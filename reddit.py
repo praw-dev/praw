@@ -12,12 +12,14 @@ REDDIT_LOGIN_URL = REDDIT_URL + "api/login"
 REDDIT_VOTE_URL = REDDIT_URL + "api/vote"
 REDDIT_SAVE_URL = REDDIT_URL + "api/save"
 REDDIT_UNSAVE_URL = REDDIT_URL + "api/unsave"
+REDDIT_REPLY_URL = REDDIT_URL + "api/reply"
 REDDIT_SUBSCRIBE_URL = REDDIT_URL + "api/subscribe"
 MY_REDDITS_URL = REDDIT_URL + "reddits/mine"
 # A small site to fetch the modhash
 REDDIT_URL_FOR_MODHASH = "http://www.reddit.com/help"
 
-REDDITOR_ABOUT_PAGE = "http://www.reddit.com/user/%s/about"
+REDDITOR_PAGE = "http://www.reddit.com/user/%s"
+REDDITOR_ABOUT_PAGE = REDDITOR_PAGE + "/about"
 REDDITOR_ABOUT_FIELDS = ['comment_karma', 'created', 'created_utc', 'has_mail', 'has_mod_mail', 'id', 'is_mod', 'link_karma', 'name']
 SUBREDDIT_ABOUT_FIELDS = ['display_name', 'name', 'title', 'url', 'created', 'created_utc', 'over18', 'subscribers', 'id', 'description']
 SUBREDDIT_SECTIONS = ['hot', 'new', 'controversial', 'top']
@@ -57,13 +59,7 @@ class Reddit:
         data = simplejson.loads(json_data)
 
         return data
-
-    def get_user(self, user_name):
-        return Redditor(user_name, self)
-    def get_subreddit(self, subreddit_name):
-        return Subreddit(subreddit_name, self)
-
-    def get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT, url_data=None, content_map="content"):
+    def get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT, url_data=None):
         all_content = []
         after = None
         
@@ -80,16 +76,19 @@ class Reddit:
                 break
 
             data = page_data.get('data')
+            children = data.get('children')
 
-            children = map(lambda x: x.get('data'), data.get('children'))
-
-            # Create Content class
             for child in children:
+                content_type = child.get('kind')
                 content = None
-                if content_map == "content":
-                    content = Content(child, self)
-                elif content_map == "subreddit":
-                    content = Subreddit(child['display_name'], self)
+
+                if content_type == "t3":
+                    content = Submission(child.get('data'), self)
+                elif content_type == "t1":
+                    content = Comment(child.get('data'), self)
+                elif content_type == "t5":
+                    content = Subreddit(child.get('data').get('display_name'), self)
+
                 all_content.append(content)
 
             after = data.get('after')
@@ -100,6 +99,12 @@ class Reddit:
         all_content = all_content[:limit]
 
         return all_content
+
+    def get_user(self, user_name):
+        return Redditor(user_name, self)
+    def get_subreddit(self, subreddit_name):
+        return Subreddit(subreddit_name, self)
+
     def login(self, user, password):
         self.user = user
 
@@ -161,22 +166,44 @@ class Reddit:
         return self.urlopen(req).read()
     def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
         reddits = self.get_content(MY_REDDITS_URL, 
-                                   limit=limit,
-                                   content_map="subreddit")
+                                   limit=limit)
         return reddits
+    def reply(self, content_id, subreddit, text):
+        # TODO: still doesn't work
+        url = REDDIT_REPLY_URL
+        params = urllib.urlencode({
+                    'thing id': content_id,
+                    'text': text,
+                    'uh': self.modhash,
+                    'r': subreddit
+            })
+        req = self.Request(url, params, REDDIT_USER_AGENT)
+        return self.urlopen(req).read()
 
 
         
 class Redditor:
     """A class for Redditor methods."""
+    # TODO: add
+    #  get overview, get comments, get submitted
     def __init__(self, user_name, reddit_session):
         self.user_name = user_name
+        self.URL = REDDITOR_PAGE % self.user_name
         self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
         self.reddit_session = reddit_session
 
     def get_about_attribute(self, attribute):
         data = self.reddit_session.get_page(self.ABOUT_URL)
         return data['data'].get(attribute)
+    def get_overview(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT):
+        url = self.URL
+        return self.reddit_session.get_content(url, limit=limit, url_data={"sort": sort, "time":time})
+    def get_comments(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT):
+        url = self.URL + "/comments"
+        return self.reddit_session.get_content(url, limit=limit, url_data={"sort": sort, "time":time})
+    def get_submitted(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT):
+        url = self.URL + "/submitted"
+        return self.reddit_session.get_content(url, limit=limit, url_data={"sort": sort, "time":time})
 
 # Add getters for Redditor about fields
 for user_attribute in REDDITOR_ABOUT_FIELDS:
@@ -219,7 +246,7 @@ for sr_attribute in SUBREDDIT_ABOUT_FIELDS:
     func = lambda self, attribute=sr_attribute: self.get_about_attribute(attribute)
     setattr(Subreddit, 'get_'+sr_attribute, func)
 
-class Content:
+class Submission:
     """A class for content on Reddit"""
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
@@ -241,6 +268,12 @@ class Comment:
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
         self.reddit_session = reddit_session
+    def __repr__(self):
+        # TODO: update this
+        comment_string = self.body[:100]
+        if len(self.body)>100:
+            comment_string += "..."
+        return comment_string
     def vote():
         pass
     def reply():
