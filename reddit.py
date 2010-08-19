@@ -11,6 +11,7 @@ REDDIT_URL = "http://www.reddit.com/"
 REDDIT_LOGIN_URL = REDDIT_URL + "api/login"
 REDDIT_VOTE_URL = REDDIT_URL + "api/vote"
 REDDIT_SAVE_URL = REDDIT_URL + "api/save"
+REDDIT_UNSAVE_URL = REDDIT_URL + "api/unsave"
 REDDIT_SUBSCRIBE_URL = REDDIT_URL + "api/subscribe"
 # A small site to fetch the modhash
 REDDIT_URL_FOR_MODHASH = "http://www.reddit.com/help"
@@ -83,8 +84,8 @@ class Reddit:
 
             # Create Content class
             for child in children:
-                content = Content(child, self)
-                content.append(content)
+                story = Content(child, self)
+                content.append(story)
 
             after = data.get('after')
             
@@ -128,17 +129,22 @@ class Reddit:
                 })
         req = self.Request(REDDIT_VOTE_URL, params, REDDIT_USER_AGENT)
         return self.urlopen(req).read()
-    def save(self, content_id):
+    def save(self, content_id, unsave=False):
+        url = REDDIT_SAVE_URL
+        executed = 'saved'
+        if unsave is True:
+            executed = 'unsaved'
+            url = REDDIT_UNSAVE_URL
         params = urllib.urlencode({
                     'id': content_id,
-                    'executed':'saved',
+                    'executed': executed,
                     'uh': self.modhash
             })
-        req = self.Request(REDDIT_SAVE_URL, params, REDDIT_USER_AGENT)
+        req = self.Request(url, params, REDDIT_USER_AGENT)
         return self.urlopen(req).read()
     def subscribe(self, subreddit_id, unsubscribe=False):
         action = 'sub'
-        if unsubscribe == True:
+        if unsubscribe is True:
             action = 'unsub'
         params = urllib.urlencode({
                     'sr': subreddit_id,
@@ -211,6 +217,10 @@ class Content:
                             subreddit_name=self.subreddit)
     def __repr__(self):
         return (str(self.score) + " - " + self.title)
+    def save(self):
+        return self.reddit_session.save(self.name)
+    def unsave(self):
+        return self.reddit_session.save(self.name, unsave=True)
 
 class Comment:
     """A class for comments."""
