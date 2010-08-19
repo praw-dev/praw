@@ -8,13 +8,16 @@ DEFAULT_CONTENT_LIMIT = 25
 
 REDDIT_USER_AGENT = { 'User-agent': 'Mozilla/4.0 (compatible; MSIE5.5; Windows NT' }
 REDDIT_URL = "http://www.reddit.com/"
-REDDIT_LOGIN_URL = "http://www.reddit.com/api/login"
-REDDIT_VOTE_URL = "http://www.reddit.com/api/vote"
+REDDIT_LOGIN_URL = REDDIT_URL + "api/login"
+REDDIT_VOTE_URL = REDDIT_URL + "api/vote"
+REDDIT_SAVE_URL = REDDIT_URL + "api/save"
+REDDIT_SUBSCRIBE_URL = REDDIT_URL + "api/subscribe"
 # A small site to fetch the modhash
 REDDIT_URL_FOR_MODHASH = "http://www.reddit.com/help"
 
 REDDITOR_ABOUT_PAGE = "http://www.reddit.com/user/%s/about"
 REDDITOR_ABOUT_FIELDS = ['comment_karma', 'created', 'created_utc', 'has_mail', 'has_mod_mail', 'id', 'is_mod', 'link_karma', 'name']
+SUBREDDIT_ABOUT_FIELDS = ['display_name', 'name', 'title', 'url', 'created', 'created_utc', 'over18', 'subscribers', 'id', 'description']
 SUBREDDIT_SECTIONS = ['hot', 'new', 'controversial', 'top']
 
 
@@ -108,6 +111,8 @@ class Reddit:
 
         return data
     def fetch_modhash(self):
+        #TODO: why the hell didn't i use json for this???
+
         req = self.Request(REDDIT_URL_FOR_MODHASH, None, REDDIT_USER_AGENT)
         # Should only need ~1200 chars to get the modhash
         data = self.urlopen(req).read(1200)
@@ -123,6 +128,27 @@ class Reddit:
                 })
         req = self.Request(REDDIT_VOTE_URL, params, REDDIT_USER_AGENT)
         return self.urlopen(req).read()
+    def save(self, content_id):
+        params = urllib.urlencode({
+                    'id': content_id,
+                    'executed':'saved',
+                    'uh': self.modhash
+            })
+        req = self.Request(REDDIT_SAVE_URL, params, REDDIT_USER_AGENT)
+        return self.urlopen(req).read()
+    def subscribe(self, subreddit_id, unsubscribe=False):
+        action = 'sub'
+        if unsubscribe == True:
+            action = 'unsub'
+        params = urllib.urlencode({
+                    'sr': subreddit_id,
+                    'action': action,
+                    'uh': self.modhash
+            })
+        req = self.Request(REDDIT_SUBSCRIBE_URL, params, 
+                           REDDIT_USER_AGENT)
+        return self.urlopen(req).read()
+
         
 class Redditor:
     """A class for Redditor methods."""
@@ -143,19 +169,35 @@ for user_attribute in REDDITOR_ABOUT_FIELDS:
 class Subreddit:
     def __init__(self, subreddit_name, reddit_session):
         self.name = subreddit_name
-        self.url = REDDIT_URL + "r/" + self.name
+        self.URL = REDDIT_URL + "r/" + self.name
+        self.ABOUT_URL = self.URL + "/about"
         self.reddit_session = reddit_session
+
     def get_top(self, time="day", limit=DEFAULT_CONTENT_LIMIT):
-        top_url = self.url + "/top"
+        top_url = self.URL + "/top"
         return self.reddit_session.get_content(top_url, limit=limit, url_data={"t":time})
     def get_controversial(self, time="day", limit=DEFAULT_CONTENT_LIMIT):
-        controversial_url = self.url + "/controversial"
+        controversial_url = self.URL + "/controversial"
         return self.reddit_session.get_content(top_url, limit=limit, url_data={"t":time})
     def get_new(self, sort="rising", limit=DEFAULT_CONTENT_LIMIT):
-        new_url = self.url + "/new"
+        new_url = self.URL + "/new"
         return self.reddit_session.get_content(top_url, limit=limit, url_data={"sort":sort})
     def get_hot(self, limit=DEFAULT_CONTENT_LIMIT):
-        return self.reddit_session.get_content(self.url, limit=limit)
+        return self.reddit_session.get_content(self.URL, limit=limit)
+
+    def get_about_attribute(self, attribute):
+        data = self.reddit_session.get_page(self.ABOUT_URL)
+        return data['data'].get(attribute)
+    def subscribe(self):
+        return self.reddit_session.subscribe(self.get_name())
+    def unsubscribe(self):
+        return self.reddit_session.subscribe(self.get_name(), 
+                                             unsubscribe=True)
+
+# Add getters for Redditor about fields
+for sr_attribute in SUBREDDIT_ABOUT_FIELDS:
+    func = lambda self, attribute=sr_attribute: self.get_about_attribute(attribute)
+    setattr(Subreddit, 'get_'+sr_attribute, func)
 
 class Content:
     """A class for content on Reddit"""
@@ -169,5 +211,15 @@ class Content:
                             subreddit_name=self.subreddit)
     def __repr__(self):
         return (str(self.score) + " - " + self.title)
+
+class Comment:
+    """A class for comments."""
+    def __init__(self, json_dict, reddit_session):
+        self.__dict__.update(json_dict)
+        self.reddit_session = reddit_session
+    def vote():
+        pass
+    def reply():
+        pass
 
 
