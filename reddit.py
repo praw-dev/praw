@@ -13,6 +13,7 @@ REDDIT_VOTE_URL = REDDIT_URL + "api/vote"
 REDDIT_SAVE_URL = REDDIT_URL + "api/save"
 REDDIT_UNSAVE_URL = REDDIT_URL + "api/unsave"
 REDDIT_SUBSCRIBE_URL = REDDIT_URL + "api/subscribe"
+MY_REDDITS_URL = REDDIT_URL + "reddits/mine"
 # A small site to fetch the modhash
 REDDIT_URL_FOR_MODHASH = "http://www.reddit.com/help"
 
@@ -62,11 +63,11 @@ class Reddit:
     def get_subreddit(self, subreddit_name):
         return Subreddit(subreddit_name, self)
 
-    def get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT, url_data=None):
-        content = []
+    def get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT, url_data=None, content_map="content"):
+        all_content = []
         after = None
         
-        while len(content) < limit:
+        while len(all_content) < limit:
             if after is not None:
                 data = {"after":after}
                 if url_data is not None:
@@ -84,17 +85,21 @@ class Reddit:
 
             # Create Content class
             for child in children:
-                story = Content(child, self)
-                content.append(story)
+                content = None
+                if content_map == "content":
+                    content = Content(child, self)
+                elif content_map == "subreddit":
+                    content = Subreddit(child['display_name'], self)
+                all_content.append(content)
 
             after = data.get('after')
             
             if after is None:
                 break
 
-        content = content[:limit]
+        all_content = all_content[:limit]
 
-        return content
+        return all_content
     def login(self, user, password):
         self.user = user
 
@@ -154,6 +159,12 @@ class Reddit:
         req = self.Request(REDDIT_SUBSCRIBE_URL, params, 
                            REDDIT_USER_AGENT)
         return self.urlopen(req).read()
+    def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
+        reddits = self.get_content(MY_REDDITS_URL, 
+                                   limit=limit,
+                                   content_map="subreddit")
+        return reddits
+
 
         
 class Redditor:
@@ -173,11 +184,14 @@ for user_attribute in REDDITOR_ABOUT_FIELDS:
     setattr(Redditor, 'get_'+user_attribute, func)
         
 class Subreddit:
+    # TODO: name vs id etc
     def __init__(self, subreddit_name, reddit_session):
         self.name = subreddit_name
         self.URL = REDDIT_URL + "r/" + self.name
         self.ABOUT_URL = self.URL + "/about"
         self.reddit_session = reddit_session
+    def __repr__(self):
+        return self.name
 
     def get_top(self, time="day", limit=DEFAULT_CONTENT_LIMIT):
         top_url = self.URL + "/top"
