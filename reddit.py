@@ -2,6 +2,7 @@ import urllib
 import urllib2
 import simplejson
 import cookielib
+import re
 
 DEFAULT_CONTENT_LIMIT = 25
 
@@ -9,6 +10,8 @@ REDDIT_USER_AGENT = { 'User-agent': 'Mozilla/4.0 (compatible; MSIE5.5; Windows N
 REDDIT_URL = "http://www.reddit.com/"
 REDDIT_LOGIN_URL = "http://www.reddit.com/api/login"
 REDDIT_VOTE_URL = "http://www.reddit.com/api/vote"
+# A small site to fetch the modhash
+REDDIT_URL_FOR_MODHASH = "http://www.reddit.com/help"
 
 REDDITOR_ABOUT_PAGE = "http://www.reddit.com/user/%s/about"
 REDDITOR_ABOUT_FIELDS = ['comment_karma', 'created', 'created_utc', 'has_mail', 'has_mod_mail', 'id', 'is_mod', 'link_karma', 'name']
@@ -74,7 +77,12 @@ class Reddit:
             data = page_data.get('data')
 
             children = map(lambda x: x.get('data'), data.get('children'))
-            content.extend(children)
+
+            # Create Content class
+            for child in children:
+                content = Content(child, self)
+                content.append(content)
+
             after = data.get('after')
             
             if after is None:
@@ -93,12 +101,25 @@ class Reddit:
                     'user' : user
                 })
         req = self.Request(REDDIT_LOGIN_URL, params, REDDIT_USER_AGENT)
-        return self.urlopen(req).read()
+        data =  self.urlopen(req).read()
+
+        # Get and store the modhash now that we can
+        self.fetch_modhash()
+
+        return data
+    def fetch_modhash(self):
+        req = self.Request(REDDIT_URL_FOR_MODHASH, None, REDDIT_USER_AGENT)
+        # Should only need ~1200 chars to get the modhash
+        data = self.urlopen(req).read(1200)
+        match = re.search(r"modhash[^,]*", data)
+        self.modhash = eval(match.group(0).split(": ")[1])
+
     def vote(self, content_id, direction=0, subreddit_name=""):
         params = urllib.urlencode({
                     'id' : content_id,
                     'dir' : direction,
-                    'r' : subreddit_name
+                    'r' : subreddit_name,
+                    'uh' : self.modhash
                 })
         req = self.Request(REDDIT_VOTE_URL, params, REDDIT_USER_AGENT)
         return self.urlopen(req).read()
@@ -136,11 +157,17 @@ class Subreddit:
     def get_hot(self, limit=DEFAULT_CONTENT_LIMIT):
         return self.reddit_session.get_content(self.url, limit=limit)
 
-
-        
-        
-
-
-
+class Content:
+    """A class for content on Reddit"""
+    def __init__(self, json_dict, reddit_session):
+        self.__dict__.update(json_dict)
+        self.reddit_session = reddit_session
+    def vote(self, direction=0):
+        """Vote for this story."""
+        self.reddit_session.vote(self.name, 
+                            direction=direction, 
+                            subreddit_name=self.subreddit)
+    def __repr__(self):
+        return (str(self.score) + " - " + self.title)
 
 
