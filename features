@@ -1,0 +1,17 @@
+API Functions:
+===============
+    FINISHED
+    -----------
+    login
+    vote
+    reply
+    save/unsave
+
+    UNFINISHED
+    -----------
+    edit
+    delete
+    submit
+    compose
+    register
+    friend/unfriend
