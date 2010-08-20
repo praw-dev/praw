@@ -12,7 +12,7 @@ REDDIT_LOGIN_URL = REDDIT_URL + "api/login"
 REDDIT_VOTE_URL = REDDIT_URL + "api/vote"
 REDDIT_SAVE_URL = REDDIT_URL + "api/save"
 REDDIT_UNSAVE_URL = REDDIT_URL + "api/unsave"
-REDDIT_REPLY_URL = REDDIT_URL + "api/reply"
+REDDIT_COMMENT_URL = REDDIT_URL + "api/comment"
 REDDIT_SUBSCRIBE_URL = REDDIT_URL + "api/subscribe"
 REDDIT_COMMENTS_URL = REDDIT_URL + "comments"
 MY_REDDITS_URL = REDDIT_URL + "reddits/mine"
@@ -186,14 +186,13 @@ class Reddit:
         reddits = self.get_content(MY_REDDITS_URL, 
                                    limit=limit)
         return reddits
-    def reply(self, content_id, subreddit, text):
-        # TODO: still doesn't work
-        url = REDDIT_REPLY_URL
+    def comment(self, content_id, subreddit_name=None, text=""):
+        url = REDDIT_COMMENT_URL
         params = urllib.urlencode({
-                    'thing id': content_id,
+                    'thing_id': content_id,
                     'text': text,
                     'uh': self.modhash,
-                    'r': subreddit
+                    'r': subreddit_name
             })
         req = self.Request(url, params, REDDIT_USER_AGENT)
         return self.urlopen(req).read()
@@ -251,7 +250,7 @@ class Redditor:
 for user_attribute in REDDITOR_ABOUT_FIELDS:
     func = lambda self, attribute=user_attribute: \
             self.get_about_attribute(attribute)
-    setattr(Redditor, 'get_'+user_attribute, func)
+    setattr(Redditor, user_attribute, property(func))
         
 class RedditPage:
     def __init__(self, url, name, reddit_session):
@@ -308,7 +307,7 @@ class Subreddit(RedditPage):
 for sr_attribute in SUBREDDIT_ABOUT_FIELDS:
     func = lambda self, attribute=sr_attribute: \
             self.get_about_attribute(attribute)
-    setattr(Subreddit, 'get_'+sr_attribute, func)
+    setattr(Subreddit, sr_attribute, property(func))
 
 class Submission:
     """A class for content on Reddit"""
@@ -330,6 +329,10 @@ class Submission:
         return self.reddit_session.save(self.name)
     def unsave(self):
         return self.reddit_session.save(self.name, unsave=True)
+    def comment(self, text):
+        return self.reddit_session.comment(self.name,
+                                           subreddit_name=self.subreddit,
+                                           text=text)
 
 class Comment:
     """A class for comments."""
@@ -350,7 +353,7 @@ class Comment:
         return self.vote(direction=1)
     def downvote(self):
         return self.vote(direction=-1)
-    def reply():
-        pass
-
-
+    def reply(self, text):
+        return self.reddit_session.comment(self.name,
+                                           subreddit_name=self.subreddit,
+                                           text=text)
