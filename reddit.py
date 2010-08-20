@@ -14,6 +14,7 @@ REDDIT_SAVE_URL = REDDIT_URL + "api/save"
 REDDIT_UNSAVE_URL = REDDIT_URL + "api/unsave"
 REDDIT_REPLY_URL = REDDIT_URL + "api/reply"
 REDDIT_SUBSCRIBE_URL = REDDIT_URL + "api/subscribe"
+REDDIT_COMMENTS_URL = REDDIT_URL + "comments"
 MY_REDDITS_URL = REDDIT_URL + "reddits/mine"
 REDDIT_SAVED_LINKS = REDDIT_URL + "saved"
 # A small site to fetch the modhash
@@ -36,7 +37,8 @@ class Reddit:
 
         # Set cookies
         self.cookie_jar = cookielib.CookieJar()
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cookie_jar))
+        opener = urllib2.build_opener(
+            urllib2.HTTPCookieProcessor(self.cookie_jar))
         urllib2.install_opener(opener)
 
         # Set logged in user to None
@@ -53,8 +55,9 @@ class Reddit:
         encoded_params = None
         if params is not None:
             encoded_params = urllib.urlencode(params)
-        request = self.Request(page_url, encoded_params, REDDIT_USER_AGENT)
-
+        request = self.Request(page_url, 
+                               encoded_params, 
+                               REDDIT_USER_AGENT)
         # Get the data 
         json_data = self.urlopen(request).read()
         data = simplejson.loads(json_data)
@@ -96,7 +99,8 @@ class Reddit:
                 elif content_type == "t1":
                     content = Comment(child.get('data'), self)
                 elif content_type == "t5":
-                    content = Subreddit(child.get('data').get('display_name'), self)
+                    content = Subreddit(child.get('data') \
+                                        .get('display_name'), self)
 
                 all_content.append(content)
 
@@ -137,9 +141,8 @@ class Reddit:
 
         return data
     def fetch_modhash(self):
-        #TODO: why the hell didn't i use json for this???
-
-        req = self.Request(REDDIT_URL_FOR_MODHASH, None, REDDIT_USER_AGENT)
+        req = self.Request(REDDIT_URL_FOR_MODHASH, 
+                           None, REDDIT_USER_AGENT)
         # Should only need ~1200 chars to get the modhash
         data = self.urlopen(req).read(1200)
         match = re.search(r"modhash[^,]*", data)
@@ -198,6 +201,11 @@ class Reddit:
         return RedditPage("http://www.reddit.com","reddit.com", self)
     def get_saved_links(self, limit=-1):
         return self.get_content(REDDIT_SAVED_LINKS, limit=limit)
+    def get_comments(self, limit=DEFAULT_CONTENT_LIMIT,
+                     place_holder=None):
+        url = REDDIT_COMMENTS_URL
+        return self.get_content(url, limit=limit, 
+                                               place_holder=place_holder)
 
 
         
@@ -241,7 +249,8 @@ class Redditor:
 
 # Add getters for Redditor about fields
 for user_attribute in REDDITOR_ABOUT_FIELDS:
-    func = lambda self, attribute=user_attribute: self.get_about_attribute(attribute)
+    func = lambda self, attribute=user_attribute: \
+            self.get_about_attribute(attribute)
     setattr(Redditor, 'get_'+user_attribute, func)
         
 class RedditPage:
@@ -297,7 +306,8 @@ class Subreddit(RedditPage):
 
 # Add getters for Redditor about fields
 for sr_attribute in SUBREDDIT_ABOUT_FIELDS:
-    func = lambda self, attribute=sr_attribute: self.get_about_attribute(attribute)
+    func = lambda self, attribute=sr_attribute: \
+            self.get_about_attribute(attribute)
     setattr(Subreddit, 'get_'+sr_attribute, func)
 
 class Submission:
@@ -307,9 +317,13 @@ class Submission:
         self.reddit_session = reddit_session
     def vote(self, direction=0):
         """Vote for this story."""
-        self.reddit_session.vote(self.name, 
+        return self.reddit_session.vote(self.name, 
                             direction=direction, 
                             subreddit_name=self.subreddit)
+    def upvote(self):
+        return self.vote(direction=1)
+    def downvote(self):
+        return self.vote(direction=-1)
     def __repr__(self):
         return (str(self.score) + " :: " + self.title)
     def save(self):
@@ -328,8 +342,14 @@ class Comment:
         if len(self.body)>100:
             comment_string += "..."
         return comment_string
-    def vote():
-        pass
+    def vote(self, direction=0):
+        return self.reddit_session.vote(self.name,
+                                        direction=direction,
+                                        subreddit_name=self.subreddit)
+    def upvote(self):
+        return self.vote(direction=1)
+    def downvote(self):
+        return self.vote(direction=-1)
     def reply():
         pass
 
