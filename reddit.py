@@ -67,15 +67,8 @@ class Reddit:
                     url_data=None, place_holder=None):
         all_content = []
         after = None
-        print "Entering loop"
-        print "limit: " + str(limit)
         
         while len(all_content) < limit or limit == -1:
-            print "At Start of loop"
-            print "len: " + str(len(all_content))
-            if after is not None:
-                print "after: " + after
-
             if after is not None:
                 data = {"after":after}
                 if url_data is not None:
@@ -85,7 +78,6 @@ class Reddit:
                 page_data = self.get_page(page_url, url_data=url_data)
 
             if page_data.get('data') is None:
-                print "data is none"
                 break
 
             data = page_data.get('data')
@@ -93,12 +85,9 @@ class Reddit:
 
             found_place_holder=False
 
-            print "iterating through children"
             for child in children:
-                print "child: " + str(child.get('data').get('name'))
                 if place_holder is not None and \
                    child.get('data').get('name') == place_holder:
-                    print "found place  holder"
                     found_place_holder=True
                     break
 
@@ -118,11 +107,9 @@ class Reddit:
             after = data.get('after')
             
             if after is None:
-                print "after is None, exiting"
                 break
 
             if found_place_holder is True:
-                print "found place holder, exiting main loop"
                 break
 
         if limit != -1:
@@ -136,7 +123,9 @@ class Reddit:
         return Subreddit(subreddit_name, self)
 
     def login(self, user=None, password=None):
-        if user is not None and password is None:
+        if user is None:
+            user = raw_input("Username: ")
+        if password is None:
             import getpass
             password = getpass.getpass("Password: ")
         self.user = user
