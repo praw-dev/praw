@@ -15,6 +15,7 @@ REDDIT_UNSAVE_URL = REDDIT_URL + "api/unsave"
 REDDIT_REPLY_URL = REDDIT_URL + "api/reply"
 REDDIT_SUBSCRIBE_URL = REDDIT_URL + "api/subscribe"
 MY_REDDITS_URL = REDDIT_URL + "reddits/mine"
+SAVED_LINKS_URL = REDDIT_URL + "saved"
 # A small site to fetch the modhash
 REDDIT_URL_FOR_MODHASH = "http://www.reddit.com/help"
 
@@ -63,7 +64,7 @@ class Reddit:
         all_content = []
         after = None
         
-        while len(all_content) < limit:
+        while len(all_content) < limit or limit == -1:
             if after is not None:
                 data = {"after":after}
                 if url_data is not None:
@@ -92,7 +93,7 @@ class Reddit:
                 all_content.append(content)
 
             after = data.get('after')
-            
+            n
             if after is None:
                 break
 
@@ -168,6 +169,9 @@ class Reddit:
         reddits = self.get_content(MY_REDDITS_URL, 
                                    limit=limit)
         return reddits
+    def get_saved_links(self, limit=-1):
+        saved = self.get_content(SAVED_LINKS_URL, limit=limit)
+        return saved
     def reply(self, content_id, subreddit, text):
         # TODO: still doesn't work
         url = REDDIT_REPLY_URL
@@ -179,18 +183,24 @@ class Reddit:
             })
         req = self.Request(url, params, REDDIT_USER_AGENT)
         return self.urlopen(req).read()
-
-
-        
+    def unfriend(self, user_name):
+        url = "http://www.reddit.com/api/friend"
+        params = urllib.urlencode({
+            'nuser':user_name,
+            'container': self.user,
+            'uh': self.modhash,
+        })
+        req = self.Request(url, params, REDDIT_USER_AGENT)
+        return self.urlopen(req).read()
 class Redditor:
     """A class for Redditor methods."""
-    # TODO: add
-    #  get overview, get comments, get submitted
     def __init__(self, user_name, reddit_session):
         self.user_name = user_name
         self.URL = REDDITOR_PAGE % self.user_name
         self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
         self.reddit_session = reddit_session
+    def __repr__(self):
+        return self.user_name
 
     def get_about_attribute(self, attribute):
         data = self.reddit_session.get_page(self.ABOUT_URL)
@@ -208,17 +218,15 @@ class Redditor:
 # Add getters for Redditor about fields
 for user_attribute in REDDITOR_ABOUT_FIELDS:
     func = lambda self, attribute=user_attribute: self.get_about_attribute(attribute)
-    setattr(Redditor, 'get_'+user_attribute, func)
+    setattr(Redditor, user_attribute, property(func))
         
 class Subreddit:
-    # TODO: name vs id etc
     def __init__(self, subreddit_name, reddit_session):
-        self.name = subreddit_name
-        self.URL = REDDIT_URL + "r/" + self.name
+        self.URL = REDDIT_URL + "r/" + subreddit_name
         self.ABOUT_URL = self.URL + "/about"
         self.reddit_session = reddit_session
     def __repr__(self):
-        return self.name
+        return self.display_name
 
     def get_top(self, time="day", limit=DEFAULT_CONTENT_LIMIT):
         top_url = self.URL + "/top"
@@ -236,15 +244,15 @@ class Subreddit:
         data = self.reddit_session.get_page(self.ABOUT_URL)
         return data['data'].get(attribute)
     def subscribe(self):
-        return self.reddit_session.subscribe(self.get_name())
+        return self.reddit_session.subscribe(self.name)
     def unsubscribe(self):
-        return self.reddit_session.subscribe(self.get_name(), 
+        return self.reddit_session.subscribe(self.name, 
                                              unsubscribe=True)
 
 # Add getters for Redditor about fields
 for sr_attribute in SUBREDDIT_ABOUT_FIELDS:
     func = lambda self, attribute=sr_attribute: self.get_about_attribute(attribute)
-    setattr(Subreddit, 'get_'+sr_attribute, func)
+    setattr(Subreddit, sr_attribute, property(func))
 
 class Submission:
     """A class for content on Reddit"""
@@ -252,12 +260,18 @@ class Submission:
         self.__dict__.update(json_dict)
         self.reddit_session = reddit_session
     def vote(self, direction=0):
-        """Vote for this story."""
         self.reddit_session.vote(self.name, 
                             direction=direction, 
                             subreddit_name=self.subreddit)
+    def upvote(self):
+        return vote(direction=1)
+    def downvote(self):
+        return vote(direction=-1)
     def __repr__(self):
-        return (str(self.score) + " - " + self.title)
+        submission_string = str(self.score) + " :: " + self.title
+        if len(submission_string)>80:
+            submission_string = submission_string[:80] + "..."
+        return submission_string
     def save(self):
         return self.reddit_session.save(self.name)
     def unsave(self):
@@ -270,12 +284,19 @@ class Comment:
         self.reddit_session = reddit_session
     def __repr__(self):
         # TODO: update this
-        comment_string = self.body[:100]
-        if len(self.body)>100:
-            comment_string += "..."
+        comment_string = self.body[:80]
+        if len(self.body)>80:
+            comment_string = comment_string[:80] + "..."
         return comment_string
-    def vote():
-        pass
+    def vote(self, direction=0):
+        return self.reddit_session.vote(
+                                self.name, 
+                                direction=direction,
+                                subreddit_name=self.subreddit)
+    def upvote(self):
+        return self.vote(direction=1)
+    def downvote(self):
+        return self.vote(direction=-1)
     def reply():
         pass
 
