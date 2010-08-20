@@ -15,6 +15,7 @@ REDDIT_UNSAVE_URL = REDDIT_URL + "api/unsave"
 REDDIT_REPLY_URL = REDDIT_URL + "api/reply"
 REDDIT_SUBSCRIBE_URL = REDDIT_URL + "api/subscribe"
 MY_REDDITS_URL = REDDIT_URL + "reddits/mine"
+REDDIT_SAVED_LINKS = REDDIT_URL + "saved"
 # A small site to fetch the modhash
 REDDIT_URL_FOR_MODHASH = "http://www.reddit.com/help"
 
@@ -59,15 +60,16 @@ class Reddit:
         data = simplejson.loads(json_data)
 
         return data
-    def get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT, url_data=None):
+    def get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT, 
+                    url_data=None, place_holder=None):
         all_content = []
         after = None
         
-        while len(all_content) < limit:
+        while len(all_content) < limit or limit == -1:
             if after is not None:
                 data = {"after":after}
                 if url_data is not None:
-                    data.extend(url_data)
+                    data.update(url_data)
                 page_data = self.get_page(page_url, url_data=data)
             else:
                 page_data = self.get_page(page_url, url_data=url_data)
@@ -78,7 +80,14 @@ class Reddit:
             data = page_data.get('data')
             children = data.get('children')
 
+            found_place_holder=False
+
             for child in children:
+                if place_holder is not None and \
+                   child.get('data').get('name') == place_holder:
+                    found_place_holder=True
+                    break
+
                 content_type = child.get('kind')
                 content = None
 
@@ -96,6 +105,9 @@ class Reddit:
             if after is None:
                 break
 
+            if found_place_holder is True:
+                break
+
         all_content = all_content[:limit]
 
         return all_content
@@ -105,7 +117,10 @@ class Reddit:
     def get_subreddit(self, subreddit_name):
         return Subreddit(subreddit_name, self)
 
-    def login(self, user, password):
+    def login(self, user=None, password=None):
+        if user is not None and password is None:
+            import getpass
+            password = getpass.getpass("Password: ")
         self.user = user
 
         params = urllib.urlencode({
@@ -179,6 +194,10 @@ class Reddit:
             })
         req = self.Request(url, params, REDDIT_USER_AGENT)
         return self.urlopen(req).read()
+    def get_home_page(self):
+        return RedditPage("http://www.reddit.com","reddit.com", self)
+    def get_saved_links(self, limit=-1):
+        return self.get_content(REDDIT_SAVED_LINKS, limit=limit)
 
 
         
@@ -195,43 +214,78 @@ class Redditor:
     def get_about_attribute(self, attribute):
         data = self.reddit_session.get_page(self.ABOUT_URL)
         return data['data'].get(attribute)
-    def get_overview(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT):
+    def get_overview(self, sort="new", time="all", 
+                     limit=DEFAULT_CONTENT_LIMIT, 
+                     place_holder=None):
         url = self.URL
-        return self.reddit_session.get_content(url, limit=limit, url_data={"sort": sort, "time":time})
-    def get_comments(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT):
+        url_data = {"sort": sort, "time":time}
+        return self.reddit_session.get_content(url, limit=limit, 
+                                               url_data=url_data,
+                                               place_holder=place_holder)
+    def get_comments(self, sort="new", time="all", 
+                     limit=DEFAULT_CONTENT_LIMIT,
+                     place_holder=None):
         url = self.URL + "/comments"
-        return self.reddit_session.get_content(url, limit=limit, url_data={"sort": sort, "time":time})
-    def get_submitted(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT):
+        url_data = {"sort": sort, "time":time}
+        return self.reddit_session.get_content(url, limit=limit, 
+                                               url_data=url_data,
+                                               place_holder=place_holder)
+    def get_submitted(self, sort="new", time="all", 
+                      limit=DEFAULT_CONTENT_LIMIT,
+                      place_holder=None):
         url = self.URL + "/submitted"
-        return self.reddit_session.get_content(url, limit=limit, url_data={"sort": sort, "time":time})
+        url_data = {"sort": sort, "time":time}
+        return self.reddit_session.get_content(url, limit=limit, 
+                                               url_data=url_data,
+                                               place_holder=place_holder)
 
 # Add getters for Redditor about fields
 for user_attribute in REDDITOR_ABOUT_FIELDS:
     func = lambda self, attribute=user_attribute: self.get_about_attribute(attribute)
     setattr(Redditor, 'get_'+user_attribute, func)
         
-class Subreddit:
-    # TODO: name vs id etc
+class RedditPage:
+    def __init__(self, url, name, reddit_session):
+        self.URL = url
+        self.display_name = name
+        self.reddit_session = reddit_session
+    def __repr__(self):
+        return self.display_name
+    def get_top(self, time="day", limit=DEFAULT_CONTENT_LIMIT,
+               place_holder=None):
+        url = self.URL + "/top"
+        url_data = {"t":time}
+        return self.reddit_session.get_content(url, limit=limit, 
+                                               url_data=url_data,
+                                              place_holder=place_holder)
+    def get_controversial(self, time="day", limit=DEFAULT_CONTENT_LIMIT,
+                         place_holder=None):
+        url = self.URL + "/controversial"
+        url_data = {"t":time}
+        return self.reddit_session.get_content(url, limit=limit, 
+                                               url_data=url_data,
+                                              place_holder=place_holder)
+    def get_new(self, sort="rising", limit=DEFAULT_CONTENT_LIMIT,
+               place_holder=None):
+        url = self.URL + "/new"
+        url_data = {"sort":sort}
+        return self.reddit_session.get_content(url, limit=limit, 
+                                               url_data=url_data,
+                                              place_holder=place_holder)
+    def get_hot(self, limit=DEFAULT_CONTENT_LIMIT,
+               place_holder=None):
+        url = self.URL
+        if url[-1] != '/':
+            url += '/'
+        return self.reddit_session.get_content(url, limit=limit,
+                                              place_holder=place_holder)
+
+class Subreddit(RedditPage):
     def __init__(self, subreddit_name, reddit_session):
         self.name = subreddit_name
         self.URL = REDDIT_URL + "r/" + self.name
         self.ABOUT_URL = self.URL + "/about"
         self.reddit_session = reddit_session
-    def __repr__(self):
-        return self.name
-
-    def get_top(self, time="day", limit=DEFAULT_CONTENT_LIMIT):
-        top_url = self.URL + "/top"
-        return self.reddit_session.get_content(top_url, limit=limit, url_data={"t":time})
-    def get_controversial(self, time="day", limit=DEFAULT_CONTENT_LIMIT):
-        controversial_url = self.URL + "/controversial"
-        return self.reddit_session.get_content(top_url, limit=limit, url_data={"t":time})
-    def get_new(self, sort="rising", limit=DEFAULT_CONTENT_LIMIT):
-        new_url = self.URL + "/new"
-        return self.reddit_session.get_content(top_url, limit=limit, url_data={"sort":sort})
-    def get_hot(self, limit=DEFAULT_CONTENT_LIMIT):
-        return self.reddit_session.get_content(self.URL, limit=limit)
-
     def get_about_attribute(self, attribute):
         data = self.reddit_session.get_page(self.ABOUT_URL)
         return data['data'].get(attribute)
@@ -257,7 +311,7 @@ class Submission:
                             direction=direction, 
                             subreddit_name=self.subreddit)
     def __repr__(self):
-        return (str(self.score) + " - " + self.title)
+        return (str(self.score) + " :: " + self.title)
     def save(self):
         return self.reddit_session.save(self.name)
     def unsave(self):
