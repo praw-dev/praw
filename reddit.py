@@ -196,6 +196,17 @@ class Reddit:
             })
         req = self.Request(url, params, REDDIT_USER_AGENT)
         return self.urlopen(req).read()
+    def friend(self, user):
+        url = "http://www.reddit.com/api/friend"
+        params = urllib.urlencode({
+                    'name': user,
+                    'container': self.user,
+                    'uh': self.modhash
+                    #'type': 'friend'
+            })
+        req = self.Request(url, params, REDDIT_USER_AGENT)
+        return self.urlopen(req).read()
+
     def get_home_page(self):
         return RedditPage("http://www.reddit.com","reddit.com", self)
     def get_saved_links(self, limit=-1):
