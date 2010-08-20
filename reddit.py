@@ -305,24 +305,28 @@ class Subreddit(RedditPage):
         self.URL = REDDIT_URL + "r/" + self.name
         self.ABOUT_URL = self.URL + "/about"
         self.reddit_session = reddit_session
-<<<<<<< HEAD
     def __repr__(self):
         return self.display_name
 
     def get_top(self, time="day", limit=DEFAULT_CONTENT_LIMIT):
         top_url = self.URL + "/top"
-        return self.reddit_session.get_content(top_url, limit=limit, url_data={"t":time})
-    def get_controversial(self, time="day", limit=DEFAULT_CONTENT_LIMIT):
+        return self.reddit_session.get_content(top_url, 
+                                               limit=limit, 
+                                               url_data={"t":time})
+    def get_controversial(self, time="day", 
+                          limit=DEFAULT_CONTENT_LIMIT):
         controversial_url = self.URL + "/controversial"
-        return self.reddit_session.get_content(top_url, limit=limit, url_data={"t":time})
+        return self.reddit_session.get_content(top_url, 
+                                               limit=limit, 
+                                               url_data={"t":time})
     def get_new(self, sort="rising", limit=DEFAULT_CONTENT_LIMIT):
         new_url = self.URL + "/new"
-        return self.reddit_session.get_content(top_url, limit=limit, url_data={"sort":sort})
+        return self.reddit_session.get_content(top_url, 
+                                               limit=limit, 
+                                               url_data={"sort":sort})
     def get_hot(self, limit=DEFAULT_CONTENT_LIMIT):
-        return self.reddit_session.get_content(self.URL, limit=limit)
-
-=======
->>>>>>> be4885cc1f23aab9646799c79cd4e4015487e4a8
+        return self.reddit_session.get_content(self.URL, 
+                                               limit=limit)
     def get_about_attribute(self, attribute):
         data = self.reddit_session.get_page(self.ABOUT_URL)
         return data['data'].get(attribute)
