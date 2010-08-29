@@ -5,6 +5,7 @@ import simplejson
 import cookielib
 import re
 import time
+from memoize import Memoize
 
 # Define constants
 DEFAULT_CONTENT_LIMIT = 25
@@ -36,6 +37,9 @@ SUBREDDIT_SECTIONS = ['hot', 'new', 'controversial', 'top']
 
 # How long to wait between api requests (in seconds)
 REDDIT_API_WAIT_TIME = 1
+# How long to cache results (in seconds)
+CACHE_TIME = 30
+memoize = Memoize(timeout=CACHE_TIME)
 
 # For printing with repr or str or unicode, truncate strings to 80 chars
 CHAR_LIMIT = 80
@@ -119,7 +123,9 @@ class Reddit:
 
         # Set logged in user to None
         self.user = None
+
     @sleep_after
+    @memoize
     def _get_page(self, page_url, params=None, url_data=None):
         """Given a page url and a dict of params, return the page JSON.
         
@@ -146,6 +152,7 @@ class Reddit:
 
         return data
     @sleep_after
+    @memoize
     def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT, 
                     url_data=None, place_holder=None):
         """A method to return Reddit content from a URL. Starts at the initial
@@ -372,6 +379,7 @@ class Reddit:
     def get_homepage(self):
         """Return a subreddit-style class of the reddit homepage."""
         return RedditPage("http://www.reddit.com","reddit.com", self)
+    @require_login
     def get_saved_links(self, limit=-1):
         """Return a listing of the logged-in user's saved links."""
         return self._get_content(REDDIT_SAVED_LINKS, limit=limit)

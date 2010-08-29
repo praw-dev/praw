@@ -77,6 +77,7 @@ Completed:
 * get hot, top, controversial, overview, submitted
 * get all comments
 * commenting/replying
+* caching results
 
 Not Included (yet):
 
@@ -84,7 +85,6 @@ Not Included (yet):
 * register
 * submitting
 * everything else
-* caching results
 
 Example Applications
 --------------------
@@ -100,7 +100,7 @@ Questions
 
 > How come you don't have caching?
 
-I couldn't find caching module that didn't require a server and worked with keyword arguments. Care to recommend one?
+EDIT: I do now :)
 
 > Why is everything so slow?
 
