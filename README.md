@@ -80,18 +80,32 @@ Not Included (yet):
 * everything else
 * caching results
 
+Example Applications
+--------------------
+I coded a few quick applications/scripts with this wrapper:
+
+* A [comment tracker](http://github.com/mellort/reddit_comment_tracker/blob/master/comment_tracker.py), which repeatedly looks at new Reddit comments and can take an action if they meet a specified condition. The example use I gave is replying with an automated message if the body of a comment contains a certain word. (Novelty accounts, anyone?)
+* An [account cloner](http://github.com/mellort/reddit_account_cloner/blob/master/account_cloner.py). Given two logins and passwords, it will transfer all of the saved links and subscribed subreddits from the first account to the second.
+
+I hope that this wrapper allows for many more quick and useful applications to be made!
+
 Questions
 ------------
+
 > How come you don't have caching?
+
 I couldn't find caching model that didn't require a server and worked with keyword arguments. Care to recommend one?
 
 > Why is everything so slow?
+
 I tried to be nice to Reddit's servers by sleeping between requests.
 
 > Why don't you have feature X coded yet?
+
 I had a bit of a hard time decyphering the Reddit API. I will hopefully put more time into it soon.
 
 > When I try to look at stories/comments I get a weird UnicodeEncodeError. What gives?
+
 Sometimes there are unicode characters in story titles and in comments. Python versions before 3.0 will have errors printing them. Try something like
 
     map(unicode, stories)
