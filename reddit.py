@@ -12,16 +12,16 @@ DEFAULT_CONTENT_LIMIT = 25
 REDDIT_USER_AGENT = { 'User-agent': 'Python Reddit API' }
 
 # Some Reddit urls to keep track of
-REDDIT_URL = "http://www.reddit.com/"
-REDDIT_LOGIN_URL = REDDIT_URL + "api/login"
-REDDIT_VOTE_URL = REDDIT_URL + "api/vote"
-REDDIT_SAVE_URL = REDDIT_URL + "api/save"
-REDDIT_UNSAVE_URL = REDDIT_URL + "api/unsave"
-REDDIT_COMMENT_URL = REDDIT_URL + "api/comment"
-REDDIT_SUBSCRIBE_URL = REDDIT_URL + "api/subscribe"
-REDDIT_COMMENTS_URL = REDDIT_URL + "comments"
-MY_REDDITS_URL = REDDIT_URL + "reddits/mine"
-REDDIT_SAVED_LINKS = REDDIT_URL + "saved"
+REDDIT_URL = "http://www.reddit.com"
+REDDIT_LOGIN_URL = REDDIT_URL + "/api/login"
+REDDIT_VOTE_URL = REDDIT_URL + "/api/vote"
+REDDIT_SAVE_URL = REDDIT_URL + "/api/save"
+REDDIT_UNSAVE_URL = REDDIT_URL + "/api/unsave"
+REDDIT_COMMENT_URL = REDDIT_URL + "/api/comment"
+REDDIT_SUBSCRIBE_URL = REDDIT_URL + "/api/subscribe"
+REDDIT_COMMENTS_URL = REDDIT_URL + "/comments"
+MY_REDDITS_URL = REDDIT_URL + "/reddits/mine"
+REDDIT_SAVED_LINKS = REDDIT_URL + "/saved"
 ## A small site to fetch the modhash
 REDDIT_URL_FOR_MODHASH = "http://www.reddit.com/help"
 REDDITOR_PAGE = "http://www.reddit.com/user/%s"
@@ -41,7 +41,14 @@ class NotLoggedInException(Exception):
     def __str__(self):
         return "You need to login to do that!"
 
+class InvalidUserPass(Exception):
+    """An exception for failed logins."""
+    def __str__(self):
+        return "Invalid username/password."
+
 def require_login(func):
+    """A decorator to ensure that a user has logged in before
+    calling the function."""
     def wrapped_func(self, *args, **kwargs):
         if self.user == None:
             raise NotLoggedInException()
@@ -49,17 +56,38 @@ def require_login(func):
             return func(self, *args, **kwargs)
     return wrapped_func
 
-def limit_chars(num_chars):
+def limit_chars(num_chars=CHAR_LIMIT):
     """A decorator to limit the number of chars in a 
     function that outputs a string."""
     def func_limiter(func):
         def func_wrapper(*args, **kwargs):
             value = func(*args, **kwargs)
-            if len(value) > CHAR_LIMIT:
-                value = value[:CHAR_LIMIT] + "..."
+            if len(value) > num_chars:
+                value = value[:num_chars] + "..."
             return value
         return func_wrapper
     return func_limiter
+
+def api_response(func):
+    """Decorator to look at the Reddit API response to an
+    API POST request like vote, subscribe, login, etc.
+    Basically, it just looks for certain errors in the 
+    return string. If it doesn't find one, then it just
+    returns True.
+    """
+    # TODO: add a 'submitting' too quickly error
+    def wrapped_func(*args, **kwargs):
+        return_value = func(*args, **kwargs)
+        if return_value == '{}' or '".error.' not in return_value:
+            return True
+        elif ".error.USER_REQUIRED" in return_value:
+            raise NotLoggedInException()
+        elif ".error.WRONG_PASSWORD" in return_value:
+            raise InvalidUserPass()
+        else:
+            raise Exception(return_value)
+
+    return wrapped_func
 
 class Reddit:
     """A class for a reddit session."""
@@ -195,13 +223,14 @@ class Reddit:
 
         return all_content
 
-    def get_user(self, user_name):
+    def get_redditor(self, user_name):
         """Return a Redditor class for the user_name specified."""
         return Redditor(user_name, self)
     def get_subreddit(self, subreddit_name):
         """Returns a Subreddit class for the user_name specified."""
         return Subreddit(subreddit_name, self)
 
+    @api_response
     def login(self, user=None, password=None):
         """Login to Reddit. If no user or password is provided, the user
         will be prompted with raw_input and getpass.getpass.
@@ -247,6 +276,7 @@ class Reddit:
         self.modhash = eval(match.group(0).split(": ")[1])
 
     @require_login
+    @api_response
     def _vote(self, content_id, direction=0, subreddit_name=""):
         """If logged in, vote for the given content_id in the direction
         specified."""
@@ -259,6 +289,7 @@ class Reddit:
         req = self.Request(REDDIT_VOTE_URL, params, REDDIT_USER_AGENT)
         return self.urlopen(req).read()
     @require_login
+    @api_response
     def _save(self, content_id, unsave=False):
         """If logged in, save the content specified by `content_id`."""
         url = REDDIT_SAVE_URL
@@ -274,6 +305,7 @@ class Reddit:
         req = self.Request(url, params, REDDIT_USER_AGENT)
         return self.urlopen(req).read()
     @require_login
+    @api_response
     def _subscribe(self, subreddit_id, unsubscribe=False):
         """If logged in, subscribe to the specified subreddit_id."""
         action = 'sub'
@@ -293,6 +325,7 @@ class Reddit:
         reddits = self._get_content(MY_REDDITS_URL, 
                                    limit=limit)
         return reddits
+    @api_response
     def _comment(self, content_id, subreddit_name=None, text=""):
         """If logged in, comment on the given content_id with the
         given text."""
@@ -306,6 +339,8 @@ class Reddit:
             })
         req = self.Request(url, params, REDDIT_USER_AGENT)
         return self.urlopen(req).read()
+    @require_login
+    @api_response
     def _friend(self, user):
         """If logged in, friend the supplied user.
         NOTE: Doesn't work yet!"""
@@ -319,7 +354,7 @@ class Reddit:
         req = self.Request(url, params, REDDIT_USER_AGENT)
         return self.urlopen(req).read()
 
-    def get_home_page(self):
+    def get_homepage(self):
         """Return a subreddit-style class of the reddit homepage."""
         return RedditPage("http://www.reddit.com","reddit.com", self)
     def get_saved_links(self, limit=-1):
@@ -331,9 +366,30 @@ class Reddit:
         url = REDDIT_COMMENTS_URL
         return self._get_content(url, limit=limit, 
                                 place_holder=place_holder)
+    def _get_submission_comments(self, submission_url):
+        json_data = self._get_page(submission_url)
+        main_content = json_data[0] # this isn't used
+        json_comments = json_data[1]['data']['children']
 
+        comments = map(self._json_data_to_comment, json_comments)
 
-        
+        return comments
+    def _json_data_to_comment(self, json_dict):
+        data = json_dict['data']
+        replies = data.get('replies')
+        if replies is not None:
+            del data['replies']
+
+        root_comment = Comment(data, self)
+
+        if replies is not None and replies != '':
+            children = replies['data']['children']
+
+            converted_children = map(self._json_data_to_comment, children)
+            root_comment.replies = converted_children
+
+        return root_comment
+
 class Redditor:
     """A class for Redditor methods."""
     def __init__(self, user_name, reddit_session):
@@ -343,7 +399,7 @@ class Redditor:
         self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
         self.reddit_session = reddit_session
     @limit_chars()
-    def __str__(self):
+    def __repr__(self):
         """Have the str just be the user's name"""
         return self.user_name
 
@@ -393,7 +449,7 @@ class RedditPage:
         self.display_name = name
         self.reddit_session = reddit_session
     @limit_chars()
-    def __str__(self):
+    def __repr__(self):
         """Just display the reddit page name."""
         return self.display_name
     def get_top(self, time="day", limit=DEFAULT_CONTENT_LIMIT,
@@ -433,10 +489,10 @@ class Subreddit(RedditPage):
     """A class for Subreddits. This is a subclass of RedditPage."""
     def __init__(self, subreddit_name, reddit_session):
         self.name = subreddit_name
-        self.URL = REDDIT_URL + "r/" + self.name
+        self.URL = REDDIT_URL + "/r/" + self.name
         self.ABOUT_URL = self.URL + "/about"
         self.reddit_session = reddit_session
-    def __str__(self):
+    def __repr__(self):
         return self.display_name
     def _get_about_attribute(self, attribute):
         """A getter for a subreddit attribute."""
@@ -458,10 +514,13 @@ for sr_attribute in SUBREDDIT_ABOUT_FIELDS:
 
 class Submission:
     """A class for submissions to Reddit."""
-    # TODO: add get_comments
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
         self.reddit_session = reddit_session
+    def get_comments(self):
+        comments_url = REDDIT_URL + self.permalink
+        comments = self.reddit_session._get_submission_comments(comments_url)
+        return comments
     def vote(self, direction=0):
         """Vote for this story."""
         return self.reddit_session._vote(self.name, 
@@ -471,8 +530,8 @@ class Submission:
         return self.vote(direction=1)
     def downvote(self):
         return self.vote(direction=-1)
-    def __str__(self):
-        if
+    @limit_chars()
+    def __repr__(self):
         return (str(self.score) + " :: " + self.title)
     def save(self):
         return self.reddit_session._save(self.name)
@@ -490,9 +549,13 @@ class Comment:
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
         self.reddit_session = reddit_session
+        self.replies = []
     @limit_chars()
-    def __str__(self):
-        return self.body
+    def __repr__(self):
+        if self.__dict__.get('body') is not None:
+            return self.body
+        else:
+            return "[[need to fetch more comments]]"
     def vote(self, direction=0):
         return self.reddit_session._vote(self.name,
                                         direction=direction,
@@ -506,3 +569,7 @@ class Comment:
         return self.reddit_session.comment(self.name,
                                            subreddit_name=self.subreddit,
                                            text=text)
+    def get_replies(self):
+        """Get the replies to this comment. Can also just use the
+        replies variable for the instance."""
+        return self.replies
