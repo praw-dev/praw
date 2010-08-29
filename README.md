@@ -65,24 +65,15 @@ This is a Python wrapper for Reddit's API, aiming to be as easy to use as possib
 Features
 -------------
 Completed:
-    *login
-    *save
-    *subscribe
-    *voting
-    *get hot, top, controversial
-    *get all comments
-    *commenting/replying
+* login
+* save
+* subscribe
+* voting
+* get hot, top, controversial
+* get all comments
+* commenting/replying
 Not Included (yet):
-    *friending
-    *register
-    *submitting
-    *everything else
-
-
-
-
-
-
-
-
-
+* friending
+* register
+* submitting
+* everything else
