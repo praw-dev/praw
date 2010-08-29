@@ -6,7 +6,7 @@ This is a Python wrapper for Reddit's API, aiming to be as easy to use as possib
     r=reddit.Reddit()
     stories = r.get_subreddit('opensource').get_hot(limit=10)
 
-12 Short Examples
+13 Short Examples
 ---------------
 
 1. Logging in:
@@ -40,23 +40,29 @@ This is a Python wrapper for Reddit's API, aiming to be as easy to use as possib
 
         r.get_saved_links()
 
-8. Get comments from all reddits:
+8. Print url's of user's saved links:
+
+        saved = r.get_saved_links()
+        for save in saved:
+            print save.url
+
+9. Get comments from all reddits:
 
         r.get_comments(limit=25)
 
-9. Get content newer than a place-holder id:
+10. Get content newer than a place-holder id:
 
         subreddit.get_top(limit=-1, place_holder=story_id)
 
-10. Get comments from a given story:
+11. Get comments from a given story:
 
         story.get_comments()
 
-11. Subscribe to a subreddit:
+12. Subscribe to a subreddit:
 
         subreddit.subscribe()
 
-12. Save a submission:
+13. Save a submission:
 
         submission.save()
 
