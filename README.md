@@ -13,70 +13,70 @@ This is a Python wrapper for Reddit's API, aiming to be as easy to use as possib
 
 1. Logging in:
 
-    r.login(user="username", password="password")
+        r.login(user="username", password="password")
 
 2. Get stories:
 
-    stories = subreddit.get_top(limit=10)
+        stories = subreddit.get_top(limit=10)
 
 3. Voting:
 
-    story.upvote()
-    story.downvote()
-    story.vote(direction=0)
+        story.upvote()
+        story.downvote()
+        story.vote(direction=0)
 
 4. Get user karma:
 
-    user = r.get_redditor("username")
-    print (user.link_karma, user.comment_karma)
+        user = r.get_redditor("username")
+        print (user.link_karma, user.comment_karma)
 
 5. Comment on story (after login):
 
-    story.comment("text")
+        story.comment("text")
 
 6. Reply to comment:
 
-    comment.reply("test")
+        comment.reply("test")
 
 7. Get user's saved links:
 
-    r.get_saved_links()
+        r.get_saved_links()
 
 8. Get comments from all reddits:
 
-    r.get_comments(limit=25)
+        r.get_comments(limit=25)
 
 9. Get content newer than a place-holder id:
 
-    subreddit.get_top(limit=-1, place_holder=story_id)
+        subreddit.get_top(limit=-1, place_holder=story_id)
 
 10. Get comments from a given story:
 
-    story.get_comments()
+        story.get_comments()
 
 11. Subscribe to a subreddit:
 
-    subreddit.subscribe()
+        subreddit.subscribe()
 
 12. Save a submission:
 
-    submission.save()
+        submission.save()
 
 Features
 -------------
 Completed:
-    -login
-    -save
-    -subscribe
-    -voting
-    -get hot, top, controversial
-    -get all comments
-    -commenting/replying
+    *login
+    *save
+    *subscribe
+    *voting
+    *get hot, top, controversial
+    *get all comments
+    *commenting/replying
 Not Included (yet):
-    -friending
-    -register
-    -submitting
-    -everything else
+    *friending
+    *register
+    *submitting
+    *everything else
 
 
 
