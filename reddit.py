@@ -37,6 +37,9 @@ SUBREDDIT_SECTIONS = ['hot', 'new', 'controversial', 'top']
 # How long to wait between api requests (in seconds)
 REDDIT_API_WAIT_TIME = 1
 
+# For printing with repr or str or unicode, truncate strings to 80 chars
+CHAR_LIMIT = 80
+
 
 class NotLoggedInException(Exception):
     """An exception for when a Reddit user isn't logged in."""
