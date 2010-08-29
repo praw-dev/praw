@@ -94,7 +94,7 @@ Questions
 
 > How come you don't have caching?
 
-I couldn't find caching model that didn't require a server and worked with keyword arguments. Care to recommend one?
+I couldn't find caching module that didn't require a server and worked with keyword arguments. Care to recommend one?
 
 > Why is everything so slow?
 
