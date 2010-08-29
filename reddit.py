@@ -124,8 +124,8 @@ class Reddit:
         # Set logged in user to None
         self.user = None
 
-    @sleep_after
     @memoize
+    @sleep_after
     def _get_page(self, page_url, params=None, url_data=None):
         """Given a page url and a dict of params, return the page JSON.
         
@@ -151,8 +151,8 @@ class Reddit:
         data = simplejson.loads(json_data)
 
         return data
-    @sleep_after
     @memoize
+    @sleep_after
     def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT, 
                     url_data=None, place_holder=None):
         """A method to return Reddit content from a URL. Starts at the initial
