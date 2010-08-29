@@ -10,7 +10,7 @@ import time
 DEFAULT_CONTENT_LIMIT = 25
 
 # THe user agent we will sent
-REDDIT_USER_AGENT = { 'User-agent': 'Python Reddit API' }
+REDDIT_USER_AGENT = { 'User-agent': 'mellorts Python Wrapper for Reddit API' }
 
 # Some Reddit urls to keep track of
 REDDIT_URL = "http://www.reddit.com"
