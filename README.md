@@ -74,7 +74,7 @@ Completed:
 * save
 * subscribe
 * voting
-* get hot, top, controversial
+* get hot, top, controversial, overview, submitted
 * get all comments
 * commenting/replying
 
