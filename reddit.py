@@ -4,6 +4,7 @@ import urllib2
 import simplejson
 import cookielib
 import re
+import time
 
 # Define constants
 DEFAULT_CONTENT_LIMIT = 25
@@ -33,8 +34,9 @@ REDDITOR_ABOUT_FIELDS = ['comment_karma', 'created', 'created_utc', 'has_mail', 
 SUBREDDIT_ABOUT_FIELDS = ['display_name', 'name', 'title', 'url', 'created', 'created_utc', 'over18', 'subscribers', 'id', 'description']
 SUBREDDIT_SECTIONS = ['hot', 'new', 'controversial', 'top']
 
-# For pretty print sake:
-CHAR_LIMIT = 80
+# How long to wait between api requests (in seconds)
+REDDIT_API_WAIT_TIME = 1
+
 
 class NotLoggedInException(Exception):
     """An exception for when a Reddit user isn't logged in."""
@@ -67,6 +69,15 @@ def limit_chars(num_chars=CHAR_LIMIT):
             return value
         return func_wrapper
     return func_limiter
+
+def sleep_after(func):
+    """A decorator to add to API functions which need to 
+    wait after completion to be nice to the Reddit servers."""
+    def wrapped_func(*args, **kwargs):
+        return_value = func(*args, **kwargs)
+        time.sleep(REDDIT_API_WAIT_TIME)
+        return return_value
+    return wrapped_func
 
 def api_response(func):
     """Decorator to look at the Reddit API response to an
@@ -105,7 +116,7 @@ class Reddit:
 
         # Set logged in user to None
         self.user = None
-
+    @sleep_after
     def _get_page(self, page_url, params=None, url_data=None):
         """Given a page url and a dict of params, return the page JSON.
         
@@ -131,6 +142,7 @@ class Reddit:
         data = simplejson.loads(json_data)
 
         return data
+    @sleep_after
     def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT, 
                     url_data=None, place_holder=None):
         """A method to return Reddit content from a URL. Starts at the initial

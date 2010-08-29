@@ -78,4 +78,22 @@ Not Included (yet):
 * register
 * submitting
 * everything else
+* caching results
 
+Questions
+------------
+> How come you don't have caching?
+I couldn't find caching model that didn't require a server and worked with keyword arguments. Care to recommend one?
+
+> Why is everything so slow?
+I tried to be nice to Reddit's servers by sleeping between requests.
+
+> Why don't you have feature X coded yet?
+I had a bit of a hard time decyphering the Reddit API. I will hopefully put more time into it soon.
+
+> When I try to look at stories/comments I get a weird UnicodeEncodeError. What gives?
+Sometimes there are unicode characters in story titles and in comments. Python versions before 3.0 will have errors printing them. Try something like
+
+    map(unicode, stories)
+
+for a quick view.
