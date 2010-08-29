@@ -1,6 +1,6 @@
 Introduction
 -------------
-This is a Python wrapper for Reddit's API, aiming to be as easy to use as possible. Here's a peak, getting the first 10 stories from the 'hot' section of the 'opensource' subreddit.
+This is a Python wrapper for Reddit's API, aiming to be as easy to use as possible. Here's a quick peek, getting the first 10 stories from the 'hot' section of the 'opensource' subreddit.
 
     import reddit
     r=reddit.Reddit()
