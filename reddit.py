@@ -107,7 +107,7 @@ def api_response(func):
 
     return wrapped_func
 
-class Reddit(object):
+class Reddit:
     """A class for a reddit session."""
     def __init__(self):
         """Initialize all of the tools we need."""
@@ -413,7 +413,7 @@ class Reddit(object):
 
         return root_comment
 
-class Redditor(object):
+class Redditor:
     """A class for Redditor methods."""
     def __init__(self, user_name, reddit_session):
         self.user_name = user_name
@@ -464,7 +464,7 @@ for user_attribute in REDDITOR_ABOUT_FIELDS:
             self._get_about_attribute(attribute)
     setattr(Redditor, user_attribute, property(func))
         
-class RedditPage(object):
+class RedditPage:
     """A class for Reddit pages, essentially reddit listings. This is separated
     from the subreddits because reddit.com isn't exactly a subreddit."""
     def __init__(self, url, name, reddit_session):
@@ -511,8 +511,8 @@ class RedditPage(object):
 class Subreddit(RedditPage):
     """A class for Subreddits. This is a subclass of RedditPage."""
     def __init__(self, subreddit_name, reddit_session):
-        self.name = subreddit_name
-        self.URL = REDDIT_URL + "/r/" + self.name
+        self.display_name = subreddit_name
+        self.URL = REDDIT_URL + "/r/" + self.display_name
         self.ABOUT_URL = self.URL + "/about"
         self.reddit_session = reddit_session
     def __repr__(self):
@@ -535,7 +535,7 @@ for sr_attribute in SUBREDDIT_ABOUT_FIELDS:
             self._get_about_attribute(attribute)
     setattr(Subreddit, sr_attribute, property(func))
 
-class Submission(object):
+class Submission:
     """A class for submissions to Reddit."""
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
@@ -567,7 +567,7 @@ class Submission(object):
                                            subreddit_name=self.subreddit,
                                            text=text)
 
-class Comment(object):
+class Comment:
     """A class for comments."""
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
