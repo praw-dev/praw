@@ -66,6 +66,8 @@ This is a Python wrapper for Reddit's API, aiming to be as easy to use as possib
 
         submission.save()
 
+Other (more involved) examples can be found [here](http://www.github.com/mellort/reddit_api/blob/master/EXAMPLES.md).
+
 Features
 -------------
 Completed:

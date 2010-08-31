@@ -523,10 +523,10 @@ class Subreddit(RedditPage):
         return data['data'].get(attribute)
     def subscribe(self):
         """If logged in, subscribe to the given subreddit."""
-        return self.reddit_session._subscribe(self.get_name())
+        return self.reddit_session._subscribe(self.name)
     def unsubscribe(self):
         """If logged in, unsubscribe from the given subreddit."""
-        return self.reddit_session._subscribe(self.get_name(), 
+        return self.reddit_session._subscribe(self.name, 
                                              unsubscribe=True)
 
 # Add getters for Redditor about fields
