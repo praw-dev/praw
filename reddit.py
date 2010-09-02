@@ -45,12 +45,16 @@ memoize = Memoize(timeout=CACHE_TIME)
 CHAR_LIMIT = 80
 
 
-class NotLoggedInException(Exception):
+class APIException(Exception):
+    """Base exception class for these API bindings."""
+    pass
+
+class NotLoggedInException(APIException):
     """An exception for when a Reddit user isn't logged in."""
     def __str__(self):
         return "You need to login to do that!"
 
-class InvalidUserPass(Exception):
+class InvalidUserPass(APIException):
     """An exception for failed logins."""
     def __str__(self):
         return "Invalid username/password."
@@ -103,7 +107,7 @@ def api_response(func):
         elif ".error.WRONG_PASSWORD" in return_value:
             raise InvalidUserPass()
         else:
-            raise Exception(return_value)
+            raise APIException(return_value)
 
     return wrapped_func
 
