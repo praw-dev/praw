@@ -224,21 +224,17 @@ class Reddit(RedditObject):
                     break
 
                 # Now we create the class instance based on the 'kind' attr
-                content_type = child.get('kind')
-                content = None
+                content_types = {"t1" : Comment,
+                                 "t3" : Submission,
+                                 "t5" : Subreddit}
+                content_type = content_types[child.get('kind')]
+                content = child.get("data")
+                if content_type == Subreddit:
+                    content = content.get("display_name")
 
-                if content_type == "t3":
-                    content = Submission(child.get('data'), self)
-                elif content_type == "t1":
-                    content = Comment(child.get('data'), self)
-                elif content_type == "t5":
-                    content = Subreddit(child.get('data') \
-                                        .get('display_name'), self)
-
-                all_content.append(content)
+                all_content.append(content_type(content, self))
 
             after = data.get('after')
-
             # If we don't have another listing to get, then break.
             if not after:
                 break
@@ -447,6 +443,8 @@ class Redditor(RedditObject):
         return self.user_name
 
     def __getattr__(self, attr):
+        """If attr is an API field, get the correct response from the ABOUT_URL
+        for this redditor."""
         if attr in self._about_fields:
             data = self.reddit_session._get_page(self.ABOUT_URL)
             return data['data'].get(attribute)
