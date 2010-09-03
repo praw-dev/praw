@@ -1,4 +1,3 @@
-# Imports
 import urllib
 import urllib2
 import simplejson
@@ -7,7 +6,6 @@ import re
 import time
 from memoize import Memoize
 
-# Define constants
 DEFAULT_CONTENT_LIMIT = 25
 
 # THe user agent we will sent
@@ -81,14 +79,23 @@ def limit_chars(num_chars=CHAR_LIMIT):
         return func_wrapper
     return func_limiter
 
-def sleep_after(func):
+class sleep_after(object):
     """A decorator to add to API functions which need to 
     wait after completion to be nice to the Reddit servers."""
-    def wrapped_func(*args, **kwargs):
-        return_value = func(*args, **kwargs)
-        time.sleep(REDDIT_API_WAIT_TIME)
-        return return_value
-    return wrapped_func
+    last_call_time = 0     # start with 0 to always allow the 1st call
+
+    def __init__(self, func):
+        self.func = func
+
+    def __call__(self, *args, **kwargs):
+        call_time = time.time()
+
+        since_last_call = call_time - self.last_call_time
+        if since_last_call < REDDIT_API_WAIT_TIME:
+            time.sleep(REDDIT_API_WAIT_TIME - since_last_call)
+
+        self.__class__.last_call_time = call_time
+        return func(*args, **kwargs)
 
 def api_response(func):
     """Decorator to look at the Reddit API response to an
