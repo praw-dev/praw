@@ -131,13 +131,13 @@ class Reddit(RedditObject):
     def __init__(self):
         """Initialize all of the tools we need."""
         # Make these simpler to access
-        self.Request = urllib2.Request
-        self.urlopen = urllib2.urlopen
+        self._Request = urllib2.Request
+        self._urlopen = urllib2.urlopen
 
         # Set cookies
-        self.cookie_jar = cookielib.CookieJar()
+        self._cookie_jar = cookielib.CookieJar()
         opener = urllib2.build_opener(
-            urllib2.HTTPCookieProcessor(self.cookie_jar))
+            urllib2.HTTPCookieProcessor(self._cookie_jar))
         urllib2.install_opener(opener)
 
         # Set logged in user to None
@@ -165,11 +165,11 @@ class Reddit(RedditObject):
         encoded_params = None
         if params:
             encoded_params = urllib.urlencode(params)
-        request = self.Request(page_url, 
+        request = self._Request(page_url, 
                                encoded_params, 
                                REDDIT_USER_AGENT)
         # Get the data 
-        json_data = self.urlopen(request).read()
+        json_data = self._urlopen(request).read()
         data = simplejson.loads(json_data)
 
         return data
@@ -298,8 +298,8 @@ class Reddit(RedditObject):
                     'passwd' : password,
                     'user' : user
                 })
-        req = self.Request(REDDIT_LOGIN_URL, params, REDDIT_USER_AGENT)
-        data =  self.urlopen(req).read()
+        req = self._Request(REDDIT_LOGIN_URL, params, REDDIT_USER_AGENT)
+        data =  self._urlopen(req).read()
 
         # Get and store the modhash; it will be needed for API requests
         # which involve this user.
@@ -312,10 +312,10 @@ class Reddit(RedditObject):
         Reddit HTML page (can just get first 1200 chars) and search for
         'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
         """
-        req = self.Request(REDDIT_URL_FOR_MODHASH, 
+        req = self._Request(REDDIT_URL_FOR_MODHASH, 
                            None, REDDIT_USER_AGENT)
         # Should only need ~1200 chars to get the modhash
-        data = self.urlopen(req).read(1200)
+        data = self._urlopen(req).read(1200)
         match = re.search(r"modhash[^,]*", data)
         # Store the modhash.
         self.modhash = eval(match.group(0).split(": ")[1])
@@ -331,8 +331,8 @@ class Reddit(RedditObject):
                     'r' : subreddit_name,
                     'uh' : self.modhash
                 })
-        req = self.Request(REDDIT_VOTE_URL, params, REDDIT_USER_AGENT)
-        return self.urlopen(req).read()
+        req = self._Request(REDDIT_VOTE_URL, params, REDDIT_USER_AGENT)
+        return self._urlopen(req).read()
     @require_login
     @api_response
     def _save(self, content_id, unsave=False):
@@ -347,8 +347,8 @@ class Reddit(RedditObject):
                     'executed': executed,
                     'uh': self.modhash
             })
-        req = self.Request(url, params, REDDIT_USER_AGENT)
-        return self.urlopen(req).read()
+        req = self._Request(url, params, REDDIT_USER_AGENT)
+        return self._urlopen(req).read()
     @require_login
     @api_response
     def _subscribe(self, subreddit_id, unsubscribe=False):
@@ -361,9 +361,9 @@ class Reddit(RedditObject):
                     'action': action,
                     'uh': self.modhash
             })
-        req = self.Request(REDDIT_SUBSCRIBE_URL, params, 
+        req = self._Request(REDDIT_SUBSCRIBE_URL, params, 
                            REDDIT_USER_AGENT)
-        return self.urlopen(req).read()
+        return self._urlopen(req).read()
     @require_login
     def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return all of the current user's subreddits."""
@@ -382,8 +382,8 @@ class Reddit(RedditObject):
                     'uh': self.modhash,
                     'r': subreddit_name
             })
-        req = self.Request(url, params, REDDIT_USER_AGENT)
-        return self.urlopen(req).read()
+        req = self._Request(url, params, REDDIT_USER_AGENT)
+        return self._urlopen(req).read()
     @require_login
     @api_response
     def _friend(self, user):
@@ -396,8 +396,8 @@ class Reddit(RedditObject):
                     'uh': self.modhash
                     #'type': 'friend'
             })
-        req = self.Request(url, params, REDDIT_USER_AGENT)
-        return self.urlopen(req).read()
+        req = self._Request(url, params, REDDIT_USER_AGENT)
+        return self._urlopen(req).read()
 
     def get_homepage(self):
         """Return a subreddit-style class of the reddit homepage."""
