@@ -152,12 +152,12 @@ class Reddit(RedditObject):
         """
         # Add .JSON to the end of the url
         page_url += ".json"
-        if url_data is not None:
+        if url_data:
             page_url += "?"+urllib.urlencode(url_data)
 
         # Encode the params and then create the request.
         encoded_params = None
-        if params is not None:
+        if params:
             encoded_params = urllib.urlencode(params)
         request = self.Request(page_url, 
                                encoded_params, 
@@ -199,9 +199,9 @@ class Reddit(RedditObject):
         while len(all_content) < limit or limit == -1:
             # If the after variable isn't None, add it do the URL
             # of the page we are going to fetch.
-            if after is not None:
+            if after:
                 data = {"after":after}
-                if url_data is not None:
+                if url_data:
                     data.update(url_data)
                 page_data = self._get_page(page_url, url_data=data)
             else:
@@ -224,7 +224,7 @@ class Reddit(RedditObject):
             # child's id matches the place_holder, then note this.
             for child in children:
                 # Check the place holder.
-                if place_holder is not None and \
+                if place_holder and \
                    child.get('data').get('name') == place_holder:
                     found_place_holder=True
                     break
@@ -416,12 +416,12 @@ class Reddit(RedditObject):
     def _json_data_to_comment(self, json_dict):
         data = json_dict['data']
         replies = data.get('replies')
-        if replies is not None:
+        if replies:
             del data['replies']
 
         root_comment = Comment(data, self)
 
-        if replies is not None and replies != '':
+        if replies:
             children = replies['data']['children']
 
             converted_children = map(self._json_data_to_comment, children)
@@ -591,7 +591,7 @@ class Comment(RedditObject):
         self.replies = []
     @limit_chars()
     def __str__(self):
-        if self.__dict__.get('body') is not None:
+        if self.__dict__.get('body'):
             return self.body
         else:
             return "[[need to fetch more comments]]"
