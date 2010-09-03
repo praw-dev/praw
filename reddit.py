@@ -8,7 +8,7 @@ from memoize import Memoize
 
 DEFAULT_CONTENT_LIMIT = 25
 
-# THe user agent we will sent
+# The user agent we will sent
 REDDIT_USER_AGENT = { 'User-agent': 'mellorts Python Wrapper for Reddit API' }
 
 # Some Reddit urls to keep track of
@@ -118,7 +118,12 @@ def api_response(func):
 
     return wrapped_func
 
-class Reddit:
+class RedditObject(object):
+    def __repr__(self):
+        return "<%s: %s>" % (self.__class__.__name__, self)
+
+
+class Reddit(RedditObject):
     """A class for a reddit session."""
     def __init__(self):
         """Initialize all of the tools we need."""
@@ -139,7 +144,7 @@ class Reddit:
     @sleep_after
     def _get_page(self, page_url, params=None, url_data=None):
         """Given a page url and a dict of params, return the page JSON.
-        
+
         :param page_url: the url to grab content from.
         :param params: the extra url data to submit
         :param url_data: the GET data to put in the url 
@@ -149,7 +154,7 @@ class Reddit:
         page_url += ".json"
         if url_data is not None:
             page_url += "?"+urllib.urlencode(url_data)
-        
+
         # Encode the params and then create the request.
         encoded_params = None
         if params is not None:
@@ -188,7 +193,7 @@ class Reddit:
         # Set the after variable initially to none. This variable
         # will keep track of the next page to fetch.
         after = None
-        
+
         # While we still need to fetch more content to reach our
         # limit, do so.
         while len(all_content) < limit or limit == -1:
@@ -240,7 +245,7 @@ class Reddit:
                 all_content.append(content)
 
             after = data.get('after')
-            
+
             # If we don't have another listing to get, then break.
             if after is None:
                 break
@@ -424,7 +429,7 @@ class Reddit:
 
         return root_comment
 
-class Redditor:
+class Redditor(RedditObject):
     """A class for Redditor methods."""
     def __init__(self, user_name, reddit_session):
         self.user_name = user_name
@@ -433,7 +438,7 @@ class Redditor:
         self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
         self.reddit_session = reddit_session
     @limit_chars()
-    def __repr__(self):
+    def __str__(self):
         """Have the str just be the user's name"""
         return self.user_name
 
@@ -474,8 +479,8 @@ for user_attribute in REDDITOR_ABOUT_FIELDS:
     func = lambda self, attribute=user_attribute: \
             self._get_about_attribute(attribute)
     setattr(Redditor, user_attribute, property(func))
-        
-class RedditPage:
+
+class RedditPage(RedditObject):
     """A class for Reddit pages, essentially reddit listings. This is separated
     from the subreddits because reddit.com isn't exactly a subreddit."""
     def __init__(self, url, name, reddit_session):
@@ -483,7 +488,7 @@ class RedditPage:
         self.display_name = name
         self.reddit_session = reddit_session
     @limit_chars()
-    def __repr__(self):
+    def __str__(self):
         """Just display the reddit page name."""
         return self.display_name
     def get_top(self, time="day", limit=DEFAULT_CONTENT_LIMIT,
@@ -526,7 +531,7 @@ class Subreddit(RedditPage):
         self.URL = REDDIT_URL + "/r/" + self.display_name
         self.ABOUT_URL = self.URL + "/about"
         self.reddit_session = reddit_session
-    def __repr__(self):
+    def __str__(self):
         return self.display_name
     def _get_about_attribute(self, attribute):
         """A getter for a subreddit attribute."""
@@ -546,7 +551,7 @@ for sr_attribute in SUBREDDIT_ABOUT_FIELDS:
             self._get_about_attribute(attribute)
     setattr(Subreddit, sr_attribute, property(func))
 
-class Submission:
+class Submission(RedditObject):
     """A class for submissions to Reddit."""
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
@@ -565,7 +570,7 @@ class Submission:
     def downvote(self):
         return self.vote(direction=-1)
     @limit_chars()
-    def __repr__(self):
+    def __str__(self):
         return (str(self.score) + " :: " + self.title)
     def save(self):
         return self.reddit_session._save(self.name)
@@ -578,14 +583,14 @@ class Submission:
                                            subreddit_name=self.subreddit,
                                            text=text)
 
-class Comment:
+class Comment(RedditObject):
     """A class for comments."""
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
         self.reddit_session = reddit_session
         self.replies = []
     @limit_chars()
-    def __repr__(self):
+    def __str__(self):
         if self.__dict__.get('body') is not None:
             return self.body
         else:
