@@ -552,7 +552,7 @@ class Subreddit(RedditPage):
     def __getattr__(self, attr):
         if attr in self._api_fields:
             data = self.reddit_session._get_page(self.ABOUT_URL)
-            return data['data'].get(attribute)
+            return data['data'].get(attr)
 
     def subscribe(self):
         """If logged in, subscribe to the given subreddit."""
