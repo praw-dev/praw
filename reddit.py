@@ -27,12 +27,6 @@ REDDIT_URL_FOR_MODHASH = "http://www.reddit.com/help"
 REDDITOR_PAGE = "http://www.reddit.com/user/%s"
 REDDITOR_ABOUT_PAGE = REDDITOR_PAGE + "/about"
 
-# Storing which fields will be accessibly for Redditors, Subreddits,
-# and what subreddit sections there are.
-REDDITOR_ABOUT_FIELDS = ['comment_karma', 'created', 'created_utc', 'has_mail', 'has_mod_mail', 'id', 'is_mod', 'link_karma', 'name']
-SUBREDDIT_ABOUT_FIELDS = ['display_name', 'name', 'title', 'url', 'created', 'created_utc', 'over18', 'subscribers', 'id', 'description']
-SUBREDDIT_SECTIONS = ['hot', 'new', 'controversial', 'top']
-
 # How long to wait between api requests (in seconds)
 REDDIT_API_WAIT_TIME = 1
 # How long to cache results (in seconds)
@@ -438,6 +432,11 @@ class Reddit(RedditObject):
 
 class Redditor(RedditObject):
     """A class for Redditor methods."""
+
+    # Redditor fields exposed by the API:
+    _api_fields = ['comment_karma', 'created', 'created_utc', 'has_mail',
+                   'has_mod_mail', 'id', 'is_mod', 'link_karma', 'name']
+
     def __init__(self, user_name, reddit_session):
         self.user_name = user_name
         # Store the urls we will need internally
@@ -451,7 +450,7 @@ class Redditor(RedditObject):
         return self.user_name
 
     def __getattr__(self, attr):
-        if attr in REDDITOR_ABOUT_FIELDS:
+        if attr in self._about_fields:
             data = self.reddit_session._get_page(self.ABOUT_URL)
             return data['data'].get(attribute)
 
@@ -529,6 +528,14 @@ class RedditPage(RedditObject):
 
 class Subreddit(RedditPage):
     """A class for Subreddits. This is a subclass of RedditPage."""
+
+
+    # Subreddit fields exposed by the API:
+    _api_fields = ['display_name', 'name', 'title', 'url', 'created',
+                   'created_utc', 'over18', 'subscribers', 'id', 'description']
+    _sections = ['hot', 'new', 'controversial', 'top']
+
+
     def __init__(self, subreddit_name, reddit_session):
         self.display_name = subreddit_name
         self.URL = REDDIT_URL + "/r/" + self.display_name
@@ -539,7 +546,7 @@ class Subreddit(RedditPage):
         return self.display_name
 
     def __getattr__(self, attr):
-        if attr in SUBREDDIT_ABOUT_FIELDS:
+        if attr in self._api_fields:
             data = self.reddit_session._get_page(self.ABOUT_URL)
             return data['data'].get(attribute)
 
