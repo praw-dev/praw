@@ -167,6 +167,7 @@ class Reddit(RedditObject):
         data = simplejson.loads(json_data)
 
         return data
+
     @memoize
     @sleep_after
     def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT, 
@@ -437,15 +438,17 @@ class Redditor(RedditObject):
         self.URL = REDDITOR_PAGE % self.user_name
         self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
         self.reddit_session = reddit_session
+
     @limit_chars()
     def __str__(self):
         """Have the str just be the user's name"""
         return self.user_name
 
-    def _get_about_attribute(self, attribute):
-        """A method to get an attribute about a Redditor."""
-        data = self.reddit_session._get_page(self.ABOUT_URL)
-        return data['data'].get(attribute)
+    def __getattr__(self, attr):
+        if attr in REDDITOR_ABOUT_FIELDS:
+            data = self.reddit_session._get_page(self.ABOUT_URL)
+            return data['data'].get(attribute)
+
     def get_overview(self, sort="new", time="all", 
                      limit=DEFAULT_CONTENT_LIMIT, 
                      place_holder=None):
@@ -473,12 +476,6 @@ class Redditor(RedditObject):
         return self.reddit_session._get_content(url, limit=limit, 
                                                url_data=url_data,
                                                place_holder=place_holder)
-
-# Add getters for Redditor about fields
-for user_attribute in REDDITOR_ABOUT_FIELDS:
-    func = lambda self, attribute=user_attribute: \
-            self._get_about_attribute(attribute)
-    setattr(Redditor, user_attribute, property(func))
 
 class RedditPage(RedditObject):
     """A class for Reddit pages, essentially reddit listings. This is separated
@@ -531,25 +528,23 @@ class Subreddit(RedditPage):
         self.URL = REDDIT_URL + "/r/" + self.display_name
         self.ABOUT_URL = self.URL + "/about"
         self.reddit_session = reddit_session
+
     def __str__(self):
         return self.display_name
-    def _get_about_attribute(self, attribute):
-        """A getter for a subreddit attribute."""
-        data = self.reddit_session._get_page(self.ABOUT_URL)
-        return data['data'].get(attribute)
+
+    def __getattr__(self, attr):
+        if attr in SUBREDDIT_ABOUT_FIELDS:
+            data = self.reddit_session._get_page(self.ABOUT_URL)
+            return data['data'].get(attribute)
+
     def subscribe(self):
         """If logged in, subscribe to the given subreddit."""
         return self.reddit_session._subscribe(self.name)
+
     def unsubscribe(self):
         """If logged in, unsubscribe from the given subreddit."""
         return self.reddit_session._subscribe(self.name, 
                                              unsubscribe=True)
-
-# Add getters for Redditor about fields
-for sr_attribute in SUBREDDIT_ABOUT_FIELDS:
-    func = lambda self, attribute=sr_attribute: \
-            self._get_about_attribute(attribute)
-    setattr(Subreddit, sr_attribute, property(func))
 
 class Submission(RedditObject):
     """A class for submissions to Reddit."""
