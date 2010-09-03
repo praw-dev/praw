@@ -122,6 +122,9 @@ class RedditObject(object):
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self)
 
+    def __str__(self):
+        raise NotImplementedError()
+
 
 class Reddit(RedditObject):
     """A class for a reddit session."""
@@ -139,6 +142,9 @@ class Reddit(RedditObject):
 
         # Set logged in user to None
         self.user = None
+
+    def __str__(self):
+        return "Open Session (%s)" % (self.user or "Unauthenticated")
 
     @memoize
     @sleep_after
