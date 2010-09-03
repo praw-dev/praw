@@ -95,7 +95,7 @@ class sleep_after(object):
             time.sleep(REDDIT_API_WAIT_TIME - since_last_call)
 
         self.__class__.last_call_time = call_time
-        return func(*args, **kwargs)
+        return self.func(*args, **kwargs)
 
 def api_response(func):
     """Decorator to look at the Reddit API response to an
