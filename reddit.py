@@ -52,8 +52,8 @@ class InvalidUserPass(APIException):
         return "Invalid username/password."
 
 def require_login(func):
-    """A decorator to ensure that a user has logged in before
-    calling the function."""
+    """A decorator to ensure that a user has logged in before calling the
+    function."""
     def wrapped_func(self, *args, **kwargs):
         if self.user == None:
             raise NotLoggedInException()
@@ -62,8 +62,8 @@ def require_login(func):
     return wrapped_func
 
 def limit_chars(num_chars=CHAR_LIMIT):
-    """A decorator to limit the number of chars in a 
-    function that outputs a string."""
+    """A decorator to limit the number of chars in a function that outputs a
+    string."""
     def func_limiter(func):
         def func_wrapper(*args, **kwargs):
             value = func(*args, **kwargs)
@@ -74,7 +74,7 @@ def limit_chars(num_chars=CHAR_LIMIT):
     return func_limiter
 
 class sleep_after(object):
-    """A decorator to add to API functions which need to 
+    """A decorator to add to API functions which need to
     wait after completion to be nice to the Reddit servers."""
     last_call_time = 0     # start with 0 to always allow the 1st call
 
@@ -92,11 +92,9 @@ class sleep_after(object):
         return self.func(*args, **kwargs)
 
 def api_response(func):
-    """Decorator to look at the Reddit API response to an
-    API POST request like vote, subscribe, login, etc.
-    Basically, it just looks for certain errors in the 
-    return string. If it doesn't find one, then it just
-    returns True.
+    """Decorator to look at the Reddit API response to an API POST request like
+    vote, subscribe, login, etc. Basically, it just looks for certain errors in
+    the return string. If it doesn't find one, then it just returns True.
     """
     # TODO: add a 'submitting' too quickly error
     def wrapped_func(*args, **kwargs):
@@ -123,7 +121,6 @@ class RedditObject(object):
 class Reddit(RedditObject):
     """A class for a reddit session."""
     def __init__(self):
-        """Initialize all of the tools we need."""
         # Make these simpler to access
         self._Request = urllib2.Request
         self._urlopen = urllib2.urlopen
@@ -134,7 +131,6 @@ class Reddit(RedditObject):
             urllib2.HTTPCookieProcessor(self._cookie_jar))
         urllib2.install_opener(opener)
 
-        # Set logged in user to None
         self.user = None
 
     def __str__(self):
@@ -147,10 +143,9 @@ class Reddit(RedditObject):
 
         :param page_url: the url to grab content from.
         :param params: the extra url data to submit
-        :param url_data: the GET data to put in the url 
+        :param url_data: the GET data to put in the url
         :returns: the json listing of the page
         """
-        # Add .JSON to the end of the url
         page_url += ".json"
         if url_data:
             page_url += "?"+urllib.urlencode(url_data)
@@ -159,10 +154,9 @@ class Reddit(RedditObject):
         encoded_params = None
         if params:
             encoded_params = urllib.urlencode(params)
-        request = self._Request(page_url, 
-                               encoded_params, 
-                               REDDIT_USER_AGENT)
-        # Get the data 
+        request = self._Request(page_url,
+                                encoded_params,
+                                REDDIT_USER_AGENT)
         json_data = self._urlopen(request).read()
         data = simplejson.loads(json_data)
 
@@ -170,7 +164,7 @@ class Reddit(RedditObject):
 
     @memoize
     @sleep_after
-    def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT, 
+    def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT,
                     url_data=None, place_holder=None):
         """A method to return Reddit content from a URL. Starts at the initial
         page_url, and fetches content using the `after` JSON data until `limit`
@@ -184,22 +178,22 @@ class Reddit(RedditObject):
         :param place_holder: if not None, the method will fetch `limit`
             content, stopping if it finds content with `id` equal to
             `place_holder`.
-        :type place_holder: a string corresponding to a Reddit content id, ie
-            't3_asdfasdf' 
-        :returns: a list of Reddit content, of type Subreddit, Comment, or Submission
+        :type place_holder: a string corresponding to a Reddit content id, e.g.
+            't3_asdfasdf'
+        :returns: a list of Reddit content, of type Subreddit, Comment, or
+            Submission
         """
 
         # A list which we will populate to return with content
         all_content = []
-        # Set the after variable initially to none. This variable
-        # will keep track of the next page to fetch.
+        # Set the after variable initially to none. This variable will keep
+        # track of the next page to fetch.
         after = None
 
-        # While we still need to fetch more content to reach our
-        # limit, do so.
+        # While we still need to fetch more content to reach our limit, do so.
         while len(all_content) < limit or limit == -1:
-            # If the after variable isn't None, add it do the URL
-            # of the page we are going to fetch.
+            # If the after variable isn't None, add it do the URL of the page
+            # we are going to fetch.
             if after:
                 data = {"after":after}
                 if url_data:
@@ -216,13 +210,12 @@ class Reddit(RedditObject):
             data = page_data.get('data')
             children = data.get('children')
 
-            # Keep track of whether or not we've found the
-            # place_holder.
+            # Keep track of whether or not we've found the place_holder.
             found_place_holder=False
 
-            # Go through each child and convert it to it's appropriate 
-            # Class before adding it to the all_content list. If the
-            # child's id matches the place_holder, then note this.
+            # Go through each child and convert it to it's appropriate class
+            # before adding it to the all_content list. If the child's id
+            # matches the place_holder, then note this.
             for child in children:
                 # Check the place holder.
                 if place_holder and \
@@ -230,8 +223,7 @@ class Reddit(RedditObject):
                     found_place_holder=True
                     break
 
-                # Now we create the class instance based on the
-                # 'kind' attribute
+                # Now we create the class instance based on the 'kind' attr
                 content_type = child.get('kind')
                 content = None
 
@@ -265,6 +257,7 @@ class Reddit(RedditObject):
     def get_redditor(self, user_name):
         """Return a Redditor class for the user_name specified."""
         return Redditor(user_name, self)
+
     def get_subreddit(self, subreddit_name):
         """Returns a Subreddit class for the user_name specified."""
         return Subreddit(subreddit_name, self)
@@ -274,7 +267,6 @@ class Reddit(RedditObject):
         """Login to Reddit. If no user or password is provided, the user
         will be prompted with raw_input and getpass.getpass.
         """
-
         # Prompt user for necessary fields.
         if not user:
             user = raw_input("Username: ")
@@ -282,7 +274,6 @@ class Reddit(RedditObject):
             import getpass
             password = getpass.getpass("Password: ")
 
-        # Store the current user.
         self.user = user
 
         # The parameters we need to login.
@@ -306,12 +297,11 @@ class Reddit(RedditObject):
         Reddit HTML page (can just get first 1200 chars) and search for
         'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
         """
-        req = self._Request(REDDIT_URL_FOR_MODHASH, 
+        req = self._Request(REDDIT_URL_FOR_MODHASH,
                            None, REDDIT_USER_AGENT)
         # Should only need ~1200 chars to get the modhash
         data = self._urlopen(req).read(1200)
         match = re.search(r"modhash[^,]*", data)
-        # Store the modhash.
         self.modhash = eval(match.group(0).split(": ")[1])
 
     @require_login
@@ -327,6 +317,7 @@ class Reddit(RedditObject):
                 })
         req = self._Request(REDDIT_VOTE_URL, params, REDDIT_USER_AGENT)
         return self._urlopen(req).read()
+
     @require_login
     @api_response
     def _save(self, content_id, unsave=False):
@@ -343,6 +334,7 @@ class Reddit(RedditObject):
             })
         req = self._Request(url, params, REDDIT_USER_AGENT)
         return self._urlopen(req).read()
+
     @require_login
     @api_response
     def _subscribe(self, subreddit_id, unsubscribe=False):
@@ -355,15 +347,17 @@ class Reddit(RedditObject):
                     'action': action,
                     'uh': self.modhash
             })
-        req = self._Request(REDDIT_SUBSCRIBE_URL, params, 
+        req = self._Request(REDDIT_SUBSCRIBE_URL, params,
                            REDDIT_USER_AGENT)
         return self._urlopen(req).read()
+
     @require_login
     def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return all of the current user's subreddits."""
-        reddits = self._get_content(MY_REDDITS_URL, 
+        reddits = self._get_content(MY_REDDITS_URL,
                                    limit=limit)
         return reddits
+
     @api_response
     def _comment(self, content_id, subreddit_name=None, text=""):
         """If logged in, comment on the given content_id with the
@@ -378,6 +372,7 @@ class Reddit(RedditObject):
             })
         req = self._Request(url, params, REDDIT_USER_AGENT)
         return self._urlopen(req).read()
+
     @require_login
     @api_response
     def _friend(self, user):
@@ -396,24 +391,27 @@ class Reddit(RedditObject):
     def get_homepage(self):
         """Return a subreddit-style class of the reddit homepage."""
         return RedditPage("http://www.reddit.com","reddit.com", self)
+
     @require_login
     def get_saved_links(self, limit=-1):
         """Return a listing of the logged-in user's saved links."""
         return self._get_content(REDDIT_SAVED_LINKS, limit=limit)
+
     def get_comments(self, limit=DEFAULT_CONTENT_LIMIT,
                      place_holder=None):
         """Returns a listing from reddit.com/comments"""
         url = REDDIT_COMMENTS_URL
-        return self._get_content(url, limit=limit, 
+        return self._get_content(url, limit=limit,
                                 place_holder=place_holder)
+
     def _get_submission_comments(self, submission_url):
         json_data = self._get_page(submission_url)
         main_content = json_data[0] # this isn't used
         json_comments = json_data[1]['data']['children']
 
         comments = map(self._json_data_to_comment, json_comments)
-
         return comments
+
     def _json_data_to_comment(self, json_dict):
         data = json_dict['data']
         replies = data.get('replies')
@@ -427,7 +425,6 @@ class Reddit(RedditObject):
 
             converted_children = map(self._json_data_to_comment, children)
             root_comment.replies = converted_children
-
         return root_comment
 
 class Redditor(RedditObject):
@@ -454,31 +451,33 @@ class Redditor(RedditObject):
             data = self.reddit_session._get_page(self.ABOUT_URL)
             return data['data'].get(attribute)
 
-    def get_overview(self, sort="new", time="all", 
-                     limit=DEFAULT_CONTENT_LIMIT, 
+    def get_overview(self, sort="new", time="all",
+                     limit=DEFAULT_CONTENT_LIMIT,
                      place_holder=None):
         """Get the listing from the user's `overview` page."""
         url = self.URL
         url_data = {"sort": sort, "time":time}
-        return self.reddit_session._get_content(url, limit=limit, 
+        return self.reddit_session._get_content(url, limit=limit,
                                                url_data=url_data,
                                                place_holder=place_holder)
-    def get_comments(self, sort="new", time="all", 
+
+    def get_comments(self, sort="new", time="all",
                      limit=DEFAULT_CONTENT_LIMIT,
                      place_holder=None):
         """Get the listing from the user's `comments` page."""
         url = self.URL + "/comments"
         url_data = {"sort": sort, "time":time}
-        return self.reddit_session._get_content(url, limit=limit, 
+        return self.reddit_session._get_content(url, limit=limit,
                                                url_data=url_data,
                                                place_holder=place_holder)
-    def get_submitted(self, sort="new", time="all", 
+
+    def get_submitted(self, sort="new", time="all",
                       limit=DEFAULT_CONTENT_LIMIT,
                       place_holder=None):
         """Get a listing of the stories the user has submitted."""
         url = self.URL + "/submitted"
         url_data = {"sort": sort, "time":time}
-        return self.reddit_session._get_content(url, limit=limit, 
+        return self.reddit_session._get_content(url, limit=limit,
                                                url_data=url_data,
                                                place_holder=place_holder)
 
@@ -489,34 +488,39 @@ class RedditPage(RedditObject):
         self.URL = url
         self.display_name = name
         self.reddit_session = reddit_session
+
     @limit_chars()
     def __str__(self):
         """Just display the reddit page name."""
         return self.display_name
+
     def get_top(self, time="day", limit=DEFAULT_CONTENT_LIMIT,
                place_holder=None):
         """A method to get the top listings of the page."""
         url = self.URL + "/top"
         url_data = {"t":time}
-        return self.reddit_session._get_content(url, limit=limit, 
+        return self.reddit_session._get_content(url, limit=limit,
                                                url_data=url_data,
                                               place_holder=place_holder)
+
     def get_controversial(self, time="day", limit=DEFAULT_CONTENT_LIMIT,
                          place_holder=None):
         """Get the controversial listings of the page."""
         url = self.URL + "/controversial"
         url_data = {"t":time}
-        return self.reddit_session._get_content(url, limit=limit, 
+        return self.reddit_session._get_content(url, limit=limit,
                                                url_data=url_data,
                                               place_holder=place_holder)
+
     def get_new(self, sort="rising", limit=DEFAULT_CONTENT_LIMIT,
                place_holder=None):
         """Get the new listings of the page."""
         url = self.URL + "/new"
         url_data = {"sort":sort}
-        return self.reddit_session._get_content(url, limit=limit, 
+        return self.reddit_session._get_content(url, limit=limit,
                                                url_data=url_data,
                                               place_holder=place_holder)
+
     def get_hot(self, limit=DEFAULT_CONTENT_LIMIT,
                place_holder=None):
         """Get the hto listings of the page."""
@@ -556,7 +560,7 @@ class Subreddit(RedditPage):
 
     def unsubscribe(self):
         """If logged in, unsubscribe from the given subreddit."""
-        return self.reddit_session._subscribe(self.name, 
+        return self.reddit_session._subscribe(self.name,
                                              unsubscribe=True)
 
 class Submission(RedditObject):
@@ -564,26 +568,34 @@ class Submission(RedditObject):
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
         self.reddit_session = reddit_session
+
+    @limit_chars()
+    def __str__(self):
+        return (str(self.score) + " :: " + self.title)
+
     def get_comments(self):
         comments_url = REDDIT_URL + self.permalink
         comments = self.reddit_session._get_submission_comments(comments_url)
         return comments
+
     def vote(self, direction=0):
         """Vote for this story."""
-        return self.reddit_session._vote(self.name, 
-                            direction=direction, 
+        return self.reddit_session._vote(self.name,
+                            direction=direction,
                             subreddit_name=self.subreddit)
+
     def upvote(self):
         return self.vote(direction=1)
+
     def downvote(self):
         return self.vote(direction=-1)
-    @limit_chars()
-    def __str__(self):
-        return (str(self.score) + " :: " + self.title)
+
     def save(self):
         return self.reddit_session._save(self.name)
+
     def unsave(self):
         return self.reddit_session._save(self.name, unsave=True)
+
     def comment(self, text):
         """If logged in, comment on the submission using the specified
         text."""
@@ -597,25 +609,31 @@ class Comment(RedditObject):
         self.__dict__.update(json_dict)
         self.reddit_session = reddit_session
         self.replies = []
+
     @limit_chars()
     def __str__(self):
         if self.__dict__.get('body'):
             return self.body
         else:
             return "[[need to fetch more comments]]"
+
     def vote(self, direction=0):
         return self.reddit_session._vote(self.name,
                                         direction=direction,
                                         subreddit_name=self.subreddit)
+
     def upvote(self):
         return self.vote(direction=1)
+
     def downvote(self):
         return self.vote(direction=-1)
+
     def reply(self, text):
         """Reply to the comment with the specified text."""
         return self.reddit_session.comment(self.name,
                                            subreddit_name=self.subreddit,
                                            text=text)
+
     def get_replies(self):
         """Get the replies to this comment. Can also just use the
         replies variable for the instance."""
