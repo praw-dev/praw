@@ -208,7 +208,7 @@ class Reddit(RedditObject):
                 page_data = self._get_page(page_url, url_data=url_data)
 
             # if for some reason we didn't get data, then break
-            if page_data.get('data') is None:
+            if not page_data.get('data'):
                 break
 
             # Get the data from the JSON dict
@@ -247,7 +247,7 @@ class Reddit(RedditObject):
             after = data.get('after')
 
             # If we don't have another listing to get, then break.
-            if after is None:
+            if not after:
                 break
 
             # If we found the place_holder, break
@@ -275,9 +275,9 @@ class Reddit(RedditObject):
         """
 
         # Prompt user for necessary fields.
-        if user is None:
+        if not user:
             user = raw_input("Username: ")
-        if password is None:
+        if not password:
             import getpass
             password = getpass.getpass("Password: ")
 
