@@ -449,7 +449,7 @@ class Redditor(RedditObject):
     def __getattr__(self, attr):
         if attr in self._about_fields:
             data = self.reddit_session._get_page(self.ABOUT_URL)
-            return data['data'].get(attribute)
+            return data['data'].get(attr)
 
     def get_overview(self, sort="new", time="all",
                      limit=DEFAULT_CONTENT_LIMIT,
