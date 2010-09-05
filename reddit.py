@@ -116,6 +116,9 @@ def api_response(func):
     return wrapped_func
 
 class RedditObject(object):
+    """
+    Base class for all Reddit API objects.
+    """
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self)
 
@@ -123,6 +126,10 @@ class RedditObject(object):
         raise NotImplementedError()
 
 class Voteable(object):
+    """
+    Additional interface for Reddit objects that can be voted on (currently
+    Submission and Comment).
+    """
     def vote(self, direction=0):
         """Cast a vote."""
         return self.reddit_session._vote(self.name, direction=direction,
@@ -440,6 +447,10 @@ class Redditor(RedditObject):
         self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
         self.reddit_session = reddit_session
 
+        self.get_overview = self._get_content_factory(self.URL)
+        self.get_comments = self._get_content_factory(self.URL + "/comments")
+        self.get_submitted = self._get_content_factory(self.URL + "/submitted")
+
     @limit_chars()
     def __str__(self):
         """Have the str just be the user's name"""
@@ -450,35 +461,14 @@ class Redditor(RedditObject):
             data = self.reddit_session._get_json_page(self.ABOUT_URL)
             return data['data'].get(attr)
 
-    def get_overview(self, sort="new", time="all",
-                     limit=DEFAULT_CONTENT_LIMIT,
-                     place_holder=None):
-        """Get the listing from the user's `overview` page."""
-        url = self.URL
-        url_data = {"sort": sort, "time":time}
-        return self.reddit_session._get_content(url, limit=limit,
-                                               url_data=url_data,
-                                               place_holder=place_holder)
-
-    def get_comments(self, sort="new", time="all",
-                     limit=DEFAULT_CONTENT_LIMIT,
-                     place_holder=None):
-        """Get the listing from the user's `comments` page."""
-        url = self.URL + "/comments"
-        url_data = {"sort": sort, "time":time}
-        return self.reddit_session._get_content(url, limit=limit,
-                                               url_data=url_data,
-                                               place_holder=place_holder)
-
-    def get_submitted(self, sort="new", time="all",
-                      limit=DEFAULT_CONTENT_LIMIT,
-                      place_holder=None):
-        """Get a listing of the stories the user has submitted."""
-        url = self.URL + "/submitted"
-        url_data = {"sort": sort, "time":time}
-        return self.reddit_session._get_content(url, limit=limit,
-                                               url_data=url_data,
-                                               place_holder=place_holder)
+    def _get_content_factory(self, url):
+        def _get_something(sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
+                           place_holder=None):
+            url_data = {"sort" : sort, "time" : time}
+            return self.reddit_session._get_content(url, limit=int(limit),
+                                                    url_data=url_data,
+                                                    place_holder=place_holder)
+        return _get_something
 
 class RedditPage(RedditObject):
     """A class for Reddit pages, essentially reddit listings. This is separated
