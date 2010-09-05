@@ -447,9 +447,9 @@ class Redditor(RedditObject):
         self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
         self.reddit_session = reddit_session
 
-        self.get_overview = self._get_content_factory(self.URL)
-        self.get_comments = self._get_content_factory(self.URL + "/comments")
-        self.get_submitted = self._get_content_factory(self.URL + "/submitted")
+        self.get_overview = self._make_content_get(self.URL)
+        self.get_comments = self._make_content_get(self.URL + "/comments")
+        self.get_submitted = self._make_content_get(self.URL + "/submitted")
 
     @limit_chars()
     def __str__(self):
@@ -461,7 +461,7 @@ class Redditor(RedditObject):
             data = self.reddit_session._get_json_page(self.ABOUT_URL)
             return data['data'].get(attr)
 
-    def _get_content_factory(self, url):
+    def _make_content_get(self, url):
         def _get_something(sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
                            place_holder=None):
             url_data = {"sort" : sort, "time" : time}
