@@ -447,9 +447,9 @@ class Redditor(RedditObject):
         self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
         self.reddit_session = reddit_session
 
-        self.get_overview = self._make_content_get(self.URL)
-        self.get_comments = self._make_content_get(self.URL + "/comments")
-        self.get_submitted = self._make_content_get(self.URL + "/submitted")
+        self.get_overview = self._getter_factory("/")
+        self.get_comments = self._getter_factory("/comments")
+        self.get_submitted = self._getter_factory("/submitted")
 
     @limit_chars()
     def __str__(self):
@@ -461,14 +461,15 @@ class Redditor(RedditObject):
             data = self.reddit_session._get_json_page(self.ABOUT_URL)
             return data['data'].get(attr)
 
-    def _make_content_get(self, url):
-        def _get_something(sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
-                           place_holder=None):
+    def _getter_factory(self, subpath=""):
+        def closure(sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
+                     place_holder=None):
             url_data = {"sort" : sort, "time" : time}
-            return self.reddit_session._get_content(url, limit=int(limit),
+            return self.reddit_session._get_content(self.URL + subpath,
+                                                    limit=int(limit),
                                                     url_data=url_data,
                                                     place_holder=place_holder)
-        return _get_something
+        return closure
 
 class RedditPage(RedditObject):
     """A class for Reddit pages, essentially reddit listings. This is separated
@@ -478,45 +479,30 @@ class RedditPage(RedditObject):
         self.display_name = name
         self.reddit_session = reddit_session
 
+        self.get_hot = self._getter_factory("/")
+        self.get_controversial = self._getter_factory("/controversial",
+                                                      time="day")
+        self.get_new = self._getter_factory("/new", sort="rising")
+        self.get_top = self._getter_factory("/top", time="day")
+
     @limit_chars()
     def __str__(self):
         """Just display the reddit page name."""
         return self.display_name
 
-    def get_top(self, time="day", limit=DEFAULT_CONTENT_LIMIT,
-                place_holder=None):
-        """A method to get the top listings of the page."""
-        url = self.URL + "/top"
-        url_data = {"t": time}
-        return self.reddit_session._get_content(url, limit=limit,
-                                                url_data=url_data,
-                                                place_holder=place_holder)
+    def _getter_factory(self, subpath="", **defaults):
+        def closure(limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
+            for k, v in defaults.items():
+                if k == "time":
+                    # time should be "t" in the API data dict
+                    k = "t"
+                data.setdefault(k, v)
+            return self.reddit_session._get_content(self.URL + subpath,
+                                                    limit=int(limit),
+                                                    url_data=data,
+                                                    place_holder=place_holder)
+        return closure
 
-    def get_controversial(self, time="day", limit=DEFAULT_CONTENT_LIMIT,
-                         place_holder=None):
-        """Get the controversial listings of the page."""
-        url = self.URL + "/controversial"
-        url_data = {"t":time}
-        return self.reddit_session._get_content(url, limit=limit,
-                                               url_data=url_data,
-                                              place_holder=place_holder)
-
-    def get_new(self, sort="rising", limit=DEFAULT_CONTENT_LIMIT,
-               place_holder=None):
-        """Get the new listings of the page."""
-        url = self.URL + "/new"
-        url_data = {"sort": sort}
-        return self.reddit_session._get_content(url, limit=limit,
-                                                url_data=url_data,
-                                                place_holder=place_holder)
-
-    def get_hot(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None):
-        """Get the hot listings of the page."""
-        url = self.URL
-        if url[-1] != '/':
-            url += '/'
-        return self.reddit_session._get_content(url, limit=limit,
-                                              place_holder=place_holder)
 
 class Subreddit(RedditPage):
     """A class for Subreddits. This is a subclass of RedditPage."""
@@ -526,10 +512,10 @@ class Subreddit(RedditPage):
     _sections = ['hot', 'new', 'controversial', 'top']
 
     def __init__(self, subreddit_name, reddit_session):
-        self.display_name = subreddit_name
-        self.URL = REDDIT_URL + "/r/" + self.display_name
+        super(Subreddit, self).__init__(REDDIT_URL + "/r/" + subreddit_name,
+                                        subreddit_name,
+                                        reddit_session)
         self.ABOUT_URL = self.URL + "/about"
-        self.reddit_session = reddit_session
 
     def __str__(self):
         return self.display_name
