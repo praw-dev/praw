@@ -122,6 +122,18 @@ class RedditObject(object):
     def __str__(self):
         raise NotImplementedError()
 
+class Voteable(object):
+    def vote(self, direction=0):
+        """Cast a vote."""
+        return self.reddit_session._vote(self.name, direction=direction,
+                                         subreddit_name=self.subreddit)
+
+    def upvote(self):
+        return self.vote(direction=1)
+
+    def downvote(self):
+        return self.vote(direction=-1)
+
 
 class Reddit(RedditObject):
     """A class for a reddit session."""
@@ -546,7 +558,7 @@ class Subreddit(RedditPage):
         return self.reddit_session._subscribe(self.name,
                                              unsubscribe=True)
 
-class Submission(RedditObject):
+class Submission(RedditObject, Voteable):
     """A class for submissions to Reddit."""
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
@@ -561,18 +573,6 @@ class Submission(RedditObject):
         comments = self.reddit_session._get_submission_comments(comments_url)
         return comments
 
-    def vote(self, direction=0):
-        """Vote for this story."""
-        return self.reddit_session._vote(self.name,
-                            direction=direction,
-                            subreddit_name=self.subreddit)
-
-    def upvote(self):
-        return self.vote(direction=1)
-
-    def downvote(self):
-        return self.vote(direction=-1)
-
     def save(self):
         return self.reddit_session._save(self.name)
 
@@ -583,10 +583,10 @@ class Submission(RedditObject):
         """If logged in, comment on the submission using the specified
         text."""
         return self.reddit_session._comment(self.name,
-                                           subreddit_name=self.subreddit,
-                                           text=text)
+                                            subreddit_name=self.subreddit,
+                                            text=text)
 
-class Comment(RedditObject):
+class Comment(RedditObject, Voteable):
     """A class for comments."""
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
@@ -599,17 +599,6 @@ class Comment(RedditObject):
             return self.body
         else:
             return "[[need to fetch more comments]]"
-
-    def vote(self, direction=0):
-        return self.reddit_session._vote(self.name,
-                                        direction=direction,
-                                        subreddit_name=self.subreddit)
-
-    def upvote(self):
-        return self.vote(direction=1)
-
-    def downvote(self):
-        return self.vote(direction=-1)
 
     def reply(self, text):
         """Reply to the comment with the specified text."""
