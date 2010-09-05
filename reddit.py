@@ -605,8 +605,3 @@ class Comment(RedditObject, Voteable):
         return self.reddit_session.comment(self.name,
                                            subreddit_name=self.subreddit,
                                            text=text)
-
-    def get_replies(self):
-        """Get the replies to this comment. Can also just use the
-        replies variable for the instance."""
-        return self.replies
