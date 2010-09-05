@@ -9,7 +9,7 @@ from memoize import Memoize
 DEFAULT_CONTENT_LIMIT = 25
 
 # The user agent we will sent
-REDDIT_USER_AGENT = { 'User-agent': 'mellorts Python Wrapper for Reddit API' }
+REDDIT_USER_AGENT = {'User-agent': 'mellorts Python Wrapper for Reddit API'}
 
 # Some Reddit urls to keep track of
 REDDIT_URL = "http://www.reddit.com"
@@ -74,8 +74,13 @@ def limit_chars(num_chars=CHAR_LIMIT):
     return func_limiter
 
 class sleep_after(object):
-    """A decorator to add to API functions which need to
-    wait after completion to be nice to the Reddit servers."""
+    """A decorator to add to API functions that shouldn't be called too
+    rapidly, in order to be nice to the reddit server.
+
+    Every function wrapped with this decorator will use a collective
+    last_call_time attribute, so that collectively any one of the funcs won't
+    be callable within REDDIT_API_WAIT_TIME; they'll automatically be delayed
+    until the proper duration is reached."""
     last_call_time = 0     # start with 0 to always allow the 1st call
 
     def __init__(self, func):
@@ -121,10 +126,6 @@ class RedditObject(object):
 class Reddit(RedditObject):
     """A class for a reddit session."""
     def __init__(self):
-        # Make these simpler to access
-        self._Request = urllib2.Request
-        self._urlopen = urllib2.urlopen
-
         # Set cookies
         self._cookie_jar = cookielib.CookieJar()
         opener = urllib2.build_opener(
@@ -139,28 +140,37 @@ class Reddit(RedditObject):
     @memoize
     @sleep_after
     def _get_page(self, page_url, params=None, url_data=None):
-        """Given a page url and a dict of params, return the page JSON.
+        """Given a page url and a dict of params, opens and returns the page.
 
         :param page_url: the url to grab content from.
         :param params: the extra url data to submit
         :param url_data: the GET data to put in the url
-        :returns: the json listing of the page
+        :returns: the open page
         """
-        page_url += ".json"
         if url_data:
-            page_url += "?"+urllib.urlencode(url_data)
+            page_url += "?" + urllib.urlencode(url_data)
 
-        # Encode the params and then create the request.
+        # urllib2.Request throws a 404 for some reason with data=""
         encoded_params = None
         if params:
             encoded_params = urllib.urlencode(params)
-        request = self._Request(page_url,
-                                encoded_params,
-                                REDDIT_USER_AGENT)
-        json_data = self._urlopen(request).read()
-        data = simplejson.loads(json_data)
 
-        return data
+        request = urllib2.Request(page_url,
+                                  data=encoded_params,
+                                  headers=REDDIT_USER_AGENT)
+        response = urllib2.urlopen(request)
+        return response
+
+    def _get_json_page(self, page_url, *args, **kwargs):
+        """Gets the JSON processed from a page. Uses the _get_page method.
+        Takes the same parameters as _get_page.
+
+        :returns: JSON processed page
+        """
+        if not page_url.endswith(".json"):
+            page_url += ".json"
+        response = self._get_page(page_url, *args, **kwargs)
+        return simplejson.loads(response.read())
 
     @memoize
     @sleep_after
@@ -195,12 +205,12 @@ class Reddit(RedditObject):
             # If the after variable isn't None, add it do the URL of the page
             # we are going to fetch.
             if after:
-                data = {"after":after}
+                data = {"after": after}
                 if url_data:
                     data.update(url_data)
-                page_data = self._get_page(page_url, url_data=data)
+                page_data = self._get_json_page(page_url, url_data=data)
             else:
-                page_data = self._get_page(page_url, url_data=url_data)
+                page_data = self._get_json_page(page_url, url_data=url_data)
 
             # if for some reason we didn't get data, then break
             if not page_data.get('data'):
@@ -277,30 +287,26 @@ class Reddit(RedditObject):
         self.user = user
 
         # The parameters we need to login.
-        params = urllib.urlencode({
-                    'id' : '#login_login-main',
-                    'op' : 'login-main',
-                    'passwd' : password,
-                    'user' : user
-                })
-        req = self._Request(REDDIT_LOGIN_URL, params, REDDIT_USER_AGENT)
-        data =  self._urlopen(req).read()
+        params = {'id' : '#login_login-main',
+                  'op' : 'login-main',
+                  'passwd' : password,
+                  'user' : user}
+        data = self._get_page(REDDIT_LOGIN_URL, params).read()
 
         # Get and store the modhash; it will be needed for API requests
         # which involve this user.
         self._fetch_modhash()
 
         return data
+
     @require_login
     def _fetch_modhash(self):
         """Grab the current user's modhash. Basically, just fetch any
         Reddit HTML page (can just get first 1200 chars) and search for
         'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
         """
-        req = self._Request(REDDIT_URL_FOR_MODHASH,
-                           None, REDDIT_USER_AGENT)
         # Should only need ~1200 chars to get the modhash
-        data = self._urlopen(req).read(1200)
+        data = self._get_page(REDDIT_URL_FOR_MODHASH).read(1200)
         match = re.search(r"modhash[^,]*", data)
         self.modhash = eval(match.group(0).split(": ")[1])
 
@@ -309,14 +315,11 @@ class Reddit(RedditObject):
     def _vote(self, content_id, direction=0, subreddit_name=""):
         """If logged in, vote for the given content_id in the direction
         specified."""
-        params = urllib.urlencode({
-                    'id' : content_id,
-                    'dir' : direction,
-                    'r' : subreddit_name,
-                    'uh' : self.modhash
-                })
-        req = self._Request(REDDIT_VOTE_URL, params, REDDIT_USER_AGENT)
-        return self._urlopen(req).read()
+        params = {'id' : content_id,
+                  'dir' : direction,
+                  'r' : subreddit_name,
+                  'uh' : self.modhash}
+        return self._get_page(REDDIT_VOTE_URL, params).read()
 
     @require_login
     @api_response
@@ -324,54 +327,41 @@ class Reddit(RedditObject):
         """If logged in, save the content specified by `content_id`."""
         url = REDDIT_SAVE_URL
         executed = 'saved'
-        if unsave is True:
-            executed = 'unsaved'
+        if unsave:
             url = REDDIT_UNSAVE_URL
-        params = urllib.urlencode({
-                    'id': content_id,
-                    'executed': executed,
-                    'uh': self.modhash
-            })
-        req = self._Request(url, params, REDDIT_USER_AGENT)
-        return self._urlopen(req).read()
+            executed = 'unsaved'
+        params = {'id': content_id,
+                  'executed': executed,
+                  'uh': self.modhash}
+        return self._get_page(url, params).read()
 
     @require_login
     @api_response
     def _subscribe(self, subreddit_id, unsubscribe=False):
         """If logged in, subscribe to the specified subreddit_id."""
         action = 'sub'
-        if unsubscribe is True:
+        if unsubscribe:
             action = 'unsub'
-        params = urllib.urlencode({
-                    'sr': subreddit_id,
-                    'action': action,
-                    'uh': self.modhash
-            })
-        req = self._Request(REDDIT_SUBSCRIBE_URL, params,
-                           REDDIT_USER_AGENT)
-        return self._urlopen(req).read()
+        params = {'sr': subreddit_id,
+                  'action': action,
+                  'uh': self.modhash}
+        return self._get_page(REDDIT_SUBSCRIBE_URL, params).read()
 
     @require_login
     def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return all of the current user's subreddits."""
-        reddits = self._get_content(MY_REDDITS_URL,
-                                   limit=limit)
+        reddits = self._get_content(MY_REDDITS_URL, limit=limit)
         return reddits
 
     @api_response
     def _comment(self, content_id, subreddit_name=None, text=""):
         """If logged in, comment on the given content_id with the
         given text."""
-
-        url = REDDIT_COMMENT_URL
-        params = urllib.urlencode({
-                    'thing_id': content_id,
-                    'text': text,
-                    'uh': self.modhash,
-                    'r': subreddit_name
-            })
-        req = self._Request(url, params, REDDIT_USER_AGENT)
-        return self._urlopen(req).read()
+        params = {'thing_id': content_id,
+                  'text': text,
+                  'uh': self.modhash,
+                  'r': subreddit_name}
+        return self._get_page(REDDIT_COMMENT_URL, params).read()
 
     @require_login
     @api_response
@@ -379,14 +369,11 @@ class Reddit(RedditObject):
         """If logged in, friend the supplied user.
         NOTE: Doesn't work yet!"""
         url = "http://www.reddit.com/api/friend"
-        params = urllib.urlencode({
-                    'name': user,
-                    'container': self.user,
-                    'uh': self.modhash
-                    #'type': 'friend'
-            })
-        req = self._Request(url, params, REDDIT_USER_AGENT)
-        return self._urlopen(req).read()
+        params = {'name': user,
+                  'container': self.user,
+                 #'type': 'friend'
+                  'uh': self.modhash}
+        return self._get_page(url, params).read()
 
     def get_homepage(self):
         """Return a subreddit-style class of the reddit homepage."""
@@ -405,7 +392,7 @@ class Reddit(RedditObject):
                                 place_holder=place_holder)
 
     def _get_submission_comments(self, submission_url):
-        json_data = self._get_page(submission_url)
+        json_data = self._get_json_page(submission_url)
         main_content = json_data[0] # this isn't used
         json_comments = json_data[1]['data']['children']
 
@@ -448,7 +435,7 @@ class Redditor(RedditObject):
 
     def __getattr__(self, attr):
         if attr in self._about_fields:
-            data = self.reddit_session._get_page(self.ABOUT_URL)
+            data = self.reddit_session._get_json_page(self.ABOUT_URL)
             return data['data'].get(attr)
 
     def get_overview(self, sort="new", time="all",
@@ -495,13 +482,13 @@ class RedditPage(RedditObject):
         return self.display_name
 
     def get_top(self, time="day", limit=DEFAULT_CONTENT_LIMIT,
-               place_holder=None):
+                place_holder=None):
         """A method to get the top listings of the page."""
         url = self.URL + "/top"
-        url_data = {"t":time}
+        url_data = {"t": time}
         return self.reddit_session._get_content(url, limit=limit,
-                                               url_data=url_data,
-                                              place_holder=place_holder)
+                                                url_data=url_data,
+                                                place_holder=place_holder)
 
     def get_controversial(self, time="day", limit=DEFAULT_CONTENT_LIMIT,
                          place_holder=None):
@@ -516,14 +503,13 @@ class RedditPage(RedditObject):
                place_holder=None):
         """Get the new listings of the page."""
         url = self.URL + "/new"
-        url_data = {"sort":sort}
+        url_data = {"sort": sort}
         return self.reddit_session._get_content(url, limit=limit,
-                                               url_data=url_data,
-                                              place_holder=place_holder)
+                                                url_data=url_data,
+                                                place_holder=place_holder)
 
-    def get_hot(self, limit=DEFAULT_CONTENT_LIMIT,
-               place_holder=None):
-        """Get the hto listings of the page."""
+    def get_hot(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None):
+        """Get the hot listings of the page."""
         url = self.URL
         if url[-1] != '/':
             url += '/'
@@ -532,13 +518,10 @@ class RedditPage(RedditObject):
 
 class Subreddit(RedditPage):
     """A class for Subreddits. This is a subclass of RedditPage."""
-
-
     # Subreddit fields exposed by the API:
     _api_fields = ['display_name', 'name', 'title', 'url', 'created',
                    'created_utc', 'over18', 'subscribers', 'id', 'description']
     _sections = ['hot', 'new', 'controversial', 'top']
-
 
     def __init__(self, subreddit_name, reddit_session):
         self.display_name = subreddit_name
@@ -551,7 +534,7 @@ class Subreddit(RedditPage):
 
     def __getattr__(self, attr):
         if attr in self._api_fields:
-            data = self.reddit_session._get_page(self.ABOUT_URL)
+            data = self.reddit_session._get_json_page(self.ABOUT_URL)
             return data['data'].get(attr)
 
     def subscribe(self):
