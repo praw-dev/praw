@@ -94,6 +94,7 @@ I coded a few quick applications/scripts with this wrapper:
 
 * A [comment tracker](http://github.com/mellort/reddit_comment_tracker/blob/master/comment_tracker.py), which repeatedly looks at new Reddit comments and can take an action if they meet a specified condition. The example use I gave is replying with an automated message if the body of a comment contains a certain word. (Novelty accounts, anyone?)
 * An [account cloner](http://github.com/mellort/reddit_account_cloner/blob/master/account_cloner.py). Given two logins and passwords, it will transfer all of the saved links and subscribed subreddits from the first account to the second.
+* A [comment generator](http://github.com/mellort/reddit_comment_bot): it pulls comments from Reddit, puts them in a Markov chain, and periodically outputs random statuses. The statuses can be viewed [here](http://identi.ca/redditbot/all).
 
 I hope that this wrapper allows for many more quick and useful applications to be made!
 
