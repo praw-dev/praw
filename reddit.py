@@ -1,9 +1,13 @@
 import urllib
 import urllib2
-import simplejson
 import cookielib
 import re
 import time
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
 from memoize import Memoize
 
 DEFAULT_CONTENT_LIMIT = 25
@@ -180,6 +184,8 @@ class Reddit(RedditObject):
         response = urllib2.urlopen(request)
         return response
 
+    @memoize
+    # no need for @sleep_after since we're wrapping _get_page
     def _get_json_page(self, page_url, *args, **kwargs):
         """Gets the JSON processed from a page. Uses the _get_page method.
         Takes the same parameters as _get_page.
@@ -189,10 +195,8 @@ class Reddit(RedditObject):
         if not page_url.endswith(".json"):
             page_url += ".json"
         response = self._get_page(page_url, *args, **kwargs)
-        return simplejson.loads(response.read())
+        return json.loads(response.read())
 
-    @memoize
-    @sleep_after
     def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT,
                     url_data=None, place_holder=None):
         """A method to return Reddit content from a URL. Starts at the initial
