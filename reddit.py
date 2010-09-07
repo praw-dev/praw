@@ -330,7 +330,7 @@ class Reddit(RedditObject):
         # Should only need ~1200 chars to get the modhash
         data = self._get_page(REDDIT_URL_FOR_MODHASH)
         match = re.search(r"modhash[^,]*", data)
-        self.modhash = eval(match.group(0).split(": ")[1])
+        self.modhash = match.group(0).split(": ")[1].strip(" '")
 
     @require_login
     @api_response
