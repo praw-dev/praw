@@ -58,12 +58,12 @@ class InvalidUserPass(APIException):
 def require_login(func):
     """A decorator to ensure that a user has logged in before calling the
     function."""
-    def wrapped_func(self, *args, **kwargs):
+    def login_reqd_func(self, *args, **kwargs):
         if self.user == None:
             raise NotLoggedInException()
         else:
             return func(self, *args, **kwargs)
-    return wrapped_func
+    return login_reqd_func
 
 def limit_chars(num_chars=CHAR_LIMIT):
     """A decorator to limit the number of chars in a function that outputs a
@@ -107,7 +107,7 @@ def api_response(func):
     the return string. If it doesn't find one, then it just returns True.
     """
     # TODO: add a 'submitting' too quickly error
-    def wrapped_func(*args, **kwargs):
+    def error_checked_func(*args, **kwargs):
         return_value = func(*args, **kwargs)
         if return_value == '{}' or '".error.' not in return_value:
             return True
@@ -117,8 +117,7 @@ def api_response(func):
             raise InvalidUserPass()
         else:
             raise APIException(return_value)
-
-    return wrapped_func
+    return error_checked_func
 
 class RedditObject(object):
     """
@@ -157,6 +156,11 @@ class Reddit(RedditObject):
         urllib2.install_opener(opener)
 
         self.user = None
+
+        self.ban = self._modify_relationship("banned")
+        self.friend = self._modify_relationship("friend")
+        self.make_contributor = self._modify_relationship("contributor")
+        self.make_moderator = self._modify_relationship("moderator")
 
     def __str__(self):
         return "Open Session (%s)" % (self.user or "Unauthenticated")
@@ -215,6 +219,8 @@ class Reddit(RedditObject):
         :returns: a list of Reddit content, of type Subreddit, Comment, or
             Submission
         """
+        if not url_data:
+            url_data = {}
 
         # A list which we will populate to return with content
         all_content = []
@@ -227,12 +233,8 @@ class Reddit(RedditObject):
             # If the after variable isn't None, add it do the URL of the page
             # we are going to fetch.
             if after:
-                data = {"after": after}
-                if url_data:
-                    data.update(url_data)
-                page_data = self._get_json_page(page_url, url_data=data)
-            else:
-                page_data = self._get_json_page(page_url, url_data=url_data)
+                url_data["after"] = after
+            page_data = self._get_json_page(page_url, url_data=url_data)
 
             # if for some reason we didn't get data, then break
             if not page_data.get('data'):
@@ -296,8 +298,8 @@ class Reddit(RedditObject):
 
     @api_response
     def login(self, user=None, password=None):
-        """Login to Reddit. If no user or password is provided, the user
-        will be prompted with raw_input and getpass.getpass.
+        """Login to Reddit. If no user or password is provided, the user will
+        be prompted with raw_input and getpass.getpass.
         """
         # Prompt user for necessary fields.
         if not user:
@@ -306,7 +308,7 @@ class Reddit(RedditObject):
             import getpass
             password = getpass.getpass("Password: ")
 
-        self.user = user
+        self.user = Redditor(user, self)
 
         # The parameters we need to login.
         params = {'id' : '#login_login-main',
@@ -323,8 +325,8 @@ class Reddit(RedditObject):
 
     @require_login
     def _fetch_modhash(self):
-        """Grab the current user's modhash. Basically, just fetch any
-        Reddit HTML page (can just get first 1200 chars) and search for
+        """Grab the current user's modhash. Basically, just fetch any Reddit
+        HTML page (can just get first 1200 chars) and search for
         'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
         """
         # Should only need ~1200 chars to get the modhash
@@ -377,25 +379,28 @@ class Reddit(RedditObject):
 
     @api_response
     def _comment(self, content_id, subreddit_name=None, text=""):
-        """If logged in, comment on the given content_id with the
-        given text."""
+        """Comment on the given content_id with the given text."""
         params = {'thing_id': content_id,
                   'text': text,
                   'uh': self.modhash,
                   'r': subreddit_name}
         return self._get_page(REDDIT_COMMENT_URL, params)
 
-    @require_login
-    @api_response
-    def _friend(self, user):
-        """If logged in, friend the supplied user.
-        NOTE: Doesn't work yet!"""
+    def _modify_relationship(self, relationship):
+        """Modify the relationship between the current user and a target thing.
+        Used to support friending (user-to-user), as well as moderating,
+        contributor creating, and banning (user-to-subreddit)."""
         url = "http://www.reddit.com/api/friend"
-        params = {'name': user,
-                  'container': self.user,
-                 #'type': 'friend'
-                  'uh': self.modhash}
-        return self._get_page(url, params)
+
+        @require_login
+        @api_response
+        def do_relationship(thing):
+            params = {'name': thing,
+                      'container': self.user,
+                      'type': relationship,
+                      'uh': self.modhash}
+            return self._get_page(url, params)
+        return do_relationship
 
     def get_homepage(self):
         """Return a subreddit-style class of the reddit homepage."""
@@ -423,9 +428,7 @@ class Reddit(RedditObject):
 
     def _json_data_to_comment(self, json_dict):
         data = json_dict['data']
-        replies = data.get('replies')
-        if replies:
-            del data['replies']
+        replies = data.pop('replies', None)
 
         root_comment = Comment(data, self)
 
@@ -460,7 +463,7 @@ class Redditor(RedditObject):
         return self.user_name
 
     def __getattr__(self, attr):
-        if attr in self._about_fields:
+        if attr in self._api_fields:
             data = self.reddit_session._get_json_page(self.ABOUT_URL)
             return data['data'].get(attr)
 
@@ -559,8 +562,7 @@ class Submission(RedditObject, Voteable):
         return self.reddit_session._save(self.name, unsave=True)
 
     def comment(self, text):
-        """If logged in, comment on the submission using the specified
-        text."""
+        """If logged in, comment on the submission using the specified text."""
         return self.reddit_session._comment(self.name,
                                             subreddit_name=self.subreddit,
                                             text=text)
