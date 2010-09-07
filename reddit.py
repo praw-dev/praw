@@ -145,9 +145,29 @@ class Voteable(object):
     def downvote(self):
         return self.vote(direction=-1)
 
+def _modify_relationship(relationship):
+    """Modify the relationship between the current user and a target thing.
+    Used to support friending (user-to-user), as well as moderating,
+    contributor creating, and banning (user-to-subreddit)."""
+    url = "http://www.reddit.com/api/friend"
+
+    @require_login
+    @api_response
+    def do_relationship(self, thing):
+        params = {'name': thing,
+                  'container': self.user,
+                  'type': relationship,
+                  'uh': self.modhash}
+        return self._get_page(url, params)
+    return do_relationship
 
 class Reddit(RedditObject):
     """A class for a reddit session."""
+    ban = _modify_relationship("banned")
+    friend = _modify_relationship("friend")
+    make_contributor = _modify_relationship("contributor")
+    make_moderator = _modify_relationship("moderator")
+
     def __init__(self):
         # Set cookies
         self._cookie_jar = cookielib.CookieJar()
@@ -156,11 +176,6 @@ class Reddit(RedditObject):
         urllib2.install_opener(opener)
 
         self.user = None
-
-        self.ban = self._modify_relationship("banned")
-        self.friend = self._modify_relationship("friend")
-        self.make_contributor = self._modify_relationship("contributor")
-        self.make_moderator = self._modify_relationship("moderator")
 
     def __str__(self):
         return "Open Session (%s)" % (self.user or "Unauthenticated")
@@ -386,22 +401,6 @@ class Reddit(RedditObject):
                   'r': subreddit_name}
         return self._get_page(REDDIT_COMMENT_URL, params)
 
-    def _modify_relationship(self, relationship):
-        """Modify the relationship between the current user and a target thing.
-        Used to support friending (user-to-user), as well as moderating,
-        contributor creating, and banning (user-to-subreddit)."""
-        url = "http://www.reddit.com/api/friend"
-
-        @require_login
-        @api_response
-        def do_relationship(thing):
-            params = {'name': thing,
-                      'container': self.user,
-                      'type': relationship,
-                      'uh': self.modhash}
-            return self._get_page(url, params)
-        return do_relationship
-
     def get_homepage(self):
         """Return a subreddit-style class of the reddit homepage."""
         return RedditPage("http://www.reddit.com","reddit.com", self)
@@ -439,12 +438,25 @@ class Reddit(RedditObject):
             root_comment.replies = converted_children
         return root_comment
 
+def _get_section(subpath=""):
+    def closure(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
+                place_holder=None):
+        url_data = {"sort" : sort, "time" : time}
+        return self.reddit_session._get_content(self.URL + subpath,
+                                                limit=int(limit),
+                                                url_data=url_data,
+                                                place_holder=place_holder)
+    return closure
+
 class Redditor(RedditObject):
     """A class for Redditor methods."""
 
     # Redditor fields exposed by the API:
     _api_fields = ['comment_karma', 'created', 'created_utc', 'has_mail',
                    'has_mod_mail', 'id', 'is_mod', 'link_karma', 'name']
+    get_overview = _get_section("/")
+    get_comments = _get_section("/comments")
+    get_submitted = _get_section("/submitted")
 
     def __init__(self, user_name, reddit_session):
         self.user_name = user_name
@@ -452,10 +464,6 @@ class Redditor(RedditObject):
         self.URL = REDDITOR_PAGE % self.user_name
         self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
         self.reddit_session = reddit_session
-
-        self.get_overview = self._getter_factory("/")
-        self.get_comments = self._getter_factory("/comments")
-        self.get_submitted = self._getter_factory("/submitted")
 
     @limit_chars()
     def __str__(self):
@@ -466,16 +474,6 @@ class Redditor(RedditObject):
         if attr in self._api_fields:
             data = self.reddit_session._get_json_page(self.ABOUT_URL)
             return data['data'].get(attr)
-
-    def _getter_factory(self, subpath=""):
-        def closure(sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
-                     place_holder=None):
-            url_data = {"sort" : sort, "time" : time}
-            return self.reddit_session._get_content(self.URL + subpath,
-                                                    limit=int(limit),
-                                                    url_data=url_data,
-                                                    place_holder=place_holder)
-        return closure
 
 class RedditPage(RedditObject):
     """A class for Reddit pages, essentially reddit listings. This is separated
