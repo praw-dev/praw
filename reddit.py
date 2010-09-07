@@ -183,20 +183,18 @@ class Reddit(RedditObject):
                                   data=encoded_params,
                                   headers=REDDIT_USER_AGENT)
         response = urllib2.urlopen(request)
-        return response
+        return response.read()
 
-    @memoize
-    # no need for @sleep_after since we're wrapping _get_page
     def _get_json_page(self, page_url, *args, **kwargs):
-        """Gets the JSON processed from a page. Uses the _get_page method.
-        Takes the same parameters as _get_page.
+        """Gets the JSON processed from a page. Takes the same parameters as
+        the _get_page method.
 
         :returns: JSON processed page
         """
         if not page_url.endswith(".json"):
             page_url += ".json"
         response = self._get_page(page_url, *args, **kwargs)
-        return json.loads(response.read())
+        return json.loads(response)
 
     def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT,
                     url_data=None, place_holder=None):
@@ -315,7 +313,7 @@ class Reddit(RedditObject):
                   'op' : 'login-main',
                   'passwd' : password,
                   'user' : user}
-        data = self._get_page(REDDIT_LOGIN_URL, params).read()
+        data = self._get_page(REDDIT_LOGIN_URL, params)
 
         # Get and store the modhash; it will be needed for API requests
         # which involve this user.
@@ -330,7 +328,7 @@ class Reddit(RedditObject):
         'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
         """
         # Should only need ~1200 chars to get the modhash
-        data = self._get_page(REDDIT_URL_FOR_MODHASH).read(1200)
+        data = self._get_page(REDDIT_URL_FOR_MODHASH)
         match = re.search(r"modhash[^,]*", data)
         self.modhash = eval(match.group(0).split(": ")[1])
 
@@ -343,7 +341,7 @@ class Reddit(RedditObject):
                   'dir' : direction,
                   'r' : subreddit_name,
                   'uh' : self.modhash}
-        return self._get_page(REDDIT_VOTE_URL, params).read()
+        return self._get_page(REDDIT_VOTE_URL, params)
 
     @require_login
     @api_response
@@ -357,7 +355,7 @@ class Reddit(RedditObject):
         params = {'id': content_id,
                   'executed': executed,
                   'uh': self.modhash}
-        return self._get_page(url, params).read()
+        return self._get_page(url, params)
 
     @require_login
     @api_response
@@ -369,7 +367,7 @@ class Reddit(RedditObject):
         params = {'sr': subreddit_id,
                   'action': action,
                   'uh': self.modhash}
-        return self._get_page(REDDIT_SUBSCRIBE_URL, params).read()
+        return self._get_page(REDDIT_SUBSCRIBE_URL, params)
 
     @require_login
     def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
@@ -385,7 +383,7 @@ class Reddit(RedditObject):
                   'text': text,
                   'uh': self.modhash,
                   'r': subreddit_name}
-        return self._get_page(REDDIT_COMMENT_URL, params).read()
+        return self._get_page(REDDIT_COMMENT_URL, params)
 
     @require_login
     @api_response
@@ -397,7 +395,7 @@ class Reddit(RedditObject):
                   'container': self.user,
                  #'type': 'friend'
                   'uh': self.modhash}
-        return self._get_page(url, params).read()
+        return self._get_page(url, params)
 
     def get_homepage(self):
         """Return a subreddit-style class of the reddit homepage."""
@@ -537,7 +535,7 @@ class Subreddit(RedditPage):
     def unsubscribe(self):
         """If logged in, unsubscribe from the given subreddit."""
         return self.reddit_session._subscribe(self.name,
-                                             unsubscribe=True)
+                                              unsubscribe=True)
 
 class Submission(RedditObject, Voteable):
     """A class for submissions to Reddit."""
