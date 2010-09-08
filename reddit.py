@@ -49,6 +49,11 @@ class APIException(Exception):
     """Base exception class for these API bindings."""
     pass
 
+class BadCaptcha(APIException):
+    """An exception for when an incorrect captcha error is returned."""
+    def __str__(self):
+        return "Incorrect captcha entered."
+
 class NotLoggedInException(APIException):
     """An exception for when a Reddit user isn't logged in."""
     def __str__(self):
