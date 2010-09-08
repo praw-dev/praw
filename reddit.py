@@ -123,11 +123,22 @@ class RedditObject(object):
     """
     Base class for all Reddit API objects.
     """
+    _content_types = {"Comment" : "t1",
+                      "Redditor" : "t2",
+                      "Submission" : "t3",
+                      "Subreddit" : "t5"}
+
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self)
 
     def __str__(self):
         raise NotImplementedError()
+
+    @property
+    def content_id(self):
+        content_type = self._content_types.get(self.__class__.__name__)
+        return "_".join((content_type, self.id))
+
 
 class Voteable(object):
     """
@@ -155,7 +166,7 @@ def _modify_relationship(relationship):
     @api_response
     def do_relationship(self, thing):
         params = {'name': thing,
-                  'container': self.user,
+                  'container': self.user.content_id,
                   'type': relationship,
                   'uh': self.modhash}
         return self._get_page(url, params)
