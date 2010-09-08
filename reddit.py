@@ -147,11 +147,17 @@ class Voteable(object):
     def downvote(self):
         return self.vote(direction=-1)
 
-def _modify_relationship(relationship):
+def _modify_relationship(relationship, unlink=False):
     """Modify the relationship between the current user and a target thing.
     Used to support friending (user-to-user), as well as moderating,
     contributor creating, and banning (user-to-subreddit)."""
-    url = "http://www.reddit.com/api/friend"
+    # the API uses friend and unfriend to manage all of these relationships
+    URL = API_URL + "/friend"
+    UNFRIEND_URL = API_URL + "/unfriend"
+
+    # unlink: remove the relationship instead of creating it
+    if unlink:
+        URL = UNFRIEND_URL
 
     @require_login
     @api_response
@@ -160,7 +166,7 @@ def _modify_relationship(relationship):
                   'container': self.user.content_id,
                   'type': relationship,
                   'uh': self.modhash}
-        return self._get_page(url, params)
+        return self._get_page(URL, params)
     return do_relationship
 
 class Reddit(RedditObject):
@@ -171,6 +177,11 @@ class Reddit(RedditObject):
     friend = _modify_relationship("friend")
     make_contributor = _modify_relationship("contributor")
     make_moderator = _modify_relationship("moderator")
+
+    unban = _modify_relationship("banned", unlink=True)
+    unfriend = _modify_relationship("friend", unlink=True)
+    remove_contributor = _modify_relationship("contributor", unlink=True)
+    remove_moderator = _modify_relationship("moderator", unlink=True)
 
     def __init__(self):
         # Set cookies
