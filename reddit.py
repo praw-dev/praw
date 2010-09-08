@@ -493,38 +493,36 @@ class Redditor(RedditObject):
         raise AttributeError("'%s' object has no attribute '%s'" % (
                                             self.__class__.__name__, attr))
 
+def _get_sorter(subpath="", **defaults):
+    def closure(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
+        for k, v in defaults.items():
+            if k == "time":
+                # time should be "t" in the API data dict
+                k = "t"
+            data.setdefault(k, v)
+        return self.reddit_session._get_content(self.URL + subpath,
+                                                limit=int(limit),
+                                                url_data=data,
+                                                place_holder=place_holder)
+    return closure
+
 class RedditPage(RedditObject):
     """A class for Reddit pages, essentially reddit listings. This is separated
     from the subreddits because reddit.com isn't exactly a subreddit."""
+    get_hot = _get_sorter("/")
+    get_controversial = _get_sorter("/controversial", time="day")
+    get_new = _get_sorter("/new", sort="rising")
+    get_top = _get_sorter("/top", time="day")
+
     def __init__(self, url, name, reddit_session):
         self.URL = url
         self.display_name = name
         self.reddit_session = reddit_session
 
-        self.get_hot = self._getter_factory("/")
-        self.get_controversial = self._getter_factory("/controversial",
-                                                      time="day")
-        self.get_new = self._getter_factory("/new", sort="rising")
-        self.get_top = self._getter_factory("/top", time="day")
-
     @limit_chars()
     def __str__(self):
         """Just display the reddit page name."""
         return self.display_name
-
-    def _getter_factory(self, subpath="", **defaults):
-        def closure(limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
-            for k, v in defaults.items():
-                if k == "time":
-                    # time should be "t" in the API data dict
-                    k = "t"
-                data.setdefault(k, v)
-            return self.reddit_session._get_content(self.URL + subpath,
-                                                    limit=int(limit),
-                                                    url_data=data,
-                                                    place_holder=place_holder)
-        return closure
-
 
 class Subreddit(RedditPage):
     """A class for Subreddits. This is a subclass of RedditPage."""
