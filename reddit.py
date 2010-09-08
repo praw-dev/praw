@@ -21,7 +21,10 @@ REDDIT_LOGIN_URL = REDDIT_URL + "/api/login"
 REDDIT_VOTE_URL = REDDIT_URL + "/api/vote"
 REDDIT_SAVE_URL = REDDIT_URL + "/api/save"
 REDDIT_UNSAVE_URL = REDDIT_URL + "/api/unsave"
+REDDIT_CAPTCHA_URL = REDDIT_URL + "/captcha"
+REDDIT_NEW_CAPTCHA_URL = REDDIT_URL + "/api/new_captcha"
 REDDIT_COMMENT_URL = REDDIT_URL + "/api/comment"
+REDDIT_REGISTER_URL = REDDIT_URL + "/api/register"
 REDDIT_SITE_ADMIN_URL = REDDIT_URL + "/api/site_admin"
 REDDIT_SUBSCRIBE_URL = REDDIT_URL + "/api/subscribe"
 REDDIT_COMMENTS_URL = REDDIT_URL + "/comments"
@@ -128,10 +131,7 @@ class RedditObject(object):
     """
     Base class for all Reddit API objects.
     """
-    _content_types = {"Comment" : "t1",
-                      "Redditor" : "t2",
-                      "Submission" : "t3",
-                      "Subreddit" : "t5"}
+    _content_type = None
 
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self)
@@ -141,9 +141,7 @@ class RedditObject(object):
 
     @property
     def content_id(self):
-        content_type = self._content_types.get(self.__class__.__name__)
-        return "_".join((content_type, self.id))
-
+        return "_".join((self._content_type, self.id))
 
 class Voteable(object):
     """
@@ -319,6 +317,17 @@ class Reddit(RedditObject):
 
         return all_content
 
+    @require_login
+    def _fetch_modhash(self):
+        """Grab the current user's modhash. Basically, just fetch any Reddit
+        HTML page (can just get first 1200 chars) and search for
+        'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
+        """
+        # Should only need ~1200 chars to get the modhash
+        data = self._get_page(REDDIT_URL_FOR_MODHASH)
+        match = re.search(r"modhash[^,]*", data)
+        self.modhash = match.group(0).split(": ")[1].strip(" '")
+
     def get_redditor(self, user_name):
         """Return a Redditor class for the user_name specified."""
         return Redditor(user_name, self)
@@ -353,17 +362,6 @@ class Reddit(RedditObject):
         self._fetch_modhash()
 
         return data
-
-    @require_login
-    def _fetch_modhash(self):
-        """Grab the current user's modhash. Basically, just fetch any Reddit
-        HTML page (can just get first 1200 chars) and search for
-        'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
-        """
-        # Should only need ~1200 chars to get the modhash
-        data = self._get_page(REDDIT_URL_FOR_MODHASH)
-        match = re.search(r"modhash[^,]*", data)
-        self.modhash = match.group(0).split(": ")[1].strip(" '")
 
     @require_login
     @api_response
@@ -419,7 +417,7 @@ class Reddit(RedditObject):
 
     def get_homepage(self):
         """Return a subreddit-style class of the reddit homepage."""
-        return RedditPage("http://www.reddit.com","reddit.com", self)
+        return RedditPage(REDDIT_URL, "reddit.com", self)
 
     @require_login
     def get_saved_links(self, limit=-1):
@@ -429,9 +427,8 @@ class Reddit(RedditObject):
     def get_comments(self, limit=DEFAULT_CONTENT_LIMIT,
                      place_holder=None):
         """Returns a listing from reddit.com/comments"""
-        url = REDDIT_COMMENTS_URL
-        return self._get_content(url, limit=limit,
-                                place_holder=place_holder)
+        return self._get_content(REDDIT_COMMENTS_URL, limit=limit,
+                                 place_holder=place_holder)
 
     def _get_submission_comments(self, submission_url):
         json_data = self._get_json_page(submission_url)
@@ -467,6 +464,7 @@ def _get_section(subpath=""):
 class Redditor(RedditObject):
     """A class for Redditor methods."""
 
+    _content_type = "t2"
     # Redditor fields exposed by the API:
     _api_fields = ['comment_karma', 'created', 'created_utc', 'has_mail',
                    'has_mod_mail', 'id', 'is_mod', 'link_karma', 'name']
@@ -493,6 +491,19 @@ class Redditor(RedditObject):
         raise AttributeError("'%s' object has no attribute '%s'" % (
                                             self.__class__.__name__, attr))
 
+    def _get_captcha(self):
+        return self.reddit_session._get_json_page(REDDIT_NEW_CAPTCHA_URL, {})
+
+    def register(self, passwd, captcha):
+        params = {"captcha" : captcha,
+                  "op" : "reg",
+                  "passwd" : passwd,
+                  "passwd2" : passwd,
+                  "user" : self.user_name}
+        return self.reddit_session._get_json_page(REDDIT_REGISTER_URL, params)
+
+    create = register # just an alias to provide a somewhat uniform API
+
 def _get_sorter(subpath="", **defaults):
     def closure(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
         for k, v in defaults.items():
@@ -509,6 +520,8 @@ def _get_sorter(subpath="", **defaults):
 class RedditPage(RedditObject):
     """A class for Reddit pages, essentially reddit listings. This is separated
     from the subreddits because reddit.com isn't exactly a subreddit."""
+
+    _content_type = "t5"
     get_hot = _get_sorter("/")
     get_controversial = _get_sorter("/controversial", time="day")
     get_new = _get_sorter("/new", sort="rising")
@@ -526,6 +539,7 @@ class RedditPage(RedditObject):
 
 class Subreddit(RedditPage):
     """A class for Subreddits. This is a subclass of RedditPage."""
+
     # Subreddit fields exposed by the API:
     _api_fields = ['display_name', 'name', 'title', 'url', 'created',
                    'created_utc', 'over18', 'subscribers', 'id', 'description']
@@ -568,6 +582,9 @@ class Subreddit(RedditPage):
 
 class Submission(RedditObject, Voteable):
     """A class for submissions to Reddit."""
+
+    _content_type = "t3"
+
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
         self.reddit_session = reddit_session
@@ -595,6 +612,9 @@ class Submission(RedditObject, Voteable):
 
 class Comment(RedditObject, Voteable):
     """A class for comments."""
+
+    _content_type = "t1"
+
     def __init__(self, json_dict, reddit_session):
         self.__dict__.update(json_dict)
         self.reddit_session = reddit_session
