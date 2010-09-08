@@ -22,13 +22,14 @@ REDDIT_VOTE_URL = REDDIT_URL + "/api/vote"
 REDDIT_SAVE_URL = REDDIT_URL + "/api/save"
 REDDIT_UNSAVE_URL = REDDIT_URL + "/api/unsave"
 REDDIT_COMMENT_URL = REDDIT_URL + "/api/comment"
+REDDIT_SITE_ADMIN_URL = REDDIT_URL + "/api/site_admin"
 REDDIT_SUBSCRIBE_URL = REDDIT_URL + "/api/subscribe"
 REDDIT_COMMENTS_URL = REDDIT_URL + "/comments"
 MY_REDDITS_URL = REDDIT_URL + "/reddits/mine"
 REDDIT_SAVED_LINKS = REDDIT_URL + "/saved"
 ## A small site to fetch the modhash
-REDDIT_URL_FOR_MODHASH = "http://www.reddit.com/help"
-REDDITOR_PAGE = "http://www.reddit.com/user/%s"
+REDDIT_URL_FOR_MODHASH = REDDIT_URL + "/help"
+REDDITOR_PAGE = REDDIT_URL + "/user/%s"
 REDDITOR_ABOUT_PAGE = REDDITOR_PAGE + "/about"
 
 # How long to wait between api requests (in seconds)
@@ -59,7 +60,12 @@ def require_login(func):
     """A decorator to ensure that a user has logged in before calling the
     function."""
     def login_reqd_func(self, *args, **kwargs):
-        if self.user == None:
+        try:
+            user = self.user
+        except AttributeError:
+            user = self.reddit_session.user
+
+        if not user:
             raise NotLoggedInException()
         else:
             return func(self, *args, **kwargs)
@@ -485,6 +491,8 @@ class Redditor(RedditObject):
         if attr in self._api_fields:
             data = self.reddit_session._get_json_page(self.ABOUT_URL)
             return data['data'].get(attr)
+        raise AttributeError("'%s' object has no attribute '%s'" % (
+                                            self.__class__.__name__, attr))
 
 class RedditPage(RedditObject):
     """A class for Reddit pages, essentially reddit listings. This is separated
@@ -539,6 +547,18 @@ class Subreddit(RedditPage):
         if attr in self._api_fields:
             data = self.reddit_session._get_json_page(self.ABOUT_URL)
             return data['data'].get(attr)
+        raise AttributeError("'%s' object has no attribute '%s'" % (
+                                            self.__class__.__name__, attr))
+
+    @require_login
+    def create(self, title, description="", language="English [en]",
+               type="public", content_options="any", other_options=None,
+               domain=""):
+        params = {"name" : self.display_name,
+                  "title" : title,
+                  "type" : type,
+                  "uh" : self.reddit_session.modhash}
+        return self.reddit_session._get_page(REDDIT_SITE_ADMIN_URL, params)
 
     def subscribe(self):
         """If logged in, subscribe to the given subreddit."""
