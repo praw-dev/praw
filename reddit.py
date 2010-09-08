@@ -12,26 +12,9 @@ from memoize import Memoize
 
 DEFAULT_CONTENT_LIMIT = 25
 
-# The user agent we will sent
-REDDIT_USER_AGENT = {'User-agent': 'mellorts Python Wrapper for Reddit API'}
-
 # Some Reddit urls to keep track of
 REDDIT_URL = "http://www.reddit.com"
-REDDIT_LOGIN_URL = REDDIT_URL + "/api/login"
-REDDIT_VOTE_URL = REDDIT_URL + "/api/vote"
-REDDIT_SAVE_URL = REDDIT_URL + "/api/save"
-REDDIT_UNSAVE_URL = REDDIT_URL + "/api/unsave"
-REDDIT_CAPTCHA_URL = REDDIT_URL + "/captcha"
-REDDIT_NEW_CAPTCHA_URL = REDDIT_URL + "/api/new_captcha"
-REDDIT_COMMENT_URL = REDDIT_URL + "/api/comment"
-REDDIT_REGISTER_URL = REDDIT_URL + "/api/register"
-REDDIT_SITE_ADMIN_URL = REDDIT_URL + "/api/site_admin"
-REDDIT_SUBSCRIBE_URL = REDDIT_URL + "/api/subscribe"
-REDDIT_COMMENTS_URL = REDDIT_URL + "/comments"
-MY_REDDITS_URL = REDDIT_URL + "/reddits/mine"
-REDDIT_SAVED_LINKS = REDDIT_URL + "/saved"
-## A small site to fetch the modhash
-REDDIT_URL_FOR_MODHASH = REDDIT_URL + "/help"
+API_URL = REDDIT_URL + "/api"
 REDDITOR_PAGE = REDDIT_URL + "/user/%s"
 REDDITOR_ABOUT_PAGE = REDDITOR_PAGE + "/about"
 
@@ -182,6 +165,8 @@ def _modify_relationship(relationship):
 
 class Reddit(RedditObject):
     """A class for a reddit session."""
+    DEFAULT_HEADERS = {'User-agent': 'mellorts Python Wrapper for Reddit API'}
+
     ban = _modify_relationship("banned")
     friend = _modify_relationship("friend")
     make_contributor = _modify_relationship("contributor")
@@ -219,7 +204,7 @@ class Reddit(RedditObject):
 
         request = urllib2.Request(page_url,
                                   data=encoded_params,
-                                  headers=REDDIT_USER_AGENT)
+                                  headers=self.DEFAULT_HEADERS)
         response = urllib2.urlopen(request)
         return response.read()
 
@@ -328,8 +313,10 @@ class Reddit(RedditObject):
         HTML page (can just get first 1200 chars) and search for
         'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
         """
-        # Should only need ~1200 chars to get the modhash
-        data = self._get_page(REDDIT_URL_FOR_MODHASH)
+        # A small site to fetch the modhash
+        URL = REDDIT_URL + "/help"
+        # TODO: Should only need ~1200 chars to get the modhash
+        data = self._get_page(URL)
         match = re.search(r"modhash[^,]*", data)
         self.modhash = match.group(0).split(": ")[1].strip(" '")
 
@@ -346,6 +333,8 @@ class Reddit(RedditObject):
         """Login to Reddit. If no user or password is provided, the user will
         be prompted with raw_input and getpass.getpass.
         """
+        URL = API_URL + "/login"
+
         # Prompt user for necessary fields.
         if not user:
             user = raw_input("Username: ")
@@ -360,7 +349,7 @@ class Reddit(RedditObject):
                   'op' : 'login-main',
                   'passwd' : password,
                   'user' : user}
-        data = self._get_page(REDDIT_LOGIN_URL, params)
+        data = self._get_page(URL, params)
 
         # Get and store the modhash; it will be needed for API requests
         # which involve this user.
@@ -373,52 +362,60 @@ class Reddit(RedditObject):
     def _vote(self, content_id, direction=0, subreddit_name=""):
         """If logged in, vote for the given content_id in the direction
         specified."""
+        URL = API_URL + "/vote"
+
         params = {'id' : content_id,
                   'dir' : direction,
                   'r' : subreddit_name,
                   'uh' : self.modhash}
-        return self._get_page(REDDIT_VOTE_URL, params)
+        return self._get_page(URL, params)
 
     @require_login
     @api_response
     def _save(self, content_id, unsave=False):
         """If logged in, save the content specified by `content_id`."""
-        url = REDDIT_SAVE_URL
+        URL = API_URL + "/save"
+        UNSAVE_URL = API_URL + "/unsave"
+
         executed = 'saved'
         if unsave:
-            url = REDDIT_UNSAVE_URL
+            URL = UNSAVE_URL
             executed = 'unsaved'
         params = {'id': content_id,
                   'executed': executed,
                   'uh': self.modhash}
-        return self._get_page(url, params)
+        return self._get_page(URL, params)
 
     @require_login
     @api_response
     def _subscribe(self, subreddit_id, unsubscribe=False):
         """If logged in, subscribe to the specified subreddit_id."""
+        URL = API_URL + "/subscribe"
+
         action = 'sub'
         if unsubscribe:
             action = 'unsub'
         params = {'sr': subreddit_id,
                   'action': action,
                   'uh': self.modhash}
-        return self._get_page(REDDIT_SUBSCRIBE_URL, params)
+        return self._get_page(URL, params)
 
     @require_login
     def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return all of the current user's subreddits."""
-        reddits = self._get_content(MY_REDDITS_URL, limit=limit)
+        URL = REDDIT_URL + "/reddits/mine"
+        reddits = self._get_content(URL, limit=limit)
         return reddits
 
     @api_response
     def _comment(self, content_id, subreddit_name=None, text=""):
         """Comment on the given content_id with the given text."""
+        URL = API_URL + "/comment"
         params = {'thing_id': content_id,
                   'text': text,
                   'uh': self.modhash,
                   'r': subreddit_name}
-        return self._get_page(REDDIT_COMMENT_URL, params)
+        return self._get_page(URL, params)
 
     def get_homepage(self):
         """Return a subreddit-style class of the reddit homepage."""
@@ -427,13 +424,14 @@ class Reddit(RedditObject):
     @require_login
     def get_saved_links(self, limit=-1):
         """Return a listing of the logged-in user's saved links."""
-        return self._get_content(REDDIT_SAVED_LINKS, limit=limit)
+        URL = REDDIT_URL + "/saved"
+        return self._get_content(URL, limit=limit)
 
     def get_comments(self, limit=DEFAULT_CONTENT_LIMIT,
                      place_holder=None):
         """Returns a listing from reddit.com/comments"""
-        return self._get_content(REDDIT_COMMENTS_URL, limit=limit,
-                                 place_holder=place_holder)
+        URL = REDDIT_URL + "/comments"
+        return self._get_content(URL, limit=limit, place_holder=place_holder)
 
     def _get_submission_comments(self, submission_url):
         json_data = self._get_json_page(submission_url)
@@ -497,15 +495,24 @@ class Redditor(RedditObject):
                                             self.__class__.__name__, attr))
 
     def _get_captcha(self):
-        return self.reddit_session._get_json_page(REDDIT_NEW_CAPTCHA_URL, {})
+        """
+        Get a new captcha (to be viewed and submitted).
+        """
+        URL = API_URL + "/new_captcha"
+        VIEW_URL = REDDIT_URL + "/captcha"
+        return self.reddit_session._get_json_page(URL, {})
 
     def register(self, passwd, captcha):
+        """
+        Register a new user.
+        """
+        URL = API_URL + "/register"
         params = {"captcha" : captcha,
                   "op" : "reg",
                   "passwd" : passwd,
                   "passwd2" : passwd,
                   "user" : self.user_name}
-        return self.reddit_session._get_json_page(REDDIT_REGISTER_URL, params)
+        return self.reddit_session._get_json_page(URL, params)
 
     create = register # just an alias to provide a somewhat uniform API
 
@@ -570,11 +577,16 @@ class Subreddit(RedditPage):
     def create(self, title, description="", language="English [en]",
                type="public", content_options="any", other_options=None,
                domain=""):
+        """
+        Create a new subreddit.
+        """
+        # TODO: Implement the rest of the options.
+        URL = API_URL + "/site_admin"
         params = {"name" : self.display_name,
                   "title" : title,
                   "type" : type,
                   "uh" : self.reddit_session.modhash}
-        return self.reddit_session._get_page(REDDIT_SITE_ADMIN_URL, params)
+        return self.reddit_session._get_page(URL, params)
 
     def subscribe(self):
         """If logged in, subscribe to the given subreddit."""
