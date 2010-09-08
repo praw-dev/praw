@@ -66,6 +66,15 @@ This is a Python wrapper for Reddit's API, aiming to be as easy to use as possib
 
         submission.save()
 
+14. Create a subreddit:
+
+        s = Subreddit("MyIncredibleSubreddit", r)
+        s.create(title="My Incredibly Cool Subreddit", description="It's just incredible.")
+
+15. Friend a user:
+
+        r.friend("ketralnis")
+
 Other (more involved) examples can be found [here](http://www.github.com/mellort/reddit_api/blob/master/EXAMPLES.md).
 
 Features
