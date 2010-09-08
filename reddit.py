@@ -97,7 +97,6 @@ class sleep_after(object):
         self.func = func
 
     def __call__(self, *args, **kwargs):
-        #TODO: Also enforce "don't hit same page more than once per 30 secs"
         call_time = time.time()
 
         since_last_call = call_time - self.last_call_time
