@@ -89,10 +89,10 @@ Completed:
 * get all comments
 * commenting/replying
 * caching results
+* friending/moderatoring/contributoring/banning
 
 Not Included (yet):
 
-* friending
 * register
 * submitting
 * everything else
@@ -119,7 +119,7 @@ I tried to be nice to Reddit's servers by sleeping between requests.
 
 > Why don't you have feature X coded yet?
 
-I had a bit of a hard time decyphering the Reddit API. I will hopefully put more time into it soon.
+I had a bit of a hard time decyphering the Reddit API. I will hopefully put more time into it soon. It'd be rather helpful to receive feedback on what feature you're looking for, so that we can prioritize. Please let us know what you're looking for!
 
 > When I try to look at stories/comments I get a weird UnicodeEncodeError. What gives?
 
@@ -127,4 +127,4 @@ Sometimes there are unicode characters in story titles and in comments. Python v
 
     map(unicode, stories)
 
-for a quick view.
+for a quick view. Basic universal unicode support is in the works, so hopefully this won't be needed much longer. Sit tight.
