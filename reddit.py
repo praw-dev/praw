@@ -369,6 +369,16 @@ class Reddit(RedditObject):
         return data
 
     @require_login
+    def logout(self):
+        """
+        Logs out of a session.
+        """
+        URL = REDDIT_URL + "/logout"
+        params = {"uh" : self.modhash}
+        data = self._get_page(URL, params)
+        self.user = None
+
+    @require_login
     @api_response
     def _vote(self, content_id, direction=0, subreddit_name=""):
         """If logged in, vote for the given content_id in the direction
@@ -511,19 +521,33 @@ class Redditor(RedditObject):
         """
         URL = API_URL + "/new_captcha"
         VIEW_URL = REDDIT_URL + "/captcha"
-        return self.reddit_session._get_json_page(URL, {})
+        data = self.reddit_session._get_json_page(URL, {"renderstyle" : "html"})
+        captcha_id = data["jquery"][-1][-1][-1]  # TODO: fix-this kills kittens
+        return captcha_id, VIEW_URL + "/" + captcha_id + ".png"
 
-    def register(self, passwd, captcha):
+    def _register(self, password, captcha, iden, email=""):
+        URL = API_URL + "/register"
+        params = {"captcha" : captcha,
+                  "email" : email,
+                  "iden" : iden,
+                  "op" : "reg",
+                  "passwd" : password,
+                  "passwd2" : password,
+                  "user" : self.user_name}
+        return self.reddit_session._get_json_page(URL, params)
+
+    def register(self, password, email=""):
         """
         Register a new user.
         """
-        URL = API_URL + "/register"
-        params = {"captcha" : captcha,
-                  "op" : "reg",
-                  "passwd" : passwd,
-                  "passwd2" : passwd,
-                  "user" : self.user_name}
-        return self.reddit_session._get_json_page(URL, params)
+        password = str(password)
+        captcha_id, url = self._get_captcha()
+        print url
+        captcha = raw_input("Captcha: ")
+        # TODO: Error messages parsed here:
+        self._register(password, captcha, captcha_id, email)
+        return self.reddit_session.login(self.user_name, password)
+
 
     create = register # just an alias to provide a somewhat uniform API
 
