@@ -233,10 +233,13 @@ class Reddit(RedditObject):
         Object hook to be used with json.load(s) to spit out RedditObjects while
         decoding.
         """
-        for reddit_object in (Comment, Redditor, Subreddit, Submission):
-            if dct.get("kind") == reddit_object._content_type:
+        kind = dct.get("kind")
+        for reddit_object in (Comment, Redditor, Submission):
+            if kind == reddit_object._content_type:
                 return reddit_object(dct.get("data"), self)
-            return dct
+        if kind == Subreddit._content_type:
+            return Subreddit(dct.get("data").get("display_name"), self)
+        return dct
 
     @memoize
     @sleep_after
