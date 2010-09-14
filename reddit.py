@@ -147,28 +147,6 @@ class Voteable(object):
     def downvote(self):
         return self.vote(direction=-1)
 
-def _modify_relationship(relationship, unlink=False):
-    """Modify the relationship between the current user and a target thing.
-    Used to support friending (user-to-user), as well as moderating,
-    contributor creating, and banning (user-to-subreddit)."""
-    # the API uses friend and unfriend to manage all of these relationships
-    URL = API_URL + "/friend"
-    UNFRIEND_URL = API_URL + "/unfriend"
-
-    # unlink: remove the relationship instead of creating it
-    if unlink:
-        URL = UNFRIEND_URL
-
-    @require_login
-    @api_response
-    def do_relationship(self, thing):
-        params = {'name': thing,
-                  'container': self.user.content_id,
-                  'type': relationship,
-                  'uh': self.modhash}
-        return self._get_page(URL, params)
-    return do_relationship
-
 class Reddit(RedditObject):
     """A class for a reddit session."""
     DEFAULT_HEADERS = {'User-agent': 'mellorts Python Wrapper for Reddit API'}
@@ -231,7 +209,7 @@ class Reddit(RedditObject):
         return json.loads(response)
 
     def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT,
-                    url_data=None, place_holder=None):
+                     url_data=None, place_holder=None):
         """A method to return Reddit content from a URL. Starts at the initial
         page_url, and fetches content using the `after` JSON data until `limit`
         entries have been fetched, or the `place_holder` has been reached.
@@ -475,15 +453,33 @@ class Reddit(RedditObject):
             root_comment.replies = converted_children
         return root_comment
 
-def _get_section(subpath=""):
-    def closure(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
-                place_holder=None):
-        url_data = {"sort" : sort, "time" : time}
-        return self.reddit_session._get_content(self.URL + subpath,
-                                                limit=int(limit),
-                                                url_data=url_data,
-                                                place_holder=place_holder)
-    return closure
+    def info(self, url):
+        """
+        Query the API to see if the given URL has been submitted already, and
+        if it has, return the submissions.
+        """
+        URL = REDDIT_URL + "/button_info"
+        params = {"url" : url}
+        return self._get_content(URL, url_data=params)
+
+    @require_login
+    def submit(self, subreddit, url, title):
+        """
+        Submit a new link.
+        """
+        URL = API_URL + "/submit"
+
+        try:
+            sr_name = subreddit.display_name
+        except AttributeError:
+            sr_name = str(subreddit)
+
+        params = {"kind" : "link",
+                  "sr" : sr_name,
+                  "title" : title,
+                  "uh" : self.modhash,
+                  "url" : url}
+        return self._get_json_page(URL, params)
 
 class Redditor(RedditObject):
     """A class for Redditor methods."""
@@ -545,24 +541,10 @@ class Redditor(RedditObject):
         print url
         captcha = raw_input("Captcha: ")
         # TODO: Error messages parsed here:
-        self._register(password, captcha, captcha_id, email)
+        print self._register(password, captcha, captcha_id, email)
         return self.reddit_session.login(self.user_name, password)
 
-
     create = register # just an alias to provide a somewhat uniform API
-
-def _get_sorter(subpath="", **defaults):
-    def closure(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
-        for k, v in defaults.items():
-            if k == "time":
-                # time should be "t" in the API data dict
-                k = "t"
-            data.setdefault(k, v)
-        return self.reddit_session._get_content(self.URL + subpath,
-                                                limit=int(limit),
-                                                url_data=data,
-                                                place_holder=place_holder)
-    return closure
 
 class RedditPage(RedditObject):
     """A class for Reddit pages, essentially reddit listings. This is separated
@@ -621,7 +603,14 @@ class Subreddit(RedditPage):
                   "title" : title,
                   "type" : type,
                   "uh" : self.reddit_session.modhash}
-        return self.reddit_session._get_page(URL, params)
+        # TODO: return new url
+        self.reddit_session._get_page(URL, params)
+
+    def submit(self, *args, **kwargs):
+        """
+        Submit a new link.
+        """
+        return self.reddit_session.submit(self, *args, **kwargs)
 
     def subscribe(self):
         """If logged in, subscribe to the given subreddit."""
@@ -684,3 +673,59 @@ class Comment(RedditObject, Voteable):
         return self.reddit_session.comment(self.name,
                                            subreddit_name=self.subreddit,
                                            text=text)
+
+def _get_section(subpath=""):
+    """
+    Used by the Redditor class to generate each of the sections (overview,
+    comments, submitted).
+    """
+    def closure(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
+                place_holder=None):
+        url_data = {"sort" : sort, "time" : time}
+        return self.reddit_session._get_content(self.URL + subpath,
+                                                limit=int(limit),
+                                                url_data=url_data,
+                                                place_holder=place_holder)
+    return closure
+
+def _get_sorter(subpath="", **defaults):
+    """
+    Used by the Reddit Page classes to generate each of the currently supported
+    sorts (hot, top, new, best).
+    """
+    def closure(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
+        for k, v in defaults.items():
+            if k == "time":
+                # time should be "t" in the API data dict
+                k = "t"
+            data.setdefault(k, v)
+        return self.reddit_session._get_content(self.URL + subpath,
+                                                limit=int(limit),
+                                                url_data=data,
+                                                place_holder=place_holder)
+    return closure
+
+def _modify_relationship(relationship, unlink=False):
+    """
+    Modify the relationship between the current user and a target thing.
+    Used to support friending (user-to-user), as well as moderating,
+    contributor creating, and banning (user-to-subreddit).
+    """
+    # the API uses friend and unfriend to manage all of these relationships
+    URL = API_URL + "/friend"
+    UNFRIEND_URL = API_URL + "/unfriend"
+
+    # unlink: remove the relationship instead of creating it
+    if unlink:
+        URL = UNFRIEND_URL
+
+    @require_login
+    @api_response
+    def do_relationship(self, thing):
+        params = {'name': thing,
+                  'container': self.user.content_id,
+                  'type': relationship,
+                  'uh': self.modhash}
+        return self._get_page(URL, params)
+    return do_relationship
+
