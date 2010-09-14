@@ -167,7 +167,7 @@ def _modify_relationship(relationship, unlink=False):
                   'container': self.user.content_id,
                   'type': relationship,
                   'uh': self.modhash}
-        return self._get_page(URL, params)
+        return self._request(URL, params)
     return do_relationship
 
 class RedditObject(object):
@@ -184,6 +184,10 @@ class RedditObject(object):
 
     @property
     def content_id(self):
+        """
+        Get the content id for this object. Just appends the appropriate
+        content type ("t1", "t2", ..., "t5") to this object's id.
+        """
         return "_".join((self._content_type, self.id))
 
 class Voteable(object):
@@ -243,7 +247,7 @@ class Reddit(RedditObject):
 
     @memoize
     @sleep_after
-    def _get_page(self, page_url, params=None, url_data=None):
+    def _request(self, page_url, params=None, url_data=None):
         """Given a page url and a dict of params, opens and returns the page.
 
         :param page_url: the url to grab content from.
@@ -265,15 +269,15 @@ class Reddit(RedditObject):
         response = urllib2.urlopen(request)
         return response.read()
 
-    def _get_json_page(self, page_url, *args, **kwargs):
+    def _request_json(self, page_url, *args, **kwargs):
         """Gets the JSON processed from a page. Takes the same parameters as
-        the _get_page method.
+        the _request method.
 
         :returns: JSON processed page
         """
         if not page_url.endswith(".json"):
             page_url += ".json"
-        response = self._get_page(page_url, *args, **kwargs)
+        response = self._request(page_url, *args, **kwargs)
         return json.loads(response, object_hook=self._json_reddit_objecter)
 
     def _found_place_holder(self, children, place_holder=None):
@@ -317,7 +321,7 @@ class Reddit(RedditObject):
         while limit and len(all_content) < limit:
             # If the after variable isn't None, add it do the URL of the page
             # we are going to fetch.
-            page_data = self._get_json_page(page_url, url_data=url_data)
+            page_data = self._request_json(page_url, url_data=url_data)
 
             # if for some reason we didn't get data, then break
             try:
@@ -352,7 +356,7 @@ class Reddit(RedditObject):
         # A small site to fetch the modhash
         URL = REDDIT_URL + "/help"
         # TODO: Should only need ~1200 chars to get the modhash
-        data = self._get_page(URL)
+        data = self._request(URL)
         match = re.search(r"modhash[^,]*", data)
         self.modhash = match.group(0).split(": ")[1].strip(" '")
 
@@ -385,7 +389,7 @@ class Reddit(RedditObject):
                   'op' : 'login-main',
                   'passwd' : password,
                   'user' : user}
-        data = self._get_page(URL, params)
+        data = self._request(URL, params)
 
         # Get and store the modhash; it will be needed for API requests
         # which involve this user.
@@ -400,7 +404,7 @@ class Reddit(RedditObject):
         """
         URL = REDDIT_URL + "/logout"
         params = {"uh" : self.modhash}
-        data = self._get_page(URL, params)
+        self._request(URL, params)
         self.user = None
 
     @require_login
@@ -414,7 +418,7 @@ class Reddit(RedditObject):
                   'dir' : direction,
                   'r' : subreddit_name,
                   'uh' : self.modhash}
-        return self._get_page(URL, params)
+        return self._request(URL, params)
 
     @require_login
     @api_response
@@ -430,7 +434,7 @@ class Reddit(RedditObject):
         params = {'id': content_id,
                   'executed': executed,
                   'uh': self.modhash}
-        return self._get_page(URL, params)
+        return self._request(URL, params)
 
     @require_login
     @api_response
@@ -444,7 +448,7 @@ class Reddit(RedditObject):
         params = {'sr': subreddit_id,
                   'action': action,
                   'uh': self.modhash}
-        return self._get_page(URL, params)
+        return self._request(URL, params)
 
     @require_login
     def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
@@ -461,7 +465,7 @@ class Reddit(RedditObject):
                   'text': text,
                   'uh': self.modhash,
                   'r': subreddit_name}
-        return self._get_page(URL, params)
+        return self._request(URL, params)
 
     def get_homepage(self):
         """Return a subreddit-style class of the reddit homepage."""
@@ -480,7 +484,7 @@ class Reddit(RedditObject):
         return self._get_content(URL, limit=limit, place_holder=place_holder)
 
     def _get_submission_comments(self, submission_url):
-        json_data = self._get_json_page(submission_url)
+        json_data = self._request_json(submission_url)
         main_content = json_data[0] # this isn't used
         json_comments = json_data[1]['data']['children']
 
@@ -526,7 +530,7 @@ class Reddit(RedditObject):
                   "title" : title,
                   "uh" : self.modhash,
                   "url" : url}
-        return self._get_json_page(URL, params)
+        return self._request_json(URL, params)
 
 class Redditor(RedditObject):
     """A class for Redditor methods."""
@@ -553,7 +557,7 @@ class Redditor(RedditObject):
 
     def __getattr__(self, attr):
         if attr in self._api_fields:
-            data = self.reddit_session._get_json_page(self.ABOUT_URL)
+            data = self.reddit_session._request_json(self.ABOUT_URL)
             return data['data'].get(attr)
         raise AttributeError("'%s' object has no attribute '%s'" % (
                                             self.__class__.__name__, attr))
@@ -564,7 +568,7 @@ class Redditor(RedditObject):
         """
         URL = API_URL + "/new_captcha"
         VIEW_URL = REDDIT_URL + "/captcha"
-        data = self.reddit_session._get_json_page(URL, {"renderstyle" : "html"})
+        data = self.reddit_session._request_json(URL, {"renderstyle" : "html"})
         captcha_id = data["jquery"][-1][-1][-1]  # TODO: fix-this kills kittens
         return captcha_id, VIEW_URL + "/" + captcha_id + ".png"
 
@@ -577,7 +581,7 @@ class Redditor(RedditObject):
                   "passwd" : password,
                   "passwd2" : password,
                   "user" : self.user_name}
-        return self.reddit_session._get_json_page(URL, params)
+        return self.reddit_session._request_json(URL, params)
 
     def register(self, password, email=""):
         """
@@ -632,7 +636,7 @@ class Subreddit(RedditPage):
 
     def __getattr__(self, attr):
         if attr in self._api_fields:
-            data = self.reddit_session._get_json_page(self.ABOUT_URL)
+            data = self.reddit_session._request_json(self.ABOUT_URL)
             return data['data'].get(attr)
         raise AttributeError("'%s' object has no attribute '%s'" % (
                                             self.__class__.__name__, attr))
@@ -651,7 +655,7 @@ class Subreddit(RedditPage):
                   "type" : type,
                   "uh" : self.reddit_session.modhash}
         # TODO: return new url
-        self.reddit_session._get_page(URL, params)
+        self.reddit_session._request(URL, params)
 
     def submit(self, *args, **kwargs):
         """
@@ -679,7 +683,7 @@ class Submission(RedditObject, Voteable):
 
     @limit_chars()
     def __str__(self):
-        return (str(self.score) + " :: " + self.title)
+        return str(self.score) + " :: " + self.title
 
     def get_comments(self):
         comments_url = REDDIT_URL + self.permalink
