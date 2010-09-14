@@ -115,6 +115,61 @@ def api_response(func):
             raise APIException(return_value)
     return error_checked_func
 
+def _get_section(subpath=""):
+    """
+    Used by the Redditor class to generate each of the sections (overview,
+    comments, submitted).
+    """
+    def closure(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
+                place_holder=None):
+        url_data = {"sort" : sort, "time" : time}
+        return self.reddit_session._get_content(self.URL + subpath,
+                                                limit=int(limit),
+                                                url_data=url_data,
+                                                place_holder=place_holder)
+    return closure
+
+def _get_sorter(subpath="", **defaults):
+    """
+    Used by the Reddit Page classes to generate each of the currently supported
+    sorts (hot, top, new, best).
+    """
+    def closure(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
+        for k, v in defaults.items():
+            if k == "time":
+                # time should be "t" in the API data dict
+                k = "t"
+            data.setdefault(k, v)
+        return self.reddit_session._get_content(self.URL + subpath,
+                                                limit=int(limit),
+                                                url_data=data,
+                                                place_holder=place_holder)
+    return closure
+
+def _modify_relationship(relationship, unlink=False):
+    """
+    Modify the relationship between the current user and a target thing.
+    Used to support friending (user-to-user), as well as moderating,
+    contributor creating, and banning (user-to-subreddit).
+    """
+    # the API uses friend and unfriend to manage all of these relationships
+    URL = API_URL + "/friend"
+    UNFRIEND_URL = API_URL + "/unfriend"
+
+    # unlink: remove the relationship instead of creating it
+    if unlink:
+        URL = UNFRIEND_URL
+
+    @require_login
+    @api_response
+    def do_relationship(self, thing):
+        params = {'name': thing,
+                  'container': self.user.content_id,
+                  'type': relationship,
+                  'uh': self.modhash}
+        return self._get_page(URL, params)
+    return do_relationship
+
 class RedditObject(object):
     """
     Base class for all Reddit API objects.
@@ -173,6 +228,16 @@ class Reddit(RedditObject):
     def __str__(self):
         return "Open Session (%s)" % (self.user or "Unauthenticated")
 
+    def _json_reddit_objecter(self, dct):
+        """
+        Object hook to be used with json.load(s) to spit out RedditObjects while
+        decoding.
+        """
+        for reddit_object in (Comment, Redditor, Subreddit, Submission):
+            if dct.get("kind") == reddit_object._content_type:
+                return reddit_object(dct.get("data"), self)
+            return dct
+
     @memoize
     @sleep_after
     def _get_page(self, page_url, params=None, url_data=None):
@@ -206,22 +271,34 @@ class Reddit(RedditObject):
         if not page_url.endswith(".json"):
             page_url += ".json"
         response = self._get_page(page_url, *args, **kwargs)
-        return json.loads(response)
+        return json.loads(response, object_hook=self._json_reddit_objecter)
+
+    def _found_place_holder(self, children, place_holder=None):
+        """
+        Helper function, checks if any of the children's id match placeholder.
+        Rather useless, but allows breaking all the way out of a nested loop.
+        """
+        if not place_holder:
+            return False
+        for child in children:
+            if child.id == place_holder:
+                return True
 
     def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT,
-                     url_data=None, place_holder=None):
+                     url_data=None, place_holder=None, all_content=None):
         """A method to return Reddit content from a URL. Starts at the initial
         page_url, and fetches content using the `after` JSON data until `limit`
         entries have been fetched, or the `place_holder` has been reached.
 
         :param page_url: the url to start fetching content from
-        :param limit: the maximum number of content entries to fetch. if -1,
+        :param limit: the maximum number of content entries to fetch. if None,
             then fetch unlimited entries--this would be used in conjunction with
             the place_holder param.
         :param url_data: extra GET data to put in the url
         :param place_holder: if not None, the method will fetch `limit`
             content, stopping if it finds content with `id` equal to
             `place_holder`.
+        :param all_content: the current list of content (used for recursion)
         :type place_holder: a string corresponding to a Reddit content id, e.g.
             't3_asdfasdf'
         :returns: a list of Reddit content, of type Subreddit, Comment, or
@@ -229,71 +306,38 @@ class Reddit(RedditObject):
         """
         if not url_data:
             url_data = {}
-
-        # A list which we will populate to return with content
-        all_content = []
-        # Set the after variable initially to none. This variable will keep
-        # track of the next page to fetch.
-        after = None
+        if not all_content:
+            # The list which we will populate to return with content
+            all_content = []
 
         # While we still need to fetch more content to reach our limit, do so.
-        while len(all_content) < limit or limit == -1:
+        while limit and len(all_content) < limit:
             # If the after variable isn't None, add it do the URL of the page
             # we are going to fetch.
-            if after:
-                url_data["after"] = after
             page_data = self._get_json_page(page_url, url_data=url_data)
 
             # if for some reason we didn't get data, then break
-            if not page_data.get('data'):
+            try:
+                data = page_data["data"]
+            except KeyError:
                 break
 
-            # Get the data from the JSON dict
-            data = page_data.get('data')
             children = data.get('children')
+            all_content.extend(children)
 
-            # Keep track of whether or not we've found the place_holder.
-            found_place_holder=False
-
-            # Go through each child and convert it to it's appropriate class
-            # before adding it to the all_content list. If the child's id
-            # matches the place_holder, then note this.
-            for child in children:
-                # Check the place holder.
-                if place_holder and \
-                   child.get('data').get('name') == place_holder:
-                    found_place_holder=True
-                    break
-
-                # Now we create the class instance based on the 'kind' attr
-                content_type = child.get('kind')
-                content = None
-
-                if content_type == "t3":
-                    content = Submission(child.get('data'), self)
-                elif content_type == "t1":
-                    content = Comment(child.get('data'), self)
-                elif content_type == "t5":
-                    content = Subreddit(child.get('data') \
-                                        .get('display_name'), self)
-
-                all_content.append(content)
+            if self._found_place_holder(children, place_holder):
+                break
 
             after = data.get('after')
+            if after:
+                url_data["after"] = after
+                self._get_content(page_url, limit, url_data, place_holder,
+                                  all_content)
 
-            # If we don't have another listing to get, then break.
-            if not after:
-                break
-
-            # If we found the place_holder, break
-            if found_place_holder is True:
-                break
-
-        # Limit the all_content list to the number of entries we want,
-        # given by `limit`.
-        if limit != -1:
+        # we may have in the last iteration gotten a few extra results, so trim
+        # down to limit
+        if limit:
             all_content = all_content[:limit]
-
         return all_content
 
     @require_login
@@ -673,59 +717,3 @@ class Comment(RedditObject, Voteable):
         return self.reddit_session.comment(self.name,
                                            subreddit_name=self.subreddit,
                                            text=text)
-
-def _get_section(subpath=""):
-    """
-    Used by the Redditor class to generate each of the sections (overview,
-    comments, submitted).
-    """
-    def closure(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
-                place_holder=None):
-        url_data = {"sort" : sort, "time" : time}
-        return self.reddit_session._get_content(self.URL + subpath,
-                                                limit=int(limit),
-                                                url_data=url_data,
-                                                place_holder=place_holder)
-    return closure
-
-def _get_sorter(subpath="", **defaults):
-    """
-    Used by the Reddit Page classes to generate each of the currently supported
-    sorts (hot, top, new, best).
-    """
-    def closure(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
-        for k, v in defaults.items():
-            if k == "time":
-                # time should be "t" in the API data dict
-                k = "t"
-            data.setdefault(k, v)
-        return self.reddit_session._get_content(self.URL + subpath,
-                                                limit=int(limit),
-                                                url_data=data,
-                                                place_holder=place_holder)
-    return closure
-
-def _modify_relationship(relationship, unlink=False):
-    """
-    Modify the relationship between the current user and a target thing.
-    Used to support friending (user-to-user), as well as moderating,
-    contributor creating, and banning (user-to-subreddit).
-    """
-    # the API uses friend and unfriend to manage all of these relationships
-    URL = API_URL + "/friend"
-    UNFRIEND_URL = API_URL + "/unfriend"
-
-    # unlink: remove the relationship instead of creating it
-    if unlink:
-        URL = UNFRIEND_URL
-
-    @require_login
-    @api_response
-    def do_relationship(self, thing):
-        params = {'name': thing,
-                  'container': self.user.content_id,
-                  'type': relationship,
-                  'uh': self.modhash}
-        return self._get_page(URL, params)
-    return do_relationship
-
