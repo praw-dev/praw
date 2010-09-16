@@ -8,6 +8,8 @@ try:
 except ImportError:
     import simplejson as json
 
+from functools import wraps
+
 from memoize import Memoize
 
 DEFAULT_CONTENT_LIMIT = 25
@@ -47,9 +49,49 @@ class InvalidUserPass(APIException):
     def __str__(self):
         return "Invalid username/password."
 
+class require_captcha(object):
+    """
+    Decorator for methods that require captchas.
+    """
+    URL = API_URL + "/new_captcha"
+    VIEW_URL = REDDIT_URL + "/captcha"
+
+    def __init__(self, func):
+        self.func = func
+        self.captcha_id = None
+        self.captcha = None
+
+    def __get__(self, obj, type=None):
+        if obj is None:
+            return self
+        return self.__class__(self.func.__get__(obj, type))
+
+    def __call__(self, *args, **kwargs):
+        # use the captcha passed in if given, otherwise get one
+        self.captcha_id, self.captcha = kwargs.get("captcha",
+                                                   self.get_captcha())
+        return self.func(*args, captcha=(self.captcha_id, self.captcha),
+                         **kwargs)
+
+    @property
+    def captcha_url(self):
+        if self.captcha_id:
+            return self.VIEW_URL + "/" + self.captcha_id + ".png"
+
+    def get_captcha(self):
+        # TODO: factor to top level _request_json so we don't need to create a
+        # new Reddit() object
+        data = Reddit()._request_json(self.URL, {"renderstyle" : "html"})
+        # TODO: fix this, it kills kittens
+        self.captcha_id = data["jquery"][-1][-1][-1]
+        print "Captcha URL: " + self.captcha_url
+        self.captcha = raw_input("Captcha: ")
+        return self.captcha_id, self.captcha
+
 def require_login(func):
     """A decorator to ensure that a user has logged in before calling the
     function."""
+    @wraps(func)
     def login_reqd_func(self, *args, **kwargs):
         try:
             user = self.user
@@ -66,6 +108,7 @@ def limit_chars(num_chars=CHAR_LIMIT):
     """A decorator to limit the number of chars in a function that outputs a
     string."""
     def func_limiter(func):
+        @wraps(func)
         def func_wrapper(*args, **kwargs):
             value = func(*args, **kwargs)
             if len(value) > num_chars:
@@ -103,6 +146,7 @@ def api_response(func):
     the return string. If it doesn't find one, then it just returns True.
     """
     # TODO: add a 'submitting' too quickly error
+    @wraps(func)
     def error_checked_func(*args, **kwargs):
         return_value = func(*args, **kwargs)
         if return_value == '{}' or '".error.' not in return_value:
@@ -513,8 +557,9 @@ class Reddit(RedditObject):
         params = {"url" : url}
         return self._get_content(URL, url_data=params)
 
+    @require_captcha
     @require_login
-    def submit(self, subreddit, url, title):
+    def submit(self, subreddit, url, title, captcha=None):
         """
         Submit a new link.
         """
@@ -562,37 +607,24 @@ class Redditor(RedditObject):
         raise AttributeError("'%s' object has no attribute '%s'" % (
                                             self.__class__.__name__, attr))
 
-    def _get_captcha(self):
+    @require_captcha
+    def register(self, password, email="", captcha=None):
         """
-        Get a new captcha (to be viewed and submitted).
+        Register a new user.
         """
-        URL = API_URL + "/new_captcha"
-        VIEW_URL = REDDIT_URL + "/captcha"
-        data = self.reddit_session._request_json(URL, {"renderstyle" : "html"})
-        captcha_id = data["jquery"][-1][-1][-1]  # TODO: fix-this kills kittens
-        return captcha_id, VIEW_URL + "/" + captcha_id + ".png"
-
-    def _register(self, password, captcha, iden, email=""):
         URL = API_URL + "/register"
+
+        captcha_id, captcha = captcha
+        password = str(password)
+
         params = {"captcha" : captcha,
                   "email" : email,
-                  "iden" : iden,
+                  "iden" : captcha_id,
                   "op" : "reg",
                   "passwd" : password,
                   "passwd2" : password,
                   "user" : self.user_name}
-        return self.reddit_session._request_json(URL, params)
-
-    def register(self, password, email=""):
-        """
-        Register a new user.
-        """
-        password = str(password)
-        captcha_id, url = self._get_captcha()
-        print url
-        captcha = raw_input("Captcha: ")
-        # TODO: Error messages parsed here:
-        print self._register(password, captcha, captcha_id, email)
+        print self.reddit_session._request_json(URL, params)
         return self.reddit_session.login(self.user_name, password)
 
     create = register # just an alias to provide a somewhat uniform API
