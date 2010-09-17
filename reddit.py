@@ -9,6 +9,7 @@ except ImportError:
     import simplejson as json
 
 from functools import wraps
+from urlparse import urljoin
 
 from memoize import Memoize
 
@@ -264,6 +265,20 @@ class Reddit(RedditObject):
     remove_contributor = _modify_relationship("contributor", unlink=True)
     remove_moderator = _modify_relationship("moderator", unlink=True)
 
+    ban.__doc__ = "Ban the target user."
+    friend.__doc__ = "Friend the target user."
+    make_contributor.__doc__ = \
+       "Make the target user a contributor in the given subreddit."
+    make_moderator.__doc__ = \
+       "Make the target user a moderator in the given subreddit."
+
+    unban.__doc__ = "Ban the target user."
+    unfriend.__doc__ = "Friend the target user."
+    remove_contributor.__doc__ = \
+       "Remove the target user from contributor status in the given subreddit."
+    remove_moderator.__doc__ = \
+       "Revoke the target user's moderator privileges in the given subreddit."
+
     def __init__(self):
         # Set cookies
         self._cookie_jar = cookielib.CookieJar()
@@ -282,11 +297,15 @@ class Reddit(RedditObject):
         decoding.
         """
         kind = dct.get("kind")
-        for reddit_object in (Comment, Redditor, Submission):
+        for reddit_object in (Comment, Submission):
             if kind == reddit_object._content_type:
                 return reddit_object(dct.get("data"), self)
+        if kind == Redditor._content_type:
+            json_dict = dct.get("data")
+            return Redditor.from_api_response(json_dict, self)
         if kind == Subreddit._content_type:
-            return Subreddit(dct.get("data").get("display_name"), self)
+            json_dict = dct.get("data")
+            return Subreddit.from_api_response(json_dict, self)
         return dct
 
     @memoize
@@ -313,16 +332,27 @@ class Reddit(RedditObject):
         response = urllib2.urlopen(request)
         return response.read()
 
-    def _request_json(self, page_url, *args, **kwargs):
+    def _request_json(self, page_url, params=None, url_data=None,
+                      as_objects=True):
         """Gets the JSON processed from a page. Takes the same parameters as
-        the _request method.
+        the _request method, plus a param to control whether objects are
+        returned.
 
+        :param page_url
+        :param params
+        :param url_data
+        :param as_objects: Whether to return constructed Reddit objects or the
+        raw json dict.
         :returns: JSON processed page
         """
         if not page_url.endswith(".json"):
             page_url += ".json"
-        response = self._request(page_url, *args, **kwargs)
-        return json.loads(response, object_hook=self._json_reddit_objecter)
+        response = self._request(page_url, params, url_data)
+        if as_objects:
+            hook = self._json_reddit_objecter
+        else:
+            hook = None
+        return json.loads(response, object_hook=hook)
 
     def _found_place_holder(self, children, place_holder=None):
         """
@@ -512,8 +542,8 @@ class Reddit(RedditObject):
         return self._request(URL, params)
 
     def get_homepage(self):
-        """Return a subreddit-style class of the reddit homepage."""
-        return RedditPage(REDDIT_URL, "reddit.com", self)
+        """Return the reddit homepage pseudo-subreddit."""
+        return self.get_subreddit("reddit.com")
 
     @require_login
     def get_saved_links(self, limit=-1):
@@ -575,6 +605,7 @@ class Reddit(RedditObject):
                   "title" : title,
                   "uh" : self.modhash,
                   "url" : url}
+        print params
         return self._request_json(URL, params)
 
 class Redditor(RedditObject):
@@ -588,24 +619,29 @@ class Redditor(RedditObject):
     get_comments = _get_section("/comments")
     get_submitted = _get_section("/submitted")
 
-    def __init__(self, user_name, reddit_session):
+    def __init__(self, user_name, reddit_session, json_dict=None):
         self.user_name = user_name
         # Store the urls we will need internally
         self.URL = REDDITOR_PAGE % self.user_name
         self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
         self.reddit_session = reddit_session
 
+        if not json_dict:
+            json_dict = self.reddit_session._request_json(self.ABOUT_URL,
+                                                          as_objects=False)
+        self.__dict__.update(json_dict["data"])
+
     @limit_chars()
     def __str__(self):
         """Have the str just be the user's name"""
         return self.user_name
 
-    def __getattr__(self, attr):
-        if attr in self._api_fields:
-            data = self.reddit_session._request_json(self.ABOUT_URL)
-            return data['data'].get(attr)
-        raise AttributeError("'%s' object has no attribute '%s'" % (
-                                            self.__class__.__name__, attr))
+    @classmethod
+    def from_api_response(cls, json_dict, reddit_session):
+        """
+        Construct a Redditor from a present API response.
+        """
+        return cls(json_dict["user_name"], reddit_session, json_dict)
 
     @require_captcha
     def register(self, password, email="", captcha=None):
@@ -629,9 +665,8 @@ class Redditor(RedditObject):
 
     create = register # just an alias to provide a somewhat uniform API
 
-class RedditPage(RedditObject):
-    """A class for Reddit pages, essentially reddit listings. This is separated
-    from the subreddits because reddit.com isn't exactly a subreddit."""
+class Subreddit(RedditObject):
+    """A class for Subreddits."""
 
     _content_type = "t5"
     get_hot = _get_sorter("/")
@@ -639,39 +674,29 @@ class RedditPage(RedditObject):
     get_new = _get_sorter("/new", sort="rising")
     get_top = _get_sorter("/top", time="day")
 
-    def __init__(self, url, name, reddit_session):
-        self.URL = url
-        self.display_name = name
+    def __init__(self, subreddit_name, reddit_session, json_dict=None):
+        self.URL = urljoin(REDDIT_URL, "r/" + subreddit_name)
+        self.ABOUT_URL = self.URL + "/about"
+
+        self.display_name = subreddit_name
         self.reddit_session = reddit_session
+
+        if not json_dict:
+            json_dict = self.reddit_session._request_json(self.ABOUT_URL,
+                                                          as_objects=False)
+        self.__dict__.update(json_dict["data"])
 
     @limit_chars()
     def __str__(self):
-        """Just display the reddit page name."""
+        """Just display the subreddit name."""
         return self.display_name
 
-class Subreddit(RedditPage):
-    """A class for Subreddits. This is a subclass of RedditPage."""
-
-    # Subreddit fields exposed by the API:
-    _api_fields = ['display_name', 'name', 'title', 'url', 'created',
-                   'created_utc', 'over18', 'subscribers', 'id', 'description']
-    _sections = ['hot', 'new', 'controversial', 'top']
-
-    def __init__(self, subreddit_name, reddit_session):
-        super(Subreddit, self).__init__(REDDIT_URL + "/r/" + subreddit_name,
-                                        subreddit_name,
-                                        reddit_session)
-        self.ABOUT_URL = self.URL + "/about"
-
-    def __str__(self):
-        return self.display_name
-
-    def __getattr__(self, attr):
-        if attr in self._api_fields:
-            data = self.reddit_session._request_json(self.ABOUT_URL)
-            return data['data'].get(attr)
-        raise AttributeError("'%s' object has no attribute '%s'" % (
-                                            self.__class__.__name__, attr))
+    @classmethod
+    def from_api_response(cls, json_dict, reddit_session):
+        """
+        Construct a subreddit from the API json_dict instead of by name.
+        """
+        return cls(json_dict["display_name"], reddit_session, json_dict)
 
     @require_login
     def create(self, title, description="", language="English [en]",
