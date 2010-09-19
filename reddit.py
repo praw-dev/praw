@@ -451,17 +451,16 @@ class Reddit(RedditObject):
             except KeyError:
                 break
 
+            after = data.get('after')
             children = data.get('children')
             all_content.extend(children)
 
-            if self._found_place_holder(children, place_holder):
+            if self._found_place_holder(children, place_holder) or not after:
                 break
 
-            after = data.get('after')
-            if after:
-                url_data["after"] = after
-                self._get_content(page_url, limit, url_data, place_holder,
-                                  all_content)
+            url_data["after"] = after
+            self._get_content(page_url, limit, url_data, place_holder,
+                              all_content)
 
         # we may have in the last iteration gotten a few extra results, so trim
         # down to limit
