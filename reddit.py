@@ -147,7 +147,8 @@ def url(url=None, url_data=None, json=False):
 
     If the url needs to be decided within the method (like if the method is
     toggling an action, you can also pass in an empty url to the decorator, and
-    then return a tuple (url, params).
+    then return a tuple (url, params) [This doesn't work yet since nonlocal is
+    3.x only].
 
     For json, set json to True.
     """
@@ -155,8 +156,9 @@ def url(url=None, url_data=None, json=False):
         # @wraps(func)
         def wrapper(self, *args, **kwargs):
             params = func(self, *args, **kwargs)
-            if not url:
-                url, params = params
+            # nonlocal url
+            # if not url:
+            #    url, params = params
             if json:
                 requester = self._request_json
             else:
@@ -545,20 +547,18 @@ class Reddit(RedditObject):
         params = {'id': content_id,
                   'executed': executed,
                   'uh': self.modhash}
-        return (URL, params)
+        return self._request(URL, params)
 
+    @url(API_URL + "/subscribe")
     @require_login
     def _subscribe(self, subreddit_id, unsubscribe=False):
         """If logged in, subscribe to the specified subreddit_id."""
-        URL = API_URL + "/subscribe"
-
         action = 'sub'
         if unsubscribe:
             action = 'unsub'
-        params = {'sr': subreddit_id,
-                  'action': action,
-                  'uh': self.modhash}
-        return self._request(URL, params)
+        return {'sr': subreddit_id,
+                'action': action,
+                'uh': self.modhash}
 
     @url(API_URL + "/comment")
     @require_login
