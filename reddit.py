@@ -80,9 +80,7 @@ class require_captcha(object):
             return self.VIEW_URL + "/" + self.captcha_id + ".png"
 
     def get_captcha(self):
-        # TODO: factor to top level _request_json so we don't need to create a
-        # new Reddit() object
-        data = Reddit()._request_json(self.URL, {"renderstyle" : "html"})
+        data = self._request_json(self.URL, {"renderstyle" : "html"})
         # TODO: fix this, it kills kittens
         self.captcha_id = data["jquery"][-1][-1][-1]
         print "Captcha URL: " + self.captcha_url
@@ -141,6 +139,32 @@ class sleep_after(object):
         self.__class__.last_call_time = call_time
         return self.func(*args, **kwargs)
 
+def url(url=None, url_data=None, json=False):
+    """
+    Decorator to allow easy definitions of functions and methods. Just specify
+    the url in a parameter to this decorator, and return the dict containing
+    the appropriate parameters for the method.
+
+    If the url needs to be decided within the method (like if the method is
+    toggling an action, you can also pass in an empty url to the decorator, and
+    then return a tuple (url, params).
+
+    For json, set json to True.
+    """
+    def request(func):
+        # @wraps(func)
+        def wrapper(self, *args, **kwargs):
+            params = func(self, *args, **kwargs)
+            if not url:
+                url, params = params
+            if json:
+                requester = self._request_json
+            else:
+                requester = self._request
+            return requester(url, params, url_data)
+        return wrapper
+    return request
+
 def api_response(func):
     """Decorator to look at the Reddit API response to an API POST request like
     vote, subscribe, login, etc. Basically, it just looks for certain errors in
@@ -193,7 +217,9 @@ def _get_sorter(subpath="", **defaults):
 
 def _modify_relationship(relationship, unlink=False):
     """
-    Modify the relationship between the current user and a target thing.
+    Modify the relationship between the current user or subreddit and a target
+    thing.
+
     Used to support friending (user-to-user), as well as moderating,
     contributor creating, and banning (user-to-subreddit).
     """
@@ -205,27 +231,55 @@ def _modify_relationship(relationship, unlink=False):
     if unlink:
         URL = UNFRIEND_URL
 
+    @url(URL)
     @require_login
-    @api_response
     def do_relationship(self, thing):
-        params = {'name': thing,
-                  'container': self.user.content_id,
-                  'type': relationship,
-                  'uh': self.modhash}
-        return self._request(URL, params)
+        return {'name': thing,
+                'container': self.content_id,
+                'type': relationship,
+                'uh': self.modhash}
     return do_relationship
 
 class RedditObject(object):
     """
     Base class for all Reddit API objects.
     """
-    _content_type = None
-
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self)
 
     def __str__(self):
         raise NotImplementedError()
+
+class RedditContentObject(RedditObject):
+    """
+    Base class for everything besides the Reddit class.
+
+    Represents actual reddit objects (Comment, Redditor, etc.).
+    """
+    def __init__(self, reddit_session, name=None, json_dict=None):
+        """
+        Create a new object either by name or from the dict of attributes
+        returned by the API. Creating by name will retrieve the proper dict
+        from the API.
+        """
+        if not name and not json_dict:
+            # one of these at least is required
+            raise TypeError("Either the name or json dict is required!.")
+
+        self.reddit_session = reddit_session
+
+        if not json_dict:
+            response = self._request_json(self.ABOUT_URL, as_objects=False)
+            json_dict = response.get("data")
+        self.__dict__.update(json_dict)
+
+    @classmethod
+    def from_api_response(cls, reddit_session, json_dict):
+        return cls(reddit_session, json_dict=json_dict)
+
+    @property
+    def modhash(self):
+        return self.reddit_session.modhash
 
     @property
     def content_id(self):
@@ -233,7 +287,13 @@ class RedditObject(object):
         Get the content id for this object. Just appends the appropriate
         content type ("t1", "t2", ..., "t5") to this object's id.
         """
-        return "_".join((self._content_type, self.id))
+        return "_".join((self.kind, self.id))
+
+    def _request(self, *args, **kwargs):
+        return self.reddit_session._request(*args, **kwargs)
+
+    def _request_json(self, *args, **kwargs):
+        return self.reddit_session._request_json(*args, **kwargs)
 
 class Voteable(object):
     """
@@ -255,29 +315,11 @@ class Reddit(RedditObject):
     """A class for a reddit session."""
     DEFAULT_HEADERS = {'User-agent': 'mellorts Python Wrapper for Reddit API'}
 
-    ban = _modify_relationship("banned")
     friend = _modify_relationship("friend")
-    make_contributor = _modify_relationship("contributor")
-    make_moderator = _modify_relationship("moderator")
-
-    unban = _modify_relationship("banned", unlink=True)
-    unfriend = _modify_relationship("friend", unlink=True)
-    remove_contributor = _modify_relationship("contributor", unlink=True)
-    remove_moderator = _modify_relationship("moderator", unlink=True)
-
-    ban.__doc__ = "Ban the target user."
     friend.__doc__ = "Friend the target user."
-    make_contributor.__doc__ = \
-       "Make the target user a contributor in the given subreddit."
-    make_moderator.__doc__ = \
-       "Make the target user a moderator in the given subreddit."
 
-    unban.__doc__ = "Ban the target user."
-    unfriend.__doc__ = "Friend the target user."
-    remove_contributor.__doc__ = \
-       "Remove the target user from contributor status in the given subreddit."
-    remove_moderator.__doc__ = \
-       "Revoke the target user's moderator privileges in the given subreddit."
+    unfriend = _modify_relationship("friend", unlink=True)
+    unfriend.__doc__ = "Unfriend the target user."
 
     def __init__(self):
         # Set cookies
@@ -290,23 +332,6 @@ class Reddit(RedditObject):
 
     def __str__(self):
         return "Open Session (%s)" % (self.user or "Unauthenticated")
-
-    def _json_reddit_objecter(self, dct):
-        """
-        Object hook to be used with json.load(s) to spit out RedditObjects while
-        decoding.
-        """
-        kind = dct.get("kind")
-        for reddit_object in (Comment, Submission):
-            if kind == reddit_object._content_type:
-                return reddit_object(dct.get("data"), self)
-        if kind == Redditor._content_type:
-            json_dict = dct.get("data")
-            return Redditor.from_api_response(json_dict, self)
-        if kind == Subreddit._content_type:
-            json_dict = dct.get("data")
-            return Subreddit.from_api_response(json_dict, self)
-        return dct
 
     @memoize
     @sleep_after
@@ -328,7 +353,7 @@ class Reddit(RedditObject):
 
         request = urllib2.Request(page_url,
                                   data=encoded_params,
-                                  headers=self.DEFAULT_HEADERS)
+                                  headers=Reddit.DEFAULT_HEADERS)
         response = urllib2.urlopen(request)
         return response.read()
 
@@ -353,6 +378,27 @@ class Reddit(RedditObject):
         else:
             hook = None
         return json.loads(response, object_hook=hook)
+
+    def _json_reddit_objecter(self, json_data):
+        """
+        Object hook to be used with json.load(s) to spit out RedditObjects while
+        decoding.
+        """
+        kind = json_data.get("kind")
+
+        for reddit_object in (Comment, Redditor, Subreddit, Submission):
+            if kind == reddit_object.kind:
+                return reddit_object.from_api_response(self, json_data.get("data"))
+        return json_data
+
+    @property
+    @require_login
+    def content_id(self):
+        """
+        For most purposes, we can stretch things a bit and just make believe
+        this object is the user (and return it's content_id instead of none.)
+        """
+        return self.user.content_id
 
     def _found_place_holder(self, children, place_holder=None):
         """
@@ -436,19 +482,23 @@ class Reddit(RedditObject):
 
     def get_redditor(self, user_name):
         """Return a Redditor class for the user_name specified."""
-        return Redditor(user_name, self)
+        return Redditor(self, user_name)
 
     def get_subreddit(self, subreddit_name):
         """Returns a Subreddit class for the user_name specified."""
-        return Subreddit(subreddit_name, self)
+        return Subreddit(self, subreddit_name)
 
-    @api_response
+    @url(API_URL + "/login")
+    def _login(self, user, password):
+        return {'id' : '#login_login-main',
+                'op' : 'login-main',
+                'passwd' : password,
+                'user' : user}
+
     def login(self, user=None, password=None):
         """Login to Reddit. If no user or password is provided, the user will
         be prompted with raw_input and getpass.getpass.
         """
-        URL = API_URL + "/login"
-
         # Prompt user for necessary fields.
         if not user:
             user = raw_input("Username: ")
@@ -456,46 +506,33 @@ class Reddit(RedditObject):
             import getpass
             password = getpass.getpass("Password: ")
 
-        self.user = Redditor(user, self)
-
-        # The parameters we need to login.
-        params = {'id' : '#login_login-main',
-                  'op' : 'login-main',
-                  'passwd' : password,
-                  'user' : user}
-        data = self._request(URL, params)
-
+        self._login(user, password)
+        self.user = self.get_redditor(user)
         # Get and store the modhash; it will be needed for API requests
         # which involve this user.
         self._fetch_modhash()
 
-        return data
-
+    @url(REDDIT_URL + "/logout")
     @require_login
     def logout(self):
         """
         Logs out of a session.
         """
-        URL = REDDIT_URL + "/logout"
-        params = {"uh" : self.modhash}
-        self._request(URL, params)
         self.user = None
+        return {"uh" : self.modhash}
 
+    @url(API_URL + "/vote")
     @require_login
-    @api_response
     def _vote(self, content_id, direction=0, subreddit_name=""):
         """If logged in, vote for the given content_id in the direction
         specified."""
-        URL = API_URL + "/vote"
+        return {'id' : content_id,
+                'dir' : direction,
+                'r' : subreddit_name,
+                'uh' : self.modhash}
 
-        params = {'id' : content_id,
-                  'dir' : direction,
-                  'r' : subreddit_name,
-                  'uh' : self.modhash}
-        return self._request(URL, params)
-
+    @url()
     @require_login
-    @api_response
     def _save(self, content_id, unsave=False):
         """If logged in, save the content specified by `content_id`."""
         URL = API_URL + "/save"
@@ -508,10 +545,9 @@ class Reddit(RedditObject):
         params = {'id': content_id,
                   'executed': executed,
                   'uh': self.modhash}
-        return self._request(URL, params)
+        return (URL, params)
 
     @require_login
-    @api_response
     def _subscribe(self, subreddit_id, unsubscribe=False):
         """If logged in, subscribe to the specified subreddit_id."""
         URL = API_URL + "/subscribe"
@@ -524,22 +560,14 @@ class Reddit(RedditObject):
                   'uh': self.modhash}
         return self._request(URL, params)
 
+    @url(API_URL + "/comment")
     @require_login
-    def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
-        """Return all of the current user's subreddits."""
-        URL = REDDIT_URL + "/reddits/mine"
-        reddits = self._get_content(URL, limit=limit)
-        return reddits
-
-    @api_response
     def _comment(self, content_id, subreddit_name=None, text=""):
         """Comment on the given content_id with the given text."""
-        URL = API_URL + "/comment"
-        params = {'thing_id': content_id,
-                  'text': text,
-                  'uh': self.modhash,
-                  'r': subreddit_name}
-        return self._request(URL, params)
+        return {'thing_id': content_id,
+                'text': text,
+                'uh': self.modhash,
+                'r': subreddit_name}
 
     def get_homepage(self):
         """Return the reddit homepage pseudo-subreddit."""
@@ -569,7 +597,7 @@ class Reddit(RedditObject):
         data = json_dict['data']
         replies = data.pop('replies', None)
 
-        root_comment = Comment(data, self)
+        root_comment = Comment(self, data)
 
         if replies:
             children = replies['data']['children']
@@ -587,61 +615,44 @@ class Reddit(RedditObject):
         params = {"url" : url}
         return self._get_content(URL, url_data=params)
 
+    @url(API_URL + "/submit")
     @require_captcha
     @require_login
     def submit(self, subreddit, url, title, captcha=None):
         """
         Submit a new link.
         """
-        URL = API_URL + "/submit"
-
         try:
             sr_name = subreddit.display_name
         except AttributeError:
             sr_name = str(subreddit)
 
-        params = {"kind" : "link",
-                  "sr" : sr_name,
-                  "title" : title,
-                  "uh" : self.modhash,
-                  "url" : url}
-        print params
-        return self._request_json(URL, params)
+        return {"kind" : "link",
+                "sr" : sr_name,
+                "title" : title,
+                "uh" : self.modhash,
+                "url" : url}
 
-class Redditor(RedditObject):
+class Redditor(RedditContentObject):
     """A class for Redditor methods."""
 
-    _content_type = "t2"
-    # Redditor fields exposed by the API:
-    _api_fields = ['comment_karma', 'created', 'created_utc', 'has_mail',
-                   'has_mod_mail', 'id', 'is_mod', 'link_karma', 'name']
+    kind = "t2"
+
     get_overview = _get_section("/")
     get_comments = _get_section("/comments")
     get_submitted = _get_section("/submitted")
 
-    def __init__(self, user_name, reddit_session, json_dict=None):
+    def __init__(self, reddit_session, user_name=None, json_dict=None):
         self.user_name = user_name
         # Store the urls we will need internally
         self.URL = REDDITOR_PAGE % self.user_name
         self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
-        self.reddit_session = reddit_session
-
-        if not json_dict:
-            json_dict = self.reddit_session._request_json(self.ABOUT_URL,
-                                                          as_objects=False)
-        self.__dict__.update(json_dict["data"])
+        super(Redditor, self).__init__(reddit_session, user_name, json_dict)
 
     @limit_chars()
     def __str__(self):
         """Have the str just be the user's name"""
         return self.user_name
-
-    @classmethod
-    def from_api_response(cls, json_dict, reddit_session):
-        """
-        Construct a Redditor from a present API response.
-        """
-        return cls(json_dict["user_name"], reddit_session, json_dict)
 
     @require_captcha
     def register(self, password, email="", captcha=None):
@@ -660,44 +671,61 @@ class Redditor(RedditObject):
                   "passwd" : password,
                   "passwd2" : password,
                   "user" : self.user_name}
-        print self.reddit_session._request_json(URL, params)
+        print self._request_json(URL, params)
         return self.reddit_session.login(self.user_name, password)
 
     create = register # just an alias to provide a somewhat uniform API
 
-class Subreddit(RedditObject):
+    @require_login
+    def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
+        """Return all of the current user's subreddits."""
+        URL = REDDIT_URL + "/reddits/mine"
+        reddits = self._get_content(URL, limit=limit)
+        return reddits
+
+class Subreddit(RedditContentObject):
     """A class for Subreddits."""
 
-    _content_type = "t5"
+    kind = "t5"
+
+    ban = _modify_relationship("banned")
+    make_contributor = _modify_relationship("contributor")
+    make_moderator = _modify_relationship("moderator")
+
+    unban = _modify_relationship("banned", unlink=True)
+    remove_contributor = _modify_relationship("contributor", unlink=True)
+    remove_moderator = _modify_relationship("moderator", unlink=True)
+
+    ban.__doc__ = "Ban the target user."
+    make_contributor.__doc__ = \
+       "Make the target user a contributor in the given subreddit."
+    make_moderator.__doc__ = \
+       "Make the target user a moderator in the given subreddit."
+
+    unban.__doc__ = "Unban the target user."
+    remove_contributor.__doc__ = \
+       "Remove the target user from contributor status in the given subreddit."
+    remove_moderator.__doc__ = \
+       "Revoke the target user's moderator privileges in the given subreddit."
+
     get_hot = _get_sorter("/")
     get_controversial = _get_sorter("/controversial", time="day")
     get_new = _get_sorter("/new", sort="rising")
     get_top = _get_sorter("/top", time="day")
 
-    def __init__(self, subreddit_name, reddit_session, json_dict=None):
+    def __init__(self, reddit_session, subreddit_name=None, json_dict=None):
         self.URL = urljoin(REDDIT_URL, "r/" + subreddit_name)
         self.ABOUT_URL = self.URL + "/about"
 
         self.display_name = subreddit_name
-        self.reddit_session = reddit_session
-
-        if not json_dict:
-            json_dict = self.reddit_session._request_json(self.ABOUT_URL,
-                                                          as_objects=False)
-        self.__dict__.update(json_dict["data"])
+        super(Subreddit, self).__init__(reddit_session, subreddit_name, json_dict)
 
     @limit_chars()
     def __str__(self):
         """Just display the subreddit name."""
         return self.display_name
 
-    @classmethod
-    def from_api_response(cls, json_dict, reddit_session):
-        """
-        Construct a subreddit from the API json_dict instead of by name.
-        """
-        return cls(json_dict["display_name"], reddit_session, json_dict)
-
+    @url(API_URL + "/site_admin")
     @require_login
     def create(self, title, description="", language="English [en]",
                type="public", content_options="any", other_options=None,
@@ -706,13 +734,10 @@ class Subreddit(RedditObject):
         Create a new subreddit.
         """
         # TODO: Implement the rest of the options.
-        URL = API_URL + "/site_admin"
-        params = {"name" : self.display_name,
-                  "title" : title,
-                  "type" : type,
-                  "uh" : self.reddit_session.modhash}
-        # TODO: return new url
-        self.reddit_session._request(URL, params)
+        return {"name" : self.display_name,
+                "title" : title,
+                "type" : type,
+                "uh" : self.reddit_session.modhash}
 
     def submit(self, *args, **kwargs):
         """
@@ -729,16 +754,14 @@ class Subreddit(RedditObject):
         return self.reddit_session._subscribe(self.name,
                                               unsubscribe=True)
 
-class Submission(RedditObject, Voteable):
+class Submission(RedditContentObject, Voteable):
     """A class for submissions to Reddit."""
 
-    _content_type = "t3"
+    kind = "t3"
 
-    def __init__(self, json_dict, reddit_session):
-        self.__dict__.update(json_dict)
-        self.reddit_session = reddit_session
+    def __init__(self, reddit_session, title=None, json_dict=None):
+        super(Submission, self).__init__(reddit_session, title, json_dict)
 
-    @limit_chars()
     def __str__(self):
         return str(self.score) + " :: " + self.title
 
@@ -759,14 +782,13 @@ class Submission(RedditObject, Voteable):
                                             subreddit_name=self.subreddit,
                                             text=text)
 
-class Comment(RedditObject, Voteable):
+class Comment(RedditContentObject, Voteable):
     """A class for comments."""
 
-    _content_type = "t1"
+    kind = "t1"
 
-    def __init__(self, json_dict, reddit_session):
-        self.__dict__.update(json_dict)
-        self.reddit_session = reddit_session
+    def __init__(self, reddit_session, json_dict=None):
+        super(Comment, self).__init__(reddit_session, None, json_dict)
         self.replies = []
 
     @limit_chars()
