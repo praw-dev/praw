@@ -71,8 +71,14 @@ class require_captcha(object):
         # use the captcha passed in if given, otherwise get one
         self.captcha_id, self.captcha = kwargs.get("captcha",
                                                    self.get_captcha())
-        return self.func(*args, captcha=(self.captcha_id, self.captcha),
-                         **kwargs)
+        result = self.func(*args, **kwargs)
+        result.update(self.captcha_as_dict)
+        return result
+
+    @property
+    def captcha_as_dict(self):
+        return {"iden" : self.captcha_id,
+                "captcha" : self.captcha}
 
     @property
     def captcha_url(self):
@@ -80,7 +86,7 @@ class require_captcha(object):
             return self.VIEW_URL + "/" + self.captcha_id + ".png"
 
     def get_captcha(self):
-        data = self._request_json(self.URL, {"renderstyle" : "html"})
+        data = Reddit()._request_json(self.URL, {"renderstyle" : "html"})
         # TODO: fix this, it kills kittens
         self.captcha_id = data["jquery"][-1][-1][-1]
         print "Captcha URL: " + self.captcha_url
@@ -258,11 +264,15 @@ class RedditContentObject(RedditObject):
 
     Represents actual reddit objects (Comment, Redditor, etc.).
     """
-    def __init__(self, reddit_session, name=None, json_dict=None):
+    def __init__(self, reddit_session, name=None, json_dict=None, fetch=True):
         """
         Create a new object either by name or from the dict of attributes
         returned by the API. Creating by name will retrieve the proper dict
         from the API.
+
+        The fetch parameter specifies whether to retrieve the object's
+        information from the API (only matters when it isn't provided using
+        json_dict).
         """
         if not name and not json_dict:
             # one of these at least is required
@@ -271,17 +281,41 @@ class RedditContentObject(RedditObject):
         self.reddit_session = reddit_session
 
         if not json_dict:
-            response = self._request_json(self.ABOUT_URL, as_objects=False)
-            json_dict = response.get("data")
+            if fetch:
+                json_dict = self._get_json_dict()
+            else:
+                json_dict = {}
         self.__dict__.update(json_dict)
+
+        # set an attr containing whether we've fetched all the attrs from API
+        self._populated = bool(json_dict) or fetch
+
+    def __getattr__(self, attr):
+        """
+        Instead of special casing to figure out if we're calling requests from
+        a reddit content object rather than a Reddit object, we can just allow
+        the reddit content objects to lookup the attrs that we choose in their
+        attached Reddit session object.
+        """
+        retrievable_attrs = ("user", "modhash", "_request", "_request_json")
+        if attr in retrievable_attrs:
+            return getattr(self.reddit_session, attr)
+        else:
+            # TODO: maybe restrict this again to known API fields
+            if not self._populated:
+                json_dict = self._get_json_dict()
+                self.__dict__.update(json_dict)
+                self._populated = True
+                return getattr(self, attr)
+
+    def _get_json_dict(self):
+        response = self._request_json(self.ABOUT_URL, as_objects=False)
+        json_dict = response.get("data")
+        return json_dict
 
     @classmethod
     def from_api_response(cls, reddit_session, json_dict):
         return cls(reddit_session, json_dict=json_dict)
-
-    @property
-    def modhash(self):
-        return self.reddit_session.modhash
 
     @property
     def content_id(self):
@@ -290,12 +324,6 @@ class RedditContentObject(RedditObject):
         content type ("t1", "t2", ..., "t5") to this object's id.
         """
         return "_".join((self.kind, self.id))
-
-    def _request(self, *args, **kwargs):
-        return self.reddit_session._request(*args, **kwargs)
-
-    def _request_json(self, *args, **kwargs):
-        return self.reddit_session._request_json(*args, **kwargs)
 
 class Voteable(object):
     """
@@ -481,13 +509,13 @@ class Reddit(RedditObject):
         match = re.search(r"modhash[^,]*", data)
         self.modhash = match.group(0).split(": ")[1].strip(" '")
 
-    def get_redditor(self, user_name):
+    def get_redditor(self, user_name, *args, **kwargs):
         """Return a Redditor class for the user_name specified."""
-        return Redditor(self, user_name)
+        return Redditor(self, user_name, *args, **kwargs)
 
-    def get_subreddit(self, subreddit_name):
+    def get_subreddit(self, subreddit_name, *args, **kwargs):
         """Returns a Subreddit class for the user_name specified."""
-        return Subreddit(self, subreddit_name)
+        return Subreddit(self, subreddit_name, *args, **kwargs)
 
     @url(API_URL + "/login")
     def _login(self, user, password):
@@ -605,32 +633,58 @@ class Reddit(RedditObject):
             root_comment.replies = converted_children
         return root_comment
 
-    def info(self, url):
+    def info(self, url=None, url_id=None):
         """
         Query the API to see if the given URL has been submitted already, and
         if it has, return the submissions.
+
+        One and only one out of url (a url string) and url_id (a reddit url id)
+        is required.
         """
+        if bool(url) == bool(url_id):
+            # either both or neither were given, either way:
+            raise TypeError("One (and only one) of url or url_id is required!")
         URL = REDDIT_URL + "/button_info"
-        params = {"url" : url}
+        if url:
+            params = {"url" : url}
+        else:
+            params = {"id" : url_id}
         return self._get_content(URL, url_data=params)
+
+    @url(API_URL + "/search_reddit_names", json=True)
+    def _search_reddit_names(self, query):
+        return {"query" : query}
+
+    def search_reddit_names(self, query):
+        results = self._search_reddit_names(query)
+        return [self.get_subreddit(name) for name in results.get("names")]
+
+    @url(API_URL + "/feedback")
+    @require_captcha
+    def send_feedback(self, name, email, message, reason="feedback"):
+        return {"name" : name,
+                "email" : email,
+                "reason" : reason,
+                "text" : message}
 
     @url(API_URL + "/submit")
     @require_captcha
     @require_login
-    def submit(self, subreddit, url, title, captcha=None):
+    def submit(self, subreddit, url, title):
         """
         Submit a new link.
+
+        Accepts either a Subreddit object or a str containing the subreddit
+        name.
         """
-        try:
-            sr_name = subreddit.display_name
-        except AttributeError:
-            sr_name = str(subreddit)
+        sr_name = str(subreddit)
 
         return {"kind" : "link",
                 "sr" : sr_name,
                 "title" : title,
                 "uh" : self.modhash,
-                "url" : url}
+                "url" : url,
+                "id" : self.user.id}
 
 class Redditor(RedditContentObject):
     """A class for Redditor methods."""
@@ -641,36 +695,37 @@ class Redditor(RedditContentObject):
     get_comments = _get_section("/comments")
     get_submitted = _get_section("/submitted")
 
-    def __init__(self, reddit_session, user_name=None, json_dict=None):
+    def __init__(self, reddit_session, user_name=None, json_dict=None,
+                 fetch=True):
         self.user_name = user_name
         # Store the urls we will need internally
         self.URL = REDDITOR_PAGE % self.user_name
         self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
-        super(Redditor, self).__init__(reddit_session, user_name, json_dict)
+        super(Redditor, self).__init__(reddit_session, user_name, json_dict,
+                                       fetch)
 
     @limit_chars()
     def __str__(self):
         """Have the str just be the user's name"""
         return self.user_name
 
+    @url(API_URL + "/register")
     @require_captcha
-    def register(self, password, email="", captcha=None):
+    @classmethod
+    def _register(cls, password, email=""):
         """
         Register a new user.
         """
-        URL = API_URL + "/register"
-
-        captcha_id, captcha = captcha
         password = str(password)
+        return {"email" : email,
+                "op" : "reg",
+                "passwd" : password,
+                "passwd2" : password,
+                "user" : self.user_name}
 
-        params = {"captcha" : captcha,
-                  "email" : email,
-                  "iden" : captcha_id,
-                  "op" : "reg",
-                  "passwd" : password,
-                  "passwd2" : password,
-                  "user" : self.user_name}
-        print self._request_json(URL, params)
+    @classmethod
+    def register(cls, password, email=""):
+        cls._register(password, email)
         return self.reddit_session.login(self.user_name, password)
 
     create = register # just an alias to provide a somewhat uniform API
@@ -712,12 +767,14 @@ class Subreddit(RedditContentObject):
     get_new = _get_sorter("/new", sort="rising")
     get_top = _get_sorter("/top", time="day")
 
-    def __init__(self, reddit_session, subreddit_name=None, json_dict=None):
+    def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
+                 fetch=True):
         self.URL = urljoin(REDDIT_URL, "r/" + subreddit_name)
         self.ABOUT_URL = self.URL + "/about"
 
         self.display_name = subreddit_name
-        super(Subreddit, self).__init__(reddit_session, subreddit_name, json_dict)
+        super(Subreddit, self).__init__(reddit_session, subreddit_name,
+                                        json_dict, fetch)
 
     @limit_chars()
     def __str__(self):
@@ -726,9 +783,9 @@ class Subreddit(RedditContentObject):
 
     @url(API_URL + "/site_admin")
     @require_login
-    def create(self, title, description="", language="English [en]",
-               type="public", content_options="any", other_options=None,
-               domain=""):
+    def _create(title, description="", language="English [en]",
+                type="public", content_options="any", other_options=None,
+                domain=""):
         """
         Create a new subreddit.
         """
@@ -737,6 +794,13 @@ class Subreddit(RedditContentObject):
                 "title" : title,
                 "type" : type,
                 "uh" : self.reddit_session.modhash}
+
+    @classmethod
+    def create(cls, title, description="", language="English [en]",
+               type="public", content_options="any", other_options=None,
+               domain=""):
+        return cls._create(title, description, language, type, content_options,
+                    other_options, domain)
 
     def submit(self, *args, **kwargs):
         """
@@ -759,7 +823,8 @@ class Submission(RedditContentObject, Voteable):
     kind = "t3"
 
     def __init__(self, reddit_session, title=None, json_dict=None):
-        super(Submission, self).__init__(reddit_session, title, json_dict)
+        super(Submission, self).__init__(reddit_session, title, json_dict,
+                                         fetch=True)
 
     def __str__(self):
         return str(self.score) + " :: " + self.title
@@ -787,7 +852,7 @@ class Comment(RedditContentObject, Voteable):
     kind = "t1"
 
     def __init__(self, reddit_session, json_dict=None):
-        super(Comment, self).__init__(reddit_session, None, json_dict)
+        super(Comment, self).__init__(reddit_session, None, json_dict, True)
         self.replies = []
 
     @limit_chars()
