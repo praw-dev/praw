@@ -601,7 +601,7 @@ class Reddit(RedditObject):
         return self.get_subreddit("reddit.com")
 
     @require_login
-    def get_saved_links(self, limit=-1):
+    def get_saved_links(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return a listing of the logged-in user's saved links."""
         URL = REDDIT_URL + "/saved"
         return self._get_content(URL, limit=limit)
