@@ -596,9 +596,10 @@ class Reddit(RedditObject):
                 'uh': self.modhash,
                 'r': subreddit_name}
 
-    def get_homepage(self):
-        """Return the reddit homepage pseudo-subreddit."""
-        return self.get_subreddit("reddit.com")
+    def get_front_page(self, *args, **kwargs):
+        """Return the reddit front page. Login isn't required, but you'll only
+        see your own front page if you are logged in."""
+        return self._get_content(REDDIT_URL + "/")
 
     @require_login
     def get_saved_links(self, limit=DEFAULT_CONTENT_LIMIT):
