@@ -40,6 +40,7 @@ memoize = Memoize(timeout=CACHE_TIME)
 # For printing with repr or str or unicode, truncate strings to 80 chars
 CHAR_LIMIT = 80
 
+DEBUG = False
 
 class APIException(Exception):
     """Base exception class for these API bindings."""
@@ -155,7 +156,7 @@ class sleep_after(object):
         self.__class__.last_call_time = call_time
         return self.func(*args, **kwargs)
 
-def url(url=None, url_data=None, json=False):
+def url(url=None, url_data=None, json=True):
     """
     Decorator to allow easy definitions of functions and methods. Just specify
     the url in a parameter to this decorator, and return the dict containing
@@ -166,7 +167,7 @@ def url(url=None, url_data=None, json=False):
     then return a tuple (url, params) [This doesn't work yet since nonlocal is
     3.x only].
 
-    For json, set json to True.
+    Uses json by default, set json to False if you want _request instead.
     """
     def request(func):
         # @wraps(func)
@@ -179,6 +180,10 @@ def url(url=None, url_data=None, json=False):
                 requester = self._request_json
             else:
                 requester = self._request
+
+            if DEBUG:
+                return (url, params, url_data)
+
             return requester(url, params, url_data)
         return wrapper
     return request
@@ -570,7 +575,6 @@ class Reddit(RedditObject):
                 'r' : subreddit_name,
                 'uh' : self.modhash}
 
-    @url()
     @require_login
     def _save(self, content_id, unsave=False):
         """If logged in, save the content specified by `content_id`."""
@@ -584,7 +588,7 @@ class Reddit(RedditObject):
         params = {'id': content_id,
                   'executed': executed,
                   'uh': self.modhash}
-        return self._request(URL, params)
+        return self._request_json(URL, params)
 
     @url(urljoin(API_URL, "subscribe"))
     @require_login
@@ -662,7 +666,7 @@ class Reddit(RedditObject):
             params = {"id" : url_id}
         return self._get_content(URL, url_data=params, limit=limit)
 
-    @url(urljoin(API_URL, "search_reddit_names"), json=True)
+    @url(urljoin(API_URL, "search_reddit_names"))
     def _search_reddit_names(self, query):
         return {"query" : query}
 
@@ -707,7 +711,7 @@ class Redditor(RedditContentObject):
     get_submitted = _get_section("/submitted")
 
     def __init__(self, reddit_session, user_name=None, json_dict=None,
-                 fetch=True):
+                 fetch=False):
         self.user_name = user_name
         # Store the urls we will need internally
         self.URL = REDDITOR_PAGE % self.user_name
@@ -779,7 +783,7 @@ class Subreddit(RedditContentObject):
     get_top = _get_sorter("/top", time="day")
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
-                 fetch=True):
+                 fetch=False):
         self.URL = urljoin(REDDIT_URL, "r/" + subreddit_name)
         self.ABOUT_URL = urljoin(self.URL, "about")
 
