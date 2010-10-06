@@ -606,10 +606,10 @@ class Reddit(RedditObject):
                 'uh': self.modhash,
                 'r': subreddit_name}
 
-    def get_front_page(self, *args, **kwargs):
+    def get_front_page(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return the reddit front page. Login isn't required, but you'll only
         see your own front page if you are logged in."""
-        return self._get_content(REDDIT_URL)
+        return self._get_content(REDDIT_URL, limit=limit)
 
     @require_login
     def get_saved_links(self, limit=DEFAULT_CONTENT_LIMIT):
@@ -644,7 +644,7 @@ class Reddit(RedditObject):
             root_comment.replies = converted_children
         return root_comment
 
-    def info(self, url=None, url_id=None):
+    def info(self, url=None, url_id=None, limit=DEFAULT_CONTENT_LIMIT):
         """
         Query the API to see if the given URL has been submitted already, and
         if it has, return the submissions.
@@ -660,7 +660,7 @@ class Reddit(RedditObject):
             params = {"url" : url}
         else:
             params = {"id" : url_id}
-        return self._get_content(URL, url_data=params)
+        return self._get_content(URL, url_data=params, limit=limit)
 
     @url(urljoin(API_URL, "search_reddit_names"), json=True)
     def _search_reddit_names(self, query):
@@ -794,9 +794,8 @@ class Subreddit(RedditContentObject):
 
     @url(urljoin(API_URL, "site_admin"))
     @require_login
-    def _create(title, description="", language="English [en]",
-                type="public", content_options="any", other_options=None,
-                domain=""):
+    def _create(title, description, language, type, content_options,
+                other_options, domain):
         """
         Create a new subreddit.
         """
