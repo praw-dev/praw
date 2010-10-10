@@ -204,7 +204,7 @@ def _get_section(subpath=""):
     def get_section(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
                     place_holder=None):
         url_data = {"sort" : sort, "time" : time}
-        return self.reddit_session._get_content(urljoin(self.URL, subpath),
+        return self.reddit_session._get_content(self.URL + subpath,
                                                 limit=limit,
                                                 url_data=url_data,
                                                 place_holder=place_holder)
@@ -221,7 +221,7 @@ def _get_sorter(subpath="", **defaults):
                 # time should be "t" in the API data dict
                 k = "t"
             data.setdefault(k, v)
-        return self.reddit_session._get_content(urljoin(self.URL, subpath),
+        return self.reddit_session._get_content(self.URL + subpath,
                                                 limit=int(limit),
                                                 url_data=data,
                                                 place_holder=place_holder)
