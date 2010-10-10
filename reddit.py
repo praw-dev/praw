@@ -156,39 +156,32 @@ class sleep_after(object):
         self.__class__.last_call_time = call_time
         return self.func(*args, **kwargs)
 
-def url(url=None, url_data=None, json=True):
+def url(api_url=None, url_data=None):
     """
     Decorator to allow easy definitions of functions and methods. Just specify
     the url in a parameter to this decorator, and return the dict containing
     the appropriate parameters for the method.
 
     If the url needs to be decided within the method (like if the method is
-    toggling an action, you can also pass in an empty url to the decorator, and
-    then return a tuple (url, params) [This doesn't work yet since nonlocal is
-    3.x only].
-
-    Uses json by default, set json to False if you want _request instead.
+    toggling an action, you can modify it from within the function by assigning
+    to api_url[0].
     """
+    # make api_url mutable (or really we're gonna use the first element)
+    # later, so that it can possibly be changed from within the func
+    api_url = [api_url]
+
     def request(func):
         # @wraps(func)
         def wrapper(self, *args, **kwargs):
             params = func(self, *args, **kwargs)
-            # nonlocal url
-            # if not url:
-            #    url, params = params
-            if json:
-                requester = self._request_json
-            else:
-                requester = self._request
 
             if DEBUG:
-                return (url, params, url_data)
-
-            return requester(url, params, url_data)
+                return (api_url[0], params, url_data)
+            return self._request_json(api_url[0], params, url_data=url_data)
         return wrapper
     return request
 
-def api_response(func):
+def parse_api_json_response(func):
     """Decorator to look at the Reddit API response to an API POST request like
     vote, subscribe, login, etc. Basically, it just looks for certain errors in
     the return string. If it doesn't find one, then it just returns True.
@@ -197,14 +190,10 @@ def api_response(func):
     @wraps(func)
     def error_checked_func(*args, **kwargs):
         return_value = func(*args, **kwargs)
-        if return_value == '{}' or '".error.' not in return_value:
-            return True
-        elif ".error.USER_REQUIRED" in return_value:
-            raise NotLoggedInException()
-        elif ".error.WRONG_PASSWORD" in return_value:
-            raise InvalidUserPass()
+        if not return_value:
+            return
         else:
-            raise APIException(return_value)
+            return return_value
     return error_checked_func
 
 def _get_section(subpath=""):
@@ -212,21 +201,21 @@ def _get_section(subpath=""):
     Used by the Redditor class to generate each of the sections (overview,
     comments, submitted).
     """
-    def closure(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
-                place_holder=None):
+    def get_section(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
+                    place_holder=None):
         url_data = {"sort" : sort, "time" : time}
         return self.reddit_session._get_content(urljoin(self.URL, subpath),
-                                                limit=int(limit),
+                                                limit=limit,
                                                 url_data=url_data,
                                                 place_holder=place_holder)
-    return closure
+    return get_section
 
 def _get_sorter(subpath="", **defaults):
     """
     Used by the Reddit Page classes to generate each of the currently supported
     sorts (hot, top, new, best).
     """
-    def closure(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
+    def sorted(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
         for k, v in defaults.items():
             if k == "time":
                 # time should be "t" in the API data dict
@@ -236,7 +225,7 @@ def _get_sorter(subpath="", **defaults):
                                                 limit=int(limit),
                                                 url_data=data,
                                                 place_holder=place_holder)
-    return closure
+    return sorted
 
 def _modify_relationship(relationship, unlink=False):
     """
@@ -402,6 +391,7 @@ class Reddit(RedditObject):
         response = urllib2.urlopen(request)
         return response.read()
 
+    @parse_api_json_response
     def _request_json(self, page_url, params=None, url_data=None,
                       as_objects=True):
         """Gets the JSON processed from a page. Takes the same parameters as
@@ -481,6 +471,7 @@ class Reddit(RedditObject):
         if not all_content:
             # The list which we will populate to return with content
             all_content = []
+        limit = int(limit)
 
         # While we still need to fetch more content to reach our limit, do so.
         while limit and len(all_content) < limit:
@@ -565,7 +556,7 @@ class Reddit(RedditObject):
         self.user = None
         return {"uh" : self.modhash}
 
-    @url(urljoin(API_URL, "/vote"))
+    @url(urljoin(API_URL, "vote"))
     @require_login
     def _vote(self, content_id, direction=0, subreddit_name=""):
         """If logged in, vote for the given content_id in the direction
@@ -575,20 +566,17 @@ class Reddit(RedditObject):
                 'r' : subreddit_name,
                 'uh' : self.modhash}
 
+    @url(urljoin(API_URL, "save"))
     @require_login
     def _save(self, content_id, unsave=False):
         """If logged in, save the content specified by `content_id`."""
-        URL = urljoin(API_URL, "save")
-        UNSAVE_URL = urljoin(API_URL, "unsave")
-
         executed = 'saved'
         if unsave:
-            URL = UNSAVE_URL
+            api_url[0] = urljoin(API_URL, "unsave")
             executed = 'unsaved'
-        params = {'id': content_id,
-                  'executed': executed,
-                  'uh': self.modhash}
-        return self._request_json(URL, params)
+        return {'id': content_id,
+                'executed': executed,
+                'uh': self.modhash}
 
     @url(urljoin(API_URL, "subscribe"))
     @require_login
@@ -621,8 +609,7 @@ class Reddit(RedditObject):
         URL = urljoin(REDDIT_URL, "saved")
         return self._get_content(URL, limit=limit)
 
-    def get_comments(self, limit=DEFAULT_CONTENT_LIMIT,
-                     place_holder=None):
+    def get_comments(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None):
         """Returns a listing from reddit.com/comments"""
         URL = urljoin(REDDIT_URL, "comments")
         return self._get_content(URL, limit=limit, place_holder=place_holder)
@@ -841,7 +828,7 @@ class Submission(RedditContentObject, Voteable):
                                          fetch=True)
 
     def __str__(self):
-        return str(self.score) + " :: " + self.title
+        return str(self.score) + " :: " + self.title.replace("\r\n", "")
 
     def get_comments(self):
         comments_url = urljoin(REDDIT_URL, self.permalink)
