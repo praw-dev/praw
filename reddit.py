@@ -13,14 +13,16 @@ from functools import wraps
 
 from memoize import Memoize
 
-def urljoin(base, url, *args, **kwargs):
+def urljoin(base, subpath, *args, **kwargs):
     """
-    Does a url join with a base url, always considering the base url to end
-    with a directory, unlike urlparse.urljoin.
+    Does a urljoin with a base url, always considering the base url to end
+    with a directory, and never truncating the base url.
     """
-    if not base.endswith("/"):
-        return urlparse.urljoin(base + "/", url, *args, **kwargs)
-    return urlparse.urljoin(base, url, *args, **kwargs)
+    if not subpath or subpath == "/":
+        return base
+    elif not base.endswith("/"):
+        return urlparse.urljoin(base + "/", subpath, *args, **kwargs)
+    return urlparse.urljoin(base, subpath, *args, **kwargs)
 
 # Some Reddit urls to keep track of
 REDDIT_URL = "http://www.reddit.com/"
@@ -204,7 +206,7 @@ def _get_section(subpath=""):
     def get_section(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
                     place_holder=None):
         url_data = {"sort" : sort, "time" : time}
-        return self.reddit_session._get_content(self.URL + subpath,
+        return self.reddit_session._get_content(urljoin(self.URL, subpath),
                                                 limit=limit,
                                                 url_data=url_data,
                                                 place_holder=place_holder)
@@ -221,7 +223,7 @@ def _get_sorter(subpath="", **defaults):
                 # time should be "t" in the API data dict
                 k = "t"
             data.setdefault(k, v)
-        return self.reddit_session._get_content(self.URL + subpath,
+        return self.reddit_session._get_content(urljoin(self.URL, subpath),
                                                 limit=int(limit),
                                                 url_data=data,
                                                 place_holder=place_holder)
