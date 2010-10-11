@@ -24,7 +24,6 @@ def urljoin(base, subpath, *args, **kwargs):
         return urlparse.urljoin(base + "/", subpath, *args, **kwargs)
     return urlparse.urljoin(base, subpath, *args, **kwargs)
 
-# Some Reddit urls to keep track of
 REDDIT_URL = "http://www.reddit.com/"
 API_URL = urljoin(REDDIT_URL, "api")
 REDDITOR_PAGE = urljoin(REDDIT_URL, "user/%s/")
@@ -38,9 +37,6 @@ REDDIT_API_WAIT_TIME = 1
 # How long to cache results (in seconds)
 CACHE_TIME = 30
 memoize = Memoize(timeout=CACHE_TIME)
-
-# For printing with repr or str or unicode, truncate strings to 80 chars
-CHAR_LIMIT = 80
 
 DEBUG = False
 
@@ -122,7 +118,7 @@ def require_login(func):
             return func(self, *args, **kwargs)
     return login_reqd_func
 
-def limit_chars(num_chars=CHAR_LIMIT):
+def limit_chars(num_chars=80):
     """A decorator to limit the number of chars in a function that outputs a
     string."""
     def func_limiter(func):
@@ -291,7 +287,8 @@ class RedditContentObject(RedditObject):
                 json_dict = self._get_json_dict()
             else:
                 json_dict = {}
-        self.__dict__.update(json_dict)
+        for name, value in json_dict.iteritems():
+            setattr(self, name, value)
 
         # set an attr containing whether we've fetched all the attrs from API
         self._populated = bool(json_dict) or fetch
@@ -310,9 +307,17 @@ class RedditContentObject(RedditObject):
             # TODO: maybe restrict this again to known API fields
             if not self._populated:
                 json_dict = self._get_json_dict()
-                self.__dict__.update(json_dict)
+                for name, value in json_dict.iteritems():
+                    setattr(self, name, value)
                 self._populated = True
                 return getattr(self, attr)
+
+    def __setattr__(self, name, value):
+        if name == "subreddit":
+            value = Subreddit(self.reddit_session, value, fetch=False)
+        elif name == "redditor" or name == "author":
+            value = Redditor(self.reddit_session, value, fetch=False)
+        object.__setattr__(self, name, value)
 
     def _get_json_dict(self):
         response = self._request_json(self.ABOUT_URL, as_objects=False)
@@ -421,6 +426,7 @@ class Reddit(RedditObject):
         Object hook to be used with json.load(s) to spit out RedditObjects while
         decoding.
         """
+        #TODO: This can be nicer. CONTENT_KINDS dict.
         kind = json_data.get("kind")
 
         for reddit_object in (Comment, Redditor, Subreddit, Submission):
@@ -860,13 +866,13 @@ class Comment(RedditContentObject, Voteable):
 
     @limit_chars()
     def __str__(self):
-        if self.__dict__.get('body'):
-            return self.body
-        else:
-            return "[[need to fetch more comments]]"
+        return getattr(self, "body", "[[ need to fetch more comments... ]]")
 
     def reply(self, text):
         """Reply to the comment with the specified text."""
         return self.reddit_session.comment(self.name,
                                            subreddit_name=self.subreddit,
                                            text=text)
+
+RedditContentObject.KINDS = dict((r_obj.__name__.lower(), r_obj) for r_obj in
+                                   (Comment, Redditor, Submission, Subreddit))
