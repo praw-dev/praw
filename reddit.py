@@ -623,11 +623,8 @@ class Reddit(RedditObject):
         return self._get_content(URL, limit=limit, place_holder=place_holder)
 
     def _get_submission_comments(self, submission_url):
-        json_data = self._request_json(submission_url)
-        main_content = json_data[0] # this isn't used
-        json_comments = json_data[1]['data']['children']
-
-        comments = map(self._json_data_to_comment, json_comments)
+        submission_info, comment_info = self._request_json(submission_url)
+        comments = comment_info['data']['children']
         return comments
 
     def _json_data_to_comment(self, json_dict):
@@ -831,7 +828,8 @@ class Submission(RedditContentObject, Voteable):
 
     kind = "t3"
 
-    def __init__(self, reddit_session, title=None, json_dict=None):
+    def __init__(self, reddit_session, title=None, json_dict=None,
+                 fetch_comments=True):
         super(Submission, self).__init__(reddit_session, title, json_dict,
                                          fetch=True)
 
@@ -840,8 +838,7 @@ class Submission(RedditContentObject, Voteable):
 
     def get_comments(self):
         comments_url = urljoin(REDDIT_URL, self.permalink)
-        comments = self.reddit_session._get_submission_comments(comments_url)
-        return comments
+        return self.reddit_session._get_submission_comments(comments_url)
 
     def save(self):
         return self.reddit_session._save(self.name)
@@ -873,6 +870,3 @@ class Comment(RedditContentObject, Voteable):
         return self.reddit_session.comment(self.name,
                                            subreddit_name=self.subreddit,
                                            text=text)
-
-RedditContentObject.KINDS = dict((r_obj.__name__.lower(), r_obj) for r_obj in
-                                   (Comment, Redditor, Submission, Subreddit))
