@@ -71,6 +71,9 @@ class require_captcha(object):
         self.captcha_id = None
         self.captcha = None
 
+        self.__name__ = func.func_name
+        self.__doc__ = func.func_doc
+
     def __get__(self, obj, type=None):
         if obj is None:
             return self
@@ -169,7 +172,7 @@ def url(api_url=None, url_data=None):
     api_url = [api_url]
 
     def request(func):
-        # @wraps(func)
+        @wraps(func)
         def wrapper(self, *args, **kwargs):
             params = func(self, *args, **kwargs)
 
@@ -677,8 +680,8 @@ class Reddit(RedditObject):
                 "text" : message}
 
     @url(urljoin(API_URL, "submit"))
-    @require_captcha
     @require_login
+    @require_captcha
     def submit(self, subreddit, url, title):
         """
         Submit a new link.
@@ -718,9 +721,9 @@ class Redditor(RedditContentObject):
         """Have the str just be the user's name"""
         return self.user_name
 
+    @classmethod
     @url(urljoin(API_URL, "register"))
     @require_captcha
-    @classmethod
     def _register(cls, password, email=""):
         """
         Register a new user.
