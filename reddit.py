@@ -311,6 +311,8 @@ class RedditContentObject(RedditObject):
                     setattr(self, name, value)
                 self._populated = True
                 return getattr(self, attr)
+        raise AttributeError("'{0}' object has no attribute '{1}'".format(
+                                                self.__class__.__name__, attr))
 
     def __setattr__(self, name, value):
         if name == "subreddit":
