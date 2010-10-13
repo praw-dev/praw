@@ -13,7 +13,7 @@ from functools import wraps
 
 from memoize import Memoize
 
-DEBUG = False
+DEBUG = True
 
 def urljoin(base, subpath, *args, **kwargs):
     """
@@ -177,9 +177,6 @@ def url(api_url=None, url_data=None):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             params = func(self, *args, **kwargs)
-
-            if DEBUG:
-                return (api_url[0], params, url_data)
             return self._request_json(api_url[0], params, url_data=url_data)
         return wrapper
     return request
@@ -360,7 +357,7 @@ class Voteable(object):
 
 class Reddit(RedditObject):
     """A class for a reddit session."""
-    DEFAULT_HEADERS = {'User-agent': 'mellorts Python Wrapper for Reddit API'}
+    DEFAULT_HEADERS = {}
 
     friend = _modify_relationship("friend")
     friend.__doc__ = "Friend the target user."
@@ -368,8 +365,15 @@ class Reddit(RedditObject):
     unfriend = _modify_relationship("friend", unlink=True)
     unfriend.__doc__ = "Unfriend the target user."
 
-    def __init__(self):
-        # Set cookies
+    def __init__(self, user_agent=None):
+        if not user_agent:
+            if DEBUG:
+                user_agent = "Reddit API Python Wrapper"
+            else:
+                raise APIException("You need to set a user_agent to identify "
+                                   "your application!")
+        self.DEFAULT_HEADERS["User-agent"] = user_agent
+
         self._cookie_jar = cookielib.CookieJar()
         opener = urllib2.build_opener(
             urllib2.HTTPCookieProcessor(self._cookie_jar))
@@ -400,7 +404,7 @@ class Reddit(RedditObject):
 
         request = urllib2.Request(page_url,
                                   data=encoded_params,
-                                  headers=Reddit.DEFAULT_HEADERS)
+                                  headers=self.DEFAULT_HEADERS)
         response = urllib2.urlopen(request)
         return response.read()
 
