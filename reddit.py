@@ -3,7 +3,6 @@ import urllib2
 import cookielib
 import re
 import time
-import urlparse
 try:
     import json
 except ImportError:
@@ -11,22 +10,9 @@ except ImportError:
 
 from functools import wraps
 
-from memoize import Memoize
+from util import urljoin, Memoize
 
 DEBUG = True
-
-def urljoin(base, subpath, *args, **kwargs):
-    """
-    Does a urljoin with a base url, always considering the base url to end
-    with a directory, and never truncating the base url.
-    """
-    subpath = subpath.lstrip("/")
-
-    if not subpath:
-        return base
-    if not base.endswith("/"):
-        return urlparse.urljoin(base + "/", subpath, *args, **kwargs)
-    return urlparse.urljoin(base, subpath, *args, **kwargs)
 
 REDDIT_URL = "http://www.reddit.com/"
 API_URL = urljoin(REDDIT_URL, "api")
@@ -368,7 +354,7 @@ class Reddit(RedditObject):
     def __init__(self, user_agent=None):
         if not user_agent:
             if DEBUG:
-                user_agent = "Reddit API Python Wrapper"
+                user_agent = "Reddit API Python Wrapper (Debug Mode)"
             else:
                 raise APIException("You need to set a user_agent to identify "
                                    "your application!")

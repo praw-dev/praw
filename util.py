@@ -1,9 +1,23 @@
+import copy
+import time
+import urlparse
+
+def urljoin(base, subpath, *args, **kwargs):
+    """
+    Does a urljoin with a base url, always considering the base url to end
+    with a directory, and never truncating the base url.
+    """
+    subpath = subpath.lstrip("/")
+
+    if not subpath:
+        return base
+    if not base.endswith("/"):
+        return urlparse.urljoin(base + "/", subpath, *args, **kwargs)
+    return urlparse.urljoin(base, subpath, *args, **kwargs)
+
 # This code is mostly taken from
 #   http://code.activestate.com/recipes/325905-memoize-decorator-with-timeout/
 # and I have changed a few lines.
-import time
-import copy
-
 class Memoize(object):
     """Memoize With Timeout"""
     _caches = {}
