@@ -18,9 +18,11 @@ def urljoin(base, subpath, *args, **kwargs):
     Does a urljoin with a base url, always considering the base url to end
     with a directory, and never truncating the base url.
     """
-    if not subpath or subpath == "/":
+    subpath = subpath.lstrip("/")
+
+    if not subpath:
         return base
-    elif not base.endswith("/"):
+    if not base.endswith("/"):
         return urlparse.urljoin(base + "/", subpath, *args, **kwargs)
     return urlparse.urljoin(base, subpath, *args, **kwargs)
 
