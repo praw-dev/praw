@@ -13,6 +13,8 @@ from functools import wraps
 
 from memoize import Memoize
 
+DEBUG = False
+
 def urljoin(base, subpath, *args, **kwargs):
     """
     Does a urljoin with a base url, always considering the base url to end
@@ -34,13 +36,8 @@ REDDITOR_ABOUT_PAGE = urljoin(REDDITOR_PAGE, "about")
 # How many results to retrieve by default when making content calls
 DEFAULT_CONTENT_LIMIT = 25
 
-# How long to wait between api requests (in seconds)
-REDDIT_API_WAIT_TIME = 1
-# How long to cache results (in seconds)
 CACHE_TIME = 30
 memoize = Memoize(timeout=CACHE_TIME)
-
-DEBUG = False
 
 class APIException(Exception):
     """Base exception class for these API bindings."""
@@ -137,14 +134,17 @@ def limit_chars(num_chars=80):
     return func_limiter
 
 class sleep_after(object):
-    """A decorator to add to API functions that shouldn't be called too
+    """
+    A decorator to add to API functions that shouldn't be called too
     rapidly, in order to be nice to the reddit server.
 
     Every function wrapped with this decorator will use a collective
     last_call_time attribute, so that collectively any one of the funcs won't
-    be callable within REDDIT_API_WAIT_TIME; they'll automatically be delayed
-    until the proper duration is reached."""
-    last_call_time = 0     # start with 0 to always allow the 1st call
+    be callable within the WAIT_BETWEEN_CALL_TIME; they'll automatically be
+    delayed until the proper duration is reached.
+    """
+    WAIT_BETWEEN_CALL_TIME = 1          # seconds
+    last_call_time = 0     # init to 0 to always allow the 1st call
 
     def __init__(self, func):
         self.func = func
@@ -153,8 +153,8 @@ class sleep_after(object):
         call_time = time.time()
 
         since_last_call = call_time - self.last_call_time
-        if since_last_call < REDDIT_API_WAIT_TIME:
-            time.sleep(REDDIT_API_WAIT_TIME - since_last_call)
+        if since_last_call < self.WAIT_BETWEEN_CALL_TIME:
+            time.sleep(self.WAIT_BETWEEN_CALL_TIME - since_last_call)
 
         self.__class__.last_call_time = call_time
         return self.func(*args, **kwargs)
@@ -189,7 +189,6 @@ def parse_api_json_response(func):
     vote, subscribe, login, etc. Basically, it just looks for certain errors in
     the return string. If it doesn't find one, then it just returns True.
     """
-    # TODO: add a 'submitting' too quickly error
     @wraps(func)
     def error_checked_func(*args, **kwargs):
         return_value = func(*args, **kwargs)
@@ -433,7 +432,7 @@ class Reddit(RedditObject):
         Object hook to be used with json.load(s) to spit out RedditObjects while
         decoding.
         """
-        #TODO: This can be nicer. CONTENT_KINDS dict.
+        # TODO: This can be nicer. CONTENT_KINDS dict.
         kind = json_data.get("kind")
 
         for reddit_object in (Comment, Redditor, Subreddit, Submission):
@@ -523,9 +522,8 @@ class Reddit(RedditObject):
         HTML page (can just get first 1200 chars) and search for
         'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
         """
-        # A small site to fetch the modhash
+        # TODO: find the right modhash url, this is only temporary
         URL = urljoin(REDDIT_URL, "help")
-        # TODO: Should only need ~1200 chars to get the modhash
         data = self._request(URL)
         match = re.search(r"modhash[^,]*", data)
         self.modhash = match.group(0).split(": ")[1].strip(" '")
