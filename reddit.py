@@ -856,10 +856,6 @@ class Comment(RedditContentObject, Voteable):
 
     def __init__(self, reddit_session, json_dict):
         super(Comment, self).__init__(reddit_session, None, json_dict, True)
-        if self.replies:
-            self.replies = self.replies["data"]["children"]
-        else:
-            self.replies = []
 
     @limit_chars()
     def __str__(self):
