@@ -150,20 +150,12 @@ def url(api_url=None, url_data=None):
     Decorator to allow easy definitions of functions and methods. Just specify
     the url in a parameter to this decorator, and return the dict containing
     the appropriate parameters for the method.
-
-    If the url needs to be decided within the method (like if the method is
-    toggling an action, you can modify it from within the function by assigning
-    to api_url[0].
     """
-    # make api_url mutable (or really we're gonna use the first element)
-    # later, so that it can possibly be changed from within the func
-    api_url = [api_url]
-
     def request(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             params = func(self, *args, **kwargs)
-            return self._request_json(api_url[0], params, url_data=url_data)
+            return self._request_json(api_url, params, url_data=url_data)
         return wrapper
     return request
 
@@ -308,6 +300,12 @@ class RedditContentObject(RedditObject):
             value = Redditor(self.reddit_session, value, fetch=False)
         object.__setattr__(self, name, value)
 
+    def __eq__(self, other):
+        return self.content_id == other.content_id
+
+    def __ne__(self, other):
+        return self.content_id != other.content_id
+
     def _get_json_dict(self):
         response = self._request_json(self.ABOUT_URL, as_objects=False)
         json_dict = response.get("data")
@@ -325,10 +323,31 @@ class RedditContentObject(RedditObject):
         """
         return "_".join((self.kind, self.id))
 
+class Saveable(object):
+    """
+    Additional interface for Reddit content objects that can be saved.
+    Currently only Submissions, but this may change at a later date, as
+    eventually Comments will probably end up being saveable.
+    """
+    @require_login
+    def _save(self, content_id, unsave=False):
+        """If logged in, save the content specified by `content_id`."""
+        url = urljoin(API_URL, "unsave" if unsave else "save")
+        params = {'id': content_id,
+                  'executed': "unsaved" if unsave else "saved",
+                  'uh': self.modhash}
+        return self.reddit_session._request_json(url, params)
+
+    def save(self):
+        return self._save(self.name)
+
+    def unsave(self):
+        return self._save(self.name, unsave=True)
+
 class Voteable(object):
     """
-    Additional interface for Reddit objects that can be voted on (currently
-    Submission and Comment).
+    Additional interface for Reddit content objects that can be voted on
+    (currently Submission and Comment).
     """
     def vote(self, direction=0):
         """Cast a vote."""
@@ -569,18 +588,6 @@ class Reddit(RedditObject):
                 'r' : subreddit_name,
                 'uh' : self.modhash}
 
-    @url(urljoin(API_URL, "save"))
-    @require_login
-    def _save(self, content_id, unsave=False):
-        """If logged in, save the content specified by `content_id`."""
-        executed = 'saved'
-        if unsave:
-            api_url[0] = urljoin(API_URL, "unsave")
-            executed = 'unsaved'
-        return {'id': content_id,
-                'executed': executed,
-                'uh': self.modhash}
-
     @url(urljoin(API_URL, "subscribe"))
     @require_login
     def _subscribe(self, subreddit_id, unsubscribe=False):
@@ -594,7 +601,7 @@ class Reddit(RedditObject):
 
     @url(urljoin(API_URL, "comment"))
     @require_login
-    def _comment(self, content_id, subreddit_name=None, text=""):
+    def _add_comment(self, content_id, subreddit_name=None, text=""):
         """Comment on the given content_id with the given text."""
         return {'thing_id': content_id,
                 'text': text,
@@ -612,28 +619,11 @@ class Reddit(RedditObject):
         URL = urljoin(REDDIT_URL, "saved")
         return self._get_content(URL, limit=limit)
 
-    def get_comments(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None):
-        """Returns a listing from reddit.com/comments"""
+    def get_all_comments(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None):
+        """Returns a listing from reddit.com/comments (which provides all of
+        the most recent comments from all users to all submissions)."""
         URL = urljoin(REDDIT_URL, "comments")
         return self._get_content(URL, limit=limit, place_holder=place_holder)
-
-    def _get_submission_comments(self, submission_url):
-        submission_info, comment_info = self._request_json(submission_url)
-        comments = comment_info['data']['children']
-        return comments
-
-    def _json_data_to_comment(self, json_dict):
-        data = json_dict['data']
-        replies = data.pop('replies', None)
-
-        root_comment = Comment(self, data)
-
-        if replies:
-            children = replies['data']['children']
-
-            converted_children = map(self._json_data_to_comment, children)
-            root_comment.replies = converted_children
-        return root_comment
 
     def info(self, url=None, url_id=None, limit=DEFAULT_CONTENT_LIMIT):
         """
@@ -818,7 +808,7 @@ class Subreddit(RedditContentObject):
         return self.reddit_session._subscribe(self.name,
                                               unsubscribe=True)
 
-class Submission(RedditContentObject, Voteable):
+class Submission(RedditContentObject, Saveable, Voteable):
     """A class for submissions to Reddit."""
 
     kind = "t3"
@@ -827,41 +817,56 @@ class Submission(RedditContentObject, Voteable):
                  fetch_comments=True):
         super(Submission, self).__init__(reddit_session, title, json_dict,
                                          fetch=True)
+        if not self.permalink.startswith(REDDIT_URL):
+            self.permalink = urljoin(REDDIT_URL, self.permalink)
 
     def __str__(self):
         return str(self.score) + " :: " + self.title.replace("\r\n", "")
 
-    def get_comments(self):
-        comments_url = urljoin(REDDIT_URL, self.permalink)
-        return self.reddit_session._get_submission_comments(comments_url)
+    @property
+    def comments(self):
+        submission_info, comment_info = self.reddit_session._request_json(
+                                                            self.permalink)
+        comments = comment_info["data"]["children"]
+        return comments
 
-    def save(self):
-        return self.reddit_session._save(self.name)
+    def _json_data_to_comment(self, json_dict):
+        data = json_dict['data']
+        replies = data.pop('replies', None)
 
-    def unsave(self):
-        return self.reddit_session._save(self.name, unsave=True)
+        root_comment = Comment(self, data)
 
-    def comment(self, text):
+        if replies:
+            children = replies['data']['children']
+
+            converted_children = map(self._json_data_to_comment, children)
+            root_comment.replies = converted_children
+        return root_comment
+
+    def add_comment(self, text):
         """If logged in, comment on the submission using the specified text."""
-        return self.reddit_session._comment(self.name,
-                                            subreddit_name=self.subreddit,
-                                            text=text)
+        return self.reddit_session._add_comment(self.name,
+                                                subreddit_name=self.subreddit,
+                                                text=text)
 
 class Comment(RedditContentObject, Voteable):
     """A class for comments."""
 
     kind = "t1"
 
-    def __init__(self, reddit_session, json_dict=None):
+    def __init__(self, reddit_session, json_dict):
         super(Comment, self).__init__(reddit_session, None, json_dict, True)
-        self.replies = []
 
     @limit_chars()
     def __str__(self):
         return getattr(self, "body", "[[ need to fetch more comments... ]]")
 
+    @property
+    def is_root(self):
+        return not bool(getattr(self, "parent", False))
+
     def reply(self, text):
         """Reply to the comment with the specified text."""
-        return self.reddit_session.comment(self.name,
-                                           subreddit_name=self.subreddit,
-                                           text=text)
+        return self.reddit_session._add_comment(self.name,
+                                                subreddit_name=self.subreddit,
+                                                text=text)
