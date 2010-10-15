@@ -3,6 +3,7 @@ import urllib2
 import cookielib
 import re
 import time
+import warnings
 try:
     import json
 except ImportError:
@@ -26,6 +27,10 @@ CACHE_TIME = 30
 memoize = Memoize(timeout=CACHE_TIME)
 
 class APIException(Exception):
+    """Base exception class for these API bindings."""
+    pass
+
+class APIWarning(UserWarning):
     """Base exception class for these API bindings."""
     pass
 
@@ -636,6 +641,10 @@ class Reddit(RedditObject):
         if bool(url) == bool(url_id):
             # either both or neither were given, either way:
             raise TypeError("One (and only one) of url or url_id is required!")
+        elif url.startswith(REDDIT_URL) and not url == REDDIT_URL:
+            warnings.warn("It looks like you may be trying to get the info of "
+                          "a self or internal link. This probably won't return"
+                          " any useful results!", APIWarning)
         URL = urljoin(REDDIT_URL, "button_info")
         if url:
             params = {"url" : url}
@@ -856,6 +865,10 @@ class Comment(RedditContentObject, Voteable):
 
     def __init__(self, reddit_session, json_dict):
         super(Comment, self).__init__(reddit_session, None, json_dict, True)
+        if self.replies:
+            self.replies = self.replies["data"]["children"]
+        else:
+            self.replies = []
 
     @limit_chars()
     def __str__(self):
