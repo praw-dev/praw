@@ -1,6 +1,7 @@
-import copy
 import time
 import urlparse
+
+from functools import wraps, partial
 
 def urljoin(base, subpath, *args, **kwargs):
     """
@@ -15,43 +16,48 @@ def urljoin(base, subpath, *args, **kwargs):
         return urlparse.urljoin(base + "/", subpath, *args, **kwargs)
     return urlparse.urljoin(base, subpath, *args, **kwargs)
 
-# This code is mostly taken from
-#   http://code.activestate.com/recipes/325905-memoize-decorator-with-timeout/
-# and I have changed a few lines.
-class Memoize(object):
-    """Memoize With Timeout"""
-    _caches = {}
-    _timeouts = {}
+class memoize(object):
+    """
+    Simple memoize decorator with timeout, providing a way to prune out cached
+    results based on the first parameter to the memoized function.
 
-    def __init__(self,timeout=2):
-        self.timeout = timeout
+    For RedditContentObject methods, this means removal by URL, provided by the
+    is_stale method.
+    """
+    TIMEOUT = 30                 # seconds
 
-    def collect(self):
-        """Clear cache of results which have timed out"""
-        for func in self._caches:
-            cache = {}
-            for key in self._caches[func]:
-                if (time.time() - self._caches[func][key][1]) < self._timeouts[func]:
-                    cache[key] = self._caches[func][key]
-            self._caches[func] = cache
+    def __init__(self, func):
+        wraps(func)(self)
+        self.func = func
 
-    def __call__(self, f):
-        self.cache = self._caches[f] = {}
-        self._timeouts[f] = self.timeout
+        self._cache = {}
+        self._timeouts = {}
 
-        def func(*args, **kwargs):
-            kw = kwargs.items()
-            kw.sort()
-            # make the Reddit user the first part of the key
-            key = (args[0].user, args, tuple(kw))
-            key = repr(key)
+    def __call__(self, *args, **kwargs):
+        key = (args[0], args[1], repr(args[2:]), frozenset(kwargs.items()))
+        call_time = time.time()
+        self.clear_timeouts(call_time)
 
+        self._timeouts.setdefault(key, call_time)
+        if key in self._cache:
+            return self._cache[key]
+        return self._cache.setdefault(key, self.func(*args, **kwargs))
+
+    def clear_timeouts(self, call_time):
+        """
+        Clears the _caches of results which have timed out.
+        """
+        need_clearing = (k for k, v in self._timeouts.items()
+                                    if call_time - v > self.TIMEOUT)
+        for k in need_clearing:
             try:
-                v = self.cache[key]
-                if (time.time() - v[1]) > self.timeout:
-                    raise KeyError
+                del self._cache[k]
             except KeyError:
-                v = self.cache[key] = f(*args,**kwargs),time.time()
-            # Make a shallow copy to return
-            return copy.copy(v[0])
-        return func
+                pass
+            del self._timeouts[k]
+
+    def is_stale(self, urls):
+        relevant_caches = (k for k in self._cache if k[1] in urls)
+        for k in relevant_caches:
+            del self._cache[k]
+            del self._timeouts[k]
