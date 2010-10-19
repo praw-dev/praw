@@ -11,7 +11,7 @@ except ImportError:
 
 from functools import wraps
 
-from util import urljoin, Memoize
+from util import urljoin, memoize
 
 DEBUG = True
 
@@ -24,7 +24,6 @@ REDDITOR_ABOUT_PAGE = urljoin(REDDITOR_PAGE, "about")
 DEFAULT_CONTENT_LIMIT = 25
 
 CACHE_TIME = 30
-memoize = Memoize(timeout=CACHE_TIME)
 
 class APIException(Exception):
     """Base exception class for these API bindings."""
@@ -57,12 +56,10 @@ class require_captcha(object):
     VIEW_URL = urljoin(REDDIT_URL, "captcha")
 
     def __init__(self, func):
+        wraps(func)(self)
         self.func = func
         self.captcha_id = None
         self.captcha = None
-
-        self.__name__ = func.func_name
-        self.__doc__ = func.func_doc
 
     def __get__(self, obj, type=None):
         if obj is None:
@@ -105,7 +102,7 @@ def require_login(func):
         except AttributeError:
             user = self.reddit_session.user
 
-        if not user:
+        if user is None:
             raise NotLoggedInException()
         else:
             return func(self, *args, **kwargs)
@@ -138,6 +135,7 @@ class sleep_after(object):
     last_call_time = 0     # init to 0 to always allow the 1st call
 
     def __init__(self, func):
+        wraps(func)(self)
         self.func = func
 
     def __call__(self, *args, **kwargs):
@@ -260,13 +258,13 @@ class RedditContentObject(RedditObject):
         information from the API (only matters when it isn't provided using
         json_dict).
         """
-        if not name and not json_dict:
+        if name is None and json_dict is None:
             # one of these at least is required
             raise TypeError("Either the name or json dict is required!.")
 
         self.reddit_session = reddit_session
 
-        if not json_dict:
+        if json_dict is None:
             if fetch:
                 json_dict = self._get_json_dict()
             else:
@@ -376,7 +374,7 @@ class Reddit(RedditObject):
     unfriend.__doc__ = "Unfriend the target user."
 
     def __init__(self, user_agent=None):
-        if not user_agent:
+        if user_agent is None:
             if DEBUG:
                 user_agent = "Reddit API Python Wrapper (Debug Mode)"
             else:
@@ -394,8 +392,6 @@ class Reddit(RedditObject):
     def __str__(self):
         return "Open Session (%s)" % (self.user or "Unauthenticated")
 
-    @memoize
-    @sleep_after
     def _request(self, page_url, params=None, url_data=None):
         """Given a page url and a dict of params, opens and returns the page.
 
@@ -404,19 +400,7 @@ class Reddit(RedditObject):
         :param url_data: the GET data to put in the url
         :returns: the open page
         """
-        if url_data:
-            page_url += "?" + urllib.urlencode(url_data)
-
-        # urllib2.Request throws a 404 for some reason with data=""
-        encoded_params = None
-        if params:
-            encoded_params = urllib.urlencode(params)
-
-        request = urllib2.Request(page_url,
-                                  data=encoded_params,
-                                  headers=self.DEFAULT_HEADERS)
-        response = urllib2.urlopen(request)
-        return response.read()
+        return _request(self, page_url, params, url_data)
 
     @parse_api_json_response
     def _request_json(self, page_url, params=None, url_data=None,
@@ -468,7 +452,7 @@ class Reddit(RedditObject):
         Helper function, checks if any of the children's id match placeholder.
         Rather useless, but allows breaking all the way out of a nested loop.
         """
-        if not place_holder:
+        if place_holder is None:
             return False
         for child in children:
             if child.id == place_holder:
@@ -494,9 +478,9 @@ class Reddit(RedditObject):
         :returns: a list of Reddit content, of type Subreddit, Comment, or
             Submission
         """
-        if not url_data:
+        if url_data is None:
             url_data = {}
-        if not all_content:
+        if all_content is None:
             # The list which we will populate to return with content
             all_content = []
         limit = int(limit)
@@ -562,9 +546,9 @@ class Reddit(RedditObject):
         be prompted with raw_input and getpass.getpass.
         """
         # Prompt user for necessary fields.
-        if not user:
+        if user is None:
             user = raw_input("Username: ")
-        if not password:
+        if password is None:
             import getpass
             password = getpass.getpass("Password: ")
 
@@ -630,17 +614,17 @@ class Reddit(RedditObject):
         URL = urljoin(REDDIT_URL, "comments")
         return self._get_content(URL, limit=limit, place_holder=place_holder)
 
-    def info(self, url=None, url_id=None, limit=DEFAULT_CONTENT_LIMIT):
+    def info(self, url=None, id=None, limit=DEFAULT_CONTENT_LIMIT):
         """
         Query the API to see if the given URL has been submitted already, and
         if it has, return the submissions.
 
-        One and only one out of url (a url string) and url_id (a reddit url id)
-        is required.
+        One and only one out of url (a url string) and id (a reddit url id) is
+        required.
         """
-        if bool(url) == bool(url_id):
+        if bool(url) == bool(id):
             # either both or neither were given, either way:
-            raise TypeError("One (and only one) of url or url_id is required!")
+            raise TypeError("One (and only one) of url or id is required!")
         elif url.startswith(REDDIT_URL) and not url == REDDIT_URL:
             warnings.warn("It looks like you may be trying to get the info of "
                           "a self or internal link. This probably won't return"
@@ -649,7 +633,7 @@ class Reddit(RedditObject):
         if url:
             params = {"url" : url}
         else:
-            params = {"id" : url_id}
+            params = {"id" : id}
         return self._get_content(URL, url_data=params, limit=limit)
 
     @url(urljoin(API_URL, "search_reddit_names"))
@@ -883,3 +867,20 @@ class Comment(RedditContentObject, Voteable):
         return self.reddit_session._add_comment(self.name,
                                                 subreddit_name=self.subreddit,
                                                 text=text)
+
+@memoize
+@sleep_after
+def _request(reddit_session, page_url, params=None, url_data=None):
+        if url_data:
+            page_url += "?" + urllib.urlencode(url_data)
+
+        # urllib2.Request throws a 404 for some reason with data=""
+        encoded_params = None
+        if params:
+            encoded_params = urllib.urlencode(params)
+
+        request = urllib2.Request(page_url,
+                                  data=encoded_params,
+                                  headers=reddit_session.DEFAULT_HEADERS)
+        response = urllib2.urlopen(request)
+        return response.read()
