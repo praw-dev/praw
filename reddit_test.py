@@ -17,6 +17,18 @@ def setUpModule():
     link_post = itertools.ifilterfalse(lambda s: s.is_self, front_page).next()
     self_post = itertools.ifilter(lambda s: s.is_self, front_page).next()
 
+class MemoizeTestCase(unittest.TestCase):
+    def setUp(self):
+        @memoize
+        def sample_func(*args, **kwargs):
+            return "+".join(args) + str(kwargs)
+
+        self.func = sample_func
+
+    def test_no_args_no_kwargs(self):
+        self.func()
+        self.assertEqual(self.func._caches, {(self.func, [], {})})
+
 class URLJoinTestCase(unittest.TestCase):
     def test_neither_slashed(self):
         self.assertEqual(reddit.urljoin("http://www.example.com", "subpath"),
@@ -57,6 +69,14 @@ class RedditTestCase(unittest.TestCase):
             self.assertEqual(len(w), 1)
             self.assertEqual(w[-1].category, reddit.APIWarning)
             self.assertIn("self", str(w[-1].message))
+
+    def test_info_by_url_also_found_by_id(self):
+        found_links = r.info(link_post.url)
+        for link in found_links:
+            found_by_id = r.info(id=link.name)
+
+            self.assertTrue(found_by_id)
+            self.assertIn(link, found_by_id)
 
 class SaveableTestCase(unittest.TestCase):
     def setUp(self):
