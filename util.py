@@ -1,20 +1,7 @@
 import time
 import urlparse
 
-from functools import wraps, partial
-
-def urljoin(base, subpath, *args, **kwargs):
-    """
-    Does a urljoin with a base url, always considering the base url to end
-    with a directory, and never truncating the base url.
-    """
-    subpath = subpath.lstrip("/")
-
-    if not subpath:
-        return base
-    if not base.endswith("/"):
-        return urlparse.urljoin(base + "/", subpath, *args, **kwargs)
-    return urlparse.urljoin(base, subpath, *args, **kwargs)
+from functools import wraps
 
 class memoize(object):
     """
@@ -57,7 +44,36 @@ class memoize(object):
             del self._timeouts[k]
 
     def is_stale(self, urls):
-        relevant_caches = (k for k in self._cache if k[1] in urls)
+        relevant_caches = [k for k in self._cache if k[1] in urls or
+                                        k[1].rstrip(".json") in urls]
         for k in relevant_caches:
             del self._cache[k]
             del self._timeouts[k]
+
+def limit_chars(num_chars=80):
+    """
+    A decorator to limit the number of chars in a function that outputs a
+    string.
+    """
+    def func_limiter(func):
+        @wraps(func)
+        def func_wrapper(*args, **kwargs):
+            value = func(*args, **kwargs)
+            if len(value) > num_chars:
+                value = value[:num_chars] + "..."
+            return value
+        return func_wrapper
+    return func_limiter
+
+def urljoin(base, subpath, *args, **kwargs):
+    """
+    Does a urljoin with a base url, always considering the base url to end
+    with a directory, and never truncating the base url.
+    """
+    subpath = subpath.lstrip("/")
+
+    if not subpath:
+        return base
+    if not base.endswith("/"):
+        return urlparse.urljoin(base + "/", subpath, *args, **kwargs)
+    return urlparse.urljoin(base, subpath, *args, **kwargs)
