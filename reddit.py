@@ -297,20 +297,17 @@ class Saveable(object):
     eventually Comments will probably end up being saveable.
     """
     @require_login
-    def _save(self, content_id, unsave=False):
+    def save(self, unsave=False):
         """If logged in, save the content specified by `content_id`."""
         url = urls["unsave" if unsave else "save"]
-        params = {'id': content_id,
+        params = {'id': self.name,
                   'executed': "unsaved" if unsave else "saved",
-                  'uh': self.modhash}
+                  'uh': self.reddit_session.modhash}
         response = self.reddit_session._request_json(url, params)
         _request.is_stale(urls.saved_links)
 
-    def save(self):
-        return self._save(self.name)
-
     def unsave(self):
-        return self._save(self.name, unsave=True)
+        return self.save(unsave=True)
 
 class Voteable(object):
     """
