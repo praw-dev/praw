@@ -3,6 +3,7 @@ import unittest
 import warnings
 
 import reddit
+import util
 
 def setUpModule():
     global r, r_auth, front_page, auth_front_page, link_post, self_post
@@ -19,31 +20,30 @@ def setUpModule():
 
 class MemoizeTestCase(unittest.TestCase):
     def setUp(self):
-        @memoize
+        from random import randint
+        from itertools import count
+
+        self._primary_key = count(1)
+        @util.memoize
         def sample_func(*args, **kwargs):
-            return "+".join(args) + str(kwargs)
-
+            return sum(args)
         self.func = sample_func
-
-    def test_no_args_no_kwargs(self):
-        self.func()
-        self.assertEqual(self.func._caches, {(self.func, [], {})})
 
 class URLJoinTestCase(unittest.TestCase):
     def test_neither_slashed(self):
-        self.assertEqual(reddit.urljoin("http://www.example.com", "subpath"),
+        self.assertEqual(util.urljoin("http://www.example.com", "subpath"),
                          "http://www.example.com/subpath")
 
     def test_base_slashed(self):
-        self.assertEqual(reddit.urljoin("http://www.example.com/", "subpath"),
+        self.assertEqual(util.urljoin("http://www.example.com/", "subpath"),
                          "http://www.example.com/subpath")
 
     def test_subpath_slashed(self):
-        self.assertEqual(reddit.urljoin("http://www.example.com", "/subpath"),
+        self.assertEqual(util.urljoin("http://www.example.com", "/subpath"),
                          "http://www.example.com/subpath")
 
     def test_both_slashed(self):
-        self.assertEqual(reddit.urljoin("http://www.example.com/", "/subpath"),
+        self.assertEqual(util.urljoin("http://www.example.com/", "/subpath"),
                          "http://www.example.com/subpath")
 
 class RedditTestCase(unittest.TestCase):
