@@ -11,14 +11,10 @@ except ImportError:
 
 from functools import wraps
 
-from util import urljoin, memoize
+from urls import urls
+from util import urljoin, memoize, limit_chars
 
 DEBUG = True
-
-REDDIT_URL = "http://www.reddit.com/"
-API_URL = urljoin(REDDIT_URL, "api")
-REDDITOR_PAGE = urljoin(REDDIT_URL, "user/%s/")
-REDDITOR_ABOUT_PAGE = urljoin(REDDITOR_PAGE, "about")
 
 # How many results to retrieve by default when making content calls
 DEFAULT_CONTENT_LIMIT = 25
@@ -52,8 +48,8 @@ class require_captcha(object):
     """
     Decorator for methods that require captchas.
     """
-    URL = urljoin(API_URL, "new_captcha")
-    VIEW_URL = urljoin(REDDIT_URL, "captcha")
+    URL = urls["new_captcha"]
+    VIEW_URL = urls["view_captcha"]
 
     def __init__(self, func):
         wraps(func)(self)
@@ -108,19 +104,6 @@ def require_login(func):
             return func(self, *args, **kwargs)
     return login_reqd_func
 
-def limit_chars(num_chars=80):
-    """A decorator to limit the number of chars in a function that outputs a
-    string."""
-    def func_limiter(func):
-        @wraps(func)
-        def func_wrapper(*args, **kwargs):
-            value = func(*args, **kwargs)
-            if len(value) > num_chars:
-                value = value[:num_chars] + "..."
-            return value
-        return func_wrapper
-    return func_limiter
-
 class sleep_after(object):
     """
     A decorator to add to API functions that shouldn't be called too
@@ -147,20 +130,6 @@ class sleep_after(object):
 
         self.__class__.last_call_time = call_time
         return self.func(*args, **kwargs)
-
-def url(api_url=None, url_data=None):
-    """
-    Decorator to allow easy definitions of functions and methods. Just specify
-    the url in a parameter to this decorator, and return the dict containing
-    the appropriate parameters for the method.
-    """
-    def request(func):
-        @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            params = func(self, *args, **kwargs)
-            return self._request_json(api_url, params, url_data=url_data)
-        return wrapper
-    return request
 
 def parse_api_json_response(func):
     """Decorator to look at the Reddit API response to an API POST request like
@@ -216,20 +185,15 @@ def _modify_relationship(relationship, unlink=False):
     contributor creating, and banning (user-to-subreddit).
     """
     # the API uses friend and unfriend to manage all of these relationships
-    URL = urljoin(API_URL, "friend")
-    UNFRIEND_URL = urljoin(API_URL, "unfriend")
+    url = urls["unfriend" if unlink else "friend"]
 
-    # unlink: remove the relationship instead of creating it
-    if unlink:
-        URL = UNFRIEND_URL
-
-    @url(URL)
     @require_login
     def do_relationship(self, thing):
-        return {'name': thing,
-                'container': self.content_id,
-                'type': relationship,
-                'uh': self.modhash}
+        params = {'name': thing,
+                  'container': self.content_id,
+                  'type': relationship,
+                  'uh': self.modhash}
+        return self._request_json(url, params)
     return do_relationship
 
 class RedditObject(object):
@@ -335,11 +299,12 @@ class Saveable(object):
     @require_login
     def _save(self, content_id, unsave=False):
         """If logged in, save the content specified by `content_id`."""
-        url = urljoin(API_URL, "unsave" if unsave else "save")
+        url = urls["unsave" if unsave else "save"]
         params = {'id': content_id,
                   'executed': "unsaved" if unsave else "saved",
                   'uh': self.modhash}
-        return self.reddit_session._request_json(url, params)
+        response = self.reddit_session._request_json(url, params)
+        _request.is_stale(urls.saved_links)
 
     def save(self):
         return self._save(self.name)
@@ -521,7 +486,7 @@ class Reddit(RedditObject):
         'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
         """
         # TODO: find the right modhash url, this is only temporary
-        URL = urljoin(REDDIT_URL, "help")
+        URL = urls["help"]
         data = self._request(URL)
         match = re.search(r"modhash[^,]*", data)
         self.modhash = match.group(0).split(": ")[1].strip(" '")
@@ -534,13 +499,6 @@ class Reddit(RedditObject):
         """Returns a Subreddit class for the user_name specified."""
         return Subreddit(self, subreddit_name, *args, **kwargs)
 
-    @url(urljoin(API_URL, "login"))
-    def _login(self, user, password):
-        return {'id' : '#login_login-main',
-                'op' : 'login-main',
-                'passwd' : password,
-                'user' : user}
-
     def login(self, user=None, password=None):
         """Login to Reddit. If no user or password is provided, the user will
         be prompted with raw_input and getpass.getpass.
@@ -552,67 +510,72 @@ class Reddit(RedditObject):
             import getpass
             password = getpass.getpass("Password: ")
 
-        self._login(user, password)
+        url = urls["login"]
+        params = {'id' : '#login_login-main',
+                  'op' : 'login-main',
+                  'passwd' : password,
+                  'user' : user}
+        self._request_json(url, params)
         self.user = self.get_redditor(user)
         # Get and store the modhash; it will be needed for API requests
         # which involve this user.
         self._fetch_modhash()
 
-    @url(urljoin(REDDIT_URL, "logout"))
     @require_login
     def logout(self):
         """
         Logs out of a session.
         """
         self.user = None
-        return {"uh" : self.modhash}
+        url = urls["logout"]
+        params = {"uh" : self.modhash}
+        return self._request_json(url, params)
 
-    @url(urljoin(API_URL, "vote"))
     @require_login
     def _vote(self, content_id, direction=0, subreddit_name=""):
         """If logged in, vote for the given content_id in the direction
         specified."""
-        return {'id' : content_id,
-                'dir' : direction,
-                'r' : subreddit_name,
-                'uh' : self.modhash}
+        url = urls["vote"]
+        params = {'id' : content_id,
+                  'dir' : direction,
+                  'r' : subreddit_name,
+                  'uh' : self.modhash}
+        return self._request_json(url, params)
 
-    @url(urljoin(API_URL, "subscribe"))
     @require_login
     def _subscribe(self, subreddit_id, unsubscribe=False):
         """If logged in, subscribe to the specified subreddit_id."""
-        action = 'sub'
-        if unsubscribe:
-            action = 'unsub'
-        return {'sr': subreddit_id,
-                'action': action,
-                'uh': self.modhash}
+        action = "unsub" if unsubscribe else "sub"
+        url = urls["subscribe"]
+        params = {'sr': subreddit_id,
+                  'action': action,
+                  'uh': self.modhash}
+        return self._request_json(url, params)
 
-    @url(urljoin(API_URL, "comment"))
     @require_login
     def _add_comment(self, content_id, subreddit_name=None, text=""):
         """Comment on the given content_id with the given text."""
-        return {'thing_id': content_id,
-                'text': text,
-                'uh': self.modhash,
-                'r': subreddit_name}
+        url = urls["comment"]
+        params = {'thing_id': content_id,
+                  'text': text,
+                  'uh': self.modhash,
+                  'r': subreddit_name}
+        self._request_json(url, params)
 
     def get_front_page(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return the reddit front page. Login isn't required, but you'll only
         see your own front page if you are logged in."""
-        return self._get_content(REDDIT_URL, limit=limit)
+        return self._get_content(urls["reddit_url"], limit=limit)
 
     @require_login
     def get_saved_links(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return a listing of the logged-in user's saved links."""
-        URL = urljoin(REDDIT_URL, "saved")
-        return self._get_content(URL, limit=limit)
+        return self._get_content(urls["saved"], limit=limit)
 
     def get_all_comments(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None):
         """Returns a listing from reddit.com/comments (which provides all of
         the most recent comments from all users to all submissions)."""
-        URL = urljoin(REDDIT_URL, "comments")
-        return self._get_content(URL, limit=limit, place_holder=place_holder)
+        return self._get_content(urls["comments"], limit=limit, place_holder=place_holder)
 
     def info(self, url=None, id=None, limit=DEFAULT_CONTENT_LIMIT):
         """
@@ -625,34 +588,31 @@ class Reddit(RedditObject):
         if bool(url) == bool(id):
             # either both or neither were given, either way:
             raise TypeError("One (and only one) of url or id is required!")
-        elif url.startswith(REDDIT_URL) and not url == REDDIT_URL:
+        elif url.startswith(urls["reddit_url"]) and url != urls["reddit_url"]:
             warnings.warn("It looks like you may be trying to get the info of "
                           "a self or internal link. This probably won't return"
                           " any useful results!", APIWarning)
-        URL = urljoin(REDDIT_URL, "button_info")
         if url:
             params = {"url" : url}
         else:
             params = {"id" : id}
-        return self._get_content(URL, url_data=params, limit=limit)
-
-    @url(urljoin(API_URL, "search_reddit_names"))
-    def _search_reddit_names(self, query):
-        return {"query" : query}
+        return self._get_content(urls["info"], url_data=params, limit=limit)
 
     def search_reddit_names(self, query):
-        results = self._search_reddit_names(query)
+        url = urls["search_reddit_names"]
+        params = {"query" : query}
+        results = self._request_json(url, params)
         return [self.get_subreddit(name) for name in results.get("names")]
 
-    @url(urljoin(API_URL, "feedback"))
     @require_captcha
     def send_feedback(self, name, email, message, reason="feedback"):
-        return {"name" : name,
-                "email" : email,
-                "reason" : reason,
-                "text" : message}
+        url = urls["send_feedback"]
+        params = {"name" : name,
+                  "email" : email,
+                  "reason" : reason,
+                  "text" : message}
+        return self._request_json(url, params)
 
-    @url(urljoin(API_URL, "submit"))
     @require_login
     @require_captcha
     def submit(self, subreddit, url, title):
@@ -664,12 +624,14 @@ class Reddit(RedditObject):
         """
         sr_name = str(subreddit)
 
-        return {"kind" : "link",
-                "sr" : sr_name,
-                "title" : title,
-                "uh" : self.modhash,
-                "url" : url,
-                "id" : self.user.id}
+        url = urls["submit"]
+        params = {"kind" : "link",
+                  "sr" : sr_name,
+                  "title" : title,
+                  "uh" : self.modhash,
+                  "url" : url,
+                  "id" : self.user.id}
+        return self._request_json(url, params)
 
 class Redditor(RedditContentObject):
     """A class for Redditor methods."""
@@ -684,8 +646,8 @@ class Redditor(RedditContentObject):
                  fetch=False):
         self.user_name = user_name
         # Store the urls we will need internally
-        self.URL = REDDITOR_PAGE % self.user_name
-        self.ABOUT_URL = REDDITOR_ABOUT_PAGE % self.user_name
+        self.URL = urls["redditor_page"] % self.user_name
+        self.ABOUT_URL = urls["redditor_about_page"] % self.user_name
         super(Redditor, self).__init__(reddit_session, user_name, json_dict,
                                        fetch)
 
@@ -695,22 +657,19 @@ class Redditor(RedditContentObject):
         return self.user_name
 
     @classmethod
-    @url(urljoin(API_URL, "register"))
     @require_captcha
-    def _register(cls, password, email=""):
+    def register(cls, password, email=""):
         """
         Register a new user.
         """
         password = str(password)
-        return {"email" : email,
-                "op" : "reg",
-                "passwd" : password,
-                "passwd2" : password,
-                "user" : self.user_name}
-
-    @classmethod
-    def register(cls, password, email=""):
-        cls._register(password, email)
+        url = urls["register"]
+        params = {"email" : email,
+                  "op" : "reg",
+                  "passwd" : password,
+                  "passwd2" : password,
+                  "user" : self.user_name}
+        self._request_json(url, params)
         return self.reddit_session.login(self.user_name, password)
 
     create = register # just an alias to provide a somewhat uniform API
@@ -718,9 +677,7 @@ class Redditor(RedditContentObject):
     @require_login
     def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return all of the current user's subreddits."""
-        URL = urljoin(REDDIT_URL, "reddits/mine")
-        reddits = self._get_content(URL, limit=limit)
-        return reddits
+        return self._get_content(urls["my_reddits"], limit=limit)
 
 class Subreddit(RedditContentObject):
     """A class for Subreddits."""
@@ -754,8 +711,8 @@ class Subreddit(RedditContentObject):
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
                  fetch=False):
-        self.URL = urljoin(REDDIT_URL, "r/" + subreddit_name)
-        self.ABOUT_URL = urljoin(self.URL, "about")
+        self.URL = urls["subreddit_page"] % subreddit_name
+        self.ABOUT_URL = urls["subreddit_about_page"] % subreddit_name
 
         self.display_name = subreddit_name
         super(Subreddit, self).__init__(reddit_session, subreddit_name,
@@ -766,25 +723,21 @@ class Subreddit(RedditContentObject):
         """Just display the subreddit name."""
         return self.display_name
 
-    @url(urljoin(API_URL, "site_admin"))
-    @require_login
-    def _create(title, description, language, type, content_options,
-                other_options, domain):
-        """
-        Create a new subreddit.
-        """
-        # TODO: Implement the rest of the options.
-        return {"name" : self.display_name,
-                "title" : title,
-                "type" : type,
-                "uh" : self.reddit_session.modhash}
-
     @classmethod
+    @require_login
     def create(cls, title, description="", language="English [en]",
                type="public", content_options="any", other_options=None,
                domain=""):
-        return cls._create(title, description, language, type, content_options,
-                    other_options, domain)
+        """
+        Create a new subreddit.
+        """
+        url = urls["create"]
+        # TODO: Implement the rest of the options.
+        params = {"name" : self.display_name,
+                  "title" : title,
+                  "type" : type,
+                  "uh" : self.reddit_session.modhash}
+        return self._request_json(url, params)
 
     def submit(self, *args, **kwargs):
         """
@@ -810,8 +763,8 @@ class Submission(RedditContentObject, Saveable, Voteable):
                  fetch_comments=True):
         super(Submission, self).__init__(reddit_session, title, json_dict,
                                          fetch=True)
-        if not self.permalink.startswith(REDDIT_URL):
-            self.permalink = urljoin(REDDIT_URL, self.permalink)
+        if not self.permalink.startswith(urls["reddit_url"]):
+            self.permalink = urljoin(urls["reddit_url"], self.permalink)
 
     def __str__(self):
         return str(self.score) + " :: " + self.title.replace("\r\n", "")
