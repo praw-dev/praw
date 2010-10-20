@@ -317,10 +317,17 @@ class Voteable(object):
     Additional interface for Reddit content objects that can be voted on
     (currently Submission and Comment).
     """
+    @require_login
     def vote(self, direction=0):
-        """Cast a vote."""
-        return self.reddit_session._vote(self.name, direction=direction,
-                                         subreddit_name=self.subreddit)
+        """
+        Vote for the given content_id in the direction specified.
+        """
+        url = urls["vote"]
+        params = {'id' : self.name,
+                  'dir' : direction,
+                  'r' : self.subreddit,
+                  'uh' : self.reddit_session.modhash}
+        return self.reddit_session._request_json(url, params)
 
     def upvote(self):
         return self.vote(direction=1)
@@ -529,17 +536,6 @@ class Reddit(RedditObject):
         self.user = None
         url = urls["logout"]
         params = {"uh" : self.modhash}
-        return self._request_json(url, params)
-
-    @require_login
-    def _vote(self, content_id, direction=0, subreddit_name=""):
-        """If logged in, vote for the given content_id in the direction
-        specified."""
-        url = urls["vote"]
-        params = {'id' : content_id,
-                  'dir' : direction,
-                  'r' : subreddit_name,
-                  'uh' : self.modhash}
         return self._request_json(url, params)
 
     @require_login
