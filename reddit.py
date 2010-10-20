@@ -19,8 +19,6 @@ DEBUG = True
 # How many results to retrieve by default when making content calls
 DEFAULT_CONTENT_LIMIT = 25
 
-CACHE_TIME = 30
-
 class APIException(Exception):
     """Base exception class for these API bindings."""
     pass
