@@ -579,12 +579,13 @@ class Reddit(RedditObject):
         if bool(url) == bool(id):
             # either both or neither were given, either way:
             raise TypeError("One (and only one) of url or id is required!")
-        elif url.startswith(urls["reddit_url"]) and url != urls["reddit_url"]:
-            warnings.warn("It looks like you may be trying to get the info of "
-                          "a self or internal link. This probably won't return"
-                          " any useful results!", APIWarning)
-        if url:
+        if url is not None:
             params = {"url" : url}
+
+            if url.startswith(urls["reddit_url"]) and url != urls["reddit_url"]:
+                warnings.warn("It looks like you may be trying to get the info"
+                              " of a self or internal link. This probably "
+                              "won't return any useful results!", APIWarning)
         else:
             params = {"id" : id}
         return self._get_content(urls["info"], url_data=params, limit=limit)
@@ -766,19 +767,6 @@ class Submission(RedditContentObject, Saveable, Voteable):
                                                             self.permalink)
         comments = comment_info["data"]["children"]
         return comments
-
-    def _json_data_to_comment(self, json_dict):
-        data = json_dict['data']
-        replies = data.pop('replies', None)
-
-        root_comment = Comment(self, data)
-
-        if replies:
-            children = replies['data']['children']
-
-            converted_children = map(self._json_data_to_comment, children)
-            root_comment.replies = converted_children
-        return root_comment
 
     def add_comment(self, text):
         """If logged in, comment on the submission using the specified text."""
