@@ -1,62 +1,60 @@
 Introduction
--------------
+------------
+
 This is a Python wrapper for Reddit's API, aiming to be as easy to use as possible. Here's a quick peek, getting the first 10 stories from the 'hot' section of the 'opensource' subreddit.
 
-    import reddit
-    r=reddit.Reddit()
+    import reddit_api as reddit
+    r = reddit.Reddit()
     stories = r.get_subreddit('opensource').get_hot(limit=10)
 
-13 Short Examples
----------------
+A Few Short Examples
+--------------------
 
 1. Logging in:
 
         r.login(user="username", password="password")
 
-2. Get stories:
+2. Get top stories for r/python:
 
-        stories = subreddit.get_top(limit=10)
+        stories = r.get_subreddit("python").get_top(limit=10)
 
-3. Voting:
+3. Voting (requires login):
 
         story.upvote()
         story.downvote()
-        story.vote(direction=0)
 
 4. Get user karma:
 
-        user = r.get_redditor("username")
-        print (user.link_karma, user.comment_karma)
+        ketralnis = r.get_redditor("ketralnis")
+        print ketralnis.link_karma, ketralnis.comment_karma
 
-5. Comment on story (after login):
+5. Comment on story (requires login):
 
         story.comment("text")
 
-6. Reply to comment:
+6. Reply to comment (requires login):
 
         comment.reply("test")
 
-7. Get user's saved links:
+7. Get my saved links (requires login):
 
         r.get_saved_links()
 
-8. Print url's of user's saved links:
+8. Retrive the urls of my saved links:
 
-        saved = r.get_saved_links()
-        for save in saved:
-            print save.url
+        saved_urls = [saved_link.url for saved_link in r.get_saved_links()]
 
-9. Get comments from all reddits:
+9. Get comments from all reddits (i.e. http://www.reddit.com/comments:
 
         r.get_comments(limit=25)
 
-10. Get content newer than a place-holder id:
+10. Get content newer than a comment or submission's id:
 
-        subreddit.get_top(limit=-1, place_holder=story_id)
+        r_python.get_top(limit=None, place_holder=submission.id)
 
-11. Get comments from a given story:
+11. Comments from a given submission:
 
-        story.get_comments()
+        submission.comments
 
 12. Subscribe to a subreddit:
 
@@ -68,7 +66,7 @@ This is a Python wrapper for Reddit's API, aiming to be as easy to use as possib
 
 14. Create a subreddit:
 
-        s = Subreddit("MyIncredibleSubreddit", r)
+        s = r.get_subreddit("MyIncredibleSubreddit")
         s.create(title="My Incredibly Cool Subreddit", description="It's just incredible.")
 
 15. Friend a user:
@@ -77,7 +75,7 @@ This is a Python wrapper for Reddit's API, aiming to be as easy to use as possib
 
 Other (more involved) examples can be found [here](http://www.github.com/mellort/reddit_api/blob/master/EXAMPLES.md).
 
-Features
+Features (Outdated list, to be updated soon)
 -------------
 Completed:
 
@@ -115,7 +113,8 @@ EDIT: I do now :)
 
 > Why is everything so slow?
 
-I tried to be nice to Reddit's servers by sleeping between requests.
+Usually has to do with how fast reddit is responding at the moment. If you're
+having a specific issue please let me know (or file a ticket).
 
 > Why don't you have feature X coded yet?
 
@@ -126,5 +125,3 @@ I had a bit of a hard time decyphering the Reddit API. I will hopefully put more
 Sometimes there are unicode characters in story titles and in comments. Python versions before 3.0 will have errors printing them. Try something like
 
     map(unicode, stories)
-
-for a quick view. Basic universal unicode support is in the works, so hopefully this won't be needed much longer. Sit tight.
