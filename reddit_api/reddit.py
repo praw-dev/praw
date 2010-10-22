@@ -139,8 +139,17 @@ def parse_api_json_response(func):
         return_value = func(*args, **kwargs)
         if not return_value:
             return
+        elif [k for k in return_value.keys() if k not in
+                               (u"jquery", "iden", "captcha", "kind", "data")]:
+                warnings.warn("Return value keys contained "
+                              "{0}!".format(return_value.keys()))
         else:
-            return return_value
+            jquery = return_value.get("jquery")
+            if jquery:
+                values = [x[-1] for x in jquery]
+                if [".error.USER_REQUIRED"] in values:
+                    raise NotLoggedInException()
+        return return_value
     return error_checked_func
 
 def _get_section(subpath=""):
@@ -398,11 +407,14 @@ class Reddit(RedditObject):
         decoding.
         """
         # TODO: This can be nicer. CONTENT_KINDS dict.
-        kind = json_data.get("kind")
-
-        for reddit_object in (Comment, Redditor, Subreddit, Submission):
-            if kind == reddit_object.kind:
-                return reddit_object.from_api_response(self, json_data.get("data"))
+        kinds = dict((content.kind, content) for content in
+                                    (Comment, Redditor, Subreddit, Submission))
+        try:
+            kind = kinds[json_data["kind"]]
+        except KeyError:
+            pass
+        else:
+            return kind.from_api_response(self, json_data["data"])
         return json_data
 
     @property
@@ -590,12 +602,6 @@ class Reddit(RedditObject):
             params = {"id" : id}
         return self._get_content(urls["info"], url_data=params, limit=limit)
 
-    def search_reddit_names(self, query):
-        url = urls["search_reddit_names"]
-        params = {"query" : query}
-        results = self._request_json(url, params)
-        return [self.get_subreddit(name) for name in results.get("names")]
-
     @require_captcha
     def send_feedback(self, name, email, message, reason="feedback"):
         url = urls["send_feedback"]
@@ -604,6 +610,23 @@ class Reddit(RedditObject):
                   "reason" : reason,
                   "text" : message}
         return self._request_json(url, params)
+
+    @require_login
+    @require_captcha
+    def compose_message(self, recipient, subject, message):
+        url = urls["compose_message"]
+        params = {"text" : message,
+                  "subject" : subject,
+                  "to" : str(recipient),
+                  "uh" : self.modhash,
+                  "user" : self.user}
+        return self._request_json(url, params)
+
+    def search_reddit_names(self, query):
+        url = urls["search_reddit_names"]
+        params = {"query" : query}
+        results = self._request_json(url, params)
+        return [self.get_subreddit(name) for name in results.get("names")]
 
     @require_login
     @require_captcha
