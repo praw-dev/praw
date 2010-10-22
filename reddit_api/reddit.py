@@ -462,7 +462,8 @@ class Reddit(RedditObject):
         if all_content is None:
             # The list which we will populate to return with content
             all_content = []
-        limit = int(limit)
+        if limit is not None:
+            limit = int(limit)
 
         # While we still need to fetch more content to reach our limit, do so.
         while limit and len(all_content) < limit:
