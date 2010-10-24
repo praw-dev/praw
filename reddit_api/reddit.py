@@ -605,6 +605,10 @@ class Reddit(RedditObject):
 
     @require_captcha
     def send_feedback(self, name, email, message, reason="feedback"):
+        """
+        Send feedback to the admins. Please don't abuse this, read what it says
+        on the send feedback page!
+        """
         url = urls["send_feedback"]
         params = {"name" : name,
                   "email" : email,
@@ -615,6 +619,9 @@ class Reddit(RedditObject):
     @require_login
     @require_captcha
     def compose_message(self, recipient, subject, message):
+        """
+        Send a message to another redditor.
+        """
         url = urls["compose_message"]
         params = {"text" : message,
                   "subject" : subject,
@@ -624,6 +631,9 @@ class Reddit(RedditObject):
         return self._request_json(url, params)
 
     def search_reddit_names(self, query):
+        """
+        Search the subreddits for a reddit whose name matches the query.
+        """
         url = urls["search_reddit_names"]
         params = {"query" : query}
         results = self._request_json(url, params)
@@ -670,7 +680,7 @@ class Redditor(RedditContentObject):
     @limit_chars()
     def __str__(self):
         """Have the str just be the user's name"""
-        return self.user_name
+        return self.user_name.encode("utf8")
 
     @classmethod
     @require_captcha
@@ -737,7 +747,7 @@ class Subreddit(RedditContentObject):
     @limit_chars()
     def __str__(self):
         """Just display the subreddit name."""
-        return self.display_name
+        return self.display_name.encode("utf8")
 
     @classmethod
     @require_login
@@ -783,7 +793,8 @@ class Submission(RedditContentObject, Saveable, Voteable):
             self.permalink = urljoin(urls["reddit_url"], self.permalink)
 
     def __str__(self):
-        return str(self.score) + " :: " + self.title.replace("\r\n", "")
+        title = self.title.replace("\r\n", "")
+        return "{0} :: {1}".format(self.score, title.encode("utf-8"))
 
     @property
     def comments(self):
@@ -812,7 +823,8 @@ class Comment(RedditContentObject, Voteable):
 
     @limit_chars()
     def __str__(self):
-        return getattr(self, "body", "[[ need to fetch more comments... ]]")
+        return getattr(self, "body",
+                       "[[ need to fetch more comments... ]]").encode("utf8")
 
     @property
     def is_root(self):
