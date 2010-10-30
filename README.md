@@ -40,7 +40,7 @@ A Few Short Examples
 
         r.get_saved_links()
 
-8. Retrive the urls of my saved links:
+8. Retrieve the urls of my saved links:
 
         saved_urls = [saved_link.url for saved_link in r.get_saved_links()]
 
@@ -87,7 +87,7 @@ Completed:
 * get all comments
 * commenting/replying
 * caching results
-* friending/moderatoring/contributoring/banning
+* friending/moderating/contributing/banning
 
 Not Included (yet):
 
@@ -118,7 +118,7 @@ having a specific issue please let me know (or file a ticket).
 
 > Why don't you have feature X coded yet?
 
-I had a bit of a hard time decyphering the Reddit API. I will hopefully put more time into it soon. It'd be rather helpful to receive feedback on what feature you're looking for, so that we can prioritize. Please let us know what you're looking for!
+I had a bit of a hard time deciphering the Reddit API. I will hopefully put more time into it soon. It'd be rather helpful to receive feedback on what feature you're looking for, so that we can prioritize. Please let us know what you're looking for!
 
 > When I try to look at stories/comments I get a weird UnicodeEncodeError. What gives?
 
