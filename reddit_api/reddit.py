@@ -315,6 +315,19 @@ class Saveable(object):
 
     def unsave(self):
         return self.save(unsave=True)
+        
+class Deletable(object):
+    """
+    Additional Interface for Reddit content objects that can be deleted
+    (currently Submission and Comment).
+    """
+    def delete(self):
+        url = urls["del"]
+        params = {'id' : self.name,
+                    'executed' : 'deleted',  
+                    'r' : self.subreddit, 
+                    'uh' : self.reddit_session.modhash}
+        return self.reddit_session._request_json(url, params)
 
 class Voteable(object):
     """
@@ -780,7 +793,7 @@ class Subreddit(RedditContentObject):
         return self.reddit_session._subscribe(self.name,
                                               unsubscribe=True)
 
-class Submission(RedditContentObject, Saveable, Voteable):
+class Submission(RedditContentObject, Saveable, Voteable,  Deletable):
     """A class for submissions to Reddit."""
 
     kind = "t3"
@@ -809,7 +822,7 @@ class Submission(RedditContentObject, Saveable, Voteable):
                                                 subreddit_name=self.subreddit,
                                                 text=text)
 
-class Comment(RedditContentObject, Voteable):
+class Comment(RedditContentObject, Voteable,  Deletable):
     """A class for comments."""
 
     kind = "t1"
