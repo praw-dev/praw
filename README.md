@@ -63,13 +63,17 @@ A Few Short Examples
 13. Save a submission:
 
         submission.save()
+        
+14. Delete a submission:
 
-14. Create a subreddit:
+        submission.delete()
+
+15. Create a subreddit:
 
         s = r.get_subreddit("MyIncredibleSubreddit")
         s.create(title="My Incredibly Cool Subreddit", description="It's just incredible.")
 
-15. Friend a user:
+16. Friend a user:
 
         r.friend("ketralnis")
 
@@ -81,6 +85,7 @@ Completed:
 
 * login
 * save
+* delete
 * subscribe
 * voting
 * get hot, top, controversial, overview, submitted
