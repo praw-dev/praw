@@ -81,6 +81,7 @@ Other (more involved) examples can be found [here](http://www.github.com/mellort
 
 Features (Outdated list, to be updated soon)
 -------------
+
 Completed:
 
 * login
@@ -94,14 +95,9 @@ Completed:
 * caching results
 * friending/moderating/contributing/banning
 
-Not Included (yet):
-
-* register
-* submitting
-* everything else
-
 Example Applications
 --------------------
+
 I coded a few quick applications/scripts with this wrapper:
 
 * A [comment tracker](http://github.com/mellort/reddit_comment_tracker/blob/master/comment_tracker.py), which repeatedly looks at new Reddit comments and can take an action if they meet a specified condition. The example use I gave is replying with an automated message if the body of a comment contains a certain word. (Novelty accounts, anyone?)
@@ -112,21 +108,10 @@ I hope that this wrapper allows for many more quick and useful applications to b
 Questions
 ------------
 
-> How come you don't have caching?
-
-EDIT: I do now :)
-
 > Why is everything so slow?
 
-Usually has to do with how fast reddit is responding at the moment. If you're
-having a specific issue please let me know (or file a ticket).
+Usually that has to do with how fast reddit is responding at the moment. Check the site, see if it's responding quicker when accessing it in your browser. Otherwise, we respect the "no more than one API call per second" rule, so if you're trying to do a bunch of quick requests in succession you're going to be spaced out to one call per second. If you're having a specific issue besides something covered by one of those two things, please let us know (or file a ticket) and we'll check it out.
 
 > Why don't you have feature X coded yet?
 
-I had a bit of a hard time deciphering the Reddit API. I will hopefully put more time into it soon. It'd be rather helpful to receive feedback on what feature you're looking for, so that we can prioritize. Please let us know what you're looking for!
-
-> When I try to look at stories/comments I get a weird UnicodeEncodeError. What gives?
-
-Sometimes there are unicode characters in story titles and in comments. Python versions before 3.0 will have errors printing them. Try something like
-
-    map(unicode, stories)
+If feature X is commenting / submitting / PMing, it's because it's not really gonna happen considering how easily it'd be to misuse (even though it's easy enough without these bindings). Otherwise, it's because we didn't need it :). We tried to add everything we imagined would be useful to anyone, but if there's something missing that you'd like, please let us know what you're looking for and we can add it!
