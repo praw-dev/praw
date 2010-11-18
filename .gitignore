@@ -1,1 +1,4 @@
+tags
+.coverage
 *.pyc
+*~
