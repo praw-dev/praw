@@ -663,13 +663,13 @@ class Reddit(RedditObject):
         """
         sr_name = str(subreddit)
 
-        url = urls["submit"]
         params = {"kind" : "link",
                   "sr" : sr_name,
                   "title" : title,
                   "uh" : self.modhash,
                   "url" : url,
                   "id" : self.user.id}
+        url = urls["submit"]
         return self._request_json(url, params)
 
 class Redditor(RedditContentObject):
