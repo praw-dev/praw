@@ -654,7 +654,7 @@ class Reddit(RedditObject):
 
     @require_login
     @require_captcha
-    def submit(self, subreddit, url, title):
+    def submit(self, subreddit, url, title, submit_type=None, text=None):
         """
         Submit a new link.
 
@@ -669,6 +669,10 @@ class Reddit(RedditObject):
                   "uh" : self.modhash,
                   "url" : url,
                   "id" : self.user.id}
+        if submit_type == 'self' and text != None:
+            params["kind"] = submit_type
+            params["text"] = text
+            del(params["url"])
         url = urls["submit"]
         return self._request_json(url, params)
 
