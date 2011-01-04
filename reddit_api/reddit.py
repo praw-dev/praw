@@ -112,7 +112,7 @@ class sleep_after(object):
     be callable within the WAIT_BETWEEN_CALL_TIME; they'll automatically be
     delayed until the proper duration is reached.
     """
-    WAIT_BETWEEN_CALL_TIME = 1          # seconds
+    WAIT_BETWEEN_CALL_TIME = 2          # seconds
     last_call_time = 0     # init to 0 to always allow the 1st call
 
     def __init__(self, func):

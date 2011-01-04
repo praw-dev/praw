@@ -111,7 +111,7 @@ Questions
 
 > Why is everything so slow?
 
-Usually that has to do with how fast reddit is responding at the moment. Check the site, see if it's responding quicker when accessing it in your browser. Otherwise, we respect the "no more than one API call per second" rule, so if you're trying to do a bunch of quick requests in succession you're going to be spaced out to one call per second. If you're having a specific issue besides something covered by one of those two things, please let us know (or file a ticket) and we'll check it out.
+Usually that has to do with how fast reddit is responding at the moment. Check the site, see if it's responding quicker when accessing it in your browser. Otherwise, we respect the "no more than one API call per two seconds" rule, so if you're trying to do a bunch of quick requests in succession you're going to be spaced out to one call per second. If you're having a specific issue besides something covered by one of those two things, please let us know (or file a ticket) and we'll check it out.
 
 > Why don't you have feature X coded yet?
 
