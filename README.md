@@ -116,3 +116,7 @@ Usually that has to do with how fast reddit is responding at the moment. Check t
 > Why don't you have feature X coded yet?
 
 If feature X is commenting / submitting / PMing, it's because it's not really gonna happen considering how easily it'd be to misuse (even though it's easy enough without these bindings). Otherwise, it's because we didn't need it :). We tried to add everything we imagined would be useful to anyone, but if there's something missing that you'd like, please let us know what you're looking for and we can add it!
+
+License
+------------
+All of the code contained here is licensed by the GNU GPLv3.
