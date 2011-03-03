@@ -1,1 +1,1 @@
-from reddit_api.reddit import *
+from reddit import *
