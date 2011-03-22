@@ -1,378 +1,48 @@
 import urllib
 import urllib2
 import cookielib
-import re
-import time
 import warnings
+import re
 try:
     import json
 except ImportError:
     import simplejson as json
 
-from functools import wraps
-
 from urls import urls
 from util import urljoin, memoize, limit_chars
 
-DEBUG = True
+from api_exceptions import APIException, APIWarning, BadCaptcha, \
+    NotLoggedInException, InvalidUserPass
 
-# How many results to retrieve by default when making content calls
-DEFAULT_CONTENT_LIMIT = 25
+from decorators import require_captcha, require_login, sleep_after, \
+    parse_api_json_response
 
-class APIException(Exception):
-    """Base exception class for these API bindings."""
-    pass
+from settings import DEFAULT_CONTENT_LIMIT
 
-class APIWarning(UserWarning):
-    """Base exception class for these API bindings."""
-    pass
-
-class BadCaptcha(APIException):
-    """An exception for when an incorrect captcha error is returned."""
-    def __str__(self):
-        return "Incorrect captcha entered."
-
-class NotLoggedInException(APIException):
-    """An exception for when a Reddit user isn't logged in."""
-    def __str__(self):
-        return "You need to login to do that!"
-
-class InvalidUserPass(APIException):
-    """An exception for failed logins."""
-    def __str__(self):
-        return "Invalid username/password."
-
-class require_captcha(object):
-    """
-    Decorator for methods that require captchas.
-    """
-    URL = urls["new_captcha"]
-    VIEW_URL = urls["view_captcha"]
-
-    def __init__(self, func):
-        wraps(func)(self)
-        self.func = func
-        self.captcha_id = None
-        self.captcha = None
-
-    def __get__(self, obj, type=None):
-        if obj is None:
-            return self
-        return self.__class__(self.func.__get__(obj, type))
-
-    def __call__(self, *args, **kwargs):
-        # use the captcha passed in if given, otherwise get one
-        self.captcha_id, self.captcha = kwargs.get("captcha",
-                                                   self.get_captcha())
-        result = self.func(*args, **kwargs)
-        result.update(self.captcha_as_dict)
-        return result
-
-    @property
-    def captcha_as_dict(self):
-        return {"iden" : self.captcha_id,
-                "captcha" : self.captcha}
-
-    @property
-    def captcha_url(self):
-        if self.captcha_id:
-            return urljoin(self.VIEW_URL, self.captcha_id + ".png")
-
-    def get_captcha(self):
-        data = Reddit()._request_json(self.URL, {"renderstyle" : "html"})
-        # TODO: fix this, it kills kittens
-        self.captcha_id = data["jquery"][-1][-1][-1]
-        print "Captcha URL: " + self.captcha_url
-        self.captcha = raw_input("Captcha: ")
-        return self.captcha_id, self.captcha
-
-def require_login(func):
-    """A decorator to ensure that a user has logged in before calling the
-    function."""
-    @wraps(func)
-    def login_reqd_func(self, *args, **kwargs):
-        try:
-            user = self.user
-        except AttributeError:
-            user = self.reddit_session.user
-
-        if user is None:
-            raise NotLoggedInException()
-        else:
-            return func(self, *args, **kwargs)
-    return login_reqd_func
-
-class sleep_after(object):
-    """
-    A decorator to add to API functions that shouldn't be called too
-    rapidly, in order to be nice to the reddit server.
-
-    Every function wrapped with this decorator will use a collective
-    last_call_time attribute, so that collectively any one of the funcs won't
-    be callable within the WAIT_BETWEEN_CALL_TIME; they'll automatically be
-    delayed until the proper duration is reached.
-    """
-    WAIT_BETWEEN_CALL_TIME = 1          # seconds
-    last_call_time = 0     # init to 0 to always allow the 1st call
-
-    def __init__(self, func):
-        wraps(func)(self)
-        self.func = func
-
-    def __call__(self, *args, **kwargs):
-        call_time = time.time()
-
-        since_last_call = call_time - self.last_call_time
-        if since_last_call < self.WAIT_BETWEEN_CALL_TIME:
-            time.sleep(self.WAIT_BETWEEN_CALL_TIME - since_last_call)
-
-        self.__class__.last_call_time = call_time
-        return self.func(*args, **kwargs)
-
-def parse_api_json_response(func):
-    """Decorator to look at the Reddit API response to an API POST request like
-    vote, subscribe, login, etc. Basically, it just looks for certain errors in
-    the return string. If it doesn't find one, then it just returns True.
-    """
-    @wraps(func)
-    def error_checked_func(*args, **kwargs):
-        return_value = func(*args, **kwargs)
-        if not return_value:
-            return
-	else:
-	    # todo, clean up this code. for right now, i just surrounded
-	    # it with a try, except. basically the issue is when the _json_request
-	    # wants to return a list, for example when you request the page for a 
-	    # story; the reddit api returns json for the story and the comments.
-	    try:
- 	    	for k in return_value.keys():
-		    if k not in (u"jquery", "iden", "captcha", "kind", "data"):
-			warnings.warn("Return value keys contained "
-				      "{0}!".format(return_value.keys()))
-		jquery = return_value.get("jquery")
-	 	if jquery:
-		    values = [x[-1] for x in jquery]
-	   	    if [".error.USER_REQUIRED"] in values:
-			raise NotLoggedInException()
-  	    except AttributeError:
-		pass
-        return return_value
-    return error_checked_func
-
-def _get_section(subpath=""):
-    """
-    Used by the Redditor class to generate each of the sections (overview,
-    comments, submitted).
-    """
-    def get_section(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
-                    place_holder=None):
-        url_data = {"sort" : sort, "time" : time}
-        return self.reddit_session._get_content(urljoin(self.URL, subpath),
-                                                limit=limit,
-                                                url_data=url_data,
-                                                place_holder=place_holder)
-    return get_section
-
-def _get_sorter(subpath="", **defaults):
-    """
-    Used by the Reddit Page classes to generate each of the currently supported
-    sorts (hot, top, new, best).
-    """
-    def sorted(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
-        for k, v in defaults.items():
-            if k == "time":
-                # time should be "t" in the API data dict
-                k = "t"
-            data.setdefault(k, v)
-        return self.reddit_session._get_content(urljoin(self.URL, subpath),
-                                                limit=int(limit),
-                                                url_data=data,
-                                                place_holder=place_holder)
-    return sorted
-
-def _modify_relationship(relationship, unlink=False):
-    """
-    Modify the relationship between the current user or subreddit and a target
-    thing.
-
-    Used to support friending (user-to-user), as well as moderating,
-    contributor creating, and banning (user-to-subreddit).
-    """
-    # the API uses friend and unfriend to manage all of these relationships
-    url = urls["unfriend" if unlink else "friend"]
-
-    @require_login
-    def do_relationship(self, thing):
-        params = {'name': thing,
-                  'container': self.content_id,
-                  'type': relationship,
-                  'uh': self.modhash}
-	print params
-        return self._request_json(url, params)
-    return do_relationship
-
-class RedditObject(object):
-    """
-    Base class for all Reddit API objects.
-    """
-    def __repr__(self):
-        return "<%s: %s>" % (self.__class__.__name__, self)
-
-    def __str__(self):
-        raise NotImplementedError()
-
-class RedditContentObject(RedditObject):
-    """
-    Base class for everything besides the Reddit class.
-
-    Represents actual reddit objects (Comment, Redditor, etc.).
-    """
-    def __init__(self, reddit_session, name=None, json_dict=None, fetch=True):
-        """
-        Create a new object either by name or from the dict of attributes
-        returned by the API. Creating by name will retrieve the proper dict
-        from the API.
-
-        The fetch parameter specifies whether to retrieve the object's
-        information from the API (only matters when it isn't provided using
-        json_dict).
-        """
-        if name is None and json_dict is None:
-            # one of these at least is required
-            raise TypeError("Either the name or json dict is required!.")
-
-        self.reddit_session = reddit_session
-
-        if json_dict is None:
-            if fetch:
-                json_dict = self._get_json_dict()
-            else:
-                json_dict = {}
-        for name, value in json_dict.iteritems():
-            setattr(self, name, value)
-
-        # set an attr containing whether we've fetched all the attrs from API
-        self._populated = bool(json_dict) or fetch
-
-    def __getattr__(self, attr):
-        """
-        Instead of special casing to figure out if we're calling requests from
-        a reddit content object rather than a Reddit object, we can just allow
-        the reddit content objects to lookup the attrs that we choose in their
-        attached Reddit session object.
-        """
-        retrievable_attrs = ("user", "modhash", "_request", "_request_json")
-        if attr in retrievable_attrs:
-            return getattr(self.reddit_session, attr)
-        else:
-            # TODO: maybe restrict this again to known API fields
-            if not self._populated:
-                json_dict = self._get_json_dict()
-                for name, value in json_dict.iteritems():
-                    setattr(self, name, value)
-                self._populated = True
-                return getattr(self, attr)
-        raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                                                self.__class__.__name__, attr))
-
-    def __setattr__(self, name, value):
-        if name == "subreddit":
-            value = Subreddit(self.reddit_session, value, fetch=False)
-        elif name == "redditor" or name == "author":
-            value = Redditor(self.reddit_session, value, fetch=False)
-        object.__setattr__(self, name, value)
-
-    def __eq__(self, other):
-        return self.content_id == other.content_id
-
-    def __ne__(self, other):
-        return self.content_id != other.content_id
-
-    def _get_json_dict(self):
-        response = self._request_json(self.ABOUT_URL, as_objects=False)
-        json_dict = response.get("data")
-        return json_dict
-
-    @classmethod
-    def from_api_response(cls, reddit_session, json_dict):
-        return cls(reddit_session, json_dict=json_dict)
-
-    @property
-    def content_id(self):
-        """
-        Get the content id for this object. Just appends the appropriate
-        content type ("t1", "t2", ..., "t5") to this object's id.
-        """
-        return "_".join((self.kind, self.id))
-
-class Saveable(object):
-    """
-    Additional interface for Reddit content objects that can be saved.
-    Currently only Submissions, but this may change at a later date, as
-    eventually Comments will probably end up being saveable.
-    """
-    @require_login
-    def save(self, unsave=False):
-        """If logged in, save the content specified by `content_id`."""
-        url = urls["unsave" if unsave else "save"]
-        params = {'id': self.name,
-                  'executed': "unsaved" if unsave else "saved",
-                  'uh': self.reddit_session.modhash}
-        response = self.reddit_session._request_json(url, params)
-        _request.is_stale(urls.saved_links)
-
-    def unsave(self):
-        return self.save(unsave=True)
-        
-class Deletable(object):
-    """
-    Additional Interface for Reddit content objects that can be deleted
-    (currently Submission and Comment).
-    """
-    def delete(self):
-        url = urls["del"]
-        params = {'id' : self.name,
-                    'executed' : 'deleted',  
-                    'r' : self.subreddit, 
-                    'uh' : self.reddit_session.modhash}
-        return self.reddit_session._request_json(url, params)
-
-class Voteable(object):
-    """
-    Additional interface for Reddit content objects that can be voted on
-    (currently Submission and Comment).
-    """
-    @require_login
-    def vote(self, direction=0):
-        """
-        Vote for the given content_id in the direction specified.
-        """
-        url = urls["vote"]
-        params = {'id' : self.name,
-                  'dir' : direction,
-                  'r' : self.subreddit,
-                  'uh' : self.reddit_session.modhash}
-        return self.reddit_session._request_json(url, params)
-
-    def upvote(self):
-        return self.vote(direction=1)
-
-    def downvote(self):
-        return self.vote(direction=-1)
+# Import reddit objects
+from base_objects import RedditObject
+from comment import Comment
+from redditor import Redditor
+from submission import Submission
+from subreddit import Subreddit
+from helpers import _get_section, _get_sorter, _modify_relationship, _request
 
 class Reddit(RedditObject):
     """A class for a reddit session."""
     DEFAULT_HEADERS = {}
 
-    friend = _modify_relationship("friend")
-    friend.__doc__ = "Friend the target user."
+    _friend = _modify_relationship("friend")
+    _friend.__doc__ = "Friend the target user."
 
-    unfriend = _modify_relationship("friend", unlink=True)
-    unfriend.__doc__ = "Unfriend the target user."
+    _unfriend = _modify_relationship("friend", unlink=True)
+    _unfriend.__doc__ = "Unfriend the target user."
 
-    def __init__(self, user_agent=None):
+    def __init__(self, user_agent=None, debug=False):
+        """Specify the user agent for the application. If user_agent
+        is None and debug is True, then the user agent will be
+         "Reddit API Python Wrapper (Debug Mode)". """
         if user_agent is None:
-            if DEBUG:
+            if debug:
                 user_agent = "Reddit API Python Wrapper (Debug Mode)"
             else:
                 raise APIException("You need to set a user_agent to identify "
@@ -683,197 +353,16 @@ class Reddit(RedditObject):
             del(params["url"])
         url = urls["submit"]
         return self._request_json(url, params)
-
-class Redditor(RedditContentObject):
-    """A class for Redditor methods."""
-
-    kind = "t2"
-
-    get_overview = _get_section("/")
-    get_comments = _get_section("/comments")
-    get_submitted = _get_section("/submitted")
-
-    def __init__(self, reddit_session, user_name=None, json_dict=None,
-                 fetch=False):
-        self.user_name = user_name
-        # Store the urls we will need internally
-        self.URL = urls["redditor_page"] % self.user_name
-        self.ABOUT_URL = urls["redditor_about_page"] % self.user_name
-        super(Redditor, self).__init__(reddit_session, user_name, json_dict,
-                                       fetch)
-
-    @limit_chars()
-    def __str__(self):
-        """Have the str just be the user's name"""
-        return self.user_name.encode("utf8")
-
-    @classmethod
-    @require_captcha
-    def register(cls, password, email=""):
-        """
-        Register a new user.
-        """
-        password = str(password)
-        url = urls["register"]
-        params = {"email" : email,
-                  "op" : "reg",
-                  "passwd" : password,
-                  "passwd2" : password,
-                  "user" : self.user_name}
-        self._request_json(url, params)
-        return self.reddit_session.login(self.user_name, password)
-
-    create = register # just an alias to provide a somewhat uniform API
-
     @require_login
-    def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
-        """Return all of the current user's subreddits."""
-        return self._get_content(urls["my_reddits"], limit=limit)
-
-class Subreddit(RedditContentObject):
-    """A class for Subreddits."""
-
-    kind = "t5"
-
-    ban = _modify_relationship("banned")
-    make_contributor = _modify_relationship("contributor")
-    make_moderator = _modify_relationship("moderator")
-
-    unban = _modify_relationship("banned", unlink=True)
-    remove_contributor = _modify_relationship("contributor", unlink=True)
-    remove_moderator = _modify_relationship("moderator", unlink=True)
-
-    ban.__doc__ = "Ban the target user."
-    make_contributor.__doc__ = \
-       "Make the target user a contributor in the given subreddit."
-    make_moderator.__doc__ = \
-       "Make the target user a moderator in the given subreddit."
-
-    unban.__doc__ = "Unban the target user."
-    remove_contributor.__doc__ = \
-       "Remove the target user from contributor status in the given subreddit."
-    remove_moderator.__doc__ = \
-       "Revoke the target user's moderator privileges in the given subreddit."
-
-    get_hot = _get_sorter("/")
-    get_controversial = _get_sorter("/controversial", time="day")
-    get_new = _get_sorter("/new", sort="rising")
-    get_top = _get_sorter("/top", time="day")
-
-    def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
-                 fetch=False):
-        self.URL = urls["subreddit_page"] % subreddit_name
-        self.ABOUT_URL = urls["subreddit_about_page"] % subreddit_name
-
-        self.display_name = subreddit_name
-        super(Subreddit, self).__init__(reddit_session, subreddit_name,
-                                        json_dict, fetch)
-
-    @limit_chars()
-    def __str__(self):
-        """Just display the subreddit name."""
-        return self.display_name.encode("utf8")
-
-    @classmethod
-    @require_login
-    def create(cls, title, description="", language="English [en]",
-               type="public", content_options="any", other_options=None,
-               domain=""):
-        """
-        Create a new subreddit.
-        """
+    def create_subreddit(self, short_title, full_title, description="", language="English [en]",
+            type="public", content_options="any", other_options=None,
+            domain=""):
+        """Create a new subreddit"""
         url = urls["create"]
         # TODO: Implement the rest of the options.
-        params = {"name" : self.display_name,
-                  "title" : title,
+        params = {"name" : short_title,
+                  "title" : full_title,
                   "type" : type,
                   "uh" : self.reddit_session.modhash}
         return self._request_json(url, params)
 
-    def submit(self, *args, **kwargs):
-        """
-        Submit a new link.
-        """
-        return self.reddit_session.submit(self, *args, **kwargs)
-
-    def subscribe(self):
-        """If logged in, subscribe to the given subreddit."""
-        return self.reddit_session._subscribe(self.name)
-
-    def unsubscribe(self):
-        """If logged in, unsubscribe from the given subreddit."""
-        return self.reddit_session._subscribe(self.name,
-                                              unsubscribe=True)
-
-class Submission(RedditContentObject, Saveable, Voteable,  Deletable):
-    """A class for submissions to Reddit."""
-
-    kind = "t3"
-
-    def __init__(self, reddit_session, title=None, json_dict=None,
-                 fetch_comments=True):
-        super(Submission, self).__init__(reddit_session, title, json_dict,
-                                         fetch=True)
-        if not self.permalink.startswith(urls["reddit_url"]):
-            self.permalink = urljoin(urls["reddit_url"], self.permalink)
-
-    def __str__(self):
-        title = self.title.replace("\r\n", "")
-        return "{0} :: {1}".format(self.score, title.encode("utf-8"))
-
-    @property
-    def comments(self):
-        submission_info, comment_info = self.reddit_session._request_json(
-                                                            self.permalink)
-        comments = comment_info["data"]["children"]
-        return comments
-
-    def add_comment(self, text):
-        """If logged in, comment on the submission using the specified text."""
-        return self.reddit_session._add_comment(self.name,
-                                                subreddit_name=self.subreddit,
-                                                text=text)
-
-class Comment(RedditContentObject, Voteable,  Deletable):
-    """A class for comments."""
-
-    kind = "t1"
-
-    def __init__(self, reddit_session, json_dict):
-        super(Comment, self).__init__(reddit_session, None, json_dict, True)
-        if self.replies:
-            self.replies = self.replies["data"]["children"]
-        else:
-            self.replies = []
-
-    @limit_chars()
-    def __str__(self):
-        return getattr(self, "body",
-                       "[[ need to fetch more comments... ]]").encode("utf8")
-
-    @property
-    def is_root(self):
-        return not bool(getattr(self, "parent", False))
-
-    def reply(self, text):
-        """Reply to the comment with the specified text."""
-        return self.reddit_session._add_comment(self.name,
-                                                subreddit_name=self.subreddit,
-                                                text=text)
-
-@memoize
-@sleep_after
-def _request(reddit_session, page_url, params=None, url_data=None):
-        if url_data:
-            page_url += "?" + urllib.urlencode(url_data)
-
-        # urllib2.Request throws a 404 for some reason with data=""
-        encoded_params = None
-        if params:
-            encoded_params = urllib.urlencode(params)
-
-        request = urllib2.Request(page_url,
-                                  data=encoded_params,
-                                  headers=reddit_session.DEFAULT_HEADERS)
-        response = urllib2.urlopen(request)
-        return response.read()

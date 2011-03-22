@@ -1,0 +1,61 @@
+from base_objects import RedditContentObject
+from helpers import _get_section
+from util import limit_chars
+from decorators import require_captcha, require_login
+from settings import DEFAULT_CONTENT_LIMIT
+from urls import urls
+
+class Redditor(RedditContentObject):
+    """A class for Redditor methods."""
+
+    kind = "t2"
+
+    get_overview = _get_section("/")
+    get_comments = _get_section("/comments")
+    get_submitted = _get_section("/submitted")
+
+    def __init__(self, reddit_session, user_name=None, json_dict=None,
+                 fetch=False):
+        self.user_name = user_name
+        # Store the urls we will need internally
+        self.URL = urls["redditor_page"] % self.user_name
+        self.ABOUT_URL = urls["redditor_about_page"] % self.user_name
+        super(Redditor, self).__init__(reddit_session, user_name, json_dict,
+                                       fetch)
+
+    @limit_chars()
+    def __str__(self):
+        """Have the str just be the user's name"""
+        return self.user_name.encode("utf8")
+
+    @classmethod
+    @require_captcha
+    def register(cls, password, email=""):
+        """
+        Register a new user.
+        """
+        password = str(password)
+        url = urls["register"]
+        params = {"email" : email,
+                  "op" : "reg",
+                  "passwd" : password,
+                  "passwd2" : password,
+                  "user" : self.user_name}
+        self._request_json(url, params)
+        return self.reddit_session.login(self.user_name, password)
+
+    create = register # just an alias to provide a somewhat uniform API
+
+    @require_login
+    def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
+        """Return all of the current user's subreddits."""
+        return self._get_content(urls["my_reddits"], limit=limit)
+
+    @require_login
+    def friend(self):
+        self.reddit_session._friend(self.user_name)
+
+    @require_login
+    def unfriend(self):
+        self.reddit_session._unfriend(self.user_name)
+

@@ -4,7 +4,7 @@ Introduction
 This is a Python wrapper for Reddit's API, aiming to be as easy to use as possible. Here's a quick peek, getting the first 10 stories from the 'hot' section of the 'opensource' subreddit.
 
     import reddit_api as reddit
-    r = reddit.Reddit()
+    r = reddit.Reddit(user_agent="my_cool_application")
     stories = r.get_subreddit('opensource').get_hot(limit=10)
 
 A Few Short Examples
@@ -70,12 +70,13 @@ A Few Short Examples
 
 15. Create a subreddit:
 
-        s = r.get_subreddit("MyIncredibleSubreddit")
-        s.create(title="My Incredibly Cool Subreddit", description="It's just incredible.")
+        s = r.create_subreddit(short_title="MyIncredibleSubreddit", \
+                               full_title="my Incredibly Cool Subreddit", \
+                               description="It's incredible!)
 
 16. Friend a user:
 
-        r.friend("ketralnis")
+        r.get_redditor("ketralnis").friend()
 
 Other (more involved) examples can be found [here](http://www.github.com/mellort/reddit_api/blob/master/EXAMPLES.md).
 
@@ -111,7 +112,9 @@ Questions
 
 > Why is everything so slow?
 
-Usually that has to do with how fast reddit is responding at the moment. Check the site, see if it's responding quicker when accessing it in your browser. Otherwise, we respect the "no more than one API call per second" rule, so if you're trying to do a bunch of quick requests in succession you're going to be spaced out to one call per second. If you're having a specific issue besides something covered by one of those two things, please let us know (or file a ticket) and we'll check it out.
+Usually that has to do with how fast reddit is responding at the moment. Check
+the site, see if it's responding quicker when accessing it in your browser.
+Otherwise, we respect the "no more than one API call per two seconds" rule, so if you're trying to do a bunch of quick requests in succession you're going to be spaced out to one call per second. If you're having a specific issue besides something covered by one of those two things, please let us know (or file a ticket) and we'll check it out.
 
 > Why don't you have feature X coded yet?
 
