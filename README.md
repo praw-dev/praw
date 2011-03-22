@@ -116,10 +116,6 @@ Usually that has to do with how fast reddit is responding at the moment. Check
 the site, see if it's responding quicker when accessing it in your browser.
 Otherwise, we respect the "no more than one API call per two seconds" rule, so if you're trying to do a bunch of quick requests in succession you're going to be spaced out to one call per second. If you're having a specific issue besides something covered by one of those two things, please let us know (or file a ticket) and we'll check it out.
 
-> Why don't you have feature X coded yet?
-
-If feature X is commenting / submitting / PMing, it's because it's not really gonna happen considering how easily it'd be to misuse (even though it's easy enough without these bindings). Otherwise, it's because we didn't need it :). We tried to add everything we imagined would be useful to anyone, but if there's something missing that you'd like, please let us know what you're looking for and we can add it!
-
 License
 ------------
 All of the code contained here is licensed by the GNU GPLv3.
