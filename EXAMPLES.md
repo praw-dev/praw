@@ -2,7 +2,7 @@ More Examples
 --------------
 1. Get application ideas from /r/SomebodyMakeThis:
 
-        r = reddit.Reddit()
+        r = reddit.Reddit(user_agent="my cool project")
         sr = reddit.get_subreddit("somebodymakethis")
         # Adjust limit as desired
         ideas = sr.get_hot(limit=300)
