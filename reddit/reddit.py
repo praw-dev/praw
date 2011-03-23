@@ -25,6 +25,7 @@ from comment import Comment
 from redditor import Redditor
 from submission import Submission
 from subreddit import Subreddit
+from inbox import Inbox
 from helpers import _get_section, _get_sorter, _modify_relationship, _request
 
 class Reddit(RedditObject):
@@ -204,6 +205,11 @@ class Reddit(RedditObject):
     def get_subreddit(self, subreddit_name, *args, **kwargs):
         """Returns a Subreddit class for the user_name specified."""
         return Subreddit(self, subreddit_name, *args, **kwargs)
+
+    @require_login
+    def get_inbox(self, *args, **kwargs):
+        """Return an Inbox object."""
+        return Inbox(self, *args, **kwargs)
 
     def login(self, user=None, password=None):
         """Login to Reddit. If no user or password is provided, the user will
