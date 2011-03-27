@@ -8,7 +8,6 @@ class Inbox(RedditContentObject):
 
     def __init__(self, reddit_session, json_dict=None, fetch=True):
       self.URL = urls["inbox"]
-      self.ABOUT_URL = urls["info"]
       self.messages = None
       super(Inbox, self).__init__(reddit_session, "Inbox", json_dict, fetch)
 
