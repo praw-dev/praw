@@ -1,3 +1,5 @@
+from urls import urls
+
 class RedditObject(object):
     """
     Base class for all Reddit API objects.
@@ -82,7 +84,7 @@ class RedditContentObject(RedditObject):
         return self.content_id != other.content_id
 
     def _get_json_dict(self):
-        response = self._request_json(self.ABOUT_URL, as_objects=False)
+        response = self._request_json(urls["info"], as_objects=False)
         json_dict = response.get("data")
         return json_dict
 
