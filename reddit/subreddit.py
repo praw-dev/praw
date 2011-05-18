@@ -48,6 +48,7 @@ class Subreddit(RedditContentObject):
     get_controversial = _get_sorter("/controversial", time="day")
     get_new = _get_sorter("/new", sort="rising")
     get_top = _get_sorter("/top", time="day")
+    get_new_by_date = _get_sorter("/new", sort="new")
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
                  fetch=False):

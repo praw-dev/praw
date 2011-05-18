@@ -171,9 +171,12 @@ class Reddit(RedditObject):
             all_content = []
         if limit is not None:
             limit = int(limit)
+            fetch_all = False
+        else:
+            fetch_all = True
 
         # While we still need to fetch more content to reach our limit, do so.
-        while limit and len(all_content) < limit:
+        while fetch_all or len(all_content) < limit:
             # If the after variable isn't None, add it do the URL of the page
             # we are going to fetch.
             page_data = self._request_json(page_url, url_data=url_data)
@@ -192,8 +195,6 @@ class Reddit(RedditObject):
                 break
 
             url_data["after"] = after
-            self._get_content(page_url, limit, url_data, place_holder,
-                              all_content)
 
         # we may have in the last iteration gotten a few extra results, so trim
         # down to limit

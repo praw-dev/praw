@@ -47,7 +47,7 @@ def _get_sorter(subpath="", **defaults):
                 k = "t"
             data.setdefault(k, v)
         return self.reddit_session._get_content(urljoin(self.URL, subpath),
-                                                limit=int(limit),
+                                                limit=limit,
                                                 url_data=data,
                                                 place_holder=place_holder)
     return sorted
