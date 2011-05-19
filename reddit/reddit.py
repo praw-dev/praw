@@ -36,7 +36,7 @@ from settings import DEFAULT_CONTENT_LIMIT
 
 # Import reddit objects
 from base_objects import RedditObject
-from comment import Comment
+from comment import Comment, MoreComments
 from redditor import Redditor
 from submission import Submission
 from subreddit import Subreddit
@@ -115,7 +115,7 @@ class Reddit(RedditObject):
         """
         # TODO: This can be nicer. CONTENT_KINDS dict.
         kinds = dict((content.kind, content) for content in
-                                    (Comment, Redditor, Subreddit, Submission))
+                     (Comment, MoreComments, Redditor, Subreddit, Submission))
         try:
             kind = kinds[json_data["kind"]]
         except KeyError:
