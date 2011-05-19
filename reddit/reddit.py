@@ -145,7 +145,7 @@ class Reddit(RedditObject):
                 return True
 
     def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT,
-                     url_data=None, place_holder=None, all_content=None):
+                     url_data=None, place_holder=None):
         """A method to return Reddit content from a URL. Starts at the initial
         page_url, and fetches content using the `after` JSON data until `limit`
         entries have been fetched, or the `place_holder` has been reached.
@@ -158,17 +158,15 @@ class Reddit(RedditObject):
         :param place_holder: if not None, the method will fetch `limit`
             content, stopping if it finds content with `id` equal to
             `place_holder`.
-        :param all_content: the current list of content (used for recursion)
         :type place_holder: a string corresponding to a Reddit content id, e.g.
             't3_asdfasdf'
         :returns: a list of Reddit content, of type Subreddit, Comment, or
             Submission
         """
+        all_content = []
+
         if url_data is None:
             url_data = {}
-        if all_content is None:
-            # The list which we will populate to return with content
-            all_content = []
         if limit is not None:
             limit = int(limit)
             fetch_all = False
