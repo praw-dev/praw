@@ -16,6 +16,7 @@
 from settings import WAIT_BETWEEN_CALL_TIME 
 from urls import urls
 from functools import wraps
+from urlparse import urljoin
 import time
 
 class require_captcha(object):
@@ -36,11 +37,11 @@ class require_captcha(object):
             return self
         return self.__class__(self.func.__get__(obj, type))
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, caller, *args, **kwargs):
         # use the captcha passed in if given, otherwise get one
         self.captcha_id, self.captcha = kwargs.get("captcha",
-                                                   self.get_captcha())
-        result = self.func(*args, **kwargs)
+                                                   self.get_captcha(caller))
+        result = self.func(caller, *args, **kwargs)
         result.update(self.captcha_as_dict)
         return result
 
@@ -54,8 +55,8 @@ class require_captcha(object):
         if self.captcha_id:
             return urljoin(self.VIEW_URL, self.captcha_id + ".png")
 
-    def get_captcha(self):
-        data = Reddit()._request_json(self.URL, {"renderstyle" : "html"})
+    def get_captcha(self, caller):
+        data = caller._request_json(self.URL, {"renderstyle" : "html"})
         # TODO: fix this, it kills kittens
         self.captcha_id = data["jquery"][-1][-1][-1]
         print "Captcha URL: " + self.captcha_url
