@@ -19,3 +19,4 @@ from comment import Comment, MoreComments
 from submission import Submission
 from subreddit import Subreddit
 from redditor import Redditor
+from api_exceptions import BadCaptcha

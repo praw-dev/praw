@@ -16,7 +16,6 @@
 from base_objects import RedditContentObject
 from helpers import _modify_relationship, _get_sorter
 from util import limit_chars
-from decorators import require_login
 from urls import urls
 
 class Subreddit(RedditContentObject):
