@@ -14,6 +14,8 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 from decorators import require_login
+from helpers import _request
+from urls import urls
 
 class Saveable(object):
     """
