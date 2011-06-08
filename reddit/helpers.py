@@ -81,10 +81,12 @@ def _request(reddit_session, page_url, params=None, url_data=None):
         # urllib2.Request throws a 404 for some reason with data=""
         encoded_params = None
         if params:
+            params = dict([k, v.encode('utf-8')] for k, v in params.items())
             encoded_params = urllib.urlencode(params)
+        if isinstance(page_url, unicode):
+            page_url = urllib.quote(page_url.encode('utf-8'), ':/')
 
-        request = urllib2.Request(page_url,
-                                  data=encoded_params,
+        request = urllib2.Request(page_url, data=encoded_params,
                                   headers=reddit_session.DEFAULT_HEADERS)
         response = urllib2.urlopen(request)
         return response.read()
