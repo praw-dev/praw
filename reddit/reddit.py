@@ -66,7 +66,7 @@ class Reddit(RedditObject):
         self.DEFAULT_HEADERS["User-agent"] = user_agent
 
         _cookie_jar = cookielib.CookieJar()
-        self.opener = urllib2.build_opener(
+        self._opener = urllib2.build_opener(
             urllib2.HTTPCookieProcessor(_cookie_jar))
 
         self.user = None
@@ -82,7 +82,7 @@ class Reddit(RedditObject):
         :param url_data: the GET data to put in the url
         :returns: the open page
         """
-        return _request(self, page_url, params, url_data, self.opener)
+        return _request(self, page_url, params, url_data, self._opener)
 
     @parse_api_json_response
     def _request_json(self, page_url, params=None, url_data=None,
