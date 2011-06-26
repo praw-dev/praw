@@ -74,7 +74,8 @@ def _modify_relationship(relationship, unlink=False):
 
 @memoize
 @sleep_after
-def _request(reddit_session, page_url, params=None, url_data=None):
+def _request(reddit_session, page_url, params=None, url_data=None,
+             openerdirector=None):
         if url_data:
             page_url += "?" + urllib.urlencode(url_data)
 
@@ -88,5 +89,9 @@ def _request(reddit_session, page_url, params=None, url_data=None):
 
         request = urllib2.Request(page_url, data=encoded_params,
                                   headers=reddit_session.DEFAULT_HEADERS)
-        response = urllib2.urlopen(request)
+        # The openerdirector manages cookies on a per-session basis
+        if openerdirector:
+          response = openerdirector.open(request)
+        else:
+          response = urllib2.urlopen(request)
         return response.read()

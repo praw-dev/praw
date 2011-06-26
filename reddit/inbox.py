@@ -34,4 +34,9 @@ class Inbox(RedditContentObject):
 
     def get_new_messages(self):
       self.get_messages(force = True)
-      return [msg for msg in self.messages if msg.new]
+      return [msg for msg in self.messages if hasattr(msg, "new") and msg.new]
+      
+    def __str__(self):
+      if self.messages == None:
+        return "<Inbox: No messages>"
+      return "<Inbox: %d messages>" % len(self.messages)
