@@ -13,35 +13,29 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-import urllib
-import urllib2
 import cookielib
-import warnings
 import re
+import warnings
+import urllib2
 try:
     import json
 except ImportError:
     import simplejson as json
 
-from urls import urls
-from util import urljoin, memoize, limit_chars
-
-from api_exceptions import APIException, APIWarning, BadCaptcha, \
-    NotLoggedInException, InvalidUserPass
-
-from decorators import require_captcha, require_login, sleep_after, \
-    parse_api_json_response
-
+from api_exceptions import APIException, APIWarning
+from decorators import require_captcha, require_login, parse_api_json_response
 from settings import DEFAULT_CONTENT_LIMIT
+from urls import urls
 
 # Import reddit objects
 from base_objects import RedditObject
-from comment import Comment
+from comment import Comment, MoreComments
+from helpers import _modify_relationship, _request
+from inbox import Inbox
 from redditor import Redditor
 from submission import Submission
 from subreddit import Subreddit
-from inbox import Inbox
-from helpers import _get_section, _get_sorter, _modify_relationship, _request
+
 
 class Reddit(RedditObject):
     """A class for a reddit session."""
@@ -115,7 +109,7 @@ class Reddit(RedditObject):
         """
         # TODO: This can be nicer. CONTENT_KINDS dict.
         kinds = dict((content.kind, content) for content in
-                                    (Comment, Redditor, Subreddit, Submission))
+                     (Comment, MoreComments, Redditor, Subreddit, Submission))
         try:
             kind = kinds[json_data["kind"]]
         except KeyError:
@@ -133,47 +127,38 @@ class Reddit(RedditObject):
         """
         return self.user.content_id
 
-    def _found_place_holder(self, children, place_holder=None):
-        """
-        Helper function, checks if any of the children's id match placeholder.
-        Rather useless, but allows breaking all the way out of a nested loop.
-        """
-        if place_holder is None:
-            return False
-        for child in children:
-            if child.id == place_holder:
-                return True
-
     def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT,
-                     url_data=None, place_holder=None, all_content=None):
-        """A method to return Reddit content from a URL. Starts at the initial
-        page_url, and fetches content using the `after` JSON data until `limit`
-        entries have been fetched, or the `place_holder` has been reached.
+                     url_data=None, place_holder=None):
+        """A generator method to return Reddit content from a URL. Starts at
+        the initial page_url, and fetches content using the `after` JSON data
+        until `limit` entries have been fetched, or the `place_holder` has been
+        reached.
 
         :param page_url: the url to start fetching content from
         :param limit: the maximum number of content entries to fetch. if None,
-            then fetch unlimited entries--this would be used in conjunction with
-            the place_holder param.
+            then fetch unlimited entries--this would be used in conjunction
+            with the place_holder param.
         :param url_data: extra GET data to put in the url
         :param place_holder: if not None, the method will fetch `limit`
             content, stopping if it finds content with `id` equal to
             `place_holder`.
-        :param all_content: the current list of content (used for recursion)
         :type place_holder: a string corresponding to a Reddit content id, e.g.
             't3_asdfasdf'
         :returns: a list of Reddit content, of type Subreddit, Comment, or
             Submission
         """
+        content_found = 0
+
         if url_data is None:
             url_data = {}
-        if all_content is None:
-            # The list which we will populate to return with content
-            all_content = []
         if limit is not None:
             limit = int(limit)
+            fetch_all = False
+        else:
+            fetch_all = True
 
         # While we still need to fetch more content to reach our limit, do so.
-        while limit and len(all_content) < limit:
+        while fetch_all or content_found < limit:
             # If the after variable isn't None, add it do the URL of the page
             # we are going to fetch.
             page_data = self._request_json(page_url, url_data=url_data)
@@ -183,23 +168,18 @@ class Reddit(RedditObject):
                 data = page_data["data"]
             except KeyError:
                 break
-
             after = data.get('after')
             children = data.get('children')
-            all_content.extend(children)
+            for child in children:
+                yield child
+                content_found += 1
 
-            if self._found_place_holder(children, place_holder) or not after:
+                # Terminate when we reached the limit, or place holder
+                if child.id == place_holder or content_found == limit:
+                    return
+            if not after:
                 break
-
             url_data["after"] = after
-            self._get_content(page_url, limit, url_data, place_holder,
-                              all_content)
-
-        # we may have in the last iteration gotten a few extra results, so trim
-        # down to limit
-        if limit:
-            all_content = all_content[:limit]
-        return all_content
 
     @require_login
     def _fetch_modhash(self):
@@ -330,7 +310,7 @@ class Reddit(RedditObject):
 
     @require_login
     @require_captcha
-    def compose_message(self, recipient, subject, message):
+    def compose_message(self, recipient, subject, message, captcha=None):
         """
         Send a message to another redditor.
         """
@@ -340,6 +320,8 @@ class Reddit(RedditObject):
                   "to" : str(recipient),
                   "uh" : self.modhash,
                   "user" : self.user}
+        if captcha:
+            params.update(captcha)
         return self._request_json(url, params)
 
     def search_reddit_names(self, query):
@@ -353,27 +335,27 @@ class Reddit(RedditObject):
 
     @require_login
     @require_captcha
-    def submit(self, subreddit, url, title, submit_type=None, text=None):
+    def submit(self, subreddit, url, title, submit_type=None, text=None,
+               captcha=None):
         """
         Submit a new link.
 
         Accepts either a Subreddit object or a str containing the subreddit
         name.
         """
-        sr_name = str(subreddit)
-
         params = {"kind" : "link",
-                  "sr" : sr_name,
+                  "sr" : str(subreddit),
                   "title" : title,
                   "uh" : self.modhash,
-                  "url" : url,
-                  "id" : self.user.id}
+                  "url" : url}
         if submit_type == 'self' and text != None:
             params["kind"] = submit_type
             params["text"] = text
             del(params["url"])
-        url = urls["submit"]
-        return self._request_json(url, params)
+        if captcha:
+            params.update(captcha)
+        return self._request_json(urls['submit'], params)
+
     @require_login
     def create_subreddit(self, short_title, full_title, description="", language="English [en]",
             type="public", content_options="any", other_options=None,

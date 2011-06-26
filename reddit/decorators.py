@@ -16,6 +16,8 @@
 from settings import WAIT_BETWEEN_CALL_TIME 
 from urls import urls
 from functools import wraps
+from urlparse import urljoin
+from api_exceptions import BadCaptcha, InvalidUserPass, NotLoggedInException
 import time
 
 class require_captcha(object):
@@ -36,31 +38,33 @@ class require_captcha(object):
             return self
         return self.__class__(self.func.__get__(obj, type))
 
-    def __call__(self, *args, **kwargs):
-        # use the captcha passed in if given, otherwise get one
-        self.captcha_id, self.captcha = kwargs.get("captcha",
-                                                   self.get_captcha())
-        result = self.func(*args, **kwargs)
-        result.update(self.captcha_as_dict)
-        return result
+    def __call__(self, caller, *args, **kwargs):
+        do_captcha = False
+        while True:
+            try:
+                if do_captcha:
+                    self.get_captcha(caller)
+                    kwargs['captcha'] = self.captcha_as_dict
+                return self.func(caller, *args, **kwargs)
+            except BadCaptcha:
+                do_captcha = True
 
     @property
     def captcha_as_dict(self):
-        return {"iden" : self.captcha_id,
-                "captcha" : self.captcha}
+        return {"iden" : self.captcha_id, "captcha" : self.captcha}
 
     @property
     def captcha_url(self):
         if self.captcha_id:
             return urljoin(self.VIEW_URL, self.captcha_id + ".png")
 
-    def get_captcha(self):
-        data = Reddit()._request_json(self.URL, {"renderstyle" : "html"})
+    def get_captcha(self, caller):
+        data = caller._request_json(self.URL, {"renderstyle" : "html"})
         # TODO: fix this, it kills kittens
         self.captcha_id = data["jquery"][-1][-1][-1]
         print "Captcha URL: " + self.captcha_url
         self.captcha = raw_input("Captcha: ")
-        return self.captcha_id, self.captcha
+
 
 def require_login(func):
     """A decorator to ensure that a user has logged in before calling the
@@ -116,10 +120,11 @@ def parse_api_json_response(func):
         if not return_value:
             return
 	else:
-	    # todo, clean up this code. for right now, i just surrounded
-	    # it with a try, except. basically the issue is when the _json_request
-	    # wants to return a list, for example when you request the page for a 
-	    # story; the reddit api returns json for the story and the comments.
+	    # todo, clean up this code. for right now, i just surrounded it
+	    # with a try, except. basically the issue is when the _json_request
+	    # wants to return a list, for example when you request the page for
+	    # a story; the reddit api returns json for the story and the
+	    # comments.
 	    try:
  	    	for k in return_value.keys():
 		    if k not in (u"jquery", "iden", "captcha", "kind", "data"):
@@ -130,6 +135,12 @@ def parse_api_json_response(func):
 		    values = [x[-1] for x in jquery]
 	   	    if [".error.USER_REQUIRED"] in values:
 			raise NotLoggedInException()
+                    elif [".error.WRONG_PASSWORD.field-passwd"] in values:
+                        raise InvalidUserPass()
+                    elif [".error.RATELIMIT.field-vdelay"] in values:
+                        raise Exception('Rate limit exceeded')
+                    elif [".error.BAD_CAPTCHA.field-captcha"] in values:
+                        raise BadCaptcha()
   	    except AttributeError:
 		pass
         return return_value

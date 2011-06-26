@@ -39,6 +39,8 @@ class Submission(RedditContentObject, Saveable, Voteable,  Deletable):
         submission_info, comment_info = self.reddit_session._request_json(
                                                             self.permalink)
         comments = comment_info["data"]["children"]
+        for comment in comments:
+            comment._update_submission(self)
         return comments
 
     def add_comment(self, text):
