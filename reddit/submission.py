@@ -46,6 +46,6 @@ class Submission(RedditContentObject, Saveable, Voteable,  Deletable):
     def add_comment(self, text):
         """If logged in, comment on the submission using the specified text."""
         return self.reddit_session._add_comment(self.name,
-                                                subreddit_name=self.subreddit,
+                                                subreddit_name=self.subreddit.display_name,
                                                 text=text)
 

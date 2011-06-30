@@ -56,7 +56,7 @@ class Comment(RedditContentObject, Voteable,  Deletable):
     def reply(self, text):
         """Reply to the comment with the specified text."""
         return self.reddit_session._add_comment(self.name,
-                                                subreddit_name=self.subreddit,
+                                                subreddit_name=self.subreddit.display_name,
                                                 text=text)
 
 class MoreComments(RedditContentObject):

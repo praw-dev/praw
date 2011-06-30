@@ -45,7 +45,7 @@ class Deletable(object):
         url = urls["del"]
         params = {'id' : self.name,
                     'executed' : 'deleted',  
-                    'r' : self.subreddit, 
+                    'r' : self.subreddit.display_name, 
                     'uh' : self.reddit_session.modhash}
         return self.reddit_session._request_json(url, params)
 
@@ -62,7 +62,7 @@ class Voteable(object):
         url = urls["vote"]
         params = {'id' : self.name,
                   'dir' : direction,
-                  'r' : self.subreddit,
+                  'r' : self.subreddit.display_name,
                   'uh' : self.reddit_session.modhash}
         return self.reddit_session._request_json(url, params)
 
