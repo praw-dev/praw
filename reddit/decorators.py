@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-from settings import WAIT_BETWEEN_CALL_TIME 
+from settings import WAIT_BETWEEN_CALL_TIME
 from urls import urls
 from functools import wraps
 from urlparse import urljoin

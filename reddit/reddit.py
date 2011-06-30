@@ -318,7 +318,7 @@ class Reddit(RedditObject):
                   "subject" : subject,
                   "to" : str(recipient),
                   "uh" : self.modhash,
-                  "user" : self.user}
+                  "user" : self.user.user_name}
         if captcha:
             params.update(captcha)
         return self._request_json(url, params)
