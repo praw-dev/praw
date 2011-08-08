@@ -119,29 +119,30 @@ def parse_api_json_response(func):
         return_value = func(*args, **kwargs)
         if not return_value:
             return
-	else:
-	    # todo, clean up this code. for right now, i just surrounded it
-	    # with a try, except. basically the issue is when the _json_request
-	    # wants to return a list, for example when you request the page for
-	    # a story; the reddit api returns json for the story and the
-	    # comments.
-	    try:
- 	    	for k in return_value.keys():
-		    if k not in (u"jquery", "iden", "captcha", "kind", "data"):
-			warnings.warn("Return value keys contained "
-				      "{0}!".format(return_value.keys()))
-		jquery = return_value.get("jquery")
-	 	if jquery:
-		    values = [x[-1] for x in jquery]
-	   	    if [".error.USER_REQUIRED"] in values:
-			raise NotLoggedInException()
+        else:
+            # todo, clean up this code. for right now, i just surrounded it
+            # with a try, except. basically the issue is when the _json_request
+            # wants to return a list, for example when you request the page for
+            # a story; the reddit api returns json for the story and the
+            # comments.
+            try:
+                jquery = None
+                for k in return_value.keys():
+                    if k not in (u"jquery", "iden", "captcha", "kind", "data"):
+                        warnings.warn("Return value keys contained "
+                                "{0}!".format(return_value.keys()))
+                        jquery = return_value.get("jquery")
+                if jquery:
+                    values = [x[-1] for x in jquery]
+                    if [".error.USER_REQUIRED"] in values:
+                        raise NotLoggedInException()
                     elif [".error.WRONG_PASSWORD.field-passwd"] in values:
                         raise InvalidUserPass()
                     elif [".error.RATELIMIT.field-vdelay"] in values:
                         raise Exception('Rate limit exceeded')
                     elif [".error.BAD_CAPTCHA.field-captcha"] in values:
                         raise BadCaptcha()
-  	    except AttributeError:
-		pass
-        return return_value
+            except AttributeError:
+                pass
+            return return_value
     return error_checked_func

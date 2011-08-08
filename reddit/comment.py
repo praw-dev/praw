@@ -71,6 +71,10 @@ class MoreComments(RedditContentObject):
 
     def _update_submission(self, _): pass
 
+    @limit_chars()
+    def __str__(self):
+        return "[[ need to fetch more comments... ]]".encode("utf8")
+
     @property
     def comments(self):
         url = urljoin(self.parent.submission.permalink, self.parent.id)

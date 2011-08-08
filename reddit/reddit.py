@@ -200,6 +200,21 @@ class Reddit(RedditObject):
         """Returns a Subreddit class for the user_name specified."""
         return Subreddit(self, subreddit_name, *args, **kwargs)
 
+    def get_submission_by_id(self, story_id):
+        """ Given a story id, possibly prefixed by t3, return a 
+        Submission object, also fetching its comments. """
+        if story_id.startswith("t3_"):
+            story_id = story_id.split("_")[1]
+        submission_info, comment_info = self._request_json(
+                urls["comments"] + story_id)
+        submission = submission_info["data"]["children"][0]
+        comments = comment_info["data"]["children"]
+        for comment in comments:
+            comment._update_submission(submission)
+
+        return submission
+
+
     @require_login
     def get_inbox(self, *args, **kwargs):
         """Return an Inbox object."""

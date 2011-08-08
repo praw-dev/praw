@@ -61,7 +61,7 @@ class Voteable(object):
         """
         url = urls["vote"]
         params = {'id' : self.name,
-                  'dir' : direction,
+                  'dir' : str(direction),
                   'r' : self.subreddit.display_name,
                   'uh' : self.reddit_session.modhash}
         return self.reddit_session._request_json(url, params)
