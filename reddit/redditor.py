@@ -30,22 +30,30 @@ class Redditor(RedditContentObject):
     get_submitted = _get_section("/submitted")
 
     def __init__(self, reddit_session, user_name=None, json_dict=None,
-                 fetch=False):
+                 fetch=True):
         self.user_name = user_name
         # Store the urls we will need internally
         self.URL = urls["redditor_page"] % self.user_name
         self.ABOUT_URL = urls["redditor_about_page"] % self.user_name
+
         super(Redditor, self).__init__(reddit_session, user_name, json_dict,
                                        fetch)
+
+    # overriding base class _get_json_dict because url is different.
+    # ideally this would be abstracted, but this is a bandaid for an
+    # existing problem. should rewrite a lot of this in the future.
+    def _get_json_dict(self):
+        response = self._request_json(self.ABOUT_URL, as_objects=False)
+        json_dict = response.get("data")
+        return json_dict
 
     @limit_chars()
     def __str__(self):
         """Have the str just be the user's name"""
         return self.user_name.encode("utf8")
 
-    @classmethod
     @require_captcha
-    def register(cls, password, email=""):
+    def register(self, password, email=""):
         """
         Register a new user.
         """
