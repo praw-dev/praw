@@ -7,6 +7,17 @@ This is a Python wrapper for Reddit's API, aiming to be as easy to use as possib
     r = reddit.Reddit(user_agent="my_cool_application")
     stories = r.get_subreddit('opensource').get_hot(limit=10)
 
+Install
+-------
+You can install via `pip` 
+
+    pip install reddit
+
+Or via `setup.py`
+
+    python setup.py install
+
+
 A Few Short Examples
 --------------------
 
