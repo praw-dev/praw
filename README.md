@@ -107,6 +107,11 @@ I coded a few quick applications/scripts with this wrapper:
 
 I hope that this wrapper allows for many more quick and useful applications to be made!
 
+Dependencies
+------------
+
+* [setuptools](http://pypi.python.org/pypi/setuptools) is required to install reddit_api.
+
 Questions
 ------------
 
