@@ -16,7 +16,7 @@
 from base_objects import RedditContentObject
 from helpers import _get_section
 from util import limit_chars
-from decorators import require_captcha, require_login
+from decorators import require_login
 from settings import DEFAULT_CONTENT_LIMIT
 from urls import urls
 

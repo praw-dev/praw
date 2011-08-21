@@ -43,9 +43,11 @@ class Reddit(RedditObject):
 
     _friend = _modify_relationship("friend")
     _friend.__doc__ = "Friend the target user."
+    _friend.__name__ = "_friend"
 
     _unfriend = _modify_relationship("friend", unlink=True)
     _unfriend.__doc__ = "Unfriend the target user."
+    _unfriend.__name__ = "_unfriend"
 
     def __init__(self, user_agent=None, debug=False):
         """Specify the user agent for the application. If user_agent

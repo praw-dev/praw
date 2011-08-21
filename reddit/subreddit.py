@@ -48,6 +48,8 @@ class Subreddit(RedditContentObject):
     get_new = _get_sorter("/new", sort="rising")
     get_top = _get_sorter("/top", time="day")
     get_new_by_date = _get_sorter("/new", sort="new")
+    get_new_by_date.__doc__ = \
+        "Fetch new stories by submission date, rather than by 'rising'"
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
                  fetch=False):
