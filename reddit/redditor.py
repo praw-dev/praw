@@ -64,7 +64,7 @@ class Redditor(RedditContentObject):
     @require_login
     def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return all of the current user's subreddits."""
-        return self._get_content(urls["my_reddits"], limit=limit)
+        return self.reddit_session._get_content(urls["my_reddits"], limit=limit)
 
     @require_login
     def friend(self):
