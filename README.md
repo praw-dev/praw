@@ -113,7 +113,6 @@ Extra usage info
     will return an infinite generator that will continue fetching
     stories until reddit hiccups (I wouldn't expect more than ~300
     stories). 
-* 
 
 Example Applications/Scripts
 ----------------------------
