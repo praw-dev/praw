@@ -383,3 +383,17 @@ class Reddit(RedditObject):
                   "uh" : self.reddit_session.modhash}
         return self._request_json(url, params)
 
+    @require_captcha
+    def create_redditor(self, password, email=""):
+        """
+        Register a new user.
+        """
+        password = str(password)
+        url = urls["register"]
+        params = {"email" : email,
+                  "op" : "reg",
+                  "passwd" : password,
+                  "passwd2" : password,
+                  "user" : self.user_name}
+        return self._request_json(url, params)
+

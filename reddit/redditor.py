@@ -52,23 +52,6 @@ class Redditor(RedditContentObject):
         """Have the str just be the user's name"""
         return self.user_name.encode("utf8")
 
-    @require_captcha
-    def register(self, password, email=""):
-        """
-        Register a new user.
-        """
-        password = str(password)
-        url = urls["register"]
-        params = {"email" : email,
-                  "op" : "reg",
-                  "passwd" : password,
-                  "passwd2" : password,
-                  "user" : self.user_name}
-        self._request_json(url, params)
-        return self.reddit_session.login(self.user_name, password)
-
-    create = register # just an alias to provide a somewhat uniform API
-
     @require_login
     def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return all of the current user's subreddits."""
