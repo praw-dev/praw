@@ -14,7 +14,6 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 from reddit import Reddit
-from reddit import Reddit
 from comment import Comment, MoreComments
 from submission import Submission
 from subreddit import Subreddit
