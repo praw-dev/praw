@@ -276,6 +276,13 @@ class Reddit(RedditObject):
                   'uh': self.modhash,
                   'r': subreddit_name}
         self._request_json(url, params)
+        
+    def _mark_as_read(self, content_ids):
+        """ Marks each of the supplied content_ids (comments) as read """
+        url = urls["read_message"]
+        params = {'id': ','.join(content_ids),
+                  'uh': self.modhash}
+        self._request_json(url, params)
 
     def get_front_page(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return the reddit front page. Login isn't required, but you'll only

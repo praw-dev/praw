@@ -43,4 +43,8 @@ class Comment(RedditContentObject, Voteable,  Deletable):
         return self.reddit_session._add_comment(self.name,
                                                 subreddit_name=self.subreddit,
                                                 text=text)
+                                                
+    def mark_read(self):
+        """ Marks the comment as read """
+        return self.reddit_session._mark_as_read([self.content_id])
 
