@@ -276,7 +276,8 @@ class Reddit(RedditObject):
                   'uh': self.modhash,
                   'r': subreddit_name}
         self._request_json(url, params)
-        
+    
+    @require_login
     def _mark_as_read(self, content_ids):
         """ Marks each of the supplied content_ids (comments) as read """
         url = urls["read_message"]
