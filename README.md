@@ -52,7 +52,7 @@ A Few Short Examples
 
 5. Comment on story (requires login):
 
-        story.comment("text")
+        story.add_comment("text")
 
 6. Reply to comment (requires login):
 
