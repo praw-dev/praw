@@ -66,19 +66,15 @@ A Few Short Examples
 
         saved_urls = [saved_link.url for saved_link in r.get_saved_links()]
 
-9. Get comments from all reddits (i.e. http://www.reddit.com/comments:
-
-        r.get_comments(limit=25)
-
-10. Get content newer than a comment or submission's id:
+9. Get content newer than a comment or submission's id:
 
         r_python.get_top(limit=None, place_holder=submission.id)
 
-11. Comments from a given submission:
+10. Comments from a given submission:
 
         submission.comments
 
-12. Subscribe to a subreddit:
+13. Subscribe to a subreddit:
 
         subreddit.subscribe()
 
@@ -86,17 +82,17 @@ A Few Short Examples
 
         submission.save()
         
-14. Delete a submission:
+13. Delete a submission:
 
         submission.delete()
 
-15. Create a subreddit:
+14. Create a subreddit:
 
         s = r.create_subreddit(short_title="MyIncredibleSubreddit", \
                                full_title="my Incredibly Cool Subreddit", \
                                description="It's incredible!)
 
-16. Friend a user:
+15. Friend a user:
 
         r.get_redditor("ketralnis").friend()
 
