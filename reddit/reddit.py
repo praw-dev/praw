@@ -281,7 +281,7 @@ class Reddit(RedditObject):
     def _mark_as_read(self, content_ids):
         """ Marks each of the supplied content_ids (comments) as read """
         url = urls["read_message"]
-        params = {'id': ','.join(content_ids),
+        params = {'id': ','.join(map(str,content_ids)),
                   'uh': self.modhash}
         self._request_json(url, params)
 
