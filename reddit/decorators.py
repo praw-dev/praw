@@ -19,6 +19,7 @@ from functools import wraps
 from urlparse import urljoin
 from api_exceptions import BadCaptcha, InvalidUserPass, NotLoggedInException
 import time
+import warnings
 
 class require_captcha(object):
     """
