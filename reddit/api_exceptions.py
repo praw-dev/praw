@@ -31,6 +31,10 @@ class NotLoggedInException(APIException):
     def __str__(self):
         return "You need to login to do that!"
 
+class RateLimitException(APIException):
+    """An exception for when the client hits Reddit's rate limits."""
+    pass
+
 class InvalidUserPass(APIException):
     """An exception for failed logins."""
     def __str__(self):
