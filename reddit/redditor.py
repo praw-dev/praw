@@ -58,6 +58,11 @@ class Redditor(RedditContentObject):
         return self.reddit_session._get_content(urls["my_reddits"], limit=limit)
 
     @require_login
+    def get_my_moderation(self, limit=DEFAULT_CONTENT_LIMIT):
+        """Return all of the current user's subreddits that they moderate."""
+        return self.reddit_session._get_content(urls["my_moderation"], limit=limit)
+
+    @require_login
     def friend(self):
         self.reddit_session._friend(self.user_name)
 
