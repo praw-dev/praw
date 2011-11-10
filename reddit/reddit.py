@@ -14,7 +14,6 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 import cookielib
-import re
 import warnings
 import urllib2
 try:
@@ -184,15 +183,10 @@ class Reddit(RedditObject):
 
     @require_login
     def _fetch_modhash(self):
-        """Grab the current user's modhash. Basically, just fetch any Reddit
-        HTML page (can just get first 1200 chars) and search for
-        'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
-        """
-        # TODO: find the right modhash url, this is only temporary
-        URL = urls["help"]
-        data = self._request(URL)
-        match = re.search(r"modhash[^,]*", data)
-        self.modhash = match.group(0).split(": ")[1].strip(" '")
+        """Grab the current user's modhash."""
+        URL = urls["me.json"]
+        data = json.load(self._opener.open(URL))
+        self.modhash = data['data']['modhash'] if 'data' in data else None
 
     def get_redditor(self, user_name, *args, **kwargs):
         """Return a Redditor class for the user_name specified."""
@@ -215,7 +209,6 @@ class Reddit(RedditObject):
             comment._update_submission(submission)
 
         return submission
-
 
     @require_login
     def get_inbox(self, *args, **kwargs):
