@@ -14,6 +14,7 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 from base_objects import RedditContentObject
+from comment import Comment, MoreComments
 from features import Saveable, Voteable, Deletable
 from urls import urls
 from util import urljoin
@@ -23,12 +24,12 @@ class Submission(RedditContentObject, Saveable, Voteable,  Deletable):
 
     kind = "t3"
 
-    def __init__(self, reddit_session, title=None, json_dict=None,
-                 fetch_comments=True):
+    def __init__(self, reddit_session, title=None, json_dict=None):
         super(Submission, self).__init__(reddit_session, title, json_dict,
                                          fetch=True)
         if not self.permalink.startswith(urls["reddit_url"]):
             self.permalink = urljoin(urls["reddit_url"], self.permalink)
+        self._comments = None
 
     def __str__(self):
         title = self.title.replace("\r\n", "")
@@ -36,12 +37,24 @@ class Submission(RedditContentObject, Saveable, Voteable,  Deletable):
 
     @property
     def comments(self):
-        submission_info, comment_info = self.reddit_session._request_json(
-                                                            self.permalink)
-        comments = comment_info["data"]["children"]
+      try:
+        if self._comments == None:
+            submission_info, comment_info = self.reddit_session._request_json(
+                self.permalink)
+            self._comments = comment_info["data"]["children"]
+            for comment in self._comments:
+                comment._update_submission(self)
+        return self._comments
+      except Exception, e:
+          # Need to handle possible exceptions
+          print e
+          raise
+
+    @comments.setter
+    def comments(self, comments):
         for comment in comments:
             comment._update_submission(self)
-        return comments
+        self._comments = comments
 
     def add_comment(self, text):
         """If logged in, comment on the submission using the specified text."""

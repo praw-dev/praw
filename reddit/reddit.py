@@ -186,13 +186,13 @@ class Reddit(RedditObject):
     def _fetch_modhash(self):
         """Grab the current user's modhash. Basically, just fetch any Reddit
         HTML page (can just get first 1200 chars) and search for
-        'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
+        'modhash": "1233asdfawefasdf"', using re.search to grab the modhash.
         """
         # TODO: find the right modhash url, this is only temporary
         URL = urls["help"]
         data = self._request(URL)
-        match = re.search(r"modhash[^,]*", data)
-        self.modhash = match.group(0).split(": ")[1].strip(" '")
+        match = re.search(r"modhash\": \"([^\"]+)", data)
+        self.modhash = match.group(1)
 
     def get_redditor(self, user_name, *args, **kwargs):
         """Return a Redditor class for the user_name specified."""
@@ -278,6 +278,13 @@ class Reddit(RedditObject):
         """Return the reddit front page. Login isn't required, but you'll only
         see your own front page if you are logged in."""
         return self._get_content(urls["reddit_url"], limit=limit)
+
+    def get_submission(self, url):
+        """Return a submission object for the given url."""
+        submission_info, comment_info = self._request_json(url)
+        submission = submission_info['data']['children'][0]
+        submission.comments = comment_info['data']['children']
+        return submission
 
     @require_login
     def get_saved_links(self, limit=DEFAULT_CONTENT_LIMIT):
