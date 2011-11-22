@@ -16,6 +16,7 @@
 from settings import WAIT_BETWEEN_CALL_TIME 
 from urls import urls
 from functools import wraps
+import warnings
 import time
 
 class require_captcha(object):
