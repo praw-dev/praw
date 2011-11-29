@@ -28,7 +28,7 @@ def setUpModule():
     print 'Initializing setup'
     r = reddit.Reddit('reddit_api')
     r_auth = reddit.Reddit('reddit_api')
-    r_auth.login("PyAPITestUser2", 1111)
+    r_auth.login("PyAPITestUser2", '1111')
 
     front_page = list(r.get_front_page(limit=5))
     auth_front_page = list(r_auth.get_front_page(limit=5))

@@ -66,6 +66,7 @@ class Reddit(RedditObject):
             urllib2.HTTPCookieProcessor(_cookie_jar))
 
         self.user = None
+        self.modhash = None
 
     def __str__(self):
         return "Open Session (%s)" % (self.user or "Unauthenticated")
@@ -114,7 +115,11 @@ class Reddit(RedditObject):
         try:
             kind = kinds[json_data["kind"]]
         except KeyError:
-            pass
+            if 'json' in json_data:
+                if len(json_data) == 1:
+                    return json_data['json']
+                else:
+                    warnings.warn('Unknown object type: %s' % json_data)
         else:
             return kind.from_api_response(self, json_data["data"])
         return json_data
@@ -182,18 +187,6 @@ class Reddit(RedditObject):
                 break
             url_data["after"] = after
 
-    @require_login
-    def _fetch_modhash(self):
-        """Grab the current user's modhash. Basically, just fetch any Reddit
-        HTML page (can just get first 1200 chars) and search for
-        'modhash: 1233asdfawefasdf', using re.search to grab the modhash.
-        """
-        # TODO: find the right modhash url, this is only temporary
-        URL = urls["help"]
-        data = self._request(URL)
-        match = re.search(r"modhash[^,]*", data)
-        self.modhash = match.group(0).split(": ")[1].strip(" '")
-
     def get_redditor(self, user_name, *args, **kwargs):
         """Return a Redditor class for the user_name specified."""
         return Redditor(self, user_name, *args, **kwargs)
@@ -237,12 +230,14 @@ class Reddit(RedditObject):
         params = {'id' : '#login_login-main',
                   'op' : 'login-main',
                   'passwd' : password,
-                  'user' : user}
-        self._request_json(url, params)
+                  'user' : user,
+                  'api_type' : 'json'}
+        response = self._request_json(url, params)
+        try:
+            self.modhash = response['data']['modhash']
+        except:
+            raise Exception('Login failed: Unexpected result\n---\n%s\n---' % response)
         self.user = self.get_redditor(user)
-        # Get and store the modhash; it will be needed for API requests
-        # which involve this user.
-        self._fetch_modhash()
 
     @require_login
     def logout(self):

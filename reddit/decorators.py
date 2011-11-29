@@ -17,9 +17,15 @@ from settings import WAIT_BETWEEN_CALL_TIME
 from urls import urls
 from functools import wraps
 from urlparse import urljoin
-from api_exceptions import BadCaptcha, InvalidUserPass, NotLoggedInException
+import api_exceptions
+import reddit
 import time
 import warnings
+
+ERROR_MAPPING = {'USER_REQUIRED'  : api_exceptions.NotLoggedInException,
+                 'WRONG_PASSWORD' : api_exceptions.InvalidUserPass,
+                 'RATELIMIT'      : api_exceptions.RateLimitExceeded,
+                 'BAD_CAPTCHA'    : api_exceptions.BadCaptcha}
 
 class require_captcha(object):
     """
@@ -72,12 +78,14 @@ def require_login(func):
     function."""
     @wraps(func)
     def login_reqd_func(self, *args, **kwargs):
-        try:
+        if isinstance(self, reddit.Reddit):
             user = self.user
-        except AttributeError:
+            modhash = self.modhash
+        else:
             user = self.reddit_session.user
+            modhash = self.reddit_session.modhash
 
-        if user is None:
+        if user is None or modhash is None:
             raise NotLoggedInException()
         else:
             return func(self, *args, **kwargs)
@@ -121,29 +129,19 @@ def parse_api_json_response(func):
         if not return_value:
             return
         else:
-            # todo, clean up this code. for right now, i just surrounded it
-            # with a try, except. basically the issue is when the _json_request
-            # wants to return a list, for example when you request the page for
-            # a story; the reddit api returns json for the story and the
-            # comments.
             try:
-                jquery = None
                 for k in return_value.keys():
-                    if k not in (u"jquery", "iden", "captcha", "kind", "data"):
+                    if k not in ("iden", "captcha", "kind", "data", "errors"):
                         warnings.warn("Return value keys contained "
                                 "{0}!".format(return_value.keys()))
-                        jquery = return_value.get("jquery")
-                if jquery:
-                    values = [x[-1] for x in jquery]
-                    if [".error.USER_REQUIRED"] in values:
-                        raise NotLoggedInException()
-                    elif [".error.WRONG_PASSWORD.field-passwd"] in values:
-                        raise InvalidUserPass()
-                    elif [".error.RATELIMIT.field-vdelay"] in values:
-                        raise Exception('Rate limit exceeded')
-                    elif [".error.BAD_CAPTCHA.field-captcha"] in values:
-                        raise BadCaptcha()
+                if 'errors' in return_value and return_value['errors']:
+                    assert len(return_value['errors']) == 1
+                    error, msg, other = return_value['errors'][0]
+                    if error in ERROR_MAPPING:
+                        raise ERROR_MAPPING[error](msg)
+                    else:
+                        raise Exception('(Unknown) %s: %s (%s)' % (errors, msg, other))
             except AttributeError:
-                pass
+                raise
             return return_value
     return error_checked_func
