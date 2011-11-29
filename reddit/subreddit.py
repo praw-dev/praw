@@ -43,11 +43,11 @@ class Subreddit(RedditContentObject):
     remove_moderator.__doc__ = \
        "Revoke the target user's moderator privileges in the given subreddit."
 
-    get_hot = _get_sorter("/")
-    get_controversial = _get_sorter("/controversial", time="day")
-    get_new = _get_sorter("/new", sort="rising")
-    get_top = _get_sorter("/top", time="day")
-    get_new_by_date = _get_sorter("/new", sort="new")
+    get_hot = _get_sorter("")
+    get_controversial = _get_sorter("controversial", time="day")
+    get_new = _get_sorter("new", sort="rising")
+    get_top = _get_sorter("top", time="day")
+    get_new_by_date = _get_sorter("new", sort="new")
     get_new_by_date.__doc__ = \
         "Fetch new stories by submission date, rather than by 'rising'"
 

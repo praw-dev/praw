@@ -17,7 +17,7 @@ from base_objects import RedditContentObject
 from comment import Comment, MoreComments
 from features import Saveable, Voteable, Deletable
 from urls import urls
-from util import urljoin
+from urlparse import urljoin
 
 class Submission(RedditContentObject, Saveable, Voteable,  Deletable):
     """A class for submissions to Reddit."""

@@ -17,9 +17,15 @@ from settings import WAIT_BETWEEN_CALL_TIME
 from urls import urls
 from functools import wraps
 from urlparse import urljoin
-from api_exceptions import BadCaptcha, InvalidUserPass, NotLoggedInException
+import api_exceptions
+import reddit
 import time
 import warnings
+
+ERROR_MAPPING = {'USER_REQUIRED'  : api_exceptions.NotLoggedInException,
+                 'WRONG_PASSWORD' : api_exceptions.InvalidUserPass,
+                 'RATELIMIT'      : api_exceptions.RateLimitExceeded,
+                 'BAD_CAPTCHA'    : api_exceptions.BadCaptcha}
 
 class require_captcha(object):
     """
@@ -47,7 +53,7 @@ class require_captcha(object):
                     self.get_captcha(caller)
                     kwargs['captcha'] = self.captcha_as_dict
                 return self.func(caller, *args, **kwargs)
-            except BadCaptcha:
+            except api_exceptions.BadCaptcha:
                 do_captcha = True
 
     @property
@@ -60,6 +66,7 @@ class require_captcha(object):
             return urljoin(self.VIEW_URL, self.captcha_id + ".png")
 
     def get_captcha(self, caller):
+        # This doesn't support the api_type:json parameter yet
         data = caller._request_json(self.URL, {"renderstyle" : "html"})
         # TODO: fix this, it kills kittens
         self.captcha_id = data["jquery"][-1][-1][-1]
@@ -72,13 +79,15 @@ def require_login(func):
     function."""
     @wraps(func)
     def login_reqd_func(self, *args, **kwargs):
-        try:
+        if isinstance(self, reddit.Reddit):
             user = self.user
-        except AttributeError:
+            modhash = self.modhash
+        else:
             user = self.reddit_session.user
+            modhash = self.reddit_session.modhash
 
-        if user is None:
-            raise NotLoggedInException()
+        if user is None or modhash is None:
+            raise api_exceptions.NotLoggedInException()
         else:
             return func(self, *args, **kwargs)
     return login_reqd_func
@@ -118,32 +127,29 @@ def parse_api_json_response(func):
     @wraps(func)
     def error_checked_func(*args, **kwargs):
         return_value = func(*args, **kwargs)
-        if not return_value:
-            return
-        else:
-            # todo, clean up this code. for right now, i just surrounded it
-            # with a try, except. basically the issue is when the _json_request
-            # wants to return a list, for example when you request the page for
-            # a story; the reddit api returns json for the story and the
-            # comments.
-            try:
-                jquery = None
-                for k in return_value.keys():
-                    if k not in (u"jquery", "iden", "captcha", "kind", "data"):
-                        warnings.warn("Return value keys contained "
-                                "{0}!".format(return_value.keys()))
-                        jquery = return_value.get("jquery")
-                if jquery:
-                    values = [x[-1] for x in jquery]
-                    if [".error.USER_REQUIRED"] in values:
-                        raise NotLoggedInException()
-                    elif [".error.WRONG_PASSWORD.field-passwd"] in values:
-                        raise InvalidUserPass()
-                    elif [".error.RATELIMIT.field-vdelay"] in values:
-                        raise Exception('Rate limit exceeded')
-                    elif [".error.BAD_CAPTCHA.field-captcha"] in values:
-                        raise BadCaptcha()
-            except AttributeError:
-                pass
-            return return_value
+        if isinstance(return_value, dict):
+            for k in return_value:
+                if k not in ('data', 'kind', 'errors'):
+                    # The only jquery response we want to allow is captcha
+                    if k == 'jquery':
+                        try:
+                            assert return_value[k][-2][-1] == 'captcha'
+                            continue
+                        except:
+                            pass
+                    warnings.warn("Unknown return value key: %s" % k)
+            if 'errors' in return_value and return_value['errors']:
+                error_list = []
+                for item in return_value['errors']:
+                    error, msg, other = item
+                    if error in ERROR_MAPPING:
+                        error_list.append(ERROR_MAPPING[error](msg))
+                    else:
+                        error_list.append(Exception('(Unknown) %s: %s (%s)' %
+                                                    (errors, msg, other)))
+                if len(error_list) == 1:
+                    raise error_list[0]
+                else:
+                    raise api_exceptions.ExceptionList(error_list)
+        return return_value
     return error_checked_func

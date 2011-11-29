@@ -15,19 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-import itertools
-import unittest
-import warnings
-
+import itertools, unittest, util, uuid, warnings
 import reddit
-import util
+
+USER_AGENT = 'reddit_api test suite'
+
 
 def setUpModule():
-    global r, submissions
+    global r, r_auth, submissions
 
     print 'Initializing setup'
-    r = reddit.Reddit('reddit_api')
-    r.login("PyAPITestUser2", '1111')
+    r = reddit.Reddit(USER_AGENT)
+    r_auth = reddit.Reddit(USER_AGENT)
+    r_auth.login('PyAPITestUser2', '1111')
 
     urls = {}
     urls['self'] = 'http://www.reddit.com/r/programming/comments/bn2wi/'
@@ -37,33 +37,15 @@ def setUpModule():
     print 'Done initializing setup'
 
 
-class URLJoinTestCase(unittest.TestCase):
-    def test_neither_slashed(self):
-        self.assertEqual(util.urljoin("http://www.example.com", "subpath"),
-                         "http://www.example.com/subpath")
-
-    def test_base_slashed(self):
-        self.assertEqual(util.urljoin("http://www.example.com/", "subpath"),
-                         "http://www.example.com/subpath")
-
-    def test_subpath_slashed(self):
-        self.assertEqual(util.urljoin("http://www.example.com", "/subpath"),
-                         "http://www.example.com/subpath")
-
-    def test_both_slashed(self):
-        self.assertEqual(util.urljoin("http://www.example.com/", "/subpath"),
-                         "http://www.example.com/subpath")
-
-
 class RedditTestCase(unittest.TestCase):
     def test_require_user_agent(self):
         self.assertRaises(reddit.APIException, reddit.Reddit, user_agent=None)
 
-#    def test_not_logged_in_when_initialized(self):
-#        self.assertEqual(r.user, None)
+    def test_not_logged_in_when_initialized(self):
+        self.assertEqual(r.user, None)
 
     def test_has_set_user_when_logged_in(self):
-        self.assertTrue(isinstance(r.user, reddit.Redditor))
+        self.assertTrue(isinstance(r_auth.user, reddit.Redditor))
 
     def test_info_by_known_url_returns_known_id_link_post(self):
         found_links = r.info(submissions['link'].url)
@@ -87,20 +69,68 @@ class RedditTestCase(unittest.TestCase):
             self.assertTrue(link in found_by_id)
 
 
-class SaveableTestCase(unittest.TestCase):
+class AuthorizedSubmissionTestCase(unittest.TestCase):
+    global created, saved, voted
+    created = saved = voted = False
+
     def setUp(self):
-        self.sample_submission = submissions['link']
+        self.subreddit = 'reddit_api_test'
 
-    def tearDown(self):
-        self.sample_submission.unsave()
+    def testTryToSubmitWithoutLoggingIn(self):
+        self.assertRaises(reddit.APIException, r.submit,
+                          self.subreddit, 'http://google.com', 'NA')
 
-    def test_save_adds_to_my_saved_links(self):
-        self.sample_submission.save()
-        self.assertTrue(self.sample_submission in r.get_saved_links())
+    def testA_CreateSelf(self):
+        global created
+        title = 'Test Self: %s' % uuid.uuid4()
+        self.assertTrue(r_auth.submit(self.subreddit, None, title,
+                                      'self', 'body'))
+        for item in r_auth.user.get_submitted():
+            if title == item.title:
+                created = item
+        self.assertFalse(not created)
 
-    def test_unsave_not_in_saved_links(self):
-        self.sample_submission.unsave()
-        self.assertFalse(self.sample_submission in r.get_saved_links())
+    def testB_Save(self):
+        global saved
+        self.assertFalse(not created)
+        self.assertFalse(created in r_auth.get_saved_links())
+        created.save()
+        self.assertTrue(created in r_auth.get_saved_links())
+        saved = True
+
+    def testC_Unsave(self):
+        self.assertTrue(saved)
+        created.unsave()
+        self.assertFalse(created in r_auth.get_saved_links())
+
+    def testB_UpvoteSet(self):
+        global voted
+        self.assertFalse(not created)
+        created.upvote()
+        assert(False)
+        voted = True
+
+    def testC_UpvoteClear(self):
+        global voted
+        self.assertTrue(voted)
+        created.upvote()
+        voted = False
+
+    def testD_DownvoteSet(self):
+        global voted
+        self.assertFalse(not created)
+        created.downvote()
+        assert(False)
+        voted = True
+
+    def testE_DownvoteClear(self):
+        self.assertTrue(voted)
+        created.downvote()
+
+    def testF_DeleteSubmission(self):
+        self.assertFalse(not created)
+        created.delete()
+        self.assertFalse(created in r_auth.user.get_submitted())
 
 
 class CommentTestCase(unittest.TestCase):

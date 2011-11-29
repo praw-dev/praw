@@ -14,7 +14,8 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 from decorators import require_login, sleep_after
-from util import memoize, urljoin
+from util import memoize
+from urlparse import urljoin
 from settings import DEFAULT_CONTENT_LIMIT
 from urls import urls
 import urllib

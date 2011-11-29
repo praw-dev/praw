@@ -25,9 +25,9 @@ class Redditor(RedditContentObject):
 
     kind = "t2"
 
-    get_overview = _get_section("/")
-    get_comments = _get_section("/comments")
-    get_submitted = _get_section("/submitted")
+    get_overview = _get_section("")
+    get_comments = _get_section("comments")
+    get_submitted = _get_section("submitted")
 
     def __init__(self, reddit_session, user_name=None, json_dict=None,
                  fetch=True):

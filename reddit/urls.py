@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-from util import urljoin
+from urlparse import urljoin
 
 class URLDict(object):
     def __init__(self, base_url, *args):
