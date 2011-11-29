@@ -29,13 +29,16 @@ class Saveable(object):
         url = urls["unsave" if unsave else "save"]
         params = {'id': self.name,
                   'executed': "unsaved" if unsave else "saved",
-                  'uh': self.reddit_session.modhash}
+                  'uh': self.reddit_session.modhash,
+                  'api_type':'json'}
         response = self.reddit_session._request_json(url, params)
         _request.is_stale(urls.saved_links)
+        return response
 
     def unsave(self):
         return self.save(unsave=True)
-        
+
+
 class Deletable(object):
     """
     Additional Interface for Reddit content objects that can be deleted
@@ -44,10 +47,14 @@ class Deletable(object):
     def delete(self):
         url = urls["del"]
         params = {'id' : self.name,
-                    'executed' : 'deleted',  
-                    'r' : self.subreddit.display_name, 
-                    'uh' : self.reddit_session.modhash}
-        return self.reddit_session._request_json(url, params)
+                  'executed' : 'deleted',
+                  'r' : self.subreddit.display_name,
+                  'uh' : self.reddit_session.modhash,
+                  'api_type' : 'json'}
+        response = self.reddit_session._request_json(url, params)
+        _request.is_stale([urls["redditor_page"]])
+        return response
+
 
 class Voteable(object):
     """
@@ -63,7 +70,8 @@ class Voteable(object):
         params = {'id' : self.name,
                   'dir' : str(direction),
                   'r' : self.subreddit.display_name,
-                  'uh' : self.reddit_session.modhash}
+                  'uh' : self.reddit_session.modhash,
+                  'api_type' : 'json'}
         return self.reddit_session._request_json(url, params)
 
     def upvote(self):
@@ -71,4 +79,3 @@ class Voteable(object):
 
     def downvote(self):
         return self.vote(direction=-1)
-

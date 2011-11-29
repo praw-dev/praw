@@ -358,14 +358,17 @@ class Reddit(RedditObject):
                   "sr" : str(subreddit),
                   "title" : title,
                   "uh" : self.modhash,
-                  "url" : url}
+                  "url" : url,
+                  "api_type" : "json"
+                  }
         if submit_type == 'self' and text != None:
             params["kind"] = submit_type
             params["text"] = text
             del(params["url"])
         if captcha:
             params.update(captcha)
-        return self._request_json(urls['submit'], params)
+        ret = self._request_json(urls['submit'], params)
+        return 'errors' in ret and len(ret['errors']) == 0
 
     @require_login
     def create_subreddit(self, short_title, full_title, description="", language="English [en]",

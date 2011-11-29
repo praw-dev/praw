@@ -53,7 +53,7 @@ class require_captcha(object):
                     self.get_captcha(caller)
                     kwargs['captcha'] = self.captcha_as_dict
                 return self.func(caller, *args, **kwargs)
-            except BadCaptcha:
+            except api_exceptions.BadCaptcha:
                 do_captcha = True
 
     @property
@@ -66,6 +66,7 @@ class require_captcha(object):
             return urljoin(self.VIEW_URL, self.captcha_id + ".png")
 
     def get_captcha(self, caller):
+        # This doesn't support the api_type:json parameter yet
         data = caller._request_json(self.URL, {"renderstyle" : "html"})
         # TODO: fix this, it kills kittens
         self.captcha_id = data["jquery"][-1][-1][-1]
@@ -86,7 +87,7 @@ def require_login(func):
             modhash = self.reddit_session.modhash
 
         if user is None or modhash is None:
-            raise NotLoggedInException()
+            raise api_exceptions.NotLoggedInException()
         else:
             return func(self, *args, **kwargs)
     return login_reqd_func
@@ -126,22 +127,29 @@ def parse_api_json_response(func):
     @wraps(func)
     def error_checked_func(*args, **kwargs):
         return_value = func(*args, **kwargs)
-        if not return_value:
-            return
-        else:
-            try:
-                for k in return_value.keys():
-                    if k not in ("iden", "captcha", "kind", "data", "errors"):
-                        warnings.warn("Return value keys contained "
-                                "{0}!".format(return_value.keys()))
-                if 'errors' in return_value and return_value['errors']:
-                    assert len(return_value['errors']) == 1
-                    error, msg, other = return_value['errors'][0]
+        if return_value:
+            for k in return_value:
+                if k not in ('data', 'kind', 'errors'):
+                    # The only jquery response we want to allow is captcha
+                    if k == 'jquery':
+                        try:
+                            assert return_value[k][-2][-1] == 'captcha'
+                            continue
+                        except:
+                            pass
+                    warnings.warn("Unknown return value key: %s" % k)
+            if 'errors' in return_value and return_value['errors']:
+                error_list = []
+                for item in return_value['errors']:
+                    error, msg, other = item
                     if error in ERROR_MAPPING:
-                        raise ERROR_MAPPING[error](msg)
+                        error_list.append(ERROR_MAPPING[error](msg))
                     else:
-                        raise Exception('(Unknown) %s: %s (%s)' % (errors, msg, other))
-            except AttributeError:
-                raise
-            return return_value
+                        error_list.append(Exception('(Unknown) %s: %s (%s)' %
+                                                    (errors, msg, other)))
+                if len(error_list) == 1:
+                    raise error_list[0]
+                else:
+                    raise api_exceptions.ExceptionList(error_list)
+        return return_value
     return error_checked_func
