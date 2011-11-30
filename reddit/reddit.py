@@ -399,3 +399,13 @@ class Reddit(RedditObject):
                   "user" : self.user_name}
         return self._request_json(url, params)
 
+    @require_login
+    def set_flair(self, subreddit, user, text='', css_class=''):
+        """Set flair of user in given subreddit"""
+        url = urls["flair"]
+        params = {'r': subreddit,
+                  'name': user,
+                  'text': text,
+                  'css_class': css_class,
+                  'uh': self.user.modhash}
+        return self._request_json(url, params)
