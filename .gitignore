@@ -5,3 +5,5 @@ tags
 build/
 dist/
 reddit.egg-info/
+.project
+.pydevproject
