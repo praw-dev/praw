@@ -13,11 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-from base_objects import RedditContentObject
-from comment import Comment, MoreComments
-from features import Saveable, Voteable, Deletable
 from urls import urls
 from urlparse import urljoin
+
+from base_objects import RedditContentObject
+from features import Deletable, Saveable, Voteable
 
 class Submission(RedditContentObject, Saveable, Voteable,  Deletable):
     """A class for submissions to Reddit."""
@@ -61,4 +61,3 @@ class Submission(RedditContentObject, Saveable, Voteable,  Deletable):
         return self.reddit_session._add_comment(self.name,
                                                 subreddit_name=self.subreddit.display_name,
                                                 text=text)
-

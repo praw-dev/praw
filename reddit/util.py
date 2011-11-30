@@ -14,10 +14,9 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 import time
-import urlparse
-from settings import CACHE_TIMEOUT
-
 from functools import wraps
+
+from settings import CACHE_TIMEOUT
 
 class memoize(object):
     """
@@ -65,6 +64,7 @@ class memoize(object):
         for k in relevant_caches:
             del self._cache[k]
             del self._timeouts[k]
+
 
 def limit_chars(num_chars=80):
     """

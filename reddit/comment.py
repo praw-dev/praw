@@ -13,9 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-from features import Voteable, Deletable
-from base_objects import RedditContentObject
 from urlparse import urljoin
+
+from base_objects import RedditContentObject
+from features import Voteable, Deletable
 from util import limit_chars
 
 class Comment(RedditContentObject, Voteable,  Deletable):
@@ -62,6 +63,7 @@ class Comment(RedditContentObject, Voteable,  Deletable):
     def mark_read(self):
         """ Marks the comment as read """
         return self.reddit_session._mark_as_read([self.content_id])
+
 
 class MoreComments(RedditContentObject):
     """A class indicating there are more comments."""

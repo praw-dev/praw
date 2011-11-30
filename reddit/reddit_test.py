@@ -20,7 +20,6 @@ import reddit
 
 USER_AGENT = 'reddit_api test suite'
 
-
 def setUpModule():
     global r, r_auth, submissions
 
@@ -78,13 +77,12 @@ class AuthorizedSubmissionTestCase(unittest.TestCase):
 
     def testTryToSubmitWithoutLoggingIn(self):
         self.assertRaises(reddit.APIException, r.submit,
-                          self.subreddit, 'http://google.com', 'NA')
+                          self.subreddit, 'TITLE', text='BODY')
 
     def testA_CreateSelf(self):
         global created
         title = 'Test Self: %s' % uuid.uuid4()
-        self.assertTrue(r_auth.submit(self.subreddit, None, title,
-                                      'self', 'body'))
+        self.assertTrue(r_auth.submit(self.subreddit, title, text='BODY'))
         for item in r_auth.user.get_submitted():
             if title == item.title:
                 created = item

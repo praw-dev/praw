@@ -13,9 +13,9 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-from reddit import Reddit
+from api_exceptions import BadCaptcha
 from comment import Comment, MoreComments
+from reddit import Reddit
+from redditor import Redditor
 from submission import Submission
 from subreddit import Subreddit
-from redditor import Redditor
-from api_exceptions import BadCaptcha

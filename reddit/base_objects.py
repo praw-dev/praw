@@ -25,6 +25,7 @@ class RedditObject(object):
     def __str__(self):
         raise NotImplementedError()
 
+
 class RedditContentObject(RedditObject):
     """
     Base class for everything besides the Reddit class.

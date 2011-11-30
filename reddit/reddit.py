@@ -22,19 +22,16 @@ except ImportError:
     import simplejson as json
 
 from api_exceptions import APIException, APIWarning
-from decorators import require_captcha, require_login, parse_api_json_response
-from settings import DEFAULT_CONTENT_LIMIT
-from urls import urls
-
-# Import reddit objects
 from base_objects import RedditObject
 from comment import Comment, MoreComments
+from decorators import require_captcha, require_login, parse_api_json_response
 from helpers import _modify_relationship, _request
 from inbox import Inbox
 from redditor import Redditor
+from settings import DEFAULT_CONTENT_LIMIT
 from submission import Submission
 from subreddit import Subreddit
-
+from urls import urls
 
 class Reddit(RedditObject):
     """A class for a reddit session."""
@@ -359,25 +356,28 @@ class Reddit(RedditObject):
 
     @require_login
     @require_captcha
-    def submit(self, subreddit, url, title, submit_type=None, text=None,
-               captcha=None):
+    def submit(self, subreddit, title, text=None, url=None, captcha=None):
         """
         Submit a new link.
 
         Accepts either a Subreddit object or a str containing the subreddit
         name.
         """
-        params = {"kind" : "link",
-                  "sr" : str(subreddit),
+
+        if text and url or not text and not url:
+            raise Exception('One of text or url must be provided but not both')
+
+        params = {"sr" : str(subreddit),
                   "title" : title,
                   "uh" : self.modhash,
-                  "url" : url,
-                  "api_type" : "json"
-                  }
-        if submit_type == 'self' and text != None:
-            params["kind"] = submit_type
+                  "api_type" : "json"}
+        if text:
+            params["kind"] = "self"
             params["text"] = text
-            del(params["url"])
+        else:
+            params["kind"] = "link"
+            params["url"] = url
+            params["r"] = str(subreddit)
         if captcha:
             params.update(captcha)
         ret = self._request_json(urls['submit'], params)

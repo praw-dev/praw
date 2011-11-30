@@ -79,3 +79,6 @@ class Voteable(object):
 
     def downvote(self):
         return self.vote(direction=-1)
+
+    def clear_vote(self):
+        return self.vote()

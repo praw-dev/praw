@@ -15,14 +15,13 @@
 
 import time
 import warnings
-
-import api_exceptions
-import reddit
-
-from settings import WAIT_BETWEEN_CALL_TIME
-from urls import urls
 from functools import wraps
 from urlparse import urljoin
+
+import reddit
+import api_exceptions
+from settings import WAIT_BETWEEN_CALL_TIME
+from urls import urls
 
 ERROR_MAPPING = {'USER_REQUIRED'  : api_exceptions.NotLoggedInException,
                  'WRONG_PASSWORD' : api_exceptions.InvalidUserPass,

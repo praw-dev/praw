@@ -13,10 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
+from urls import urls
+
 from base_objects import RedditContentObject
 from helpers import _modify_relationship, _get_sorter
 from util import limit_chars
-from urls import urls
 
 class Subreddit(RedditContentObject):
     """A class for Subreddits."""
@@ -79,4 +80,3 @@ class Subreddit(RedditContentObject):
         """If logged in, unsubscribe from the given subreddit."""
         return self.reddit_session._subscribe(self.name,
                                               unsubscribe=True)
-
