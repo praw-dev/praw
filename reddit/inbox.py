@@ -22,9 +22,9 @@ class Inbox(RedditContentObject):
     kind = "t1"
 
     def __init__(self, reddit_session, json_dict=None, fetch=True):
+      super(Inbox, self).__init__(reddit_session, "Inbox", json_dict, fetch)
       self.URL = urls["inbox"]
       self.messages = None
-      super(Inbox, self).__init__(reddit_session, "Inbox", json_dict, fetch)
 
     def get_messages(self, force = False, *args, **kwargs):
       # Crude caching
@@ -36,7 +36,12 @@ class Inbox(RedditContentObject):
       self.get_messages(force = True)
       return [msg for msg in self.messages if hasattr(msg, "new") and msg.new]
       
+    def mark_all_as_read(self):
+      self.reddit_session._mark_as_read(
+            [msg for msg in self.messages if hasattr(msg, "new") and msg.new])
+      
     def __str__(self):
       if self.messages == None:
         return "<Inbox: No messages>"
       return "<Inbox: %d messages>" % len(self.messages)
+

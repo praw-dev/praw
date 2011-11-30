@@ -14,7 +14,6 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 import cookielib
-import re
 import warnings
 import urllib2
 try:
@@ -226,9 +225,8 @@ class Reddit(RedditObject):
             import getpass
             password = getpass.getpass("Password: ")
 
-        url = urls["login"]
-        params = {'id' : '#login_login-main',
-                  'op' : 'login-main',
+        url = urls["login"] + '/' + user
+        params = {'api_type': 'json',
                   'passwd' : password,
                   'user' : user,
                   'api_type' : 'json'}
@@ -267,6 +265,14 @@ class Reddit(RedditObject):
                   'text': text,
                   'uh': self.modhash,
                   'r': subreddit_name}
+        self._request_json(url, params)
+    
+    @require_login
+    def _mark_as_read(self, content_ids):
+        """ Marks each of the supplied content_ids (comments) as read """
+        url = urls["read_message"]
+        params = {'id': ','.join(map(str,content_ids)),
+                  'uh': self.modhash}
         self._request_json(url, params)
 
     def get_front_page(self, limit=DEFAULT_CONTENT_LIMIT):
@@ -404,3 +410,13 @@ class Reddit(RedditObject):
                   "user" : self.user_name}
         return self._request_json(url, params)
 
+    @require_login
+    def set_flair(self, subreddit, user, text='', css_class=''):
+        """Set flair of user in given subreddit"""
+        url = urls["flair"]
+        params = {'r': subreddit,
+                  'name': user,
+                  'text': text,
+                  'css_class': css_class,
+                  'uh': self.user.modhash}
+        return self._request_json(url, params)

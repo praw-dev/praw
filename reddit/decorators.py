@@ -13,14 +13,16 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
+import time
+import warnings
+
+import api_exceptions
+import reddit
+
 from settings import WAIT_BETWEEN_CALL_TIME
 from urls import urls
 from functools import wraps
 from urlparse import urljoin
-import api_exceptions
-import reddit
-import time
-import warnings
 
 ERROR_MAPPING = {'USER_REQUIRED'  : api_exceptions.NotLoggedInException,
                  'WRONG_PASSWORD' : api_exceptions.InvalidUserPass,
