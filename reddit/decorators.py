@@ -18,6 +18,7 @@ from urls import urls
 from functools import wraps
 from urlparse import urljoin
 from api_exceptions import BadCaptcha, InvalidUserPass, NotLoggedInException
+import warnings
 import time
 import warnings
 

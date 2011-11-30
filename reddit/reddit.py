@@ -24,6 +24,15 @@ except ImportError:
 
 from api_exceptions import APIException, APIWarning
 from decorators import require_captcha, require_login, parse_api_json_response
+from urls import urls
+from util import urljoin, memoize, limit_chars
+
+from api_exceptions import APIException, APIWarning, BadCaptcha, \
+    NotLoggedInException, InvalidUserPass, RateLimitException
+
+from decorators import require_captcha, require_login, sleep_after, \
+    parse_api_json_response
+
 from settings import DEFAULT_CONTENT_LIMIT
 from urls import urls
 
@@ -233,16 +242,27 @@ class Reddit(RedditObject):
             import getpass
             password = getpass.getpass("Password: ")
 
-        url = urls["login"]
-        params = {'id' : '#login_login-main',
-                  'op' : 'login-main',
+        url = urls["login"] + '/' + user
+        params = {'api_type': 'json',
                   'passwd' : password,
                   'user' : user}
-        self._request_json(url, params)
-        self.user = self.get_redditor(user)
-        # Get and store the modhash; it will be needed for API requests
-        # which involve this user.
-        self._fetch_modhash()
+        response = self._request_json(url, params)
+        if 'json' in response:
+          if not response['json'].get('errors'):
+            self.user = self.get_redditor(user)
+            # Get and store the modhash; it will be needed for API requests
+            # which involve this user.
+            self._fetch_modhash()
+          else:
+            # Make sure to raise the correct error
+            for error in response['json'].get('errors'):
+              if len(error) >= 2:
+                if error[0] == "RATELIMIT":
+                  raise RateLimitException(error[1])
+                elif error[0] == "WRONG_PASSWORD":
+                  raise InvalidUserPass()
+            else:  # There are errors, but none are RATELIMIT or WRONG_PASSWORD
+              raise APIException(response['json'].get('errors'))
 
     @require_login
     def logout(self):
@@ -272,6 +292,14 @@ class Reddit(RedditObject):
                   'text': text,
                   'uh': self.modhash,
                   'r': subreddit_name}
+        self._request_json(url, params)
+    
+    @require_login
+    def _mark_as_read(self, content_ids):
+        """ Marks each of the supplied content_ids (comments) as read """
+        url = urls["read_message"]
+        params = {'id': ','.join(map(str,content_ids)),
+                  'uh': self.modhash}
         self._request_json(url, params)
 
     def get_front_page(self, limit=DEFAULT_CONTENT_LIMIT):
