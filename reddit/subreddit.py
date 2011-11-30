@@ -54,12 +54,21 @@ class Subreddit(RedditContentObject):
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
                  fetch=False):
+        self.display_name = subreddit_name
+
         self.URL = urls["subreddit_page"] % subreddit_name
         self.ABOUT_URL = urls["subreddit_about_page"] % subreddit_name
 
-        self.display_name = subreddit_name
         super(Subreddit, self).__init__(reddit_session, subreddit_name,
                                         json_dict, fetch)
+
+    # overriding base class _get_json_dict because url is different.
+    # ideally this would be abstracted, but this is a bandaid for an
+    # existing problem. should rewrite a lot of this in the future.
+    def _get_json_dict(self):
+        response = self._request_json(self.ABOUT_URL, as_objects=False)
+        json_dict = response.get("data")
+        return json_dict
 
     @limit_chars()
     def __str__(self):

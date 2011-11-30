@@ -251,8 +251,10 @@ class Reddit(RedditObject):
         url = urls["subscribe"]
         params = {'sr': subreddit_id,
                   'action': action,
-                  'uh': self.modhash}
-        return self._request_json(url, params)
+                  'uh': self.modhash,
+                  'api_type': 'json'}
+        ret = self._request_json(url, params)
+        return 'errors' in ret and len(ret['errors']) == 0
 
     @require_login
     def _add_comment(self, content_id, subreddit_name=None, text=""):
@@ -261,8 +263,10 @@ class Reddit(RedditObject):
         params = {'thing_id': content_id,
                   'text': text,
                   'uh': self.modhash,
-                  'r': subreddit_name}
-        self._request_json(url, params)
+                  'r': subreddit_name,
+                  'api_type': 'json'}
+        ret = self._request_json(url, params)
+        return 'errors' in ret and len(ret['errors']) == 0
     
     @require_login
     def _mark_as_read(self, content_ids):

@@ -68,9 +68,20 @@ class RedditTestCase(unittest.TestCase):
             self.assertTrue(link in found_by_id)
 
 
-class AuthorizedSubmissionTestCase(unittest.TestCase):
-    global created, saved, voted
-    created = saved = voted = False
+class CommunityTestCase(unittest.TestCase):
+    def setUp(self):
+        self.community = r_auth.get_subreddit('reddit_api_test')
+
+    def test_subscribe(self):
+        self.community.subscribe()
+
+    def test_unsubscribe(self):
+        self.community.unsubscribe()
+
+
+class SubComTestCase(unittest.TestCase):
+    global comment, created, saved, voted
+    comment = created = saved = voted = False
 
     def setUp(self):
         self.subreddit = 'reddit_api_test'
@@ -88,45 +99,58 @@ class AuthorizedSubmissionTestCase(unittest.TestCase):
                 created = item
         self.assertFalse(not created)
 
+    def testB_AddComment(self):
+        global comment
+        if not created:
+            return
+        self.assertTrue(created.add_comment('comment text'))
+        comment = created.comments[0]
+
+    def testC_AddReply(self):
+        if not comment:
+            return
+        self.assertTrue(comment.reply('reply text'))
+
     def testB_Save(self):
         global saved
-        self.assertFalse(not created)
+        if not created:
+            return
         self.assertFalse(created in r_auth.get_saved_links())
         created.save()
         self.assertTrue(created in r_auth.get_saved_links())
         saved = True
 
     def testC_Unsave(self):
+        if not saved:
+            return
         self.assertTrue(saved)
         created.unsave()
         self.assertFalse(created in r_auth.get_saved_links())
 
-    def testB_UpvoteSet(self):
+    def testB_SubUpvoteSet(self):
         global voted
-        self.assertFalse(not created)
+        if not created:
+            return
         created.upvote()
         assert(False)
         voted = True
 
-    def testC_UpvoteClear(self):
+    def testB_SubDownvoteSet(self):
         global voted
-        self.assertTrue(voted)
-        created.upvote()
-        voted = False
-
-    def testD_DownvoteSet(self):
-        global voted
-        self.assertFalse(not created)
+        if not created:
+            return
         created.downvote()
         assert(False)
         voted = True
 
-    def testE_DownvoteClear(self):
-        self.assertTrue(voted)
-        created.downvote()
+    def testC_SubClearVote(self):
+        if not voted:
+            return
+        created.clear_vote()
 
-    def testF_DeleteSubmission(self):
-        self.assertFalse(not created)
+    def testD_DeleteSubmission(self):
+        if not created:
+            return
         created.delete()
         self.assertFalse(created in r_auth.user.get_submitted())
 
