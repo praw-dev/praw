@@ -50,9 +50,9 @@ A Few Short Examples
         ketralnis = r.get_redditor("ketralnis")
         print ketralnis.link_karma, ketralnis.comment_karma
 
-5. Comment on story (requires login):
+5. Comment on submission (requires login):
 
-        story.add_comment("text")
+        submission.add_comment("text")
 
 6. Reply to comment (requires login):
 
