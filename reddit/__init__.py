@@ -13,4 +13,387 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-from reddit import Reddit
+import cookielib
+import warnings
+import urllib2
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
+from api_exceptions import APIException, APIWarning
+from base_objects import RedditObject
+from comment import Comment, MoreComments
+from decorators import require_captcha, require_login, parse_api_json_response
+from helpers import _modify_relationship, _request
+from inbox import Inbox
+from redditor import Redditor
+from settings import DEFAULT_CONTENT_LIMIT
+from submission import Submission
+from subreddit import Subreddit
+from urls import urls
+
+class Reddit(RedditObject):
+    """A class for a reddit session."""
+    DEFAULT_HEADERS = {}
+
+    _friend = _modify_relationship("friend")
+    _friend.__doc__ = "Friend the target user."
+    _friend.__name__ = "_friend"
+
+    _unfriend = _modify_relationship("friend", unlink=True)
+    _unfriend.__doc__ = "Unfriend the target user."
+    _unfriend.__name__ = "_unfriend"
+
+    def __init__(self, user_agent):
+        """Specify the user agent for the application."""
+        if not isinstance(user_agent, str):
+            raise APIException("User agent must be a string.")
+        self.DEFAULT_HEADERS["User-agent"] = user_agent
+
+        _cookie_jar = cookielib.CookieJar()
+        self._opener = urllib2.build_opener(
+            urllib2.HTTPCookieProcessor(_cookie_jar))
+
+        self.modhash = self.user = None
+
+    def __str__(self):
+        return "Open Session (%s)" % (self.user or "Unauthenticated")
+
+    def _request(self, page_url, params=None, url_data=None):
+        """Given a page url and a dict of params, opens and returns the page.
+
+        :param page_url: the url to grab content from.
+        :param params: the extra url data to submit
+        :param url_data: the GET data to put in the url
+        :returns: the open page
+        """
+        return _request(self, page_url, params, url_data, self._opener)
+
+    @parse_api_json_response
+    def _request_json(self, page_url, params=None, url_data=None,
+                      as_objects=True):
+        """Gets the JSON processed from a page. Takes the same parameters as
+        the _request method, plus a param to control whether objects are
+        returned.
+
+        :param page_url
+        :param params
+        :param url_data
+        :param as_objects: Whether to return constructed Reddit objects or the
+        raw json dict.
+        :returns: JSON processed page
+        """
+        if not page_url.endswith(".json"):
+            page_url += ".json"
+        response = self._request(page_url, params, url_data)
+        if as_objects:
+            hook = self._json_reddit_objecter
+        else:
+            hook = None
+        return json.loads(response, object_hook=hook)
+
+    def _json_reddit_objecter(self, json_data):
+        """
+        Object hook to be used with json.load(s) to spit out RedditObjects
+        while decoding.
+        """
+        # TODO: This can be nicer. CONTENT_KINDS dict.
+        kinds = dict((content.kind, content) for content in
+                     (Comment, MoreComments, Redditor, Subreddit, Submission))
+        try:
+            kind = kinds[json_data["kind"]]
+        except KeyError:
+            if 'json' in json_data:
+                if len(json_data) == 1:
+                    return json_data['json']
+                else:
+                    warnings.warn('Unknown object type: %s' % json_data)
+        else:
+            return kind.from_api_response(self, json_data["data"])
+        return json_data
+
+    @property
+    @require_login
+    def content_id(self):
+        """
+        For most purposes, we can stretch things a bit and just make believe
+        this object is the user (and return it's content_id instead of none.)
+        """
+        return self.user.content_id
+
+    def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT,
+                     url_data=None, place_holder=None):
+        """A generator method to return Reddit content from a URL. Starts at
+        the initial page_url, and fetches content using the `after` JSON data
+        until `limit` entries have been fetched, or the `place_holder` has been
+        reached.
+
+        :param page_url: the url to start fetching content from
+        :param limit: the maximum number of content entries to fetch. if None,
+            then fetch unlimited entries--this would be used in conjunction
+            with the place_holder param.
+        :param url_data: extra GET data to put in the url
+        :param place_holder: if not None, the method will fetch `limit`
+            content, stopping if it finds content with `id` equal to
+            `place_holder`.
+        :type place_holder: a string corresponding to a Reddit content id, e.g.
+            't3_asdfasdf'
+        :returns: a list of Reddit content, of type Subreddit, Comment, or
+            Submission
+        """
+        content_found = 0
+
+        if url_data is None:
+            url_data = {}
+        if limit is not None:
+            limit = int(limit)
+            fetch_all = False
+        else:
+            fetch_all = True
+
+        # While we still need to fetch more content to reach our limit, do so.
+        while fetch_all or content_found < limit:
+            # If the after variable isn't None, add it do the URL of the page
+            # we are going to fetch.
+            page_data = self._request_json(page_url, url_data=url_data)
+
+            # if for some reason we didn't get data, then break
+            try:
+                data = page_data["data"]
+            except KeyError:
+                break
+            after = data.get('after')
+            children = data.get('children')
+            for child in children:
+                yield child
+                content_found += 1
+
+                # Terminate when we reached the limit, or place holder
+                if child.id == place_holder or content_found == limit:
+                    return
+            if not after:
+                break
+            url_data["after"] = after
+
+    def get_redditor(self, user_name, *args, **kwargs):
+        """Return a Redditor class for the user_name specified."""
+        return Redditor(self, user_name, *args, **kwargs)
+
+    def get_subreddit(self, subreddit_name, *args, **kwargs):
+        """Returns a Subreddit class for the subreddit_name specified."""
+        return Subreddit(self, subreddit_name, *args, **kwargs)
+
+    def get_submission_by_id(self, story_id):
+        """ Given a story id, possibly prefixed by t3, return a Submission
+        object, also fetching its comments."""
+        if story_id.startswith("t3_"):
+            story_id = story_id.split("_")[1]
+        submission_info, comment_info = self._request_json(
+                urls["comments"] + story_id)
+        submission = submission_info["data"]["children"][0]
+        comments = comment_info["data"]["children"]
+        for comment in comments:
+            comment._update_submission(submission)
+        return submission
+
+    @require_login
+    def get_inbox(self, *args, **kwargs):
+        """Return an Inbox object."""
+        return Inbox(self, *args, **kwargs)
+
+    def login(self, user=None, password=None):
+        """Login to Reddit. If no user or password is provided, the user will
+        be prompted with raw_input and getpass.getpass.
+        """
+        # Prompt user for necessary fields.
+        if user is None:
+            user = raw_input("Username: ")
+        if password is None:
+            import getpass
+            password = getpass.getpass("Password: ")
+
+        params = {'api_type': 'json',
+                  'passwd' : password,
+                  'user' : user,
+                  'api_type' : 'json'}
+        response = self._request_json(urls["login"] % user, params)
+        try:
+            self.modhash = response['data']['modhash']
+        except:
+            raise Exception('Login failed: Unexpected result\n---\n%s\n---' %
+                            response)
+        self.user = self.get_redditor(user)
+
+    @require_login
+    def logout(self):
+        """Logs out of a session."""
+        self.modhash = self.user = None
+        params = {"uh" : self.modhash}
+        return self._request_json(urls["logout"], params)
+
+    @require_login
+    def _subscribe(self, subreddit_id, unsubscribe=False):
+        """If logged in, subscribe to the specified subreddit_id."""
+        action = "unsub" if unsubscribe else "sub"
+        params = {'sr': subreddit_id,
+                  'action': action,
+                  'uh': self.modhash,
+                  'api_type': 'json'}
+        ret = self._request_json(urls["subscribe"], params)
+        return 'errors' in ret and len(ret['errors']) == 0
+
+    @require_login
+    def _add_comment(self, content_id, subreddit_name=None, text=""):
+        """Comment on the given content_id with the given text."""
+        params = {'thing_id': content_id,
+                  'text': text,
+                  'uh': self.modhash,
+                  'r': subreddit_name,
+                  'api_type': 'json'}
+        ret = self._request_json(urls["comment"], params)
+        return 'errors' in ret and len(ret['errors']) == 0
+    
+    @require_login
+    def _mark_as_read(self, content_ids):
+        """ Marks each of the supplied content_ids (comments) as read """
+        params = {'id': ','.join(map(str,content_ids)),
+                  'uh': self.modhash}
+        self._request_json(urls["read_message"], params)
+
+    def get_front_page(self, limit=DEFAULT_CONTENT_LIMIT):
+        """Return the reddit front page. Login isn't required, but you'll only
+        see your own front page if you are logged in."""
+        return self._get_content(urls["reddit_url"], limit=limit)
+
+    def get_submission(self, url):
+        """Return a submission object for the given url."""
+        submission_info, comment_info = self._request_json(url)
+        submission = submission_info['data']['children'][0]
+        submission.comments = comment_info['data']['children']
+        return submission
+
+    @require_login
+    def get_saved_links(self, limit=DEFAULT_CONTENT_LIMIT):
+        """Return a listing of the logged-in user's saved links."""
+        return self._get_content(urls["saved"], limit=limit)
+
+    def get_all_comments(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None):
+        """Returns a listing from reddit.com/comments (which provides all of
+        the most recent comments from all users to all submissions)."""
+        return self._get_content(urls["comments"], limit=limit,
+                                 place_holder=place_holder)
+
+    def info(self, url=None, id=None, limit=DEFAULT_CONTENT_LIMIT):
+        """
+        Query the API to see if the given URL has been submitted already, and
+        if it has, return the submissions.
+
+        One and only one out of url (a url string) and id (a reddit url id) is
+        required.
+        """
+        if bool(url) == bool(id):
+            # either both or neither were given, either way:
+            raise TypeError("One (and only one) of url or id is required!")
+        if url is not None:
+            params = {"url" : url}
+            if (url.startswith(urls["reddit_url"]) and
+                url != urls["reddit_url"]):
+                warnings.warn("It looks like you may be trying to get the info"
+                              " of a self or internal link. This probably "
+                              "won't return any useful results!", APIWarning)
+        else:
+            params = {"id" : id}
+        return self._get_content(urls["info"], url_data=params, limit=limit)
+
+    @require_captcha
+    def send_feedback(self, name, email, message, reason="feedback"):
+        """
+        Send feedback to the admins. Please don't abuse this, read what it says
+        on the send feedback page!
+        """
+        params = {"name" : name,
+                  "email" : email,
+                  "reason" : reason,
+                  "text" : message}
+        return self._request_json(urls["send_feedback"], params)
+
+    @require_login
+    @require_captcha
+    def compose_message(self, recipient, subject, message, captcha=None):
+        """Send a message to another redditor."""
+        params = {"text" : message,
+                  "subject" : subject,
+                  "to" : str(recipient),
+                  "uh" : self.modhash,
+                  "user" : self.user.name}
+        if captcha:
+            params.update(captcha)
+        return self._request_json(urls["compose_message"], params)
+
+    def search_reddit_names(self, query):
+        """Search the subreddits for a reddit whose name matches the query."""
+        params = {"query" : query}
+        results = self._request_json(urls["search_reddit_names"], params)
+        return [self.get_subreddit(name) for name in results.get("names")]
+
+    @require_login
+    @require_captcha
+    def submit(self, subreddit, title, text=None, url=None, captcha=None):
+        """
+        Submit a new link.
+
+        Accepts either a Subreddit object or a str containing the subreddit
+        name.
+        """
+
+        if text and url or not text and not url:
+            raise TypeError('Only one of text or url is required.')
+
+        params = {"sr" : str(subreddit),
+                  "title" : title,
+                  "uh" : self.modhash,
+                  "api_type" : "json"}
+        if text:
+            params["kind"] = "self"
+            params["text"] = text
+        else:
+            params["kind"] = "link"
+            params["url"] = url
+            params["r"] = str(subreddit)
+        if captcha:
+            params.update(captcha)
+        ret = self._request_json(urls['submit'], params)
+        return 'errors' in ret and len(ret['errors']) == 0
+
+    @require_login
+    def create_subreddit(self, short_title, full_title, description="",
+                         language="English [en]", type="public",
+                         content_options="any", other_options=None, domain=""):
+        """Create a new subreddit"""
+        # TODO: Implement the rest of the options.
+        params = {"name" : short_title,
+                  "title" : full_title,
+                  "type" : type,
+                  "uh" : self.reddit_session.modhash}
+        return self._request_json(urls["create"], params)
+
+    @require_captcha
+    def create_redditor(self, user_name, password, email):
+        """Register a new user."""
+        params = {"email" : email,
+                  "op" : "reg",
+                  "passwd" : password,
+                  "passwd2" : password,
+                  "user" : user_name}
+        return self._request_json(urls["register"], params)
+
+    @require_login
+    def set_flair(self, subreddit, user, text='', css_class=''):
+        """Set flair of user in given subreddit"""
+        params = {'r': subreddit,
+                  'name': user,
+                  'text': text,
+                  'css_class': css_class,
+                  'uh': self.user.modhash}
+        return self._request_json(urls["flair"], params)

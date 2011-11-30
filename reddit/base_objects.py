@@ -16,9 +16,7 @@
 from urls import urls
 
 class RedditObject(object):
-    """
-    Base class for all Reddit API objects.
-    """
+    """Base class for all Reddit API objects."""
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self)
 
@@ -32,7 +30,8 @@ class RedditContentObject(RedditObject):
 
     Represents actual reddit objects (Comment, Redditor, etc.).
     """
-    def __init__(self, reddit_session, name=None, json_dict=None, fetch=True):
+    def __init__(self, reddit_session, name=None, json_dict=None, fetch=True,
+                 info_url=None):
         """
         Create a new object either by name or from the dict of attributes
         returned by the API. Creating by name will retrieve the proper dict
@@ -43,11 +42,16 @@ class RedditContentObject(RedditObject):
         json_dict).
         """
         if name is None and json_dict is None:
-            # one of these at least is required
-            raise TypeError("Either the name or json dict is required!.")
+            raise TypeError("Either the name or json dict is required.")
 
+        if info_url:
+            self._info_url = info_url
+        else:
+            self._info_url = urls["info"]
         self.reddit_session = reddit_session
+        self._populate(json_dict, fetch)
 
+    def _populate(self, json_dict, fetch):
         if json_dict is None:
             if fetch:
                 json_dict = self._get_json_dict()
@@ -55,8 +59,6 @@ class RedditContentObject(RedditObject):
                 json_dict = {}
         for name, value in json_dict.iteritems():
             setattr(self, name, value)
-
-        # set an attr containing whether we've fetched all the attrs from API
         self._populated = bool(json_dict) or fetch
 
     def __getattr__(self, attr):
@@ -69,38 +71,29 @@ class RedditContentObject(RedditObject):
         retrievable_attrs = ("user", "modhash", "_request", "_request_json")
         if attr in retrievable_attrs:
             return getattr(self.reddit_session, attr)
-        else:
-            # TODO: maybe restrict this again to known API fields
-            if not self._populated:
-                json_dict = self._get_json_dict()
-                for name, value in json_dict.iteritems():
-                    setattr(self, name, value)
-                self._populated = True
-                return getattr(self, attr)
+        if not self._populated:
+            self._populate(None, True)
+            return getattr(self, attr)
         raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                                                self.__class__.__name__, attr))
+                self.__class__.__name__, attr))
 
     def __setattr__(self, name, value):
-        # So i have to hide imports in here for some reason, other wise
-        # there is some circular reference which python doesn't like
-        # Honestly, im not sure exactly why this code is here. It probably
-        # doesn't need to be here.
         if name == "subreddit":
-            from subreddit import Subreddit
             value = Subreddit(self.reddit_session, value, fetch=False)
         elif name == "redditor" or name == "author":
-            from redditor import Redditor
             value = Redditor(self.reddit_session, value, fetch=False)
         object.__setattr__(self, name, value)
 
     def __eq__(self, other):
-        return self.content_id == other.content_id
+        return (type(self) == type(other) and 
+                self.content_id == other.content_id)
 
     def __ne__(self, other):
-        return self.content_id != other.content_id
+        return (type(self) != type(other) or
+                self.content_id != other.content_id)
 
     def _get_json_dict(self):
-        response = self._request_json(urls["info"], as_objects=False)
+        response = self._request_json(self._info_url, as_objects=False)
         json_dict = response.get("data")
         return json_dict
 
@@ -115,3 +108,8 @@ class RedditContentObject(RedditObject):
         content type ("t1", "t2", ..., "t5") to this object's id.
         """
         return "_".join((self.kind, self.id))
+
+# These imports need to be at the end to avoid circular imports
+# http://effbot.org/zone/import-confusion.htm
+from redditor import Redditor
+from subreddit import Subreddit

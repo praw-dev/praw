@@ -25,7 +25,7 @@ class Comment(RedditContentObject, Voteable,  Deletable):
     kind = "t1"
 
     def __init__(self, reddit_session, json_dict):
-        super(Comment, self).__init__(reddit_session, None, json_dict, True)
+        super(Comment, self).__init__(reddit_session, None, json_dict)
         if self.replies:
             self.replies = self.replies["data"]["children"]
             for reply in self.replies:
@@ -71,8 +71,7 @@ class MoreComments(RedditContentObject):
     kind = "more"
 
     def __init__(self, reddit_session, json_dict):
-        super(MoreComments, self).__init__(reddit_session, None, json_dict,
-                                           True)
+        super(MoreComments, self).__init__(reddit_session, None, json_dict)
         self.parent_id = None
 
     def _update_submission(self, _): pass

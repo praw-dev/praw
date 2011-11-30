@@ -25,8 +25,7 @@ class Submission(RedditContentObject, Saveable, Voteable,  Deletable):
     kind = "t3"
 
     def __init__(self, reddit_session, title=None, json_dict=None):
-        super(Submission, self).__init__(reddit_session, title, json_dict,
-                                         fetch=True)
+        super(Submission, self).__init__(reddit_session, title, json_dict)
         if not self.permalink.startswith(urls["reddit_url"]):
             self.permalink = urljoin(urls["reddit_url"], self.permalink)
         self._comments = None

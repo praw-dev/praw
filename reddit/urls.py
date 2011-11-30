@@ -27,7 +27,7 @@ class URLDict(object):
         for prefix, url_dict in args:
             full_prefix = urljoin(self._base_url, prefix)
             for name, url in url_dict.iteritems():
-                self[name] = urljoin(full_prefix, url)
+                self[name] = '%s/' % urljoin(full_prefix, url)
 
     def __getitem__(self, key):
         return self._urls[key]
@@ -38,46 +38,41 @@ class URLDict(object):
     def group(self, *urls):
         return [v for v in (self[k] for k in urls)]
 
-urls = URLDict("http://www.reddit.com/",
-          ("", {"reddit_url" : "",
-                "api_url" : "api/",
-                "comments" : "comments/",
-                "help" : "help/",
-                "inbox" : "message/inbox/",
-                "info" : "button_info",
-                "logout" : "logout/",
-                "my_reddits" : "reddits/mine/",
-                "my_moderation" : "reddits/mine/moderator/",
-                "inbox" : "message/inbox/",
-                "saved" : "saved/",
-                "view_captcha" : "captcha/",
-                }),
-          ("api/", {"comment" : "comment/",
-                    "compose_message" : "compose/",
-                    "del" : "del/",
-                    "friend" : "friend/",
-                    "login" : "login/",
-                    "new_captcha" : "new_captcha/",
-                    "read_message" : "read_message/",
-                    "register" : "register/",
-                    "save" : "save/",
-                    "search_reddit_names" : "search_reddit_names/",
-                    "send_feedback" : "feedback/",
-                    "site_admin" : "site_admin/",
-                    "submit" : "submit/",
-                    "subscribe" : "subscribe/",
-                    "unfriend" : "unfriend/",
-                    "unsave" : "unsave/",
-                    "vote" : "vote/",
-                    "flair": "flair/",
-                   }),
-          ("r/", {"subreddit_base" : "",
-                  "subreddit_page" : "%s/",
-                  "subreddit_about_page" : "%s/about",
-                 }),
-          ("user/", {"redditor_page" : "%s/",
-                     "redditor_about_page" : "%s/about/",
-                    }))
+urls = URLDict("http://www.reddit.com",
+               ("", {"reddit_url" : "",
+                      "api_url" : "api",
+                      "comments" : "comments",
+                      "help" : "help",
+                      "inbox" : "message/inbox",
+                      "info" : "button_info",
+                      "logout" : "logout",
+                      "my_reddits" : "reddits/mine",
+                      "my_moderation" : "reddits/mine/moderator",
+                      "saved" : "saved",
+                      "view_captcha" : "captcha"}),
+               ("api/", {"comment" : "comment",
+                         "compose_message" : "compose",
+                         "del" : "del",
+                         "flair": "flair",
+                         "friend" : "friend",
+                         "login" : "login/%s",
+                         "new_captcha" : "new_captcha",
+                         "read_message" : "read_message",
+                         "register" : "register",
+                         "save" : "save",
+                         "search_reddit_names" : "search_reddit_names",
+                         "send_feedback" : "feedback",
+                         "site_admin" : "site_admin",
+                         "submit" : "submit",
+                         "subscribe" : "subscribe",
+                         "unfriend" : "unfriend",
+                         "unsave" : "unsave",
+                         "vote" : "vote"}),
+               ("r/", {"subreddit_about_page" : "%s/about",
+                       "subreddit_base" : "",
+                       "subreddit_page" : "%s"}),
+               ("user/", {"redditor_about_page" : "%s/about",
+                          "redditor_page" : "%s"}))
 
 # URL Groups:
 urls.saved_links = urls.group("saved")

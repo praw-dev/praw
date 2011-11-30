@@ -103,8 +103,10 @@ class SubComTestCase(unittest.TestCase):
         global comment
         if not created:
             return
-        self.assertTrue(created.add_comment('comment text'))
+        text = 'Unique comment: %s' % uuid.uuid4()
+        self.assertTrue(created.add_comment(text))
         comment = created.comments[0]
+        self.assertEqual(text, comment.body)
 
     def testC_AddReply(self):
         if not comment:

@@ -23,7 +23,7 @@ class Inbox(RedditContentObject):
 
     def __init__(self, reddit_session, json_dict=None, fetch=True):
       super(Inbox, self).__init__(reddit_session, "Inbox", json_dict, fetch)
-      self.URL = urls["inbox"]
+      self._url = urls["inbox"]
       self.messages = None
 
     def get_messages(self, force = False, *args, **kwargs):

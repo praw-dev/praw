@@ -30,7 +30,7 @@ def _get_section(subpath=""):
     def get_section(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
                     place_holder=None):
         url_data = {"sort" : sort, "time" : time}
-        return self.reddit_session._get_content(urljoin(self.URL, subpath),
+        return self.reddit_session._get_content(urljoin(self._url, subpath),
                                                 limit=limit,
                                                 url_data=url_data,
                                                 place_holder=place_holder)
@@ -47,7 +47,7 @@ def _get_sorter(subpath="", **defaults):
                 # time should be "t" in the API data dict
                 k = "t"
             data.setdefault(k, v)
-        return self.reddit_session._get_content(urljoin(self.URL, subpath),
+        return self.reddit_session._get_content(urljoin(self._url, subpath),
                                                 limit=limit,
                                                 url_data=data,
                                                 place_holder=place_holder)
@@ -77,22 +77,22 @@ def _modify_relationship(relationship, unlink=False):
 @sleep_after
 def _request(reddit_session, page_url, params=None, url_data=None,
              openerdirector=None):
-        if url_data:
-            page_url += "?" + urllib.urlencode(url_data)
+    if url_data:
+        page_url += "?" + urllib.urlencode(url_data)
 
-        # urllib2.Request throws a 404 for some reason with data=""
-        encoded_params = None
-        if params:
-            params = dict([k, v.encode('utf-8')] for k, v in params.items())
-            encoded_params = urllib.urlencode(params)
-        if isinstance(page_url, unicode):
-            page_url = urllib.quote(page_url.encode('utf-8'), ':/')
+    # urllib2.Request throws a 404 for some reason with data=""
+    encoded_params = None
+    if params:
+        params = dict([k, v.encode('utf-8')] for k, v in params.items())
+        encoded_params = urllib.urlencode(params)
+    if isinstance(page_url, unicode):
+        page_url = urllib.quote(page_url.encode('utf-8'), ':/')
 
-        request = urllib2.Request(page_url, data=encoded_params,
-                                  headers=reddit_session.DEFAULT_HEADERS)
-        # The openerdirector manages cookies on a per-session basis
-        if openerdirector:
-          response = openerdirector.open(request)
-        else:
-          response = urllib2.urlopen(request)
-        return response.read()
+    request = urllib2.Request(page_url, data=encoded_params,
+                              headers=reddit_session.DEFAULT_HEADERS)
+    # The openerdirector manages cookies on a per-session basis
+    if openerdirector:
+        response = openerdirector.open(request)
+    else:
+        response = urllib2.urlopen(request)
+    return response.read()

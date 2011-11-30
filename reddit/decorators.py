@@ -29,11 +29,7 @@ ERROR_MAPPING = {'USER_REQUIRED'  : api_exceptions.NotLoggedInException,
                  'BAD_CAPTCHA'    : api_exceptions.BadCaptcha}
 
 class require_captcha(object):
-    """
-    Decorator for methods that require captchas.
-    """
-    URL = urls["new_captcha"]
-    VIEW_URL = urls["view_captcha"]
+    """Decorator for methods that require captchas."""
 
     def __init__(self, func):
         wraps(func)(self)
@@ -64,12 +60,12 @@ class require_captcha(object):
     @property
     def captcha_url(self):
         if self.captcha_id:
-            return urljoin(self.VIEW_URL, self.captcha_id + ".png")
+            return urljoin(urls["view_captcha"], self.captcha_id + ".png")
 
     def get_captcha(self, caller):
         # This doesn't support the api_type:json parameter yet
-        data = caller._request_json(self.URL, {"renderstyle" : "html"})
-        # TODO: fix this, it kills kittens
+        data = caller._request_json(urls["new_captcha"],
+                                    {"renderstyle" : "html"})
         self.captcha_id = data["jquery"][-1][-1][-1]
         print "Captcha URL: " + self.captcha_url
         self.captcha = raw_input("Captcha: ")
