@@ -67,9 +67,10 @@ def _modify_relationship(relationship, unlink=False):
     @require_login
     def do_relationship(self, thing):
         params = {'name': thing,
-                  'container': self.content_id, # this will return the user id
+                  'container': self.content_id,
                   'type': relationship,
-                  'uh': self.modhash}
+                  'uh': self.modhash,
+                  'api_type': 'json'}
         return self._request_json(url, params)
     return do_relationship
 

@@ -52,12 +52,12 @@ class RedditTestCase(unittest.TestCase):
 
     def test_info_by_self_url_raises_warning(self):
         with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
+            warnings.simplefilter('always')
 
             r.info(submissions['self'].url)
             self.assertEqual(len(w), 1)
             self.assertEqual(w[-1].category, reddit.APIWarning)
-            self.assertTrue("self" in str(w[-1].message))
+            self.assertTrue('self' in str(w[-1].message))
 
     def test_info_by_url_also_found_by_id(self):
         found_links = r.info(submissions['link'].url)
@@ -66,6 +66,19 @@ class RedditTestCase(unittest.TestCase):
 
             self.assertTrue(found_by_id)
             self.assertTrue(link in found_by_id)
+
+class RedditorTestCase(unittest.TestCase):
+    def setUp(self):
+        self.user = r_auth.get_redditor('pyapitestuser3')
+
+    def test_get(self):
+        self.assertEqual('6c1xj', self.user.id)
+
+    def test_friend(self):
+        self.user.friend()
+
+    def test_unfriend(self):
+        self.user.unfriend()
 
 
 class CommunityTestCase(unittest.TestCase):
@@ -89,6 +102,11 @@ class SubComTestCase(unittest.TestCase):
     def testTryToSubmitWithoutLoggingIn(self):
         self.assertRaises(reddit.APIException, r.submit,
                           self.subreddit, 'TITLE', text='BODY')
+
+    def testCreateLink(self):
+        title = 'Test Link: %s' % uuid.uuid4()
+        self.assertTrue(r_auth.submit(self.subreddit, title,
+                                      url='http://bryceboe.com'))
 
     def testA_CreateSelf(self):
         global created
@@ -167,6 +185,6 @@ class CommentTestCase(unittest.TestCase):
                           isinstance(item, reddit.MoreComments))])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     setUpModule()
     unittest.main()

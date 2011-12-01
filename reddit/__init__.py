@@ -16,6 +16,7 @@
 import cookielib
 import warnings
 import urllib2
+from urlparse import urljoin
 try:
     import json
 except ImportError:
@@ -168,7 +169,6 @@ class Reddit(RedditObject):
             for child in children:
                 yield child
                 content_found += 1
-
                 # Terminate when we reached the limit, or place holder
                 if child.id == place_holder or content_found == limit:
                     return
@@ -184,13 +184,13 @@ class Reddit(RedditObject):
         """Returns a Subreddit class for the subreddit_name specified."""
         return Subreddit(self, subreddit_name, *args, **kwargs)
 
-    def get_submission_by_id(self, story_id):
-        """ Given a story id, possibly prefixed by t3, return a Submission
-        object, also fetching its comments."""
-        if story_id.startswith("t3_"):
+    def get_submission_by_id(self, submission_id):
+        """ Given a submission id, possibly prefixed by Submission.kind, return
+        a Submission object, also fetching its comments."""
+        if story_id.startswith("%s_" % Submission.kind):
             story_id = story_id.split("_")[1]
-        submission_info, comment_info = self._request_json(
-                urls["comments"] + story_id)
+        url = urljoin(urls["comments"], story_id)
+        submission_info, comment_info = self._request_json(url)
         submission = submission_info["data"]["children"][0]
         comments = comment_info["data"]["children"]
         for comment in comments:

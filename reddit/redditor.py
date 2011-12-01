@@ -14,11 +14,12 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 from base_objects import RedditContentObject
-from helpers import _get_section
-from util import limit_chars
 from decorators import require_login
+from helpers import _get_section
 from settings import DEFAULT_CONTENT_LIMIT
 from urls import urls
+from util import limit_chars
+
 
 class Redditor(RedditContentObject):
     """A class for Redditor methods."""
@@ -52,7 +53,6 @@ class Redditor(RedditContentObject):
         """Return all of the current user's subreddits that they moderate."""
         return self.reddit_session._get_content(urls["my_moderation"],
                                                 limit=limit)
-
     @require_login
     def friend(self):
         self.reddit_session._friend(self.name)
@@ -60,4 +60,3 @@ class Redditor(RedditContentObject):
     @require_login
     def unfriend(self):
         self.reddit_session._unfriend(self.name)
-
