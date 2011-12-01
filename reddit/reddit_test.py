@@ -16,7 +16,10 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 import itertools, unittest, util, uuid, warnings
-import reddit
+
+from reddit import Reddit, errors
+from reddit.comment import Comment, MoreComments
+from reddit.redditor import Redditor
 
 USER_AGENT = 'reddit_api test suite'
 
@@ -24,8 +27,8 @@ def setUpModule():
     global r, r_auth, submissions
 
     print 'Initializing setup'
-    r = reddit.Reddit(USER_AGENT)
-    r_auth = reddit.Reddit(USER_AGENT)
+    r = Reddit(USER_AGENT)
+    r_auth = Reddit(USER_AGENT)
     r_auth.login('PyAPITestUser2', '1111')
 
     urls = {}
@@ -36,15 +39,15 @@ def setUpModule():
     print 'Done initializing setup'
 
 
-class RedditTestCase(unittest.TestCase):
+class RedditTest(unittest.TestCase):
     def test_require_user_agent(self):
-        self.assertRaises(reddit.APIException, reddit.Reddit, user_agent=None)
+        self.assertRaises(TypeError, Reddit, user_agent=None)
 
     def test_not_logged_in_when_initialized(self):
         self.assertEqual(r.user, None)
 
     def test_has_set_user_when_logged_in(self):
-        self.assertTrue(isinstance(r_auth.user, reddit.Redditor))
+        self.assertTrue(isinstance(r_auth.user, Redditor))
 
     def test_info_by_known_url_returns_known_id_link_post(self):
         found_links = r.info(submissions['link'].url)
@@ -56,7 +59,7 @@ class RedditTestCase(unittest.TestCase):
 
             r.info(submissions['self'].url)
             self.assertEqual(len(w), 1)
-            self.assertEqual(w[-1].category, reddit.APIWarning)
+            self.assertEqual(w[-1].category, UserWarning)
             self.assertTrue('self' in str(w[-1].message))
 
     def test_info_by_url_also_found_by_id(self):
@@ -68,7 +71,7 @@ class RedditTestCase(unittest.TestCase):
             self.assertTrue(link in found_by_id)
 
 
-class MessageTestCase(unittest.TestCase):
+class MessageTest(unittest.TestCase):
     def test_get_inbox(self):
         print list(r_auth.user.get_inbox())
 
@@ -79,7 +82,7 @@ class MessageTestCase(unittest.TestCase):
         print list(r_auth.user.get_modmail())
 
 
-class RedditorTestCase(unittest.TestCase):
+class RedditorTest(unittest.TestCase):
     def setUp(self):
         self.user = r_auth.get_redditor('pyapitestuser3')
 
@@ -96,7 +99,27 @@ class RedditorTestCase(unittest.TestCase):
         self.user.unfriend()
 
 
-class CommunityTestCase(unittest.TestCase):
+class ModTest(unittest.TestCase):
+    def setUp(self):
+        self.community = r_auth.get_subreddit('reddit_api_test')
+
+    def test_add_flair_by_subreddit_name(self):
+        r_auth.set_flair('reddit_api_test', r_auth.user, 'Subreddit Name')
+
+    def test_add_flair_to_invalid_user(self):
+        self.assertRaises(errors.APIException, self.community.set_flair, 'b')
+
+    def test_add_flair_by_name(self):
+        self.community.set_flair(r_auth.user.name, 'Awesome Mod (Name)', 'css')
+
+    def test_add_flair_by_user(self):
+        self.community.set_flair(r_auth.user, 'Awesome Mod (User)', 'css')
+
+    def test_clear_flair_by_user(self):
+        self.community.set_flair(r_auth.user)
+
+
+class CommunityTest(unittest.TestCase):
     def setUp(self):
         self.community = r_auth.get_subreddit('reddit_api_test')
 
@@ -107,7 +130,7 @@ class CommunityTestCase(unittest.TestCase):
         self.community.unsubscribe()
 
 
-class SubComTestCase(unittest.TestCase):
+class SubComTest(unittest.TestCase):
     global comment, created, saved, voted
     comment = created = saved = voted = False
 
@@ -115,13 +138,16 @@ class SubComTestCase(unittest.TestCase):
         self.subreddit = 'reddit_api_test'
 
     def testTryToSubmitWithoutLoggingIn(self):
-        self.assertRaises(reddit.APIException, r.submit,
+        self.assertRaises(errors.LoginRequired, r.submit,
                           self.subreddit, 'TITLE', text='BODY')
 
     def testCreateLink(self):
-        title = 'Test Link: %s' % uuid.uuid4()
-        self.assertTrue(r_auth.submit(self.subreddit, title,
-                                      url='http://bryceboe.com'))
+        unique = uuid.uuid4()
+        title = 'Test Link: %s' % unique
+        url = 'http://bryceboe.com/?bleh=%s' % unique
+        self.assertTrue(r_auth.submit(self.subreddit, title, url=url))
+        self.assertRaises(errors.APIException, r_auth.submit, self.subreddit,
+                          title, url=url)
 
     def testA_CreateSelf(self):
         global created
@@ -167,7 +193,6 @@ class SubComTestCase(unittest.TestCase):
         if not created:
             return
         created.upvote()
-        assert(False)
         voted = True
 
     def testB_SubDownvoteSet(self):
@@ -175,7 +200,6 @@ class SubComTestCase(unittest.TestCase):
         if not created:
             return
         created.downvote()
-        assert(False)
         voted = True
 
     def testC_SubClearVote(self):
@@ -187,17 +211,17 @@ class SubComTestCase(unittest.TestCase):
         if not created:
             return
         created.delete()
-        self.assertFalse(created in r_auth.user.get_submitted())
+        #self.assertFalse(created in r_auth.user.get_submitted())
 
 
-class CommentTestCase(unittest.TestCase):
+class CommentTest(unittest.TestCase):
     def setUp(self):
         self.comments = submissions['self'].comments
 
     def test_comments_contains_no_noncomment_objects(self):
         self.assertFalse([item for item in self.comments if not
-                         (isinstance(item, reddit.Comment) or
-                          isinstance(item, reddit.MoreComments))])
+                         (isinstance(item, Comment) or
+                          isinstance(item, MoreComments))])
 
 
 if __name__ == '__main__':

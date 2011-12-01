@@ -18,15 +18,11 @@ import warnings
 from functools import wraps
 from urlparse import urljoin
 
+import errors
 import reddit
-import api_exceptions
 from settings import WAIT_BETWEEN_CALL_TIME
 from urls import urls
 
-ERROR_MAPPING = {'USER_REQUIRED'  : api_exceptions.NotLoggedInException,
-                 'WRONG_PASSWORD' : api_exceptions.InvalidUserPass,
-                 'RATELIMIT'      : api_exceptions.RateLimitExceeded,
-                 'BAD_CAPTCHA'    : api_exceptions.BadCaptcha}
 
 class require_captcha(object):
     """Decorator for methods that require captchas."""
@@ -50,7 +46,7 @@ class require_captcha(object):
                     self.get_captcha(caller)
                     kwargs['captcha'] = self.captcha_as_dict
                 return self.func(caller, *args, **kwargs)
-            except api_exceptions.BadCaptcha:
+            except errors.BadCaptcha:
                 do_captcha = True
 
     @property
@@ -84,7 +80,7 @@ def require_login(func):
             modhash = self.reddit_session.modhash
 
         if user is None or modhash is None:
-            raise api_exceptions.NotLoggedInException()
+            raise errors.LoginRequired('"%s" requires login.' % func.__name__)
         else:
             return func(self, *args, **kwargs)
     return login_reqd_func
@@ -138,15 +134,15 @@ def parse_api_json_response(func):
             if 'errors' in return_value and return_value['errors']:
                 error_list = []
                 for item in return_value['errors']:
-                    error, msg, other = item
-                    if error in ERROR_MAPPING:
-                        error_list.append(ERROR_MAPPING[error](msg))
+                    error_type, msg, field = item
+                    if error_type in errors.ERROR_MAPPING:
+                        error_class = errors.ERROR_MAPPING[error_type]
                     else:
-                        error_list.append(Exception('(Unknown) %s: %s (%s)' %
-                                                    (error, msg, other)))
+                        error_class = errors.APIException
+                    error_list.append(error_class(*item))
                 if len(error_list) == 1:
                     raise error_list[0]
                 else:
-                    raise api_exceptions.ExceptionList(error_list)
+                    raise errors.ExceptionList(error_list)
         return return_value
     return error_checked_func

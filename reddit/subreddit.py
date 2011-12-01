@@ -66,10 +66,12 @@ class Subreddit(RedditContentObject):
         """Just display the subreddit name."""
         return self.display_name.encode("utf8")
 
+    def set_flair(self, *args, **kwargs):
+        """Set flair for a particular user."""
+        return self.reddit_session.set_flair(self, *args, **kwargs)
+
     def submit(self, *args, **kwargs):
-        """
-        Submit a new link.
-        """
+        """Submit a new link."""
         return self.reddit_session.submit(self, *args, **kwargs)
 
     def subscribe(self):

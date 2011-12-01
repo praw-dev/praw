@@ -56,14 +56,6 @@ class Redditor(RedditContentObject):
 
 class LoggedInRedditor(Redditor):
     """A class for a currently logged in redditor"""
-
-    def __init__(self, redditor):
-        """Copy constructor"""
-        if not isinstance(redditor, Redditor):
-            raise TypeError("redditor must be a Redditor object")
-        for key, val in redditor.__dict__.iteritems():
-            setattr(self, key, val)
-
     @require_login
     def my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return all of the current user's subscribed subreddits."""

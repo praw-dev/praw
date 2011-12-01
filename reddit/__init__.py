@@ -22,7 +22,6 @@ try:
 except ImportError:
     import simplejson as json
 
-from api_exceptions import APIException, APIWarning
 from base_objects import RedditObject
 from comment import Comment, MoreComments
 from decorators import require_captcha, require_login, parse_api_json_response
@@ -48,7 +47,7 @@ class Reddit(RedditObject):
     def __init__(self, user_agent):
         """Specify the user agent for the application."""
         if not isinstance(user_agent, str):
-            raise APIException("User agent must be a string.")
+            raise TypeError("User agent must be a string.")
         self.DEFAULT_HEADERS["User-agent"] = user_agent
 
         _cookie_jar = cookielib.CookieJar()
@@ -217,7 +216,8 @@ class Reddit(RedditObject):
         except:
             raise Exception('Login failed: Unexpected result\n---\n%s\n---' %
                             response)
-        self.user = LoggedInRedditor(self.get_redditor(user))
+        self.user = self.get_redditor(user)
+        self.user.__class__ = LoggedInRedditor
 
     @require_login
     def logout(self):
@@ -295,7 +295,7 @@ class Reddit(RedditObject):
                 url != urls["reddit_url"]):
                 warnings.warn("It looks like you may be trying to get the info"
                               " of a self or internal link. This probably "
-                              "won't return any useful results!", APIWarning)
+                              "won't return any useful results!", UserWarning)
         else:
             params = {"id" : id}
         return self._get_content(urls["info"], url_data=params, limit=limit)
@@ -385,10 +385,18 @@ class Reddit(RedditObject):
 
     @require_login
     def set_flair(self, subreddit, user, text='', css_class=''):
-        """Set flair of user in given subreddit"""
-        params = {'r': subreddit,
-                  'name': user,
+        """Set flair of user in given subreddit.
+
+        subreddit argument accepts either a Subreddit object or a string
+        containing the subreddit name.
+
+        user argument accepts either a Redditor object or a string containing
+        the user name.
+        """
+        params = {'r': str(subreddit),
+                  'name': str(user),
                   'text': text,
                   'css_class': css_class,
-                  'uh': self.user.modhash}
-        return self._request_json(urls["flair"], params)
+                  'uh': self.user.modhash,
+                  'api_type': 'json'}
+        return self._request_json(urls['flair'], params)
