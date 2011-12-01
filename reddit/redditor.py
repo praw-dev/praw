@@ -43,16 +43,9 @@ class Redditor(RedditContentObject):
         return self.name.encode("utf8")
 
     @require_login
-    def get_my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
-        """Return all of the current user's subreddits."""
-        return self.reddit_session._get_content(urls["my_reddits"],
-                                                limit=limit)
+    def compose_message(self, subject, message):
+        return self.reddit_session.compose_message(self, subject, message)
 
-    @require_login
-    def get_my_moderation(self, limit=DEFAULT_CONTENT_LIMIT):
-        """Return all of the current user's subreddits that they moderate."""
-        return self.reddit_session._get_content(urls["my_moderation"],
-                                                limit=limit)
     @require_login
     def friend(self):
         self.reddit_session._friend(self.name)
@@ -60,3 +53,40 @@ class Redditor(RedditContentObject):
     @require_login
     def unfriend(self):
         self.reddit_session._unfriend(self.name)
+
+class LoggedInRedditor(Redditor):
+    """A class for a currently logged in redditor"""
+
+    def __init__(self, redditor):
+        """Copy constructor"""
+        if not isinstance(redditor, Redditor):
+            raise TypeError("redditor must be a Redditor object")
+        for key, val in redditor.__dict__.iteritems():
+            setattr(self, key, val)
+
+    @require_login
+    def my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
+        """Return all of the current user's subscribed subreddits."""
+        return self.reddit_session._get_content(urls["my_reddits"],
+                                                limit=limit)
+
+    @require_login
+    def my_moderation(self, limit=DEFAULT_CONTENT_LIMIT):
+        """Return all of the current user's subreddits that they moderate."""
+        return self.reddit_session._get_content(urls["my_moderation"],
+                                                limit=limit)
+
+    @require_login
+    def get_inbox(self):
+        """Return a generator for inbox messages."""
+        return self.reddit_session._get_content(urls['inbox'])
+
+    @require_login
+    def get_sent(self):
+        """Return a generator for sent messages."""
+        return self.reddit_session._get_content(urls['sent'])
+
+    @require_login
+    def get_modmail(self):
+        """Return a generator for moderator messages."""
+        return self.reddit_session._get_content(urls['moderator'])

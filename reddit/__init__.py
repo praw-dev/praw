@@ -27,8 +27,7 @@ from base_objects import RedditObject
 from comment import Comment, MoreComments
 from decorators import require_captcha, require_login, parse_api_json_response
 from helpers import _modify_relationship, _request
-from inbox import Inbox
-from redditor import Redditor
+from redditor import LoggedInRedditor, Redditor
 from settings import DEFAULT_CONTENT_LIMIT
 from submission import Submission
 from subreddit import Subreddit
@@ -162,10 +161,10 @@ class Reddit(RedditObject):
             # if for some reason we didn't get data, then break
             try:
                 data = page_data["data"]
+                after = data['after']
+                children = data['children']
             except KeyError:
                 break
-            after = data.get('after')
-            children = data.get('children')
             for child in children:
                 yield child
                 content_found += 1
@@ -197,11 +196,6 @@ class Reddit(RedditObject):
             comment._update_submission(submission)
         return submission
 
-    @require_login
-    def get_inbox(self, *args, **kwargs):
-        """Return an Inbox object."""
-        return Inbox(self, *args, **kwargs)
-
     def login(self, user=None, password=None):
         """Login to Reddit. If no user or password is provided, the user will
         be prompted with raw_input and getpass.getpass.
@@ -223,7 +217,7 @@ class Reddit(RedditObject):
         except:
             raise Exception('Login failed: Unexpected result\n---\n%s\n---' %
                             response)
-        self.user = self.get_redditor(user)
+        self.user = LoggedInRedditor(self.get_redditor(user))
 
     @require_login
     def logout(self):
@@ -326,7 +320,8 @@ class Reddit(RedditObject):
                   "subject" : subject,
                   "to" : str(recipient),
                   "uh" : self.modhash,
-                  "user" : self.user.name}
+                  "user" : self.user.name,
+                  "api_type" : "json"}
         if captcha:
             params.update(captcha)
         return self._request_json(urls["compose_message"], params)
@@ -335,7 +330,7 @@ class Reddit(RedditObject):
         """Search the subreddits for a reddit whose name matches the query."""
         params = {"query" : query}
         results = self._request_json(urls["search_reddit_names"], params)
-        return [self.get_subreddit(name) for name in results.get("names")]
+        return [self.get_subreddit(name) for name in results["names"]]
 
     @require_login
     @require_captcha

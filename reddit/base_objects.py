@@ -94,8 +94,7 @@ class RedditContentObject(RedditObject):
 
     def _get_json_dict(self):
         response = self._request_json(self._info_url, as_objects=False)
-        json_dict = response.get("data")
-        return json_dict
+        return response["data"]
 
     @classmethod
     def from_api_response(cls, reddit_session, json_dict):

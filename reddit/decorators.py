@@ -143,7 +143,7 @@ def parse_api_json_response(func):
                         error_list.append(ERROR_MAPPING[error](msg))
                     else:
                         error_list.append(Exception('(Unknown) %s: %s (%s)' %
-                                                    (errors, msg, other)))
+                                                    (error, msg, other)))
                 if len(error_list) == 1:
                     raise error_list[0]
                 else:

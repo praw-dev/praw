@@ -67,12 +67,27 @@ class RedditTestCase(unittest.TestCase):
             self.assertTrue(found_by_id)
             self.assertTrue(link in found_by_id)
 
+
+class MessageTestCase(unittest.TestCase):
+    def test_get_inbox(self):
+        print list(r_auth.user.get_inbox())
+
+    def test_get_sent(self):
+        print list(r_auth.user.get_sent())
+
+    def test_get_modmail(self):
+        print list(r_auth.user.get_modmail())
+
+
 class RedditorTestCase(unittest.TestCase):
     def setUp(self):
         self.user = r_auth.get_redditor('pyapitestuser3')
 
     def test_get(self):
         self.assertEqual('6c1xj', self.user.id)
+
+    def test_compose(self):
+        self.user.compose_message('Message topic', 'Message content')
 
     def test_friend(self):
         self.user.friend()
