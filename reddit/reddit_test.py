@@ -96,7 +96,7 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
             if comment.body == text:
                 break
         else:
-            self.fail('Could not find comment that was just posted')
+            self.fail('Could not find comment that was just posted.')
 
     def test_add_reply_and_verify(self):
         text = 'Unique reply: %s' % uuid.uuid4()
@@ -105,7 +105,7 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
                 comment = submission.comments[0]
                 break
         else:
-            self.fail('Could not find a submission with comments')
+            self.fail('Could not find a submission with comments.')
         self.assertTrue(comment.reply(text))
         # reload the submission (use id to bypass cache)
         submission = self.r.get_submission(id=submission.id)
@@ -181,6 +181,76 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
+    def test_delete(self):
+        submission = list(self.r.user.get_submitted())[-1]
+        submission.delete()
+        # reload the submission
+        submission = self.r.get_submission(id=submission.id)
+        self.assertEqual('[deleted]', submission.author)
+
+    def test_save(self):
+        for submission in self.r.user.get_submitted():
+            if not submission.saved:
+                break
+        else:
+            self.fail('Could not find unsaved submission.')
+        submission.save()
+        # reload the submission
+        submission = self.r.get_submission(id=submission.id)
+        self.assertTrue(submission.saved)
+
+    def test_unsave(self):
+        for submission in self.r.user.get_submitted():
+            if submission.saved:
+                break
+        else:
+            self.fail('Could not find saved submission.')
+        submission.unsave()
+        # reload the submission
+        submission = self.r.get_submission(id=submission.id)
+        self.assertFalse(submission.saved)
+
+    def test_clear_vote(self):
+        for submission in self.r.user.get_submitted():
+            if submission.likes == False:
+                break
+        else:
+            self.fail('Could not find a down-voted submission.')
+        submission.clear_vote()
+        print submission, 'clear'
+        # reload the submission
+        submission = self.r.get_submission(id=submission.id)
+        self.assertEqual(submission.likes, None)
+
+    def test_downvote(self):
+        for submission in self.r.user.get_submitted():
+            if submission.likes == True:
+                break
+        else:
+            self.fail('Could not find an up-voted submission.')
+        submission.downvote()
+        print submission, 'down'
+        # reload the submission
+        submission = self.r.get_submission(id=submission.id)
+        self.assertEqual(submission.likes, False)
+
+    def test_upvote(self):
+        for submission in self.r.user.get_submitted():
+            if submission.likes == None:
+                break
+        else:
+            self.fail('Could not find a non-voted submission.')
+        submission.upvote()
+        print submission, 'up'
+        # reload the submission
+        submission = self.r.get_submission(id=submission.id)
+        self.assertEqual(submission.likes, True)
+
+
+class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+
     def test_create_link_and_duplicate(self):
         unique = uuid.uuid4()
         title = 'Test Link: %s' % unique
@@ -198,54 +268,13 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.fail('Could not find submission.')
 
-    def test_delete(self):
-        submission = list(self.r.user.get_submitted())[-1]
-        submission.delete()
-        # reload the submission
-        submission = self.r.get_submission(id=submission.id)
-        self.assertEqual('[deleted]', submission.author)
-
-    def test_save(self):
-        for submission in self.r.user.get_submitted():
-            if not submission.saved:
-                break
-        else:
-            self.fail('Could not find unsaved submission')
-        submission.save()
-        # reload the submission
-        submission = self.r.get_submission(id=submission.id)
-        self.assertTrue(submission.saved)
-
-    def test_unsave(self):
-        for submission in self.r.user.get_submitted():
-            if submission.saved:
-                break
-        else:
-            self.fail('Could not find saved submission')
-        submission.unsave()
-        # reload the submission
-        submission = self.r.get_submission(id=submission.id)
-        self.assertFalse(submission.saved)
-
-    # TODO: need a way to verify votes
-    def test_clear_vote(self):
-        submission = self.r.user.get_submitted().next()
-        submission.clear_vote()
-
-    def test_downvote(self):
-        submission = self.r.user.get_submitted().next()
-        submission.downvote()
-
-    def test_upvote(self):
-        submission = self.r.user.get_submitted().next()
-        submission.upvote()
-
 
 class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
 
+    # TODO: Need to verify the subscription
     def test_subscribe(self):
         self.subreddit.subscribe()
 
