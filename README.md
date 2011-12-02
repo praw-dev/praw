@@ -5,18 +5,22 @@ This is a Python wrapper for Reddit's API, aiming to be as easy to use as
 possible. Here's a quick peek, getting the first 10 submissions from the 'hot'
 section of the 'opensource' subreddit.
 
-    import reddit
-    r = reddit.Reddit(user_agent="my_cool_application")
-    submissions = r.get_subreddit('opensource').get_hot(limit=5)
-    list(submissions)
+```python
+import reddit
+r = reddit.Reddit(user_agent="my_cool_application")
+submissions = r.get_subreddit('opensource').get_hot(limit=5)
+list(submissions)
+```
 
 this displays
 
-    [<Submission: 1 :: OpenFOAM: Open Source Computational Fluid Dynamics>,
-     <Submission: 9 :: My new open source project, Bunchify>,
-     <Submission: 93 :: Arrested while contributing to OpenStreetMap>,
-     <Submission: 27 :: DK: 25,000 hospital staff Copenhagen region to use open source office suite >,
-     <Submission: 24 :: Eclipse online>]
+```python
+[<Submission: 1 :: OpenFOAM: Open Source Computational Fluid Dynamics>,
+ <Submission: 9 :: My new open source project, Bunchify>,
+ <Submission: 93 :: Arrested while contributing to OpenStreetMap>,
+ <Submission: 27 :: DK: 25,000 hospital staff Copenhagen region to use open source office suite >,
+ <Submission: 24 :: Eclipse online>]
+```
 
 
 Install
@@ -161,6 +165,16 @@ r.get_subreddit("python").set_flair("bboe", "text flair", "css-class")
 
     ```python
 r.get_subreddit("python").set_flair("bboe")
+```
+
+0. Bulk set user flair (requires mod privileges):
+
+    ```python
+flair_mapping = [{'user':'bboe', 'flair_text':'dev'},
+                     {'user':'pyapitestuser3', 'flair_css_class':'css2'},
+                     {'user':'pyapitestuser2', 'flair_text':'AWESOME',
+                      'flair_css_class':'css'}]
+r.get_subreddit("python").set_flair_csv(flair_mapping)
 ```
 
 Extra usage info

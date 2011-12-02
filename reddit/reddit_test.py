@@ -154,6 +154,32 @@ class ModTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.set_flair(self.un, 'flair')
         self.assertTrue(self.subreddit.flair_list().next())
 
+    def test_flair_csv(self):
+        flair_mapping = [{'user':'bboe', 'flair_text':'dev',
+                          'flair_css_class':''},
+                         {'user':'pyapitestuser3', 'flair_text':'',
+                          'flair_css_class':'css2'},
+                         {'user':'pyapitestuser2', 'flair_text':'AWESOME',
+                          'flair_css_class':'css'}]
+        self.subreddit.set_flair_csv(flair_mapping)
+        expected = set([tuple(x) for x in flair_mapping])
+        result = set([tuple(x) for x in self.subreddit.flair_list()])
+        self.assertTrue(not expected - result)
+
+    def test_flair_csv_optional_args(self):
+        flair_mapping = [{'user':'bboe', 'flair_text':'bboe'},
+                         {'user':'pyapitestuser3', 'flair_css_class':'blah'}]
+        self.subreddit.set_flair_csv(flair_mapping)
+
+    def test_flair_csv_empty(self):
+        self.assertRaises(errors.ClientException,
+                          self.subreddit.set_flair_csv, [])
+
+    def test_flair_csv_requires_user(self):
+        flair_mapping = [{'flair_text':'hsdf'}]
+        self.assertRaises(errors.ClientException,
+                          self.subreddit.set_flair_csv, flair_mapping)
+
 
 class RedditorTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):

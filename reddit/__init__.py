@@ -25,6 +25,7 @@ except ImportError:
 from base_objects import RedditObject
 from comment import Comment, MoreComments
 from decorators import require_captcha, require_login, parse_api_json_response
+from errors import ClientException
 from helpers import _modify_relationship, _request
 from redditor import LoggedInRedditor, Redditor
 from settings import DEFAULT_CONTENT_LIMIT
@@ -217,11 +218,7 @@ class Reddit(RedditObject):
                   'user' : user,
                   'api_type' : 'json'}
         response = self._request_json(urls["login"] % user, params)
-        try:
-            self.modhash = response['data']['modhash']
-        except:
-            raise Exception('Login failed: Unexpected result\n---\n%s\n---' %
-                            response)
+        self.modhash = response['data']['modhash']
         self.user = self.get_redditor(user)
         self.user.__class__ = LoggedInRedditor
 
@@ -400,3 +397,26 @@ class Reddit(RedditObject):
                   'uh': self.user.modhash,
                   'api_type': 'json'}
         return self._request_json(urls['flair'], params)
+
+    @require_login
+    def set_flair_csv(self, subreddit, flair_mapping):
+        """Set flair for a group of users all at once.
+
+        flair_mapping should be a list of dictionaries with the following keys:
+                       user: the user name
+                 flair_text: the flair text for the user (optional)
+            flair_css_class: the flair css class for the user (optional)
+        """
+        if not flair_mapping:
+            raise ClientException('flair_mapping cannot be empty')
+        item_order = ['user', 'flair_text', 'flair_css_class']
+        lines = []
+        for mapping in flair_mapping:
+            if 'user' not in mapping:
+                raise ClientException('mapping must contain "user" key')
+            lines.append(','.join([mapping.get(x, '') for x in item_order]))
+        params = {'r': str(subreddit),
+                  'flair_csv': '\n'.join(lines),
+                  'uh': self.user.modhash,
+                  'api_type': 'json'}
+        return self._request_json(urls['flaircsv'], params)

@@ -73,6 +73,10 @@ class Subreddit(RedditContentObject):
         """Set flair for a particular user."""
         return self.reddit_session.set_flair(self, *args, **kwargs)
 
+    def set_flair_csv(self, *args, **kwargs):
+        """Set flair for a group of users all at once."""
+        return self.reddit_session.set_flair_csv(self, *args, **kwargs)
+
     def submit(self, *args, **kwargs):
         """Submit a new link."""
         return self.reddit_session.submit(self, *args, **kwargs)
