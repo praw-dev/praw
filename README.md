@@ -48,7 +48,7 @@ submissions = r.get_subreddit("python").get_top(limit=10)
 0. Get comments from a given submission:
 
     ```python
-submission = list(submissions)[0]
+submission = submissions.next()
 submission.comments
 ```
 
@@ -145,10 +145,10 @@ r.create_subreddit(short_title="MyIncredibleSubreddit",
 0. Get flair mappings for a particular subreddit (requires mod privileges):
 
     ```python
-for item in r.get_subreddit("python").flair_list():
-    item['user']
-    item['flair_text']
-    item['flair_css_class']
+item = r.get_subreddit("python").flair_list().next()
+item['user']
+item['flair_text']
+item['flair_css_class']
 ```
 
 0. Set / update user flair (requires mod privileges):
