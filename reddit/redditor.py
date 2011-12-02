@@ -35,11 +35,12 @@ class Redditor(RedditContentObject):
         info_url = urls["redditor_about_page"] % user_name
         super(Redditor, self).__init__(reddit_session, user_name, json_dict,
                                        fetch, info_url)
+        self.name = user_name
         self._url = urls["redditor_page"] % user_name
 
     @limit_chars()
     def __str__(self):
-        """Have the str just be the user's name"""
+        """Display the user's name."""
         return self.name.encode("utf8")
 
     @require_login

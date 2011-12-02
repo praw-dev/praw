@@ -122,7 +122,7 @@ def parse_api_json_response(func):
         return_value = func(*args, **kwargs)
         if isinstance(return_value, dict):
             for k in return_value:
-                if k not in ('data', 'kind', 'errors'):
+                if k not in ('data', 'errors', 'kind', 'next', 'prev', 'users'):
                     # The only jquery response we want to allow is captcha
                     if k == 'jquery':
                         try:

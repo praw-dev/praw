@@ -142,6 +142,27 @@ r.create_subreddit(short_title="MyIncredibleSubreddit",
                        description="It's incredible!)
 ```
 
+0. Get flair mappings for a particular subreddit (requires mod privileges):
+
+    ```python
+for item in r.get_subreddit("python").flair_list():
+    item['user']
+    item['flair_text']
+    item['flair_css_class']
+```
+
+0. Set / update user flair (requires mod privileges):
+
+    ```python
+r.get_subreddit("python").set_flair("bboe", "text flair", "css-class")
+```
+
+0. Clear user flair (requires mod privileges):
+
+    ```python
+r.get_subreddit("python").set_flair("bboe")
+```
+
 Extra usage info
 ----------
 
@@ -214,14 +235,6 @@ File an issue, I'll look into it.
 
 Send me a github message. I can help you get aquainted with the code base, and
 maybe we can write a wiki page for others, too.
-
-Pending features
-----------------
-
-Feel free to help out with adding new features!
-
-* flair
-* proper messaging
 
 
 License

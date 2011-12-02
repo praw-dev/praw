@@ -81,7 +81,9 @@ class RedditContentObject(RedditObject):
         if name == "subreddit":
             value = Subreddit(self.reddit_session, value, fetch=False)
         elif name == "redditor" or name == "author":
-            value = Redditor(self.reddit_session, value, fetch=False)
+            # Special case for deleted users
+            if value != '[deleted]':
+                value = Redditor(self.reddit_session, value, fetch=False)
         object.__setattr__(self, name, value)
 
     def __eq__(self, other):

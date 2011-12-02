@@ -19,75 +19,150 @@ import itertools, unittest, util, uuid, warnings
 
 from reddit import Reddit, errors
 from reddit.comment import Comment, MoreComments
-from reddit.redditor import Redditor
+from reddit.redditor import LoggedInRedditor
 
-USER_AGENT = 'reddit_api test suite'
-
-def setUpModule():
-    global r, r_auth, submissions
-
-    print 'Initializing setup'
-    r = Reddit(USER_AGENT)
-    r_auth = Reddit(USER_AGENT)
-    r_auth.login('PyAPITestUser2', '1111')
-
-    urls = {}
-    urls['self'] = 'http://www.reddit.com/r/programming/comments/bn2wi/'
-    urls['link'] = 'http://www.reddit.com/r/UCSantaBarbara/comments/m77nc/'
-
-    submissions = dict((x, r.get_submission(urls[x])) for x in urls)
-    print 'Done initializing setup'
+class BasicHelper(object):
+    def configure(self):
+        self.r = Reddit('reddit_api test suite')
+        self.sr = 'reddit_api_test'
+        self.un = 'PyApiTestUser2'
 
 
-class RedditTest(unittest.TestCase):
+class AuthenticatedHelper(BasicHelper):
+    def configure(self):
+        super(AuthenticatedHelper, self).configure()
+        self.r.login(self.un, '1111')
+
+
+class BasicTest(unittest.TestCase, BasicHelper):
+    def setUp(self):
+        self.configure()
+        self.self = 'http://www.reddit.com/r/programming/comments/bn2wi/'
+
     def test_require_user_agent(self):
         self.assertRaises(TypeError, Reddit, user_agent=None)
 
     def test_not_logged_in_when_initialized(self):
-        self.assertEqual(r.user, None)
+        self.assertEqual(self.r.user, None)
 
-    def test_has_set_user_when_logged_in(self):
-        self.assertTrue(isinstance(r_auth.user, Redditor))
+    def test_not_logged_in_submit(self):
+        self.assertRaises(errors.LoginRequired, self.r.submit,
+                          self.sr, 'TITLE', text='BODY')
 
     def test_info_by_known_url_returns_known_id_link_post(self):
-        found_links = r.info(submissions['link'].url)
-        self.assertTrue(submissions['link'] in found_links)
+        url = 'http://imgur.com/Vr8ZZ'
+        comm = 'http://www.reddit.com/r/UCSantaBarbara/comments/m77nc/'
+        found_links = self.r.info(url)
+        tmp = self.r.get_submission(url=comm)
+        self.assertTrue(tmp in found_links)
 
     def test_info_by_self_url_raises_warning(self):
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter('always')
-
-            r.info(submissions['self'].url)
+            self.r.info(self.self)
             self.assertEqual(len(w), 1)
             self.assertEqual(w[-1].category, UserWarning)
             self.assertTrue('self' in str(w[-1].message))
 
     def test_info_by_url_also_found_by_id(self):
-        found_links = r.info(submissions['link'].url)
+        url = 'http://imgur.com/Vr8ZZ'
+        comm = 'http://www.reddit.com/r/UCSantaBarbara/comments/m77nc/'
+        found_links = self.r.info(url)
         for link in found_links:
-            found_by_id = r.info(id=link.name)
-
+            found_by_id = self.r.info(id=link.name)
             self.assertTrue(found_by_id)
             self.assertTrue(link in found_by_id)
 
+    def test_comments_contains_no_noncomment_objects(self):
+        url = 'http://www.reddit.com/r/programming/comments/bn2wi/'
+        comments = self.r.get_submission(url=url).comments
+        self.assertFalse([item for item in comments if not
+                          (isinstance(item, Comment) or
+                           isinstance(item, MoreComments))])
 
-class MessageTest(unittest.TestCase):
+
+class CommentTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
+
+    def test_add_comment_and_verify(self):
+        text = 'Unique comment: %s' % uuid.uuid4()
+        submission = self.subreddit.get_new_by_date().next()
+        self.assertTrue(submission.add_comment(text))
+        # reload the submission
+        submission = self.r.get_submission(url=submission.permalink)
+        for comment in submission.comments:
+            if comment.body == text:
+                break
+        else:
+            self.fail('Could not find comment that was just posted')
+
+    def test_add_reply_and_verify(self):
+        text = 'Unique reply: %s' % uuid.uuid4()
+        for submission in self.subreddit.get_new_by_date():
+            if submission.num_comments > 0:
+                comment = submission.comments[0]
+                break
+        else:
+            self.fail('Could not find a submission with comments')
+        self.assertTrue(comment.reply(text))
+        # reload the submission (use id to bypass cache)
+        submission = self.r.get_submission(id=submission.id)
+        for comment in submission.comments[0].replies:
+            if comment.body == text:
+                break
+        else:
+            self.fail('Could not find the reply that was just posted.')
+
+
+class MessageTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+
     def test_get_inbox(self):
-        print list(r_auth.user.get_inbox())
+        self.r.user.get_inbox()
 
     def test_get_sent(self):
-        print list(r_auth.user.get_sent())
+        self.r.user.get_sent()
 
     def test_get_modmail(self):
-        print list(r_auth.user.get_modmail())
+        self.r.user.get_modmail()
 
 
-class RedditorTest(unittest.TestCase):
+class ModTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
-        self.user = r_auth.get_redditor('pyapitestuser3')
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
+
+    def test_add_flair_by_subreddit_name(self):
+        self.r.set_flair(self.sr, self.r.user, 'flair')
+
+    def test_add_flair_to_invalid_user(self):
+        self.assertRaises(errors.APIException, self.subreddit.set_flair, 'b')
+
+    def test_add_flair_by_name(self):
+        self.subreddit.set_flair(self.r.user.name, 'Awesome Mod (Name)', 'css')
+
+    def test_add_flair_by_user(self):
+        self.subreddit.set_flair(self.r.user, 'Awesome Mod (User)', 'css')
+
+    def test_clear_flair(self):
+        self.subreddit.set_flair(self.r.user)
+
+    def test_flair_list(self):
+        self.subreddit.set_flair(self.un, 'flair')
+        self.assertTrue(self.subreddit.flair_list().next())
+
+
+class RedditorTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.other = {'id':'6c1xj', 'name':'PyApiTestUser3'}
+        self.user = self.r.get_redditor(self.other['name'])
 
     def test_get(self):
-        self.assertEqual('6c1xj', self.user.id)
+        self.assertEqual(self.other['id'], self.user.id)
 
     def test_compose(self):
         self.user.compose_message('Message topic', 'Message content')
@@ -98,132 +173,85 @@ class RedditorTest(unittest.TestCase):
     def test_unfriend(self):
         self.user.unfriend()
 
+    def test_user_set_on_login(self):
+        self.assertTrue(isinstance(self.r.user, LoggedInRedditor))
 
-class ModTest(unittest.TestCase):
+
+class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
-        self.community = r_auth.get_subreddit('reddit_api_test')
+        self.configure()
 
-    def test_add_flair_by_subreddit_name(self):
-        r_auth.set_flair('reddit_api_test', r_auth.user, 'Subreddit Name')
-
-    def test_add_flair_to_invalid_user(self):
-        self.assertRaises(errors.APIException, self.community.set_flair, 'b')
-
-    def test_add_flair_by_name(self):
-        self.community.set_flair(r_auth.user.name, 'Awesome Mod (Name)', 'css')
-
-    def test_add_flair_by_user(self):
-        self.community.set_flair(r_auth.user, 'Awesome Mod (User)', 'css')
-
-    def test_clear_flair_by_user(self):
-        self.community.set_flair(r_auth.user)
-
-
-class CommunityTest(unittest.TestCase):
-    def setUp(self):
-        self.community = r_auth.get_subreddit('reddit_api_test')
-
-    def test_subscribe(self):
-        self.community.subscribe()
-
-    def test_unsubscribe(self):
-        self.community.unsubscribe()
-
-
-class SubComTest(unittest.TestCase):
-    global comment, created, saved, voted
-    comment = created = saved = voted = False
-
-    def setUp(self):
-        self.subreddit = 'reddit_api_test'
-
-    def testTryToSubmitWithoutLoggingIn(self):
-        self.assertRaises(errors.LoginRequired, r.submit,
-                          self.subreddit, 'TITLE', text='BODY')
-
-    def testCreateLink(self):
+    def test_create_link_and_duplicate(self):
         unique = uuid.uuid4()
         title = 'Test Link: %s' % unique
         url = 'http://bryceboe.com/?bleh=%s' % unique
-        self.assertTrue(r_auth.submit(self.subreddit, title, url=url))
-        self.assertRaises(errors.APIException, r_auth.submit, self.subreddit,
+        self.assertTrue(self.r.submit(self.sr, title, url=url))
+        self.assertRaises(errors.APIException, self.r.submit, self.sr,
                           title, url=url)
 
-    def testA_CreateSelf(self):
-        global created
+    def test_create_self_and_verify(self):
         title = 'Test Self: %s' % uuid.uuid4()
-        self.assertTrue(r_auth.submit(self.subreddit, title, text='BODY'))
-        for item in r_auth.user.get_submitted():
+        self.assertTrue(self.r.submit(self.sr, title, text='BODY'))
+        for item in self.r.user.get_submitted():
             if title == item.title:
-                created = item
-        self.assertFalse(not created)
+                break
+        else:
+            self.fail('Could not find submission.')
 
-    def testB_AddComment(self):
-        global comment
-        if not created:
-            return
-        text = 'Unique comment: %s' % uuid.uuid4()
-        self.assertTrue(created.add_comment(text))
-        comment = created.comments[0]
-        self.assertEqual(text, comment.body)
+    def test_delete(self):
+        submission = list(self.r.user.get_submitted())[-1]
+        submission.delete()
+        # reload the submission
+        submission = self.r.get_submission(id=submission.id)
+        self.assertEqual('[deleted]', submission.author)
 
-    def testC_AddReply(self):
-        if not comment:
-            return
-        self.assertTrue(comment.reply('reply text'))
+    def test_save(self):
+        for submission in self.r.user.get_submitted():
+            if not submission.saved:
+                break
+        else:
+            self.fail('Could not find unsaved submission')
+        submission.save()
+        # reload the submission
+        submission = self.r.get_submission(id=submission.id)
+        self.assertTrue(submission.saved)
 
-    def testB_Save(self):
-        global saved
-        if not created:
-            return
-        self.assertFalse(created in r_auth.get_saved_links())
-        created.save()
-        self.assertTrue(created in r_auth.get_saved_links())
-        saved = True
+    def test_unsave(self):
+        for submission in self.r.user.get_submitted():
+            if submission.saved:
+                break
+        else:
+            self.fail('Could not find saved submission')
+        submission.unsave()
+        # reload the submission
+        submission = self.r.get_submission(id=submission.id)
+        self.assertFalse(submission.saved)
 
-    def testC_Unsave(self):
-        if not saved:
-            return
-        self.assertTrue(saved)
-        created.unsave()
-        self.assertFalse(created in r_auth.get_saved_links())
+    # TODO: need a way to verify votes
+    def test_clear_vote(self):
+        submission = self.r.user.get_submitted().next()
+        submission.clear_vote()
 
-    def testB_SubUpvoteSet(self):
-        global voted
-        if not created:
-            return
-        created.upvote()
-        voted = True
+    def test_downvote(self):
+        submission = self.r.user.get_submitted().next()
+        submission.downvote()
 
-    def testB_SubDownvoteSet(self):
-        global voted
-        if not created:
-            return
-        created.downvote()
-        voted = True
-
-    def testC_SubClearVote(self):
-        if not voted:
-            return
-        created.clear_vote()
-
-    def testD_DeleteSubmission(self):
-        if not created:
-            return
-        created.delete()
-        #self.assertFalse(created in r_auth.user.get_submitted())
+    def test_upvote(self):
+        submission = self.r.user.get_submitted().next()
+        submission.upvote()
 
 
-class CommentTest(unittest.TestCase):
+class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
-        self.comments = submissions['self'].comments
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
 
-    def test_comments_contains_no_noncomment_objects(self):
-        self.assertFalse([item for item in self.comments if not
-                         (isinstance(item, Comment) or
-                          isinstance(item, MoreComments))])
+    def test_subscribe(self):
+        self.subreddit.subscribe()
+
+    def test_unsubscribe(self):
+        self.subreddit.unsubscribe()
 
 
 if __name__ == '__main__':
-    setUpModule()
     unittest.main()

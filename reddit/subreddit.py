@@ -57,14 +57,17 @@ class Subreddit(RedditContentObject):
         info_url = urls["subreddit_about_page"] % subreddit_name
         super(Subreddit, self).__init__(reddit_session, subreddit_name,
                                         json_dict, fetch, info_url)
-
         self.display_name = subreddit_name
         self._url = urls["subreddit_page"] % subreddit_name
 
     @limit_chars()
     def __str__(self):
-        """Just display the subreddit name."""
+        """Display the subreddit name."""
         return self.display_name.encode("utf8")
+
+    def flair_list(self, *args, **kwargs):
+        """Return a list of flair for this subreddit."""
+        return self.reddit_session.flair_list(self, *args, **kwargs)
 
     def set_flair(self, *args, **kwargs):
         """Set flair for a particular user."""

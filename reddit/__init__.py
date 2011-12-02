@@ -122,7 +122,8 @@ class Reddit(RedditObject):
         return self.user.content_id
 
     def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT,
-                     url_data=None, place_holder=None):
+                     url_data=None, place_holder=None, root_field='data',
+                     thing_field='children', after_field='after'):
         """A generator method to return Reddit content from a URL. Starts at
         the initial page_url, and fetches content using the `after` JSON data
         until `limit` entries have been fetched, or the `place_holder` has been
@@ -136,10 +137,17 @@ class Reddit(RedditObject):
         :param place_holder: if not None, the method will fetch `limit`
             content, stopping if it finds content with `id` equal to
             `place_holder`.
+        :param data_field: indicates the field in the json response that holds
+            the data. Most objects use 'data', however some (flairlist) don't
+            have the 'data' object. Use None for the root object.
+        :param thing_field: indicates the field under the data_field which
+            contains the list of things. Most objects use 'children'.
+        :param after_field: indicates the field which holds the after item
+            element
         :type place_holder: a string corresponding to a Reddit content id, e.g.
             't3_asdfasdf'
-        :returns: a list of Reddit content, of type Subreddit, Comment, or
-            Submission
+        :returns: a list of Reddit content, of type Subreddit, Comment,
+            Submission or user flair.
         """
         content_found = 0
 
@@ -153,26 +161,23 @@ class Reddit(RedditObject):
 
         # While we still need to fetch more content to reach our limit, do so.
         while fetch_all or content_found < limit:
-            # If the after variable isn't None, add it do the URL of the page
-            # we are going to fetch.
             page_data = self._request_json(page_url, url_data=url_data)
-
-            # if for some reason we didn't get data, then break
-            try:
-                data = page_data["data"]
-                after = data['after']
-                children = data['children']
-            except KeyError:
-                break
-            for child in children:
-                yield child
+            if root_field:
+                root = page_data[root_field]
+            else:
+                root = page_data
+            for thing in root[thing_field]:
+                yield thing
                 content_found += 1
                 # Terminate when we reached the limit, or place holder
-                if child.id == place_holder or content_found == limit:
+                if (content_found == limit or
+                    place_holder and thing.id == place_holder):
                     return
-            if not after:
-                break
-            url_data["after"] = after
+            # Set/update the 'after' parameter for the next iteration
+            if after_field in root and root[after_field]:
+                url_data['after'] = root[after_field]
+            else:
+                return
 
     def get_redditor(self, user_name, *args, **kwargs):
         """Return a Redditor class for the user_name specified."""
@@ -182,18 +187,19 @@ class Reddit(RedditObject):
         """Returns a Subreddit class for the subreddit_name specified."""
         return Subreddit(self, subreddit_name, *args, **kwargs)
 
-    def get_submission_by_id(self, submission_id):
-        """ Given a submission id, possibly prefixed by Submission.kind, return
-        a Submission object, also fetching its comments."""
-        if story_id.startswith("%s_" % Submission.kind):
-            story_id = story_id.split("_")[1]
-        url = urljoin(urls["comments"], story_id)
+    def get_submission(self, id=None, url=None):
+        """Return a submission object for either the given id or url."""
+        if bool(id) == bool(url):
+            raise TypeError("One (and only one) of id or url is required!")
+        if id:
+            if id.startswith('%s_' % Submission.kind):
+                id = id.split('_')[1]
+            url = urljoin(urls['comments'], id)
         submission_info, comment_info = self._request_json(url)
-        submission = submission_info["data"]["children"][0]
-        comments = comment_info["data"]["children"]
-        for comment in comments:
-            comment._update_submission(submission)
+        submission = submission_info['data']['children'][0]
+        submission.comments = comment_info['data']['children']
         return submission
+
 
     def login(self, user=None, password=None):
         """Login to Reddit. If no user or password is provided, the user will
@@ -260,13 +266,6 @@ class Reddit(RedditObject):
         see your own front page if you are logged in."""
         return self._get_content(urls["reddit_url"], limit=limit)
 
-    def get_submission(self, url):
-        """Return a submission object for the given url."""
-        submission_info, comment_info = self._request_json(url)
-        submission = submission_info['data']['children'][0]
-        submission.comments = comment_info['data']['children']
-        return submission
-
     @require_login
     def get_saved_links(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return a listing of the logged-in user's saved links."""
@@ -287,7 +286,6 @@ class Reddit(RedditObject):
         required.
         """
         if bool(url) == bool(id):
-            # either both or neither were given, either way:
             raise TypeError("One (and only one) of url or id is required!")
         if url is not None:
             params = {"url" : url}
@@ -341,10 +339,8 @@ class Reddit(RedditObject):
         Accepts either a Subreddit object or a str containing the subreddit
         name.
         """
-
-        if text and url or not text and not url:
-            raise TypeError('Only one of text or url is required.')
-
+        if bool(text) == bool(url):
+            raise TypeError("One (and only one) of text or url is required!")
         params = {"sr" : str(subreddit),
                   "title" : title,
                   "uh" : self.modhash,
@@ -384,15 +380,19 @@ class Reddit(RedditObject):
         return self._request_json(urls["register"], params)
 
     @require_login
-    def set_flair(self, subreddit, user, text='', css_class=''):
-        """Set flair of user in given subreddit.
+    def flair_list(self, subreddit):
+        """Get flair list for a subreddit.
 
-        subreddit argument accepts either a Subreddit object or a string
-        containing the subreddit name.
-
-        user argument accepts either a Redditor object or a string containing
-        the user name.
+        Returns a tuple containing 'user', 'flair_text', and 'flair_css_class'.
         """
+        params = {'uh':self.user.modhash}
+        return self._get_content(urls['flairlist'] % str(subreddit),
+                                 limit=None, url_data=params, root_field=None,
+                                 thing_field='users', after_field='next')
+
+    @require_login
+    def set_flair(self, subreddit, user, text='', css_class=''):
+        """Set flair of user in given subreddit."""
         params = {'r': str(subreddit),
                   'name': str(user),
                   'text': text,

@@ -80,7 +80,6 @@ def _request(reddit_session, page_url, params=None, url_data=None,
              openerdirector=None):
     if url_data:
         page_url += "?" + urllib.urlencode(url_data)
-
     # urllib2.Request throws a 404 for some reason with data=""
     encoded_params = None
     if params:
@@ -88,7 +87,6 @@ def _request(reddit_session, page_url, params=None, url_data=None,
         encoded_params = urllib.urlencode(params)
     if isinstance(page_url, unicode):
         page_url = urllib.quote(page_url.encode('utf-8'), ':/')
-
     request = urllib2.Request(page_url, data=encoded_params,
                               headers=reddit_session.DEFAULT_HEADERS)
     # The openerdirector manages cookies on a per-session basis
