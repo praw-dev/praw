@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # This file is part of reddit_api.
-# 
+#
 # reddit_api is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -11,15 +11,19 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-import itertools, unittest, util, uuid, warnings
-
+import itertools
+import unittest
+import util
+import uuid
+import warnings
 from reddit import Reddit, errors
 from reddit.comment import Comment, MoreComments
 from reddit.redditor import LoggedInRedditor
+
 
 class BasicHelper(object):
     def configure(self):
@@ -155,20 +159,20 @@ class ModTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(self.subreddit.flair_list().next())
 
     def test_flair_csv(self):
-        flair_mapping = [{'user':'bboe', 'flair_text':'dev',
-                          'flair_css_class':''},
-                         {'user':'pyapitestuser3', 'flair_text':'',
-                          'flair_css_class':'css2'},
-                         {'user':'pyapitestuser2', 'flair_text':'AWESOME',
-                          'flair_css_class':'css'}]
+        flair_mapping = [{'user': 'bboe', 'flair_text': 'dev',
+                          'flair_css_class': ''},
+                         {'user': 'pyapitestuser3', 'flair_text': '',
+                          'flair_css_class': 'css2'},
+                         {'user': 'pyapitestuser2', 'flair_text': 'AWESOME',
+                          'flair_css_class': 'css'}]
         self.subreddit.set_flair_csv(flair_mapping)
         expected = set([tuple(x) for x in flair_mapping])
         result = set([tuple(x) for x in self.subreddit.flair_list()])
         self.assertTrue(not expected - result)
 
     def test_flair_csv_optional_args(self):
-        flair_mapping = [{'user':'bboe', 'flair_text':'bboe'},
-                         {'user':'pyapitestuser3', 'flair_css_class':'blah'}]
+        flair_mapping = [{'user': 'bboe', 'flair_text': 'bboe'},
+                         {'user': 'pyapitestuser3', 'flair_css_class': 'blah'}]
         self.subreddit.set_flair_csv(flair_mapping)
 
     def test_flair_csv_empty(self):
@@ -176,7 +180,7 @@ class ModTest(unittest.TestCase, AuthenticatedHelper):
                           self.subreddit.set_flair_csv, [])
 
     def test_flair_csv_requires_user(self):
-        flair_mapping = [{'flair_text':'hsdf'}]
+        flair_mapping = [{'flair_text': 'hsdf'}]
         self.assertRaises(errors.ClientException,
                           self.subreddit.set_flair_csv, flair_mapping)
 
@@ -184,7 +188,7 @@ class ModTest(unittest.TestCase, AuthenticatedHelper):
 class RedditorTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
-        self.other = {'id':'6c1xj', 'name':'PyApiTestUser3'}
+        self.other = {'id': '6c1xj', 'name': 'PyApiTestUser3'}
         self.user = self.r.get_redditor(self.other['name'])
 
     def test_get(self):

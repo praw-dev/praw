@@ -1,5 +1,5 @@
 # This file is part of reddit_api.
-# 
+#
 # reddit_api is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -9,7 +9,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -32,6 +32,7 @@ from settings import DEFAULT_CONTENT_LIMIT
 from submission import Submission
 from subreddit import Subreddit
 from urls import urls
+
 
 class Reddit(RedditObject):
     """A class for a reddit session."""
@@ -201,7 +202,6 @@ class Reddit(RedditObject):
         submission.comments = comment_info['data']['children']
         return submission
 
-
     def login(self, user=None, password=None):
         """Login to Reddit. If no user or password is provided, the user will
         be prompted with raw_input and getpass.getpass.
@@ -214,9 +214,9 @@ class Reddit(RedditObject):
             password = getpass.getpass("Password: ")
 
         params = {'api_type': 'json',
-                  'passwd' : password,
-                  'user' : user,
-                  'api_type' : 'json'}
+                  'passwd': password,
+                  'user': user,
+                  'api_type': 'json'}
         response = self._request_json(urls["login"] % user, params)
         self.modhash = response['data']['modhash']
         self.user = self.get_redditor(user)
@@ -226,7 +226,7 @@ class Reddit(RedditObject):
     def logout(self):
         """Logs out of a session."""
         self.modhash = self.user = None
-        params = {"uh" : self.modhash}
+        params = {"uh": self.modhash}
         return self._request_json(urls["logout"], params)
 
     @require_login
@@ -241,20 +241,19 @@ class Reddit(RedditObject):
         return 'errors' in ret and len(ret['errors']) == 0
 
     @require_login
-    def _add_comment(self, content_id, subreddit_name=None, text=""):
+    def _add_comment(self, content_id, text):
         """Comment on the given content_id with the given text."""
         params = {'thing_id': content_id,
                   'text': text,
                   'uh': self.modhash,
-                  'r': subreddit_name,
                   'api_type': 'json'}
         ret = self._request_json(urls["comment"], params)
         return 'errors' in ret and len(ret['errors']) == 0
-    
+
     @require_login
     def _mark_as_read(self, content_ids):
         """ Marks each of the supplied content_ids (comments) as read """
-        params = {'id': ','.join(map(str,content_ids)),
+        params = {'id': ','.join(map(str, content_ids)),
                   'uh': self.modhash}
         self._request_json(urls["read_message"], params)
 
@@ -285,14 +284,14 @@ class Reddit(RedditObject):
         if bool(url) == bool(id):
             raise TypeError("One (and only one) of url or id is required!")
         if url is not None:
-            params = {"url" : url}
+            params = {"url": url}
             if (url.startswith(urls["reddit_url"]) and
                 url != urls["reddit_url"]):
                 warnings.warn("It looks like you may be trying to get the info"
                               " of a self or internal link. This probably "
                               "won't return any useful results!", UserWarning)
         else:
-            params = {"id" : id}
+            params = {"id": id}
         return self._get_content(urls["info"], url_data=params, limit=limit)
 
     @require_captcha
@@ -301,29 +300,29 @@ class Reddit(RedditObject):
         Send feedback to the admins. Please don't abuse this, read what it says
         on the send feedback page!
         """
-        params = {"name" : name,
-                  "email" : email,
-                  "reason" : reason,
-                  "text" : message}
+        params = {"name": name,
+                  "email": email,
+                  "reason": reason,
+                  "text": message}
         return self._request_json(urls["send_feedback"], params)
 
     @require_login
     @require_captcha
     def compose_message(self, recipient, subject, message, captcha=None):
         """Send a message to another redditor."""
-        params = {"text" : message,
-                  "subject" : subject,
-                  "to" : str(recipient),
-                  "uh" : self.modhash,
-                  "user" : self.user.name,
-                  "api_type" : "json"}
+        params = {"text": message,
+                  "subject": subject,
+                  "to": str(recipient),
+                  "uh": self.modhash,
+                  "user": self.user.name,
+                  "api_type": "json"}
         if captcha:
             params.update(captcha)
         return self._request_json(urls["compose_message"], params)
 
     def search_reddit_names(self, query):
         """Search the subreddits for a reddit whose name matches the query."""
-        params = {"query" : query}
+        params = {"query": query}
         results = self._request_json(urls["search_reddit_names"], params)
         return [self.get_subreddit(name) for name in results["names"]]
 
@@ -338,10 +337,10 @@ class Reddit(RedditObject):
         """
         if bool(text) == bool(url):
             raise TypeError("One (and only one) of text or url is required!")
-        params = {"sr" : str(subreddit),
-                  "title" : title,
-                  "uh" : self.modhash,
-                  "api_type" : "json"}
+        params = {"sr": str(subreddit),
+                  "title": title,
+                  "uh": self.modhash,
+                  "api_type": "json"}
         if text:
             params["kind"] = "self"
             params["text"] = text
@@ -360,20 +359,20 @@ class Reddit(RedditObject):
                          content_options="any", other_options=None, domain=""):
         """Create a new subreddit"""
         # TODO: Implement the rest of the options.
-        params = {"name" : short_title,
-                  "title" : full_title,
-                  "type" : type,
-                  "uh" : self.reddit_session.modhash}
+        params = {"name": short_title,
+                  "title": full_title,
+                  "type": type,
+                  "uh": self.reddit_session.modhash}
         return self._request_json(urls["create"], params)
 
     @require_captcha
     def create_redditor(self, user_name, password, email):
         """Register a new user."""
-        params = {"email" : email,
-                  "op" : "reg",
-                  "passwd" : password,
-                  "passwd2" : password,
-                  "user" : user_name}
+        params = {"email": email,
+                  "op": "reg",
+                  "passwd": password,
+                  "passwd2": password,
+                  "user": user_name}
         return self._request_json(urls["register"], params)
 
     @require_login
@@ -382,7 +381,7 @@ class Reddit(RedditObject):
 
         Returns a tuple containing 'user', 'flair_text', and 'flair_css_class'.
         """
-        params = {'uh':self.user.modhash}
+        params = {'uh': self.user.modhash}
         return self._get_content(urls['flairlist'] % str(subreddit),
                                  limit=None, url_data=params, root_field=None,
                                  thing_field='users', after_field='next')

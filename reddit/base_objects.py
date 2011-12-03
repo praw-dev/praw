@@ -1,5 +1,5 @@
 # This file is part of reddit_api.
-# 
+#
 # reddit_api is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -9,11 +9,12 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 from urls import urls
+
 
 class RedditObject(object):
     """Base class for all Reddit API objects."""
@@ -87,7 +88,7 @@ class RedditContentObject(RedditObject):
         object.__setattr__(self, name, value)
 
     def __eq__(self, other):
-        return (type(self) == type(other) and 
+        return (type(self) == type(other) and
                 self.content_id == other.content_id)
 
     def __ne__(self, other):

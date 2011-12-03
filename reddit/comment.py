@@ -1,5 +1,5 @@
 # This file is part of reddit_api.
-# 
+#
 # reddit_api is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -9,7 +9,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -18,6 +18,7 @@ from urlparse import urljoin
 from base_objects import RedditContentObject
 from features import Voteable, Deletable
 from util import limit_chars
+
 
 class Comment(RedditContentObject, Voteable,  Deletable):
     """A class for comments."""
@@ -56,10 +57,8 @@ class Comment(RedditContentObject, Voteable,  Deletable):
 
     def reply(self, text):
         """Reply to the comment with the specified text."""
-        return self.reddit_session._add_comment(self.name,
-                                                subreddit_name=self.subreddit.display_name,
-                                                text=text)
-                                                
+        return self.reddit_session._add_comment(self.name, text)
+
     def mark_read(self):
         """ Marks the comment as read """
         return self.reddit_session._mark_as_read([self.content_id])
@@ -74,7 +73,8 @@ class MoreComments(RedditContentObject):
         super(MoreComments, self).__init__(reddit_session, None, json_dict)
         self.parent_id = None
 
-    def _update_submission(self, _): pass
+    def _update_submission(self, _):
+        pass
 
     @limit_chars()
     def __str__(self):
