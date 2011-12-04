@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # This file is part of reddit_api.
-# 
+#
 # reddit_api is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -11,16 +11,20 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-import itertools, time, unittest, util, uuid, warnings
+import time
+import unittest
+import uuid
+import warnings
 
 import settings
 from reddit import Reddit, errors
 from reddit.comment import Comment, MoreComments
 from reddit.redditor import LoggedInRedditor
+
 
 class BasicHelper(object):
     def configure(self):
@@ -38,7 +42,7 @@ class AuthenticatedHelper(BasicHelper):
 class BasicTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
-        if settings.REDDIT_DOMAIN == 'www.reddit.com':        
+        if settings.REDDIT_DOMAIN == 'www.reddit.com':
             self.self = 'http://www.reddit.com/r/programming/comments/bn2wi/'
         else:
             self.self = 'http://reddit.local:8888/r/bboe/comments/2z/tasdest/'
@@ -75,15 +79,12 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def test_info_by_url_also_found_by_id(self):
         if settings.REDDIT_DOMAIN == 'www.reddit.com':
             url = 'http://imgur.com/Vr8ZZ'
-            comm = 'http://www.reddit.com/r/UCSantaBarbara/comments/m77nc/'
         else:
             url = 'http://google.com/?q=82.1753988563'
-            comm = 'http://reddit.local:8888/r/reddit_test8/comments/2s/'
-        found_links = self.r.info(url)
-        for link in found_links:
-            found_by_id = self.r.info(id=link.name)
-            self.assertTrue(found_by_id)
-            self.assertTrue(link in found_by_id)
+        found_link = self.r.info(url).next()
+        found_by_id = self.r.info(thing_id=found_link.content_id)
+        self.assertTrue(found_by_id)
+        self.assertTrue(found_link in found_by_id)
 
     def test_comments_contains_no_noncomment_objects(self):
         if settings.REDDIT_DOMAIN == 'www.reddit.com':
@@ -125,7 +126,7 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(comment.reply(text))
         # reload the submission (use id to bypass cache)
         time.sleep(1)
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         for comment in submission.comments[0].replies:
             if comment.body == text:
                 break
@@ -185,8 +186,8 @@ class ModTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(not expected - result)
 
     def test_flair_csv_optional_args(self):
-        flair_mapping = [{'user':'bboe', 'flair_text':'bboe'},
-                         {'user':'pyapitestuser3', 'flair_css_class':'blah'}]
+        flair_mapping = [{'user': 'bboe', 'flair_text': 'bboe'},
+                         {'user': 'pyapitestuser3', 'flair_css_class': 'blah'}]
         self.subreddit.set_flair_csv(flair_mapping)
 
     def test_flair_csv_empty(self):
@@ -194,7 +195,7 @@ class ModTest(unittest.TestCase, AuthenticatedHelper):
                           self.subreddit.set_flair_csv, [])
 
     def test_flair_csv_requires_user(self):
-        flair_mapping = [{'flair_text':'hsdf'}]
+        flair_mapping = [{'flair_text': 'hsdf'}]
         self.assertRaises(errors.ClientException,
                           self.subreddit.set_flair_csv, flair_mapping)
 
@@ -203,9 +204,9 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
         if settings.REDDIT_DOMAIN == 'www.reddit.com':
-            self.other = {'id':'6c1xj', 'name':'PyApiTestUser3'}
+            self.other = {'id': '6c1xj', 'name': 'PyApiTestUser3'}
         else:
-            self.other = {'id':'pa', 'name':'PyApiTestUser3'}
+            self.other = {'id': 'pa', 'name': 'PyApiTestUser3'}
         self.user = self.r.get_redditor(self.other['name'])
 
     def test_get(self):
@@ -232,7 +233,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         submission = list(self.r.user.get_submitted())[-1]
         submission.delete()
         # reload the submission
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual('[deleted]', submission.author)
 
     def test_save(self):
@@ -243,7 +244,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find unsaved submission.')
         submission.save()
         # reload the submission
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         self.assertTrue(submission.saved)
 
     def test_unsave(self):
@@ -254,29 +255,29 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find saved submission.')
         submission.unsave()
         # reload the submission
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         self.assertFalse(submission.saved)
 
     def test_clear_vote(self):
         for submission in self.r.user.get_submitted():
-            if submission.likes == False:
+            if submission.likes is False:
                 break
         else:
             self.fail('Could not find a down-voted submission.')
         submission.clear_vote()
         # reload the submission
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, None)
 
     def test_downvote(self):
         for submission in self.r.user.get_submitted():
-            if submission.likes == True:
+            if submission.likes is True:
                 break
         else:
             self.fail('Could not find an up-voted submission.')
         submission.downvote()
         # reload the submission
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, False)
 
     def test_upvote(self):
@@ -287,7 +288,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find a non-voted submission.')
         submission.upvote()
         # reload the submission
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, True)
 
 

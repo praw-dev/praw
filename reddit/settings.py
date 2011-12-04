@@ -1,5 +1,5 @@
 # This file is part of reddit_api.
-# 
+#
 # reddit_api is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -9,7 +9,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 # How many results to retrieve by default when making content calls
@@ -33,8 +33,11 @@ DEFAULT_CONTENT_LIMIT = 25
 # request per two seconds"
 WAIT_BETWEEN_CALL_TIME = 2
 
-CACHE_TIMEOUT = 30 # in seconds
+# Time, in seconds, to save the results of a get/post request.
+CACHE_TIMEOUT = 30
 
+# Mapping between RedditContent objects and their "kind" value. This is needed
+# because these values differ between reddit installations.
 OBJECT_KIND_MAPPING = {'Comment':      't1',
                        'Redditor':     't2',
                        'Submission':   't3',
@@ -47,6 +50,7 @@ if 'REDDIT_CONFIG' in os.environ:
     _tmp = imp.load_source('config', os.environ['REDDIT_CONFIG'])
     for name, _ in inspect.getmembers(sys.modules[__name__],
                                       lambda x: not inspect.ismodule(x)):
-        if name.startswith('_'): continue
+        if name.startswith('_'):
+            continue
         if hasattr(_tmp, name):
             setattr(sys.modules[__name__], name, getattr(_tmp, name))

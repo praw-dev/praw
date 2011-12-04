@@ -1,5 +1,5 @@
 # This file is part of reddit_api.
-# 
+#
 # reddit_api is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -9,7 +9,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -17,33 +17,33 @@ import urllib
 import urllib2
 from urlparse import urljoin
 
-import settings
+import urls
 from decorators import require_login, sleep_after
-from urls import urls
+from settings import DEFAULT_CONTENT_LIMIT
 from util import memoize
+
 
 def _get_section(subpath=""):
     """
     Used by the Redditor class to generate each of the sections (overview,
     comments, submitted).
     """
-    def get_section(self, sort="new", time="all",
-                    limit=settings.DEFAULT_CONTENT_LIMIT,
-                    place_holder=None):
-        url_data = {"sort" : sort, "time" : time}
+    def _section(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
+                 place_holder=None):
+        url_data = {"sort": sort, "time": time}
         return self.reddit_session._get_content(urljoin(self._url, subpath),
                                                 limit=limit,
                                                 url_data=url_data,
                                                 place_holder=place_holder)
-    return get_section
+    return _section
+
 
 def _get_sorter(subpath="", **defaults):
     """
     Used by the Reddit Page classes to generate each of the currently supported
     sorts (hot, top, new, best).
     """
-    def sorted(self, limit=settings.DEFAULT_CONTENT_LIMIT,
-               place_holder=None, **data):
+    def _sorted(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
         for k, v in defaults.items():
             if k == "time":
                 # time should be "t" in the API data dict
@@ -53,7 +53,8 @@ def _get_sorter(subpath="", **defaults):
                                                 limit=limit,
                                                 url_data=data,
                                                 place_holder=place_holder)
-    return sorted
+    return _sorted
+
 
 def _modify_relationship(relationship, unlink=False):
     """
@@ -64,17 +65,18 @@ def _modify_relationship(relationship, unlink=False):
     contributor creating, and banning (user-to-subreddit).
     """
     # the API uses friend and unfriend to manage all of these relationships
-    url = urls["unfriend" if unlink else "friend"]
+    url = urls.urls["unfriend" if unlink else "friend"]
 
     @require_login
-    def do_relationship(self, thing):
-        params = {'name': thing,
-                  'container': self.content_id,
+    def do_relationship(cls, thing):
+        params = {'name': str(thing),
+                  'container': cls.content_id,
                   'type': relationship,
-                  'uh': self.modhash,
+                  'uh': cls.modhash,
                   'api_type': 'json'}
-        return self._request_json(url, params)
+        return cls.reddit_session._request_json(url, params)
     return do_relationship
+
 
 @memoize
 @sleep_after

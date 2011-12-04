@@ -1,5 +1,5 @@
 # This file is part of reddit_api.
-# 
+#
 # reddit_api is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -9,11 +9,13 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-import inspect, sys
+import inspect
+import sys
+
 
 class ClientException(Exception):
     """Base exception class for errors that don't involve the remote API."""
@@ -25,10 +27,10 @@ class ClientException(Exception):
 
 
 class LoginRequired(ClientException):
-    """This exception is raised when a  user is not logged in for a priviliged call.
+    """Raised when a user is not logged in for a priviliged call.
 
-    This handled on a preemtive basis, whereas NotLoggedIn occurs in response
-    to a lack of credientials on a priviliged API call.
+    This exception is raised on a preemtive basis, whereas NotLoggedIn occurs
+    in response to a lack of credientials on a priviliged API call.
     """
 
 
@@ -53,7 +55,7 @@ class BadCaptcha(APIException):
 
 
 class ExceptionList(APIException):
-    """A container to express instances where more than one exception occured."""
+    """Raised when more than one exception occured."""
     def __init__(self, errors):
         self.errors = errors
 

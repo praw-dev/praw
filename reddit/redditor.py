@@ -1,5 +1,5 @@
 # This file is part of reddit_api.
-# 
+#
 # reddit_api is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -9,14 +9,14 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 import settings
 from base_objects import RedditContentObject
 from decorators import require_login
-from helpers import _get_section
+from helpers import _get_section, _modify_relationship
 from urls import urls
 from util import limit_chars
 
@@ -49,11 +49,15 @@ class Redditor(RedditContentObject):
 
     @require_login
     def friend(self):
-        self.reddit_session._friend(self.name)
+        """Friend the user."""
+        _modify_relationship("friend")(self.reddit_session.user, self)
 
     @require_login
     def unfriend(self):
-        self.reddit_session._unfriend(self.name)
+        """Unfriend the user."""
+        _modify_relationship("friend", unlink=True)(self.reddit_session.user,
+                                                    self)
+
 
 class LoggedInRedditor(Redditor):
     """A class for a currently logged in redditor"""

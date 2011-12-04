@@ -1,5 +1,5 @@
 # This file is part of reddit_api.
-# 
+#
 # reddit_api is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -9,11 +9,12 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 from urls import urls
+
 
 class RedditObject(object):
     """Base class for all Reddit API objects."""
@@ -62,20 +63,10 @@ class RedditContentObject(RedditObject):
         self._populated = bool(json_dict) or fetch
 
     def __getattr__(self, attr):
-        """
-        Instead of special casing to figure out if we're calling requests from
-        a reddit content object rather than a Reddit object, we can just allow
-        the reddit content objects to lookup the attrs that we choose in their
-        attached Reddit session object.
-        """
-        retrievable_attrs = ("user", "modhash", "_request", "_request_json")
-        if attr in retrievable_attrs:
-            return getattr(self.reddit_session, attr)
         if not self._populated:
             self._populate(None, True)
             return getattr(self, attr)
-        raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                self.__class__.__name__, attr))
+        raise AttributeError
 
     def __setattr__(self, name, value):
         if name == "subreddit":
@@ -87,7 +78,7 @@ class RedditContentObject(RedditObject):
         object.__setattr__(self, name, value)
 
     def __eq__(self, other):
-        return (type(self) == type(other) and 
+        return (type(self) == type(other) and
                 self.content_id == other.content_id)
 
     def __ne__(self, other):
@@ -95,7 +86,8 @@ class RedditContentObject(RedditObject):
                 self.content_id != other.content_id)
 
     def _get_json_dict(self):
-        response = self._request_json(self._info_url, as_objects=False)
+        response = self.reddit_session._request_json(self._info_url,
+                                                     as_objects=False)
         return response["data"]
 
     @classmethod

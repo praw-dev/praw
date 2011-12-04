@@ -1,5 +1,5 @@
 # This file is part of reddit_api.
-# 
+#
 # reddit_api is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -9,7 +9,7 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -19,6 +19,7 @@ import settings
 from base_objects import RedditContentObject
 from helpers import _modify_relationship, _get_sorter
 from util import limit_chars
+
 
 class Subreddit(RedditContentObject):
     """A class for Subreddits."""
@@ -83,10 +84,9 @@ class Subreddit(RedditContentObject):
         return self.reddit_session.submit(self, *args, **kwargs)
 
     def subscribe(self):
-        """If logged in, subscribe to the given subreddit."""
-        return self.reddit_session._subscribe(self.name)
+        """Subscribe to the given subreddit."""
+        return self.reddit_session._subscribe(self)
 
     def unsubscribe(self):
-        """If logged in, unsubscribe from the given subreddit."""
-        return self.reddit_session._subscribe(self.name,
-                                              unsubscribe=True)
+        """Unsubscribe from the given subreddit."""
+        return self.reddit_session._subscribe(self, unsubscribe=True)
