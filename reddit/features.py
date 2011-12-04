@@ -13,12 +13,13 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
+from base_objects import RedditContentObject
 from decorators import require_login
 from helpers import _request
 from urls import urls
 
 
-class Saveable(object):
+class Saveable(RedditContentObject):
     """
     Additional interface for Reddit content objects that can be saved.
     Currently only Submissions, but this may change at a later date, as
@@ -26,9 +27,9 @@ class Saveable(object):
     """
     @require_login
     def save(self, unsave=False):
-        """If logged in, save the content specified by `content_id`."""
+        """If logged in, save the content."""
         url = urls["unsave" if unsave else "save"]
-        params = {'id': self.name,
+        params = {'id': self.content_id,
                   'executed': "unsaved" if unsave else "saved",
                   'uh': self.reddit_session.modhash,
                   'api_type': 'json'}
@@ -40,16 +41,15 @@ class Saveable(object):
         return self.save(unsave=True)
 
 
-class Deletable(object):
+class Deletable(RedditContentObject):
     """
     Additional Interface for Reddit content objects that can be deleted
     (currently Submission and Comment).
     """
     def delete(self):
         url = urls["del"]
-        params = {'id': self.name,
+        params = {'id': self.content_id,
                   'executed': 'deleted',
-                  'r': self.subreddit.display_name,
                   'uh': self.reddit_session.modhash,
                   'api_type': 'json'}
         response = self.reddit_session._request_json(url, params)
@@ -57,7 +57,7 @@ class Deletable(object):
         return response
 
 
-class Voteable(object):
+class Voteable(RedditContentObject):
     """
     Additional interface for Reddit content objects that can be voted on
     (currently Submission and Comment).
@@ -65,12 +65,11 @@ class Voteable(object):
     @require_login
     def vote(self, direction=0):
         """
-        Vote for the given content_id in the direction specified.
+        Vote for the given item in the direction specified.
         """
         url = urls["vote"]
-        params = {'id': self.name,
+        params = {'id': self.content_id,
                   'dir': str(direction),
-                  'r': self.subreddit.display_name,
                   'uh': self.reddit_session.modhash,
                   'api_type': 'json'}
         return self.reddit_session._request_json(url, params)

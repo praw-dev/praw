@@ -47,9 +47,7 @@ class memoize(object):
         return self._cache.setdefault(key, self.func(*args, **kwargs))
 
     def clear_timeouts(self, call_time):
-        """
-        Clears the _caches of results which have timed out.
-        """
+        """Clears the _caches of results which have timed out."""
         need_clearing = (k for k, v in self._timeouts.items()
                                     if call_time - v > self.TIMEOUT)
         for k in need_clearing:

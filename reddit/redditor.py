@@ -15,7 +15,7 @@
 
 from base_objects import RedditContentObject
 from decorators import require_login
-from helpers import _get_section
+from helpers import _get_section, _modify_relationship
 from settings import DEFAULT_CONTENT_LIMIT
 from urls import urls
 from util import limit_chars
@@ -49,11 +49,14 @@ class Redditor(RedditContentObject):
 
     @require_login
     def friend(self):
-        self.reddit_session._friend(self.name)
+        """Friend the user."""
+        _modify_relationship("friend")(self.reddit_session.user, self)
 
     @require_login
     def unfriend(self):
-        self.reddit_session._unfriend(self.name)
+        """Unfriend the user."""
+        _modify_relationship("friend", unlink=True)(self.reddit_session.user,
+                                                    self)
 
 
 class LoggedInRedditor(Redditor):

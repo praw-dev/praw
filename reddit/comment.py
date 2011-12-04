@@ -20,15 +20,15 @@ from features import Voteable, Deletable
 from util import limit_chars
 
 
-class Comment(RedditContentObject, Voteable,  Deletable):
+class Comment(Deletable, Voteable):
     """A class for comments."""
 
-    kind = "t1"
+    kind = 't1'
 
     def __init__(self, reddit_session, json_dict):
         super(Comment, self).__init__(reddit_session, None, json_dict)
         if self.replies:
-            self.replies = self.replies["data"]["children"]
+            self.replies = self.replies['data']['children']
             for reply in self.replies:
                 reply.parent = self
         else:
@@ -38,26 +38,25 @@ class Comment(RedditContentObject, Voteable,  Deletable):
 
     @limit_chars()
     def __str__(self):
-        return getattr(self, "body",
-                       "[[ need to fetch more comments... ]]").encode("utf8")
+        return getattr(self, 'body', '[Unloaded Comment]').encode('utf8')
 
     @property
     def is_root(self):
-        return not bool(getattr(self, "parent", False))
+        return hasattr(self, 'parent')
 
     @property
     def permalink(self):
         return urljoin(self.submission.permalink, self.id)
 
     def _update_submission(self, submission):
-        """Submission isn't set on __init__ thus we need to update it"""
+        """Submission isn't set on __init__ thus we need to update it."""
         self.submission = submission
         for reply in self.replies:
             reply._update_submission(submission)
 
     def reply(self, text):
         """Reply to the comment with the specified text."""
-        return self.reddit_session._add_comment(self.name, text)
+        return self.reddit_session._add_comment(self.content_id, text)
 
     def mark_read(self):
         """ Marks the comment as read """
@@ -67,24 +66,22 @@ class Comment(RedditContentObject, Voteable,  Deletable):
 class MoreComments(RedditContentObject):
     """A class indicating there are more comments."""
 
-    kind = "more"
+    kind = 'more'
 
     def __init__(self, reddit_session, json_dict):
         super(MoreComments, self).__init__(reddit_session, None, json_dict)
-        self.parent_id = None
 
     def _update_submission(self, _):
         pass
 
-    @limit_chars()
     def __str__(self):
-        return "[[ need to fetch more comments... ]]".encode("utf8")
+        return '[More Comments]'.encode('utf8')
 
     @property
     def comments(self):
         url = urljoin(self.parent.submission.permalink, self.parent.id)
         submission_info, comment_info = self.reddit_session._request_json(url)
-        comments = comment_info["data"]["children"]
+        comments = comment_info['data']['children']
 
         # We need to return the children of the parent as we already have
         # the parent

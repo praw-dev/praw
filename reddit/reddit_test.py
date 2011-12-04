@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-import itertools
 import unittest
-import util
 import uuid
 import warnings
 from reddit import Reddit, errors
@@ -70,12 +68,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_info_by_url_also_found_by_id(self):
         url = 'http://imgur.com/Vr8ZZ'
-        comm = 'http://www.reddit.com/r/UCSantaBarbara/comments/m77nc/'
-        found_links = self.r.info(url)
-        for link in found_links:
-            found_by_id = self.r.info(id=link.name)
-            self.assertTrue(found_by_id)
-            self.assertTrue(link in found_by_id)
+        found_link = self.r.info(url).next()
+        found_by_id = self.r.info(thing_id=found_link.content_id)
+        self.assertTrue(found_by_id)
+        self.assertTrue(found_link in found_by_id)
 
     def test_comments_contains_no_noncomment_objects(self):
         url = 'http://www.reddit.com/r/programming/comments/bn2wi/'
@@ -112,7 +108,7 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find a submission with comments.')
         self.assertTrue(comment.reply(text))
         # reload the submission (use id to bypass cache)
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         for comment in submission.comments[0].replies:
             if comment.body == text:
                 break
@@ -215,7 +211,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         submission = list(self.r.user.get_submitted())[-1]
         submission.delete()
         # reload the submission
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual('[deleted]', submission.author)
 
     def test_save(self):
@@ -226,7 +222,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find unsaved submission.')
         submission.save()
         # reload the submission
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         self.assertTrue(submission.saved)
 
     def test_unsave(self):
@@ -237,31 +233,29 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find saved submission.')
         submission.unsave()
         # reload the submission
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         self.assertFalse(submission.saved)
 
     def test_clear_vote(self):
         for submission in self.r.user.get_submitted():
-            if submission.likes == False:
+            if submission.likes is False:
                 break
         else:
             self.fail('Could not find a down-voted submission.')
         submission.clear_vote()
-        print submission, 'clear'
         # reload the submission
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, None)
 
     def test_downvote(self):
         for submission in self.r.user.get_submitted():
-            if submission.likes == True:
+            if submission.likes is True:
                 break
         else:
             self.fail('Could not find an up-voted submission.')
         submission.downvote()
-        print submission, 'down'
         # reload the submission
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, False)
 
     def test_upvote(self):
@@ -271,9 +265,8 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.fail('Could not find a non-voted submission.')
         submission.upvote()
-        print submission, 'up'
         # reload the submission
-        submission = self.r.get_submission(id=submission.id)
+        submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, True)
 
 

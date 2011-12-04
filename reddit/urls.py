@@ -36,8 +36,8 @@ class URLDict(object):
     def __setitem__(self, key, value):
         self._urls[key] = value
 
-    def group(self, *urls):
-        return [v for v in (self[k] for k in urls)]
+    def group(self, *groups):
+        return [url for url in (self._urls[key] for key in groups)]
 
 urls = URLDict("http://www.reddit.com",
                ("", {"reddit_url": "",

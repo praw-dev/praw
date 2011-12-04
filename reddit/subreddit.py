@@ -83,10 +83,9 @@ class Subreddit(RedditContentObject):
         return self.reddit_session.submit(self, *args, **kwargs)
 
     def subscribe(self):
-        """If logged in, subscribe to the given subreddit."""
-        return self.reddit_session._subscribe(self.name)
+        """Subscribe to the given subreddit."""
+        return self.reddit_session._subscribe(self)
 
     def unsubscribe(self):
-        """If logged in, unsubscribe from the given subreddit."""
-        return self.reddit_session._subscribe(self.name,
-                                              unsubscribe=True)
+        """Unsubscribe from the given subreddit."""
+        return self.reddit_session._subscribe(self, unsubscribe=True)

@@ -63,20 +63,10 @@ class RedditContentObject(RedditObject):
         self._populated = bool(json_dict) or fetch
 
     def __getattr__(self, attr):
-        """
-        Instead of special casing to figure out if we're calling requests from
-        a reddit content object rather than a Reddit object, we can just allow
-        the reddit content objects to lookup the attrs that we choose in their
-        attached Reddit session object.
-        """
-        retrievable_attrs = ("user", "modhash", "_request", "_request_json")
-        if attr in retrievable_attrs:
-            return getattr(self.reddit_session, attr)
         if not self._populated:
             self._populate(None, True)
             return getattr(self, attr)
-        raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                self.__class__.__name__, attr))
+        raise AttributeError
 
     def __setattr__(self, name, value):
         if name == "subreddit":
@@ -96,7 +86,8 @@ class RedditContentObject(RedditObject):
                 self.content_id != other.content_id)
 
     def _get_json_dict(self):
-        response = self._request_json(self._info_url, as_objects=False)
+        response = self.reddit_session._request_json(self._info_url,
+                                                     as_objects=False)
         return response["data"]
 
     @classmethod
