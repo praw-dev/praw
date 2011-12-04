@@ -12,20 +12,21 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
-
 from urlparse import urljoin
 
+import settings
+
 class URLDict(object):
-    def __init__(self, base_url, *args):
+    def __init__(self, *args):
         """
         Builds a URL dictionary. `args` should be tuples of the form:
             `(url_prefix, {"url_name", "url_path"})`
         """
-        self._base_url = base_url
+        _base_url = 'http://%s' % settings.REDDIT_DOMAIN
         self._urls = {}
 
         for prefix, url_dict in args:
-            full_prefix = urljoin(self._base_url, prefix)
+            full_prefix = urljoin(_base_url, prefix)
             for name, url in url_dict.iteritems():
                 self[name] = '%s/' % urljoin(full_prefix, url)
 
@@ -38,17 +39,16 @@ class URLDict(object):
     def group(self, *urls):
         return [v for v in (self[k] for k in urls)]
 
-urls = URLDict("http://www.reddit.com",
-               ("", {"reddit_url" : "",
-                      "api_url" : "api",
-                      "comments" : "comments",
-                      "help" : "help",
-                      "info" : "button_info",
-                      "logout" : "logout",
-                      "my_reddits" : "reddits/mine",
-                      "my_moderation" : "reddits/mine/moderator",
-                      "saved" : "saved",
-                      "view_captcha" : "captcha"}),
+urls = URLDict(("", {"reddit_url" : "",
+                     "api_url" : "api",
+                     "comments" : "comments",
+                     "help" : "help",
+                     "info" : "button_info",
+                     "logout" : "logout",
+                     "my_reddits" : "reddits/mine",
+                     "my_moderation" : "reddits/mine/moderator",
+                     "saved" : "saved",
+                     "view_captcha" : "captcha"}),
                ("api/", {"comment" : "comment",
                          "compose_message" : "compose",
                          "del" : "del",

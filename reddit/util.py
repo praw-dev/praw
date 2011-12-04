@@ -16,7 +16,8 @@
 import time
 from functools import wraps
 
-from settings import CACHE_TIMEOUT
+import settings
+
 
 class memoize(object):
     """
@@ -26,7 +27,6 @@ class memoize(object):
     For RedditContentObject methods, this means removal by URL, provided by the
     is_stale method.
     """
-    TIMEOUT = CACHE_TIMEOUT
 
     def __init__(self, func):
         wraps(func)(self)
@@ -50,7 +50,7 @@ class memoize(object):
         Clears the _caches of results which have timed out.
         """
         need_clearing = (k for k, v in self._timeouts.items()
-                                    if call_time - v > self.TIMEOUT)
+                                    if call_time - v > settings.CACHE_TIMEOUT)
         for k in need_clearing:
             try:
                 del self._cache[k]

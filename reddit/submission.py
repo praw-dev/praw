@@ -16,13 +16,14 @@
 from urls import urls
 from urlparse import urljoin
 
+import settings
 from base_objects import RedditContentObject
 from features import Deletable, Saveable, Voteable
 
 class Submission(RedditContentObject, Saveable, Voteable,  Deletable):
     """A class for submissions to Reddit."""
 
-    kind = "t3"
+    kind = settings.OBJECT_KIND_MAPPING['Submission']
 
     def __init__(self, reddit_session, title=None, json_dict=None):
         super(Submission, self).__init__(reddit_session, title, json_dict)

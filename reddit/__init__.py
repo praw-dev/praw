@@ -22,13 +22,13 @@ try:
 except ImportError:
     import simplejson as json
 
+import settings
 from base_objects import RedditObject
 from comment import Comment, MoreComments
 from decorators import require_captcha, require_login, parse_api_json_response
 from errors import ClientException
 from helpers import _modify_relationship, _request
 from redditor import LoggedInRedditor, Redditor
-from settings import DEFAULT_CONTENT_LIMIT
 from submission import Submission
 from subreddit import Subreddit
 from urls import urls
@@ -122,7 +122,7 @@ class Reddit(RedditObject):
         """
         return self.user.content_id
 
-    def _get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT,
+    def _get_content(self, page_url, limit=settings.DEFAULT_CONTENT_LIMIT,
                      url_data=None, place_holder=None, root_field='data',
                      thing_field='children', after_field='after'):
         """A generator method to return Reddit content from a URL. Starts at
@@ -258,23 +258,24 @@ class Reddit(RedditObject):
                   'uh': self.modhash}
         self._request_json(urls["read_message"], params)
 
-    def get_front_page(self, limit=DEFAULT_CONTENT_LIMIT):
+    def get_front_page(self, limit=settings.DEFAULT_CONTENT_LIMIT):
         """Return the reddit front page. Login isn't required, but you'll only
         see your own front page if you are logged in."""
         return self._get_content(urls["reddit_url"], limit=limit)
 
     @require_login
-    def get_saved_links(self, limit=DEFAULT_CONTENT_LIMIT):
+    def get_saved_links(self, limit=settings.DEFAULT_CONTENT_LIMIT):
         """Return a listing of the logged-in user's saved links."""
         return self._get_content(urls["saved"], limit=limit)
 
-    def get_all_comments(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None):
+    def get_all_comments(self, limit=settings.DEFAULT_CONTENT_LIMIT,
+                         place_holder=None):
         """Returns a listing from reddit.com/comments (which provides all of
         the most recent comments from all users to all submissions)."""
         return self._get_content(urls["comments"], limit=limit,
                                  place_holder=place_holder)
 
-    def info(self, url=None, id=None, limit=DEFAULT_CONTENT_LIMIT):
+    def info(self, url=None, id=None, limit=settings.DEFAULT_CONTENT_LIMIT):
         """
         Query the API to see if the given URL has been submitted already, and
         if it has, return the submissions.

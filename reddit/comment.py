@@ -15,6 +15,7 @@
 
 from urlparse import urljoin
 
+import settings
 from base_objects import RedditContentObject
 from features import Voteable, Deletable
 from util import limit_chars
@@ -22,7 +23,7 @@ from util import limit_chars
 class Comment(RedditContentObject, Voteable,  Deletable):
     """A class for comments."""
 
-    kind = "t1"
+    kind = settings.OBJECT_KIND_MAPPING['Comment']
 
     def __init__(self, reddit_session, json_dict):
         super(Comment, self).__init__(reddit_session, None, json_dict)
@@ -68,7 +69,7 @@ class Comment(RedditContentObject, Voteable,  Deletable):
 class MoreComments(RedditContentObject):
     """A class indicating there are more comments."""
 
-    kind = "more"
+    kind = settings.OBJECT_KIND_MAPPING['MoreComments']
 
     def __init__(self, reddit_session, json_dict):
         super(MoreComments, self).__init__(reddit_session, None, json_dict)

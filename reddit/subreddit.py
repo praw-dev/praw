@@ -15,6 +15,7 @@
 
 from urls import urls
 
+import settings
 from base_objects import RedditContentObject
 from helpers import _modify_relationship, _get_sorter
 from util import limit_chars
@@ -22,7 +23,7 @@ from util import limit_chars
 class Subreddit(RedditContentObject):
     """A class for Subreddits."""
 
-    kind = "t5"
+    kind = settings.OBJECT_KIND_MAPPING['Subreddit']
 
     ban = _modify_relationship("banned")
     make_contributor = _modify_relationship("contributor")

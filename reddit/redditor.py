@@ -13,10 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
+import settings
 from base_objects import RedditContentObject
 from decorators import require_login
 from helpers import _get_section
-from settings import DEFAULT_CONTENT_LIMIT
 from urls import urls
 from util import limit_chars
 
@@ -24,7 +24,7 @@ from util import limit_chars
 class Redditor(RedditContentObject):
     """A class for Redditor methods."""
 
-    kind = "t2"
+    kind = settings.OBJECT_KIND_MAPPING['Redditor']
 
     get_overview = _get_section("")
     get_comments = _get_section("comments")
@@ -58,13 +58,13 @@ class Redditor(RedditContentObject):
 class LoggedInRedditor(Redditor):
     """A class for a currently logged in redditor"""
     @require_login
-    def my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
+    def my_reddits(self, limit=settings.DEFAULT_CONTENT_LIMIT):
         """Return all of the current user's subscribed subreddits."""
         return self.reddit_session._get_content(urls["my_reddits"],
                                                 limit=limit)
 
     @require_login
-    def my_moderation(self, limit=DEFAULT_CONTENT_LIMIT):
+    def my_moderation(self, limit=settings.DEFAULT_CONTENT_LIMIT):
         """Return all of the current user's subreddits that they moderate."""
         return self.reddit_session._get_content(urls["my_moderation"],
                                                 limit=limit)

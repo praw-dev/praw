@@ -85,6 +85,6 @@ class RateLimitExceeded(APIException):
 
 
 ERROR_MAPPING = {}
-for name, obj in inspect.getmembers(sys.modules[__name__]):
-    if inspect.isclass(obj) and hasattr(obj, 'ERROR_TYPE'):
-        ERROR_MAPPING[obj.ERROR_TYPE] = obj
+predicate = lambda x: inspect.isclass(x) and hasattr(x, 'ERROR_TYPE')
+for name, obj in inspect.getmembers(sys.modules[__name__], predicate):
+    ERROR_MAPPING[obj.ERROR_TYPE] = obj

@@ -20,7 +20,7 @@ from urlparse import urljoin
 
 import errors
 import reddit
-from settings import WAIT_BETWEEN_CALL_TIME
+import settings
 from urls import urls
 
 
@@ -96,7 +96,6 @@ class sleep_after(object):
     delayed until the proper duration is reached.
     """
     last_call_time = 0     # init to 0 to always allow the 1st call
-    WAIT_BETWEEN_CALL_TIME = WAIT_BETWEEN_CALL_TIME
 
     def __init__(self, func):
         wraps(func)(self)
@@ -106,8 +105,8 @@ class sleep_after(object):
         call_time = time.time()
 
         since_last_call = call_time - self.last_call_time
-        if since_last_call < WAIT_BETWEEN_CALL_TIME:
-            time.sleep(WAIT_BETWEEN_CALL_TIME - since_last_call)
+        if since_last_call < settings.WAIT_BETWEEN_CALL_TIME:
+            time.sleep(settings.WAIT_BETWEEN_CALL_TIME - since_last_call)
 
         self.__class__.last_call_time = call_time
         return self.func(*args, **kwargs)
