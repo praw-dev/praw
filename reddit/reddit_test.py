@@ -146,7 +146,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         self.r.user.get_modmail()
 
 
-class ModTest(unittest.TestCase, AuthenticatedHelper):
+class FlairTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
@@ -196,6 +196,18 @@ class ModTest(unittest.TestCase, AuthenticatedHelper):
         flair_mapping = [{'flair_text': 'hsdf'}]
         self.assertRaises(errors.ClientException,
                           self.subreddit.set_flair_csv, flair_mapping)
+
+
+class FlairTemplateTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
+
+    def test_add_templates(self):
+        self.subreddit.add_flair_template('text', 'css', True)
+
+    def test_clear(self):
+        self.subreddit.clear_flair_templates()
 
 
 class RedditorTest(unittest.TestCase, AuthenticatedHelper):

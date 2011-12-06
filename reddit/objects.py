@@ -357,6 +357,14 @@ class Subreddit(RedditContentObject):
         """Display the subreddit name."""
         return self.display_name.encode('utf8')
 
+    def add_flair_template(self, *args, **kwargs):
+        """Adds a flair template to the subreddit."""
+        return self.reddit_session.add_flair_template(self, *args, **kwargs)
+
+    def clear_flair_templates(self, *args, **kwargs):
+        """Clear flair templates for this subreddit."""
+        return self.reddit_session.clear_flair_templates(self, *args, **kwargs)
+
     def flair_list(self, *args, **kwargs):
         """Return a list of flair for this subreddit."""
         return self.reddit_session.flair_list(self, *args, **kwargs)

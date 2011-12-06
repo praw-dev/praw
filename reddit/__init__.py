@@ -34,6 +34,7 @@ from reddit.settings import CONFIG, DEFAULT_CONTENT_LIMIT
 class Config(object):
     """A class containing the configuration for a reddit site."""
     API_PATHS = {'captcha':             'captcha/',
+                 'clearflairtemplates': 'api/clearflairtemplates/',
                  'comment':             'api/comment/',
                  'comments':            'comments/',
                  'compose':             'api/compose/',
@@ -42,6 +43,7 @@ class Config(object):
                  'flair':               'api/flair/',
                  'flaircsv':            'api/flaircsv/',
                  'flairlist':           'r/%s/api/flairlist/',
+                 'flairtemplate':       'api/flairtemplate',
                  'friend':              'api/friend/',
                  'help':                'help/',
                  'inbox':               'message/inbox/',
@@ -407,6 +409,25 @@ class Reddit(object):
                   'passwd2': password,
                   'user': user_name}
         return self.request_json(self.config['register'], params)
+
+    @reddit.decorators.require_login
+    def add_flair_template(self, subreddit, text, css_class, text_editable):
+        """Adds a flair template to the subreddit."""
+        params = {'r': str(subreddit),
+                  'text': text,
+                  'css_class': css_class,
+                  'text_editable': str(text_editable),
+                  'uh': self.user.modhash,
+                  'api_type': 'json'}
+        return self.request_json(self.config['flairtemplate'], params)
+
+    @reddit.decorators.require_login
+    def clear_flair_templates(self, subreddit):
+        """Clear flair templates for a subreddit."""
+        params = {'r': str(subreddit),
+                  'uh': self.user.modhash,
+                  'api_type': 'json'}
+        return self.request_json(self.config['clearflairtemplates'], params)
 
     @reddit.decorators.require_login
     def flair_list(self, subreddit):
