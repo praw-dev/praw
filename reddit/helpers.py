@@ -17,10 +17,9 @@ import urllib
 import urllib2
 from urlparse import urljoin
 
-import urls
-from decorators import require_login, sleep_after
-from settings import DEFAULT_CONTENT_LIMIT
-from util import memoize
+from reddit.decorators import SleepAfter, require_login
+from reddit.settings import DEFAULT_CONTENT_LIMIT
+from reddit.util import Memoize
 
 
 def _get_section(subpath=""):
@@ -31,10 +30,9 @@ def _get_section(subpath=""):
     def _section(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
                  place_holder=None):
         url_data = {"sort": sort, "time": time}
-        return self.reddit_session._get_content(urljoin(self._url, subpath),
-                                                limit=limit,
-                                                url_data=url_data,
-                                                place_holder=place_holder)
+        return self.reddit_session.get_content(urljoin(self._url, subpath),
+                                               limit=limit, url_data=url_data,
+                                               place_holder=place_holder)
     return _section
 
 
@@ -44,15 +42,14 @@ def _get_sorter(subpath="", **defaults):
     sorts (hot, top, new, best).
     """
     def _sorted(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
-        for k, v in defaults.items():
-            if k == "time":
+        for key, value in defaults.items():
+            if key == "time":
                 # time should be "t" in the API data dict
-                k = "t"
-            data.setdefault(k, v)
-        return self.reddit_session._get_content(urljoin(self._url, subpath),
-                                                limit=limit,
-                                                url_data=data,
-                                                place_holder=place_holder)
+                key = "t"
+            data.setdefault(key, value)
+        return self.reddit_session.get_content(urljoin(self._url, subpath),
+                                               limit=limit, url_data=data,
+                                               place_holder=place_holder)
     return _sorted
 
 
@@ -65,7 +62,7 @@ def _modify_relationship(relationship, unlink=False):
     contributor creating, and banning (user-to-subreddit).
     """
     # the API uses friend and unfriend to manage all of these relationships
-    url = urls.urls["unfriend" if unlink else "friend"]
+    url_key = "unfriend" if unlink else "friend"
 
     @require_login
     def do_relationship(cls, thing):
@@ -74,12 +71,13 @@ def _modify_relationship(relationship, unlink=False):
                   'type': relationship,
                   'uh': cls.modhash,
                   'api_type': 'json'}
-        return cls.reddit_session._request_json(url, params)
+        url = cls.reddit_session.config[url_key]
+        return cls.reddit_session.request_json(url, params)
     return do_relationship
 
 
-@memoize
-@sleep_after
+@Memoize
+@SleepAfter
 def _request(reddit_session, page_url, params=None, url_data=None,
              openerdirector=None):
     if url_data:

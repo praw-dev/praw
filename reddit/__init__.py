@@ -14,35 +14,98 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 import cookielib
+import os
 import warnings
 import urllib2
-from urlparse import urljoin
+import urlparse
 try:
     import json
 except ImportError:
     import simplejson as json
 
-import settings
-from base_objects import RedditObject
-from comment import Comment, MoreComments
-from decorators import require_captcha, require_login, parse_api_json_response
-from errors import ClientException
-from helpers import _request
-from redditor import LoggedInRedditor, Redditor
-from submission import Submission
-from subreddit import Subreddit
-from urls import urls
+import reddit.decorators
+import reddit.errors
+import reddit.helpers
+import reddit.objects
+
+from reddit.settings import CONFIG, DEFAULT_CONTENT_LIMIT
 
 
-class Reddit(RedditObject):
+class Config(object):
+    """A class containing the configuration for a reddit site."""
+    API_PATHS = {'captcha':             'captcha/',
+                 'comment':             'api/comment/',
+                 'comments':            'comments/',
+                 'compose':             'api/compose/',
+                 'del':                 'api/del/',
+                 'feedback':            'api/feedback/',
+                 'flair':               'api/flair/',
+                 'flaircsv':            'api/flaircsv/',
+                 'flairlist':           'r/%s/api/flairlist/',
+                 'friend':              'api/friend/',
+                 'help':                'help/',
+                 'inbox':               'message/inbox/',
+                 'info':                'button_info/',
+                 'login':               'api/login/%s/',
+                 'logout':              'logout/',
+                 'moderator':           'message/moderator/',
+                 'my_mod_reddits':      'reddits/mine/moderator/',
+                 'my_reddits':          'reddits/mine/',
+                 'new_captcha':         'api/new_captcha/',
+                 'read_message':        'api/read_message/',
+                 'reddit_url':          '/',
+                 'register':            'api/register/',
+                 'save':                'api/save/',
+                 'saved':               'saved/',
+                 'search_reddit_names': 'api/search_reddit_names/',
+                 'sent':                'message/sent/',
+                 'site_admin':          'api/site_admin/',
+                 'submit':              'api/submit/',
+                 'subreddit':           'r/%s/',
+                 'subreddit_about':     'r/%s/about/',
+                 'subscribe':           'api/subscribe/',
+                 'unfriend':            'api/unfriend/',
+                 'unsave':              'api/unsave/',
+                 'user':                'user/%s/',
+                 'user_about':          'user/%s/about/',
+                 'vote':                'api/vote/'}
+
+    def __init__(self, site_name):
+        o = dict(CONFIG.items(site_name))
+        self._site_url = 'http://' + o['domain']
+        self.kind_mapping = {o['comment_kind']:    reddit.objects.Comment,
+                             o['more_kind']:       reddit.objects.MoreComments,
+                             o['redditor_kind']:   reddit.objects.Redditor,
+                             o['submission_kind']: reddit.objects.Submission,
+                             o['subreddit_kind']: reddit.objects.Subreddit}
+
+        self.object_mapping = dict((value, key) for (key, value) in
+                                   self.kind_mapping.items())
+        self.object_mapping[reddit.objects.LoggedInRedditor] = \
+            o['redditor_kind']
+        self.is_reddit = o['domain'] == 'www.reddit.com'
+
+    def __getitem__(self, key):
+        """Return the URL for key"""
+        return urlparse.urljoin(self._site_url, self.API_PATHS[key])
+
+
+class Reddit(object):
     """A class for a reddit session."""
     DEFAULT_HEADERS = {}
 
-    def __init__(self, user_agent):
-        """Specify the user agent for the application."""
+    def __init__(self, user_agent, site_name=None):
+        """
+        Specify the user agent for the application and optionally a site_name.
+
+        If site_name is None, then the site name will be looked for in the
+        environment variable REDDIT_SITE. It if is not found there, the default
+        site name `reddit` will be used.
+        """
         if not isinstance(user_agent, str):
-            raise TypeError("User agent must be a string.")
-        self.DEFAULT_HEADERS["User-agent"] = user_agent
+            raise TypeError('User agent must be a string.')
+        self.DEFAULT_HEADERS['User-agent'] = user_agent
+        self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
 
         _cookie_jar = cookielib.CookieJar()
         self._opener = urllib2.build_opener(
@@ -51,7 +114,7 @@ class Reddit(RedditObject):
         self.modhash = self.user = None
 
     def __str__(self):
-        return "Open Session (%s)" % (self.user or "Unauthenticated")
+        return 'Open Session (%s)' % (self.user or 'Unauthenticated')
 
     def _request(self, page_url, params=None, url_data=None):
         """Given a page url and a dict of params, opens and returns the page.
@@ -61,41 +124,16 @@ class Reddit(RedditObject):
         :param url_data: the GET data to put in the url
         :returns: the open page
         """
-        return _request(self, page_url, params, url_data, self._opener)
-
-    @parse_api_json_response
-    def _request_json(self, page_url, params=None, url_data=None,
-                      as_objects=True):
-        """Gets the JSON processed from a page. Takes the same parameters as
-        the _request method, plus a param to control whether objects are
-        returned.
-
-        :param page_url
-        :param params
-        :param url_data
-        :param as_objects: Whether to return constructed Reddit objects or the
-        raw json dict.
-        :returns: JSON processed page
-        """
-        if not page_url.endswith(".json"):
-            page_url += ".json"
-        response = self._request(page_url, params, url_data)
-        if as_objects:
-            hook = self._json_reddit_objecter
-        else:
-            hook = None
-        return json.loads(response, object_hook=hook)
+        return reddit.helpers._request(self, page_url, params, url_data,
+                                       self._opener)
 
     def _json_reddit_objecter(self, json_data):
         """
         Object hook to be used with json.load(s) to spit out RedditObjects
         while decoding.
         """
-        # TODO: This can be nicer. CONTENT_KINDS dict.
-        kinds = dict((content.kind, content) for content in
-                     (Comment, MoreComments, Redditor, Subreddit, Submission))
         try:
-            kind = kinds[json_data["kind"]]
+            object_class = self.config.kind_mapping[json_data['kind']]
         except KeyError:
             if 'json' in json_data:
                 if len(json_data) == 1:
@@ -103,10 +141,10 @@ class Reddit(RedditObject):
                 else:
                     warnings.warn('Unknown object type: %s' % json_data)
         else:
-            return kind.from_api_response(self, json_data["data"])
+            return object_class.from_api_response(self, json_data['data'])
         return json_data
 
-    def _get_content(self, page_url, limit=settings.DEFAULT_CONTENT_LIMIT,
+    def get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT,
                      url_data=None, place_holder=None, root_field='data',
                      thing_field='children', after_field='after'):
         """A generator method to return Reddit content from a URL. Starts at
@@ -146,7 +184,7 @@ class Reddit(RedditObject):
 
         # While we still need to fetch more content to reach our limit, do so.
         while fetch_all or content_found < limit:
-            page_data = self._request_json(page_url, url_data=url_data)
+            page_data = self.request_json(page_url, url_data=url_data)
             if root_field:
                 root = page_data[root_field]
             else:
@@ -164,21 +202,44 @@ class Reddit(RedditObject):
             else:
                 return
 
+    @reddit.decorators.parse_api_json_response
+    def request_json(self, page_url, params=None, url_data=None,
+                     as_objects=True):
+        """Gets the JSON processed from a page. Takes the same parameters as
+        the _request method, plus a param to control whether objects are
+        returned.
+
+        :param page_url
+        :param params
+        :param url_data
+        :param as_objects: Whether to return constructed Reddit objects or the
+        raw json dict.
+        :returns: JSON processed page
+        """
+        if not page_url.endswith('.json'):
+            page_url += '.json'
+        response = self._request(page_url, params, url_data)
+        if as_objects:
+            hook = self._json_reddit_objecter
+        else:
+            hook = None
+        return json.loads(response, object_hook=hook)
+
     def get_redditor(self, user_name, *args, **kwargs):
         """Returns a Redditor class for the user_name specified."""
-        return Redditor(self, user_name, *args, **kwargs)
+        return reddit.objects.Redditor(self, user_name, *args, **kwargs)
 
     def get_subreddit(self, subreddit_name, *args, **kwargs):
         """Returns a Subreddit class for the subreddit_name specified."""
-        return Subreddit(self, subreddit_name, *args, **kwargs)
+        return reddit.objects.Subreddit(self, subreddit_name, *args, **kwargs)
 
     def get_submission(self, url=None, submission_id=None):
         """Returns a submission object for the given url or submission_id."""
         if bool(url) == bool(submission_id):
-            raise TypeError("One (and only one) of id or url is required!")
+            raise TypeError('One (and only one) of id or url is required!')
         if submission_id:
-            url = urljoin(urls['comments'], submission_id)
-        submission_info, comment_info = self._request_json(url)
+            url = urlparse.urljoin(self.config['comments'], submission_id)
+        submission_info, comment_info = self.request_json(url)
         submission = submission_info['data']['children'][0]
         submission.comments = comment_info['data']['children']
         return submission
@@ -189,74 +250,62 @@ class Reddit(RedditObject):
         """
         # Prompt user for necessary fields.
         if user is None:
-            user = raw_input("Username: ")
+            user = raw_input('Username: ')
         if password is None:
             import getpass
-            password = getpass.getpass("Password: ")
+            password = getpass.getpass('Password: ')
 
         params = {'api_type': 'json',
                   'passwd': password,
-                  'user': user,
-                  'api_type': 'json'}
-        response = self._request_json(urls["login"] % user, params)
+                  'user': user}
+        response = self.request_json(self.config['login'] % user, params)
         self.modhash = response['data']['modhash']
         self.user = self.get_redditor(user)
-        self.user.__class__ = LoggedInRedditor
+        self.user.__class__ = reddit.objects.LoggedInRedditor
 
-    @require_login
+    @reddit.decorators.require_login
     def logout(self):
         """Logs out of a session."""
         self.modhash = self.user = None
-        params = {"uh": self.modhash}
-        return self._request_json(urls["logout"], params)
+        params = {'uh': self.modhash}
+        return self.request_json(self.config['logout'], params)
 
-    @require_login
-    def _subscribe(self, subreddit, unsubscribe=False):
-        """If logged in, subscribe to the specified subreddit."""
-        action = "unsub" if unsubscribe else "sub"
-        params = {'sr': subreddit.content_id,
-                  'action': action,
-                  'uh': self.modhash,
-                  'api_type': 'json'}
-        ret = self._request_json(urls["subscribe"], params)
-        return 'errors' in ret and len(ret['errors']) == 0
-
-    @require_login
+    @reddit.decorators.require_login
     def _add_comment(self, thing_id, text):
         """Comment on the given thing with the given text."""
         params = {'thing_id': thing_id,
                   'text': text,
                   'uh': self.modhash,
                   'api_type': 'json'}
-        ret = self._request_json(urls["comment"], params)
+        ret = self.request_json(self.config['comment'], params)
         return 'errors' in ret and len(ret['errors']) == 0
 
-    @require_login
+    @reddit.decorators.require_login
     def _mark_as_read(self, thing_ids):
         """ Marks each of the supplied thing_ids as read """
         params = {'id': ','.join(thing_ids),
                   'uh': self.modhash}
-        self._request_json(urls["read_message"], params)
+        self.request_json(self.config['read_message'], params)
 
-    def get_front_page(self, limit=settings.DEFAULT_CONTENT_LIMIT):
+    def get_front_page(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return the reddit front page. Login isn't required, but you'll only
         see your own front page if you are logged in."""
-        return self._get_content(urls["reddit_url"], limit=limit)
+        return self.get_content(self.config['reddit_url'], limit=limit)
 
-    @require_login
-    def get_saved_links(self, limit=settings.DEFAULT_CONTENT_LIMIT):
+    @reddit.decorators.require_login
+    def get_saved_links(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return a listing of the logged-in user's saved links."""
-        return self._get_content(urls["saved"], limit=limit)
+        return self.get_content(self.config['saved'], limit=limit)
 
-    def get_all_comments(self, limit=settings.DEFAULT_CONTENT_LIMIT,
+    def get_all_comments(self, limit=DEFAULT_CONTENT_LIMIT,
                          place_holder=None):
         """Returns a listing from reddit.com/comments (which provides all of
         the most recent comments from all users to all submissions)."""
-        return self._get_content(urls["comments"], limit=limit,
-                                 place_holder=place_holder)
+        return self.get_content(self.config['comments'], limit=limit,
+                                place_holder=place_holder)
 
     def info(self, url=None, thing_id=None,
-             limit=settings.DEFAULT_CONTENT_LIMIT):
+             limit=DEFAULT_CONTENT_LIMIT):
         """
         Given url, queries the API to see if the given URL has been submitted
         already, and if it has, return the submissions.
@@ -264,52 +313,54 @@ class Reddit(RedditObject):
         Given a thing_id, requests the info for that thing.
         """
         if bool(url) == bool(thing_id):
-            raise TypeError("Only one of url or thing_id is required!")
+            raise TypeError('Only one of url or thing_id is required!')
         if url is not None:
-            params = {"url": url}
-            if (url.startswith(urls["reddit_url"]) and
-                url != urls["reddit_url"]):
-                warnings.warn("It looks like you may be trying to get the info"
-                              " of a self or internal link. This probably "
-                              "won't return any useful results!", UserWarning)
+            params = {'url': url}
+            if (url.startswith(self.config['reddit_url']) and
+                url != self.config['reddit_url']):
+                warnings.warn('It looks like you may be trying to get the info'
+                              ' of a self or internal link. This probably '
+                              'will not return any useful results!',
+                              UserWarning)
         else:
-            params = {"id": thing_id}
-        return self._get_content(urls["info"], url_data=params, limit=limit)
+            params = {'id': thing_id}
+        return self.get_content(self.config['info'], url_data=params,
+                                limit=limit)
 
-    @require_captcha
-    def send_feedback(self, name, email, message, reason="feedback"):
+    @reddit.decorators.RequireCaptcha
+    def send_feedback(self, name, email, message, reason='feedback'):
         """
         Send feedback to the admins. Please don't abuse this, read what it says
         on the send feedback page!
         """
-        params = {"name": name,
-                  "email": email,
-                  "reason": reason,
-                  "text": message}
-        return self._request_json(urls["send_feedback"], params)
+        params = {'name': name,
+                  'email': email,
+                  'reason': reason,
+                  'text': message}
+        return self.request_json(self.config['send_feedback'], params)
 
-    @require_login
-    @require_captcha
+    @reddit.decorators.require_login
+    @reddit.decorators.RequireCaptcha
     def compose_message(self, recipient, subject, message, captcha=None):
         """Send a message to another redditor."""
-        params = {"text": message,
-                  "subject": subject,
-                  "to": str(recipient),
-                  "uh": self.modhash,
-                  "user": self.user.name,
-                  "api_type": "json"}
+        params = {'text': message,
+                  'subject': subject,
+                  'to': str(recipient),
+                  'uh': self.modhash,
+                  'user': self.user.name,
+                  'api_type': 'json'}
         if captcha:
             params.update(captcha)
-        return self._request_json(urls["compose_message"], params)
+        return self.request_json(self.config['compose'], params)
 
     def search_reddit_names(self, query):
         """Search the subreddits for a reddit whose name matches the query."""
-        params = {"query": query}
-        results = self._request_json(urls["search_reddit_names"], params)
-        return [self.get_subreddit(name) for name in results["names"]]
+        params = {'query': query}
+        results = self.request_json(self.config['search_reddit_names'], params)
+        return [self.get_subreddit(name) for name in results['names']]
 
-    @require_login
-    @require_captcha
+    @reddit.decorators.require_login
+    @reddit.decorators.RequireCaptcha
     def submit(self, subreddit, title, text=None, url=None, captcha=None):
         """
         Submit a new link.
@@ -318,57 +369,57 @@ class Reddit(RedditObject):
         name.
         """
         if bool(text) == bool(url):
-            raise TypeError("One (and only one) of text or url is required!")
-        params = {"sr": str(subreddit),
-                  "title": title,
-                  "uh": self.modhash,
-                  "api_type": "json"}
+            raise TypeError('One (and only one) of text or url is required!')
+        params = {'sr': str(subreddit),
+                  'title': title,
+                  'uh': self.modhash,
+                  'api_type': 'json'}
         if text:
-            params["kind"] = "self"
-            params["text"] = text
+            params['kind'] = 'self'
+            params['text'] = text
         else:
-            params["kind"] = "link"
-            params["url"] = url
-            params["r"] = str(subreddit)
+            params['kind'] = 'link'
+            params['url'] = url
         if captcha:
             params.update(captcha)
-        ret = self._request_json(urls['submit'], params)
+        ret = self.request_json(self.config['submit'], params)
         return 'errors' in ret and len(ret['errors']) == 0
 
-    @require_login
-    def create_subreddit(self, short_title, full_title, description="",
-                         language="English [en]", type="public",
-                         content_options="any", other_options=None, domain=""):
+    @reddit.decorators.require_login
+    def create_subreddit(self, short_title, full_title,  # description='',
+                         # language='English [en]',
+                         sr_type='public',
+                         # content_options='any', other_options=None, domain=''
+                         ):
         """Create a new subreddit"""
-        # TODO: Implement the rest of the options.
-        params = {"name": short_title,
-                  "title": full_title,
-                  "type": type,
-                  "uh": self.reddit_session.modhash}
-        return self._request_json(urls["create"], params)
+        params = {'name': short_title,
+                  'title': full_title,
+                  'type': sr_type,
+                  'uh': self.modhash}
+        return self.request_json(self.config['create'], params)
 
-    @require_captcha
+    @reddit.decorators.RequireCaptcha
     def create_redditor(self, user_name, password, email):
         """Register a new user."""
-        params = {"email": email,
-                  "op": "reg",
-                  "passwd": password,
-                  "passwd2": password,
-                  "user": user_name}
-        return self._request_json(urls["register"], params)
+        params = {'email': email,
+                  'op': 'reg',
+                  'passwd': password,
+                  'passwd2': password,
+                  'user': user_name}
+        return self.request_json(self.config['register'], params)
 
-    @require_login
+    @reddit.decorators.require_login
     def flair_list(self, subreddit):
         """Get flair list for a subreddit.
 
         Returns a tuple containing 'user', 'flair_text', and 'flair_css_class'.
         """
         params = {'uh': self.user.modhash}
-        return self._get_content(urls['flairlist'] % str(subreddit),
-                                 limit=None, url_data=params, root_field=None,
-                                 thing_field='users', after_field='next')
+        return self.get_content(self.config['flairlist'] % str(subreddit),
+                                limit=None, url_data=params, root_field=None,
+                                thing_field='users', after_field='next')
 
-    @require_login
+    @reddit.decorators.require_login
     def set_flair(self, subreddit, user, text='', css_class=''):
         """Set flair of user in given subreddit."""
         params = {'r': str(subreddit),
@@ -377,9 +428,9 @@ class Reddit(RedditObject):
                   'css_class': css_class,
                   'uh': self.user.modhash,
                   'api_type': 'json'}
-        return self._request_json(urls['flair'], params)
+        return self.request_json(self.config['flair'], params)
 
-    @require_login
+    @reddit.decorators.require_login
     def set_flair_csv(self, subreddit, flair_mapping):
         """Set flair for a group of users all at once.
 
@@ -389,15 +440,16 @@ class Reddit(RedditObject):
             flair_css_class: the flair css class for the user (optional)
         """
         if not flair_mapping:
-            raise ClientException('flair_mapping cannot be empty')
+            raise reddit.errors.ClientException('flair_mapping must be set')
         item_order = ['user', 'flair_text', 'flair_css_class']
         lines = []
         for mapping in flair_mapping:
             if 'user' not in mapping:
-                raise ClientException('mapping must contain "user" key')
+                raise reddit.errors.ClientException('flair_mapping must '
+                                                    'contain `user` key')
             lines.append(','.join([mapping.get(x, '') for x in item_order]))
         params = {'r': str(subreddit),
                   'flair_csv': '\n'.join(lines),
                   'uh': self.user.modhash,
                   'api_type': 'json'}
-        return self._request_json(urls['flaircsv'], params)
+        return self.request_json(self.config['flaircsv'], params)

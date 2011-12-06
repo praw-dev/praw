@@ -18,13 +18,12 @@ import warnings
 from functools import wraps
 from urlparse import urljoin
 
-import errors
 import reddit
-import settings
-from urls import urls
+from reddit import errors
+from reddit.settings import WAIT_BETWEEN_CALL_TIME
 
 
-class require_captcha(object):
+class RequireCaptcha(object):
     """Decorator for methods that require captchas."""
 
     def __init__(self, func):
@@ -33,10 +32,10 @@ class require_captcha(object):
         self.captcha_id = None
         self.captcha = None
 
-    def __get__(self, obj, type=None):
+    def __get__(self, obj, key=None):
         if obj is None:
             return self
-        return self.__class__(self.func.__get__(obj, type))
+        return self.__class__(self.func.__get__(obj, key))
 
     def __call__(self, caller, *args, **kwargs):
         do_captcha = False
@@ -53,17 +52,13 @@ class require_captcha(object):
     def captcha_as_dict(self):
         return {'iden': self.captcha_id, 'captcha': self.captcha}
 
-    @property
-    def captcha_url(self):
-        if self.captcha_id:
-            return urljoin(urls['view_captcha'], self.captcha_id + '.png')
-
     def get_captcha(self, caller):
         # This doesn't support the api_type:json parameter yet
-        data = caller._request_json(urls['new_captcha'],
-                                    {'renderstyle': 'html'})
+        data = caller.request_json(caller.config['new_captcha'],
+                                   {'renderstyle': 'html'})
         self.captcha_id = data['jquery'][-1][-1][-1]
-        print 'Captcha URL: ' + self.captcha_url
+        url = urljoin(caller.config['captcha'], self.captcha_id + '.png')
+        print 'Captcha URL: ' + url
         self.captcha = raw_input('Captcha: ')
 
 
@@ -86,7 +81,7 @@ def require_login(func):
     return login_reqd_func
 
 
-class sleep_after(object):
+class SleepAfter(object):  # pylint: disable-msg=R0903
     """
     A decorator to add to API functions that shouldn't be called too
     rapidly, in order to be nice to the reddit server.
@@ -106,14 +101,14 @@ class sleep_after(object):
         call_time = time.time()
 
         since_last_call = call_time - self.last_call_time
-        if since_last_call < settings.WAIT_BETWEEN_CALL_TIME:
-            time.sleep(settings.WAIT_BETWEEN_CALL_TIME - since_last_call)
+        if since_last_call < WAIT_BETWEEN_CALL_TIME:
+            time.sleep(WAIT_BETWEEN_CALL_TIME - since_last_call)
 
         self.__class__.last_call_time = call_time
         return self.func(*args, **kwargs)
 
 
-def parse_api_json_response(func):
+def parse_api_json_response(func):  # pylint: disable-msg=R0912
     """Decorator to look at the Reddit API response to an API POST request like
     vote, subscribe, login, etc. Basically, it just looks for certain errors in
     the return string. If it doesn't find one, then it just returns True.
@@ -130,18 +125,17 @@ def parse_api_json_response(func):
                         try:
                             assert return_value[k][-2][-1] == 'captcha'
                             continue
-                        except:
+                        finally:
                             pass
                     warnings.warn('Unknown return value key: %s' % k)
             if 'errors' in return_value and return_value['errors']:
                 error_list = []
-                for item in return_value['errors']:
-                    error_type, msg, field = item
+                for error_type, msg, value in return_value['errors']:
                     if error_type in errors.ERROR_MAPPING:
                         error_class = errors.ERROR_MAPPING[error_type]
                     else:
                         error_class = errors.APIException
-                    error_list.append(error_class(*item))
+                    error_list.append(error_class(error_type, msg, value))
                 if len(error_list) == 1:
                     raise error_list[0]
                 else:

@@ -20,10 +20,8 @@ import unittest
 import uuid
 import warnings
 
-import settings
 from reddit import Reddit, errors
-from reddit.comment import Comment, MoreComments
-from reddit.redditor import LoggedInRedditor
+from reddit.objects import Comment, LoggedInRedditor, MoreComments
 
 
 class BasicHelper(object):
@@ -42,7 +40,7 @@ class AuthenticatedHelper(BasicHelper):
 class BasicTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
-        if settings.REDDIT_DOMAIN == 'www.reddit.com':
+        if self.r.config.is_reddit:
             self.self = 'http://www.reddit.com/r/programming/comments/bn2wi/'
         else:
             self.self = 'http://reddit.local:8888/r/bboe/comments/2z/tasdest/'
@@ -58,7 +56,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
                           self.sr, 'TITLE', text='BODY')
 
     def test_info_by_known_url_returns_known_id_link_post(self):
-        if settings.REDDIT_DOMAIN == 'www.reddit.com':
+        if self.r.config.is_reddit:
             url = 'http://imgur.com/Vr8ZZ'
             comm = 'http://www.reddit.com/r/UCSantaBarbara/comments/m77nc/'
         else:
@@ -77,7 +75,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
             self.assertTrue('self' in str(w[-1].message))
 
     def test_info_by_url_also_found_by_id(self):
-        if settings.REDDIT_DOMAIN == 'www.reddit.com':
+        if self.r.config.is_reddit:
             url = 'http://imgur.com/Vr8ZZ'
         else:
             url = 'http://google.com/?q=82.1753988563'
@@ -87,7 +85,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(found_link in found_by_id)
 
     def test_comments_contains_no_noncomment_objects(self):
-        if settings.REDDIT_DOMAIN == 'www.reddit.com':
+        if self.r.config.is_reddit:
             url = 'http://www.reddit.com/r/programming/comments/bn2wi/'
         else:
             url = 'http://reddit.local:8888/r/reddit_test9/comments/1a/'
@@ -203,7 +201,7 @@ class ModTest(unittest.TestCase, AuthenticatedHelper):
 class RedditorTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
-        if settings.REDDIT_DOMAIN == 'www.reddit.com':
+        if self.r.config.is_reddit:
             self.other = {'id': '6c1xj', 'name': 'PyApiTestUser3'}
         else:
             self.other = {'id': 'pa', 'name': 'PyApiTestUser3'}
