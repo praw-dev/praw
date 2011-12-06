@@ -43,7 +43,7 @@ class RedditContentObject(object):
         else:
             self._info_url = reddit_session.config["info"]
         self.reddit_session = reddit_session
-        self._populate(json_dict, fetch)
+        self._populated = self._populate(json_dict, fetch)
 
     def _populate(self, json_dict, fetch):
         if json_dict is None:
@@ -53,7 +53,7 @@ class RedditContentObject(object):
                 json_dict = {}
         for name, value in json_dict.iteritems():
             setattr(self, name, value)
-        self._populated = bool(json_dict) or fetch
+        return bool(json_dict) or fetch
 
     def __getattr__(self, attr):
         if not self._populated:
@@ -93,8 +93,8 @@ class RedditContentObject(object):
         Get the content id for this object. Just prepends the appropriate
         content type to this object's id.
         """
-        om = self.reddit_session.config.object_mapping
-        return '%s_%s' % (om[self.__class__], self.id)
+        by_object = self.reddit_session.config.by_object
+        return '%s_%s' % (by_object[self.__class__], self.id)
 
 
 class Saveable(RedditContentObject):
@@ -112,7 +112,9 @@ class Saveable(RedditContentObject):
                   'uh': self.reddit_session.modhash,
                   'api_type': 'json'}
         response = self.reddit_session.request_json(url, params)
+        # pylint: disable-msg=E1101
         _request.is_stale([self.reddit_session.config['saved']])
+        # pylint: enable-msg=E1101
         return response
 
     def unsave(self):
@@ -131,7 +133,9 @@ class Deletable(RedditContentObject):
                   'uh': self.reddit_session.modhash,
                   'api_type': 'json'}
         response = self.reddit_session.request_json(url, params)
+        # pylint: disable-msg=E1101
         _request.is_stale([self.reddit_session.config['user']])
+        # pylint: enable-msg=E1101
         return response
 
 
@@ -191,14 +195,16 @@ class Comment(Deletable, Voteable):
         """Submission isn't set on __init__ thus we need to update it."""
         self.submission = submission
         for reply in self.replies:
-            reply._update_submission(submission)
+            reply._update_submission(submission)  # pylint: disable-msg=W0212
 
     def reply(self, text):
         """Reply to the comment with the specified text."""
+        # pylint: disable-msg=W0212
         return self.reddit_session._add_comment(self.content_id, text)
 
     def mark_read(self):
         """ Marks the comment as read """
+        # pylint: disable-msg=W0212
         return self.reddit_session._mark_as_read([self.content_id])
 
 
@@ -216,7 +222,7 @@ class MoreComments(RedditContentObject):
     @property
     def comments(self):
         url = urljoin(self.parent.submission.permalink, self.parent.id)
-        submission_info, comment_info = self.reddit_session.request_json(url)
+        _, comment_info = self.reddit_session.request_json(url)
         comments = comment_info['data']['children']
 
         # We need to return the children of the parent as we already have
@@ -297,9 +303,8 @@ class Submission(Deletable, Saveable, Voteable):
     """A class for submissions to Reddit."""
     def __init__(self, reddit_session, json_dict):
         super(Submission, self).__init__(reddit_session, None, json_dict)
-        if not self.permalink.startswith(reddit_session.config['reddit_url']):
-            self.permalink = urljoin(reddit_session.config['reddit_url'],
-                                     self.permalink)
+        self.permalink = urljoin(reddit_session.config['reddit_url'],
+                                 self.permalink)
         self._comments = None
 
     def __str__(self):
@@ -309,21 +314,21 @@ class Submission(Deletable, Saveable, Voteable):
     @property
     def comments(self):
         if self._comments == None:
-            submission_info, comment_info = self.reddit_session.request_json(
-                self.permalink)
+            _, comment_info = self.reddit_session.request_json(self.permalink)
             self._comments = comment_info['data']['children']
             for comment in self._comments:
-                comment._update_submission(self)
+                comment._update_submission(self)  # pylint: disable-msg=W0212
         return self._comments
 
-    @comments.setter
-    def comments(self, new_comments):
+    @comments.setter  # pylint: disable-msg=E1101
+    def comments(self, new_comments):  # pylint: disable-msg=E0102
         for comment in new_comments:
-            comment._update_submission(self)
+            comment._update_submission(self)  # pylint: disable-msg=W0212
         self._comments = new_comments
 
     def add_comment(self, text):
         """If logged in, comment on the submission using the specified text."""
+        # pylint: disable-msg=W0212
         return self.reddit_session._add_comment(self.content_id, text)
 
 

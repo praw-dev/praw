@@ -71,8 +71,8 @@ def limit_chars(num_chars=80):
     """
     def func_limiter(func):
         @wraps(func)
-        def func_wrapper(*args, **kwargs):
-            value = func(*args, **kwargs)
+        def func_wrapper(self, *args, **kwargs):
+            value = func(self, *args, **kwargs)
             if len(value) > num_chars:
                 value = value[:num_chars] + "..."
             return value

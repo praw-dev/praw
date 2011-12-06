@@ -29,9 +29,9 @@ def _get_section(subpath=""):
     """
     def _section(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
                  place_holder=None):
-        url_data = {"sort": sort, "time": time}
-        return self.reddit_session.get_content(urljoin(self._url, subpath),
-                                               limit=limit, url_data=url_data,
+        data = {"sort": sort, "time": time}
+        url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
+        return self.reddit_session.get_content(url, limit=limit, url_data=data,
                                                place_holder=place_holder)
     return _section
 
@@ -47,8 +47,8 @@ def _get_sorter(subpath="", **defaults):
                 # time should be "t" in the API data dict
                 key = "t"
             data.setdefault(key, value)
-        return self.reddit_session.get_content(urljoin(self._url, subpath),
-                                               limit=limit, url_data=data,
+        url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
+        return self.reddit_session.get_content(url, limit=limit, url_data=data,
                                                place_holder=place_holder)
     return _sorted
 

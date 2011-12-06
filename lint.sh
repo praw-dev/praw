@@ -10,8 +10,9 @@ if [ -n "$output" ]; then
     exit 1
 fi
 
-echo "---pychecker---"
-pychecker --quiet --limit 20 $dir/reddit
+echo "--pylint--"
+pylint --rcfile=$dir/.pylintrc $dir/reddit 2> /dev/null
+echo
 
 echo "---pyflakes---"
 find $dir -name \*.py -exec pyflakes {} \;

@@ -20,6 +20,7 @@ import sys
 class ClientException(Exception):
     """Base exception class for errors that don't involve the remote API."""
     def __init__(self, message):
+        super(ClientException, self).__init__()
         self.message = message
 
     def __str__(self):
@@ -37,8 +38,8 @@ class LoginRequired(ClientException):
 class APIException(Exception):
     """Base exception class for the reddit API bindings."""
     def __init__(self, error_type, message, field=''):
+        super(APIException, self).__init__(message)
         self.error_type = error_type
-        self.message = message
         self.field = field
 
     def __str__(self):
@@ -57,6 +58,7 @@ class BadCaptcha(APIException):
 class ExceptionList(APIException):
     """Raised when more than one exception occured."""
     def __init__(self, errors):
+        super(ExceptionList, self).__init__(None, None)
         self.errors = errors
 
     def __str__(self):

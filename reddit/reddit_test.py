@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
+# pylint: disable-msg=C0103, R0903, R0904, W0201
+
 import time
 import unittest
 import uuid
@@ -79,7 +81,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
             url = 'http://imgur.com/Vr8ZZ'
         else:
             url = 'http://google.com/?q=82.1753988563'
-        found_link = self.r.info(url).next()
+        found_link = self.r.info(url).next()  # pylint: disable-msg=E1101
         found_by_id = self.r.info(thing_id=found_link.content_id)
         self.assertTrue(found_by_id)
         self.assertTrue(found_link in found_by_id)
@@ -102,7 +104,9 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_add_comment_and_verify(self):
         text = 'Unique comment: %s' % uuid.uuid4()
+        # pylint: disable-msg=E1101
         submission = self.subreddit.get_new_by_date().next()
+        # pylint: enable-msg=E1101
         self.assertTrue(submission.add_comment(text))
         # reload the submission
         time.sleep(1)
@@ -115,11 +119,12 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_add_reply_and_verify(self):
         text = 'Unique reply: %s' % uuid.uuid4()
+        submission = None
         for submission in self.subreddit.get_new_by_date():
             if submission.num_comments > 0:
                 comment = submission.comments[0]
                 break
-        else:
+        if not comment:
             self.fail('Could not find a submission with comments.')
         self.assertTrue(comment.reply(text))
         # reload the submission (use id to bypass cache)
@@ -247,10 +252,11 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual('[deleted]', submission.author)
 
     def test_save(self):
+        submission = None
         for submission in self.r.user.get_submitted():
             if not submission.saved:
                 break
-        else:
+        if not submission or submission.saved:
             self.fail('Could not find unsaved submission.')
         submission.save()
         # reload the submission
@@ -258,10 +264,11 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(submission.saved)
 
     def test_unsave(self):
+        submission = None
         for submission in self.r.user.get_submitted():
             if submission.saved:
                 break
-        else:
+        if not submission or not submission.saved:
             self.fail('Could not find saved submission.')
         submission.unsave()
         # reload the submission
@@ -269,10 +276,11 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.assertFalse(submission.saved)
 
     def test_clear_vote(self):
+        submission = None
         for submission in self.r.user.get_submitted():
             if submission.likes is False:
                 break
-        else:
+        if not submission or submission.likes is not False:
             self.fail('Could not find a down-voted submission.')
         submission.clear_vote()
         # reload the submission
@@ -280,10 +288,11 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(submission.likes, None)
 
     def test_downvote(self):
+        submission = None
         for submission in self.r.user.get_submitted():
             if submission.likes is True:
                 break
-        else:
+        if not submission or submission.likes is not True:
             self.fail('Could not find an up-voted submission.')
         submission.downvote()
         # reload the submission
@@ -291,10 +300,11 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(submission.likes, False)
 
     def test_upvote(self):
+        submission = None
         for submission in self.r.user.get_submitted():
-            if submission.likes == None:
+            if submission.likes is None:
                 break
-        else:
+        if not submission or submission.likes is not None:
             self.fail('Could not find a non-voted submission.')
         submission.upvote()
         # reload the submission

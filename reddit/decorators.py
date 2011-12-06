@@ -18,7 +18,6 @@ import warnings
 from functools import wraps
 from urlparse import urljoin
 
-import reddit
 from reddit import errors
 from reddit.settings import WAIT_BETWEEN_CALL_TIME
 
@@ -65,14 +64,15 @@ class RequireCaptcha(object):
 def require_login(func):
     """A decorator to ensure that a user has logged in before calling the
     function."""
+
     @wraps(func)
     def login_reqd_func(self, *args, **kwargs):
-        if isinstance(self, reddit.Reddit):
-            user = self.user
-            modhash = self.modhash
-        else:
+        if isinstance(self, RedditContentObject):
             user = self.reddit_session.user
             modhash = self.reddit_session.modhash
+        else:
+            user = self.user
+            modhash = self.modhash
 
         if user is None or modhash is None:
             raise errors.LoginRequired('"%s" requires login.' % func.__name__)
@@ -114,8 +114,8 @@ def parse_api_json_response(func):  # pylint: disable-msg=R0912
     the return string. If it doesn't find one, then it just returns True.
     """
     @wraps(func)
-    def error_checked_func(*args, **kwargs):
-        return_value = func(*args, **kwargs)
+    def error_checked_func(self, *args, **kwargs):
+        return_value = func(self, *args, **kwargs)
         if isinstance(return_value, dict):
             for k in return_value:
                 allowed = ('data', 'errors', 'kind', 'next', 'prev', 'users')
@@ -142,3 +142,6 @@ def parse_api_json_response(func):  # pylint: disable-msg=R0912
                     raise errors.ExceptionList(error_list)
         return return_value
     return error_checked_func
+
+# Avoid circular import: http://effbot.org/zone/import-confusion.htm
+from reddit.objects import RedditContentObject

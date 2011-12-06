@@ -31,7 +31,7 @@ import reddit.objects
 from reddit.settings import CONFIG, DEFAULT_CONTENT_LIMIT
 
 
-class Config(object):
+class Config(object):  # pylint: disable-msg=R0903
     """A class containing the configuration for a reddit site."""
     API_PATHS = {'captcha':             'captcha/',
                  'clearflairtemplates': 'api/clearflairtemplates/',
@@ -73,27 +73,25 @@ class Config(object):
                  'vote':                'api/vote/'}
 
     def __init__(self, site_name):
-        o = dict(CONFIG.items(site_name))
-        self._site_url = 'http://' + o['domain']
-        self.kind_mapping = {o['comment_kind']:    reddit.objects.Comment,
-                             o['more_kind']:       reddit.objects.MoreComments,
-                             o['redditor_kind']:   reddit.objects.Redditor,
-                             o['submission_kind']: reddit.objects.Submission,
-                             o['subreddit_kind']: reddit.objects.Subreddit}
-
-        self.object_mapping = dict((value, key) for (key, value) in
-                                   self.kind_mapping.items())
-        self.object_mapping[reddit.objects.LoggedInRedditor] = \
-            o['redditor_kind']
-        self.is_reddit = o['domain'] == 'www.reddit.com'
+        obj = dict(CONFIG.items(site_name))
+        self._site_url = 'http://' + obj['domain']
+        self.by_kind = {obj['comment_kind']:    reddit.objects.Comment,
+                        obj['more_kind']:       reddit.objects.MoreComments,
+                        obj['redditor_kind']:   reddit.objects.Redditor,
+                        obj['submission_kind']: reddit.objects.Submission,
+                        obj['subreddit_kind']:  reddit.objects.Subreddit}
+        self.by_object = dict((value, key) for (key, value) in
+                              self.by_kind.items())
+        self.by_object[reddit.objects.LoggedInRedditor] = obj['redditor_kind']
+        self.is_reddit = obj['domain'] == 'www.reddit.com'
 
     def __getitem__(self, key):
         """Return the URL for key"""
         return urlparse.urljoin(self._site_url, self.API_PATHS[key])
 
 
-class Reddit(object):
-    """A class for a reddit session."""
+class BaseReddit(object):
+    """The base class for a reddit session."""
     DEFAULT_HEADERS = {}
 
     def __init__(self, user_agent, site_name=None):
@@ -104,6 +102,7 @@ class Reddit(object):
         environment variable REDDIT_SITE. It if is not found there, the default
         site name `reddit` will be used.
         """
+
         if not isinstance(user_agent, str):
             raise TypeError('User agent must be a string.')
         self.DEFAULT_HEADERS['User-agent'] = user_agent
@@ -126,6 +125,7 @@ class Reddit(object):
         :param url_data: the GET data to put in the url
         :returns: the open page
         """
+        # pylint: disable-msg=W0212
         return reddit.helpers._request(self, page_url, params, url_data,
                                        self._opener)
 
@@ -135,7 +135,7 @@ class Reddit(object):
         while decoding.
         """
         try:
-            object_class = self.config.kind_mapping[json_data['kind']]
+            object_class = self.config.by_kind[json_data['kind']]
         except KeyError:
             if 'json' in json_data:
                 if len(json_data) == 1:
@@ -227,188 +227,10 @@ class Reddit(object):
             hook = None
         return json.loads(response, object_hook=hook)
 
-    def get_redditor(self, user_name, *args, **kwargs):
-        """Returns a Redditor class for the user_name specified."""
-        return reddit.objects.Redditor(self, user_name, *args, **kwargs)
 
-    def get_subreddit(self, subreddit_name, *args, **kwargs):
-        """Returns a Subreddit class for the subreddit_name specified."""
-        return reddit.objects.Subreddit(self, subreddit_name, *args, **kwargs)
-
-    def get_submission(self, url=None, submission_id=None):
-        """Returns a submission object for the given url or submission_id."""
-        if bool(url) == bool(submission_id):
-            raise TypeError('One (and only one) of id or url is required!')
-        if submission_id:
-            url = urlparse.urljoin(self.config['comments'], submission_id)
-        submission_info, comment_info = self.request_json(url)
-        submission = submission_info['data']['children'][0]
-        submission.comments = comment_info['data']['children']
-        return submission
-
-    def login(self, user=None, password=None):
-        """Login to Reddit. If no user or password is provided, the user will
-        be prompted with raw_input and getpass.getpass.
-        """
-        # Prompt user for necessary fields.
-        if user is None:
-            user = raw_input('Username: ')
-        if password is None:
-            import getpass
-            password = getpass.getpass('Password: ')
-
-        params = {'api_type': 'json',
-                  'passwd': password,
-                  'user': user}
-        response = self.request_json(self.config['login'] % user, params)
-        self.modhash = response['data']['modhash']
-        self.user = self.get_redditor(user)
-        self.user.__class__ = reddit.objects.LoggedInRedditor
-
-    @reddit.decorators.require_login
-    def logout(self):
-        """Logs out of a session."""
-        self.modhash = self.user = None
-        params = {'uh': self.modhash}
-        return self.request_json(self.config['logout'], params)
-
-    @reddit.decorators.require_login
-    def _add_comment(self, thing_id, text):
-        """Comment on the given thing with the given text."""
-        params = {'thing_id': thing_id,
-                  'text': text,
-                  'uh': self.modhash,
-                  'api_type': 'json'}
-        ret = self.request_json(self.config['comment'], params)
-        return 'errors' in ret and len(ret['errors']) == 0
-
-    @reddit.decorators.require_login
-    def _mark_as_read(self, thing_ids):
-        """ Marks each of the supplied thing_ids as read """
-        params = {'id': ','.join(thing_ids),
-                  'uh': self.modhash}
-        self.request_json(self.config['read_message'], params)
-
-    def get_front_page(self, limit=DEFAULT_CONTENT_LIMIT):
-        """Return the reddit front page. Login isn't required, but you'll only
-        see your own front page if you are logged in."""
-        return self.get_content(self.config['reddit_url'], limit=limit)
-
-    @reddit.decorators.require_login
-    def get_saved_links(self, limit=DEFAULT_CONTENT_LIMIT):
-        """Return a listing of the logged-in user's saved links."""
-        return self.get_content(self.config['saved'], limit=limit)
-
-    def get_all_comments(self, limit=DEFAULT_CONTENT_LIMIT,
-                         place_holder=None):
-        """Returns a listing from reddit.com/comments (which provides all of
-        the most recent comments from all users to all submissions)."""
-        return self.get_content(self.config['comments'], limit=limit,
-                                place_holder=place_holder)
-
-    def info(self, url=None, thing_id=None,
-             limit=DEFAULT_CONTENT_LIMIT):
-        """
-        Given url, queries the API to see if the given URL has been submitted
-        already, and if it has, return the submissions.
-
-        Given a thing_id, requests the info for that thing.
-        """
-        if bool(url) == bool(thing_id):
-            raise TypeError('Only one of url or thing_id is required!')
-        if url is not None:
-            params = {'url': url}
-            if (url.startswith(self.config['reddit_url']) and
-                url != self.config['reddit_url']):
-                warnings.warn('It looks like you may be trying to get the info'
-                              ' of a self or internal link. This probably '
-                              'will not return any useful results!',
-                              UserWarning)
-        else:
-            params = {'id': thing_id}
-        return self.get_content(self.config['info'], url_data=params,
-                                limit=limit)
-
-    @reddit.decorators.RequireCaptcha
-    def send_feedback(self, name, email, message, reason='feedback'):
-        """
-        Send feedback to the admins. Please don't abuse this, read what it says
-        on the send feedback page!
-        """
-        params = {'name': name,
-                  'email': email,
-                  'reason': reason,
-                  'text': message}
-        return self.request_json(self.config['send_feedback'], params)
-
-    @reddit.decorators.require_login
-    @reddit.decorators.RequireCaptcha
-    def compose_message(self, recipient, subject, message, captcha=None):
-        """Send a message to another redditor."""
-        params = {'text': message,
-                  'subject': subject,
-                  'to': str(recipient),
-                  'uh': self.modhash,
-                  'user': self.user.name,
-                  'api_type': 'json'}
-        if captcha:
-            params.update(captcha)
-        return self.request_json(self.config['compose'], params)
-
-    def search_reddit_names(self, query):
-        """Search the subreddits for a reddit whose name matches the query."""
-        params = {'query': query}
-        results = self.request_json(self.config['search_reddit_names'], params)
-        return [self.get_subreddit(name) for name in results['names']]
-
-    @reddit.decorators.require_login
-    @reddit.decorators.RequireCaptcha
-    def submit(self, subreddit, title, text=None, url=None, captcha=None):
-        """
-        Submit a new link.
-
-        Accepts either a Subreddit object or a str containing the subreddit
-        name.
-        """
-        if bool(text) == bool(url):
-            raise TypeError('One (and only one) of text or url is required!')
-        params = {'sr': str(subreddit),
-                  'title': title,
-                  'uh': self.modhash,
-                  'api_type': 'json'}
-        if text:
-            params['kind'] = 'self'
-            params['text'] = text
-        else:
-            params['kind'] = 'link'
-            params['url'] = url
-        if captcha:
-            params.update(captcha)
-        ret = self.request_json(self.config['submit'], params)
-        return 'errors' in ret and len(ret['errors']) == 0
-
-    @reddit.decorators.require_login
-    def create_subreddit(self, short_title, full_title,  # description='',
-                         # language='English [en]',
-                         sr_type='public',
-                         # content_options='any', other_options=None, domain=''
-                         ):
-        """Create a new subreddit"""
-        params = {'name': short_title,
-                  'title': full_title,
-                  'type': sr_type,
-                  'uh': self.modhash}
-        return self.request_json(self.config['create'], params)
-
-    @reddit.decorators.RequireCaptcha
-    def create_redditor(self, user_name, password, email):
-        """Register a new user."""
-        params = {'email': email,
-                  'op': 'reg',
-                  'passwd': password,
-                  'passwd2': password,
-                  'user': user_name}
-        return self.request_json(self.config['register'], params)
+class SubredditExtension(BaseReddit):
+    def __init__(self, *args, **kwargs):
+        super(SubredditExtension, self).__init__(*args, **kwargs)
 
     @reddit.decorators.require_login
     def add_flair_template(self, subreddit, text, css_class, text_editable):
@@ -474,3 +296,197 @@ class Reddit(object):
                   'uh': self.user.modhash,
                   'api_type': 'json'}
         return self.request_json(self.config['flaircsv'], params)
+
+    @reddit.decorators.require_login
+    @reddit.decorators.RequireCaptcha
+    def submit(self, subreddit, title, text=None, url=None, captcha=None):
+        """
+        Submit a new link.
+
+        Accepts either a Subreddit object or a str containing the subreddit
+        name.
+        """
+        if bool(text) == bool(url):
+            raise TypeError('One (and only one) of text or url is required!')
+        params = {'sr': str(subreddit),
+                  'title': title,
+                  'uh': self.modhash,
+                  'api_type': 'json'}
+        if text:
+            params['kind'] = 'self'
+            params['text'] = text
+        else:
+            params['kind'] = 'link'
+            params['url'] = url
+        if captcha:
+            params.update(captcha)
+        ret = self.request_json(self.config['submit'], params)
+        return 'errors' in ret and len(ret['errors']) == 0
+
+
+class LoggedInExtension(BaseReddit):
+    def __init__(self, *args, **kwargs):
+        super(LoggedInExtension, self).__init__(*args, **kwargs)
+
+    @reddit.decorators.require_login
+    def _add_comment(self, thing_id, text):
+        """Comment on the given thing with the given text."""
+        params = {'thing_id': thing_id,
+                  'text': text,
+                  'uh': self.modhash,
+                  'api_type': 'json'}
+        ret = self.request_json(self.config['comment'], params)
+        return 'errors' in ret and len(ret['errors']) == 0
+
+    @reddit.decorators.require_login
+    def _mark_as_read(self, thing_ids):
+        """ Marks each of the supplied thing_ids as read """
+        params = {'id': ','.join(thing_ids),
+                  'uh': self.modhash}
+        self.request_json(self.config['read_message'], params)
+
+    @reddit.decorators.require_login
+    @reddit.decorators.RequireCaptcha
+    def compose_message(self, recipient, subject, message, captcha=None):
+        """Send a message to another redditor."""
+        params = {'text': message,
+                  'subject': subject,
+                  'to': str(recipient),
+                  'uh': self.modhash,
+                  'user': self.user.name,
+                  'api_type': 'json'}
+        if captcha:
+            params.update(captcha)
+        return self.request_json(self.config['compose'], params)
+
+    @reddit.decorators.require_login
+    def create_subreddit(self, short_title, full_title,  # description='',
+                         # language='English [en]',
+                         sr_type='public',
+                         # content_options='any', other_options=None, domain=''
+                         ):
+        """Create a new subreddit"""
+        params = {'name': short_title,
+                  'title': full_title,
+                  'type': sr_type,
+                  'uh': self.modhash}
+        return self.request_json(self.config['create'], params)
+
+    def get_redditor(self, user_name, *args, **kwargs):
+        """Returns a Redditor class for the user_name specified."""
+        return reddit.objects.Redditor(self, user_name, *args, **kwargs)
+
+    @reddit.decorators.require_login
+    def get_saved_links(self, limit=DEFAULT_CONTENT_LIMIT):
+        """Return a listing of the logged-in user's saved links."""
+        return self.get_content(self.config['saved'], limit=limit)
+
+    def login(self, user=None, password=None):
+        """Login to Reddit. If no user or password is provided, the user will
+        be prompted with raw_input and getpass.getpass.
+        """
+        # Prompt user for necessary fields.
+        if user is None:
+            user = raw_input('Username: ')
+        if password is None:
+            import getpass
+            password = getpass.getpass('Password: ')
+
+        params = {'api_type': 'json',
+                  'passwd': password,
+                  'user': user}
+        response = self.request_json(self.config['login'] % user, params)
+        self.modhash = response['data']['modhash']
+        self.user = self.get_redditor(user)
+        self.user.__class__ = reddit.objects.LoggedInRedditor
+
+    @reddit.decorators.require_login
+    def logout(self):
+        """Logs out of a session."""
+        self.modhash = self.user = None
+        params = {'uh': self.modhash}
+        return self.request_json(self.config['logout'], params)
+
+
+class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
+             SubredditExtension):
+    def __init__(self, *args, **kwargs):
+        super(Reddit, self).__init__(*args, **kwargs)
+
+    def get_all_comments(self, limit=DEFAULT_CONTENT_LIMIT,
+                         place_holder=None):
+        """Returns a listing from reddit.com/comments (which provides all of
+        the most recent comments from all users to all submissions)."""
+        return self.get_content(self.config['comments'], limit=limit,
+                                place_holder=place_holder)
+
+    def get_front_page(self, limit=DEFAULT_CONTENT_LIMIT):
+        """Return the reddit front page. Login isn't required, but you'll only
+        see your own front page if you are logged in."""
+        return self.get_content(self.config['reddit_url'], limit=limit)
+
+    def get_subreddit(self, subreddit_name, *args, **kwargs):
+        """Returns a Subreddit class for the subreddit_name specified."""
+        return reddit.objects.Subreddit(self, subreddit_name, *args, **kwargs)
+
+    def get_submission(self, url=None, submission_id=None):
+        """Returns a submission object for the given url or submission_id."""
+        if bool(url) == bool(submission_id):
+            raise TypeError('One (and only one) of id or url is required!')
+        if submission_id:
+            url = urlparse.urljoin(self.config['comments'], submission_id)
+        submission_info, comment_info = self.request_json(url)
+        submission = submission_info['data']['children'][0]
+        submission.comments = comment_info['data']['children']
+        return submission
+
+    def info(self, url=None, thing_id=None,
+             limit=DEFAULT_CONTENT_LIMIT):
+        """
+        Given url, queries the API to see if the given URL has been submitted
+        already, and if it has, return the submissions.
+
+        Given a thing_id, requests the info for that thing.
+        """
+        if bool(url) == bool(thing_id):
+            raise TypeError('Only one of url or thing_id is required!')
+        if url is not None:
+            params = {'url': url}
+            if (url.startswith(self.config['reddit_url']) and
+                url != self.config['reddit_url']):
+                warnings.warn('It looks like you may be trying to get the info'
+                              ' of a self or internal link. This probably '
+                              'will not return any useful results!',
+                              UserWarning)
+        else:
+            params = {'id': thing_id}
+        return self.get_content(self.config['info'], url_data=params,
+                                limit=limit)
+
+    @reddit.decorators.RequireCaptcha
+    def send_feedback(self, name, email, message, reason='feedback'):
+        """
+        Send feedback to the admins. Please don't abuse this, read what it says
+        on the send feedback page!
+        """
+        params = {'name': name,
+                  'email': email,
+                  'reason': reason,
+                  'text': message}
+        return self.request_json(self.config['send_feedback'], params)
+
+    def search_reddit_names(self, query):
+        """Search the subreddits for a reddit whose name matches the query."""
+        params = {'query': query}
+        results = self.request_json(self.config['search_reddit_names'], params)
+        return [self.get_subreddit(name) for name in results['names']]
+
+    @reddit.decorators.RequireCaptcha
+    def create_redditor(self, user_name, password, email):
+        """Register a new user."""
+        params = {'email': email,
+                  'op': 'reg',
+                  'passwd': password,
+                  'passwd2': password,
+                  'user': user_name}
+        return self.request_json(self.config['register'], params)
