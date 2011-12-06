@@ -271,7 +271,11 @@ class SubredditExtension(BaseReddit):
                   'css_class': css_class,
                   'uh': self.user.modhash,
                   'api_type': 'json'}
-        return self.request_json(self.config['flair'], params)
+        response = self.request_json(self.config['flair'], params)
+        stale_url = self.config['flairlist'] % str(subreddit)
+        # pylint: disable-msg=E1101,W0212
+        reddit.helpers._request.is_stale([stale_url])
+        return response
 
     @reddit.decorators.require_login
     def set_flair_csv(self, subreddit, flair_mapping):
@@ -295,7 +299,11 @@ class SubredditExtension(BaseReddit):
                   'flair_csv': '\n'.join(lines),
                   'uh': self.user.modhash,
                   'api_type': 'json'}
-        return self.request_json(self.config['flaircsv'], params)
+        response = self.request_json(self.config['flaircsv'], params)
+        stale_url = self.config['flairlist'] % str(subreddit)
+        # pylint: disable-msg=E1101,W0212
+        reddit.helpers._request.is_stale([stale_url])
+        return response
 
     @reddit.decorators.require_login
     @reddit.decorators.RequireCaptcha
@@ -320,8 +328,7 @@ class SubredditExtension(BaseReddit):
             params['url'] = url
         if captcha:
             params.update(captcha)
-        ret = self.request_json(self.config['submit'], params)
-        return 'errors' in ret and len(ret['errors']) == 0
+        return self.request_json(self.config['submit'], params)
 
 
 class LoggedInExtension(BaseReddit):
@@ -335,15 +342,14 @@ class LoggedInExtension(BaseReddit):
                   'text': text,
                   'uh': self.modhash,
                   'api_type': 'json'}
-        ret = self.request_json(self.config['comment'], params)
-        return 'errors' in ret and len(ret['errors']) == 0
+        return self.request_json(self.config['comment'], params)
 
     @reddit.decorators.require_login
     def _mark_as_read(self, thing_ids):
         """ Marks each of the supplied thing_ids as read """
         params = {'id': ','.join(thing_ids),
                   'uh': self.modhash}
-        self.request_json(self.config['read_message'], params)
+        return self.request_json(self.config['read_message'], params)
 
     @reddit.decorators.require_login
     @reddit.decorators.RequireCaptcha

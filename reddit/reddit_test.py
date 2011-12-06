@@ -26,6 +26,16 @@ from reddit import Reddit, errors
 from reddit.objects import Comment, LoggedInRedditor, MoreComments
 
 
+def flair_diff(root, other):
+    """Function for comparing two flairlists supporting optional arguments."""
+    keys = [u'user', u'flair_text', u'flair_css_class']
+    root_items = set(tuple(item[key] if key in item and item[key] else u'' for
+                           key in keys) for item in root)
+    other_items = set(tuple(item[key] if key in item and item[key] else u'' for
+                            key in keys) for item in other)
+    return list(root_items - other_items)
+
+
 class BasicHelper(object):
     def configure(self):
         self.r = Reddit('reddit_api test suite')
@@ -168,25 +178,22 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
     def test_add_flair_by_user(self):
         self.subreddit.set_flair(self.r.user, 'Awesome Mod (User)', 'css')
 
-    def test_clear_flair(self):
+    def test_clear_user_flair(self):
         self.subreddit.set_flair(self.r.user)
 
-    def test_flair_list(self):
-        self.subreddit.set_flair(self.un, 'flair')
-        self.assertTrue(self.subreddit.flair_list().next())
+    def test_flair_csv_and_flair_list(self):
+        # Clear all flair
+        self.subreddit.clear_all_flair()
+        self.assertEqual([], list(self.subreddit.flair_list()))
 
-    def test_flair_csv(self):
-        flair_mapping = [{u'user':'bboe', u'flair_text':u'dev',
-                          u'flair_css_class':u''},
-                         {u'user':u'PyAPITestUser3', u'flair_text':u'',
-                          u'flair_css_class':u'css2'},
-                         {u'user':u'PyAPITestUser2', u'flair_text':u'AWESOME',
+        # Set flair
+        flair_mapping = [{u'user':'bboe', u'flair_text':u'dev'},
+                         {u'user':u'PyAPITestUser2', u'flair_css_class':u'xx'},
+                         {u'user':u'PyAPITestUser3', u'flair_text':u'AWESOME',
                           u'flair_css_class':u'css'}]
         self.subreddit.set_flair_csv(flair_mapping)
-        expected = set([tuple(sorted(x.items())) for x in flair_mapping])
-        result = set([tuple(sorted(x.items())) for x in
-                      self.subreddit.flair_list()])
-        self.assertTrue(not expected - result)
+        self.assertEqual([], flair_diff(flair_mapping,
+                                        list(self.subreddit.flair_list())))
 
     def test_flair_csv_optional_args(self):
         flair_mapping = [{'user': 'bboe', 'flair_text': 'bboe'},

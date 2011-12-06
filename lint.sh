@@ -3,7 +3,7 @@
 dir=$(dirname $0)
 
 # PEP 8
-output=$(find $dir -name \*.py -exec pep8 {} \;)
+output=$(find $dir -name [A-Za-z_]\*.py -exec pep8 {} \;)
 if [ -n "$output" ]; then
     echo "---pep8---"
     echo -e "$output"
@@ -15,6 +15,6 @@ pylint --rcfile=$dir/.pylintrc $dir/reddit 2> /dev/null
 echo
 
 echo "---pyflakes---"
-find $dir -name \*.py -exec pyflakes {} \;
+find $dir -name [A-Za-z_]\*.py -exec pyflakes {} \;
 
 exit 0

@@ -38,8 +38,9 @@ class LoginRequired(ClientException):
 class APIException(Exception):
     """Base exception class for the reddit API bindings."""
     def __init__(self, error_type, message, field=''):
-        super(APIException, self).__init__(message)
+        super(APIException, self).__init__()
         self.error_type = error_type
+        self.message = message
         self.field = field
 
     def __str__(self):

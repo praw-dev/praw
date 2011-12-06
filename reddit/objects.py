@@ -199,8 +199,10 @@ class Comment(Deletable, Voteable):
 
     def reply(self, text):
         """Reply to the comment with the specified text."""
-        # pylint: disable-msg=W0212
-        return self.reddit_session._add_comment(self.content_id, text)
+        # pylint: disable-msg=E1101,W0212
+        response = self.reddit_session._add_comment(self.content_id, text)
+        _request.is_stale([self.submission.permalink])
+        return response
 
     def mark_read(self):
         """ Marks the comment as read """
@@ -328,8 +330,10 @@ class Submission(Deletable, Saveable, Voteable):
 
     def add_comment(self, text):
         """If logged in, comment on the submission using the specified text."""
-        # pylint: disable-msg=W0212
-        return self.reddit_session._add_comment(self.content_id, text)
+        # pylint: disable-msg=E1101, W0212
+        response = self.reddit_session._add_comment(self.content_id, text)
+        _request.is_stale([self.permalink])
+        return response
 
 
 class Subreddit(RedditContentObject):
@@ -365,6 +369,14 @@ class Subreddit(RedditContentObject):
     def add_flair_template(self, *args, **kwargs):
         """Adds a flair template to the subreddit."""
         return self.reddit_session.add_flair_template(self, *args, **kwargs)
+
+    def clear_all_flair(self):
+        """Helper method to remove all currently set flair."""
+        csv = [{'user': x['user']} for x in self.flair_list()]
+        if csv:
+            return self.set_flair_csv(csv)
+        else:
+            return
 
     def clear_flair_templates(self, *args, **kwargs):
         """Clear flair templates for this subreddit."""
