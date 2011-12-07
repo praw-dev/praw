@@ -76,6 +76,7 @@ class Config(object):  # pylint: disable-msg=R0903
         obj = dict(CONFIG.items(site_name))
         self._site_url = 'http://' + obj['domain']
         self.by_kind = {obj['comment_kind']:    reddit.objects.Comment,
+                        obj['message_kind']:    reddit.objects.Message,
                         obj['more_kind']:       reddit.objects.MoreComments,
                         obj['redditor_kind']:   reddit.objects.Redditor,
                         obj['submission_kind']: reddit.objects.Submission,
@@ -363,7 +364,10 @@ class LoggedInExtension(BaseReddit):
                   'api_type': 'json'}
         if captcha:
             params.update(captcha)
-        return self.request_json(self.config['compose'], params)
+        response = self.request_json(self.config['compose'], params)
+        # pylint: disable-msg=E1101,W0212
+        reddit.helpers._request.is_stale([self.config['sent']])
+        return response
 
     @reddit.decorators.require_login
     def create_subreddit(self, short_title, full_title,  # description='',

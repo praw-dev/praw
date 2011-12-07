@@ -23,7 +23,7 @@ import uuid
 import warnings
 
 from reddit import Reddit, errors
-from reddit.objects import Comment, LoggedInRedditor, MoreComments
+from reddit.objects import Comment, LoggedInRedditor, Message, MoreComments
 
 
 def flair_diff(root, other):
@@ -147,20 +147,6 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find the reply that was just posted.')
 
 
-class MessageTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    def test_get_inbox(self):
-        self.r.user.get_inbox()
-
-    def test_get_sent(self):
-        self.r.user.get_sent()
-
-    def test_get_modmail(self):
-        self.r.user.get_modmail()
-
-
 class FlairTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
@@ -222,6 +208,40 @@ class FlairTemplateTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.clear_flair_templates()
 
 
+class MessageTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+
+    def test_compose(self):
+        subject = 'Unique message: %s' % uuid.uuid4()
+        self.r.user.compose_message(subject, 'Message content')
+        for msg in self.r.user.get_inbox():
+            if msg.subject == subject:
+                break
+        else:
+            self.fail('Could not find the message we just sent to ourself.')
+
+    def test_reply_to_message_and_verify(self):
+        text = 'Unique message reply: %s' % uuid.uuid4()
+        found = None
+        for msg in self.r.user.get_inbox():
+            if isinstance(msg, Message) and msg.author == self.r.user:
+                found = msg
+                break
+        if not found:
+            self.fail('Could not find a self-message in the inbox')
+        found.reply(text)
+        for msg in self.r.user.get_sent():
+            if msg.body == text:
+                break
+        else:
+            self.fail('Could not find the recently sent reply.')
+
+    def test_get_modmail(self):
+        for msg in self.r.user.get_modmail():
+            print msg
+
+
 class RedditorTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
@@ -233,9 +253,6 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_get(self):
         self.assertEqual(self.other['id'], self.user.id)
-
-    def test_compose(self):
-        self.user.compose_message('Message topic', 'Message content')
 
     def test_friend(self):
         self.user.friend()

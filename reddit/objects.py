@@ -62,16 +62,14 @@ class RedditContentObject(object):
         raise AttributeError
 
     def __setattr__(self, name, value):
-        if name == "subreddit":
+        if value and name == "subreddit":
             value = Subreddit(self.reddit_session, value, fetch=False)
-        elif name == "redditor" or name == "author":
-            # Special case for deleted users
-            if value != '[deleted]':
-                value = Redditor(self.reddit_session, value, fetch=False)
+        elif value and name in ['redditor', 'author'] and value != '[deleted]':
+            value = Redditor(self.reddit_session, value, fetch=False)
         object.__setattr__(self, name, value)
 
     def __eq__(self, other):
-        return (type(self) == type(other) and
+        return (isinstance(other, RedditContentObject) and
                 self.content_id == other.content_id)
 
     def __ne__(self, other):
@@ -114,7 +112,6 @@ class Saveable(RedditContentObject):
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
         _request.is_stale([self.reddit_session.config['saved']])
-        # pylint: enable-msg=E1101
         return response
 
     def unsave(self):
@@ -135,8 +132,29 @@ class Deletable(RedditContentObject):
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
         _request.is_stale([self.reddit_session.config['user']])
-        # pylint: enable-msg=E1101
         return response
+
+
+class Inboxable(RedditContentObject):
+    """Interface for RedditContentObjects that appear in the Inbox."""
+    @require_login
+    def reply(self, text):
+        """Reply to the comment with the specified text."""
+        # pylint: disable-msg=E1101,W0212
+        response = self.reddit_session._add_comment(self.content_id, text)
+        if isinstance(self, Comment):
+            _request.is_stale([self.reddit_session.config['inbox'],
+                               self.submission.permalink])
+        elif isinstance(self, Message):
+            _request.is_stale([self.reddit_session.config['inbox'],
+                               self.reddit_session.config['sent']])
+        return response
+
+    @require_login
+    def mark_read(self):
+        """ Marks the comment as read """
+        # pylint: disable-msg=W0212
+        return self.reddit_session._mark_as_read([self.content_id])
 
 
 class Voteable(RedditContentObject):
@@ -166,7 +184,7 @@ class Voteable(RedditContentObject):
         return self.vote()
 
 
-class Comment(Deletable, Voteable):
+class Comment(Deletable, Inboxable, Voteable):
     """A class for comments."""
     def __init__(self, reddit_session, json_dict):
         super(Comment, self).__init__(reddit_session, None, json_dict)
@@ -197,17 +215,16 @@ class Comment(Deletable, Voteable):
         for reply in self.replies:
             reply._update_submission(submission)  # pylint: disable-msg=W0212
 
-    def reply(self, text):
-        """Reply to the comment with the specified text."""
-        # pylint: disable-msg=E1101,W0212
-        response = self.reddit_session._add_comment(self.content_id, text)
-        _request.is_stale([self.submission.permalink])
-        return response
 
-    def mark_read(self):
-        """ Marks the comment as read """
-        # pylint: disable-msg=W0212
-        return self.reddit_session._mark_as_read([self.content_id])
+class Message(Inboxable):
+    """A class for reddit messages (orangereds)."""
+    def __init__(self, reddit_session, json_dict):
+        super(Message, self).__init__(reddit_session, None, json_dict)
+
+    @limit_chars()
+    def __str__(self):
+        return 'From: %s\nSubject: %s\n\n%s' % (self.author, self.subject,
+                                                self.body)
 
 
 class MoreComments(RedditContentObject):
