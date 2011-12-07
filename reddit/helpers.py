@@ -78,8 +78,7 @@ def _modify_relationship(relationship, unlink=False):
 
 @Memoize
 @SleepAfter
-def _request(reddit_session, page_url, params=None, url_data=None,
-             openerdirector=None):
+def _request(reddit_session, page_url, params=None, url_data=None):
     if url_data:
         page_url += "?" + urllib.urlencode(url_data)
     # urllib2.Request throws a 404 for some reason with data=""
@@ -91,9 +90,6 @@ def _request(reddit_session, page_url, params=None, url_data=None,
         page_url = urllib.quote(page_url.encode('utf-8'), ':/')
     request = urllib2.Request(page_url, data=encoded_params,
                               headers=reddit_session.DEFAULT_HEADERS)
-    # The openerdirector manages cookies on a per-session basis
-    if openerdirector:
-        response = openerdirector.open(request)
-    else:
-        response = urllib2.urlopen(request)
+    # pylint: disable-msg=W0212
+    response = reddit_session._opener.open(request)
     return response.read()

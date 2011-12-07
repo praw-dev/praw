@@ -127,8 +127,7 @@ class BaseReddit(object):
         :returns: the open page
         """
         # pylint: disable-msg=W0212
-        return reddit.helpers._request(self, page_url, params, url_data,
-                                       self._opener)
+        return reddit.helpers._request(self, page_url, params, url_data)
 
     def _json_reddit_objecter(self, json_data):
         """
@@ -139,10 +138,9 @@ class BaseReddit(object):
             object_class = self.config.by_kind[json_data['kind']]
         except KeyError:
             if 'json' in json_data:
-                if len(json_data) == 1:
-                    return json_data['json']
-                else:
+                if len(json_data) != 1:
                     warnings.warn('Unknown object type: %s' % json_data)
+                return json_data['json']
         else:
             return object_class.from_api_response(self, json_data['data'])
         return json_data
@@ -370,17 +368,25 @@ class LoggedInExtension(BaseReddit):
         return response
 
     @reddit.decorators.require_login
-    def create_subreddit(self, short_title, full_title,  # description='',
-                         # language='English [en]',
-                         sr_type='public',
-                         # content_options='any', other_options=None, domain=''
-                         ):
+    def create_subreddit(self, name, title, description='', language='en',
+                         subreddit_type='public', content_options='any',
+                         over_18=False, default_set=True, show_media=False,
+                         domain=''):
         """Create a new subreddit"""
-        params = {'name': short_title,
-                  'title': full_title,
-                  'type': sr_type,
-                  'uh': self.modhash}
-        return self.request_json(self.config['create'], params)
+        params = {'name': name,
+                  'title': title,
+                  'description': description,
+                  'lang': language,
+                  'type': subreddit_type,
+                  'link_type': content_options,
+                  'over_18': 'on' if over_18 else 'off',
+                  'allow_top': 'on' if default_set else 'off',
+                  'show_media': 'on' if show_media else 'off',
+                  'domain': domain,
+                  'uh': self.modhash,
+                  'id': '#sr-form',
+                  'api_type': 'json'}
+        return self.request_json(self.config['site_admin'], params)
 
     def get_redditor(self, user_name, *args, **kwargs):
         """Returns a Redditor class for the user_name specified."""

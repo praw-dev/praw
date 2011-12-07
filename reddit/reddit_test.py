@@ -64,15 +64,23 @@ class BasicTest(unittest.TestCase, BasicHelper):
         else:
             self.self = self.url('/r/bboe/comments/2z/tasdest/')
 
-    def test_require_user_agent(self):
-        self.assertRaises(TypeError, Reddit, user_agent=None)
+    def test_comments_contains_no_noncomment_objects(self):
+        if self.r.config.is_reddit:
+            url = self.url('/r/programming/comments/bn2wi/')
+        else:
+            url = self.url('/r/reddit_test9/comments/1a/')
+        comments = self.r.get_submission(url=url).comments
+        self.assertFalse([item for item in comments if not
+                          (isinstance(item, Comment) or
+                           isinstance(item, MoreComments))])
 
-    def test_not_logged_in_when_initialized(self):
-        self.assertEqual(self.r.user, None)
+    def test_get_all_comments(self):
+        num = 50
+        self.assertEqual(num, len(list(self.r.get_all_comments(limit=num))))
 
-    def test_not_logged_in_submit(self):
-        self.assertRaises(errors.LoginRequired, self.r.submit,
-                          self.sr, 'TITLE', text='BODY')
+    def test_get_front_page(self):
+        num = 50
+        self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
 
     def test_info_by_known_url_returns_known_id_link_post(self):
         if self.r.config.is_reddit:
@@ -103,15 +111,15 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(found_by_id)
         self.assertTrue(found_link in found_by_id)
 
-    def test_comments_contains_no_noncomment_objects(self):
-        if self.r.config.is_reddit:
-            url = self.url('/r/programming/comments/bn2wi/')
-        else:
-            url = self.url('/r/reddit_test9/comments/1a/')
-        comments = self.r.get_submission(url=url).comments
-        self.assertFalse([item for item in comments if not
-                          (isinstance(item, Comment) or
-                           isinstance(item, MoreComments))])
+    def test_not_logged_in_submit(self):
+        self.assertRaises(errors.LoginRequired, self.r.submit,
+                          self.sr, 'TITLE', text='BODY')
+
+    def test_not_logged_in_when_initialized(self):
+        self.assertEqual(self.r.user, None)
+
+    def test_require_user_agent(self):
+        self.assertRaises(TypeError, Reddit, user_agent=None)
 
 
 class CommentTest(unittest.TestCase, AuthenticatedHelper):
@@ -221,9 +229,21 @@ class LocalOnlyTest(unittest.TestCase, BasicHelper):
         if self.r.config.is_reddit:
             raise Exception('This test is for localhost only.')
 
+    def test_create_existing_subreddit(self):
+        self.r.login(self.un, '1111')
+        self.assertRaises(errors.APIException, self.r.create_subreddit,
+                          self.sr, 'foo')
+
     def test_create_redditor(self):
         unique_name = 'PyApiTestUser%d' % random.randint(3, 10240)
         self.r.create_redditor(unique_name, '1111')
+
+    def test_create_subreddit(self):
+        unique_name = 'test%d' % random.randint(3, 10240)
+        description = '#Welcome to %s\n\n0 item 1\n0 item 2\n' % unique_name
+        self.r.login(self.un, '1111')
+        self.r.create_subreddit(unique_name, 'The %s' % unique_name,
+                                description)
 
     def test_send_feedback(self):
         msg = 'You guys are awesome. (Sent from reddit_api python module).'
@@ -277,7 +297,7 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
             self.other = {'id': 'pa', 'name': 'PyApiTestUser3'}
         self.other_user = self.r.get_redditor(self.other['name'])
 
-    def test_get(self):
+    def test_get_redditor(self):
         self.assertEqual(self.other['id'], self.other_user.id)
 
     def test_friend(self):
@@ -325,6 +345,12 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertTrue(submission.saved)
+        # verify in saved_links
+        for item in self.r.get_saved_links():
+            if item == submission:
+                break
+        else:
+            self.fail('Could not find submission in saved links.')
 
     def test_unsave(self):
         submission = None
@@ -390,11 +416,12 @@ class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
         self.assertRaises(errors.APIException, self.r.submit, self.sr,
                           found.title, url=found.url)
 
-    def test_create_link(self):
+    def test_create_link_through_subreddit(self):
         unique = uuid.uuid4()
         title = 'Test Link: %s' % unique
         url = 'http://bryceboe.com/?bleh=%s' % unique
-        self.assertTrue(self.r.submit(self.sr, title, url=url))
+        subreddit = self.r.get_subreddit(self.sr)
+        self.assertTrue(subreddit.submit(title, url=url))
 
     def test_create_self_and_verify(self):
         title = 'Test Self: %s' % uuid.uuid4()
@@ -412,12 +439,26 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
 
-    # TODO: Need to verify the subscription
-    def test_subscribe(self):
-        self.subreddit.subscribe()
+    def test_get_my_moderation(self):
+        for subreddit in self.r.user.my_moderation():
+            if subreddit.display_name == self.sr:
+                break
+        else:
+            self.fail('Could not find moderated reddit in my_moderation.')
 
-    def test_unsubscribe(self):
+    def test_subscribe_and_verify(self):
+        self.subreddit.subscribe()
+        for subreddit in self.r.user.my_reddits():
+            if subreddit.display_name == self.sr:
+                break
+        else:
+            self.fail('Could not find reddit in my_reddits.')
+
+    def test_unsubscribe_and_verify(self):
         self.subreddit.unsubscribe()
+        for subreddit in self.r.user.my_reddits():
+            if subreddit.display_name == self.sr:
+                self.fail('Found reddit in my_reddits.')
 
 
 if __name__ == '__main__':

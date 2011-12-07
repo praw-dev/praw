@@ -72,10 +72,6 @@ class RedditContentObject(object):
         return (isinstance(other, RedditContentObject) and
                 self.content_id == other.content_id)
 
-    def __ne__(self, other):
-        return (type(self) != type(other) or
-                self.content_id != other.content_id)
-
     def _get_json_dict(self):
         response = self.reddit_session.request_json(self._info_url,
                                                     as_objects=False)
@@ -296,7 +292,7 @@ class LoggedInRedditor(Redditor):
     @require_login
     def my_moderation(self, limit=DEFAULT_CONTENT_LIMIT):
         """Return all of the current user's subreddits that they moderate."""
-        url = self.reddit_session.config['my_moderation']
+        url = self.reddit_session.config['my_mod_reddits']
         return self.reddit_session.get_content(url, limit=limit)
 
     @require_login
@@ -375,6 +371,13 @@ class Subreddit(RedditContentObject):
                     subreddit_name)
         super(Subreddit, self).__init__(reddit_session, subreddit_name,
                                         json_dict, fetch, info_url)
+
+        # Special case for when my_reddits is called as no name is returned so
+        # we have to extract the name from the URL.  The URLs are returned as:
+        # /r/reddit_name/
+        if not subreddit_name:
+            subreddit_name = self.url.split('/')[2]
+
         self.display_name = subreddit_name
         self._url = reddit_session.config['subreddit'] % subreddit_name
 
