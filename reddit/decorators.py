@@ -31,19 +31,19 @@ class RequireCaptcha(object):
         self.captcha_id = None
         self.captcha = None
 
-    def __get__(self, obj, key=None):
+    def __get__(self, obj, key):
         if obj is None:
             return self
         return self.__class__(self.func.__get__(obj, key))
 
-    def __call__(self, caller, *args, **kwargs):
+    def __call__(self, *args, **kwargs):
         do_captcha = False
         while True:
             try:
                 if do_captcha:
-                    self.get_captcha(caller)
+                    self.get_captcha()
                     kwargs['captcha'] = self.captcha_as_dict
-                return self.func(caller, *args, **kwargs)
+                return self.func(*args, **kwargs)
             except errors.BadCaptcha:
                 do_captcha = True
 
@@ -51,7 +51,8 @@ class RequireCaptcha(object):
     def captcha_as_dict(self):
         return {'iden': self.captcha_id, 'captcha': self.captcha}
 
-    def get_captcha(self, caller):
+    def get_captcha(self):
+        caller = self.func.im_self
         # This doesn't support the api_type:json parameter yet
         data = caller.request_json(caller.config['new_captcha'],
                                    {'renderstyle': 'html'})

@@ -17,10 +17,12 @@
 
 # pylint: disable-msg=C0103, R0903, R0904, W0201
 
+import random
 import time
 import unittest
 import uuid
 import warnings
+from urllib2 import HTTPError
 
 from reddit import Reddit, errors
 from reddit.objects import Comment, LoggedInRedditor, Message, MoreComments
@@ -208,6 +210,25 @@ class FlairTemplateTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.clear_flair_templates()
 
 
+class LocalOnlyTest(unittest.TestCase, BasicHelper):
+    def setUp(self):
+        self.configure()
+        if self.r.config.is_reddit:
+            raise Exception('This test is for localhost only.')
+
+    def test_create_redditor(self):
+        unique_name = 'PyApiTestUser%d' % random.randint(3, 10240)
+        self.r.create_redditor(unique_name, '1111')
+
+    def test_send_feedback(self):
+        msg = 'You guys are awesome. (Sent from reddit_api python module).'
+        self.r.send_feedback('Bryce Boe', 'foo@foo.com', msg)
+
+    def test_failed_feedback(self):
+        self.assertRaises(errors.APIException, self.r.send_feedback,
+                          'a', 'b', 'c')
+
+
 class MessageTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
@@ -249,19 +270,32 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
             self.other = {'id': '6c1xj', 'name': 'PyApiTestUser3'}
         else:
             self.other = {'id': 'pa', 'name': 'PyApiTestUser3'}
-        self.user = self.r.get_redditor(self.other['name'])
+        self.other_user = self.r.get_redditor(self.other['name'])
 
     def test_get(self):
-        self.assertEqual(self.other['id'], self.user.id)
+        self.assertEqual(self.other['id'], self.other_user.id)
 
     def test_friend(self):
-        self.user.friend()
+        self.other_user.friend()
 
     def test_unfriend(self):
-        self.user.unfriend()
+        self.other_user.unfriend()
 
     def test_user_set_on_login(self):
         self.assertTrue(isinstance(self.r.user, LoggedInRedditor))
+
+    def test_logout(self):
+        tmp = self.r.modhash, self.r.user
+        self.r.logout()
+        self.r.modhash, self.r.user = tmp
+        try:
+            passed = False
+            self.r.clear_flair_templates(self.sr)
+        except HTTPError, e:
+            if e.code == 403:
+                passed = True
+        if not passed:
+            self.fail('Logout failed.')
 
 
 class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
@@ -340,17 +374,27 @@ class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
-    def test_create_link_and_duplicate(self):
+    def test_create_duplicate(self):
+        found = None
+        for item in self.r.user.get_submitted():
+            if not item.is_self:
+                found = item
+                break
+        if not found:
+            self.fail('Could not find link post')
+        self.assertRaises(errors.APIException, self.r.submit, self.sr,
+                          found.title, url=found.url)
+
+    def test_create_link(self):
         unique = uuid.uuid4()
         title = 'Test Link: %s' % unique
         url = 'http://bryceboe.com/?bleh=%s' % unique
         self.assertTrue(self.r.submit(self.sr, title, url=url))
-        self.assertRaises(errors.APIException, self.r.submit, self.sr,
-                          title, url=url)
 
     def test_create_self_and_verify(self):
         title = 'Test Self: %s' % uuid.uuid4()
         self.assertTrue(self.r.submit(self.sr, title, text='BODY'))
+        time.sleep(1)
         for item in self.r.user.get_submitted():
             if title == item.title:
                 break

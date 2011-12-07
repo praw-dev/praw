@@ -306,8 +306,8 @@ class SubredditExtension(BaseReddit):
         reddit.helpers._request.is_stale([stale_url])
         return response
 
-    @reddit.decorators.require_login
     @reddit.decorators.RequireCaptcha
+    @reddit.decorators.require_login
     def submit(self, subreddit, title, text=None, url=None, captcha=None):
         """
         Submit a new link.
@@ -352,8 +352,8 @@ class LoggedInExtension(BaseReddit):
                   'uh': self.modhash}
         return self.request_json(self.config['read_message'], params)
 
-    @reddit.decorators.require_login
     @reddit.decorators.RequireCaptcha
+    @reddit.decorators.require_login
     def compose_message(self, recipient, subject, message, captcha=None):
         """Send a message to another redditor."""
         params = {'text': message,
@@ -413,8 +413,8 @@ class LoggedInExtension(BaseReddit):
     @reddit.decorators.require_login
     def logout(self):
         """Logs out of a session."""
-        self.modhash = self.user = None
         params = {'uh': self.modhash}
+        self.modhash = self.user = None
         return self.request_json(self.config['logout'], params)
 
 
@@ -482,8 +482,9 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         params = {'name': name,
                   'email': email,
                   'reason': reason,
-                  'text': message}
-        return self.request_json(self.config['send_feedback'], params)
+                  'text': message,
+                  'api_type': 'json'}
+        return self.request_json(self.config['feedback'], params)
 
     def search_reddit_names(self, query):
         """Search the subreddits for a reddit whose name matches the query."""
@@ -492,11 +493,14 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         return [self.get_subreddit(name) for name in results['names']]
 
     @reddit.decorators.RequireCaptcha
-    def create_redditor(self, user_name, password, email):
+    def create_redditor(self, user_name, password, email='', captcha=None):
         """Register a new user."""
         params = {'email': email,
                   'op': 'reg',
                   'passwd': password,
                   'passwd2': password,
-                  'user': user_name}
+                  'user': user_name,
+                  'api_type': 'json'}
+        if captcha:
+            params.update(captcha)
         return self.request_json(self.config['register'], params)
