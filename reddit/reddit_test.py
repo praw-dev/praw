@@ -22,6 +22,7 @@ import time
 import unittest
 import uuid
 import warnings
+from urlparse import urljoin
 from urllib2 import HTTPError
 
 from reddit import Reddit, errors
@@ -44,6 +45,10 @@ class BasicHelper(object):
         self.sr = 'reddit_api_test'
         self.un = 'PyApiTestUser2'
 
+    def url(self, path):
+        # pylint: disable-msg=W0212
+        return urljoin(self.r.config._site_url, path)
+
 
 class AuthenticatedHelper(BasicHelper):
     def configure(self):
@@ -55,9 +60,9 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
         if self.r.config.is_reddit:
-            self.self = 'http://www.reddit.com/r/programming/comments/bn2wi/'
+            self.self = self.url('/r/programming/comments/bn2wi/')
         else:
-            self.self = 'http://reddit.local:8888/r/bboe/comments/2z/tasdest/'
+            self.self = self.url('/r/bboe/comments/2z/tasdest/')
 
     def test_require_user_agent(self):
         self.assertRaises(TypeError, Reddit, user_agent=None)
@@ -72,10 +77,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def test_info_by_known_url_returns_known_id_link_post(self):
         if self.r.config.is_reddit:
             url = 'http://imgur.com/Vr8ZZ'
-            comm = 'http://www.reddit.com/r/UCSantaBarbara/comments/m77nc/'
+            comm = self.url('/r/UCSantaBarbara/comments/m77nc/')
         else:
             url = 'http://google.com/?q=82.1753988563'
-            comm = 'http://reddit.local:8888/r/reddit_test8/comments/2s/'
+            comm = self.url('/r/reddit_test8/comments/2s/')
         found_links = self.r.info(url)
         tmp = self.r.get_submission(url=comm)
         self.assertTrue(tmp in found_links)
@@ -100,9 +105,9 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_comments_contains_no_noncomment_objects(self):
         if self.r.config.is_reddit:
-            url = 'http://www.reddit.com/r/programming/comments/bn2wi/'
+            url = self.url('/r/programming/comments/bn2wi/')
         else:
-            url = 'http://reddit.local:8888/r/reddit_test9/comments/1a/'
+            url = self.url('/r/reddit_test9/comments/1a/')
         comments = self.r.get_submission(url=url).comments
         self.assertFalse([item for item in comments if not
                           (isinstance(item, Comment) or
