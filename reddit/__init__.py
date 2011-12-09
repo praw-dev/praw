@@ -67,6 +67,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'subreddit_about':     'r/%s/about/',
                  'subscribe':           'api/subscribe/',
                  'unfriend':            'api/unfriend/',
+                 'unread':              'message/unread/',
                  'unsave':              'api/unsave/',
                  'user':                'user/%s/',
                  'user_about':          'user/%s/about/',
@@ -355,7 +356,11 @@ class LoggedInExtension(BaseReddit):
         """ Marks each of the supplied thing_ids as read """
         params = {'id': ','.join(thing_ids),
                   'uh': self.modhash}
-        return self.request_json(self.config['read_message'], params)
+        response = self.request_json(self.config['read_message'], params)
+        urls = [self.config[x] for x in ['inbox', 'moderator', 'unread']]
+        # pylint: disable-msg=E1101,W0212
+        reddit.helpers._request.is_stale(urls)
+        return response
 
     @reddit.decorators.RequireCaptcha
     @reddit.decorators.require_login
@@ -499,7 +504,8 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
 
     def search_reddit_names(self, query):
         """Search the subreddits for a reddit whose name matches the query."""
-        params = {'query': query}
+        params = {'query': query,
+                  'api_type': 'json'}
         results = self.request_json(self.config['search_reddit_names'], params)
         return [self.get_subreddit(name) for name in results['names']]
 

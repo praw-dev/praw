@@ -122,15 +122,12 @@ def parse_api_json_response(func):  # pylint: disable-msg=R0912
         return_value = func(self, *args, **kwargs)
         if isinstance(return_value, dict):
             for k in return_value:
-                allowed = ('data', 'errors', 'kind', 'next', 'prev', 'users')
+                allowed = ('data', 'errors', 'kind', 'names', 'next', 'prev',
+                           'users')
                 if k not in allowed:
                     # The only jquery response we want to allow is captcha
-                    if k == 'jquery':
-                        try:
-                            assert return_value[k][-2][-1] == 'captcha'
-                            continue
-                        finally:
-                            pass
+                    if k == 'jquery' and return_value[k][-2][-1] == 'captcha':
+                        continue
                     warnings.warn('Unknown return value key: %s' % k)
             if 'errors' in return_value and return_value['errors']:
                 error_list = []

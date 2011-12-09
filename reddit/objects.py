@@ -146,7 +146,7 @@ class Inboxable(RedditContentObject):
         return response
 
     @require_login
-    def mark_read(self):
+    def mark_as_read(self):
         """ Marks the comment as read """
         # pylint: disable-msg=W0212
         return self.reddit_session._mark_as_read([self.content_id])
@@ -301,15 +301,21 @@ class LoggedInRedditor(Redditor):
         return self.reddit_session.get_content(url, limit=limit)
 
     @require_login
+    def get_modmail(self, limit=0):
+        """Return a generator for moderator messages."""
+        url = self.reddit_session.config['moderator']
+        return self.reddit_session.get_content(url, limit=limit)
+
+    @require_login
     def get_sent(self, limit=0):
         """Return a generator for sent messages."""
         url = self.reddit_session.config['sent']
         return self.reddit_session.get_content(url, limit=limit)
 
     @require_login
-    def get_modmail(self, limit=0):
-        """Return a generator for moderator messages."""
-        url = self.reddit_session.config['moderator']
+    def get_unread(self, limit=0):
+        """Return a generator for unread messages."""
+        url = self.reddit_session.config['unread']
         return self.reddit_session.get_content(url, limit=limit)
 
 

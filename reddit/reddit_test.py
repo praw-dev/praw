@@ -121,6 +121,9 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def test_require_user_agent(self):
         self.assertRaises(TypeError, Reddit, user_agent=None)
 
+    def test_search_reddit_names(self):
+        self.assertTrue(len(self.r.search_reddit_names('reddit')) > 0)
+
 
 class CommentTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
@@ -267,6 +270,16 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.fail('Could not find the message we just sent to ourself.')
 
+    def test_mark_as_read(self):
+        oth = Reddit('reddit_api test suite')
+        oth.login('PyApiTestUser3', '1111')
+        msg = oth.user.get_unread(limit=1).next()  # pylint: disable-msg=E1101
+        msg.mark_as_read()
+        self.assertTrue(msg not in list(oth.user.get_unread(limit=5)))
+
+    def test_modmail(self):
+        self.assertTrue(len(list(self.r.user.get_modmail())) > 0)
+
     def test_reply_to_message_and_verify(self):
         text = 'Unique message reply: %s' % uuid.uuid4()
         found = None
@@ -282,10 +295,6 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
                 break
         else:
             self.fail('Could not find the recently sent reply.')
-
-    def test_get_modmail(self):
-        for msg in self.r.user.get_modmail():
-            print msg
 
 
 class RedditorTest(unittest.TestCase, AuthenticatedHelper):
