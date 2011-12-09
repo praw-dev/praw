@@ -35,12 +35,12 @@ class RedditContentObject(object):
         json_dict).
         """
         if name is None and json_dict is None:
-            raise TypeError("Either the name or json dict is required.")
+            raise TypeError('Either the name or json dict is required.')
 
         if info_url:
             self._info_url = info_url
         else:
-            self._info_url = reddit_session.config["info"]
+            self._info_url = reddit_session.config['info']
         self.reddit_session = reddit_session
         self._populated = self._populate(json_dict, fetch)
 
@@ -61,7 +61,7 @@ class RedditContentObject(object):
         raise AttributeError
 
     def __setattr__(self, name, value):
-        if value and name == "subreddit":
+        if value and name == 'subreddit':
             value = Subreddit(self.reddit_session, value, fetch=False)
         elif value and name in ['redditor', 'author'] and value != '[deleted]':
             value = Redditor(self.reddit_session, value, fetch=False)
@@ -74,7 +74,7 @@ class RedditContentObject(object):
     def _get_json_dict(self):
         response = self.reddit_session.request_json(self._info_url,
                                                     as_objects=False)
-        return response["data"]
+        return response['data']
 
     @classmethod
     def from_api_response(cls, reddit_session, json_dict):

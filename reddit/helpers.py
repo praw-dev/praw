@@ -21,29 +21,29 @@ from reddit.decorators import SleepAfter, require_login
 from reddit.util import Memoize
 
 
-def _get_section(subpath=""):
+def _get_section(subpath=''):
     """
     Used by the Redditor class to generate each of the sections (overview,
     comments, submitted).
     """
-    def _section(self, sort="new", time="all", limit=0, place_holder=None):
-        data = {"sort": sort, "time": time}
+    def _section(self, sort='new', time='all', limit=0, place_holder=None):
+        data = {'sort': sort, 'time': time}
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
         return self.reddit_session.get_content(url, limit=limit, url_data=data,
                                                place_holder=place_holder)
     return _section
 
 
-def _get_sorter(subpath="", **defaults):
+def _get_sorter(subpath='', **defaults):
     """
     Used by the Reddit Page classes to generate each of the currently supported
     sorts (hot, top, new, best).
     """
     def _sorted(self, limit=0, place_holder=None, **data):
         for key, value in defaults.items():
-            if key == "time":
-                # time should be "t" in the API data dict
-                key = "t"
+            if key == 'time':
+                # time should be 't' in the API data dict
+                key = 't'
             data.setdefault(key, value)
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
         return self.reddit_session.get_content(url, limit=limit, url_data=data,
@@ -60,7 +60,7 @@ def _modify_relationship(relationship, unlink=False):
     contributor creating, and banning (user-to-subreddit).
     """
     # the API uses friend and unfriend to manage all of these relationships
-    url_key = "unfriend" if unlink else "friend"
+    url_key = 'unfriend' if unlink else 'friend'
 
     @require_login
     def do_relationship(cls, thing):
@@ -78,8 +78,7 @@ def _modify_relationship(relationship, unlink=False):
 @SleepAfter
 def _request(reddit_session, page_url, params=None, url_data=None):
     if url_data:
-        page_url += "?" + urllib.urlencode(url_data)
-    # urllib2.Request throws a 404 for some reason with data=""
+        page_url += '?' + urllib.urlencode(url_data)
     encoded_params = None
     if params:
         params = dict([k, v.encode('utf-8')] for k, v in params.items())

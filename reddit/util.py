@@ -56,7 +56,7 @@ class Memoize(object):
 
     def is_stale(self, urls):
         relevant_caches = [k for k in self._cache if k[1] in urls or
-                                        k[1].rstrip(".json") in urls]
+                                        k[1].rstrip('.json') in urls]
         for k in relevant_caches:
             del self._cache[k]
             del self._timeouts[k]
@@ -72,7 +72,7 @@ def limit_chars(num_chars=80):
         def func_wrapper(self, *args, **kwargs):
             value = func(self, *args, **kwargs)
             if len(value) > num_chars:
-                value = value[:num_chars] + "..."
+                value = value[:num_chars - 3] + '...'
             return value
         return func_wrapper
     return func_limiter

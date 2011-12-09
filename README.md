@@ -7,7 +7,7 @@ section of the 'opensource' subreddit.
 
 ```python
 import reddit
-r = reddit.Reddit(user_agent="my_cool_application")
+r = reddit.Reddit(user_agent='my_cool_application')
 submissions = r.get_subreddit('opensource').get_hot(limit=5)
 list(submissions)
 ```
@@ -40,13 +40,13 @@ A Few Short Examples
 0. Logging in:
 
     ```python
-r.login(user="username", password="password")
+r.login(user='username', password='password')
 ```
 
 0. Get the top submissions for r/python:
 
     ```python
-submissions = r.get_subreddit("python").get_top(limit=10)
+submissions = r.get_subreddit('python').get_top(limit=10)
 ```
 
 0. Get comments from a given submission:
@@ -59,14 +59,14 @@ submission.comments
 0. Comment on a submission (requires login):
 
     ```python
-submission.add_comment("text")
+submission.add_comment('text')
 ```
 
 0. Reply to a comment (requires login):
 
     ```python
 comment = submission.comments[0]
-comment.reply("test")
+comment.reply('test')
 ```
 
 0. Voting (requires login):
@@ -95,19 +95,19 @@ submission.unsave()
 0. Create a SELF submission (requires login):
 
     ```python
-r.submit("reddit_api_test", "submission title", text="body")
+r.submit('reddit_api_test', 'submission title', text='body')
 ```
 
 0. Create a URL submission (requires login):
 
     ```python
-r.submit("reddit_api_test", "Google!", url="http://google.com")
+r.submit('reddit_api_test', 'Google!', url='http://google.com')
 ```
 
 0. Get user karma:
 
     ```python
-user = r.get_redditor("ketralnis")
+user = r.get_redditor('ketralnis')
 user.link_karma
 user.comment_karma
 ```
@@ -121,35 +121,35 @@ r.get_saved_links()
 0. Get content newer than a comment or submission's id:
 
     ```python
-r.get_subreddit("python").get_top(limit=None, place_holder=submission.id)
+r.get_subreddit('python').get_top(limit=None, place_holder=submission.id)
 ```
 
 0. (Un)subscribe to a subreddit (requires login):
 
     ```python
-r.get_subreddit("python").subscribe()
-r.get_subreddit("python").unsubscribe()
+r.get_subreddit('python').subscribe()
+r.get_subreddit('python').unsubscribe()
 ```
 
 0. (Un)friend a user:
 
     ```python
-r.get_redditor("ketralnis").friend()
-r.get_redditor("ketralnis").unfriend()
+r.get_redditor('ketralnis').friend()
+r.get_redditor('ketralnis').unfriend()
 ```
 
 0. Create a subreddit:
 
     ```python
-r.create_subreddit(short_title="MyIncredibleSubreddit",
-                       full_title="my Incredibly Cool Subreddit",
-                       description="It's incredible!)
+r.create_subreddit(short_title='MyIncredibleSubreddit',
+                       full_title='my Incredibly Cool Subreddit',
+                       description='It's incredible!)
 ```
 
 0. Get flair mappings for a particular subreddit (requires mod privileges):
 
     ```python
-item = r.get_subreddit("python").flair_list().next()
+item = r.get_subreddit('python').flair_list().next()
 item['user']
 item['flair_text']
 item['flair_css_class']
@@ -158,13 +158,13 @@ item['flair_css_class']
 0. Set / update user flair (requires mod privileges):
 
     ```python
-r.get_subreddit("python").set_flair("bboe", "text flair", "css-class")
+r.get_subreddit('python').set_flair('bboe', 'text flair', 'css-class')
 ```
 
 0. Clear user flair (requires mod privileges):
 
     ```python
-r.get_subreddit("python").set_flair("bboe")
+r.get_subreddit('python').set_flair('bboe')
 ```
 
 0. Bulk set user flair (requires mod privileges):
@@ -174,7 +174,7 @@ flair_mapping = [{'user':'bboe', 'flair_text':'dev'},
                      {'user':'pyapitestuser3', 'flair_css_class':'css2'},
                      {'user':'pyapitestuser2', 'flair_text':'AWESOME',
                       'flair_css_class':'css'}]
-r.get_subreddit("python").set_flair_csv(flair_mapping)
+r.get_subreddit('python').set_flair_csv(flair_mapping)
 ```
 
 Extra usage info

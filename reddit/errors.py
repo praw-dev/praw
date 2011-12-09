@@ -45,9 +45,9 @@ class APIException(Exception):
 
     def __str__(self):
         if hasattr(self, 'ERROR_TYPE'):
-            return '"%s" on field "%s"' % (self.message, self.field)
+            return '`%s` on field `%s`' % (self.message, self.field)
         else:
-            return '(%s) "%s" on field "%s"' % (self.error_type, self.message,
+            return '(%s) `%s` on field `%s`' % (self.error_type, self.message,
                                                 self.field)
 
 

@@ -75,7 +75,7 @@ def require_login(func):
             modhash = self.modhash
 
         if user is None or modhash is None:
-            raise errors.LoginRequired('"%s" requires login.' % func.__name__)
+            raise errors.LoginRequired('`%s` requires login.' % func.__name__)
         else:
             return func(self, *args, **kwargs)
     return login_reqd_func
