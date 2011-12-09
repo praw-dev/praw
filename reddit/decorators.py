@@ -19,7 +19,6 @@ from functools import wraps
 from urlparse import urljoin
 
 from reddit import errors
-from reddit.settings import WAIT_BETWEEN_CALL_TIME
 
 
 class RequireCaptcha(object):
@@ -87,25 +86,29 @@ class SleepAfter(object):  # pylint: disable-msg=R0903
     A decorator to add to API functions that shouldn't be called too
     rapidly, in order to be nice to the reddit server.
 
-    Every function wrapped with this decorator will use a collective
-    last_call_time attribute, so that collectively any one of the funcs won't
-    be callable within the WAIT_BETWEEN_CALL_TIME; they'll automatically be
+    Every function wrapped with this decorator will use a domain specific
+    last_call attribute, so that collectively any one of the funcs won't be
+    callable within the site's api_request_delay time; they'll automatically be
     delayed until the proper duration is reached.
     """
-    last_call_time = 0     # init to 0 to always allow the 1st call
 
     def __init__(self, func):
         wraps(func)(self)
         self.func = func
+        self.last_call = {}
 
     def __call__(self, *args, **kwargs):
-        call_time = time.time()
-
-        since_last_call = call_time - self.last_call_time
-        if since_last_call < WAIT_BETWEEN_CALL_TIME:
-            time.sleep(WAIT_BETWEEN_CALL_TIME - since_last_call)
-
-        self.__class__.last_call_time = call_time
+        config = args[0].config
+        if config.domain in self.last_call:
+            last_call = self.last_call[config.domain]
+        else:
+            last_call = 0
+        now = time.time()
+        delay = last_call + int(config.api_request_delay) - now
+        if delay > 0:
+            now += delay
+            time.sleep(delay)
+        self.last_call[config.domain] = now
         return self.func(*args, **kwargs)
 
 

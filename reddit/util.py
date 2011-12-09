@@ -16,8 +16,6 @@
 import time
 from functools import wraps
 
-from reddit.settings import CACHE_TIMEOUT
-
 
 class Memoize(object):
     """
@@ -38,17 +36,17 @@ class Memoize(object):
     def __call__(self, *args, **kwargs):
         key = (args[0], args[1], repr(args[2:]), frozenset(kwargs.items()))
         call_time = time.time()
-        self.clear_timeouts(call_time)
+        self.clear_timeouts(call_time, args[0].config.cache_timeout)
 
         self._timeouts.setdefault(key, call_time)
         if key in self._cache:
             return self._cache[key]
         return self._cache.setdefault(key, self.func(*args, **kwargs))
 
-    def clear_timeouts(self, call_time):
+    def clear_timeouts(self, call_time, cache_timeout):
         """Clears the _caches of results which have timed out."""
         need_clearing = (k for k, v in self._timeouts.items()
-                                    if call_time - v > CACHE_TIMEOUT)
+                                    if call_time - v > cache_timeout)
         for k in need_clearing:
             try:
                 del self._cache[k]

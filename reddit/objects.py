@@ -18,7 +18,6 @@ from urlparse import urljoin
 from reddit.decorators import require_login
 from reddit.helpers import _get_section, _get_sorter, _modify_relationship
 from reddit.helpers import _request
-from reddit.settings import DEFAULT_CONTENT_LIMIT
 from reddit.util import limit_chars
 
 
@@ -284,34 +283,34 @@ class Redditor(RedditContentObject):
 class LoggedInRedditor(Redditor):
     """A class for a currently logged in redditor"""
     @require_login
-    def my_reddits(self, limit=DEFAULT_CONTENT_LIMIT):
+    def my_reddits(self, limit=0):
         """Return all of the current user's subscribed subreddits."""
         url = self.reddit_session.config['my_reddits']
         return self.reddit_session.get_content(url, limit=limit)
 
     @require_login
-    def my_moderation(self, limit=DEFAULT_CONTENT_LIMIT):
+    def my_moderation(self, limit=0):
         """Return all of the current user's subreddits that they moderate."""
         url = self.reddit_session.config['my_mod_reddits']
         return self.reddit_session.get_content(url, limit=limit)
 
     @require_login
-    def get_inbox(self):
+    def get_inbox(self, limit=0):
         """Return a generator for inbox messages."""
         url = self.reddit_session.config['inbox']
-        return self.reddit_session.get_content(url)
+        return self.reddit_session.get_content(url, limit=limit)
 
     @require_login
-    def get_sent(self):
+    def get_sent(self, limit=0):
         """Return a generator for sent messages."""
         url = self.reddit_session.config['sent']
-        return self.reddit_session.get_content(url)
+        return self.reddit_session.get_content(url, limit=limit)
 
     @require_login
-    def get_modmail(self):
+    def get_modmail(self, limit=0):
         """Return a generator for moderator messages."""
         url = self.reddit_session.config['moderator']
-        return self.reddit_session.get_content(url)
+        return self.reddit_session.get_content(url, limit=limit)
 
 
 class Submission(Deletable, Saveable, Voteable):

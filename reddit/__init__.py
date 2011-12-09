@@ -28,7 +28,7 @@ import reddit.errors
 import reddit.helpers
 import reddit.objects
 
-from reddit.settings import CONFIG, DEFAULT_CONTENT_LIMIT
+from reddit.settings import CONFIG
 
 
 class Config(object):  # pylint: disable-msg=R0903
@@ -75,6 +75,7 @@ class Config(object):  # pylint: disable-msg=R0903
     def __init__(self, site_name):
         obj = dict(CONFIG.items(site_name))
         self._site_url = 'http://' + obj['domain']
+        self.api_request_delay = int(obj['api_request_delay'])
         self.by_kind = {obj['comment_kind']:    reddit.objects.Comment,
                         obj['message_kind']:    reddit.objects.Message,
                         obj['more_kind']:       reddit.objects.MoreComments,
@@ -84,6 +85,9 @@ class Config(object):  # pylint: disable-msg=R0903
         self.by_object = dict((value, key) for (key, value) in
                               self.by_kind.items())
         self.by_object[reddit.objects.LoggedInRedditor] = obj['redditor_kind']
+        self.cache_timeout = int(obj['cache_timeout'])
+        self.default_content_limit = int(obj['default_content_limit'])
+        self.domain = obj['domain']
         self.is_reddit = obj['domain'] == 'www.reddit.com'
 
     def __getitem__(self, key):
@@ -145,16 +149,17 @@ class BaseReddit(object):
             return object_class.from_api_response(self, json_data['data'])
         return json_data
 
-    def get_content(self, page_url, limit=DEFAULT_CONTENT_LIMIT,
-                     url_data=None, place_holder=None, root_field='data',
-                     thing_field='children', after_field='after'):
+    def get_content(self, page_url, limit=0, url_data=None, place_holder=None,
+                    root_field='data', thing_field='children',
+                    after_field='after'):
         """A generator method to return Reddit content from a URL. Starts at
         the initial page_url, and fetches content using the `after` JSON data
         until `limit` entries have been fetched, or the `place_holder` has been
         reached.
 
         :param page_url: the url to start fetching content from
-        :param limit: the maximum number of content entries to fetch. if None,
+        :param limit: the maximum number of content entries to fetch. If
+            limit <= 0, fetch the default_content_limit for the site. If None,
             then fetch unlimited entries--this would be used in conjunction
             with the place_holder param.
         :param url_data: extra GET data to put in the url
@@ -177,11 +182,13 @@ class BaseReddit(object):
 
         if url_data is None:
             url_data = {}
-        if limit is not None:
-            limit = int(limit)
-            fetch_all = False
-        else:
+        if limit is None:
             fetch_all = True
+        elif limit <= 0:
+            fetch_all = False
+            limit = int(self.config.default_content_limit)
+        else:
+            fetch_all = False
 
         # While we still need to fetch more content to reach our limit, do so.
         while fetch_all or content_found < limit:
@@ -251,14 +258,14 @@ class SubredditExtension(BaseReddit):
         return self.request_json(self.config['clearflairtemplates'], params)
 
     @reddit.decorators.require_login
-    def flair_list(self, subreddit):
+    def flair_list(self, subreddit, limit=None):
         """Get flair list for a subreddit.
 
         Returns a tuple containing 'user', 'flair_text', and 'flair_css_class'.
         """
         params = {'uh': self.user.modhash}
         return self.get_content(self.config['flairlist'] % str(subreddit),
-                                limit=None, url_data=params, root_field=None,
+                                limit=limit, url_data=params, root_field=None,
                                 thing_field='users', after_field='next')
 
     @reddit.decorators.require_login
@@ -393,7 +400,7 @@ class LoggedInExtension(BaseReddit):
         return reddit.objects.Redditor(self, user_name, *args, **kwargs)
 
     @reddit.decorators.require_login
-    def get_saved_links(self, limit=DEFAULT_CONTENT_LIMIT):
+    def get_saved_links(self, limit=0):
         """Return a listing of the logged-in user's saved links."""
         return self.get_content(self.config['saved'], limit=limit)
 
@@ -429,14 +436,13 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
     def __init__(self, *args, **kwargs):
         super(Reddit, self).__init__(*args, **kwargs)
 
-    def get_all_comments(self, limit=DEFAULT_CONTENT_LIMIT,
-                         place_holder=None):
+    def get_all_comments(self, limit=0, place_holder=None):
         """Returns a listing from reddit.com/comments (which provides all of
         the most recent comments from all users to all submissions)."""
         return self.get_content(self.config['comments'], limit=limit,
                                 place_holder=place_holder)
 
-    def get_front_page(self, limit=DEFAULT_CONTENT_LIMIT):
+    def get_front_page(self, limit=0):
         """Return the reddit front page. Login isn't required, but you'll only
         see your own front page if you are logged in."""
         return self.get_content(self.config['reddit_url'], limit=limit)
@@ -456,8 +462,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         submission.comments = comment_info['data']['children']
         return submission
 
-    def info(self, url=None, thing_id=None,
-             limit=DEFAULT_CONTENT_LIMIT):
+    def info(self, url=None, thing_id=None, limit=0):
         """
         Given url, queries the API to see if the given URL has been submitted
         already, and if it has, return the submissions.

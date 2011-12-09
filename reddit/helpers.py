@@ -18,7 +18,6 @@ import urllib2
 from urlparse import urljoin
 
 from reddit.decorators import SleepAfter, require_login
-from reddit.settings import DEFAULT_CONTENT_LIMIT
 from reddit.util import Memoize
 
 
@@ -27,8 +26,7 @@ def _get_section(subpath=""):
     Used by the Redditor class to generate each of the sections (overview,
     comments, submitted).
     """
-    def _section(self, sort="new", time="all", limit=DEFAULT_CONTENT_LIMIT,
-                 place_holder=None):
+    def _section(self, sort="new", time="all", limit=0, place_holder=None):
         data = {"sort": sort, "time": time}
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
         return self.reddit_session.get_content(url, limit=limit, url_data=data,
@@ -41,7 +39,7 @@ def _get_sorter(subpath="", **defaults):
     Used by the Reddit Page classes to generate each of the currently supported
     sorts (hot, top, new, best).
     """
-    def _sorted(self, limit=DEFAULT_CONTENT_LIMIT, place_holder=None, **data):
+    def _sorted(self, limit=0, place_holder=None, **data):
         for key, value in defaults.items():
             if key == "time":
                 # time should be "t" in the API data dict

@@ -28,9 +28,3 @@ def _load_configuration():
         raise Exception('Could not find config file in any of: %s' % locations)
     return config
 CONFIG = _load_configuration()
-
-# TODO: These shouldn't be hard coded but need to be until some decorators and
-# helps are updated to not need them.
-CACHE_TIMEOUT = CONFIG.getint('reddit', 'cache_timeout')
-DEFAULT_CONTENT_LIMIT = CONFIG.getint('reddit', 'default_content_limit')
-WAIT_BETWEEN_CALL_TIME = CONFIG.getint('reddit', 'wait_between_call_time')
