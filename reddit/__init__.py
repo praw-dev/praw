@@ -509,7 +509,8 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
                                 limit=limit)
 
     @reddit.decorators.RequireCaptcha
-    def send_feedback(self, name, email, message, reason='feedback'):
+    def send_feedback(self, name, email, message, reason='feedback',
+                      captcha=None):
         """
         Send feedback to the admins. Please don't abuse this, read what it says
         on the send feedback page!
@@ -519,6 +520,8 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
                   'reason': reason,
                   'text': message,
                   'api_type': 'json'}
+        if captcha:
+            params.update(captcha)
         return self.request_json(self.config['feedback'], params)
 
     def search_reddit_names(self, query):
