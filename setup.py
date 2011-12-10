@@ -8,6 +8,7 @@ setup(
     name='reddit',
     version='1.0',
     packages=['reddit'],
+    package_data={'reddit': ['*.cfg']},
     author='mellort',
     author_email='timothy.mellor+pip@gmail.com',
     description='A Python wrapper for the Reddit API',
