@@ -33,11 +33,13 @@ from reddit.settings import CONFIG
 
 class Config(object):  # pylint: disable-msg=R0903
     """A class containing the configuration for a reddit site."""
-    API_PATHS = {'captcha':             'captcha/',
+    API_PATHS = {'banned':              'r/%s/about/banned',
+                 'captcha':             'captcha/',
                  'clearflairtemplates': 'api/clearflairtemplates/',
                  'comment':             'api/comment/',
                  'comments':            'comments/',
                  'compose':             'api/compose/',
+                 'contributors':        'r/%s/about/contributors',
                  'del':                 'api/del/',
                  'feedback':            'api/feedback/',
                  'flair':               'api/flair/',
@@ -51,6 +53,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'login':               'api/login/%s/',
                  'logout':              'logout/',
                  'moderator':           'message/moderator/',
+                 'moderators':          'r/%s/about/moderators',
                  'my_mod_reddits':      'reddits/mine/moderator/',
                  'my_reddits':          'reddits/mine/',
                  'new_captcha':         'api/new_captcha/',
@@ -76,17 +79,18 @@ class Config(object):  # pylint: disable-msg=R0903
     def __init__(self, site_name):
         obj = dict(CONFIG.items(site_name))
         self._site_url = 'http://' + obj['domain']
-        self.api_request_delay = int(obj['api_request_delay'])
+        self.api_request_delay = float(obj['api_request_delay'])
         self.by_kind = {obj['comment_kind']:    reddit.objects.Comment,
                         obj['message_kind']:    reddit.objects.Message,
                         obj['more_kind']:       reddit.objects.MoreComments,
                         obj['redditor_kind']:   reddit.objects.Redditor,
                         obj['submission_kind']: reddit.objects.Submission,
-                        obj['subreddit_kind']:  reddit.objects.Subreddit}
+                        obj['subreddit_kind']:  reddit.objects.Subreddit,
+                        obj['userlist_kind']:   reddit.objects.UserList}
         self.by_object = dict((value, key) for (key, value) in
                               self.by_kind.items())
         self.by_object[reddit.objects.LoggedInRedditor] = obj['redditor_kind']
-        self.cache_timeout = int(obj['cache_timeout'])
+        self.cache_timeout = float(obj['cache_timeout'])
         self.default_content_limit = int(obj['default_content_limit'])
         self.domain = obj['domain']
         self.is_reddit = obj['domain'] == 'www.reddit.com'
@@ -257,6 +261,21 @@ class SubredditExtension(BaseReddit):
                   'uh': self.user.modhash,
                   'api_type': 'json'}
         return self.request_json(self.config['clearflairtemplates'], params)
+
+    @reddit.decorators.require_login
+    def get_banned(self, subreddit):
+        """Get the list of banned users for a subreddit."""
+        return self.request_json(self.config['banned'] % str(subreddit))
+
+    @reddit.decorators.require_login
+    def get_contributors(self, subreddit):
+        """Get the list of contributors for a subreddit."""
+        return self.request_json(self.config['contributors'] % str(subreddit))
+
+    @reddit.decorators.require_login
+    def get_moderators(self, subreddit):
+        """Get the list of moderators for a subreddit."""
+        return self.request_json(self.config['moderators'] % str(subreddit))
 
     @reddit.decorators.require_login
     def flair_list(self, subreddit, limit=None):
@@ -453,11 +472,11 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         return self.get_content(self.config['reddit_url'], limit=limit)
 
     def get_subreddit(self, subreddit_name, *args, **kwargs):
-        """Returns a Subreddit class for the subreddit_name specified."""
+        """Returns a Subreddit object for the subreddit_name specified."""
         return reddit.objects.Subreddit(self, subreddit_name, *args, **kwargs)
 
     def get_submission(self, url=None, submission_id=None):
-        """Returns a submission object for the given url or submission_id."""
+        """Returns a Submission object for the given url or submission_id."""
         if bool(url) == bool(submission_id):
             raise TypeError('One (and only one) of id or url is required!')
         if submission_id:

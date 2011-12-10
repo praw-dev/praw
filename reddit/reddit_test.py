@@ -297,6 +297,37 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find the recently sent reply.')
 
 
+class ModeratorTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
+        self.other = self.r.get_redditor('pyapitestuser3', fetch=True)
+
+    def test_ban(self):
+        self.subreddit.ban(self.other)
+        self.assertTrue(self.other in self.subreddit.get_banned())
+
+    def test_make_contributor(self):
+        self.subreddit.make_contributor(self.other)
+        self.assertTrue(self.other in self.subreddit.get_contributors())
+
+    def test_make_moderator(self):
+        self.subreddit.make_moderator(self.other, r=str(self.subreddit))
+        self.assertTrue(self.other in self.subreddit.get_moderators())
+
+    def test_remove_contributor(self):
+        self.subreddit.remove_contributor(self.other)
+        self.assertFalse(self.other in self.subreddit.get_contributors())
+
+    def test_remove_moderator(self):
+        self.subreddit.remove_moderator(self.other)
+        self.assertFalse(self.other in self.subreddit.get_moderators())
+
+    def test_bunban(self):
+        self.subreddit.unban(self.other)
+        self.assertFalse(self.other in self.subreddit.get_banned())
+
+
 class RedditorTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()

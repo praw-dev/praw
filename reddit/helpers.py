@@ -63,14 +63,15 @@ def _modify_relationship(relationship, unlink=False):
     url_key = 'unfriend' if unlink else 'friend'
 
     @require_login
-    def do_relationship(cls, thing):
-        params = {'name': str(thing),
-                  'container': cls.content_id,
+    def do_relationship(thing, user, **kwargs):
+        params = {'name': str(user),
+                  'container': thing.content_id,
                   'type': relationship,
-                  'uh': cls.modhash,
+                  'uh': thing.reddit_session.modhash,
                   'api_type': 'json'}
-        url = cls.reddit_session.config[url_key]
-        return cls.reddit_session.request_json(url, params)
+        params.update(kwargs)  # HACK: for make_moderator to prevent an error
+        url = thing.reddit_session.config[url_key]
+        return thing.reddit_session.request_json(url, params)
     return do_relationship
 
 

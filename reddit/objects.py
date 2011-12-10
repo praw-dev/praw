@@ -23,20 +23,15 @@ from reddit.util import limit_chars
 
 class RedditContentObject(object):
     """Base class that  represents actual reddit objects."""
-    def __init__(self, reddit_session, name=None, json_dict=None, fetch=True,
+    def __init__(self, reddit_session, json_dict=None, fetch=True,
                  info_url=None):
         """
-        Create a new object either by name or from the dict of attributes
-        returned by the API. Creating by name will retrieve the proper dict
-        from the API.
+        Create a new object from the dict of attributes returned by the API.
 
         The fetch parameter specifies whether to retrieve the object's
         information from the API (only matters when it isn't provided using
         json_dict).
         """
-        if name is None and json_dict is None:
-            raise TypeError('Either the name or json dict is required.')
-
         if info_url:
             self._info_url = info_url
         else:
@@ -182,7 +177,7 @@ class Voteable(RedditContentObject):
 class Comment(Deletable, Inboxable, Voteable):
     """A class for comments."""
     def __init__(self, reddit_session, json_dict):
-        super(Comment, self).__init__(reddit_session, None, json_dict)
+        super(Comment, self).__init__(reddit_session, json_dict)
         if self.replies:
             self.replies = self.replies['data']['children']
             for reply in self.replies:
@@ -214,7 +209,7 @@ class Comment(Deletable, Inboxable, Voteable):
 class Message(Inboxable):
     """A class for reddit messages (orangereds)."""
     def __init__(self, reddit_session, json_dict):
-        super(Message, self).__init__(reddit_session, None, json_dict)
+        super(Message, self).__init__(reddit_session, json_dict)
 
     @limit_chars()
     def __str__(self):
@@ -225,7 +220,7 @@ class Message(Inboxable):
 class MoreComments(RedditContentObject):
     """A class indicating there are more comments."""
     def __init__(self, reddit_session, json_dict):
-        super(MoreComments, self).__init__(reddit_session, None, json_dict)
+        super(MoreComments, self).__init__(reddit_session, json_dict)
 
     def _update_submission(self, _):
         pass
@@ -254,7 +249,7 @@ class Redditor(RedditContentObject):
     def __init__(self, reddit_session, user_name=None, json_dict=None,
                  fetch=True):
         info_url = reddit_session.config['user_about'] % user_name
-        super(Redditor, self).__init__(reddit_session, user_name, json_dict,
+        super(Redditor, self).__init__(reddit_session, json_dict,
                                        fetch, info_url)
         self.name = user_name
         self._url = reddit_session.config['user'] % user_name
@@ -271,13 +266,13 @@ class Redditor(RedditContentObject):
     @require_login
     def friend(self):
         """Friend the user."""
-        _modify_relationship('friend')(self.reddit_session.user, self)
+        return _modify_relationship('friend')(self.reddit_session.user, self)
 
     @require_login
     def unfriend(self):
         """Unfriend the user."""
-        _modify_relationship('friend', unlink=True)(self.reddit_session.user,
-                                                    self)
+        return _modify_relationship('friend', unlink=True)(
+            self.reddit_session.user, self)
 
 
 class LoggedInRedditor(Redditor):
@@ -322,7 +317,7 @@ class LoggedInRedditor(Redditor):
 class Submission(Deletable, Saveable, Voteable):
     """A class for submissions to Reddit."""
     def __init__(self, reddit_session, json_dict):
-        super(Submission, self).__init__(reddit_session, None, json_dict)
+        super(Submission, self).__init__(reddit_session, json_dict)
         self.permalink = urljoin(reddit_session.config['reddit_url'],
                                  self.permalink)
         self._comments = None
@@ -374,8 +369,8 @@ class Subreddit(RedditContentObject):
                  fetch=False):
         info_url = (reddit_session.config['subreddit_about'] %
                     subreddit_name)
-        super(Subreddit, self).__init__(reddit_session, subreddit_name,
-                                        json_dict, fetch, info_url)
+        super(Subreddit, self).__init__(reddit_session, json_dict, fetch,
+                                        info_url)
 
         # Special case for when my_reddits is called as no name is returned so
         # we have to extract the name from the URL.  The URLs are returned as:
@@ -406,6 +401,18 @@ class Subreddit(RedditContentObject):
     def clear_flair_templates(self, *args, **kwargs):
         """Clear flair templates for this subreddit."""
         return self.reddit_session.clear_flair_templates(self, *args, **kwargs)
+
+    def get_banned(self, *args, **kwargs):
+        """Get banned users for this subreddit."""
+        return self.reddit_session.get_banned(self, *args, **kwargs)
+
+    def get_contributors(self, *args, **kwargs):
+        """Get contributors for this subreddit."""
+        return self.reddit_session.get_contributors(self, *args, **kwargs)
+
+    def get_moderators(self, *args, **kwargs):
+        """Get moderators for this subreddit."""
+        return self.reddit_session.get_moderators(self, *args, **kwargs)
 
     def flair_list(self, *args, **kwargs):
         """Return a list of flair for this subreddit."""
@@ -441,3 +448,29 @@ class Subreddit(RedditContentObject):
     def unsubscribe(self):
         """Unsubscribe from the given subreddit."""
         return self._subscribe(unsubscribe=True)
+
+
+class UserList(RedditContentObject):
+    """A class for UserList."""
+
+    def __init__(self, reddit_session, json_dict=None, fetch=False):
+        super(UserList, self).__init__(reddit_session, json_dict, fetch)
+
+        # HACK: Convert children to RedditorObjects
+        for i in range(len(self.children)):
+            tmp = self.children[i]
+            redditor = Redditor(reddit_session, tmp['name'], fetch=False)
+            redditor.id = tmp['id'].split('_')[1]  # pylint: disable-msg=C0103
+            self.children[i] = redditor
+
+    def __contains__(self, item):
+        return item in self.children
+
+    def __getitem__(self, index):
+        return self.children[index]
+
+    def __iter__(self):
+        return self.children.__iter__()
+
+    def __len__(self):
+        return len(self.children)
