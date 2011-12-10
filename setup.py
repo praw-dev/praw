@@ -6,7 +6,7 @@ except ImportError:
 
 setup(
     name='reddit',
-    version='1.0',
+    version='1.1.1',
     packages=['reddit'],
     package_data={'reddit': ['*.cfg']},
     author='mellort',
