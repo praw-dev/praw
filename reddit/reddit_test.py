@@ -219,7 +219,7 @@ class FlairTemplateTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
 
-    def test_add_templates(self):
+    def test_add_template(self):
         self.subreddit.add_flair_template('text', 'css', True)
 
     def test_clear(self):
@@ -248,13 +248,13 @@ class LocalOnlyTest(unittest.TestCase, BasicHelper):
         self.r.create_subreddit(unique_name, 'The %s' % unique_name,
                                 description)
 
-    def test_send_feedback(self):
-        msg = 'You guys are awesome. (Sent from reddit_api python module).'
-        self.r.send_feedback('Bryce Boe', 'foo@foo.com', msg)
-
     def test_failed_feedback(self):
         self.assertRaises(errors.APIException, self.r.send_feedback,
                           'a', 'b', 'c')
+
+    def test_send_feedback(self):
+        msg = 'You guys are awesome. (Sent from reddit_api python module).'
+        self.r.send_feedback('Bryce Boe', 'foo@foo.com', msg)
 
 
 class MessageTest(unittest.TestCase, AuthenticatedHelper):
@@ -323,7 +323,7 @@ class ModeratorTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.remove_moderator(self.other)
         self.assertFalse(self.other in self.subreddit.get_moderators())
 
-    def test_bunban(self):
+    def test_unban(self):
         self.subreddit.unban(self.other)
         self.assertFalse(self.other in self.subreddit.get_banned())
 

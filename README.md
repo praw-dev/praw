@@ -43,6 +43,19 @@ A Few Short Examples
 r.login(user='username', password='password')
 ```
 
+0. Send a message (requires login):
+
+    ```python
+r.compose_message('bboe', 'Subject Line', 'You are awesome!')
+```
+
+0. Mark all unread messages as read (requires login):
+
+    ```python
+for msg in r.user.get_unread(limit=None):
+        msg.mark_as_read()
+```
+
 0. Get the top submissions for r/python:
 
     ```python
@@ -143,7 +156,7 @@ r.get_redditor('ketralnis').unfriend()
     ```python
 r.create_subreddit(short_title='MyIncredibleSubreddit',
                        full_title='my Incredibly Cool Subreddit',
-                       description='It's incredible!)
+                       description='It is incredible!')
 ```
 
 0. Get flair mappings for a particular subreddit (requires mod privileges):
@@ -175,6 +188,19 @@ flair_mapping = [{'user':'bboe', 'flair_text':'dev'},
                      {'user':'pyapitestuser2', 'flair_text':'AWESOME',
                       'flair_css_class':'css'}]
 r.get_subreddit('python').set_flair_csv(flair_mapping)
+```
+
+0. Add flair templates (requires mod privileges):
+
+    ```python
+r.get_subreddit('python').add_flair_template(text='editable', css_class='foo',
+	                                             text_editable=True)
+```
+
+0. Clear flair templates (requires mod privileges):
+
+    ```python
+r.get_subreddit('python').clear_flair_templates()
 ```
 
 Extra usage info
