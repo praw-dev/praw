@@ -9,19 +9,18 @@ section of the 'opensource' subreddit.
 import reddit
 r = reddit.Reddit(user_agent='my_cool_application')
 submissions = r.get_subreddit('opensource').get_hot(limit=5)
-list(submissions)
+[str(x) for x in submissions]
 ```
 
-this displays
+this will display something similar to the following:
 
 ```python
-[<Submission: 1 :: OpenFOAM: Open Source Computational Fluid Dynamics>,
- <Submission: 9 :: My new open source project, Bunchify>,
- <Submission: 93 :: Arrested while contributing to OpenStreetMap>,
- <Submission: 27 :: DK: 25,000 hospital staff Copenhagen region to use open source office suite >,
- <Submission: 24 :: Eclipse online>]
+['10 :: Gun.io Debuts Group Funding for Open Source Projects\n Gun.io',
+ '24 :: Support the Free Software Foundation',
+ '67 :: The 10 Most Important Open Source Projects of 2011',
+  '2 :: Open-source webOS is dead on arrival ',
+ '85 :: Plan 9 - A distributed OS with a unified communication protocol and I/O driver model.  Wow.']
 ```
-
 
 Install
 -------
