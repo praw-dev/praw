@@ -315,6 +315,10 @@ class ModeratorTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.make_moderator(self.other, r=str(self.subreddit))
         self.assertTrue(self.other in self.subreddit.get_moderators())
 
+    def test_make_moderator_by_name(self):
+        self.subreddit.make_moderator(str(self.other), r=str(self.subreddit))
+        self.assertTrue(self.other in self.subreddit.get_moderators())
+
     def test_remove_contributor(self):
         self.subreddit.remove_contributor(self.other)
         self.assertFalse(self.other in self.subreddit.get_contributors())
@@ -478,6 +482,9 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
+
+    def test_attribute_error(self):
+        self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
 
     def test_get_my_moderation(self):
         for subreddit in self.r.user.my_moderation():

@@ -51,9 +51,10 @@ class RedditContentObject(object):
 
     def __getattr__(self, attr):
         if not self._populated:
-            self._populate(None, True)
+            self._populated = self._populate(None, True)
             return getattr(self, attr)
-        raise AttributeError
+        raise AttributeError('\'%s\' has no attribute \'%s\'' % (type(self),
+                                                                 attr))
 
     def __setattr__(self, name, value):
         if value and name == 'subreddit':
