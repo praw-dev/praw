@@ -93,6 +93,11 @@ class Config(object):  # pylint: disable-msg=R0903
         self.cache_timeout = float(obj['cache_timeout'])
         self.default_content_limit = int(obj['default_content_limit'])
         self.domain = obj['domain']
+        try:
+            self.user = obj['user']
+            self.pswd = obj['pswd']
+        except KeyError:
+            self.user = self.pswd = None
         self.is_reddit = obj['domain'] == 'www.reddit.com'
 
     def __getitem__(self, key):
@@ -428,19 +433,28 @@ class LoggedInExtension(BaseReddit):
         """Return a listing of the logged-in user's saved links."""
         return self.get_content(self.config['saved'], limit=limit)
 
-    def login(self, user=None, password=None):
-        """Login to Reddit. If no user or password is provided, the user will
-        be prompted with raw_input and getpass.getpass.
-        """
-        # Prompt user for necessary fields.
-        if user is None:
-            user = raw_input('Username: ')
-        if password is None:
+    def login(self, username=None, password=None):
+        """Login to Reddit.
+
+        If no user or password is provided, the settings file will be checked,
+        and finally the user will be prompted with raw_input and
+        getpass.getpass. If username was explicitly provided and password was
+        not, then we must ask for the password unless the username matches
+        what's provided in the config file."""
+        if password and not username:
+            raise Exception('Username must be provided when password is.')
+
+        user = username or self.config.user or raw_input('Username: ')
+        if username and username == self.config.user:
+            pswd = password or self.config.pswd
+        elif not username and self.config.user:
+            pswd = self.config.pswd
+        else:
             import getpass
-            password = getpass.getpass('Password: ')
+            pswd = password or getpass.getpass('Password for %s: ' % user)
 
         params = {'api_type': 'json',
-                  'passwd': password,
+                  'passwd': pswd,
                   'user': user}
         response = self.request_json(self.config['login'] % user, params)
         self.modhash = response['data']['modhash']
