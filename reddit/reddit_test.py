@@ -443,7 +443,24 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, True)
-
+        
+    def test_report(self):
+        # login as new user to report submission
+        oth = Reddit('reddit_api test suite')
+        oth.login('PyApiTestUser3', '1111')
+        submission = None
+        for submission in oth.get_redditor(self.r.user.name).get_submitted():
+            if submission.hidden is False:
+                break
+        if not submission or submission.hidden is True:
+            self.fail('Could not find a non-reported submission.')
+        submission.report()
+        # check if submission was reported
+        for report in self.r.get_subreddit(self.sr).get_reports():
+            if report.id == submission.id:
+               break
+        else:
+            self.fail('Could not find reported submission.')
 
 class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):

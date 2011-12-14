@@ -86,6 +86,21 @@ class RedditContentObject(object):
         return '%s_%s' % (by_object[self.__class__], self.id)
 
 
+class Reportable(RedditContentObject):
+    """
+    Additional interface for Reddit content objects that can be reported.
+    """
+    @require_login
+    def report(self):
+        url = self.reddit_session.config['report']
+        params = {'id': self.content_id,
+                  'uh': self.reddit_session.modhash,
+                  'api_type': 'json'}
+        response = self.reddit_session.request_json(url, params)
+        # pylint: disable-msg=E1101
+        _request.is_stale([self.reddit_session.config['user']])
+        return response
+
 class Saveable(RedditContentObject):
     """
     Additional interface for Reddit content objects that can be saved.
@@ -315,7 +330,7 @@ class LoggedInRedditor(Redditor):
         return self.reddit_session.get_content(url, limit=limit)
 
 
-class Submission(Deletable, Saveable, Voteable):
+class Submission(Deletable, Reportable, Saveable, Voteable):
     """A class for submissions to Reddit."""
     def __init__(self, reddit_session, json_dict):
         super(Submission, self).__init__(reddit_session, json_dict)
@@ -449,6 +464,11 @@ class Subreddit(RedditContentObject):
     def unsubscribe(self):
         """Unsubscribe from the given subreddit."""
         return self._subscribe(unsubscribe=True)
+        
+    @require_login
+    def get_reports(self, *args, **kwargs):
+        """Get the reported submissions on the given subreddit."""
+        return self.reddit_session.get_reports(self, *args, **kwargs)
 
 
 class UserList(RedditContentObject):
