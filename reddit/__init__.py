@@ -60,6 +60,8 @@ class Config(object):  # pylint: disable-msg=R0903
                  'read_message':        'api/read_message/',
                  'reddit_url':          '/',
                  'register':            'api/register/',
+                 'report':              'api/report/',
+                 'reports':             'r/%s/about/reports/',
                  'save':                'api/save/',
                  'saved':               'saved/',
                  'search_reddit_names': 'api/search_reddit_names/',
@@ -281,6 +283,12 @@ class SubredditExtension(BaseReddit):
     def get_moderators(self, subreddit):
         """Get the list of moderators for a subreddit."""
         return self.request_json(self.config['moderators'] % str(subreddit))
+        
+    @reddit.decorators.require_login
+    def get_reports(self, subreddit, limit=None):
+        """Get the list of reported submissions for a subreddit."""
+        return self.get_content(self.config['reports'] % str(subreddit),
+                                limit=limit, url_data={'uh':self.user.modhash})
 
     @reddit.decorators.require_login
     def flair_list(self, subreddit, limit=None):
