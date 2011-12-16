@@ -193,7 +193,7 @@ r.get_subreddit('python').set_flair_csv(flair_mapping)
 
     ```python
 r.get_subreddit('python').add_flair_template(text='editable', css_class='foo',
-	                                             text_editable=True)
+                                             text_editable=True)
 ```
 
 0. Clear flair templates (requires mod privileges):

@@ -283,12 +283,13 @@ class SubredditExtension(BaseReddit):
     def get_moderators(self, subreddit):
         """Get the list of moderators for a subreddit."""
         return self.request_json(self.config['moderators'] % str(subreddit))
-        
+
     @reddit.decorators.require_login
     def get_reports(self, subreddit, limit=None):
         """Get the list of reported submissions for a subreddit."""
         return self.get_content(self.config['reports'] % str(subreddit),
-                                limit=limit, url_data={'uh':self.user.modhash})
+                                url_data={'uh': self.user.modhash},
+                                limit=limit)
 
     @reddit.decorators.require_login
     def flair_list(self, subreddit, limit=None):

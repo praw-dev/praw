@@ -101,6 +101,7 @@ class Reportable(RedditContentObject):
         _request.is_stale([self.reddit_session.config['user']])
         return response
 
+
 class Saveable(RedditContentObject):
     """
     Additional interface for Reddit content objects that can be saved.
@@ -402,6 +403,17 @@ class Subreddit(RedditContentObject):
         """Display the subreddit name."""
         return self.display_name.encode('utf8')
 
+    @require_login
+    def _subscribe(self, unsubscribe=False):
+        """Perform the (un)subscribe to the subreddit."""
+        action = 'unsub' if unsubscribe else 'sub'
+        params = {'sr': self.content_id,
+                  'action': action,
+                  'uh': self.reddit_session.modhash,
+                  'api_type': 'json'}
+        url = self.reddit_session.config['subscribe']
+        return self.reddit_session.request_json(url, params)
+
     def add_flair_template(self, *args, **kwargs):
         """Adds a flair template to the subreddit."""
         return self.reddit_session.add_flair_template(self, *args, **kwargs)
@@ -430,6 +442,10 @@ class Subreddit(RedditContentObject):
         """Get moderators for this subreddit."""
         return self.reddit_session.get_moderators(self, *args, **kwargs)
 
+    def get_reports(self, *args, **kwargs):
+        """Get the reported submissions on the given subreddit."""
+        return self.reddit_session.get_reports(self, *args, **kwargs)
+
     def flair_list(self, *args, **kwargs):
         """Return a list of flair for this subreddit."""
         return self.reddit_session.flair_list(self, *args, **kwargs)
@@ -446,17 +462,6 @@ class Subreddit(RedditContentObject):
         """Submit a new link."""
         return self.reddit_session.submit(self, *args, **kwargs)
 
-    @require_login
-    def _subscribe(self, unsubscribe=False):
-        """Perform the (un)subscribe to the subreddit."""
-        action = 'unsub' if unsubscribe else 'sub'
-        params = {'sr': self.content_id,
-                  'action': action,
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
-        url = self.reddit_session.config['subscribe']
-        return self.reddit_session.request_json(url, params)
-
     def subscribe(self):
         """Subscribe to the given subreddit."""
         return self._subscribe()
@@ -464,11 +469,6 @@ class Subreddit(RedditContentObject):
     def unsubscribe(self):
         """Unsubscribe from the given subreddit."""
         return self._subscribe(unsubscribe=True)
-        
-    @require_login
-    def get_reports(self, *args, **kwargs):
-        """Get the reported submissions on the given subreddit."""
-        return self.reddit_session.get_reports(self, *args, **kwargs)
 
 
 class UserList(RedditContentObject):
