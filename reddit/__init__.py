@@ -31,6 +31,9 @@ import reddit.objects
 from reddit.settings import CONFIG
 
 
+VERSION = '1.2.0'
+
+
 class Config(object):  # pylint: disable-msg=R0903
     """A class containing the configuration for a reddit site."""
     API_PATHS = {'banned':              'r/%s/about/banned',
@@ -54,6 +57,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'logout':              'logout/',
                  'moderator':           'message/moderator/',
                  'moderators':          'r/%s/about/moderators',
+                 'morechildren':        'api/morechildren/',
                  'my_mod_reddits':      'reddits/mine/moderator/',
                  'my_reddits':          'reddits/mine/',
                  'new_captcha':         'api/new_captcha/',

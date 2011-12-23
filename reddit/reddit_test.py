@@ -25,8 +25,10 @@ import warnings
 from urlparse import urljoin
 from urllib2 import HTTPError
 
-from reddit import Reddit, errors
+from reddit import Reddit, errors, VERSION
 from reddit.objects import Comment, LoggedInRedditor, Message, MoreComments
+
+USER_AGENT = 'reddit_api test suite %s' % VERSION
 
 
 def flair_diff(root, other):
@@ -41,7 +43,7 @@ def flair_diff(root, other):
 
 class BasicHelper(object):
     def configure(self):
-        self.r = Reddit('reddit_api test suite')
+        self.r = Reddit(USER_AGENT)
         self.sr = 'reddit_api_test'
         self.un = 'PyApiTestUser2'
 
@@ -123,6 +125,27 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_search_reddit_names(self):
         self.assertTrue(len(self.r.search_reddit_names('reddit')) > 0)
+
+
+class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        if self.r.config.is_reddit:
+            url = self.url('/r/blog/comments/f8aqy/')
+            self.submission = self.r.get_submission(url=url)
+        else:
+            url = self.url('/r/reddit_test9/comments/1a/')
+            self.submission = self.r.get_submission(url=url)
+
+    def test_all_comments(self):
+        c_len = len(self.submission.comments)
+        cf_len = len(self.submission.comments_flat)
+        ac_len = len(self.submission.all_comments)
+        acf_len = len(self.submission.all_comments_flat)
+
+        # pylint: disable-msg=W0212
+        self.assertEqual(len(self.submission._comments_by_id), acf_len)
+        self.assertTrue(c_len <= ac_len < cf_len < acf_len)
 
 
 class CommentTest(unittest.TestCase, AuthenticatedHelper):
@@ -271,7 +294,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find the message we just sent to ourself.')
 
     def test_mark_as_read(self):
-        oth = Reddit('reddit_api test suite')
+        oth = Reddit(USER_AGENT)
         oth.login('PyApiTestUser3', '1111')
         msg = oth.user.get_unread(limit=1).next()  # pylint: disable-msg=E1101
         msg.mark_as_read()
@@ -312,11 +335,11 @@ class ModeratorTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(self.other in self.subreddit.get_contributors())
 
     def test_make_moderator(self):
-        self.subreddit.make_moderator(self.other, r=str(self.subreddit))
+        self.subreddit.make_moderator(self.other)
         self.assertTrue(self.other in self.subreddit.get_moderators())
 
     def test_make_moderator_by_name(self):
-        self.subreddit.make_moderator(str(self.other), r=str(self.subreddit))
+        self.subreddit.make_moderator(str(self.other))
         self.assertTrue(self.other in self.subreddit.get_moderators())
 
     def test_remove_contributor(self):
@@ -446,7 +469,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_report(self):
         # login as new user to report submission
-        oth = Reddit('reddit_api test suite')
+        oth = Reddit(USER_AGENT)
         oth.login('PyApiTestUser3', '1111')
         subreddit = oth.get_subreddit(self.sr)
         submission = None

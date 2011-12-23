@@ -16,6 +16,7 @@
 from urlparse import urljoin
 
 from reddit.decorators import require_login
+from reddit.errors import ClientException
 from reddit.helpers import _get_section, _get_sorter, _modify_relationship
 from reddit.helpers import _request
 from reddit.util import limit_chars
@@ -197,11 +198,8 @@ class Comment(Deletable, Inboxable, Voteable):
         super(Comment, self).__init__(reddit_session, json_dict)
         if self.replies:
             self.replies = self.replies['data']['children']
-            for reply in self.replies:
-                reply.parent = self
         else:
             self.replies = []
-        self.parent = None
         self.submission = None
 
     @limit_chars()
@@ -210,7 +208,7 @@ class Comment(Deletable, Inboxable, Voteable):
 
     @property
     def is_root(self):
-        return hasattr(self, 'parent')
+        return self.parent_id is None
 
     @property
     def permalink(self):
@@ -218,9 +216,11 @@ class Comment(Deletable, Inboxable, Voteable):
 
     def _update_submission(self, submission):
         """Submission isn't set on __init__ thus we need to update it."""
+        # pylint: disable-msg=W0212
+        submission._comments_by_id[self.name] = self
         self.submission = submission
         for reply in self.replies:
-            reply._update_submission(submission)  # pylint: disable-msg=W0212
+            reply._update_submission(submission)
 
 
 class Message(Inboxable):
@@ -238,23 +238,29 @@ class MoreComments(RedditContentObject):
     """A class indicating there are more comments."""
     def __init__(self, reddit_session, json_dict):
         super(MoreComments, self).__init__(reddit_session, json_dict)
+        self.submission = None
+        self._comments = None
 
-    def _update_submission(self, _):
-        pass
+    def _update_submission(self, submission):
+        self.submission = submission
 
     def __str__(self):
         return '[More Comments]'.encode('utf8')
 
-    @property
     def comments(self):
-        url = urljoin(self.parent.submission.permalink, self.parent.id)
-        _, comment_info = self.reddit_session.request_json(url)
-        comments = comment_info['data']['children']
-
-        # We need to return the children of the parent as we already have
-        # the parent
-        assert(len(comments) == 1)
-        return comments[0].replies
+        """Use this to fetch the comments for a single MoreComments object."""
+        if not self._comments:
+            params = {'children': ','.join(self.children),
+                      'link_id': self.submission.content_id,
+                      'r': str(self.submission.subreddit),
+                      'api_type': 'json'}
+            url = self.reddit_session.config['morechildren']
+            response = self.reddit_session.request_json(url, params)
+            self._comments = response['data']['things']
+            for comment in self._comments:
+                # pylint: disable-msg=W0212
+                comment._update_submission(self.submission)
+        return self._comments
 
 
 class Redditor(RedditContentObject):
@@ -337,26 +343,109 @@ class Submission(Deletable, Reportable, Saveable, Voteable):
         super(Submission, self).__init__(reddit_session, json_dict)
         self.permalink = urljoin(reddit_session.config['reddit_url'],
                                  self.permalink)
+        self._comments_by_id = {}
+        self._all_comments = False
         self._comments = None
+        self._comments_flat = None
 
     def __str__(self):
         title = self.title.replace('\r\n', ' ').encode('utf-8')
         return '{0} :: {1}'.format(self.score, title)
 
+    def _extract_morecomments(self):
+        more_comments = []
+        queue = [(None, x) for x in self.comments]
+        while len(queue) > 0:
+            parent, comm = queue.pop(0)
+            if isinstance(comm, MoreComments):
+                more_comments.append(comm)
+                if parent:
+                    parent.replies.remove(comm)
+                else:
+                    self._comments.remove(comm)
+            else:
+                queue[0:0] = [(comm, x) for x in comm.replies]
+        return more_comments
+
+    def _fetch_morecomments(self, more_comments):
+        """Fetch each more_comments object one at a time."""
+        if len(more_comments) > 10:
+            raise ClientException(('Fetching more than 10 MoreComment objects '
+                                   'is not supported at this time.'))
+
+        results = []
+        url = self.reddit_session.config['morechildren']
+        for comment_ids in [x.children for x in more_comments]:
+            ids = ','.join(comment_ids)
+            params = {'children': ids,
+                      'link_id': self.content_id,
+                      'r': str(self.subreddit),
+                      'api_type': 'json'}
+            response = self.reddit_session.request_json(url, params)
+            results.extend(response['data']['things'])
+
+        for comment in results:
+            comment._update_submission(self)  # pylint: disable-msg=W0212
+            if isinstance(comment, MoreComments):
+                self._comments.append(comment)  # Handle in the next iteration
+            elif comment.parent_id == self.content_id:
+                assert len(comment.replies) == 0
+                assert comment not in self._comments
+                self._comments.append(comment)
+            else:
+                assert len(comment.replies) == 0
+                tmp = self._comments_by_id[comment.parent_id].replies
+                assert comment not in tmp
+                tmp.append(comment)
+
+    def _update_comments(self, comments):
+        self._comments = comments
+        for comment in self._comments:
+            comment._update_submission(self)  # pylint: disable-msg=W0212
+
     @property
     def comments(self):
         if self._comments == None:
             _, comment_info = self.reddit_session.request_json(self.permalink)
-            self._comments = comment_info['data']['children']
-            for comment in self._comments:
-                comment._update_submission(self)  # pylint: disable-msg=W0212
+            self._update_comments(comment_info['data']['children'])
         return self._comments
 
     @comments.setter  # pylint: disable-msg=E1101
     def comments(self, new_comments):  # pylint: disable-msg=E0102
-        for comment in new_comments:
-            comment._update_submission(self)  # pylint: disable-msg=W0212
-        self._comments = new_comments
+        self._update_comments(new_comments)
+        self._all_comments = False
+        self._comments_flat = None
+
+    @property
+    def all_comments(self):
+        """Replace instances of MoreComments with the actual comments tree."""
+        if not self._all_comments:
+            more_comments = self._extract_morecomments()
+            while more_comments:
+                self._fetch_morecomments(more_comments)
+                more_comments = self._extract_morecomments()
+            self._all_comments = True
+            self._comments_flat = None
+        return self._comments
+
+    @property
+    def all_comments_flat(self):
+        if not self.all_comments:
+            self.all_comments  # pylint: disable-msg=W0104
+        return self.comments_flat
+
+    @property
+    def comments_flat(self):
+        if not self._comments_flat:
+            self._comments_flat = []
+            stack = self.comments[:]
+            while len(stack) > 0:
+                comment = stack.pop(0)
+                assert(comment not in self._comments_flat)
+                if isinstance(comment, Comment):
+                    stack[0:0] = comment.replies
+                self._comments_flat.append(comment)
+        return self._comments_flat
 
     def add_comment(self, text):
         """If logged in, comment on the submission using the specified text."""
@@ -369,12 +458,14 @@ class Submission(Deletable, Reportable, Saveable, Voteable):
 class Subreddit(RedditContentObject):
     """A class for Subreddits."""
 
-    ban = _modify_relationship('banned')
-    unban = _modify_relationship('banned', unlink=True)
-    make_contributor = _modify_relationship('contributor')
-    remove_contributor = _modify_relationship('contributor', unlink=True)
-    make_moderator = _modify_relationship('moderator')
-    remove_moderator = _modify_relationship('moderator', unlink=True)
+    ban = _modify_relationship('banned', is_sub=True)
+    unban = _modify_relationship('banned', unlink=True, is_sub=True)
+    make_contributor = _modify_relationship('contributor', is_sub=True)
+    remove_contributor = _modify_relationship('contributor', unlink=True,
+                                              is_sub=True)
+    make_moderator = _modify_relationship('moderator', is_sub=True)
+    remove_moderator = _modify_relationship('moderator', unlink=True,
+                                            is_sub=True)
 
     get_hot = _get_sorter('')
     get_controversial = _get_sorter('controversial', time='day')

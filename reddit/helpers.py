@@ -51,7 +51,7 @@ def _get_sorter(subpath='', **defaults):
     return _sorted
 
 
-def _modify_relationship(relationship, unlink=False):
+def _modify_relationship(relationship, unlink=False, is_sub=False):
     """
     Modify the relationship between the current user or subreddit and a target
     thing.
@@ -63,13 +63,14 @@ def _modify_relationship(relationship, unlink=False):
     url_key = 'unfriend' if unlink else 'friend'
 
     @require_login
-    def do_relationship(thing, user, **kwargs):
+    def do_relationship(thing, user):
         params = {'name': str(user),
                   'container': thing.content_id,
                   'type': relationship,
                   'uh': thing.reddit_session.modhash,
                   'api_type': 'json'}
-        params.update(kwargs)  # HACK: for make_moderator to prevent an error
+        if is_sub:
+            params['r'] = str(thing)
         url = thing.reddit_session.config[url_key]
         return thing.reddit_session.request_json(url, params)
     return do_relationship

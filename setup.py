@@ -3,10 +3,12 @@ try:
 except ImportError:
     from distutils.core import setup
 
+from reddit import VERSION
+
 
 setup(
     name='reddit',
-    version='1.1.2',
+    version=VERSION,
     author='Timothy Mellor',
     author_email='timothy.mellor+pip@gmail.com',
     maintainer='Bryce Boe',
