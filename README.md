@@ -39,7 +39,7 @@ A Few Short Examples
 0. Logging in:
 
     ```python
-r.login(user='username', password='password')
+r.login('username', 'password')
 ```
 
 0. Send a message (requires login):
