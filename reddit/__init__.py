@@ -77,6 +77,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'subscribe':           'api/subscribe/',
                  'unfriend':            'api/unfriend/',
                  'unread':              'message/unread/',
+                 'unread_message':      'api/unread_message/',
                  'unsave':              'api/unsave/',
                  'user':                'user/%s/',
                  'user_about':          'user/%s/about/',
@@ -396,11 +397,12 @@ class LoggedInExtension(BaseReddit):
         return self.request_json(self.config['comment'], params)
 
     @reddit.decorators.require_login
-    def _mark_as_read(self, thing_ids):
-        """ Marks each of the supplied thing_ids as read """
+    def _mark_as_read(self, thing_ids, unread=False):
+        """ Marks each of the supplied thing_ids as (un)read."""
         params = {'id': ','.join(thing_ids),
                   'uh': self.modhash}
-        response = self.request_json(self.config['read_message'], params)
+        key = 'unread_message' if unread else 'read_message'
+        response = self.request_json(self.config[key], params)
         urls = [self.config[x] for x in ['inbox', 'moderator', 'unread']]
         # pylint: disable-msg=E1101,W0212
         reddit.helpers._request.is_stale(urls)

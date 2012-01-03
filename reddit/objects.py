@@ -160,9 +160,13 @@ class Inboxable(RedditContentObject):
 
     @require_login
     def mark_as_read(self):
-        """ Marks the comment as read """
-        # pylint: disable-msg=W0212
-        return self.reddit_session._mark_as_read([self.content_id])
+        """ Marks the comment as read."""
+        return self.reddit_session.user.mark_as_read(self)
+
+    @require_login
+    def mark_as_unread(self):
+        """ Marks the comment as unread."""
+        return self.reddit_session.user.mark_as_read(self, unread=True)
 
 
 class Voteable(RedditContentObject):
@@ -290,6 +294,23 @@ class Redditor(RedditContentObject):
     def friend(self):
         """Friend the user."""
         return _modify_relationship('friend')(self.reddit_session.user, self)
+
+    @require_login
+    def mark_as_read(self, messages, unread=False):
+        """Mark message(s) as read or unread."""
+        ids = []
+        if isinstance(messages, Inboxable):
+            ids.append(messages.content_id)
+        elif hasattr(messages, '__iter__'):
+            for msg in messages:
+                if not isinstance(msg, Inboxable):
+                    raise ClientException('Invalid message type: %s'
+                                          % type(msg))
+                ids.append(msg.content_id)
+        else:
+            raise ClientException('Invalid message type: %s' % type(messages))
+        # pylint: disable-msg=W0212
+        return self.reddit_session._mark_as_read(ids, unread=unread)
 
     @require_login
     def unfriend(self):

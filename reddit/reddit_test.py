@@ -298,7 +298,30 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         oth.login('PyApiTestUser3', '1111')
         msg = oth.user.get_unread(limit=1).next()  # pylint: disable-msg=E1101
         msg.mark_as_read()
-        self.assertTrue(msg not in list(oth.user.get_unread(limit=5)))
+        self.assertTrue(msg not in oth.user.get_unread(limit=5))
+
+    def test_mark_as_unread(self):
+        oth = Reddit(USER_AGENT)
+        oth.login('PyApiTestUser3', '1111')
+        found = None
+        for msg in oth.user.get_inbox():
+            if not msg.new:
+                found = msg
+                msg.mark_as_unread()
+                break
+        else:
+            self.fail('Could not find a read message.')
+        self.assertTrue(found in oth.user.get_unread())
+
+    def test_mark_multiple_as_read(self):
+        oth = Reddit(USER_AGENT)
+        oth.login('PyApiTestUser3', '1111')
+        messages = list(oth.user.get_unread(limit=2))
+        self.assertEqual(2, len(messages))
+        self.r.user.mark_as_read(messages)
+        unread = oth.user.get_unread(limit=5)
+        for msg in messages:
+            self.assertTrue(msg not in unread)
 
     def test_modmail(self):
         self.assertTrue(len(list(self.r.user.get_modmail())) > 0)
