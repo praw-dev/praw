@@ -31,7 +31,7 @@ import reddit.objects
 from reddit.settings import CONFIG
 
 
-VERSION = '1.2.0'
+VERSION = '1.2.1'
 
 
 class Config(object):  # pylint: disable-msg=R0903
@@ -81,10 +81,15 @@ class Config(object):  # pylint: disable-msg=R0903
                  'user':                'user/%s/',
                  'user_about':          'user/%s/about/',
                  'vote':                'api/vote/'}
+    SSL_PATHS = ('login', )
 
     def __init__(self, site_name):
         obj = dict(CONFIG.items(site_name))
         self._site_url = 'http://' + obj['domain']
+        if 'ssl_domain' in obj:
+            self._ssl_url = 'https://' + obj['ssl_domain']
+        else:
+            self._ssl_url = None
         self.api_request_delay = float(obj['api_request_delay'])
         self.by_kind = {obj['comment_kind']:    reddit.objects.Comment,
                         obj['message_kind']:    reddit.objects.Message,
@@ -108,6 +113,8 @@ class Config(object):  # pylint: disable-msg=R0903
 
     def __getitem__(self, key):
         """Return the URL for key"""
+        if self._ssl_url and key in self.SSL_PATHS:
+            return urlparse.urljoin(self._ssl_url, self.API_PATHS[key])
         return urlparse.urljoin(self._site_url, self.API_PATHS[key])
 
 
