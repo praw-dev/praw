@@ -21,8 +21,14 @@ import sys
 def _load_configuration():
     config = ConfigParser.RawConfigParser()
     module_dir = os.path.dirname(sys.modules[__name__].__file__)
+    if 'APPDATA' in os.environ:  # Windows
+        os_config_path = os.environ['APPDATA']
+    elif 'XDG_CONFIG_HOME' in os.environ:  # Modern Linux
+        os_config_path = os.environ['XDG_CONFIG_HOME']
+    else:  # Legacy Linux
+        os_config_path = os.path.join(os.environ['HOME'], '.config')
     locations = [os.path.join(module_dir, 'reddit_api.cfg'),
-                 os.path.expanduser('~/.reddit_api.cfg'),
+                 os.path.join(os_config_path, 'reddit_api', 'reddit_api.cfg'),
                  'reddit_api.cfg']
     if not config.read(locations):
         raise Exception('Could not find config file in any of: %s' % locations)
