@@ -18,10 +18,7 @@ import os
 import warnings
 import urllib2
 import urlparse
-try:
-    import json
-except ImportError:
-    import simplejson as json
+import json
 
 import reddit.decorators
 import reddit.errors
