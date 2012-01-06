@@ -26,11 +26,14 @@ def _get_section(subpath=''):
     Used by the Redditor class to generate each of the sections (overview,
     comments, submitted).
     """
-    def _section(self, sort='new', time='all', limit=0, place_holder=None):
-        data = {'sort': sort, 'time': time}
+    def _section(self, sort='new', time='all', *args, **kw):
+        if 'url_data' in kw and kw['url_data']:
+            url_data = kw['url_data']
+        else:
+            url_data = kw['url_data'] = {}
+        url_data.update({'sort': sort, 't': time})
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
-        return self.reddit_session.get_content(url, limit=limit, url_data=data,
-                                               place_holder=place_holder)
+        return self.reddit_session.get_content(url, *args, **kw)
     return _section
 
 
@@ -39,15 +42,16 @@ def _get_sorter(subpath='', **defaults):
     Used by the Reddit Page classes to generate each of the currently supported
     sorts (hot, top, new, best).
     """
-    def _sorted(self, limit=0, place_holder=None, **data):
+    def _sorted(self, *args, **kw):
+        if 'url_data' in kw and kw['url_data']:
+            url_data = kw['url_data']
+        else:
+            url_data = kw['url_data'] = {}
+
         for key, value in defaults.items():
-            if key == 'time':
-                # time should be 't' in the API data dict
-                key = 't'
-            data.setdefault(key, value)
+            url_data.setdefault(key, value)
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
-        return self.reddit_session.get_content(url, limit=limit, url_data=data,
-                                               place_holder=place_holder)
+        return self.reddit_session.get_content(url, *args, **kw)
     return _sorted
 
 

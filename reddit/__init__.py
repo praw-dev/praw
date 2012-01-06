@@ -28,7 +28,7 @@ import reddit.objects
 from reddit.settings import CONFIG
 
 
-VERSION = '1.2.1'
+VERSION = '1.2.2'
 
 
 class Config(object):  # pylint: disable-msg=R0903
@@ -152,7 +152,15 @@ class BaseReddit(object):
         :returns: the open page
         """
         # pylint: disable-msg=W0212
-        return reddit.helpers._request(self, page_url, params, url_data)
+        remaining_attempts = 3
+        while True:
+            try:
+                return reddit.helpers._request(self, page_url, params,
+                                               url_data)
+            except urllib2.HTTPError, error:
+                remaining_attempts -= 1
+                if error.code != 504 or remaining_attempts == 0:
+                    raise
 
     def _json_reddit_objecter(self, json_data):
         """

@@ -170,17 +170,18 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_add_reply_and_verify(self):
         text = 'Unique reply: %s' % uuid.uuid4()
-        submission = None
+        found = None
         for submission in self.subreddit.get_new_by_date():
             if submission.num_comments > 0:
-                comment = submission.comments[0]
+                found = submission
                 break
-        if not comment:
+        if not found:
             self.fail('Could not find a submission with comments.')
+        comment = found.comments[0]
         self.assertTrue(comment.reply(text))
         # reload the submission (use id to bypass cache)
         time.sleep(1)
-        submission = self.r.get_submission(submission_id=submission.id)
+        submission = self.r.get_submission(submission_id=found.id)
         for comment in submission.comments[0].replies:
             if comment.body == text:
                 break
