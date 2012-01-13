@@ -489,9 +489,9 @@ class Subreddit(RedditContentObject):
                                             is_sub=True)
 
     get_hot = _get_sorter('')
-    get_controversial = _get_sorter('controversial', time='day')
+    get_controversial = _get_sorter('controversial', t='day')
     get_new = _get_sorter('new', sort='rising')
-    get_top = _get_sorter('top', time='day')
+    get_top = _get_sorter('top', t='day')
     get_new_by_date = _get_sorter('new', sort='new')
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
