@@ -103,6 +103,31 @@ class Reportable(RedditContentObject):
         return response
 
 
+class Distinguishable(RedditContentObject):
+    """
+    Additional interface for Reddit content objects that can be distinguished.
+    """
+    @require_login
+    def distinguish(self):
+        url = self.reddit_session.config['distinguish']
+        params = {'id': self.content_id,
+                  'uh': self.reddit_session.modhash,
+                  'api_type': 'json'}
+        response = self.reddit_session.request_json(url, params)
+        _request.is_stale([self.reddit_session.config['user']])
+        return response
+
+    @require_login
+    def undistinguish(self):
+        url = self.reddit_session.config['undistinguish']
+        params = {'id': self.content_id,
+                  'uh': self.reddit_session.modhash,
+                  'api_type': 'json'}
+        response = self.reddit_session.request_json(url, params)
+        _request.is_stale([self.reddit_session.config['user']])
+        return response
+
+
 class ApprovableRemovable(RedditContentObject):
     """
     Additional interface for Reddit content objects that can be approved/removed.
@@ -116,6 +141,7 @@ class ApprovableRemovable(RedditContentObject):
         response = self.reddit_session.request_json(url, params)
         _request.is_stale([self.reddit_session.config['user']])
         return response
+
     @require_login
     def remove(self):
         url = self.reddit_session.config['remove']
@@ -220,7 +246,7 @@ class Voteable(RedditContentObject):
         return self.vote()
 
 
-class Comment(Deletable, Reportable, ApprovableRemovable, Inboxable, Voteable):
+class Comment(Deletable, Reportable, ApprovableRemovable, Distinguishable, Inboxable, Voteable):
     """A class for comments."""
     def __init__(self, reddit_session, json_dict):
         super(Comment, self).__init__(reddit_session, json_dict)
@@ -382,7 +408,7 @@ class LoggedInRedditor(Redditor):
         return self.reddit_session.get_content(url, limit=limit)
 
 
-class Submission(Deletable, Reportable, ApprovableRemovable, Saveable, Voteable):
+class Submission(Deletable, Reportable, ApprovableRemovable, Distinguishable, Saveable, Voteable):
     """A class for submissions to Reddit."""
     def __init__(self, reddit_session, json_dict):
         super(Submission, self).__init__(reddit_session, json_dict)
