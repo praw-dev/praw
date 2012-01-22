@@ -125,6 +125,8 @@ class ApprovableRemovable(RedditContentObject):
         response = self.reddit_session.request_json(url, params)
         _request.is_stale([self.reddit_session.config['user']])
         return response
+
+
 class Saveable(RedditContentObject):
     """
     Additional interface for Reddit content objects that can be saved.
@@ -579,9 +581,11 @@ class Subreddit(RedditContentObject):
     def get_modqueue(self, *args, **kwargs):
         """Get the modqueue on the given subreddit."""
         return self.reddit_session.get_modqueue(self, *args, **kwargs)
+
     def get_reports(self, *args, **kwargs):
         """Get the reported submissions on the given subreddit."""
         return self.reddit_session.get_reports(self, *args, **kwargs)
+
     def get_spam(self, *args, **kwargs):
         """Get the spam-filtered submissions/comments on the given subreddit."""
         return self.reddit_session.get_spam(self, *args, **kwargs)

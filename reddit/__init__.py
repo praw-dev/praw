@@ -311,12 +311,14 @@ class SubredditExtension(BaseReddit):
         return self.get_content(self.config['modqueue'] % str(subreddit),
                                 url_data={'uh': self.user.modhash},
                                 limit=limit)
+
     @reddit.decorators.require_login
     def get_reports(self, subreddit, limit=None):
         """Get the list of reported submissions for a subreddit."""
         return self.get_content(self.config['reports'] % str(subreddit),
                                 url_data={'uh': self.user.modhash},
                                 limit=limit)
+
     @reddit.decorators.require_login
     def get_spam(self, subreddit, limit=None):
         """Get the list of spam-filtered submissions/comments for a subreddit."""
