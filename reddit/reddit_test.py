@@ -510,6 +510,30 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.fail('Could not find reported submission.')
 
+    def test_remove(self):
+        submission = self.sr.get_new_by_date()[0]
+        if not submission:
+            self.fail('Could not find a submission to remove.')
+        submission.remove()
+        # check if submission was removed
+        for removed in self.sr.get_spam():
+            if removed.id == submission.id:
+                break
+        else:
+            self.fail('Could not find removed submission.')
+
+    def test_approve(self):
+        submission = self.sr.get_spam()[0]
+        if not submission:
+            self.fail('Could not find a submission to approve.')
+        submission.approve()
+        # check if submission was approved
+        for approved in self.sr.get_new_by_date():
+            if approved.id == submission.id:
+                break
+        else:
+            self.fail('Could not find approved submission.')
+
 
 class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
