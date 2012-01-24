@@ -27,8 +27,6 @@ class RequireCaptcha(object):
     def __init__(self, func):
         wraps(func)(self)
         self.func = func
-        self.captcha_id = None
-        self.captcha = None
 
     def __get__(self, obj, key):
         if obj is None:
@@ -36,29 +34,20 @@ class RequireCaptcha(object):
         return self.__class__(self.func.__get__(obj, key))
 
     def __call__(self, *args, **kwargs):
-        do_captcha = False
+        captcha_id = None
         while True:
             try:
-                if do_captcha:
-                    self.get_captcha()
-                    kwargs['captcha'] = self.captcha_as_dict
+                if captcha_id:
+                    kwargs['captcha'] = self.get_captcha(captcha_id)
                 return self.func(*args, **kwargs)
-            except errors.BadCaptcha:
-                do_captcha = True
+            except errors.BadCaptcha, e:
+                captcha_id = e.response['captcha']
 
-    @property
-    def captcha_as_dict(self):
-        return {'iden': self.captcha_id, 'captcha': self.captcha}
-
-    def get_captcha(self):
-        caller = self.func.im_self
-        # This doesn't support the api_type:json parameter yet
-        data = caller.request_json(caller.config['new_captcha'],
-                                   {'renderstyle': 'html'})
-        self.captcha_id = data['jquery'][-1][-1][-1]
-        url = urljoin(caller.config['captcha'], self.captcha_id + '.png')
+    def get_captcha(self, captcha_id):
+        url = urljoin(self.func.im_self.config['captcha'], captcha_id + '.png')
         print 'Captcha URL: ' + url
-        self.captcha = raw_input('Captcha: ')
+        captcha = raw_input('Captcha: ')
+        return {'iden': captcha_id, 'captcha': captcha}
 
 
 def require_login(func):
@@ -122,12 +111,9 @@ def parse_api_json_response(func):  # pylint: disable-msg=R0912
         return_value = func(self, *args, **kwargs)
         if isinstance(return_value, dict):
             for k in return_value:
-                allowed = ('data', 'errors', 'kind', 'names', 'next', 'prev',
-                           'users')
+                allowed = ('captcha', 'data', 'errors', 'kind', 'names',
+                           'next', 'prev', 'users')
                 if k not in allowed:
-                    # The only jquery response we want to allow is captcha
-                    if k == 'jquery' and return_value[k][-2][-1] == 'captcha':
-                        continue
                     warnings.warn('Unknown return value key: %s' % k)
             if 'errors' in return_value and return_value['errors']:
                 error_list = []
@@ -136,7 +122,8 @@ def parse_api_json_response(func):  # pylint: disable-msg=R0912
                         error_class = errors.ERROR_MAPPING[error_type]
                     else:
                         error_class = errors.APIException
-                    error_list.append(error_class(error_type, msg, value))
+                    error_list.append(error_class(error_type, msg, value,
+                                                  return_value))
                 if len(error_list) == 1:
                     raise error_list[0]
                 else:

@@ -567,8 +567,23 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.fail('Could not find reddit in my_reddits.')
 
+    def test_subscribe_by_name_and_verify(self):
+        self.r.subscribe(self.sr)
+        for subreddit in self.r.user.my_reddits():
+            if subreddit.display_name == self.sr:
+                break
+        else:
+            self.fail('Could not find reddit in my_reddits.')
+
+
     def test_unsubscribe_and_verify(self):
         self.subreddit.unsubscribe()
+        for subreddit in self.r.user.my_reddits():
+            if subreddit.display_name == self.sr:
+                self.fail('Found reddit in my_reddits.')
+
+    def test_unsubscribe_by_name_and_verify(self):
+        self.r.unsubscribe(self.sr)
         for subreddit in self.r.user.my_reddits():
             if subreddit.display_name == self.sr:
                 self.fail('Found reddit in my_reddits.')

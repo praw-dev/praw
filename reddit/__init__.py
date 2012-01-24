@@ -57,7 +57,6 @@ class Config(object):  # pylint: disable-msg=R0903
                  'morechildren':        'api/morechildren/',
                  'my_mod_reddits':      'reddits/mine/moderator/',
                  'my_reddits':          'reddits/mine/',
-                 'new_captcha':         'api/new_captcha/',
                  'read_message':        'api/read_message/',
                  'reddit_url':          '/',
                  'register':            'api/register/',
@@ -268,6 +267,25 @@ class SubredditExtension(BaseReddit):
         super(SubredditExtension, self).__init__(*args, **kwargs)
 
     @reddit.decorators.require_login
+    def _subscribe(self, sr_id=None, sr_name=None, unsubscribe=False):
+        """Perform the (un)subscribe to the subreddit.
+
+        Provide either the subreddit_id (sr_id) or subreddit name (sr_name)."""
+
+        if bool(sr_id) == bool(sr_name):
+            raise TypeError('One (and only one) of text or url is required!')
+        action = 'unsub' if unsubscribe else 'sub'
+        params = {'action': action,
+                  'uh': self.modhash,
+                  'api_type': 'json'}
+        if sr_id:
+            params['sr'] = sr_id
+        else:
+            params['sr_name'] = sr_name
+        return self.request_json(self.config['subscribe'], params)
+
+
+    @reddit.decorators.require_login
     def add_flair_template(self, subreddit, text, css_class, text_editable):
         """Adds a flair template to the subreddit."""
         params = {'r': str(subreddit),
@@ -386,6 +404,14 @@ class SubredditExtension(BaseReddit):
         if captcha:
             params.update(captcha)
         return self.request_json(self.config['submit'], params)
+
+    def subscribe(self, subreddit):
+        """Subscribe to subreddit by name."""
+        self._subscribe(sr_name=subreddit)
+
+    def unsubscribe(self, subreddit):
+        """Unsubscribe from subreddit by name."""
+        self._subscribe(sr_name=subreddit, unsubscribe=True)
 
 
 class LoggedInExtension(BaseReddit):

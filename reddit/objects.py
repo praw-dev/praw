@@ -515,17 +515,6 @@ class Subreddit(RedditContentObject):
         """Display the subreddit name."""
         return self.display_name.encode('utf8')
 
-    @require_login
-    def _subscribe(self, unsubscribe=False):
-        """Perform the (un)subscribe to the subreddit."""
-        action = 'unsub' if unsubscribe else 'sub'
-        params = {'sr': self.content_id,
-                  'action': action,
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
-        url = self.reddit_session.config['subscribe']
-        return self.reddit_session.request_json(url, params)
-
     def add_flair_template(self, *args, **kwargs):
         """Adds a flair template to the subreddit."""
         return self.reddit_session.add_flair_template(self, *args, **kwargs)
@@ -576,11 +565,14 @@ class Subreddit(RedditContentObject):
 
     def subscribe(self):
         """Subscribe to the given subreddit."""
-        return self._subscribe()
+        # pylint: disable-msg=E1101
+        return self.reddit_session._subscribe(self.content_id)
 
     def unsubscribe(self):
         """Unsubscribe from the given subreddit."""
-        return self._subscribe(unsubscribe=True)
+        # pylint: disable-msg=E1101
+        return self.reddit_session._subscribe(self.content_id,
+                                              unsubscribe=True)
 
 
 class UserList(RedditContentObject):
