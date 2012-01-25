@@ -34,7 +34,7 @@ VERSION = '1.2.3'
 class Config(object):  # pylint: disable-msg=R0903
     """A class containing the configuration for a reddit site."""
     API_PATHS = {'approve':             'api/approve/',
-                 'banned':              'r/%s/about/banned',
+                 'banned':              'r/%s/about/banned/',
                  'captcha':             'captcha/',
                  'clearflairtemplates': 'api/clearflairtemplates/',
                  'comment':             'api/comment/',
@@ -47,7 +47,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'flair':               'api/flair/',
                  'flaircsv':            'api/flaircsv/',
                  'flairlist':           'r/%s/api/flairlist/',
-                 'flairtemplate':       'api/flairtemplate',
+                 'flairtemplate':       'api/flairtemplate/',
                  'friend':              'api/friend/',
                  'help':                'help/',
                  'inbox':               'message/inbox/',
@@ -55,8 +55,8 @@ class Config(object):  # pylint: disable-msg=R0903
                  'login':               'api/login/%s/',
                  'logout':              'logout/',
                  'moderator':           'message/moderator/',
-                 'moderators':          'r/%s/about/moderators',
-                 'modqueue':            'r/%s/about/modqueue',
+                 'moderators':          'r/%s/about/moderators/',
+                 'modqueue':            'r/%s/about/modqueue/',
                  'morechildren':        'api/morechildren/',
                  'my_mod_reddits':      'reddits/mine/moderator/',
                  'my_reddits':          'reddits/mine/',
@@ -329,22 +329,22 @@ class SubredditExtension(BaseReddit):
         return self.request_json(self.config['moderators'] % str(subreddit))
 
     @reddit.decorators.require_login
-    def get_modqueue(self, subreddit, limit=None):
+    def get_modqueue(self, subreddit='mod', limit=None):
         """Get the mod-queue for a subreddit."""
         return self.get_content(self.config['modqueue'] % str(subreddit),
                                 url_data={'uh': self.user.modhash},
                                 limit=limit)
 
     @reddit.decorators.require_login
-    def get_reports(self, subreddit, limit=None):
+    def get_reports(self, subreddit='mod', limit=None):
         """Get the list of reported submissions for a subreddit."""
         return self.get_content(self.config['reports'] % str(subreddit),
                                 url_data={'uh': self.user.modhash},
                                 limit=limit)
 
     @reddit.decorators.require_login
-    def get_spam(self, subreddit, limit=None):
-        """Get the list of spam-filtered submissions/comments for a subreddit."""
+    def get_spam(self, subreddit='mod', limit=None):
+        """Get the list of spam-filtered items for a subreddit."""
         return self.get_content(self.config['spam'] % str(subreddit),
                                 url_data={'uh': self.user.modhash},
                                 limit=limit)

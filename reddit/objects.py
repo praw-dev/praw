@@ -87,51 +87,8 @@ class RedditContentObject(object):
         return '%s_%s' % (by_object[self.__class__], self.id)
 
 
-class Reportable(RedditContentObject):
-    """
-    Additional interface for Reddit content objects that can be reported.
-    """
-    @require_login
-    def report(self):
-        url = self.reddit_session.config['report']
-        params = {'id': self.content_id,
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
-        response = self.reddit_session.request_json(url, params)
-        # pylint: disable-msg=E1101
-        _request.is_stale([self.reddit_session.config['user']])
-        return response
-
-
-class Distinguishable(RedditContentObject):
-    """
-    Additional interface for Reddit content objects that can be distinguished.
-    """
-    @require_login
-    def distinguish(self):
-        url = self.reddit_session.config['distinguish']
-        params = {'id': self.content_id,
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
-        response = self.reddit_session.request_json(url, params)
-        _request.is_stale([self.reddit_session.config['user']])
-        return response
-
-    @require_login
-    def undistinguish(self):
-        url = self.reddit_session.config['undistinguish']
-        params = {'id': self.content_id,
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
-        response = self.reddit_session.request_json(url, params)
-        _request.is_stale([self.reddit_session.config['user']])
-        return response
-
-
-class ApprovableRemovable(RedditContentObject):
-    """
-    Additional interface for Reddit content objects that can be approved/removed.
-    """
+class Approvable(RedditContentObject):
+    """Interface for Reddit content objects that can be approved."""
     @require_login
     def approve(self):
         url = self.reddit_session.config['approve']
@@ -139,7 +96,8 @@ class ApprovableRemovable(RedditContentObject):
                   'uh': self.reddit_session.modhash,
                   'api_type': 'json'}
         response = self.reddit_session.request_json(url, params)
-        _request.is_stale([self.reddit_session.config['user']])
+        urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
+        _request.is_stale(urls)  # pylint: disable-msg=E1101
         return response
 
     @require_login
@@ -149,38 +107,13 @@ class ApprovableRemovable(RedditContentObject):
                   'uh': self.reddit_session.modhash,
                   'api_type': 'json'}
         response = self.reddit_session.request_json(url, params)
-        _request.is_stale([self.reddit_session.config['user']])
+        urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
+        _request.is_stale(urls)  # pylint: disable-msg=E1101
         return response
-
-
-class Saveable(RedditContentObject):
-    """
-    Additional interface for Reddit content objects that can be saved.
-    Currently only Submissions, but this may change at a later date, as
-    eventually Comments will probably end up being saveable.
-    """
-    @require_login
-    def save(self, unsave=False):
-        """If logged in, save the content."""
-        url = self.reddit_session.config['unsave' if unsave else 'save']
-        params = {'id': self.content_id,
-                  'executed': 'unsaved' if unsave else 'saved',
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
-        response = self.reddit_session.request_json(url, params)
-        # pylint: disable-msg=E1101
-        _request.is_stale([self.reddit_session.config['saved']])
-        return response
-
-    def unsave(self):
-        return self.save(unsave=True)
 
 
 class Deletable(RedditContentObject):
-    """
-    Additional Interface for Reddit content objects that can be deleted
-    (currently Submission and Comment).
-    """
+    """Interface for Reddit content objects that can be deleted."""
     def delete(self):
         url = self.reddit_session.config['del']
         params = {'id': self.content_id,
@@ -191,6 +124,28 @@ class Deletable(RedditContentObject):
         # pylint: disable-msg=E1101
         _request.is_stale([self.reddit_session.config['user']])
         return response
+
+
+class Distinguishable(RedditContentObject):
+    """Interface for Reddit content objects that can be distinguished.
+
+    Presently there is no way to verify a distinguished post.
+    """
+    @require_login
+    def distinguish(self):
+        url = self.reddit_session.config['distinguish']
+        params = {'id': self.content_id,
+                  'uh': self.reddit_session.modhash,
+                  'api_type': 'json'}
+        return self.reddit_session.request_json(url, params)
+
+    @require_login
+    def undistinguish(self):
+        url = self.reddit_session.config['undistinguish']
+        params = {'id': self.content_id,
+                  'uh': self.reddit_session.modhash,
+                  'api_type': 'json'}
+        return self.reddit_session.request_json(url, params)
 
 
 class Inboxable(RedditContentObject):
@@ -217,6 +172,39 @@ class Inboxable(RedditContentObject):
     def mark_as_unread(self):
         """ Marks the comment as unread."""
         return self.reddit_session.user.mark_as_read(self, unread=True)
+
+
+class Reportable(RedditContentObject):
+    """Interface for Reddit content objects that can be reported."""
+    @require_login
+    def report(self):
+        url = self.reddit_session.config['report']
+        params = {'id': self.content_id,
+                  'uh': self.reddit_session.modhash,
+                  'api_type': 'json'}
+        response = self.reddit_session.request_json(url, params)
+        # pylint: disable-msg=E1101
+        _request.is_stale([self.reddit_session.config['user']])
+        return response
+
+
+class Saveable(RedditContentObject):
+    """Interface for Reddit content objects that can be saved."""
+    @require_login
+    def save(self, unsave=False):
+        """If logged in, save the content."""
+        url = self.reddit_session.config['unsave' if unsave else 'save']
+        params = {'id': self.content_id,
+                  'executed': 'unsaved' if unsave else 'saved',
+                  'uh': self.reddit_session.modhash,
+                  'api_type': 'json'}
+        response = self.reddit_session.request_json(url, params)
+        # pylint: disable-msg=E1101
+        _request.is_stale([self.reddit_session.config['saved']])
+        return response
+
+    def unsave(self):
+        return self.save(unsave=True)
 
 
 class Voteable(RedditContentObject):
@@ -246,7 +234,8 @@ class Voteable(RedditContentObject):
         return self.vote()
 
 
-class Comment(Deletable, Reportable, ApprovableRemovable, Distinguishable, Inboxable, Voteable):
+class Comment(Approvable, Reportable, Deletable, Distinguishable, Inboxable,
+              Voteable):
     """A class for comments."""
     def __init__(self, reddit_session, json_dict):
         super(Comment, self).__init__(reddit_session, json_dict)
@@ -408,7 +397,8 @@ class LoggedInRedditor(Redditor):
         return self.reddit_session.get_content(url, limit=limit)
 
 
-class Submission(Deletable, Reportable, ApprovableRemovable, Distinguishable, Saveable, Voteable):
+class Submission(Approvable, Deletable, Distinguishable, Reportable, Saveable,
+                 Voteable):
     """A class for submissions to Reddit."""
     def __init__(self, reddit_session, json_dict):
         super(Submission, self).__init__(reddit_session, json_dict)
@@ -602,7 +592,7 @@ class Subreddit(RedditContentObject):
         return self.reddit_session.get_reports(self, *args, **kwargs)
 
     def get_spam(self, *args, **kwargs):
-        """Get the spam-filtered submissions/comments on the given subreddit."""
+        """Get the spam-filtered items on the given subreddit."""
         return self.reddit_session.get_spam(self, *args, **kwargs)
 
     def flair_list(self, *args, **kwargs):

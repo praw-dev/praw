@@ -344,7 +344,35 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find the recently sent reply.')
 
 
-class ModeratorTest(unittest.TestCase, AuthenticatedHelper):
+class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
+
+    def test_approve(self):
+        submission = self.subreddit.get_spam().next()
+        if not submission:
+            self.fail('Could not find a submission to approve.')
+        submission.approve()
+        for approved in self.subreddit.get_new_by_date():
+            if approved.id == submission.id:
+                break
+        else:
+            self.fail('Could not find approved submission.')
+
+    def test_remove(self):
+        submission = self.subreddit.get_new_by_date().next()
+        if not submission:
+            self.fail('Could not find a submission to remove.')
+        submission.remove()
+        for removed in self.subreddit.get_spam():
+            if removed.id == submission.id:
+                break
+        else:
+            self.fail('Could not find removed submission.')
+
+
+class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
@@ -509,30 +537,6 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
                 break
         else:
             self.fail('Could not find reported submission.')
-
-    def test_remove(self):
-        submission = self.sr.get_new_by_date()[0]
-        if not submission:
-            self.fail('Could not find a submission to remove.')
-        submission.remove()
-        # check if submission was removed
-        for removed in self.sr.get_spam():
-            if removed.id == submission.id:
-                break
-        else:
-            self.fail('Could not find removed submission.')
-
-    def test_approve(self):
-        submission = self.sr.get_spam()[0]
-        if not submission:
-            self.fail('Could not find a submission to approve.')
-        submission.approve()
-        # check if submission was approved
-        for approved in self.sr.get_new_by_date():
-            if approved.id == submission.id:
-                break
-        else:
-            self.fail('Could not find approved submission.')
 
 
 class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
