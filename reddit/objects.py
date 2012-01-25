@@ -144,10 +144,7 @@ class Deletable(RedditContentObject):
 
 
 class Distinguishable(RedditContentObject):
-    """Interface for Reddit content objects that can be distinguished.
-
-    Presently there is no way to verify a distinguished post.
-    """
+    """Interface for Reddit content objects that can be distinguished."""
     @require_login
     def distinguish(self):
         url = self.reddit_session.config['distinguish']
@@ -163,6 +160,20 @@ class Distinguishable(RedditContentObject):
                   'uh': self.reddit_session.modhash,
                   'api_type': 'json'}
         return self.reddit_session.request_json(url, params)
+
+
+class Editable(RedditContentObject):
+    """Interface for Reddit content objects that can be edited."""
+    def edit(self, text):
+        url = self.reddit_session.config['edit']
+        params = {'thing_id': self.content_id,
+                  'text': text,
+                  'uh': self.reddit_session.modhash,
+                  'api_type': 'json'}
+        response = self.reddit_session.request_json(url, params)
+        # pylint: disable-msg=E1101
+        _request.is_stale([self.reddit_session.config['user']])
+        return response
 
 
 class Inboxable(RedditContentObject):
@@ -251,8 +262,8 @@ class Voteable(RedditContentObject):
         return self.vote()
 
 
-class Comment(Approvable, Reportable, Deletable, Distinguishable, Inboxable,
-              Voteable):
+class Comment(Approvable, Editable, Reportable, Deletable, Distinguishable,
+              Inboxable, Voteable):
     """A class for comments."""
     def __init__(self, reddit_session, json_dict):
         super(Comment, self).__init__(reddit_session, json_dict,
