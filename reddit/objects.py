@@ -567,31 +567,19 @@ class Subreddit(RedditContentObject):
         else:
             return
 
-    def update_community_settings(self, title, description, language,
-                                  subreddit_type, content_options, over_18,
-                                  default_set, show_media, domain,
-                                  header_title):
-        """Update community settings for a subreddit
-
-        Ideally this method would allow you to only pass the values you wanted
-        changed, but there is no API method to read the values, so we can't do
-        that."""
-        if content_options not in ('any', 'link', 'self'):
-            raise ClientException("Unknown content_options: %s (must be one of"
-                                  " any/link/self)" % content_options)
-        elif subreddit_type not in ('public', 'restricted', 'private'):
-            raise ClientException("Unknown subreddit_type: %s (must be one of "
-                                  "public/restricted/private)"
-                                  % subreddit_type)
-
-        params = {'r': self.display_name,
+    def update_community_settings(self, title, description='', language='en',
+                                  subreddit_type='public',
+                                  content_options='any', over_18=False,
+                                  default_set=True, show_media=False,
+                                  domain='', header_hover_text=''):
+        params = {'r': str(self),
                   'sr': self.content_id,
                   'title': title,
                   'description': description,
                   'lang': language,
                   'type': subreddit_type,
                   'link_type': content_options,
-                  'header_title': header_title,
+                  'header-title': header_hover_text,
                   'over_18': 'on' if over_18 else 'off',
                   'allow_top': 'on' if default_set else 'off',
                   'show_media': 'on' if show_media else 'off',
