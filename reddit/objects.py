@@ -565,12 +565,12 @@ class Subreddit(RedditContentObject):
 
     def subscribe(self):
         """Subscribe to the given subreddit."""
-        # pylint: disable-msg=E1101
+        # pylint: disable-msg=W0212
         return self.reddit_session._subscribe(self.content_id)
 
     def unsubscribe(self):
         """Unsubscribe from the given subreddit."""
-        # pylint: disable-msg=E1101
+        # pylint: disable-msg=W0212
         return self.reddit_session._subscribe(self.content_id,
                                               unsubscribe=True)
 

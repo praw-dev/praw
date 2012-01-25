@@ -575,7 +575,6 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.fail('Could not find reddit in my_reddits.')
 
-
     def test_unsubscribe_and_verify(self):
         self.subreddit.unsubscribe()
         for subreddit in self.r.user.my_reddits():

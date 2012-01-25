@@ -40,8 +40,8 @@ class RequireCaptcha(object):
                 if captcha_id:
                     kwargs['captcha'] = self.get_captcha(captcha_id)
                 return self.func(*args, **kwargs)
-            except errors.BadCaptcha, e:
-                captcha_id = e.response['captcha']
+            except errors.BadCaptcha, exception:
+                captcha_id = exception.response['captcha']
 
     def get_captcha(self, captcha_id):
         url = urljoin(self.func.im_self.config['captcha'], captcha_id + '.png')

@@ -270,7 +270,7 @@ class SubredditExtension(BaseReddit):
     def _subscribe(self, sr_id=None, sr_name=None, unsubscribe=False):
         """Perform the (un)subscribe to the subreddit.
 
-        Provide either the subreddit_id (sr_id) or subreddit name (sr_name)."""
+        Provide either the subreddit id (sr_id) name (sr_name)."""
 
         if bool(sr_id) == bool(sr_name):
             raise TypeError('One (and only one) of text or url is required!')
@@ -282,8 +282,11 @@ class SubredditExtension(BaseReddit):
             params['sr'] = sr_id
         else:
             params['sr_name'] = sr_name
-        return self.request_json(self.config['subscribe'], params)
 
+        response = self.request_json(self.config['subscribe'], params)
+        # pylint: disable-msg=E1101,W0212
+        reddit.helpers._request.is_stale([self.config['my_reddits']])
+        return response
 
     @reddit.decorators.require_login
     def add_flair_template(self, subreddit, text, css_class, text_editable):
