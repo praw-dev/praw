@@ -83,14 +83,14 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 @Memoize
 @SleepAfter
 def _request(reddit_session, page_url, params=None, url_data=None):
+    if isinstance(page_url, unicode):
+        page_url = urllib.quote(page_url.encode('utf-8'), ':/')
     if url_data:
         page_url += '?' + urllib.urlencode(url_data)
     encoded_params = None
     if params:
         params = dict([k, v.encode('utf-8')] for k, v in params.items())
         encoded_params = urllib.urlencode(params)
-    if isinstance(page_url, unicode):
-        page_url = urllib.quote(page_url.encode('utf-8'), ':/')
     request = urllib2.Request(page_url, data=encoded_params,
                               headers=reddit_session.DEFAULT_HEADERS)
     # pylint: disable-msg=W0212

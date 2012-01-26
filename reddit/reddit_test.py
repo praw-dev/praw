@@ -127,6 +127,19 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(len(self.r.search_reddit_names('reddit')) > 0)
 
 
+class EncodingTest(unittest.TestCase, BasicHelper):
+    def setUp(self):
+        self.configure()
+
+    def test_author_encoding(self):
+        a1 = self.r.get_front_page().next().author  # pylint: disable-msg=E1101
+        a2 = self.r.get_redditor(str(a1))
+        self.assertEqual(a1, a2)
+        s1 = a1.get_submitted().next()
+        s2 = a2.get_submitted().next()
+        self.assertEqual(s1, s2)
+
+
 class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
