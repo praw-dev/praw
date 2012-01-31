@@ -557,6 +557,7 @@ class Subreddit(RedditContentObject):
     get_new = _get_sorter('new', sort='rising')
     get_top = _get_sorter('top', t='day')
     get_new_by_date = _get_sorter('new', sort='new')
+    get_comments = _get_section('comments')
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
                  fetch=False):

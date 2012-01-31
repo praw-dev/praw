@@ -218,6 +218,10 @@ class CommentOtherTest(unittest.TestCase, AuthenticatedHelper):
         item = self.r.user.get_comments().next()
         self.assertTrue(item.id in item.permalink)
 
+    def test_get_comments_permalink(self):
+        item = self.r.get_subreddit(self.sr).get_comments().next()
+        self.assertTrue(item.id in item.permalink)
+
 
 class FlairTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
