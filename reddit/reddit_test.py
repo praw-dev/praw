@@ -202,6 +202,23 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find the reply that was just posted.')
 
 
+class CommentOtherTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+
+    def test_inbox_permalink(self):
+        for item in self.r.user.get_inbox():
+            if isinstance(item, Comment):
+                self.assertTrue(item.id in item.permalink)
+                break
+        else:
+            self.fail('Could not find comment reply in inbox')
+
+    def test_user_comments_permalink(self):
+        item = self.r.user.get_comments().next()
+        self.assertTrue(item.id in item.permalink)
+
+
 class FlairTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
@@ -599,6 +616,11 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
                 break
         else:
             self.fail('Could not find moderated reddit in my_moderation.')
+
+    def test_my_reddits(self):
+        for subreddit in self.r.user.my_reddits():
+            # pylint: disable-msg=W0212
+            self.assertTrue(subreddit.display_name in subreddit._info_url)
 
     def test_subscribe_and_verify(self):
         self.subreddit.subscribe()

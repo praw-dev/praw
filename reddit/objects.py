@@ -25,7 +25,7 @@ from reddit.util import limit_chars
 class RedditContentObject(object):
     """Base class that  represents actual reddit objects."""
     def __init__(self, reddit_session, json_dict=None, fetch=True,
-                 info_url=None):
+                 info_url=None, underscore_names=None):
         """
         Create a new object from the dict of attributes returned by the API.
 
@@ -38,6 +38,7 @@ class RedditContentObject(object):
         else:
             self._info_url = reddit_session.config['info']
         self.reddit_session = reddit_session
+        self._underscore_names = underscore_names
         self._populated = self._populate(json_dict, fetch)
 
     def _populate(self, json_dict, fetch):
@@ -47,6 +48,8 @@ class RedditContentObject(object):
             else:
                 json_dict = {}
         for name, value in json_dict.iteritems():
+            if self._underscore_names and name in self._underscore_names:
+                name = '_' + name
             setattr(self, name, value)
         return bool(json_dict) or fetch
 
@@ -238,12 +241,15 @@ class Comment(Approvable, Reportable, Deletable, Distinguishable, Inboxable,
               Voteable):
     """A class for comments."""
     def __init__(self, reddit_session, json_dict):
-        super(Comment, self).__init__(reddit_session, json_dict)
-        if self.replies:
-            self.replies = self.replies['data']['children']
+        super(Comment, self).__init__(reddit_session, json_dict,
+                                      underscore_names=['replies'])
+        if self._replies:
+            self._replies = self._replies['data']['children']
+        elif hasattr(self, 'context'):  # Comment not from submission
+            self._replies = None
         else:
-            self.replies = []
-        self.submission = None
+            self._replies = []
+        self._submission = None
 
     @limit_chars()
     def __str__(self):
@@ -257,12 +263,30 @@ class Comment(Approvable, Reportable, Deletable, Distinguishable, Inboxable,
     def permalink(self):
         return urljoin(self.submission.permalink, self.id)
 
+    @property
+    def replies(self):
+        if self._replies is None:
+            response = self.reddit_session.request_json(self.permalink)
+            # pylint: disable-msg=W0212
+            self._replies = response[1]['data']['children'][0]._replies
+        return self._replies
+
+    @property
+    def submission(self):
+        if not self._submission:  # Comment not from submission
+            if hasattr(self, 'link_id'):  # from user comments page
+                sid = self.link_id.split('_')[1]
+            else:  # from user inbox
+                sid = self.context.split('/')[4]
+            self._submission = self.reddit_session.get_submission(None, sid)
+        return self._submission
+
     def _update_submission(self, submission):
         """Submission isn't set on __init__ thus we need to update it."""
         # pylint: disable-msg=W0212
         submission._comments_by_id[self.name] = self
-        self.submission = submission
-        for reply in self.replies:
+        self._submission = submission
+        for reply in self._replies:
             reply._update_submission(submission)
 
 
@@ -536,17 +560,15 @@ class Subreddit(RedditContentObject):
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
                  fetch=False):
-        info_url = (reddit_session.config['subreddit_about'] %
-                    subreddit_name)
-        super(Subreddit, self).__init__(reddit_session, json_dict, fetch,
-                                        info_url)
-
         # Special case for when my_reddits is called as no name is returned so
         # we have to extract the name from the URL.  The URLs are returned as:
         # /r/reddit_name/
         if not subreddit_name:
-            subreddit_name = self.url.split('/')[2]
+            subreddit_name = json_dict['url'].split('/')[2]
 
+        info_url = reddit_session.config['subreddit_about'] % subreddit_name
+        super(Subreddit, self).__init__(reddit_session, json_dict, fetch,
+                                        info_url)
         self.display_name = subreddit_name
         self._url = reddit_session.config['subreddit'] % subreddit_name
 
