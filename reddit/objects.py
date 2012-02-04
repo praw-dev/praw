@@ -323,6 +323,9 @@ class MoreComments(RedditContentObject):
                       'api_type': 'json'}
             url = self.reddit_session.config['morechildren']
             response = self.reddit_session.request_json(url, params)
+            if not response or 'data' not in response:
+                # Generate a blank response if request_json fails
+                response = {'data': {'things'}: []}
             self._comments = response['data']['things']
             for comment in self._comments:
                 # pylint: disable-msg=W0212
