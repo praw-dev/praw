@@ -124,6 +124,7 @@ class Config(object):  # pylint: disable-msg=R0903
 class BaseReddit(object):
     """The base class for a reddit session."""
     DEFAULT_HEADERS = {}
+    RETRY_CODES = [502, 503, 504]
 
     def __init__(self, user_agent, site_name=None):
         """
@@ -164,7 +165,8 @@ class BaseReddit(object):
                                                url_data)
             except urllib2.HTTPError, error:
                 remaining_attempts -= 1
-                if error.code != 504 or remaining_attempts == 0:
+                if (error.code not in self.RETRY_CODES or
+                    remaining_attempts == 0):
                     raise
 
     def _json_reddit_objecter(self, json_data):
