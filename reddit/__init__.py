@@ -19,6 +19,7 @@ import warnings
 import urllib2
 import urlparse
 import json
+import httplib
 
 import reddit.decorators
 import reddit.errors
@@ -167,6 +168,10 @@ class BaseReddit(object):
                 remaining_attempts -= 1
                 if (error.code not in self.RETRY_CODES or
                     remaining_attempts == 0):
+                    raise
+            except httplib.IncompleteRead:
+                remaining_attempts -=1
+                if remaining_attempts == 0:
                     raise
 
     def _json_reddit_objecter(self, json_data):
