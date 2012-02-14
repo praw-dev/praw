@@ -13,14 +13,16 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-from urlparse import urljoin
+try:
+    from urlparse import urljoin
+except:
+    from urllib.parse import urljoin
 
 from reddit.decorators import require_login
 from reddit.errors import ClientException
 from reddit.helpers import _get_section, _get_sorter, _modify_relationship
 from reddit.helpers import _request
 from reddit.util import limit_chars
-
 
 class RedditContentObject(object):
     """Base class that  represents actual reddit objects."""
@@ -47,7 +49,7 @@ class RedditContentObject(object):
                 json_dict = self._get_json_dict()
             else:
                 json_dict = {}
-        for name, value in json_dict.iteritems():
+        for name, value in json_dict.items():
             if self._underscore_names and name in self._underscore_names:
                 name = '_' + name
             setattr(self, name, value)

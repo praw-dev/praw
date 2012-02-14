@@ -12,8 +12,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
+try:
+    import ConfigParser
+except ImportError:
+    import configparser as ConfigParser
 
-import ConfigParser
 import os
 import sys
 

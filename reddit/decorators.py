@@ -16,10 +16,15 @@
 import time
 import warnings
 from functools import wraps
-from urlparse import urljoin
+
+try:
+    from urlparse import urljoin
+except ImportError:
+    from urllib.parse import urljoin
+
+from __future__ import print_function
 
 from reddit import errors
-
 
 class RequireCaptcha(object):
     """Decorator for methods that require captchas."""
@@ -40,12 +45,12 @@ class RequireCaptcha(object):
                 if captcha_id:
                     kwargs['captcha'] = self.get_captcha(captcha_id)
                 return self.func(*args, **kwargs)
-            except errors.BadCaptcha, exception:
+            except errors.BadCaptcha as exception:
                 captcha_id = exception.response['captcha']
 
     def get_captcha(self, captcha_id):
         url = urljoin(self.func.im_self.config['captcha'], captcha_id + '.png')
-        print 'Captcha URL: ' + url
+        print ('Captcha URL: ' + url)
         captcha = raw_input('Captcha: ')
         return {'iden': captcha_id, 'captcha': captcha}
 

@@ -13,20 +13,34 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-import cookielib
+try:
+    import cookielib
+except ImportError:
+    import http.cookiejar as cookielib
+
 import os
 import warnings
-import urllib2
-import urlparse
-import json
-import httplib
 
+try:
+    from urllib2 import HTTPCookieProcessor, build_opener, HTTPError
+    from urlparse import urljoin
+except ImportError:
+    from urllib.request import build_opener, HTTPCookieProcessor
+    from urllib.parse import urljoin
+    from urllib.error import HTTPError
+    from http.client import IncompleteRead
+
+import json
 import reddit.decorators
 import reddit.errors
 import reddit.helpers
 import reddit.objects
 
 from reddit.settings import CONFIG
+
+import sys
+if sys.version>'3':
+    raw_input=input
 
 
 VERSION = '1.2.5'
@@ -118,8 +132,8 @@ class Config(object):  # pylint: disable-msg=R0903
     def __getitem__(self, key):
         """Return the URL for key"""
         if self._ssl_url and key in self.SSL_PATHS:
-            return urlparse.urljoin(self._ssl_url, self.API_PATHS[key])
-        return urlparse.urljoin(self._site_url, self.API_PATHS[key])
+            return urljoin(self._ssl_url, self.API_PATHS[key])
+        return urljoin(self._site_url, self.API_PATHS[key])
 
 
 class BaseReddit(object):
@@ -141,9 +155,8 @@ class BaseReddit(object):
         self.DEFAULT_HEADERS['User-agent'] = user_agent
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
 
-        _cookie_jar = cookielib.CookieJar()
-        self._opener = urllib2.build_opener(
-            urllib2.HTTPCookieProcessor(_cookie_jar))
+        _cookie_jar = CookieJar()
+        self._opener = build_opener(HTTPCookieProcessor(_cookie_jar))
 
         self.modhash = self.user = None
 
@@ -164,12 +177,12 @@ class BaseReddit(object):
             try:
                 return reddit.helpers._request(self, page_url, params,
                                                url_data)
-            except urllib2.HTTPError, error:
+            except HTTPError as error:
                 remaining_attempts -= 1
                 if (error.code not in self.RETRY_CODES or
                     remaining_attempts == 0):
                     raise
-            except httplib.IncompleteRead:
+            except IncompleteRead:
                 remaining_attempts -=1
                 if remaining_attempts == 0:
                     raise
@@ -526,7 +539,7 @@ class LoggedInExtension(BaseReddit):
         what's provided in the config file."""
         if password and not username:
             raise Exception('Username must be provided when password is.')
-
+        # TODO: raw_input is undefined in python3
         user = username or self.config.user or raw_input('Username: ')
         if username and username == self.config.user:
             pswd = password or self.config.pswd
@@ -577,7 +590,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         if bool(url) == bool(submission_id):
             raise TypeError('One (and only one) of id or url is required!')
         if submission_id:
-            url = urlparse.urljoin(self.config['comments'], submission_id)
+            url = urljoin(self.config['comments'], submission_id)
         submission_info, comment_info = self.request_json(url)
         submission = submission_info['data']['children'][0]
         submission.comments = comment_info['data']['children']

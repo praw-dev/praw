@@ -15,7 +15,14 @@
 
 import urllib
 import urllib2
-from urlparse import urljoin
+
+try:
+    from urllib import quote, urlencode
+    from urllib2 import Request
+    from urlparse import urljoin
+except ImportError:
+    from urllib.request import Request
+    from urllib.parse import urljoin, urlencode, quote
 
 from reddit.decorators import SleepAfter, require_login
 from reddit.util import Memoize
@@ -84,14 +91,14 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 @SleepAfter
 def _request(reddit_session, page_url, params=None, url_data=None):
     if isinstance(page_url, unicode):
-        page_url = urllib.quote(page_url.encode('utf-8'), ':/')
+        page_url = quote(page_url.encode('utf-8'), ':/')
     if url_data:
-        page_url += '?' + urllib.urlencode(url_data)
+        page_url += '?' + urlencode(url_data)
     encoded_params = None
     if params:
         params = dict([k, v.encode('utf-8')] for k, v in params.items())
-        encoded_params = urllib.urlencode(params)
-    request = urllib2.Request(page_url, data=encoded_params,
+        encoded_params = urlencode(params)
+    request = Request(page_url, data=encoded_params,
                               headers=reddit_session.DEFAULT_HEADERS)
     # pylint: disable-msg=W0212
     response = reddit_session._opener.open(request)

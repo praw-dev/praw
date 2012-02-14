@@ -22,22 +22,31 @@ import time
 import unittest
 import uuid
 import warnings
-from urlparse import urljoin
-from urllib2 import HTTPError
+import sys
+
+try:
+    from urlparse import urljoin
+    from urllib2 import HTTPError
+except AttributeError:
+    from urllib.parse import urljoin
+    from urllib.error import HTTPError
 
 from reddit import Reddit, errors, VERSION
 from reddit.objects import Comment, LoggedInRedditor, Message, MoreComments
 
 USER_AGENT = 'reddit_api test suite %s' % VERSION
 
+if sys.version< '3':
+    def next(gen):#Next
+        return gen.next()
 
 def flair_diff(root, other):
     """Function for comparing two flairlists supporting optional arguments."""
-    keys = [u'user', u'flair_text', u'flair_css_class']
-    root_items = set(tuple(item[key] if key in item and item[key] else u'' for
-                           key in keys) for item in root)
-    other_items = set(tuple(item[key] if key in item and item[key] else u'' for
-                            key in keys) for item in other)
+    keys = ['user', 'flair_text', 'flair_css_class']
+    root_items = set(tuple(item[key] if key in item and item[key] else '' for
+    key in keys) for item in root)
+    other_items = set(tuple(item[key] if key in item and item[key] else '' for
+    key in keys) for item in other)
     return list(root_items - other_items)
 
 
@@ -73,8 +82,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
             url = self.url('/r/reddit_test9/comments/1a/')
         comments = self.r.get_submission(url=url).comments
         self.assertFalse([item for item in comments if not
-                          (isinstance(item, Comment) or
-                           isinstance(item, MoreComments))])
+        (isinstance(item, Comment) or
+         isinstance(item, MoreComments))])
 
     def test_get_all_comments(self):
         num = 50
@@ -108,7 +117,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
             url = 'http://imgur.com/Vr8ZZ'
         else:
             url = 'http://google.com/?q=82.1753988563'
-        found_link = self.r.info(url).next()  # pylint: disable-msg=E1101
+        found_link = next(self.r.info(url))  # pylint: disable-msg=E1101
         found_by_id = self.r.info(thing_id=found_link.content_id)
         self.assertTrue(found_by_id)
         self.assertTrue(found_link in found_by_id)
@@ -135,8 +144,8 @@ class EncodingTest(unittest.TestCase, BasicHelper):
         a1 = self.r.get_front_page().next().author  # pylint: disable-msg=E1101
         a2 = self.r.get_redditor(str(a1))
         self.assertEqual(a1, a2)
-        s1 = a1.get_submitted().next()
-        s2 = a2.get_submitted().next()
+        s1 = next(a1.get_submitted())
+        s2 = next(a2.get_submitted())
         self.assertEqual(s1, s2)
 
 
@@ -169,7 +178,7 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
     def test_add_comment_and_verify(self):
         text = 'Unique comment: %s' % uuid.uuid4()
         # pylint: disable-msg=E1101
-        submission = self.subreddit.get_new_by_date().next()
+        submission = next(self.subreddit.get_new_by_date())
         # pylint: enable-msg=E1101
         self.assertTrue(submission.add_comment(text))
         # reload the submission
@@ -215,11 +224,11 @@ class CommentOtherTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find comment reply in inbox')
 
     def test_user_comments_permalink(self):
-        item = self.r.user.get_comments().next()
+        item = next(self.r.user.get_comments())
         self.assertTrue(item.id in item.permalink)
 
     def test_get_comments_permalink(self):
-        item = self.r.get_subreddit(self.sr).get_comments().next()
+        item = next(self.r.get_subreddit(self.sr).get_comments())
         self.assertTrue(item.id in item.permalink)
 
 
@@ -249,17 +258,17 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual([], list(self.subreddit.flair_list()))
 
         # Set flair
-        flair_mapping = [{u'user':'bboe', u'flair_text':u'dev'},
-                         {u'user':u'PyAPITestUser2', u'flair_css_class':u'xx'},
-                         {u'user':u'PyAPITestUser3', u'flair_text':u'AWESOME',
-                          u'flair_css_class':u'css'}]
+        flair_mapping = [{'user':'bboe', 'flair_text':'dev'},
+                {'user':'PyAPITestUser2', 'flair_css_class':'xx'},
+                {'user':'PyAPITestUser3', 'flair_text':'AWESOME',
+                 'flair_css_class':'css'}]
         self.subreddit.set_flair_csv(flair_mapping)
         self.assertEqual([], flair_diff(flair_mapping,
                                         list(self.subreddit.flair_list())))
 
     def test_flair_csv_optional_args(self):
         flair_mapping = [{'user': 'bboe', 'flair_text': 'bboe'},
-                         {'user': 'pyapitestuser3', 'flair_css_class': 'blah'}]
+                {'user': 'pyapitestuser3', 'flair_css_class': 'blah'}]
         self.subreddit.set_flair_csv(flair_mapping)
 
     def test_flair_csv_empty(self):
@@ -331,7 +340,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
     def test_mark_as_read(self):
         oth = Reddit(USER_AGENT)
         oth.login('PyApiTestUser3', '1111')
-        msg = oth.user.get_unread(limit=1).next()  # pylint: disable-msg=E1101
+        msg = next(oth.user.get_unread(limit=1))  # pylint: disable-msg=E1101
         msg.mark_as_read()
         self.assertTrue(msg not in oth.user.get_unread(limit=5))
 
@@ -384,7 +393,7 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     def test_approve(self):
-        submission = self.subreddit.get_spam().next()
+        submission = next(self.subreddit.get_spam())
         if not submission:
             self.fail('Could not find a submission to approve.')
         submission.approve()
@@ -395,7 +404,7 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find approved submission.')
 
     def test_remove(self):
-        submission = self.subreddit.get_new_by_date().next()
+        submission = next(self.subreddit.get_new_by_date())
         if not submission:
             self.fail('Could not find a submission to remove.')
         submission.remove()
@@ -469,7 +478,7 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         try:
             passed = False
             self.r.clear_flair_templates(self.sr)
-        except HTTPError, e:
+        except HTTPError as e:
             if e.code == 403:
                 passed = True
         if not passed:
