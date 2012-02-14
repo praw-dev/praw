@@ -12,9 +12,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import unicode_literals
 
-import urllib
-import urllib2
+import sys
 
 try:
     from urllib import quote, urlencode
@@ -27,6 +27,8 @@ except ImportError:
 from reddit.decorators import SleepAfter, require_login
 from reddit.util import Memoize
 
+if sys.version >'3':
+    unicode=str
 
 def _get_section(subpath=''):
     """

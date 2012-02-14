@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+
 import time
 import warnings
 from functools import wraps
@@ -21,8 +23,6 @@ try:
     from urlparse import urljoin
 except ImportError:
     from urllib.parse import urljoin
-
-from __future__ import print_function
 
 from reddit import errors
 

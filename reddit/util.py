@@ -16,7 +16,6 @@
 import time
 from functools import wraps
 
-
 class Memoize(object):
     """
     Simple memoize decorator with timeout, providing a way to prune out cached
@@ -45,8 +44,8 @@ class Memoize(object):
 
     def clear_timeouts(self, call_time, cache_timeout):
         """Clears the _caches of results which have timed out."""
-        need_clearing = (k for k, v in self._timeouts.items()
-                                    if call_time - v > cache_timeout)
+        need_clearing = (k for k, v in list(self._timeouts.items())
+                                if call_time - v > cache_timeout)
         for k in need_clearing:
             try:
                 del self._cache[k]

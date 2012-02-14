@@ -155,7 +155,7 @@ class BaseReddit(object):
         self.DEFAULT_HEADERS['User-agent'] = user_agent
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
 
-        _cookie_jar = CookieJar()
+        _cookie_jar = cookielib.CookieJar()
         self._opener = build_opener(HTTPCookieProcessor(_cookie_jar))
 
         self.modhash = self.user = None
@@ -539,7 +539,6 @@ class LoggedInExtension(BaseReddit):
         what's provided in the config file."""
         if password and not username:
             raise Exception('Username must be provided when password is.')
-        # TODO: raw_input is undefined in python3
         user = username or self.config.user or raw_input('Username: ')
         if username and username == self.config.user:
             pswd = password or self.config.pswd
