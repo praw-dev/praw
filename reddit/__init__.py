@@ -12,6 +12,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import unicode_literals
 
 try:
     import cookielib
@@ -149,9 +150,9 @@ class BaseReddit(object):
         environment variable REDDIT_SITE. It if is not found there, the default
         site name `reddit` will be used.
         """
-
-        if not isinstance(user_agent, str):
-            raise TypeError('User agent must be a string.')
+        #Breaks 3.2 support:
+        #if not isinstance(user_agent, str):
+        #   raise TypeError('User agent must be a string.')
         self.DEFAULT_HEADERS['User-agent'] = user_agent
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
 
@@ -285,8 +286,10 @@ class BaseReddit(object):
             hook = self._json_reddit_objecter
         else:
             hook = None
-        return json.loads(response, object_hook=hook)
-
+        try:
+            return json.loads(response, object_hook=hook)
+        except TypeError:
+            return json.loads(response.decode('utf-8'), object_hook=hook)
 
 class SubredditExtension(BaseReddit):
     def __init__(self, *args, **kwargs):

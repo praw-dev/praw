@@ -142,7 +142,7 @@ class EncodingTest(unittest.TestCase, BasicHelper):
         self.configure()
 
     def test_author_encoding(self):
-        a1 = self.r.get_front_page().next().author  # pylint: disable-msg=E1101
+        a1 = next(self.r.get_front_page()).author  # pylint: disable-msg=E1101
         a2 = self.r.get_redditor(str(a1))
         self.assertEqual(a1, a2)
         s1 = next(a1.get_submitted())

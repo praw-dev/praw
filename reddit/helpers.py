@@ -99,7 +99,7 @@ def _request(reddit_session, page_url, params=None, url_data=None):
     encoded_params = None
     if params:
         params = dict([k, v.encode('utf-8')] for k, v in params.items())
-        encoded_params = urlencode(params)
+        encoded_params = urlencode(params).encode()
     request = Request(page_url, data=encoded_params,
                               headers=reddit_session.DEFAULT_HEADERS)
     # pylint: disable-msg=W0212
