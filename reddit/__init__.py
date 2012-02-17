@@ -14,12 +14,12 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 import cookielib
+import httplib
+import json
 import os
 import warnings
 import urllib2
 import urlparse
-import json
-import httplib
 
 import reddit.decorators
 import reddit.errors
@@ -29,7 +29,7 @@ import reddit.objects
 from reddit.settings import CONFIG
 
 
-VERSION = '1.2.5'
+VERSION = '1.2.6'
 
 
 class Config(object):  # pylint: disable-msg=R0903
@@ -170,7 +170,7 @@ class BaseReddit(object):
                     remaining_attempts == 0):
                     raise
             except httplib.IncompleteRead:
-                remaining_attempts -=1
+                remaining_attempts -= 1
                 if remaining_attempts == 0:
                     raise
 
