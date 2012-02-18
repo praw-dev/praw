@@ -14,6 +14,7 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 import inspect
+import re
 import sys
 
 
@@ -88,6 +89,19 @@ class NotLoggedIn(APIException):
 class RateLimitExceeded(APIException):
     """An exception for when something wrong has happened too many times."""
     ERROR_TYPE = 'RATELIMIT'
+    MINUTES_RE = re.compile('(\d+) minutes')
+    SECONDS_RE = re.compile('(\d+) seconds')
+
+    @property
+    def sleep_time(self):
+        match = self.MINUTES_RE.search(self.message)
+        if match:
+            return int(match.group(1)) * 60
+        match = self.SECONDS_RE.search(self.message)
+        if match:
+            return int(match.group(1))
+        # This should never happen
+        assert False
 
 
 def _build_error_mapping():
