@@ -136,8 +136,8 @@ class BaseReddit(object):
         site name `reddit` will be used.
         """
 
-        if not isinstance(user_agent, str):
-            raise TypeError('User agent must be a string.')
+        if not user_agent or not isinstance(user_agent, str):
+            raise TypeError('User agent must be a non-empty string.')
         self.DEFAULT_HEADERS['User-agent'] = user_agent
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
 
