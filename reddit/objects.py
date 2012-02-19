@@ -310,11 +310,15 @@ class MoreComments(RedditContentObject):
         self.submission = None
         self._comments = None
 
+    def __str__(self):
+        return ('[More Comments: %s]' % ','.join(self.children)).encode('utf8')
+
+    @property
+    def is_valid(self):
+        return len(self.children) > 0
+
     def _update_submission(self, submission):
         self.submission = submission
-
-    def __str__(self):
-        return '[More Comments]'.encode('utf8')
 
     def comments(self):
         """Use this to fetch the comments for a single MoreComments object."""
@@ -462,7 +466,7 @@ class Submission(Approvable, Deletable, Distinguishable, Reportable, Saveable,
 
         results = []
         url = self.reddit_session.config['morechildren']
-        for comment_ids in [x.children for x in more_comments]:
+        for comment_ids in [x.children for x in more_comments if x.is_valid]:
             ids = ','.join(comment_ids)
             params = {'children': ids,
                       'link_id': self.content_id,

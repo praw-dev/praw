@@ -132,6 +132,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_require_user_agent(self):
         self.assertRaises(TypeError, Reddit, user_agent=None)
+        self.assertRaises(TypeError, Reddit, user_agent='')
+        self.assertRaises(TypeError, Reddit, user_agent=1)
 
     def test_search_reddit_names(self):
         self.assertTrue(len(self.r.search_reddit_names('reddit')) > 0)
