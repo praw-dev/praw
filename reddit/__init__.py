@@ -106,6 +106,7 @@ class Config(object):  # pylint: disable-msg=R0903
                               self.by_kind.items())
         self.by_object[reddit.objects.LoggedInRedditor] = obj['redditor_kind']
         self.cache_timeout = float(obj['cache_timeout'])
+        self.timeout = float(obj['timeout'])
         self.default_content_limit = int(obj['default_content_limit'])
         self.domain = obj['domain']
         try:
@@ -150,7 +151,7 @@ class BaseReddit(object):
     def __str__(self):
         return 'Open Session (%s)' % (self.user or 'Unauthenticated')
 
-    def _request(self, page_url, params=None, url_data=None):
+    def _request(self, page_url, params=None, url_data=None, timeout=None):
         """Given a page url and a dict of params, opens and returns the page.
 
         :param page_url: the url to grab content from.
@@ -159,11 +160,12 @@ class BaseReddit(object):
         :returns: the open page
         """
         # pylint: disable-msg=W0212
+        timeout = self.config.timeout if timeout is None else timeout
         remaining_attempts = 3
         while True:
             try:
                 return reddit.helpers._request(self, page_url, params,
-                                               url_data)
+                                               url_data, timeout)
             except urllib2.HTTPError, error:
                 remaining_attempts -= 1
                 if (error.code not in self.RETRY_CODES or

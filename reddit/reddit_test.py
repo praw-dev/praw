@@ -23,9 +23,9 @@ import unittest
 import uuid
 import warnings
 from urlparse import urljoin
-from urllib2 import HTTPError
+from urllib2 import HTTPError, URLError
 
-from reddit import Reddit, errors, VERSION
+from reddit import Reddit, errors, helpers, VERSION
 from reddit.objects import Comment, LoggedInRedditor, Message, MoreComments
 
 USER_AGENT = 'reddit_api test suite %s' % VERSION
@@ -127,6 +127,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_search_reddit_names(self):
         self.assertTrue(len(self.r.search_reddit_names('reddit')) > 0)
+
+    def test_timeout(self):
+        self.assertRaises(URLError,
+                          helpers._request, self.r, self.r.config['comments'], timeout=0.001)
 
 
 class EncodingTest(unittest.TestCase, BasicHelper):
