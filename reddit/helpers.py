@@ -82,7 +82,11 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 
 @Memoize
 @SleepAfter
-def _request(reddit_session, page_url, params=None, url_data=None):
+def _request(
+        reddit_session, page_url,
+        params=None, url_data=None,
+        timeout=45
+        ):
     if isinstance(page_url, unicode):
         page_url = urllib.quote(page_url.encode('utf-8'), ':/')
     if url_data:
@@ -94,5 +98,5 @@ def _request(reddit_session, page_url, params=None, url_data=None):
     request = urllib2.Request(page_url, data=encoded_params,
                               headers=reddit_session.DEFAULT_HEADERS)
     # pylint: disable-msg=W0212
-    response = reddit_session._opener.open(request)
+    response = reddit_session._opener.open(request, timeout=timeout)
     return response.read()
