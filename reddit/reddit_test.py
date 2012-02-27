@@ -129,8 +129,9 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(len(self.r.search_reddit_names('reddit')) > 0)
 
     def test_timeout(self):
-        self.assertRaises(URLError,
-                          helpers._request, self.r, self.r.config['comments'], timeout=0.001)
+        # pylint: disable-msg=W0212
+        self.assertRaises(URLError, helpers._request, self.r,
+                          self.r.config['comments'], timeout=0.001)
 
 
 class EncodingTest(unittest.TestCase, BasicHelper):
