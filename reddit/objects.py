@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
+import warnings
 from urlparse import urljoin
 
 from reddit.decorators import require_login
@@ -311,26 +312,30 @@ class MoreComments(RedditContentObject):
     def __str__(self):
         return ('[More Comments: %s]' % ','.join(self.children)).encode('utf8')
 
-    @property
-    def is_valid(self):
-        return len(self.children) > 0
-
     def _update_submission(self, submission):
         self.submission = submission
 
-    def comments(self):
+    def comments(self, update=True):
         """Use this to fetch the comments for a single MoreComments object."""
         if not self._comments:
-            params = {'children': ','.join(self.children),
+            # pylint: disable-msg=W0212
+            children = [x for x in self.children if 't1_%s' % x
+                        not in self.submission._comments_by_id]
+            if not children:
+                return None
+            params = {'children': ','.join(children),
                       'link_id': self.submission.content_id,
                       'r': str(self.submission.subreddit),
                       'api_type': 'json'}
+            if self.reddit_session.config.comment_sort:
+                params['where'] = self.reddit_session.config.comment_sort
             url = self.reddit_session.config['morechildren']
             response = self.reddit_session.request_json(url, params)
             self._comments = response['data']['things']
-            for comment in self._comments:
-                # pylint: disable-msg=W0212
-                comment._update_submission(self.submission)
+            if update:
+                for comment in self._comments:
+                    # pylint: disable-msg=W0212
+                    comment._update_submission(self.submission)
         return self._comments
 
 
@@ -436,56 +441,101 @@ class Submission(Approvable, Deletable, Distinguishable, Reportable, Saveable,
         self._all_comments = False
         self._comments = None
         self._comments_flat = None
+        self._orphaned = {}
 
     def __str__(self):
         title = self.title.replace('\r\n', ' ').encode('utf-8')
         return '{0} :: {1}'.format(self.score, title)
 
-    def _extract_morecomments(self):
-        more_comments = []
+    @staticmethod
+    def get_info(reddit_session, url, comments_only=False):
+        url_data = {}
+        comment_limit = reddit_session.config.comment_limit
+        comment_sort = reddit_session.config.comment_sort
+        if comment_limit:
+            if reddit_session.user and reddit_session.user.is_gold:
+                limit_max = 1500
+            else:
+                limit_max = 500
+            if comment_limit > limit_max:
+                warnings.warn('comment_limit %d is too high (max: %d)'
+                              % (comment_limit, limit_max))
+                url_data['limit'] = limit_max
+            elif comment_limit < 0:
+                url_data['limit'] = limit_max
+            else:
+                url_data['limit'] = comment_limit
+        if comment_sort:
+            url_data['sort'] = comment_sort
+        s_info, c_info = reddit_session.request_json(url, url_data=url_data)
+        if comments_only:
+            return c_info['data']['children']
+        submission = s_info['data']['children'][0]
+        submission.comments = c_info['data']['children']
+        return submission
+
+    def _add_comment(self, comment):
+        assert len(comment.replies) == 0
+        if comment.name in self._comments_by_id:  # Skip existing comments
+            return
+
+        comment._update_submission(self)  # pylint: disable-msg=W0212
+
+        if comment.name in self._orphaned:  # Reunite children with parent
+            comment.replies.extend(self._orphaned[comment.name])
+            del self._orphaned[comment.name]
+
+        if comment.parent_id == self.content_id:  # Top-level comment
+            self._comments.append(comment)
+        elif comment.parent_id in self._comments_by_id:
+            self._comments_by_id[comment.parent_id].replies.append(comment)
+        else:  # Orphan
+            if comment.parent_id in self._orphaned:
+                self._orphaned[comment.parent_id].append(comment)
+            else:
+                self._orphaned[comment.parent_id] = [comment]
+
+    def _replace_more_comments(self):
         queue = [(None, x) for x in self.comments]
+        remaining = self.reddit_session.config.more_comments_max
+        if remaining < 0:
+            remaining = None
+        skipped = []
+
         while len(queue) > 0:
             parent, comm = queue.pop(0)
             if isinstance(comm, MoreComments):
-                more_comments.append(comm)
                 if parent:
                     parent.replies.remove(comm)
-                else:
+                elif parent is None:
                     self._comments.remove(comm)
+
+                # Skip after reaching the limit
+                if remaining is not None and remaining <= 0:
+                    skipped.append(comm)
+                    continue
+
+                new_comments = comm.comments(update=False)
+
+                # Don't count if no request was made
+                if new_comments is None:
+                    continue
+                elif remaining is not None:
+                    remaining -= 1
+
+                for comment in new_comments:
+                    if isinstance(comment, MoreComments):
+                        # pylint: disable-msg=W0212
+                        comment._update_submission(self)
+                        queue.insert(0, (0, comment))
+                    else:
+                        self._add_comment(comment)
             else:
-                queue[0:0] = [(comm, x) for x in comm.replies]
-        return more_comments
+                [queue.append((comm, x)) for x in comm.replies]
 
-    def _fetch_morecomments(self, more_comments):
-        """Fetch each more_comments object one at a time."""
-        if len(more_comments) > 10:
-            raise ClientException(('Fetching more than 10 MoreComment objects '
-                                   'is not supported at this time.'))
-
-        results = []
-        url = self.reddit_session.config['morechildren']
-        for comment_ids in [x.children for x in more_comments if x.is_valid]:
-            ids = ','.join(comment_ids)
-            params = {'children': ids,
-                      'link_id': self.content_id,
-                      'r': str(self.subreddit),
-                      'api_type': 'json'}
-            response = self.reddit_session.request_json(url, params)
-            results.extend(response['data']['things'])
-
-        for comment in results:
-            comment._update_submission(self)  # pylint: disable-msg=W0212
-            if isinstance(comment, MoreComments):
-                self._comments.append(comment)  # Handle in the next iteration
-            elif comment.parent_id == self.content_id:
-                assert len(comment.replies) == 0
-                assert comment not in self._comments
-                self._comments.append(comment)
-            else:
-                assert len(comment.replies) == 0
-                tmp = self._comments_by_id[comment.parent_id].replies
-                assert comment not in tmp
-                tmp.append(comment)
+        if skipped:
+            warnings.warn('Skipped %d more comments objects on %r' %
+                          (len(skipped), str(self)))
 
     def _update_comments(self, comments):
         self._comments = comments
@@ -493,26 +543,25 @@ class Submission(Approvable, Deletable, Distinguishable, Reportable, Saveable,
             comment._update_submission(self)  # pylint: disable-msg=W0212
 
     @property
-    def comments(self):
+    def comments(self):  # pylint: disable-msg=E0202
         if self._comments == None:
-            _, comment_info = self.reddit_session.request_json(self.permalink)
-            self._update_comments(comment_info['data']['children'])
+            self.comments = Submission.get_info(self.reddit_session,
+                                                self.permalink,
+                                                comments_only=True)
         return self._comments
 
     @comments.setter  # pylint: disable-msg=E1101
-    def comments(self, new_comments):  # pylint: disable-msg=E0102
+    def comments(self, new_comments):  # pylint: disable-msg=E0102,E0202
         self._update_comments(new_comments)
         self._all_comments = False
         self._comments_flat = None
+        self._orphaned = {}
 
     @property
     def all_comments(self):
         """Replace instances of MoreComments with the actual comments tree."""
         if not self._all_comments:
-            more_comments = self._extract_morecomments()
-            while more_comments:
-                self._fetch_morecomments(more_comments)
-                more_comments = self._extract_morecomments()
+            self._replace_more_comments()
             self._all_comments = True
             self._comments_flat = None
         return self._comments

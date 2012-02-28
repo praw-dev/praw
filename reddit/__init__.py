@@ -29,7 +29,7 @@ import reddit.objects
 from reddit.settings import CONFIG
 
 
-VERSION = '1.2.6'
+VERSION = '1.2.7'
 
 
 class Config(object):  # pylint: disable-msg=R0903
@@ -106,9 +106,12 @@ class Config(object):  # pylint: disable-msg=R0903
                               self.by_kind.items())
         self.by_object[reddit.objects.LoggedInRedditor] = obj['redditor_kind']
         self.cache_timeout = float(obj['cache_timeout'])
-        self.timeout = float(obj['timeout'])
+        self.comment_limit = int(obj['comment_limit'])
+        self.comment_sort = obj['comment_sort']
         self.default_content_limit = int(obj['default_content_limit'])
         self.domain = obj['domain']
+        self.more_comments_max = int(obj['more_comments_max'])
+        self.timeout = float(obj['timeout'])
         try:
             self.user = obj['user']
             self.pswd = obj['pswd']
@@ -559,11 +562,10 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
     def __init__(self, *args, **kwargs):
         super(Reddit, self).__init__(*args, **kwargs)
 
-    def get_all_comments(self, limit=0, place_holder=None):
+    def get_all_comments(self, *args, **kwargs):
         """Returns a listing from reddit.com/comments (which provides all of
         the most recent comments from all users to all submissions)."""
-        return self.get_content(self.config['comments'], limit=limit,
-                                place_holder=place_holder)
+        return self.get_content(self.config['comments'], *args, **kwargs)
 
     def get_front_page(self, limit=0):
         """Return the reddit front page. Login isn't required, but you'll only
@@ -580,10 +582,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
             raise TypeError('One (and only one) of id or url is required!')
         if submission_id:
             url = urlparse.urljoin(self.config['comments'], submission_id)
-        submission_info, comment_info = self.request_json(url)
-        submission = submission_info['data']['children'][0]
-        submission.comments = comment_info['data']['children']
-        return submission
+        return reddit.objects.Submission.get_info(self, url)
 
     def info(self, url=None, thing_id=None, limit=0):
         """
@@ -600,8 +599,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
                 url != self.config['reddit_url']):
                 warnings.warn('It looks like you may be trying to get the info'
                               ' of a self or internal link. This probably '
-                              'will not return any useful results!',
-                              UserWarning)
+                              'will not return any useful results!')
         else:
             params = {'id': thing_id}
         return self.get_content(self.config['info'], url_data=params,
