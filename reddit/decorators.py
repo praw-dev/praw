@@ -114,7 +114,8 @@ def parse_api_json_response(func):  # pylint: disable-msg=R0912
                 allowed = ('captcha', 'data', 'errors', 'kind', 'names',
                            'next', 'prev', 'users')
                 if k not in allowed:
-                    warnings.warn('Unknown return value key: %s' % k)
+                    warnings.warn_explicit('Unknown return value key: %s' % k,
+                                           UserWarning, '', 0)
             if 'errors' in return_value and return_value['errors']:
                 error_list = []
                 for error_type, msg, value in return_value['errors']:

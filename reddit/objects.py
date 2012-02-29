@@ -461,8 +461,9 @@ class Submission(Approvable, Deletable, Distinguishable, Reportable, Saveable,
             else:
                 limit_max = 500
             if comment_limit > limit_max:
-                warnings.warn('comment_limit %d is too high (max: %d)'
-                              % (comment_limit, limit_max))
+                warnings.warn_explicit('comment_limit %d is too high (max: %d)'
+                                       % (comment_limit, limit_max),
+                                       UserWarning, '', 0)
                 url_data['limit'] = limit_max
             elif comment_limit < 0:
                 url_data['limit'] = limit_max
@@ -537,8 +538,8 @@ class Submission(Approvable, Deletable, Distinguishable, Reportable, Saveable,
                 [queue.append((comm, x)) for x in comm.replies]
 
         if skipped:
-            warnings.warn('Skipped %d more comments objects on %r' %
-                          (len(skipped), str(self)))
+            warnings.warn_explicit('Skipped %d more comments objects on %r' %
+                                   (len(skipped), str(self)), UserWarning, '', 0)
 
     def _update_comments(self, comments):
         self._comments = comments
