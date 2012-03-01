@@ -16,7 +16,6 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 # pylint: disable-msg=C0103, R0903, R0904, W0201
-from __future__ import unicode_literals
 
 import random
 import time

@@ -21,10 +21,10 @@ except ImportError:
 import os
 import warnings
 
-
 try:
     from urllib2 import HTTPCookieProcessor, build_opener, HTTPError
     from urlparse import urljoin
+    from httplib import IncompleteRead
 except ImportError:
     from urllib.request import build_opener, HTTPCookieProcessor
     from urllib.parse import urljoin
@@ -41,8 +41,12 @@ from reddit.settings import CONFIG
 
 import sys
 if sys.version>'3':
+    python3=True
     raw_input=input
-
+else:
+    python3=False
+    class bytes():
+        pass
 
 VERSION = '1.2.6'
 
@@ -153,9 +157,8 @@ class BaseReddit(object):
         #Breaks 3.2 support:
         #if not isinstance(user_agent, str):
         #   raise TypeError('User agent must be a string.')
-
-        if not user_agent or not isinstance(user_agent, str):
-            raise TypeError('User agent must be a non-empty string.')
+        if not user_agent or not (isinstance(user_agent, str) or isinstance(user_agent,bytes)):
+            raise TypeError('User agent must be a non-empty string.  Received %s.' % type(user_agent))
 
         self.DEFAULT_HEADERS['User-agent'] = user_agent
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')

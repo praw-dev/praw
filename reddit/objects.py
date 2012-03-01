@@ -15,14 +15,21 @@
 
 try:
     from urlparse import urljoin
-except:
+except ImportError:
     from urllib.parse import urljoin
+
+import sys
 
 from reddit.decorators import require_login
 from reddit.errors import ClientException
 from reddit.helpers import _get_section, _get_sorter, _modify_relationship
 from reddit.helpers import _request
 from reddit.util import limit_chars
+
+if sys.version > '3':
+    python3 = True
+else:
+    python3 = False
 
 class RedditContentObject(object):
     """Base class that  represents actual reddit objects."""
@@ -255,7 +262,10 @@ class Comment(Approvable, Reportable, Deletable, Distinguishable, Inboxable,
 
     @limit_chars()
     def __str__(self):
-        return getattr(self, 'body', '[Unloaded Comment]').encode('utf8')
+        if not python3:
+            return getattr(self, 'body', '[Unloaded Comment]').encode('utf8')
+        else:
+            return getattr(self,'body','[Unloaded Comment]')
 
     @property
     def is_root(self):
@@ -311,7 +321,10 @@ class MoreComments(RedditContentObject):
         self._comments = None
 
     def __str__(self):
-        return ('[More Comments: %s]' % ','.join(self.children)).encode('utf8')
+        if not python3:
+            return ('[More Comments: %s]' % ','.join(self.children)).encode('utf8')
+        else:
+            return ('[More Comments: %s]' % ','.join(self.children))
 
     @property
     def is_valid(self):
@@ -353,7 +366,10 @@ class Redditor(RedditContentObject):
     @limit_chars()
     def __str__(self):
         """Display the user's name."""
-        return self.name.encode('utf8')
+        if not python3:
+            return self.name.encode('utf8')
+        else:
+            return self.name
 
     @require_login
     def compose_message(self, subject, message):
@@ -440,7 +456,10 @@ class Submission(Approvable, Deletable, Distinguishable, Reportable, Saveable,
         self._comments_flat = None
 
     def __str__(self):
-        title = self.title.replace('\r\n', ' ').encode('utf-8')
+        if not python3:
+            title = self.title.replace('\r\n', ' ').encode('utf-8')
+        else:
+            title = self.title.replace('\r\n',' ')
         return '{0} :: {1}'.format(self.score, title)
 
     def _extract_morecomments(self):
@@ -582,7 +601,10 @@ class Subreddit(RedditContentObject):
     @limit_chars()
     def __str__(self):
         """Display the subreddit name."""
-        return self.display_name.encode('utf8')
+        if not python3:
+            return self.display_name.encode('utf8')
+        else:
+            return self.display_name
 
     def add_flair_template(self, *args, **kwargs):
         """Adds a flair template to the subreddit."""
