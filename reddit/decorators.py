@@ -17,6 +17,7 @@ from __future__ import print_function
 
 import time
 import warnings
+import sys
 from functools import wraps
 
 try:
@@ -25,6 +26,14 @@ except ImportError:
     from urllib.parse import urljoin
 
 from reddit import errors
+
+if sys.version > '3':
+    python3 = True
+else:
+    python3 = False
+
+if python3:
+    raw_input=input
 
 class RequireCaptcha(object):
     """Decorator for methods that require captchas."""
