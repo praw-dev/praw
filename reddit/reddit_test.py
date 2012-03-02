@@ -234,10 +234,15 @@ class CommentOtherReplyTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
+    def test_front_page_comment_replies_are_none(self):
+        # pylint: disable-msg=E1101,W0212
+        self.assertEqual(self.r.get_all_comments().next()._replies, None)
+
     def test_inbox_comment_replies_are_none(self):
         for item in self.r.user.get_inbox():
             if isinstance(item, Comment):
-                assert item._replies == None  # pylint: disable-msg=W0212
+                # pylint: disable-msg=W0212
+                self.assertEqual(item._replies, None)
                 break
         else:
             self.fail('Could not find comment in inbox')
@@ -245,7 +250,8 @@ class CommentOtherReplyTest(unittest.TestCase, AuthenticatedHelper):
     def test_spambox_comments_replies_are_none(self):
         for item in self.r.get_subreddit(self.sr).get_spam():
             if isinstance(item, Comment):
-                assert item._replies == None  # pylint: disable-msg=W0212
+                # pylint: disable-msg=W0212
+                self.assertEqual(item._replies, None)
                 break
         else:
             self.fail('Could not find comment in spambox')
@@ -253,7 +259,8 @@ class CommentOtherReplyTest(unittest.TestCase, AuthenticatedHelper):
     def test_user_comment_replies_are_none(self):
         for item in self.r.get_redditor('pyapitestuser3').get_comments():
             if isinstance(item, Comment):
-                assert item._replies == None  # pylint: disable-msg=W0212
+                # pylint: disable-msg=W0212
+                self.assertEqual(item._replies, None)
                 break
         else:
             self.fail('Could not find comment on other user\'s list')
@@ -521,7 +528,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         submission.delete()
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
-        self.assertEqual('[deleted]', submission.author)
+        self.assertEqual(None, submission.author)
 
     def test_save(self):
         submission = None
