@@ -249,10 +249,10 @@ class Comment(Approvable, Reportable, Deletable, Distinguishable, Inboxable,
                                       underscore_names=['replies'])
         if self._replies:
             self._replies = self._replies['data']['children']
-        elif hasattr(self, 'context'):  # Comment not from submission
-            self._replies = None
-        else:
+        elif self._replies == '':  # Comment tree was built and there are none
             self._replies = []
+        else:
+            self._replies = None
         self._submission = None
 
     @limit_chars()
@@ -539,7 +539,8 @@ class Submission(Approvable, Deletable, Distinguishable, Reportable, Saveable,
 
         if skipped:
             warnings.warn_explicit('Skipped %d more comments objects on %r' %
-                                   (len(skipped), str(self)), UserWarning, '', 0)
+                                   (len(skipped), str(self)), UserWarning,
+                                   '', 0)
 
     def _update_comments(self, comments):
         self._comments = comments

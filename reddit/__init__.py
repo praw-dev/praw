@@ -189,8 +189,8 @@ class BaseReddit(object):
         except KeyError:
             if 'json' in json_data:
                 if len(json_data) != 1:
-                    warnings.warn_explicit('Unknown object type: %s' % json_data,
-                                           UserWarning, '', 0)
+                    warnings.warn_explicit('Unknown object type: %s' %
+                                           json_data, UserWarning, '', 0)
                 return json_data['json']
         else:
             return object_class.from_api_response(self, json_data['data'])
@@ -598,10 +598,10 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
             params = {'url': url}
             if (url.startswith(self.config['reddit_url']) and
                 url != self.config['reddit_url']):
-                warnings.warn_explicit('It looks like you may be trying to get the '
-                                       'info of a self or internal link. This probably'
-                                       ' will not return any useful results!',
-                                       UserWarning, '', 0)
+                msg = ('It looks like you may be trying to get the info of a '
+                       'self or internal link. This probably will not return '
+                       'any useful results!')
+                warnings.warn_explicit(msg, UserWarning, '', 0)
         else:
             params = {'id': thing_id}
         return self.get_content(self.config['info'], url_data=params,

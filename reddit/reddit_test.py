@@ -230,6 +230,35 @@ class CommentOtherTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(item.id in item.permalink)
 
 
+class CommentOtherReplyTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+
+    def test_inbox_comment_replies_are_none(self):
+        for item in self.r.user.get_inbox():
+            if isinstance(item, Comment):
+                assert item._replies == None  # pylint: disable-msg=W0212
+                break
+        else:
+            self.fail('Could not find comment in inbox')
+
+    def test_spambox_comments_replies_are_none(self):
+        for item in self.r.get_subreddit(self.sr).get_spam():
+            if isinstance(item, Comment):
+                assert item._replies == None  # pylint: disable-msg=W0212
+                break
+        else:
+            self.fail('Could not find comment in spambox')
+
+    def test_user_comment_replies_are_none(self):
+        for item in self.r.get_redditor('pyapitestuser3').get_comments():
+            if isinstance(item, Comment):
+                assert item._replies == None  # pylint: disable-msg=W0212
+                break
+        else:
+            self.fail('Could not find comment on other user\'s list')
+
+
 class FlairTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
