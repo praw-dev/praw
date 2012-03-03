@@ -43,7 +43,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'compose':             'api/compose/',
                  'contributors':        'r/%s/about/contributors',
                  'del':                 'api/del/',
-                 'distinguish':         '/api/distinguish/yes/',
+                 'distinguish':         'api/distinguish/yes/',
                  'feedback':            'api/feedback/',
                  'flair':               'api/flair/',
                  'flaircsv':            'api/flaircsv/',
@@ -69,6 +69,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'reports':             'r/%s/about/reports/',
                  'save':                'api/save/',
                  'saved':               'saved/',
+                 'search':              'r/%s/search/',
                  'search_reddit_names': 'api/search_reddit_names/',
                  'sent':                'message/sent/',
                  'site_admin':          'api/site_admin/',
@@ -622,6 +623,19 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         if captcha:
             params.update(captcha)
         return self.request_json(self.config['feedback'], params)
+
+    def search(self, query, subreddit=None, sort=None, limit=0, *args,
+               **kwargs):
+        url_data = {'q': query}
+        if sort:
+            url_data['sort'] = sort
+        if subreddit:
+            url_data['restrict_sr'] = 'on'
+            url = self.config['search'] % subreddit
+        else:
+            url = self.config['search'] % 'all'
+        return self.get_content(url, url_data=url_data, limit=limit, *args,
+                                **kwargs)
 
     def search_reddit_names(self, query):
         """Search the subreddits for a reddit whose name matches the query."""

@@ -125,6 +125,9 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertRaises(TypeError, Reddit, user_agent='')
         self.assertRaises(TypeError, Reddit, user_agent=1)
 
+    def test_search(self):
+        self.assertTrue(len(list(self.r.search('test'))) > 0)
+
     def test_search_reddit_names(self):
         self.assertTrue(len(self.r.search_reddit_names('reddit')) > 0)
 
@@ -668,6 +671,9 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         for subreddit in self.r.user.my_reddits():
             # pylint: disable-msg=W0212
             self.assertTrue(subreddit.display_name in subreddit._info_url)
+
+    def test_search(self):
+        self.assertTrue(len(list(self.subreddit.search('test'))) > 0)
 
     def test_subscribe_and_verify(self):
         self.subreddit.subscribe()

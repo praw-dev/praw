@@ -703,6 +703,10 @@ class Subreddit(RedditContentObject):
         """Return a list of flair for this subreddit."""
         return self.reddit_session.flair_list(self, *args, **kwargs)
 
+    def search(self, query, *args, **kwargs):
+        """Search this subreddit."""
+        return self.reddit_session.search(query, self, *args, **kwargs)
+
     def set_flair(self, *args, **kwargs):
         """Set flair for a particular user."""
         return self.reddit_session.set_flair(self, *args, **kwargs)
