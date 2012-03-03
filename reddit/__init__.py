@@ -29,7 +29,7 @@ import reddit.objects
 from reddit.settings import CONFIG
 
 
-VERSION = '1.2.7'
+VERSION = '1.2.8'
 
 
 class Config(object):  # pylint: disable-msg=R0903
@@ -462,7 +462,9 @@ class LoggedInExtension(BaseReddit):
                   'text': text,
                   'uh': self.modhash,
                   'api_type': 'json'}
-        return self.request_json(self.config['comment'], params)
+        data = self.request_json(self.config['comment'], params)
+        # REDDIT: Reddit's end should only ever return a single comment
+        return data['data']['things'][0]
 
     @reddit.decorators.require_login
     def _mark_as_read(self, thing_ids, unread=False):

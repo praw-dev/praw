@@ -18,7 +18,6 @@
 # pylint: disable-msg=C0103, R0903, R0904, W0201
 
 import random
-import time
 import unittest
 import uuid
 import warnings
@@ -181,15 +180,9 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
         # pylint: disable-msg=E1101
         submission = self.subreddit.get_new_by_date().next()
         # pylint: enable-msg=E1101
-        self.assertTrue(submission.add_comment(text))
-        # reload the submission
-        time.sleep(1)
-        submission = self.r.get_submission(url=submission.permalink)
-        for comment in submission.comments:
-            if comment.body == text:
-                break
-        else:
-            self.fail('Could not find comment that was just posted.')
+        comment = submission.add_comment(text)
+        self.assertEqual(comment.submission, submission)
+        self.assertEqual(comment.body, text)
 
     def test_add_reply_and_verify(self):
         text = 'Unique reply: %s' % uuid.uuid4()
@@ -201,15 +194,9 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
         if not found:
             self.fail('Could not find a submission with comments.')
         comment = found.comments[0]
-        self.assertTrue(comment.reply(text))
-        # reload the submission (use id to bypass cache)
-        time.sleep(1)
-        submission = self.r.get_submission(submission_id=found.id)
-        for comment in submission.comments[0].replies:
-            if comment.body == text:
-                break
-        else:
-            self.fail('Could not find the reply that was just posted.')
+        reply = comment.reply(text)
+        self.assertEqual(reply.parent_id, comment.content_id)
+        self.assertEqual(reply.body, text)
 
 
 class CommentOtherTest(unittest.TestCase, AuthenticatedHelper):
@@ -397,7 +384,12 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
     def test_mark_multiple_as_read(self):
         oth = Reddit(USER_AGENT)
         oth.login('PyApiTestUser3', '1111')
-        messages = list(oth.user.get_unread(limit=2))
+        messages = []
+        for msg in oth.user.get_unread(limit=None):
+            if msg.author != oth.user.name:
+                messages.append(msg)
+                if len(messages) >= 2:
+                    return
         self.assertEqual(2, len(messages))
         self.r.user.mark_as_read(messages)
         unread = oth.user.get_unread(limit=5)
@@ -416,12 +408,8 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
                 break
         if not found:
             self.fail('Could not find a self-message in the inbox')
-        found.reply(text)
-        for msg in self.r.user.get_sent():
-            if msg.body == text:
-                break
-        else:
-            self.fail('Could not find the recently sent reply.')
+        reply = found.reply(text)
+        self.assertEqual(reply.parent_id, found.content_id)
 
 
 class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
@@ -642,6 +630,7 @@ class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(subreddit.submit(title, url=url))
 
     def test_create_self_and_verify(self):
+        import time
         title = 'Test Self: %s' % uuid.uuid4()
         self.assertTrue(self.r.submit(self.sr, title, text='BODY'))
         time.sleep(1)

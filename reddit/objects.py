@@ -298,6 +298,10 @@ class Message(Inboxable):
     """A class for reddit messages (orangereds)."""
     def __init__(self, reddit_session, json_dict):
         super(Message, self).__init__(reddit_session, json_dict)
+        if self.replies:
+            self.replies = self.replies['data']['children']
+        else:
+            self.replies = []
 
     @limit_chars()
     def __str__(self):
