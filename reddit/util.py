@@ -16,6 +16,7 @@
 import time
 from functools import wraps
 
+
 class Memoize(object):
     """
     Simple memoize decorator with timeout, providing a way to prune out cached
