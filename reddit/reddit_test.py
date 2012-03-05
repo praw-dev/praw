@@ -153,7 +153,7 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
         if self.r.config.is_reddit:
-            url = self.url('/r/blog/comments/f8aqy/')
+            url = self.url('/r/photography/comments/pozpi/')
             self.submission = self.r.get_submission(url=url)
         else:
             url = self.url('/r/reddit_test9/comments/1a/')
