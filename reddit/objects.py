@@ -587,8 +587,8 @@ class Submission(Approvable, Deletable, Distinguishable, Reportable, Saveable,
     @property
     def comments_flat(self):
         if not self._comments_flat:
-            self._comments_flat = []
             stack = self.comments[:]
+            self._comments_flat = []
             while len(stack) > 0:
                 comment = stack.pop(0)
                 assert(comment not in self._comments_flat)

@@ -170,7 +170,47 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(c_len <= ac_len < cf_len < acf_len)
 
 
-class CommentTest(unittest.TestCase, AuthenticatedHelper):
+class CommentAttributeTest(unittest.TestCase, BasicHelper):
+    def setUp(self):
+        self.configure()
+        subreddit = self.r.get_subreddit(self.sr)
+        self.sub = subreddit.get_top(url_data={'t': 'week'}).next()
+
+    def test_all_comments(self):
+        self.assertTrue(len(self.sub.all_comments))
+
+    def test_all_comments_flat(self):
+        self.assertTrue(len(self.sub.all_comments_flat))
+
+    def test_comments(self):
+        self.assertTrue(len(self.sub.comments))
+
+    def test_comments_flat(self):
+        self.assertTrue(len(self.sub.comments_flat))
+
+
+class CommentPermalinkTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+
+    def test_inbox_permalink(self):
+        for item in self.r.user.get_inbox():
+            if isinstance(item, Comment):
+                self.assertTrue(item.id in item.permalink)
+                break
+        else:
+            self.fail('Could not find comment reply in inbox')
+
+    def test_user_comments_permalink(self):
+        item = self.r.user.get_comments().next()
+        self.assertTrue(item.id in item.permalink)
+
+    def test_get_comments_permalink(self):
+        item = self.r.get_subreddit(self.sr).get_comments().next()
+        self.assertTrue(item.id in item.permalink)
+
+
+class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
@@ -199,28 +239,7 @@ class CommentTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(reply.body, text)
 
 
-class CommentOtherTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    def test_inbox_permalink(self):
-        for item in self.r.user.get_inbox():
-            if isinstance(item, Comment):
-                self.assertTrue(item.id in item.permalink)
-                break
-        else:
-            self.fail('Could not find comment reply in inbox')
-
-    def test_user_comments_permalink(self):
-        item = self.r.user.get_comments().next()
-        self.assertTrue(item.id in item.permalink)
-
-    def test_get_comments_permalink(self):
-        item = self.r.get_subreddit(self.sr).get_comments().next()
-        self.assertTrue(item.id in item.permalink)
-
-
-class CommentOtherReplyTest(unittest.TestCase, AuthenticatedHelper):
+class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
@@ -247,7 +266,7 @@ class CommentOtherReplyTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find comment in spambox')
 
     def test_user_comment_replies_are_none(self):
-        for item in self.r.get_redditor('pyapitestuser3').get_comments():
+        for item in self.r.user.get_comments():
             if isinstance(item, Comment):
                 # pylint: disable-msg=W0212
                 self.assertEqual(item._replies, None)
