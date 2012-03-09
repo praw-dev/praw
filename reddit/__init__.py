@@ -394,9 +394,9 @@ class SubredditExtension(BaseReddit):
         """Set flair for a group of users all at once.
 
         flair_mapping should be a list of dictionaries with the following keys:
-                       user: the user name
-                 flair_text: the flair text for the user (optional)
-            flair_css_class: the flair css class for the user (optional)
+          user: the user name
+          flair_text: the flair text for the user (optional)
+          flair_css_class: the flair css class for the user (optional)
         """
         if not flair_mapping:
             raise reddit.errors.ClientException('flair_mapping must be set')
