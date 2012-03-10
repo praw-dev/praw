@@ -3,7 +3,7 @@
 dir=$(dirname $0)
 
 # pep8
-output=$(find $dir -name [A-Za-z_]\*.py -exec pep8 {} \;)
+output=$(find $dir/reddit -name [A-Za-z_]\*.py -exec pep8 {} \;)
 if [ -n "$output" ]; then
     echo "---pep8---"
     echo -e "$output"
@@ -19,6 +19,6 @@ if [ -n "$output" ]; then
 fi
 
 echo "---pyflakes---"
-find $dir -name [A-Za-z_]\*.py -exec pyflakes {} \;
+find $dir/reddit -name [A-Za-z_]\*.py -exec pyflakes {} \;
 
 exit 0
