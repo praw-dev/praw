@@ -108,10 +108,11 @@ class Approvable(RedditContentObject):
         return response
 
     @require_login
-    def remove(self):
+    def remove(self, spam=True):
         url = self.reddit_session.config['remove']
         params = {'id': self.content_id,
                   'uh': self.reddit_session.modhash,
+                  'spam': 'True' if spam else 'False',
                   'api_type': 'json'}
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
