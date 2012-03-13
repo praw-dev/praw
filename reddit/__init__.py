@@ -29,7 +29,7 @@ import reddit.objects
 from reddit.settings import CONFIG
 
 
-VERSION = '1.2.10'
+VERSION = '1.2.11'
 
 
 class Config(object):  # pylint: disable-msg=R0903
@@ -440,7 +440,9 @@ class SubredditExtension(BaseReddit):
             params['url'] = url
         if captcha:
             params.update(captcha)
-        return self.request_json(self.config['submit'], params)
+        result = self.request_json(self.config['submit'], params)
+        # pylint: disable-msg=E1101
+        return self.get_submission(result['data']['url'])
 
     def subscribe(self, subreddit):
         """Subscribe to subreddit by name."""

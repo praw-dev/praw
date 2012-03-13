@@ -646,18 +646,16 @@ class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
         title = 'Test Link: %s' % unique
         url = 'http://bryceboe.com/?bleh=%s' % unique
         subreddit = self.r.get_subreddit(self.sr)
-        self.assertTrue(subreddit.submit(title, url=url))
+        submission = subreddit.submit(title, url=url)
+        self.assertEqual(submission.title, title)
+        self.assertEqual(submission.url, url)
 
     def test_create_self_and_verify(self):
-        import time
         title = 'Test Self: %s' % uuid.uuid4()
-        self.assertTrue(self.r.submit(self.sr, title, text='BODY'))
-        time.sleep(1)
-        for item in self.r.user.get_submitted():
-            if title == item.title:
-                break
-        else:
-            self.fail('Could not find submission.')
+        content = 'BODY'
+        submission = self.r.submit(self.sr, title, text=content)
+        self.assertEqual(submission.title, title)
+        self.assertEqual(submission.selftext, content)
 
 
 class SubredditTest(unittest.TestCase, AuthenticatedHelper):
