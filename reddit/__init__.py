@@ -159,8 +159,8 @@ class BaseReddit(object):
         """Given a page url and a dict of params, opens and returns the page.
 
         :param page_url: the url to grab content from.
-        :param params: the extra url data to submit
-        :param url_data: the GET data to put in the url
+        :param params: a dictionary containing the extra url data to submit
+        :param url_data: a dictionary containing the GET data to put in the url
         :returns: the open page
         """
         # pylint: disable-msg=W0212
@@ -210,7 +210,7 @@ class BaseReddit(object):
             limit <= 0, fetch the default_content_limit for the site. If None,
             then fetch unlimited entries--this would be used in conjunction
             with the place_holder param.
-        :param url_data: extra GET data to put in the url
+        :param url_data: dictionary containing extra GET data to put in the url
         :param place_holder: if not None, the method will fetch `limit`
             content, stopping if it finds content with `id` equal to
             `place_holder`.
