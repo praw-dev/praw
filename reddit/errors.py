@@ -90,19 +90,11 @@ class NotLoggedIn(APIException):
 class RateLimitExceeded(APIException):
     """An exception for when something wrong has happened too many times."""
     ERROR_TYPE = 'RATELIMIT'
-    MINUTES_RE = re.compile('(\d+) minutes')
-    SECONDS_RE = re.compile('(\d+) seconds')
 
-    @property
-    def sleep_time(self):
-        match = self.MINUTES_RE.search(self.message)
-        if match:
-            return int(match.group(1)) * 60
-        match = self.SECONDS_RE.search(self.message)
-        if match:
-            return int(match.group(1))
-        # This should never happen
-        assert False
+    def __init__(self, error_type, message, field='', response=None):
+        super(RateLimitExceeded, self).__init__(error_type, message,
+                                                field, response)
+        self.sleep_time = self.response['ratelimit']
 
 
 def _build_error_mapping():

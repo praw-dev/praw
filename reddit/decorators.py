@@ -154,7 +154,7 @@ def parse_api_json_response(func):  # pylint: disable-msg=R0912
     def error_checked_func(self, *args, **kwargs):
         return_value = func(self, *args, **kwargs)
         allowed = ('captcha', 'data', 'errors', 'kind', 'names', 'next',
-                   'prev', 'users')
+                   'prev', 'ratelimit', 'users')
         if isinstance(return_value, dict):
             for key in return_value:
                 if key not in allowed:
