@@ -31,7 +31,8 @@ def _get_section(subpath=''):
             url_data = kw['url_data']
         else:
             url_data = kw['url_data'] = {}
-        url_data.update({'sort': sort, 't': time})
+        for key, value in {'sort': sort, 't': time}.items():
+            url_data.setdefault(key, value)
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
         return self.reddit_session.get_content(url, *args, **kw)
     return _section
