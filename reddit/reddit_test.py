@@ -125,6 +125,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertRaises(TypeError, Reddit, user_agent=1)
 
     def test_search(self):
+        if not self.r.config.is_reddit:
+            raise Exception('Search does not work locally.')
         self.assertTrue(len(list(self.r.search('test'))) > 0)
 
     def test_search_reddit_names(self):
@@ -154,10 +156,9 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
         if self.r.config.is_reddit:
             url = self.url('/r/photography/comments/pozpi/')
-            self.submission = self.r.get_submission(url=url)
         else:
             url = self.url('/r/reddit_test9/comments/1a/')
-            self.submission = self.r.get_submission(url=url)
+        self.submission = self.r.get_submission(url=url)
 
     def test_all_comments(self):
         c_len = len(self.submission.comments)
@@ -173,20 +174,23 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
 class CommentAttributeTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
-        subreddit = self.r.get_subreddit(self.sr)
-        self.sub = subreddit.get_top(url_data={'t': 'week'}).next()
+        if self.r.config.is_reddit:
+            url = self.url('/r/reddit_api_test/comments/qfk25/')
+        else:
+            url = self.url('/r/reddit_api_test/comments/ao/')
+        self.submission = self.r.get_submission(url=url)
 
     def test_all_comments(self):
-        self.assertTrue(len(self.sub.all_comments))
+        self.assertTrue(len(self.submission.all_comments))
 
     def test_all_comments_flat(self):
-        self.assertTrue(len(self.sub.all_comments_flat))
+        self.assertTrue(len(self.submission.all_comments_flat))
 
     def test_comments(self):
-        self.assertTrue(len(self.sub.comments))
+        self.assertTrue(len(self.submission.comments))
 
     def test_comments_flat(self):
-        self.assertTrue(len(self.sub.comments_flat))
+        self.assertTrue(len(self.submission.comments_flat))
 
 
 class CommentPermalinkTest(unittest.TestCase, AuthenticatedHelper):
@@ -679,6 +683,8 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
             self.assertTrue(subreddit.display_name in subreddit._info_url)
 
     def test_search(self):
+        if not self.r.config.is_reddit:
+            raise Exception('Search does not work locally.')
         self.assertTrue(len(list(self.subreddit.search('test'))) > 0)
 
     def test_subscribe_and_verify(self):
