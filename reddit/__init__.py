@@ -543,7 +543,10 @@ class LoggedInExtension(BaseReddit):
         if password and not username:
             raise Exception('Username must be provided when password is.')
 
-        user = username or self.config.user or raw_input('Username: ')
+        if six.PY3:
+            user = username or self.config.user or input('Username: ')
+        else:
+            user = username or self.config.user or raw_input('Username: ')
         if username and username == self.config.user:
             pswd = password or self.config.pswd
         elif not username and self.config.user:

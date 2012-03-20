@@ -74,7 +74,7 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
                   'uh': thing.reddit_session.modhash,
                   'api_type': 'json'}
         if is_sub:
-            params['r'] = str(thing)
+            params['r'] = six.text_type(thing)
         url = thing.reddit_session.config[url_key]
         return thing.reddit_session.request_json(url, params)
     return do_relationship

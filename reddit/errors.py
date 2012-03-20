@@ -15,6 +15,7 @@
 
 import inspect
 import re
+import six
 import sys
 
 
@@ -67,7 +68,7 @@ class ExceptionList(APIException):
     def __str__(self):
         ret = '\n'
         for i, error in enumerate(self.errors):
-            ret += '\tError %d) %s\n' % (i, str(error))
+            ret += '\tError %d) %s\n' % (i, six.text_type(error))
         return ret
 
 

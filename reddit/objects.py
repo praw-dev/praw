@@ -236,7 +236,7 @@ class Voteable(RedditContentObject):
         """
         url = self.reddit_session.config['vote']
         params = {'id': self.content_id,
-                  'dir': str(direction),
+                  'dir': six.text_type(direction),
                   'uh': self.reddit_session.modhash,
                   'api_type': 'json'}
         return self.reddit_session.request_json(url, params)
