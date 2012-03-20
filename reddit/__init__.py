@@ -78,6 +78,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'submit':              'api/submit/',
                  'subreddit':           'r/%s/',
                  'subreddit_about':     'r/%s/about/',
+                 'subreddit_css':       'api/subreddit_stylesheet/',
                  'subscribe':           'api/subscribe/',
                  'undistinguish':       'api/distinguish/no/',
                  'unfriend':            'api/unfriend/',
@@ -457,6 +458,16 @@ class SubredditExtension(BaseReddit):
     def unsubscribe(self, subreddit):
         """Unsubscribe from subreddit by name."""
         self._subscribe(sr_name=subreddit, unsubscribe=True)
+
+    @reddit.decorators.require_login
+    def update_stylesheet(self, subreddit, stylesheet):
+        """Set stylesheet in given subreddit."""
+        params = {'r': six.text_type(subreddit),
+                  'stylesheet_contents': stylesheet,
+                  'op': 'save',
+                  'uh': self.user.modhash,
+                  'api_type': 'json'}
+        return self.request_json(self.config['subreddit_css'], params)
 
 
 class LoggedInExtension(BaseReddit):

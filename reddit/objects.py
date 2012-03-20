@@ -747,6 +747,11 @@ class Subreddit(RedditContentObject):
         return self.reddit_session._subscribe(self.content_id,
                                               unsubscribe=True)
 
+    def update_stylesheet(self, *args, **kwargs):
+        """Set stylesheet for a sub-reddit."""
+        # pylint: disable-msg=W0212
+        return self.reddit_session.update_stylesheet(self, *args, **kwargs)
+
 
 class UserList(RedditContentObject):
     """A class for UserList."""
