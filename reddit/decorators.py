@@ -47,7 +47,8 @@ class RequireCaptcha(object):
                 captcha_id = exception.response['captcha']
 
     def get_captcha(self, captcha_id):
-        url = urljoin(self.func.im_self.config['captcha'], captcha_id + '.png')
+        url = urljoin(self.func.__self__.config['captcha'],
+                      captcha_id + '.png')
         print('Captcha URL: ' + url)
         if six.PY3:
             captcha = input('Captcha: ')
