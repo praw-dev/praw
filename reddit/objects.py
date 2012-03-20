@@ -13,8 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
+import reddit.backport  # pylint: disable-msg=W0611
+
+import six
 import warnings
-from urlparse import urljoin
+from six.moves import urljoin
 
 from reddit.decorators import require_login
 from reddit.errors import ClientException
@@ -42,13 +45,19 @@ class RedditContentObject(object):
         self._underscore_names = underscore_names
         self._populated = self._populate(json_dict, fetch)
 
+    def __str__(self):
+        retval = self.__unicode__()
+        if not six.PY3:
+            retval = retval.encode('utf-8')
+        return retval
+
     def _populate(self, json_dict, fetch):
         if json_dict is None:
             if fetch:
                 json_dict = self._get_json_dict()
             else:
                 json_dict = {}
-        for name, value in json_dict.iteritems():
+        for name, value in six.iteritems(json_dict):
             if self._underscore_names and name in self._underscore_names:
                 name = '_' + name
             setattr(self, name, value)
@@ -257,8 +266,8 @@ class Comment(Approvable, Reportable, Deletable, Distinguishable, Inboxable,
         self._submission = None
 
     @limit_chars()
-    def __str__(self):
-        return getattr(self, 'body', '[Unloaded Comment]').encode('utf8')
+    def __unicode__(self):
+        return getattr(self, 'body', '[Unloaded Comment]')
 
     @property
     def is_root(self):
@@ -305,7 +314,7 @@ class Message(Inboxable):
             self.replies = []
 
     @limit_chars()
-    def __str__(self):
+    def __unicode__(self):
         return 'From: %s\nSubject: %s\n\n%s' % (self.author, self.subject,
                                                 self.body)
 
@@ -317,8 +326,8 @@ class MoreComments(RedditContentObject):
         self.submission = None
         self._comments = None
 
-    def __str__(self):
-        return ('[More Comments: %s]' % ','.join(self.children)).encode('utf8')
+    def __unicode__(self):
+        return ('[More Comments: %s]' % ','.join(self.children))
 
     def _update_submission(self, submission):
         self.submission = submission
@@ -362,9 +371,9 @@ class Redditor(RedditContentObject):
         self._url = reddit_session.config['user'] % user_name
 
     @limit_chars()
-    def __str__(self):
+    def __unicode__(self):
         """Display the user's name."""
-        return self.name.encode('utf8')
+        return self.name
 
     @require_login
     def compose_message(self, subject, message):
@@ -451,8 +460,8 @@ class Submission(Approvable, Deletable, Distinguishable, Reportable, Saveable,
         self._comments_flat = None
         self._orphaned = {}
 
-    def __str__(self):
-        title = self.title.replace('\r\n', ' ').encode('utf-8')
+    def __unicode__(self):
+        title = self.title.replace('\r\n', ' ')
         return '{0} :: {1}'.format(self.score, title)
 
     @staticmethod
@@ -547,8 +556,8 @@ class Submission(Approvable, Deletable, Distinguishable, Reportable, Saveable,
 
         if skipped:
             warnings.warn_explicit('Skipped %d more comments objects on %r' %
-                                   (len(skipped), str(self)), UserWarning,
-                                   '', 0)
+                                   (len(skipped), six.text_type(self)),
+                                   UserWarning, '', 0)
 
     def _update_comments(self, comments):
         self._comments = comments
@@ -640,9 +649,9 @@ class Subreddit(RedditContentObject):
         self._url = reddit_session.config['subreddit'] % subreddit_name
 
     @limit_chars()
-    def __str__(self):
+    def __unicode__(self):
         """Display the subreddit name."""
-        return self.display_name.encode('utf8')
+        return self.display_name
 
     def add_flair_template(self, *args, **kwargs):
         """Adds a flair template to the subreddit."""
@@ -661,7 +670,7 @@ class Subreddit(RedditContentObject):
                                   content_options='any', over_18=False,
                                   default_set=True, show_media=False,
                                   domain='', header_hover_text=''):
-        params = {'r': str(self),
+        params = {'r': six.text_type(self),
                   'sr': self.content_id,
                   'title': title,
                   'description': description,

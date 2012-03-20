@@ -13,13 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-import ConfigParser
+import reddit.backport  # pylint: disable-msg=W0611
+
 import os
 import sys
+from six.moves import configparser
 
 
 def _load_configuration():
-    config = ConfigParser.RawConfigParser()
+    config = configparser.RawConfigParser()
     module_dir = os.path.dirname(sys.modules[__name__].__file__)
     if 'APPDATA' in os.environ:  # Windows
         os_config_path = os.environ['APPDATA']

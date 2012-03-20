@@ -17,12 +17,15 @@
 
 # pylint: disable-msg=C0103, R0903, R0904, W0201
 
+from __future__ import unicode_literals
+import reddit.backport  # pylint: disable-msg=W0611
+
 import random
 import unittest
 import uuid
 import warnings
-from urlparse import urljoin
-from urllib2 import HTTPError, URLError
+from six import advance_iterator as six_next
+from six.moves import HTTPError, URLError, urljoin
 
 from reddit import Reddit, errors, helpers, VERSION
 from reddit.objects import Comment, LoggedInRedditor, Message, MoreComments
@@ -32,10 +35,10 @@ USER_AGENT = 'reddit_api test suite %s' % VERSION
 
 def flair_diff(root, other):
     """Function for comparing two flairlists supporting optional arguments."""
-    keys = [u'user', u'flair_text', u'flair_css_class']
-    root_items = set(tuple(item[key] if key in item and item[key] else u'' for
+    keys = ['user', 'flair_text', 'flair_css_class']
+    root_items = set(tuple(item[key] if key in item and item[key] else '' for
                            key in keys) for item in root)
-    other_items = set(tuple(item[key] if key in item and item[key] else u'' for
+    other_items = set(tuple(item[key] if key in item and item[key] else '' for
                             key in keys) for item in other)
     return list(root_items - other_items)
 
@@ -107,7 +110,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
             url = 'http://imgur.com/Vr8ZZ'
         else:
             url = 'http://google.com/?q=82.1753988563'
-        found_link = self.r.info(url).next()  # pylint: disable-msg=E1101
+        # pylint: disable-msg=E1101
+        found_link = six_next(self.r.info(url))
         found_by_id = self.r.info(thing_id=found_link.content_id)
         self.assertTrue(found_by_id)
         self.assertTrue(found_link in found_by_id)
@@ -134,21 +138,43 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_timeout(self):
         # pylint: disable-msg=W0212
-        self.assertRaises(URLError, helpers._request, self.r,
-                          self.r.config['comments'], timeout=0.001)
+        from socket import timeout
+        try:
+            helpers._request(self.r, self.r.config['comments'], timeout=0.001)
+        except URLError as error:
+            self.assertEqual(str(error.reason), 'timed out')
+        except timeout:
+            pass
+        else:
+            self.fail('Timeout did not raise the proper exception.')
 
 
-class EncodingTest(unittest.TestCase, BasicHelper):
+class EncodingTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
     def test_author_encoding(self):
-        a1 = self.r.get_front_page().next().author  # pylint: disable-msg=E1101
+        # pylint: disable-msg=E1101
+        a1 = six_next(self.r.get_front_page()).author
         a2 = self.r.get_redditor(str(a1))
         self.assertEqual(a1, a2)
-        s1 = a1.get_submitted().next()
-        s2 = a2.get_submitted().next()
+        s1 = six_next(a1.get_submitted())
+        s2 = six_next(a2.get_submitted())
         self.assertEqual(s1, s2)
+
+    def test_unicode_comment(self):
+        sub = six_next(self.r.get_subreddit(self.sr).get_new_by_date())
+        text = 'Have some unicode: (\xd0, \xdd)'
+        comment = sub.add_comment(text)
+        self.assertEqual(text, comment.body)
+
+    def test_unicode_submission(self):
+        unique = uuid.uuid4()
+        title = 'Wiki Entry on \xC3\x9C'
+        url = 'http://en.wikipedia.org/wiki/\xC3\x9C?id=%s' % unique
+        submission = self.r.submit(self.sr, title, url=url)
+        self.assertEqual(title, submission.title)
+        self.assertEqual(url, submission.url)
 
 
 class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
@@ -206,11 +232,12 @@ class CommentPermalinkTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find comment reply in inbox')
 
     def test_user_comments_permalink(self):
-        item = self.r.user.get_comments().next()
+        item = six_next(self.r.user.get_comments())
         self.assertTrue(item.id in item.permalink)
 
     def test_get_comments_permalink(self):
-        item = self.r.get_subreddit(self.sr).get_comments().next()
+        sub = self.r.get_subreddit(self.sr)
+        item = six_next(sub.get_comments())
         self.assertTrue(item.id in item.permalink)
 
 
@@ -222,7 +249,7 @@ class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
     def test_add_comment_and_verify(self):
         text = 'Unique comment: %s' % uuid.uuid4()
         # pylint: disable-msg=E1101
-        submission = self.subreddit.get_new_by_date().next()
+        submission = six_next(self.subreddit.get_new_by_date())
         # pylint: enable-msg=E1101
         comment = submission.add_comment(text)
         self.assertEqual(comment.submission, submission)
@@ -249,7 +276,8 @@ class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_front_page_comment_replies_are_none(self):
         # pylint: disable-msg=E1101,W0212
-        self.assertEqual(self.r.get_all_comments().next()._replies, None)
+        item = six_next(self.r.get_all_comments())
+        self.assertEqual(item._replies, None)
 
     def test_inbox_comment_replies_are_none(self):
         for item in self.r.user.get_inbox():
@@ -305,10 +333,10 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual([], list(self.subreddit.flair_list()))
 
         # Set flair
-        flair_mapping = [{u'user':'bboe', u'flair_text':u'dev'},
-                         {u'user':u'PyAPITestUser2', u'flair_css_class':u'xx'},
-                         {u'user':u'PyAPITestUser3', u'flair_text':u'AWESOME',
-                          u'flair_css_class':u'css'}]
+        flair_mapping = [{'user':'bboe', 'flair_text':'dev'},
+                         {'user':'PyAPITestUser2', 'flair_css_class':'xx'},
+                         {'user':'PyAPITestUser3', 'flair_text':'AWESOME',
+                          'flair_css_class':'css'}]
         self.subreddit.set_flair_csv(flair_mapping)
         self.assertEqual([], flair_diff(flair_mapping,
                                         list(self.subreddit.flair_list())))
@@ -387,7 +415,8 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
     def test_mark_as_read(self):
         oth = Reddit(USER_AGENT)
         oth.login('PyApiTestUser3', '1111')
-        msg = oth.user.get_unread(limit=1).next()  # pylint: disable-msg=E1101
+        # pylint: disable-msg=E1101
+        msg = six_next(oth.user.get_unread(limit=1))
         msg.mark_as_read()
         self.assertTrue(msg not in oth.user.get_unread(limit=5))
 
@@ -441,7 +470,7 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     def test_approve(self):
-        submission = self.subreddit.get_spam().next()
+        submission = six_next(self.subreddit.get_spam())
         if not submission:
             self.fail('Could not find a submission to approve.')
         submission.approve()
@@ -452,7 +481,7 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find approved submission.')
 
     def test_remove(self):
-        submission = self.subreddit.get_new_by_date().next()
+        submission = six_next(self.subreddit.get_new_by_date())
         if not submission:
             self.fail('Could not find a submission to remove.')
         submission.remove()
@@ -526,7 +555,7 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         try:
             passed = False
             self.r.clear_flair_templates(self.sr)
-        except HTTPError, e:
+        except HTTPError as e:
             if e.code == 403:
                 passed = True
         if not passed:

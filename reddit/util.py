@@ -45,14 +45,14 @@ class Memoize(object):
 
     def clear_timeouts(self, call_time, cache_timeout):
         """Clears the _caches of results which have timed out."""
-        need_clearing = (k for k, v in self._timeouts.items()
-                                    if call_time - v > cache_timeout)
-        for k in need_clearing:
+        need_clearing = list(k for k, v in self._timeouts.items()
+                             if call_time - v > cache_timeout)
+        for key in need_clearing:
             try:
-                del self._cache[k]
+                del self._cache[key]
             except KeyError:
                 pass
-            del self._timeouts[k]
+            del self._timeouts[key]
 
     def is_stale(self, urls):
         relevant_caches = [k for k in self._cache if k[1] in urls or

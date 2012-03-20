@@ -13,10 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
+import reddit.backport  # pylint: disable-msg=W0611
+
 import time
 import warnings
 from functools import wraps
-from urlparse import urljoin
+from six.moves import urljoin
 
 from reddit import errors
 
@@ -40,12 +42,12 @@ class RequireCaptcha(object):
                 if captcha_id:
                     kwargs['captcha'] = self.get_captcha(captcha_id)
                 return self.func(*args, **kwargs)
-            except errors.BadCaptcha, exception:
+            except errors.BadCaptcha as exception:
                 captcha_id = exception.response['captcha']
 
     def get_captcha(self, captcha_id):
         url = urljoin(self.func.im_self.config['captcha'], captcha_id + '.png')
-        print 'Captcha URL: ' + url
+        print('Captcha URL: ' + url)
         captcha = raw_input('Captcha: ')
         return {'iden': captcha_id, 'captcha': captcha}
 
