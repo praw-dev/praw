@@ -3,8 +3,20 @@ try:
 except ImportError:
     from distutils.core import setup
 
-from reddit import VERSION
+try:
+    import six
+except ImportError:
+    # HACK so we can import the VERSION from reddit without needing six first
+    import sys
+    class HackObj(object):
+        def __call__(*args):
+            return HackObj()
+        def __getattr__(*args):
+            return HackObj()
+    sys.modules['six'] = HackObj()
+    sys.modules['six.moves'] = HackObj()
 
+from reddit import VERSION
 
 setup(
     name='reddit',
@@ -30,4 +42,5 @@ setup(
     license='GPLv3',
     keywords=['api', 'reddit'],
     packages=['reddit'],
-    package_data={'reddit': ['*.cfg']})
+    package_data={'reddit': ['*.cfg']},
+    install_requires=['six'])
