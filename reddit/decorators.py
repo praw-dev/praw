@@ -15,7 +15,7 @@
 
 import reddit.backport  # pylint: disable-msg=W0611
 
-import six
+import sys
 import time
 import warnings
 from functools import wraps
@@ -49,11 +49,9 @@ class RequireCaptcha(object):
     def get_captcha(self, captcha_id):
         url = urljoin(self.func.__self__.config['captcha'],
                       captcha_id + '.png')
-        print('Captcha URL: ' + url)
-        if six.PY3:
-            captcha = input('Captcha: ')
-        else:
-            captcha = raw_input('Captcha: ')
+        sys.stdout.write('Captcha URL: %s\nCaptcha: ' % url)
+        sys.stdout.flush()
+        captcha = sys.stdin.readline().strip()
         return {'iden': captcha_id, 'captcha': captcha}
 
 

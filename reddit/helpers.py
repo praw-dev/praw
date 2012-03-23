@@ -30,8 +30,8 @@ def _get_section(subpath=''):
             url_data = kw['url_data']
         else:
             url_data = kw['url_data'] = {}
-        for key, value in {'sort': sort, 't': time}.items():
-            url_data.setdefault(key, value)
+        url_data.setdefault('sort', sort)
+        url_data.setdefault('t', time)
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
         return self.reddit_session.get_content(url, *args, **kw)
     return _section
@@ -47,8 +47,7 @@ def _get_sorter(subpath='', **defaults):
             url_data = kw['url_data']
         else:
             url_data = kw['url_data'] = {}
-
-        for key, value in defaults.items():
+        for key, value in six.iteritems(defaults):
             url_data.setdefault(key, value)
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
         return self.reddit_session.get_content(url, *args, **kw)
@@ -88,7 +87,7 @@ def _request(reddit_session, page_url, params=None, url_data=None, timeout=45):
         page_url += '?' + urlencode(url_data)
     encoded_params = None
     if params:
-        params = dict([k, v.encode('utf-8')] for k, v in params.items())
+        params = dict([k, v.encode('utf-8')] for k, v in six.iteritems(params))
         encoded_params = urlencode(params).encode('utf-8')
     request = Request(page_url, data=encoded_params,
                       headers=reddit_session.DEFAULT_HEADERS)

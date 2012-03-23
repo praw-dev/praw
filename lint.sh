@@ -15,7 +15,6 @@ output=$(pylint --rcfile=$dir/.pylintrc $dir/reddit 2> /dev/null)
 if [ -n "$output" ]; then
     echo "--pylint--"
     echo -e "$output"
-    exit 1
 fi
 
 echo "---pyflakes---"

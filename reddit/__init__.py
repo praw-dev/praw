@@ -20,6 +20,7 @@ from six.moves import (HTTPCookieProcessor, HTTPError, build_opener,
 import json
 import os
 import six
+import sys
 import warnings
 
 import reddit.decorators
@@ -104,7 +105,7 @@ class Config(object):  # pylint: disable-msg=R0903
                         obj['subreddit_kind']:  reddit.objects.Subreddit,
                         obj['userlist_kind']:   reddit.objects.UserList}
         self.by_object = dict((value, key) for (key, value) in
-                              self.by_kind.items())
+                              six.iteritems(self.by_kind))
         self.by_object[reddit.objects.LoggedInRedditor] = obj['redditor_kind']
         self.cache_timeout = float(obj['cache_timeout'])
         self.comment_limit = int(obj['comment_limit'])
@@ -542,11 +543,11 @@ class LoggedInExtension(BaseReddit):
         what's provided in the config file."""
         if password and not username:
             raise Exception('Username must be provided when password is.')
-
-        if six.PY3:
-            user = username or self.config.user or input('Username: ')
-        else:
-            user = username or self.config.user or raw_input('Username: ')
+        user = username or self.config.user
+        if not user:
+            sys.stdout.write('Username: ')
+            sys.stdout.flush()
+            user = sys.stdin.readline().strip()
         if username and username == self.config.user:
             pswd = password or self.config.pswd
         elif not username and self.config.user:

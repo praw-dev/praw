@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
+import six
 import time
 from functools import wraps
 
@@ -34,7 +35,8 @@ class Memoize(object):
         self._timeouts = {}
 
     def __call__(self, *args, **kwargs):
-        key = (args[0], args[1], repr(args[2:]), frozenset(kwargs.items()))
+        key = (args[0], args[1], repr(args[2:]),
+               frozenset(six.iteritems(kwargs)))
         call_time = time.time()
         self.clear_timeouts(call_time, args[0].config.cache_timeout)
 
@@ -45,7 +47,7 @@ class Memoize(object):
 
     def clear_timeouts(self, call_time, cache_timeout):
         """Clears the _caches of results which have timed out."""
-        need_clearing = list(k for k, v in self._timeouts.items()
+        need_clearing = list(k for k, v in six.iteritems(self._timeouts)
                              if call_time - v > cache_timeout)
         for key in need_clearing:
             try:
