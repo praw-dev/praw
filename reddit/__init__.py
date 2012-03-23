@@ -30,7 +30,7 @@ import reddit.objects
 from reddit.settings import CONFIG
 
 
-VERSION = '1.3.0dev'
+VERSION = '1.3.0'
 
 
 class Config(object):  # pylint: disable-msg=R0903
