@@ -19,6 +19,7 @@ from six.moves import (HTTPCookieProcessor, HTTPError, build_opener,
 
 import json
 import os
+import platform
 import six
 import sys
 import warnings
@@ -31,6 +32,9 @@ from reddit.settings import CONFIG
 
 
 VERSION = '1.3.0'
+UA_STRING = '%%s PRAW/%s Python/%s %s' % (VERSION,
+                                          sys.version.split()[0],
+                                          platform.platform(True))
 
 
 class Config(object):  # pylint: disable-msg=R0903
@@ -146,7 +150,8 @@ class BaseReddit(object):
 
         if not user_agent or not isinstance(user_agent, six.string_types):
             raise TypeError('User agent must be a non-empty string.')
-        self.DEFAULT_HEADERS['User-agent'] = user_agent
+
+        self.DEFAULT_HEADERS['User-agent'] = UA_STRING % user_agent
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
 
         _cookie_jar = http_cookiejar.CookieJar()

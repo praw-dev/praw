@@ -27,10 +27,10 @@ import warnings
 from six import advance_iterator as six_next
 from six.moves import HTTPError, URLError, urljoin
 
-from reddit import Reddit, errors, helpers, VERSION
+from reddit import Reddit, errors, helpers
 from reddit.objects import Comment, LoggedInRedditor, Message, MoreComments
 
-USER_AGENT = 'reddit_api test suite %s' % VERSION
+USER_AGENT = 'PRAW_test_suite'
 
 
 def flair_diff(root, other):
