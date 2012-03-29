@@ -173,7 +173,8 @@ class Editable(RedditContentObject):
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
         _request.is_stale([self.reddit_session.config['user']])
-        return response
+        # REDDIT: Reddit's end should only ever return a single comment
+        return response['data']['things'][0]
 
 
 class Inboxable(RedditContentObject):
@@ -262,8 +263,8 @@ class Voteable(RedditContentObject):
         return self.vote()
 
 
-class Comment(Approvable, Editable, Reportable, Deletable, Distinguishable,
-              Inboxable, Voteable):
+class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
+              Reportable, Voteable):
     """A class for comments."""
     def __init__(self, reddit_session, json_dict):
         super(Comment, self).__init__(reddit_session, json_dict,
@@ -458,8 +459,8 @@ class LoggedInRedditor(Redditor):
         return self.reddit_session.get_content(url, limit=limit)
 
 
-class Submission(Approvable, Deletable, Distinguishable, Reportable, Saveable,
-                 Voteable):
+class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
+                 Saveable, Voteable):
     """A class for submissions to Reddit."""
     def __init__(self, reddit_session, json_dict):
         super(Submission, self).__init__(reddit_session, json_dict)

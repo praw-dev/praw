@@ -219,6 +219,17 @@ class CommentAttributeTest(unittest.TestCase, BasicHelper):
         self.assertTrue(len(self.submission.comments_flat))
 
 
+class CommentEditTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+
+    def test_reply(self):
+        comment = six_next(self.r.user.get_comments())
+        new_body = '%s\n\n+Edit Text' % comment.body
+        comment = comment.edit(new_body)
+        self.assertEqual(comment.body, new_body)
+
+
 class CommentPermalinkTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
@@ -689,6 +700,33 @@ class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
         submission = self.r.submit(self.sr, title, text=content)
         self.assertEqual(submission.title, title)
         self.assertEqual(submission.selftext, content)
+
+
+class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+
+    def test_edit_link(self):
+        found = None
+        for item in self.r.user.get_submitted():
+            if not item.is_self:
+                found = item
+                break
+        if not found:
+            self.fail('Could not find link post')
+        self.assertRaises(HTTPError, found.edit, 'text')
+
+    def test_edit_self(self):
+        found = None
+        for item in self.r.user.get_submitted():
+            if item.is_self:
+                found = item
+                break
+        if not found:
+            self.fail('Could not find self post')
+        new_body = '%s\n\n+Edit Text' % found.selftext
+        found = found.edit(new_body)
+        self.assertEqual(found.selftext, new_body)
 
 
 class SubredditTest(unittest.TestCase, AuthenticatedHelper):
