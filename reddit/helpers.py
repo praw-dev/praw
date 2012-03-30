@@ -69,9 +69,7 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
     def do_relationship(thing, user):
         params = {'name': six.text_type(user),
                   'container': thing.content_id,
-                  'type': relationship,
-                  'uh': thing.reddit_session.modhash,
-                  'api_type': 'json'}
+                  'type': relationship}
         if is_sub:
             params['r'] = six.text_type(thing)
         url = thing.reddit_session.config[url_key]
@@ -87,6 +85,11 @@ def _request(reddit_session, page_url, params=None, url_data=None, timeout=45):
         page_url += '?' + urlencode(url_data)
     encoded_params = None
     if params:
+        if params is True:
+            params = {}
+        params.setdefault('api_type', 'json')
+        if reddit_session.modhash:
+            params.setdefault('uh', reddit_session.modhash)
         params = dict([k, v.encode('utf-8')] for k, v in six.iteritems(params))
         encoded_params = urlencode(params).encode('utf-8')
     request = Request(page_url, data=encoded_params,

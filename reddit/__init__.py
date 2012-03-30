@@ -302,9 +302,7 @@ class SubredditExtension(BaseReddit):
         if bool(sr_id) == bool(sr_name):
             raise TypeError('One (and only one) of text or url is required!')
         action = 'unsub' if unsubscribe else 'sub'
-        params = {'action': action,
-                  'uh': self.modhash,
-                  'api_type': 'json'}
+        params = {'action': action}
         if sr_id:
             params['sr'] = sr_id
         else:
@@ -321,17 +319,13 @@ class SubredditExtension(BaseReddit):
         params = {'r': six.text_type(subreddit),
                   'text': text,
                   'css_class': css_class,
-                  'text_editable': six.text_type(text_editable),
-                  'uh': self.user.modhash,
-                  'api_type': 'json'}
+                  'text_editable': six.text_type(text_editable)}
         return self.request_json(self.config['flairtemplate'], params)
 
     @reddit.decorators.require_login
     def clear_flair_templates(self, subreddit):
         """Clear flair templates for a subreddit."""
-        params = {'r': six.text_type(subreddit),
-                  'uh': self.user.modhash,
-                  'api_type': 'json'}
+        params = {'r': six.text_type(subreddit)}
         return self.request_json(self.config['clearflairtemplates'], params)
 
     @reddit.decorators.require_login
@@ -357,7 +351,6 @@ class SubredditExtension(BaseReddit):
         """Get the mod-queue for a subreddit."""
         return self.get_content(self.config['modqueue'] %
                                 six.text_type(subreddit),
-                                url_data={'uh': self.user.modhash},
                                 limit=limit)
 
     @reddit.decorators.require_login
@@ -365,14 +358,12 @@ class SubredditExtension(BaseReddit):
         """Get the list of reported submissions for a subreddit."""
         return self.get_content(self.config['reports'] %
                                 six.text_type(subreddit),
-                                url_data={'uh': self.user.modhash},
                                 limit=limit)
 
     @reddit.decorators.require_login
     def get_spam(self, subreddit='mod', limit=None):
         """Get the list of spam-filtered items for a subreddit."""
         return self.get_content(self.config['spam'] % six.text_type(subreddit),
-                                url_data={'uh': self.user.modhash},
                                 limit=limit)
 
     @reddit.decorators.require_login
@@ -381,10 +372,9 @@ class SubredditExtension(BaseReddit):
 
         Returns a tuple containing 'user', 'flair_text', and 'flair_css_class'.
         """
-        params = {'uh': self.user.modhash}
         return self.get_content(self.config['flairlist'] %
                                 six.text_type(subreddit),
-                                limit=limit, url_data=params, root_field=None,
+                                limit=limit, root_field=None,
                                 thing_field='users', after_field='next')
 
     @reddit.decorators.require_login
@@ -393,9 +383,7 @@ class SubredditExtension(BaseReddit):
         params = {'r': six.text_type(subreddit),
                   'name': six.text_type(user),
                   'text': text,
-                  'css_class': css_class,
-                  'uh': self.user.modhash,
-                  'api_type': 'json'}
+                  'css_class': css_class}
         response = self.request_json(self.config['flair'], params)
         stale_url = self.config['flairlist'] % six.text_type(subreddit)
         # pylint: disable-msg=E1101,W0212
@@ -421,9 +409,7 @@ class SubredditExtension(BaseReddit):
                                                     'contain `user` key')
             lines.append(','.join([mapping.get(x, '') for x in item_order]))
         params = {'r': six.text_type(subreddit),
-                  'flair_csv': '\n'.join(lines),
-                  'uh': self.user.modhash,
-                  'api_type': 'json'}
+                  'flair_csv': '\n'.join(lines)}
         response = self.request_json(self.config['flaircsv'], params)
         stale_url = self.config['flairlist'] % six.text_type(subreddit)
         # pylint: disable-msg=E1101,W0212
@@ -442,9 +428,7 @@ class SubredditExtension(BaseReddit):
         if bool(text) == bool(url):
             raise TypeError('One (and only one) of text or url is required!')
         params = {'sr': six.text_type(subreddit),
-                  'title': title,
-                  'uh': self.modhash,
-                  'api_type': 'json'}
+                  'title': title}
         if text:
             params['kind'] = 'self'
             params['text'] = text
@@ -470,9 +454,7 @@ class SubredditExtension(BaseReddit):
         """Set stylesheet in given subreddit."""
         params = {'r': six.text_type(subreddit),
                   'stylesheet_contents': stylesheet,
-                  'op': 'save',
-                  'uh': self.user.modhash,
-                  'api_type': 'json'}
+                  'op': 'save'}
         return self.request_json(self.config['subreddit_css'], params)
 
 
@@ -484,9 +466,7 @@ class LoggedInExtension(BaseReddit):
     def _add_comment(self, thing_id, text):
         """Comment on the given thing with the given text."""
         params = {'thing_id': thing_id,
-                  'text': text,
-                  'uh': self.modhash,
-                  'api_type': 'json'}
+                  'text': text}
         data = self.request_json(self.config['comment'], params)
         # REDDIT: Reddit's end should only ever return a single comment
         return data['data']['things'][0]
@@ -494,8 +474,7 @@ class LoggedInExtension(BaseReddit):
     @reddit.decorators.require_login
     def _mark_as_read(self, thing_ids, unread=False):
         """ Marks each of the supplied thing_ids as (un)read."""
-        params = {'id': ','.join(thing_ids),
-                  'uh': self.modhash}
+        params = {'id': ','.join(thing_ids)}
         key = 'unread_message' if unread else 'read_message'
         response = self.request_json(self.config[key], params)
         urls = [self.config[x] for x in ['inbox', 'moderator', 'unread']]
@@ -510,9 +489,7 @@ class LoggedInExtension(BaseReddit):
         params = {'text': message,
                   'subject': subject,
                   'to': six.text_type(recipient),
-                  'uh': self.modhash,
-                  'user': self.user.name,
-                  'api_type': 'json'}
+                  'user': self.user.name}
         if captcha:
             params.update(captcha)
         response = self.request_json(self.config['compose'], params)
@@ -536,9 +513,7 @@ class LoggedInExtension(BaseReddit):
                   'allow_top': 'on' if default_set else 'off',
                   'show_media': 'on' if show_media else 'off',
                   'domain': domain,
-                  'uh': self.modhash,
-                  'id': '#sr-form',
-                  'api_type': 'json'}
+                  'id': '#sr-form'}
         return self.request_json(self.config['site_admin'], params)
 
     def get_redditor(self, user_name, *args, **kwargs):
@@ -573,8 +548,7 @@ class LoggedInExtension(BaseReddit):
             import getpass
             pswd = password or getpass.getpass('Password for %s: ' % user)
 
-        params = {'api_type': 'json',
-                  'passwd': pswd,
+        params = {'passwd': pswd,
                   'user': user}
         response = self.request_json(self.config['login'] % user, params)
         self.modhash = response['data']['modhash']
@@ -584,10 +558,9 @@ class LoggedInExtension(BaseReddit):
     @reddit.decorators.require_login
     def logout(self):
         """Logs out of a session."""
-        params = {'uh': self.modhash}
         self.modhash = self.user = None
         try:
-            self.request_json(self.config['logout'], params)
+            self.request_json(self.config['logout'], True)
         except HTTPError as error:
             # Python 3 doesn't like the 302 response on POST requests
             if error.code != 302:
@@ -653,8 +626,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         params = {'name': name,
                   'email': email,
                   'reason': reason,
-                  'text': message,
-                  'api_type': 'json'}
+                  'text': message}
         if captcha:
             params.update(captcha)
         return self.request_json(self.config['feedback'], params)
@@ -674,8 +646,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
 
     def search_reddit_names(self, query):
         """Search the subreddits for a reddit whose name matches the query."""
-        params = {'query': query,
-                  'api_type': 'json'}
+        params = {'query': query}
         results = self.request_json(self.config['search_reddit_names'], params)
         return [self.get_subreddit(name) for name in results['names']]
 
@@ -686,8 +657,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
                   'op': 'reg',
                   'passwd': password,
                   'passwd2': password,
-                  'user': user_name,
-                  'api_type': 'json'}
+                  'user': user_name}
         if captcha:
             params.update(captcha)
         return self.request_json(self.config['register'], params)

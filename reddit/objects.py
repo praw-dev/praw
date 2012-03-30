@@ -108,9 +108,7 @@ class Approvable(RedditContentObject):
     @require_login
     def approve(self):
         url = self.reddit_session.config['approve']
-        params = {'id': self.content_id,
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
+        params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
         _request.is_stale(urls)  # pylint: disable-msg=E1101
@@ -120,9 +118,7 @@ class Approvable(RedditContentObject):
     def remove(self, spam=True):
         url = self.reddit_session.config['remove']
         params = {'id': self.content_id,
-                  'uh': self.reddit_session.modhash,
-                  'spam': 'True' if spam else 'False',
-                  'api_type': 'json'}
+                  'spam': 'True' if spam else 'False'}
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
         _request.is_stale(urls)  # pylint: disable-msg=E1101
@@ -134,9 +130,7 @@ class Deletable(RedditContentObject):
     def delete(self):
         url = self.reddit_session.config['del']
         params = {'id': self.content_id,
-                  'executed': 'deleted',
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
+                  'executed': 'deleted'}
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
         _request.is_stale([self.reddit_session.config['user']])
@@ -148,17 +142,13 @@ class Distinguishable(RedditContentObject):
     @require_login
     def distinguish(self):
         url = self.reddit_session.config['distinguish']
-        params = {'id': self.content_id,
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
+        params = {'id': self.content_id}
         return self.reddit_session.request_json(url, params)
 
     @require_login
     def undistinguish(self):
         url = self.reddit_session.config['undistinguish']
-        params = {'id': self.content_id,
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
+        params = {'id': self.content_id}
         return self.reddit_session.request_json(url, params)
 
 
@@ -167,9 +157,7 @@ class Editable(RedditContentObject):
     def edit(self, text):
         url = self.reddit_session.config['edit']
         params = {'thing_id': self.content_id,
-                  'text': text,
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
+                  'text': text}
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
         _request.is_stale([self.reddit_session.config['user']])
@@ -208,9 +196,7 @@ class Reportable(RedditContentObject):
     @require_login
     def report(self):
         url = self.reddit_session.config['report']
-        params = {'id': self.content_id,
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
+        params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
         _request.is_stale([self.reddit_session.config['user']])
@@ -224,9 +210,7 @@ class Saveable(RedditContentObject):
         """If logged in, save the content."""
         url = self.reddit_session.config['unsave' if unsave else 'save']
         params = {'id': self.content_id,
-                  'executed': 'unsaved' if unsave else 'saved',
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
+                  'executed': 'unsaved' if unsave else 'saved'}
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
         _request.is_stale([self.reddit_session.config['saved']])
@@ -248,9 +232,7 @@ class Voteable(RedditContentObject):
         """
         url = self.reddit_session.config['vote']
         params = {'id': self.content_id,
-                  'dir': six.text_type(direction),
-                  'uh': self.reddit_session.modhash,
-                  'api_type': 'json'}
+                  'dir': six.text_type(direction)}
         return self.reddit_session.request_json(url, params)
 
     def upvote(self):
@@ -694,9 +676,7 @@ class Subreddit(RedditContentObject):
                   'allow_top': 'on' if default_set else 'off',
                   'show_media': 'on' if show_media else 'off',
                   'domain': domain,
-                  'uh': self.reddit_session.modhash,
-                  'id': '#sr-form',
-                  'api_type': 'json'}
+                  'id': '#sr-form'}
         return self.reddit_session.request_json(
                 self.reddit_session.config['site_admin'], params)
 
