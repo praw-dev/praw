@@ -16,7 +16,7 @@ fi
 
 read -p "Do you want to deploy $version1? [y/n] " input
 case $input in
-    [Yy]* ) break;;
+    [Yy]* ) ;;
     * ) echo "Goodbye"; exit 1;;
 esac
 
