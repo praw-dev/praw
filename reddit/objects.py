@@ -19,11 +19,10 @@ import six
 import warnings
 from six.moves import urljoin
 
-from reddit.decorators import require_login
+from reddit.decorators import limit_chars, require_login
 from reddit.errors import ClientException
-from reddit.helpers import _get_section, _get_sorter, _modify_relationship
-from reddit.helpers import _request
-from reddit.util import limit_chars
+from reddit.helpers import (_get_section, _get_sorter, _modify_relationship,
+                            _request)
 
 
 class RedditContentObject(object):
@@ -111,7 +110,7 @@ class Approvable(RedditContentObject):
         params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
-        _request.is_stale(urls)  # pylint: disable-msg=E1101
+        _request.evict(urls)  # pylint: disable-msg=E1101
         return response
 
     @require_login
@@ -121,7 +120,7 @@ class Approvable(RedditContentObject):
                   'spam': 'True' if spam else 'False'}
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
-        _request.is_stale(urls)  # pylint: disable-msg=E1101
+        _request.evict(urls)  # pylint: disable-msg=E1101
         return response
 
 
@@ -133,7 +132,7 @@ class Deletable(RedditContentObject):
                   'executed': 'deleted'}
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
-        _request.is_stale([self.reddit_session.config['user']])
+        _request.evict([self.reddit_session.config['user']])
         return response
 
 
@@ -160,7 +159,7 @@ class Editable(RedditContentObject):
                   'text': text}
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
-        _request.is_stale([self.reddit_session.config['user']])
+        _request.evict([self.reddit_session.config['user']])
         # REDDIT: Reddit's end should only ever return a single comment
         return response['data']['things'][0]
 
@@ -173,10 +172,10 @@ class Inboxable(RedditContentObject):
         # pylint: disable-msg=E1101,W0212
         response = self.reddit_session._add_comment(self.content_id, text)
         if isinstance(self, Comment):
-            _request.is_stale([self.reddit_session.config['inbox'],
+            _request.evict([self.reddit_session.config['inbox'],
                                self.submission.permalink])
         elif isinstance(self, Message):
-            _request.is_stale([self.reddit_session.config['inbox'],
+            _request.evict([self.reddit_session.config['inbox'],
                                self.reddit_session.config['sent']])
         return response
 
@@ -199,7 +198,7 @@ class Reportable(RedditContentObject):
         params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
-        _request.is_stale([self.reddit_session.config['user']])
+        _request.evict([self.reddit_session.config['user']])
         return response
 
 
@@ -213,7 +212,7 @@ class Saveable(RedditContentObject):
                   'executed': 'unsaved' if unsave else 'saved'}
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
-        _request.is_stale([self.reddit_session.config['saved']])
+        _request.evict([self.reddit_session.config['saved']])
         return response
 
     def unsave(self):
@@ -605,7 +604,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
         """If logged in, comment on the submission using the specified text."""
         # pylint: disable-msg=E1101, W0212
         response = self.reddit_session._add_comment(self.content_id, text)
-        _request.is_stale([self.permalink])
+        _request.evict([self.permalink])
         return response
 
 

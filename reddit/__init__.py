@@ -279,8 +279,7 @@ class BaseReddit(object):
         raw json dict.
         :returns: JSON processed page
         """
-        if not page_url.endswith('.json'):
-            page_url += '.json'
+        page_url += '.json'
         response = self._request(page_url, params, url_data)
         if as_objects:
             hook = self._json_reddit_objecter
@@ -310,7 +309,7 @@ class SubredditExtension(BaseReddit):
 
         response = self.request_json(self.config['subscribe'], params)
         # pylint: disable-msg=E1101,W0212
-        reddit.helpers._request.is_stale([self.config['my_reddits']])
+        reddit.helpers._request.evict([self.config['my_reddits']])
         return response
 
     @reddit.decorators.require_login
@@ -387,7 +386,7 @@ class SubredditExtension(BaseReddit):
         response = self.request_json(self.config['flair'], params)
         stale_url = self.config['flairlist'] % six.text_type(subreddit)
         # pylint: disable-msg=E1101,W0212
-        reddit.helpers._request.is_stale([stale_url])
+        reddit.helpers._request.evict([stale_url])
         return response
 
     @reddit.decorators.require_login
@@ -413,7 +412,7 @@ class SubredditExtension(BaseReddit):
         response = self.request_json(self.config['flaircsv'], params)
         stale_url = self.config['flairlist'] % six.text_type(subreddit)
         # pylint: disable-msg=E1101,W0212
-        reddit.helpers._request.is_stale([stale_url])
+        reddit.helpers._request.evict([stale_url])
         return response
 
     @reddit.decorators.RequireCaptcha
@@ -479,7 +478,7 @@ class LoggedInExtension(BaseReddit):
         response = self.request_json(self.config[key], params)
         urls = [self.config[x] for x in ['inbox', 'moderator', 'unread']]
         # pylint: disable-msg=E1101,W0212
-        reddit.helpers._request.is_stale(urls)
+        reddit.helpers._request.evict(urls)
         return response
 
     @reddit.decorators.RequireCaptcha
@@ -494,7 +493,7 @@ class LoggedInExtension(BaseReddit):
             params.update(captcha)
         response = self.request_json(self.config['compose'], params)
         # pylint: disable-msg=E1101,W0212
-        reddit.helpers._request.is_stale([self.config['sent']])
+        reddit.helpers._request.evict([self.config['sent']])
         return response
 
     @reddit.decorators.require_login

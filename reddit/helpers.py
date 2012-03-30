@@ -16,8 +16,7 @@
 import reddit.backport  # pylint: disable-msg=W0611
 import six
 from six.moves import Request, quote, urlencode, urljoin
-from reddit.decorators import SleepAfter, require_login
-from reddit.util import Memoize
+from reddit.decorators import Memoize, SleepAfter, require_login
 
 
 def _get_section(subpath=''):
