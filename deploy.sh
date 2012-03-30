@@ -6,8 +6,15 @@ if [[ "$status" != "# On branch master" ]]; then
     exit 1
 fi
 
-version=$(python -c "import reddit; print reddit.VERSION")
-read -p "Do you want to deploy $version? [y/n] " input
+version1=$(python -c "import reddit; print reddit.VERSION")
+version2=$(egrep -o "'[0-9.]+'" setup.py)
+
+if [[ "'$version1'" != $version2 ]]; then
+    echo "'$version1' does not match $version2. Goodbye"
+    exit 1
+fi
+
+read -p "Do you want to deploy $version1? [y/n] " input
 case $input in
     [Yy]* ) break;;
     * ) echo "Goodbye"; exit 1;;
@@ -19,7 +26,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-git tag -s $version -m "Version $version"
+git tag -s $version1 -m "Version $version1"
 if [ $? -ne 0 ]; then
     echo "Tagging version failed. Aborting."
     exit 1

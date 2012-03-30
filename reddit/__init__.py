@@ -31,7 +31,7 @@ import reddit.objects
 from reddit.settings import CONFIG
 
 
-VERSION = '1.3.0'
+VERSION = '1.3.1'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (VERSION,
                                           sys.version.split()[0],
                                           platform.platform(True))
