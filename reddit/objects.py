@@ -167,8 +167,7 @@ class Editable(RedditContentObject):
 
 
 class Inboxable(RedditContentObject):
-    """Interface for RedditContentObjects that appear in the Inbox."""
-    @require_login
+    """Interface for Reddit content objects that appear in the Inbox."""
     def reply(self, text):
         """Reply to the comment with the specified text."""
         # pylint: disable-msg=E1101,W0212
@@ -181,15 +180,19 @@ class Inboxable(RedditContentObject):
                                self.reddit_session.config['sent']])
         return response
 
-    @require_login
     def mark_as_read(self):
         """ Marks the comment as read."""
         return self.reddit_session.user.mark_as_read(self)
 
-    @require_login
     def mark_as_unread(self):
         """ Marks the comment as unread."""
         return self.reddit_session.user.mark_as_read(self, unread=True)
+
+
+class Messageable(RedditContentObject):
+    """Interface for Reddit content objects that can be messaged."""
+    def compose_message(self, subject, message):
+        return self.reddit_session.compose_message(self, subject, message)
 
 
 class Reportable(RedditContentObject):
@@ -351,7 +354,7 @@ class MoreComments(RedditContentObject):
         return self._comments
 
 
-class Redditor(RedditContentObject):
+class Redditor(Messageable):
     """A class for Redditor methods."""
     get_overview = _get_section('')
     get_comments = _get_section('comments')
@@ -369,10 +372,6 @@ class Redditor(RedditContentObject):
     def __unicode__(self):
         """Display the user's name."""
         return self.name
-
-    @require_login
-    def compose_message(self, subject, message):
-        return self.reddit_session.compose_message(self, subject, message)
 
     @require_login
     def friend(self):
@@ -610,7 +609,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
         return response
 
 
-class Subreddit(RedditContentObject):
+class Subreddit(Messageable):
     """A class for Subreddits."""
 
     ban = _modify_relationship('banned', is_sub=True)

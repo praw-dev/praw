@@ -484,10 +484,20 @@ class LoggedInExtension(BaseReddit):
     @reddit.decorators.RequireCaptcha
     @reddit.decorators.require_login
     def compose_message(self, recipient, subject, message, captcha=None):
-        """Send a message to another redditor."""
+        """Send a message to another redditor or a subreddit.
+
+        When sending a message to a subreddit the recipient paramater must
+        either be a subreddit object or the subreddit name needs to be prefixed
+        with either '/r/' or '#'.
+        """
+        if isinstance(recipient, reddit.objects.Subreddit):
+            to = '/r/%s' % recipient.display_name
+        else:
+            to = six.text_type(recipient)
+
         params = {'text': message,
                   'subject': subject,
-                  'to': six.text_type(recipient),
+                  'to': to,
                   'user': self.user.name}
         if captcha:
             params.update(captcha)

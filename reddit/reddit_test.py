@@ -423,6 +423,15 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.fail('Could not find the message we just sent to ourself.')
 
+    def test_modmail_compose(self):
+        subject = 'Unique message: %s' % uuid.uuid4()
+        self.r.get_subreddit(self.sr).compose_message(subject, 'Content')
+        for msg in self.r.user.get_modmail():
+            if msg.subject == subject:
+                break
+        else:
+            self.fail('Could not find the message we just sent to outself.')
+
     def test_mark_as_read(self):
         oth = Reddit(USER_AGENT)
         oth.login('PyApiTestUser3', '1111')
@@ -458,9 +467,6 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         unread = oth.user.get_unread(limit=5)
         for msg in messages:
             self.assertTrue(msg not in unread)
-
-    def test_modmail(self):
-        self.assertTrue(len(list(self.r.user.get_modmail())) > 0)
 
     def test_reply_to_message_and_verify(self):
         text = 'Unique message reply: %s' % uuid.uuid4()
