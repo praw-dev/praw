@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Reddit api by mellort</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Reddit api</h1>
+        <p>A python wrapper for the Reddit API.</p>
+        <p class="view"><a href="https://github.com/mellort/reddit_api">View the Project on GitHub <small>mellort/reddit_api</small></a></p>
+        <ul>
+          <li><a href="https://github.com/mellort/reddit_api/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/mellort/reddit_api/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/mellort/reddit_api">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Quick Intro</h1>
+
+<p>This is a Python wrapper for Reddit's API, aiming to be as easy to use as
+possible. Here's a quick peek, getting the first 10 submissions from the 'hot'
+section of the 'opensource' subreddit.</p>
+
+<div class="highlight">
+<pre><span class="kn">import</span> <span class="nn">reddit</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">reddit</span><span class="o">.</span><span class="n">Reddit</span><span class="p">(</span><span class="n">user_agent</span><span class="o">=</span><span class="s">'my_cool_application'</span><span class="p">)</span>
+<span class="n">submissions</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_subreddit</span><span class="p">(</span><span class="s">'opensource'</span><span class="p">)</span><span class="o">.</span><span class="n">get_hot</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">submissions</span><span class="p">]</span>
+</pre>
+</div>
+
+
+<p>this will display something similar to the following:</p>
+
+<div class="highlight">
+<pre><span class="p">[</span><span class="s">'10 :: Gun.io Debuts Group Funding for Open Source Projects</span><span class="se">\n</span><span class="s"> Gun.io'</span><span class="p">,</span>
+ <span class="s">'24 :: Support the Free Software Foundation'</span><span class="p">,</span>
+ <span class="s">'67 :: The 10 Most Important Open Source Projects of 2011'</span><span class="p">,</span>
+  <span class="s">'2 :: Open-source webOS is dead on arrival '</span><span class="p">,</span>
+ <span class="s">'85 :: Plan 9 - A distributed OS with a unified communication protocol and I/O driver model.  Wow.'</span><span class="p">]</span>
+</pre>
+</div>
+
+
+<h1>Installation</h1>
+
+<p>The preferred way to install is via <code>pip</code> </p>
+
+<pre><code>pip install reddit
+</code></pre>
+
+<p>For the most up to date code, you can install via <code>setup.py</code> from a checkout of this repo</p>
+
+<pre><code>python setup.py install
+</code></pre>
+
+<h2>A Few Short Examples</h2>
+
+<ol>
+<li>
+<p>Building the Reddit object (requires a user agent):</p>
+
+<div class="highlight">
+<pre><span class="n">r</span> <span class="o">=</span> <span class="n">reddit</span><span class="o">.</span><span class="n">Reddit</span><span class="p">(</span><span class="n">user_agent</span><span class="o">=</span><span class="s">'example'</span><span class="p">)</span>
+</pre>
+</div>
+</li>
+<li>
+<p>Logging in:</p>
+
+<div class="highlight">
+<pre><span class="n">r</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="s">'username'</span><span class="p">,</span> <span class="s">'password'</span><span class="p">)</span>
+</pre>
+</div>
+</li>
+<li>
+<p>Send a message (requires login):</p>
+
+<div class="highlight">
+<pre><span class="n">r</span><span class="o">.</span><span class="n">compose_message</span><span class="p">(</span><span class="s">'bboe'</span><span class="p">,</span> <span class="s">'Subject Line'</span><span class="p">,</span> <span class="s">'You are awesome!'</span><span class="p">)</span>
+</pre>
+</div>
+</li>
+<li>
+<p>Get the top submissions for r/python:</p>
+
+<div class="highlight">
+<pre><span class="n">submissions</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get_subreddit</span><span class="p">(</span><span class="s">'python'</span><span class="p">)</span><span class="o">.</span><span class="n">get_top</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre>
+</div>
+</li>
+<li>
+<p>Get comments from a given submission:</p>
+
+<div class="highlight">
+<pre><span class="n">submission</span> <span class="o">=</span> <span class="n">submissions</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="n">submission</span><span class="o">.</span><span class="n">comments</span>
+</pre>
+</div>
+</li>
+<li>
+<p>Comment on a submission (requires login):</p>
+
+<div class="highlight">
+<pre><span class="n">submission</span><span class="o">.</span><span class="n">add_comment</span><span class="p">(</span><span class="s">'text'</span><span class="p">)</span>
+</pre>
+</div>
+</li>
+<li>
+<p>Voting (requires login):</p>
+
+<div class="highlight">
+<pre><span class="c"># item can be a comment or submission</span>
+<span class="n">item</span><span class="o">.</span><span class="n">upvote</span><span class="p">()</span>
+<span class="n">item</span><span class="o">.</span><span class="n">downvote</span><span class="p">()</span>
+<span class="n">item</span><span class="o">.</span><span class="n">clear_vote</span><span class="p">()</span>
+</pre>
+</div>
+</li>
+</ol><p>For a more extensive set of examples, see <a href="https://github.com/mellort/reddit_api/wiki">the wiki</a>.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/mellort">mellort</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
