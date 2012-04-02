@@ -24,6 +24,8 @@ from reddit.errors import ClientException
 from reddit.helpers import (_get_section, _get_sorter, _modify_relationship,
                             _request)
 
+REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor')
+
 
 class RedditContentObject(object):
     """Base class that  represents actual reddit objects."""
@@ -72,8 +74,8 @@ class RedditContentObject(object):
     def __setattr__(self, name, value):
         if value and name == 'subreddit':
             value = Subreddit(self.reddit_session, value, fetch=False)
-        elif value and name in ['redditor', 'author']:
-            if value == '[deleted]':
+        elif value and name in REDDITOR_KEYS:
+            if not value or value == '[deleted]':
                 value = None
             else:
                 value = Redditor(self.reddit_session, value, fetch=False)
