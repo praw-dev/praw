@@ -31,7 +31,7 @@ import reddit.objects
 from reddit.settings import CONFIG
 
 
-VERSION = '1.3.1'
+VERSION = '1.3.2'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (VERSION,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -340,6 +340,14 @@ class SubredditExtension(BaseReddit):
                                  six.text_type(subreddit))
 
     @reddit.decorators.require_login
+    def get_flair(self, subreddit, redditor):
+        """Gets the flair for a user on subreddit."""
+        url_data = {'name': six.text_type(redditor)}
+        data = self.request_json(self.config['flairlist'] %
+                                 six.text_type(subreddit), url_data=url_data)
+        return data['users'][0]
+
+    @reddit.decorators.require_login
     def get_moderators(self, subreddit):
         """Get the list of moderators for a subreddit."""
         return self.request_json(self.config['moderators'] %
@@ -407,9 +415,12 @@ class SubredditExtension(BaseReddit):
                 raise reddit.errors.ClientException('flair_mapping must '
                                                     'contain `user` key')
             lines.append(','.join([mapping.get(x, '') for x in item_order]))
-        params = {'r': six.text_type(subreddit),
-                  'flair_csv': '\n'.join(lines)}
-        response = self.request_json(self.config['flaircsv'], params)
+        response = []
+        while len(lines):
+            params = {'r': six.text_type(subreddit),
+                      'flair_csv': '\n'.join(lines[:100])}
+            response.extend(self.request_json(self.config['flaircsv'], params))
+            lines = lines[100:]
         stale_url = self.config['flairlist'] % six.text_type(subreddit)
         # pylint: disable-msg=E1101,W0212
         reddit.helpers._request.evict([stale_url])
@@ -491,13 +502,13 @@ class LoggedInExtension(BaseReddit):
         with either '/r/' or '#'.
         """
         if isinstance(recipient, reddit.objects.Subreddit):
-            to = '/r/%s' % recipient.display_name
+            recipient = '/r/%s' % recipient.display_name
         else:
-            to = six.text_type(recipient)
+            recipient = six.text_type(recipient)
 
         params = {'text': message,
                   'subject': subject,
-                  'to': to,
+                  'to': recipient,
                   'user': self.user.name}
         if captcha:
             params.update(captcha)

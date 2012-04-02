@@ -692,6 +692,10 @@ class Subreddit(Messageable):
         """Get contributors for this subreddit."""
         return self.reddit_session.get_contributors(self, *args, **kwargs)
 
+    def get_flair(self, *args, **kwargs):
+        """Gets the flair for a user on this subreddit."""
+        return self.reddit_session.get_flair(self, *args, **kwargs)
+
     def get_moderators(self, *args, **kwargs):
         """Get moderators for this subreddit."""
         return self.reddit_session.get_moderators(self, *args, **kwargs)

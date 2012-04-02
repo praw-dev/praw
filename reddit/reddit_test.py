@@ -324,19 +324,28 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     def test_add_flair_by_subreddit_name(self):
-        self.r.set_flair(self.sr, self.r.user, 'flair')
+        flair_text = 'Flair: %s' % uuid.uuid4()
+        self.r.set_flair(self.sr, self.r.user, flair_text)
+        flair = self.r.get_flair(self.sr, self.r.user)
+        self.assertEqual(flair['flair_text'], flair_text)
+        self.assertEqual(flair['flair_css_class'], None)
 
     def test_add_flair_to_invalid_user(self):
         self.assertRaises(errors.APIException, self.subreddit.set_flair, 'b')
 
     def test_add_flair_by_name(self):
-        self.subreddit.set_flair(self.r.user.name, 'Awesome Mod (Name)', 'css')
-
-    def test_add_flair_by_user(self):
-        self.subreddit.set_flair(self.r.user, 'Awesome Mod (User)', 'css')
+        flair_text = 'Flair: %s' % uuid.uuid4()
+        flair_css = 'a%d' % random.randint(0, 1024)
+        self.subreddit.set_flair(self.r.user, flair_text, flair_css)
+        flair = self.subreddit.get_flair(self.r.user)
+        self.assertEqual(flair['flair_text'], flair_text)
+        self.assertEqual(flair['flair_css_class'], flair_css)
 
     def test_clear_user_flair(self):
         self.subreddit.set_flair(self.r.user)
+        flair = self.subreddit.get_flair(self.r.user)
+        self.assertEqual(flair['flair_text'], None)
+        self.assertEqual(flair['flair_css_class'], None)
 
     def test_flair_csv_and_flair_list(self):
         # Clear all flair
@@ -351,6 +360,18 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.set_flair_csv(flair_mapping)
         self.assertEqual([], flair_diff(flair_mapping,
                                         list(self.subreddit.flair_list())))
+
+    def test_flair_csv_many(self):
+        users = ('bboe', 'pyapitestuser2', 'pyapitestuser3')
+        flair_text_a = 'Flair: %s' % uuid.uuid4()
+        flair_text_b = 'Flair: %s' % uuid.uuid4()
+        flair_mapping = [{'user':'bboe', 'flair_text': flair_text_a}] * 99
+        for user in users:
+            flair_mapping.append({'user': user, 'flair_text': flair_text_b})
+        self.subreddit.set_flair_csv(flair_mapping)
+        for user in users:
+            flair = self.subreddit.get_flair(user)
+            self.assertEqual(flair['flair_text'], flair_text_b)
 
     def test_flair_csv_optional_args(self):
         flair_mapping = [{'user': 'bboe', 'flair_text': 'bboe'},
@@ -430,7 +451,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
             if msg.subject == subject:
                 break
         else:
-            self.fail('Could not find the message we just sent to outself.')
+            self.fail('Could not find the message we just sent to ourself.')
 
     def test_mark_as_read(self):
         oth = Reddit(USER_AGENT)
