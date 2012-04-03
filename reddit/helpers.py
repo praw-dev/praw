@@ -67,10 +67,11 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
     @require_login
     def do_relationship(thing, user):
         params = {'name': six.text_type(user),
-                  'container': thing.content_id,
                   'type': relationship}
         if is_sub:
             params['r'] = six.text_type(thing)
+        else:
+            params['container'] = thing.content_id
         url = thing.reddit_session.config[url_key]
         return thing.reddit_session.request_json(url, params)
     return do_relationship
