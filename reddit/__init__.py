@@ -84,6 +84,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'subreddit':           'r/%s/',
                  'subreddit_about':     'r/%s/about/',
                  'subreddit_css':       'api/subreddit_stylesheet/',
+                 'subreddit_edit':      'r/%s/about/edit',
                  'subscribe':           'api/subscribe/',
                  'undistinguish':       'api/distinguish/no/',
                  'unfriend':            'api/unfriend/',
