@@ -657,6 +657,9 @@ class Subreddit(Messageable):
         else:
             return
 
+    def get_community_settings():
+        pass
+
     def clear_flair_templates(self, *args, **kwargs):
         """Clear flair templates for this subreddit."""
         return self.reddit_session.clear_flair_templates(self, *args, **kwargs)
