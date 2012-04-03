@@ -56,7 +56,6 @@ class Config(object):  # pylint: disable-msg=R0903
                  'flairlist':           'r/%s/api/flairlist/',
                  'flairtemplate':       'api/flairtemplate/',
                  'friend':              'api/friend/',
-                 'get_subreddit_settings':'r/%s/about/edit/',
                  'help':                'help/',
                  'inbox':               'message/inbox/',
                  'info':                'button_info/',
