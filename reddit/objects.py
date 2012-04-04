@@ -17,6 +17,7 @@ import reddit.backport  # pylint: disable-msg=W0611
 
 import six
 import warnings
+import HTMLParser
 from six.moves import urljoin
 
 from reddit.decorators import limit_chars, require_login
@@ -660,7 +661,82 @@ class Subreddit(Messageable):
             return
             
     def get_community_settings():
+        """Gets a subreddit's settings"""
+        #Currently horribly coded :<
+        html = self.reddit_session._request(self.reddit_session.config['subreddit_edit'])
+        cutStart = html.find('sr-form"') + 8
+        cutEnd = html.find('save-button"', cutStart);
+        html = html[cutStart:cutEnd]
         
+        #title
+        cutStart = html.find('<input id="title" type="text" name="title" class="text" value="') + 63
+        cutEnd = html.find('">', cutStart)
+        title = html[cutStart:cutEnd]
+        html = html[cutEnd:]
+        
+        #description
+        cutStart = html.find('<textarea rows="1" cols="1" name="description">') + 47
+        cutEnd = html.find('</textarea>', cutStart)
+        HP = HTMLParser.HTMLParser()
+        description = HP.unescape(html[cutStart:cutEnd])
+        html = html[cutEnd:]
+        
+        #lang
+        cutStart = html.find('<option selected="selected" value="') + 35
+        cutEnd = html.find('"', cutStart)
+        language = html[cutStart:cutEnd]
+        html = html[cutEnd:]
+        
+        #subreddit type
+        cutEnd = html.find('" class="nomargin" checked="checked">');
+        cutStart = html.rfind('value="', cutEnd) + 7
+        subreddit_type = html[cutStart:cutEnd]
+        html = html[cutEnd:]
+        
+        #link type
+        cutEnd = html.find('" class="nomargin" checked="checked">');
+        cutStart = html.rfind('value="', cutEnd) + 7
+        link_type = html[cutStart:cutEnd]
+        html = html[cutEnd:]
+        
+        over_18 = 'on'
+        default_set = 'on'
+        show_media = 'on'
+        
+        #18+ only? show up as a default subreddit? show thumbnails?
+        if (html.find('<input class="nomargin" type="checkbox" name="over_18" id="over_18" checked="checked">') == -1):
+            over_18 = 'off'
+        if (html.find('<input class="nomargin" type="checkbox" name="allow_top" id="allow_top" checked="checked">') == -1):
+            default_set = 'off'
+        if (html.find('<input class="nomargin" type="checkbox" name="show_media" id="show_media" checked="checked">') == -1):
+            show_media = 'off'
+                                    
+        #domain
+        cutStart = html.find('<input id="domain" type="text" name="domain" class="text" value="') + 65
+        cutEnd = html.find('"', cutStart)
+        domain = html[cutStart:cutEnd]
+        html = html[cutEnd:]
+        
+        #header title
+        cutStart = html.find('<input type="text" name="header-title" id="header-title" value="') + 64
+        cutEnd = html.find('"', cutStart)
+        header_hover_text = html[cutStart:cutEnd]
+        html = html[cutEnd:]
+        
+        settings = {'r': six.text_type(self),
+                  'sr': self.content_id,
+                  'title': title,
+                  'description': description,
+                  'lang': language,
+                  'type': subreddit_type,
+                  'link_type': link_type,
+                  'header-title': header_hover_text,
+                  'over_18': over_18,
+                  'allow_top': default_set,
+                  'show_media': show_media,
+                  'domain': domain,
+                  'id': '#sr-form'}
+        return settings
 
     def update_community_settings(self, title, description='', language='en',
                                   subreddit_type='public',
