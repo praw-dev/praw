@@ -670,32 +670,32 @@ class Subreddit(Messageable):
         
         #title
         cutStart = html.find('<input id="title" type="text" name="title" class="text" value="') + 63
-        cutEnd = html.find('">', cutStart)
+        cutEnd = html.find('"/>', cutStart)
         title = html[cutStart:cutEnd]
         html = html[cutEnd:]
         
         #description
-        cutStart = html.find('<textarea rows="1" cols="1" name="description">') + 47
+        cutStart = html.find('<textarea rows="1" cols="1" name="description" >') + 48
         cutEnd = html.find('</textarea>', cutStart)
         HP = HTMLParser.HTMLParser()
         description = HP.unescape(html[cutStart:cutEnd])
         html = html[cutEnd:]
         
         #lang
-        cutStart = html.find('<option selected="selected" value="') + 35
+        cutStart = html.find('<option selected=\'selected\' value="') + 35
         cutEnd = html.find('"', cutStart)
         language = html[cutStart:cutEnd]
         html = html[cutEnd:]
         
         #subreddit type
-        cutEnd = html.find('" class="nomargin" checked="checked">');
-        cutStart = html.rfind('value="', cutEnd) + 7
+        cutEnd = html.find('" class="nomargin" checked="checked" />');
+        cutStart = html.rfind('value="', 0, cutEnd) + 7
         subreddit_type = html[cutStart:cutEnd]
-        html = html[cutEnd:]
+        html = html[html.find('<input name="link_type"'):]
         
         #link type
-        cutEnd = html.find('" class="nomargin" checked="checked">');
-        cutStart = html.rfind('value="', cutEnd) + 7
+        cutEnd = html.find('" class="nomargin" checked="checked" />');
+        cutStart = html.rfind('value="', 0, cutEnd) + 7
         link_type = html[cutStart:cutEnd]
         html = html[cutEnd:]
         
@@ -704,11 +704,11 @@ class Subreddit(Messageable):
         show_media = 'on'
         
         #18+ only? show up as a default subreddit? show thumbnails?
-        if (html.find('<input class="nomargin" type="checkbox" name="over_18" id="over_18" checked="checked">') == -1):
+        if (html.find('<input class="nomargin" type="checkbox" name="over_18" id="over_18" checked=\'checked\'/>') == -1):
             over_18 = 'off'
-        if (html.find('<input class="nomargin" type="checkbox" name="allow_top" id="allow_top" checked="checked">') == -1):
+        if (html.find('<input class="nomargin" type="checkbox" name="allow_top" id="allow_top" checked=\'checked\'/>') == -1):
             default_set = 'off'
-        if (html.find('<input class="nomargin" type="checkbox" name="show_media" id="show_media" checked="checked">') == -1):
+        if (html.find('<input class="nomargin" type="checkbox" name="show_media" id="show_media" checked=\'checked\'/>') == -1):
             show_media = 'off'
                                     
         #domain
