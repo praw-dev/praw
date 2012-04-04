@@ -14,7 +14,6 @@
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
 import inspect
-import re
 import six
 import sys
 

@@ -29,6 +29,10 @@ REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor')
 
 class RedditContentObject(object):
     """Base class that  represents actual reddit objects."""
+    @classmethod
+    def from_api_response(cls, reddit_session, json_dict):
+        return cls(reddit_session, json_dict=json_dict)
+
     def __init__(self, reddit_session, json_dict=None, fetch=True,
                  info_url=None, underscore_names=None):
         """
@@ -46,23 +50,9 @@ class RedditContentObject(object):
         self._underscore_names = underscore_names
         self._populated = self._populate(json_dict, fetch)
 
-    def __str__(self):
-        retval = self.__unicode__()
-        if not six.PY3:
-            retval = retval.encode('utf-8')
-        return retval
-
-    def _populate(self, json_dict, fetch):
-        if json_dict is None:
-            if fetch:
-                json_dict = self._get_json_dict()
-            else:
-                json_dict = {}
-        for name, value in six.iteritems(json_dict):
-            if self._underscore_names and name in self._underscore_names:
-                name = '_' + name
-            setattr(self, name, value)
-        return bool(json_dict) or fetch
+    def __eq__(self, other):
+        return (isinstance(other, RedditContentObject) and
+                self.content_id == other.content_id)
 
     def __getattr__(self, attr):
         if not self._populated:
@@ -81,18 +71,28 @@ class RedditContentObject(object):
                 value = Redditor(self.reddit_session, value, fetch=False)
         object.__setattr__(self, name, value)
 
-    def __eq__(self, other):
-        return (isinstance(other, RedditContentObject) and
-                self.content_id == other.content_id)
+    def __str__(self):
+        retval = self.__unicode__()
+        if not six.PY3:
+            retval = retval.encode('utf-8')
+        return retval
 
     def _get_json_dict(self):
         response = self.reddit_session.request_json(self._info_url,
                                                     as_objects=False)
         return response['data']
 
-    @classmethod
-    def from_api_response(cls, reddit_session, json_dict):
-        return cls(reddit_session, json_dict=json_dict)
+    def _populate(self, json_dict, fetch):
+        if json_dict is None:
+            if fetch:
+                json_dict = self._get_json_dict()
+            else:
+                json_dict = {}
+        for name, value in six.iteritems(json_dict):
+            if self._underscore_names and name in self._underscore_names:
+                name = '_' + name
+            setattr(self, name, value)
+        return bool(json_dict) or fetch
 
     @property
     def content_id(self):
@@ -130,8 +130,7 @@ class Deletable(RedditContentObject):
     """Interface for Reddit content objects that can be deleted."""
     def delete(self):
         url = self.reddit_session.config['del']
-        params = {'id': self.content_id,
-                  'executed': 'deleted'}
+        params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
         _request.evict([self.reddit_session.config['user']])
@@ -168,6 +167,14 @@ class Editable(RedditContentObject):
 
 class Inboxable(RedditContentObject):
     """Interface for Reddit content objects that appear in the Inbox."""
+    def mark_as_read(self):
+        """ Marks the comment as read."""
+        return self.reddit_session.user.mark_as_read(self)
+
+    def mark_as_unread(self):
+        """ Marks the comment as unread."""
+        return self.reddit_session.user.mark_as_read(self, unread=True)
+
     def reply(self, text):
         """Reply to the comment with the specified text."""
         # pylint: disable-msg=E1101,W0212
@@ -179,14 +186,6 @@ class Inboxable(RedditContentObject):
             _request.evict([self.reddit_session.config['inbox'],
                                self.reddit_session.config['sent']])
         return response
-
-    def mark_as_read(self):
-        """ Marks the comment as read."""
-        return self.reddit_session.user.mark_as_read(self)
-
-    def mark_as_unread(self):
-        """ Marks the comment as unread."""
-        return self.reddit_session.user.mark_as_read(self, unread=True)
 
 
 class Messageable(RedditContentObject):
@@ -225,10 +224,16 @@ class Saveable(RedditContentObject):
 
 
 class Voteable(RedditContentObject):
-    """
-    Additional interface for Reddit content objects that can be voted on
-    (currently Submission and Comment).
-    """
+    """Interface for Reddit content objects that can be voted on."""
+    def clear_vote(self):
+        return self.vote()
+
+    def downvote(self):
+        return self.vote(direction=-1)
+
+    def upvote(self):
+        return self.vote(direction=1)
+
     @require_login
     def vote(self, direction=0):
         """
@@ -238,15 +243,6 @@ class Voteable(RedditContentObject):
         params = {'id': self.content_id,
                   'dir': six.text_type(direction)}
         return self.reddit_session.request_json(url, params)
-
-    def upvote(self):
-        return self.vote(direction=1)
-
-    def downvote(self):
-        return self.vote(direction=-1)
-
-    def clear_vote(self):
-        return self.vote()
 
 
 class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
@@ -266,6 +262,14 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
     @limit_chars()
     def __unicode__(self):
         return getattr(self, 'body', '[Unloaded Comment]')
+
+    def _update_submission(self, submission):
+        """Submission isn't set on __init__ thus we need to update it."""
+        # pylint: disable-msg=W0212
+        submission._comments_by_id[self.name] = self
+        self._submission = submission
+        for reply in self._replies:
+            reply._update_submission(submission)
 
     @property
     def is_root(self):
@@ -292,14 +296,6 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
                 sid = self.context.split('/')[4]
             self._submission = self.reddit_session.get_submission(None, sid)
         return self._submission
-
-    def _update_submission(self, submission):
-        """Submission isn't set on __init__ thus we need to update it."""
-        # pylint: disable-msg=W0212
-        submission._comments_by_id[self.name] = self
-        self._submission = submission
-        for reply in self._replies:
-            reply._update_submission(submission)
 
 
 class Message(Inboxable):
@@ -340,8 +336,7 @@ class MoreComments(RedditContentObject):
                 return None
             params = {'children': ','.join(children),
                       'link_id': self.submission.content_id,
-                      'r': str(self.submission.subreddit),
-                      'api_type': 'json'}
+                      'r': str(self.submission.subreddit)}
             if self.reddit_session.config.comment_sort:
                 params['where'] = self.reddit_session.config.comment_sort
             url = self.reddit_session.config['morechildren']
@@ -405,18 +400,6 @@ class Redditor(Messageable):
 class LoggedInRedditor(Redditor):
     """A class for a currently logged in redditor"""
     @require_login
-    def my_reddits(self, limit=0):
-        """Return all of the current user's subscribed subreddits."""
-        url = self.reddit_session.config['my_reddits']
-        return self.reddit_session.get_content(url, limit=limit)
-
-    @require_login
-    def my_moderation(self, limit=0):
-        """Return all of the current user's subreddits that they moderate."""
-        url = self.reddit_session.config['my_mod_reddits']
-        return self.reddit_session.get_content(url, limit=limit)
-
-    @require_login
     def get_inbox(self, limit=0):
         """Return a generator for inbox messages."""
         url = self.reddit_session.config['inbox']
@@ -440,24 +423,22 @@ class LoggedInRedditor(Redditor):
         url = self.reddit_session.config['unread']
         return self.reddit_session.get_content(url, limit=limit)
 
+    @require_login
+    def my_moderation(self, limit=0):
+        """Return all of the current user's subreddits that they moderate."""
+        url = self.reddit_session.config['my_mod_reddits']
+        return self.reddit_session.get_content(url, limit=limit)
+
+    @require_login
+    def my_reddits(self, limit=0):
+        """Return all of the current user's subscribed subreddits."""
+        url = self.reddit_session.config['my_reddits']
+        return self.reddit_session.get_content(url, limit=limit)
+
 
 class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
                  Saveable, Voteable):
     """A class for submissions to Reddit."""
-    def __init__(self, reddit_session, json_dict):
-        super(Submission, self).__init__(reddit_session, json_dict)
-        self.permalink = urljoin(reddit_session.config['reddit_url'],
-                                 self.permalink)
-        self._comments_by_id = {}
-        self._all_comments = False
-        self._comments = None
-        self._comments_flat = None
-        self._orphaned = {}
-
-    def __unicode__(self):
-        title = self.title.replace('\r\n', ' ')
-        return '{0} :: {1}'.format(self.score, title)
-
     @staticmethod
     def get_info(reddit_session, url, comments_only=False):
         url_data = {}
@@ -485,6 +466,20 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
         submission = s_info['data']['children'][0]
         submission.comments = c_info['data']['children']
         return submission
+
+    def __init__(self, reddit_session, json_dict):
+        super(Submission, self).__init__(reddit_session, json_dict)
+        self.permalink = urljoin(reddit_session.config['reddit_url'],
+                                 self.permalink)
+        self._comments_by_id = {}
+        self._all_comments = False
+        self._comments = None
+        self._comments_flat = None
+        self._orphaned = {}
+
+    def __unicode__(self):
+        title = self.title.replace('\r\n', ' ')
+        return '{0} :: {1}'.format(self.score, title)
 
     def _insert_comment(self, comment):
         if comment.name in self._comments_by_id:  # Skip existing comments
@@ -558,20 +553,12 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
         for comment in self._comments:
             comment._update_submission(self)  # pylint: disable-msg=W0212
 
-    @property
-    def comments(self):  # pylint: disable-msg=E0202
-        if self._comments == None:
-            self.comments = Submission.get_info(self.reddit_session,
-                                                self.permalink,
-                                                comments_only=True)
-        return self._comments
-
-    @comments.setter  # pylint: disable-msg=E1101
-    def comments(self, new_comments):  # pylint: disable-msg=E0102,E0202
-        self._update_comments(new_comments)
-        self._all_comments = False
-        self._comments_flat = None
-        self._orphaned = {}
+    def add_comment(self, text):
+        """If logged in, comment on the submission using the specified text."""
+        # pylint: disable-msg=E1101, W0212
+        response = self.reddit_session._add_comment(self.content_id, text)
+        _request.evict([self.permalink])
+        return response
 
     @property
     def all_comments(self):
@@ -589,6 +576,21 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
         return self.comments_flat
 
     @property
+    def comments(self):  # pylint: disable-msg=E0202
+        if self._comments == None:
+            self.comments = Submission.get_info(self.reddit_session,
+                                                self.permalink,
+                                                comments_only=True)
+        return self._comments
+
+    @comments.setter  # pylint: disable-msg=E1101
+    def comments(self, new_comments):  # pylint: disable-msg=E0102,E0202
+        self._update_comments(new_comments)
+        self._all_comments = False
+        self._comments_flat = None
+        self._orphaned = {}
+
+    @property
     def comments_flat(self):
         if not self._comments_flat:
             stack = self.comments[:]
@@ -601,17 +603,9 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
                 self._comments_flat.append(comment)
         return self._comments_flat
 
-    def add_comment(self, text):
-        """If logged in, comment on the submission using the specified text."""
-        # pylint: disable-msg=E1101, W0212
-        response = self.reddit_session._add_comment(self.content_id, text)
-        _request.evict([self.permalink])
-        return response
-
 
 class Subreddit(Messageable):
     """A class for Subreddits."""
-
     ban = _modify_relationship('banned', is_sub=True)
     unban = _modify_relationship('banned', unlink=True, is_sub=True)
     make_contributor = _modify_relationship('contributor', is_sub=True)
@@ -659,30 +653,13 @@ class Subreddit(Messageable):
         else:
             return
 
-    def update_community_settings(self, title, description='', language='en',
-                                  subreddit_type='public',
-                                  content_options='any', over_18=False,
-                                  default_set=True, show_media=False,
-                                  domain='', header_hover_text=''):
-        params = {'r': six.text_type(self),
-                  'sr': self.content_id,
-                  'title': title,
-                  'description': description,
-                  'lang': language,
-                  'type': subreddit_type,
-                  'link_type': content_options,
-                  'header-title': header_hover_text,
-                  'over_18': 'on' if over_18 else 'off',
-                  'allow_top': 'on' if default_set else 'off',
-                  'show_media': 'on' if show_media else 'off',
-                  'domain': domain,
-                  'id': '#sr-form'}
-        return self.reddit_session.request_json(
-                self.reddit_session.config['site_admin'], params)
-
     def clear_flair_templates(self, *args, **kwargs):
         """Clear flair templates for this subreddit."""
         return self.reddit_session.clear_flair_templates(self, *args, **kwargs)
+
+    def flair_list(self, *args, **kwargs):
+        """Return a list of flair for this subreddit."""
+        return self.reddit_session.flair_list(self, *args, **kwargs)
 
     def get_banned(self, *args, **kwargs):
         """Get banned users for this subreddit."""
@@ -712,10 +689,6 @@ class Subreddit(Messageable):
         """Get the spam-filtered items on the given subreddit."""
         return self.reddit_session.get_spam(self, *args, **kwargs)
 
-    def flair_list(self, *args, **kwargs):
-        """Return a list of flair for this subreddit."""
-        return self.reddit_session.flair_list(self, *args, **kwargs)
-
     def search(self, query, *args, **kwargs):
         """Search this subreddit."""
         return self.reddit_session.search(query, self, *args, **kwargs)
@@ -743,6 +716,26 @@ class Subreddit(Messageable):
         return self.reddit_session._subscribe(self.content_id,
                                               unsubscribe=True)
 
+    def update_community_settings(self, title, description='', language='en',
+                                  subreddit_type='public',
+                                  content_options='any', over_18=False,
+                                  default_set=True, show_media=False,
+                                  domain='', header_hover_text=''):
+        params = {'r': six.text_type(self),
+                  'sr': self.content_id,
+                  'title': title,
+                  'description': description,
+                  'lang': language,
+                  'type': subreddit_type,
+                  'link_type': content_options,
+                  'header-title': header_hover_text,
+                  'over_18': 'on' if over_18 else 'off',
+                  'allow_top': 'on' if default_set else 'off',
+                  'show_media': 'on' if show_media else 'off',
+                  'domain': domain}
+        return self.reddit_session.request_json(
+                self.reddit_session.config['site_admin'], params)
+
     def update_stylesheet(self, *args, **kwargs):
         """Set stylesheet for a sub-reddit."""
         # pylint: disable-msg=W0212
@@ -751,7 +744,6 @@ class Subreddit(Messageable):
 
 class UserList(RedditContentObject):
     """A class for UserList."""
-
     def __init__(self, reddit_session, json_dict=None, fetch=False):
         super(UserList, self).__init__(reddit_session, json_dict, fetch)
 

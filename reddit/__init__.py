@@ -328,6 +328,17 @@ class SubredditExtension(BaseReddit):
         return self.request_json(self.config['clearflairtemplates'], params)
 
     @reddit.decorators.require_login
+    def flair_list(self, subreddit, limit=None):
+        """Get flair list for a subreddit.
+
+        Returns a tuple containing 'user', 'flair_text', and 'flair_css_class'.
+        """
+        return self.get_content(self.config['flairlist'] %
+                                six.text_type(subreddit),
+                                limit=limit, root_field=None,
+                                thing_field='users', after_field='next')
+
+    @reddit.decorators.require_login
     def get_banned(self, subreddit):
         """Get the list of banned users for a subreddit."""
         return self.request_json(self.config['banned'] %
@@ -372,17 +383,6 @@ class SubredditExtension(BaseReddit):
         """Get the list of spam-filtered items for a subreddit."""
         return self.get_content(self.config['spam'] % six.text_type(subreddit),
                                 limit=limit)
-
-    @reddit.decorators.require_login
-    def flair_list(self, subreddit, limit=None):
-        """Get flair list for a subreddit.
-
-        Returns a tuple containing 'user', 'flair_text', and 'flair_css_class'.
-        """
-        return self.get_content(self.config['flairlist'] %
-                                six.text_type(subreddit),
-                                limit=limit, root_field=None,
-                                thing_field='users', after_field='next')
 
     @reddit.decorators.require_login
     def set_flair(self, subreddit, user, text='', css_class=''):
@@ -464,7 +464,7 @@ class SubredditExtension(BaseReddit):
         """Set stylesheet in given subreddit."""
         params = {'r': six.text_type(subreddit),
                   'stylesheet_contents': stylesheet,
-                  'op': 'save'}
+                  'op': 'save'}  # Options: save / preview
         return self.request_json(self.config['subreddit_css'], params)
 
 
@@ -508,8 +508,7 @@ class LoggedInExtension(BaseReddit):
 
         params = {'text': message,
                   'subject': subject,
-                  'to': recipient,
-                  'user': self.user.name}
+                  'to': recipient}
         if captcha:
             params.update(captcha)
         response = self.request_json(self.config['compose'], params)
@@ -532,8 +531,7 @@ class LoggedInExtension(BaseReddit):
                   'over_18': 'on' if over_18 else 'off',
                   'allow_top': 'on' if default_set else 'off',
                   'show_media': 'on' if show_media else 'off',
-                  'domain': domain,
-                  'id': '#sr-form'}
+                  'domain': domain}
         return self.request_json(self.config['site_admin'], params)
 
     def get_redditor(self, user_name, *args, **kwargs):
@@ -592,6 +590,17 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
     def __init__(self, *args, **kwargs):
         super(Reddit, self).__init__(*args, **kwargs)
 
+    @reddit.decorators.RequireCaptcha
+    def create_redditor(self, user_name, password, email='', captcha=None):
+        """Register a new user."""
+        params = {'email': email,
+                  'passwd': password,
+                  'passwd2': password,
+                  'user': user_name}
+        if captcha:
+            params.update(captcha)
+        return self.request_json(self.config['register'], params)
+
     def get_all_comments(self, *args, **kwargs):
         """Returns a listing from reddit.com/comments (which provides all of
         the most recent comments from all users to all submissions)."""
@@ -602,10 +611,6 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         see your own front page if you are logged in."""
         return self.get_content(self.config['reddit_url'], limit=limit)
 
-    def get_subreddit(self, subreddit_name, *args, **kwargs):
-        """Returns a Subreddit object for the subreddit_name specified."""
-        return reddit.objects.Subreddit(self, subreddit_name, *args, **kwargs)
-
     def get_submission(self, url=None, submission_id=None):
         """Returns a Submission object for the given url or submission_id."""
         if bool(url) == bool(submission_id):
@@ -613,6 +618,10 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         if submission_id:
             url = urljoin(self.config['comments'], submission_id)
         return reddit.objects.Submission.get_info(self, url)
+
+    def get_subreddit(self, subreddit_name, *args, **kwargs):
+        """Returns a Subreddit object for the subreddit_name specified."""
+        return reddit.objects.Subreddit(self, subreddit_name, *args, **kwargs)
 
     def info(self, url=None, thing_id=None, limit=0):
         """
@@ -624,7 +633,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         if bool(url) == bool(thing_id):
             raise TypeError('Only one of url or thing_id is required!')
         if url is not None:
-            params = {'url': url}
+            url_data = {'url': url}
             if (url.startswith(self.config['reddit_url']) and
                 url != self.config['reddit_url']):
                 msg = ('It looks like you may be trying to get the info of a '
@@ -632,24 +641,9 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
                        'any useful results!')
                 warnings.warn_explicit(msg, UserWarning, '', 0)
         else:
-            params = {'id': thing_id}
-        return self.get_content(self.config['info'], url_data=params,
+            url_data = {'id': thing_id}
+        return self.get_content(self.config['info'], url_data=url_data,
                                 limit=limit)
-
-    @reddit.decorators.RequireCaptcha
-    def send_feedback(self, name, email, message, reason='feedback',
-                      captcha=None):
-        """
-        Send feedback to the admins. Please don't abuse this, read what it says
-        on the send feedback page!
-        """
-        params = {'name': name,
-                  'email': email,
-                  'reason': reason,
-                  'text': message}
-        if captcha:
-            params.update(captcha)
-        return self.request_json(self.config['feedback'], params)
 
     def search(self, query, subreddit=None, sort=None, limit=0, *args,
                **kwargs):
@@ -671,13 +665,16 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         return [self.get_subreddit(name) for name in results['names']]
 
     @reddit.decorators.RequireCaptcha
-    def create_redditor(self, user_name, password, email='', captcha=None):
-        """Register a new user."""
-        params = {'email': email,
-                  'op': 'reg',
-                  'passwd': password,
-                  'passwd2': password,
-                  'user': user_name}
+    def send_feedback(self, name, email, message, reason='feedback',
+                      captcha=None):
+        """
+        Send feedback to the admins. Please don't abuse this, read what it says
+        on the send feedback page!
+        """
+        params = {'name': name,
+                  'email': email,
+                  'reason': reason,
+                  'text': message}
         if captcha:
             params.update(captcha)
-        return self.request_json(self.config['register'], params)
+        return self.request_json(self.config['feedback'], params)
