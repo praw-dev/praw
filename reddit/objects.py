@@ -693,6 +693,10 @@ class Subreddit(Messageable):
         """Get the spam-filtered items on the given subreddit."""
         return self.reddit_session.get_spam(self, *args, **kwargs)
 
+    def get_stylesheet(self, *args, **kwargs):
+        """Get the stylesheet and associated images for this subreddit."""
+        return self.reddit_session.get_stylesheet(self, *args, **kwargs)
+
     def search(self, query, *args, **kwargs):
         """Search this subreddit."""
         return self.reddit_session.search(query, self, *args, **kwargs)

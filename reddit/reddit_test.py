@@ -318,6 +318,19 @@ class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find comment on other user\'s list')
 
 
+class StylesheetTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
+
+    def test_update_stylesheet(self):
+        stylesheet = ('div.titlebox span.number:after {\ncontent: " %s"\n' %
+                      uuid.uuid4())
+        self.subreddit.update_stylesheet(stylesheet)
+        self.assertEqual(self.subreddit.get_stylesheet()['stylesheet'],
+                         stylesheet)
+
+
 class FlairTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()

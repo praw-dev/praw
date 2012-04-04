@@ -80,6 +80,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'sent':                'message/sent/',
                  'site_admin':          'api/site_admin/',
                  'spam':                'r/%s/about/spam/',
+                 'stylesheet':          'r/%s/about/stylesheet/',
                  'submit':              'api/submit/',
                  'subreddit':           'r/%s/',
                  'subreddit_about':     'r/%s/about/',
@@ -105,11 +106,11 @@ class Config(object):  # pylint: disable-msg=R0903
         self.api_request_delay = float(obj['api_request_delay'])
         self.by_kind = {obj['comment_kind']:    reddit.objects.Comment,
                         obj['message_kind']:    reddit.objects.Message,
-                        obj['more_kind']:       reddit.objects.MoreComments,
                         obj['redditor_kind']:   reddit.objects.Redditor,
                         obj['submission_kind']: reddit.objects.Submission,
                         obj['subreddit_kind']:  reddit.objects.Subreddit,
-                        obj['userlist_kind']:   reddit.objects.UserList}
+                        'more':                 reddit.objects.MoreComments,
+                        'UserList':             reddit.objects.UserList}
         self.by_object = dict((value, key) for (key, value) in
                               six.iteritems(self.by_kind))
         self.by_object[reddit.objects.LoggedInRedditor] = obj['redditor_kind']
@@ -394,6 +395,12 @@ class SubredditExtension(BaseReddit):
         """Get the list of spam-filtered items for a subreddit."""
         return self.get_content(self.config['spam'] % six.text_type(subreddit),
                                 limit=limit)
+
+    @reddit.decorators.require_login
+    def get_stylesheet(self, subreddit):
+        """Get the stylesheet and associated images for a subreddit."""
+        return self.request_json(self.config['stylesheet'] %
+                                 six.text_type(subreddit))['data']
 
     @reddit.decorators.require_login
     def set_flair(self, subreddit, user, text='', css_class=''):
