@@ -658,6 +658,9 @@ class Subreddit(Messageable):
             return self.set_flair_csv(csv)
         else:
             return
+            
+    def get_community_settings():
+        
 
     def update_community_settings(self, title, description='', language='en',
                                   subreddit_type='public',
