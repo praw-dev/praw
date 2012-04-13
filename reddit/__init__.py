@@ -119,6 +119,10 @@ class Config(object):  # pylint: disable-msg=R0903
         self.default_content_limit = int(obj['default_content_limit'])
         self.domain = obj['domain']
         self.more_comments_max = int(obj['more_comments_max'])
+        if 'short_domain' in obj:
+            self._short_domain = 'http://' + obj['short_domain']
+        else:
+            self._short_domain = None
         self.timeout = float(obj['timeout'])
         try:
             self.user = obj['user']
@@ -132,6 +136,13 @@ class Config(object):  # pylint: disable-msg=R0903
         if self._ssl_url and key in self.SSL_PATHS:
             return urljoin(self._ssl_url, self.API_PATHS[key])
         return urljoin(self._site_url, self.API_PATHS[key])
+
+    @property
+    def short_domain(self):
+        if self._short_domain:
+            return self._short_domain
+        else:
+            raise reddit.errors.ClientException('No short domain specified.')
 
 
 class BaseReddit(object):

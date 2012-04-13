@@ -603,6 +603,10 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
                 self._comments_flat.append(comment)
         return self._comments_flat
 
+    @property
+    def short_link(self):
+        return urljoin(self.reddit_session.config.short_domain, self.id)
+
 
 class Subreddit(Messageable):
     """A class for Subreddits."""

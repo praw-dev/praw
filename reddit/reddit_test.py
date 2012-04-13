@@ -604,43 +604,6 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
-    def test_delete(self):
-        submission = list(self.r.user.get_submitted())[-1]
-        submission.delete()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertEqual(None, submission.author)
-
-    def test_save(self):
-        submission = None
-        for submission in self.r.user.get_submitted():
-            if not submission.saved:
-                break
-        if not submission or submission.saved:
-            self.fail('Could not find unsaved submission.')
-        submission.save()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertTrue(submission.saved)
-        # verify in saved_links
-        for item in self.r.get_saved_links():
-            if item == submission:
-                break
-        else:
-            self.fail('Could not find submission in saved links.')
-
-    def test_unsave(self):
-        submission = None
-        for submission in self.r.user.get_submitted():
-            if submission.saved:
-                break
-        if not submission or not submission.saved:
-            self.fail('Could not find saved submission.')
-        submission.unsave()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertFalse(submission.saved)
-
     def test_clear_vote(self):
         submission = None
         for submission in self.r.user.get_submitted():
@@ -653,6 +616,13 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, None)
 
+    def test_delete(self):
+        submission = list(self.r.user.get_submitted())[-1]
+        submission.delete()
+        # reload the submission
+        submission = self.r.get_submission(submission_id=submission.id)
+        self.assertEqual(None, submission.author)
+
     def test_downvote(self):
         submission = None
         for submission in self.r.user.get_submitted():
@@ -664,18 +634,6 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, False)
-
-    def test_upvote(self):
-        submission = None
-        for submission in self.r.user.get_submitted():
-            if submission.likes is None:
-                break
-        if not submission or submission.likes is not None:
-            self.fail('Could not find a non-voted submission.')
-        submission.upvote()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertEqual(submission.likes, True)
 
     def test_report(self):
         # login as new user to report submission
@@ -695,6 +653,56 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
                 break
         else:
             self.fail('Could not find reported submission.')
+
+    def test_save(self):
+        submission = None
+        for submission in self.r.user.get_submitted():
+            if not submission.saved:
+                break
+        if not submission or submission.saved:
+            self.fail('Could not find unsaved submission.')
+        submission.save()
+        # reload the submission
+        submission = self.r.get_submission(submission_id=submission.id)
+        self.assertTrue(submission.saved)
+        # verify in saved_links
+        for item in self.r.get_saved_links():
+            if item == submission:
+                break
+        else:
+            self.fail('Could not find submission in saved links.')
+
+    def test_short_link(self):
+        submission = six_next(self.r.get_front_page())
+        if self.r.config.is_reddit:
+            self.assertTrue(submission.id in submission.short_link)
+        else:
+            self.assertRaises(errors.ClientException, getattr, submission,
+                              'short_link')
+
+    def test_unsave(self):
+        submission = None
+        for submission in self.r.user.get_submitted():
+            if submission.saved:
+                break
+        if not submission or not submission.saved:
+            self.fail('Could not find saved submission.')
+        submission.unsave()
+        # reload the submission
+        submission = self.r.get_submission(submission_id=submission.id)
+        self.assertFalse(submission.saved)
+
+    def test_upvote(self):
+        submission = None
+        for submission in self.r.user.get_submitted():
+            if submission.likes is None:
+                break
+        if not submission or submission.likes is not None:
+            self.fail('Could not find a non-voted submission.')
+        submission.upvote()
+        # reload the submission
+        submission = self.r.get_submission(submission_id=submission.id)
+        self.assertEqual(submission.likes, True)
 
 
 class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
