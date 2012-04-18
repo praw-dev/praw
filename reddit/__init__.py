@@ -358,6 +358,12 @@ class SubredditExtension(BaseReddit):
                                  six.text_type(subreddit))
 
     @reddit.decorators.require_login
+    def get_community_settings(self, subreddit):
+        """Get the community settings for a subreddit."""
+        return self.request_json(self.config['subreddit_settings'] %
+                                 six.text_type(subreddit))['data']
+
+    @reddit.decorators.require_login
     def get_contributors(self, subreddit):
         """Get the list of contributors for a subreddit."""
         return self.request_json(self.config['contributors'] %

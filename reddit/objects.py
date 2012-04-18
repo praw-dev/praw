@@ -657,9 +657,6 @@ class Subreddit(Messageable):
         else:
             return
 
-    def get_community_settings():
-        pass
-
     def clear_flair_templates(self, *args, **kwargs):
         """Clear flair templates for this subreddit."""
         return self.reddit_session.clear_flair_templates(self, *args, **kwargs)
@@ -671,6 +668,11 @@ class Subreddit(Messageable):
     def get_banned(self, *args, **kwargs):
         """Get banned users for this subreddit."""
         return self.reddit_session.get_banned(self, *args, **kwargs)
+
+    def get_community_settings(self, *args, **kwargs):
+        """Get the community settings for a subreddit."""
+        return self.reddit_session.get_community_settings(self, *args,
+                                                          **kwargs)
 
     def get_contributors(self, *args, **kwargs):
         """Get contributors for this subreddit."""
