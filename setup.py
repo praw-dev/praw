@@ -5,7 +5,7 @@ except ImportError:
 
 setup(
     name='reddit',
-    version='1.3.3',
+    version='1.3.4',
     author='Timothy Mellor',
     author_email='timothy.mellor+pip@gmail.com',
     maintainer='Bryce Boe',

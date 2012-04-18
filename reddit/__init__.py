@@ -31,7 +31,7 @@ import reddit.objects
 from reddit.settings import CONFIG
 
 
-VERSION = '1.3.3'
+VERSION = '1.3.4'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (VERSION,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -85,7 +85,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'subreddit':           'r/%s/',
                  'subreddit_about':     'r/%s/about/',
                  'subreddit_css':       'api/subreddit_stylesheet/',
-                 'subreddit_settings':  'r/%s/about/edit',
+                 'subreddit_settings':  'r/%s/about/edit/',
                  'subscribe':           'api/subscribe/',
                  'undistinguish':       'api/distinguish/no/',
                  'unfriend':            'api/unfriend/',
