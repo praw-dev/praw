@@ -60,7 +60,6 @@ class Config(object):  # pylint: disable-msg=R0903
                  'inbox':               'message/inbox/',
                  'info':                'button_info/',
                  'login':               'api/login/%s/',
-                 'logout':              'logout/',
                  'moderator':           'message/moderator/',
                  'moderators':          'r/%s/about/moderators/',
                  'modqueue':            'r/%s/about/modqueue/',
@@ -307,7 +306,7 @@ class SubredditExtension(BaseReddit):
 
     @reddit.decorators.require_login
     def _subscribe(self, sr_id=None, sr_name=None, unsubscribe=False):
-        """Perform the (un)subscribe to the subreddit.
+        """Perform the (un)subscribe to the given subreddit.
 
         Provide either the subreddit id (sr_id) name (sr_name)."""
 
@@ -326,8 +325,9 @@ class SubredditExtension(BaseReddit):
         return response
 
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
     def add_flair_template(self, subreddit, text, css_class, text_editable):
-        """Adds a flair template to the subreddit."""
+        """Adds a flair template to the given subreddit."""
         params = {'r': six.text_type(subreddit),
                   'text': text,
                   'css_class': css_class,
@@ -335,14 +335,16 @@ class SubredditExtension(BaseReddit):
         return self.request_json(self.config['flairtemplate'], params)
 
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
     def clear_flair_templates(self, subreddit):
-        """Clear flair templates for a subreddit."""
+        """Clear flair templates for the given subreddit."""
         params = {'r': six.text_type(subreddit)}
         return self.request_json(self.config['clearflairtemplates'], params)
 
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
     def flair_list(self, subreddit, limit=None):
-        """Get flair list for a subreddit.
+        """Get flair list for the given subreddit.
 
         Returns a tuple containing 'user', 'flair_text', and 'flair_css_class'.
         """
@@ -352,26 +354,30 @@ class SubredditExtension(BaseReddit):
                                 thing_field='users', after_field='next')
 
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
     def get_banned(self, subreddit):
-        """Get the list of banned users for a subreddit."""
+        """Get the list of banned users for the given subreddit."""
         return self.request_json(self.config['banned'] %
                                  six.text_type(subreddit))
 
     @reddit.decorators.require_login
-    def get_community_settings(self, subreddit):
-        """Get the community settings for a subreddit."""
+    @reddit.decorators.require_moderator
+    def get_settings(self, subreddit):
+        """Get the settings for the given subreddit."""
         return self.request_json(self.config['subreddit_settings'] %
                                  six.text_type(subreddit))['data']
 
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
     def get_contributors(self, subreddit):
-        """Get the list of contributors for a subreddit."""
+        """Get the list of contributors for the given subreddit."""
         return self.request_json(self.config['contributors'] %
                                  six.text_type(subreddit))
 
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
     def get_flair(self, subreddit, redditor):
-        """Gets the flair for a user on subreddit."""
+        """Gets the flair for a user on the given subreddit."""
         url_data = {'name': six.text_type(redditor)}
         data = self.request_json(self.config['flairlist'] %
                                  six.text_type(subreddit), url_data=url_data)
@@ -379,47 +385,48 @@ class SubredditExtension(BaseReddit):
 
     @reddit.decorators.require_login
     def get_moderators(self, subreddit):
-        """Get the list of moderators for a subreddit."""
+        """Get the list of moderators for the given subreddit."""
         return self.request_json(self.config['moderators'] %
                                  six.text_type(subreddit))
 
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
     def get_modqueue(self, subreddit='mod', limit=None):
-        """Get the mod-queue for a subreddit."""
+        """Get the mod-queue for the given subreddit."""
         return self.get_content(self.config['modqueue'] %
                                 six.text_type(subreddit),
                                 limit=limit)
 
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
     def get_reports(self, subreddit='mod', limit=None):
-        """Get the list of reported submissions for a subreddit."""
+        """Get the list of reported submissions for the given subreddit."""
         return self.get_content(self.config['reports'] %
                                 six.text_type(subreddit),
                                 limit=limit)
 
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
     def get_spam(self, subreddit='mod', limit=None):
-        """Get the list of spam-filtered items for a subreddit."""
+        """Get the list of spam-filtered items for the given subreddit."""
         return self.get_content(self.config['spam'] % six.text_type(subreddit),
                                 limit=limit)
 
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
     def get_stylesheet(self, subreddit):
-        """Get the stylesheet and associated images for a subreddit."""
+        """Get the stylesheet and associated images for the given subreddit."""
         return self.request_json(self.config['stylesheet'] %
                                  six.text_type(subreddit))['data']
 
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
     def set_flair(self, subreddit, user, flair_text='', flair_css_class=''):
-        """Set flair of user in given subreddit."""
-        if flair_text == None:
-            flair_text = ''
-        if flair_css_class == None:
-            flair_css_class = ''
+        """Set flair for the user in the given subreddit."""
         params = {'r': six.text_type(subreddit),
                   'name': six.text_type(user),
-                  'text': flair_text,
-                  'css_class': flair_css_class}
+                  'text': flair_text or '',
+                  'css_class': flair_css_class or ''}
         response = self.request_json(self.config['flair'], params)
         stale_url = self.config['flairlist'] % six.text_type(subreddit)
         # pylint: disable-msg=E1101,W0212
@@ -427,8 +434,9 @@ class SubredditExtension(BaseReddit):
         return response
 
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
     def set_flair_csv(self, subreddit, flair_mapping):
-        """Set flair for a group of users all at once.
+        """Set flair for a group of users in the given subreddit.
 
         flair_mapping should be a list of dictionaries with the following keys:
           user: the user name
@@ -455,11 +463,41 @@ class SubredditExtension(BaseReddit):
         reddit.helpers._request.evict([stale_url])
         return response
 
-    @reddit.decorators.RequireCaptcha
     @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
+    def set_settings(self, subreddit, title, description='', language='en',
+                     subreddit_type='public', content_options='any',
+                     over_18=False, default_set=True, show_media=False,
+                     domain='', header_hover_text=''):
+        """Set the settings for the given subreddit."""
+        params = {'r': six.text_type(subreddit),
+                  'sr': subreddit.content_id,
+                  'title': title,
+                  'description': description,
+                  'lang': language,
+                  'type': subreddit_type,
+                  'link_type': content_options,
+                  'header-title': header_hover_text,
+                  'over_18': 'on' if over_18 else 'off',
+                  'allow_top': 'on' if default_set else 'off',
+                  'show_media': 'on' if show_media else 'off',
+                  'domain': domain}
+        return self.request_json(self.config['site_admin'], params)
+
+    @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
+    def set_stylesheet(self, subreddit, stylesheet):
+        """Set stylesheet for the given subreddit."""
+        params = {'r': six.text_type(subreddit),
+                  'stylesheet_contents': stylesheet,
+                  'op': 'save'}  # Options: save / preview
+        return self.request_json(self.config['subreddit_css'], params)
+
+    @reddit.decorators.require_login
+    @reddit.decorators.RequireCaptcha
     def submit(self, subreddit, title, text=None, url=None, captcha=None):
         """
-        Submit a new link.
+        Submit a new link to the given subreddit.
 
         Accepts either a Subreddit object or a str containing the subreddit
         name.
@@ -481,20 +519,12 @@ class SubredditExtension(BaseReddit):
         return self.get_submission(result['data']['url'])
 
     def subscribe(self, subreddit):
-        """Subscribe to subreddit by name."""
+        """Subscribe to the given subreddit by name."""
         self._subscribe(sr_name=subreddit)
 
     def unsubscribe(self, subreddit):
-        """Unsubscribe from subreddit by name."""
+        """Unsubscribe from the given subreddit by name."""
         self._subscribe(sr_name=subreddit, unsubscribe=True)
-
-    @reddit.decorators.require_login
-    def update_stylesheet(self, subreddit, stylesheet):
-        """Set stylesheet in given subreddit."""
-        params = {'r': six.text_type(subreddit),
-                  'stylesheet_contents': stylesheet,
-                  'op': 'save'}  # Options: save / preview
-        return self.request_json(self.config['subreddit_css'], params)
 
 
 class LoggedInExtension(BaseReddit):
@@ -521,8 +551,8 @@ class LoggedInExtension(BaseReddit):
         reddit.helpers._request.evict(urls)
         return response
 
-    @reddit.decorators.RequireCaptcha
     @reddit.decorators.require_login
+    @reddit.decorators.RequireCaptcha
     def compose_message(self, recipient, subject, message, captcha=None):
         """Send a message to another redditor or a subreddit.
 
@@ -531,7 +561,7 @@ class LoggedInExtension(BaseReddit):
         with either '/r/' or '#'.
         """
         if isinstance(recipient, reddit.objects.Subreddit):
-            recipient = '/r/%s' % recipient.display_name
+            recipient = '/r/%s' % six.text_type(recipient)
         else:
             recipient = six.text_type(recipient)
 
@@ -601,17 +631,6 @@ class LoggedInExtension(BaseReddit):
         self.modhash = response['data']['modhash']
         self.user = self.get_redditor(user)
         self.user.__class__ = reddit.objects.LoggedInRedditor
-
-    @reddit.decorators.require_login
-    def logout(self):
-        """Logs out of a session."""
-        self.modhash = self.user = None
-        try:
-            self.request_json(self.config['logout'], True)
-        except HTTPError as error:
-            # Python 3 doesn't like the 302 response on POST requests
-            if error.code != 302:
-                raise
 
 
 class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904

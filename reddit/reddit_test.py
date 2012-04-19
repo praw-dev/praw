@@ -24,7 +24,7 @@ import random
 import unittest
 import uuid
 import warnings
-from six import advance_iterator as six_next
+from six import advance_iterator as six_next, text_type
 from six.moves import HTTPError, URLError, urljoin
 
 from reddit import Reddit, errors, helpers
@@ -103,7 +103,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
             self.r.info(self.self)
             self.assertEqual(len(w), 1)
             self.assertEqual(w[-1].category, UserWarning)
-            self.assertTrue('self' in str(w[-1].message))
+            self.assertTrue('self' in text_type(w[-1].message))
 
     def test_info_by_url_also_found_by_id(self):
         if self.r.config.is_reddit:
@@ -142,7 +142,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
         try:
             helpers._request(self.r, self.r.config['comments'], timeout=0.001)
         except URLError as error:
-            self.assertEqual(str(error.reason), 'timed out')
+            self.assertEqual(text_type(error.reason), 'timed out')
         except timeout:
             pass
         else:
@@ -156,7 +156,7 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
     def test_author_encoding(self):
         # pylint: disable-msg=E1101
         a1 = six_next(self.r.get_front_page()).author
-        a2 = self.r.get_redditor(str(a1))
+        a2 = self.r.get_redditor(text_type(a1))
         self.assertEqual(a1, a2)
         s1 = six_next(a1.get_submitted())
         s2 = six_next(a2.get_submitted())
@@ -323,16 +323,15 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
 
-    def test_update_settings(self):
+    def test_set_settings(self):
         title = 'Reddit API Test %s' % uuid.uuid4()
-        self.subreddit.update_community_settings(title)
-        self.assertEqual(self.subreddit.get_community_settings()['title'],
-                         title)
+        self.subreddit.set_settings(title)
+        self.assertEqual(self.subreddit.get_settings()['title'], title)
 
-    def test_update_stylesheet(self):
+    def test_set_stylesheet(self):
         stylesheet = ('div.titlebox span.number:after {\ncontent: " %s"\n' %
                       uuid.uuid4())
-        self.subreddit.update_stylesheet(stylesheet)
+        self.subreddit.set_stylesheet(stylesheet)
         self.assertEqual(self.subreddit.get_stylesheet()['stylesheet'],
                          stylesheet)
 
@@ -568,7 +567,7 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(self.other in self.subreddit.get_moderators())
 
     def test_make_moderator_by_name(self):
-        self.subreddit.make_moderator(str(self.other))
+        self.subreddit.make_moderator(text_type(self.other))
         self.assertTrue(self.other in self.subreddit.get_moderators())
 
     def test_remove_contributor(self):
@@ -604,19 +603,6 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_user_set_on_login(self):
         self.assertTrue(isinstance(self.r.user, LoggedInRedditor))
-
-    def test_logout(self):
-        tmp = self.r.modhash, self.r.user
-        self.r.logout()
-        self.r.modhash, self.r.user = tmp
-        try:
-            passed = False
-            self.r.clear_flair_templates(self.sr)
-        except HTTPError as e:
-            if e.code == 403:
-                passed = True
-        if not passed:
-            self.fail('Logout failed.')
 
 
 class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
@@ -793,15 +779,20 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_get_my_moderation(self):
         for subreddit in self.r.user.my_moderation():
-            if subreddit.display_name == self.sr:
+            if text_type(subreddit) == self.sr:
                 break
         else:
             self.fail('Could not find moderated reddit in my_moderation.')
 
+    def test_moderator_requried(self):
+        oth = Reddit(USER_AGENT)
+        oth.login('PyApiTestUser3', '1111')
+        self.assertRaises(errors.ModeratorRequired, oth.get_settings, self.sr)
+
     def test_my_reddits(self):
         for subreddit in self.r.user.my_reddits():
             # pylint: disable-msg=W0212
-            self.assertTrue(subreddit.display_name in subreddit._info_url)
+            self.assertTrue(text_type(subreddit) in subreddit._info_url)
 
     def test_search(self):
         if not self.r.config.is_reddit:
@@ -811,7 +802,7 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def test_subscribe_and_verify(self):
         self.subreddit.subscribe()
         for subreddit in self.r.user.my_reddits():
-            if subreddit.display_name == self.sr:
+            if text_type(subreddit) == self.sr:
                 break
         else:
             self.fail('Could not find reddit in my_reddits.')
@@ -819,7 +810,7 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def test_subscribe_by_name_and_verify(self):
         self.r.subscribe(self.sr)
         for subreddit in self.r.user.my_reddits():
-            if subreddit.display_name == self.sr:
+            if text_type(subreddit) == self.sr:
                 break
         else:
             self.fail('Could not find reddit in my_reddits.')
@@ -827,13 +818,13 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def test_unsubscribe_and_verify(self):
         self.subreddit.unsubscribe()
         for subreddit in self.r.user.my_reddits():
-            if subreddit.display_name == self.sr:
+            if text_type(subreddit) == self.sr:
                 self.fail('Found reddit in my_reddits.')
 
     def test_unsubscribe_by_name_and_verify(self):
         self.r.unsubscribe(self.sr)
         for subreddit in self.r.user.my_reddits():
-            if subreddit.display_name == self.sr:
+            if text_type(subreddit) == self.sr:
                 self.fail('Found reddit in my_reddits.')
 
 

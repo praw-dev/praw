@@ -19,7 +19,7 @@ import six
 import warnings
 from six.moves import urljoin
 
-from reddit.decorators import limit_chars, require_login
+from reddit.decorators import limit_chars, require_login, require_moderator
 from reddit.errors import ClientException
 from reddit.helpers import (_get_section, _get_sorter, _modify_relationship,
                             _request)
@@ -362,6 +362,7 @@ class Redditor(Messageable):
                                        fetch, info_url)
         self.name = user_name
         self._url = reddit_session.config['user'] % user_name
+        self._mod_subs = None
 
     @limit_chars()
     def __unicode__(self):
@@ -642,15 +643,15 @@ class Subreddit(Messageable):
 
     @limit_chars()
     def __unicode__(self):
-        """Display the subreddit name."""
+        """Display this subreddit's name."""
         return self.display_name
 
     def add_flair_template(self, *args, **kwargs):
-        """Adds a flair template to the subreddit."""
+        """Adds a flair template to this subreddit."""
         return self.reddit_session.add_flair_template(self, *args, **kwargs)
 
     def clear_all_flair(self):
-        """Helper method to remove all currently set flair."""
+        """Helper method to remove all flair on this subreddit."""
         csv = [{'user': x['user']} for x in self.flair_list()]
         if csv:
             return self.set_flair_csv(csv)
@@ -669,10 +670,9 @@ class Subreddit(Messageable):
         """Get banned users for this subreddit."""
         return self.reddit_session.get_banned(self, *args, **kwargs)
 
-    def get_community_settings(self, *args, **kwargs):
-        """Get the community settings for a subreddit."""
-        return self.reddit_session.get_community_settings(self, *args,
-                                                          **kwargs)
+    def get_settings(self, *args, **kwargs):
+        """Get the settings for this subreddit."""
+        return self.reddit_session.get_settings(self, *args, **kwargs)
 
     def get_contributors(self, *args, **kwargs):
         """Get contributors for this subreddit."""
@@ -687,15 +687,15 @@ class Subreddit(Messageable):
         return self.reddit_session.get_moderators(self, *args, **kwargs)
 
     def get_modqueue(self, *args, **kwargs):
-        """Get the modqueue on the given subreddit."""
+        """Get the modqueue on this subreddit."""
         return self.reddit_session.get_modqueue(self, *args, **kwargs)
 
     def get_reports(self, *args, **kwargs):
-        """Get the reported submissions on the given subreddit."""
+        """Get the reported submissions on this subreddit."""
         return self.reddit_session.get_reports(self, *args, **kwargs)
 
     def get_spam(self, *args, **kwargs):
-        """Get the spam-filtered items on the given subreddit."""
+        """Get the spam-filtered items on this subreddit."""
         return self.reddit_session.get_spam(self, *args, **kwargs)
 
     def get_stylesheet(self, *args, **kwargs):
@@ -707,52 +707,35 @@ class Subreddit(Messageable):
         return self.reddit_session.search(query, self, *args, **kwargs)
 
     def set_flair(self, *args, **kwargs):
-        """Set flair for a particular user."""
+        """Set flair for a particular user on this subreddit."""
         return self.reddit_session.set_flair(self, *args, **kwargs)
 
     def set_flair_csv(self, *args, **kwargs):
-        """Set flair for a group of users all at once."""
+        """Set flair for a group of users all at once on this subreddit."""
         return self.reddit_session.set_flair_csv(self, *args, **kwargs)
 
+    def set_settings(self, *args, **kwargs):
+        """Set the settings for this subreddit."""
+        return self.reddit_session.set_settings(self, *args, **kwargs)
+
+    def set_stylesheet(self, *args, **kwargs):
+        """Set stylesheet for this sub-reddit."""
+        return self.reddit_session.set_stylesheet(self, *args, **kwargs)
+
     def submit(self, *args, **kwargs):
-        """Submit a new link."""
+        """Submit a new link to this subreddit."""
         return self.reddit_session.submit(self, *args, **kwargs)
 
     def subscribe(self):
-        """Subscribe to the given subreddit."""
+        """Subscribe to this subreddit."""
         # pylint: disable-msg=W0212
         return self.reddit_session._subscribe(self.content_id)
 
     def unsubscribe(self):
-        """Unsubscribe from the given subreddit."""
+        """Unsubscribe from this subreddit."""
         # pylint: disable-msg=W0212
         return self.reddit_session._subscribe(self.content_id,
                                               unsubscribe=True)
-
-    def update_community_settings(self, title, description='', language='en',
-                                  subreddit_type='public',
-                                  content_options='any', over_18=False,
-                                  default_set=True, show_media=False,
-                                  domain='', header_hover_text=''):
-        params = {'r': six.text_type(self),
-                  'sr': self.content_id,
-                  'title': title,
-                  'description': description,
-                  'lang': language,
-                  'type': subreddit_type,
-                  'link_type': content_options,
-                  'header-title': header_hover_text,
-                  'over_18': 'on' if over_18 else 'off',
-                  'allow_top': 'on' if default_set else 'off',
-                  'show_media': 'on' if show_media else 'off',
-                  'domain': domain}
-        return self.reddit_session.request_json(
-                self.reddit_session.config['site_admin'], params)
-
-    def update_stylesheet(self, *args, **kwargs):
-        """Set stylesheet for a sub-reddit."""
-        # pylint: disable-msg=W0212
-        return self.reddit_session.update_stylesheet(self, *args, **kwargs)
 
 
 class UserList(RedditContentObject):

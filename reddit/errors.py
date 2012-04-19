@@ -36,6 +36,11 @@ class LoginRequired(ClientException):
     """
 
 
+class ModeratorRequired(ClientException):
+    """Raised when a logged in user is not a moderator for the corresponding
+    subreddit."""
+
+
 class APIException(Exception):
     """Base exception class for the reddit API bindings."""
     def __init__(self, error_type, message, field='', response=None):

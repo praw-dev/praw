@@ -34,9 +34,9 @@ class Memoize(object):
     evict method.
     """
 
-    def __init__(self, func):
-        wraps(func)(self)
-        self.func = func
+    def __init__(self, function):
+        wraps(function)(self)
+        self.function = function
         self._cache = {}
         self._timeouts = {}
 
@@ -48,8 +48,9 @@ class Memoize(object):
         self._timeouts.setdefault(key, call_time)
         if key in self._cache:
             return self._cache[key]
-        return self._cache.setdefault(key, self.func(reddit_session, page_url,
-                                                     *args, **kwargs))
+        return self._cache.setdefault(key, self.function(reddit_session,
+                                                         page_url, *args,
+                                                         **kwargs))
 
     def clear_timeouts(self, call_time, cache_timeout):
         """Clears the caches of results which have timed out."""
@@ -70,14 +71,14 @@ class Memoize(object):
 class RequireCaptcha(object):
     """Decorator for methods that require captchas."""
 
-    def __init__(self, func):
-        wraps(func)(self)
-        self.func = func
+    def __init__(self, function):
+        wraps(function)(self)
+        self.function = function
 
     def __get__(self, obj, key):
         if obj is None:
             return self
-        return self.__class__(self.func.__get__(obj, key))
+        return self.__class__(self.function.__get__(obj, key))
 
     def __call__(self, *args, **kwargs):
         captcha_id = None
@@ -85,12 +86,12 @@ class RequireCaptcha(object):
             try:
                 if captcha_id:
                     kwargs['captcha'] = self.get_captcha(captcha_id)
-                return self.func(*args, **kwargs)
+                return self.function(*args, **kwargs)
             except errors.BadCaptcha as exception:
                 captcha_id = exception.response['captcha']
 
     def get_captcha(self, captcha_id):
-        url = urljoin(self.func.__self__.config['captcha'],
+        url = urljoin(self.function.__self__.config['captcha'],
                       captcha_id + '.png')
         sys.stdout.write('Captcha URL: %s\nCaptcha: ' % url)
         sys.stdout.flush()
@@ -109,9 +110,9 @@ class SleepAfter(object):  # pylint: disable-msg=R0903
     delayed until the proper duration is reached.
     """
 
-    def __init__(self, func):
-        wraps(func)(self)
-        self.func = func
+    def __init__(self, function):
+        wraps(function)(self)
+        self.function = function
         self.last_call = {}
 
     def __call__(self, *args, **kwargs):
@@ -126,7 +127,7 @@ class SleepAfter(object):  # pylint: disable-msg=R0903
             now += delay
             time.sleep(delay)
         self.last_call[config.domain] = now
-        return self.func(*args, **kwargs)
+        return self.function(*args, **kwargs)
 
 
 def limit_chars(num_chars=80):
@@ -134,25 +135,25 @@ def limit_chars(num_chars=80):
     A decorator to limit the number of chars in a function that outputs a
     string.
     """
-    def func_limiter(func):
-        @wraps(func)
-        def func_wrapper(self, *args, **kwargs):
-            value = func(self, *args, **kwargs)
+    def function_limiter(function):
+        @wraps(function)
+        def function_wrapper(self, *args, **kwargs):
+            value = function(self, *args, **kwargs)
             if len(value) > num_chars:
                 value = value[:num_chars - 3] + '...'
             return value
-        return func_wrapper
-    return func_limiter
+        return function_wrapper
+    return function_limiter
 
 
-def parse_api_json_response(func):  # pylint: disable-msg=R0912
+def parse_api_json_response(function):  # pylint: disable-msg=R0912
     """Decorator to look at the Reddit API response to an API POST request like
     vote, subscribe, login, etc. Basically, it just looks for certain errors in
     the return string. If it doesn't find one, then it just returns True.
     """
-    @wraps(func)
-    def error_checked_func(self, *args, **kwargs):
-        return_value = func(self, *args, **kwargs)
+    @wraps(function)
+    def error_checked_function(self, *args, **kwargs):
+        return_value = function(self, *args, **kwargs)
         allowed = ('captcha', 'data', 'errors', 'kind', 'names', 'next',
                    'prev', 'ratelimit', 'users')
         if isinstance(return_value, dict):
@@ -176,15 +177,14 @@ def parse_api_json_response(func):  # pylint: disable-msg=R0912
                 else:
                     raise errors.ExceptionList(error_list)
         return return_value
-    return error_checked_func
+    return error_checked_function
 
 
-def require_login(func):
-    """A decorator to ensure that a user has logged in before calling the
-    function."""
+def require_login(function):
+    """Ensure that the user has logged in before calling the function."""
 
-    @wraps(func)
-    def login_reqd_func(self, *args, **kwargs):
+    @wraps(function)
+    def login_required_function(self, *args, **kwargs):
         if isinstance(self, RedditContentObject):
             user = self.reddit_session.user
             modhash = self.reddit_session.modhash
@@ -193,10 +193,30 @@ def require_login(func):
             modhash = self.modhash
 
         if user is None or modhash is None:
-            raise errors.LoginRequired('`%s` requires login.' % func.__name__)
+            raise errors.LoginRequired('%r requires login' % function.__name__)
         else:
-            return func(self, *args, **kwargs)
-    return login_reqd_func
+            return function(self, *args, **kwargs)
+    return login_required_function
+
+
+def require_moderator(function):
+    """Ensure that the user is a moderator of the subreddit."""
+
+    @wraps(function)
+    def moderator_required_function(self, subreddit, *args, **kwargs):
+        if not self.user.is_mod:
+            raise errors.ModeratorRequired('%r is not moderator' %
+                                           six.text_type(self.user))
+        if self.user._mod_subs is None:
+            self.user._mod_subs = {}
+            for sub in self.user.my_moderation():
+                self.user._mod_subs[six.text_type(sub).lower()] = sub
+        if six.text_type(subreddit).lower() not in self.user._mod_subs:
+            raise errors.ModeratorRequired('%r is not a moderator of %r' %
+                                           (six.text_type(self.user),
+                                            six.text_type(subreddit)))
+        return function(self, subreddit, *args, **kwargs)
+    return moderator_required_function
 
 
 # Avoid circular import: http://effbot.org/zone/import-confusion.htm
