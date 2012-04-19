@@ -410,12 +410,16 @@ class SubredditExtension(BaseReddit):
                                  six.text_type(subreddit))['data']
 
     @reddit.decorators.require_login
-    def set_flair(self, subreddit, user, text='', css_class=''):
+    def set_flair(self, subreddit, user, flair_text='', flair_css_class=''):
         """Set flair of user in given subreddit."""
+        if flair_text == None:
+            flair_text = ''
+        if flair_css_class == None:
+            flair_css_class = ''
         params = {'r': six.text_type(subreddit),
                   'name': six.text_type(user),
-                  'text': text,
-                  'css_class': css_class}
+                  'text': flair_text,
+                  'css_class': flair_css_class}
         response = self.request_json(self.config['flair'], params)
         stale_url = self.config['flairlist'] % six.text_type(subreddit)
         # pylint: disable-msg=E1101,W0212
