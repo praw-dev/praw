@@ -326,19 +326,22 @@ class SubredditExtension(BaseReddit):
 
     @reddit.decorators.require_login
     @reddit.decorators.require_moderator
-    def add_flair_template(self, subreddit, text, css_class, text_editable):
+    def add_flair_template(self, subreddit, text, css_class, text_editable,
+                           is_link=False):
         """Adds a flair template to the given subreddit."""
         params = {'r': six.text_type(subreddit),
                   'text': text,
                   'css_class': css_class,
-                  'text_editable': six.text_type(text_editable)}
+                  'text_editable': six.text_type(text_editable),
+                  'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
         return self.request_json(self.config['flairtemplate'], params)
 
     @reddit.decorators.require_login
     @reddit.decorators.require_moderator
-    def clear_flair_templates(self, subreddit):
+    def clear_flair_templates(self, subreddit, is_link=False):
         """Clear flair templates for the given subreddit."""
-        params = {'r': six.text_type(subreddit)}
+        params = {'r': six.text_type(subreddit),
+                  'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
         return self.request_json(self.config['clearflairtemplates'], params)
 
     @reddit.decorators.require_login

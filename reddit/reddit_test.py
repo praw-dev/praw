@@ -417,11 +417,17 @@ class FlairTemplateTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
 
-    def test_add_template(self):
+    def test_add_user_template(self):
         self.subreddit.add_flair_template('text', 'css', True)
 
-    def test_clear(self):
+    def test_add_link_template(self):
+        self.subreddit.add_flair_template('text', 'css', True, True)
+
+    def test_clear_user_templates(self):
         self.subreddit.clear_flair_templates()
+
+    def test_clear_link_templates(self):
+        self.subreddit.clear_flair_templates(True)
 
 
 class LocalOnlyTest(unittest.TestCase, BasicHelper):
