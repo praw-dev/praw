@@ -737,6 +737,10 @@ class Subreddit(Messageable):
         return self.reddit_session._subscribe(self.content_id,
                                               unsubscribe=True)
 
+    def update_settings(self, *args, **kwargs):
+        """Update only the settings provided for this subreddit."""
+        return self.reddit_session.update_settings(self, *args, **kwargs)
+
 
 class UserList(RedditContentObject):
     """A class for UserList."""

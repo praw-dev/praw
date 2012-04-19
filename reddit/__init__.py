@@ -468,7 +468,11 @@ class SubredditExtension(BaseReddit):
     def set_settings(self, subreddit, title, description='', language='en',
                      subreddit_type='public', content_options='any',
                      over_18=False, default_set=True, show_media=False,
-                     domain='', header_hover_text=''):
+                     domain='', domain_css=False, domain_sidebar=False,
+                     header_hover_text=''):
+        def bool_str(item):
+            return 'on' if item else 'off'
+
         """Set the settings for the given subreddit."""
         params = {'r': six.text_type(subreddit),
                   'sr': subreddit.content_id,
@@ -477,11 +481,16 @@ class SubredditExtension(BaseReddit):
                   'lang': language,
                   'type': subreddit_type,
                   'link_type': content_options,
-                  'header-title': header_hover_text,
-                  'over_18': 'on' if over_18 else 'off',
-                  'allow_top': 'on' if default_set else 'off',
-                  'show_media': 'on' if show_media else 'off',
-                  'domain': domain}
+                  'over_18': bool_str(over_18),
+                  'allow_top': bool_str(default_set),
+                  'show_media': bool_str(show_media),
+                  'domain': domain or '',
+                  'domain_css': bool_str(domain_css),
+                  'domain_sidebar': bool_str(domain_sidebar),
+                  'header-title': header_hover_text}
+        # pylint: disable-msg=E1101,W0212
+        reddit.helpers._request.evict([self.config['subreddit_settings'] %
+                                       six.text_type(subreddit)])
         return self.request_json(self.config['site_admin'], params)
 
     @reddit.decorators.require_login
@@ -525,6 +534,17 @@ class SubredditExtension(BaseReddit):
     def unsubscribe(self, subreddit):
         """Unsubscribe from the given subreddit by name."""
         self._subscribe(sr_name=subreddit, unsubscribe=True)
+
+    def update_settings(self, subreddit, **kwargs):
+        """Update only the given settings for the given subreddit.
+
+        The settings to update must be given by keyword and match one of the
+        parameter names in `set_settings`.
+        """
+        settings = self.get_settings(subreddit)
+        settings.update(kwargs)
+        del settings['subreddit_id']
+        return self.set_settings(subreddit, **settings)
 
 
 class LoggedInExtension(BaseReddit):

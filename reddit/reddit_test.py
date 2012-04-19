@@ -335,6 +335,12 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(self.subreddit.get_stylesheet()['stylesheet'],
                          stylesheet)
 
+    def test_update_settings(self):
+        settings = self.subreddit.get_settings()
+        settings['description'] = 'Description %s' % uuid.uuid4()
+        self.subreddit.update_settings(description=settings['description'])
+        self.assertEqual(self.subreddit.get_settings(), settings)
+
 
 class FlairTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
