@@ -424,16 +424,24 @@ class SubredditExtension(BaseReddit):
 
     @reddit.decorators.require_login
     @reddit.decorators.require_moderator
-    def set_flair(self, subreddit, user, flair_text='', flair_css_class=''):
-        """Set flair for the user in the given subreddit."""
+    def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
+        """Set flair for the user in the given subreddit.
+
+        Item can be a string, Redditor object, or Submission object. If item is
+        a string it will be treated as a Redditor.
+        """
         params = {'r': six.text_type(subreddit),
-                  'name': six.text_type(user),
                   'text': flair_text or '',
                   'css_class': flair_css_class or ''}
+        if isinstance(item, reddit.objects.Submission):
+            params['link'] = item.content_id
+            evict = item.permalink
+        else:
+            params['name'] = six.text_type(item)
+            evict = self.config['flairlist'] % six.text_type(subreddit)
         response = self.request_json(self.config['flair'], params)
-        stale_url = self.config['flairlist'] % six.text_type(subreddit)
         # pylint: disable-msg=E1101,W0212
-        reddit.helpers._request.evict([stale_url])
+        reddit.helpers._request.evict([evict])
         return response
 
     @reddit.decorators.require_login

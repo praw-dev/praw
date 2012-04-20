@@ -347,20 +347,31 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
 
-    def test_add_flair_by_subreddit_name(self):
+    def test_add_link_flair(self):
+        flair_text = 'Flair: %s' % uuid.uuid4()
+        sub = six_next(self.subreddit.get_new_by_date())
+        self.subreddit.set_flair(sub, flair_text)
+        sub = self.r.get_submission(sub.permalink)
+        self.assertEqual(sub.link_flair_text, flair_text)
+
+    def test_add_link_flair_to_invalid_subreddit(self):
+        sub = six_next(self.r.get_subreddit('bboe').get_new_by_date())
+        self.assertRaises(HTTPError, self.subreddit.set_flair, sub, 'text')
+
+    def test_add_user_flair_by_subreddit_name(self):
         flair_text = 'Flair: %s' % uuid.uuid4()
         self.r.set_flair(self.sr, self.r.user, flair_text)
         flair = self.r.get_flair(self.sr, self.r.user)
         self.assertEqual(flair['flair_text'], flair_text)
         self.assertEqual(flair['flair_css_class'], None)
 
-    def test_add_flair_to_invalid_user(self):
+    def test_add_user_flair_to_invalid_user(self):
         self.assertRaises(errors.APIException, self.subreddit.set_flair, 'b')
 
-    def test_add_flair_by_name(self):
+    def test_add_user_flair_by_name(self):
         flair_text = 'Flair: %s' % uuid.uuid4()
         flair_css = 'a%d' % random.randint(0, 1024)
-        self.subreddit.set_flair(self.r.user, flair_text, flair_css)
+        self.subreddit.set_flair(text_type(self.r.user), flair_text, flair_css)
         flair = self.subreddit.get_flair(self.r.user)
         self.assertEqual(flair['flair_text'], flair_text)
         self.assertEqual(flair['flair_css_class'], flair_css)
