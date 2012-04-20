@@ -326,8 +326,8 @@ class SubredditExtension(BaseReddit):
 
     @reddit.decorators.require_login
     @reddit.decorators.require_moderator
-    def add_flair_template(self, subreddit, text, css_class, text_editable,
-                           is_link=False):
+    def add_flair_template(self, subreddit, text='', css_class='',
+                           text_editable=False, is_link=False):
         """Adds a flair template to the given subreddit."""
         params = {'r': six.text_type(subreddit),
                   'text': text,

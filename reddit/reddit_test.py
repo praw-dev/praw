@@ -433,6 +433,9 @@ class FlairTemplateTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_add_link_template(self):
         self.subreddit.add_flair_template('text', 'css', True, True)
+        self.subreddit.add_flair_template(text='text', is_link=True)
+        self.subreddit.add_flair_template(css_class='blah', is_link=True)
+        self.subreddit.add_flair_template(is_link=True)
 
     def test_clear_user_templates(self):
         self.subreddit.clear_flair_templates()
