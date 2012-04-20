@@ -56,12 +56,3 @@ reddit Package
     :members:
     :undoc-members:
     :show-inheritance:
-
-:mod:`util` Module
-------------------
-
-.. automodule:: reddit.util
-    :members:
-    :undoc-members:
-    :show-inheritance:
-

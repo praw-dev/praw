@@ -29,9 +29,9 @@ import reddit.errors
 import reddit.helpers
 import reddit.objects
 from reddit.settings import CONFIG
+from reddit.version import VERSION
 
 
-VERSION = '1.3.4'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (VERSION,
                                           sys.version.split()[0],
                                           platform.platform(True))

@@ -1,3 +1,4 @@
+from reddit.version import VERSION
 try:
     from setuptools import setup
 except ImportError:
@@ -5,11 +6,11 @@ except ImportError:
 
 setup(
     name='reddit',
-    version='1.3.4',
+    version=VERSION,
     author='Timothy Mellor',
     author_email='timothy.mellor+pip@gmail.com',
     maintainer='Bryce Boe',
-    maintainer_email='bbzbryce+pip@gmail.com',
+    maintainer_email='bbzbryce@gmail.com',
     url='https://github.com/mellort/reddit_api',
     description='A wrapper for the Reddit API',
     long_description=('Please see the `documentation on github '
