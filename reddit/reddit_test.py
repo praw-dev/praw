@@ -354,6 +354,13 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         sub = self.r.get_submission(sub.permalink)
         self.assertEqual(sub.link_flair_text, flair_text)
 
+    def test_add_link_flair_through_submission(self):
+        flair_text = 'Falir: %s' % uuid.uuid4()
+        sub = six_next(self.subreddit.get_new_by_date())
+        sub.set_flair(flair_text)
+        sub = self.r.get_submission(sub.permalink)
+        self.assertEqual(sub.link_flair_text, flair_text)
+
     def test_add_link_flair_to_invalid_subreddit(self):
         sub = six_next(self.r.get_subreddit('bboe').get_new_by_date())
         self.assertRaises(HTTPError, self.subreddit.set_flair, sub, 'text')

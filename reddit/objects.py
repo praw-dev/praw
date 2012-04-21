@@ -604,6 +604,10 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
                 self._comments_flat.append(comment)
         return self._comments_flat
 
+    def set_flair(self, *args, **kwargs):
+        """Set flair for this submission."""
+        return self.subreddit.set_flair(self, *args, **kwargs)
+
     @property
     def short_link(self):
         return urljoin(self.reddit_session.config.short_domain, self.id)
@@ -707,7 +711,7 @@ class Subreddit(Messageable):
         return self.reddit_session.search(query, self, *args, **kwargs)
 
     def set_flair(self, *args, **kwargs):
-        """Set flair for a particular user on this subreddit."""
+        """Set flair for a particular user or submission on this subreddit."""
         return self.reddit_session.set_flair(self, *args, **kwargs)
 
     def set_flair_csv(self, *args, **kwargs):
