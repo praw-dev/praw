@@ -817,6 +817,10 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.fail('Could not find moderated reddit in my_moderation.')
 
+    def test_get_modqueue(self):
+        mod_submissions = list(self.r.get_subreddit('mod').get_modqueue())
+        self.assertTrue(len(mod_submissions) > 0)
+
     def test_moderator_requried(self):
         oth = Reddit(USER_AGENT)
         oth.login('PyApiTestUser3', '1111')

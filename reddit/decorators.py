@@ -208,8 +208,8 @@ def require_moderator(function):
             raise errors.ModeratorRequired('%r is not moderator' %
                                            six.text_type(self.user))
         if self.user._mod_subs is None:
-            self.user._mod_subs = {}
-            for sub in self.user.my_moderation():
+            self.user._mod_subs = {'mod': self.get_subreddit('mod')}
+            for sub in self.user.my_moderation(limit=None):
                 self.user._mod_subs[six.text_type(sub).lower()] = sub
         if six.text_type(subreddit).lower() not in self.user._mod_subs:
             raise errors.ModeratorRequired('%r is not a moderator of %r' %
