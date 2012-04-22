@@ -13,4 +13,4 @@
 # You should have received a copy of the GNU General Public License
 # along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
 
-VERSION = '1.3.5'
+VERSION = '1.3.6'
