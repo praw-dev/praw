@@ -1,12 +1,17 @@
-from reddit.version import VERSION
+import re
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
+
+version = re.search("__version__ = '([^']+)'",
+                    open('reddit/__init__.py').read()).group(1)
+
+
 setup(
     name='reddit',
-    version=VERSION,
+    version=version,
     author='Timothy Mellor',
     author_email='timothy.mellor+pip@gmail.com',
     maintainer='Bryce Boe',
