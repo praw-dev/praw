@@ -30,7 +30,7 @@ import reddit.helpers
 import reddit.objects
 from reddit.settings import CONFIG
 
-__version__ = '1.3.6'
+__version__ = '1.3.7'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -497,7 +497,7 @@ class SubredditExtension(BaseReddit):
                   'domain': domain or '',
                   'domain_css': bool_str(domain_css),
                   'domain_sidebar': bool_str(domain_sidebar),
-                  'header-title': header_hover_text}
+                  'header-title': header_hover_text or ''}
         # pylint: disable-msg=E1101,W0212
         reddit.helpers._request.evict([self.config['subreddit_settings'] %
                                        six.text_type(subreddit)])

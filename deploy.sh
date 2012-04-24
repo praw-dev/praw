@@ -12,7 +12,7 @@ if [ $lines -ne 2 ]; then
     exit 1
 fi
 
-version=$(python -c "import reddit.version; print reddit.version.VERSION")
+version=$(python -c "import reddit; print reddit.__version__")
 
 read -p "Do you want to deploy $version? [y/n] " input
 case $input in
