@@ -85,13 +85,19 @@ class RequireCaptcha(object):
         while True:
             try:
                 if captcha_id:
-                    kwargs['captcha'] = self.get_captcha(captcha_id)
+                    # Differentiate between bound and unbound methods
+                    if hasattr(self.function, '__self__'):
+                        reddit_session = self.function.__self__
+                    else:
+                        reddit_session = args[0]
+                    kwargs['captcha'] = self.get_captcha(reddit_session,
+                                                         captcha_id)
                 return self.function(*args, **kwargs)
             except errors.BadCaptcha as exception:
                 captcha_id = exception.response['captcha']
 
-    def get_captcha(self, captcha_id):
-        url = urljoin(self.function.__self__.config['captcha'],
+    def get_captcha(self, reddit_session, captcha_id):
+        url = urljoin(reddit_session.config['captcha'],
                       captcha_id + '.png')
         sys.stdout.write('Captcha URL: %s\nCaptcha: ' % url)
         sys.stdout.flush()
