@@ -65,7 +65,9 @@ class RedditContentObject(object):
         if value and name == 'subreddit':
             value = Subreddit(self.reddit_session, value, fetch=False)
         elif value and name in REDDITOR_KEYS:
-            if not value or value == '[deleted]':
+            if isinstance(value, bool):
+                pass
+            elif not value or value == '[deleted]':
                 value = None
             else:
                 value = Redditor(self.reddit_session, value, fetch=False)
