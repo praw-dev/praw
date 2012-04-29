@@ -118,7 +118,7 @@ class Approvable(RedditContentObject):
         return response
 
     @require_login
-    def remove(self, spam=True):
+    def remove(self, spam=False):
         url = self.reddit_session.config['remove']
         params = {'id': self.content_id,
                   'spam': 'True' if spam else 'False'}
