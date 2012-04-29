@@ -143,12 +143,14 @@ class Distinguishable(RedditContentObject):
     """Interface for Reddit content objects that can be distinguished."""
     @require_login
     def distinguish(self):
+        """Distinguish object as made by mod / admin."""
         url = self.reddit_session.config['distinguish']
         params = {'id': self.content_id}
         return self.reddit_session.request_json(url, params)
 
     @require_login
     def undistinguish(self):
+        """Remove mod / admin distinguishing on object."""
         url = self.reddit_session.config['undistinguish']
         params = {'id': self.content_id}
         return self.reddit_session.request_json(url, params)
