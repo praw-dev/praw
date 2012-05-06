@@ -1,6 +1,6 @@
 # Introduction
 This is a Python wrapper for Reddit's API, aiming to be as easy to use as
-possible. Here's a quick peek, getting the first 10 submissions from the 'hot'
+possible. Here's a quick peek, getting the first 5 submissions from the 'hot'
 section of the 'opensource' subreddit.
 
 ```python
@@ -10,7 +10,7 @@ submissions = r.get_subreddit('opensource').get_hot(limit=5)
 [str(x) for x in submissions]
 ```
 
-this will display something similar to the following:
+This will display something similar to the following:
 
 ```python
 ['10 :: Gun.io Debuts Group Funding for Open Source Projects\n Gun.io',
@@ -24,6 +24,10 @@ this will display something similar to the following:
 You can install via `pip` 
 
     pip install reddit
+
+Or via `easy-install`
+
+    easy_install reddit
 
 Or via `setup.py`
 
