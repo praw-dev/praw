@@ -262,6 +262,7 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
         else:
             self._replies = None
         self._submission = None
+        self.score = self.ups - self.downs
 
     @limit_chars()
     def __unicode__(self):
