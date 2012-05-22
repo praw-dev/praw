@@ -337,8 +337,11 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_update_settings(self):
         settings = self.subreddit.get_settings()
-        settings['description'] = 'Description %s' % uuid.uuid4()
-        self.subreddit.update_settings(description=settings['description'])
+        settings['public_description'] = 'Description %s' % uuid.uuid4()
+        settings['description'] = 'Sidebar %s' % uuid.uuid4()
+        self.subreddit.update_settings(
+            public_description=settings['public_description'],
+            description=settings['description'])
         self.assertEqual(self.subreddit.get_settings(), settings)
 
 

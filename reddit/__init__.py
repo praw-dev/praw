@@ -30,7 +30,7 @@ import reddit.helpers
 import reddit.objects
 from reddit.settings import CONFIG
 
-__version__ = '1.3.7'
+__version__ = '1.3.8'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -475,11 +475,11 @@ class SubredditExtension(BaseReddit):
 
     @reddit.decorators.require_login
     @reddit.decorators.require_moderator
-    def set_settings(self, subreddit, title, description='', language='en',
-                     subreddit_type='public', content_options='any',
-                     over_18=False, default_set=True, show_media=False,
-                     domain='', domain_css=False, domain_sidebar=False,
-                     header_hover_text=''):
+    def set_settings(self, subreddit, title, public_description='',
+                     description='', language='en', subreddit_type='public',
+                     content_options='any', over_18=False, default_set=True,
+                     show_media=False, domain='', domain_css=False,
+                     domain_sidebar=False, header_hover_text=''):
         def bool_str(item):
             return 'on' if item else 'off'
 
@@ -487,6 +487,7 @@ class SubredditExtension(BaseReddit):
         params = {'r': six.text_type(subreddit),
                   'sr': subreddit.content_id,
                   'title': title,
+                  'public_description': public_description,
                   'description': description,
                   'lang': language,
                   'type': subreddit_type,

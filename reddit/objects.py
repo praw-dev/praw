@@ -19,7 +19,7 @@ import six
 import warnings
 from six.moves import urljoin
 
-from reddit.decorators import limit_chars, require_login, require_moderator
+from reddit.decorators import limit_chars, require_login
 from reddit.errors import ClientException
 from reddit.helpers import (_get_section, _get_sorter, _modify_relationship,
                             _request)
