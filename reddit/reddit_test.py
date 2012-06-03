@@ -173,6 +173,7 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
         title = 'Wiki Entry on \xC3\x9C'
         url = 'http://en.wikipedia.org/wiki/\xC3\x9C?id=%s' % unique
         submission = self.r.submit(self.sr, title, url=url)
+        str(submission)
         self.assertEqual(title, submission.title)
         self.assertEqual(url, submission.url)
 
