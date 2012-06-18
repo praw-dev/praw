@@ -484,7 +484,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
 
     def __unicode__(self):
         title = self.title.replace('\r\n', ' ')
-        return six.text_type('{} :: {}').format(self.score, title)
+        return six.text_type('{0} :: {1}').format(self.score, title)
 
     def _insert_comment(self, comment):
         if comment.name in self._comments_by_id:  # Skip existing comments
