@@ -14,11 +14,14 @@
 
 from six import MovedAttribute, add_move
 
-add_move(MovedAttribute('HTTPError', 'urllib2', 'urllib.error'))
-add_move(MovedAttribute('HTTPCookieProcessor', 'urllib2', 'urllib.request'))
-add_move(MovedAttribute('Request', 'urllib2', 'urllib.request'))
-add_move(MovedAttribute('URLError', 'urllib2', 'urllib.error'))
-add_move(MovedAttribute('build_opener', 'urllib2', 'urllib.request'))
-add_move(MovedAttribute('quote', 'urllib2', 'urllib.parse'))
-add_move(MovedAttribute('urlencode', 'urllib', 'urllib.parse'))
-add_move(MovedAttribute('urljoin', 'urlparse', 'urllib.parse'))
+
+def add_moves():
+    add_move(MovedAttribute('HTTPError', 'urllib2', 'urllib.error'))
+    add_move(MovedAttribute('HTTPCookieProcessor', 'urllib2',
+                            'urllib.request'))
+    add_move(MovedAttribute('Request', 'urllib2', 'urllib.request'))
+    add_move(MovedAttribute('URLError', 'urllib2', 'urllib.error'))
+    add_move(MovedAttribute('build_opener', 'urllib2', 'urllib.request'))
+    add_move(MovedAttribute('quote', 'urllib2', 'urllib.parse'))
+    add_move(MovedAttribute('urlencode', 'urllib', 'urllib.parse'))
+    add_move(MovedAttribute('urljoin', 'urlparse', 'urllib.parse'))

@@ -13,6 +13,7 @@
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import backport  # pylint: disable-msg=W0611
+backport.add_moves()
 
 import six
 import sys

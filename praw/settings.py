@@ -13,11 +13,11 @@
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import backport  # pylint: disable-msg=W0611
+backport.add_moves()
 
 import os
 import sys
 from six.moves import configparser
-from warnings import warn_explicit
 
 
 def _load_configuration():

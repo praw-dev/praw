@@ -12,7 +12,8 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import backport  # pylint: disable-msg=W0611
+from . import backport
+backport.add_moves()
 from six.moves import (HTTPCookieProcessor, HTTPError, build_opener,
                        http_cookiejar, http_client, urljoin)
 

@@ -12,7 +12,8 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import backport  # pylint: disable-msg=W0611
+from . import backport
+backport.add_moves()
 
 import six
 from six.moves import Request, quote, urlencode, urljoin
@@ -79,6 +80,9 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 @Memoize
 @SleepAfter
 def _request(reddit_session, page_url, params=None, url_data=None, timeout=45):
+    """
+    Actually make the request.
+    """
     page_url = quote(page_url.encode('utf-8'), ':/')
     if url_data:
         page_url += '?' + urlencode(url_data)

@@ -17,7 +17,8 @@
 # pylint: disable-msg=C0103, R0903, R0904, W0201
 
 from __future__ import unicode_literals
-from . import backport  # pylint: disable-msg=W0611
+from . import backport
+backport.add_moves()
 
 import random
 import unittest
