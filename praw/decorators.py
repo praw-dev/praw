@@ -167,9 +167,6 @@ def parse_api_json_response(function):  # pylint: disable-msg=R0912
                     warnings.warn_explicit('Unknown return key: %s' % key,
                                            UserWarning, '', 0)
             if 'errors' in return_value and return_value['errors']:
-                # Hack for now with successful submission and captcha error
-                if 'data' in return_value and 'url' in return_value['data']:
-                    return return_value
                 error_list = []
                 for error_type, msg, value in return_value['errors']:
                     if error_type in errors.ERROR_MAPPING:
