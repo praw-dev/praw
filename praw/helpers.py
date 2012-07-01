@@ -1,22 +1,22 @@
-# This file is part of reddit_api.
+# This file is part of PRAW.
 #
-# reddit_api is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# PRAW is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# reddit_api is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# PRAW is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-import reddit.backport  # pylint: disable-msg=W0611
+from . import backport  # pylint: disable-msg=W0611
+
 import six
 from six.moves import Request, quote, urlencode, urljoin
-from reddit.decorators import Memoize, SleepAfter, require_login
+from .decorators import Memoize, SleepAfter, require_login
 
 
 def _get_section(subpath=''):
@@ -38,8 +38,7 @@ def _get_section(subpath=''):
 
 def _get_sorter(subpath='', **defaults):
     """
-    Used by the Reddit Page classes to generate each of the currently supported
-    sorts (hot, top, new, best).
+    Used to generate the various Submission listings.
     """
     def _sorted(self, *args, **kw):
         if 'url_data' in kw and kw['url_data']:

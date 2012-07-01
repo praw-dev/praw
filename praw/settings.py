@@ -1,23 +1,23 @@
-# This file is part of reddit_api.
+# This file is part of PRAW.
 #
-# reddit_api is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# PRAW is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# reddit_api is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# PRAW is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-import reddit.backport  # pylint: disable-msg=W0611
+from . import backport  # pylint: disable-msg=W0611
 
 import os
 import sys
 from six.moves import configparser
+from warnings import warn_explicit
 
 
 def _load_configuration():
@@ -29,9 +29,9 @@ def _load_configuration():
         os_config_path = os.environ['XDG_CONFIG_HOME']
     else:  # Legacy Linux
         os_config_path = os.path.join(os.environ['HOME'], '.config')
-    locations = [os.path.join(module_dir, 'reddit_api.cfg'),
-                 os.path.join(os_config_path, 'reddit_api', 'reddit_api.cfg'),
-                 'reddit_api.cfg']
+    locations = [os.path.join(module_dir, 'praw.ini'),
+                 os.path.join(os_config_path, 'praw.ini'),
+                 'praw.ini']
     if not config.read(locations):
         raise Exception('Could not find config file in any of: %s' % locations)
     return config

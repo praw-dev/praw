@@ -1,24 +1,23 @@
 #!/usr/bin/env python
 
-# This file is part of reddit_api.
+# This file is part of PRAW.
 #
-# reddit_api is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# PRAW is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# reddit_api is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# PRAW is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
 # pylint: disable-msg=C0103, R0903, R0904, W0201
 
 from __future__ import unicode_literals
-import reddit.backport  # pylint: disable-msg=W0611
+from . import backport  # pylint: disable-msg=W0611
 
 import random
 import unittest
@@ -27,8 +26,8 @@ import warnings
 from six import advance_iterator as six_next, text_type
 from six.moves import HTTPError, URLError, urljoin
 
-from reddit import Reddit, errors, helpers
-from reddit.objects import Comment, LoggedInRedditor, Message, MoreComments
+from . import Reddit, errors, helpers
+from .objects import Comment, LoggedInRedditor, Message, MoreComments
 
 USER_AGENT = 'PRAW_test_suite'
 

@@ -1,19 +1,18 @@
-# This file is part of reddit_api.
+# This file is part of PRAW.
 #
-# reddit_api is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# PRAW is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# reddit_api is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# PRAW is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-import reddit.backport  # pylint: disable-msg=W0611
+from . import backport  # pylint: disable-msg=W0611
 from six.moves import (HTTPCookieProcessor, HTTPError, build_opener,
                        http_cookiejar, http_client, urljoin)
 
@@ -22,15 +21,15 @@ import os
 import platform
 import six
 import sys
-import warnings
+from warnings import warn_explicit
 
-import reddit.decorators
-import reddit.errors
-import reddit.helpers
-import reddit.objects
-from reddit.settings import CONFIG
+from . import decorators
+from . import errors
+from . import helpers
+from . import objects
+from .settings import CONFIG
 
-__version__ = '1.4.0'
+__version__ = '1.0dev'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -103,16 +102,16 @@ class Config(object):  # pylint: disable-msg=R0903
         else:
             self._ssl_url = None
         self.api_request_delay = float(obj['api_request_delay'])
-        self.by_kind = {obj['comment_kind']:    reddit.objects.Comment,
-                        obj['message_kind']:    reddit.objects.Message,
-                        obj['redditor_kind']:   reddit.objects.Redditor,
-                        obj['submission_kind']: reddit.objects.Submission,
-                        obj['subreddit_kind']:  reddit.objects.Subreddit,
-                        'more':                 reddit.objects.MoreComments,
-                        'UserList':             reddit.objects.UserList}
+        self.by_kind = {obj['comment_kind']:    objects.Comment,
+                        obj['message_kind']:    objects.Message,
+                        obj['redditor_kind']:   objects.Redditor,
+                        obj['submission_kind']: objects.Submission,
+                        obj['subreddit_kind']:  objects.Subreddit,
+                        'more':                 objects.MoreComments,
+                        'UserList':             objects.UserList}
         self.by_object = dict((value, key) for (key, value) in
                               six.iteritems(self.by_kind))
-        self.by_object[reddit.objects.LoggedInRedditor] = obj['redditor_kind']
+        self.by_object[objects.LoggedInRedditor] = obj['redditor_kind']
         self.cache_timeout = float(obj['cache_timeout'])
         self.comment_limit = int(obj['comment_limit'])
         self.comment_sort = obj['comment_sort']
@@ -142,7 +141,7 @@ class Config(object):  # pylint: disable-msg=R0903
         if self._short_domain:
             return self._short_domain
         else:
-            raise reddit.errors.ClientException('No short domain specified.')
+            raise errors.ClientException('No short domain specified.')
 
 
 class BaseReddit(object):
@@ -186,8 +185,8 @@ class BaseReddit(object):
         remaining_attempts = 3
         while True:
             try:
-                return reddit.helpers._request(self, page_url, params,
-                                               url_data, timeout)
+                return helpers._request(self, page_url, params,
+                                        url_data, timeout)
             except HTTPError as error:
                 remaining_attempts -= 1
                 if (error.code not in self.RETRY_CODES or
@@ -208,8 +207,8 @@ class BaseReddit(object):
         except KeyError:
             if 'json' in json_data:
                 if len(json_data) != 1:
-                    warnings.warn_explicit('Unknown object type: %s' %
-                                           json_data, UserWarning, '', 0)
+                    warn_explicit('Unknown object type: %s' %
+                                  json_data, UserWarning, '', 0)
                 return json_data['json']
         else:
             return object_class.from_api_response(self, json_data['data'])
@@ -218,7 +217,7 @@ class BaseReddit(object):
     def get_content(self, page_url, limit=0, url_data=None, place_holder=None,
                     root_field='data', thing_field='children',
                     after_field='after'):
-        """A generator method to return Reddit content from a URL. Starts at
+        """A generator method to return reddit content from a URL. Starts at
         the initial page_url, and fetches content using the `after` JSON data
         until `limit` entries have been fetched, or the `place_holder` has been
         reached.
@@ -239,9 +238,9 @@ class BaseReddit(object):
             contains the list of things. Most objects use 'children'.
         :param after_field: indicates the field which holds the after item
             element
-        :type place_holder: a string corresponding to a Reddit content id, e.g.
+        :type place_holder: a string corresponding to a reddit content id, e.g.
             't3_asdfasdf'
-        :returns: a list of Reddit content, of type Subreddit, Comment,
+        :returns: a list of reddit content, of type Subreddit, Comment,
             Submission or user flair.
         """
         content_found = 0
@@ -276,7 +275,7 @@ class BaseReddit(object):
             else:
                 return
 
-    @reddit.decorators.parse_api_json_response
+    @decorators.parse_api_json_response
     def request_json(self, page_url, params=None, url_data=None,
                      as_objects=True):
         """Gets the JSON processed from a page. Takes the same parameters as
@@ -286,7 +285,7 @@ class BaseReddit(object):
         :param page_url
         :param params
         :param url_data
-        :param as_objects: Whether to return constructed Reddit objects or the
+        :param as_objects: Whether to return constructed reddit objects or the
         raw json dict.
         :returns: JSON processed page
         """
@@ -303,7 +302,7 @@ class SubredditExtension(BaseReddit):
     def __init__(self, *args, **kwargs):
         super(SubredditExtension, self).__init__(*args, **kwargs)
 
-    @reddit.decorators.require_login
+    @decorators.require_login
     def _subscribe(self, sr_id=None, sr_name=None, unsubscribe=False):
         """Perform the (un)subscribe to the given subreddit.
 
@@ -320,11 +319,11 @@ class SubredditExtension(BaseReddit):
 
         response = self.request_json(self.config['subscribe'], params)
         # pylint: disable-msg=E1101,W0212
-        reddit.helpers._request.evict([self.config['my_reddits']])
+        helpers._request.evict([self.config['my_reddits']])
         return response
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def add_flair_template(self, subreddit, text='', css_class='',
                            text_editable=False, is_link=False):
         """Adds a flair template to the given subreddit."""
@@ -335,16 +334,16 @@ class SubredditExtension(BaseReddit):
                   'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
         return self.request_json(self.config['flairtemplate'], params)
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def clear_flair_templates(self, subreddit, is_link=False):
         """Clear flair templates for the given subreddit."""
         params = {'r': six.text_type(subreddit),
                   'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
         return self.request_json(self.config['clearflairtemplates'], params)
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def flair_list(self, subreddit, limit=None):
         """Get flair list for the given subreddit.
 
@@ -355,29 +354,29 @@ class SubredditExtension(BaseReddit):
                                 limit=limit, root_field=None,
                                 thing_field='users', after_field='next')
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def get_banned(self, subreddit):
         """Get the list of banned users for the given subreddit."""
         return self.request_json(self.config['banned'] %
                                  six.text_type(subreddit))
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def get_settings(self, subreddit):
         """Get the settings for the given subreddit."""
         return self.request_json(self.config['subreddit_settings'] %
                                  six.text_type(subreddit))['data']
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def get_contributors(self, subreddit):
         """Get the list of contributors for the given subreddit."""
         return self.request_json(self.config['contributors'] %
                                  six.text_type(subreddit))
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def get_flair(self, subreddit, redditor):
         """Gets the flair for a user on the given subreddit."""
         url_data = {'name': six.text_type(redditor)}
@@ -385,44 +384,44 @@ class SubredditExtension(BaseReddit):
                                  six.text_type(subreddit), url_data=url_data)
         return data['users'][0]
 
-    @reddit.decorators.require_login
+    @decorators.require_login
     def get_moderators(self, subreddit):
         """Get the list of moderators for the given subreddit."""
         return self.request_json(self.config['moderators'] %
                                  six.text_type(subreddit))
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def get_modqueue(self, subreddit='mod', limit=None):
         """Get the mod-queue for the given subreddit."""
         return self.get_content(self.config['modqueue'] %
                                 six.text_type(subreddit),
                                 limit=limit)
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def get_reports(self, subreddit='mod', limit=None):
         """Get the list of reported submissions for the given subreddit."""
         return self.get_content(self.config['reports'] %
                                 six.text_type(subreddit),
                                 limit=limit)
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def get_spam(self, subreddit='mod', limit=None):
         """Get the list of spam-filtered items for the given subreddit."""
         return self.get_content(self.config['spam'] % six.text_type(subreddit),
                                 limit=limit)
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def get_stylesheet(self, subreddit):
         """Get the stylesheet and associated images for the given subreddit."""
         return self.request_json(self.config['stylesheet'] %
                                  six.text_type(subreddit))['data']
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
         """Set flair for the user in the given subreddit.
 
@@ -432,7 +431,7 @@ class SubredditExtension(BaseReddit):
         params = {'r': six.text_type(subreddit),
                   'text': flair_text or '',
                   'css_class': flair_css_class or ''}
-        if isinstance(item, reddit.objects.Submission):
+        if isinstance(item, objects.Submission):
             params['link'] = item.content_id
             evict = item.permalink
         else:
@@ -440,11 +439,11 @@ class SubredditExtension(BaseReddit):
             evict = self.config['flairlist'] % six.text_type(subreddit)
         response = self.request_json(self.config['flair'], params)
         # pylint: disable-msg=E1101,W0212
-        reddit.helpers._request.evict([evict])
+        helpers._request.evict([evict])
         return response
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def set_flair_csv(self, subreddit, flair_mapping):
         """Set flair for a group of users in the given subreddit.
 
@@ -454,13 +453,13 @@ class SubredditExtension(BaseReddit):
           flair_css_class: the flair css class for the user (optional)
         """
         if not flair_mapping:
-            raise reddit.errors.ClientException('flair_mapping must be set')
+            raise errors.ClientException('flair_mapping must be set')
         item_order = ['user', 'flair_text', 'flair_css_class']
         lines = []
         for mapping in flair_mapping:
             if 'user' not in mapping:
-                raise reddit.errors.ClientException('flair_mapping must '
-                                                    'contain `user` key')
+                raise errors.ClientException('flair_mapping must '
+                                             'contain `user` key')
             lines.append(','.join([mapping.get(x, '') for x in item_order]))
         response = []
         while len(lines):
@@ -470,11 +469,11 @@ class SubredditExtension(BaseReddit):
             lines = lines[100:]
         stale_url = self.config['flairlist'] % six.text_type(subreddit)
         # pylint: disable-msg=E1101,W0212
-        reddit.helpers._request.evict([stale_url])
+        helpers._request.evict([stale_url])
         return response
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def set_settings(self, subreddit, title, public_description='',
                      description='', language='en', subreddit_type='public',
                      content_options='any', over_18=False, default_set=True,
@@ -500,12 +499,12 @@ class SubredditExtension(BaseReddit):
                   'domain_sidebar': bool_str(domain_sidebar),
                   'header-title': header_hover_text or ''}
         # pylint: disable-msg=E1101,W0212
-        reddit.helpers._request.evict([self.config['subreddit_settings'] %
-                                       six.text_type(subreddit)])
+        helpers._request.evict([self.config['subreddit_settings'] %
+                                six.text_type(subreddit)])
         return self.request_json(self.config['site_admin'], params)
 
-    @reddit.decorators.require_login
-    @reddit.decorators.require_moderator
+    @decorators.require_login
+    @decorators.require_moderator
     def set_stylesheet(self, subreddit, stylesheet):
         """Set stylesheet for the given subreddit."""
         params = {'r': six.text_type(subreddit),
@@ -513,8 +512,8 @@ class SubredditExtension(BaseReddit):
                   'op': 'save'}  # Options: save / preview
         return self.request_json(self.config['subreddit_css'], params)
 
-    @reddit.decorators.require_login
-    @reddit.decorators.RequireCaptcha
+    @decorators.require_login
+    @decorators.RequireCaptcha
     def submit(self, subreddit, title, text=None, url=None, captcha=None):
         """
         Submit a new link to the given subreddit.
@@ -562,28 +561,27 @@ class LoggedInExtension(BaseReddit):
     def __init__(self, *args, **kwargs):
         super(LoggedInExtension, self).__init__(*args, **kwargs)
 
-    @reddit.decorators.require_login
+    @decorators.require_login
     def _add_comment(self, thing_id, text):
         """Comment on the given thing with the given text."""
         params = {'thing_id': thing_id,
                   'text': text}
         data = self.request_json(self.config['comment'], params)
-        # REDDIT: Reddit's end should only ever return a single comment
+        # REDDIT: reddit's end should only ever return a single comment
         return data['data']['things'][0]
 
-    @reddit.decorators.require_login
+    @decorators.require_login
     def _mark_as_read(self, thing_ids, unread=False):
         """ Marks each of the supplied thing_ids as (un)read."""
         params = {'id': ','.join(thing_ids)}
         key = 'unread_message' if unread else 'read_message'
         response = self.request_json(self.config[key], params)
         urls = [self.config[x] for x in ['inbox', 'moderator', 'unread']]
-        # pylint: disable-msg=E1101,W0212
-        reddit.helpers._request.evict(urls)
+        helpers._request.evict(urls)  # pylint: disable-msg=E1101,W0212
         return response
 
-    @reddit.decorators.require_login
-    @reddit.decorators.RequireCaptcha
+    @decorators.require_login
+    @decorators.RequireCaptcha
     def compose_message(self, recipient, subject, message, captcha=None):
         """Send a message to another redditor or a subreddit.
 
@@ -591,7 +589,7 @@ class LoggedInExtension(BaseReddit):
         either be a subreddit object or the subreddit name needs to be prefixed
         with either '/r/' or '#'.
         """
-        if isinstance(recipient, reddit.objects.Subreddit):
+        if isinstance(recipient, objects.Subreddit):
             recipient = '/r/%s' % six.text_type(recipient)
         else:
             recipient = six.text_type(recipient)
@@ -603,10 +601,10 @@ class LoggedInExtension(BaseReddit):
             params.update(captcha)
         response = self.request_json(self.config['compose'], params)
         # pylint: disable-msg=E1101,W0212
-        reddit.helpers._request.evict([self.config['sent']])
+        helpers._request.evict([self.config['sent']])
         return response
 
-    @reddit.decorators.require_login
+    @decorators.require_login
     def create_subreddit(self, name, title, description='', language='en',
                          subreddit_type='public', content_options='any',
                          over_18=False, default_set=True, show_media=False,
@@ -625,16 +623,16 @@ class LoggedInExtension(BaseReddit):
         return self.request_json(self.config['site_admin'], params)
 
     def get_redditor(self, user_name, *args, **kwargs):
-        """Returns a Redditor class for the user_name specified."""
-        return reddit.objects.Redditor(self, user_name, *args, **kwargs)
+        """Returns a Redditor instance for the user_name specified."""
+        return objects.Redditor(self, user_name, *args, **kwargs)
 
-    @reddit.decorators.require_login
+    @decorators.require_login
     def get_saved_links(self, limit=0):
         """Return a listing of the logged-in user's saved links."""
         return self.get_content(self.config['saved'], limit=limit)
 
     def login(self, username=None, password=None):
-        """Login to Reddit.
+        """Login to a reddit site.
 
         If no user or password is provided, the settings file will be checked,
         and finally the user will be prompted with raw_input and
@@ -661,7 +659,7 @@ class LoggedInExtension(BaseReddit):
         response = self.request_json(self.config['login'] % user, params)
         self.modhash = response['data']['modhash']
         self.user = self.get_redditor(user)
-        self.user.__class__ = reddit.objects.LoggedInRedditor
+        self.user.__class__ = objects.LoggedInRedditor
 
 
 class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
@@ -669,7 +667,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
     def __init__(self, *args, **kwargs):
         super(Reddit, self).__init__(*args, **kwargs)
 
-    @reddit.decorators.RequireCaptcha
+    @decorators.RequireCaptcha
     def create_redditor(self, user_name, password, email='', captcha=None):
         """Register a new user."""
         params = {'email': email,
@@ -696,11 +694,11 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
             raise TypeError('One (and only one) of id or url is required!')
         if submission_id:
             url = urljoin(self.config['comments'], submission_id)
-        return reddit.objects.Submission.get_info(self, url)
+        return objects.Submission.get_info(self, url)
 
     def get_subreddit(self, subreddit_name, *args, **kwargs):
         """Returns a Subreddit object for the subreddit_name specified."""
-        return reddit.objects.Subreddit(self, subreddit_name, *args, **kwargs)
+        return objects.Subreddit(self, subreddit_name, *args, **kwargs)
 
     def info(self, url=None, thing_id=None, limit=0):
         """
@@ -718,7 +716,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
                 msg = ('It looks like you may be trying to get the info of a '
                        'self or internal link. This probably will not return '
                        'any useful results!')
-                warnings.warn_explicit(msg, UserWarning, '', 0)
+                warn_explicit(msg, UserWarning, '', 0)
         else:
             url_data = {'id': thing_id}
         return self.get_content(self.config['info'], url_data=url_data,
@@ -743,7 +741,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         results = self.request_json(self.config['search_reddit_names'], params)
         return [self.get_subreddit(name) for name in results['names']]
 
-    @reddit.decorators.RequireCaptcha
+    @decorators.RequireCaptcha
     def send_feedback(self, name, email, message, reason='feedback',
                       captcha=None):
         """

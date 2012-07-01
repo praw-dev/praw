@@ -1,19 +1,18 @@
-# This file is part of reddit_api.
+# This file is part of PRAW.
 #
-# reddit_api is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# PRAW is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# reddit_api is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# PRAW is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-import reddit.backport  # pylint: disable-msg=W0611
+from . import backport  # pylint: disable-msg=W0611
 
 import six
 import sys
@@ -22,7 +21,7 @@ import warnings
 from functools import wraps
 from six.moves import urljoin
 
-from reddit import errors
+from . import errors
 
 
 class Memoize(object):
@@ -153,9 +152,9 @@ def limit_chars(num_chars=80):
 
 
 def parse_api_json_response(function):  # pylint: disable-msg=R0912
-    """Decorator to look at the Reddit API response to an API POST request like
-    vote, subscribe, login, etc. Basically, it just looks for certain errors in
-    the return string. If it doesn't find one, then it just returns True.
+    """Decorator to look at the response to an API POST request like vote,
+    subscribe, login, etc. Basically, it just looks for certain errors in the
+    return string. If it doesn't find one, then it just returns True.
     """
     @wraps(function)
     def error_checked_function(self, *args, **kwargs):
@@ -229,5 +228,5 @@ def require_moderator(function):
 
 
 # Avoid circular import: http://effbot.org/zone/import-confusion.htm
-from reddit.objects import RedditContentObject
-from reddit.helpers import _request
+from .objects import RedditContentObject
+from .helpers import _request

@@ -1,28 +1,27 @@
-# This file is part of reddit_api.
+# This file is part of PRAW.
 #
-# reddit_api is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# PRAW is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
 #
-# reddit_api is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# PRAW is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with reddit_api.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along with
+# PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-import reddit.backport  # pylint: disable-msg=W0611
+from . import backport  # pylint: disable-msg=W0611
 
 import six
 import warnings
 from six.moves import urljoin
 
-from reddit.decorators import limit_chars, require_login
-from reddit.errors import ClientException
-from reddit.helpers import (_get_section, _get_sorter, _modify_relationship,
-                            _request)
+from .decorators import limit_chars, require_login
+from .errors import ClientException
+from .helpers import (_get_section, _get_sorter, _modify_relationship,
+                      _request)
 
 REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor')
 
@@ -165,7 +164,7 @@ class Editable(RedditContentObject):
         response = self.reddit_session.request_json(url, params)
         # pylint: disable-msg=E1101
         _request.evict([self.reddit_session.config['user']])
-        # REDDIT: Reddit's end should only ever return a single comment
+        # REDDIT: reddit's end should only ever return a single comment
         return response['data']['things'][0]
 
 
@@ -193,13 +192,13 @@ class Inboxable(RedditContentObject):
 
 
 class Messageable(RedditContentObject):
-    """Interface for Reddit content objects that can be messaged."""
+    """Interface for RedditContentObjects that can be messaged."""
     def compose_message(self, subject, message):
         return self.reddit_session.compose_message(self, subject, message)
 
 
 class Reportable(RedditContentObject):
-    """Interface for Reddit content objects that can be reported."""
+    """Interface for RedditContentObjects that can be reported."""
     @require_login
     def report(self):
         url = self.reddit_session.config['report']
@@ -211,7 +210,7 @@ class Reportable(RedditContentObject):
 
 
 class Saveable(RedditContentObject):
-    """Interface for Reddit content objects that can be saved."""
+    """Interface for RedditContentObjects that can be saved."""
     @require_login
     def save(self, unsave=False):
         """If logged in, save the content."""
@@ -228,7 +227,7 @@ class Saveable(RedditContentObject):
 
 
 class Voteable(RedditContentObject):
-    """Interface for Reddit content objects that can be voted on."""
+    """Interface for RedditContentObjects that can be voted on."""
     def clear_vote(self):
         return self.vote()
 
@@ -354,7 +353,7 @@ class MoreComments(RedditContentObject):
 
 
 class Redditor(Messageable):
-    """A class for Redditor methods."""
+    """A class representing the users of reddit."""
     get_overview = _get_section('')
     get_comments = _get_section('comments')
     get_submitted = _get_section('submitted')
@@ -403,7 +402,7 @@ class Redditor(Messageable):
 
 
 class LoggedInRedditor(Redditor):
-    """A class for a currently logged in redditor"""
+    """A class for a currently logged in Redditor"""
     @require_login
     def get_inbox(self, limit=0):
         """Return a generator for inbox messages."""
@@ -443,7 +442,7 @@ class LoggedInRedditor(Redditor):
 
 class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
                  Saveable, Voteable):
-    """A class for submissions to Reddit."""
+    """A class for submissions to reddit."""
     @staticmethod
     def get_info(reddit_session, url, comments_only=False):
         url_data = {}
@@ -771,7 +770,7 @@ class UserList(RedditContentObject):
     def __init__(self, reddit_session, json_dict=None, fetch=False):
         super(UserList, self).__init__(reddit_session, json_dict, fetch)
 
-        # HACK: Convert children to RedditorObjects
+        # HACK: Convert children to Redditor instances
         for i in range(len(self.children)):
             tmp = self.children[i]
             redditor = Redditor(reddit_session, tmp['name'], fetch=False)

@@ -1,8 +1,8 @@
-tags
-.coverage
-*.pyc
 *~
+*.egg
+*.pyc
+.coverage
+*.egg-info/
 _build/
 build/
 dist/
-reddit.egg-info/
