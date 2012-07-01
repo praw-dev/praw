@@ -6,8 +6,8 @@ if [[ "$status" != "# On branch master" ]]; then
     exit 1
 fi
 
-lines=$(git status | wc -l)
-if [ $lines -ne 2 ]; then
+status=$(git status | tail -n -1)
+if [[ "$status" != "nothing to commit (working directory clean)" ]]; then
     echo "There are pending changes. Goodbye"
     exit 1
 fi
@@ -26,7 +26,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-git tag -s $version -m "Version $version"
+git tag -s "PRAW-$version" -m "PRAW-$version"
 if [ $? -ne 0 ]; then
     echo "Tagging version failed. Aborting."
     exit 1
@@ -34,3 +34,4 @@ fi
 
 git push bboe master --tags
 git push mellort master --tags
+git push origin master --tags
