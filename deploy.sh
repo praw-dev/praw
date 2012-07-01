@@ -33,5 +33,4 @@ if [ $? -ne 0 ]; then
 fi
 
 git push bboe master --tags
-git push mellort master --tags
 git push origin master --tags

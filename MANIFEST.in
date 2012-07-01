@@ -1,2 +1,2 @@
-include COPYING
+include COPYING README.md
 include praw/praw.ini
