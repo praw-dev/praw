@@ -86,6 +86,14 @@ class BasicTest(unittest.TestCase, BasicHelper):
         num = 50
         self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
 
+    def test_get_new(self):
+        num = 50
+        self.assertEqual(num, len(list(self.r.get_new(limit=num))))
+
+    def test_get_controversial(self):
+        num = 50
+        self.assertEqual(num, len(list(self.r.get_controversial(limit=num))))
+
     def test_info_by_known_url_returns_known_id_link_post(self):
         if self.r.config.is_reddit:
             url = 'http://imgur.com/Vr8ZZ'
