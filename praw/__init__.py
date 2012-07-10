@@ -119,6 +119,8 @@ class Config(object):  # pylint: disable-msg=R0903
         self.default_content_limit = int(obj['default_content_limit'])
         self.domain = obj['domain']
         self.more_comments_max = int(obj['more_comments_max'])
+        self.log_requests = int(obj['log_requests'])
+
         if 'short_domain' in obj:
             self._short_domain = 'http://' + obj['short_domain']
         else:

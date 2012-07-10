@@ -15,6 +15,7 @@
 from . import backport
 backport.add_moves()
 
+import sys
 import six
 from six.moves import Request, quote, urlencode, urljoin
 from .decorators import Memoize, SleepAfter, require_login
@@ -97,6 +98,13 @@ def _request(reddit_session, page_url, params=None, url_data=None, timeout=45):
         encoded_params = urlencode(params).encode('utf-8')
     request = Request(page_url, data=encoded_params,
                       headers=reddit_session.DEFAULT_HEADERS)
+
+    if reddit_session.config.log_requests >= 1:
+        sys.stderr.write('retrieving: %s\n' % page_url)
+    if reddit_session.config.log_requests >= 2:
+        sys.stderr.write('data: %s\n' % (encoded_params or 'None'))
+
+        
     # pylint: disable-msg=W0212
     response = reddit_session._opener.open(request, timeout=timeout)
     return response.read()
