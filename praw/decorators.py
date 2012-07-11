@@ -218,11 +218,11 @@ def require_moderator(function):
             for sub in self.user.my_moderation(limit=None):
                 self.user._mod_subs[six.text_type(sub).lower()] = sub
 
-        for sub in six.text_type(subreddit).split('+'):
-            if six.text_type(sub).lower() not in self.user._mod_subs:
+        # Allow for multireddits
+        for sub in six.text_type(subreddit).lower().split('+'):
+            if sub not in self.user._mod_subs:
                 raise errors.ModeratorRequired('%r is not a moderator of %r' %
-                                               (six.text_type(self.user),
-                                                six.text_type(sub)))
+                                               (six.text_type(self.user), sub))
         return function(self, subreddit, *args, **kwargs)
     return moderator_required_function
 

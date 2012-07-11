@@ -369,7 +369,6 @@ class Redditor(Messageable):
         self._url = reddit_session.config['user'] % user_name
         self._mod_subs = None
 
-    @limit_chars()
     def __unicode__(self):
         """Display the user's name."""
         return self.name
@@ -666,7 +665,6 @@ class Subreddit(Messageable):
         self.display_name = subreddit_name
         self._url = reddit_session.config['subreddit'] % subreddit_name
 
-    @limit_chars()
     def __unicode__(self):
         """Display this subreddit's name."""
         return self.display_name
