@@ -30,7 +30,7 @@ from . import helpers
 from . import objects
 from .settings import CONFIG
 
-__version__ = '1.0'
+__version__ = '1.0.1'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))

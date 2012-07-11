@@ -104,7 +104,6 @@ def _request(reddit_session, page_url, params=None, url_data=None, timeout=45):
     if reddit_session.config.log_requests >= 2:
         sys.stderr.write('data: %s\n' % (encoded_params or 'None'))
 
-        
     # pylint: disable-msg=W0212
     response = reddit_session._opener.open(request, timeout=timeout)
     return response.read()
