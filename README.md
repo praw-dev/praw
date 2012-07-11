@@ -1,3 +1,10 @@
+# Note!
+A python wrapper for the Reddit API. 
+I originally created this repo, and have since transferred ownership to the praw-dev (PRAW: Python Reddit API Wrapper) 
+organization to allow this project to continue to grow. 
+This fork is here to preserve old links, please head to the praw-dev/praw repo for the latest code.
+
+
 # Introduction
 This is a Python wrapper for Reddit's API, aiming to be as easy to use as
 possible. Here's a quick peek, getting the first 5 submissions from the 'hot'

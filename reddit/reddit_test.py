@@ -173,6 +173,7 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
         title = 'Wiki Entry on \xC3\x9C'
         url = 'http://en.wikipedia.org/wiki/\xC3\x9C?id=%s' % unique
         submission = self.r.submit(self.sr, title, url=url)
+        str(submission)
         self.assertEqual(title, submission.title)
         self.assertEqual(url, submission.url)
 
@@ -337,8 +338,11 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_update_settings(self):
         settings = self.subreddit.get_settings()
-        settings['description'] = 'Description %s' % uuid.uuid4()
-        self.subreddit.update_settings(description=settings['description'])
+        settings['public_description'] = 'Description %s' % uuid.uuid4()
+        settings['description'] = 'Sidebar %s' % uuid.uuid4()
+        self.subreddit.update_settings(
+            public_description=settings['public_description'],
+            description=settings['description'])
         self.assertEqual(self.subreddit.get_settings(), settings)
 
 
