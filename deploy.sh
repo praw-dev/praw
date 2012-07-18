@@ -32,5 +32,4 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-git push bboe master --tags
 git push origin master --tags
