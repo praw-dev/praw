@@ -219,7 +219,7 @@ class BaseReddit(object):
 
     def get_content(self, page_url, limit=0, url_data=None, place_holder=None,
                     root_field='data', thing_field='children',
-                    after_field='after'):
+                    after_field='after', json=False):
         """A generator method to return reddit content from a URL. Starts at
         the initial page_url, and fetches content using the `after` JSON data
         until `limit` entries have been fetched, or the `place_holder` has been
@@ -241,6 +241,8 @@ class BaseReddit(object):
             contains the list of things. Most objects use 'children'.
         :param after_field: indicates the field which holds the after item
             element
+        :param json: if set to True the data returned will be the raw json
+            returned from the content request
         :type place_holder: a string corresponding to a reddit content id, e.g.
             't3_asdfasdf'
         :returns: a list of reddit content, of type Subreddit, Comment,
@@ -260,7 +262,12 @@ class BaseReddit(object):
 
         # While we still need to fetch more content to reach our limit, do so.
         while fetch_all or content_found < limit:
-            page_data = self.request_json(page_url, url_data=url_data)
+            if json:
+                page_data = self.request_json(page_url, url_data=url_data, as_objects=False)
+                yield page_data
+            else:
+                page_data = self.request_json(page_url, url_data=url_data)
+                
             if root_field:
                 root = page_data[root_field]
             else:
