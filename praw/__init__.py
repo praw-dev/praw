@@ -264,7 +264,6 @@ class BaseReddit(object):
         while fetch_all or content_found < limit:
             if json:
                 page_data = self.request_json(page_url, url_data=url_data, as_objects=False)
-                print "Returning: %s" %(page_data)
                 yield page_data
             else:
                 page_data = self.request_json(page_url, url_data=url_data)
