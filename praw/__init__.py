@@ -219,7 +219,7 @@ class BaseReddit(object):
 
     def get_content(self, page_url, limit=0, url_data=None, place_holder=None,
                     root_field='data', thing_field='children',
-                    after_field='after', json=True):
+                    after_field='after', json=False):
         """A generator method to return reddit content from a URL. Starts at
         the initial page_url, and fetches content using the `after` JSON data
         until `limit` entries have been fetched, or the `place_holder` has been
