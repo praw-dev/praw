@@ -277,6 +277,10 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
             reply._update_submission(submission)
 
     @property
+    def score(self):
+        return self.ups - self.downs
+
+    @property
     def is_root(self):
         return self.parent_id is None
 
