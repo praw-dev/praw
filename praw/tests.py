@@ -219,6 +219,10 @@ class CommentAttributeTest(unittest.TestCase, BasicHelper):
     def test_comments_flat(self):
         self.assertTrue(len(self.submission.comments_flat))
 
+    def test_comments_score(self):
+        comment = self.submission.comments[0]
+        self.assertEqual(comment.ups - comment.downs, comment.score)
+
 
 class CommentEditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
