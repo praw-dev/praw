@@ -30,7 +30,7 @@ from . import helpers
 from . import objects
 from .settings import CONFIG
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -345,8 +345,6 @@ class SubredditExtension(BaseReddit):
                   'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
         return self.request_json(self.config['clearflairtemplates'], params)
 
-    @decorators.require_login
-    @decorators.require_moderator
     def flair_list(self, subreddit, limit=None):
         """Get flair list for the given subreddit.
 

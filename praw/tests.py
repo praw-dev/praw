@@ -63,10 +63,6 @@ class AuthenticatedHelper(BasicHelper):
 class BasicTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
-        if self.r.config.is_reddit:
-            self.self = self.url('/r/programming/comments/bn2wi/')
-        else:
-            self.self = self.url('/r/bboe/comments/2z/tasdest/')
 
     def test_comments_contains_no_noncomment_objects(self):
         if self.r.config.is_reddit:
@@ -85,6 +81,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def test_get_front_page(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
+
+    def test_flair_list(self):
+        sub = self.r.get_subreddit('python')
+        self.assertTrue(six_next(sub.flair_list()))
 
     def test_info_by_known_url_returns_known_id_link_post(self):
         if self.r.config.is_reddit:
