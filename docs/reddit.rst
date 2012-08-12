@@ -4,7 +4,7 @@ reddit Package
 :mod:`reddit` Package
 ---------------------
 
-.. automodule:: reddit.__init__
+.. automodule:: praw.__init__
     :members:
     :undoc-members:
     :show-inheritance:
@@ -12,7 +12,7 @@ reddit Package
 :mod:`decorators` Module
 ------------------------
 
-.. automodule:: reddit.decorators
+.. automodule:: praw.decorators
     :members:
     :undoc-members:
     :show-inheritance:
@@ -20,7 +20,7 @@ reddit Package
 :mod:`errors` Module
 --------------------
 
-.. automodule:: reddit.errors
+.. automodule:: praw.errors
     :members:
     :undoc-members:
     :show-inheritance:
@@ -28,7 +28,7 @@ reddit Package
 :mod:`helpers` Module
 ---------------------
 
-.. automodule:: reddit.helpers
+.. automodule:: praw.helpers
     :members:
     :undoc-members:
     :show-inheritance:
@@ -36,7 +36,7 @@ reddit Package
 :mod:`objects` Module
 ---------------------
 
-.. automodule:: reddit.objects
+.. automodule:: praw.objects
     :members:
     :undoc-members:
     :show-inheritance:
@@ -44,7 +44,7 @@ reddit Package
 :mod:`reddit_test` Module
 -------------------------
 
-.. automodule:: reddit.reddit_test
+.. automodule:: praw.reddit_test
     :members:
     :undoc-members:
     :show-inheritance:
@@ -52,7 +52,7 @@ reddit Package
 :mod:`settings` Module
 ----------------------
 
-.. automodule:: reddit.settings
+.. automodule:: praw.settings
     :members:
     :undoc-members:
     :show-inheritance:

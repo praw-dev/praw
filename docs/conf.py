@@ -16,7 +16,7 @@ import re
 import sys
 
 version = re.search("__version__ = '([^']+)'",
-                    open('../reddit/__init__.py').read()).group(1)
+                    open('../praw/__init__.py').read()).group(1)
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -191,7 +191,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'PythonRedditAPIWrapper.tex', u'Python Reddit API Wrapper Documentation',
+  ('index', 'PythonRedditAPIWrapper.tex',
+   u'Python Reddit API Wrapper Documentation',
    u'Bryce Boe', 'manual'),
 ]
 
@@ -221,7 +222,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'pythonredditapiwrapper', u'Python Reddit API Wrapper Documentation',
+    ('index', 'pythonredditapiwrapper',
+     u'Python Reddit API Wrapper Documentation',
      [u'Bryce Boe'], 1)
 ]
 
@@ -235,7 +237,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'PythonRedditAPIWrapper', u'Python Reddit API Wrapper Documentation',
+  ('index', 'PythonRedditAPIWrapper',
+   u'Python Reddit API Wrapper Documentation',
    u'Bryce Boe', 'PythonRedditAPIWrapper', 'One line description of project.',
    'Miscellaneous'),
 ]
