@@ -30,7 +30,7 @@ from . import helpers
 from . import objects
 from .settings import CONFIG
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -46,6 +46,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'comments':            'comments/',
                  'compose':             'api/compose/',
                  'contributors':        'r/%s/about/contributors/',
+                 'controversial':       'controversial/',
                  'del':                 'api/del/',
                  'distinguish':         'api/distinguish/yes/',
                  'edit':                'api/editusertext/',
@@ -65,6 +66,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'morechildren':        'api/morechildren/',
                  'my_mod_reddits':      'reddits/mine/moderator/',
                  'my_reddits':          'reddits/mine/',
+                 'new':                 'new/',
                  'read_message':        'api/read_message/',
                  'reddit_url':          '/',
                  'register':            'api/register/',
@@ -684,10 +686,18 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         the most recent comments from all users to all submissions)."""
         return self.get_content(self.config['comments'], *args, **kwargs)
 
-    def get_front_page(self, limit=0):
+    def get_front_page(self, *args, **kwargs):
         """Return the reddit front page. Login isn't required, but you'll only
         see your own front page if you are logged in."""
-        return self.get_content(self.config['reddit_url'], limit=limit)
+        return self.get_content(self.config['reddit_url'], *args, **kwargs)
+
+    def get_new(self, *args, **kwargs):
+        """Return the reddit new page."""
+        return self.get_content(self.config['new'], *args, **kwargs)
+
+    def get_controversial(self, *args, **kwargs):
+        """Return the reddit controversial page."""
+        return self.get_content(self.config['controversial'], *args, **kwargs)
 
     def get_submission(self, url=None, submission_id=None):
         """Returns a Submission object for the given url or submission_id."""
