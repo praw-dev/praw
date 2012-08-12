@@ -22,7 +22,7 @@ import os
 import platform
 import six
 import sys
-from warnings import warn_explicit
+from warnings import warn, warn_explicit
 
 from . import decorators
 from . import errors
@@ -582,11 +582,12 @@ class LoggedInExtension(BaseReddit):
         urls = [self.config[x] for x in ['inbox', 'moderator', 'unread']]
         helpers._request.evict(urls)  # pylint: disable-msg=E1101,W0212
         return response
-
+    
     @decorators.require_login
     @decorators.RequireCaptcha
-    def compose_message(self, recipient, subject, message, captcha=None):
-        """Send a message to another redditor or a subreddit.
+    def send_message(self, recipient, subject, message, captcha=None):
+        """
+        Send a message to another redditor or a subreddit (mod mail).
 
         When sending a message to a subreddit the recipient paramater must
         either be a subreddit object or the subreddit name needs to be prefixed
@@ -606,6 +607,19 @@ class LoggedInExtension(BaseReddit):
         # pylint: disable-msg=E1101,W0212
         helpers._request.evict([self.config['sent']])
         return response
+
+    @decorators.require_login
+    @decorators.RequireCaptcha
+    def compose_message(self, recipient, subject, message, captcha=None):
+        """
+        Send a message to another redditor or a subreddit (mod mail).
+
+        Depreciated. compose_message has been renamed to send_message and
+        will be removed in a future version.
+        """
+        warn('compose_message has been renamed to send_message and will be '
+             'removed in a future version. Please update.', DeprecationWarning)
+        return self.send_message(recipient, subject, message, captcha)
 
     @decorators.require_login
     def create_subreddit(self, name, title, description='', language='en',
