@@ -847,12 +847,12 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         mod_submissions = list(self.r.get_subreddit(multi).get_modqueue())
         self.assertTrue(len(mod_submissions) > 0)
 
-    def test_moderator_requried(self):
+    def test_moderator_required(self):
         oth = Reddit(USER_AGENT)
         oth.login('PyApiTestUser3', '1111')
         self.assertRaises(errors.ModeratorRequired, oth.get_settings, self.sr)
 
-    def test_moderator_requried_multi(self):
+    def test_moderator_required_multi(self):
         sub = self.r.get_subreddit('{0}+{1}'.format(self.sr, 'test'))
         self.assertRaises(errors.ModeratorRequired, sub.get_modqueue)
 
