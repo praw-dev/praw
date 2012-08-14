@@ -195,11 +195,13 @@ def require_login(function):
         if isinstance(self, RedditContentObject):
             user = self.reddit_session.user
             modhash = self.reddit_session.modhash
+            access_token = self.reddit_session.access_token
         else:
             user = self.user
             modhash = self.modhash
+            access_token = self.access_token
 
-        if user is None or modhash is None:
+        if access_token is None and (user is None or modhash is None):
             raise errors.LoginRequired('%r requires login' % function.__name__)
         else:
             return function(self, *args, **kwargs)

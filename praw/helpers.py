@@ -76,6 +76,23 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 def _request(reddit_session, page_url, params=None, data=None, timeout=45,
              raw=False):
     """Make the http request and return the http response body."""
+    if reddit_session.access_token:
+        headers = {"Authorization": "bearer %s" % reddit_session.access_token}
+        # Requests using OAuth for authorization must switch to using the oauth
+        # domain.
+        for prefix in (reddit_session.config._site_url,
+                       reddit_session.config._ssl_url):
+            if page_url.startswith(prefix):
+                if reddit_session.config.log_requests >= 1:
+                    sys.stderr.write(
+                        'substituting %s for %s in url\n'
+                        % (reddit_session.config._oauth_url, prefix))
+                page_url = (
+                    reddit_session.config._oauth_url + page_url[len(prefix):])
+                break
+    else:
+        headers = {}
+
     if reddit_session.config.log_requests >= 1:
         sys.stderr.write('retrieving: %s\n' % page_url)
     if reddit_session.config.log_requests >= 2:
@@ -97,7 +114,8 @@ def _request(reddit_session, page_url, params=None, data=None, timeout=45,
         # pylint: disable-msg=W0212
         try:
             response = method(page_url, params=params, data=data,
-                              timeout=timeout, allow_redirects=False)
+                              headers=headers, timeout=timeout,
+                              allow_redirects=False)
         finally:
             # Hack to force-close the connection (if needed) until
             # https://github.com/shazow/urllib3/pull/133 is added to urllib3
