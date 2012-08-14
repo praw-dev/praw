@@ -89,8 +89,14 @@ def _request(reddit_session, page_url, params=None, url_data=None, timeout=45):
             params.setdefault('uh', reddit_session.modhash)
         params = dict([k, v.encode('utf-8')] for k, v in six.iteritems(params))
         encoded_params = urlencode(params).encode('utf-8')
-    request = Request(page_url, data=encoded_params,
-                      headers=reddit_session.DEFAULT_HEADERS)
+
+    if reddit_session.access_token:
+        headers = {"Authorization": "bearer %s" % reddit_session.access_token}
+        headers.update(reddit_session.DEFAULT_HEADERS)
+    else:
+        headers = reddit_session.DEFAULT_HEADERS
+
+    request = Request(page_url, data=encoded_params, headers=headers)
 
     if reddit_session.config.log_requests >= 1:
         sys.stderr.write('retrieving: %s\n' % page_url)
