@@ -66,6 +66,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'morechildren':        'api/morechildren/',
                  'my_mod_reddits':      'reddits/mine/moderator/',
                  'my_reddits':          'reddits/mine/',
+                 'popular_reddits':     'reddits/popular/',
                  'new':                 'new/',
                  'read_message':        'api/read_message/',
                  'reddit_url':          '/',
@@ -698,6 +699,11 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
     def get_controversial(self, *args, **kwargs):
         """Return the reddit controversial page."""
         return self.get_content(self.config['controversial'], *args, **kwargs)
+
+    def get_popular_reddits(self, limit=0):
+        """Return the most subscribed subreddits."""
+        url = self.config['popular_reddits']
+        return self.get_content(url, limit=limit)
 
     def get_submission(self, url=None, submission_id=None):
         """Returns a Submission object for the given url or submission_id."""

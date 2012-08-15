@@ -91,6 +91,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
         num = 50
         self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
 
+    def test_get_popular_reddits(self):
+        num = 50
+        self.assertEqual(num, len(list(self.r.get_popular_reddits(limit=num))))
+
     def test_get_new(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_new(limit=num))))
