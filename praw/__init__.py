@@ -701,7 +701,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         return self.get_content(self.config['controversial'], *args, **kwargs)
 
     def get_popular_reddits(self, *args, **kwargs):
-        """Return the most subscribed subreddits."""
+        """Return the most active subreddits."""
         url = self.config['popular_reddits']
         return self.get_content(url, *args, **kwargs)
 
