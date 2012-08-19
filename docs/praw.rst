@@ -1,7 +1,7 @@
-reddit Package
+praw Package
 ==============
 
-:mod:`reddit` Package
+:mod:`praw` Package
 ---------------------
 
 .. automodule:: praw.__init__
@@ -41,10 +41,10 @@ reddit Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`reddit_test` Module
+:mod:`tests` Module
 -------------------------
 
-.. automodule:: praw.reddit_test
+.. automodule:: praw.tests
     :members:
     :undoc-members:
     :show-inheritance:

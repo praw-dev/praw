@@ -11,7 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   reddit
+   praw
 
 Indices and tables
 ==================
