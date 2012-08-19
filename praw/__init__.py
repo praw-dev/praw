@@ -30,7 +30,7 @@ from . import helpers
 from . import objects
 from .settings import CONFIG
 
-__version__ = '1.0.4'
+__version__ = '1.0.5'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -66,8 +66,8 @@ class Config(object):  # pylint: disable-msg=R0903
                  'morechildren':        'api/morechildren/',
                  'my_mod_reddits':      'reddits/mine/moderator/',
                  'my_reddits':          'reddits/mine/',
-                 'popular_reddits':     'reddits/popular/',
                  'new':                 'new/',
+                 'popular_reddits':     'reddits/popular/',
                  'read_message':        'api/read_message/',
                  'reddit_url':          '/',
                  'register':            'api/register/',
@@ -700,10 +700,10 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         """Return the reddit controversial page."""
         return self.get_content(self.config['controversial'], *args, **kwargs)
 
-    def get_popular_reddits(self, limit=0):
+    def get_popular_reddits(self, *args, **kwargs):
         """Return the most subscribed subreddits."""
         url = self.config['popular_reddits']
-        return self.get_content(url, limit=limit)
+        return self.get_content(url, *args, **kwargs)
 
     def get_submission(self, url=None, submission_id=None):
         """Returns a Submission object for the given url or submission_id."""
