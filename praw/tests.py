@@ -16,6 +16,8 @@
 
 # pylint: disable-msg=C0103, R0903, R0904, W0201
 
+"""Tests. Split into classes according to what they test."""
+
 from __future__ import unicode_literals
 from . import backport
 backport.add_moves()

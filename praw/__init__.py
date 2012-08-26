@@ -12,6 +12,8 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Reddit object."""
+
 from . import backport
 backport.add_moves()
 from six.moves import (HTTPCookieProcessor, HTTPError, build_opener,
@@ -136,13 +138,19 @@ class Config(object):  # pylint: disable-msg=R0903
         self.is_reddit = obj['domain'] == 'www.reddit.com'
 
     def __getitem__(self, key):
-        """Return the URL for key"""
+        """Return the URL for key."""
         if self._ssl_url and key in self.SSL_PATHS:
             return urljoin(self._ssl_url, self.API_PATHS[key])
         return urljoin(self._site_url, self.API_PATHS[key])
 
     @property
     def short_domain(self):
+        """
+        Return the short domain of the reddit.
+
+        Used to generate the shortlink. For reddit the short_domain is 
+        redd.it and generate shortlinks like http://redd.it/y3r8u
+        """
         if self._short_domain:
             return self._short_domain
         else:
@@ -156,13 +164,23 @@ class BaseReddit(object):
 
     def __init__(self, user_agent, site_name=None):
         """
-        Specify the user agent for the application and optionally a site_name.
+        Initialize our connection with a reddit.
 
-        If site_name is None, then the site name will be looked for in the
-        environment variable REDDIT_SITE. It if is not found there, the default
-        site name `reddit` will be used.
+        The user_agent is how your application identifies itself. Read the 
+        official API guidelines for user_agents 
+        https://github.com/reddit/reddit/wiki/API. 
+        Applications using default user_agents such as "Python/urllib" are 
+        drastically limited.
+
+        site_name allows you to specify which reddit you want to connect to. 
+        The installation defaults are reddit.com, if you only need to connect 
+        to reddit.com then you can safely ignore this. If you want to connect 
+        to another reddit, set site_name to the name of that reddit. This must 
+        match with an entry in praw.ini. If site_name is None, then the site 
+        name will be looked for in the environment variable REDDIT_SITE. If 
+        it is not found there, the default site name reddit matching reddit.com
+        will be used.
         """
-
         if not user_agent or not isinstance(user_agent, six.string_types):
             raise TypeError('User agent must be a non-empty string.')
 
@@ -178,7 +196,8 @@ class BaseReddit(object):
         return 'Open Session (%s)' % (self.user or 'Unauthenticated')
 
     def _request(self, page_url, params=None, url_data=None, timeout=None):
-        """Given a page url and a dict of params, opens and returns the page.
+        """
+        Given a page url and a dict of params, open and return the page.
 
         :param page_url: the url to grab content from.
         :param params: a dictionary containing the extra url data to submit
@@ -222,10 +241,12 @@ class BaseReddit(object):
     def get_content(self, page_url, limit=0, url_data=None, place_holder=None,
                     root_field='data', thing_field='children',
                     after_field='after'):
-        """A generator method to return reddit content from a URL. Starts at
-        the initial page_url, and fetches content using the `after` JSON data
-        until `limit` entries have been fetched, or the `place_holder` has been
-        reached.
+        """
+        A generator method to return reddit content from a URL. 
+           
+        Starts at the initial page_url, and fetches content using the `after` 
+        JSON data until `limit` entries have been fetched, or the 
+        `place_holder` has been reached.
 
         :param page_url: the url to start fetching content from
         :param limit: the maximum number of content entries to fetch. If
@@ -283,9 +304,11 @@ class BaseReddit(object):
     @decorators.parse_api_json_response
     def request_json(self, page_url, params=None, url_data=None,
                      as_objects=True):
-        """Gets the JSON processed from a page. Takes the same parameters as
-        the _request method, plus a param to control whether objects are
-        returned.
+        """
+        Get the JSON processed from a page. 
+        
+        Takes the same parameters as the _request method, plus a param to 
+        control whether objects are returned.
 
         :param page_url
         :param params
@@ -309,10 +332,11 @@ class SubredditExtension(BaseReddit):
 
     @decorators.require_login
     def _subscribe(self, sr_id=None, sr_name=None, unsubscribe=False):
-        """Perform the (un)subscribe to the given subreddit.
+        """
+        (Un)subscribe to the given subreddit.
 
-        Provide either the subreddit id (sr_id) name (sr_name)."""
-
+        Provide either the subreddit id (sr_id) or the name (sr_name).
+        """
         if bool(sr_id) == bool(sr_name):
             raise TypeError('One (and only one) of text or url is required!')
         action = 'unsub' if unsubscribe else 'sub'
@@ -331,7 +355,7 @@ class SubredditExtension(BaseReddit):
     @decorators.require_moderator
     def add_flair_template(self, subreddit, text='', css_class='',
                            text_editable=False, is_link=False):
-        """Adds a flair template to the given subreddit."""
+        """Add a flair template to the given subreddit."""
         params = {'r': six.text_type(subreddit),
                   'text': text,
                   'css_class': css_class,
@@ -348,9 +372,11 @@ class SubredditExtension(BaseReddit):
         return self.request_json(self.config['clearflairtemplates'], params)
 
     def flair_list(self, subreddit, limit=None):
-        """Get flair list for the given subreddit.
+        """
+        Return generator of flair mappings.
 
-        Returns a tuple containing 'user', 'flair_text', and 'flair_css_class'.
+        Each flair mapping is a dict with three keys. 'user', 
+        'flair_text' and 'flair_css_class'.
         """
         return self.get_content(self.config['flairlist'] %
                                 six.text_type(subreddit),
@@ -426,10 +452,11 @@ class SubredditExtension(BaseReddit):
     @decorators.require_login
     @decorators.require_moderator
     def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
-        """Set flair for the user in the given subreddit.
+        """
+        Set flair for the user in the given subreddit.
 
         Item can be a string, Redditor object, or Submission object. If item is
-        a string it will be treated as a Redditor.
+        a string it will be treated as the name of a Redditor.
         """
         params = {'r': six.text_type(subreddit),
                   'text': flair_text or '',
@@ -448,7 +475,8 @@ class SubredditExtension(BaseReddit):
     @decorators.require_login
     @decorators.require_moderator
     def set_flair_csv(self, subreddit, flair_mapping):
-        """Set flair for a group of users in the given subreddit.
+        """
+        Set flair for a group of users in the given subreddit.
 
         flair_mapping should be a list of dictionaries with the following keys:
           user: the user name
@@ -482,10 +510,10 @@ class SubredditExtension(BaseReddit):
                      content_options='any', over_18=False, default_set=True,
                      show_media=False, domain='', domain_css=False,
                      domain_sidebar=False, header_hover_text=''):
+        """Set the settings for the given subreddit."""
         def bool_str(item):
             return 'on' if item else 'off'
 
-        """Set the settings for the given subreddit."""
         params = {'r': six.text_type(subreddit),
                   'sr': subreddit.content_id,
                   'title': title,
@@ -521,8 +549,8 @@ class SubredditExtension(BaseReddit):
         """
         Submit a new link to the given subreddit.
 
-        Accepts either a Subreddit object or a str containing the subreddit
-        name.
+        Accepts either a Subreddit object or a str containing the subreddit's
+        display name.
         """
         if bool(text) == bool(url):
             raise TypeError('One (and only one) of text or url is required!')
@@ -541,15 +569,16 @@ class SubredditExtension(BaseReddit):
         return self.get_submission(result['data']['url'])
 
     def subscribe(self, subreddit):
-        """Subscribe to the given subreddit by name."""
+        """Subscribe to the given subreddit by display name."""
         self._subscribe(sr_name=subreddit)
 
     def unsubscribe(self, subreddit):
-        """Unsubscribe from the given subreddit by name."""
+        """Unsubscribe from the given subreddit by display name."""
         self._subscribe(sr_name=subreddit, unsubscribe=True)
 
     def update_settings(self, subreddit, **kwargs):
-        """Update only the given settings for the given subreddit.
+        """
+        Update only the given settings for the given subreddit.
 
         The settings to update must be given by keyword and match one of the
         parameter names in `set_settings`.
@@ -575,7 +604,7 @@ class LoggedInExtension(BaseReddit):
 
     @decorators.require_login
     def _mark_as_read(self, thing_ids, unread=False):
-        """ Marks each of the supplied thing_ids as (un)read."""
+        """Mark each of the supplied thing_ids as (un)read."""
         params = {'id': ','.join(thing_ids)}
         key = 'unread_message' if unread else 'read_message'
         response = self.request_json(self.config[key], params)
@@ -626,7 +655,7 @@ class LoggedInExtension(BaseReddit):
                          subreddit_type='public', content_options='any',
                          over_18=False, default_set=True, show_media=False,
                          domain=''):
-        """Create a new subreddit"""
+        """Create a new subreddit."""
         params = {'name': name,
                   'title': title,
                   'description': description,
@@ -640,7 +669,7 @@ class LoggedInExtension(BaseReddit):
         return self.request_json(self.config['site_admin'], params)
 
     def get_redditor(self, user_name, *args, **kwargs):
-        """Returns a Redditor instance for the user_name specified."""
+        """Return a Redditor instance for the user_name specified."""
         return objects.Redditor(self, user_name, *args, **kwargs)
 
     @decorators.require_login
@@ -649,13 +678,15 @@ class LoggedInExtension(BaseReddit):
         return self.get_content(self.config['saved'], limit=limit)
 
     def login(self, username=None, password=None):
-        """Login to a reddit site.
+        """
+        Login to a reddit site.
 
         If no user or password is provided, the settings file will be checked,
         and finally the user will be prompted with raw_input and
         getpass.getpass. If username was explicitly provided and password was
         not, then we must ask for the password unless the username matches
-        what's provided in the config file."""
+        what's provided in the config file.
+        """
         if password and not username:
             raise Exception('Username must be provided when password is.')
         user = username or self.config.user
@@ -696,25 +727,28 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         return self.request_json(self.config['register'], params)
 
     def get_all_comments(self, *args, **kwargs):
-        """Returns a listing from reddit.com/comments (which provides all of
-        the most recent comments from all users to all submissions)."""
+        """Return all comments."""
         return self.get_content(self.config['comments'], *args, **kwargs)
 
     def get_front_page(self, *args, **kwargs):
-        """Return the reddit front page. Login isn't required, but you'll only
-        see your own front page if you are logged in."""
+        """
+        Return the front page submissions.
+           
+        Default front page if not logged in, otherwise get logged in redditor's 
+        front page.
+        """
         return self.get_content(self.config['reddit_url'], *args, **kwargs)
 
     def get_new(self, *args, **kwargs):
-        """Return the reddit new page."""
+        """Return new page."""
         return self.get_content(self.config['new'], *args, **kwargs)
 
     def get_controversial(self, *args, **kwargs):
-        """Return the reddit controversial page."""
+        """Return controversial page."""
         return self.get_content(self.config['controversial'], *args, **kwargs)
 
     def get_submission(self, url=None, submission_id=None):
-        """Returns a Submission object for the given url or submission_id."""
+        """Return a Submission object for the given url or submission_id."""
         if bool(url) == bool(submission_id):
             raise TypeError('One (and only one) of id or url is required!')
         if submission_id:
@@ -722,7 +756,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         return objects.Submission.get_info(self, url)
 
     def get_subreddit(self, subreddit_name, *args, **kwargs):
-        """Returns a Subreddit object for the subreddit_name specified."""
+        """Return a Subreddit object for the subreddit_name specified."""
         return objects.Subreddit(self, subreddit_name, *args, **kwargs)
 
     def info(self, url=None, thing_id=None, limit=0):
@@ -749,6 +783,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
 
     def search(self, query, subreddit=None, sort=None, limit=0, *args,
                **kwargs):
+        """Return submissions whose title contains the query phrase."""
         url_data = {'q': query}
         if sort:
             url_data['sort'] = sort
@@ -761,7 +796,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
                                 **kwargs)
 
     def search_reddit_names(self, query):
-        """Search the subreddits for a reddit whose name matches the query."""
+        """Return subreddits whose display name contains the query."""
         params = {'query': query}
         results = self.request_json(self.config['search_reddit_names'], params)
         return [self.get_subreddit(name) for name in results['names']]
@@ -770,8 +805,9 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
     def send_feedback(self, name, email, message, reason='feedback',
                       captcha=None):
         """
-        Send feedback to the admins. Please don't abuse this, read what it says
-        on the send feedback page!
+        Send feedback to the admins. 
+        
+        Please don't abuse this. Read the send feedback page before use.
         """
         params = {'name': name,
                   'email': email,

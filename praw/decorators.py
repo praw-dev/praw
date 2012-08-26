@@ -12,6 +12,14 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+Decorators.
+
+Mainly do two things. Ensure API guidelines are met and prevent unneccesary 
+failed API requests by testing that the call can be made first. Also limit
+the length of output strings and parse json response for certain errors.
+"""
+
 from . import backport  # pylint: disable-msg=W0611
 backport.add_moves()
 
@@ -26,14 +34,7 @@ from . import errors
 
 
 class Memoize(object):
-    """
-    Simple memoize decorator with timeout, providing a way to prune out cached
-    results based on the first parameter to the memoized function.
-
-    For RedditContentObject methods, this means removal by URL, provided by the
-    evict method.
-    """
-
+    """Memoize decorator with timeout to clear cache of timed out results."""
     def __init__(self, function):
         wraps(function)(self)
         self.function = function
@@ -53,7 +54,7 @@ class Memoize(object):
                                                          **kwargs))
 
     def clear_timeouts(self, call_time, cache_timeout):
-        """Clears the caches of results which have timed out."""
+        """Clear the cache of timed out results."""
         for key in list(self._timeouts):
             if call_time - self._timeouts[key] > cache_timeout:
                 del self._timeouts[key]
@@ -61,6 +62,7 @@ class Memoize(object):
                     del self._cache[key]
 
     def evict(self, urls):
+        """Remove cached RedditContentObject by URL."""
         relevant_caches = [k for k in self._cache
                            if k[1].rstrip('.json') in urls]
         for key in relevant_caches:
@@ -70,7 +72,6 @@ class Memoize(object):
 
 class RequireCaptcha(object):
     """Decorator for methods that require captchas."""
-
     def __init__(self, function):
         wraps(function)(self)
         self.function = function
@@ -107,15 +108,14 @@ class RequireCaptcha(object):
 
 class SleepAfter(object):  # pylint: disable-msg=R0903
     """
-    A decorator to add to API functions that shouldn't be called too
-    rapidly, in order to be nice to the reddit server.
+    Ensure frequency of API calls doesn't exceed guidelines.
 
-    Every function wrapped with this decorator will use a domain specific
-    last_call attribute, so that collectively any one of the funcs won't be
-    callable within the site's api_request_delay time; they'll automatically be
-    delayed until the proper duration is reached.
+    We are allowed to make a API request every api_request_delay seconds as 
+    specified in praw.ini. This value may differ from reddit to reddit. For 
+    reddit.com it is 2. Any function decorated with this will be forced to 
+    delay api_request_delay seconds from the calling of the last function 
+    decorated with this before executing.
     """
-
     def __init__(self, function):
         wraps(function)(self)
         self.function = function
@@ -137,26 +137,20 @@ class SleepAfter(object):  # pylint: disable-msg=R0903
 
 
 def limit_chars(num_chars=80):
-    """
-    A decorator to limit the number of chars in a function that outputs a
-    string.
-    """
+    """Limit the number of chars in a function that outputs a string."""
     def function_limiter(function):
         @wraps(function)
         def function_wrapper(self, *args, **kwargs):
-            value = function(self, *args, **kwargs)
-            if len(value) > num_chars:
-                value = value[:num_chars - 3] + '...'
-            return value
+            output_string = function(self, *args, **kwargs)
+            if len(output_string) > num_chars:
+                output_string = output_string[:num_chars - 3] + '...'
+            return output_string
         return function_wrapper
     return function_limiter
 
 
 def parse_api_json_response(function):  # pylint: disable-msg=R0912
-    """Decorator to look at the response to an API POST request like vote,
-    subscribe, login, etc. Basically, it just looks for certain errors in the
-    return string. If it doesn't find one, then it just returns True.
-    """
+    """Raise client side exception(s) if errors in the API request response."""
     @wraps(function)
     def error_checked_function(self, *args, **kwargs):
         return_value = function(self, *args, **kwargs)
@@ -187,8 +181,7 @@ def parse_api_json_response(function):  # pylint: disable-msg=R0912
 
 
 def require_login(function):
-    """Ensure that the user has logged in before calling the function."""
-
+    """Ensure the user has logged in."""
     @wraps(function)
     def login_required_function(self, *args, **kwargs):
         if isinstance(self, RedditContentObject):
@@ -206,8 +199,7 @@ def require_login(function):
 
 
 def require_moderator(function):
-    """Ensure that the user is a moderator of the subreddit."""
-
+    """Ensure the user is a moderator of the subreddit."""
     @wraps(function)
     def moderator_required_function(self, subreddit, *args, **kwargs):
         if not self.user.is_mod:

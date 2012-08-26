@@ -12,6 +12,8 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Helper functions"""
+
 from . import backport
 backport.add_moves()
 
@@ -22,42 +24,36 @@ from .decorators import Memoize, SleepAfter, require_login
 
 
 def _get_section(subpath=''):
-    """
-    Used by the Redditor class to generate each of the sections (overview,
-    comments, submitted).
-    """
-    def _section(self, sort='new', time='all', *args, **kw):
-        if 'url_data' in kw and kw['url_data']:
-            url_data = kw['url_data']
+    """Generate sections overview, comments and submitted for Redditor class"""
+    def _section(self, sort='new', time='all', *args, **kwargs):
+        if 'url_data' in kwargs and kwargs['url_data']:
+            url_data = kwargs['url_data']
         else:
-            url_data = kw['url_data'] = {}
+            url_data = kwargs['url_data'] = {}
         url_data.setdefault('sort', sort)
         url_data.setdefault('t', time)
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
-        return self.reddit_session.get_content(url, *args, **kw)
+        return self.reddit_session.get_content(url, *args, **kwargs)
     return _section
 
 
 def _get_sorter(subpath='', **defaults):
-    """
-    Used to generate the various Submission listings.
-    """
-    def _sorted(self, *args, **kw):
-        if 'url_data' in kw and kw['url_data']:
-            url_data = kw['url_data']
+    """Generate a Submission listing function."""
+    def _sorted(self, *args, **kwargs):
+        if 'url_data' in kwargs and kwargs['url_data']:
+            url_data = kwargs['url_data']
         else:
-            url_data = kw['url_data'] = {}
+            url_data = kwargs['url_data'] = {}
         for key, value in six.iteritems(defaults):
             url_data.setdefault(key, value)
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
-        return self.reddit_session.get_content(url, *args, **kw)
+        return self.reddit_session.get_content(url, *args, **kwargs)
     return _sorted
 
 
 def _modify_relationship(relationship, unlink=False, is_sub=False):
     """
-    Modify the relationship between the current user or subreddit and a target
-    thing.
+    Modify relationship.
 
     Used to support friending (user-to-user), as well as moderating,
     contributor creating, and banning (user-to-subreddit).
@@ -81,9 +77,7 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 @Memoize
 @SleepAfter
 def _request(reddit_session, page_url, params=None, url_data=None, timeout=45):
-    """
-    Actually make the request.
-    """
+    """Make the http request and return the http response body."""
     page_url = quote(page_url.encode('utf-8'), ':/')
     if url_data:
         page_url += '?' + urlencode(url_data)
