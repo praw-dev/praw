@@ -12,6 +12,15 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+Error classes
+
+Includes two main execeptions. ClientException, when something goes
+wrong on our end and APIExeception for when something goes wrong on the
+server side. A number of classes extend these two main exceptions for more
+specific exceptions.
+"""
+
 import inspect
 import six
 import sys
@@ -28,7 +37,8 @@ class ClientException(Exception):
 
 
 class LoginRequired(ClientException):
-    """Raised when a user is not logged in for a priviliged call.
+    """
+    Raised when a user is not logged in for a privileged call.
 
     This exception is raised on a preemtive basis, whereas NotLoggedIn occurs
     in response to a lack of credientials on a priviliged API call.
@@ -36,8 +46,7 @@ class LoginRequired(ClientException):
 
 
 class ModeratorRequired(ClientException):
-    """Raised when a logged in user is not a moderator for the corresponding
-    subreddit."""
+    """Raised when a logged in user is not a moderator for the subreddit."""
 
 
 class APIException(Exception):
@@ -91,7 +100,7 @@ class NotLoggedIn(APIException):
 
 
 class RateLimitExceeded(APIException):
-    """An exception for when something wrong has happened too many times."""
+    """An exception for when something has happened too frequently."""
     ERROR_TYPE = 'RATELIMIT'
 
     def __init__(self, error_type, message, field='', response=None):

@@ -12,6 +12,16 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+Contains code about objects such as Submissions, Deletable or Commments
+
+There are two main groups of objects in this file. The first are objects that 
+correspond to a Thing or part of a Thing as specified in reddit's API overview,
+https://github.com/reddit/reddit/wiki/API. The second gives functionality 
+that extends over multiple Things. An object that extends from Saveable 
+indicates that it can be saved and unsaved in the context of a logged in user.
+"""
+
 from . import backport
 backport.add_moves()
 
@@ -29,7 +39,7 @@ REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor')
 
 
 class RedditContentObject(object):
-    """Base class that  represents actual reddit objects."""
+    """Base class that represents actual reddit objects."""
     @classmethod
     def from_api_response(cls, reddit_session, json_dict):
         return cls(reddit_session, json_dict=json_dict)
@@ -100,8 +110,10 @@ class RedditContentObject(object):
     @property
     def content_id(self):
         """
-        Get the content id for this object. Just prepends the appropriate
-        content type to this object's id.
+        Get the object's content id.
+
+        An object id is its object to kind mapping like t3 followed by an
+        underscore and then its id. E.g. 't1_c5s96e0'.
         """
         by_object = self.reddit_session.config.by_object
         return '%s_%s' % (by_object[self.__class__], self.id)
@@ -111,6 +123,7 @@ class Approvable(RedditContentObject):
     """Interface for Reddit content objects that can be approved."""
     @require_login
     def approve(self):
+        """Give approval to object."""
         url = self.reddit_session.config['approve']
         params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
@@ -120,6 +133,7 @@ class Approvable(RedditContentObject):
 
     @require_login
     def remove(self, spam=False):
+        """Remove approval from object."""
         url = self.reddit_session.config['remove']
         params = {'id': self.content_id,
                   'spam': 'True' if spam else 'False'}
@@ -132,6 +146,7 @@ class Approvable(RedditContentObject):
 class Deletable(RedditContentObject):
     """Interface for Reddit content objects that can be deleted."""
     def delete(self):
+        """Delete this object."""
         url = self.reddit_session.config['del']
         params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
@@ -160,6 +175,7 @@ class Distinguishable(RedditContentObject):
 class Editable(RedditContentObject):
     """Interface for Reddit content objects that can be edited."""
     def edit(self, text):
+        """Edit the object to `text`"""
         url = self.reddit_session.config['edit']
         params = {'thing_id': self.content_id,
                   'text': text}
@@ -173,15 +189,15 @@ class Editable(RedditContentObject):
 class Inboxable(RedditContentObject):
     """Interface for Reddit content objects that appear in the Inbox."""
     def mark_as_read(self):
-        """ Marks the comment as read."""
+        """Mark object as read."""
         return self.reddit_session.user.mark_as_read(self)
 
     def mark_as_unread(self):
-        """ Marks the comment as unread."""
+        """Mark object as unread."""
         return self.reddit_session.user.mark_as_read(self, unread=True)
 
     def reply(self, text):
-        """Reply to the comment with the specified text."""
+        """Reply to object with the specified text."""
         # pylint: disable-msg=E1101,W0212
         response = self.reddit_session._add_comment(self.content_id, text)
         if isinstance(self, Comment):
@@ -196,13 +212,21 @@ class Inboxable(RedditContentObject):
 class Messageable(RedditContentObject):
     """Interface for RedditContentObjects that can be messaged."""
     def compose_message(self, subject, message):
-        return self.reddit_session.compose_message(self, subject, message)
+        """A deprecated alias for send_message. Do not use."""
+        warnings.warn('compose_message has been renamed to send_message and '
+                      'will be removed in a future version. Please update.', 
+                      DeprecationWarning)
+        return self.reddit_session.send_message(self, subject, message)
 
+    def send_message(self, subject, message):
+        """Send message to subject."""
+        return self.reddit_session.send_message(self, subject, message)
 
 class Reportable(RedditContentObject):
     """Interface for RedditContentObjects that can be reported."""
     @require_login
     def report(self):
+        """Report this object to the moderators."""
         url = self.reddit_session.config['report']
         params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
@@ -215,7 +239,7 @@ class Saveable(RedditContentObject):
     """Interface for RedditContentObjects that can be saved."""
     @require_login
     def save(self, unsave=False):
-        """If logged in, save the content."""
+        """Save the object."""
         url = self.reddit_session.config['unsave' if unsave else 'save']
         params = {'id': self.content_id,
                   'executed': 'unsaved' if unsave else 'saved'}
@@ -225,25 +249,31 @@ class Saveable(RedditContentObject):
         return response
 
     def unsave(self):
+        """Unsave the object."""
         return self.save(unsave=True)
 
 
 class Voteable(RedditContentObject):
     """Interface for RedditContentObjects that can be voted on."""
     def clear_vote(self):
+        """
+        Remove the logged in user's vote on the object.
+
+        Running this on an object with no existing vote has no adverse effects.
+        """
         return self.vote()
 
     def downvote(self):
+        """Downvote object. If there already is a vote, replace it."""
         return self.vote(direction=-1)
 
     def upvote(self):
-        return self.vote(direction=1)
+        """Upvote object. If there already is a vote, replace it."""
+       return self.vote(direction=1)
 
     @require_login
     def vote(self, direction=0):
-        """
-        Vote for the given item in the direction specified.
-        """
+        """Vote for the given item in the direction specified."""
         url = self.reddit_session.config['vote']
         params = {'id': self.content_id,
                   'dir': six.text_type(direction)}
@@ -278,18 +308,22 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
 
     @property
     def score(self):
+        """Return the comment's score."""
         return self.ups - self.downs
 
     @property
     def is_root(self):
+        """Indicate if the comment is a top level comment."""
         return self.parent_id is None
 
     @property
     def permalink(self):
+        """Return a permalink to the comment."""
         return urljoin(self.submission.permalink, self.id)
 
     @property
     def replies(self):
+        """Return a list of the comment replies to this comment."""
         if self._replies is None:
             response = self.reddit_session.request_json(self.permalink)
             # pylint: disable-msg=W0212
@@ -298,6 +332,7 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
 
     @property
     def submission(self):
+        """Return the submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
             if hasattr(self, 'link_id'):  # from user comments page
                 sid = self.link_id.split('_')[1]
@@ -336,7 +371,7 @@ class MoreComments(RedditContentObject):
         self.submission = submission
 
     def comments(self, update=True):
-        """Use this to fetch the comments for a single MoreComments object."""
+        """Fetch the comments for a single MoreComments object."""
         if not self._comments:
             # pylint: disable-msg=W0212
             children = [x for x in self.children if 't1_%s' % x
@@ -511,6 +546,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
                 self._orphaned[comment.parent_id] = [comment]
 
     def _replace_more_comments(self):
+        """Replace instances of MoreComments objects with the actual comments."""
         queue = [(None, x) for x in self.comments]
         remaining = self.reddit_session.config.more_comments_max
         if remaining < 0:
@@ -571,7 +607,13 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
 
     @property
     def all_comments(self):
-        """Replace instances of MoreComments with the actual comments tree."""
+        """
+        Return forest of all comments, with top-level comments as tree roots
+
+        Use a comment's replies to walk down the tree. To get an unnested,
+        flat list if comments use all_comments_flat. Multiple API
+        requests may be needed to get all comments.
+        """
         if not self._all_comments:
             self._replace_more_comments()
             self._all_comments = True
@@ -580,12 +622,25 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
 
     @property
     def all_comments_flat(self):
+        """
+        Return all comments in an unnested, flat list.
+        
+        Multiple API requests may be needed to get all comments.
+        """
         if not self.all_comments:
             self.all_comments  # pylint: disable-msg=W0104
         return self.comments_flat
 
     @property
     def comments(self):  # pylint: disable-msg=E0202
+        """
+        Return forest of comments, with top-level comments as tree roots.
+
+        May contain instances of MoreComment objects. To easily replace
+        these objects with Comment objects, use the all_comments property
+        instead. Use comment's replies to walk down the tree. To get
+        an unnested, flat list of comments use comments_flat.
+        """
         if self._comments == None:
             self.comments = Submission.get_info(self.reddit_session,
                                                 self.permalink,
@@ -601,6 +656,13 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
 
     @property
     def comments_flat(self):
+        """
+        Return comments as an unnested, flat list.
+
+        Note that there may be instances of MoreComment objects. To
+        easily remove these objects, use the all_comments_flat property
+        instead.
+        """
         if not self._comments_flat:
             stack = self.comments[:]
             self._comments_flat = []
@@ -618,6 +680,12 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
 
     @property
     def short_link(self):
+        """
+        Return a short link to the submission. 
+           
+        The short link points to a page on the short_domain that redirects to
+        the main. http://redd.it/y3r8u is a short link for reddit.
+        """
         return urljoin(self.reddit_session.config.short_domain, self.id)
 
 
@@ -670,15 +738,15 @@ class Subreddit(Messageable):
         self._url = reddit_session.config['subreddit'] % subreddit_name
 
     def __unicode__(self):
-        """Display this subreddit's name."""
+        """Return the subreddit's display name. E.g. 'python' or 'askreddit'."""
         return self.display_name
 
     def add_flair_template(self, *args, **kwargs):
-        """Adds a flair template to this subreddit."""
+        """Add a flair template to this subreddit."""
         return self.reddit_session.add_flair_template(self, *args, **kwargs)
 
     def clear_all_flair(self):
-        """Helper method to remove all flair on this subreddit."""
+        """Remove all flair on this subreddit."""
         csv = [{'user': x['user']} for x in self.flair_list()]
         if csv:
             return self.set_flair_csv(csv)
@@ -706,7 +774,7 @@ class Subreddit(Messageable):
         return self.reddit_session.get_contributors(self, *args, **kwargs)
 
     def get_flair(self, *args, **kwargs):
-        """Gets the flair for a user on this subreddit."""
+        """Get the flair for a user on this subreddit."""
         return self.reddit_session.get_flair(self, *args, **kwargs)
 
     def get_moderators(self, *args, **kwargs):
