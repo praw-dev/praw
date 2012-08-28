@@ -15,9 +15,9 @@
 """
 Decorators.
 
-Mainly do two things. Ensure API guidelines are met and prevent unneccesary 
-failed API requests by testing that the call can be made first. Also limit
-the length of output strings and parse json response for certain errors.
+Mainly do two things. Ensure API guidelines are met and prevent unneccesary
+failed API requests by testing that the call can be made first. Also limit the
+length of output strings and parse json response for certain errors.
 """
 
 from . import backport  # pylint: disable-msg=W0611
@@ -110,10 +110,10 @@ class SleepAfter(object):  # pylint: disable-msg=R0903
     """
     Ensure frequency of API calls doesn't exceed guidelines.
 
-    We are allowed to make a API request every api_request_delay seconds as 
-    specified in praw.ini. This value may differ from reddit to reddit. For 
-    reddit.com it is 2. Any function decorated with this will be forced to 
-    delay api_request_delay seconds from the calling of the last function 
+    We are allowed to make a API request every api_request_delay seconds as
+    specified in praw.ini. This value may differ from reddit to reddit. For
+    reddit.com it is 2. Any function decorated with this will be forced to
+    delay api_request_delay seconds from the calling of the last function
     decorated with this before executing.
     """
     def __init__(self, function):

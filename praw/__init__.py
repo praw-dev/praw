@@ -32,7 +32,7 @@ from . import helpers
 from . import objects
 from .settings import CONFIG
 
-__version__ = '1.0.5'
+__version__ = '1.0.6'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -149,8 +149,8 @@ class Config(object):  # pylint: disable-msg=R0903
         """
         Return the short domain of the reddit.
 
-        Used to generate the shortlink. For reddit the short_domain is 
-        redd.it and generate shortlinks like http://redd.it/y3r8u
+        Used to generate the shortlink. For reddit the short_domain is redd.it
+        and generate shortlinks like http://redd.it/y3r8u
         """
         if self._short_domain:
             return self._short_domain
@@ -167,19 +167,18 @@ class BaseReddit(object):
         """
         Initialize our connection with a reddit.
 
-        The user_agent is how your application identifies itself. Read the 
-        official API guidelines for user_agents 
-        https://github.com/reddit/reddit/wiki/API. 
-        Applications using default user_agents such as "Python/urllib" are 
-        drastically limited.
+        The user_agent is how your application identifies itself. Read the
+        official API guidelines for user_agents
+        https://github.com/reddit/reddit/wiki/API.  Applications using default
+        user_agents such as "Python/urllib" are drastically limited.
 
-        site_name allows you to specify which reddit you want to connect to. 
-        The installation defaults are reddit.com, if you only need to connect 
-        to reddit.com then you can safely ignore this. If you want to connect 
-        to another reddit, set site_name to the name of that reddit. This must 
-        match with an entry in praw.ini. If site_name is None, then the site 
-        name will be looked for in the environment variable REDDIT_SITE. If 
-        it is not found there, the default site name reddit matching reddit.com
+        site_name allows you to specify which reddit you want to connect to.
+        The installation defaults are reddit.com, if you only need to connect
+        to reddit.com then you can safely ignore this. If you want to connect
+        to another reddit, set site_name to the name of that reddit. This must
+        match with an entry in praw.ini. If site_name is None, then the site
+        name will be looked for in the environment variable REDDIT_SITE. If it
+        is not found there, the default site name reddit matching reddit.com
         will be used.
         """
         if not user_agent or not isinstance(user_agent, six.string_types):
@@ -243,10 +242,10 @@ class BaseReddit(object):
                     root_field='data', thing_field='children',
                     after_field='after'):
         """
-        A generator method to return reddit content from a URL. 
-           
-        Starts at the initial page_url, and fetches content using the `after` 
-        JSON data until `limit` entries have been fetched, or the 
+        A generator method to return reddit content from a URL.
+
+        Starts at the initial page_url, and fetches content using the `after`
+        JSON data until `limit` entries have been fetched, or the
         `place_holder` has been reached.
 
         :param page_url: the url to start fetching content from
@@ -306,9 +305,9 @@ class BaseReddit(object):
     def request_json(self, page_url, params=None, url_data=None,
                      as_objects=True):
         """
-        Get the JSON processed from a page. 
-        
-        Takes the same parameters as the _request method, plus a param to 
+        Get the JSON processed from a page.
+
+        Takes the same parameters as the _request method, plus a param to
         control whether objects are returned.
 
         :param page_url
@@ -376,8 +375,8 @@ class SubredditExtension(BaseReddit):
         """
         Return generator of flair mappings.
 
-        Each flair mapping is a dict with three keys. 'user', 
-        'flair_text' and 'flair_css_class'.
+        Each flair mapping is a dict with three keys. 'user', 'flair_text' and
+        'flair_css_class'.
         """
         return self.get_content(self.config['flairlist'] %
                                 six.text_type(subreddit),
@@ -612,7 +611,7 @@ class LoggedInExtension(BaseReddit):
         urls = [self.config[x] for x in ['inbox', 'moderator', 'unread']]
         helpers._request.evict(urls)  # pylint: disable-msg=E1101,W0212
         return response
-    
+
     @decorators.require_login
     @decorators.RequireCaptcha
     def send_message(self, recipient, subject, message, captcha=None):
@@ -644,8 +643,8 @@ class LoggedInExtension(BaseReddit):
         """
         Send a message to another redditor or a subreddit (mod mail).
 
-        Depreciated. compose_message has been renamed to send_message and
-        will be removed in a future version.
+        Depreciated. compose_message has been renamed to send_message and will
+        be removed in a future version.
         """
         warn('compose_message has been renamed to send_message and will be '
              'removed in a future version. Please update.', DeprecationWarning)
@@ -734,8 +733,8 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
     def get_front_page(self, *args, **kwargs):
         """
         Return the front page submissions.
-           
-        Default front page if not logged in, otherwise get logged in redditor's 
+
+        Default front page if not logged in, otherwise get logged in redditor's
         front page.
         """
         return self.get_content(self.config['reddit_url'], *args, **kwargs)
@@ -811,8 +810,8 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
     def send_feedback(self, name, email, message, reason='feedback',
                       captcha=None):
         """
-        Send feedback to the admins. 
-        
+        Send feedback to the admins.
+
         Please don't abuse this. Read the send feedback page before use.
         """
         params = {'name': name,

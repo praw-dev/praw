@@ -15,11 +15,11 @@
 """
 Contains code about objects such as Submissions, Deletable or Commments
 
-There are two main groups of objects in this file. The first are objects that 
+There are two main groups of objects in this file. The first are objects that
 correspond to a Thing or part of a Thing as specified in reddit's API overview,
-https://github.com/reddit/reddit/wiki/API. The second gives functionality 
-that extends over multiple Things. An object that extends from Saveable 
-indicates that it can be saved and unsaved in the context of a logged in user.
+https://github.com/reddit/reddit/wiki/API. The second gives functionality that
+extends over multiple Things. An object that extends from Saveable indicates
+that it can be saved and unsaved in the context of a logged in user.
 """
 
 from . import backport
@@ -214,13 +214,14 @@ class Messageable(RedditContentObject):
     def compose_message(self, subject, message):
         """A deprecated alias for send_message. Do not use."""
         warnings.warn('compose_message has been renamed to send_message and '
-                      'will be removed in a future version. Please update.', 
+                      'will be removed in a future version. Please update.',
                       DeprecationWarning)
         return self.reddit_session.send_message(self, subject, message)
 
     def send_message(self, subject, message):
         """Send message to subject."""
         return self.reddit_session.send_message(self, subject, message)
+
 
 class Reportable(RedditContentObject):
     """Interface for RedditContentObjects that can be reported."""
@@ -269,7 +270,7 @@ class Voteable(RedditContentObject):
 
     def upvote(self):
         """Upvote object. If there already is a vote, replace it."""
-       return self.vote(direction=1)
+        return self.vote(direction=1)
 
     @require_login
     def vote(self, direction=0):
@@ -546,7 +547,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
                 self._orphaned[comment.parent_id] = [comment]
 
     def _replace_more_comments(self):
-        """Replace instances of MoreComments objects with the actual comments."""
+        """Replace MoreComments objects with the actual comments."""
         queue = [(None, x) for x in self.comments]
         remaining = self.reddit_session.config.more_comments_max
         if remaining < 0:
@@ -624,7 +625,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
     def all_comments_flat(self):
         """
         Return all comments in an unnested, flat list.
-        
+
         Multiple API requests may be needed to get all comments.
         """
         if not self.all_comments:
@@ -681,8 +682,8 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
     @property
     def short_link(self):
         """
-        Return a short link to the submission. 
-           
+        Return a short link to the submission.
+
         The short link points to a page on the short_domain that redirects to
         the main. http://redd.it/y3r8u is a short link for reddit.
         """
@@ -738,7 +739,7 @@ class Subreddit(Messageable):
         self._url = reddit_session.config['subreddit'] % subreddit_name
 
     def __unicode__(self):
-        """Return the subreddit's display name. E.g. 'python' or 'askreddit'."""
+        """Return the subreddit's display name. E.g. python or askreddit."""
         return self.display_name
 
     def add_flair_template(self, *args, **kwargs):

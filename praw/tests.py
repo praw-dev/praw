@@ -121,8 +121,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
             warnings.simplefilter('always')
             self.r.info(self.self_url)
             self.assertEqual(len(w), 1)
-            self.assertEqual(w[-1].category, UserWarning)
-            self.assertTrue('self' in text_type(w[-1].message))
+            self.assertEqual(w[0].category, UserWarning)
+            self.assertTrue('self' in text_type(w[0].message))
 
     def test_info_by_url_also_found_by_id(self):
         if self.r.config.is_reddit:
@@ -513,23 +513,18 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
-    def test_compose(self):
-        subject = 'Unique message: %s' % uuid.uuid4()
-        self.r.user.compose_message(subject, 'Message content')
-        for msg in self.r.user.get_inbox():
-            if msg.subject == subject:
-                break
-        else:
-            self.fail('Could not find the message we just sent to ourself.')
-
-    def test_modmail_compose(self):
-        subject = 'Unique message: %s' % uuid.uuid4()
-        self.r.get_subreddit(self.sr).compose_message(subject, 'Content')
-        for msg in self.r.user.get_modmail():
-            if msg.subject == subject:
-                break
-        else:
-            self.fail('Could not find the message we just sent to ourself.')
+    def test_deprecated_compose(self):
+        subject = 'Deprecated Test'
+        with warnings.catch_warnings(record=True) as warning:
+            warnings.simplefilter('always')
+            self.r.user.compose_message(subject, 'Message content')
+            self.assertEqual(len(warning), 1)
+            self.assertEqual(warning[0].category, DeprecationWarning)
+        with warnings.catch_warnings(record=True) as warning:
+            warnings.simplefilter('always')
+            self.r.compose_message(self.r.user, subject, 'Message content')
+            self.assertEqual(len(warning), 1)
+            self.assertEqual(warning[0].category, DeprecationWarning)
 
     def test_mark_as_read(self):
         oth = Reddit(USER_AGENT)
@@ -567,6 +562,15 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         for msg in messages:
             self.assertTrue(msg not in unread)
 
+    def test_modmail_send(self):
+        subject = 'Unique message: %s' % uuid.uuid4()
+        self.r.get_subreddit(self.sr).send_message(subject, 'Content')
+        for msg in self.r.user.get_modmail():
+            if msg.subject == subject:
+                break
+        else:
+            self.fail('Could not find the message we just sent to ourself.')
+
     def test_reply_to_message_and_verify(self):
         text = 'Unique message reply: %s' % uuid.uuid4()
         found = None
@@ -578,6 +582,15 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find a self-message in the inbox')
         reply = found.reply(text)
         self.assertEqual(reply.parent_id, found.content_id)
+
+    def test_send(self):
+        subject = 'Unique message: %s' % uuid.uuid4()
+        self.r.user.send_message(subject, 'Message content')
+        for msg in self.r.user.get_inbox():
+            if msg.subject == subject:
+                break
+        else:
+            self.fail('Could not find the message we just sent to ourself.')
 
 
 class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
