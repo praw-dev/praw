@@ -681,26 +681,23 @@ class LoggedInExtension(BaseReddit):
         """
         Login to a reddit site.
 
-        If no user or password is provided, the settings file will be checked,
-        and finally the user will be prompted with raw_input and
-        getpass.getpass. If username was explicitly provided and password was
-        not, then we must ask for the password unless the username matches
-        what's provided in the config file.
+        Look for username first in parameter, then praw.ini and finally if both
+        were empty get it from stdin. Look for password in parameter, then
+        praw.ini (but only if username matches that in praw.ini) and finally
+        if they both are empty get it with getpass.
         """
-        if password and not username:
-            raise Exception('Username must be provided when password is.')
         user = username or self.config.user
         if not user:
             sys.stdout.write('Username: ')
             sys.stdout.flush()
             user = sys.stdin.readline().strip()
-        if username and username == self.config.user:
+        if user == self.config.user:
             pswd = password or self.config.pswd
-        elif not username and self.config.user:
-            pswd = self.config.pswd
         else:
+            pswd = password
+        if not pswd:
             import getpass
-            pswd = password or getpass.getpass('Password for %s: ' % user)
+            pswd = getpass.getpass('Password for %s: ' % user)
 
         params = {'passwd': pswd,
                   'user': user}
