@@ -495,9 +495,9 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
         comment_sort = reddit_session.config.comment_sort
         if comment_limit:
             if reddit_session.user and reddit_session.user.is_gold:
-                limit_max = 1500
+                limit_max = reddit_session.config.gold_comment_max
             else:
-                limit_max = 500
+                limit_max = reddit_session.config.regular_comment_max
             if comment_limit > limit_max:
                 warnings.warn_explicit('comment_limit %d is too high (max: %d)'
                                        % (comment_limit, limit_max),
@@ -526,6 +526,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
         self._comments_flat = None
         self._orphaned = {}
 
+    @limit_chars()
     def __unicode__(self):
         title = self.title.replace('\r\n', ' ')
         return six.text_type('{0} :: {1}').format(self.score, title)
@@ -540,7 +541,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
             comment.replies.extend(self._orphaned[comment.name])
             del self._orphaned[comment.name]
 
-        if comment.parent_id == self.content_id:  # Top-level comment
+        if comment.is_root:
             self._comments.append(comment)
         elif comment.parent_id in self._comments_by_id:
             self._comments_by_id[comment.parent_id].replies.append(comment)
@@ -689,7 +690,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
         Return a short link to the submission.
 
         The short link points to a page on the short_domain that redirects to
-        the main. http://redd.it/y3r8u is a short link for reddit.
+        the main. http://redd.it/y3r8u is a short link for reddit.com.
         """
         return urljoin(self.reddit_session.config.short_domain, self.id)
 
