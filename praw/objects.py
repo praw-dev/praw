@@ -444,6 +444,10 @@ class Redditor(Messageable):
 
 class LoggedInRedditor(Redditor):
     """A class for a currently logged in Redditor"""
+    get_liked = _get_section('liked')
+    get_disliked = _get_section('disliked')
+    get_hidden = _get_section('hidden')
+
     @require_login
     def get_inbox(self, limit=0):
         """Return a generator for inbox messages."""
