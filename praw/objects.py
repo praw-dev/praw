@@ -223,6 +223,27 @@ class Messageable(RedditContentObject):
         return self.reddit_session.send_message(self, subject, message)
 
 
+class Refreshable(RedditContentObject):
+    """Interface for objects that can be refreshed."""
+    def refresh(self):
+        """
+        Requery to update object with latest values.
+
+        Note that if this call is made within cache_timeout as specified in
+        praw.ini then this will return the cached content. Any listing, such
+        as the submissions on a subreddits top page, will automatically be
+        refreshed serverside. Refreshing a submission will also refresh all its
+        comments.
+        """
+        if isinstance(self, Redditor):
+            other = Redditor(self.reddit_session, self.name)
+        elif isinstance(self, Subreddit):
+            other = Subreddit(self.reddit_session, self.display_name)
+        elif isinstance(self, Submission):
+            other = Submission.get_info(self.reddit_session, self.permalink)
+        self.__dict__ = other.__dict__
+
+
 class Reportable(RedditContentObject):
     """Interface for RedditContentObjects that can be reported."""
     @require_login
@@ -394,7 +415,7 @@ class MoreComments(RedditContentObject):
         return self._comments
 
 
-class Redditor(Messageable):
+class Redditor(Messageable, Refreshable):
     """A class representing the users of reddit."""
     get_overview = _get_section('')
     get_comments = _get_section('comments')
@@ -485,8 +506,8 @@ class LoggedInRedditor(Redditor):
         return self.reddit_session.get_content(url, limit=limit)
 
 
-class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
-                 Saveable, Voteable):
+class Submission(Approvable, Deletable, Distinguishable, Editable, Refreshable,
+                 Reportable, Saveable, Voteable):
     """A class for submissions to reddit."""
     @staticmethod
     def get_info(reddit_session, url, comments_only=False):
@@ -695,7 +716,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
         return urljoin(self.reddit_session.config.short_domain, self.id)
 
 
-class Subreddit(Messageable):
+class Subreddit(Messageable, Refreshable):
     """A class for Subreddits."""
     ban = _modify_relationship('banned', is_sub=True)
     unban = _modify_relationship('banned', unlink=True, is_sub=True)
