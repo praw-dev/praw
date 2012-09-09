@@ -223,6 +223,27 @@ class Messageable(RedditContentObject):
         return self.reddit_session.send_message(self, subject, message)
 
 
+class Refreshable(RedditContentObject):
+    """Interface for objects that can be refreshed."""
+    def refresh(self):
+        """
+        Requery to update object with latest values.
+
+        Note that if this call is made within cache_timeout as specified in
+        praw.ini then this will return the cached content. Any listing, such
+        as the submissions on a subreddits top page, will automatically be
+        refreshed serverside. Refreshing a submission will also refresh all its
+        comments.
+        """
+        if isinstance(self, Redditor):
+            other = Redditor(self.reddit_session, self.name)
+        elif isinstance(self, Subreddit):
+            other = Subreddit(self.reddit_session, self.display_name)
+        elif isinstance(self, Submission):
+            other = Submission.get_info(self.reddit_session, self.permalink)
+        self.__dict__ = other.__dict__
+
+
 class Reportable(RedditContentObject):
     """Interface for RedditContentObjects that can be reported."""
     @require_login
@@ -394,7 +415,7 @@ class MoreComments(RedditContentObject):
         return self._comments
 
 
-class Redditor(Messageable):
+class Redditor(Messageable, Refreshable):
     """A class representing the users of reddit."""
     get_overview = _get_section('')
     get_comments = _get_section('comments')
@@ -444,6 +465,10 @@ class Redditor(Messageable):
 
 class LoggedInRedditor(Redditor):
     """A class for a currently logged in Redditor"""
+    get_liked = _get_section('liked')
+    get_disliked = _get_section('disliked')
+    get_hidden = _get_section('hidden')
+
     @require_login
     def get_inbox(self, limit=0):
         """Return a generator for inbox messages."""
@@ -481,8 +506,8 @@ class LoggedInRedditor(Redditor):
         return self.reddit_session.get_content(url, limit=limit)
 
 
-class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
-                 Saveable, Voteable):
+class Submission(Approvable, Deletable, Distinguishable, Editable, Refreshable,
+                 Reportable, Saveable, Voteable):
     """A class for submissions to reddit."""
     @staticmethod
     def get_info(reddit_session, url, comments_only=False):
@@ -491,9 +516,9 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
         comment_sort = reddit_session.config.comment_sort
         if comment_limit:
             if reddit_session.user and reddit_session.user.is_gold:
-                limit_max = 1500
+                limit_max = reddit_session.config.gold_comment_max
             else:
-                limit_max = 500
+                limit_max = reddit_session.config.regular_comment_max
             if comment_limit > limit_max:
                 warnings.warn_explicit('comment_limit %d is too high (max: %d)'
                                        % (comment_limit, limit_max),
@@ -522,6 +547,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
         self._comments_flat = None
         self._orphaned = {}
 
+    @limit_chars()
     def __unicode__(self):
         title = self.title.replace('\r\n', ' ')
         return six.text_type('{0} :: {1}').format(self.score, title)
@@ -536,7 +562,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
             comment.replies.extend(self._orphaned[comment.name])
             del self._orphaned[comment.name]
 
-        if comment.parent_id == self.content_id:  # Top-level comment
+        if comment.is_root:
             self._comments.append(comment)
         elif comment.parent_id in self._comments_by_id:
             self._comments_by_id[comment.parent_id].replies.append(comment)
@@ -685,12 +711,12 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
         Return a short link to the submission.
 
         The short link points to a page on the short_domain that redirects to
-        the main. http://redd.it/y3r8u is a short link for reddit.
+        the main. http://redd.it/y3r8u is a short link for reddit.com.
         """
         return urljoin(self.reddit_session.config.short_domain, self.id)
 
 
-class Subreddit(Messageable):
+class Subreddit(Messageable, Refreshable):
     """A class for Subreddits."""
     ban = _modify_relationship('banned', is_sub=True)
     unban = _modify_relationship('banned', unlink=True, is_sub=True)

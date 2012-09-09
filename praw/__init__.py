@@ -149,8 +149,8 @@ class Config(object):  # pylint: disable-msg=R0903
         """
         Return the short domain of the reddit.
 
-        Used to generate the shortlink. For reddit the short_domain is redd.it
-        and generate shortlinks like http://redd.it/y3r8u
+        Used to generate the shortlink. For reddit.com the short_domain is 
+        redd.it and generate shortlinks like http://redd.it/y3r8u
         """
         if self._short_domain:
             return self._short_domain
@@ -404,8 +404,6 @@ class SubredditExtension(BaseReddit):
         return self.request_json(self.config['contributors'] %
                                  six.text_type(subreddit))
 
-    @decorators.require_login
-    @decorators.require_moderator
     def get_flair(self, subreddit, redditor):
         """Gets the flair for a user on the given subreddit."""
         url_data = {'name': six.text_type(redditor)}
@@ -413,7 +411,6 @@ class SubredditExtension(BaseReddit):
                                  six.text_type(subreddit), url_data=url_data)
         return data['users'][0]
 
-    @decorators.require_login
     def get_moderators(self, subreddit):
         """Get the list of moderators for the given subreddit."""
         return self.request_json(self.config['moderators'] %
@@ -511,9 +508,6 @@ class SubredditExtension(BaseReddit):
                      show_media=False, domain='', domain_css=False,
                      domain_sidebar=False, header_hover_text=''):
         """Set the settings for the given subreddit."""
-        def bool_str(item):
-            return 'on' if item else 'off'
-
         params = {'r': six.text_type(subreddit),
                   'sr': subreddit.content_id,
                   'title': title,
@@ -522,12 +516,12 @@ class SubredditExtension(BaseReddit):
                   'lang': language,
                   'type': subreddit_type,
                   'link_type': content_options,
-                  'over_18': bool_str(over_18),
-                  'allow_top': bool_str(default_set),
-                  'show_media': bool_str(show_media),
+                  'over_18': 'on' if over_18 else 'off',
+                  'allow_top': 'on' if default_set else 'off',
+                  'show_media': 'on' if show_media else 'off',
                   'domain': domain or '',
-                  'domain_css': bool_str(domain_css),
-                  'domain_sidebar': bool_str(domain_sidebar),
+                  'domain_css': 'on' if domain_css else 'off',
+                  'domain_sidebar': 'on' if domain_sidebar else 'off',
                   'header-title': header_hover_text or ''}
         # pylint: disable-msg=E1101,W0212
         helpers._request.evict([self.config['subreddit_settings'] %
@@ -681,26 +675,23 @@ class LoggedInExtension(BaseReddit):
         """
         Login to a reddit site.
 
-        If no user or password is provided, the settings file will be checked,
-        and finally the user will be prompted with raw_input and
-        getpass.getpass. If username was explicitly provided and password was
-        not, then we must ask for the password unless the username matches
-        what's provided in the config file.
+        Look for username first in parameter, then praw.ini and finally if both
+        were empty get it from stdin. Look for password in parameter, then
+        praw.ini (but only if username matches that in praw.ini) and finally
+        if they both are empty get it with getpass.
         """
-        if password and not username:
-            raise Exception('Username must be provided when password is.')
         user = username or self.config.user
         if not user:
             sys.stdout.write('Username: ')
             sys.stdout.flush()
             user = sys.stdin.readline().strip()
-        if username and username == self.config.user:
+        if user == self.config.user:
             pswd = password or self.config.pswd
-        elif not username and self.config.user:
-            pswd = self.config.pswd
         else:
+            pswd = password
+        if not pswd:
             import getpass
-            pswd = password or getpass.getpass('Password for %s: ' % user)
+            pswd = getpass.getpass('Password for %s: ' % user)
 
         params = {'passwd': pswd,
                   'user': user}

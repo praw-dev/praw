@@ -665,17 +665,59 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
             self.other = {'id': 'pa', 'name': 'PyApiTestUser3'}
         self.other_user = self.r.get_redditor(self.other['name'])
 
+    def test_dislikes(self):
+        item = self.r.get_subreddit(self.sr).get_hot().next()
+        item.downvote()
+        self.assertTrue(item in self.r.user.get_disliked())
+
     def test_get_redditor(self):
         self.assertEqual(self.other['id'], self.other_user.id)
 
     def test_friend(self):
         self.other_user.friend()
 
+    def test_likes(self):
+        item = self.r.get_subreddit(self.sr).get_hot().next()
+        item.upvote()
+        self.assertTrue(item in self.r.user.get_liked())
+
     def test_unfriend(self):
         self.other_user.unfriend()
 
     def test_user_set_on_login(self):
         self.assertTrue(isinstance(self.r.user, LoggedInRedditor))
+
+
+class RefreshableTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.timeout = self.r.config.cache_timeout
+
+    def test_refresh_subreddit(self):
+        # This test will fail if the subreddit doesn't get a new subscriber
+        # during timeout_cache seconds. But as long as it is a default
+        # subreddit, where new users will be auto subscribed and the number of
+        # users increase, this should not be a problem.
+        a_default_subreddit = 'pics'
+        subreddit = self.r.get_subreddit(a_default_subreddit)
+        original_subscribers = subreddit.subscribers
+        time.sleep(self.timeout)
+        self.assertEqual(subreddit.subscribers, original_subscribers)
+        subreddit.refresh()
+        self.assertNotEqual(subreddit.subscribers, original_subscribers)
+
+    def test_refresh_submission(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        submission = subreddit.get_top().next()
+        same_submission = self.r.get_submission(submission_id = submission.id)
+        if submission.likes:
+            submission.downvote()
+        else:
+            submission.upvote()
+        time.sleep(self.timeout)
+        self.assertEqual(submission.likes, same_submission.likes)
+        submission.refresh()
+        self.assertNotEqual(submission.likes, same_submission.likes)
 
 
 class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
