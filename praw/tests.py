@@ -359,14 +359,29 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(self.subreddit.get_stylesheet()['stylesheet'],
                          stylesheet)
 
-    def test_update_settings(self):
+    def test_update_settings_description(self):
+        self.maxDiff = None
+        settings = self.subreddit.get_settings()
+        settings['description'] = 'Description %s' % uuid.uuid4()
+        self.subreddit.update_settings(
+            description=settings['description'])
+        new = self.subreddit.get_settings()
+        # ignore prev_id values since those change on update
+        key = 'prev_description_id'
+        settings[key] = new[key] = None
+        self.assertEqual(new, settings)
+
+    def test_update_settings_public_description(self):
+        self.maxDiff = None
         settings = self.subreddit.get_settings()
         settings['public_description'] = 'Description %s' % uuid.uuid4()
-        settings['description'] = 'Sidebar %s' % uuid.uuid4()
         self.subreddit.update_settings(
-            public_description=settings['public_description'],
-            description=settings['description'])
-        self.assertEqual(self.subreddit.get_settings(), settings)
+            public_description=settings['public_description'])
+        new = self.subreddit.get_settings()
+        # ignore prev_id values since those change on update
+        key = 'prev_public_description_id'
+        settings[key] = new[key] = None
+        self.assertEqual(new, settings)
 
 
 class FlairTest(unittest.TestCase, AuthenticatedHelper):

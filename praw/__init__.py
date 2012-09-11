@@ -32,7 +32,7 @@ from . import helpers
 from . import objects
 from .settings import CONFIG
 
-__version__ = '1.0.6'
+__version__ = '1.0.7'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -509,7 +509,9 @@ class SubredditExtension(BaseReddit):
                      description='', language='en', subreddit_type='public',
                      content_options='any', over_18=False, default_set=True,
                      show_media=False, domain='', domain_css=False,
-                     domain_sidebar=False, header_hover_text=''):
+                     domain_sidebar=False, header_hover_text='',
+                     prev_description_id=False,
+                     prev_public_description_id=False, **kwargs):
         """Set the settings for the given subreddit."""
         def bool_str(item):
             return 'on' if item else 'off'
@@ -519,6 +521,8 @@ class SubredditExtension(BaseReddit):
                   'title': title,
                   'public_description': public_description,
                   'description': description,
+                  'prev_description_id': prev_description_id or '',
+                  'prev_public_description_id': prev_public_description_id or '',
                   'lang': language,
                   'type': subreddit_type,
                   'link_type': content_options,
@@ -529,6 +533,10 @@ class SubredditExtension(BaseReddit):
                   'domain_css': bool_str(domain_css),
                   'domain_sidebar': bool_str(domain_sidebar),
                   'header-title': header_hover_text or ''}
+        if kwargs:
+            msg = 'Extra settings fields: {0}'.format(kwargs.keys())
+            warn_explicit(msg, UserWarning, '', 0)
+            params.update(kwargs)
         # pylint: disable-msg=E1101,W0212
         helpers._request.evict([self.config['subreddit_settings'] %
                                 six.text_type(subreddit)])
