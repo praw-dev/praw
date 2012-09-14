@@ -132,7 +132,7 @@ class Config(object):  # pylint: disable-msg=R0903
             self._short_domain = None
         self.timeout = float(obj['timeout'])
         try:
-            self.user = obj['user']
+            self.user = obj['user'] if obj['user'] or None
             self.pswd = obj['pswd']
         except KeyError:
             self.user = self.pswd = None
@@ -689,11 +689,12 @@ class LoggedInExtension(BaseReddit):
         """
         Login to a reddit site.
 
-        If no user or password is provided, the settings file will be checked,
-        and finally the user will be prompted with raw_input and
-        getpass.getpass. If username was explicitly provided and password was
-        not, then we must ask for the password unless the username matches
-        what's provided in the config file.
+        Look for username first in parameter, then praw.ini and finally if both
+        were empty get it from stdin. Look for password in parameter, then
+        praw.ini (but only if username matches that in praw.ini) and finally
+        if they both are empty get it with getpass. Add the variables user
+        (username) and pswd (password) to your praw.ini file to allow for auto-
+        login.
         """
         if password and not username:
             raise Exception('Username must be provided when password is.')
@@ -702,13 +703,12 @@ class LoggedInExtension(BaseReddit):
             sys.stdout.write('Username: ')
             sys.stdout.flush()
             user = sys.stdin.readline().strip()
-        if username and username == self.config.user:
-            pswd = password or self.config.pswd
-        elif not username and self.config.user:
-            pswd = self.config.pswd
+            pswd = None
         else:
+            pswd = password or self.config.pswd
+        if not pswd:
             import getpass
-            pswd = password or getpass.getpass('Password for %s: ' % user)
+            pswd = getpass.getpass('Password for %s: ' % user)
 
         params = {'passwd': pswd,
                   'user': user}
