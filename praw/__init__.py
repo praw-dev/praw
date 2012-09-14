@@ -546,8 +546,10 @@ class SubredditExtension(BaseReddit):
     @decorators.require_moderator
     def set_stylesheet(self, subreddit, stylesheet):
         """Set stylesheet for the given subreddit."""
+        prev_stylesheet = self.get_stylesheet(subreddit) 
         params = {'r': six.text_type(subreddit),
                   'stylesheet_contents': stylesheet,
+                  'prevstyle': prev_stylesheet['prevstyle'],
                   'op': 'save'}  # Options: save / preview
         return self.request_json(self.config['subreddit_css'], params)
 
