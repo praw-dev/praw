@@ -59,6 +59,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'inbox':               'message/inbox/',
                  'info':                'button_info/',
                  'login':               'api/login/',
+                 'me':                  'api/v1/me',
                  'moderator':           'message/moderator/',
                  'moderators':          'r/%s/about/moderators/',
                  'modqueue':            'r/%s/about/modqueue/',
