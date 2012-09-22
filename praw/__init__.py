@@ -14,11 +14,6 @@
 
 """Reddit object."""
 
-from . import backport
-backport.add_moves()
-from six.moves import (HTTPCookieProcessor, HTTPError, build_opener,
-                       http_cookiejar, http_client, urljoin)
-
 import json
 import os
 import platform
@@ -26,11 +21,11 @@ import six
 import sys
 from warnings import warn, warn_explicit
 
-from . import decorators
-from . import errors
-from . import helpers
-from . import objects
-from .settings import CONFIG
+from praw import decorators, errors, helpers, objects
+from praw.compat import (HTTPCookieProcessor,  # pylint: disable-msg=E0611
+                         HTTPError, build_opener, http_cookiejar, http_client,
+                         urljoin)
+from praw.settings import CONFIG
 
 __version__ = '1.0.7'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
@@ -132,7 +127,7 @@ class Config(object):  # pylint: disable-msg=R0903
             self._short_domain = None
         self.timeout = float(obj['timeout'])
         try:
-            self.user = obj['user'] if obj['user'] or None
+            self.user = obj['user'] if obj['user'] else None
             self.pswd = obj['pswd']
         except KeyError:
             self.user = self.pswd = None
@@ -522,7 +517,8 @@ class SubredditExtension(BaseReddit):
                   'public_description': public_description,
                   'description': description,
                   'prev_description_id': prev_description_id or '',
-                  'prev_public_description_id': prev_public_description_id or '',
+                  'prev_public_description_id': (prev_public_description_id
+                                                 or ''),
                   'lang': language,
                   'type': subreddit_type,
                   'link_type': content_options,

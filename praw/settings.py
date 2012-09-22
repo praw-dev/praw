@@ -12,12 +12,10 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import backport  # pylint: disable-msg=W0611
-backport.add_moves()
-
 import os
 import sys
-from six.moves import configparser
+
+from praw.compat import configparser  # pylint: disable-msg=E0611
 
 
 def _load_configuration():

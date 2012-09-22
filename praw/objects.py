@@ -22,18 +22,15 @@ extends over multiple Things. An object that extends from Saveable indicates
 that it can be saved and unsaved in the context of a logged in user.
 """
 
-from . import backport
-backport.add_moves()
-
-
 import six
 import warnings
-from six.moves import urljoin
 
-from .decorators import limit_chars, require_login
-from .errors import ClientException
-from .helpers import (_get_section, _get_sorter, _modify_relationship,
-                      _request)
+from praw.compat import urljoin  # pylint: disable-msg=E0611
+from praw.decorators import limit_chars, require_login
+from praw.errors import ClientException
+from praw.helpers import (_get_section, _get_sorter, _modify_relationship,
+                          _request)
+
 
 REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor')
 
@@ -587,7 +584,8 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
                         comment._replies = []
                         self._insert_comment(comment)
             else:
-                [queue.append((comm, x)) for x in comm.replies]
+                for item in comm.replies:
+                    queue.append((comm, item))
 
         if skipped:
             warnings.warn_explicit('Skipped %d more comments objects on %r' %

@@ -14,13 +14,12 @@
 
 """Helper functions"""
 
-from . import backport
-backport.add_moves()
-
 import sys
 import six
-from six.moves import Request, quote, urlencode, urljoin
-from .decorators import Memoize, SleepAfter, require_login
+
+from praw.compat import (Request, quote,  # pylint: disable-msg=E0611
+                         urlencode, urljoin)
+from praw.decorators import Memoize, SleepAfter, require_login
 
 
 def _get_section(subpath=''):

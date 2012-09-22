@@ -19,18 +19,17 @@
 """Tests. Split into classes according to what they test."""
 
 from __future__ import unicode_literals
-from . import backport
-backport.add_moves()
 
 import random
 import unittest
 import uuid
 import warnings
 from six import advance_iterator as six_next, text_type
-from six.moves import HTTPError, URLError, urljoin
 
-from . import Reddit, errors, helpers
-from .objects import Comment, LoggedInRedditor, Message, MoreComments
+from praw import Reddit, errors, helpers
+from praw.compat import (HTTPError, URLError,  # pylint: disable-msg=E0611
+                         urljoin)
+from praw.objects import Comment, LoggedInRedditor, Message, MoreComments
 
 USER_AGENT = 'PRAW_test_suite'
 

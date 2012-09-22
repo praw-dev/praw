@@ -33,7 +33,7 @@ load-plugins=
 # can either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
-disable=C0111
+disable=C0111,I0011,W0142
 
 
 [REPORTS]
@@ -43,7 +43,7 @@ disable=C0111
 output-format=text
 
 # Include message's id in output
-include-ids=no
+include-ids=yes
 
 # Put messages in a separate file for each module / package specified on the
 # command line instead of printing them on stdout. Reports (if any) will be
@@ -211,35 +211,35 @@ int-import-graph=
 [DESIGN]
 
 # Maximum number of arguments for function / method
-max-args=5
+max-args=20
 
 # Argument names that match this expression will be ignored. Default to name
 # with leading underscore
 ignored-argument-names=_.*
 
 # Maximum number of locals for function / method body
-max-locals=15
+max-locals=25
 
 # Maximum number of return / yield for function / method body
-max-returns=6
+# max-returns=0
 
 # Maximum number of branch for function / method body
-max-branchs=12
+max-branchs=15
 
 # Maximum number of statements in function / method body
-max-statements=50
+# max-statements=0
 
 # Maximum number of parents for a class (see R0901).
-max-parents=7
+max-parents=10
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=7
+max-attributes=20
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods=2
+min-public-methods=1
 
 # Maximum number of public methods for a class (see R0904).
-max-public-methods=20
+max-public-methods=30
 
 
 [EXCEPTIONS]

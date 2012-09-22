@@ -20,17 +20,14 @@ failed API requests by testing that the call can be made first. Also limit the
 length of output strings and parse json response for certain errors.
 """
 
-from . import backport  # pylint: disable-msg=W0611
-backport.add_moves()
-
 import six
 import sys
 import time
 import warnings
 from functools import wraps
-from six.moves import urljoin
 
-from . import errors
+from praw import errors
+from praw.compat import urljoin  # pylint: disable-msg=E0611
 
 
 class Memoize(object):
@@ -72,6 +69,16 @@ class Memoize(object):
 
 class RequireCaptcha(object):
     """Decorator for methods that require captchas."""
+
+    @staticmethod
+    def get_captcha(reddit_session, captcha_id):
+        url = urljoin(reddit_session.config['captcha'],
+                      captcha_id + '.png')
+        sys.stdout.write('Captcha URL: %s\nCaptcha: ' % url)
+        sys.stdout.flush()
+        captcha = sys.stdin.readline().strip()
+        return {'iden': captcha_id, 'captcha': captcha}
+
     def __init__(self, function):
         wraps(function)(self)
         self.function = function
@@ -96,14 +103,6 @@ class RequireCaptcha(object):
                 return self.function(*args, **kwargs)
             except errors.BadCaptcha as exception:
                 captcha_id = exception.response['captcha']
-
-    def get_captcha(self, reddit_session, captcha_id):
-        url = urljoin(reddit_session.config['captcha'],
-                      captcha_id + '.png')
-        sys.stdout.write('Captcha URL: %s\nCaptcha: ' % url)
-        sys.stdout.flush()
-        captcha = sys.stdin.readline().strip()
-        return {'iden': captcha_id, 'captcha': captcha}
 
 
 class SleepAfter(object):  # pylint: disable-msg=R0903
@@ -205,6 +204,8 @@ def require_moderator(function):
         if not self.user.is_mod:
             raise errors.ModeratorRequired('%r is not moderator' %
                                            six.text_type(self.user))
+
+        # pylint: disable-msg=W0212
         if self.user._mod_subs is None:
             self.user._mod_subs = {'mod': self.get_subreddit('mod')}
             for sub in self.user.my_moderation(limit=None):
