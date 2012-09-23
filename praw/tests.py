@@ -707,6 +707,36 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(isinstance(self.r.user, LoggedInRedditor))
 
 
+class RefreshableTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.real_timeout = self.r.config.cache_timeout
+        self.r.config.cache_timeout = 0
+
+    def tearDown(self):
+        self.r.config.cache_timeout = self.real_timeout
+
+    def test_refresh_subreddit(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        new_description = 'Description %s' % uuid.uuid4()
+        subreddit.update_settings(public_description=new_description)
+        self.assertNotEqual(subreddit.public_description, new_description)
+        subreddit.refresh()
+        self.assertEqual(subreddit.public_description, new_description)
+
+    def test_refresh_submission(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        submission = six_next(subreddit.get_top())
+        same_submission = self.r.get_submission(submission_id=submission.id)
+        if submission.likes:
+            submission.downvote()
+        else:
+            submission.upvote()
+        self.assertEqual(submission.likes, same_submission.likes)
+        submission.refresh()
+        self.assertNotEqual(submission.likes, same_submission.likes)
+
+
 class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
