@@ -355,19 +355,20 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
         stylesheet = ('div.titlebox span.number:after {\ncontent: " %s"\n' %
                       uuid.uuid4())
         self.subreddit.set_stylesheet(stylesheet)
-        self.assertEqual(self.subreddit.get_stylesheet()['stylesheet'],
-                         stylesheet)
+        self.assertEqual(stylesheet,
+                         self.subreddit.get_stylesheet()['stylesheet'])
 
     def test_update_settings_description(self):
         self.maxDiff = None
         settings = self.subreddit.get_settings()
         settings['description'] = 'Description %s' % uuid.uuid4()
-        self.subreddit.update_settings(
-            description=settings['description'])
+        self.subreddit.update_settings(description=settings['description'])
         new = self.subreddit.get_settings()
-        # ignore prev_id values since those change on update
+        # The id should change, but nothing else
         key = 'prev_description_id'
-        settings[key] = new[key] = None
+        self.assertNotEqual(settings[key], new[key])
+        del settings[key]
+        del new[key]
         self.assertEqual(new, settings)
 
     def test_update_settings_public_description(self):
@@ -377,9 +378,11 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.update_settings(
             public_description=settings['public_description'])
         new = self.subreddit.get_settings()
-        # ignore prev_id values since those change on update
+        # The id should change, but nothing else
         key = 'prev_public_description_id'
-        settings[key] = new[key] = None
+        self.assertNotEqual(settings[key], new[key])
+        del settings[key]
+        del new[key]
         self.assertEqual(new, settings)
 
 

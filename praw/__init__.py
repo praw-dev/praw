@@ -505,8 +505,9 @@ class SubredditExtension(BaseReddit):
                      content_options='any', over_18=False, default_set=True,
                      show_media=False, domain='', domain_css=False,
                      domain_sidebar=False, header_hover_text='',
-                     prev_description_id=False,
-                     prev_public_description_id=False, **kwargs):
+                     prev_description_id=None,
+                     prev_public_description_id=None, wikimode='disabled',
+                     wiki_edit_age=30, wiki_edit_karma=100, **kwargs):
         """Set the settings for the given subreddit."""
         def bool_str(item):
             return 'on' if item else 'off'
@@ -516,9 +517,6 @@ class SubredditExtension(BaseReddit):
                   'title': title,
                   'public_description': public_description,
                   'description': description,
-                  'prev_description_id': prev_description_id or '',
-                  'prev_public_description_id': (prev_public_description_id
-                                                 or ''),
                   'lang': language,
                   'type': subreddit_type,
                   'link_type': content_options,
@@ -528,7 +526,15 @@ class SubredditExtension(BaseReddit):
                   'domain': domain or '',
                   'domain_css': bool_str(domain_css),
                   'domain_sidebar': bool_str(domain_sidebar),
-                  'header-title': header_hover_text or ''}
+                  'header-title': header_hover_text or '',
+                  'wikimode': wikimode,
+                  'wiki_edit_age': six.text_type(wiki_edit_age),
+                  'wiki_edit_karma': six.text_type(wiki_edit_karma)}
+        #if prev_description_id is not None:
+        params['prev_description_id'] = prev_description_id or ''
+        #if prev_public_description_id is not None:
+        params['prev_public_description_id'] = (prev_public_description_id
+                                                    or '')
         if kwargs:
             msg = 'Extra settings fields: {0}'.format(kwargs.keys())
             warn_explicit(msg, UserWarning, '', 0)
