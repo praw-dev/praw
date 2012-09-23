@@ -12,7 +12,7 @@ if [[ "$status" != "nothing to commit (working directory clean)" ]]; then
     exit 1
 fi
 
-version=$(python -c "import praw; print praw.__version__")
+version=$(python -c "import praw; print(praw.__version__)")
 
 read -p "Do you want to deploy $version? [y/n] " input
 case $input in

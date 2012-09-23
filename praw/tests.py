@@ -173,7 +173,7 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_author_encoding(self):
         # pylint: disable-msg=E1101
-        a1 = six_next(self.r.get_front_page()).author
+        a1 = six_next(self.r.get_new()).author
         a2 = self.r.get_redditor(text_type(a1))
         self.assertEqual(a1, a2)
         s1 = six_next(a1.get_submitted())
@@ -810,7 +810,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find submission in saved links.')
 
     def test_short_link(self):
-        submission = six_next(self.r.get_front_page())
+        submission = six_next(self.r.get_new())
         if self.r.config.is_reddit:
             self.assertTrue(submission.id in submission.short_link)
         else:
