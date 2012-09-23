@@ -682,11 +682,23 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
             self.other = {'id': 'pa', 'name': 'PyApiTestUser3'}
         self.other_user = self.r.get_redditor(self.other['name'])
 
+    def test_disliked(self):
+        # Pulls from get_liked. Problem here may come from get_liked
+        item = self.r.user.get_liked().next()
+        item.downvote()
+        self.assertTrue(item in self.r.user.get_disliked())
+
     def test_get_redditor(self):
         self.assertEqual(self.other['id'], self.other_user.id)
 
     def test_friend(self):
         self.other_user.friend()
+
+    def test_liked(self):
+        # Pulls from get_disliked. Problem here may come from get_disliked
+        item = self.r.user.get_disliked().next()
+        item.upvote()
+        self.assertTrue(item in self.r.user.get_liked())
 
     def test_unfriend(self):
         self.other_user.unfriend()
