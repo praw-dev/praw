@@ -877,6 +877,12 @@ class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
 class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
+        self.real_timeout = self.r.config.cache_timeout
+        self.r.config.cache_timeout = 0
+
+    def tearDown(self):
+        self.r.config.cache_timeout = self.real_timeout
 
     def test_edit_link(self):
         found = None
@@ -900,11 +906,36 @@ class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
         found = found.edit(new_body)
         self.assertEqual(found.selftext, new_body)
 
+    def test_mark_as_nsfw(self):
+        for item in self.subreddit.get_top():
+            if not item.over_18:
+                break
+        else:
+            self.fail("Couldn't find a SFW submission")
+        item.mark_as_nsfw()
+        item.refresh()
+        self.assertTrue(item.over_18)
+
+    def test_unmark_as_nsfw(self):
+        for item in self.subreddit.get_top():
+            if item.over_18:
+                break
+        else:
+            self.fail("Couldn't find a NSFW submission")
+        item.unmark_as_nsfw()
+        item.refresh()
+        self.assertFalse(item.over_18)
+
 
 class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
+        self.real_timeout = self.r.config.cache_timeout
+        self.r.config.cache_timeout = 0
+
+    def tearDown(self):
+        self.r.config.cache_timeout = self.real_timeout
 
     def test_attribute_error(self):
         self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
@@ -938,6 +969,21 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         for subreddit in self.r.user.my_reddits():
             # pylint: disable-msg=W0212
             self.assertTrue(text_type(subreddit) in subreddit._info_url)
+
+    def test_nsfw_subreddit(self):
+        originally_nsfw = self.subreddit.over18
+        if originally_nsfw:
+            self.subreddit.unmark_as_nsfw()
+        else:
+            self.subreddit.mark_as_nsfw()
+        self.subreddit.refresh()
+        self.assertNotEqual(originally_nsfw, self.subreddit.over18)
+        if self.subreddit.over18:
+            self.subreddit.unmark_as_nsfw()
+        else:
+            self.subreddit.mark_as_nsfw()
+        self.subreddit.refresh()
+        self.assertEqual(originally_nsfw, self.subreddit.over18)
 
     def test_search(self):
         if not self.r.config.is_reddit:
