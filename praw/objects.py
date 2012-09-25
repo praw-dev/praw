@@ -220,6 +220,22 @@ class Messageable(RedditContentObject):
         return self.reddit_session.send_message(self, subject, message)
 
 
+class NSFWable(RedditContentObject):
+    """Interface for objects that can be marked as NSFW."""
+    @require_login
+    def mark_as_nsfw(self, unmarknsfw=False):
+        """Mark object as Not Safe For Work ( Porn / Gore )."""
+        url = self.reddit_session.config['unmarknsfw' if unmarknsfw else
+                                         'marknsfw']
+        params = {'id': self.content_id,
+                  'executed': 'unmarknsfw' if unmarknsfw else 'marknsfw'}
+        return self.reddit_session.request_json(url, params)
+
+    def unmark_as_nsfw(self):
+        """Mark object as Safe For Work, no porn or gore."""
+        return self.mark_as_nsfw(unmarknsfw=True)
+
+
 class Refreshable(RedditContentObject):
     """Interface for objects that can be refreshed."""
     def refresh(self):
@@ -503,8 +519,8 @@ class LoggedInRedditor(Redditor):
         return self.reddit_session.get_content(url, limit=limit)
 
 
-class Submission(Approvable, Deletable, Distinguishable, Editable, Refreshable,
-                 Reportable, Saveable, Voteable):
+class Submission(Approvable, Deletable, Distinguishable, Editable, NSFWable,
+                 Refreshable, Reportable, Saveable, Voteable):
     """A class for submissions to reddit."""
     @staticmethod
     def get_info(reddit_session, url, comments_only=False):
@@ -714,7 +730,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Refreshable,
         return urljoin(self.reddit_session.config.short_domain, self.id)
 
 
-class Subreddit(Messageable, Refreshable):
+class Subreddit(Messageable, NSFWable, Refreshable):
     """A class for Subreddits."""
     ban = _modify_relationship('banned', is_sub=True)
     unban = _modify_relationship('banned', unlink=True, is_sub=True)
