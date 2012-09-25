@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, R0903, R0904, W0201
+# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
 """Tests. Split into classes according to what they test."""
 
@@ -907,24 +907,28 @@ class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(found.selftext, new_body)
 
     def test_mark_as_nsfw(self):
+        found = None
         for item in self.subreddit.get_top():
             if not item.over_18:
+                found = item
                 break
         else:
             self.fail("Couldn't find a SFW submission")
-        item.mark_as_nsfw()
-        item.refresh()
-        self.assertTrue(item.over_18)
+        found.mark_as_nsfw()
+        found.refresh()
+        self.assertTrue(found.over_18)
 
     def test_unmark_as_nsfw(self):
+        found = None
         for item in self.subreddit.get_top():
             if item.over_18:
+                found = item
                 break
         else:
             self.fail("Couldn't find a NSFW submission")
-        item.unmark_as_nsfw()
-        item.refresh()
-        self.assertFalse(item.over_18)
+        found.unmark_as_nsfw()
+        found.refresh()
+        self.assertFalse(found.over_18)
 
 
 class SubredditTest(unittest.TestCase, AuthenticatedHelper):

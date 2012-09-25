@@ -27,7 +27,7 @@ from praw.compat import (HTTPCookieProcessor,  # pylint: disable-msg=E0611
                          urljoin)
 from praw.settings import CONFIG
 
-__version__ = '1.0.8'
+__version__ = '1.0.9'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
