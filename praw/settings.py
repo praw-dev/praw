@@ -19,10 +19,8 @@ from praw.compat import configparser  # pylint: disable-msg=E0611
 
 
 def _load_configuration():
-    
     config = configparser.RawConfigParser()
     module_dir = os.path.dirname(sys.modules[__name__].__file__)
-    
     if 'APPDATA' in os.environ:  # Windows
         os_config_path = os.environ['APPDATA']
     elif 'XDG_CONFIG_HOME' in os.environ:  # Modern Linux
@@ -31,10 +29,10 @@ def _load_configuration():
         os_config_path = os.path.join(os.environ['HOME'], '.config')
     else:
         os_config_path = None
-        
-    locations = [os.path.join(module_dir, 'praw.ini'),
-                 os.path.join(os_config_path, 'praw.ini'),
-                 'praw.ini']
+    locations = [os.path.join(module_dir, 'praw.ini'), 
+                'praw.ini']
+    if os_config_path is not None:
+        locations.insert(1,os.path.join(os_config_path, 'praw.ini'))
     if not config.read(locations):
         raise Exception('Could not find config file in any of: %s' % locations)
     return config
