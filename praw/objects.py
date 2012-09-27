@@ -312,6 +312,14 @@ class Voteable(RedditContentObject):
         url = self.reddit_session.config['vote']
         params = {'id': self.content_id,
                   'dir': six.text_type(direction)}
+        base_url = (self.reddit_session.config['user'] %
+                    self.reddit_session.user)
+        if (direction == 1 or self.likes):
+            evict_url = urljoin(base_url, 'liked')
+            _request.evict(evict_url)  # pylint: disable-msg=E1101
+        if (direction == -1 or not self.likes):
+            evict_url = urljoin(base_url, 'disliked')
+            _request.evict(evict_url)  # pylint: disable-msg=E1101
         return self.reddit_session.request_json(url, params)
 
 
