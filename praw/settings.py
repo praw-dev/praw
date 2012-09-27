@@ -19,14 +19,19 @@ from praw.compat import configparser  # pylint: disable-msg=E0611
 
 
 def _load_configuration():
+    
     config = configparser.RawConfigParser()
     module_dir = os.path.dirname(sys.modules[__name__].__file__)
+    
     if 'APPDATA' in os.environ:  # Windows
         os_config_path = os.environ['APPDATA']
     elif 'XDG_CONFIG_HOME' in os.environ:  # Modern Linux
         os_config_path = os.environ['XDG_CONFIG_HOME']
-    else:  # Legacy Linux
+    elif 'HOME' in os.environ: # Less Modern Linux
         os_config_path = os.path.join(os.environ['HOME'], '.config')
+    else:  # Legacy Linux
+        os_config_path = os.path.join(os.environ['PWD'], '.config')    
+        
     locations = [os.path.join(module_dir, 'praw.ini'),
                  os.path.join(os_config_path, 'praw.ini'),
                  'praw.ini']
