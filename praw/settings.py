@@ -25,14 +25,13 @@ def _load_configuration():
         os_config_path = os.environ['APPDATA']
     elif 'XDG_CONFIG_HOME' in os.environ:  # Modern Linux
         os_config_path = os.environ['XDG_CONFIG_HOME']
-    elif 'HOME' in os.environ: # Legacy Linux
+    elif 'HOME' in os.environ:  # Legacy Linux
         os_config_path = os.path.join(os.environ['HOME'], '.config')
     else:
         os_config_path = None
-    locations = [os.path.join(module_dir, 'praw.ini'), 
-                'praw.ini']
+    locations = [os.path.join(module_dir, 'praw.ini'), 'praw.ini']
     if os_config_path is not None:
-        locations.insert(1,os.path.join(os_config_path, 'praw.ini'))
+        locations.insert(1, os.path.join(os_config_path, 'praw.ini'))
     if not config.read(locations):
         raise Exception('Could not find config file in any of: %s' % locations)
     return config
