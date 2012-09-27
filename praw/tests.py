@@ -62,6 +62,9 @@ class BasicHelper(object):
             self.link_url_link = 'http://google.com/?q=29.9093488449'
             self.other_user_id = 'pk'
 
+    def disable_cache(self):
+        self.r.config.cache_timeout = 0
+
     def url(self, path):
         # pylint: disable-msg=W0212
         return urljoin(self.r.config._site_url, path)
@@ -290,7 +293,7 @@ class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
             if submission.num_comments > 0:
                 found = submission
                 break
-        if not found:
+        else:
             self.fail('Could not find a submission with comments.')
         comment = found.comments[0]
         reply = comment.reply(text)
@@ -522,7 +525,7 @@ class LocalOnlyTest(unittest.TestCase, BasicHelper):
                           'a', 'b', 'c')
 
     def test_send_feedback(self):
-        msg = 'You guys are awesome. (Sent from reddit_api python module).'
+        msg = 'You guys are awesome. (Sent from the PRAW python module).'
         self.r.send_feedback('Bryce Boe', 'foo@foo.com', msg)
 
 
@@ -595,7 +598,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
             if isinstance(msg, Message) and msg.author == self.r.user:
                 found = msg
                 break
-        if not found:
+        else:
             self.fail('Could not find a self-message in the inbox')
         reply = found.reply(text)
         self.assertEqual(reply.parent_id, found.content_id)
@@ -706,11 +709,7 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
 class RefreshableTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
-        self.real_timeout = self.r.config.cache_timeout
-        self.r.config.cache_timeout = 0
-
-    def tearDown(self):
-        self.r.config.cache_timeout = self.real_timeout
+        self.disable_cache()
 
     def test_refresh_subreddit(self):
         subreddit = self.r.get_subreddit(self.sr)
@@ -742,7 +741,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         for submission in self.r.user.get_submitted():
             if submission.likes is False:
                 break
-        if not submission or submission.likes is not False:
+        else:
             self.fail('Could not find a down-voted submission.')
         submission.clear_vote()
         # reload the submission
@@ -761,7 +760,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         for submission in self.r.user.get_submitted():
             if submission.likes is True:
                 break
-        if not submission or submission.likes is not True:
+        else:
             self.fail('Could not find an up-voted submission.')
         submission.downvote()
         # reload the submission
@@ -777,7 +776,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         for submission in subreddit.get_new_by_date():
             if not submission.hidden:
                 break
-        if not submission or submission.hidden:
+        else:
             self.fail('Could not find a non-reported submission.')
         submission.report()
         # check if submission was reported
@@ -792,7 +791,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         for submission in self.r.user.get_submitted():
             if not submission.saved:
                 break
-        if not submission or submission.saved:
+        else:
             self.fail('Could not find unsaved submission.')
         submission.save()
         # reload the submission
@@ -818,7 +817,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         for submission in self.r.user.get_submitted():
             if submission.saved:
                 break
-        if not submission or not submission.saved:
+        else:
             self.fail('Could not find saved submission.')
         submission.unsave()
         # reload the submission
@@ -830,7 +829,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         for submission in self.r.user.get_submitted():
             if submission.likes is None:
                 break
-        if not submission or submission.likes is not None:
+        else:
             self.fail('Could not find a non-voted submission.')
         submission.upvote()
         # reload the submission
@@ -848,7 +847,7 @@ class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
             if not item.is_self:
                 found = item
                 break
-        if not found:
+        else:
             self.fail('Could not find link post')
         self.assertRaises(errors.APIException, self.r.submit, self.sr,
                           found.title, url=found.url)
@@ -874,11 +873,6 @@ class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
-        self.real_timeout = self.r.config.cache_timeout
-        self.r.config.cache_timeout = 0
-
-    def tearDown(self):
-        self.r.config.cache_timeout = self.real_timeout
 
     def test_edit_link(self):
         found = None
@@ -886,7 +880,7 @@ class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
             if not item.is_self:
                 found = item
                 break
-        if not found:
+        else:
             self.fail('Could not find link post')
         self.assertRaises(HTTPError, found.edit, 'text')
 
@@ -896,13 +890,14 @@ class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
             if item.is_self:
                 found = item
                 break
-        if not found:
+        else:
             self.fail('Could not find self post')
         new_body = '%s\n\n+Edit Text' % found.selftext
         found = found.edit(new_body)
         self.assertEqual(found.selftext, new_body)
 
     def test_mark_as_nsfw(self):
+        self.disable_cache()
         found = None
         for item in self.subreddit.get_top():
             if not item.over_18:
@@ -915,6 +910,7 @@ class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(found.over_18)
 
     def test_unmark_as_nsfw(self):
+        self.disable_cache()
         found = None
         for item in self.subreddit.get_top():
             if item.over_18:
@@ -931,21 +927,9 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
-        self.real_timeout = self.r.config.cache_timeout
-        self.r.config.cache_timeout = 0
-
-    def tearDown(self):
-        self.r.config.cache_timeout = self.real_timeout
 
     def test_attribute_error(self):
         self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
-
-    def test_get_my_moderation(self):
-        for subreddit in self.r.user.my_moderation():
-            if text_type(subreddit) == self.sr:
-                break
-        else:
-            self.fail('Could not find moderated reddit in my_moderation.')
 
     def test_get_modqueue(self):
         mod_submissions = list(self.r.get_subreddit('mod').get_modqueue())
@@ -965,12 +949,20 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         sub = self.r.get_subreddit('{0}+{1}'.format(self.sr, 'test'))
         self.assertRaises(errors.ModeratorRequired, sub.get_modqueue)
 
+    def test_my_moderation(self):
+        for subreddit in self.r.user.my_moderation():
+            if text_type(subreddit) == self.sr:
+                break
+        else:
+            self.fail('Could not find moderated reddit in my_moderation.')
+
     def test_my_reddits(self):
         for subreddit in self.r.user.my_reddits():
             # pylint: disable-msg=W0212
             self.assertTrue(text_type(subreddit) in subreddit._info_url)
 
     def test_nsfw_subreddit(self):
+        self.disable_cache()
         originally_nsfw = self.subreddit.over18
         if originally_nsfw:
             self.subreddit.unmark_as_nsfw()

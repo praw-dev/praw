@@ -210,6 +210,7 @@ class Messageable(RedditContentObject):
     """Interface for RedditContentObjects that can be messaged."""
     def compose_message(self, subject, message):
         """A deprecated alias for send_message. Do not use."""
+        # Remove around the end of 2012
         warnings.warn('compose_message has been renamed to send_message and '
                       'will be removed in a future version. Please update.',
                       DeprecationWarning)
@@ -250,10 +251,10 @@ class Refreshable(RedditContentObject):
         """
         if isinstance(self, Redditor):
             other = Redditor(self.reddit_session, self.name)
-        elif isinstance(self, Subreddit):
-            other = Subreddit(self.reddit_session, self.display_name)
         elif isinstance(self, Submission):
             other = Submission.get_info(self.reddit_session, self.permalink)
+        elif isinstance(self, Subreddit):
+            other = Subreddit(self.reddit_session, self.display_name)
         self.__dict__ = other.__dict__  # pylint: disable-msg=W0201
 
 
@@ -350,11 +351,6 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
             reply._update_submission(submission)
 
     @property
-    def score(self):
-        """Return the comment's score."""
-        return self.ups - self.downs
-
-    @property
     def is_root(self):
         """Indicate if the comment is a top level comment."""
         return (self.parent_id is None or
@@ -373,6 +369,11 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
             # pylint: disable-msg=W0212
             self._replies = response[1]['data']['children'][0]._replies
         return self._replies
+
+    @property
+    def score(self):
+        """Return the comment's score."""
+        return self.ups - self.downs
 
     @property
     def submission(self):
@@ -517,13 +518,13 @@ class LoggedInRedditor(Redditor):
 
     @require_login
     def my_moderation(self, limit=0):
-        """Return all of the current user's subreddits that they moderate."""
+        """Return the subreddits where the logged in user is a mod."""
         url = self.reddit_session.config['my_mod_reddits']
         return self.reddit_session.get_content(url, limit=limit)
 
     @require_login
     def my_reddits(self, limit=0):
-        """Return all of the current user's subscribed subreddits."""
+        """Return the subreddits that the logged in user is subscribed to."""
         url = self.reddit_session.config['my_reddits']
         return self.reddit_session.get_content(url, limit=limit)
 
@@ -820,10 +821,6 @@ class Subreddit(Messageable, NSFWable, Refreshable):
         """Get banned users for this subreddit."""
         return self.reddit_session.get_banned(self, *args, **kwargs)
 
-    def get_settings(self, *args, **kwargs):
-        """Get the settings for this subreddit."""
-        return self.reddit_session.get_settings(self, *args, **kwargs)
-
     def get_contributors(self, *args, **kwargs):
         """Get contributors for this subreddit."""
         return self.reddit_session.get_contributors(self, *args, **kwargs)
@@ -843,6 +840,10 @@ class Subreddit(Messageable, NSFWable, Refreshable):
     def get_reports(self, *args, **kwargs):
         """Get the reported submissions on this subreddit."""
         return self.reddit_session.get_reports(self, *args, **kwargs)
+
+    def get_settings(self, *args, **kwargs):
+        """Get the settings for this subreddit."""
+        return self.reddit_session.get_settings(self, *args, **kwargs)
 
     def get_spam(self, *args, **kwargs):
         """Get the spam-filtered items on this subreddit."""
@@ -893,7 +894,7 @@ class Subreddit(Messageable, NSFWable, Refreshable):
 
 
 class UserList(RedditContentObject):
-    """A class for UserList."""
+    """A list of Redditors. Works just like a regular list."""
     def __init__(self, reddit_session, json_dict=None, fetch=False):
         super(UserList, self).__init__(reddit_session, json_dict, fetch)
 
