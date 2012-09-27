@@ -29,8 +29,8 @@ def _load_configuration():
         os_config_path = os.environ['XDG_CONFIG_HOME']
     elif 'HOME' in os.environ: # Legacy Linux
         os_config_path = os.path.join(os.environ['HOME'], '.config')
-    else: # Use PWD as fallback (init/cron)
-        os_config_path = os.environ['PWD'];
+    else:
+        os_config_path = None
         
     locations = [os.path.join(module_dir, 'praw.ini'),
                  os.path.join(os_config_path, 'praw.ini'),
