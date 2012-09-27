@@ -148,7 +148,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_search(self):
         if not self.r.config.is_reddit:
-            raise Exception('Search does not work locally.')
+            self.skipTest('Search does not work locally.')
         self.assertTrue(len(list(self.r.search('test'))) > 0)
 
     def test_search_reddit_names(self):
@@ -499,7 +499,7 @@ class LocalOnlyTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
         if self.r.config.is_reddit:
-            raise Exception('This test is for localhost only.')
+            self.skipTest('This test is for localhost only.')
 
     def test_create_existing_subreddit(self):
         self.r.login(self.un, '1111')
@@ -991,7 +991,7 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_search(self):
         if not self.r.config.is_reddit:
-            raise Exception('Search does not work locally.')
+            self.skipTest('Search does not work locally.')
         self.assertTrue(len(list(self.subreddit.search('test'))) > 0)
 
     def test_subscribe_and_verify(self):
