@@ -369,6 +369,8 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
         self.assertNotEqual(settings[key], new[key])
         del settings[key]
         del new[key]
+        del settings['prev_public_description_id']
+        del new['prev_public_description_id']
         self.assertEqual(new, settings)
 
     def test_update_settings_public_description(self):
