@@ -514,13 +514,14 @@ class SubredditExtension(BaseReddit):
                      prev_description_id=None,
                      prev_public_description_id=None, wikimode='disabled',
                      wiki_edit_age=30, wiki_edit_karma=100, **kwargs):
+        """Set the settings for the given subreddit."""
+
         # Temporary support for no longer valid entries
         if wiki_edit_age is None:
             wiki_edit_age = ''
         if wiki_edit_karma is None:
             wiki_edit_karma = ''
 
-        """Set the settings for the given subreddit."""
         params = {'r': six.text_type(subreddit),
                   'sr': subreddit.content_id,
                   'title': title,
@@ -537,7 +538,7 @@ class SubredditExtension(BaseReddit):
                   'domain_sidebar': 'on' if domain_sidebar else 'off',
                   'header-title': header_hover_text or '',
                   'wikimode': wikimode,
-                  'wiki_edit_age': six.text_type(wiki_edit_age ),
+                  'wiki_edit_age': six.text_type(wiki_edit_age),
                   'wiki_edit_karma': six.text_type(wiki_edit_karma)}
         if prev_description_id is not None:
             params['prev_description_id'] = prev_description_id
