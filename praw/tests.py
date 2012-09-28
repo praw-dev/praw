@@ -100,6 +100,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
         num = 50
         self.assertEqual(num, len(list(self.r.get_popular_reddits(limit=num))))
 
+    def test_get_top(self):
+        num = 50
+        self.assertEqual(num, len(list(self.r.get_top(limit=num))))
+
     def test_flair_list(self):
         sub = self.r.get_subreddit('python')
         self.assertTrue(six_next(sub.flair_list()))
@@ -369,7 +373,7 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
         self.assertNotEqual(settings[key], new[key])
         del settings[key]
         del new[key]
-        self.assertEqual(new, settings)
+        self.assertEqual(settings, new)
 
     def test_update_settings_public_description(self):
         self.maxDiff = None
@@ -383,7 +387,7 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
         self.assertNotEqual(settings[key], new[key])
         del settings[key]
         del new[key]
-        self.assertEqual(new, settings)
+        self.assertEqual(settings, new)
 
 
 class FlairTest(unittest.TestCase, AuthenticatedHelper):

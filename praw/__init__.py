@@ -27,7 +27,7 @@ from praw.compat import (HTTPCookieProcessor,  # pylint: disable-msg=E0611
                          urljoin)
 from praw.settings import CONFIG
 
-__version__ = '1.0.10'
+__version__ = '1.0.11'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -86,6 +86,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'subreddit_css':       'api/subreddit_stylesheet/',
                  'subreddit_settings':  'r/%s/about/edit/',
                  'subscribe':           'api/subscribe/',
+                 'top':                 'top/',
                  'undistinguish':       'api/distinguish/no/',
                  'unfriend':            'api/unfriend/',
                  'unmarknsfw':          'api/unmarknsfw/',
@@ -120,8 +121,10 @@ class Config(object):  # pylint: disable-msg=R0903
         self.comment_sort = obj['comment_sort']
         self.default_content_limit = int(obj['default_content_limit'])
         self.domain = obj['domain']
+        self.gold_comments_max = int(obj['gold_comments_max'])
         self.more_comments_max = int(obj['more_comments_max'])
         self.log_requests = int(obj['log_requests'])
+        self.regular_comments_max = int(obj['regular_comments_max'])
 
         if 'short_domain' in obj:
             self._short_domain = 'http://' + obj['short_domain']
@@ -320,7 +323,11 @@ class BaseReddit(object):
             hook = self._json_reddit_objecter
         else:
             hook = None
-        return json.loads(response.decode('utf-8'), object_hook=hook)
+        data = json.loads(response.decode('utf-8'), object_hook=hook)
+        # Update the modhash
+        if self.user and 'data' in data and 'modhash' in data['data']:
+            self.modhash = data['data']['modhash']
+        return data
 
 
 class SubredditExtension(BaseReddit):
@@ -742,6 +749,10 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         """Return all comments."""
         return self.get_content(self.config['comments'], *args, **kwargs)
 
+    def get_controversial(self, *args, **kwargs):
+        """Return controversial page."""
+        return self.get_content(self.config['controversial'], *args, **kwargs)
+
     def get_front_page(self, *args, **kwargs):
         """
         Return the front page submissions.
@@ -755,9 +766,9 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         """Return new page."""
         return self.get_content(self.config['new'], *args, **kwargs)
 
-    def get_controversial(self, *args, **kwargs):
-        """Return controversial page."""
-        return self.get_content(self.config['controversial'], *args, **kwargs)
+    def get_top(self, *args, **kwargs):
+        """Return top page."""
+        return self.get_content(self.config['top'], *args, **kwargs)
 
     def get_popular_reddits(self, *args, **kwargs):
         """Return the most active subreddits."""

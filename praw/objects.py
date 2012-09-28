@@ -527,20 +527,25 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, NSFWable,
         url_data = {}
         comment_limit = reddit_session.config.comment_limit
         comment_sort = reddit_session.config.comment_sort
-        if comment_limit:
-            if reddit_session.user and reddit_session.user.is_gold:
-                limit_max = reddit_session.config.gold_comment_max
-            else:
-                limit_max = reddit_session.config.regular_comment_max
-            if comment_limit > limit_max:
+
+        if reddit_session.user and reddit_session.user.is_gold:
+            class_max = reddit_session.config.gold_comments_max
+        else:
+            class_max = reddit_session.config.regular_comments_max
+
+        if comment_limit == -1:  # Use max for user class
+            comment_limit = class_max
+        elif comment_limit > 0:  # Use specified value
+            if comment_limit > class_max:
                 warnings.warn_explicit('comment_limit %d is too high (max: %d)'
-                                       % (comment_limit, limit_max),
+                                       % (comment_limit, class_max),
                                        UserWarning, '', 0)
-                url_data['limit'] = limit_max
-            elif comment_limit < 0:
-                url_data['limit'] = limit_max
-            else:
-                url_data['limit'] = comment_limit
+                comment_limit = class_max
+        elif comment_limit == 0:  # Use default
+            comment_limit = None
+
+        if comment_limit:
+            url_data['limit'] = comment_limit
         if comment_sort:
             url_data['sort'] = comment_sort
         s_info, c_info = reddit_session.request_json(url, url_data=url_data)
@@ -668,7 +673,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, NSFWable,
 
         Multiple API requests may be needed to get all comments.
         """
-        if not self.all_comments:
+        if not self._all_comments:
             self.all_comments  # pylint: disable-msg=W0104
         return self.comments_flat
 
