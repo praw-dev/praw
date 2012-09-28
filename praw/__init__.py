@@ -61,6 +61,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'moderators':          'r/%s/about/moderators/',
                  'modqueue':            'r/%s/about/modqueue/',
                  'morechildren':        'api/morechildren/',
+                 'my_con_reddits':      'reddits/mine/contributor/',
                  'my_mod_reddits':      'reddits/mine/moderator/',
                  'my_reddits':          'reddits/mine/subscriber/',
                  'new':                 'new/',

@@ -517,6 +517,12 @@ class LoggedInRedditor(Redditor):
         return self.reddit_session.get_content(url, limit=limit)
 
     @require_login
+    def my_contributions(self, limit=0):
+        """Return the subreddits where the logged in user is a contributor."""
+        url = self.reddit_session.config['my_con_reddits']
+        return self.reddit_session.get_content(url, limit=limit)
+
+    @require_login
     def my_moderation(self, limit=0):
         """Return the subreddits where the logged in user is a mod."""
         url = self.reddit_session.config['my_mod_reddits']
