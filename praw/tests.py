@@ -963,6 +963,13 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         sub = self.r.get_subreddit('{0}+{1}'.format(self.sr, 'test'))
         self.assertRaises(errors.ModeratorRequired, sub.get_modqueue)
 
+    def test_my_contributions(self):
+        for subreddit in self.r.user.my_contributions():
+            if text_type(subreddit) == self.sr:
+                break
+        else:
+            self.fail('Could not find contributed reddit in my_contributions.')
+
     def test_my_moderation(self):
         for subreddit in self.r.user.my_moderation():
             if text_type(subreddit) == self.sr:
