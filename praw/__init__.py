@@ -27,7 +27,7 @@ from praw.compat import (HTTPCookieProcessor,  # pylint: disable-msg=E0611
                          urljoin)
 from praw.settings import CONFIG
 
-__version__ = '1.0.11'
+__version__ = '1.0.12'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -514,6 +514,12 @@ class SubredditExtension(BaseReddit):
                      prev_description_id=None,
                      prev_public_description_id=None, wikimode='disabled',
                      wiki_edit_age=30, wiki_edit_karma=100, **kwargs):
+        # Temporary support for no longer valid entries
+        if wiki_edit_age is None:
+            wiki_edit_age = ''
+        if wiki_edit_karma is None:
+            wiki_edit_karma = ''
+
         """Set the settings for the given subreddit."""
         params = {'r': six.text_type(subreddit),
                   'sr': subreddit.content_id,
@@ -531,13 +537,12 @@ class SubredditExtension(BaseReddit):
                   'domain_sidebar': 'on' if domain_sidebar else 'off',
                   'header-title': header_hover_text or '',
                   'wikimode': wikimode,
-                  'wiki_edit_age': six.text_type(wiki_edit_age),
+                  'wiki_edit_age': six.text_type(wiki_edit_age ),
                   'wiki_edit_karma': six.text_type(wiki_edit_karma)}
-        #if prev_description_id is not None:
-        params['prev_description_id'] = prev_description_id or ''
-        #if prev_public_description_id is not None:
-        params['prev_public_description_id'] = (prev_public_description_id
-                                                    or '')
+        if prev_description_id is not None:
+            params['prev_description_id'] = prev_description_id
+        if prev_public_description_id is not None:
+            params['prev_public_description_id'] = prev_public_description_id
         if kwargs:
             msg = 'Extra settings fields: {0}'.format(kwargs.keys())
             warn_explicit(msg, UserWarning, '', 0)
@@ -549,14 +554,13 @@ class SubredditExtension(BaseReddit):
 
     @decorators.require_login
     @decorators.require_moderator
-    def set_stylesheet(self, subreddit, stylesheet):
+    def set_stylesheet(self, subreddit, stylesheet, prevstyle=None):
         """Set stylesheet for the given subreddit."""
-        prev_stylesheet = self.get_stylesheet(subreddit)
-        warn('set_stylesheet is temporarily inefficient')
         params = {'r': six.text_type(subreddit),
-                  'prevstyle': prev_stylesheet['prevstyle'],
                   'stylesheet_contents': stylesheet,
                   'op': 'save'}  # Options: save / preview
+        if prevstyle is not None:
+            params['prevstyle'] = prevstyle
         # pylint: disable-msg=E1101,W0212
         helpers._request.evict([self.config['stylesheet'] %
                                 six.text_type(subreddit)])

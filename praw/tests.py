@@ -355,6 +355,12 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.set_settings(title)
         self.assertEqual(self.subreddit.get_settings()['title'], title)
 
+    def test_set_settings_none_values(self):
+        title = 'Reddit API Test %s' % uuid.uuid4()
+        self.subreddit.set_settings(title, wiki_edit_age=None,
+                                    wiki_edit_karma=None)
+        self.assertEqual(self.subreddit.get_settings()['title'], title)
+
     def test_set_stylesheet(self):
         stylesheet = ('div.titlebox span.number:after {\ncontent: " %s"\n' %
                       uuid.uuid4())
