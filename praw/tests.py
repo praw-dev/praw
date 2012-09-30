@@ -93,8 +93,6 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(subreddit == same_subreddit)
         self.assertFalse(subreddit != same_subreddit)
         self.assertFalse(subreddit == submission)
-        self.assertFalse(subreddit == None)
-        self.assertFalse(None == subreddit)
 
     def test_get_all_comments(self):
         num = 50
@@ -179,6 +177,55 @@ class BasicTest(unittest.TestCase, BasicHelper):
             pass
         else:
             self.fail('Timeout did not raise the proper exception.')
+
+
+class RefreshableTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+
+    def test_cache(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        title = 'Test Cache: %s' % uuid.uuid4()
+        body = "BODY"
+        original_listing = list(subreddit.get_new(limit=5))
+        subreddit.submit(title, body)
+        new_listing = list(subreddit.get_new(limit=5))
+        self.assertEqual(original_listing, new_listing)
+        self.disable_cache()
+        no_cache_listing = list(subreddit.get_new(limit=5))
+        self.assertNotEqual(original_listing, no_cache_listing)
+
+    def test_refresh_subreddit(self):
+        self.disable_cache()
+        subreddit = self.r.get_subreddit(self.sr)
+        new_description = 'Description %s' % uuid.uuid4()
+        subreddit.update_settings(public_description=new_description)
+        self.assertNotEqual(new_description, subreddit.public_description)
+        subreddit.refresh()
+        self.assertEqual(new_description, subreddit.public_description)
+
+    def test_refresh_submission(self):
+        self.disable_cache()
+        subreddit = self.r.get_subreddit(self.sr)
+        submission = six_next(subreddit.get_top())
+        same_submission = self.r.get_submission(submission_id=submission.id)
+        if submission.likes:
+            submission.downvote()
+        else:
+            submission.upvote()
+        self.assertEqual(submission.likes, same_submission.likes)
+        submission.refresh()
+        self.assertNotEqual(submission.likes, same_submission.likes)
+
+    def test_users_share_cache(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        title = 'Test User Sharing Of Cache: %s' % uuid.uuid4()
+        body = "BODY"
+        original_listing = list(subreddit.get_new(limit=5))
+        subreddit.submit(title, body)
+        self.r.login('PyApiTestUser2', '1111')
+        new_user_listing = list(subreddit.get_new(limit=5))
+        self.assertEqual(original_listing, new_user_listing)
 
 
 class EncodingTest(unittest.TestCase, AuthenticatedHelper):
@@ -714,32 +761,6 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_user_set_on_login(self):
         self.assertTrue(isinstance(self.r.user, LoggedInRedditor))
-
-
-class RefreshableTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.disable_cache()
-
-    def test_refresh_subreddit(self):
-        subreddit = self.r.get_subreddit(self.sr)
-        new_description = 'Description %s' % uuid.uuid4()
-        subreddit.update_settings(public_description=new_description)
-        self.assertNotEqual(subreddit.public_description, new_description)
-        subreddit.refresh()
-        self.assertEqual(subreddit.public_description, new_description)
-
-    def test_refresh_submission(self):
-        subreddit = self.r.get_subreddit(self.sr)
-        submission = six_next(subreddit.get_top())
-        same_submission = self.r.get_submission(submission_id=submission.id)
-        if submission.likes:
-            submission.downvote()
-        else:
-            submission.upvote()
-        self.assertEqual(submission.likes, same_submission.likes)
-        submission.refresh()
-        self.assertNotEqual(submission.likes, same_submission.likes)
 
 
 class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
