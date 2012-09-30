@@ -86,6 +86,16 @@ class BasicTest(unittest.TestCase, BasicHelper):
                           (isinstance(item, Comment) or
                            isinstance(item, MoreComments))])
 
+    def test_equality(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        same_subreddit = self.r.get_subreddit(self.sr)
+        submission = six_next(subreddit.get_hot())
+        self.assertTrue(subreddit == same_subreddit)
+        self.assertFalse(subreddit != same_subreddit)
+        self.assertFalse(subreddit == submission)
+        self.assertFalse(subreddit == None)
+        self.assertFalse(None == subreddit)
+
     def test_get_all_comments(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_all_comments(limit=num))))

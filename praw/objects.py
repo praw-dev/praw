@@ -69,6 +69,9 @@ class RedditContentObject(object):
         raise AttributeError('\'%s\' has no attribute \'%s\'' % (type(self),
                                                                  attr))
 
+    def __ne__(self, other):
+        return not (self == other)
+
     def __setattr__(self, name, value):
         if value and name == 'subreddit':
             value = Subreddit(self.reddit_session, value, fetch=False)
