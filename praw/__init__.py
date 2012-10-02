@@ -61,8 +61,9 @@ class Config(object):  # pylint: disable-msg=R0903
                  'moderators':          'r/%s/about/moderators/',
                  'modqueue':            'r/%s/about/modqueue/',
                  'morechildren':        'api/morechildren/',
+                 'my_con_reddits':      'reddits/mine/contributor/',
                  'my_mod_reddits':      'reddits/mine/moderator/',
-                 'my_reddits':          'reddits/mine/',
+                 'my_reddits':          'reddits/mine/subscriber/',
                  'new':                 'new/',
                  'marknsfw':            'api/marknsfw/',
                  'popular_reddits':     'reddits/popular/',
@@ -269,7 +270,7 @@ class BaseReddit(object):
         :returns: a list of reddit content, of type Subreddit, Comment,
             Submission or user flair.
         """
-        content_found = 0
+        objects_found = 0
 
         if url_data is None:
             url_data = {}
@@ -282,7 +283,7 @@ class BaseReddit(object):
             fetch_all = False
 
         # While we still need to fetch more content to reach our limit, do so.
-        while fetch_all or content_found < limit:
+        while fetch_all or objects_found < limit:
             page_data = self.request_json(page_url, url_data=url_data)
             if root_field:
                 root = page_data[root_field]
@@ -290,9 +291,9 @@ class BaseReddit(object):
                 root = page_data
             for thing in root[thing_field]:
                 yield thing
-                content_found += 1
-                # Terminate when we reached the limit, or place holder
-                if (content_found == limit or
+                objects_found += 1
+                # Terminate when we've reached the limit, or place holder
+                if (objects_found == limit or
                     place_holder and thing.id == place_holder):
                     return
             # Set/update the 'after' parameter for the next iteration
@@ -396,13 +397,6 @@ class SubredditExtension(BaseReddit):
 
     @decorators.require_login
     @decorators.require_moderator
-    def get_settings(self, subreddit):
-        """Get the settings for the given subreddit."""
-        return self.request_json(self.config['subreddit_settings'] %
-                                 six.text_type(subreddit))['data']
-
-    @decorators.require_login
-    @decorators.require_moderator
     def get_contributors(self, subreddit):
         """Get the list of contributors for the given subreddit."""
         return self.request_json(self.config['contributors'] %
@@ -435,6 +429,13 @@ class SubredditExtension(BaseReddit):
         return self.get_content(self.config['reports'] %
                                 six.text_type(subreddit),
                                 limit=limit)
+
+    @decorators.require_login
+    @decorators.require_moderator
+    def get_settings(self, subreddit):
+        """Get the settings for the given subreddit."""
+        return self.request_json(self.config['subreddit_settings'] %
+                                 six.text_type(subreddit))['data']
 
     @decorators.require_login
     @decorators.require_moderator
@@ -638,31 +639,6 @@ class LoggedInExtension(BaseReddit):
 
     @decorators.require_login
     @decorators.RequireCaptcha
-    def send_message(self, recipient, subject, message, captcha=None):
-        """
-        Send a message to another redditor or a subreddit (mod mail).
-
-        When sending a message to a subreddit the recipient paramater must
-        either be a subreddit object or the subreddit name needs to be prefixed
-        with either '/r/' or '#'.
-        """
-        if isinstance(recipient, objects.Subreddit):
-            recipient = '/r/%s' % six.text_type(recipient)
-        else:
-            recipient = six.text_type(recipient)
-
-        params = {'text': message,
-                  'subject': subject,
-                  'to': recipient}
-        if captcha:
-            params.update(captcha)
-        response = self.request_json(self.config['compose'], params)
-        # pylint: disable-msg=E1101,W0212
-        helpers._request.evict([self.config['sent']])
-        return response
-
-    @decorators.require_login
-    @decorators.RequireCaptcha
     def compose_message(self, recipient, subject, message, captcha=None):
         """
         Send a message to another redditor or a subreddit (mod mail).
@@ -670,6 +646,7 @@ class LoggedInExtension(BaseReddit):
         Depreciated. compose_message has been renamed to send_message and will
         be removed in a future version.
         """
+        # Remove around the end of 2012
         warn('compose_message has been renamed to send_message and will be '
              'removed in a future version. Please update.', DeprecationWarning)
         return self.send_message(recipient, subject, message, captcha)
@@ -733,6 +710,31 @@ class LoggedInExtension(BaseReddit):
         self.modhash = response['data']['modhash']
         self.user = self.get_redditor(user)
         self.user.__class__ = objects.LoggedInRedditor
+
+    @decorators.require_login
+    @decorators.RequireCaptcha
+    def send_message(self, recipient, subject, message, captcha=None):
+        """
+        Send a message to another redditor or a subreddit (mod mail).
+
+        When sending a message to a subreddit the recipient paramater must
+        either be a subreddit object or the subreddit name needs to be prefixed
+        with either '/r/' or '#'.
+        """
+        if isinstance(recipient, objects.Subreddit):
+            recipient = '/r/%s' % six.text_type(recipient)
+        else:
+            recipient = six.text_type(recipient)
+
+        params = {'text': message,
+                  'subject': subject,
+                  'to': recipient}
+        if captcha:
+            params.update(captcha)
+        response = self.request_json(self.config['compose'], params)
+        # pylint: disable-msg=E1101,W0212
+        helpers._request.evict([self.config['sent']])
+        return response
 
 
 class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904

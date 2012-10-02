@@ -18,8 +18,8 @@ This will display something similar to the following:
 ['10 :: Gun.io Debuts Group Funding for Open Source Projects\n Gun.io',
  '24 :: Support the Free Software Foundation',
  '67 :: The 10 Most Important Open Source Projects of 2011',
-  '2 :: Open-source webOS is dead on arrival ',
- '85 :: Plan 9 - A distributed OS with a unified communication protocol and I/O driver model.  Wow.']
+ '85 :: Plan 9 - A distributed OS with a unified communication protocol and I/O...',
+  '2 :: Open-source webOS is dead on arrival ']
 ```
 
 # Installation
