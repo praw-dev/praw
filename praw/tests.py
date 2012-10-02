@@ -98,7 +98,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_new(self):
         num = 50
-        result = self.r.get_new(limit=num, url_data={'sort':'new'})
+        result = self.r.get_new(limit=num, url_data={'sort': 'new'})
         self.assertEqual(num, len(list(result)))
 
     def test_get_popular_reddits(self):
@@ -120,7 +120,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(tmp in found_links)
 
     def test_info_by_self_url_raises_warning(self):
-        url = six_next(self.r.get_new(url_data={'sort':'new'})).permalink
+        url = six_next(self.r.get_new(url_data={'sort': 'new'})).permalink
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter('always')
             self.r.info(url)
@@ -174,7 +174,7 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_author_encoding(self):
         # pylint: disable-msg=E1101
-        a1 = six_next(self.r.get_new(url_data={'sort':'new'})).author
+        a1 = six_next(self.r.get_new(url_data={'sort': 'new'})).author
         a2 = self.r.get_redditor(text_type(a1))
         self.assertEqual(a1, a2)
         s1 = six_next(a1.get_submitted())
@@ -439,10 +439,10 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual([], list(self.subreddit.flair_list()))
 
         # Set flair
-        flair_mapping = [{'user':'reddit', 'flair_text':'dev'},
-                         {'user':'PyAPITestUser2', 'flair_css_class':'xx'},
-                         {'user':'PyAPITestUser3', 'flair_text':'AWESOME',
-                          'flair_css_class':'css'}]
+        flair_mapping = [{'user': 'reddit', 'flair_text': 'dev'},
+                         {'user': 'PyAPITestUser2', 'flair_css_class': 'xx'},
+                         {'user': 'PyAPITestUser3', 'flair_text': 'AWESOME',
+                          'flair_css_class': 'css'}]
         self.subreddit.set_flair_csv(flair_mapping)
         self.assertEqual([], flair_diff(flair_mapping,
                                         list(self.subreddit.flair_list())))
@@ -451,7 +451,7 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         users = ('reddit', 'pyapitestuser2', 'pyapitestuser3')
         flair_text_a = 'Flair: %s' % uuid.uuid4()
         flair_text_b = 'Flair: %s' % uuid.uuid4()
-        flair_mapping = [{'user':'reddit', 'flair_text': flair_text_a}] * 99
+        flair_mapping = [{'user': 'reddit', 'flair_text': flair_text_a}] * 99
         for user in users:
             flair_mapping.append({'user': user, 'flair_text': flair_text_b})
         self.subreddit.set_flair_csv(flair_mapping)
@@ -806,7 +806,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find submission in saved links.')
 
     def test_short_link(self):
-        submission = six_next(self.r.get_new(url_data={'sort':'new'}))
+        submission = six_next(self.r.get_new(url_data={'sort': 'new'}))
         if self.r.config.is_reddit:
             self.assertTrue(submission.id in submission.short_link)
         else:
