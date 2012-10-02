@@ -349,7 +349,8 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
     @property
     def is_root(self):
         """Indicate if the comment is a top level comment."""
-        return self.parent_id is None
+        return (self.parent_id is None or
+                self.parent_id == self.submission.content_id)
 
     @property
     def permalink(self):
@@ -400,7 +401,7 @@ class MoreComments(RedditContentObject):
         self._comments = None
 
     def __unicode__(self):
-        return ('[More Comments: %s]' % ','.join(self.children))
+        return '[More Comments: %d]' % self.count
 
     def _update_submission(self, submission):
         self.submission = submission

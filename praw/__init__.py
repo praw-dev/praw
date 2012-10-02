@@ -678,7 +678,7 @@ class LoggedInExtension(BaseReddit):
     def create_subreddit(self, name, title, description='', language='en',
                          subreddit_type='public', content_options='any',
                          over_18=False, default_set=True, show_media=False,
-                         domain=''):
+                         domain='', wikimode='disabled'):
         """Create a new subreddit."""
         params = {'name': name,
                   'title': title,
@@ -689,6 +689,7 @@ class LoggedInExtension(BaseReddit):
                   'over_18': 'on' if over_18 else 'off',
                   'allow_top': 'on' if default_set else 'off',
                   'show_media': 'on' if show_media else 'off',
+                  'wikimode': wikimode,
                   'domain': domain}
         return self.request_json(self.config['site_admin'], params)
 

@@ -37,10 +37,10 @@ USER_AGENT = 'PRAW_test_suite'
 def flair_diff(root, other):
     """Function for comparing two flairlists supporting optional arguments."""
     keys = ['user', 'flair_text', 'flair_css_class']
-    root_items = set(tuple(item[key] if key in item and item[key] else '' for
-                           key in keys) for item in root)
-    other_items = set(tuple(item[key] if key in item and item[key] else '' for
-                            key in keys) for item in other)
+    root_items = set(tuple(item[key].lower() if key in item and item[key] else
+                           '' for key in keys) for item in root)
+    other_items = set(tuple(item[key].lower() if key in item and item[key] else
+                            '' for key in keys) for item in other)
     return list(root_items - other_items)
 
 
@@ -49,6 +49,18 @@ class BasicHelper(object):
         self.r = Reddit(USER_AGENT)
         self.sr = 'reddit_api_test'
         self.un = 'PyApiTestUser2'
+        self.other_user_name = 'PyApiTestUser3'
+
+        if self.r.config.is_reddit:
+            self.comment_url = self.url('/r/programming/comments/bn2wi/')
+            self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
+            self.link_url_link = 'http://imgur.com/Vr8ZZ'
+            self.other_user_id = '6c1xj'
+        else:
+            self.comment_url = self.url('/r/reddit_test6/comments/y/')
+            self.link_url = self.url('/r/reddit_test6/comments/y/')
+            self.link_url_link = 'http://google.com/?q=29.9093488449'
+            self.other_user_id = 'pk'
 
     def url(self, path):
         # pylint: disable-msg=W0212
@@ -65,17 +77,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
 
-        if self.r.config.is_reddit:
-            self.self_url = self.url('/r/programming/comments/bn2wi/')
-        else:
-            self.self_url = self.url('/r/bboe/comments/2z/tasdest/')
-
     def test_comments_contains_no_noncomment_objects(self):
-        if self.r.config.is_reddit:
-            url = self.url('/r/programming/comments/bn2wi/')
-        else:
-            url = self.url('/r/reddit_test9/comments/1a/')
-        comments = self.r.get_submission(url=url).comments
+        comments = self.r.get_submission(url=self.comment_url).comments
         self.assertFalse([item for item in comments if not
                           (isinstance(item, Comment) or
                            isinstance(item, MoreComments))])
@@ -86,7 +89,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_controversial(self):
         num = 50
-        self.assertEqual(num, len(list(self.r.get_controversial(limit=num))))
+        result = self.r.get_controversial(limit=num, url_data={'t': 'all'})
+        self.assertEqual(num, len(list(result)))
 
     def test_get_front_page(self):
         num = 50
@@ -94,7 +98,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_new(self):
         num = 50
-        self.assertEqual(num, len(list(self.r.get_new(limit=num))))
+        result = self.r.get_new(limit=num, url_data={'sort':'new'})
+        self.assertEqual(num, len(list(result)))
 
     def test_get_popular_reddits(self):
         num = 50
@@ -102,38 +107,30 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_top(self):
         num = 50
-        self.assertEqual(num, len(list(self.r.get_top(limit=num))))
+        result = self.r.get_top(limit=num, url_data={'t': 'all'})
+        self.assertEqual(num, len(list(result)))
 
     def test_flair_list(self):
         sub = self.r.get_subreddit('python')
         self.assertTrue(six_next(sub.flair_list()))
 
     def test_info_by_known_url_returns_known_id_link_post(self):
-        if self.r.config.is_reddit:
-            url = 'http://imgur.com/Vr8ZZ'
-            comm = self.url('/r/UCSantaBarbara/comments/m77nc/')
-        else:
-            url = 'http://google.com/?q=82.1753988563'
-            comm = self.url('/r/reddit_test8/comments/2s/')
-        found_links = self.r.info(url)
-        tmp = self.r.get_submission(url=comm)
+        found_links = self.r.info(self.link_url_link)
+        tmp = self.r.get_submission(url=self.link_url)
         self.assertTrue(tmp in found_links)
 
     def test_info_by_self_url_raises_warning(self):
+        url = six_next(self.r.get_new(url_data={'sort':'new'})).permalink
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter('always')
-            self.r.info(self.self_url)
+            self.r.info(url)
             self.assertEqual(len(w), 1)
             self.assertEqual(w[0].category, UserWarning)
             self.assertTrue('self' in text_type(w[0].message))
 
     def test_info_by_url_also_found_by_id(self):
-        if self.r.config.is_reddit:
-            url = 'http://imgur.com/Vr8ZZ'
-        else:
-            url = 'http://google.com/?q=82.1753988563'
         # pylint: disable-msg=E1101
-        found_link = six_next(self.r.info(url))
+        found_link = six_next(self.r.info(self.link_url_link))
         found_by_id = self.r.info(thing_id=found_link.content_id)
         self.assertTrue(found_by_id)
         self.assertTrue(found_link in found_by_id)
@@ -177,7 +174,7 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_author_encoding(self):
         # pylint: disable-msg=E1101
-        a1 = six_next(self.r.get_new()).author
+        a1 = six_next(self.r.get_new(url_data={'sort':'new'})).author
         a2 = self.r.get_redditor(text_type(a1))
         self.assertEqual(a1, a2)
         s1 = six_next(a1.get_submitted())
@@ -203,11 +200,8 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
 class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
-        if self.r.config.is_reddit:
-            url = self.url('/r/photography/comments/pozpi/')
-        else:
-            url = self.url('/r/reddit_test9/comments/1a/')
-        self.submission = self.r.get_submission(url=url)
+        self.r.config.comment_limit = 5
+        self.submission = self.r.get_submission(url=self.comment_url)
 
     def test_all_comments(self):
         c_len = len(self.submission.comments)
@@ -223,11 +217,7 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
 class CommentAttributeTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
-        if self.r.config.is_reddit:
-            url = self.url('/r/reddit_api_test/comments/qfk25/')
-        else:
-            url = self.url('/r/reddit_api_test/comments/ao/')
-        self.submission = self.r.get_submission(url=url)
+        self.submission = self.r.get_submission(url=self.comment_url)
 
     def test_all_comments(self):
         self.assertTrue(len(self.submission.all_comments))
@@ -416,7 +406,7 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(sub.link_flair_text, flair_text)
 
     def test_add_link_flair_to_invalid_subreddit(self):
-        sub = six_next(self.r.get_subreddit('bboe').get_new_by_date())
+        sub = six_next(self.r.get_subreddit('python').get_new_by_date())
         self.assertRaises(HTTPError, self.subreddit.set_flair, sub, 'text')
 
     def test_add_user_flair_by_subreddit_name(self):
@@ -449,7 +439,7 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual([], list(self.subreddit.flair_list()))
 
         # Set flair
-        flair_mapping = [{'user':'bboe', 'flair_text':'dev'},
+        flair_mapping = [{'user':'reddit', 'flair_text':'dev'},
                          {'user':'PyAPITestUser2', 'flair_css_class':'xx'},
                          {'user':'PyAPITestUser3', 'flair_text':'AWESOME',
                           'flair_css_class':'css'}]
@@ -458,10 +448,10 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
                                         list(self.subreddit.flair_list())))
 
     def test_flair_csv_many(self):
-        users = ('bboe', 'pyapitestuser2', 'pyapitestuser3')
+        users = ('reddit', 'pyapitestuser2', 'pyapitestuser3')
         flair_text_a = 'Flair: %s' % uuid.uuid4()
         flair_text_b = 'Flair: %s' % uuid.uuid4()
-        flair_mapping = [{'user':'bboe', 'flair_text': flair_text_a}] * 99
+        flair_mapping = [{'user':'reddit', 'flair_text': flair_text_a}] * 99
         for user in users:
             flair_mapping.append({'user': user, 'flair_text': flair_text_b})
         self.subreddit.set_flair_csv(flair_mapping)
@@ -470,7 +460,7 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
             self.assertEqual(flair['flair_text'], flair_text_b)
 
     def test_flair_csv_optional_args(self):
-        flair_mapping = [{'user': 'bboe', 'flair_text': 'bboe'},
+        flair_mapping = [{'user': 'reddit', 'flair_text': 'reddit'},
                          {'user': 'pyapitestuser3', 'flair_css_class': 'blah'}]
         self.subreddit.set_flair_csv(flair_mapping)
 
@@ -686,11 +676,7 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
 class RedditorTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
-        if self.r.config.is_reddit:
-            self.other = {'id': '6c1xj', 'name': 'PyApiTestUser3'}
-        else:
-            self.other = {'id': 'pa', 'name': 'PyApiTestUser3'}
-        self.other_user = self.r.get_redditor(self.other['name'])
+        self.other_user = self.r.get_redditor(self.other_user_name)
 
     def test_disliked(self):
         # Pulls from get_liked. Problem here may come from get_liked
@@ -699,7 +685,7 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(item in self.r.user.get_disliked())
 
     def test_get_redditor(self):
-        self.assertEqual(self.other['id'], self.other_user.id)
+        self.assertEqual(self.other_user_id, self.other_user.id)
 
     def test_friend(self):
         self.other_user.friend()
@@ -820,7 +806,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find submission in saved links.')
 
     def test_short_link(self):
-        submission = six_next(self.r.get_new())
+        submission = six_next(self.r.get_new(url_data={'sort':'new'}))
         if self.r.config.is_reddit:
             self.assertTrue(submission.id in submission.short_link)
         else:
