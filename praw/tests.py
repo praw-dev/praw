@@ -21,6 +21,7 @@
 from __future__ import unicode_literals
 
 import random
+import time
 import unittest
 import uuid
 import warnings
@@ -52,15 +53,23 @@ class BasicHelper(object):
         self.other_user_name = 'PyApiTestUser3'
 
         if self.r.config.is_reddit:
-            self.comment_url = self.url('/r/programming/comments/bn2wi/')
+            self.comment_url = self.url('r/redditdev/comments/dtg4j/')
             self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
             self.link_url_link = 'http://imgur.com/Vr8ZZ'
+            self.more_comments_url = self.url('/r/redditdev/comments/dqkfz/')
             self.other_user_id = '6c1xj'
         else:
             self.comment_url = self.url('/r/reddit_test6/comments/y/')
             self.link_url = self.url('/r/reddit_test6/comments/y/')
             self.link_url_link = 'http://google.com/?q=29.9093488449'
+            self.more_comments_url = self.url('/r/reddit_test6/comments/y/')
             self.other_user_id = 'pk'
+
+    def delay(self, amount=None):
+        if amount:
+            time.sleep(amount)
+        elif self.r.config.api_request_delay == 0:
+            time.sleep(0.1)
 
     def disable_cache(self):
         self.r.config.cache_timeout = 0
@@ -187,12 +196,12 @@ class RefreshableTest(unittest.TestCase, AuthenticatedHelper):
         subreddit = self.r.get_subreddit(self.sr)
         title = 'Test Cache: %s' % uuid.uuid4()
         body = "BODY"
-        original_listing = list(subreddit.get_new(limit=5))
+        original_listing = list(subreddit.get_new_by_date(limit=5))
         subreddit.submit(title, body)
-        new_listing = list(subreddit.get_new(limit=5))
+        new_listing = list(subreddit.get_new_by_date(limit=5))
         self.assertEqual(original_listing, new_listing)
         self.disable_cache()
-        no_cache_listing = list(subreddit.get_new(limit=5))
+        no_cache_listing = list(subreddit.get_new_by_date(limit=5))
         self.assertNotEqual(original_listing, no_cache_listing)
 
     def test_refresh_subreddit(self):
@@ -221,10 +230,10 @@ class RefreshableTest(unittest.TestCase, AuthenticatedHelper):
         subreddit = self.r.get_subreddit(self.sr)
         title = 'Test User Sharing Of Cache: %s' % uuid.uuid4()
         body = "BODY"
-        original_listing = list(subreddit.get_new(limit=5))
+        original_listing = list(subreddit.get_new_by_date(limit=5))
         subreddit.submit(title, body)
         self.r.login('PyApiTestUser2', '1111')
-        new_user_listing = list(subreddit.get_new(limit=5))
+        new_user_listing = list(subreddit.get_new_by_date(limit=5))
         self.assertEqual(original_listing, new_user_listing)
 
 
@@ -260,8 +269,8 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
 class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
-        self.r.config.comment_limit = 5
-        self.submission = self.r.get_submission(url=self.comment_url)
+        self.r.config.comment_limit = 10
+        self.submission = self.r.get_submission(url=self.more_comments_url)
 
     def test_all_comments(self):
         c_len = len(self.submission.comments)
@@ -271,7 +280,10 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
 
         # pylint: disable-msg=W0212
         self.assertEqual(len(self.submission._comments_by_id), acf_len)
-        self.assertTrue(c_len <= ac_len < cf_len < acf_len)
+        self.assertTrue(c_len < ac_len)
+        self.assertTrue(c_len < cf_len)
+        self.assertTrue(ac_len < acf_len)
+        self.assertTrue(cf_len < acf_len)
 
 
 class CommentAttributeTest(unittest.TestCase, BasicHelper):
@@ -496,6 +508,7 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
     def test_flair_csv_and_flair_list(self):
         # Clear all flair
         self.subreddit.clear_all_flair()
+        self.delay(5)  # Wait for flair to clear
         self.assertEqual([], list(self.subreddit.flair_list()))
 
         # Set flair
@@ -742,7 +755,8 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         # Pulls from get_liked. Problem here may come from get_liked
         item = six_next(self.r.user.get_liked())
         item.downvote()
-        self.assertTrue(item in self.r.user.get_disliked())
+        self.delay()  # The queue needs to be processed
+        self.assertFalse(item in list(self.r.user.get_liked()))
 
     def test_get_redditor(self):
         self.assertEqual(self.other_user_id, self.other_user.id)
@@ -754,7 +768,8 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         # Pulls from get_disliked. Problem here may come from get_disliked
         item = six_next(self.r.user.get_disliked())
         item.upvote()
-        self.assertTrue(item in self.r.user.get_liked())
+        self.delay()  # The queue needs to be processed
+        self.assertFalse(item in list(self.r.user.get_disliked()))
 
     def test_unfriend(self):
         self.other_user.unfriend()
