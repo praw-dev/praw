@@ -60,8 +60,8 @@ class Memoize(object):
 
     def evict(self, urls):
         """Remove cached RedditContentObject by URL."""
-        relevant_caches = [k for k in self._cache
-                           if k[1].rstrip('.json') in urls]
+        relevant_caches = [key for key in self._cache
+                           if key[1].rpartition('.json')[0] in urls]
         for key in relevant_caches:
             del self._cache[key]
             del self._timeouts[key]
