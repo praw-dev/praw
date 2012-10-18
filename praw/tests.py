@@ -155,6 +155,11 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(found_by_id)
         self.assertTrue(found_link in found_by_id)
 
+    def test_is_username_available(self):
+        self.assertFalse(self.r.is_username_available('_Daimon_'))
+        self.assertTrue(self.r.is_username_available('_Daimon__'))
+        self.assertFalse(self.r.is_username_available(''))
+
     def test_not_logged_in_submit(self):
         self.assertRaises(errors.LoginRequired, self.r.submit,
                           self.sr, 'TITLE', text='BODY')
