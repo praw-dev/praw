@@ -186,6 +186,25 @@ class Editable(RedditContentObject):
         return response['data']['things'][0]
 
 
+class Hideable(RedditContentObject):
+    """Interface for objects that can be hidden."""
+    @require_login
+    def hide(self, unhide=False):
+        """Hide object in the context of the logged in user."""
+        url = self.reddit_session.config['unhide' if unhide else 'hide']
+        params = {'id': self.content_id,
+                  'executed': 'unhide' if unhide else 'hide'}
+        response = self.reddit_session.request_json(url, params)
+        # pylint: disable-msg=W0212
+        urls = [urljoin(self.reddit_session.user._url, 'hidden')]
+        _request.evict(urls)
+        return response
+
+    def unhide(self):
+        """Unhide object in the context of the logged in user."""
+        return self.hide(unhide=True)
+
+
 class Inboxable(RedditContentObject):
     """Interface for Reddit content objects that appear in the Inbox."""
     def mark_as_read(self):
@@ -534,8 +553,8 @@ class LoggedInRedditor(Redditor):
         return self.reddit_session.get_content(url, limit=limit)
 
 
-class Submission(Approvable, Deletable, Distinguishable, Editable, NSFWable,
-                 Refreshable, Reportable, Saveable, Voteable):
+class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
+                 NSFWable, Refreshable, Reportable, Saveable, Voteable):
     """A class for submissions to reddit."""
     @staticmethod
     def get_info(reddit_session, url, comments_only=False):
