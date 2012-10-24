@@ -179,17 +179,34 @@ class Config(object):  # pylint: disable-msg=R0903
         else:
             raise errors.ClientException('No short domain specified.')
 
-    def get_authorize_url(self, scope, state, redirect_uri):
+    def get_authorize_url(self, scope, state, redirect_uri, refreshable=False):
         """Return the URL to send the user to for OAuth 2 authorization."""
+        duration = "permanent" if refreshable else "temporary"
         return self.oauth.get_authorize_url(response_type='code',
                                             scope=scope,
                                             state=state,
-                                            redirect_uri=redirect_uri)
+                                            redirect_uri=redirect_uri,
+                                            duration=duration)
 
-    def get_access_token(self, code, redirect_uri):
+    def get_access_token(self, code, redirect_uri, refreshable=False):
         """Fetch the access token for an OAuth 2 authorization grant."""
         data = dict(grant_type='authorization_code',
                     code=code,
+                    redirect_uri=redirect_uri)
+        response = self.oauth.get_access_token(
+            auth=(self.oauth_client_id, self.oauth_client_secret), data=data)
+        if refreshable:
+            return (response.content['access_token'],
+                    response.content['refresh_token'])
+        else:
+            return response.content['access_token']
+
+    def refresh_access_token(self, refresh_token, redirect_uri):
+        """
+        Refresh the access token of a refreshable OAuth 2 authorization grant.
+        """
+        data = dict(grant_type='refresh_token',
+                    refresh_token=refresh_token,
                     redirect_uri=redirect_uri)
         response = self.oauth.get_access_token(
             auth=(self.oauth_client_id, self.oauth_client_secret), data=data)
@@ -201,7 +218,8 @@ class BaseReddit(object):
     DEFAULT_HEADERS = {}
     RETRY_CODES = [502, 503, 504]
 
-    def __init__(self, user_agent, site_name=None, access_token=None):
+    def __init__(self, user_agent, site_name=None, access_token=None,
+                 refresh_token=None):
         """
         Initialize our connection with a reddit.
 
@@ -219,12 +237,15 @@ class BaseReddit(object):
         is not found there, the default site name reddit matching reddit.com
         will be used.
 
-        If access_token is given, then all requests will use OAuth 2.0.
+        If access_token is given, then all requests will use OAuth 2.0. If
+        refresh_token is given, then the refresh_access_token method can be
+        used to update the access token.
         """
         if not user_agent or not isinstance(user_agent, six.string_types):
             raise TypeError('User agent must be a non-empty string.')
 
         self.access_token = access_token
+        self.refresh_token = refresh_token
 
         self.DEFAULT_HEADERS['User-agent'] = UA_STRING % user_agent
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit',
@@ -372,13 +393,27 @@ class BaseReddit(object):
             self.modhash = data['data']['modhash']
         return data
 
-    def get_authorize_url(self, scope, state, redirect_uri):
+    def get_authorize_url(self, scope, state, redirect_uri, refreshable=False):
         """Return the URL to send the user to for OAuth 2 authorization."""
-        return self.config.get_authorize_url(scope, state, redirect_uri)
+        return self.config.get_authorize_url(scope, state, redirect_uri,
+                                             refreshable=refreshable)
 
-    def get_access_token(self, code, redirect_uri):
+    def get_access_token(self, code, redirect_uri, refreshable=False):
         """Fetch the access token for an OAuth 2 authorization grant."""
-        return self.config.get_access_token(code, redirect_uri)
+        result = self.config.get_access_token(code, redirect_uri,
+                                              refreshable=refreshable)
+        if refreshable:
+            self.access_token, self.refresh_token = result
+        else:
+            self.access_token = result
+        return result
+
+    def refresh_access_token(self, redirect_uri):
+        """
+        Refresh the access token of a refreshable OAuth 2 authorization grant.
+        """
+        self.access_token = self.config.refresh_access_token(
+            self.refresh_token, redirect_uri)
 
 
 class SubredditExtension(BaseReddit):
