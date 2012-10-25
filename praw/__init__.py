@@ -159,7 +159,7 @@ class Config(object):  # pylint: disable-msg=R0903
         self.is_reddit = obj['domain'] == 'www.reddit.com'
 
     def __getitem__(self, key):
-        """Return the URL for key"""
+        """Return the URL for key."""
         if self.access_token and self._oauth_url:
             return urljoin(self._oauth_url, self.API_PATHS[key])
         if self._ssl_url and key in self.SSL_PATHS:
