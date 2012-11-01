@@ -27,7 +27,7 @@ from praw.compat import (HTTPCookieProcessor,  # pylint: disable-msg=E0611
                          urljoin)
 from praw.settings import CONFIG
 
-__version__ = '1.0.13'
+__version__ = '1.0.14'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -56,7 +56,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'help':                'help/',
                  'inbox':               'message/inbox/',
                  'info':                'button_info/',
-                 'login':               'api/login/%s/',
+                 'login':               'api/login/',
                  'moderator':           'message/moderator/',
                  'moderators':          'r/%s/about/moderators/',
                  'modqueue':            'r/%s/about/modqueue/',
@@ -706,7 +706,7 @@ class LoggedInExtension(BaseReddit):
 
         params = {'passwd': pswd,
                   'user': user}
-        response = self.request_json(self.config['login'] % user, params)
+        response = self.request_json(self.config['login'], params)
         self.modhash = response['data']['modhash']
         self.user = self.get_redditor(user)
         self.user.__class__ = objects.LoggedInRedditor

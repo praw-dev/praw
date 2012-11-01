@@ -35,6 +35,7 @@ class CompatImporter(object):
         try:
             package = __import__('six.moves', fromlist=[module])
             mod = getattr(package, module)
+            sys.modules[fullname] = mod
             return mod
         except ImportError:
             raise ImportError('No module named {0}'.format(fullname))
