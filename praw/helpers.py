@@ -89,8 +89,27 @@ def _request(reddit_session, page_url, params=None, url_data=None, timeout=45):
             params.setdefault('uh', reddit_session.modhash)
         params = dict([k, v.encode('utf-8')] for k, v in six.iteritems(params))
         encoded_params = urlencode(params).encode('utf-8')
-    request = Request(page_url, data=encoded_params,
-                      headers=reddit_session.DEFAULT_HEADERS)
+
+    if reddit_session.access_token:
+        headers = {"Authorization": "bearer %s" % reddit_session.access_token}
+        headers.update(reddit_session.DEFAULT_HEADERS)
+
+        # Requests using OAuth for authorization must switch to using the oauth
+        # domain.
+        for prefix in (reddit_session.config._site_url,
+                       reddit_session.config._ssl_url):
+            if page_url.startswith(prefix):
+                if reddit_session.config.log_requests >= 1:
+                    sys.stderr.write(
+                        'substituting %s for %s in url\n'
+                        % (reddit_session.config._oauth_url, prefix))
+                page_url = (
+                    reddit_session.config._oauth_url + page_url[len(prefix):])
+                break
+    else:
+        headers = reddit_session.DEFAULT_HEADERS
+
+    request = Request(page_url, data=encoded_params, headers=headers)
 
     if reddit_session.config.log_requests >= 1:
         sys.stderr.write('retrieving: %s\n' % page_url)

@@ -40,6 +40,6 @@ setup(
     keywords='reddit api wrapper',
     packages=[PACKAGE_NAME],
     package_data={'': ['COPYING'], PACKAGE_NAME: ['*.ini']},
-    install_requires=['six'],
+    install_requires=['rauth', 'six'],
     test_suite='praw',
     )

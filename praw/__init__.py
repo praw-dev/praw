@@ -19,6 +19,7 @@ import os
 import platform
 import six
 import sys
+import uuid
 from warnings import warn, warn_explicit
 
 from praw import decorators, errors, helpers, objects
@@ -27,7 +28,10 @@ from praw.compat import (HTTPCookieProcessor,  # pylint: disable-msg=E0611
                          urljoin)
 from praw.settings import CONFIG
 
+from rauth.service import OAuth2Service
+
 __version__ = '1.0.14'
+
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -57,6 +61,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'inbox':               'message/inbox/',
                  'info':                'button_info/',
                  'login':               'api/login/',
+                 'me':                  'api/v1/me',
                  'moderator':           'message/moderator/',
                  'moderators':          'r/%s/about/moderators/',
                  'modqueue':            'r/%s/about/modqueue/',
@@ -106,6 +111,10 @@ class Config(object):  # pylint: disable-msg=R0903
             self._ssl_url = 'https://' + obj['ssl_domain']
         else:
             self._ssl_url = None
+        if 'oauth_domain' in obj:
+            self._oauth_url = 'https://' + obj['oauth_domain']
+        else:
+            self._oauth_url = self._ssl_url
         self.api_request_delay = float(obj['api_request_delay'])
         self.by_kind = {obj['comment_kind']:    objects.Comment,
                         obj['message_kind']:    objects.Message,
@@ -126,6 +135,15 @@ class Config(object):  # pylint: disable-msg=R0903
         self.more_comments_max = int(obj['more_comments_max'])
         self.log_requests = int(obj['log_requests'])
         self.regular_comments_max = int(obj['regular_comments_max'])
+
+        self.oauth_client_id = obj.get('oauth_client_id')
+        self.oauth_client_secret = obj.get('oauth_client_secret')
+        self.oauth = OAuth2Service(
+            name='reddit',
+            consumer_key=self.oauth_client_id,
+            consumer_secret=self.oauth_client_secret,
+            access_token_url='%s/api/v1/access_token' % self._ssl_url,
+            authorize_url='%s/api/v1/authorize' % self._ssl_url)
 
         if 'short_domain' in obj:
             self._short_domain = 'http://' + obj['short_domain']
@@ -158,13 +176,47 @@ class Config(object):  # pylint: disable-msg=R0903
         else:
             raise errors.ClientException('No short domain specified.')
 
+    def get_authorize_url(self, scope, state, redirect_uri, refreshable=False):
+        """Return the URL to send the user to for OAuth 2 authorization."""
+        duration = "permanent" if refreshable else "temporary"
+        return self.oauth.get_authorize_url(response_type='code',
+                                            scope=scope,
+                                            state=state,
+                                            redirect_uri=redirect_uri,
+                                            duration=duration)
+
+    def get_access_token(self, code, redirect_uri, refreshable=False):
+        """Fetch the access token for an OAuth 2 authorization grant."""
+        data = dict(grant_type='authorization_code',
+                    code=code,
+                    redirect_uri=redirect_uri)
+        response = self.oauth.get_access_token(
+            auth=(self.oauth_client_id, self.oauth_client_secret), data=data)
+        if refreshable:
+            return (response.content['access_token'],
+                    response.content['refresh_token'])
+        else:
+            return response.content['access_token']
+
+    def refresh_access_token(self, refresh_token, redirect_uri):
+        """
+        Refresh the access token of a refreshable OAuth 2 authorization grant.
+        """
+        data = dict(grant_type='refresh_token',
+                    refresh_token=refresh_token,
+                    redirect_uri=redirect_uri)
+        response = self.oauth.get_access_token(
+            auth=(self.oauth_client_id, self.oauth_client_secret), data=data)
+        return response.content['access_token']
+
 
 class BaseReddit(object):
     """The base class for a reddit session."""
     DEFAULT_HEADERS = {}
     RETRY_CODES = [502, 503, 504]
 
-    def __init__(self, user_agent, site_name=None):
+    def __init__(self, user_agent, site_name=None, access_token=None,
+                 refresh_token=None):
         """
         Initialize our connection with a reddit.
 
@@ -181,9 +233,16 @@ class BaseReddit(object):
         name will be looked for in the environment variable REDDIT_SITE. If it
         is not found there, the default site name reddit matching reddit.com
         will be used.
+
+        If access_token is given, then all requests will use OAuth 2.0. If
+        refresh_token is given, then the refresh_access_token method can be
+        used to update the access token.
         """
         if not user_agent or not isinstance(user_agent, six.string_types):
             raise TypeError('User agent must be a non-empty string.')
+
+        self.access_token = access_token
+        self.refresh_token = refresh_token
 
         self.DEFAULT_HEADERS['User-agent'] = UA_STRING % user_agent
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
@@ -329,6 +388,28 @@ class BaseReddit(object):
         if self.user and 'data' in data and 'modhash' in data['data']:
             self.modhash = data['data']['modhash']
         return data
+
+    def get_authorize_url(self, scope, state, redirect_uri, refreshable=False):
+        """Return the URL to send the user to for OAuth 2 authorization."""
+        return self.config.get_authorize_url(scope, state, redirect_uri,
+                                             refreshable=refreshable)
+
+    def get_access_token(self, code, redirect_uri, refreshable=False):
+        """Fetch the access token for an OAuth 2 authorization grant."""
+        result = self.config.get_access_token(code, redirect_uri,
+                                              refreshable=refreshable)
+        if refreshable:
+            self.access_token, self.refresh_token = result
+        else:
+            self.access_token = result
+        return result
+
+    def refresh_access_token(self, redirect_uri):
+        """
+        Refresh the access token of a refreshable OAuth 2 authorization grant.
+        """
+        self.access_token = self.config.refresh_access_token(
+            self.refresh_token, redirect_uri)
 
 
 class SubredditExtension(BaseReddit):
@@ -689,7 +770,16 @@ class LoggedInExtension(BaseReddit):
         if they both are empty get it with getpass. Add the variables user
         (username) and pswd (password) to your praw.ini file to allow for auto-
         login.
+
+        If an OAuth2 access token is configured, arguments will be ignored and
+        user details will be fetched from the site.
         """
+        if self.access_token:
+            response = self.request_json(self.config['me'])
+            self.user = objects.Redditor(self, response['name'], response)
+            self.user.__class__ = objects.LoggedInRedditor
+            return
+
         if password and not username:
             raise Exception('Username must be provided when password is.')
         user = username or self.config.user
