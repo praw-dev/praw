@@ -104,9 +104,8 @@ class Config(object):  # pylint: disable-msg=R0903
                  'vote':                'api/vote/'}
     SSL_PATHS = ('login', )
 
-    def __init__(self, site_name, access_token):
+    def __init__(self, site_name):
         obj = dict(CONFIG.items(site_name))
-        self.access_token = access_token
         self._site_url = 'http://' + obj['domain']
         if 'ssl_domain' in obj:
             self._ssl_url = 'https://' + obj['ssl_domain']
@@ -160,8 +159,6 @@ class Config(object):  # pylint: disable-msg=R0903
 
     def __getitem__(self, key):
         """Return the URL for key."""
-        if self.access_token and self._oauth_url:
-            return urljoin(self._oauth_url, self.API_PATHS[key])
         if self._ssl_url and key in self.SSL_PATHS:
             return urljoin(self._ssl_url, self.API_PATHS[key])
         return urljoin(self._site_url, self.API_PATHS[key])
@@ -248,8 +245,7 @@ class BaseReddit(object):
         self.refresh_token = refresh_token
 
         self.DEFAULT_HEADERS['User-agent'] = UA_STRING % user_agent
-        self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit',
-                             access_token)
+        self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
 
         _cookie_jar = http_cookiejar.CookieJar()
         self._opener = build_opener(HTTPCookieProcessor(_cookie_jar))

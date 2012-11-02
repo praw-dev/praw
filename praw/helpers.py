@@ -93,6 +93,19 @@ def _request(reddit_session, page_url, params=None, url_data=None, timeout=45):
     if reddit_session.access_token:
         headers = {"Authorization": "bearer %s" % reddit_session.access_token}
         headers.update(reddit_session.DEFAULT_HEADERS)
+
+        # Requests using OAuth for authorization must switch to using the oauth
+        # domain.
+        for prefix in (reddit_session.config._site_url,
+                       reddit_session.config._ssl_url):
+            if page_url.startswith(prefix):
+                if reddit_session.config.log_requests >= 1:
+                    sys.stderr.write(
+                        'substituting %s for %s in url\n'
+                        % (reddit_session.config._oauth_url, prefix))
+                page_url = (
+                    reddit_session.config._oauth_url + page_url[len(prefix):])
+                break
     else:
         headers = reddit_session.DEFAULT_HEADERS
 
