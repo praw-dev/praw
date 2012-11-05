@@ -54,6 +54,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'flairtemplate':       'api/flairtemplate/',
                  'friend':              'api/friend/',
                  'help':                'help/',
+                 'hide':                'api/hide/',
                  'inbox':               'message/inbox/',
                  'info':                'button_info/',
                  'login':               'api/login/',
@@ -90,12 +91,14 @@ class Config(object):  # pylint: disable-msg=R0903
                  'top':                 'top/',
                  'undistinguish':       'api/distinguish/no/',
                  'unfriend':            'api/unfriend/',
+                 'unhide':              'api/unhide/',
                  'unmarknsfw':          'api/unmarknsfw/',
                  'unread':              'message/unread/',
                  'unread_message':      'api/unread_message/',
                  'unsave':              'api/unsave/',
                  'user':                'user/%s/',
                  'user_about':          'user/%s/about/',
+                 'username_available':  'api/username_available/',
                  'vote':                'api/vote/'}
     SSL_PATHS = ('login', )
 
@@ -816,6 +819,19 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
             url_data = {'id': thing_id}
         return self.get_content(self.config['info'], url_data=url_data,
                                 limit=limit)
+
+    def is_username_available(self, username):
+        """Return True if username is valid and available, otherwise False."""
+        url_data = {'user': username}
+        try:
+            result = self.request_json(self.config['username_available'],
+                                       url_data=url_data)
+        except errors.APIException as e:
+            if e.error_type == 'BAD_USERNAME':
+                result = False
+            else:
+                raise
+        return result
 
     def search(self, query, subreddit=None, sort=None, limit=0, *args,
                **kwargs):

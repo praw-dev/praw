@@ -155,6 +155,11 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(found_by_id)
         self.assertTrue(found_link in found_by_id)
 
+    def test_is_username_available(self):
+        self.assertFalse(self.r.is_username_available('_Daimon_'))
+        self.assertTrue(self.r.is_username_available('_Daimon__'))
+        self.assertFalse(self.r.is_username_available(''))
+
     def test_not_logged_in_submit(self):
         self.assertRaises(errors.LoginRequired, self.r.submit,
                           self.sr, 'TITLE', text='BODY')
@@ -188,7 +193,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
             self.fail('Timeout did not raise the proper exception.')
 
 
-class RefreshableTest(unittest.TestCase, AuthenticatedHelper):
+class CacheTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
@@ -751,25 +756,31 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
         self.other_user = self.r.get_redditor(self.other_user_name)
 
-    def test_disliked(self):
+    def test_friend(self):
+        self.other_user.friend()
+
+    def test_get_disliked(self):
         # Pulls from get_liked. Problem here may come from get_liked
         item = six_next(self.r.user.get_liked())
         item.downvote()
         self.delay()  # The queue needs to be processed
         self.assertFalse(item in list(self.r.user.get_liked()))
 
-    def test_get_redditor(self):
-        self.assertEqual(self.other_user_id, self.other_user.id)
+    def test_get_hidden(self):
+        item = six_next(self.r.user.get_hidden())
+        item.unhide()
+        self.delay()  # The queue needs to be processed
+        self.assertFalse(item in list(self.r.user.get_hidden()))
 
-    def test_friend(self):
-        self.other_user.friend()
-
-    def test_liked(self):
+    def test_get_liked(self):
         # Pulls from get_disliked. Problem here may come from get_disliked
         item = six_next(self.r.user.get_disliked())
         item.upvote()
         self.delay()  # The queue needs to be processed
         self.assertFalse(item in list(self.r.user.get_disliked()))
+
+    def test_get_redditor(self):
+        self.assertEqual(self.other_user_id, self.other_user.id)
 
     def test_unfriend(self):
         self.other_user.unfriend()
@@ -812,6 +823,19 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, False)
+
+    def test_hide(self):
+        self.disable_cache()
+        found = None
+        for item in self.r.user.get_submitted():
+            if not item.hidden:
+                found = item
+                break
+        else:
+            self.fail("Couldn't find a unhidden submission")
+        found.hide()
+        found.refresh()
+        self.assertTrue(found.hidden)
 
     def test_report(self):
         # login as new user to report submission
@@ -857,6 +881,19 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.assertRaises(errors.ClientException, getattr, submission,
                               'short_link')
+
+    def test_unhide(self):
+        self.disable_cache()
+        found = None
+        for item in self.r.user.get_submitted():
+            if item.hidden:
+                found = item
+                break
+        else:
+            self.fail("Couldn't find a hidden submission")
+        found.unhide()
+        found.refresh()
+        self.assertFalse(found.hidden)
 
     def test_unsave(self):
         submission = None
