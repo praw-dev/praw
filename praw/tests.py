@@ -47,7 +47,7 @@ def flair_diff(root, other):
 
 class BasicHelper(object):
     def configure(self):
-        self.r = Reddit(USER_AGENT)
+        self.r = Reddit(USER_AGENT, disable_update_check=True)
         self.sr = 'reddit_api_test'
         self.un = 'PyApiTestUser2'
         self.other_user_name = 'PyApiTestUser3'
@@ -615,7 +615,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
             self.assertEqual(warning[0].category, DeprecationWarning)
 
     def test_mark_as_read(self):
-        oth = Reddit(USER_AGENT)
+        oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyApiTestUser3', '1111')
         # pylint: disable-msg=E1101
         msg = six_next(oth.user.get_unread(limit=1))
@@ -623,7 +623,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(msg not in oth.user.get_unread(limit=5))
 
     def test_mark_as_unread(self):
-        oth = Reddit(USER_AGENT)
+        oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyApiTestUser3', '1111')
         found = None
         for msg in oth.user.get_inbox():
@@ -636,7 +636,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(found in oth.user.get_unread())
 
     def test_mark_multiple_as_read(self):
-        oth = Reddit(USER_AGENT)
+        oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyApiTestUser3', '1111')
         messages = []
         for msg in oth.user.get_unread(limit=None):
@@ -832,7 +832,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_report(self):
         # login as new user to report submission
-        oth = Reddit(USER_AGENT)
+        oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyApiTestUser3', '1111')
         subreddit = oth.get_subreddit(self.sr)
         submission = None
@@ -1017,7 +1017,7 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(len(mod_submissions) > 0)
 
     def test_moderator_required(self):
-        oth = Reddit(USER_AGENT)
+        oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyApiTestUser3', '1111')
         self.assertRaises(errors.ModeratorRequired, oth.get_settings, self.sr)
 

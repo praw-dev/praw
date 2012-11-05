@@ -21,6 +21,7 @@ import requests
 import six
 import sys
 from requests.compat import urljoin
+from update_checker import update_check
 from warnings import warn, warn_explicit
 
 from praw import decorators, errors, helpers, objects
@@ -120,6 +121,11 @@ class Config(object):  # pylint: disable-msg=R0903
                               six.iteritems(self.by_kind))
         self.by_object[objects.LoggedInRedditor] = obj['redditor_kind']
         self.cache_timeout = float(obj['cache_timeout'])
+        if obj['check_for_updates'] \
+                and obj['check_for_updates'].lower() == 'true':
+            self.check_for_updates = True
+        else:
+            self.check_for_updates = False
         self.comment_limit = int(obj['comment_limit'])
         self.comment_sort = obj['comment_sort']
         self.default_content_limit = int(obj['default_content_limit'])
@@ -165,8 +171,9 @@ class BaseReddit(object):
     """The base class for a reddit session."""
     DEFAULT_HEADERS = {}
     RETRY_CODES = [502, 503, 504]
+    update_checked = False
 
-    def __init__(self, user_agent, site_name=None):
+    def __init__(self, user_agent, site_name=None, disable_update_check=False):
         """
         Initialize our connection with a reddit.
 
@@ -183,6 +190,9 @@ class BaseReddit(object):
         name will be looked for in the environment variable REDDIT_SITE. If it
         is not found there, the default site name reddit matching reddit.com
         will be used.
+
+        disable_update_check allows you to prevent an update check from
+        occuring in spite of the check_for_updates setting in praw.ini.
         """
         if not user_agent or not isinstance(user_agent, six.string_types):
             raise TypeError('User agent must be a non-empty string.')
@@ -191,6 +201,12 @@ class BaseReddit(object):
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
         self.http = requests.session()
         self.modhash = self.user = None
+
+        # Check for updates if permitted and this is the first Reddit instance
+        if not disable_update_check and not self.update_checked \
+                and self.config.check_for_updates:
+            update_check(__name__, __version__)
+            self.update_checked = True
 
     def __str__(self):
         return 'Open Session (%s)' % (self.user or 'Unauthenticated')
