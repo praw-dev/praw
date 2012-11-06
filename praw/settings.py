@@ -15,7 +15,10 @@
 import os
 import sys
 
-from praw.compat import configparser  # pylint: disable-msg=E0611
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser  # pylint: disable-msg=F0401
 
 
 def _load_configuration():

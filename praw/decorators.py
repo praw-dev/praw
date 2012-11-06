@@ -25,9 +25,9 @@ import sys
 import time
 import warnings
 from functools import wraps
+from requests.compat import urljoin
 
 from praw import errors
-from praw.compat import urljoin  # pylint: disable-msg=E0611
 
 
 class Memoize(object):

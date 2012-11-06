@@ -17,14 +17,13 @@
 import json
 import os
 import platform
+import requests
 import six
 import sys
+from requests.compat import urljoin
 from warnings import warn, warn_explicit
 
 from praw import decorators, errors, helpers, objects
-from praw.compat import (HTTPCookieProcessor,  # pylint: disable-msg=E0611
-                         HTTPError, build_opener, http_cookiejar, http_client,
-                         urljoin)
 from praw.settings import CONFIG
 
 __version__ = '1.0.15'
@@ -190,10 +189,7 @@ class BaseReddit(object):
 
         self.DEFAULT_HEADERS['User-agent'] = UA_STRING % user_agent
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
-
-        _cookie_jar = http_cookiejar.CookieJar()
-        self._opener = build_opener(HTTPCookieProcessor(_cookie_jar))
-
+        self.http = requests.session()
         self.modhash = self.user = None
 
     def __str__(self):
@@ -213,14 +209,14 @@ class BaseReddit(object):
         remaining_attempts = 3
         while True:
             try:
-                return helpers._request(self, page_url, params,
-                                        url_data, timeout)
-            except HTTPError as error:
+                return helpers._request(self, page_url, url_data, params,
+                                        timeout)
+            except requests.exceptions.HTTPError as error:
                 remaining_attempts -= 1
-                if (error.code not in self.RETRY_CODES or
+                if (error.response.status_code not in self.RETRY_CODES or
                     remaining_attempts == 0):
                     raise
-            except http_client.IncompleteRead:
+            except requests.exceptions.RequestException:
                 remaining_attempts -= 1
                 if remaining_attempts == 0:
                     raise
@@ -327,7 +323,7 @@ class BaseReddit(object):
             hook = self._json_reddit_objecter
         else:
             hook = None
-        data = json.loads(response.decode('utf-8'), object_hook=hook)
+        data = json.loads(response, object_hook=hook)
         # Update the modhash
         if self.user and 'data' in data and 'modhash' in data['data']:
             self.modhash = data['data']['modhash']

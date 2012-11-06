@@ -25,11 +25,11 @@ import time
 import unittest
 import uuid
 import warnings
+from requests.compat import urljoin
+from requests.exceptions import HTTPError, Timeout
 from six import advance_iterator as six_next, text_type
 
 from praw import Reddit, errors, helpers
-from praw.compat import (HTTPError, URLError,  # pylint: disable-msg=E0611
-                         urljoin)
 from praw.objects import Comment, LoggedInRedditor, Message, MoreComments
 
 USER_AGENT = 'PRAW_test_suite'
@@ -182,15 +182,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_timeout(self):
         # pylint: disable-msg=W0212
-        from socket import timeout
-        try:
-            helpers._request(self.r, self.r.config['comments'], timeout=0.001)
-        except URLError as error:
-            self.assertEqual(text_type(error.reason), 'timed out')
-        except timeout:
-            pass
-        else:
-            self.fail('Timeout did not raise the proper exception.')
+        self.assertRaises(Timeout, helpers._request, self.r,
+                          self.r.config['comments'], timeout=0.001)
 
 
 class CacheTest(unittest.TestCase, AuthenticatedHelper):
