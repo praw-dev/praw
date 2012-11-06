@@ -32,6 +32,15 @@ from praw.compat import urljoin  # pylint: disable-msg=E0611
 
 class Memoize(object):
     """Memoize decorator with timeout to clear cache of timed out results."""
+    @staticmethod
+    def normalize_url(url):
+        """Strip trailing .json and trailing slashes."""
+        if url.endswith('.json'):
+            url = url[:-5]
+        if url.endswith('/'):
+            url = url[:-1]
+        return url
+
     def __init__(self, function):
         wraps(function)(self)
         self.function = function
@@ -39,16 +48,16 @@ class Memoize(object):
         self._timeouts = {}
 
     def __call__(self, reddit_session, page_url, *args, **kwargs):
-        key = (reddit_session, page_url, repr(args),
+        normalized_url = self.normalize_url(page_url)
+        key = (reddit_session, normalized_url, repr(args),
                frozenset(six.iteritems(kwargs)))
         call_time = time.time()
         self.clear_timeouts(call_time, reddit_session.config.cache_timeout)
         self._timeouts.setdefault(key, call_time)
         if key in self._cache:
             return self._cache[key]
-        return self._cache.setdefault(key, self.function(reddit_session,
-                                                         page_url, *args,
-                                                         **kwargs))
+        result = self.function(reddit_session, page_url, *args, **kwargs)
+        return self._cache.setdefault(key, result)
 
     def clear_timeouts(self, call_time, cache_timeout):
         """Clear the cache of timed out results."""
@@ -60,8 +69,8 @@ class Memoize(object):
 
     def evict(self, urls):
         """Remove cached RedditContentObject by URL."""
-        relevant_caches = [k for k in self._cache
-                           if k[1].rstrip('.json') in urls]
+        urls = [self.normalize_url(url) for url in urls]
+        relevant_caches = [key for key in self._cache if key[1] in urls]
         for key in relevant_caches:
             del self._cache[key]
             del self._timeouts[key]

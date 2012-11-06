@@ -471,6 +471,10 @@ class Redditor(Messageable, Refreshable):
         self._url = reddit_session.config['user'] % user_name
         self._mod_subs = None
 
+    def __repr__(self):
+        """Include the user's name."""
+        return 'Redditor(user_name=\'{0}\')'.format(self.name)
+
     def __unicode__(self):
         """Display the user's name."""
         return self.name
