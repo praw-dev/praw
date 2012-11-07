@@ -47,8 +47,8 @@ class Memoize(object):
         self._cache = {}
         self._timeouts = {}
 
-    def __call__(self, reddit_session, page_url, *args, **kwargs):
-        normalized_url = self.normalize_url(page_url)
+    def __call__(self, reddit_session, url, *args, **kwargs):
+        normalized_url = self.normalize_url(url)
         key = (reddit_session, normalized_url, repr(args),
                frozenset(six.iteritems(kwargs)))
         call_time = time.time()
@@ -56,8 +56,8 @@ class Memoize(object):
         self._timeouts.setdefault(key, call_time)
         if key in self._cache:
             return self._cache[key]
-        result = self.function(reddit_session, page_url, *args, **kwargs)
-        if kwargs.get('raw'):
+        result = self.function(reddit_session, url, *args, **kwargs)
+        if kwargs.get('raw_response'):
             return result
         return self._cache.setdefault(key, result)
 

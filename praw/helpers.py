@@ -73,38 +73,40 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 
 @Memoize
 @SleepAfter
-def _request(reddit_session, page_url, params=None, data=None, timeout=45,
-             raw=False):
+def _request(reddit_session, url, params=None, data=None, timeout=45,
+             raw_response=False, auth=None):
     """Make the http request and return the http response body."""
-    if reddit_session.access_token:
-        headers = {"Authorization": "bearer %s" % reddit_session.access_token}
+    if not auth and reddit_session.access_token:
+        headers = {'Authorization': 'bearer %s' % reddit_session.access_token}
         # Requests using OAuth for authorization must switch to using the oauth
         # domain.
         for prefix in (reddit_session.config._site_url,
                        reddit_session.config._ssl_url):
-            if page_url.startswith(prefix):
+            if url.startswith(prefix):
                 if reddit_session.config.log_requests >= 1:
                     sys.stderr.write(
                         'substituting %s for %s in url\n'
                         % (reddit_session.config._oauth_url, prefix))
-                page_url = (
-                    reddit_session.config._oauth_url + page_url[len(prefix):])
+                url = (reddit_session.config._oauth_url + url[len(prefix):])
                 break
     else:
         headers = {}
 
     if reddit_session.config.log_requests >= 1:
-        sys.stderr.write('retrieving: %s\n' % page_url)
+        sys.stderr.write('retrieving: %s\n' % url)
     if reddit_session.config.log_requests >= 2:
         sys.stderr.write('params: %s\n' % (params or 'None'))
         sys.stderr.write('data: %s\n' % (data or 'None'))
+        if auth:
+            sys.stderr.write('auth: %s\n' % auth)
 
     if data:
         if data is True:
             data = {}
-        data.setdefault('api_type', 'json')
-        if reddit_session.modhash:
-            data.setdefault('uh', reddit_session.modhash)
+        if not auth:
+            data.setdefault('api_type', 'json')
+            if reddit_session.modhash:
+                data.setdefault('uh', reddit_session.modhash)
         method = reddit_session.http.post
     else:
         method = reddit_session.http.get
@@ -113,9 +115,9 @@ def _request(reddit_session, page_url, params=None, data=None, timeout=45,
     while True:
         # pylint: disable-msg=W0212
         try:
-            response = method(page_url, params=params, data=data,
+            response = method(url, params=params, data=data,
                               headers=headers, timeout=timeout,
-                              allow_redirects=False)
+                              allow_redirects=False, auth=auth)
         finally:
             # Hack to force-close the connection (if needed) until
             # https://github.com/shazow/urllib3/pull/133 is added to urllib3
@@ -124,10 +126,10 @@ def _request(reddit_session, page_url, params=None, data=None, timeout=45,
             if response and response.raw._fp.will_close:
                 response.raw._fp.close()
         if response.status_code == 302:
-            page_url = urljoin(page_url, response.headers['location'])
+            url = urljoin(url, response.headers['location'])
         else:
             break
     response.raise_for_status()
-    if raw:
+    if raw_response:
         return response
     return response.text

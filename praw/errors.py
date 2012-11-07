@@ -49,6 +49,20 @@ class ModeratorRequired(ClientException):
     """Raised when a logged in user is not a moderator for the subreddit."""
 
 
+class OAuthException(ClientException):
+    """Raised when an OAuth API call fails.
+
+    The message attribute indicates the specific reddit OAuth exception.
+    """
+
+
+class OAuthRequired(ClientException):
+    """Raised when an OAuth client cannot be initialized.
+
+    This occurs when any one of the OAuth config values are not set.
+    """
+
+
 class APIException(Exception):
     """Base exception class for the reddit API bindings."""
     def __init__(self, error_type, message, field='', response=None):

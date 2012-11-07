@@ -21,7 +21,6 @@ import requests
 import six
 import sys
 import uuid
-from rauth.service import OAuth2Service
 from requests.compat import urljoin
 from update_checker import update_check
 from warnings import warn, warn_explicit
@@ -142,18 +141,12 @@ class Config(object):  # pylint: disable-msg=R0903
         self.output_chars_limit = int(obj['output_chars_limit'])
         self.log_requests = int(obj['log_requests'])
         self.regular_comments_max = int(obj['regular_comments_max'])
-
-        self.oauth_client_id = obj.get('oauth_client_id')
-        self.oauth_client_secret = obj.get('oauth_client_secret')
-        if self.oauth_client_id and self.oauth_client_secret:
-            self.oauth = OAuth2Service(
-                name='reddit',
-                consumer_key=self.oauth_client_id,
-                consumer_secret=self.oauth_client_secret,
-                access_token_url='%s/api/v1/access_token' % self._ssl_url,
-                authorize_url='%s/api/v1/authorize' % self._ssl_url)
-        else:
-            self.oauth = None
+        self.oauth = objects.OAuth2(
+            access_token_uri=obj.get('oauth_access_token_uri'),
+            authorize_uri=obj.get('oauth_authorize_uri'),
+            client_id=obj.get('oauth_client_id'),
+            client_secret=obj.get('oauth_client_secret'),
+            redirect_uri=obj.get('oauth_redirect_uri'))
 
         if 'short_domain' in obj:
             self._short_domain = 'http://' + obj['short_domain']
@@ -185,39 +178,6 @@ class Config(object):  # pylint: disable-msg=R0903
             return self._short_domain
         else:
             raise errors.ClientException('No short domain specified.')
-
-    def get_authorize_url(self, scope, state, redirect_uri, refreshable=False):
-        """Return the URL to send the user to for OAuth 2 authorization."""
-        duration = "permanent" if refreshable else "temporary"
-        return self.oauth.get_authorize_url(response_type='code',
-                                            scope=scope,
-                                            state=state,
-                                            redirect_uri=redirect_uri,
-                                            duration=duration)
-
-    def get_access_token(self, code, redirect_uri, refreshable=False):
-        """Fetch the access token for an OAuth 2 authorization grant."""
-        data = dict(grant_type='authorization_code',
-                    code=code,
-                    redirect_uri=redirect_uri)
-        response = self.oauth.get_access_token(
-            auth=(self.oauth_client_id, self.oauth_client_secret), data=data)
-        if refreshable:
-            return (response.content['access_token'],
-                    response.content['refresh_token'])
-        else:
-            return response.content['access_token']
-
-    def refresh_access_token(self, refresh_token, redirect_uri):
-        """
-        Refresh the access token of a refreshable OAuth 2 authorization grant.
-        """
-        data = dict(grant_type='refresh_token',
-                    refresh_token=refresh_token,
-                    redirect_uri=redirect_uri)
-        response = self.oauth.get_access_token(
-            auth=(self.oauth_client_id, self.oauth_client_secret), data=data)
-        return response.content['access_token']
 
 
 class BaseReddit(object):
@@ -270,15 +230,17 @@ class BaseReddit(object):
     def __str__(self):
         return 'Open Session (%s)' % (self.user or 'Unauthenticated')
 
-    def _request(self, page_url, params=None, url_data=None, timeout=None,
-                 raw=False):
+    def _request(self, url, params=None, data=None, timeout=None,
+                 raw_response=False, auth=None):
         """
         Given a page url and a dict of params, open and return the page.
 
-        :param page_url: the url to grab content from.
-        :param params: a dictionary containing the extra data to submit
-        :param url_data: a dictionary containing the GET data to put in the url
-        :param raw: return the response object rather than the response body
+        :param url: the url to grab content from.
+        :param params: a dictionary containing the GET data to put in the url
+        :param data: a dictionary containing the extra data to submit
+        :param raw_response: return the response object rather than the
+               response body
+        :param auth: Add the HTTP authentication headers (see requests)
         :returns: either the response body or the response object
         """
         # pylint: disable-msg=W0212
@@ -286,8 +248,9 @@ class BaseReddit(object):
         remaining_attempts = 3
         while True:
             try:
-                return helpers._request(self, page_url, url_data, params,
-                                        timeout, raw=raw)
+                return helpers._request(self, url, params, data, auth=auth,
+                                        raw_response=raw_response,
+                                        timeout=timeout)
             except requests.exceptions.HTTPError as error:
                 remaining_attempts -= 1
                 if (error.response.status_code not in self.RETRY_CODES or
@@ -384,6 +347,8 @@ class BaseReddit(object):
         """
         Get the JSON processed from a page.
 
+        TODO (before 1.1 release): use `params` for url_data and `data` for
+              params. Then update this documentation.
         Takes the same parameters as the _request method, plus a param to
         control whether objects are returned.
 
@@ -395,7 +360,7 @@ class BaseReddit(object):
         :returns: JSON processed page
         """
         page_url += '.json'
-        response = self._request(page_url, params, url_data)
+        response = self._request(page_url, url_data, params)
         if as_objects:
             hook = self._json_reddit_objecter
         else:
@@ -406,27 +371,45 @@ class BaseReddit(object):
             self.modhash = data['data']['modhash']
         return data
 
-    def get_authorize_url(self, scope, state, redirect_uri, refreshable=False):
-        """Return the URL to send the user to for OAuth 2 authorization."""
-        return self.config.get_authorize_url(scope, state, redirect_uri,
-                                             refreshable=refreshable)
+    def get_access_token(self, code, refreshable=False, update_session=True):
+        """Fetch the access token for an OAuth 2 authorization grant.
 
-    def get_access_token(self, code, redirect_uri, refreshable=False):
-        """Fetch the access token for an OAuth 2 authorization grant."""
-        result = self.config.get_access_token(code, redirect_uri,
-                                              refreshable=refreshable)
-        if refreshable:
-            self.access_token, self.refresh_token = result
-        else:
-            self.access_token = result
-        return result
+        :param code: the code received in the request from the OAuth 2 server
+        :param refreshable: when true, the return value is a tuple with the
+                            second item being the refresh token.
+        :param update_session: Update the current session with the retrieved
+                               token(s).
+        """
+        response = self.config.oauth.get_access_token(self._request, code,
+                                                      refreshable)
+        if update_session:
+            if refreshable:
+                self.access_token, self.refresh_token = response
+            else:
+                self.access_token = response
+        return response
 
-    def refresh_access_token(self, redirect_uri):
+    def get_authorize_url(self, state, scope='identity', refreshable=False):
+        """Return the URL to send the user to for OAuth 2 authorization.
+
+        state: a unique key that represents this individual client
+        scope: the reddit scope to ask permissions for. Multiple scopes can be
+               enabled by passing in a list of strings.
+        refreshable: when true, a permanent "refreshable" token is issued
         """
-        Refresh the access token of a refreshable OAuth 2 authorization grant.
+        return self.config.oauth.get_authorize_url(state, scope, refreshable)
+
+    def refresh_access_token(self, refresh_token=None):
+        """Refresh the access token of a refreshable OAuth 2 grant.
+
+        When provided, the passed in refresh token will be refreshed.
+        Otherwise, the current sessions refresh token will be used.
         """
-        self.access_token = self.config.refresh_access_token(
-            self.refresh_token, redirect_uri)
+        refresh_token = refresh_token or self.refresh_token
+        response = self.config.oauth.refresh_access_token(self._request,
+                                                          refresh_token)
+        self.access_token = response
+        return response
 
 
 class SubredditExtension(BaseReddit):
@@ -923,7 +906,8 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
 
     def get_random_subreddit(self):
         """Return a random subreddit just like /r/random does."""
-        response = self._request(self.config['subreddit'] % 'random', raw=True)
+        response = self._request(self.config['subreddit'] % 'random',
+                                 raw_response=True)
         return self.get_subreddit(response.url.rsplit('/', 2)[-2])
 
     def get_submission(self, url=None, submission_id=None):

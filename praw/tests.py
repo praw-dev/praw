@@ -20,7 +20,9 @@
 
 from __future__ import unicode_literals
 
+import os
 import random
+import sys
 import time
 import unittest
 import uuid
@@ -64,6 +66,17 @@ def reddit_only(function):
         print('Passing reddit only test: {0}.{1}'.format(
                 obj.__class__.__name__, function.__name__))
     return reddit_only_function
+
+
+def prompt(msg):
+    sys.stdout.write(msg)
+    sys.stdout.flush()
+    response = ''
+    cur = ''
+    while cur != '\n':
+        cur = sys.stdin.read(1)
+        response += cur
+    return response.strip()
 
 
 class BasicHelper(object):
@@ -734,6 +747,56 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
     def test_unban(self):
         self.subreddit.unban(self.other)
         self.assertFalse(self.other in self.subreddit.get_banned())
+
+
+class OAuth2Test(unittest.TestCase):
+    def setUp(self):
+        site_name = (os.getenv('REDDIT_SITE') or 'reddit') + '_oauth_test'
+        self.r = Reddit(USER_AGENT, site_name=site_name,
+                        disable_update_check=True)
+        self.invalid = Reddit(USER_AGENT, disable_update_check=True)
+
+    def test_access_token(self):
+        if not os.getenv('INTERACTIVE'):
+            return
+        print('Visit this URL: {0}'.format(self.r.get_authorize_url('...')))
+        code = prompt('Code from redir URL: ')
+        token = self.r.get_access_token(code)
+        self.assertEqual(self.r.access_token, token)
+        self.r.login()
+        self.assertNotEqual(None, self.r.user)
+
+    def test_access_token_with_invalid_code(self):
+        self.assertRaises(errors.OAuthException, self.r.get_access_token,
+                          'invalid_code')
+
+    def test_authorize_url(self):
+        self.assertTrue('api/v1/authorize?state=...&'
+                        'redirect_uri=http%3A%2F%2F127.0.0.1%3A65010%2F'
+                        'authorize_callback&response_type=code&client_id='
+                        'stJlUSUbPQe5lQ&duration=temporary&scope=identity' in
+                        self.r.get_authorize_url('...'))
+
+    def test_invalid_access_token(self):
+        self.assertRaises(errors.OAuthRequired, self.invalid.get_access_token,
+                          'dummy_code')
+
+    def test_invalid_authorize_url(self):
+        self.assertRaises(errors.OAuthRequired, self.invalid.get_authorize_url,
+                          'dummy_state')
+
+    def test_refreshable_access_token(self):
+        if not os.getenv('INTERACTIVE'):
+            return
+        url = self.r.get_authorize_url('dummy_state', refreshable=True)
+        print('Visit this URL: {0}'.format(url))
+        code = prompt('Code from redir URL: ')
+        access, refresh = self.r.get_access_token(code, refreshable=True)
+        self.assertEqual(self.r.access_token, access)
+        self.assertEqual(self.r.refresh_token, refresh)
+        new_access = self.r.refresh_access_token()
+        self.assertNotEqual(access, new_access)
+        self.assertEqual(self.r.access_token, new_access)
 
 
 class RedditorTest(unittest.TestCase, AuthenticatedHelper):
