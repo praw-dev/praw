@@ -571,16 +571,16 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
         else:
             class_max = reddit_session.config.regular_comments_max
 
-        if comment_limit == -1:  # Use max for user class
+        if comment_limit < 0:  # Use max for user class
             comment_limit = class_max
-        elif comment_limit > 0:  # Use specified value
+        elif comment_limit == 0:  # Use default
+            comment_limit = None
+        else:  # Use specified value
             if comment_limit > class_max:
                 warnings.warn_explicit('comment_limit %d is too high (max: %d)'
                                        % (comment_limit, class_max),
                                        UserWarning, '', 0)
                 comment_limit = class_max
-        elif comment_limit == 0:  # Use default
-            comment_limit = None
 
         if comment_limit:
             url_data['limit'] = comment_limit
