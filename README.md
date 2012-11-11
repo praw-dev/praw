@@ -38,10 +38,6 @@ Or via `setup.py`
 
 PRAW works with Python 2.6 or later.
 
-Installation via `pip` or `easy_install` automatically installs PRAW's only
-dependency, the module [six](http://pypi.python.org/pypi/six/). If you install 
-via `setup.py` you'll need to install `six` manually.
-
 # Examples and Configuration
 
 For a number of simple code examples, details on PRAW's
