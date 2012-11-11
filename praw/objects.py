@@ -515,6 +515,7 @@ class LoggedInRedditor(Redditor):
     get_disliked = _get_section('disliked')
     get_hidden = _get_section('hidden')
     get_liked = _get_section('liked')
+    get_saved = _get_section('saved')
 
     @require_login
     def get_inbox(self, limit=0):
