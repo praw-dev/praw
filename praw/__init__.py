@@ -691,7 +691,18 @@ class LoggedInExtension(BaseReddit):
 
     @decorators.require_login
     def get_saved_links(self, limit=0):
+        """
+        Return a listing of the logged-in user's saved links.
+
+        Moved to LoggedInRedditor and renamed to get_saved. You should now use
+        r.user.get_saved() instead of r.get_saved_links where
+        r = praw.Reddit(useragent).
+        """
+        # Remove around the end of Q1 2013
         """Return a listing of the logged-in user's saved links."""
+        warn('get_saved_links has been renamed to get_saved and moved to '
+             'LoggedInRedditor. get_saved_links will be removed in a future '
+             'version. Please update.', DeprecationWarning)
         return self.get_content(self.config['saved'], limit=limit)
 
     def login(self, username=None, password=None):
