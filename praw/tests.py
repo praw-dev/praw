@@ -805,6 +805,14 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(None, submission.author)
 
+    def test_deprecated_saved_links(self):
+        subject = 'Deprecated Test'
+        with warnings.catch_warnings(record=True) as warning:
+            warnings.simplefilter('always')
+            self.r.get_saved_links()
+            self.assertEqual(len(warning), 1)
+            self.assertEqual(warning[0].category, DeprecationWarning)
+
     def test_downvote(self):
         submission = None
         for submission in self.r.user.get_submitted():
@@ -861,7 +869,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertTrue(submission.saved)
         # verify in saved_links
-        for item in self.r.get_saved_links():
+        for item in self.r.user.get_saved():
             if item == submission:
                 break
         else:
