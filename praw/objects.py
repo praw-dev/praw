@@ -288,8 +288,10 @@ class Reportable(RedditContentObject):
         url = self.reddit_session.config['report']
         params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
+        # Reported objects are automatically hidden as well
         # pylint: disable-msg=E1101
-        _request.evict([self.reddit_session.config['user']])
+        _request.evict([self.reddit_session.config['user'],
+                        urljoin(self.reddit_session.user._url, 'hidden')])
         return response
 
 
