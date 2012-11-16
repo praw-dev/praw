@@ -205,7 +205,7 @@ class BaseReddit(object):
         Given a page url and a dict of params, open and return the page.
 
         :param page_url: the url to grab content from.
-        :param params: a dictionary containing the extra url data to submit
+        :param params: a dictionary containing the extra data to submit
         :param url_data: a dictionary containing the GET data to put in the url
         :param raw: return the response object rather than the response body
         :returns: either the response body or the response object
