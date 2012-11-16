@@ -199,22 +199,24 @@ class BaseReddit(object):
     def __str__(self):
         return 'Open Session (%s)' % (self.user or 'Unauthenticated')
 
-    def _request(self, page_url, params=None, url_data=None, timeout=None):
+    def _request(self, page_url, params=None, url_data=None, timeout=None,
+                 raw=False):
         """
         Given a page url and a dict of params, open and return the page.
 
         :param page_url: the url to grab content from.
         :param params: a dictionary containing the extra url data to submit
         :param url_data: a dictionary containing the GET data to put in the url
-        :returns: the open page
+        :param raw: return the response object rather than the response body
+        :returns: either the response body or the response object
         """
         # pylint: disable-msg=W0212
         timeout = self.config.timeout if timeout is None else timeout
         remaining_attempts = 3
         while True:
             try:
-                return helpers._request(self, page_url, params,
-                                        url_data, timeout)
+                return helpers._request(self, page_url, url_data, params,
+                                        timeout, raw=raw)
             except HTTPError as error:
                 remaining_attempts -= 1
                 if (error.code not in self.RETRY_CODES or
@@ -786,6 +788,11 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         url = self.config['popular_reddits']
         return self.get_content(url, *args, **kwargs)
 
+    def get_random_subreddit(self):
+        """Return a random subreddit just like /r/random does."""
+        response = self._request(self.config['subreddit'] % 'random', raw=True)
+        return self.get_subreddit(response.url.rsplit('/', 2)[-2])
+
     def get_submission(self, url=None, submission_id=None):
         """Return a Submission object for the given url or submission_id."""
         if bool(url) == bool(submission_id):
@@ -796,6 +803,8 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
 
     def get_subreddit(self, subreddit_name, *args, **kwargs):
         """Return a Subreddit object for the subreddit_name specified."""
+        if subreddit_name.lower() == 'random':
+            return self.get_random_subreddit()
         return objects.Subreddit(self, subreddit_name, *args, **kwargs)
 
     def info(self, url=None, thing_id=None, limit=0):

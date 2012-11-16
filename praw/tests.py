@@ -125,6 +125,12 @@ class BasicTest(unittest.TestCase, BasicHelper):
         num = 50
         self.assertEqual(num, len(list(self.r.get_popular_reddits(limit=num))))
 
+    def test_get_random_subreddit(self):
+        subs = set()
+        for i in range(3):
+            subs.add(self.r.get_subreddit('RANDOM').display_name)
+        self.assertTrue(len(subs) > 1)
+
     def test_get_top(self):
         num = 50
         result = self.r.get_top(limit=num, url_data={'t': 'all'})

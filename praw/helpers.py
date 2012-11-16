@@ -75,28 +75,32 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 
 @Memoize
 @SleepAfter
-def _request(reddit_session, page_url, params=None, url_data=None, timeout=45):
+def _request(reddit_session, page_url, params=None, data=None, timeout=45,
+             raw=False):
     """Make the http request and return the http response body."""
-    page_url = quote(page_url.encode('utf-8'), ':/')
-    if url_data:
-        page_url += '?' + urlencode(url_data)
-    encoded_params = None
-    if params:
-        if params is True:
-            params = {}
-        params.setdefault('api_type', 'json')
-        if reddit_session.modhash:
-            params.setdefault('uh', reddit_session.modhash)
-        params = dict([k, v.encode('utf-8')] for k, v in six.iteritems(params))
-        encoded_params = urlencode(params).encode('utf-8')
-    request = Request(page_url, data=encoded_params,
-                      headers=reddit_session.DEFAULT_HEADERS)
-
     if reddit_session.config.log_requests >= 1:
         sys.stderr.write('retrieving: %s\n' % page_url)
     if reddit_session.config.log_requests >= 2:
-        sys.stderr.write('data: %s\n' % (encoded_params or 'None'))
+        sys.stderr.write('params: %s\n' % (params or 'None'))
+        sys.stderr.write('data: %s\n' % (data or 'None'))
+
+    page_url = quote(page_url.encode('utf-8'), ':/')
+    if params:
+        page_url += '?' + urlencode(params)
+    encoded = None
+    if data:
+        if data is True:
+            data = {}
+        data.setdefault('api_type', 'json')
+        if reddit_session.modhash:
+            data.setdefault('uh', reddit_session.modhash)
+        data = dict([k, v.encode('utf-8')] for k, v in six.iteritems(data))
+        encoded = urlencode(data).encode('utf-8')
+    request = Request(page_url, data=encoded,
+                      headers=reddit_session.DEFAULT_HEADERS)
 
     # pylint: disable-msg=W0212
     response = reddit_session._opener.open(request, timeout=timeout)
+    if raw:
+        return response
     return response.read()
