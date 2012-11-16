@@ -73,7 +73,8 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 
 @Memoize
 @SleepAfter
-def _request(reddit_session, page_url, params=None, data=None, timeout=45):
+def _request(reddit_session, page_url, params=None, data=None, timeout=45,
+             raw=False):
     """Make the http request and return the http response body."""
     if reddit_session.config.log_requests >= 1:
         sys.stderr.write('retrieving: %s\n' % page_url)
@@ -93,4 +94,6 @@ def _request(reddit_session, page_url, params=None, data=None, timeout=45):
     response = method(page_url, params=params, data=data, timeout=timeout,
                       headers=reddit_session.DEFAULT_HEADERS)
     response.raise_for_status()
+    if raw:
+        return response
     return response.text

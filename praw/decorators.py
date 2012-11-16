@@ -57,6 +57,8 @@ class Memoize(object):
         if key in self._cache:
             return self._cache[key]
         result = self.function(reddit_session, page_url, *args, **kwargs)
+        if kwargs.get('raw'):
+            return result
         return self._cache.setdefault(key, result)
 
     def clear_timeouts(self, call_time, cache_timeout):
