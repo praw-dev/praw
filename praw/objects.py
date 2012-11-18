@@ -129,6 +129,8 @@ class Approvable(RedditContentObject):
         params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
+        if isinstance(self, Submission):
+            urls += self.subreddit._listing_urls
         _request.evict(urls)  # pylint: disable-msg=E1101
         return response
 
@@ -141,6 +143,8 @@ class Approvable(RedditContentObject):
                   'spam': 'True' if spam else 'False'}
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
+        if isinstance(self, Submission):
+            urls += self.subreddit._listing_urls
         _request.evict(urls)  # pylint: disable-msg=E1101
         return response
 
@@ -830,6 +834,10 @@ class Subreddit(Messageable, NSFWable, Refreshable):
                                         info_url)
         self.display_name = subreddit_name
         self._url = reddit_session.config['subreddit'] % subreddit_name
+        # '' is the hot listing
+        listings = ['new/', '', 'top/', 'controversial/']
+        base = (reddit_session.config['subreddit'] % self.display_name)
+        self._listing_urls = [base + x + '.json' for x in listings]
 
     def __unicode__(self):
         """Return the subreddit's display name. E.g. python or askreddit."""
