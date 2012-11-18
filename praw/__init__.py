@@ -658,7 +658,7 @@ class LoggedInExtension(BaseReddit):
     @decorators.RequireCaptcha
     def compose_message(self, recipient, subject, message, captcha=None):
         """
-        Send a message to another redditor or a subreddit (mod mail).
+        Send a message to a redditor or a subreddit's moderators (mod mail).
 
         Depreciated. compose_message has been renamed to send_message and will
         be removed in a future version.
@@ -743,9 +743,9 @@ class LoggedInExtension(BaseReddit):
     @decorators.RequireCaptcha
     def send_message(self, recipient, subject, message, captcha=None):
         """
-        Send a message to another redditor or a subreddit (mod mail).
+        Send a message to a redditor or a subreddit's moderators (mod mail).
 
-        When sending a message to a subreddit the recipient paramater must
+        When sending a message to a subreddit the recipient parameter must
         either be a subreddit object or the subreddit name needs to be prefixed
         with either '/r/' or '#'.
         """
