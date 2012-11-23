@@ -161,14 +161,20 @@ class Distinguishable(RedditContentObject):
     """Interface for Reddit content objects that can be distinguished."""
     @require_login
     def distinguish(self):
-        """Distinguish object as made by mod / admin."""
+        """
+        Distinguish object as made by mod, admin or special.
+
+        Distingusihed objects have a different background author color.
+        Similar to how the comments of the original poster are distinguished
+        from other comments in submissions.
+        """
         url = self.reddit_session.config['distinguish']
         params = {'id': self.content_id}
         return self.reddit_session.request_json(url, params)
 
     @require_login
     def undistinguish(self):
-        """Remove mod / admin distinguishing on object."""
+        """Remove mod, admin or special distinguishing on object."""
         url = self.reddit_session.config['undistinguish']
         params = {'id': self.content_id}
         return self.reddit_session.request_json(url, params)
@@ -835,7 +841,7 @@ class Subreddit(Messageable, NSFWable, Refreshable):
         return self.reddit_session.add_flair_template(self, *args, **kwargs)
 
     def clear_all_flair(self):
-        """Remove all flair on this subreddit."""
+        """Remove all user flair on this subreddit."""
         csv = [{'user': x['user']} for x in self.flair_list()]
         if csv:
             return self.set_flair_csv(csv)

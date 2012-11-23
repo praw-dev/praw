@@ -558,10 +558,8 @@ class SubredditExtension(BaseReddit):
         """Set the settings for the given subreddit."""
 
         # Temporary support for no longer valid entries
-        if wiki_edit_age is None:
-            wiki_edit_age = ''
-        if wiki_edit_karma is None:
-            wiki_edit_karma = ''
+        wiki_edit_age = wiki_edit_age or ''
+        wiki_edit_karma = wiki_edit_karma or ''
 
         params = {'r': six.text_type(subreddit),
                   'sr': subreddit.content_id,
@@ -890,7 +888,12 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
 
     def search(self, query, subreddit=None, sort=None, limit=0, *args,
                **kwargs):
-        """Return submissions whose title contains the query phrase."""
+        """
+        Return submissions that match the search query.
+
+        See http://www.reddit.com/help/search for more information on how to
+        build a search query.
+        """
         url_data = {'q': query}
         if sort:
             url_data['sort'] = sort
