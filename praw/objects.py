@@ -26,7 +26,7 @@ import six
 import warnings
 
 from requests.compat import urljoin
-from praw.decorators import limit_chars, require_login
+from praw.decorators import limit_chars, require_login, require_moderator
 from praw.errors import ClientException
 from praw.helpers import (_get_section, _get_sorter, _modify_relationship,
                           _request)
@@ -122,6 +122,7 @@ class RedditContentObject(object):
 class Approvable(RedditContentObject):
     """Interface for Reddit content objects that can be approved."""
     @require_login
+    @require_moderator
     def approve(self):
         """Give approval to object."""
         url = self.reddit_session.config['approve']
@@ -132,6 +133,7 @@ class Approvable(RedditContentObject):
         return response
 
     @require_login
+    @require_moderator
     def remove(self, spam=False):
         """Remove approval from object."""
         url = self.reddit_session.config['remove']
