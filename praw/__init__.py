@@ -49,6 +49,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'edit':                'api/editusertext/',
                  'feedback':            'api/feedback/',
                  'flair':               'api/flair/',
+                 'flairconfig':         'api/flairconfig/',
                  'flaircsv':            'api/flaircsv/',
                  'flairlist':           'r/%s/api/flairlist/',
                  'flairtemplate':       'api/flairtemplate/',
@@ -391,6 +392,28 @@ class SubredditExtension(BaseReddit):
         params = {'r': six.text_type(subreddit),
                   'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
         return self.request_json(self.config['clearflairtemplates'], params)
+
+    @decorators.require_login
+    @decorators.require_moderator
+    def configure_flair(self, subreddit, flair_enabled=False,
+                        flair_position='right',
+                        flair_self_assign=False,
+                        link_flair_enabled=False,
+                        link_flair_position='left',
+                        link_flair_self_assign=False):
+        """Configure the flair setting for the given subreddit."""
+        flair_enabled = 'on' if flair_enabled else 'off'
+        flair_self_assign = 'on' if flair_self_assign else 'off'
+        if not link_flair_enabled:
+            link_flair_position = ''
+        link_flair_self_assign = 'on' if link_flair_self_assign else 'off'
+        params = {'r': six.text_type(subreddit),
+                  'flair_enabled': flair_enabled,
+                  'flair_position': flair_position,
+                  'flair_self_assign_enabled': flair_self_assign,
+                  'link_flair_position': link_flair_position,
+                  'link_flair_self_assign_enabled': link_flair_self_assign}
+        return self.request_json(self.config['flairconfig'], params)
 
     def flair_list(self, subreddit, limit=None):
         """
