@@ -844,6 +844,10 @@ class Subreddit(Messageable, NSFWable, Refreshable):
         """Clear flair templates for this subreddit."""
         return self.reddit_session.clear_flair_templates(self, *args, **kwargs)
 
+    def configure_flair(self, *args, **kwargs):
+        """Set overall flair settings for this subreddit."""
+        return self.reddit_session.configure_flair(self, *args, **kwargs)
+
     def flair_list(self, *args, **kwargs):
         """Return a list of flair for this subreddit."""
         return self.reddit_session.flair_list(self, *args, **kwargs)
