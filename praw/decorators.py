@@ -80,7 +80,6 @@ class Memoize(object):
 
 class RequireCaptcha(object):
     """Decorator for methods that require captchas."""
-
     @staticmethod
     def get_captcha(reddit_session, captcha_id):
         url = urljoin(reddit_session.config['captcha'],
