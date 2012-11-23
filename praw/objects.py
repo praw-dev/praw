@@ -833,7 +833,7 @@ class Subreddit(Messageable, NSFWable, Refreshable):
         return self.reddit_session.add_flair_template(self, *args, **kwargs)
 
     def clear_all_flair(self):
-        """Remove all flair on this subreddit."""
+        """Remove all user flair on this subreddit."""
         csv = [{'user': x['user']} for x in self.flair_list()]
         if csv:
             return self.set_flair_csv(csv)
