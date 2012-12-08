@@ -127,7 +127,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_random_subreddit(self):
         subs = set()
-        for i in range(3):
+        for _ in range(3):
             subs.add(self.r.get_subreddit('RANDOM').display_name)
         self.assertTrue(len(subs) > 1)
 
@@ -812,7 +812,6 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(None, submission.author)
 
     def test_deprecated_saved_links(self):
-        subject = 'Deprecated Test'
         with warnings.catch_warnings(record=True) as warning:
             warnings.simplefilter('always')
             self.r.get_saved_links()
