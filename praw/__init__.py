@@ -132,6 +132,7 @@ class Config(object):  # pylint: disable-msg=R0903
         self.domain = obj['domain']
         self.gold_comments_max = int(obj['gold_comments_max'])
         self.more_comments_max = int(obj['more_comments_max'])
+        self.num_chars = int(obj['num_chars'])
         self.log_requests = int(obj['log_requests'])
         self.regular_comments_max = int(obj['regular_comments_max'])
 
