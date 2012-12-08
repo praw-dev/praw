@@ -363,7 +363,7 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
             self._replies = None
         self._submission = None
 
-    @limit_chars()
+    @limit_chars
     def __unicode__(self):
         return getattr(self, 'body', '[Unloaded Comment]')
 
@@ -421,7 +421,7 @@ class Message(Inboxable):
         else:
             self.replies = []
 
-    @limit_chars()
+    @limit_chars
     def __unicode__(self):
         return 'From: %s\nSubject: %s\n\n%s' % (self.author, self.subject,
                                                 self.body)
@@ -611,7 +611,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
         self._comments_flat = None
         self._orphaned = {}
 
-    @limit_chars()
+    @limit_chars
     def __unicode__(self):
         title = self.title.replace('\r\n', ' ')
         return six.text_type('{0} :: {1}').format(self.score, title)

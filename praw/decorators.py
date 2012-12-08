@@ -146,17 +146,16 @@ class SleepAfter(object):  # pylint: disable-msg=R0903
         return self.function(*args, **kwargs)
 
 
-def limit_chars(num_chars=80):
+def limit_chars(function):
     """Limit the number of chars in a function that outputs a string."""
-    def function_limiter(function):
-        @wraps(function)
-        def function_wrapper(self, *args, **kwargs):
-            output_string = function(self, *args, **kwargs)
-            if len(output_string) > num_chars:
-                output_string = output_string[:num_chars - 3] + '...'
-            return output_string
-        return function_wrapper
-    return function_limiter
+    @wraps(function)
+    def function_wrapper(self, *args, **kwargs):
+        output_chars_limit = self.reddit_session.config.output_chars_limit
+        output_string = function(self, *args, **kwargs)
+        if -1 < output_chars_limit < len(output_string):
+            output_string = output_string[:output_chars_limit - 3] + '...'
+        return output_string
+    return function_wrapper
 
 
 def parse_api_json_response(function):  # pylint: disable-msg=R0912
