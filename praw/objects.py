@@ -164,18 +164,23 @@ class Deletable(RedditContentObject):
 class Distinguishable(RedditContentObject):
     """Interface for Reddit content objects that can be distinguished."""
     @require_login
-    def distinguish(self):
-        """Distinguish object as made by mod / admin."""
+    def distinguish(self, as_made_by='mod'):
+        """
+        Distinguish object as made by mod, admin or special.
+
+        Distingusihed objects have a different background author color.
+        Similar to how the comments of the original poster are distinguished
+        from other comments in submissions.
+        """
         url = self.reddit_session.config['distinguish']
-        params = {'id': self.content_id}
+        params = {'id': self.content_id,
+                  'how': 'yes' if as_made_by == 'mod' else as_made_by}
         return self.reddit_session.request_json(url, params)
 
     @require_login
     def undistinguish(self):
-        """Remove mod / admin distinguishing on object."""
-        url = self.reddit_session.config['undistinguish']
-        params = {'id': self.content_id}
-        return self.reddit_session.request_json(url, params)
+        """Remove mod, admin or special distinguishing on object."""
+        return self.distinguish(as_made_by='no')
 
 
 class Editable(RedditContentObject):
