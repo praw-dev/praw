@@ -45,10 +45,11 @@ class Config(object):  # pylint: disable-msg=R0903
                  'contributors':        'r/%s/about/contributors/',
                  'controversial':       'controversial/',
                  'del':                 'api/del/',
-                 'distinguish':         'api/distinguish/yes/',
+                 'distinguish':         'api/distinguish/',
                  'edit':                'api/editusertext/',
                  'feedback':            'api/feedback/',
                  'flair':               'api/flair/',
+                 'flairconfig':         'api/flairconfig/',
                  'flaircsv':            'api/flaircsv/',
                  'flairlist':           'r/%s/api/flairlist/',
                  'flairtemplate':       'api/flairtemplate/',
@@ -89,7 +90,6 @@ class Config(object):  # pylint: disable-msg=R0903
                  'subreddit_settings':  'r/%s/about/edit/',
                  'subscribe':           'api/subscribe/',
                  'top':                 'top/',
-                 'undistinguish':       'api/distinguish/no/',
                  'unfriend':            'api/unfriend/',
                  'unhide':              'api/unhide/',
                  'unmarknsfw':          'api/unmarknsfw/',
@@ -132,6 +132,7 @@ class Config(object):  # pylint: disable-msg=R0903
         self.domain = obj['domain']
         self.gold_comments_max = int(obj['gold_comments_max'])
         self.more_comments_max = int(obj['more_comments_max'])
+        self.num_chars = int(obj['num_chars'])
         self.log_requests = int(obj['log_requests'])
         self.regular_comments_max = int(obj['regular_comments_max'])
 
@@ -393,6 +394,28 @@ class SubredditExtension(BaseReddit):
                   'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
         return self.request_json(self.config['clearflairtemplates'], params)
 
+    @decorators.require_login
+    @decorators.require_moderator
+    def configure_flair(self, subreddit, flair_enabled=False,
+                        flair_position='right',
+                        flair_self_assign=False,
+                        link_flair_enabled=False,
+                        link_flair_position='left',
+                        link_flair_self_assign=False):
+        """Configure the flair setting for the given subreddit."""
+        flair_enabled = 'on' if flair_enabled else 'off'
+        flair_self_assign = 'on' if flair_self_assign else 'off'
+        if not link_flair_enabled:
+            link_flair_position = ''
+        link_flair_self_assign = 'on' if link_flair_self_assign else 'off'
+        params = {'r': six.text_type(subreddit),
+                  'flair_enabled': flair_enabled,
+                  'flair_position': flair_position,
+                  'flair_self_assign_enabled': flair_self_assign,
+                  'link_flair_position': link_flair_position,
+                  'link_flair_self_assign_enabled': link_flair_self_assign}
+        return self.request_json(self.config['flairconfig'], params)
+
     def flair_list(self, subreddit, limit=None):
         """
         Return generator of flair mappings.
@@ -535,10 +558,8 @@ class SubredditExtension(BaseReddit):
         """Set the settings for the given subreddit."""
 
         # Temporary support for no longer valid entries
-        if wiki_edit_age is None:
-            wiki_edit_age = ''
-        if wiki_edit_karma is None:
-            wiki_edit_karma = ''
+        wiki_edit_age = wiki_edit_age or ''
+        wiki_edit_karma = wiki_edit_karma or ''
 
         params = {'r': six.text_type(subreddit),
                   'sr': subreddit.content_id,
@@ -867,7 +888,12 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
 
     def search(self, query, subreddit=None, sort=None, limit=0, *args,
                **kwargs):
-        """Return submissions whose title contains the query phrase."""
+        """
+        Return submissions that match the search query.
+
+        See http://www.reddit.com/help/search for more information on how to
+        build a search query.
+        """
         url_data = {'q': query}
         if sort:
             url_data['sort'] = sort

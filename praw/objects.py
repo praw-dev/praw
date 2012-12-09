@@ -26,7 +26,7 @@ import six
 import warnings
 
 from requests.compat import urljoin
-from praw.decorators import limit_chars, require_login
+from praw.decorators import limit_chars, require_login, require_moderator
 from praw.errors import ClientException
 from praw.helpers import (_get_section, _get_sorter, _modify_relationship,
                           _request)
@@ -122,16 +122,20 @@ class RedditContentObject(object):
 class Approvable(RedditContentObject):
     """Interface for Reddit content objects that can be approved."""
     @require_login
+    @require_moderator
     def approve(self):
         """Give approval to object."""
         url = self.reddit_session.config['approve']
         params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
+        if isinstance(self, Submission):
+            urls += self.subreddit._listing_urls
         _request.evict(urls)  # pylint: disable-msg=E1101
         return response
 
     @require_login
+    @require_moderator
     def remove(self, spam=False):
         """Remove approval from object."""
         url = self.reddit_session.config['remove']
@@ -139,6 +143,8 @@ class Approvable(RedditContentObject):
                   'spam': 'True' if spam else 'False'}
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
+        if isinstance(self, Submission):
+            urls += self.subreddit._listing_urls
         _request.evict(urls)  # pylint: disable-msg=E1101
         return response
 
@@ -158,18 +164,23 @@ class Deletable(RedditContentObject):
 class Distinguishable(RedditContentObject):
     """Interface for Reddit content objects that can be distinguished."""
     @require_login
-    def distinguish(self):
-        """Distinguish object as made by mod / admin."""
+    def distinguish(self, as_made_by='mod'):
+        """
+        Distinguish object as made by mod, admin or special.
+
+        Distingusihed objects have a different background author color.
+        Similar to how the comments of the original poster are distinguished
+        from other comments in submissions.
+        """
         url = self.reddit_session.config['distinguish']
-        params = {'id': self.content_id}
+        params = {'id': self.content_id,
+                  'how': 'yes' if as_made_by == 'mod' else as_made_by}
         return self.reddit_session.request_json(url, params)
 
     @require_login
     def undistinguish(self):
-        """Remove mod / admin distinguishing on object."""
-        url = self.reddit_session.config['undistinguish']
-        params = {'id': self.content_id}
-        return self.reddit_session.request_json(url, params)
+        """Remove mod, admin or special distinguishing on object."""
+        return self.distinguish(as_made_by='no')
 
 
 class Editable(RedditContentObject):
@@ -358,7 +369,7 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
             self._replies = None
         self._submission = None
 
-    @limit_chars()
+    @limit_chars
     def __unicode__(self):
         return getattr(self, 'body', '[Unloaded Comment]')
 
@@ -416,7 +427,7 @@ class Message(Inboxable):
         else:
             self.replies = []
 
-    @limit_chars()
+    @limit_chars
     def __unicode__(self):
         return 'From: %s\nSubject: %s\n\n%s' % (self.author, self.subject,
                                                 self.body)
@@ -606,7 +617,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
         self._comments_flat = None
         self._orphaned = {}
 
-    @limit_chars()
+    @limit_chars
     def __unicode__(self):
         title = self.title.replace('\r\n', ' ')
         return six.text_type('{0} :: {1}').format(self.score, title)
@@ -823,6 +834,10 @@ class Subreddit(Messageable, NSFWable, Refreshable):
                                         info_url)
         self.display_name = subreddit_name
         self._url = reddit_session.config['subreddit'] % subreddit_name
+        # '' is the hot listing
+        listings = ['new/', '', 'top/', 'controversial/']
+        base = (reddit_session.config['subreddit'] % self.display_name)
+        self._listing_urls = [base + x + '.json' for x in listings]
 
     def __unicode__(self):
         """Return the subreddit's display name. E.g. python or askreddit."""
@@ -833,7 +848,7 @@ class Subreddit(Messageable, NSFWable, Refreshable):
         return self.reddit_session.add_flair_template(self, *args, **kwargs)
 
     def clear_all_flair(self):
-        """Remove all flair on this subreddit."""
+        """Remove all user flair on this subreddit."""
         csv = [{'user': x['user']} for x in self.flair_list()]
         if csv:
             return self.set_flair_csv(csv)
@@ -843,6 +858,10 @@ class Subreddit(Messageable, NSFWable, Refreshable):
     def clear_flair_templates(self, *args, **kwargs):
         """Clear flair templates for this subreddit."""
         return self.reddit_session.clear_flair_templates(self, *args, **kwargs)
+
+    def configure_flair(self, *args, **kwargs):
+        """Set overall flair settings for this subreddit."""
+        return self.reddit_session.configure_flair(self, *args, **kwargs)
 
     def flair_list(self, *args, **kwargs):
         """Return a list of flair for this subreddit."""

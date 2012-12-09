@@ -80,7 +80,6 @@ class Memoize(object):
 
 class RequireCaptcha(object):
     """Decorator for methods that require captchas."""
-
     @staticmethod
     def get_captcha(reddit_session, captcha_id):
         url = urljoin(reddit_session.config['captcha'],
@@ -146,17 +145,16 @@ class SleepAfter(object):  # pylint: disable-msg=R0903
         return self.function(*args, **kwargs)
 
 
-def limit_chars(num_chars=80):
+def limit_chars(function):
     """Limit the number of chars in a function that outputs a string."""
-    def function_limiter(function):
-        @wraps(function)
-        def function_wrapper(self, *args, **kwargs):
-            output_string = function(self, *args, **kwargs)
-            if len(output_string) > num_chars:
-                output_string = output_string[:num_chars - 3] + '...'
-            return output_string
-        return function_wrapper
-    return function_limiter
+    @wraps(function)
+    def function_wrapper(self, *args, **kwargs):
+        num_chars = self.reddit_session.config.num_chars
+        output_string = function(self, *args, **kwargs)
+        if len(output_string) > num_chars:
+            output_string = output_string[:num_chars - 3] + '...'
+        return output_string
+    return function_wrapper
 
 
 def parse_api_json_response(function):  # pylint: disable-msg=R0912
@@ -211,23 +209,29 @@ def require_login(function):
 def require_moderator(function):
     """Ensure the user is a moderator of the subreddit."""
     @wraps(function)
-    def moderator_required_function(self, subreddit, *args, **kwargs):
-        if not self.user.is_mod:
+    def moderator_required_function(self, *args, **kwargs):
+        if isinstance(self, RedditContentObject):
+            subreddit = self.subreddit
+            user = self.reddit_session.user
+        else:
+            subreddit = args[0]
+            user = self.user
+        if not user.is_mod:
             raise errors.ModeratorRequired('%r is not moderator' %
-                                           six.text_type(self.user))
+                                           six.text_type(user))
 
         # pylint: disable-msg=W0212
-        if self.user._mod_subs is None:
-            self.user._mod_subs = {'mod': self.get_subreddit('mod')}
-            for sub in self.user.my_moderation(limit=None):
-                self.user._mod_subs[six.text_type(sub).lower()] = sub
+        if user._mod_subs is None:
+            user._mod_subs = {'mod': user.reddit_session.get_subreddit('mod')}
+            for sub in user.my_moderation(limit=None):
+                user._mod_subs[six.text_type(sub).lower()] = sub
 
         # Allow for multireddits
         for sub in six.text_type(subreddit).lower().split('+'):
-            if sub not in self.user._mod_subs:
+            if sub not in user._mod_subs:
                 raise errors.ModeratorRequired('%r is not a moderator of %r' %
-                                               (six.text_type(self.user), sub))
-        return function(self, subreddit, *args, **kwargs)
+                                               (six.text_type(user), sub))
+        return function(self, *args, **kwargs)
     return moderator_required_function
 
 
