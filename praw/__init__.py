@@ -169,7 +169,6 @@ class Config(object):  # pylint: disable-msg=R0903
 
 class BaseReddit(object):
     """The base class for a reddit session."""
-    DEFAULT_HEADERS = {}
     RETRY_CODES = [502, 503, 504]
     update_checked = False
 
@@ -197,9 +196,9 @@ class BaseReddit(object):
         if not user_agent or not isinstance(user_agent, six.string_types):
             raise TypeError('User agent must be a non-empty string.')
 
-        self.DEFAULT_HEADERS['User-agent'] = UA_STRING % user_agent
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
         self.http = requests.session()
+        self.http.headers['User-Agent'] = UA_STRING % user_agent
         self.modhash = self.user = None
 
         # Check for updates if permitted and this is the first Reddit instance

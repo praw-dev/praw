@@ -91,8 +91,23 @@ def _request(reddit_session, page_url, params=None, data=None, timeout=45,
         method = reddit_session.http.post
     else:
         method = reddit_session.http.get
-    response = method(page_url, params=params, data=data, timeout=timeout,
-                      headers=reddit_session.DEFAULT_HEADERS)
+
+    response = None
+    while True:
+        try:
+            response = method(page_url, params=params, data=data,
+                              timeout=timeout, allow_redirects=False)
+        finally:
+            # Hack to force-close the connection (if needed) until
+            # https://github.com/shazow/urllib3/pull/133 is added to urllib3
+            # and then the version of urllib3 in requests is updated We also
+            # have to manually handle redirects for now because of this.
+            if response and response.raw._fp.will_close:
+                response.raw._fp.close()
+        if response.status_code == 302:
+            page_url = urljoin(page_url, response.headers['location'])
+        else:
+            break
     response.raise_for_status()
     if raw:
         return response
