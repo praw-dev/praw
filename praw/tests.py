@@ -25,6 +25,7 @@ import time
 import unittest
 import uuid
 import warnings
+from functools import wraps
 from requests.compat import urljoin
 from requests.exceptions import HTTPError, Timeout
 from six import advance_iterator as six_next, text_type
@@ -43,6 +44,26 @@ def flair_diff(root, other):
     other_items = set(tuple(item[key].lower() if key in item and item[key] else
                             '' for key in keys) for item in other)
     return list(root_items - other_items)
+
+
+def local_only(function):
+    @wraps(function)
+    def local_only_function(obj):
+        if not obj.r.config.is_reddit:
+            return function(obj)
+        print('Passing local only test: {0}.{1}'.format(
+                obj.__class__.__name__, function.__name__))
+    return local_only_function
+
+
+def reddit_only(function):
+    @wraps(function)
+    def reddit_only_function(obj):
+        if obj.r.config.is_reddit:
+            return function(obj)
+        print('Passing reddit only test: {0}.{1}'.format(
+                obj.__class__.__name__, function.__name__))
+    return reddit_only_function
 
 
 class BasicHelper(object):
@@ -121,13 +142,14 @@ class BasicTest(unittest.TestCase, BasicHelper):
         result = self.r.get_new(limit=num, url_data={'sort': 'new'})
         self.assertEqual(num, len(list(result)))
 
+    @reddit_only
     def test_get_popular_reddits(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_popular_reddits(limit=num))))
 
     def test_get_random_subreddit(self):
         subs = set()
-        for i in range(3):
+        for _ in range(3):
             subs.add(self.r.get_subreddit('RANDOM').display_name)
         self.assertTrue(len(subs) > 1)
 
@@ -162,8 +184,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(found_link in found_by_id)
 
     def test_is_username_available(self):
-        self.assertFalse(self.r.is_username_available('_Daimon_'))
-        self.assertTrue(self.r.is_username_available('_Daimon__'))
+        self.assertFalse(self.r.is_username_available(self.un))
+        self.assertTrue(self.r.is_username_available(self.un + '___'))
         self.assertFalse(self.r.is_username_available(''))
 
     def test_not_logged_in_submit(self):
@@ -178,9 +200,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertRaises(TypeError, Reddit, user_agent='')
         self.assertRaises(TypeError, Reddit, user_agent=1)
 
+    @reddit_only
     def test_search(self):
-        if not self.r.config.is_reddit:
-            raise Exception('Search does not work locally.')
         self.assertTrue(len(list(self.r.search('test'))) > 0)
 
     def test_search_reddit_names(self):
@@ -575,18 +596,19 @@ class FlairTemplateTest(unittest.TestCase, AuthenticatedHelper):
 class LocalOnlyTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
-        if self.r.config.is_reddit:
-            raise Exception('This test is for localhost only.')
 
+    @local_only
     def test_create_existing_subreddit(self):
         self.r.login(self.un, '1111')
         self.assertRaises(errors.APIException, self.r.create_subreddit,
                           self.sr, 'foo')
 
+    @local_only
     def test_create_redditor(self):
         unique_name = 'PyApiTestUser%d' % random.randint(3, 10240)
         self.r.create_redditor(unique_name, '1111')
 
+    @local_only
     def test_create_subreddit(self):
         unique_name = 'test%d' % random.randint(3, 10240)
         description = '#Welcome to %s\n\n0 item 1\n0 item 2\n' % unique_name
@@ -594,10 +616,12 @@ class LocalOnlyTest(unittest.TestCase, BasicHelper):
         self.r.create_subreddit(unique_name, 'The %s' % unique_name,
                                 description)
 
+    @local_only
     def test_failed_feedback(self):
         self.assertRaises(errors.APIException, self.r.send_feedback,
                           'a', 'b', 'c')
 
+    @local_only
     def test_send_feedback(self):
         msg = 'You guys are awesome. (Sent from the PRAW python module).'
         self.r.send_feedback('Bryce Boe', 'foo@foo.com', msg)
@@ -812,7 +836,6 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(None, submission.author)
 
     def test_deprecated_saved_links(self):
-        subject = 'Deprecated Test'
         with warnings.catch_warnings(record=True) as warning:
             warnings.simplefilter('always')
             self.r.get_saved_links()
@@ -1074,9 +1097,8 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.refresh()
         self.assertEqual(originally_nsfw, self.subreddit.over18)
 
+    @reddit_only
     def test_search(self):
-        if not self.r.config.is_reddit:
-            raise Exception('Search does not work locally.')
         self.assertTrue(len(list(self.subreddit.search('test'))) > 0)
 
     def test_subscribe_and_verify(self):
