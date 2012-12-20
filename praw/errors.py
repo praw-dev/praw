@@ -84,6 +84,11 @@ class ExceptionList(APIException):
         return ret
 
 
+class AlreadySubmitted(APIException):
+    """An exception to indicate that a URL was previously submitted."""
+    ERROR_TYPE = 'ALREADY_SUB'
+
+
 class InvalidUserPass(APIException):
     """An exception for failed logins."""
     ERROR_TYPE = 'WRONG_PASSWORD'
@@ -99,6 +104,11 @@ class NotLoggedIn(APIException):
     ERROR_TYPE = 'USER_REQUIRED'
 
 
+class SubredditExists(APIException):
+    """An exception to indicate that a subreddit name is not available."""
+    ERROR_TYPE = 'SUBREDDIT_EXISTS'
+
+
 class RateLimitExceeded(APIException):
     """An exception for when something has happened too frequently."""
     ERROR_TYPE = 'RATELIMIT'
@@ -107,6 +117,11 @@ class RateLimitExceeded(APIException):
         super(RateLimitExceeded, self).__init__(error_type, message,
                                                 field, response)
         self.sleep_time = self.response['ratelimit']
+
+
+class UsernameExists(APIException):
+    """An exception to indicate that a username is not available."""
+    ERROR_TYPE = 'USERNAME_TAKEN'
 
 
 def _build_error_mapping():
