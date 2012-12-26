@@ -72,6 +72,7 @@ class BasicHelper(object):
         self.sr = 'reddit_api_test'
         self.un = 'PyApiTestUser2'
         self.other_user_name = 'PyApiTestUser3'
+        self.invalid_user_name = 'PyApiTestInvalid'
 
         if self.r.config.is_reddit:
             self.comment_url = self.url('r/redditdev/comments/dtg4j/')
@@ -185,7 +186,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_is_username_available(self):
         self.assertFalse(self.r.is_username_available(self.un))
-        self.assertTrue(self.r.is_username_available(self.un + '___'))
+        self.assertTrue(self.r.is_username_available(self.invalid_user_name))
         self.assertFalse(self.r.is_username_available(''))
 
     def test_not_logged_in_submit(self):
@@ -431,58 +432,6 @@ class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.fail('Could not find comment on other user\'s list')
 
-
-class SettingsTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
-
-    def test_set_settings(self):
-        title = 'Reddit API Test %s' % uuid.uuid4()
-        self.subreddit.set_settings(title)
-        self.assertEqual(self.subreddit.get_settings()['title'], title)
-
-    def test_set_settings_none_values(self):
-        title = 'Reddit API Test %s' % uuid.uuid4()
-        self.subreddit.set_settings(title, wiki_edit_age=None,
-                                    wiki_edit_karma=None)
-        self.assertEqual(self.subreddit.get_settings()['title'], title)
-
-    def test_set_stylesheet(self):
-        stylesheet = ('div.titlebox span.number:after {\ncontent: " %s"\n' %
-                      uuid.uuid4())
-        self.subreddit.set_stylesheet(stylesheet)
-        self.assertEqual(stylesheet,
-                         self.subreddit.get_stylesheet()['stylesheet'])
-
-    def test_update_settings_description(self):
-        self.maxDiff = None
-        settings = self.subreddit.get_settings()
-        settings['description'] = 'Description %s' % uuid.uuid4()
-        self.subreddit.update_settings(description=settings['description'])
-        new = self.subreddit.get_settings()
-        # The id should change, but nothing else
-        key = 'prev_description_id'
-        self.assertNotEqual(settings[key], new[key])
-        del settings[key]
-        del new[key]
-        self.assertEqual(settings, new)
-
-    def test_update_settings_public_description(self):
-        self.maxDiff = None
-        settings = self.subreddit.get_settings()
-        settings['public_description'] = 'Description %s' % uuid.uuid4()
-        self.subreddit.update_settings(
-            public_description=settings['public_description'])
-        new = self.subreddit.get_settings()
-        # The id should change, but nothing else
-        key = 'prev_public_description_id'
-        self.assertNotEqual(settings[key], new[key])
-        del settings[key]
-        del new[key]
-        self.assertEqual(settings, new)
-
-
 class FlairTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
@@ -514,7 +463,8 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(flair['flair_css_class'], None)
 
     def test_add_user_flair_to_invalid_user(self):
-        self.assertRaises(errors.APIException, self.subreddit.set_flair, 'b')
+        self.assertRaises(errors.InvalidFlairTarget, self.subreddit.set_flair,
+                          self.invalid_user_name)
 
     def test_add_user_flair_by_name(self):
         flair_text = 'Flair: %s' % uuid.uuid4()
@@ -598,9 +548,15 @@ class LocalOnlyTest(unittest.TestCase, BasicHelper):
         self.configure()
 
     @local_only
+    def test_create_existing_redditor(self):
+        self.r.login(self.un, '1111')
+        self.assertRaises(errors.UsernameExists, self.r.create_redditor,
+                          self.other_user_name, '1111')
+
+    @local_only
     def test_create_existing_subreddit(self):
         self.r.login(self.un, '1111')
-        self.assertRaises(errors.APIException, self.r.create_subreddit,
+        self.assertRaises(errors.SubredditExists, self.r.create_subreddit,
                           self.sr, 'foo')
 
     @local_only
@@ -618,7 +574,7 @@ class LocalOnlyTest(unittest.TestCase, BasicHelper):
 
     @local_only
     def test_failed_feedback(self):
-        self.assertRaises(errors.APIException, self.r.send_feedback,
+        self.assertRaises(errors.InvalidEmails, self.r.send_feedback,
                           'a', 'b', 'c')
 
     @local_only
@@ -709,6 +665,11 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
                 break
         else:
             self.fail('Could not find the message we just sent to ourself.')
+
+    def test_send_invalid(self):
+        subject = 'Unique message: %s' % uuid.uuid4()
+        self.assertRaises(errors.InvalidUser, self.r.send_message,
+                          self.invalid_user_name, subject, 'Message content')
 
 
 class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
@@ -812,6 +773,143 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(isinstance(self.r.user, LoggedInRedditor))
 
 
+class SettingsTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
+
+    def test_set_settings(self):
+        title = 'Reddit API Test %s' % uuid.uuid4()
+        self.subreddit.set_settings(title)
+        self.assertEqual(self.subreddit.get_settings()['title'], title)
+
+    def test_set_settings_none_values(self):
+        title = 'Reddit API Test %s' % uuid.uuid4()
+        self.subreddit.set_settings(title, wiki_edit_age=None,
+                                    wiki_edit_karma=None)
+        self.assertEqual(self.subreddit.get_settings()['title'], title)
+
+    def test_set_stylesheet(self):
+        stylesheet = ('div.titlebox span.number:after {\ncontent: " %s"\n' %
+                      uuid.uuid4())
+        self.subreddit.set_stylesheet(stylesheet)
+        self.assertEqual(stylesheet,
+                         self.subreddit.get_stylesheet()['stylesheet'])
+
+    def test_update_settings_description(self):
+        self.maxDiff = None
+        settings = self.subreddit.get_settings()
+        settings['description'] = 'Description %s' % uuid.uuid4()
+        self.subreddit.update_settings(description=settings['description'])
+        new = self.subreddit.get_settings()
+        # The id should change, but nothing else
+        key = 'prev_description_id'
+        self.assertNotEqual(settings[key], new[key])
+        del settings[key]
+        del new[key]
+        self.assertEqual(settings, new)
+
+    def test_update_settings_public_description(self):
+        self.maxDiff = None
+        settings = self.subreddit.get_settings()
+        settings['public_description'] = 'Description %s' % uuid.uuid4()
+        self.subreddit.update_settings(
+            public_description=settings['public_description'])
+        new = self.subreddit.get_settings()
+        # The id should change, but nothing else
+        key = 'prev_public_description_id'
+        self.assertNotEqual(settings[key], new[key])
+        del settings[key]
+        del new[key]
+        self.assertEqual(settings, new)
+
+
+class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+
+    def test_create_duplicate(self):
+        found = None
+        for item in self.r.user.get_submitted():
+            if not item.is_self:
+                found = item
+                break
+        else:
+            self.fail('Could not find link post')
+        self.assertRaises(errors.AlreadySubmitted, self.r.submit, self.sr,
+                          found.title, url=found.url)
+
+    def test_create_link_through_subreddit(self):
+        unique = uuid.uuid4()
+        title = 'Test Link: %s' % unique
+        url = 'http://bryceboe.com/?bleh=%s' % unique
+        subreddit = self.r.get_subreddit(self.sr)
+        submission = subreddit.submit(title, url=url)
+        self.assertEqual(submission.title, title)
+        self.assertEqual(submission.url, url)
+
+    def test_create_self_and_verify(self):
+        title = 'Test Self: %s' % uuid.uuid4()
+        content = 'BODY'
+        submission = self.r.submit(self.sr, title, text=content)
+        self.assertEqual(submission.title, title)
+        self.assertEqual(submission.selftext, content)
+
+
+class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
+
+    def test_edit_link(self):
+        found = None
+        for item in self.r.user.get_submitted():
+            if not item.is_self:
+                found = item
+                break
+        else:
+            self.fail('Could not find link post')
+        self.assertRaises(HTTPError, found.edit, 'text')
+
+    def test_edit_self(self):
+        found = None
+        for item in self.r.user.get_submitted():
+            if item.is_self:
+                found = item
+                break
+        else:
+            self.fail('Could not find self post')
+        new_body = '%s\n\n+Edit Text' % found.selftext
+        found = found.edit(new_body)
+        self.assertEqual(found.selftext, new_body)
+
+    def test_mark_as_nsfw(self):
+        self.disable_cache()
+        found = None
+        for item in self.subreddit.get_top():
+            if not item.over_18:
+                found = item
+                break
+        else:
+            self.fail("Couldn't find a SFW submission")
+        found.mark_as_nsfw()
+        found.refresh()
+        self.assertTrue(found.over_18)
+
+    def test_unmark_as_nsfw(self):
+        self.disable_cache()
+        found = None
+        for item in self.subreddit.get_top():
+            if item.over_18:
+                found = item
+                break
+        else:
+            self.fail("Couldn't find a NSFW submission")
+        found.unmark_as_nsfw()
+        found.refresh()
+        self.assertFalse(found.over_18)
+
+
 class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
@@ -827,6 +925,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, None)
+
 
     def test_delete(self):
         submission = list(self.r.user.get_submitted())[-1]
@@ -862,7 +961,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
                 found = item
                 break
         else:
-            self.fail("Couldn't find a unhidden submission")
+            self.fail("Couldn't find an unhidden submission")
         found.hide()
         found.refresh()
         self.assertTrue(found.hidden)
@@ -948,93 +1047,6 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, True)
-
-
-class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    def test_create_duplicate(self):
-        found = None
-        for item in self.r.user.get_submitted():
-            if not item.is_self:
-                found = item
-                break
-        else:
-            self.fail('Could not find link post')
-        self.assertRaises(errors.APIException, self.r.submit, self.sr,
-                          found.title, url=found.url)
-
-    def test_create_link_through_subreddit(self):
-        unique = uuid.uuid4()
-        title = 'Test Link: %s' % unique
-        url = 'http://bryceboe.com/?bleh=%s' % unique
-        subreddit = self.r.get_subreddit(self.sr)
-        submission = subreddit.submit(title, url=url)
-        self.assertEqual(submission.title, title)
-        self.assertEqual(submission.url, url)
-
-    def test_create_self_and_verify(self):
-        title = 'Test Self: %s' % uuid.uuid4()
-        content = 'BODY'
-        submission = self.r.submit(self.sr, title, text=content)
-        self.assertEqual(submission.title, title)
-        self.assertEqual(submission.selftext, content)
-
-
-class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
-
-    def test_edit_link(self):
-        found = None
-        for item in self.r.user.get_submitted():
-            if not item.is_self:
-                found = item
-                break
-        else:
-            self.fail('Could not find link post')
-        self.assertRaises(HTTPError, found.edit, 'text')
-
-    def test_edit_self(self):
-        found = None
-        for item in self.r.user.get_submitted():
-            if item.is_self:
-                found = item
-                break
-        else:
-            self.fail('Could not find self post')
-        new_body = '%s\n\n+Edit Text' % found.selftext
-        found = found.edit(new_body)
-        self.assertEqual(found.selftext, new_body)
-
-    def test_mark_as_nsfw(self):
-        self.disable_cache()
-        found = None
-        for item in self.subreddit.get_top():
-            if not item.over_18:
-                found = item
-                break
-        else:
-            self.fail("Couldn't find a SFW submission")
-        found.mark_as_nsfw()
-        found.refresh()
-        self.assertTrue(found.over_18)
-
-    def test_unmark_as_nsfw(self):
-        self.disable_cache()
-        found = None
-        for item in self.subreddit.get_top():
-            if item.over_18:
-                found = item
-                break
-        else:
-            self.fail("Couldn't find a NSFW submission")
-        found.unmark_as_nsfw()
-        found.refresh()
-        self.assertFalse(found.over_18)
-
 
 class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):

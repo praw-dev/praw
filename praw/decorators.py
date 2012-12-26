@@ -112,7 +112,7 @@ class RequireCaptcha(object):
                     kwargs['captcha'] = self.get_captcha(reddit_session,
                                                          captcha_id)
                 return self.function(*args, **kwargs)
-            except errors.BadCaptcha as exception:
+            except errors.InvalidCaptcha as exception:
                 captcha_id = exception.response['captcha']
 
 

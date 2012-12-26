@@ -66,11 +66,6 @@ class APIException(Exception):
                                                 self.field)
 
 
-class BadCaptcha(APIException):
-    """An exception for when an incorrect captcha error is returned."""
-    ERROR_TYPE = 'BAD_CAPTCHA'
-
-
 class ExceptionList(APIException):
     """Raised when more than one exception occured."""
     def __init__(self, errors):
@@ -89,14 +84,29 @@ class AlreadySubmitted(APIException):
     ERROR_TYPE = 'ALREADY_SUB'
 
 
+class InvalidCaptcha(APIException):
+    """An exception for when an incorrect captcha error is returned."""
+    ERROR_TYPE = 'BAD_CAPTCHA'
+
+
+class InvalidEmails(APIException):
+    """An exception for when invalid emails are provided."""
+    ERROR_TYPE = 'BAD_EMAILS'
+
+
+class InvalidFlairTarget(APIException):
+    """An exception raised when an invalid user is passed as a flair target."""
+    ERROR_TYPE = 'BAD_FLAIR_TARGET'
+
+
+class InvalidUser(APIException):
+    """An exception for when a user doesn't exist."""
+    ERROR_TYPE = 'USER_DOESNT_EXIST'
+
+
 class InvalidUserPass(APIException):
     """An exception for failed logins."""
     ERROR_TYPE = 'WRONG_PASSWORD'
-
-
-class NonExistentUser(APIException):
-    """An exception for when a user doesn't exist."""
-    ERROR_TYPE = 'USER_DOESNT_EXIST'
 
 
 class NotLoggedIn(APIException):
