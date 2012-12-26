@@ -94,6 +94,7 @@ def _request(reddit_session, page_url, params=None, data=None, timeout=45,
 
     response = None
     while True:
+        # pylint: disable-msg=W0212
         try:
             response = method(page_url, params=params, data=data,
                               timeout=timeout, allow_redirects=False)

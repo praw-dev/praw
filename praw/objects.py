@@ -130,7 +130,7 @@ class Approvable(RedditContentObject):
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
         if isinstance(self, Submission):
-            urls += self.subreddit._listing_urls
+            urls += self.subreddit._listing_urls  # pylint: disable-msg=W0212
         _request.evict(urls)  # pylint: disable-msg=E1101
         return response
 
@@ -144,7 +144,7 @@ class Approvable(RedditContentObject):
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
         if isinstance(self, Submission):
-            urls += self.subreddit._listing_urls
+            urls += self.subreddit._listing_urls  # pylint: disable-msg=W0212
         _request.evict(urls)  # pylint: disable-msg=E1101
         return response
 
@@ -300,7 +300,7 @@ class Reportable(RedditContentObject):
         params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
         # Reported objects are automatically hidden as well
-        # pylint: disable-msg=E1101
+        # pylint: disable-msg=E1101,W0212
         _request.evict([self.reddit_session.config['user'],
                         urljoin(self.reddit_session.user._url, 'hidden')])
         return response

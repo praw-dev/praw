@@ -432,6 +432,7 @@ class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.fail('Could not find comment on other user\'s list')
 
+
 class FlairTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
@@ -926,7 +927,6 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, None)
 
-
     def test_delete(self):
         submission = list(self.r.user.get_submitted())[-1]
         submission.delete()
@@ -1047,6 +1047,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(submission.likes, True)
+
 
 class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
