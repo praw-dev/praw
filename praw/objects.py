@@ -26,7 +26,7 @@ import six
 import warnings
 
 from requests.compat import urljoin
-from praw.decorators import limit_chars, require_login
+from praw.decorators import limit_chars, require_login, require_moderator
 from praw.errors import ClientException
 from praw.helpers import (_get_section, _get_sorter, _modify_relationship,
                           _request)
@@ -122,16 +122,20 @@ class RedditContentObject(object):
 class Approvable(RedditContentObject):
     """Interface for Reddit content objects that can be approved."""
     @require_login
+    @require_moderator
     def approve(self):
         """Give approval to object."""
         url = self.reddit_session.config['approve']
         params = {'id': self.content_id}
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
+        if isinstance(self, Submission):
+            urls += self.subreddit._listing_urls
         _request.evict(urls)  # pylint: disable-msg=E1101
         return response
 
     @require_login
+    @require_moderator
     def remove(self, spam=False):
         """Remove approval from object."""
         url = self.reddit_session.config['remove']
@@ -139,6 +143,8 @@ class Approvable(RedditContentObject):
                   'spam': 'True' if spam else 'False'}
         response = self.reddit_session.request_json(url, params)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
+        if isinstance(self, Submission):
+            urls += self.subreddit._listing_urls
         _request.evict(urls)  # pylint: disable-msg=E1101
         return response
 
@@ -831,6 +837,10 @@ class Subreddit(Messageable, NSFWable, Refreshable):
                                         info_url)
         self.display_name = subreddit_name
         self._url = reddit_session.config['subreddit'] % subreddit_name
+        # '' is the hot listing
+        listings = ['new/', '', 'top/', 'controversial/']
+        base = (reddit_session.config['subreddit'] % self.display_name)
+        self._listing_urls = [base + x + '.json' for x in listings]
 
     def __unicode__(self):
         """Return the subreddit's display name. E.g. python or askreddit."""
@@ -841,7 +851,7 @@ class Subreddit(Messageable, NSFWable, Refreshable):
         return self.reddit_session.add_flair_template(self, *args, **kwargs)
 
     def clear_all_flair(self):
-        """Remove all flair on this subreddit."""
+        """Remove all user flair on this subreddit."""
         csv = [{'user': x['user']} for x in self.flair_list()]
         if csv:
             return self.set_flair_csv(csv)
