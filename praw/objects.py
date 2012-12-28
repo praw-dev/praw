@@ -214,8 +214,8 @@ class Approvable(RedditContentObject):
     def approve(self):
         """Give approval to object."""
         url = self.reddit_session.config['approve']
-        params = {'id': self.content_id}
-        response = self.reddit_session.request_json(url, params)
+        data = {'id': self.content_id}
+        response = self.reddit_session.request_json(url, data=data)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
         if isinstance(self, Submission):
             urls += self.subreddit._listing_urls  # pylint: disable-msg=W0212
@@ -227,9 +227,9 @@ class Approvable(RedditContentObject):
     def remove(self, spam=False):
         """Remove approval from object."""
         url = self.reddit_session.config['remove']
-        params = {'id': self.content_id,
-                  'spam': 'True' if spam else 'False'}
-        response = self.reddit_session.request_json(url, params)
+        data = {'id': self.content_id,
+                'spam': 'True' if spam else 'False'}
+        response = self.reddit_session.request_json(url, data=data)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
         if isinstance(self, Submission):
             urls += self.subreddit._listing_urls  # pylint: disable-msg=W0212
@@ -242,8 +242,8 @@ class Deletable(RedditContentObject):
     def delete(self):
         """Delete this object."""
         url = self.reddit_session.config['del']
-        params = {'id': self.content_id}
-        response = self.reddit_session.request_json(url, params)
+        data = {'id': self.content_id}
+        response = self.reddit_session.request_json(url, data=data)
         # pylint: disable-msg=E1101
         _request.evict([self.reddit_session.config['user']])
         return response
@@ -261,9 +261,9 @@ class Distinguishable(RedditContentObject):
         from other comments in submissions.
         """
         url = self.reddit_session.config['distinguish']
-        params = {'id': self.content_id,
-                  'how': 'yes' if as_made_by == 'mod' else as_made_by}
-        return self.reddit_session.request_json(url, params)
+        data = {'id': self.content_id,
+                'how': 'yes' if as_made_by == 'mod' else as_made_by}
+        return self.reddit_session.request_json(url, data=data)
 
     @require_login
     def undistinguish(self):
@@ -276,9 +276,9 @@ class Editable(RedditContentObject):
     def edit(self, text):
         """Edit the object to `text`"""
         url = self.reddit_session.config['edit']
-        params = {'thing_id': self.content_id,
-                  'text': text}
-        response = self.reddit_session.request_json(url, params)
+        data = {'thing_id': self.content_id,
+                'text': text}
+        response = self.reddit_session.request_json(url, data=data)
         # pylint: disable-msg=E1101
         _request.evict([self.reddit_session.config['user']])
         # REDDIT: reddit's end should only ever return a single comment
@@ -291,9 +291,9 @@ class Hideable(RedditContentObject):
     def hide(self, unhide=False):
         """Hide object in the context of the logged in user."""
         url = self.reddit_session.config['unhide' if unhide else 'hide']
-        params = {'id': self.content_id,
-                  'executed': 'unhide' if unhide else 'hide'}
-        response = self.reddit_session.request_json(url, params)
+        data = {'id': self.content_id,
+                'executed': 'unhide' if unhide else 'hide'}
+        response = self.reddit_session.request_json(url, data=data)
         # pylint: disable-msg=W0212
         urls = [urljoin(self.reddit_session.user._url, 'hidden')]
         _request.evict(urls)
@@ -349,9 +349,9 @@ class NSFWable(RedditContentObject):
         """Mark object as Not Safe For Work ( Porn / Gore )."""
         url = self.reddit_session.config['unmarknsfw' if unmarknsfw else
                                          'marknsfw']
-        params = {'id': self.content_id,
-                  'executed': 'unmarknsfw' if unmarknsfw else 'marknsfw'}
-        return self.reddit_session.request_json(url, params)
+        data = {'id': self.content_id,
+                'executed': 'unmarknsfw' if unmarknsfw else 'marknsfw'}
+        return self.reddit_session.request_json(url, data=data)
 
     def unmark_as_nsfw(self):
         """Mark object as Safe For Work, no porn or gore."""
@@ -385,8 +385,8 @@ class Reportable(RedditContentObject):
     def report(self):
         """Report this object to the moderators."""
         url = self.reddit_session.config['report']
-        params = {'id': self.content_id}
-        response = self.reddit_session.request_json(url, params)
+        data = {'id': self.content_id}
+        response = self.reddit_session.request_json(url, data=data)
         # Reported objects are automatically hidden as well
         # pylint: disable-msg=E1101,W0212
         _request.evict([self.reddit_session.config['user'],
@@ -400,9 +400,9 @@ class Saveable(RedditContentObject):
     def save(self, unsave=False):
         """Save the object."""
         url = self.reddit_session.config['unsave' if unsave else 'save']
-        params = {'id': self.content_id,
-                  'executed': 'unsaved' if unsave else 'saved'}
-        response = self.reddit_session.request_json(url, params)
+        data = {'id': self.content_id,
+                'executed': 'unsaved' if unsave else 'saved'}
+        response = self.reddit_session.request_json(url, data=data)
         # pylint: disable-msg=E1101
         _request.evict([self.reddit_session.config['saved']])
         return response
@@ -434,13 +434,13 @@ class Voteable(RedditContentObject):
     def vote(self, direction=0):
         """Vote for the given item in the direction specified."""
         url = self.reddit_session.config['vote']
-        params = {'id': self.content_id,
-                  'dir': six.text_type(direction)}
+        data = {'id': self.content_id,
+                'dir': six.text_type(direction)}
         # pylint: disable-msg=W0212
         urls = [urljoin(self.reddit_session.user._url, 'disliked'),
                 urljoin(self.reddit_session.user._url, 'liked')]
         _request.evict(urls)
-        return self.reddit_session.request_json(url, params)
+        return self.reddit_session.request_json(url, data=data)
 
 
 class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
@@ -542,13 +542,13 @@ class MoreComments(RedditContentObject):
                         not in self.submission._comments_by_id]
             if not children:
                 return None
-            params = {'children': ','.join(children),
-                      'link_id': self.submission.content_id,
-                      'r': str(self.submission.subreddit)}
+            data = {'children': ','.join(children),
+                    'link_id': self.submission.content_id,
+                    'r': str(self.submission.subreddit)}
             if self.reddit_session.config.comment_sort:
-                params['where'] = self.reddit_session.config.comment_sort
+                data['where'] = self.reddit_session.config.comment_sort
             url = self.reddit_session.config['morechildren']
-            response = self.reddit_session.request_json(url, params)
+            response = self.reddit_session.request_json(url, data=data)
             self._comments = response['data']['things']
             if update:
                 for comment in self._comments:
@@ -668,7 +668,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
     """A class for submissions to reddit."""
     @staticmethod
     def get_info(reddit_session, url, comments_only=False):
-        url_data = {}
+        params = {}
         comment_limit = reddit_session.config.comment_limit
         comment_sort = reddit_session.config.comment_sort
 
@@ -689,10 +689,10 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
                 comment_limit = class_max
 
         if comment_limit:
-            url_data['limit'] = comment_limit
+            params['limit'] = comment_limit
         if comment_sort:
-            url_data['sort'] = comment_sort
-        s_info, c_info = reddit_session.request_json(url, url_data=url_data)
+            params['sort'] = comment_sort
+        s_info, c_info = reddit_session.request_json(url, params=params)
         if comments_only:
             return c_info['data']['children']
         submission = s_info['data']['children'][0]

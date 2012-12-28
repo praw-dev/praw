@@ -278,22 +278,22 @@ class BaseReddit(object):
             return object_class.from_api_response(self, json_data['data'])
         return json_data
 
-    def get_content(self, page_url, limit=0, url_data=None, place_holder=None,
+    def get_content(self, url, params=None, limit=0, place_holder=None,
                     root_field='data', thing_field='children',
                     after_field='after'):
         """
         A generator method to return reddit content from a URL.
 
-        Starts at the initial page_url, and fetches content using the `after`
+        Starts at the initial url, and fetches content using the `after`
         JSON data until `limit` entries have been fetched, or the
         `place_holder` has been reached.
 
-        :param page_url: the url to start fetching content from
+        :param url: the url to start fetching content from
+        :param params: dictionary containing extra GET data to put in the url
         :param limit: the maximum number of content entries to fetch. If
             limit <= 0, fetch the default_content_limit for the site. If None,
             then fetch unlimited entries--this would be used in conjunction
             with the place_holder param.
-        :param url_data: dictionary containing extra GET data to put in the url
         :param place_holder: if not None, the method will fetch `limit`
             content, stopping if it finds content with `id` equal to
             `place_holder`.
@@ -311,8 +311,8 @@ class BaseReddit(object):
         """
         objects_found = 0
 
-        if url_data is None:
-            url_data = {}
+        if params is None:
+            params = {}
         if limit is None:
             fetch_all = True
         elif limit <= 0:
@@ -323,7 +323,7 @@ class BaseReddit(object):
 
         # While we still need to fetch more content to reach our limit, do so.
         while fetch_all or objects_found < limit:
-            page_data = self.request_json(page_url, url_data=url_data)
+            page_data = self.request_json(url, params=params)
             if root_field:
                 root = page_data[root_field]
             else:
@@ -337,30 +337,24 @@ class BaseReddit(object):
                     return
             # Set/update the 'after' parameter for the next iteration
             if after_field in root and root[after_field]:
-                url_data['after'] = root[after_field]
+                params['after'] = root[after_field]
             else:
                 return
 
     @decorators.parse_api_json_response
-    def request_json(self, page_url, params=None, url_data=None,
-                     as_objects=True):
+    def request_json(self, url, params=None, data=None, as_objects=True):
         """
         Get the JSON processed from a page.
 
-        TODO (before 1.1 release): use `params` for url_data and `data` for
-              params. Then update this documentation.
-        Takes the same parameters as the _request method, plus a param to
-        control whether objects are returned.
-
-        :param page_url
-        :param params
-        :param url_data
+        :param url: the url to grab content from.
+        :param params: a dictionary containing the GET data to put in the url
+        :param data: a dictionary containing the extra data to submit
         :param as_objects: Whether to return constructed reddit objects or the
         raw json dict.
         :returns: JSON processed page
         """
-        page_url += '.json'
-        response = self._request(page_url, url_data, params)
+        url += '.json'
+        response = self._request(url, params, data)
         if as_objects:
             hook = self._json_reddit_objecter
         else:
@@ -426,13 +420,13 @@ class SubredditExtension(BaseReddit):
         if bool(sr_id) == bool(sr_name):
             raise TypeError('One (and only one) of text or url is required!')
         action = 'unsub' if unsubscribe else 'sub'
-        params = {'action': action}
+        data = {'action': action}
         if sr_id:
-            params['sr'] = sr_id
+            data['sr'] = sr_id
         else:
-            params['sr_name'] = sr_name
+            data['sr_name'] = sr_name
 
-        response = self.request_json(self.config['subscribe'], params)
+        response = self.request_json(self.config['subscribe'], data=data)
         # pylint: disable-msg=E1101,W0212
         helpers._request.evict([self.config['my_reddits']])
         return response
@@ -442,20 +436,20 @@ class SubredditExtension(BaseReddit):
     def add_flair_template(self, subreddit, text='', css_class='',
                            text_editable=False, is_link=False):
         """Add a flair template to the given subreddit."""
-        params = {'r': six.text_type(subreddit),
-                  'text': text,
-                  'css_class': css_class,
-                  'text_editable': six.text_type(text_editable),
-                  'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
-        return self.request_json(self.config['flairtemplate'], params)
+        data = {'r': six.text_type(subreddit),
+                'text': text,
+                'css_class': css_class,
+                'text_editable': six.text_type(text_editable),
+                'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
+        return self.request_json(self.config['flairtemplate'], data=data)
 
     @decorators.require_login
     @decorators.require_moderator
     def clear_flair_templates(self, subreddit, is_link=False):
         """Clear flair templates for the given subreddit."""
-        params = {'r': six.text_type(subreddit),
-                  'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
-        return self.request_json(self.config['clearflairtemplates'], params)
+        data = {'r': six.text_type(subreddit),
+                'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
+        return self.request_json(self.config['clearflairtemplates'], data=data)
 
     @decorators.require_login
     @decorators.require_moderator
@@ -471,13 +465,13 @@ class SubredditExtension(BaseReddit):
         if not link_flair_enabled:
             link_flair_position = ''
         link_flair_self_assign = 'on' if link_flair_self_assign else 'off'
-        params = {'r': six.text_type(subreddit),
-                  'flair_enabled': flair_enabled,
-                  'flair_position': flair_position,
-                  'flair_self_assign_enabled': flair_self_assign,
-                  'link_flair_position': link_flair_position,
-                  'link_flair_self_assign_enabled': link_flair_self_assign}
-        return self.request_json(self.config['flairconfig'], params)
+        data = {'r': six.text_type(subreddit),
+                'flair_enabled': flair_enabled,
+                'flair_position': flair_position,
+                'flair_self_assign_enabled': flair_self_assign,
+                'link_flair_position': link_flair_position,
+                'link_flair_self_assign_enabled': link_flair_self_assign}
+        return self.request_json(self.config['flairconfig'], data=data)
 
     def flair_list(self, subreddit, limit=None):
         """
@@ -507,9 +501,9 @@ class SubredditExtension(BaseReddit):
 
     def get_flair(self, subreddit, redditor):
         """Gets the flair for a user on the given subreddit."""
-        url_data = {'name': six.text_type(redditor)}
+        params = {'name': six.text_type(redditor)}
         data = self.request_json(self.config['flairlist'] %
-                                 six.text_type(subreddit), url_data=url_data)
+                                 six.text_type(subreddit), params=params)
         return data['users'][0]
 
     def get_moderators(self, subreddit):
@@ -563,16 +557,16 @@ class SubredditExtension(BaseReddit):
         Item can be a string, Redditor object, or Submission object. If item is
         a string it will be treated as the name of a Redditor.
         """
-        params = {'r': six.text_type(subreddit),
-                  'text': flair_text or '',
-                  'css_class': flair_css_class or ''}
+        data = {'r': six.text_type(subreddit),
+                'text': flair_text or '',
+                'css_class': flair_css_class or ''}
         if isinstance(item, objects.Submission):
-            params['link'] = item.content_id
+            data['link'] = item.content_id
             evict = item.permalink
         else:
-            params['name'] = six.text_type(item)
+            data['name'] = six.text_type(item)
             evict = self.config['flairlist'] % six.text_type(subreddit)
-        response = self.request_json(self.config['flair'], params)
+        response = self.request_json(self.config['flair'], data=data)
         # pylint: disable-msg=E1101,W0212
         helpers._request.evict([evict])
         return response
@@ -599,9 +593,10 @@ class SubredditExtension(BaseReddit):
             lines.append(','.join([mapping.get(x, '') for x in item_order]))
         response = []
         while len(lines):
-            params = {'r': six.text_type(subreddit),
-                      'flair_csv': '\n'.join(lines[:100])}
-            response.extend(self.request_json(self.config['flaircsv'], params))
+            data = {'r': six.text_type(subreddit),
+                    'flair_csv': '\n'.join(lines[:100])}
+            response.extend(self.request_json(self.config['flaircsv'],
+                                              data=data))
             lines = lines[100:]
         stale_url = self.config['flairlist'] % six.text_type(subreddit)
         # pylint: disable-msg=E1101,W0212
@@ -624,50 +619,50 @@ class SubredditExtension(BaseReddit):
         wiki_edit_age = wiki_edit_age or ''
         wiki_edit_karma = wiki_edit_karma or ''
 
-        params = {'r': six.text_type(subreddit),
-                  'sr': subreddit.content_id,
-                  'title': title,
-                  'public_description': public_description,
-                  'description': description,
-                  'lang': language,
-                  'type': subreddit_type,
-                  'link_type': content_options,
-                  'over_18': 'on' if over_18 else 'off',
-                  'allow_top': 'on' if default_set else 'off',
-                  'show_media': 'on' if show_media else 'off',
-                  'domain': domain or '',
-                  'domain_css': 'on' if domain_css else 'off',
-                  'domain_sidebar': 'on' if domain_sidebar else 'off',
-                  'header-title': header_hover_text or '',
-                  'wikimode': wikimode,
-                  'wiki_edit_age': six.text_type(wiki_edit_age),
-                  'wiki_edit_karma': six.text_type(wiki_edit_karma)}
+        data = {'r': six.text_type(subreddit),
+                'sr': subreddit.content_id,
+                'title': title,
+                'public_description': public_description,
+                'description': description,
+                'lang': language,
+                'type': subreddit_type,
+                'link_type': content_options,
+                'over_18': 'on' if over_18 else 'off',
+                'allow_top': 'on' if default_set else 'off',
+                'show_media': 'on' if show_media else 'off',
+                'domain': domain or '',
+                'domain_css': 'on' if domain_css else 'off',
+                'domain_sidebar': 'on' if domain_sidebar else 'off',
+                'header-title': header_hover_text or '',
+                'wikimode': wikimode,
+                'wiki_edit_age': six.text_type(wiki_edit_age),
+                'wiki_edit_karma': six.text_type(wiki_edit_karma)}
         if prev_description_id is not None:
-            params['prev_description_id'] = prev_description_id
+            data['prev_description_id'] = prev_description_id
         if prev_public_description_id is not None:
-            params['prev_public_description_id'] = prev_public_description_id
+            data['prev_public_description_id'] = prev_public_description_id
         if kwargs:
             msg = 'Extra settings fields: {0}'.format(kwargs.keys())
             warn_explicit(msg, UserWarning, '', 0)
-            params.update(kwargs)
+            data.update(kwargs)
         # pylint: disable-msg=E1101,W0212
         helpers._request.evict([self.config['subreddit_settings'] %
                                 six.text_type(subreddit)])
-        return self.request_json(self.config['site_admin'], params)
+        return self.request_json(self.config['site_admin'], data=data)
 
     @decorators.require_login
     @decorators.require_moderator
     def set_stylesheet(self, subreddit, stylesheet, prevstyle=None):
         """Set stylesheet for the given subreddit."""
-        params = {'r': six.text_type(subreddit),
-                  'stylesheet_contents': stylesheet,
-                  'op': 'save'}  # Options: save / preview
+        data = {'r': six.text_type(subreddit),
+                'stylesheet_contents': stylesheet,
+                'op': 'save'}  # Options: save / preview
         if prevstyle is not None:
-            params['prevstyle'] = prevstyle
+            data['prevstyle'] = prevstyle
         # pylint: disable-msg=E1101,W0212
         helpers._request.evict([self.config['stylesheet'] %
                                 six.text_type(subreddit)])
-        return self.request_json(self.config['subreddit_css'], params)
+        return self.request_json(self.config['subreddit_css'], data=data)
 
     @decorators.require_login
     @decorators.RequireCaptcha
@@ -680,17 +675,17 @@ class SubredditExtension(BaseReddit):
         """
         if bool(text) == bool(url):
             raise TypeError('One (and only one) of text or url is required!')
-        params = {'sr': six.text_type(subreddit),
-                  'title': title}
+        data = {'sr': six.text_type(subreddit),
+                'title': title}
         if text:
-            params['kind'] = 'self'
-            params['text'] = text
+            data['kind'] = 'self'
+            data['text'] = text
         else:
-            params['kind'] = 'link'
-            params['url'] = url
+            data['kind'] = 'link'
+            data['url'] = url
         if captcha:
-            params.update(captcha)
-        result = self.request_json(self.config['submit'], params)
+            data.update(captcha)
+        result = self.request_json(self.config['submit'], data=data)
         # pylint: disable-msg=E1101
         return self.get_submission(result['data']['url'])
 
@@ -722,18 +717,18 @@ class LoggedInExtension(BaseReddit):
     @decorators.require_login
     def _add_comment(self, thing_id, text):
         """Comment on the given thing with the given text."""
-        params = {'thing_id': thing_id,
-                  'text': text}
-        data = self.request_json(self.config['comment'], params)
+        data = {'thing_id': thing_id,
+                'text': text}
+        retval = self.request_json(self.config['comment'], data=data)
         # REDDIT: reddit's end should only ever return a single comment
-        return data['data']['things'][0]
+        return retval['data']['things'][0]
 
     @decorators.require_login
     def _mark_as_read(self, thing_ids, unread=False):
         """Mark each of the supplied thing_ids as (un)read."""
-        params = {'id': ','.join(thing_ids)}
+        data = {'id': ','.join(thing_ids)}
         key = 'unread_message' if unread else 'read_message'
-        response = self.request_json(self.config[key], params)
+        response = self.request_json(self.config[key], data=data)
         urls = [self.config[x] for x in ['inbox', 'moderator', 'unread']]
         helpers._request.evict(urls)  # pylint: disable-msg=E1101,W0212
         return response
@@ -758,18 +753,18 @@ class LoggedInExtension(BaseReddit):
                          over_18=False, default_set=True, show_media=False,
                          domain='', wikimode='disabled'):
         """Create a new subreddit."""
-        params = {'name': name,
-                  'title': title,
-                  'description': description,
-                  'lang': language,
-                  'type': subreddit_type,
-                  'link_type': content_options,
-                  'over_18': 'on' if over_18 else 'off',
-                  'allow_top': 'on' if default_set else 'off',
-                  'show_media': 'on' if show_media else 'off',
-                  'wikimode': wikimode,
-                  'domain': domain}
-        return self.request_json(self.config['site_admin'], params)
+        data = {'name': name,
+                'title': title,
+                'description': description,
+                'lang': language,
+                'type': subreddit_type,
+                'link_type': content_options,
+                'over_18': 'on' if over_18 else 'off',
+                'allow_top': 'on' if default_set else 'off',
+                'show_media': 'on' if show_media else 'off',
+                'wikimode': wikimode,
+                'domain': domain}
+        return self.request_json(self.config['site_admin'], data=data)
 
     def get_redditor(self, user_name, *args, **kwargs):
         """Return a Redditor instance for the user_name specified."""
@@ -825,9 +820,9 @@ class LoggedInExtension(BaseReddit):
             import getpass
             pswd = getpass.getpass('Password for %s: ' % user)
 
-        params = {'passwd': pswd,
-                  'user': user}
-        response = self.request_json(self.config['login'], params)
+        data = {'passwd': pswd,
+                'user': user}
+        response = self.request_json(self.config['login'], data=data)
         self.modhash = response['data']['modhash']
         self.user = self.get_redditor(user)
         self.user.__class__ = objects.LoggedInRedditor
@@ -847,12 +842,12 @@ class LoggedInExtension(BaseReddit):
         else:
             recipient = six.text_type(recipient)
 
-        params = {'text': message,
-                  'subject': subject,
-                  'to': recipient}
+        data = {'text': message,
+                'subject': subject,
+                'to': recipient}
         if captcha:
-            params.update(captcha)
-        response = self.request_json(self.config['compose'], params)
+            data.update(captcha)
+        response = self.request_json(self.config['compose'], data=data)
         # pylint: disable-msg=E1101,W0212
         helpers._request.evict([self.config['sent']])
         return response
@@ -866,13 +861,13 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
     @decorators.RequireCaptcha
     def create_redditor(self, user_name, password, email='', captcha=None):
         """Register a new user."""
-        params = {'email': email,
-                  'passwd': password,
-                  'passwd2': password,
-                  'user': user_name}
+        data = {'email': email,
+                'passwd': password,
+                'passwd2': password,
+                'user': user_name}
         if captcha:
-            params.update(captcha)
-        return self.request_json(self.config['register'], params)
+            data.update(captcha)
+        return self.request_json(self.config['register'], data=data)
 
     def get_all_comments(self, *args, **kwargs):
         """Return all comments."""
@@ -934,7 +929,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         if bool(url) == bool(thing_id):
             raise TypeError('Only one of url or thing_id is required!')
         if url is not None:
-            url_data = {'url': url}
+            params = {'url': url}
             if (url.startswith(self.config['reddit_url']) and
                 url != self.config['reddit_url']):
                 msg = ('It looks like you may be trying to get the info of a '
@@ -942,16 +937,16 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
                        'any useful results!')
                 warn_explicit(msg, UserWarning, '', 0)
         else:
-            url_data = {'id': thing_id}
-        return self.get_content(self.config['info'], url_data=url_data,
+            params = {'id': thing_id}
+        return self.get_content(self.config['info'], params=params,
                                 limit=limit)
 
     def is_username_available(self, username):
         """Return True if username is valid and available, otherwise False."""
-        url_data = {'user': username}
+        params = {'user': username}
         try:
             result = self.request_json(self.config['username_available'],
-                                       url_data=url_data)
+                                       params=params)
         except errors.APIException as exception:
             if exception.error_type == 'BAD_USERNAME':
                 result = False
@@ -967,21 +962,22 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         See http://www.reddit.com/help/search for more information on how to
         build a search query.
         """
-        url_data = {'q': query}
+        params = {'q': query}
         if sort:
-            url_data['sort'] = sort
+            params['sort'] = sort
         if subreddit:
-            url_data['restrict_sr'] = 'on'
+            params['restrict_sr'] = 'on'
             url = self.config['search'] % subreddit
         else:
             url = self.config['search'] % 'all'
-        return self.get_content(url, url_data=url_data, limit=limit, *args,
+        return self.get_content(url, params=params, limit=limit, *args,
                                 **kwargs)
 
     def search_reddit_names(self, query):
         """Return subreddits whose display name contains the query."""
-        params = {'query': query}
-        results = self.request_json(self.config['search_reddit_names'], params)
+        data = {'query': query}
+        results = self.request_json(self.config['search_reddit_names'],
+                                    data=data)
         return [self.get_subreddit(name) for name in results['names']]
 
     @decorators.RequireCaptcha
@@ -992,10 +988,10 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
 
         Please don't abuse this. Read the send feedback page before use.
         """
-        params = {'name': name,
-                  'email': email,
-                  'reason': reason,
-                  'text': message}
+        data = {'name': name,
+                'email': email,
+                'reason': reason,
+                'text': message}
         if captcha:
-            params.update(captcha)
-        return self.request_json(self.config['feedback'], params)
+            data.update(captcha)
+        return self.request_json(self.config['feedback'], data=data)

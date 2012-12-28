@@ -144,7 +144,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_controversial(self):
         num = 50
-        result = self.r.get_controversial(limit=num, url_data={'t': 'all'})
+        result = self.r.get_controversial(limit=num, params={'t': 'all'})
         self.assertEqual(num, len(list(result)))
 
     def test_get_front_page(self):
@@ -153,7 +153,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_new(self):
         num = 50
-        result = self.r.get_new(limit=num, url_data={'sort': 'new'})
+        result = self.r.get_new(limit=num, params={'sort': 'new'})
         self.assertEqual(num, len(list(result)))
 
     @reddit_only
@@ -169,7 +169,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_top(self):
         num = 50
-        result = self.r.get_top(limit=num, url_data={'t': 'all'})
+        result = self.r.get_top(limit=num, params={'t': 'all'})
         self.assertEqual(num, len(list(result)))
 
     def test_flair_list(self):
@@ -182,7 +182,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(tmp in found_links)
 
     def test_info_by_self_url_raises_warning(self):
-        url = six_next(self.r.get_new(url_data={'sort': 'new'})).permalink
+        url = six_next(self.r.get_new(params={'sort': 'new'})).permalink
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter('always')
             self.r.info(url)
@@ -282,7 +282,7 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_author_encoding(self):
         # pylint: disable-msg=E1101
-        a1 = six_next(self.r.get_new(url_data={'sort': 'new'})).author
+        a1 = six_next(self.r.get_new(params={'sort': 'new'})).author
         a2 = self.r.get_redditor(text_type(a1))
         self.assertEqual(a1, a2)
         s1 = six_next(a1.get_submitted())
@@ -1067,7 +1067,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find submission in saved links.')
 
     def test_short_link(self):
-        submission = six_next(self.r.get_new(url_data={'sort': 'new'}))
+        submission = six_next(self.r.get_new(params={'sort': 'new'}))
         if self.r.config.is_reddit:
             self.assertTrue(submission.id in submission.short_link)
         else:

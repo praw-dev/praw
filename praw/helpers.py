@@ -23,12 +23,10 @@ from praw.decorators import Memoize, SleepAfter, require_login
 def _get_section(subpath=''):
     """Generate sections overview, comments and submitted for Redditor class"""
     def _section(self, sort='new', time='all', *args, **kwargs):
-        if 'url_data' in kwargs and kwargs['url_data']:
-            url_data = kwargs['url_data']
-        else:
-            url_data = kwargs['url_data'] = {}
-        url_data.setdefault('sort', sort)
-        url_data.setdefault('t', time)
+        if not kwargs.get('params'):
+            kwargs['params'] = {}
+        kwargs['params'].setdefault('sort', sort)
+        kwargs['params'].setdefault('t', time)
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
         return self.reddit_session.get_content(url, *args, **kwargs)
     return _section
@@ -37,12 +35,10 @@ def _get_section(subpath=''):
 def _get_sorter(subpath='', **defaults):
     """Generate a Submission listing function."""
     def _sorted(self, *args, **kwargs):
-        if 'url_data' in kwargs and kwargs['url_data']:
-            url_data = kwargs['url_data']
-        else:
-            url_data = kwargs['url_data'] = {}
+        if not kwargs.get('params'):
+            kwargs['params'] = {}
         for key, value in six.iteritems(defaults):
-            url_data.setdefault(key, value)
+            kwargs['params'].setdefault(key, value)
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
         return self.reddit_session.get_content(url, *args, **kwargs)
     return _sorted
@@ -60,14 +56,14 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 
     @require_login
     def do_relationship(thing, user):
-        params = {'name': six.text_type(user),
-                  'type': relationship}
+        data = {'name': six.text_type(user),
+                'type': relationship}
         if is_sub:
-            params['r'] = six.text_type(thing)
+            data['r'] = six.text_type(thing)
         else:
-            params['container'] = thing.content_id
+            data['container'] = thing.content_id
         url = thing.reddit_session.config[url_key]
-        return thing.reddit_session.request_json(url, params)
+        return thing.reddit_session.request_json(url, data=data)
     return do_relationship
 
 
