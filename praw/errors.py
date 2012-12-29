@@ -50,14 +50,16 @@ class ModeratorRequired(ClientException):
 
 
 class OAuthException(ClientException):
-    """Raised when an OAuth API call fails.
+    """
+    Raised when an OAuth API call fails.
 
     The message attribute indicates the specific reddit OAuth exception.
     """
 
 
 class OAuthRequired(ClientException):
-    """Raised when an OAuth client cannot be initialized.
+    """
+    Raised when an OAuth client cannot be initialized.
 
     This occurs when any one of the OAuth config values are not set.
     """

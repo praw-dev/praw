@@ -12,7 +12,17 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Reddit object."""
+"""
+Python Reddit API Wrapper.
+
+PRAW, an acronym for "Python Reddit API Wrapper", is a python package that
+allows for simple access to reddit's API. PRAW aims to be as easy to use as
+possible and is designed to follow all of reddit's API rules. You have to give
+a useragent, everything else is handled by PRAW so you needn't worry about
+violating them.
+
+More information about PRAW can be found at https://github.com/praw-dev/praw
+"""
 
 import json
 import os
@@ -349,8 +359,7 @@ class BaseReddit(object):
         :param url: the url to grab content from.
         :param params: a dictionary containing the GET data to put in the url
         :param data: a dictionary containing the extra data to submit
-        :param as_objects: Whether to return constructed reddit objects or the
-        raw json dict.
+        :param as_objects: if true return reddit objects else raw json dict.
         :returns: JSON processed page
         """
         url += '.json'
@@ -1028,7 +1037,8 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         """
         Send feedback to the admins.
 
-        Please don't abuse this. Read the send feedback page before use.
+        Please don't abuse this. Read the send feedback page at
+        http://www.reddit.com/feedback/ (for reddit.com) before use.
         """
         data = {'name': name,
                 'email': email,
