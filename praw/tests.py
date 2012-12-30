@@ -771,7 +771,7 @@ class OAuth2Test(unittest.TestCase):
                           'invalid_code')
 
     def test_authorize_url(self):
-        self.assertTrue('api/v1/authorize?state=...&'
+        self.assertTrue('api/v1/authorize/?state=...&'
                         'redirect_uri=http%3A%2F%2F127.0.0.1%3A65010%2F'
                         'authorize_callback&response_type=code&client_id='
                         'stJlUSUbPQe5lQ&duration=temporary&scope=identity' in

@@ -237,6 +237,17 @@ def require_moderator(function):
     return moderator_required_function
 
 
+def require_oauth(function):
+    """Verify that the OAuth functions can be used."""
+    @wraps(function)
+    def validate_function(self, *args, **kwargs):
+        if not self.is_valid:
+            raise errors.OAuthRequired('OAuth config parameters must be '
+                                       'specified to use this function.')
+        return function(self, *args, **kwargs)
+    return validate_function
+
+
 # Avoid circular import: http://effbot.org/zone/import-confusion.htm
 from .objects import RedditContentObject
 from .helpers import _request

@@ -24,103 +24,15 @@ that it can be saved and unsaved in the context of a logged in user.
 
 import six
 import warnings
-from functools import wraps
-from requests import Request
 from requests.compat import urljoin
-from praw.decorators import limit_chars, require_login, require_moderator
-from praw.errors import ClientException, OAuthException, OAuthRequired
+from praw.decorators import (limit_chars, require_login, require_moderator,
+                             require_oauth)
+from praw.errors import ClientException
 from praw.helpers import (_get_section, _get_sorter, _modify_relationship,
                           _request)
 
 
 REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor')
-
-
-class OAuth2(object):
-    """A simple OAuth 2.0 helper class."""
-    def __init__(self, access_token_uri, authorize_uri, client_id,
-                 client_secret, redirect_uri):
-        self.access_token_uri = access_token_uri
-        self.authorize_uri = authorize_uri
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.redirect_uri = redirect_uri
-
-    def validate(function):
-        """Verify that the decorated OAuth functions can be used."""
-        @wraps(function)
-        def validate_function(cls, *args, **kwargs):
-            if not cls.is_valid:
-                raise OAuthRequired('OAuth config parameters must be specified'
-                                    'to use this function.')
-            return function(cls, *args, **kwargs)
-        return validate_function
-
-    @property
-    def is_valid(self):
-        return all((self.access_token_uri, self.authorize_uri, self.client_id,
-                    self.client_secret, self.redirect_uri))
-
-    @validate
-    def get_authorize_url(self, state, scope='identity', refreshable=False):
-        """Return the URL to send the user to for OAuth 2 authorization.
-
-        state: a unique key that represents this individual client
-        scope: the reddit scope to ask permissions for. Multiple scopes can be
-               enabled by passing in a list of strings.
-        refreshable: when true, a permanent "refreshable" token is issued
-        """
-        params = {'client_id': self.client_id,
-                  'redirect_uri': self.redirect_uri, 'response_type': 'code',
-                  'state': state}
-        if isinstance(scope, six.string_types):
-            params['scope'] = scope
-        else:
-            params['scope'] = ','.join(scope)
-        params['duration'] = 'permanent' if refreshable else 'temporary'
-        return Request('GET', self.authorize_uri, params=params).prepare().url
-
-    @validate
-    def get_access_token(self, request_fn, code, refreshable=False):
-        """Return the access token for an OAuth 2 authorization grant.
-
-        request_fn: the function that handles the request
-        code: the code received in the request from the OAuth 2 server
-        refreshable: when true, the return value is a tuple with the second
-                     item being the refresh token
-        """
-        auth = (self.client_id, self.client_secret)
-        data = {'code': code, 'grant_type': 'authorization_code',
-                'redirect_uri': self.redirect_uri}
-        retval = self.handle_request(request_fn, auth, data)
-        if refreshable:
-            return retval['access_token'], retval['refresh_token']
-        else:
-            return retval['access_token']
-
-    def handle_request(self, request_fn, auth, data):
-        response = request_fn(self.access_token_uri, auth=auth, data=data,
-                              raw_response=True)
-        if response.status_code != 200:
-            raise OAuthException('Unexpected OAuthReturn: %d' %
-                                 response.status_code)
-        retval = response.json()
-        if 'error' in retval:
-            raise OAuthException(retval['error'])
-        return retval
-
-    @validate
-    def refresh_access_token(self, request_fn, refresh_token):
-        """Refresh the access token of a refreshable OAuth 2 grant.
-
-        request_fn: the function that handles the request
-        refresh_token: the token to refresh
-        """
-        auth = (self.client_id, self.client_secret)
-        data = {'grant_type': 'refresh_token',
-                'redirect_uri': self.redirect_uri,
-                'refresh_token': refresh_token}
-        return self.handle_request(request_fn, auth, data)['access_token']
 
 
 class RedditContentObject(object):

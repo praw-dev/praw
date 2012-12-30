@@ -22,6 +22,7 @@ import six
 import sys
 import uuid
 from requests.compat import urljoin
+from requests import Request
 from update_checker import update_check
 from warnings import warn, warn_explicit
 
@@ -36,7 +37,9 @@ UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
 
 class Config(object):  # pylint: disable-msg=R0903
     """A class containing the configuration for a reddit site."""
-    API_PATHS = {'approve':             'api/approve/',
+    API_PATHS = {'access_token_url':    'api/v1/access_token/',
+                 'approve':             'api/approve/',
+                 'authorize':           'api/v1/authorize/',
                  'banned':              'r/%s/about/banned/',
                  'captcha':             'captcha/',
                  'clearflairtemplates': 'api/clearflairtemplates/',
@@ -102,7 +105,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'user_about':          'user/%s/about/',
                  'username_available':  'api/username_available/',
                  'vote':                'api/vote/'}
-    SSL_PATHS = ('login', )
+    SSL_PATHS = ('access_token_url', 'authorize', 'login')
 
     def __init__(self, site_name):
         obj = dict(CONFIG.items(site_name))
@@ -141,12 +144,9 @@ class Config(object):  # pylint: disable-msg=R0903
         self.output_chars_limit = int(obj['output_chars_limit'])
         self.log_requests = int(obj['log_requests'])
         self.regular_comments_max = int(obj['regular_comments_max'])
-        self.oauth = objects.OAuth2(
-            access_token_uri=obj.get('oauth_access_token_uri'),
-            authorize_uri=obj.get('oauth_authorize_uri'),
-            client_id=obj.get('oauth_client_id'),
-            client_secret=obj.get('oauth_client_secret'),
-            redirect_uri=obj.get('oauth_redirect_uri'))
+        self.client_id = obj.get('oauth_client_id')
+        self.client_secret = obj.get('oauth_client_secret')
+        self.redirect_uri = obj.get('oauth_redirect_uri')
 
         if 'short_domain' in obj:
             self._short_domain = 'http://' + obj['short_domain']
@@ -364,46 +364,6 @@ class BaseReddit(object):
         if self.user and 'data' in data and 'modhash' in data['data']:
             self.modhash = data['data']['modhash']
         return data
-
-    def get_access_token(self, code, refreshable=False, update_session=True):
-        """Fetch the access token for an OAuth 2 authorization grant.
-
-        :param code: the code received in the request from the OAuth 2 server
-        :param refreshable: when true, the return value is a tuple with the
-                            second item being the refresh token.
-        :param update_session: Update the current session with the retrieved
-                               token(s).
-        """
-        response = self.config.oauth.get_access_token(self._request, code,
-                                                      refreshable)
-        if update_session:
-            if refreshable:
-                self.access_token, self.refresh_token = response
-            else:
-                self.access_token = response
-        return response
-
-    def get_authorize_url(self, state, scope='identity', refreshable=False):
-        """Return the URL to send the user to for OAuth 2 authorization.
-
-        state: a unique key that represents this individual client
-        scope: the reddit scope to ask permissions for. Multiple scopes can be
-               enabled by passing in a list of strings.
-        refreshable: when true, a permanent "refreshable" token is issued
-        """
-        return self.config.oauth.get_authorize_url(state, scope, refreshable)
-
-    def refresh_access_token(self, refresh_token=None):
-        """Refresh the access token of a refreshable OAuth 2 grant.
-
-        When provided, the passed in refresh token will be refreshed.
-        Otherwise, the current sessions refresh token will be used.
-        """
-        refresh_token = refresh_token or self.refresh_token
-        response = self.config.oauth.refresh_access_token(self._request,
-                                                          refresh_token)
-        self.access_token = response
-        return response
 
 
 class SubredditExtension(BaseReddit):
@@ -853,7 +813,93 @@ class LoggedInExtension(BaseReddit):
         return response
 
 
+class OAuth2Extension(BaseReddit):
+    def __init__(self, *args, **kwargs):
+        super(OAuth2Extension, self).__init__(*args, **kwargs)
+
+    def _handle_request(self, data):
+        auth = (self.config.client_id, self.config.client_secret)
+        response = self._request(self.config['access_token_url'], auth=auth,
+                                 data=data, raw_response=True)
+        if response.status_code != 200:
+            raise errors.OAuthException('Unexpected OAuthReturn: %d' %
+                                        response.status_code)
+        retval = response.json()
+        if 'error' in retval:
+            raise errors.OAuthException(retval['error'])
+        return retval
+
+    @decorators.require_oauth
+    def get_access_token(self, code, refreshable=False, update_session=True):
+        """
+        Return the access token for an OAuth 2 authorization grant.
+
+        code: the code received in the request from the OAuth 2 server
+        refreshable: when True, the return value is a tuple with the second
+                     item being the refresh token
+        :param update_session: Update the current session with the retrieved
+                               token(s).
+        """
+        data = {'code': code, 'grant_type': 'authorization_code',
+                'redirect_uri': self.config.redirect_uri}
+        retval = self._handle_request(data)
+        if refreshable:
+            response = (retval['access_token'], retval['refresh_token'])
+        else:
+            response = retval['access_token']
+        if update_session:
+            if refreshable:
+                self.access_token, self.refresh_token = response
+            else:
+                self.access_token = response
+        return response
+
+    @decorators.require_oauth
+    def get_authorize_url(self, state, scope='identity', refreshable=False):
+        """
+        Return the URL to send the user to for OAuth 2 authorization.
+
+        state: a unique key that represents this individual client
+        scope: the reddit scope to ask permissions for. Multiple scopes can be
+               enabled by passing in a list of strings.
+        refreshable: when True, a permanent "refreshable" token is issued
+        """
+        params = {'client_id': self.config.client_id, 'response_type': 'code',
+                  'redirect_uri': self.config.redirect_uri, 'state': state}
+        if isinstance(scope, six.string_types):
+            params['scope'] = scope
+        else:
+            params['scope'] = ','.join(scope)
+        params['duration'] = 'permanent' if refreshable else 'temporary'
+        request = Request('GET', self.config['authorize'], params=params)
+        return request.prepare().url
+
+    @property
+    def is_valid(self):
+        return all((self.config.client_id, self.config.client_secret,
+                    self.config.redirect_uri))
+
+    @decorators.require_oauth
+    def refresh_access_token(self, refresh_token=None):
+        """
+        Refresh the access token of a refreshable OAuth 2 grant.
+
+        When provided, the passed in refresh token will be refreshed.
+        Otherwise, the current sessions refresh token will be used.
+
+        refresh_token: the token to refresh
+        """
+        refresh_token = refresh_token or self.refresh_token
+        data = {'grant_type': 'refresh_token',
+                'redirect_uri': self.config.redirect_uri,
+                'refresh_token': refresh_token}
+        response = self._handle_request(data)['access_token']
+        self.access_token = response
+        return response
+
+
 class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
+             OAuth2Extension,
              SubredditExtension):
     def __init__(self, *args, **kwargs):
         super(Reddit, self).__init__(*args, **kwargs)
