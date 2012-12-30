@@ -762,7 +762,7 @@ class OAuth2Test(unittest.TestCase):
         print('Visit this URL: {0}'.format(self.r.get_authorize_url('...')))
         code = prompt('Code from redir URL: ')
         token = self.r.get_access_token(code)
-        self.assertEqual(self.r.access_token, token)
+        self.assertEqual((self.r.access_token, None), token)
         self.r.login()
         self.assertNotEqual(None, self.r.user)
 
@@ -771,7 +771,7 @@ class OAuth2Test(unittest.TestCase):
                           'invalid_code')
 
     def test_authorize_url(self):
-        self.assertTrue('api/v1/authorize?state=...&'
+        self.assertTrue('api/v1/authorize/?state=...&'
                         'redirect_uri=http%3A%2F%2F127.0.0.1%3A65010%2F'
                         'authorize_callback&response_type=code&client_id='
                         'stJlUSUbPQe5lQ&duration=temporary&scope=identity' in
@@ -791,7 +791,7 @@ class OAuth2Test(unittest.TestCase):
         url = self.r.get_authorize_url('dummy_state', refreshable=True)
         print('Visit this URL: {0}'.format(url))
         code = prompt('Code from redir URL: ')
-        access, refresh = self.r.get_access_token(code, refreshable=True)
+        access, refresh = self.r.get_access_token(code)
         self.assertEqual(self.r.access_token, access)
         self.assertEqual(self.r.refresh_token, refresh)
         new_access = self.r.refresh_access_token()
