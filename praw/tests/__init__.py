@@ -32,7 +32,8 @@ from requests.exceptions import HTTPError, Timeout
 from six import advance_iterator as six_next, text_type
 
 from praw import Reddit, errors, helpers
-from praw.objects import Comment, LoggedInRedditor, Message, MoreComments
+from praw.objects import (Comment, LoggedInRedditor, Message, ModeratorInvite,
+                          MoreComments)
 
 USER_AGENT = 'PRAW_test_suite'
 
@@ -716,11 +717,21 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(self.other in self.subreddit.get_contributors())
 
     def test_make_moderator(self):
+        # If pyapitestuser3 already has an pending invitation, then this
+        # may fail, as using make_moderator on a redditor with a pending
+        # invitation will instead make them an approved submitter. i.e. not
+        # send a ModeratorInvite message. /about/moderators/ show if you have a
+        # pending invitation from that subreddit.
+        # Moderators can go there as well and see/remove pending invitations.
         self.subreddit.make_moderator(self.other)
-        self.assertTrue(self.other in self.subreddit.get_moderators())
-
-    def test_make_moderator_by_name(self):
-        self.subreddit.make_moderator(text_type(self.other))
+        self.r.login('pyapitestuser3', '1111')
+        for message in self.r.user.get_inbox(limit=5):
+            if (isinstance(message, ModeratorInvite)
+                    and message.subreddit == self.subreddit):
+                message.accept()
+                break
+        else:
+            self.fail('Could not find moderator invite')
         self.assertTrue(self.other in self.subreddit.get_moderators())
 
     def test_remove_contributor(self):
