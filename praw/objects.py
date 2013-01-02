@@ -25,8 +25,7 @@ that it can be saved and unsaved in the context of a logged in user.
 import six
 import warnings
 from requests.compat import urljoin
-from praw.decorators import (limit_chars, require_login, require_moderator,
-                             require_oauth)
+from praw.decorators import limit_chars, require_login, require_moderator
 from praw.errors import ClientException
 from praw.helpers import (_get_section, _get_sorter, _modify_relationship,
                           _request)

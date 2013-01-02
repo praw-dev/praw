@@ -817,7 +817,7 @@ class OAuth2Extension(BaseReddit):
     def __init__(self, *args, **kwargs):
         super(OAuth2Extension, self).__init__(*args, **kwargs)
 
-    def _handle_request(self, data):
+    def _handle_oauth_request(self, data):
         auth = (self.config.client_id, self.config.client_secret)
         response = self._request(self.config['access_token_url'], auth=auth,
                                  data=data, raw_response=True)
@@ -830,28 +830,25 @@ class OAuth2Extension(BaseReddit):
         return retval
 
     @decorators.require_oauth
-    def get_access_token(self, code, refreshable=False, update_session=True):
+    def get_access_token(self, code, update_session=True):
         """
         Return the access token for an OAuth 2 authorization grant.
 
         code: the code received in the request from the OAuth 2 server
-        refreshable: when True, the return value is a tuple with the second
-                     item being the refresh token
         :param update_session: Update the current session with the retrieved
                                token(s).
+        :returns: A tuple with access_token first and refresh_token second. If
+                  we have temporary access, then refresh_token will be None.
         """
         data = {'code': code, 'grant_type': 'authorization_code',
                 'redirect_uri': self.config.redirect_uri}
-        retval = self._handle_request(data)
-        if refreshable:
+        retval = self._handle_oauth_request(data)
+        if 'refresh_token' in retval:
             response = (retval['access_token'], retval['refresh_token'])
         else:
-            response = retval['access_token']
+            response = (retval['access_token'], None)
         if update_session:
-            if refreshable:
-                self.access_token, self.refresh_token = response
-            else:
-                self.access_token = response
+            self.access_token, self.refresh_token = response
         return response
 
     @decorators.require_oauth
@@ -875,7 +872,7 @@ class OAuth2Extension(BaseReddit):
         return request.prepare().url
 
     @property
-    def is_valid(self):
+    def has_oauth_app_info(self):
         return all((self.config.client_id, self.config.client_secret,
                     self.config.redirect_uri))
 
@@ -885,7 +882,7 @@ class OAuth2Extension(BaseReddit):
         Refresh the access token of a refreshable OAuth 2 grant.
 
         When provided, the passed in refresh token will be refreshed.
-        Otherwise, the current sessions refresh token will be used.
+        Otherwise, the current session's refresh token will be used.
 
         refresh_token: the token to refresh
         """
@@ -893,9 +890,8 @@ class OAuth2Extension(BaseReddit):
         data = {'grant_type': 'refresh_token',
                 'redirect_uri': self.config.redirect_uri,
                 'refresh_token': refresh_token}
-        response = self._handle_request(data)['access_token']
-        self.access_token = response
-        return response
+        self.access_token = self._handle_oauth_request(data)['access_token']
+        return self.access_token
 
 
 class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904

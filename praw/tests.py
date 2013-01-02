@@ -791,7 +791,7 @@ class OAuth2Test(unittest.TestCase):
         url = self.r.get_authorize_url('dummy_state', refreshable=True)
         print('Visit this URL: {0}'.format(url))
         code = prompt('Code from redir URL: ')
-        access, refresh = self.r.get_access_token(code, refreshable=True)
+        access, refresh = self.r.get_access_token(code)
         self.assertEqual(self.r.access_token, access)
         self.assertEqual(self.r.refresh_token, refresh)
         new_access = self.r.refresh_access_token()

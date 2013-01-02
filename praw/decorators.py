@@ -241,9 +241,11 @@ def require_oauth(function):
     """Verify that the OAuth functions can be used."""
     @wraps(function)
     def validate_function(self, *args, **kwargs):
-        if not self.is_valid:
-            raise errors.OAuthRequired('OAuth config parameters must be '
-                                       'specified to use this function.')
+        if not self.has_oauth_app_info:
+            err_msg = ("The OAuth app config parameters client_id, "
+                       "client_secret and redirect_url must be specified to "
+                       "use this function.")
+            raise errors.OAuthRequired(err_msg)
         return function(self, *args, **kwargs)
     return validate_function
 
