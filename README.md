@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/praw-dev/praw.png)](https://travis-ci.org/praw-dev/praw)
+
 # Introduction
 
 PRAW, an acronym for "Python Reddit API Wrapper", is a python package that
