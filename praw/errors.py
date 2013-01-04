@@ -128,6 +128,21 @@ class NotLoggedIn(APIException):
     ERROR_TYPE = 'USER_REQUIRED'
 
 
+class NotModified(APIException):
+    """An exception raised when reddit returns {'error': 304}.
+
+    This error indicates that the requested content was not modified and is
+    being requested too frequently. Such an error usually occurs when multiple
+    instances of PRAW are running concurrently or in rapid succession.
+    """
+
+    def __init__(self, response):
+        super(NotModified, self).__init__(None, None, response=response)
+
+    def __str__(self):
+        return 'That page has not been modified.'
+
+
 class SubredditExists(APIException):
     """An exception to indicate that a subreddit name is not available."""
     ERROR_TYPE = 'SUBREDDIT_EXISTS'
