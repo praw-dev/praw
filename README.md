@@ -4,8 +4,9 @@
 
 PRAW, an acronym for "Python Reddit API Wrapper", is a python package that
 allows for simple access to reddit's API. PRAW aims to be as easy to use as
-possible. PRAW is coded to follow all of [reddit's API
-rules](https://github.com/reddit/reddit/wiki/API) so that you needn't worry
+possible and is designed to follow all of [reddit's API
+rules](https://github.com/reddit/reddit/wiki/API). You have to give a useragent
+that follows the rules, everything else is handled by PRAW so you needn't worry
 about violating them.
 
 Here's a quick peek, getting the first 5 submissions from
@@ -37,7 +38,10 @@ Or via `easy_install`
 
     easy_install praw
 
-Or via `setup.py`
+You can also install via `setup.py`, this requires either a download or
+checkout of the code first. Downloading PRAW from [the cheeseshop]
+(http://pypi.python.org/pypi/praw) is recommended, as downloading from github
+or doing a checkout may give you a between releases unstable codestate.
 
     # First download or checkout the code then run
     python setup.py install

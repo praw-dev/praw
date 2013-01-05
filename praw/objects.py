@@ -123,7 +123,13 @@ class Approvable(RedditContentObject):
     @require_login
     @require_moderator
     def approve(self):
-        """Give approval to object."""
+        """
+        Approve object.
+
+        This reverts a removal, resets the report counter, marks it with a
+        green checkmark (only visible to other moderators) on the webend and
+        sets the approved_by attribute to the logged in user.
+        """
         url = self.reddit_session.config['approve']
         data = {'id': self.content_id}
         response = self.reddit_session.request_json(url, data=data)
@@ -136,7 +142,13 @@ class Approvable(RedditContentObject):
     @require_login
     @require_moderator
     def remove(self, spam=False):
-        """Remove approval from object."""
+        """
+        Remove object. This is the moderator version of delete.
+
+        The object is removed from the subreddit listings and placed into the
+        spam listing. If spam is set to True, then the automatic spam filter
+        will try to remove objects with similair attributes in the future.
+        """
         url = self.reddit_session.config['remove']
         data = {'id': self.content_id,
                 'spam': 'True' if spam else 'False'}
@@ -167,9 +179,8 @@ class Distinguishable(RedditContentObject):
         """
         Distinguish object as made by mod, admin or special.
 
-        Distingusihed objects have a different background author color.
-        Similar to how the comments of the original poster are distinguished
-        from other comments in submissions.
+        Distinguished objects have a different author color. With Reddit
+        enhancement suite it is the background color that changes.
         """
         url = self.reddit_session.config['distinguish']
         data = {'id': self.content_id,
@@ -709,7 +720,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
     @property
     def all_comments(self):
         """
-        Return forest of all comments, with top-level comments as tree roots
+        Return forest of all comments, with top-level comments as tree roots.
 
         Use a comment's replies to walk down the tree. To get an unnested,
         flat list if comments use all_comments_flat. Multiple API
