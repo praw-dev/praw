@@ -30,7 +30,6 @@ import platform
 import requests
 import six
 import sys
-import uuid
 from requests.compat import urljoin
 from requests import Request
 from update_checker import update_check

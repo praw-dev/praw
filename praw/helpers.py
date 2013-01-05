@@ -76,6 +76,7 @@ def _request(reddit_session, url, params=None, data=None, timeout=45,
         headers = {'Authorization': 'bearer %s' % reddit_session.access_token}
         # Requests using OAuth for authorization must switch to using the oauth
         # domain.
+        # pylint: disable-msg=W0212
         for prefix in (reddit_session.config._site_url,
                        reddit_session.config._ssl_url):
             if url.startswith(prefix):

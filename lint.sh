@@ -21,4 +21,7 @@ fi
 echo "---pyflakes---"
 find $dir/praw -name [A-Za-z_]\*.py -exec pyflakes {} \;
 
+# pep237
+pep257 $dir/praw/*.py
+
 exit 0
