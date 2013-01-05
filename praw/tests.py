@@ -771,11 +771,15 @@ class OAuth2Test(unittest.TestCase):
                           'invalid_code')
 
     def test_authorize_url(self):
-        self.assertTrue('api/v1/authorize/?state=...&'
-                        'redirect_uri=http%3A%2F%2F127.0.0.1%3A65010%2F'
-                        'authorize_callback&response_type=code&client_id='
-                        'stJlUSUbPQe5lQ&duration=temporary&scope=identity' in
-                        self.r.get_authorize_url('...'))
+        url, params = self.r.get_authorize_url('...').split('?', 1)
+        self.assertTrue('api/v1/authorize/' in url)
+        params = dict(x.split('=', 1) for x in params.split('&'))
+        expected = {'client_id': 'stJlUSUbPQe5lQ', 'duration': 'temporary',
+                    'redirect_uri': ('http%3A%2F%2F127.0.0.1%3A65010%2F'
+                                     'authorize_callback'),
+                    'response_type': 'code', 'scope': 'identity',
+                    'state': '...'}
+        self.assertEqual(expected, params)
 
     def test_invalid_access_token(self):
         self.assertRaises(errors.OAuthRequired, self.invalid.get_access_token,
