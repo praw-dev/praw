@@ -70,7 +70,7 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 @Memoize
 @SleepAfter
 def _request(reddit_session, url, params=None, data=None, timeout=45,
-             raw_response=False, auth=None):
+             raw_response=False, auth=None, files=None):
     """Make the http request and return the http response body."""
     if not auth and reddit_session.access_token:
         headers = {'Authorization': 'bearer %s' % reddit_session.access_token}
@@ -97,7 +97,7 @@ def _request(reddit_session, url, params=None, data=None, timeout=45,
         if auth:
             sys.stderr.write('auth: %s\n' % auth)
 
-    if data:
+    if data or files:
         if data is True:
             data = {}
         if not auth:
@@ -112,7 +112,7 @@ def _request(reddit_session, url, params=None, data=None, timeout=45,
     while True:
         # pylint: disable-msg=W0212
         try:
-            response = method(url, params=params, data=data,
+            response = method(url, params=params, data=data, files=files,
                               headers=headers, timeout=timeout,
                               allow_redirects=False, auth=auth)
         finally:

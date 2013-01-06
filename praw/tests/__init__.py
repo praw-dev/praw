@@ -1210,5 +1210,28 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
                 self.fail('Found reddit in my_reddits.')
 
 
+class UploadImageTests(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
+        test_dir = os.path.dirname(sys.modules[__name__].__file__)
+        self.image_path = os.path.join(test_dir, 'files', 'white-square.{0}')
+
+    def test_jpg_image(self):
+        image = open(self.image_path.format('jpg'))
+        self.subreddit.upload_image(image)
+
+    def test_not_file(self):
+        self.assertRaises(TypeError, self.subreddit.upload_image, 'bar.png')
+
+    def test_png_image(self):
+        image = open(self.image_path.format('png'))
+        self.subreddit.upload_image(image)
+
+    def test_tiff_image(self):
+        image = open(self.image_path.format('tiff'))
+        self.assertRaises(TypeError, self.subreddit.upload_image, image)
+
+
 if __name__ == '__main__':
     unittest.main()

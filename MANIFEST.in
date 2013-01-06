@@ -1,2 +1,3 @@
 include COPYING README.md
 include praw/praw.ini
+recursive-include praw/tests/files *

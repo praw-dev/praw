@@ -38,10 +38,14 @@ from warnings import warn, warn_explicit
 from praw import decorators, errors, helpers, objects
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc6'
+__version__ = '1.1.0rc7'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
+
+MIN_IMAGE_SIZE = 128
+JPEG_HEADER = '\xff\xd8\xff'
+PNG_HEADER = '\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
 
 
 class Config(object):  # pylint: disable-msg=R0903
@@ -110,6 +114,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'unread':              'message/unread/',
                  'unread_message':      'api/unread_message/',
                  'unsave':              'api/unsave/',
+                 'upload_image':        'api/upload_sr_img',
                  'user':                'user/%s/',
                  'user_about':          'user/%s/about/',
                  'username_available':  'api/username_available/',
@@ -239,7 +244,7 @@ class BaseReddit(object):
     def __str__(self):
         return 'Open Session (%s)' % (self.user or 'Unauthenticated')
 
-    def _request(self, url, params=None, data=None, timeout=None,
+    def _request(self, url, params=None, data=None, files=None, timeout=None,
                  raw_response=False, auth=None):
         """
         Given a page url and a dict of params, open and return the page.
@@ -247,6 +252,7 @@ class BaseReddit(object):
         :param url: the url to grab content from.
         :param params: a dictionary containing the GET data to put in the url
         :param data: a dictionary containing the extra data to submit
+        :param files: a dictionary specifying the files to upload
         :param raw_response: return the response object rather than the
                response body
         :param auth: Add the HTTP authentication headers (see requests)
@@ -257,8 +263,8 @@ class BaseReddit(object):
         remaining_attempts = 3
         while True:
             try:
-                return helpers._request(self, url, params, data, auth=auth,
-                                        raw_response=raw_response,
+                return helpers._request(self, url, params, data, files=files,
+                                        auth=auth, raw_response=raw_response,
                                         timeout=timeout)
             except requests.exceptions.HTTPError as error:
                 remaining_attempts -= 1
@@ -676,6 +682,38 @@ class SubredditExtension(BaseReddit):
         settings.update(kwargs)
         del settings['subreddit_id']
         return self.set_settings(subreddit, **settings)
+
+    def upload_image(self, subreddit, image, name=None):
+        """
+        Upload an image to the subreddit for use in the stylesheet.
+
+        :param image: A readable file object
+        :param name: The name to provide the image. When None the name will be
+        filename less any extension.
+        """
+        image_type = None
+        # Verify image is jpeg or png
+        if not isinstance(image, file):
+            raise TypeError('`image` argument must be a file object')
+        first_bytes = image.read(MIN_IMAGE_SIZE)
+        image.seek(0)
+        if len(first_bytes) < MIN_IMAGE_SIZE:
+            raise TypeError('`image` argument is not a valid image')
+        if first_bytes.startswith(JPEG_HEADER):
+            image_type = 'jpg'
+        elif first_bytes.startswith(PNG_HEADER):
+            image_type = 'png'
+        else:
+            raise TypeError('`image` argument is not a valid image')
+
+        if not name:
+            name = os.path.splitext(os.path.basename(image.name))[0]
+        data = {'r': six.text_type(subreddit),
+                'formid': 'image-upload',
+                'img_type': image_type,
+                'name': name}
+        return self._request(self.config['upload_image'], data=data,
+                             files={'file': image})
 
 
 class LoggedInExtension(BaseReddit):

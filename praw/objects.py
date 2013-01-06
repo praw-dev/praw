@@ -960,6 +960,10 @@ class Subreddit(Messageable, NSFWable, Refreshable):
         """Update only the settings provided for this subreddit."""
         return self.reddit_session.update_settings(self, *args, **kwargs)
 
+    def upload_image(self, *args, **kwargs):
+        """Upload an image to the subreddit for use in the stylesheet."""
+        return self.reddit_session.upload_image(self, *args, **kwargs)
+
 
 class UserList(RedditContentObject):
     """A list of Redditors. Works just like a regular list."""

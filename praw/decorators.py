@@ -48,6 +48,10 @@ class Memoize(object):
         self._timeouts = {}
 
     def __call__(self, reddit_session, url, *args, **kwargs):
+        # Ignore uploads
+        if kwargs.get('files'):
+            return self.function(reddit_session, url, *args, **kwargs)
+
         normalized_url = self.normalize_url(url)
         key = (reddit_session, normalized_url, repr(args),
                frozenset(six.iteritems(kwargs)))
