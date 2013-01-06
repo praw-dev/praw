@@ -834,6 +834,9 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         item.unhide()
         self.delay()  # The queue needs to be processed
         self.assertFalse(item in list(self.r.user.get_hidden()))
+        # Hide a object to avoid eventually running out of hidden objects
+        submission = six_next(self.r.user.get_submitted())
+        submission.hide()
 
     def test_get_liked(self):
         # Pulls from get_disliked. Problem here may come from get_disliked
