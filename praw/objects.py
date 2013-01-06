@@ -961,7 +961,7 @@ class Subreddit(Messageable, NSFWable, Refreshable):
         return self.reddit_session.update_settings(self, *args, **kwargs)
 
     def upload_image(self, *args, **kwargs):
-        """Upload an image to the subreddit for use in the stylesheet."""
+        """Upload an image for use in a subreddit's stylesheet or header."""
         return self.reddit_session.upload_image(self, *args, **kwargs)
 
 

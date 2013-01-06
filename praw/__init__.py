@@ -38,12 +38,13 @@ from warnings import warn, warn_explicit
 from praw import decorators, errors, helpers, objects
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc7'
+__version__ = '1.1.0rc8'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
 
 MIN_IMAGE_SIZE = 128
+MAX_IMAGE_SIZE = 512000
 JPEG_HEADER = '\xff\xd8\xff'
 PNG_HEADER = '\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
 
@@ -683,37 +684,57 @@ class SubredditExtension(BaseReddit):
         del settings['subreddit_id']
         return self.set_settings(subreddit, **settings)
 
-    def upload_image(self, subreddit, image, name=None):
+    def upload_image(self, subreddit, image, name=None, header=False):
         """
-        Upload an image to the subreddit for use in the stylesheet.
+        Upload an image to the subreddit for use in the stylesheet or header.
 
         :param image: A readable file object
         :param name: The name to provide the image. When None the name will be
         filename less any extension.
+        :param header: When true, upload the image as the subreddit header.
         """
+        if name and header:
+            raise TypeError('Both name and header cannot be set.')
         image_type = None
-        # Verify image is jpeg or png
+        # Verify image is a jpeg or png and meets size requirements
         if not isinstance(image, file):
             raise TypeError('`image` argument must be a file object')
+        size = os.path.getsize(image.name)
+        if size < MIN_IMAGE_SIZE:
+            raise errors.ClientException('`image` is not a valid image')
+        elif size > MAX_IMAGE_SIZE:
+            raise errors.ClientException('`image` is too big. Max: {0} bytes'
+                                         .format(MAX_IMAGE_SIZE))
         first_bytes = image.read(MIN_IMAGE_SIZE)
         image.seek(0)
-        if len(first_bytes) < MIN_IMAGE_SIZE:
-            raise TypeError('`image` argument is not a valid image')
         if first_bytes.startswith(JPEG_HEADER):
             image_type = 'jpg'
         elif first_bytes.startswith(PNG_HEADER):
             image_type = 'png'
         else:
-            raise TypeError('`image` argument is not a valid image')
-
-        if not name:
-            name = os.path.splitext(os.path.basename(image.name))[0]
-        data = {'r': six.text_type(subreddit),
-                'formid': 'image-upload',
-                'img_type': image_type,
-                'name': name}
-        return self._request(self.config['upload_image'], data=data,
-                             files={'file': image})
+            raise errors.ClientException('`image` is not a valid image')
+        data = {'r': six.text_type(subreddit), 'img_type': image_type}
+        if header:
+            data['header'] = 1
+        else:
+            if not name:
+                name = os.path.splitext(os.path.basename(image.name))[0]
+            data['name'] = name
+        response = self._request(self.config['upload_image'], data=data,
+                                 files={'file': image})
+        # HACK: Until json response, attempt to parse the errors
+        json_start = response.find('[[')
+        json_end = response.find(']]')
+        try:
+            image_errors = dict(json.loads(response[json_start:json_end + 2]))
+        except Exception:  # pylint: disable-msg=W0703
+            warn_explicit('image_upload parsing issue', UserWarning, '', 0)
+            return False
+        if image_errors['BAD_CSS_NAME']:
+            raise errors.APIException(image_errors['BAD_CSS_NAME'], None)
+        elif image_errors['IMAGE_ERROR']:
+            raise errors.APIException(image_errors['IMAGE_ERROR'], None)
+        return True
 
 
 class LoggedInExtension(BaseReddit):
