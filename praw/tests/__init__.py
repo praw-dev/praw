@@ -817,10 +817,14 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         self.assertFalse(item in list(self.r.user.get_liked()))
 
     def test_get_hidden(self):
+        submission = six_next(self.r.user.get_submitted())
+        submission.hide()
+        self.delay()  # The queue needs to be processed
         item = six_next(self.r.user.get_hidden())
         item.unhide()
-        self.delay()  # The queue needs to be processed
+        self.delay()
         self.assertFalse(item in list(self.r.user.get_hidden()))
+
 
     def test_get_liked(self):
         # Pulls from get_disliked. Problem here may come from get_disliked
