@@ -50,7 +50,9 @@ PNG_HEADER = '\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
 
 
 class Config(object):  # pylint: disable-msg=R0903
+
     """A class containing the configuration for a reddit site."""
+
     API_PATHS = {'access_token_url':    'api/v1/access_token/',
                  'approve':             'api/approve/',
                  'authorize':           'api/v1/authorize/',
@@ -183,11 +185,11 @@ class Config(object):  # pylint: disable-msg=R0903
 
     @property
     def short_domain(self):
-        """
-        Return the short domain of the reddit.
+        """Return the short domain of the reddit.
 
         Used to generate the shortlink. For reddit.com the short_domain is
         redd.it and generate shortlinks like http://redd.it/y3r8u
+
         """
         if self._short_domain:
             return self._short_domain
@@ -196,14 +198,15 @@ class Config(object):  # pylint: disable-msg=R0903
 
 
 class BaseReddit(object):
+
     """The base class for a reddit session."""
+
     RETRY_CODES = [502, 503, 504]
     update_checked = False
 
     def __init__(self, user_agent, site_name=None, access_token=None,
                  refresh_token=None, disable_update_check=False):
-        """
-        Initialize our connection with a reddit.
+        """Initialize our connection with a reddit server.
 
         The user_agent is how your application identifies itself. Read the
         official API guidelines for user_agents
@@ -225,6 +228,7 @@ class BaseReddit(object):
 
         disable_update_check allows you to prevent an update check from
         occuring in spite of the check_for_updates setting in praw.ini.
+
         """
         if not user_agent or not isinstance(user_agent, six.string_types):
             raise TypeError('User agent must be a non-empty string.')
@@ -247,17 +251,17 @@ class BaseReddit(object):
 
     def _request(self, url, params=None, data=None, files=None, timeout=None,
                  raw_response=False, auth=None):
-        """
-        Given a page url and a dict of params, open and return the page.
+        """Given a page url and a dict of params, open and return the page.
 
         :param url: the url to grab content from.
         :param params: a dictionary containing the GET data to put in the url
         :param data: a dictionary containing the extra data to submit
         :param files: a dictionary specifying the files to upload
         :param raw_response: return the response object rather than the
-               response body
+            response body
         :param auth: Add the HTTP authentication headers (see requests)
         :returns: either the response body or the response object
+
         """
         # pylint: disable-msg=W0212
         timeout = self.config.timeout if timeout is None else timeout
@@ -278,10 +282,7 @@ class BaseReddit(object):
                     raise
 
     def _json_reddit_objecter(self, json_data):
-        """
-        Object hook to be used with json.load(s) to spit out RedditObjects
-        while decoding.
-        """
+        """Return an appropriate RedditObject from json_data when possible."""
         try:
             object_class = self.config.by_kind[json_data['kind']]
         except KeyError:
@@ -297,8 +298,7 @@ class BaseReddit(object):
     def get_content(self, url, params=None, limit=0, place_holder=None,
                     root_field='data', thing_field='children',
                     after_field='after'):
-        """
-        A generator method to return reddit content from a URL.
+        """A generator method to return reddit content from a URL.
 
         Starts at the initial url, and fetches content using the `after`
         JSON data until `limit` entries have been fetched, or the
@@ -324,6 +324,7 @@ class BaseReddit(object):
             't3_asdfasdf'
         :returns: a list of reddit content, of type Subreddit, Comment,
             Submission or user flair.
+
         """
         objects_found = 0
 
@@ -359,14 +360,14 @@ class BaseReddit(object):
 
     @decorators.parse_api_json_response
     def request_json(self, url, params=None, data=None, as_objects=True):
-        """
-        Get the JSON processed from a page.
+        """Get the JSON processed from a page.
 
         :param url: the url to grab content from.
         :param params: a dictionary containing the GET data to put in the url
         :param data: a dictionary containing the extra data to submit
         :param as_objects: if true return reddit objects else raw json dict.
         :returns: JSON processed page
+
         """
         url += '.json'
         response = self._request(url, params, data)
@@ -382,15 +383,20 @@ class BaseReddit(object):
 
 
 class SubredditExtension(BaseReddit):
+
+    """Adds methods that operate on Subreddit objects."""
+
     def __init__(self, *args, **kwargs):
         super(SubredditExtension, self).__init__(*args, **kwargs)
 
     @decorators.require_login
     def _subscribe(self, sr_id=None, sr_name=None, unsubscribe=False):
-        """
-        (Un)subscribe to the given subreddit.
+        """(Un)subscribe to the given subreddit.
 
         Provide either the subreddit id (sr_id) or the name (sr_name).
+
+        :returns: The json response from the server.
+
         """
         if bool(sr_id) == bool(sr_name):
             raise TypeError('One (and only one) of text or url is required!')
@@ -410,7 +416,11 @@ class SubredditExtension(BaseReddit):
     @decorators.require_moderator
     def add_flair_template(self, subreddit, text='', css_class='',
                            text_editable=False, is_link=False):
-        """Add a flair template to the given subreddit."""
+        """Add a flair template to the given subreddit.
+
+        :returns: The json response from the server.
+
+        """
         data = {'r': six.text_type(subreddit),
                 'text': text,
                 'css_class': css_class,
@@ -421,7 +431,11 @@ class SubredditExtension(BaseReddit):
     @decorators.require_login
     @decorators.require_moderator
     def clear_flair_templates(self, subreddit, is_link=False):
-        """Clear flair templates for the given subreddit."""
+        """Clear flair templates for the given subreddit.
+
+        :returns: The json response from the server.
+
+        """
         data = {'r': six.text_type(subreddit),
                 'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
         return self.request_json(self.config['clearflairtemplates'], data=data)
@@ -434,7 +448,11 @@ class SubredditExtension(BaseReddit):
                         link_flair_enabled=False,
                         link_flair_position='left',
                         link_flair_self_assign=False):
-        """Configure the flair setting for the given subreddit."""
+        """Configure the flair setting for the given subreddit.
+
+        :returns: The json response from the server.
+
+        """
         flair_enabled = 'on' if flair_enabled else 'off'
         flair_self_assign = 'on' if flair_self_assign else 'off'
         if not link_flair_enabled:
@@ -449,11 +467,11 @@ class SubredditExtension(BaseReddit):
         return self.request_json(self.config['flairconfig'], data=data)
 
     def flair_list(self, subreddit, limit=None):
-        """
-        Return generator of flair mappings.
+        """Return generator of flair mappings.
 
         Each flair mapping is a dict with three keys. 'user', 'flair_text' and
         'flair_css_class'.
+
         """
         return self.get_content(self.config['flairlist'] %
                                 six.text_type(subreddit),
@@ -463,33 +481,33 @@ class SubredditExtension(BaseReddit):
     @decorators.require_login
     @decorators.require_moderator
     def get_banned(self, subreddit):
-        """Get the list of banned users for the given subreddit."""
+        """Return the list of banned users for the given subreddit."""
         return self.request_json(self.config['banned'] %
                                  six.text_type(subreddit))
 
     @decorators.require_login
     @decorators.require_moderator
     def get_contributors(self, subreddit):
-        """Get the list of contributors for the given subreddit."""
+        """Return the list of contributors for the given subreddit."""
         return self.request_json(self.config['contributors'] %
                                  six.text_type(subreddit))
 
     def get_flair(self, subreddit, redditor):
-        """Gets the flair for a user on the given subreddit."""
+        """Return the flair for a user on the given subreddit."""
         params = {'name': six.text_type(redditor)}
         data = self.request_json(self.config['flairlist'] %
                                  six.text_type(subreddit), params=params)
         return data['users'][0]
 
     def get_moderators(self, subreddit):
-        """Get the list of moderators for the given subreddit."""
+        """Return the list of moderators for the given subreddit."""
         return self.request_json(self.config['moderators'] %
                                  six.text_type(subreddit))
 
     @decorators.require_login
     @decorators.require_moderator
     def get_modqueue(self, subreddit='mod', limit=None):
-        """Get the mod-queue for the given subreddit."""
+        """Return the mod-queue for the given subreddit."""
         return self.get_content(self.config['modqueue'] %
                                 six.text_type(subreddit),
                                 limit=limit)
@@ -497,7 +515,7 @@ class SubredditExtension(BaseReddit):
     @decorators.require_login
     @decorators.require_moderator
     def get_reports(self, subreddit='mod', limit=None):
-        """Get the list of reported submissions for the given subreddit."""
+        """Return the list of reported submissions for the given subreddit."""
         return self.get_content(self.config['reports'] %
                                 six.text_type(subreddit),
                                 limit=limit)
@@ -505,32 +523,34 @@ class SubredditExtension(BaseReddit):
     @decorators.require_login
     @decorators.require_moderator
     def get_settings(self, subreddit):
-        """Get the settings for the given subreddit."""
+        """Return the settings for the given subreddit."""
         return self.request_json(self.config['subreddit_settings'] %
                                  six.text_type(subreddit))['data']
 
     @decorators.require_login
     @decorators.require_moderator
     def get_spam(self, subreddit='mod', limit=None):
-        """Get the list of spam-filtered items for the given subreddit."""
+        """Return the list of spam-filtered items for the given subreddit."""
         return self.get_content(self.config['spam'] % six.text_type(subreddit),
                                 limit=limit)
 
     @decorators.require_login
     @decorators.require_moderator
     def get_stylesheet(self, subreddit):
-        """Get the stylesheet and associated images for the given subreddit."""
+        """Return the stylesheet and images for the given subreddit."""
         return self.request_json(self.config['stylesheet'] %
                                  six.text_type(subreddit))['data']
 
     @decorators.require_login
     @decorators.require_moderator
     def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
-        """
-        Set flair for the user in the given subreddit.
+        """Set flair for the user in the given subreddit.
 
         Item can be a string, Redditor object, or Submission object. If item is
         a string it will be treated as the name of a Redditor.
+
+        :returns: The json response from the server.
+
         """
         data = {'r': six.text_type(subreddit),
                 'text': flair_text or '',
@@ -549,13 +569,15 @@ class SubredditExtension(BaseReddit):
     @decorators.require_login
     @decorators.require_moderator
     def set_flair_csv(self, subreddit, flair_mapping):
-        """
-        Set flair for a group of users in the given subreddit.
+        """Set flair for a group of users in the given subreddit.
 
         flair_mapping should be a list of dictionaries with the following keys:
           user: the user name
           flair_text: the flair text for the user (optional)
           flair_css_class: the flair css class for the user (optional)
+
+        :returns: The json response from the server.
+
         """
         if not flair_mapping:
             raise errors.ClientException('flair_mapping must be set')
@@ -588,7 +610,11 @@ class SubredditExtension(BaseReddit):
                      prev_description_id=None,
                      prev_public_description_id=None, wikimode='disabled',
                      wiki_edit_age=30, wiki_edit_karma=100, **kwargs):
-        """Set the settings for the given subreddit."""
+        """Set the settings for the given subreddit.
+
+        :returns: The json response from the server.
+
+        """
 
         # Temporary support for no longer valid entries
         wiki_edit_age = wiki_edit_age or ''
@@ -628,7 +654,11 @@ class SubredditExtension(BaseReddit):
     @decorators.require_login
     @decorators.require_moderator
     def set_stylesheet(self, subreddit, stylesheet, prevstyle=None):
-        """Set stylesheet for the given subreddit."""
+        """Set stylesheet for the given subreddit.
+
+        :returns: The json response from the server.
+
+        """
         data = {'r': six.text_type(subreddit),
                 'stylesheet_contents': stylesheet,
                 'op': 'save'}  # Options: save / preview
@@ -642,11 +672,13 @@ class SubredditExtension(BaseReddit):
     @decorators.require_login
     @decorators.RequireCaptcha
     def submit(self, subreddit, title, text=None, url=None, captcha=None):
-        """
-        Submit a new link to the given subreddit.
+        """Submit a new link to the given subreddit.
 
         Accepts either a Subreddit object or a str containing the subreddit's
         display name.
+
+        :returns: The url to the submission.
+
         """
         if bool(text) == bool(url):
             raise TypeError('One (and only one) of text or url is required!')
@@ -673,11 +705,13 @@ class SubredditExtension(BaseReddit):
         self._subscribe(sr_name=subreddit, unsubscribe=True)
 
     def update_settings(self, subreddit, **kwargs):
-        """
-        Update only the given settings for the given subreddit.
+        """Update only the given settings for the given subreddit.
 
         The settings to update must be given by keyword and match one of the
         parameter names in `set_settings`.
+
+        :returns: The json response from the server.
+
         """
         settings = self.get_settings(subreddit)
         settings.update(kwargs)
@@ -685,13 +719,15 @@ class SubredditExtension(BaseReddit):
         return self.set_settings(subreddit, **settings)
 
     def upload_image(self, subreddit, image, name=None, header=False):
-        """
-        Upload an image to the subreddit for use in the stylesheet or header.
+        """Upload an image to the subreddit.
 
         :param image: A readable file object
         :param name: The name to provide the image. When None the name will be
-        filename less any extension.
+            filename less any extension.
         :param header: When true, upload the image as the subreddit header.
+        :returns: True when the upload was successful. False otherwise. Note
+            this is subject to change.
+
         """
         if name and header:
             raise TypeError('Both name and header cannot be set.')
@@ -738,12 +774,19 @@ class SubredditExtension(BaseReddit):
 
 
 class LoggedInExtension(BaseReddit):
+
+    """Contains methods relevent only to a logged in user."""
+
     def __init__(self, *args, **kwargs):
         super(LoggedInExtension, self).__init__(*args, **kwargs)
 
     @decorators.require_login
     def _add_comment(self, thing_id, text):
-        """Comment on the given thing with the given text."""
+        """Comment on the given thing with the given text.
+
+        :returns: A Comment object for the newly created comment.
+
+        """
         data = {'thing_id': thing_id,
                 'text': text}
         retval = self.request_json(self.config['comment'], data=data)
@@ -752,7 +795,11 @@ class LoggedInExtension(BaseReddit):
 
     @decorators.require_login
     def _mark_as_read(self, thing_ids, unread=False):
-        """Mark each of the supplied thing_ids as (un)read."""
+        """Mark each of the supplied thing_ids as (un)read.
+
+        :returns: The json response from the server.
+
+        """
         data = {'id': ','.join(thing_ids)}
         key = 'unread_message' if unread else 'read_message'
         response = self.request_json(self.config[key], data=data)
@@ -765,7 +812,11 @@ class LoggedInExtension(BaseReddit):
                          subreddit_type='public', content_options='any',
                          over_18=False, default_set=True, show_media=False,
                          domain='', wikimode='disabled'):
-        """Create a new subreddit."""
+        """Create a new subreddit.
+
+        :returns: The json response from the server.
+
+        """
         data = {'name': name,
                 'title': title,
                 'description': description,
@@ -784,8 +835,7 @@ class LoggedInExtension(BaseReddit):
         return objects.Redditor(self, user_name, *args, **kwargs)
 
     def login(self, username=None, password=None):
-        """
-        Login to a reddit site.
+        """Login to a reddit site.
 
         Look for username first in parameter, then praw.ini and finally if both
         were empty get it from stdin. Look for password in parameter, then
@@ -796,6 +846,7 @@ class LoggedInExtension(BaseReddit):
 
         If an OAuth2 access token is configured, arguments will be ignored and
         user details will be fetched from the site.
+
         """
         if self.access_token:
             response = self.request_json(self.config['me'])
@@ -827,12 +878,14 @@ class LoggedInExtension(BaseReddit):
     @decorators.require_login
     @decorators.RequireCaptcha
     def send_message(self, recipient, subject, message, captcha=None):
-        """
-        Send a message to a redditor or a subreddit's moderators (mod mail).
+        """Send a message to a redditor or a subreddit's moderators (mod mail).
 
         When sending a message to a subreddit the recipient parameter must
         either be a subreddit object or the subreddit name needs to be prefixed
         with either '/r/' or '#'.
+
+        :returns: The json response from the server.
+
         """
         if isinstance(recipient, objects.Subreddit):
             recipient = '/r/%s' % six.text_type(recipient)
@@ -851,6 +904,9 @@ class LoggedInExtension(BaseReddit):
 
 
 class OAuth2Extension(BaseReddit):
+
+    """Contains functions specific to working with reddit's OAuth2."""
+
     def __init__(self, *args, **kwargs):
         super(OAuth2Extension, self).__init__(*args, **kwargs)
 
@@ -868,14 +924,14 @@ class OAuth2Extension(BaseReddit):
 
     @decorators.require_oauth
     def get_access_token(self, code, update_session=True):
-        """
-        Return the access token for an OAuth 2 authorization grant.
+        """Return the access token for an OAuth 2 authorization grant.
 
-        code: the code received in the request from the OAuth 2 server
+        :param code: the code received in the request from the OAuth 2 server
         :param update_session: Update the current session with the retrieved
-                               token(s).
+            token(s).
         :returns: A tuple with access_token first and refresh_token second. If
-                  we have temporary access, then refresh_token will be None.
+            we have temporary access, then refresh_token will be None.
+
         """
         data = {'code': code, 'grant_type': 'authorization_code',
                 'redirect_uri': self.config.redirect_uri}
@@ -890,13 +946,14 @@ class OAuth2Extension(BaseReddit):
 
     @decorators.require_oauth
     def get_authorize_url(self, state, scope='identity', refreshable=False):
-        """
-        Return the URL to send the user to for OAuth 2 authorization.
+        """Return the URL to send the user to for OAuth 2 authorization.
 
-        state: a unique key that represents this individual client
-        scope: the reddit scope to ask permissions for. Multiple scopes can be
-               enabled by passing in a list of strings.
-        refreshable: when True, a permanent "refreshable" token is issued
+        :param state: a unique key that represents this individual client
+        :param scope: the reddit scope to ask permissions for. Multiple scopes
+            can be enabled by passing in a list of strings.
+        :param refreshable: when True, a permanent "refreshable" token is
+            issued
+
         """
         params = {'client_id': self.config.client_id, 'response_type': 'code',
                   'redirect_uri': self.config.redirect_uri, 'state': state}
@@ -910,18 +967,20 @@ class OAuth2Extension(BaseReddit):
 
     @property
     def has_oauth_app_info(self):
+        """Return True when all the necessary OAuth settings are set."""
         return all((self.config.client_id, self.config.client_secret,
                     self.config.redirect_uri))
 
     @decorators.require_oauth
     def refresh_access_token(self, refresh_token=None):
-        """
-        Refresh the access token of a refreshable OAuth 2 grant.
+        """Refresh the access token of a refreshable OAuth 2 grant.
 
         When provided, the passed in refresh token will be refreshed.
         Otherwise, the current session's refresh token will be used.
 
-        refresh_token: the token to refresh
+        :param refresh_token: the token to refresh
+        :returns: The new access token.
+
         """
         refresh_token = refresh_token or self.refresh_token
         data = {'grant_type': 'refresh_token',
@@ -934,12 +993,19 @@ class OAuth2Extension(BaseReddit):
 class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
              OAuth2Extension,
              SubredditExtension):
+
+    """Contains the base set of reddit API functions."""
+
     def __init__(self, *args, **kwargs):
         super(Reddit, self).__init__(*args, **kwargs)
 
     @decorators.RequireCaptcha
     def create_redditor(self, user_name, password, email='', captcha=None):
-        """Register a new user."""
+        """Register a new user.
+
+        :returns: The json response from the server.
+
+        """
         data = {'email': email,
                 'passwd': password,
                 'passwd2': password,
@@ -949,7 +1015,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         return self.request_json(self.config['register'], data=data)
 
     def get_all_comments(self, *args, **kwargs):
-        """Return all comments."""
+        """Return all comments (up to the reddit limit)."""
         return self.get_content(self.config['comments'], *args, **kwargs)
 
     def get_controversial(self, *args, **kwargs):
@@ -957,11 +1023,11 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         return self.get_content(self.config['controversial'], *args, **kwargs)
 
     def get_front_page(self, *args, **kwargs):
-        """
-        Return the front page submissions.
+        """Return the front page submissions.
 
         Default front page if not logged in, otherwise get logged in redditor's
         front page.
+
         """
         return self.get_content(self.config['reddit_url'], *args, **kwargs)
 
@@ -1044,11 +1110,11 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
 
     def search(self, query, subreddit=None, sort=None, limit=0, *args,
                **kwargs):
-        """
-        Return submissions that match the search query.
+        """Return submissions that match the search query.
 
         See http://www.reddit.com/help/search for more information on how to
         build a search query.
+
         """
         params = {'q': query}
         if sort:
@@ -1071,11 +1137,13 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
     @decorators.RequireCaptcha
     def send_feedback(self, name, email, message, reason='feedback',
                       captcha=None):
-        """
-        Send feedback to the admins.
+        """Send feedback to the admins.
 
         Please don't abuse this. Read the send feedback page at
         http://www.reddit.com/feedback/ (for reddit.com) before use.
+
+        :returns: The json response from the server.
+
         """
         data = {'name': name,
                 'email': email,
