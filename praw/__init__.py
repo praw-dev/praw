@@ -173,7 +173,7 @@ class Config(object):  # pylint: disable-msg=R0903
             self.pswd = obj['pswd']
         except KeyError:
             self.user = self.pswd = None
-        self.is_reddit = obj['domain'] == 'www.reddit.com'
+        self.is_reddit = obj['domain'].endswith('reddit.com')
 
     def __getitem__(self, key):
         """Return the URL for key."""

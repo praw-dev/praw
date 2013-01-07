@@ -12,6 +12,8 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Provides the code to load PRAW's configuration file `praw.ini`."""
+
 import os
 import sys
 
