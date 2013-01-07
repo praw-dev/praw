@@ -33,12 +33,12 @@ import sys
 from requests.compat import urljoin
 from requests import Request
 from update_checker import update_check
-from warnings import warn, warn_explicit
+from warnings import warn_explicit
 
 from praw import decorators, errors, helpers, objects
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc8'
+__version__ = '1.1.0rc9'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -75,7 +75,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'help':                'help/',
                  'hide':                'api/hide/',
                  'inbox':               'message/inbox/',
-                 'info':                'button_info/',
+                 'info':                'api/info/',
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
                  'moderator':           'message/moderator/',
@@ -761,20 +761,6 @@ class LoggedInExtension(BaseReddit):
         return response
 
     @decorators.require_login
-    @decorators.RequireCaptcha
-    def compose_message(self, recipient, subject, message, captcha=None):
-        """
-        Send a message to a redditor or a subreddit's moderators (mod mail).
-
-        Depreciated. compose_message has been renamed to send_message and will
-        be removed in a future version.
-        """
-        # Remove around the end of 2012
-        warn('compose_message has been renamed to send_message and will be '
-             'removed in a future version. Please update.', DeprecationWarning)
-        return self.send_message(recipient, subject, message, captcha)
-
-    @decorators.require_login
     def create_subreddit(self, name, title, description='', language='en',
                          subreddit_type='public', content_options='any',
                          over_18=False, default_set=True, show_media=False,
@@ -796,22 +782,6 @@ class LoggedInExtension(BaseReddit):
     def get_redditor(self, user_name, *args, **kwargs):
         """Return a Redditor instance for the user_name specified."""
         return objects.Redditor(self, user_name, *args, **kwargs)
-
-    @decorators.require_login
-    def get_saved_links(self, limit=0):
-        """
-        Return a listing of the logged-in user's saved links.
-
-        Moved to LoggedInRedditor and renamed to get_saved. You should now use
-        r.user.get_saved() instead of r.get_saved_links where
-        r = praw.Reddit(useragent).
-
-        This function will be removed around the end of Q1 2013.
-        """
-        warn('get_saved_links has been renamed to get_saved and moved to '
-             'LoggedInRedditor. get_saved_links will be removed in a future '
-             'version. Please update.', DeprecationWarning)
-        return self.get_content(self.config['saved'], limit=limit)
 
     def login(self, username=None, password=None):
         """
@@ -995,6 +965,37 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         """
         return self.get_content(self.config['reddit_url'], *args, **kwargs)
 
+    def get_info(self, url=None, thing_id=None, limit=None):
+        """Look up existing Submissions by thing_id (fullname) or url.
+
+        :param url: The url to lookup.
+        :param thing_id: The submission to lookup by fullname.
+        :param limit: The maximum number of Submissions to return when looking
+            up by url. Default: 25, Max: 100.
+        :returns: When thing_id is provided, return the corresponding
+            Submission object, or None if not found. When url is provided
+            return a list of Submission objects (up to limit) for the url.
+
+        """
+        if bool(url) == bool(thing_id):
+            raise TypeError('Only one of url or thing_id is required!')
+        elif thing_id and limit:
+            raise TypeError('Limit keyword is not applicable with thing_id.')
+        if url:
+            params = {'url': url}
+            if limit:
+                params['limit'] = limit
+        else:
+            params = {'id': thing_id}
+        items = self.request_json(self.config['info'],
+                                  params=params)['data']['children']
+        if url:
+            return items
+        elif items:
+            return items[0]
+        else:
+            return None
+
     def get_new(self, *args, **kwargs):
         """Return new page."""
         return self.get_content(self.config['new'], *args, **kwargs)
@@ -1027,28 +1028,6 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         if subreddit_name.lower() == 'random':
             return self.get_random_subreddit()
         return objects.Subreddit(self, subreddit_name, *args, **kwargs)
-
-    def info(self, url=None, thing_id=None, limit=0):
-        """
-        Given url, queries the API to see if the given URL has been submitted
-        already, and if it has, return the submissions.
-
-        Given a thing_id, requests the info for that thing.
-        """
-        if bool(url) == bool(thing_id):
-            raise TypeError('Only one of url or thing_id is required!')
-        if url is not None:
-            params = {'url': url}
-            if (url.startswith(self.config['reddit_url']) and
-                url != self.config['reddit_url']):
-                msg = ('It looks like you may be trying to get the info of a '
-                       'self or internal link. This probably will not return '
-                       'any useful results!')
-                warn_explicit(msg, UserWarning, '', 0)
-        else:
-            params = {'id': thing_id}
-        return self.get_content(self.config['info'], params=params,
-                                limit=limit)
 
     def is_username_available(self, username):
         """Return True if username is valid and available, otherwise False."""

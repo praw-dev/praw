@@ -26,7 +26,6 @@ import sys
 import time
 import unittest
 import uuid
-import warnings
 from functools import wraps
 from requests.compat import urljoin
 from requests.exceptions import HTTPError, Timeout
@@ -176,26 +175,22 @@ class BasicTest(unittest.TestCase, BasicHelper):
         sub = self.r.get_subreddit('python')
         self.assertTrue(six_next(sub.flair_list()))
 
+    def test_info_by_invalid_id(self):
+        self.assertEqual(None, self.r.get_info(thing_id='INVALID'))
+
     def test_info_by_known_url_returns_known_id_link_post(self):
-        found_links = self.r.info(self.link_url_link)
+        found_links = self.r.get_info(self.link_url_link)
         tmp = self.r.get_submission(url=self.link_url)
         self.assertTrue(tmp in found_links)
 
-    def test_info_by_self_url_raises_warning(self):
-        url = six_next(self.r.get_new(params={'sort': 'new'})).permalink
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter('always')
-            self.r.info(url)
-            self.assertEqual(len(w), 1)
-            self.assertEqual(w[0].category, UserWarning)
-            self.assertTrue('self' in text_type(w[0].message))
-
     def test_info_by_url_also_found_by_id(self):
-        # pylint: disable-msg=E1101
-        found_link = six_next(self.r.info(self.link_url_link))
-        found_by_id = self.r.info(thing_id=found_link.content_id)
-        self.assertTrue(found_by_id)
-        self.assertTrue(found_link in found_by_id)
+        found_by_url = self.r.get_info(self.link_url_link)[0]
+        found_by_id = self.r.get_info(thing_id=found_by_url.content_id)
+        self.assertEqual(found_by_id, found_by_url)
+
+    def test_info_by_url_maximum_listing(self):
+        self.assertEqual(100, len(self.r.get_info('http://reddit.com',
+                                                  limit=101)))
 
     def test_is_username_available(self):
         self.assertFalse(self.r.is_username_available(self.un))
@@ -601,19 +596,6 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
-    def test_deprecated_compose(self):
-        subject = 'Deprecated Test'
-        with warnings.catch_warnings(record=True) as warning:
-            warnings.simplefilter('always')
-            self.r.user.compose_message(subject, 'Message content')
-            self.assertEqual(len(warning), 1)
-            self.assertEqual(warning[0].category, DeprecationWarning)
-        with warnings.catch_warnings(record=True) as warning:
-            warnings.simplefilter('always')
-            self.r.compose_message(self.r.user, subject, 'Message content')
-            self.assertEqual(len(warning), 1)
-            self.assertEqual(warning[0].category, DeprecationWarning)
-
     def test_mark_as_read(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyApiTestUser3', '1111')
@@ -1000,13 +982,6 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(None, submission.author)
-
-    def test_deprecated_saved_links(self):
-        with warnings.catch_warnings(record=True) as warning:
-            warnings.simplefilter('always')
-            self.r.get_saved_links()
-            self.assertEqual(len(warning), 1)
-            self.assertEqual(warning[0].category, DeprecationWarning)
 
     def test_downvote(self):
         submission = None

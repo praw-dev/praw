@@ -251,14 +251,6 @@ class Inboxable(RedditContentObject):
 
 class Messageable(RedditContentObject):
     """Interface for RedditContentObjects that can be messaged."""
-    def compose_message(self, subject, message):
-        """A deprecated alias for send_message. Do not use."""
-        # Remove around the end of 2012
-        warnings.warn('compose_message has been renamed to send_message and '
-                      'will be removed in a future version. Please update.',
-                      DeprecationWarning)
-        return self.reddit_session.send_message(self, subject, message)
-
     def send_message(self, subject, message):
         """Send message to subject."""
         return self.reddit_session.send_message(self, subject, message)
