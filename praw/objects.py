@@ -62,7 +62,7 @@ class RedditContentObject(object):
 
     def __eq__(self, other):
         return (isinstance(other, RedditContentObject) and
-                self.content_id == other.content_id)
+                self.fullname == other.fullname)
 
     def __getattr__(self, attr):
         if not self._populated:
@@ -110,11 +110,11 @@ class RedditContentObject(object):
         return bool(json_dict) or fetch
 
     @property
-    def content_id(self):
-        """Get the object's content id.
+    def fullname(self):
+        """Return the object's fullname.
 
-        An object id is its object to kind mapping like t3 followed by an
-        underscore and then its id. E.g. 't1_c5s96e0'.
+        A fullname is an object's kind mapping like `t3` followed by an
+        underscore and the object's base36 id, e.g., `t1_c5s96e0`.
 
         """
         by_object = self.reddit_session.config.by_object
@@ -136,7 +136,7 @@ class Approvable(RedditContentObject):
 
         """
         url = self.reddit_session.config['approve']
-        data = {'id': self.content_id}
+        data = {'id': self.fullname}
         response = self.reddit_session.request_json(url, data=data)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
         if isinstance(self, Submission):
@@ -155,7 +155,7 @@ class Approvable(RedditContentObject):
 
         """
         url = self.reddit_session.config['remove']
-        data = {'id': self.content_id,
+        data = {'id': self.fullname,
                 'spam': 'True' if spam else 'False'}
         response = self.reddit_session.request_json(url, data=data)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
@@ -172,7 +172,7 @@ class Deletable(RedditContentObject):
     def delete(self):
         """Delete this object."""
         url = self.reddit_session.config['del']
-        data = {'id': self.content_id}
+        data = {'id': self.fullname}
         response = self.reddit_session.request_json(url, data=data)
         # pylint: disable-msg=E1101
         _request.evict([self.reddit_session.config['user']])
@@ -192,7 +192,7 @@ class Distinguishable(RedditContentObject):
 
         """
         url = self.reddit_session.config['distinguish']
-        data = {'id': self.content_id,
+        data = {'id': self.fullname,
                 'how': 'yes' if as_made_by == 'mod' else as_made_by}
         return self.reddit_session.request_json(url, data=data)
 
@@ -213,7 +213,7 @@ class Editable(RedditContentObject):
 
         """
         url = self.reddit_session.config['edit']
-        data = {'thing_id': self.content_id,
+        data = {'thing_id': self.fullname,
                 'text': text}
         response = self.reddit_session.request_json(url, data=data)
         # pylint: disable-msg=E1101
@@ -230,7 +230,7 @@ class Hideable(RedditContentObject):
     def hide(self, unhide=False):
         """Hide object in the context of the logged in user."""
         url = self.reddit_session.config['unhide' if unhide else 'hide']
-        data = {'id': self.content_id,
+        data = {'id': self.fullname,
                 'executed': 'unhide' if unhide else 'hide'}
         response = self.reddit_session.request_json(url, data=data)
         # pylint: disable-msg=W0212
@@ -258,7 +258,7 @@ class Inboxable(RedditContentObject):
     def reply(self, text):
         """Reply to object with the specified text."""
         # pylint: disable-msg=E1101,W0212
-        response = self.reddit_session._add_comment(self.content_id, text)
+        response = self.reddit_session._add_comment(self.fullname, text)
         if isinstance(self, Comment):
             _request.evict([self.reddit_session.config['inbox'],
                                self.submission.permalink])
@@ -286,7 +286,7 @@ class NSFWable(RedditContentObject):
         """Mark object as Not Safe For Work ( Porn / Gore )."""
         url = self.reddit_session.config['unmarknsfw' if unmarknsfw else
                                          'marknsfw']
-        data = {'id': self.content_id,
+        data = {'id': self.fullname,
                 'executed': 'unmarknsfw' if unmarknsfw else 'marknsfw'}
         return self.reddit_session.request_json(url, data=data)
 
@@ -326,7 +326,7 @@ class Reportable(RedditContentObject):
     def report(self):
         """Report this object to the moderators."""
         url = self.reddit_session.config['report']
-        data = {'id': self.content_id}
+        data = {'id': self.fullname}
         response = self.reddit_session.request_json(url, data=data)
         # Reported objects are automatically hidden as well
         # pylint: disable-msg=E1101,W0212
@@ -343,7 +343,7 @@ class Saveable(RedditContentObject):
     def save(self, unsave=False):
         """Save the object."""
         url = self.reddit_session.config['unsave' if unsave else 'save']
-        data = {'id': self.content_id,
+        data = {'id': self.fullname,
                 'executed': 'unsaved' if unsave else 'saved'}
         response = self.reddit_session.request_json(url, data=data)
         # pylint: disable-msg=E1101
@@ -379,7 +379,7 @@ class Voteable(RedditContentObject):
     def vote(self, direction=0):
         """Vote for the given item in the direction specified."""
         url = self.reddit_session.config['vote']
-        data = {'id': self.content_id,
+        data = {'id': self.fullname,
                 'dir': six.text_type(direction)}
         # pylint: disable-msg=W0212
         urls = [urljoin(self.reddit_session.user._url, 'disliked'),
@@ -420,7 +420,7 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
     def is_root(self):
         """Indicate if the comment is a top level comment."""
         return (self.parent_id is None or
-                self.parent_id == self.submission.content_id)
+                self.parent_id == self.submission.fullname)
 
     @property
     def permalink(self):
@@ -494,7 +494,7 @@ class MoreComments(RedditContentObject):
             if not children:
                 return None
             data = {'children': ','.join(children),
-                    'link_id': self.submission.content_id,
+                    'link_id': self.submission.fullname,
                     'r': str(self.submission.subreddit)}
             if self.reddit_session.config.comment_sort:
                 data['where'] = self.reddit_session.config.comment_sort
@@ -547,13 +547,13 @@ class Redditor(Messageable, Refreshable):
         """Mark message(s) as read or unread."""
         ids = []
         if isinstance(messages, Inboxable):
-            ids.append(messages.content_id)
+            ids.append(messages.fullname)
         elif hasattr(messages, '__iter__'):
             for msg in messages:
                 if not isinstance(msg, Inboxable):
                     raise ClientException('Invalid message type: %s'
                                           % type(msg))
-                ids.append(msg.content_id)
+                ids.append(msg.fullname)
         else:
             raise ClientException('Invalid message type: %s' % type(messages))
         # pylint: disable-msg=W0212
@@ -755,7 +755,7 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
     def add_comment(self, text):
         """If logged in, comment on the submission using the specified text."""
         # pylint: disable-msg=E1101, W0212
-        response = self.reddit_session._add_comment(self.content_id, text)
+        response = self.reddit_session._add_comment(self.fullname, text)
         _request.evict([self.permalink])
         return response
 
@@ -931,39 +931,39 @@ class Subreddit(Messageable, NSFWable, Refreshable):
         return self.reddit_session.flair_list(self, *args, **kwargs)
 
     def get_banned(self, *args, **kwargs):
-        """Get banned users for this subreddit."""
+        """Return banned users for this subreddit."""
         return self.reddit_session.get_banned(self, *args, **kwargs)
 
     def get_contributors(self, *args, **kwargs):
-        """Get contributors for this subreddit."""
+        """Return contributors for this subreddit."""
         return self.reddit_session.get_contributors(self, *args, **kwargs)
 
     def get_flair(self, *args, **kwargs):
-        """Get the flair for a user on this subreddit."""
+        """Return the flair for a user on this subreddit."""
         return self.reddit_session.get_flair(self, *args, **kwargs)
 
     def get_moderators(self, *args, **kwargs):
-        """Get moderators for this subreddit."""
+        """Return moderators for this subreddit."""
         return self.reddit_session.get_moderators(self, *args, **kwargs)
 
     def get_modqueue(self, *args, **kwargs):
-        """Get the modqueue on this subreddit."""
+        """Return the modqueue on this subreddit."""
         return self.reddit_session.get_modqueue(self, *args, **kwargs)
 
     def get_reports(self, *args, **kwargs):
-        """Get the reported submissions on this subreddit."""
+        """Return the reported submissions on this subreddit."""
         return self.reddit_session.get_reports(self, *args, **kwargs)
 
     def get_settings(self, *args, **kwargs):
-        """Get the settings for this subreddit."""
+        """Return the settings for this subreddit."""
         return self.reddit_session.get_settings(self, *args, **kwargs)
 
     def get_spam(self, *args, **kwargs):
-        """Get the spam-filtered items on this subreddit."""
+        """Return the spam-filtered items on this subreddit."""
         return self.reddit_session.get_spam(self, *args, **kwargs)
 
     def get_stylesheet(self, *args, **kwargs):
-        """Get the stylesheet and associated images for this subreddit."""
+        """Return the stylesheet and associated images for this subreddit."""
         return self.reddit_session.get_stylesheet(self, *args, **kwargs)
 
     def search(self, query, *args, **kwargs):
@@ -993,12 +993,12 @@ class Subreddit(Messageable, NSFWable, Refreshable):
     def subscribe(self):
         """Subscribe to this subreddit."""
         # pylint: disable-msg=W0212
-        return self.reddit_session._subscribe(self.content_id)
+        return self.reddit_session._subscribe(self.fullname)
 
     def unsubscribe(self):
         """Unsubscribe from this subreddit."""
         # pylint: disable-msg=W0212
-        return self.reddit_session._subscribe(self.content_id,
+        return self.reddit_session._subscribe(self.fullname,
                                               unsubscribe=True)
 
     def update_settings(self, *args, **kwargs):

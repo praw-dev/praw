@@ -61,7 +61,7 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
         if is_sub:
             data['r'] = six.text_type(thing)
         else:
-            data['container'] = thing.content_id
+            data['container'] = thing.fullname
         url = thing.reddit_session.config[url_key]
         return thing.reddit_session.request_json(url, data=data)
     return do_relationship

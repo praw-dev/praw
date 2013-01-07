@@ -185,7 +185,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_info_by_url_also_found_by_id(self):
         found_by_url = self.r.get_info(self.link_url_link)[0]
-        found_by_id = self.r.get_info(thing_id=found_by_url.content_id)
+        found_by_id = self.r.get_info(thing_id=found_by_url.fullname)
         self.assertEqual(found_by_id, found_by_url)
 
     def test_info_by_url_maximum_listing(self):
@@ -400,7 +400,7 @@ class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find a submission with comments.')
         comment = found.comments[0]
         reply = comment.reply(text)
-        self.assertEqual(reply.parent_id, comment.content_id)
+        self.assertEqual(reply.parent_id, comment.fullname)
         self.assertEqual(reply.body, text)
 
 
@@ -651,7 +651,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.fail('Could not find a self-message in the inbox')
         reply = found.reply(text)
-        self.assertEqual(reply.parent_id, found.content_id)
+        self.assertEqual(reply.parent_id, found.fullname)
 
     def test_send(self):
         subject = 'Unique message: %s' % uuid.uuid4()

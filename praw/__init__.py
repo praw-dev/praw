@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers, objects
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc10'
+__version__ = '1.1.0rc11'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -556,7 +556,7 @@ class SubredditExtension(BaseReddit):
                 'text': flair_text or '',
                 'css_class': flair_css_class or ''}
         if isinstance(item, objects.Submission):
-            data['link'] = item.content_id
+            data['link'] = item.fullname
             evict = item.permalink
         else:
             data['name'] = six.text_type(item)
@@ -621,7 +621,7 @@ class SubredditExtension(BaseReddit):
         wiki_edit_karma = wiki_edit_karma or ''
 
         data = {'r': six.text_type(subreddit),
-                'sr': subreddit.content_id,
+                'sr': subreddit.fullname,
                 'title': title,
                 'public_description': public_description,
                 'description': description,
