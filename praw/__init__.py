@@ -161,9 +161,9 @@ class Config(object):  # pylint: disable-msg=R0903
         self.output_chars_limit = int(obj['output_chars_limit'])
         self.log_requests = int(obj['log_requests'])
         self.regular_comments_max = int(obj['regular_comments_max'])
-        self.client_id = obj.get('oauth_client_id')
-        self.client_secret = obj.get('oauth_client_secret')
-        self.redirect_uri = obj.get('oauth_redirect_uri')
+        self.client_id = obj.get('oauth_client_id') or None
+        self.client_secret = obj.get('oauth_client_secret') or None
+        self.redirect_uri = obj.get('oauth_redirect_uri') or None
 
         if 'short_domain' in obj:
             self._short_domain = 'http://' + obj['short_domain']
@@ -855,8 +855,8 @@ class LoggedInExtension(BaseReddit):
         self.modhash = response['data']['modhash']
         self.user = self.get_redditor(user)
         self.user.__class__ = objects.LoggedInRedditor
-        self.access_token = None
-        self.refresh_token = None
+        self.access_token = None # pylint: disable-msg=W0201
+        self.refresh_token = None # pylint: disable-msg=W0201
 
     @decorators.require_login
     @decorators.RequireCaptcha
@@ -894,9 +894,9 @@ class OAuth2Extension(BaseReddit):
         super(OAuth2Extension, self).__init__(*args, **kwargs)
         self.access_token = None
         self.refresh_token = None
-        self.client_id = None
-        self.client_secret = None
-        self.redirect_uri = None
+        self.client_id = self.config.client_id
+        self.client_secret = self.config.client_secret
+        self.redirect_uri = self.config.redirect_uri
 
     def _handle_oauth_request(self, data):
         auth = (self.client_id, self.client_secret)
@@ -925,8 +925,7 @@ class OAuth2Extension(BaseReddit):
                 'redirect_uri': self.redirect_uri}
         retval = self._handle_oauth_request(data)
         access = retval['access_token']
-        refresh = (retval['refresh_token'] if 'refresh_token' in retval
-                                           else None)
+        refresh = retval.get('refresh_token')
         if update_session:
             self.set_access_credentials(access, refresh)
         return access, refresh
@@ -983,7 +982,7 @@ class OAuth2Extension(BaseReddit):
         (oauth and user/pswd) and make future requests use oauth.
 
         :param access_token: the access_token of the authentication
-        :param access_token: the refresh token of the authentication
+        :param refresh_token: the refresh token of the authentication
 
         """
         self.access_token = access_token
@@ -992,12 +991,12 @@ class OAuth2Extension(BaseReddit):
             response = self.request_json(self.config['me'])
             self.user = objects.Redditor(self, response['name'], response)
             self.user.__class__ = objects.LoggedInRedditor
-        except requests.HTTPError as e:
-            if e.response.status_code == 403:
+        except requests.HTTPError as exception:
+            if exception.response.status_code == 403:
                 # Identity not part of oauth scope.
                 self.user = None
             else:
-                raise e
+                raise exception
 
     def set_oauth_app_info(self, client_id=None, client_secret=None,
                                  redirect_uri=None):
@@ -1007,9 +1006,9 @@ class OAuth2Extension(BaseReddit):
         the configuration file. Go to https://ssl.reddit.com/prefs/apps/
         to see the variables of your application.
 
-        :param access_token: the client_id of your application
-        :param access_token: the client_secret of your application
-        :param access_token: the redirect_uri of your application
+        :param client_id: the client_id of your application
+        :param client_secret: the client_secret of your application
+        :param redirect_uri: the redirect_uri of your application
 
         """
 
