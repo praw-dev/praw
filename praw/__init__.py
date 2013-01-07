@@ -35,10 +35,10 @@ from requests import Request
 from update_checker import update_check
 from warnings import warn_explicit
 
-from praw import decorators, errors, helpers, objects
+from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc11'
+__version__ = '1.1.0rc12'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -390,29 +390,6 @@ class SubredditExtension(BaseReddit):
         super(SubredditExtension, self).__init__(*args, **kwargs)
 
     @decorators.require_login
-    def _subscribe(self, sr_id=None, sr_name=None, unsubscribe=False):
-        """(Un)subscribe to the given subreddit.
-
-        Provide either the subreddit id (sr_id) or the name (sr_name).
-
-        :returns: The json response from the server.
-
-        """
-        if bool(sr_id) == bool(sr_name):
-            raise TypeError('One (and only one) of text or url is required!')
-        action = 'unsub' if unsubscribe else 'sub'
-        data = {'action': action}
-        if sr_id:
-            data['sr'] = sr_id
-        else:
-            data['sr_name'] = sr_name
-
-        response = self.request_json(self.config['subscribe'], data=data)
-        # pylint: disable-msg=E1101,W0212
-        helpers._request.evict([self.config['my_reddits']])
-        return response
-
-    @decorators.require_login
     @decorators.require_moderator
     def add_flair_template(self, subreddit, text='', css_class='',
                            text_editable=False, is_link=False):
@@ -696,13 +673,30 @@ class SubredditExtension(BaseReddit):
         # pylint: disable-msg=E1101
         return self.get_submission(result['data']['url'])
 
-    def subscribe(self, subreddit):
-        """Subscribe to the given subreddit by display name."""
-        self._subscribe(sr_name=subreddit)
+    @decorators.require_login
+    def subscribe(self, subreddit, unsubscribe=False):
+        """Subscribe to the given subreddit.
+
+        :param subreddit: Either the subreddit name or a subreddit object.
+        :param unsubscribe: When true, unsubscribe.
+        :returns: The json response from the server.
+
+        """
+        data = {'action': 'unsub' if unsubscribe else 'sub',
+                'sr_name': six.text_type(subreddit)}
+        response = self.request_json(self.config['subscribe'], data=data)
+        # pylint: disable-msg=E1101,W0212
+        helpers._request.evict([self.config['my_reddits']])
+        return response
 
     def unsubscribe(self, subreddit):
-        """Unsubscribe from the given subreddit by display name."""
-        self._subscribe(sr_name=subreddit, unsubscribe=True)
+        """Unsubscribe from the given subreddit.
+
+        :param subreddit: Either the subreddit name or a subreddit object.
+        :returns: The json response from the server.
+
+        """
+        return self.subscribe(subreddit, unsubscribe=True)
 
     def update_settings(self, subreddit, **kwargs):
         """Update only the given settings for the given subreddit.
@@ -1152,3 +1146,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
         if captcha:
             data.update(captcha)
         return self.request_json(self.config['feedback'], data=data)
+
+
+# Prevent recursive import
+from praw import objects

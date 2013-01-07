@@ -25,7 +25,9 @@ that it can be saved and unsaved in the context of a logged in user.
 import six
 import warnings
 from requests.compat import urljoin
-from praw.decorators import limit_chars, require_login, require_moderator
+from praw import LoggedInExtension as LIExt, SubredditExtension as SRExt
+from praw.decorators import (alias_function, limit_chars, require_login,
+                             require_moderator)
 from praw.errors import ClientException
 from praw.helpers import (_get_section, _get_sorter, _modify_relationship,
                           _request)
@@ -272,9 +274,7 @@ class Messageable(RedditContentObject):
 
     """Interface for RedditContentObjects that can be messaged."""
 
-    def send_message(self, subject, message):
-        """Send message to subject."""
-        return self.reddit_session.send_message(self, subject, message)
+    _methods = (('send_message', LIExt.send_message),)
 
 
 class NSFWable(RedditContentObject):
@@ -848,6 +848,29 @@ class Subreddit(Messageable, NSFWable, Refreshable):
 
     """A class for Subreddits."""
 
+    _methods = (('add_flair_template', SRExt.add_flair_template),
+                ('clear_flair_templates', SRExt.clear_flair_templates),
+                ('configure_flair', SRExt.configure_flair),
+                ('flair_list', SRExt.flair_list),
+                ('get_banned', SRExt.get_banned),
+                ('get_contributors', SRExt.get_contributors),
+                ('get_flair', SRExt.get_flair),
+                ('get_moderators', SRExt.get_moderators),
+                ('get_modqueue', SRExt.get_modqueue),
+                ('get_reports', SRExt.get_reports),
+                ('get_settings', SRExt.get_settings),
+                ('get_spam', SRExt.get_spam),
+                ('get_stylesheet', SRExt.get_stylesheet),
+                ('set_flair', SRExt.set_flair),
+                ('set_flair_csv', SRExt.set_flair_csv),
+                ('set_settings', SRExt.set_settings),
+                ('set_stylesheet', SRExt.set_stylesheet),
+                ('submit', SRExt.submit),
+                ('subscribe', SRExt.subscribe),
+                ('unsubscribe', SRExt.unsubscribe),
+                ('update_settings', SRExt.update_settings),
+                ('upload_image', SRExt.upload_image))
+
     ban = _modify_relationship('banned', is_sub=True)
     unban = _modify_relationship('banned', unlink=True, is_sub=True)
     make_contributor = _modify_relationship('contributor', is_sub=True)
@@ -906,10 +929,6 @@ class Subreddit(Messageable, NSFWable, Refreshable):
         """Return the subreddit's display name. E.g. python or askreddit."""
         return self.display_name
 
-    def add_flair_template(self, *args, **kwargs):
-        """Add a flair template to this subreddit."""
-        return self.reddit_session.add_flair_template(self, *args, **kwargs)
-
     def clear_all_flair(self):
         """Remove all user flair on this subreddit."""
         csv = [{'user': x['user']} for x in self.flair_list()]
@@ -918,96 +937,9 @@ class Subreddit(Messageable, NSFWable, Refreshable):
         else:
             return
 
-    def clear_flair_templates(self, *args, **kwargs):
-        """Clear flair templates for this subreddit."""
-        return self.reddit_session.clear_flair_templates(self, *args, **kwargs)
-
-    def configure_flair(self, *args, **kwargs):
-        """Set overall flair settings for this subreddit."""
-        return self.reddit_session.configure_flair(self, *args, **kwargs)
-
-    def flair_list(self, *args, **kwargs):
-        """Return a list of flair for this subreddit."""
-        return self.reddit_session.flair_list(self, *args, **kwargs)
-
-    def get_banned(self, *args, **kwargs):
-        """Return banned users for this subreddit."""
-        return self.reddit_session.get_banned(self, *args, **kwargs)
-
-    def get_contributors(self, *args, **kwargs):
-        """Return contributors for this subreddit."""
-        return self.reddit_session.get_contributors(self, *args, **kwargs)
-
-    def get_flair(self, *args, **kwargs):
-        """Return the flair for a user on this subreddit."""
-        return self.reddit_session.get_flair(self, *args, **kwargs)
-
-    def get_moderators(self, *args, **kwargs):
-        """Return moderators for this subreddit."""
-        return self.reddit_session.get_moderators(self, *args, **kwargs)
-
-    def get_modqueue(self, *args, **kwargs):
-        """Return the modqueue on this subreddit."""
-        return self.reddit_session.get_modqueue(self, *args, **kwargs)
-
-    def get_reports(self, *args, **kwargs):
-        """Return the reported submissions on this subreddit."""
-        return self.reddit_session.get_reports(self, *args, **kwargs)
-
-    def get_settings(self, *args, **kwargs):
-        """Return the settings for this subreddit."""
-        return self.reddit_session.get_settings(self, *args, **kwargs)
-
-    def get_spam(self, *args, **kwargs):
-        """Return the spam-filtered items on this subreddit."""
-        return self.reddit_session.get_spam(self, *args, **kwargs)
-
-    def get_stylesheet(self, *args, **kwargs):
-        """Return the stylesheet and associated images for this subreddit."""
-        return self.reddit_session.get_stylesheet(self, *args, **kwargs)
-
     def search(self, query, *args, **kwargs):
         """Search this subreddit."""
         return self.reddit_session.search(query, self, *args, **kwargs)
-
-    def set_flair(self, *args, **kwargs):
-        """Set flair for a particular user or submission on this subreddit."""
-        return self.reddit_session.set_flair(self, *args, **kwargs)
-
-    def set_flair_csv(self, *args, **kwargs):
-        """Set flair for a group of users all at once on this subreddit."""
-        return self.reddit_session.set_flair_csv(self, *args, **kwargs)
-
-    def set_settings(self, *args, **kwargs):
-        """Set the settings for this subreddit."""
-        return self.reddit_session.set_settings(self, *args, **kwargs)
-
-    def set_stylesheet(self, *args, **kwargs):
-        """Set stylesheet for this sub-reddit."""
-        return self.reddit_session.set_stylesheet(self, *args, **kwargs)
-
-    def submit(self, *args, **kwargs):
-        """Submit a new link to this subreddit."""
-        return self.reddit_session.submit(self, *args, **kwargs)
-
-    def subscribe(self):
-        """Subscribe to this subreddit."""
-        # pylint: disable-msg=W0212
-        return self.reddit_session._subscribe(self.fullname)
-
-    def unsubscribe(self):
-        """Unsubscribe from this subreddit."""
-        # pylint: disable-msg=W0212
-        return self.reddit_session._subscribe(self.fullname,
-                                              unsubscribe=True)
-
-    def update_settings(self, *args, **kwargs):
-        """Update only the settings provided for this subreddit."""
-        return self.reddit_session.update_settings(self, *args, **kwargs)
-
-    def upload_image(self, *args, **kwargs):
-        """Upload an image for use in a subreddit's stylesheet or header."""
-        return self.reddit_session.upload_image(self, *args, **kwargs)
 
 
 class UserList(RedditContentObject):
@@ -1035,3 +967,13 @@ class UserList(RedditContentObject):
 
     def __len__(self):
         return len(self.children)
+
+
+def _add_aliases():
+    import inspect
+    import sys
+    predicate = lambda x: inspect.isclass(x) and hasattr(x, '_methods')
+    for _, cls in inspect.getmembers(sys.modules[__name__], predicate):
+        for name, method in cls._methods:  # pylint: disable-msg=W0212
+            setattr(cls, name, alias_function(method))
+_add_aliases()

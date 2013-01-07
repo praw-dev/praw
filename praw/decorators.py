@@ -156,6 +156,21 @@ class SleepAfter(object):  # pylint: disable-msg=R0903
         return self.function(*args, **kwargs)
 
 
+def alias_function(function):
+    """Create a RedditContentObject function mapped to a BaseReddit function.
+
+    The BaseReddit classes define the majority of the API's functions. The
+    first argument for many of these functions is the RedditContentObject that
+    they operate on. This factory returns functions appropriate to be called on
+    a RedditContent object that maps to the corresponding BaseReddit function.
+
+    """
+    @wraps(function)
+    def wrapped(self, *args, **kwargs):
+        return function(self.reddit_session, self, *args, **kwargs)
+    return wrapped
+
+
 def limit_chars(function):
     """Truncate the string returned from a function and return the result."""
     @wraps(function)
@@ -213,6 +228,7 @@ def require_login(function):
     """
     @wraps(function)
     def login_required_function(self, *args, **kwargs):
+        from praw.objects import RedditContentObject
         if isinstance(self, RedditContentObject):
             user = self.reddit_session.user
             modhash = self.reddit_session.modhash
@@ -239,6 +255,7 @@ def require_moderator(function):
     """
     @wraps(function)
     def moderator_required_function(self, *args, **kwargs):
+        from praw.objects import RedditContentObject
         if isinstance(self, RedditContentObject):
             subreddit = self.subreddit
             user = self.reddit_session.user
@@ -282,5 +299,4 @@ def require_oauth(function):
 
 
 # Avoid circular import: http://effbot.org/zone/import-confusion.htm
-from .objects import RedditContentObject
 from .helpers import _request

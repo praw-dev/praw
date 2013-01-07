@@ -141,15 +141,18 @@ class BasicTest(unittest.TestCase, BasicHelper):
         num = 50
         self.assertEqual(num, len(list(self.r.get_all_comments(limit=num))))
 
+    @reddit_only
     def test_get_controversial(self):
         num = 50
         result = self.r.get_controversial(limit=num, params={'t': 'all'})
         self.assertEqual(num, len(list(result)))
 
+    @reddit_only
     def test_get_front_page(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
 
+    @reddit_only
     def test_get_new(self):
         num = 50
         result = self.r.get_new(limit=num, params={'sort': 'new'})
@@ -166,6 +169,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
             subs.add(self.r.get_subreddit('RANDOM').display_name)
         self.assertTrue(len(subs) > 1)
 
+    @reddit_only
     def test_get_top(self):
         num = 50
         result = self.r.get_top(limit=num, params={'t': 'all'})
@@ -188,6 +192,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
         found_by_id = self.r.get_info(thing_id=found_by_url.fullname)
         self.assertEqual(found_by_id, found_by_url)
 
+    @reddit_only
     def test_info_by_url_maximum_listing(self):
         self.assertEqual(100, len(self.r.get_info('http://reddit.com',
                                                   limit=101)))
@@ -1215,14 +1220,17 @@ class UploadImageTests(unittest.TestCase, AuthenticatedHelper):
         self.assertRaises(TypeError, self.subreddit.upload_image, image,
                           name='Foo', header=True)
 
+    @reddit_only
     def test_jpg_header(self):
         image = open(self.image_path.format('white-square.jpg'))
         self.assertTrue(self.subreddit.upload_image(image, header=True))
 
+    @reddit_only
     def test_jpg_image(self):
         image = open(self.image_path.format('white-square.jpg'))
         self.assertTrue(self.subreddit.upload_image(image))
 
+    @reddit_only
     def test_jpg_image_named(self):
         image = open(self.image_path.format('white-square.jpg'))
         name = text_type(uuid.uuid4())
@@ -1230,18 +1238,22 @@ class UploadImageTests(unittest.TestCase, AuthenticatedHelper):
         images_json = self.subreddit.get_stylesheet()['images']
         self.assertTrue(name in text_type(x['name']) for x in images_json)
 
+    @reddit_only
     def test_jpg_image_no_extension(self):
         image = open(self.image_path.format('white-square'))
         self.assertTrue(self.subreddit.upload_image(image))
 
+    @reddit_only
     def test_png_header(self):
         image = open(self.image_path.format('white-square.png'))
         self.assertTrue(self.subreddit.upload_image(image, header=True))
 
+    @reddit_only
     def test_png_image(self):
         image = open(self.image_path.format('white-square.png'))
         self.assertTrue(self.subreddit.upload_image(image))
 
+    @reddit_only
     def test_png_image_named(self):
         image = open(self.image_path.format('white-square.png'))
         name = text_type(uuid.uuid4())
