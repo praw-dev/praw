@@ -13,7 +13,7 @@
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Contains code about objects such as Submissions, Deletable or Commments
+Contains code about objects such as Submissions, Deletable or Commments.
 
 There are two main groups of objects in this file. The first are objects that
 correspond to a Thing or part of a Thing as specified in reddit's API overview,
@@ -35,19 +35,22 @@ REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor')
 
 
 class RedditContentObject(object):
+
     """Base class that represents actual reddit objects."""
+
     @classmethod
     def from_api_response(cls, reddit_session, json_dict):
+        """Return an instance of the appropriate class from the json_dict."""
         return cls(reddit_session, json_dict=json_dict)
 
     def __init__(self, reddit_session, json_dict=None, fetch=True,
                  info_url=None, underscore_names=None):
-        """
-        Create a new object from the dict of attributes returned by the API.
+        """Create a new object from the dict of attributes returned by the API.
 
         The fetch parameter specifies whether to retrieve the object's
         information from the API (only matters when it isn't provided using
         json_dict).
+
         """
         if info_url:
             self._info_url = info_url
@@ -108,27 +111,29 @@ class RedditContentObject(object):
 
     @property
     def content_id(self):
-        """
-        Get the object's content id.
+        """Get the object's content id.
 
         An object id is its object to kind mapping like t3 followed by an
         underscore and then its id. E.g. 't1_c5s96e0'.
+
         """
         by_object = self.reddit_session.config.by_object
         return '%s_%s' % (by_object[self.__class__], self.id)
 
 
 class Approvable(RedditContentObject):
+
     """Interface for Reddit content objects that can be approved."""
+
     @require_login
     @require_moderator
     def approve(self):
-        """
-        Approve object.
+        """Approve object.
 
         This reverts a removal, resets the report counter, marks it with a
         green checkmark (only visible to other moderators) on the webend and
         sets the approved_by attribute to the logged in user.
+
         """
         url = self.reddit_session.config['approve']
         data = {'id': self.content_id}
@@ -142,12 +147,12 @@ class Approvable(RedditContentObject):
     @require_login
     @require_moderator
     def remove(self, spam=False):
-        """
-        Remove object. This is the moderator version of delete.
+        """Remove object. This is the moderator version of delete.
 
         The object is removed from the subreddit listings and placed into the
         spam listing. If spam is set to True, then the automatic spam filter
         will try to remove objects with similair attributes in the future.
+
         """
         url = self.reddit_session.config['remove']
         data = {'id': self.content_id,
@@ -161,7 +166,9 @@ class Approvable(RedditContentObject):
 
 
 class Deletable(RedditContentObject):
+
     """Interface for Reddit content objects that can be deleted."""
+
     def delete(self):
         """Delete this object."""
         url = self.reddit_session.config['del']
@@ -173,14 +180,16 @@ class Deletable(RedditContentObject):
 
 
 class Distinguishable(RedditContentObject):
+
     """Interface for Reddit content objects that can be distinguished."""
+
     @require_login
     def distinguish(self, as_made_by='mod'):
-        """
-        Distinguish object as made by mod, admin or special.
+        """Distinguish object as made by mod, admin or special.
 
         Distinguished objects have a different author color. With Reddit
         enhancement suite it is the background color that changes.
+
         """
         url = self.reddit_session.config['distinguish']
         data = {'id': self.content_id,
@@ -194,9 +203,15 @@ class Distinguishable(RedditContentObject):
 
 
 class Editable(RedditContentObject):
+
     """Interface for Reddit content objects that can be edited."""
+
     def edit(self, text):
-        """Edit the object to `text`"""
+        """Replace the body of the object with `text`.
+
+        :returns: The update object.
+
+        """
         url = self.reddit_session.config['edit']
         data = {'thing_id': self.content_id,
                 'text': text}
@@ -208,7 +223,9 @@ class Editable(RedditContentObject):
 
 
 class Hideable(RedditContentObject):
+
     """Interface for objects that can be hidden."""
+
     @require_login
     def hide(self, unhide=False):
         """Hide object in the context of the logged in user."""
@@ -227,7 +244,9 @@ class Hideable(RedditContentObject):
 
 
 class Inboxable(RedditContentObject):
+
     """Interface for Reddit content objects that appear in the Inbox."""
+
     def mark_as_read(self):
         """Mark object as read."""
         return self.reddit_session.user.mark_as_read(self)
@@ -250,14 +269,18 @@ class Inboxable(RedditContentObject):
 
 
 class Messageable(RedditContentObject):
+
     """Interface for RedditContentObjects that can be messaged."""
+
     def send_message(self, subject, message):
         """Send message to subject."""
         return self.reddit_session.send_message(self, subject, message)
 
 
 class NSFWable(RedditContentObject):
+
     """Interface for objects that can be marked as NSFW."""
+
     @require_login
     def mark_as_nsfw(self, unmarknsfw=False):
         """Mark object as Not Safe For Work ( Porn / Gore )."""
@@ -273,28 +296,32 @@ class NSFWable(RedditContentObject):
 
 
 class Refreshable(RedditContentObject):
+
     """Interface for objects that can be refreshed."""
+
     def refresh(self):
-        """
-        Requery to update object with latest values.
+        """Re-query to update object with latest values.
 
         Note that if this call is made within cache_timeout as specified in
         praw.ini then this will return the cached content. Any listing, such
         as the submissions on a subreddits top page, will automatically be
         refreshed serverside. Refreshing a submission will also refresh all its
         comments.
+
         """
         if isinstance(self, Redditor):
             other = Redditor(self.reddit_session, self.name)
         elif isinstance(self, Submission):
-            other = Submission.get_info(self.reddit_session, self.permalink)
+            other = Submission.from_url(self.reddit_session, self.permalink)
         elif isinstance(self, Subreddit):
             other = Subreddit(self.reddit_session, self.display_name)
         self.__dict__ = other.__dict__  # pylint: disable-msg=W0201
 
 
 class Reportable(RedditContentObject):
+
     """Interface for RedditContentObjects that can be reported."""
+
     @require_login
     def report(self):
         """Report this object to the moderators."""
@@ -309,7 +336,9 @@ class Reportable(RedditContentObject):
 
 
 class Saveable(RedditContentObject):
+
     """Interface for RedditContentObjects that can be saved."""
+
     @require_login
     def save(self, unsave=False):
         """Save the object."""
@@ -327,12 +356,14 @@ class Saveable(RedditContentObject):
 
 
 class Voteable(RedditContentObject):
+
     """Interface for RedditContentObjects that can be voted on."""
+
     def clear_vote(self):
-        """
-        Remove the logged in user's vote on the object.
+        """Remove the logged in user's vote on the object.
 
         Running this on an object with no existing vote has no adverse effects.
+
         """
         return self.vote()
 
@@ -359,7 +390,9 @@ class Voteable(RedditContentObject):
 
 class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
               Reportable, Voteable):
-    """A class for comments."""
+
+    """A class that represents a reddit comments."""
+
     def __init__(self, reddit_session, json_dict):
         super(Comment, self).__init__(reddit_session, json_dict,
                                       underscore_names=['replies'])
@@ -421,7 +454,9 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
 
 
 class Message(Inboxable):
+
     """A class for reddit messages (orangereds)."""
+
     def __init__(self, reddit_session, json_dict):
         super(Message, self).__init__(reddit_session, json_dict)
         if self.replies:
@@ -436,7 +471,9 @@ class Message(Inboxable):
 
 
 class MoreComments(RedditContentObject):
+
     """A class indicating there are more comments."""
+
     def __init__(self, reddit_session, json_dict):
         super(MoreComments, self).__init__(reddit_session, json_dict)
         self.submission = None
@@ -472,7 +509,9 @@ class MoreComments(RedditContentObject):
 
 
 class Redditor(Messageable, Refreshable):
+
     """A class representing the users of reddit."""
+
     get_overview = _get_section('')
     get_comments = _get_section('comments')
     get_submitted = _get_section('submitted')
@@ -528,7 +567,9 @@ class Redditor(Messageable, Refreshable):
 
 
 class LoggedInRedditor(Redditor):
-    """A class for a currently logged in Redditor"""
+
+    """A class representing a currently logged in Redditor."""
+
     get_disliked = _get_section('disliked')
     get_hidden = _get_section('hidden')
     get_liked = _get_section('liked')
@@ -579,9 +620,18 @@ class LoggedInRedditor(Redditor):
 
 class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
                  NSFWable, Refreshable, Reportable, Saveable, Voteable):
+
     """A class for submissions to reddit."""
+
     @staticmethod
-    def get_info(reddit_session, url, comments_only=False):
+    def from_url(reddit_session, url, comments_only=False):
+        """Request the url and return a Submission object.
+
+        :param reddit_session: The session to make the request with.
+        :param url: The url to build the Submission object from.
+        :param comments_only: Return only the list of comments.
+
+        """
         params = {}
         comment_limit = reddit_session.config.comment_limit
         comment_sort = reddit_session.config.comment_sort
@@ -711,12 +761,12 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
 
     @property
     def all_comments(self):
-        """
-        Return forest of all comments, with top-level comments as tree roots.
+        """Return forest of all comments with top-level comments as tree roots.
 
         Use a comment's replies to walk down the tree. To get an unnested,
         flat list if comments use all_comments_flat. Multiple API
         requests may be needed to get all comments.
+
         """
         if not self._all_comments:
             self._replace_more_comments()
@@ -726,10 +776,10 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
 
     @property
     def all_comments_flat(self):
-        """
-        Return all comments in an unnested, flat list.
+        """Return all comments in an unnested, flat list.
 
         Multiple API requests may be needed to get all comments.
+
         """
         if not self._all_comments:
             self.all_comments  # pylint: disable-msg=W0104
@@ -737,22 +787,23 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
 
     @property
     def comments(self):  # pylint: disable-msg=E0202
-        """
-        Return forest of comments, with top-level comments as tree roots.
+        """Return forest of comments, with top-level comments as tree roots.
 
         May contain instances of MoreComment objects. To easily replace
         these objects with Comment objects, use the all_comments property
         instead. Use comment's replies to walk down the tree. To get
         an unnested, flat list of comments use comments_flat.
+
         """
         if self._comments is None:
-            self.comments = Submission.get_info(self.reddit_session,
+            self.comments = Submission.from_url(self.reddit_session,
                                                 self.permalink,
                                                 comments_only=True)
         return self._comments
 
     @comments.setter  # pylint: disable-msg=E1101
     def comments(self, new_comments):  # pylint: disable-msg=E0102,E0202
+        """Update the list of comments with the provided nested list."""
         self._update_comments(new_comments)
         self._all_comments = False
         self._comments_flat = None
@@ -760,12 +811,12 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
 
     @property
     def comments_flat(self):
-        """
-        Return comments as an unnested, flat list.
+        """Return comments as an unnested, flat list.
 
         Note that there may be instances of MoreComment objects. To
         easily remove these objects, use the all_comments_flat property
         instead.
+
         """
         if not self._comments_flat:
             stack = self.comments[:]
@@ -784,17 +835,19 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
 
     @property
     def short_link(self):
-        """
-        Return a short link to the submission.
+        """Return a short link to the submission.
 
         The short link points to a page on the short_domain that redirects to
         the main. http://redd.it/y3r8u is a short link for reddit.com.
+
         """
         return urljoin(self.reddit_session.config.short_domain, self.id)
 
 
 class Subreddit(Messageable, NSFWable, Refreshable):
+
     """A class for Subreddits."""
+
     ban = _modify_relationship('banned', is_sub=True)
     unban = _modify_relationship('banned', unlink=True, is_sub=True)
     make_contributor = _modify_relationship('contributor', is_sub=True)
@@ -958,7 +1011,9 @@ class Subreddit(Messageable, NSFWable, Refreshable):
 
 
 class UserList(RedditContentObject):
+
     """A list of Redditors. Works just like a regular list."""
+
     def __init__(self, reddit_session, json_dict=None, fetch=False):
         super(UserList, self).__init__(reddit_session, json_dict, fetch)
 

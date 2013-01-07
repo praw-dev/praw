@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers, objects
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc9'
+__version__ = '1.1.0rc10'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -1087,7 +1087,7 @@ class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
             raise TypeError('One (and only one) of id or url is required!')
         if submission_id:
             url = urljoin(self.config['comments'], submission_id)
-        return objects.Submission.get_info(self, url)
+        return objects.Submission.from_url(self, url)
 
     def get_subreddit(self, subreddit_name, *args, **kwargs):
         """Return a Subreddit object for the subreddit_name specified."""

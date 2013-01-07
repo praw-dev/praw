@@ -22,6 +22,6 @@ echo "---pyflakes---"
 find $dir/praw -name [A-Za-z_]\*.py -exec pyflakes {} \;
 
 # pep257
-pep257 $dir/praw/*.py
+find $dir/praw -name [A-Za-z_]\*.py | xargs pep257
 
 exit 0
