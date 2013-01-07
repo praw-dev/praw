@@ -136,6 +136,8 @@ class Approvable(RedditContentObject):
         green checkmark (only visible to other moderators) on the webend and
         sets the approved_by attribute to the logged in user.
 
+        :returns: The json response from the server.
+
         """
         url = self.reddit_session.config['approve']
         data = {'id': self.fullname}
@@ -155,6 +157,8 @@ class Approvable(RedditContentObject):
         spam listing. If spam is set to True, then the automatic spam filter
         will try to remove objects with similair attributes in the future.
 
+        :returns: The json response from the server.
+
         """
         url = self.reddit_session.config['remove']
         data = {'id': self.fullname,
@@ -172,7 +176,11 @@ class Deletable(RedditContentObject):
     """Interface for Reddit content objects that can be deleted."""
 
     def delete(self):
-        """Delete this object."""
+        """Delete this object.
+
+        :returns: The json response from the server.
+
+        """
         url = self.reddit_session.config['del']
         data = {'id': self.fullname}
         response = self.reddit_session.request_json(url, data=data)
@@ -192,6 +200,8 @@ class Distinguishable(RedditContentObject):
         Distinguished objects have a different author color. With Reddit
         enhancement suite it is the background color that changes.
 
+        :returns: The json response from the server.
+
         """
         url = self.reddit_session.config['distinguish']
         data = {'id': self.fullname,
@@ -200,7 +210,11 @@ class Distinguishable(RedditContentObject):
 
     @require_login
     def undistinguish(self):
-        """Remove mod, admin or special distinguishing on object."""
+        """Remove mod, admin or special distinguishing on object.
+
+        :returns: The json response from the server.
+
+        """
         return self.distinguish(as_made_by='no')
 
 
@@ -230,7 +244,11 @@ class Hideable(RedditContentObject):
 
     @require_login
     def hide(self, unhide=False):
-        """Hide object in the context of the logged in user."""
+        """Hide object in the context of the logged in user.
+
+        :returns: The json response from the server.
+
+        """
         url = self.reddit_session.config['unhide' if unhide else 'hide']
         data = {'id': self.fullname,
                 'executed': 'unhide' if unhide else 'hide'}
@@ -241,7 +259,11 @@ class Hideable(RedditContentObject):
         return response
 
     def unhide(self):
-        """Unhide object in the context of the logged in user."""
+        """Unhide object in the context of the logged in user.
+
+        :returns: The json response from the server.
+
+        """
         return self.hide(unhide=True)
 
 
@@ -250,15 +272,27 @@ class Inboxable(RedditContentObject):
     """Interface for Reddit content objects that appear in the Inbox."""
 
     def mark_as_read(self):
-        """Mark object as read."""
+        """Mark object as read.
+
+        :returns: The json response from the server.
+
+        """
         return self.reddit_session.user.mark_as_read(self)
 
     def mark_as_unread(self):
-        """Mark object as unread."""
+        """Mark object as unread.
+
+        :returns: The json response from the server.
+
+        """
         return self.reddit_session.user.mark_as_read(self, unread=True)
 
     def reply(self, text):
-        """Reply to object with the specified text."""
+        """Reply to object with the specified text.
+
+        :returns: A Comment object for the newly created comment (reply).
+
+        """
         # pylint: disable-msg=E1101,W0212
         response = self.reddit_session._add_comment(self.fullname, text)
         if isinstance(self, Comment):
@@ -283,7 +317,11 @@ class NSFWable(RedditContentObject):
 
     @require_login
     def mark_as_nsfw(self, unmarknsfw=False):
-        """Mark object as Not Safe For Work ( Porn / Gore )."""
+        """Mark object as Not Safe For Work.
+
+        :returns: The json response from the server.
+
+        """
         url = self.reddit_session.config['unmarknsfw' if unmarknsfw else
                                          'marknsfw']
         data = {'id': self.fullname,
@@ -291,7 +329,11 @@ class NSFWable(RedditContentObject):
         return self.reddit_session.request_json(url, data=data)
 
     def unmark_as_nsfw(self):
-        """Mark object as Safe For Work, no porn or gore."""
+        """Mark object as Safe For Work.
+
+        :returns: The json response from the server.
+
+        """
         return self.mark_as_nsfw(unmarknsfw=True)
 
 
@@ -324,7 +366,11 @@ class Reportable(RedditContentObject):
 
     @require_login
     def report(self):
-        """Report this object to the moderators."""
+        """Report this object to the moderators.
+
+        :returns: The json response from the server.
+
+        """
         url = self.reddit_session.config['report']
         data = {'id': self.fullname}
         response = self.reddit_session.request_json(url, data=data)
@@ -341,7 +387,11 @@ class Saveable(RedditContentObject):
 
     @require_login
     def save(self, unsave=False):
-        """Save the object."""
+        """Save the object.
+
+        :returns: The json response from the server.
+
+        """
         url = self.reddit_session.config['unsave' if unsave else 'save']
         data = {'id': self.fullname,
                 'executed': 'unsaved' if unsave else 'saved'}
@@ -351,7 +401,11 @@ class Saveable(RedditContentObject):
         return response
 
     def unsave(self):
-        """Unsave the object."""
+        """Unsave the object.
+
+        :returns: The json response from the server.
+
+        """
         return self.save(unsave=True)
 
 
@@ -364,20 +418,34 @@ class Voteable(RedditContentObject):
 
         Running this on an object with no existing vote has no adverse effects.
 
+        :returns: The json response from the server.
+
         """
         return self.vote()
 
     def downvote(self):
-        """Downvote object. If there already is a vote, replace it."""
+        """Downvote object. If there already is a vote, replace it.
+
+        :returns: The json response from the server.
+
+        """
         return self.vote(direction=-1)
 
     def upvote(self):
-        """Upvote object. If there already is a vote, replace it."""
+        """Upvote object. If there already is a vote, replace it.
+
+        :returns: The json response from the server.
+
+        """
         return self.vote(direction=1)
 
     @require_login
     def vote(self, direction=0):
-        """Vote for the given item in the direction specified."""
+        """Vote for the given item in the direction specified.
+
+        :returns: The json response from the server.
+
+        """
         url = self.reddit_session.config['vote']
         data = {'id': self.fullname,
                 'dir': six.text_type(direction)}
@@ -418,7 +486,7 @@ class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
 
     @property
     def is_root(self):
-        """Indicate if the comment is a top level comment."""
+        """Return True when the comment is a top level comment."""
         return (self.parent_id is None or
                 self.parent_id == self.submission.fullname)
 
@@ -486,7 +554,7 @@ class MoreComments(RedditContentObject):
         self.submission = submission
 
     def comments(self, update=True):
-        """Fetch the comments for a single MoreComments object."""
+        """Fetch and return the comments for a single MoreComments object."""
         if not self._comments:
             # pylint: disable-msg=W0212
             children = [x for x in self.children if 't1_%s' % x
@@ -526,25 +594,35 @@ class Redditor(Messageable, Refreshable):
         self._mod_subs = None
 
     def __cmp__(self, other):
-        """Compare two redditors based on the lowercase of their name."""
+        """Compare two redditors based on the lowercase of their name.
+
+        :returns: negative, 0, or positive depending on the comparision.
+
+        """
         return cmp(self.name.lower(), other.name.lower())
 
     def __repr__(self):
-        """Include the user's name."""
         return 'Redditor(user_name=\'{0}\')'.format(self.name)
 
     def __unicode__(self):
-        """Display the user's name."""
         return self.name
 
     @require_login
     def friend(self):
-        """Friend the user."""
+        """Friend the user.
+
+        :returns: The json response from the server.
+
+        """
         return _modify_relationship('friend')(self.reddit_session.user, self)
 
     @require_login
     def mark_as_read(self, messages, unread=False):
-        """Mark message(s) as read or unread."""
+        """Mark message(s) as read or unread.
+
+        :returns: The json response from the server.
+
+        """
         ids = []
         if isinstance(messages, Inboxable):
             ids.append(messages.fullname)
@@ -561,7 +639,11 @@ class Redditor(Messageable, Refreshable):
 
     @require_login
     def unfriend(self):
-        """Unfriend the user."""
+        """Unfriend the user.
+
+        :returns: The json response from the server.
+
+        """
         return _modify_relationship('friend', unlink=True)(
             self.reddit_session.user, self)
 
@@ -753,7 +835,11 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
             comment._update_submission(self)  # pylint: disable-msg=W0212
 
     def add_comment(self, text):
-        """If logged in, comment on the submission using the specified text."""
+        """Comment on the submission using the specified text.
+
+        :returns: A Comment object for the newly created comment.
+
+        """
         # pylint: disable-msg=E1101, W0212
         response = self.reddit_session._add_comment(self.fullname, text)
         _request.evict([self.permalink])
@@ -830,7 +916,11 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
         return self._comments_flat
 
     def set_flair(self, *args, **kwargs):
-        """Set flair for this submission."""
+        """Set flair for this submission.
+
+        :returns: The json response from the server.
+
+        """
         return self.subreddit.set_flair(self, *args, **kwargs)
 
     @property
@@ -904,7 +994,11 @@ class Subreddit(Messageable, NSFWable, Refreshable):
     get_top_from_year = _get_sorter('top', t='year')
 
     def __cmp__(self, other):
-        """Compare two subreddits based on the lowercase of their name."""
+        """Compare two subreddits based on the lowercase of their name.
+
+        :returns: negative, 0, or positive depending on the comparision.
+
+        """
         return cmp(self.display_name.lower(), other.display_name.lower())
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
@@ -926,11 +1020,15 @@ class Subreddit(Messageable, NSFWable, Refreshable):
         self._listing_urls = [base + x + '.json' for x in listings]
 
     def __unicode__(self):
-        """Return the subreddit's display name. E.g. python or askreddit."""
         return self.display_name
 
     def clear_all_flair(self):
-        """Remove all user flair on this subreddit."""
+        """Remove all user flair on this subreddit.
+
+        :returns: The json response from the server when there is flair to
+        clear, otherwise returns None.
+
+        """
         csv = [{'user': x['user']} for x in self.flair_list()]
         if csv:
             return self.set_flair_csv(csv)
@@ -938,7 +1036,12 @@ class Subreddit(Messageable, NSFWable, Refreshable):
             return
 
     def search(self, query, *args, **kwargs):
-        """Search this subreddit."""
+        """Return submissions that match the search query from this subreddit.
+
+        See http://www.reddit.com/help/search for more information on how to
+        build a search query.
+
+        """
         return self.reddit_session.search(query, self, *args, **kwargs)
 
 
