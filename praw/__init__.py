@@ -80,6 +80,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'info':                'api/info/',
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
+                 'accept_mod_invite':   'api/accept_moderator_invite',
                  'moderator':           'message/moderator/',
                  'moderators':          'r/%s/about/moderators/',
                  'modqueue':            'r/%s/about/modqueue/',
@@ -146,6 +147,7 @@ class Config(object):  # pylint: disable-msg=R0903
         self.by_object = dict((value, key) for (key, value) in
                               six.iteritems(self.by_kind))
         self.by_object[objects.LoggedInRedditor] = obj['redditor_kind']
+        self.by_object[objects.ModeratorInvite] = obj['message_kind']
         self.cache_timeout = float(obj['cache_timeout'])
         if obj['check_for_updates'] \
                 and obj['check_for_updates'].lower() == 'true':
