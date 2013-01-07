@@ -21,7 +21,7 @@ from praw.decorators import Memoize, SleepAfter, require_login
 
 
 def _get_section(subpath=''):
-    """Generate sections overview, comments and submitted for Redditor class"""
+    """Return function to generate various non-subreddit listings."""
     def _section(self, sort='new', time='all', *args, **kwargs):
         if not kwargs.get('params'):
             kwargs['params'] = {}
@@ -33,7 +33,7 @@ def _get_section(subpath=''):
 
 
 def _get_sorter(subpath='', **defaults):
-    """Generate a Submission listing function."""
+    """Return function to generate specific subreddit Submission listings."""
     def _sorted(self, *args, **kwargs):
         if not kwargs.get('params'):
             kwargs['params'] = {}
@@ -45,11 +45,11 @@ def _get_sorter(subpath='', **defaults):
 
 
 def _modify_relationship(relationship, unlink=False, is_sub=False):
-    """
-    Modify relationship.
+    """Return a function for relationship modification.
 
     Used to support friending (user-to-user), as well as moderating,
     contributor creating, and banning (user-to-subreddit).
+
     """
     # the API uses friend and unfriend to manage all of these relationships
     url_key = 'unfriend' if unlink else 'friend'

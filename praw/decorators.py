@@ -31,10 +31,12 @@ from praw import errors
 
 
 class Memoize(object):
+
     """Memoize decorator with timeout to clear cache of timed out results."""
+
     @staticmethod
     def normalize_url(url):
-        """Strip trailing .json and trailing slashes."""
+        """Return url after stripping trailing .json and trailing slashes."""
         if url.endswith('.json'):
             url = url[:-5]
         if url.endswith('/'):
@@ -83,9 +85,12 @@ class Memoize(object):
 
 
 class RequireCaptcha(object):
+
     """Decorator for methods that require captchas."""
+
     @staticmethod
     def get_captcha(reddit_session, captcha_id):
+        """Prompt user for captcha solution and return a prepared result."""
         url = urljoin(reddit_session.config['captcha'],
                       captcha_id + '.png')
         sys.stdout.write('Captcha URL: %s\nCaptcha: ' % url)
@@ -120,15 +125,17 @@ class RequireCaptcha(object):
 
 
 class SleepAfter(object):  # pylint: disable-msg=R0903
-    """
-    Ensure frequency of API calls doesn't exceed guidelines.
+
+    """Ensure frequency of API calls doesn't exceed guidelines.
 
     We are allowed to make a API request every api_request_delay seconds as
     specified in praw.ini. This value may differ from reddit to reddit. For
     reddit.com it is 2. Any function decorated with this will be forced to
     delay api_request_delay seconds from the calling of the last function
     decorated with this before executing.
+
     """
+
     def __init__(self, function):
         wraps(function)(self)
         self.function = function
@@ -150,7 +157,7 @@ class SleepAfter(object):  # pylint: disable-msg=R0903
 
 
 def limit_chars(function):
-    """Limit the number of chars in a function that outputs a string."""
+    """Truncate the string returned from a function and return the result."""
     @wraps(function)
     def function_wrapper(self, *args, **kwargs):
         output_chars_limit = self.reddit_session.config.output_chars_limit
@@ -162,7 +169,11 @@ def limit_chars(function):
 
 
 def parse_api_json_response(function):  # pylint: disable-msg=R0912
-    """Raise client side exception(s) if errors in the API request response."""
+    """Raise client side exception(s) when presenet in the API response.
+
+    Returned data is not modified.
+
+    """
     @wraps(function)
     def error_checked_function(self, *args, **kwargs):
         return_value = function(self, *args, **kwargs)
@@ -195,7 +206,11 @@ def parse_api_json_response(function):  # pylint: disable-msg=R0912
 
 
 def require_login(function):
-    """Ensure the user has logged in."""
+    """Verify user is logged in prior to making the API request.
+
+    Returned data is not modified.
+
+    """
     @wraps(function)
     def login_required_function(self, *args, **kwargs):
         if isinstance(self, RedditContentObject):
@@ -215,7 +230,13 @@ def require_login(function):
 
 
 def require_moderator(function):
-    """Ensure the user is a moderator of the subreddit."""
+    """Verify the user is a moderator of the subreddit.
+
+    The verification takes place prior to making the API request.
+
+    Returned data is not modified.
+
+    """
     @wraps(function)
     def moderator_required_function(self, *args, **kwargs):
         if isinstance(self, RedditContentObject):
@@ -244,7 +265,11 @@ def require_moderator(function):
 
 
 def require_oauth(function):
-    """Verify that the OAuth functions can be used."""
+    """Verify that the OAuth functions can be used prior to use.
+
+    Returned data is not modified.
+
+    """
     @wraps(function)
     def validate_function(self, *args, **kwargs):
         if not self.has_oauth_app_info:

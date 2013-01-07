@@ -27,7 +27,9 @@ import sys
 
 
 class ClientException(Exception):
+
     """Base exception class for errors that don't involve the remote API."""
+
     def __init__(self, message):
         super(ClientException, self).__init__()
         self.message = message
@@ -37,36 +39,42 @@ class ClientException(Exception):
 
 
 class LoginRequired(ClientException):
-    """
-    Raised when a user is not logged in for a privileged call.
+
+    """Raised when a user is not logged in for a privileged call.
 
     This exception is raised on a preemtive basis, whereas NotLoggedIn occurs
     in response to a lack of credientials on a priviliged API call.
+
     """
 
 
 class ModeratorRequired(ClientException):
+
     """Raised when a logged in user is not a moderator for the subreddit."""
 
 
 class OAuthException(ClientException):
-    """
-    Raised when an OAuth API call fails.
+
+    """Raised when an OAuth API call fails.
 
     The message attribute indicates the specific reddit OAuth exception.
+
     """
 
 
 class OAuthRequired(ClientException):
-    """
-    Raised when an OAuth client cannot be initialized.
+
+    """Raised when an OAuth client cannot be initialized.
 
     This occurs when any one of the OAuth config values are not set.
+
     """
 
 
 class APIException(Exception):
+
     """Base exception class for the reddit API bindings."""
+
     def __init__(self, error_type, message, field='', response=None):
         super(APIException, self).__init__()
         self.error_type = error_type
@@ -83,7 +91,9 @@ class APIException(Exception):
 
 
 class ExceptionList(APIException):
+
     """Raised when more than one exception occured."""
+
     def __init__(self, errors):
         super(ExceptionList, self).__init__(None, None)
         self.errors = errors
@@ -96,46 +106,62 @@ class ExceptionList(APIException):
 
 
 class AlreadySubmitted(APIException):
+
     """An exception to indicate that a URL was previously submitted."""
+
     ERROR_TYPE = 'ALREADY_SUB'
 
 
 class InvalidCaptcha(APIException):
+
     """An exception for when an incorrect captcha error is returned."""
+
     ERROR_TYPE = 'BAD_CAPTCHA'
 
 
 class InvalidEmails(APIException):
+
     """An exception for when invalid emails are provided."""
+
     ERROR_TYPE = 'BAD_EMAILS'
 
 
 class InvalidFlairTarget(APIException):
+
     """An exception raised when an invalid user is passed as a flair target."""
+
     ERROR_TYPE = 'BAD_FLAIR_TARGET'
 
 
 class InvalidUser(APIException):
+
     """An exception for when a user doesn't exist."""
+
     ERROR_TYPE = 'USER_DOESNT_EXIST'
 
 
 class InvalidUserPass(APIException):
+
     """An exception for failed logins."""
+
     ERROR_TYPE = 'WRONG_PASSWORD'
 
 
 class NotLoggedIn(APIException):
+
     """An exception for when a Reddit user isn't logged in."""
+
     ERROR_TYPE = 'USER_REQUIRED'
 
 
 class NotModified(APIException):
+
     """An exception raised when reddit returns {'error': 304}.
 
     This error indicates that the requested content was not modified and is
     being requested too frequently. Such an error usually occurs when multiple
     instances of PRAW are running concurrently or in rapid succession.
+
     """
 
     def __init__(self, response):
@@ -146,12 +172,16 @@ class NotModified(APIException):
 
 
 class SubredditExists(APIException):
+
     """An exception to indicate that a subreddit name is not available."""
+
     ERROR_TYPE = 'SUBREDDIT_EXISTS'
 
 
 class RateLimitExceeded(APIException):
+
     """An exception for when something has happened too frequently."""
+
     ERROR_TYPE = 'RATELIMIT'
 
     def __init__(self, error_type, message, field='', response=None):
@@ -161,7 +191,9 @@ class RateLimitExceeded(APIException):
 
 
 class UsernameExists(APIException):
+
     """An exception to indicate that a username is not available."""
+
     ERROR_TYPE = 'USERNAME_TAKEN'
 
 
