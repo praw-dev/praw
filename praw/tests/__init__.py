@@ -746,6 +746,7 @@ class OAuth2Test(unittest.TestCase):
     def test_access_token(self):
         if not os.getenv('INTERACTIVE'):
             return
+        self.r.set_oauth_app_info()
         print('Visit this URL: {0}'.format(self.r.get_authorize_url('...')))
         code = prompt('Code from redir URL: ')
         token = self.r.get_access_token(code)
@@ -754,10 +755,12 @@ class OAuth2Test(unittest.TestCase):
         self.assertNotEqual(None, self.r.user)
 
     def test_access_token_with_invalid_code(self):
+        self.r.set_oauth_app_info()
         self.assertRaises(errors.OAuthException, self.r.get_access_token,
                           'invalid_code')
 
     def test_authorize_url(self):
+        self.r.set_oauth_app_info()
         url, params = self.r.get_authorize_url('...').split('?', 1)
         self.assertTrue('api/v1/authorize/' in url)
         params = dict(x.split('=', 1) for x in params.split('&'))
@@ -768,17 +771,25 @@ class OAuth2Test(unittest.TestCase):
                     'state': '...'}
         self.assertEqual(expected, params)
 
-    def test_invalid_access_token(self):
+    def test_invalid_app_access_token(self):
+        self.r.set_oauth_app_info()
         self.assertRaises(errors.OAuthRequired, self.invalid.get_access_token,
                           'dummy_code')
 
-    def test_invalid_authorize_url(self):
+    def test_invalid_app_authorize_url(self):
+        self.r.set_oauth_app_info()
         self.assertRaises(errors.OAuthRequired, self.invalid.get_authorize_url,
                           'dummy_state')
+
+    def test_invalid_set_access_credentials(self):
+        self.r.set_oauth_app_info()
+        self.assertRaises(HTTPError, self.r.set_access_credentials,
+                          'dummy_access_token')
 
     def test_refreshable_access_token(self):
         if not os.getenv('INTERACTIVE'):
             return
+        self.r.set_oauth_app_info()
         url = self.r.get_authorize_url('dummy_state', refreshable=True)
         print('Visit this URL: {0}'.format(url))
         code = prompt('Code from redir URL: ')
@@ -788,6 +799,43 @@ class OAuth2Test(unittest.TestCase):
         new_access = self.r.refresh_access_token()
         self.assertNotEqual(access, new_access)
         self.assertEqual(self.r.access_token, new_access)
+
+    def test_set_access_credentials(self):
+        if not os.getenv('INTERACTIVE'):
+            return
+        url = self.r.get_authorize_url('dummy_state', refreshable=False)
+        print('Visit this URL: {0}'.format(url))
+        code = prompt('Code from redir URL: ')
+        access, refresh = self.r.get_access_token(code, update_session=False)
+        self.assertTrue(self.r.user is None)
+        self.r.set_access_credentials(access, refresh)
+        self.assertFalse(self.r.user is None)
+
+    def test_oauth_without_identy_doesnt_set_user(self):
+        if not os.getenv('INTERACTIVE'):
+            return
+        self.r.set_oauth_app_info()
+        url = self.r.get_authorize_url('dummy_state', 'edit',
+                                       refreshable=False)
+        import webbrowser
+        print('Visit this URL: {0}'.format(url))
+        webbrowser.open(url)
+        code = prompt('Code from redir URL: ')
+        self.assertTrue(self.r.user is None)
+        self.r.get_access_token(code)
+        self.assertTrue(self.r.user is None)
+
+
+    def test_oauth_info(self):
+        self.assertTrue(self.r.client_id is None)
+        self.assertTrue(self.r.client_secret is None)
+        self.assertTrue(self.r.redirect_uri is None)
+        self.assertRaises(errors.OAuthRequired, self.r.get_authorize_url,
+                          'dummy_state')
+        self.r.set_oauth_app_info()
+        self.assertFalse(self.r.client_id is None)
+        self.assertFalse(self.r.client_secret is None)
+        self.assertFalse(self.r.redirect_uri is None)
 
 
 class RedditorTest(unittest.TestCase, AuthenticatedHelper):
