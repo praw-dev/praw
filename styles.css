@@ -1,0 +1,33 @@
+body {
+  padding:50px;
+  font:14px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color:#777;
+  font-weight:300;
+}
+
+h1, h2 {
+  color:#222;
+  margin:0 0 20px;
+}
+
+p {
+  margin:0 0 20px;
+}
+
+h1, h2 {
+  line-height:1.1;
+}
+
+h1 {
+  font-size:28px;
+}
+
+h2 {
+  color:#393939;
+}
+
+a {
+  color:#39c;
+  font-weight:400;
+  text-decoration:none;
+}
