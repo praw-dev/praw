@@ -725,10 +725,10 @@ class SubredditExtension(BaseReddit):
         del settings['subreddit_id']
         return self.set_settings(subreddit, **settings)
 
-    def upload_image(self, subreddit, image, name=None, header=False):
+    def upload_image(self, subreddit, image_path, name=None, header=False):
         """Upload an image to the subreddit.
 
-        :param image: A readable file object
+        :param image_path: A path to the jpg or png image you want to upload.
         :param name: The name to provide the image. When None the name will be
             filename less any extension.
         :param header: When true, upload the image as the subreddit header.
@@ -740,31 +740,31 @@ class SubredditExtension(BaseReddit):
             raise TypeError('Both name and header cannot be set.')
         image_type = None
         # Verify image is a jpeg or png and meets size requirements
-        if not isinstance(image, file):
-            raise TypeError('`image` argument must be a file object')
-        size = os.path.getsize(image.name)
-        if size < MIN_IMAGE_SIZE:
-            raise errors.ClientException('`image` is not a valid image')
-        elif size > MAX_IMAGE_SIZE:
-            raise errors.ClientException('`image` is too big. Max: {0} bytes'
-                                         .format(MAX_IMAGE_SIZE))
-        first_bytes = image.read(MIN_IMAGE_SIZE)
-        image.seek(0)
-        if first_bytes.startswith(JPEG_HEADER):
-            image_type = 'jpg'
-        elif first_bytes.startswith(PNG_HEADER):
-            image_type = 'png'
-        else:
-            raise errors.ClientException('`image` is not a valid image')
-        data = {'r': six.text_type(subreddit), 'img_type': image_type}
-        if header:
-            data['header'] = 1
-        else:
-            if not name:
-                name = os.path.splitext(os.path.basename(image.name))[0]
-            data['name'] = name
-        response = self._request(self.config['upload_image'], data=data,
-                                 files={'file': image})
+        with open(image_path, 'rb') as image:
+            size = os.path.getsize(image.name)
+            if size < MIN_IMAGE_SIZE:
+                raise errors.ClientException('`image` is not a valid image')
+            elif size > MAX_IMAGE_SIZE:
+                raise errors.ClientException('`image` is too big. Max: {0} '
+                                             'bytes'.format(MAX_IMAGE_SIZE))
+            first_bytes = image.read(MIN_IMAGE_SIZE)
+            image.seek(0)
+            if first_bytes.startswith(JPEG_HEADER):
+                image_type = 'jpg'
+            elif first_bytes.startswith(PNG_HEADER):
+                image_type = 'png'
+            else:
+                raise errors.ClientException('`image` must be either jpg or '
+                                             'png.')
+            data = {'r': six.text_type(subreddit), 'img_type': image_type}
+            if header:
+                data['header'] = 1
+            else:
+                if not name:
+                    name = os.path.splitext(os.path.basename(image.name))[0]
+                data['name'] = name
+            response = self._request(self.config['upload_image'], data=data,
+                                     files={'file': image})
         # HACK: Until json response, attempt to parse the errors
         json_start = response.find('[[')
         json_end = response.find(']]')
