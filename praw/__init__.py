@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc12'
+__version__ = '1.1.0rc13'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -53,7 +53,8 @@ class Config(object):  # pylint: disable-msg=R0903
 
     """A class containing the configuration for a reddit site."""
 
-    API_PATHS = {'access_token_url':    'api/v1/access_token/',
+    API_PATHS = {'accept_mod_invite':   'api/accept_moderator_invite',
+                 'access_token_url':    'api/v1/access_token/',
                  'approve':             'api/approve/',
                  'authorize':           'api/v1/authorize/',
                  'banned':              'r/%s/about/banned/',
@@ -80,7 +81,6 @@ class Config(object):  # pylint: disable-msg=R0903
                  'info':                'api/info/',
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
-                 'accept_mod_invite':   'api/accept_moderator_invite',
                  'moderator':           'message/moderator/',
                  'moderators':          'r/%s/about/moderators/',
                  'modqueue':            'r/%s/about/modqueue/',
@@ -147,7 +147,6 @@ class Config(object):  # pylint: disable-msg=R0903
         self.by_object = dict((value, key) for (key, value) in
                               six.iteritems(self.by_kind))
         self.by_object[objects.LoggedInRedditor] = obj['redditor_kind']
-        self.by_object[objects.ModeratorInvite] = obj['message_kind']
         self.cache_timeout = float(obj['cache_timeout'])
         if obj['check_for_updates'] \
                 and obj['check_for_updates'].lower() == 'true':
@@ -390,6 +389,18 @@ class SubredditExtension(BaseReddit):
 
     def __init__(self, *args, **kwargs):
         super(SubredditExtension, self).__init__(*args, **kwargs)
+
+    @decorators.require_login
+    def accept_moderator_invite(self, subreddit):
+        """Accept a moderator invite to the given subreddit.
+
+        Callable upon an instance of Subreddit with no arguments.
+
+        :returns: The json response from the server.
+
+        """
+        data = {'r': six.text_type(subreddit)}
+        return self.request_json(self.config['accept_mod_invite'], data=data)
 
     @decorators.require_login
     @decorators.require_moderator

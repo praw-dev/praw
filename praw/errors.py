@@ -112,6 +112,13 @@ class AlreadySubmitted(APIException):
     ERROR_TYPE = 'ALREADY_SUB'
 
 
+class AlreadyModerator(APIException):
+
+    """Used to indicate that a user is already a moderator of a subreddit."""
+
+    ERROR_TYPE = 'ALREADY_MODERATOR'
+
+
 class InvalidCaptcha(APIException):
 
     """An exception for when an incorrect captcha error is returned."""

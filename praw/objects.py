@@ -531,28 +531,11 @@ class Message(Inboxable):
             self.replies = self.replies['data']['children']
         else:
             self.replies = []
-        if (self.author is None and self.subreddit is not None
-                and self.first_message is None
-                and self.subject.lower().startswith('invitation to moderate')):
-            self.__class__ = ModeratorInvite
 
     @limit_chars
     def __unicode__(self):
         return 'From: %s\nSubject: %s\n\n%s' % (self.author, self.subject,
                                                 self.body)
-
-
-class ModeratorInvite(Message):
-    """Interface for the messages that are invites to become a moderator."""
-    def accept(self):
-        """
-        Accept the invitation to become a moderator.
-
-        See the 'subreddit' attribute to see which subreddit invited you.
-        """
-        data = {'r': six.text_type(self.subreddit)}
-        url = self.reddit_session.config['accept_mod_invite']
-        return self.reddit_session.request_json(url, data=data)
 
 
 class MoreComments(RedditContentObject):
@@ -955,7 +938,8 @@ class Subreddit(Messageable, NSFWable, Refreshable):
 
     """A class for Subreddits."""
 
-    _methods = (('add_flair_template', SRExt.add_flair_template),
+    _methods = (('accept_moderator_invite', SRExt.accept_moderator_invite),
+                ('add_flair_template', SRExt.add_flair_template),
                 ('clear_flair_templates', SRExt.clear_flair_templates),
                 ('configure_flair', SRExt.configure_flair),
                 ('flair_list', SRExt.flair_list),

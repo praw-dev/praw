@@ -62,6 +62,10 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
             data['r'] = six.text_type(thing)
         else:
             data['container'] = thing.fullname
+
+        if relationship == 'moderator':
+            _request.evict([thing.reddit_session.config['moderators'] %
+                            six.text_type(thing)])
         url = thing.reddit_session.config[url_key]
         return thing.reddit_session.request_json(url, data=data)
     return do_relationship

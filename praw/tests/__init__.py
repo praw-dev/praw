@@ -32,8 +32,7 @@ from requests.exceptions import HTTPError, Timeout
 from six import advance_iterator as six_next, text_type
 
 from praw import Reddit, errors, helpers
-from praw.objects import (Comment, LoggedInRedditor, Message, ModeratorInvite,
-                          MoreComments)
+from praw.objects import Comment, LoggedInRedditor, Message, MoreComments
 
 USER_AGENT = 'PRAW_test_suite'
 
@@ -708,6 +707,12 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit = self.r.get_subreddit(self.sr)
         self.other = self.r.get_redditor('pyapitestuser3', fetch=True)
 
+    def test_accept_moderator_invite_fail(self):
+        self.r.login('pyapitestuser3', '1111')
+        # TODO: update after reddit PR #623
+        self.assertRaises(errors.APIException,
+                          self.subreddit.accept_moderator_invite)
+
     def test_ban(self):
         self.subreddit.ban(self.other)
         self.assertTrue(self.other in self.subreddit.get_banned())
@@ -717,22 +722,16 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(self.other in self.subreddit.get_contributors())
 
     def test_make_moderator(self):
-        # If pyapitestuser3 already has an pending invitation, then this
-        # may fail, as using make_moderator on a redditor with a pending
-        # invitation will instead make them an approved submitter. i.e. not
-        # send a ModeratorInvite message. /about/moderators/ show if you have a
-        # pending invitation from that subreddit.
-        # Moderators can go there as well and see/remove pending invitations.
+        self.assertFalse(self.other in self.subreddit.get_moderators())
         self.subreddit.make_moderator(self.other)
         self.r.login('pyapitestuser3', '1111')
-        for message in self.r.user.get_inbox(limit=5):
-            if (isinstance(message, ModeratorInvite)
-                    and message.subreddit == self.subreddit):
-                message.accept()
-                break
-        else:
-            self.fail('Could not find moderator invite')
+        self.subreddit.accept_moderator_invite()
         self.assertTrue(self.other in self.subreddit.get_moderators())
+
+    def test_make_moderator_by_name_failure(self):
+        self.assertTrue(self.other in self.subreddit.get_moderators())
+        self.assertRaises(errors.AlreadyModerator,
+                          self.subreddit.make_moderator, text_type(self.other))
 
     def test_remove_contributor(self):
         self.subreddit.remove_contributor(self.other)
@@ -824,7 +823,6 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         item.unhide()
         self.delay()
         self.assertFalse(item in list(self.r.user.get_hidden()))
-
 
     def test_get_liked(self):
         # Pulls from get_disliked. Problem here may come from get_disliked
