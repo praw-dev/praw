@@ -1210,6 +1210,9 @@ class UploadImageTests(unittest.TestCase, AuthenticatedHelper):
         test_dir = os.path.dirname(sys.modules[__name__].__file__)
         self.image_path = os.path.join(test_dir, 'files', '{0}')
 
+    def test_invalid_file_path(self):
+        self.assertRaises(IOError, self.subreddit.upload_image, 'nonexistent')
+
     def test_invalid_image(self):
         image = self.image_path.format('white-square.tiff')
         self.assertRaises(errors.ClientException, self.subreddit.upload_image,
