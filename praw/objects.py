@@ -13,7 +13,7 @@
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Contains code about objects such as Submissions, Deletable or Commments.
+Contains code about objects such as Submissions, Redditors or Commments.
 
 There are two main groups of objects in this file. The first are objects that
 correspond to a Thing or part of a Thing as specified in reddit's API overview,
@@ -171,24 +171,6 @@ class Approvable(RedditContentObject):
         return response
 
 
-class Deletable(RedditContentObject):
-
-    """Interface for Reddit content objects that can be deleted."""
-
-    def delete(self):
-        """Delete this object.
-
-        :returns: The json response from the server.
-
-        """
-        url = self.reddit_session.config['del']
-        data = {'id': self.fullname}
-        response = self.reddit_session.request_json(url, data=data)
-        # pylint: disable-msg=E1101
-        _request.evict([self.reddit_session.config['user']])
-        return response
-
-
 class Distinguishable(RedditContentObject):
 
     """Interface for Reddit content objects that can be distinguished."""
@@ -220,7 +202,20 @@ class Distinguishable(RedditContentObject):
 
 class Editable(RedditContentObject):
 
-    """Interface for Reddit content objects that can be edited."""
+    """Interface for Reddit content objects that can be edited and deleted."""
+
+    def delete(self):
+        """Delete this object.
+
+        :returns: The json response from the server.
+
+        """
+        url = self.reddit_session.config['del']
+        data = {'id': self.fullname}
+        response = self.reddit_session.request_json(url, data=data)
+        # pylint: disable-msg=E1101
+        _request.evict([self.reddit_session.config['user']])
+        return response
 
     def edit(self, text):
         """Replace the body of the object with `text`.
@@ -456,8 +451,8 @@ class Voteable(RedditContentObject):
         return self.reddit_session.request_json(url, data=data)
 
 
-class Comment(Approvable, Deletable, Distinguishable, Editable, Inboxable,
-              Reportable, Voteable):
+class Comment(Approvable, Distinguishable, Editable, Inboxable, Reportable,
+              Voteable):
 
     """A class that represents a reddit comments."""
 
@@ -700,8 +695,8 @@ class LoggedInRedditor(Redditor):
         return self.reddit_session.get_content(url, limit=limit)
 
 
-class Submission(Approvable, Deletable, Distinguishable, Editable, Hideable,
-                 NSFWable, Refreshable, Reportable, Saveable, Voteable):
+class Submission(Approvable, Distinguishable, Editable, Hideable, NSFWable,
+                 Refreshable, Reportable, Saveable, Voteable):
 
     """A class for submissions to reddit."""
 
