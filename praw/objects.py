@@ -123,9 +123,9 @@ class RedditContentObject(object):
         return '%s_%s' % (by_object[self.__class__], self.id)
 
 
-class Approvable(RedditContentObject):
+class Moderatable(RedditContentObject):
 
-    """Interface for Reddit content objects that can be approved."""
+    """Interface for Reddit content objects that have can be moderated."""
 
     @require_login
     @require_moderator
@@ -150,6 +150,22 @@ class Approvable(RedditContentObject):
 
     @require_login
     @require_moderator
+    def distinguish(self, as_made_by='mod'):
+        """Distinguish object as made by mod, admin or special.
+
+        Distinguished objects have a different author color. With Reddit
+        enhancement suite it is the background color that changes.
+
+        :returns: The json response from the server.
+
+        """
+        url = self.reddit_session.config['distinguish']
+        data = {'id': self.fullname,
+                'how': 'yes' if as_made_by == 'mod' else as_made_by}
+        return self.reddit_session.request_json(url, data=data)
+
+    @require_login
+    @require_moderator
     def remove(self, spam=False):
         """Remove object. This is the moderator version of delete.
 
@@ -169,26 +185,6 @@ class Approvable(RedditContentObject):
             urls += self.subreddit._listing_urls  # pylint: disable-msg=W0212
         _request.evict(urls)  # pylint: disable-msg=E1101
         return response
-
-
-class Distinguishable(RedditContentObject):
-
-    """Interface for Reddit content objects that can be distinguished."""
-
-    @require_login
-    def distinguish(self, as_made_by='mod'):
-        """Distinguish object as made by mod, admin or special.
-
-        Distinguished objects have a different author color. With Reddit
-        enhancement suite it is the background color that changes.
-
-        :returns: The json response from the server.
-
-        """
-        url = self.reddit_session.config['distinguish']
-        data = {'id': self.fullname,
-                'how': 'yes' if as_made_by == 'mod' else as_made_by}
-        return self.reddit_session.request_json(url, data=data)
 
     @require_login
     def undistinguish(self):
@@ -451,8 +447,7 @@ class Voteable(RedditContentObject):
         return self.reddit_session.request_json(url, data=data)
 
 
-class Comment(Approvable, Distinguishable, Editable, Inboxable, Reportable,
-              Voteable):
+class Comment(Editable, Inboxable, Moderatable, Reportable, Voteable):
 
     """A class that represents a reddit comments."""
 
@@ -695,8 +690,8 @@ class LoggedInRedditor(Redditor):
         return self.reddit_session.get_content(url, limit=limit)
 
 
-class Submission(Approvable, Distinguishable, Editable, Hideable, NSFWable,
-                 Refreshable, Reportable, Saveable, Voteable):
+class Submission(Editable, Hideable, Moderatable, NSFWable, Refreshable,
+                 Reportable, Saveable, Voteable):
 
     """A class for submissions to reddit."""
 
