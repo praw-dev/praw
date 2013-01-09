@@ -189,16 +189,17 @@ def parse_api_json_response(function):  # pylint: disable-msg=R0912
     Returned data is not modified.
 
     """
+    allowed = set(('captcha', 'data', 'error', 'errors', 'kind', 'names',
+                   'next', 'prev', 'ratelimit', 'users'))
+
     @wraps(function)
-    def error_checked_function(self, *args, **kwargs):
-        return_value = function(self, *args, **kwargs)
-        allowed = ('captcha', 'data', 'error', 'errors', 'kind', 'names',
-                   'next', 'prev', 'ratelimit', 'users')
+    def error_checked_function(cls, *args, **kwargs):
+        return_value = function(cls, *args, **kwargs)
         if isinstance(return_value, dict):
-            for key in return_value:
-                if key not in allowed:
-                    warnings.warn_explicit('Unknown return key: %s' % key,
-                                           UserWarning, '', 0)
+            if not isinstance(getattr(cls, '_authentication', None), set):
+                for key in set(return_value) - allowed:
+                    warnings.warn_explicit('Unknown return key: {0}'
+                                           .format(key), UserWarning, '', 0)
             if return_value.get('error') == 304:  # Not modified exception
                 raise errors.NotModified(return_value)
             elif return_value.get('errors'):

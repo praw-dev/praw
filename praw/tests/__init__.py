@@ -753,33 +753,34 @@ class OAuth2Test(unittest.TestCase):
                         disable_update_check=True)
         self.invalid = Reddit(USER_AGENT, disable_update_check=True)
 
-    def test_access_token(self):
-        if not os.getenv('INTERACTIVE'):
-            return
-        print('Visit this URL: {0}'.format(self.r.get_authorize_url('...')))
-        code = prompt('Code from redir URL: ')
-        token = self.r.get_access_token(code)
-        self.assertEqual((self.r.access_token, None), token)
-        self.assertNotEqual(None, self.r.user)
-
-    def test_access_token_with_invalid_code(self):
-        self.assertRaises(errors.OAuthException, self.r.get_access_token,
-                          'invalid_code')
-
     def test_authorize_url(self):
         url, params = self.r.get_authorize_url('...').split('?', 1)
         self.assertTrue('api/v1/authorize/' in url)
         params = dict(x.split('=', 1) for x in params.split('&'))
-        expected = {'client_id': 'stJlUSUbPQe5lQ', 'duration': 'temporary',
+        expected = {'client_id': self.r.config.client_id,
+                    'duration': 'temporary',
                     'redirect_uri': ('http%3A%2F%2F127.0.0.1%3A65010%2F'
                                      'authorize_callback'),
                     'response_type': 'code', 'scope': 'identity',
                     'state': '...'}
         self.assertEqual(expected, params)
 
+    def test_get_access_information(self):
+        if not os.getenv('INTERACTIVE'):
+            return
+        print('Visit this URL: {0}'.format(self.r.get_authorize_url('...')))
+        code = prompt('Code from redir URL: ')
+        token = self.r.get_access_information(code)
+        self.assertEqual((self.r.access_token, None), token)
+        self.assertNotEqual(None, self.r.user)
+
+    def test_get_access_information_with_invalid_code(self):
+        self.assertRaises(errors.OAuthException, self.r.get_access_information,
+                          'invalid_code')
+
     def test_invalid_app_access_token(self):
-        self.assertRaises(errors.OAuthRequired, self.invalid.get_access_token,
-                          'dummy_code')
+        self.assertRaises(errors.OAuthRequired,
+                          self.invalid.get_access_information, 'dummy_code')
 
     def test_invalid_app_authorize_url(self):
         self.assertRaises(errors.OAuthRequired, self.invalid.get_authorize_url,
@@ -787,20 +788,20 @@ class OAuth2Test(unittest.TestCase):
 
     def test_invalid_set_access_credentials(self):
         self.assertRaises(HTTPError, self.r.set_access_credentials,
-                          'dummy_access_token')
+                          set(('identity',)), 'dummy_access_token')
 
-    def test_refreshable_access_token(self):
+    def test_refresh_access_information(self):
         if not os.getenv('INTERACTIVE'):
             return
         url = self.r.get_authorize_url('dummy_state', refreshable=True)
         print('Visit this URL: {0}'.format(url))
         code = prompt('Code from redir URL: ')
-        access, refresh = self.r.get_access_token(code)
-        self.assertEqual(self.r.access_token, access)
-        self.assertEqual(self.r.refresh_token, refresh)
-        new_access = self.r.refresh_access_token()
-        self.assertNotEqual(access, new_access)
-        self.assertEqual(self.r.access_token, new_access)
+        info = self.r.get_access_information(code)
+        self.assertEqual(self.r.access_token, info['access_token'])
+        self.assertEqual(self.r.refresh_token, info['refresh_token'])
+        new_info = self.r.refresh_access_information()
+        self.assertNotEqual(info['access_token'], new_info['access_token'])
+        self.assertEqual(self.r.access_token, new_info['access_token'])
 
     def test_set_access_credentials(self):
         if not os.getenv('INTERACTIVE'):
@@ -808,9 +809,9 @@ class OAuth2Test(unittest.TestCase):
         url = self.r.get_authorize_url('dummy_state', refreshable=False)
         print('Visit this URL: {0}'.format(url))
         code = prompt('Code from redir URL: ')
-        access, refresh = self.r.get_access_token(code, update_session=False)
+        retval = self.r.get_access_information(code, update_session=False)
         self.assertTrue(self.r.user is None)
-        self.r.set_access_credentials(access, refresh)
+        self.r.set_access_credentials(**retval)
         self.assertFalse(self.r.user is None)
 
     def test_oauth_without_identy_doesnt_set_user(self):
@@ -821,7 +822,7 @@ class OAuth2Test(unittest.TestCase):
         print('Visit this URL: {0}'.format(url))
         code = prompt('Code from redir URL: ')
         self.assertTrue(self.r.user is None)
-        self.r.get_access_token(code)
+        self.r.get_access_information(code)
         self.assertTrue(self.r.user is None)
 
     def test_set_oauth_info(self):
