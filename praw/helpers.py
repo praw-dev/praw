@@ -81,7 +81,7 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 def _request(reddit_session, url, params=None, data=None, timeout=45,
              raw_response=False, auth=None, files=None):
     """Make the http request and return the http response body."""
-    if not auth and reddit_session.access_token:
+    if getattr(reddit_session, '_use_oauth', False):
         headers = {'Authorization': 'bearer %s' % reddit_session.access_token}
         # Requests using OAuth for authorization must switch to using the oauth
         # domain.

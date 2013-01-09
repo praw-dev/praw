@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc17'
+__version__ = '1.1.0rc18'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -515,6 +515,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         #  * True mean login authenticated
         #  * set(...) means OAuth authenticated with the scopes in the set
         self._authentication = None
+        self._use_oauth = False  # Updated on a request by request basis
         self.access_token = None
         self.refresh_token = None
         self.user = None
@@ -551,6 +552,14 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         if update_session:
             self.set_access_credentials(**retval)
         return retval
+
+    @decorators.restrict_access(scope='identity')
+    def get_me(self):
+        """Return a LoggedInRedditor object."""
+        response = self.request_json(self.config['me'])
+        user = objects.Redditor(self, response['name'], response)
+        user.__class__ = objects.LoggedInRedditor
+        return user
 
     def has_scope(self, scope):
         """Return True if OAuth2 authorized for the passed in scope."""
@@ -646,9 +655,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         if not update_user:
             pass
         elif 'identity' in scope:
-            response = self.request_json(self.config['me'])
-            self.user = objects.Redditor(self, response['name'], response)
-            self.user.__class__ = objects.LoggedInRedditor
+            self.user = self.get_me()
         else:
             self.user = None
 

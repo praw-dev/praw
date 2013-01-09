@@ -272,8 +272,13 @@ def restrict_access(scope, mod=None, login=None):
             else:
                 obj = cls
                 subreddit = args[0] if mod else None
+
+            # This function sets _use_oauth for one time use only.
+            # Verify that statement is actually true.
+            assert not obj._use_oauth  # pylint: disable-msg=W0212
+
             if scope and obj.has_scope(scope):
-                pass
+                obj._use_oauth = True  # pylint: disable-msg=W0212
             elif obj.is_logged_in():
                 if not mod or mod and obj.user.is_mod and mods_all():
                     pass
@@ -287,7 +292,10 @@ def restrict_access(scope, mod=None, login=None):
                 if scope:
                     raise errors.LoginOrOAuthRequired(function.__name__, scope)
                 raise errors.LoginRequired(function.__name__)
-            return function(cls, *args, **kwargs)
+            try:
+                return function(cls, *args, **kwargs)
+            finally:
+                obj._use_oauth = False  # pylint: disable-msg=W0212
         return wrapped
     return wrap
 
