@@ -17,7 +17,7 @@
 import sys
 import six
 from requests.compat import urljoin
-from praw.decorators import Memoize, SleepAfter, require_login
+from praw.decorators import Memoize, SleepAfter, restrict_access
 
 
 def _get_section(subpath=''):
@@ -54,7 +54,12 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
     # the API uses friend and unfriend to manage all of these relationships
     url_key = 'unfriend' if unlink else 'friend'
 
-    @require_login
+    if relationship == 'friend':
+        access = {'scope': None, 'login': True}
+    else:
+        access = {'scope': None, 'mod': True}
+
+    @restrict_access(**access)
     def do_relationship(thing, user):
         data = {'name': six.text_type(user),
                 'type': relationship}

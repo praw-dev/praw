@@ -40,17 +40,57 @@ class ClientException(Exception):
 
 class LoginRequired(ClientException):
 
-    """Raised when a user is not logged in for a privileged call.
+    """Indicates that a logged in session is required.
 
     This exception is raised on a preemtive basis, whereas NotLoggedIn occurs
     in response to a lack of credientials on a priviliged API call.
 
     """
 
+    def __init__(self, function, message=None):
+        if not message:
+            message = '`{0}` requires a logged in session'.format(function)
+        super(LoginRequired, self).__init__(message)
 
-class ModeratorRequired(ClientException):
 
-    """Raised when a logged in user is not a moderator for the subreddit."""
+class LoginOrOAuthRequired(LoginRequired):
+
+    """Indicates that either a logged in session or OAuth2 scope is required.
+
+    The attribute `scope` will contain the name of the necessary scope.
+
+    """
+
+    def __init__(self, function, scope, message=None):
+        if not message:
+            message = ('`{0}` requires a logged in session or the '
+                       'OAuth2 scope `{1}`').format(function, scope)
+        super(LoginOrOAuthRequired, self).__init__(function, message)
+        self.scope = scope
+
+
+class ModeratorRequired(LoginRequired):
+
+    """Indicates that a moderator of the subreddit is required."""
+
+    def __init__(self, function):
+        msg = '`{0}` requires a moderator of the subreddit'.format(function)
+        super(ModeratorRequired, self).__init__(msg)
+
+
+class ModeratorOrOAuthRequired(LoginOrOAuthRequired):
+
+    """Indicates that a moderator of the sub or OAuth2 scope is required.
+
+    The attribute `scope` will contain the name of the necessary scope.
+
+    """
+
+    def __init__(self, function, scope):
+        message = ('`{0}` requires a moderator of the subreddit or the '
+                   'OAuth2 scope `{1}`').format(function, scope)
+        super(ModeratorOrOAuthRequired, self).__init__(function, scope,
+                                                       message)
 
 
 class OAuthException(ClientException):

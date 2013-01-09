@@ -119,6 +119,50 @@ class AuthenticatedHelper(BasicHelper):
         self.r.login(self.un, '1111')
 
 
+class AccessControlTests(unittest.TestCase, BasicHelper):
+    def setUp(self):
+        self.configure()
+
+    def test_login_or_oauth_required_not_logged_in(self):
+        self.assertRaises(errors.LoginOrOAuthRequired,
+                          self.r.add_flair_template, self.sr, 'foo')
+
+    def test_login_or_oauth_required_not_logged_in_mod_func(self):
+        self.assertRaises(errors.LoginOrOAuthRequired,
+                          self.r.get_settings, self.sr)
+
+    def test_login_required_not_logged_in(self):
+        self.assertRaises(errors.LoginRequired, self.r.accept_moderator_invite,
+                          self.sr)
+
+    def test_login_required_not_logged_in_mod_func(self):
+        self.assertRaises(errors.LoginRequired, self.r.get_banned, self.sr)
+
+    def test_moderator_or_oauth_required_loged_in_from_reddit_obj(self):
+        oth = Reddit(USER_AGENT, disable_update_check=True)
+        oth.login('PyApiTestUser3', '1111')
+        self.assertRaises(errors.ModeratorOrOAuthRequired,
+                          oth.get_settings, self.sr)
+
+    def test_moderator_or_oauth_required_loged_in_from_submission_obj(self):
+        oth = Reddit(USER_AGENT, disable_update_check=True)
+        oth.login('PyApiTestUser3', '1111')
+        submission = oth.get_submission(url=self.comment_url)
+        self.assertRaises(errors.ModeratorOrOAuthRequired, submission.remove)
+
+    def test_moderator_or_oauth_required_loged_in_from_subreddit_obj(self):
+        oth = Reddit(USER_AGENT, disable_update_check=True)
+        oth.login('PyApiTestUser3', '1111')
+        subreddit = oth.get_subreddit(self.sr)
+        self.assertRaises(errors.ModeratorOrOAuthRequired,
+                          subreddit.get_settings)
+
+    def test_moderator_required_multi(self):
+        self.r.login(self.un, '1111')
+        sub = self.r.get_subreddit('{0}+{1}'.format(self.sr, 'test'))
+        self.assertRaises(errors.ModeratorRequired, sub.get_modqueue)
+
+
 class BasicTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
@@ -137,6 +181,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertFalse(subreddit != same_subreddit)
         self.assertFalse(subreddit == submission)
 
+    def test_flair_list(self):
+        sub = self.r.get_subreddit('python')
+        self.assertTrue(six_next(sub.flair_list()))
+
     def test_get_all_comments(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_all_comments(limit=num))))
@@ -147,12 +195,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
         result = self.r.get_controversial(limit=num, params={'t': 'all'})
         self.assertEqual(num, len(list(result)))
 
-    @reddit_only
     def test_get_front_page(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
 
-    @reddit_only
     def test_get_new(self):
         num = 50
         result = self.r.get_new(limit=num, params={'sort': 'new'})
@@ -174,10 +220,6 @@ class BasicTest(unittest.TestCase, BasicHelper):
         num = 50
         result = self.r.get_top(limit=num, params={'t': 'all'})
         self.assertEqual(num, len(list(result)))
-
-    def test_flair_list(self):
-        sub = self.r.get_subreddit('python')
-        self.assertTrue(six_next(sub.flair_list()))
 
     def test_info_by_invalid_id(self):
         self.assertEqual(None, self.r.get_info(thing_id='INVALID'))
@@ -201,10 +243,6 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertFalse(self.r.is_username_available(self.un))
         self.assertTrue(self.r.is_username_available(self.invalid_user_name))
         self.assertFalse(self.r.is_username_available(''))
-
-    def test_not_logged_in_submit(self):
-        self.assertRaises(errors.LoginRequired, self.r.submit,
-                          self.sr, 'TITLE', text='BODY')
 
     def test_not_logged_in_when_initialized(self):
         self.assertEqual(self.r.user, None)
@@ -771,7 +809,10 @@ class OAuth2Test(unittest.TestCase):
         print('Visit this URL: {0}'.format(self.r.get_authorize_url('...')))
         code = prompt('Code from redir URL: ')
         token = self.r.get_access_information(code)
-        self.assertEqual((self.r.access_token, None), token)
+        expected = {'access_token': self.r.access_token,
+                    'refresh_token': None,
+                    'scope': set(('identity',))}
+        self.assertEqual(expected, token)
         self.assertNotEqual(None, self.r.user)
 
     def test_get_access_information_with_invalid_code(self):
@@ -1159,15 +1200,6 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         mod_submissions = list(self.r.get_subreddit(multi).get_modqueue())
         self.assertTrue(len(mod_submissions) > 0)
 
-    def test_moderator_required(self):
-        oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyApiTestUser3', '1111')
-        self.assertRaises(errors.ModeratorRequired, oth.get_settings, self.sr)
-
-    def test_moderator_required_multi(self):
-        sub = self.r.get_subreddit('{0}+{1}'.format(self.sr, 'test'))
-        self.assertRaises(errors.ModeratorRequired, sub.get_modqueue)
-
     def test_my_contributions(self):
         for subreddit in self.r.user.my_contributions():
             if text_type(subreddit) == self.sr:
@@ -1186,22 +1218,6 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         for subreddit in self.r.user.my_reddits():
             # pylint: disable-msg=W0212
             self.assertTrue(text_type(subreddit) in subreddit._info_url)
-
-    def test_nsfw_subreddit(self):
-        self.disable_cache()
-        originally_nsfw = self.subreddit.over18
-        if originally_nsfw:
-            self.subreddit.unmark_as_nsfw()
-        else:
-            self.subreddit.mark_as_nsfw()
-        self.subreddit.refresh()
-        self.assertNotEqual(originally_nsfw, self.subreddit.over18)
-        if self.subreddit.over18:
-            self.subreddit.unmark_as_nsfw()
-        else:
-            self.subreddit.mark_as_nsfw()
-        self.subreddit.refresh()
-        self.assertEqual(originally_nsfw, self.subreddit.over18)
 
     @reddit_only
     def test_search(self):

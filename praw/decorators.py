@@ -213,65 +213,83 @@ def parse_api_json_response(function):  # pylint: disable-msg=R0912
     return error_checked_function
 
 
-def require_login(function):
-    """Verify user is logged in prior to making the API request.
+def restrict_access(scope, mod=None, login=None):
+    """Restrict function access unless the user has the necessary permissions.
+
+    Raises one of the following exceptions when appropriate:
+      * LoginRequired
+      * LoginOrOAuthRequired
+        * the scope attribute will provide the necessary scope name
+      * ModeratorRequired
+      * ModeratorOrOAuthRequired
+        * the scope attribute will provide the necessary scope name
+
+    :param scope: Indicate the scope that is required for the API call. None or
+        False must be passed to indicate that no scope handles the API call.
+        All scopes eimply login=True. Scopes with 'mod' in their name imply
+        mod=True.
+    :param mod: Indicate that a moderator is required. Implies login=True.
+    :param login: Indicate that a login is required.
 
     Returned data is not modified.
 
-    """
-    @wraps(function)
-    def login_required_function(self, *args, **kwargs):
-        from praw.objects import RedditContentObject
-        if isinstance(self, RedditContentObject):
-            user = self.reddit_session.user
-            modhash = self.reddit_session.modhash
-            access_token = self.reddit_session.access_token
-        else:
-            user = self.user
-            modhash = self.modhash
-            access_token = self.access_token
+    This decorator assumes that all mod required functions
 
-        if access_token is None and (user is None or modhash is None):
-            raise errors.LoginRequired('%r requires login' % function.__name__)
-        else:
-            return function(self, *args, **kwargs)
-    return login_required_function
-
-
-def require_moderator(function):
-    """Verify the user is a moderator of the subreddit.
-
-    The verification takes place prior to making the API request.
-
-    Returned data is not modified.
+      * have the subreddit as the first argument (Reddit instance functions)
+      * are called upon a subreddit object
 
     """
-    @wraps(function)
-    def moderator_required_function(self, *args, **kwargs):
-        from praw.objects import RedditContentObject
-        if isinstance(self, RedditContentObject):
-            subreddit = self.subreddit
-            user = self.reddit_session.user
-        else:
-            subreddit = args[0]
-            user = self.user
-        if not user.is_mod:
-            raise errors.ModeratorRequired('%r is not moderator' %
-                                           six.text_type(user))
 
-        # pylint: disable-msg=W0212
-        if user._mod_subs is None:
-            user._mod_subs = {'mod': user.reddit_session.get_subreddit('mod')}
-            for sub in user.my_moderation(limit=None):
-                user._mod_subs[six.text_type(sub).lower()] = sub
+    mod = mod or scope and 'mod' in scope
+    login = login or mod or scope
 
-        # Allow for multireddits
-        for sub in six.text_type(subreddit).lower().split('+'):
-            if sub not in user._mod_subs:
-                raise errors.ModeratorRequired('%r is not a moderator of %r' %
-                                               (six.text_type(user), sub))
-        return function(self, *args, **kwargs)
-    return moderator_required_function
+    login_exceptions = ('flair_list',)
+    moderator_exceptions = ('create_subreddit',)
+
+    def wrap(function):
+        @wraps(function)
+        def wrapped(cls, *args, **kwargs):
+            def mods_all():
+                mod_subs = obj.user.get_cached_moderated_reddits()
+                for sub in six.text_type(subreddit).lower().split('+'):
+                    if sub not in mod_subs:
+                        return False
+                return True
+
+            # This segment of code uses hasattr to determine what instance type
+            # the function was called on. We could use isinstance if we wanted
+            # to import the types at runtime (decorators is used by all the
+            # types).
+            if hasattr(cls, 'reddit_session'):
+                obj = cls.reddit_session
+                if mod:
+                    if hasattr(cls, 'display_name'):  # Subreddit object
+                        subreddit = cls
+                    else:
+                        subreddit = cls.subreddit  # Other RedditContentObject
+                else:
+                    subreddit = None
+            else:
+                obj = cls
+                subreddit = args[0] if mod else None
+            if scope and obj.has_scope(scope):
+                pass
+            elif obj.is_logged_in():
+                if not mod or mod and obj.user.is_mod and mods_all():
+                    pass
+                elif function.__name__ not in moderator_exceptions:
+                    if scope:
+                        raise errors.ModeratorOrOAuthRequired(
+                        function.__name__, scope)
+                    else:
+                        raise errors.ModeratorRequired(function.__name__)
+            elif function.__name__ not in login_exceptions:
+                if scope:
+                    raise errors.LoginOrOAuthRequired(function.__name__, scope)
+                raise errors.LoginRequired(function.__name__)
+            return function(cls, *args, **kwargs)
+        return wrapped
+    return wrap
 
 
 def require_oauth(function):

@@ -26,8 +26,7 @@ import six
 import warnings
 from requests.compat import urljoin
 from praw import LoggedInExtension as LIExt, SubredditExtension as SRExt
-from praw.decorators import (alias_function, limit_chars, require_login,
-                             require_moderator)
+from praw.decorators import alias_function, limit_chars, restrict_access
 from praw.errors import ClientException
 from praw.helpers import (_get_section, _get_sorter, _modify_relationship,
                           _request)
@@ -127,8 +126,7 @@ class Moderatable(RedditContentObject):
 
     """Interface for Reddit content objects that have can be moderated."""
 
-    @require_login
-    @require_moderator
+    @restrict_access(scope='modposts')
     def approve(self):
         """Approve object.
 
@@ -148,8 +146,7 @@ class Moderatable(RedditContentObject):
         _request.evict(urls)  # pylint: disable-msg=E1101
         return response
 
-    @require_login
-    @require_moderator
+    @restrict_access(scope='modposts')
     def distinguish(self, as_made_by='mod'):
         """Distinguish object as made by mod, admin or special.
 
@@ -164,8 +161,19 @@ class Moderatable(RedditContentObject):
                 'how': 'yes' if as_made_by == 'mod' else as_made_by}
         return self.reddit_session.request_json(url, data=data)
 
-    @require_login
-    @require_moderator
+    @restrict_access(scope='modposts')
+    def mark_as_nsfw(self, unmark_nsfw=False):
+        """Mark object as Not Safe For Work.
+
+        :returns: The json response from the server.
+
+        """
+        url = self.reddit_session.config['unmarknsfw' if unmark_nsfw else
+                                         'marknsfw']
+        data = {'id': self.fullname}
+        return self.reddit_session.request_json(url, data=data)
+
+    @restrict_access(scope='modposts')
     def remove(self, spam=False):
         """Remove object. This is the moderator version of delete.
 
@@ -186,7 +194,6 @@ class Moderatable(RedditContentObject):
         _request.evict(urls)  # pylint: disable-msg=E1101
         return response
 
-    @require_login
     def undistinguish(self):
         """Remove mod, admin or special distinguishing on object.
 
@@ -195,11 +202,20 @@ class Moderatable(RedditContentObject):
         """
         return self.distinguish(as_made_by='no')
 
+    def unmark_as_nsfw(self):
+        """Mark object as Safe For Work.
+
+        :returns: The json response from the server.
+
+        """
+        return self.mark_as_nsfw(unmark_nsfw=True)
+
 
 class Editable(RedditContentObject):
 
     """Interface for Reddit content objects that can be edited and deleted."""
 
+    @restrict_access(scope='edit')
     def delete(self):
         """Delete this object.
 
@@ -213,6 +229,7 @@ class Editable(RedditContentObject):
         _request.evict([self.reddit_session.config['user']])
         return response
 
+    @restrict_access(scope='edit')
     def edit(self, text):
         """Replace the body of the object with `text`.
 
@@ -233,7 +250,7 @@ class Hideable(RedditContentObject):
 
     """Interface for objects that can be hidden."""
 
-    @require_login
+    @restrict_access(scope=None, login=True)
     def hide(self, unhide=False):
         """Hide object in the context of the logged in user.
 
@@ -302,32 +319,6 @@ class Messageable(RedditContentObject):
     _methods = (('send_message', LIExt.send_message),)
 
 
-class NSFWable(RedditContentObject):
-
-    """Interface for objects that can be marked as NSFW."""
-
-    @require_login
-    def mark_as_nsfw(self, unmarknsfw=False):
-        """Mark object as Not Safe For Work.
-
-        :returns: The json response from the server.
-
-        """
-        url = self.reddit_session.config['unmarknsfw' if unmarknsfw else
-                                         'marknsfw']
-        data = {'id': self.fullname,
-                'executed': 'unmarknsfw' if unmarknsfw else 'marknsfw'}
-        return self.reddit_session.request_json(url, data=data)
-
-    def unmark_as_nsfw(self):
-        """Mark object as Safe For Work.
-
-        :returns: The json response from the server.
-
-        """
-        return self.mark_as_nsfw(unmarknsfw=True)
-
-
 class Refreshable(RedditContentObject):
 
     """Interface for objects that can be refreshed."""
@@ -355,7 +346,7 @@ class Reportable(RedditContentObject):
 
     """Interface for RedditContentObjects that can be reported."""
 
-    @require_login
+    @restrict_access(scope=None, login=True)
     def report(self):
         """Report this object to the moderators.
 
@@ -376,7 +367,7 @@ class Saveable(RedditContentObject):
 
     """Interface for RedditContentObjects that can be saved."""
 
-    @require_login
+    @restrict_access(scope=None, login=True)
     def save(self, unsave=False):
         """Save the object.
 
@@ -430,7 +421,7 @@ class Voteable(RedditContentObject):
         """
         return self.vote(direction=1)
 
-    @require_login
+    @restrict_access(scope='vote')
     def vote(self, direction=0):
         """Vote for the given item in the direction specified.
 
@@ -597,7 +588,6 @@ class Redditor(Messageable, Refreshable):
     def __unicode__(self):
         return self.name
 
-    @require_login
     def friend(self):
         """Friend the user.
 
@@ -606,7 +596,6 @@ class Redditor(Messageable, Refreshable):
         """
         return _modify_relationship('friend')(self.reddit_session.user, self)
 
-    @require_login
     def mark_as_read(self, messages, unread=False):
         """Mark message(s) as read or unread.
 
@@ -627,7 +616,6 @@ class Redditor(Messageable, Refreshable):
         # pylint: disable-msg=W0212
         return self.reddit_session._mark_as_read(ids, unread=unread)
 
-    @require_login
     def unfriend(self):
         """Unfriend the user.
 
@@ -647,51 +635,65 @@ class LoggedInRedditor(Redditor):
     get_liked = _get_section('liked')
     get_saved = _get_section('saved')
 
-    @require_login
+    def get_cached_moderated_reddits(self):
+        """Return a cached dictionary of the user's moderated reddits.
+
+        This list is used internally. Consider using the `my_moderation`
+        function instead.
+
+        """
+        if self._mod_subs is None:
+            self._mod_subs = {'mod': self.reddit_session.get_subreddit('mod')}
+            for sub in self.my_moderation(limit=None):
+                self._mod_subs[six.text_type(sub).lower()] = sub
+        return self._mod_subs
+
+    @restrict_access(scope='privatemessages')
     def get_inbox(self, limit=0):
         """Return a generator for inbox messages."""
         url = self.reddit_session.config['inbox']
         return self.reddit_session.get_content(url, limit=limit)
 
-    @require_login
+    @restrict_access(scope='privatemessages')
     def get_modmail(self, limit=0):
         """Return a generator for moderator messages."""
         url = self.reddit_session.config['moderator']
         return self.reddit_session.get_content(url, limit=limit)
 
-    @require_login
+    @restrict_access(scope='privatemessages')
     def get_sent(self, limit=0):
         """Return a generator for sent messages."""
         url = self.reddit_session.config['sent']
         return self.reddit_session.get_content(url, limit=limit)
 
-    @require_login
+    @restrict_access(scope='privatemessages')
     def get_unread(self, limit=0):
         """Return a generator for unread messages."""
         url = self.reddit_session.config['unread']
         return self.reddit_session.get_content(url, limit=limit)
 
-    @require_login
+    @restrict_access(scope='mysubreddits')
     def my_contributions(self, limit=0):
         """Return the subreddits where the logged in user is a contributor."""
         url = self.reddit_session.config['my_con_reddits']
         return self.reddit_session.get_content(url, limit=limit)
 
-    @require_login
+    @restrict_access(scope='mysubreddits')
     def my_moderation(self, limit=0):
         """Return the subreddits where the logged in user is a mod."""
         url = self.reddit_session.config['my_mod_reddits']
-        return self.reddit_session.get_content(url, limit=limit)
+        retval = self.reddit_session.get_content(url, limit=limit)
+        return retval
 
-    @require_login
+    @restrict_access(scope='mysubreddits')
     def my_reddits(self, limit=0):
         """Return the subreddits that the logged in user is subscribed to."""
         url = self.reddit_session.config['my_reddits']
         return self.reddit_session.get_content(url, limit=limit)
 
 
-class Submission(Editable, Hideable, Moderatable, NSFWable, Refreshable,
-                 Reportable, Saveable, Voteable):
+class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
+                 Saveable, Voteable):
 
     """A class for submissions to reddit."""
 
@@ -924,7 +926,7 @@ class Submission(Editable, Hideable, Moderatable, NSFWable, Refreshable,
         return urljoin(self.reddit_session.config.short_domain, self.id)
 
 
-class Subreddit(Messageable, NSFWable, Refreshable):
+class Subreddit(Messageable, Refreshable):
 
     """A class for Subreddits."""
 

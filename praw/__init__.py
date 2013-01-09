@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc16'
+__version__ = '1.1.0rc17'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -552,6 +552,18 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             self.set_access_credentials(**retval)
         return retval
 
+    def has_scope(self, scope):
+        """Return True if OAuth2 authorized for the passed in scope."""
+        return self.is_oauth_session() and scope in self._authentication
+
+    def is_logged_in(self):
+        """Return True when session is authenticated via login."""
+        return self._authentication is True
+
+    def is_oauth_session(self):
+        """Return True when the current session is an OAuth2 session."""
+        return isinstance(self._authentication, set)
+
     def login(self, username=None, password=None):
         """Login to a reddit site.
 
@@ -648,7 +660,7 @@ class SubredditExtension(AuthenticatedReddit):
     def __init__(self, *args, **kwargs):
         super(SubredditExtension, self).__init__(*args, **kwargs)
 
-    @decorators.require_login
+    @decorators.restrict_access(scope=None, login=True)
     def accept_moderator_invite(self, subreddit):
         """Accept a moderator invite to the given subreddit.
 
@@ -660,8 +672,7 @@ class SubredditExtension(AuthenticatedReddit):
         data = {'r': six.text_type(subreddit)}
         return self.request_json(self.config['accept_mod_invite'], data=data)
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope='modflair')
     def add_flair_template(self, subreddit, text='', css_class='',
                            text_editable=False, is_link=False):
         """Add a flair template to the given subreddit.
@@ -676,8 +687,7 @@ class SubredditExtension(AuthenticatedReddit):
                 'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
         return self.request_json(self.config['flairtemplate'], data=data)
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope='modflair')
     def clear_flair_templates(self, subreddit, is_link=False):
         """Clear flair templates for the given subreddit.
 
@@ -688,8 +698,7 @@ class SubredditExtension(AuthenticatedReddit):
                 'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
         return self.request_json(self.config['clearflairtemplates'], data=data)
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope='modflair')
     def configure_flair(self, subreddit, flair_enabled=False,
                         flair_position='right',
                         flair_self_assign=False,
@@ -714,6 +723,7 @@ class SubredditExtension(AuthenticatedReddit):
                 'link_flair_self_assign_enabled': link_flair_self_assign}
         return self.request_json(self.config['flairconfig'], data=data)
 
+    @decorators.restrict_access(scope='modflair')
     def flair_list(self, subreddit, limit=None):
         """Return generator of flair mappings.
 
@@ -726,15 +736,13 @@ class SubredditExtension(AuthenticatedReddit):
                                 limit=limit, root_field=None,
                                 thing_field='users', after_field='next')
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope=None, mod=True)
     def get_banned(self, subreddit):
         """Return the list of banned users for the given subreddit."""
         return self.request_json(self.config['banned'] %
                                  six.text_type(subreddit))
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope=None, mod=True)
     def get_contributors(self, subreddit):
         """Return the list of contributors for the given subreddit."""
         return self.request_json(self.config['contributors'] %
@@ -752,45 +760,39 @@ class SubredditExtension(AuthenticatedReddit):
         return self.request_json(self.config['moderators'] %
                                  six.text_type(subreddit))
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope=None, mod=True)
     def get_modqueue(self, subreddit='mod', limit=None):
         """Return the mod-queue for the given subreddit."""
         return self.get_content(self.config['modqueue'] %
                                 six.text_type(subreddit),
                                 limit=limit)
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope=None, mod=True)
     def get_reports(self, subreddit='mod', limit=None):
         """Return the list of reported submissions for the given subreddit."""
         return self.get_content(self.config['reports'] %
                                 six.text_type(subreddit),
                                 limit=limit)
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope='modconfig')
     def get_settings(self, subreddit):
         """Return the settings for the given subreddit."""
         return self.request_json(self.config['subreddit_settings'] %
                                  six.text_type(subreddit))['data']
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope=None, mod=True)
     def get_spam(self, subreddit='mod', limit=None):
         """Return the list of spam-filtered items for the given subreddit."""
         return self.get_content(self.config['spam'] % six.text_type(subreddit),
                                 limit=limit)
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope=None, mod=True)
     def get_stylesheet(self, subreddit):
         """Return the stylesheet and images for the given subreddit."""
         return self.request_json(self.config['stylesheet'] %
                                  six.text_type(subreddit))['data']
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope='modflair')
     def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
         """Set flair for the user in the given subreddit.
 
@@ -814,8 +816,7 @@ class SubredditExtension(AuthenticatedReddit):
         helpers._request.evict([evict])
         return response
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope='modflair')
     def set_flair_csv(self, subreddit, flair_mapping):
         """Set flair for a group of users in the given subreddit.
 
@@ -848,8 +849,7 @@ class SubredditExtension(AuthenticatedReddit):
         helpers._request.evict([stale_url])
         return response
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope='modconfig')
     def set_settings(self, subreddit, title, public_description='',
                      description='', language='en', subreddit_type='public',
                      content_options='any', over_18=False, default_set=True,
@@ -899,8 +899,7 @@ class SubredditExtension(AuthenticatedReddit):
                                 six.text_type(subreddit)])
         return self.request_json(self.config['site_admin'], data=data)
 
-    @decorators.require_login
-    @decorators.require_moderator
+    @decorators.restrict_access(scope='modconfig')
     def set_stylesheet(self, subreddit, stylesheet, prevstyle=None):
         """Set stylesheet for the given subreddit.
 
@@ -917,7 +916,7 @@ class SubredditExtension(AuthenticatedReddit):
                                 six.text_type(subreddit)])
         return self.request_json(self.config['subreddit_css'], data=data)
 
-    @decorators.require_login
+    @decorators.restrict_access(scope='submit')
     @decorators.RequireCaptcha
     def submit(self, subreddit, title, text=None, url=None, captcha=None):
         """Submit a new link to the given subreddit.
@@ -944,7 +943,7 @@ class SubredditExtension(AuthenticatedReddit):
         # pylint: disable-msg=E1101
         return self.get_submission(result['data']['url'])
 
-    @decorators.require_login
+    @decorators.restrict_access(scope='subscribe')
     def subscribe(self, subreddit, unsubscribe=False):
         """Subscribe to the given subreddit.
 
@@ -983,6 +982,7 @@ class SubredditExtension(AuthenticatedReddit):
         del settings['subreddit_id']
         return self.set_settings(subreddit, **settings)
 
+    @decorators.restrict_access(scope='modconfig')
     def upload_image(self, subreddit, image_path, name=None, header=False):
         """Upload an image to the subreddit.
 
@@ -1045,7 +1045,7 @@ class LoggedInExtension(AuthenticatedReddit):
     def __init__(self, *args, **kwargs):
         super(LoggedInExtension, self).__init__(*args, **kwargs)
 
-    @decorators.require_login
+    @decorators.restrict_access(scope='submit')
     def _add_comment(self, thing_id, text):
         """Comment on the given thing with the given text.
 
@@ -1058,7 +1058,7 @@ class LoggedInExtension(AuthenticatedReddit):
         # REDDIT: reddit's end should only ever return a single comment
         return retval['data']['things'][0]
 
-    @decorators.require_login
+    @decorators.restrict_access(scope='privatemessages')
     def _mark_as_read(self, thing_ids, unread=False):
         """Mark each of the supplied thing_ids as (un)read.
 
@@ -1072,7 +1072,7 @@ class LoggedInExtension(AuthenticatedReddit):
         helpers._request.evict(urls)  # pylint: disable-msg=E1101,W0212
         return response
 
-    @decorators.require_login
+    @decorators.restrict_access(scope='modconfig')
     def create_subreddit(self, name, title, description='', language='en',
                          subreddit_type='public', content_options='any',
                          over_18=False, default_set=True, show_media=False,
@@ -1095,7 +1095,7 @@ class LoggedInExtension(AuthenticatedReddit):
                 'domain': domain}
         return self.request_json(self.config['site_admin'], data=data)
 
-    @decorators.require_login
+    @decorators.restrict_access(scope='privatemessages')
     @decorators.RequireCaptcha
     def send_message(self, recipient, subject, message, captcha=None):
         """Send a message to a redditor or a subreddit's moderators (mod mail).
