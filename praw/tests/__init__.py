@@ -31,7 +31,7 @@ from requests.compat import urljoin
 from requests.exceptions import HTTPError, Timeout
 from six import advance_iterator as six_next, text_type
 
-from praw import Reddit, errors, helpers
+from praw import Reddit, decorators, errors, helpers
 from praw.objects import Comment, LoggedInRedditor, Message, MoreComments
 
 USER_AGENT = 'PRAW_test_suite'
@@ -124,11 +124,11 @@ class AccessControlTests(unittest.TestCase, BasicHelper):
         self.configure()
 
     def test_login_or_oauth_required_not_logged_in(self):
-        self.assertRaises(errors.LoginOrOAuthRequired,
+        self.assertRaises(errors.LoginOrScopeRequired,
                           self.r.add_flair_template, self.sr, 'foo')
 
     def test_login_or_oauth_required_not_logged_in_mod_func(self):
-        self.assertRaises(errors.LoginOrOAuthRequired,
+        self.assertRaises(errors.LoginOrScopeRequired,
                           self.r.get_settings, self.sr)
 
     def test_login_required_not_logged_in(self):
@@ -141,26 +141,30 @@ class AccessControlTests(unittest.TestCase, BasicHelper):
     def test_moderator_or_oauth_required_loged_in_from_reddit_obj(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyApiTestUser3', '1111')
-        self.assertRaises(errors.ModeratorOrOAuthRequired,
+        self.assertRaises(errors.ModeratorOrScopeRequired,
                           oth.get_settings, self.sr)
 
     def test_moderator_or_oauth_required_loged_in_from_submission_obj(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyApiTestUser3', '1111')
         submission = oth.get_submission(url=self.comment_url)
-        self.assertRaises(errors.ModeratorOrOAuthRequired, submission.remove)
+        self.assertRaises(errors.ModeratorOrScopeRequired, submission.remove)
 
     def test_moderator_or_oauth_required_loged_in_from_subreddit_obj(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyApiTestUser3', '1111')
         subreddit = oth.get_subreddit(self.sr)
-        self.assertRaises(errors.ModeratorOrOAuthRequired,
+        self.assertRaises(errors.ModeratorOrScopeRequired,
                           subreddit.get_settings)
 
     def test_moderator_required_multi(self):
         self.r.login(self.un, '1111')
         sub = self.r.get_subreddit('{0}+{1}'.format(self.sr, 'test'))
         self.assertRaises(errors.ModeratorRequired, sub.get_modqueue)
+
+    def test_require_access_failure(self):
+        self.assertRaises(TypeError, decorators.restrict_access, scope=None,
+                          oauth_only=True)
 
 
 class BasicTest(unittest.TestCase, BasicHelper):
@@ -820,12 +824,12 @@ class OAuth2Test(unittest.TestCase):
                           'invalid_code')
 
     def test_invalid_app_access_token(self):
-        self.assertRaises(errors.OAuthRequired,
+        self.assertRaises(errors.OAuthAppRequired,
                           self.invalid.get_access_information, 'dummy_code')
 
     def test_invalid_app_authorize_url(self):
-        self.assertRaises(errors.OAuthRequired, self.invalid.get_authorize_url,
-                          'dummy_state')
+        self.assertRaises(errors.OAuthAppRequired,
+                          self.invalid.get_authorize_url, 'dummy_state')
 
     def test_invalid_set_access_credentials(self):
         self.assertRaises(HTTPError, self.r.set_access_credentials,
@@ -867,8 +871,8 @@ class OAuth2Test(unittest.TestCase):
         self.assertTrue(self.r.user is None)
 
     def test_set_oauth_info(self):
-        self.assertRaises(errors.OAuthRequired, self.invalid.get_authorize_url,
-                          'dummy_state')
+        self.assertRaises(errors.OAuthAppRequired,
+                          self.invalid.get_authorize_url, 'dummy_state')
         self.invalid.set_oauth_app_info(self.r.client_id, self.r.client_secret,
                                         self.r.redirect_uri)
         self.invalid.get_authorize_url('dummy_state')

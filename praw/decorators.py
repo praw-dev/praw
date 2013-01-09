@@ -213,7 +213,7 @@ def parse_api_json_response(function):  # pylint: disable-msg=R0912
     return error_checked_function
 
 
-def restrict_access(scope, mod=None, login=None):
+def restrict_access(scope, mod=False, login=False, oauth_only=False):
     """Restrict function access unless the user has the necessary permissions.
 
     Raises one of the following exceptions when appropriate:
@@ -230,15 +230,20 @@ def restrict_access(scope, mod=None, login=None):
         mod=True.
     :param mod: Indicate that a moderator is required. Implies login=True.
     :param login: Indicate that a login is required.
+    :param oauth_only: Indicate that only OAuth is supported for the function.
 
     Returned data is not modified.
 
-    This decorator assumes that all mod required functions
+    This decorator assumes that all mod required functions fit one of:
 
       * have the subreddit as the first argument (Reddit instance functions)
-      * are called upon a subreddit object
+      * are called upon a subreddit object (Subredit RedditContentObject)
+      * are called upon a RedditContent object with attribute subreddit
 
     """
+
+    if not scope and oauth_only:
+        raise TypeError('`scope` must be set when `oauth_only` is set')
 
     mod = mod or scope and 'mod' in scope
     login = login or mod or scope
@@ -279,18 +284,20 @@ def restrict_access(scope, mod=None, login=None):
 
             if scope and obj.has_scope(scope):
                 obj._use_oauth = True  # pylint: disable-msg=W0212
+            elif oauth_only:
+                raise errors.OAuthScopeRequired(function.__name__, scope)
             elif obj.is_logged_in():
                 if not mod or mod and obj.user.is_mod and mods_all():
                     pass
                 elif function.__name__ not in moderator_exceptions:
                     if scope:
-                        raise errors.ModeratorOrOAuthRequired(
+                        raise errors.ModeratorOrScopeRequired(
                         function.__name__, scope)
                     else:
                         raise errors.ModeratorRequired(function.__name__)
             elif function.__name__ not in login_exceptions:
                 if scope:
-                    raise errors.LoginOrOAuthRequired(function.__name__, scope)
+                    raise errors.LoginOrScopeRequired(function.__name__, scope)
                 raise errors.LoginRequired(function.__name__)
             try:
                 return function(cls, *args, **kwargs)
@@ -312,7 +319,7 @@ def require_oauth(function):
             err_msg = ("The OAuth app config parameters client_id, "
                        "client_secret and redirect_url must be specified to "
                        "use this function.")
-            raise errors.OAuthRequired(err_msg)
+            raise errors.OAuthAppRequired(err_msg)
         return function(self, *args, **kwargs)
     return validate_function
 

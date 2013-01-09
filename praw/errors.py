@@ -38,6 +38,22 @@ class ClientException(Exception):
         return self.message
 
 
+class OAuthScopeRequired(ClientException):
+
+    """Indicates that an OAuth2 scope is required to make the function call.
+
+    The attribute `scope` will contain the name of the necessary scope.
+
+    """
+
+    def __init__(self, function, scope, message=None):
+        if not message:
+            message = '`{0}` requires the OAuth2 scope `{1}`'.format(function,
+                                                                     scope)
+        super(OAuthScopeRequired, self).__init__(message)
+        self.scope = scope
+
+
 class LoginRequired(ClientException):
 
     """Indicates that a logged in session is required.
@@ -53,7 +69,7 @@ class LoginRequired(ClientException):
         super(LoginRequired, self).__init__(message)
 
 
-class LoginOrOAuthRequired(LoginRequired):
+class LoginOrScopeRequired(OAuthScopeRequired, LoginRequired):
 
     """Indicates that either a logged in session or OAuth2 scope is required.
 
@@ -65,8 +81,7 @@ class LoginOrOAuthRequired(LoginRequired):
         if not message:
             message = ('`{0}` requires a logged in session or the '
                        'OAuth2 scope `{1}`').format(function, scope)
-        super(LoginOrOAuthRequired, self).__init__(function, message)
-        self.scope = scope
+        super(LoginOrScopeRequired, self).__init__(function, scope, message)
 
 
 class ModeratorRequired(LoginRequired):
@@ -78,7 +93,7 @@ class ModeratorRequired(LoginRequired):
         super(ModeratorRequired, self).__init__(msg)
 
 
-class ModeratorOrOAuthRequired(LoginOrOAuthRequired):
+class ModeratorOrScopeRequired(LoginOrScopeRequired, ModeratorRequired):
 
     """Indicates that a moderator of the sub or OAuth2 scope is required.
 
@@ -89,7 +104,7 @@ class ModeratorOrOAuthRequired(LoginOrOAuthRequired):
     def __init__(self, function, scope):
         message = ('`{0}` requires a moderator of the subreddit or the '
                    'OAuth2 scope `{1}`').format(function, scope)
-        super(ModeratorOrOAuthRequired, self).__init__(function, scope,
+        super(ModeratorOrScopeRequired, self).__init__(function, scope,
                                                        message)
 
 
@@ -102,7 +117,7 @@ class OAuthException(ClientException):
     """
 
 
-class OAuthRequired(ClientException):
+class OAuthAppRequired(ClientException):
 
     """Raised when an OAuth client cannot be initialized.
 

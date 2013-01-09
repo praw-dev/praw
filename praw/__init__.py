@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc18'
+__version__ = '1.1.0rc19'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -553,7 +553,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             self.set_access_credentials(**retval)
         return retval
 
-    @decorators.restrict_access(scope='identity')
+    @decorators.restrict_access(scope='identity', oauth_only=True)
     def get_me(self):
         """Return a LoggedInRedditor object."""
         response = self.request_json(self.config['me'])
