@@ -841,7 +841,7 @@ class OAuth2Test(unittest.TestCase):
                           self.invalid.get_authorize_url, 'dummy_state')
 
     def test_invalid_set_access_credentials(self):
-        self.assertRaises(HTTPError, self.r.set_access_credentials,
+        self.assertRaises(errors.OAuthException, self.r.set_access_credentials,
                           set(('identity',)), 'dummy_access_token')
 
     @interactive_only

@@ -18,6 +18,7 @@ import sys
 import six
 from requests.compat import urljoin
 from praw.decorators import Memoize, SleepAfter, restrict_access
+from praw.errors import OAuthException
 
 
 def _get_section(subpath=''):
@@ -135,6 +136,9 @@ def _request(reddit_session, url, params=None, data=None, timeout=45,
             url = urljoin(url, response.headers['location'])
         else:
             break
+    # Raise specific errors on some status codes
+    if response.status_code == 401:
+        raise OAuthException(response.headers['www-authenticate'])
     response.raise_for_status()
     if raw_response:
         return response
