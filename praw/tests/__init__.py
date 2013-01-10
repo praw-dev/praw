@@ -92,9 +92,9 @@ class BasicHelper(object):
     def configure(self):
         self.r = Reddit(USER_AGENT, disable_update_check=True)
         self.sr = 'reddit_api_test'
-        self.un = 'PyApiTestUser2'
-        self.other_user_name = 'PyApiTestUser3'
-        self.invalid_user_name = 'PyApiTestInvalid'
+        self.un = 'PyAPITestUser2'
+        self.other_user_name = 'PyAPITestUser3'
+        self.invalid_user_name = 'PyAPITestInvalid'
 
         if self.r.config.is_reddit:
             self.comment_url = self.url('r/redditdev/comments/dtg4j/')
@@ -102,6 +102,8 @@ class BasicHelper(object):
             self.link_url_link = 'http://imgur.com/Vr8ZZ'
             self.more_comments_url = self.url('/r/redditdev/comments/dqkfz/')
             self.other_user_id = '6c1xj'
+            self.refresh_token = {'identity': 'pwKb6vuFpbqTQjLPTBK_4LW0x3U',
+                                  'submit': 'DSJdhcEd9vkwHWqRenDiY042iW0'}
         else:
             self.comment_url = self.url('/r/reddit_test6/comments/y/')
             self.link_url = self.url('/r/reddit_test6/comments/y/')
@@ -148,21 +150,26 @@ class AccessControlTests(unittest.TestCase, BasicHelper):
     def test_login_required_not_logged_in_mod_func(self):
         self.assertRaises(errors.LoginRequired, self.r.get_banned, self.sr)
 
+    def test_oauth_scope_required(self):
+        self.r.set_oauth_app_info('dummy_client', 'dummy_secret', 'dummy_url')
+        self.r.set_access_credentials(set('dummy_scope',), 'dummy_token')
+        self.assertRaises(errors.OAuthScopeRequired, self.r.get_me)
+
     def test_moderator_or_oauth_required_loged_in_from_reddit_obj(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyApiTestUser3', '1111')
+        oth.login('PyAPITestUser3', '1111')
         self.assertRaises(errors.ModeratorOrScopeRequired,
                           oth.get_settings, self.sr)
 
     def test_moderator_or_oauth_required_loged_in_from_submission_obj(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyApiTestUser3', '1111')
+        oth.login('PyAPITestUser3', '1111')
         submission = oth.get_submission(url=self.comment_url)
         self.assertRaises(errors.ModeratorOrScopeRequired, submission.remove)
 
     def test_moderator_or_oauth_required_loged_in_from_subreddit_obj(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyApiTestUser3', '1111')
+        oth.login('PyAPITestUser3', '1111')
         subreddit = oth.get_subreddit(self.sr)
         self.assertRaises(errors.ModeratorOrScopeRequired,
                           subreddit.get_settings)
@@ -323,7 +330,7 @@ class CacheTest(unittest.TestCase, AuthenticatedHelper):
         body = "BODY"
         original_listing = list(subreddit.get_new_by_date(limit=5))
         subreddit.submit(title, body)
-        self.r.login('PyApiTestUser2', '1111')
+        self.r.login('PyAPITestUser2', '1111')
         new_user_listing = list(subreddit.get_new_by_date(limit=5))
         self.assertEqual(original_listing, new_user_listing)
 
@@ -627,7 +634,7 @@ class LocalOnlyTest(unittest.TestCase, BasicHelper):
 
     @local_only
     def test_create_redditor(self):
-        unique_name = 'PyApiTestUser%d' % random.randint(3, 10240)
+        unique_name = 'PyAPITestUser%d' % random.randint(3, 10240)
         self.r.create_redditor(unique_name, '1111')
 
     @local_only
@@ -655,7 +662,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_mark_as_read(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyApiTestUser3', '1111')
+        oth.login('PyAPITestUser3', '1111')
         # pylint: disable-msg=E1101
         msg = six_next(oth.user.get_unread(limit=1))
         msg.mark_as_read()
@@ -663,7 +670,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_mark_as_unread(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyApiTestUser3', '1111')
+        oth.login('PyAPITestUser3', '1111')
         found = None
         for msg in oth.user.get_inbox():
             if not msg.new:
@@ -676,7 +683,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_mark_multiple_as_read(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyApiTestUser3', '1111')
+        oth.login('PyAPITestUser3', '1111')
         messages = []
         for msg in oth.user.get_unread(limit=None):
             if msg.author != oth.user.name:
@@ -798,8 +805,9 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
         self.assertFalse(self.other in self.subreddit.get_banned())
 
 
-class OAuth2Test(unittest.TestCase):
+class OAuth2Test(unittest.TestCase, BasicHelper):
     def setUp(self):
+        self.configure()
         site_name = (os.getenv('REDDIT_SITE') or 'reddit') + '_oauth_test'
         self.r = Reddit(USER_AGENT, site_name=site_name,
                         disable_update_check=True)
@@ -829,8 +837,8 @@ class OAuth2Test(unittest.TestCase):
         self.assertNotEqual(None, self.r.user)
 
     def test_get_access_information_with_invalid_code(self):
-        self.assertRaises(errors.OAuthException, self.r.get_access_information,
-                          'invalid_code')
+        self.assertRaises(errors.OAuthInvalidGrant,
+                          self.r.get_access_information, 'invalid_code')
 
     def test_invalid_app_access_token(self):
         self.assertRaises(errors.OAuthAppRequired,
@@ -841,7 +849,8 @@ class OAuth2Test(unittest.TestCase):
                           self.invalid.get_authorize_url, 'dummy_state')
 
     def test_invalid_set_access_credentials(self):
-        self.assertRaises(errors.OAuthException, self.r.set_access_credentials,
+        self.assertRaises(errors.OAuthInvalidToken,
+                          self.r.set_access_credentials,
                           set(('identity',)), 'dummy_access_token')
 
     @interactive_only
@@ -856,9 +865,19 @@ class OAuth2Test(unittest.TestCase):
         self.assertNotEqual(info['access_token'], new_info['access_token'])
         self.assertEqual(self.r.access_token, new_info['access_token'])
 
+    def test_scope_identity(self):
+        self.r.refresh_access_information(self.refresh_token['identity'])
+        self.assertEqual(self.un, self.r.get_me().name)
+
+    """
+    def test_scope_submit(self):
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        print self.r.submit(self.sr, 'OAuth Submit', text='Foo')
+    """
+
     @interactive_only
     def test_set_access_credentials(self):
-        url = self.r.get_authorize_url('dummy_state', refreshable=False)
+        url = self.r.get_authorize_url('dummy_state')
         print('Visit this URL: {0}'.format(url))
         code = prompt('Code from redir URL: ')
         retval = self.r.get_access_information(code, update_session=False)
@@ -868,8 +887,7 @@ class OAuth2Test(unittest.TestCase):
 
     @interactive_only
     def test_oauth_without_identy_doesnt_set_user(self):
-        url = self.r.get_authorize_url('dummy_state', 'edit',
-                                       refreshable=False)
+        url = self.r.get_authorize_url('dummy_state', 'edit')
         print('Visit this URL: {0}'.format(url))
         code = prompt('Code from redir URL: ')
         self.assertTrue(self.r.user is None)
@@ -1113,7 +1131,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
     def test_report(self):
         # login as new user to report submission
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyApiTestUser3', '1111')
+        oth.login('PyAPITestUser3', '1111')
         subreddit = oth.get_subreddit(self.sr)
         submission = None
         for submission in subreddit.get_new_by_date():

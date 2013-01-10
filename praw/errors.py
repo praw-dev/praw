@@ -108,15 +108,6 @@ class ModeratorOrScopeRequired(LoginOrScopeRequired, ModeratorRequired):
                                                        message)
 
 
-class OAuthException(ClientException):
-
-    """Raised when an OAuth API call fails.
-
-    The message attribute indicates the specific reddit OAuth exception.
-
-    """
-
-
 class OAuthAppRequired(ClientException):
 
     """Raised when an OAuth client cannot be initialized.
@@ -126,9 +117,46 @@ class OAuthAppRequired(ClientException):
     """
 
 
+class OAuthException(Exception):
+
+    """Base exception class for OAuth API calls.
+
+    Attribute `message` contains the error message.
+    Attribute `url` contains the url that resulted in the error.
+
+    """
+
+    def __init__(self, message, url):
+        super(OAuthException, self).__init__()
+        self.message = message
+        self.url = url
+
+    def __str__(self):
+        return self.message + " on url {0}".format(self.url)
+
+
+class OAuthInsufficientScope(OAuthException):
+
+    """Raised when the current OAuth scope is not sufficient for the action.
+
+    This indicates the access token is valid, but not for the desired action.
+
+    """
+
+
+class OAuthInvalidGrant(OAuthException):
+
+    """Raised when the code to recevie access information is not valid."""
+
+
+class OAuthInvalidToken(OAuthException):
+
+    """Raised when the current OAuth access token is not valid."""
+
+
 class APIException(Exception):
 
-    """Base exception class for the reddit API bindings."""
+    """Base exception class for the reddit API error message exceptions."""
 
     def __init__(self, error_type, message, field='', response=None):
         super(APIException, self).__init__()

@@ -18,7 +18,8 @@ import sys
 import six
 from requests.compat import urljoin
 from praw.decorators import Memoize, SleepAfter, restrict_access
-from praw.errors import OAuthException
+from praw.errors import (OAuthException, OAuthInsufficientScope,
+                         OAuthInvalidToken)
 
 
 def _get_section(subpath=''):
@@ -137,8 +138,14 @@ def _request(reddit_session, url, params=None, data=None, timeout=45,
         else:
             break
     # Raise specific errors on some status codes
-    if response.status_code == 401:
-        raise OAuthException(response.headers['www-authenticate'])
+    if response.status_code != 200 and 'www-authenticate' in response.headers:
+        msg = response.headers['www-authenticate']
+        if 'insufficient_scope' in msg:
+            raise OAuthInsufficientScope('insufficient_scope', url)
+        elif 'invalid_token' in msg:
+            raise OAuthInvalidToken('invalid_token', url)
+        else:
+            raise OAuthException(msg, url)
     response.raise_for_status()
     if raw_response:
         return response

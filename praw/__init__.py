@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc19'
+__version__ = '1.1.0rc20'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -392,14 +392,17 @@ class OAuth2Reddit(BaseReddit):
 
     def _handle_oauth_request(self, data):
         auth = (self.client_id, self.client_secret)
-        response = self._request(self.config['access_token_url'], auth=auth,
-                                 data=data, raw_response=True)
+        url = self.config['access_token_url']
+        response = self._request(url, auth=auth, data=data, raw_response=True)
         if response.status_code != 200:
             raise errors.OAuthException('Unexpected OAuthReturn: %d' %
-                                        response.status_code)
+                                        response.status_code, url)
         retval = response.json()
         if 'error' in retval:
-            raise errors.OAuthException(retval['error'])
+            error = retval['error']
+            if error == 'invalid_grant':
+                raise errors.OAuthInvalidGrant(error, url)
+            raise errors.OAuthException(retval['error'], url)
         return retval
 
     @decorators.require_oauth

@@ -8,11 +8,11 @@ SUBMISSIONS = ({'subreddit': 'reddit_api_test', 'text': 'blah blah blah',
                 'title': 'Init Submission', 'username': 'pyapitestuser3'},
                {'subreddit': 'python', 'title': 'Python Website',
                 'url': 'http://python.org', 'username': 'subreddit_stats'})
-USER_TO_SUBS = {'PyApiTestUser2': ('reddit_api_test', 'reddit_api_test2'),
-                'PyApiTestUser3': ('Python',),
-                'PyApiTestUser4': (),
-                'PyApiTestUser5': (),
-                'PyApiTestUser6': ()}
+USER_TO_SUBS = {'PyAPITestUser2': ('reddit_api_test', 'reddit_api_test2'),
+                'PyAPITestUser3': ('Python',),
+                'PyAPITestUser4': (),
+                'PyAPITestUser5': (),
+                'PyAPITestUser6': ()}
 
 
 def create_redditors(r):
