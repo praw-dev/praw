@@ -494,9 +494,175 @@ class UnauthenticatedReddit(BaseReddit):
 
     """
 
+    @decorators.RequireCaptcha
+    def create_redditor(self, user_name, password, email='', captcha=None):
+        """Register a new user.
+
+        :returns: The json response from the server.
+
+        """
+        data = {'email': email,
+                'passwd': password,
+                'passwd2': password,
+                'user': user_name}
+        if captcha:
+            data.update(captcha)
+        return self.request_json(self.config['register'], data=data)
+
+    def get_all_comments(self, *args, **kwargs):
+        """Return all comments (up to the reddit limit)."""
+        return self.get_content(self.config['comments'], *args, **kwargs)
+
+    def get_controversial(self, *args, **kwargs):
+        """Return controversial page."""
+        return self.get_content(self.config['controversial'], *args, **kwargs)
+
+    def get_flair(self, subreddit, redditor):
+        """Return the flair for a user on the given subreddit."""
+        params = {'name': six.text_type(redditor)}
+        data = self.request_json(self.config['flairlist'] %
+                                 six.text_type(subreddit), params=params)
+        return data['users'][0]
+
+    def get_front_page(self, *args, **kwargs):
+        """Return the front page submissions.
+
+        Default front page if not logged in, otherwise get logged in redditor's
+        front page.
+
+        """
+        return self.get_content(self.config['reddit_url'], *args, **kwargs)
+
+    def get_info(self, url=None, thing_id=None, limit=None):
+        """Look up existing Submissions by thing_id (fullname) or url.
+
+        :param url: The url to lookup.
+        :param thing_id: The submission to lookup by fullname.
+        :param limit: The maximum number of Submissions to return when looking
+            up by url. Default: 25, Max: 100.
+        :returns: When thing_id is provided, return the corresponding
+            Submission object, or None if not found. When url is provided
+            return a list of Submission objects (up to limit) for the url.
+
+        """
+        if bool(url) == bool(thing_id):
+            raise TypeError('Only one of url or thing_id is required!')
+        elif thing_id and limit:
+            raise TypeError('Limit keyword is not applicable with thing_id.')
+        if url:
+            params = {'url': url}
+            if limit:
+                params['limit'] = limit
+        else:
+            params = {'id': thing_id}
+        items = self.request_json(self.config['info'],
+                                  params=params)['data']['children']
+        if url:
+            return items
+        elif items:
+            return items[0]
+        else:
+            return None
+
+    def get_moderators(self, subreddit):
+        """Return the list of moderators for the given subreddit."""
+        return self.request_json(self.config['moderators'] %
+                                 six.text_type(subreddit))
+
+    def get_new(self, *args, **kwargs):
+        """Return new page."""
+        return self.get_content(self.config['new'], *args, **kwargs)
+
+    def get_popular_reddits(self, *args, **kwargs):
+        """Return the most active subreddits."""
+        url = self.config['popular_reddits']
+        return self.get_content(url, *args, **kwargs)
+
+    def get_random_subreddit(self):
+        """Return a random subreddit just like /r/random does."""
+        response = self._request(self.config['subreddit'] % 'random',
+                                 raw_response=True)
+        return self.get_subreddit(response.url.rsplit('/', 2)[-2])
+
     def get_redditor(self, user_name, *args, **kwargs):
         """Return a Redditor instance for the user_name specified."""
         return objects.Redditor(self, user_name, *args, **kwargs)
+
+    def get_submission(self, url=None, submission_id=None):
+        """Return a Submission object for the given url or submission_id."""
+        if bool(url) == bool(submission_id):
+            raise TypeError('One (and only one) of id or url is required!')
+        if submission_id:
+            url = urljoin(self.config['comments'], submission_id)
+        return objects.Submission.from_url(self, url)
+
+    def get_subreddit(self, subreddit_name, *args, **kwargs):
+        """Return a Subreddit object for the subreddit_name specified."""
+        if subreddit_name.lower() == 'random':
+            return self.get_random_subreddit()
+        return objects.Subreddit(self, subreddit_name, *args, **kwargs)
+
+    def get_top(self, *args, **kwargs):
+        """Return top page."""
+        return self.get_content(self.config['top'], *args, **kwargs)
+
+    def is_username_available(self, username):
+        """Return True if username is valid and available, otherwise False."""
+        params = {'user': username}
+        try:
+            result = self.request_json(self.config['username_available'],
+                                       params=params)
+        except errors.APIException as exception:
+            if exception.error_type == 'BAD_USERNAME':
+                result = False
+            else:
+                raise
+        return result
+
+    def search(self, query, subreddit=None, sort=None, limit=0, *args,
+               **kwargs):
+        """Return submissions that match the search query.
+
+        See http://www.reddit.com/help/search for more information on how to
+        build a search query.
+
+        """
+        params = {'q': query}
+        if sort:
+            params['sort'] = sort
+        if subreddit:
+            params['restrict_sr'] = 'on'
+            url = self.config['search'] % subreddit
+        else:
+            url = self.config['search'] % 'all'
+        return self.get_content(url, params=params, limit=limit, *args,
+                                **kwargs)
+
+    def search_reddit_names(self, query):
+        """Return subreddits whose display name contains the query."""
+        data = {'query': query}
+        results = self.request_json(self.config['search_reddit_names'],
+                                    data=data)
+        return [self.get_subreddit(name) for name in results['names']]
+
+    @decorators.RequireCaptcha
+    def send_feedback(self, name, email, message, reason='feedback',
+                      captcha=None):
+        """Send feedback to the admins.
+
+        Please don't abuse this. Read the send feedback page at
+        http://www.reddit.com/feedback/ (for reddit.com) before use.
+
+        :returns: The json response from the server.
+
+        """
+        data = {'name': name,
+                'email': email,
+                'reason': reason,
+                'text': message}
+        if captcha:
+            data.update(captcha)
+        return self.request_json(self.config['feedback'], data=data)
 
 
 class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
@@ -528,6 +694,18 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             return 'LoggedIn reddit session (user: {0})'.format(self.user)
         else:
             return 'Unauthenticated reddit sesssion'
+
+    @decorators.restrict_access(scope=None, login=True)
+    def accept_moderator_invite(self, subreddit):
+        """Accept a moderator invite to the given subreddit.
+
+        Callable upon an instance of Subreddit with no arguments.
+
+        :returns: The json response from the server.
+
+        """
+        data = {'r': six.text_type(subreddit)}
+        return self.request_json(self.config['accept_mod_invite'], data=data)
 
     def clear_authentication(self):
         """Clear any existing authentication on the reddit object."""
@@ -660,201 +838,38 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             self.user = None
 
 
-class SubredditExtension(AuthenticatedReddit):
+class ModConfigMixin(AuthenticatedReddit):
 
-    """Adds methods that operate on Subreddit objects."""
+    """Adds methods requiring the 'modconfig' scope (or mod access)."""
 
-    def __init__(self, *args, **kwargs):
-        super(SubredditExtension, self).__init__(*args, **kwargs)
-
-    @decorators.restrict_access(scope=None, login=True)
-    def accept_moderator_invite(self, subreddit):
-        """Accept a moderator invite to the given subreddit.
-
-        Callable upon an instance of Subreddit with no arguments.
+    @decorators.restrict_access(scope='modconfig')
+    def create_subreddit(self, name, title, description='', language='en',
+                         subreddit_type='public', content_options='any',
+                         over_18=False, default_set=True, show_media=False,
+                         domain='', wikimode='disabled'):
+        """Create a new subreddit.
 
         :returns: The json response from the server.
 
         """
-        data = {'r': six.text_type(subreddit)}
-        return self.request_json(self.config['accept_mod_invite'], data=data)
-
-    @decorators.restrict_access(scope='modflair')
-    def add_flair_template(self, subreddit, text='', css_class='',
-                           text_editable=False, is_link=False):
-        """Add a flair template to the given subreddit.
-
-        :returns: The json response from the server.
-
-        """
-        data = {'r': six.text_type(subreddit),
-                'text': text,
-                'css_class': css_class,
-                'text_editable': six.text_type(text_editable),
-                'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
-        return self.request_json(self.config['flairtemplate'], data=data)
-
-    @decorators.restrict_access(scope='modflair')
-    def clear_flair_templates(self, subreddit, is_link=False):
-        """Clear flair templates for the given subreddit.
-
-        :returns: The json response from the server.
-
-        """
-        data = {'r': six.text_type(subreddit),
-                'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
-        return self.request_json(self.config['clearflairtemplates'], data=data)
-
-    @decorators.restrict_access(scope='modflair')
-    def configure_flair(self, subreddit, flair_enabled=False,
-                        flair_position='right',
-                        flair_self_assign=False,
-                        link_flair_enabled=False,
-                        link_flair_position='left',
-                        link_flair_self_assign=False):
-        """Configure the flair setting for the given subreddit.
-
-        :returns: The json response from the server.
-
-        """
-        flair_enabled = 'on' if flair_enabled else 'off'
-        flair_self_assign = 'on' if flair_self_assign else 'off'
-        if not link_flair_enabled:
-            link_flair_position = ''
-        link_flair_self_assign = 'on' if link_flair_self_assign else 'off'
-        data = {'r': six.text_type(subreddit),
-                'flair_enabled': flair_enabled,
-                'flair_position': flair_position,
-                'flair_self_assign_enabled': flair_self_assign,
-                'link_flair_position': link_flair_position,
-                'link_flair_self_assign_enabled': link_flair_self_assign}
-        return self.request_json(self.config['flairconfig'], data=data)
-
-    @decorators.restrict_access(scope='modflair')
-    def flair_list(self, subreddit, limit=None):
-        """Return generator of flair mappings.
-
-        Each flair mapping is a dict with three keys. 'user', 'flair_text' and
-        'flair_css_class'.
-
-        """
-        return self.get_content(self.config['flairlist'] %
-                                six.text_type(subreddit),
-                                limit=limit, root_field=None,
-                                thing_field='users', after_field='next')
-
-    @decorators.restrict_access(scope=None, mod=True)
-    def get_banned(self, subreddit):
-        """Return the list of banned users for the given subreddit."""
-        return self.request_json(self.config['banned'] %
-                                 six.text_type(subreddit))
-
-    @decorators.restrict_access(scope=None, mod=True)
-    def get_contributors(self, subreddit):
-        """Return the list of contributors for the given subreddit."""
-        return self.request_json(self.config['contributors'] %
-                                 six.text_type(subreddit))
-
-    def get_flair(self, subreddit, redditor):
-        """Return the flair for a user on the given subreddit."""
-        params = {'name': six.text_type(redditor)}
-        data = self.request_json(self.config['flairlist'] %
-                                 six.text_type(subreddit), params=params)
-        return data['users'][0]
-
-    def get_moderators(self, subreddit):
-        """Return the list of moderators for the given subreddit."""
-        return self.request_json(self.config['moderators'] %
-                                 six.text_type(subreddit))
-
-    @decorators.restrict_access(scope=None, mod=True)
-    def get_modqueue(self, subreddit='mod', limit=None):
-        """Return the mod-queue for the given subreddit."""
-        return self.get_content(self.config['modqueue'] %
-                                six.text_type(subreddit),
-                                limit=limit)
-
-    @decorators.restrict_access(scope=None, mod=True)
-    def get_reports(self, subreddit='mod', limit=None):
-        """Return the list of reported submissions for the given subreddit."""
-        return self.get_content(self.config['reports'] %
-                                six.text_type(subreddit),
-                                limit=limit)
+        data = {'name': name,
+                'title': title,
+                'description': description,
+                'lang': language,
+                'type': subreddit_type,
+                'link_type': content_options,
+                'over_18': 'on' if over_18 else 'off',
+                'allow_top': 'on' if default_set else 'off',
+                'show_media': 'on' if show_media else 'off',
+                'wikimode': wikimode,
+                'domain': domain}
+        return self.request_json(self.config['site_admin'], data=data)
 
     @decorators.restrict_access(scope='modconfig')
     def get_settings(self, subreddit):
         """Return the settings for the given subreddit."""
         return self.request_json(self.config['subreddit_settings'] %
                                  six.text_type(subreddit))['data']
-
-    @decorators.restrict_access(scope=None, mod=True)
-    def get_spam(self, subreddit='mod', limit=None):
-        """Return the list of spam-filtered items for the given subreddit."""
-        return self.get_content(self.config['spam'] % six.text_type(subreddit),
-                                limit=limit)
-
-    @decorators.restrict_access(scope=None, mod=True)
-    def get_stylesheet(self, subreddit):
-        """Return the stylesheet and images for the given subreddit."""
-        return self.request_json(self.config['stylesheet'] %
-                                 six.text_type(subreddit))['data']
-
-    @decorators.restrict_access(scope='modflair')
-    def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
-        """Set flair for the user in the given subreddit.
-
-        Item can be a string, Redditor object, or Submission object. If item is
-        a string it will be treated as the name of a Redditor.
-
-        :returns: The json response from the server.
-
-        """
-        data = {'r': six.text_type(subreddit),
-                'text': flair_text or '',
-                'css_class': flair_css_class or ''}
-        if isinstance(item, objects.Submission):
-            data['link'] = item.fullname
-            evict = item.permalink
-        else:
-            data['name'] = six.text_type(item)
-            evict = self.config['flairlist'] % six.text_type(subreddit)
-        response = self.request_json(self.config['flair'], data=data)
-        # pylint: disable-msg=E1101,W0212
-        helpers._request.evict([evict])
-        return response
-
-    @decorators.restrict_access(scope='modflair')
-    def set_flair_csv(self, subreddit, flair_mapping):
-        """Set flair for a group of users in the given subreddit.
-
-        flair_mapping should be a list of dictionaries with the following keys:
-          user: the user name
-          flair_text: the flair text for the user (optional)
-          flair_css_class: the flair css class for the user (optional)
-
-        :returns: The json response from the server.
-
-        """
-        if not flair_mapping:
-            raise errors.ClientException('flair_mapping must be set')
-        item_order = ['user', 'flair_text', 'flair_css_class']
-        lines = []
-        for mapping in flair_mapping:
-            if 'user' not in mapping:
-                raise errors.ClientException('flair_mapping must '
-                                             'contain `user` key')
-            lines.append(','.join([mapping.get(x, '') for x in item_order]))
-        response = []
-        while len(lines):
-            data = {'r': six.text_type(subreddit),
-                    'flair_csv': '\n'.join(lines[:100])}
-            response.extend(self.request_json(self.config['flaircsv'],
-                                              data=data))
-            lines = lines[100:]
-        stale_url = self.config['flairlist'] % six.text_type(subreddit)
-        # pylint: disable-msg=E1101,W0212
-        helpers._request.evict([stale_url])
-        return response
 
     @decorators.restrict_access(scope='modconfig')
     def set_settings(self, subreddit, title, public_description='',
@@ -923,72 +938,6 @@ class SubredditExtension(AuthenticatedReddit):
                                 six.text_type(subreddit)])
         return self.request_json(self.config['subreddit_css'], data=data)
 
-    @decorators.restrict_access(scope='submit')
-    @decorators.RequireCaptcha
-    def submit(self, subreddit, title, text=None, url=None, captcha=None):
-        """Submit a new link to the given subreddit.
-
-        Accepts either a Subreddit object or a str containing the subreddit's
-        display name.
-
-        :returns: The url to the submission.
-
-        """
-        if bool(text) == bool(url):
-            raise TypeError('One (and only one) of text or url is required!')
-        data = {'sr': six.text_type(subreddit),
-                'title': title}
-        if text:
-            data['kind'] = 'self'
-            data['text'] = text
-        else:
-            data['kind'] = 'link'
-            data['url'] = url
-        if captcha:
-            data.update(captcha)
-        result = self.request_json(self.config['submit'], data=data)
-        # pylint: disable-msg=E1101
-        return self.get_submission(result['data']['url'])
-
-    @decorators.restrict_access(scope='subscribe')
-    def subscribe(self, subreddit, unsubscribe=False):
-        """Subscribe to the given subreddit.
-
-        :param subreddit: Either the subreddit name or a subreddit object.
-        :param unsubscribe: When true, unsubscribe.
-        :returns: The json response from the server.
-
-        """
-        data = {'action': 'unsub' if unsubscribe else 'sub',
-                'sr_name': six.text_type(subreddit)}
-        response = self.request_json(self.config['subscribe'], data=data)
-        # pylint: disable-msg=E1101,W0212
-        helpers._request.evict([self.config['my_reddits']])
-        return response
-
-    def unsubscribe(self, subreddit):
-        """Unsubscribe from the given subreddit.
-
-        :param subreddit: Either the subreddit name or a subreddit object.
-        :returns: The json response from the server.
-
-        """
-        return self.subscribe(subreddit, unsubscribe=True)
-
-    def update_settings(self, subreddit, **kwargs):
-        """Update only the given settings for the given subreddit.
-
-        The settings to update must be given by keyword and match one of the
-        parameter names in `set_settings`.
-
-        :returns: The json response from the server.
-
-        """
-        settings = self.get_settings(subreddit)
-        settings.update(kwargs)
-        del settings['subreddit_id']
-        return self.set_settings(subreddit, **settings)
-
     @decorators.restrict_access(scope='modconfig')
     def upload_image(self, subreddit, image_path, name=None, header=False):
         """Upload an image to the subreddit.
@@ -1044,26 +993,193 @@ class SubredditExtension(AuthenticatedReddit):
             raise errors.APIException(image_errors['IMAGE_ERROR'], None)
         return True
 
+    def update_settings(self, subreddit, **kwargs):
+        """Update only the given settings for the given subreddit.
 
-class LoggedInExtension(AuthenticatedReddit):
+        The settings to update must be given by keyword and match one of the
+        parameter names in `set_settings`.
 
-    """Contains methods relevent only to a logged in user."""
-
-    def __init__(self, *args, **kwargs):
-        super(LoggedInExtension, self).__init__(*args, **kwargs)
-
-    @decorators.restrict_access(scope='submit')
-    def _add_comment(self, thing_id, text):
-        """Comment on the given thing with the given text.
-
-        :returns: A Comment object for the newly created comment.
+        :returns: The json response from the server.
 
         """
-        data = {'thing_id': thing_id,
-                'text': text}
-        retval = self.request_json(self.config['comment'], data=data)
-        # REDDIT: reddit's end should only ever return a single comment
-        return retval['data']['things'][0]
+        settings = self.get_settings(subreddit)
+        settings.update(kwargs)
+        del settings['subreddit_id']
+        return self.set_settings(subreddit, **settings)
+
+
+class ModFlairMixin(AuthenticatedReddit):
+
+    """Adds methods requring the 'modflair' scope (or mod access)."""
+
+    @decorators.restrict_access(scope='modflair')
+    def add_flair_template(self, subreddit, text='', css_class='',
+                           text_editable=False, is_link=False):
+        """Add a flair template to the given subreddit.
+
+        :returns: The json response from the server.
+
+        """
+        data = {'r': six.text_type(subreddit),
+                'text': text,
+                'css_class': css_class,
+                'text_editable': six.text_type(text_editable),
+                'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
+        return self.request_json(self.config['flairtemplate'], data=data)
+
+    @decorators.restrict_access(scope='modflair')
+    def clear_flair_templates(self, subreddit, is_link=False):
+        """Clear flair templates for the given subreddit.
+
+        :returns: The json response from the server.
+
+        """
+        data = {'r': six.text_type(subreddit),
+                'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
+        return self.request_json(self.config['clearflairtemplates'], data=data)
+
+    @decorators.restrict_access(scope='modflair')
+    def configure_flair(self, subreddit, flair_enabled=False,
+                        flair_position='right',
+                        flair_self_assign=False,
+                        link_flair_enabled=False,
+                        link_flair_position='left',
+                        link_flair_self_assign=False):
+        """Configure the flair setting for the given subreddit.
+
+        :returns: The json response from the server.
+
+        """
+        flair_enabled = 'on' if flair_enabled else 'off'
+        flair_self_assign = 'on' if flair_self_assign else 'off'
+        if not link_flair_enabled:
+            link_flair_position = ''
+        link_flair_self_assign = 'on' if link_flair_self_assign else 'off'
+        data = {'r': six.text_type(subreddit),
+                'flair_enabled': flair_enabled,
+                'flair_position': flair_position,
+                'flair_self_assign_enabled': flair_self_assign,
+                'link_flair_position': link_flair_position,
+                'link_flair_self_assign_enabled': link_flair_self_assign}
+        return self.request_json(self.config['flairconfig'], data=data)
+
+    @decorators.restrict_access(scope='modflair')
+    def flair_list(self, subreddit, limit=None):
+        """Return generator of flair mappings.
+
+        Each flair mapping is a dict with three keys. 'user', 'flair_text' and
+        'flair_css_class'.
+
+        """
+        return self.get_content(self.config['flairlist'] %
+                                six.text_type(subreddit),
+                                limit=limit, root_field=None,
+                                thing_field='users', after_field='next')
+
+    @decorators.restrict_access(scope='modflair')
+    def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
+        """Set flair for the user in the given subreddit.
+
+        Item can be a string, Redditor object, or Submission object. If item is
+        a string it will be treated as the name of a Redditor.
+
+        :returns: The json response from the server.
+
+        """
+        data = {'r': six.text_type(subreddit),
+                'text': flair_text or '',
+                'css_class': flair_css_class or ''}
+        if isinstance(item, objects.Submission):
+            data['link'] = item.fullname
+            evict = item.permalink
+        else:
+            data['name'] = six.text_type(item)
+            evict = self.config['flairlist'] % six.text_type(subreddit)
+        response = self.request_json(self.config['flair'], data=data)
+        # pylint: disable-msg=E1101,W0212
+        helpers._request.evict([evict])
+        return response
+
+    @decorators.restrict_access(scope='modflair')
+    def set_flair_csv(self, subreddit, flair_mapping):
+        """Set flair for a group of users in the given subreddit.
+
+        flair_mapping should be a list of dictionaries with the following keys:
+          user: the user name
+          flair_text: the flair text for the user (optional)
+          flair_css_class: the flair css class for the user (optional)
+
+        :returns: The json response from the server.
+
+        """
+        if not flair_mapping:
+            raise errors.ClientException('flair_mapping must be set')
+        item_order = ['user', 'flair_text', 'flair_css_class']
+        lines = []
+        for mapping in flair_mapping:
+            if 'user' not in mapping:
+                raise errors.ClientException('flair_mapping must '
+                                             'contain `user` key')
+            lines.append(','.join([mapping.get(x, '') for x in item_order]))
+        response = []
+        while len(lines):
+            data = {'r': six.text_type(subreddit),
+                    'flair_csv': '\n'.join(lines[:100])}
+            response.extend(self.request_json(self.config['flaircsv'],
+                                              data=data))
+            lines = lines[100:]
+        stale_url = self.config['flairlist'] % six.text_type(subreddit)
+        # pylint: disable-msg=E1101,W0212
+        helpers._request.evict([stale_url])
+        return response
+
+
+class ModOnlyMixin(AuthenticatedReddit):
+
+    """Adds methods requring the logged in moderator access."""
+
+    @decorators.restrict_access(scope=None, mod=True)
+    def get_banned(self, subreddit):
+        """Return the list of banned users for the given subreddit."""
+        return self.request_json(self.config['banned'] %
+                                 six.text_type(subreddit))
+
+    @decorators.restrict_access(scope=None, mod=True)
+    def get_contributors(self, subreddit):
+        """Return the list of contributors for the given subreddit."""
+        return self.request_json(self.config['contributors'] %
+                                 six.text_type(subreddit))
+
+    @decorators.restrict_access(scope=None, mod=True)
+    def get_modqueue(self, subreddit='mod', limit=None):
+        """Return the mod-queue for the given subreddit."""
+        return self.get_content(self.config['modqueue'] %
+                                six.text_type(subreddit),
+                                limit=limit)
+
+    @decorators.restrict_access(scope=None, mod=True)
+    def get_reports(self, subreddit='mod', limit=None):
+        """Return the list of reported submissions for the given subreddit."""
+        return self.get_content(self.config['reports'] %
+                                six.text_type(subreddit),
+                                limit=limit)
+
+    @decorators.restrict_access(scope=None, mod=True)
+    def get_spam(self, subreddit='mod', limit=None):
+        """Return the list of spam-filtered items for the given subreddit."""
+        return self.get_content(self.config['spam'] % six.text_type(subreddit),
+                                limit=limit)
+
+    @decorators.restrict_access(scope=None, mod=True)
+    def get_stylesheet(self, subreddit):
+        """Return the stylesheet and images for the given subreddit."""
+        return self.request_json(self.config['stylesheet'] %
+                                 six.text_type(subreddit))['data']
+
+
+class PrivateMessagesMixin(AuthenticatedReddit):
+
+    """Adds methods requring the 'privatemessages' scope (or login)."""
 
     @decorators.restrict_access(scope='privatemessages')
     def _mark_as_read(self, thing_ids, unread=False):
@@ -1078,29 +1194,6 @@ class LoggedInExtension(AuthenticatedReddit):
         urls = [self.config[x] for x in ['inbox', 'moderator', 'unread']]
         helpers._request.evict(urls)  # pylint: disable-msg=E1101,W0212
         return response
-
-    @decorators.restrict_access(scope='modconfig')
-    def create_subreddit(self, name, title, description='', language='en',
-                         subreddit_type='public', content_options='any',
-                         over_18=False, default_set=True, show_media=False,
-                         domain='', wikimode='disabled'):
-        """Create a new subreddit.
-
-        :returns: The json response from the server.
-
-        """
-        data = {'name': name,
-                'title': title,
-                'description': description,
-                'lang': language,
-                'type': subreddit_type,
-                'link_type': content_options,
-                'over_18': 'on' if over_18 else 'off',
-                'allow_top': 'on' if default_set else 'off',
-                'show_media': 'on' if show_media else 'off',
-                'wikimode': wikimode,
-                'domain': domain}
-        return self.request_json(self.config['site_admin'], data=data)
 
     @decorators.restrict_access(scope='privatemessages')
     @decorators.RequireCaptcha
@@ -1130,167 +1223,85 @@ class LoggedInExtension(AuthenticatedReddit):
         return response
 
 
-class Reddit(LoggedInExtension,  # pylint: disable-msg=R0904
-             SubredditExtension):
+class SubmitMixin(AuthenticatedReddit):
 
-    """Contains the base set of reddit API functions."""
+    """Adds methods requring the 'submit' scope (or login)."""
 
-    def __init__(self, *args, **kwargs):
-        super(Reddit, self).__init__(*args, **kwargs)
+    @decorators.restrict_access(scope='submit')
+    def _add_comment(self, thing_id, text):
+        """Comment on the given thing with the given text.
 
+        :returns: A Comment object for the newly created comment.
+
+        """
+        data = {'thing_id': thing_id,
+                'text': text}
+        retval = self.request_json(self.config['comment'], data=data)
+        # REDDIT: reddit's end should only ever return a single comment
+        return retval['data']['things'][0]
+
+    @decorators.restrict_access(scope='submit')
     @decorators.RequireCaptcha
-    def create_redditor(self, user_name, password, email='', captcha=None):
-        """Register a new user.
+    def submit(self, subreddit, title, text=None, url=None, captcha=None):
+        """Submit a new link to the given subreddit.
 
+        Accepts either a Subreddit object or a str containing the subreddit's
+        display name.
+
+        :returns: The url to the submission.
+
+        """
+        if bool(text) == bool(url):
+            raise TypeError('One (and only one) of text or url is required!')
+        data = {'sr': six.text_type(subreddit),
+                'title': title}
+        if text:
+            data['kind'] = 'self'
+            data['text'] = text
+        else:
+            data['kind'] = 'link'
+            data['url'] = url
+        if captcha:
+            data.update(captcha)
+        result = self.request_json(self.config['submit'], data=data)
+        # pylint: disable-msg=E1101
+        return self.get_submission(result['data']['url'])
+
+
+class SubscribeMixin(AuthenticatedReddit):
+
+    """Adds methods requring the 'subscribe' scope (or login)."""
+
+    @decorators.restrict_access(scope='subscribe')
+    def subscribe(self, subreddit, unsubscribe=False):
+        """Subscribe to the given subreddit.
+
+        :param subreddit: Either the subreddit name or a subreddit object.
+        :param unsubscribe: When true, unsubscribe.
         :returns: The json response from the server.
 
         """
-        data = {'email': email,
-                'passwd': password,
-                'passwd2': password,
-                'user': user_name}
-        if captcha:
-            data.update(captcha)
-        return self.request_json(self.config['register'], data=data)
+        data = {'action': 'unsub' if unsubscribe else 'sub',
+                'sr_name': six.text_type(subreddit)}
+        response = self.request_json(self.config['subscribe'], data=data)
+        # pylint: disable-msg=E1101,W0212
+        helpers._request.evict([self.config['my_reddits']])
+        return response
 
-    def get_all_comments(self, *args, **kwargs):
-        """Return all comments (up to the reddit limit)."""
-        return self.get_content(self.config['comments'], *args, **kwargs)
+    def unsubscribe(self, subreddit):
+        """Unsubscribe from the given subreddit.
 
-    def get_controversial(self, *args, **kwargs):
-        """Return controversial page."""
-        return self.get_content(self.config['controversial'], *args, **kwargs)
-
-    def get_front_page(self, *args, **kwargs):
-        """Return the front page submissions.
-
-        Default front page if not logged in, otherwise get logged in redditor's
-        front page.
-
-        """
-        return self.get_content(self.config['reddit_url'], *args, **kwargs)
-
-    def get_info(self, url=None, thing_id=None, limit=None):
-        """Look up existing Submissions by thing_id (fullname) or url.
-
-        :param url: The url to lookup.
-        :param thing_id: The submission to lookup by fullname.
-        :param limit: The maximum number of Submissions to return when looking
-            up by url. Default: 25, Max: 100.
-        :returns: When thing_id is provided, return the corresponding
-            Submission object, or None if not found. When url is provided
-            return a list of Submission objects (up to limit) for the url.
-
-        """
-        if bool(url) == bool(thing_id):
-            raise TypeError('Only one of url or thing_id is required!')
-        elif thing_id and limit:
-            raise TypeError('Limit keyword is not applicable with thing_id.')
-        if url:
-            params = {'url': url}
-            if limit:
-                params['limit'] = limit
-        else:
-            params = {'id': thing_id}
-        items = self.request_json(self.config['info'],
-                                  params=params)['data']['children']
-        if url:
-            return items
-        elif items:
-            return items[0]
-        else:
-            return None
-
-    def get_new(self, *args, **kwargs):
-        """Return new page."""
-        return self.get_content(self.config['new'], *args, **kwargs)
-
-    def get_top(self, *args, **kwargs):
-        """Return top page."""
-        return self.get_content(self.config['top'], *args, **kwargs)
-
-    def get_popular_reddits(self, *args, **kwargs):
-        """Return the most active subreddits."""
-        url = self.config['popular_reddits']
-        return self.get_content(url, *args, **kwargs)
-
-    def get_random_subreddit(self):
-        """Return a random subreddit just like /r/random does."""
-        response = self._request(self.config['subreddit'] % 'random',
-                                 raw_response=True)
-        return self.get_subreddit(response.url.rsplit('/', 2)[-2])
-
-    def get_submission(self, url=None, submission_id=None):
-        """Return a Submission object for the given url or submission_id."""
-        if bool(url) == bool(submission_id):
-            raise TypeError('One (and only one) of id or url is required!')
-        if submission_id:
-            url = urljoin(self.config['comments'], submission_id)
-        return objects.Submission.from_url(self, url)
-
-    def get_subreddit(self, subreddit_name, *args, **kwargs):
-        """Return a Subreddit object for the subreddit_name specified."""
-        if subreddit_name.lower() == 'random':
-            return self.get_random_subreddit()
-        return objects.Subreddit(self, subreddit_name, *args, **kwargs)
-
-    def is_username_available(self, username):
-        """Return True if username is valid and available, otherwise False."""
-        params = {'user': username}
-        try:
-            result = self.request_json(self.config['username_available'],
-                                       params=params)
-        except errors.APIException as exception:
-            if exception.error_type == 'BAD_USERNAME':
-                result = False
-            else:
-                raise
-        return result
-
-    def search(self, query, subreddit=None, sort=None, limit=0, *args,
-               **kwargs):
-        """Return submissions that match the search query.
-
-        See http://www.reddit.com/help/search for more information on how to
-        build a search query.
-
-        """
-        params = {'q': query}
-        if sort:
-            params['sort'] = sort
-        if subreddit:
-            params['restrict_sr'] = 'on'
-            url = self.config['search'] % subreddit
-        else:
-            url = self.config['search'] % 'all'
-        return self.get_content(url, params=params, limit=limit, *args,
-                                **kwargs)
-
-    def search_reddit_names(self, query):
-        """Return subreddits whose display name contains the query."""
-        data = {'query': query}
-        results = self.request_json(self.config['search_reddit_names'],
-                                    data=data)
-        return [self.get_subreddit(name) for name in results['names']]
-
-    @decorators.RequireCaptcha
-    def send_feedback(self, name, email, message, reason='feedback',
-                      captcha=None):
-        """Send feedback to the admins.
-
-        Please don't abuse this. Read the send feedback page at
-        http://www.reddit.com/feedback/ (for reddit.com) before use.
-
+        :param subreddit: Either the subreddit name or a subreddit object.
         :returns: The json response from the server.
 
         """
-        data = {'name': name,
-                'email': email,
-                'reason': reason,
-                'text': message}
-        if captcha:
-            data.update(captcha)
-        return self.request_json(self.config['feedback'], data=data)
+        return self.subscribe(subreddit, unsubscribe=True)
+
+
+class Reddit(ModConfigMixin, ModFlairMixin, ModOnlyMixin,
+             PrivateMessagesMixin, SubmitMixin, SubscribeMixin):
+
+    """Provides the fullest access to reddit's API."""
 
 
 # Prevent recursive import

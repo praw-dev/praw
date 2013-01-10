@@ -56,6 +56,7 @@ def interactive_only(function):
                 obj.__class__.__name__, function.__name__))
     return interactive_only_function
 
+
 def local_only(function):
     @wraps(function)
     def local_only_function(obj):

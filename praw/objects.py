@@ -25,7 +25,10 @@ that it can be saved and unsaved in the context of a logged in user.
 import six
 import warnings
 from requests.compat import urljoin
-from praw import LoggedInExtension as LIExt, SubredditExtension as SRExt
+from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
+                  ModFlairMixin as MFMix, ModOnlyMixin as MOMix,
+                  PrivateMessagesMixin as PMMix, SubmitMixin, SubscribeMixin,
+                  UnauthenticatedReddit as UR)
 from praw.decorators import alias_function, limit_chars, restrict_access
 from praw.errors import ClientException
 from praw.helpers import (_get_section, _get_sorter, _modify_relationship,
@@ -316,7 +319,7 @@ class Messageable(RedditContentObject):
 
     """Interface for RedditContentObjects that can be messaged."""
 
-    _methods = (('send_message', LIExt.send_message),)
+    _methods = (('send_message', PMMix.send_message),)
 
 
 class Refreshable(RedditContentObject):
@@ -930,29 +933,29 @@ class Subreddit(Messageable, Refreshable):
 
     """A class for Subreddits."""
 
-    _methods = (('accept_moderator_invite', SRExt.accept_moderator_invite),
-                ('add_flair_template', SRExt.add_flair_template),
-                ('clear_flair_templates', SRExt.clear_flair_templates),
-                ('configure_flair', SRExt.configure_flair),
-                ('flair_list', SRExt.flair_list),
-                ('get_banned', SRExt.get_banned),
-                ('get_contributors', SRExt.get_contributors),
-                ('get_flair', SRExt.get_flair),
-                ('get_moderators', SRExt.get_moderators),
-                ('get_modqueue', SRExt.get_modqueue),
-                ('get_reports', SRExt.get_reports),
-                ('get_settings', SRExt.get_settings),
-                ('get_spam', SRExt.get_spam),
-                ('get_stylesheet', SRExt.get_stylesheet),
-                ('set_flair', SRExt.set_flair),
-                ('set_flair_csv', SRExt.set_flair_csv),
-                ('set_settings', SRExt.set_settings),
-                ('set_stylesheet', SRExt.set_stylesheet),
-                ('submit', SRExt.submit),
-                ('subscribe', SRExt.subscribe),
-                ('unsubscribe', SRExt.unsubscribe),
-                ('update_settings', SRExt.update_settings),
-                ('upload_image', SRExt.upload_image))
+    _methods = (('accept_moderator_invite', AR.accept_moderator_invite),
+                ('add_flair_template', MFMix.add_flair_template),
+                ('clear_flair_templates', MFMix.clear_flair_templates),
+                ('configure_flair', MFMix.configure_flair),
+                ('flair_list', MFMix.flair_list),
+                ('get_banned', MOMix.get_banned),
+                ('get_contributors', MOMix.get_contributors),
+                ('get_flair', UR.get_flair),
+                ('get_moderators', MOMix.get_moderators),
+                ('get_modqueue', MOMix.get_modqueue),
+                ('get_reports', MOMix.get_reports),
+                ('get_settings', MCMix.get_settings),
+                ('get_spam', MOMix.get_spam),
+                ('get_stylesheet', MOMix.get_stylesheet),
+                ('set_flair', MFMix.set_flair),
+                ('set_flair_csv', MFMix.set_flair_csv),
+                ('set_settings', MCMix.set_settings),
+                ('set_stylesheet', MCMix.set_stylesheet),
+                ('submit', SubmitMixin.submit),
+                ('subscribe', SubscribeMixin.subscribe),
+                ('unsubscribe', SubscribeMixin.unsubscribe),
+                ('update_settings', MCMix.update_settings),
+                ('upload_image', MCMix.upload_image))
 
     ban = _modify_relationship('banned', is_sub=True)
     unban = _modify_relationship('banned', unlink=True, is_sub=True)
