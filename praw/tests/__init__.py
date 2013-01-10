@@ -47,6 +47,15 @@ def flair_diff(root, other):
     return list(root_items - other_items)
 
 
+def interactive_only(function):
+    @wraps(function)
+    def interactive_only_function(obj):
+        if os.getenv('INTERACTIVE'):
+            return function(obj)
+        print('Passing interactive only test: {0}.{1}'.format(
+                obj.__class__.__name__, function.__name__))
+    return interactive_only_function
+
 def local_only(function):
     @wraps(function)
     def local_only_function(obj):
@@ -672,10 +681,10 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
             if msg.author != oth.user.name:
                 messages.append(msg)
                 if len(messages) >= 2:
-                    return
+                    break
         self.assertEqual(2, len(messages))
-        self.r.user.mark_as_read(messages)
-        unread = oth.user.get_unread(limit=5)
+        oth.user.mark_as_read(messages)
+        unread = list(oth.user.get_unread(limit=5))
         for msg in messages:
             self.assertTrue(msg not in unread)
 
@@ -807,9 +816,8 @@ class OAuth2Test(unittest.TestCase):
                     'state': '...'}
         self.assertEqual(expected, params)
 
+    @interactive_only
     def test_get_access_information(self):
-        if not os.getenv('INTERACTIVE'):
-            return
         print('Visit this URL: {0}'.format(self.r.get_authorize_url('...')))
         code = prompt('Code from redir URL: ')
         token = self.r.get_access_information(code)
@@ -835,9 +843,8 @@ class OAuth2Test(unittest.TestCase):
         self.assertRaises(HTTPError, self.r.set_access_credentials,
                           set(('identity',)), 'dummy_access_token')
 
+    @interactive_only
     def test_refresh_access_information(self):
-        if not os.getenv('INTERACTIVE'):
-            return
         url = self.r.get_authorize_url('dummy_state', refreshable=True)
         print('Visit this URL: {0}'.format(url))
         code = prompt('Code from redir URL: ')
@@ -848,9 +855,8 @@ class OAuth2Test(unittest.TestCase):
         self.assertNotEqual(info['access_token'], new_info['access_token'])
         self.assertEqual(self.r.access_token, new_info['access_token'])
 
+    @interactive_only
     def test_set_access_credentials(self):
-        if not os.getenv('INTERACTIVE'):
-            return
         url = self.r.get_authorize_url('dummy_state', refreshable=False)
         print('Visit this URL: {0}'.format(url))
         code = prompt('Code from redir URL: ')
@@ -859,9 +865,8 @@ class OAuth2Test(unittest.TestCase):
         self.r.set_access_credentials(**retval)
         self.assertFalse(self.r.user is None)
 
+    @interactive_only
     def test_oauth_without_identy_doesnt_set_user(self):
-        if not os.getenv('INTERACTIVE'):
-            return
         url = self.r.get_authorize_url('dummy_state', 'edit',
                                        refreshable=False)
         print('Visit this URL: {0}'.format(url))
