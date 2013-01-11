@@ -308,10 +308,10 @@ class Inboxable(RedditContentObject):
         response = self.reddit_session._add_comment(self.fullname, text)
         if isinstance(self, Comment):
             _request.evict([self.reddit_session.config['inbox'],
-                               self.submission.permalink])
+                            self.submission.permalink])
         elif isinstance(self, Message):
             _request.evict([self.reddit_session.config['inbox'],
-                               self.reddit_session.config['sent']])
+                            self.reddit_session.config['sent']])
         return response
 
 
@@ -882,8 +882,8 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
                                                 comments_only=True)
         return self._comments
 
-    @comments.setter  # pylint: disable-msg=E1101
-    def comments(self, new_comments):  # pylint: disable-msg=E0102,E0202
+    @comments.setter  # NOQA
+    def comments(self, new_comments):  # pylint: disable-msg=E0202
         """Update the list of comments with the provided nested list."""
         self._update_comments(new_comments)
         self._all_comments = False

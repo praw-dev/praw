@@ -20,7 +20,9 @@ import sys
 try:
     import ConfigParser as configparser
 except ImportError:
-    import configparser  # pylint: disable-msg=F0401
+    # pylint: disable-msg=F0401
+    import configparser  # NOQA
+    # pylint: enable-msg=F0401
 
 
 def _load_configuration():

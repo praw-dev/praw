@@ -52,8 +52,8 @@ def interactive_only(function):
     def interactive_only_function(obj):
         if os.getenv('INTERACTIVE'):
             return function(obj)
-        print('Passing interactive only test: {0}.{1}'.format(
-                obj.__class__.__name__, function.__name__))
+        print('Passing interactive only test: {0}.{1}'
+              .format(obj.__class__.__name__, function.__name__))
     return interactive_only_function
 
 
@@ -62,8 +62,8 @@ def local_only(function):
     def local_only_function(obj):
         if not obj.r.config.is_reddit:
             return function(obj)
-        print('Passing local only test: {0}.{1}'.format(
-                obj.__class__.__name__, function.__name__))
+        print('Passing local only test: {0}.{1}'
+              .format(obj.__class__.__name__, function.__name__))
     return local_only_function
 
 
@@ -72,8 +72,8 @@ def reddit_only(function):
     def reddit_only_function(obj):
         if obj.r.config.is_reddit:
             return function(obj)
-        print('Passing reddit only test: {0}.{1}'.format(
-                obj.__class__.__name__, function.__name__))
+        print('Passing reddit only test: {0}.{1}'
+              .format(obj.__class__.__name__, function.__name__))
     return reddit_only_function
 
 

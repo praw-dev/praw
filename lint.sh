@@ -2,12 +2,11 @@
 
 dir=$(dirname $0)
 
-# pep8
-output=$(find $dir/praw -name [A-Za-z_]\*.py -exec pep8 {} \;)
-if [ -n "$output" ]; then
-    echo "---pep8---"
-    echo -e "$output"
-    exit 1
+# flake8 (runs pep8 and pyflakes)
+flake8 $dir/praw
+if [ $? -ne 0 ]; then
+    echo "Exiting due to flake8 errors. Fix and re-run to finish tests."
+    exit $?
 fi
 
 # pylint
@@ -15,11 +14,7 @@ output=$(pylint --rcfile=$dir/.pylintrc $dir/praw 2> /dev/null)
 if [ -n "$output" ]; then
     echo "--pylint--"
     echo -e "$output"
-    #exit 1
 fi
-
-echo "---pyflakes---"
-find $dir/praw -name [A-Za-z_]\*.py -exec pyflakes {} \;
 
 # pep257
 find $dir/praw -name [A-Za-z_]\*.py | xargs pep257

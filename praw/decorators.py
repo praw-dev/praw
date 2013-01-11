@@ -292,7 +292,7 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
                 elif function.__name__ not in moderator_exceptions:
                     if scope:
                         raise errors.ModeratorOrScopeRequired(
-                        function.__name__, scope)
+                            function.__name__, scope)
                     else:
                         raise errors.ModeratorRequired(function.__name__)
             elif function.__name__ not in login_exceptions:

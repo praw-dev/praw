@@ -270,8 +270,8 @@ class BaseReddit(object):
                                         timeout=timeout)
             except requests.exceptions.HTTPError as error:
                 remaining_attempts -= 1
-                if (error.response.status_code not in self.RETRY_CODES or
-                    remaining_attempts == 0):
+                if error.response.status_code not in self.RETRY_CODES or \
+                        remaining_attempts == 0:
                     raise
             except requests.exceptions.RequestException:
                 remaining_attempts -= 1
@@ -346,8 +346,8 @@ class BaseReddit(object):
                 yield thing
                 objects_found += 1
                 # Terminate when we've reached the limit, or place holder
-                if (objects_found == limit or
-                    place_holder and thing.id == place_holder):
+                if objects_found == limit or (place_holder and
+                                              thing.id == place_holder):
                     return
             # Set/update the 'after' parameter for the next iteration
             if after_field in root and root[after_field]:
