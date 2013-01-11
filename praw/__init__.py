@@ -164,6 +164,7 @@ class Config(object):  # pylint: disable-msg=R0903
         self.default_content_limit = int(obj['default_content_limit'])
         self.domain = obj['domain']
         self.gold_comments_max = int(obj['gold_comments_max'])
+        self.max_limit = int(obj['max_limit'])
         self.more_comments_max = int(obj['more_comments_max'])
         self.output_chars_limit = int(obj['output_chars_limit'])
         self.log_requests = int(obj['log_requests'])
@@ -324,16 +325,12 @@ class BaseReddit(object):
 
         """
         objects_found = 0
-
-        if params is None:
-            params = {}
-        if limit is None:
-            fetch_all = True
-        elif limit <= 0:
-            fetch_all = False
+        params = params or {}
+        fetch_all = limit is None
+        if limit is not None and limit <= 0:
             limit = int(self.config.default_content_limit)
-        else:
-            fetch_all = False
+        params['limit'] = (min(limit, self.config.max_limit)
+                                   or self.config.max_limit)
 
         # While we still need to fetch more content to reach our limit, do so.
         while fetch_all or objects_found < limit:
@@ -554,8 +551,9 @@ class UnauthenticatedReddit(BaseReddit):
             raise TypeError('Limit keyword is not applicable with thing_id.')
         if url:
             params = {'url': url}
-            if limit:
-                params['limit'] = limit
+            if limit is None or limit > 0:
+                params['limit'] = (min(limit, self.config.max_limit)
+                                           or self.config.max_limit)
         else:
             params = {'id': thing_id}
         items = self.request_json(self.config['info'],
