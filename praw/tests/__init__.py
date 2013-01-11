@@ -257,8 +257,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     @reddit_only
     def test_info_by_url_maximum_listing(self):
-        self.assertEqual(100, len(self.r.get_info('http://reddit.com',
-                                                  limit=101)))
+        maximum = self.r.config.max_limit
+        self.assertEqual(maximum, len(self.r.get_info('http://reddit.com')))
 
     def test_is_username_available(self):
         self.assertFalse(self.r.is_username_available(self.un))
