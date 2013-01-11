@@ -226,7 +226,7 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
 
     :param scope: Indicate the scope that is required for the API call. None or
         False must be passed to indicate that no scope handles the API call.
-        All scopes eimply login=True. Scopes with 'mod' in their name imply
+        All scopes imply login=True. Scopes with 'mod' in their name imply
         mod=True.
     :param mod: Indicate that a moderator is required. Implies login=True.
     :param login: Indicate that a login is required.

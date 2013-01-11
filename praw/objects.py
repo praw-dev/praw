@@ -236,7 +236,7 @@ class Editable(RedditContentObject):
     def edit(self, text):
         """Replace the body of the object with `text`.
 
-        :returns: The update object.
+        :returns: The updated object.
 
         """
         url = self.reddit_session.config['edit']
