@@ -161,10 +161,8 @@ class Config(object):  # pylint: disable-msg=R0903
             self.check_for_updates = False
         self.comment_limit = int(obj['comment_limit'])
         self.comment_sort = obj['comment_sort']
-        self.default_content_limit = int(obj['default_content_limit'])
         self.domain = obj['domain']
         self.gold_comments_max = int(obj['gold_comments_max'])
-        self.max_limit = int(obj['max_limit'])
         self.more_comments_max = int(obj['more_comments_max'])
         self.output_chars_limit = int(obj['output_chars_limit'])
         self.log_requests = int(obj['log_requests'])
@@ -304,10 +302,11 @@ class BaseReddit(object):
 
         :param url: the url to start fetching content from
         :param params: dictionary containing extra GET data to put in the url
-        :param limit: the maximum number of content entries to fetch. If
-            limit <= 0, fetch the default_content_limit for the site. If None,
-            then fetch unlimited entries--this would be used in conjunction
-            with the place_holder param.
+        :param limit: the number of content entries to fetch. If limit <= 0,
+            fetch the default for your account (25 for unauthenticated
+            users). If limit is None, then fetch as many entries as possible
+            (reddit returns at most 100 per request, however, PRAW will
+            automatically make additional requests as necessary).
         :param place_holder: if not None, the method will fetch `limit`
             content, stopping if it finds content with `id` equal to
             `place_holder`.
@@ -326,15 +325,19 @@ class BaseReddit(object):
         """
         objects_found = 0
         params = params or {}
-        fetch_all = limit is None
-        if limit is not None and limit <= 0:
-            limit = int(self.config.default_content_limit)
-        params['limit'] = (min(limit, self.config.max_limit)
-                                   or self.config.max_limit)
+        fetch_all = fetch_once = False
+        if limit is None:
+            fetch_all = True
+            params['limit'] = 1024  # Just use a big number
+        elif limit > 0:
+            params['limit'] = limit
+        else:
+            fetch_once = True
 
         # While we still need to fetch more content to reach our limit, do so.
-        while fetch_all or objects_found < limit:
+        while fetch_once or fetch_all or objects_found < limit:
             page_data = self.request_json(url, params=params)
+            fetch_once = False
             if root_field:
                 root = page_data[root_field]
             else:
@@ -347,7 +350,7 @@ class BaseReddit(object):
                                               thing.id == place_holder):
                     return
             # Set/update the 'after' parameter for the next iteration
-            if after_field in root and root[after_field]:
+            if root.get('after_field'):
                 params['after'] = root[after_field]
             else:
                 return
@@ -539,7 +542,7 @@ class UnauthenticatedReddit(BaseReddit):
         :param url: The url to lookup.
         :param thing_id: The submission to lookup by fullname.
         :param limit: The maximum number of Submissions to return when looking
-            up by url. Default: 25, Max: 100.
+            up by url. When None, uses account default settings.
         :returns: When thing_id is provided, return the corresponding
             Submission object, or None if not found. When url is provided
             return a list of Submission objects (up to limit) for the url.
@@ -551,9 +554,8 @@ class UnauthenticatedReddit(BaseReddit):
             raise TypeError('Limit keyword is not applicable with thing_id.')
         if url:
             params = {'url': url}
-            if limit is None or limit > 0:
-                params['limit'] = (min(limit, self.config.max_limit)
-                                           or self.config.max_limit)
+            if limit:
+                params['limit'] = limit
         else:
             params = {'id': thing_id}
         items = self.request_json(self.config['info'],
