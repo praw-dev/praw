@@ -1251,7 +1251,8 @@ class SubmitMixin(AuthenticatedReddit):
         Accepts either a Subreddit object or a str containing the subreddit's
         display name.
 
-        :returns: The url to the submission.
+        :returns: The newly created Submission object if the reddit instance
+            can access it. Otherwise, return the url to the submission.
 
         """
         if bool(text) == bool(url):
@@ -1267,8 +1268,22 @@ class SubmitMixin(AuthenticatedReddit):
         if captcha:
             data.update(captcha)
         result = self.request_json(self.config['submit'], data=data)
-        # pylint: disable-msg=E1101
-        return self.get_submission(result['data']['url'])
+        url = result['data']['url']
+        # Clear the OAUth setting when attempting to fetch the submission
+        # pylint: disable-msg=W0212
+        if self._use_oauth:
+            self._use_oauth = False
+            # Hack until reddit/627 is resolved
+            if url.startswith(self.config._oauth_url):
+                url = self.config._site_url + url[len(self.config._oauth_url):]
+        try:
+            return self.get_submission(url)
+        except requests.exceptions.HTTPError as error:
+            # The request may still fail if the submission was made to a
+            # private subreddit.
+            if error.code == 403:
+                return url
+            raise
 
 
 class SubscribeMixin(AuthenticatedReddit):

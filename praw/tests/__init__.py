@@ -32,7 +32,8 @@ from requests.exceptions import HTTPError, Timeout
 from six import advance_iterator as six_next, text_type
 
 from praw import Reddit, decorators, errors, helpers
-from praw.objects import Comment, LoggedInRedditor, Message, MoreComments
+from praw.objects import (Comment, LoggedInRedditor, Message, MoreComments,
+                          Submission)
 
 USER_AGENT = 'PRAW_test_suite'
 
@@ -869,11 +870,10 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         self.r.refresh_access_information(self.refresh_token['identity'])
         self.assertEqual(self.un, self.r.get_me().name)
 
-    """
     def test_scope_submit(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
-        print self.r.submit(self.sr, 'OAuth Submit', text='Foo')
-    """
+        retval = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
+        self.assertTrue(isinstance(retval, Submission))
 
     @interactive_only
     def test_set_access_credentials(self):
