@@ -103,8 +103,20 @@ class BasicHelper(object):
             self.link_url_link = 'http://imgur.com/Vr8ZZ'
             self.more_comments_url = self.url('/r/redditdev/comments/dqkfz/')
             self.other_user_id = '6c1xj'
-            self.refresh_token = {'identity': 'pwKb6vuFpbqTQjLPTBK_4LW0x3U',
-                                  'submit': 'DSJdhcEd9vkwHWqRenDiY042iW0'}
+            self.refresh_token = {
+                'edit':            'mFB93g1nlgt57gd2ch9xy8815ng',
+                'identity':        'pwKb6vuFpbqTQjLPTBK_4LW0x3U',
+                'modconfig':       'm8em73vTHVaA05_DX-m0RHVBXdU',
+                'modflair':        'Zt7sl88AKsljl7VS19gifVHNBaU',
+                'modlog':          'Ql-qe7ad56-5UsIP4GN14__t_aY',
+                'modposts':        'fdbclNlJorCA_GcD42JLxhNM6mc',
+                'mysubreddits':    'HCnSeHp9Rw3fdMd9SkEOdNuys2c',
+                'privatemessages': 'pu7vyu-RtB5Z2LkmHJnwKxoStqw',
+                'read':            'qa43Mc1v9RjsJCm_tjEUFrN27IU',
+                'submit':          'DSJdhcEd9vkwHWqRenDiY042iW0',
+                'subscribe':       '8xgyDmQm9FOfOmKnhGcA2bvfywg',
+                'vote':            'odS8Wkmgt_kgnUiYfvK6v4u1sAQ'}
+            self.submission_edit_id = '16i92b'
         else:
             self.comment_url = self.url('/r/reddit_test6/comments/y/')
             self.link_url = self.url('/r/reddit_test6/comments/y/')
@@ -865,6 +877,11 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         new_info = self.r.refresh_access_information()
         self.assertNotEqual(info['access_token'], new_info['access_token'])
         self.assertEqual(self.r.access_token, new_info['access_token'])
+
+    def test_scope_edit(self):
+        self.r.refresh_access_information(self.refresh_token['edit'])
+        submission = Submission.from_id(self.r, self.submission_edit_id)
+        self.assertEqual(submission, submission.edit('Edited text'))
 
     def test_scope_identity(self):
         self.r.refresh_access_information(self.refresh_token['identity'])

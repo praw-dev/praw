@@ -701,6 +701,12 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
     """A class for submissions to reddit."""
 
     @staticmethod
+    def from_id(reddit_session, id):
+        """Return an edit-only submission object based on the id."""
+        pseudo_data = {'id': id, 'permalink': '/comments/{0}'.format(id)}
+        return Submission(reddit_session, pseudo_data)
+
+    @staticmethod
     def from_url(reddit_session, url, comments_only=False):
         """Request the url and return a Submission object.
 
