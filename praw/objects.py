@@ -97,8 +97,12 @@ class RedditContentObject(object):
         return retval
 
     def _get_json_dict(self):
+        # pylint disable-msg:W0212
+        prev_use_oauth = self.reddit_session._use_oauth
+        self.reddit_session._use_oauth = False
         response = self.reddit_session.request_json(self._info_url,
                                                     as_objects=False)
+        self.reddit_session._use_oauth = prev_use_oauth
         return response['data']
 
     def _populate(self, json_dict, fetch):

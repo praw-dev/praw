@@ -885,16 +885,11 @@ class ModConfigMixin(AuthenticatedReddit):
                      wiki_edit_age=30, wiki_edit_karma=100, **kwargs):
         """Set the settings for the given subreddit.
 
+        :param subreddit: Must be  a subreddit object.
         :returns: The json response from the server.
 
         """
-
-        # Temporary support for no longer valid entries
-        wiki_edit_age = wiki_edit_age or ''
-        wiki_edit_karma = wiki_edit_karma or ''
-
-        data = {'r': six.text_type(subreddit),
-                'sr': subreddit.fullname,
+        data = {'sr': subreddit.fullname,
                 'title': title,
                 'public_description': public_description,
                 'description': description,

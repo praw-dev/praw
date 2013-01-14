@@ -887,6 +887,11 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         self.r.refresh_access_information(self.refresh_token['identity'])
         self.assertEqual(self.un, self.r.get_me().name)
 
+    def test_scope_modconfig(self):
+        self.r.refresh_access_information(self.refresh_token['modconfig'])
+        sub = self.r.get_subreddit(self.sr)
+        sub.set_settings('foobar')
+
     def test_scope_submit(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
         retval = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
@@ -968,12 +973,6 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
     def test_set_settings(self):
         title = 'Reddit API Test %s' % uuid.uuid4()
         self.subreddit.set_settings(title)
-        self.assertEqual(self.subreddit.get_settings()['title'], title)
-
-    def test_set_settings_none_values(self):
-        title = 'Reddit API Test %s' % uuid.uuid4()
-        self.subreddit.set_settings(title, wiki_edit_age=None,
-                                    wiki_edit_karma=None)
         self.assertEqual(self.subreddit.get_settings()['title'], title)
 
     def test_set_stylesheet(self):
