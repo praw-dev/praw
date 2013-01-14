@@ -196,7 +196,7 @@ class Moderatable(RedditContentObject):
                 'spam': 'True' if spam else 'False'}
         response = self.reddit_session.request_json(url, data=data)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
-        if isinstance(self, Submission):
+        if isinstance(self, Submission) and hasattr(self, 'subreddit'):
             urls += self.subreddit._listing_urls  # pylint: disable-msg=W0212
         _request.evict(urls)  # pylint: disable-msg=E1101
         return response

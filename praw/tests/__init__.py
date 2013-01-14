@@ -883,6 +883,10 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         self.r.refresh_access_information(self.refresh_token['modflair'])
         self.r.get_subreddit(self.sr).set_flair(self.un, 'foobar')
 
+    def test_scope_modposts(self):
+        self.r.refresh_access_information(self.refresh_token['modposts'])
+        Submission.from_id(self.r, self.submission_edit_id).remove()
+
     def test_scope_submit(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
         retval = self.r.submit(self.sr, 'OAuth Submit', text='Foo')

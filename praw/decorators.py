@@ -271,7 +271,10 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
                     if hasattr(cls, 'display_name'):  # Subreddit object
                         subreddit = cls
                     else:
-                        subreddit = cls.subreddit  # Other RedditContentObject
+                        # Defer access until necessary for RedditContentObject.
+                        # This is because scoped sessions may not require this
+                        # attribute to exist, thus it might not be set.
+                        subreddit = False
                 else:
                     subreddit = None
             else:
@@ -287,6 +290,10 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
             elif oauth_only:
                 raise errors.OAuthScopeRequired(function.__name__, scope)
             elif obj.is_logged_in():
+                if subreddit is False:
+                    # Now fetch the subreddit attribute. There is no good
+                    # reason for it to not be set during a logged in session.
+                    subreddit = cls.subreddit
                 if not mod or mod and obj.user.is_mod and mods_all():
                     pass
                 elif function.__name__ not in moderator_exceptions:
