@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc21'
+__version__ = '1.1.0rc22'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -1220,6 +1220,26 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         urls = [self.config[x] for x in ['inbox', 'moderator', 'unread']]
         helpers._request.evict(urls)  # pylint: disable-msg=E1101,W0212
         return response
+
+    @decorators.restrict_access(scope='privatemessages')
+    def get_inbox(self, limit=0):
+        """Return a generator for inbox messages."""
+        return self.get_content(self.config['inbox'], limit=limit)
+
+    @decorators.restrict_access(scope='privatemessages')
+    def get_modmail(self, limit=0):
+        """Return a generator for moderator messages."""
+        return self.get_content(self.config['moderator'], limit=limit)
+
+    @decorators.restrict_access(scope='privatemessages')
+    def get_sent(self, limit=0):
+        """Return a generator for sent messages."""
+        return self.get_content(self.config['sent'], limit=limit)
+
+    @decorators.restrict_access(scope='privatemessages')
+    def get_unread(self, limit=0):
+        """Return a generator for unread messages."""
+        return self.get_content(self.config['unread'], limit=limit)
 
     @decorators.restrict_access(scope='privatemessages')
     @decorators.RequireCaptcha

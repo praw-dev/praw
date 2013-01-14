@@ -435,7 +435,7 @@ class CommentPermalinkTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
 
     def test_inbox_permalink(self):
-        for item in self.r.user.get_inbox():
+        for item in self.r.get_inbox():
             if isinstance(item, Comment):
                 self.assertTrue(item.id in item.permalink)
                 break
@@ -491,7 +491,7 @@ class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(item._replies, None)
 
     def test_inbox_comment_replies_are_none(self):
-        for item in self.r.user.get_inbox():
+        for item in self.r.get_inbox():
             if isinstance(item, Comment):
                 # pylint: disable-msg=W0212
                 self.assertEqual(item._replies, None)
@@ -677,42 +677,42 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyAPITestUser3', '1111')
         # pylint: disable-msg=E1101
-        msg = six_next(oth.user.get_unread(limit=1))
+        msg = six_next(oth.get_unread(limit=1))
         msg.mark_as_read()
-        self.assertTrue(msg not in oth.user.get_unread(limit=5))
+        self.assertTrue(msg not in oth.get_unread(limit=5))
 
     def test_mark_as_unread(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyAPITestUser3', '1111')
         found = None
-        for msg in oth.user.get_inbox():
+        for msg in oth.get_inbox():
             if not msg.new:
                 found = msg
                 msg.mark_as_unread()
                 break
         else:
             self.fail('Could not find a read message.')
-        self.assertTrue(found in oth.user.get_unread())
+        self.assertTrue(found in oth.get_unread())
 
     def test_mark_multiple_as_read(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyAPITestUser3', '1111')
         messages = []
-        for msg in oth.user.get_unread(limit=None):
+        for msg in oth.get_unread(limit=None):
             if msg.author != oth.user.name:
                 messages.append(msg)
                 if len(messages) >= 2:
                     break
         self.assertEqual(2, len(messages))
         oth.user.mark_as_read(messages)
-        unread = list(oth.user.get_unread(limit=5))
+        unread = list(oth.get_unread(limit=5))
         for msg in messages:
             self.assertTrue(msg not in unread)
 
     def test_modmail_send(self):
         subject = 'Unique message: %s' % uuid.uuid4()
         self.r.get_subreddit(self.sr).send_message(subject, 'Content')
-        for msg in self.r.user.get_modmail():
+        for msg in self.r.get_modmail():
             if msg.subject == subject:
                 break
         else:
@@ -721,7 +721,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
     def test_reply_to_message_and_verify(self):
         text = 'Unique message reply: %s' % uuid.uuid4()
         found = None
-        for msg in self.r.user.get_inbox():
+        for msg in self.r.get_inbox():
             if isinstance(msg, Message) and msg.author == self.r.user:
                 found = msg
                 break
@@ -733,7 +733,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
     def test_send(self):
         subject = 'Unique message: %s' % uuid.uuid4()
         self.r.user.send_message(subject, 'Message content')
-        for msg in self.r.user.get_inbox():
+        for msg in self.r.get_inbox():
             if msg.subject == subject:
                 break
         else:
@@ -889,7 +889,12 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
 
     def test_scope_mysubreddits(self):
         self.r.refresh_access_information(self.refresh_token['mysubreddits'])
-        self.assertTrue(len(list(self.r.get_my_moderation())))
+        self.assertTrue(list(self.r.get_my_moderation()))
+
+    def test_scope_privatemessages(self):
+        self.r.refresh_access_information(
+            self.refresh_token['privatemessages'])
+        self.assertTrue(list(self.r.get_inbox()))
 
     def test_scope_submit(self):
         self.r.refresh_access_information(self.refresh_token['submit'])

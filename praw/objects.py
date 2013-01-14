@@ -655,30 +655,6 @@ class LoggedInRedditor(Redditor):
                 self._mod_subs[six.text_type(sub).lower()] = sub
         return self._mod_subs
 
-    @restrict_access(scope='privatemessages')
-    def get_inbox(self, limit=0):
-        """Return a generator for inbox messages."""
-        url = self.reddit_session.config['inbox']
-        return self.reddit_session.get_content(url, limit=limit)
-
-    @restrict_access(scope='privatemessages')
-    def get_modmail(self, limit=0):
-        """Return a generator for moderator messages."""
-        url = self.reddit_session.config['moderator']
-        return self.reddit_session.get_content(url, limit=limit)
-
-    @restrict_access(scope='privatemessages')
-    def get_sent(self, limit=0):
-        """Return a generator for sent messages."""
-        url = self.reddit_session.config['sent']
-        return self.reddit_session.get_content(url, limit=limit)
-
-    @restrict_access(scope='privatemessages')
-    def get_unread(self, limit=0):
-        """Return a generator for unread messages."""
-        url = self.reddit_session.config['unread']
-        return self.reddit_session.get_content(url, limit=limit)
-
 
 class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
                  Saveable, Voteable):
