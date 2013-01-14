@@ -192,7 +192,7 @@ class AccessControlTests(unittest.TestCase, BasicHelper):
     def test_moderator_required_multi(self):
         self.r.login(self.un, '1111')
         sub = self.r.get_subreddit('{0}+{1}'.format(self.sr, 'test'))
-        self.assertRaises(errors.ModeratorRequired, sub.get_modqueue)
+        self.assertRaises(errors.ModeratorRequired, sub.get_mod_queue)
 
     def test_require_access_failure(self):
         self.assertRaises(TypeError, decorators.restrict_access, scope=None,
@@ -217,10 +217,6 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertFalse(subreddit != same_subreddit)
         self.assertFalse(subreddit == submission)
 
-    def test_flair_list(self):
-        sub = self.r.get_subreddit('python')
-        self.assertTrue(six_next(sub.flair_list()))
-
     def test_get_all_comments(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_all_comments(limit=num))))
@@ -230,6 +226,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
         num = 50
         result = self.r.get_controversial(limit=num, params={'t': 'all'})
         self.assertEqual(num, len(list(result)))
+
+    def test_get_flair_list(self):
+        sub = self.r.get_subreddit('python')
+        self.assertTrue(six_next(sub.get_flair_list()))
 
     def test_get_front_page(self):
         num = 50
@@ -572,7 +572,7 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         # Clear all flair
         self.subreddit.clear_all_flair()
         self.delay(5)  # Wait for flair to clear
-        self.assertEqual([], list(self.subreddit.flair_list()))
+        self.assertEqual([], list(self.subreddit.get_flair_list()))
 
         # Set flair
         flair_mapping = [{'user': 'reddit', 'flair_text': 'dev'},
@@ -581,7 +581,7 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
                           'flair_css_class': 'css'}]
         self.subreddit.set_flair_csv(flair_mapping)
         self.assertEqual([], flair_diff(flair_mapping,
-                                        list(self.subreddit.flair_list())))
+                                        list(self.subreddit.get_flair_list())))
 
     def test_flair_csv_many(self):
         users = ('reddit', 'pyapitestuser2', 'pyapitestuser3')
@@ -711,10 +711,10 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         for msg in messages:
             self.assertTrue(msg not in unread)
 
-    def test_modmail_send(self):
+    def test_mod_mail_send(self):
         subject = 'Unique message: %s' % uuid.uuid4()
         self.r.get_subreddit(self.sr).send_message(subject, 'Content')
-        for msg in self.r.get_modmail():
+        for msg in self.r.get_mod_mail():
             if msg.subject == subject:
                 break
         else:
@@ -887,8 +887,8 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
 
     def test_scope_modlog(self):
         self.r.refresh_access_information(self.refresh_token['modlog'])
-        self.assertEqual(25, len(list(
-                    self.r.get_subreddit(self.sr).get_mod_log())))
+        self.assertEqual(
+            25, len(list(self.r.get_subreddit(self.sr).get_mod_log())))
 
     def test_scope_modposts(self):
         self.r.refresh_access_information(self.refresh_token['modposts'])
@@ -1258,13 +1258,13 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def test_attribute_error(self):
         self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
 
-    def test_get_modqueue(self):
-        mod_submissions = list(self.r.get_subreddit('mod').get_modqueue())
+    def test_get_mod_queue(self):
+        mod_submissions = list(self.r.get_subreddit('mod').get_mod_queue())
         self.assertTrue(len(mod_submissions) > 0)
 
-    def test_get_modqueue_multi(self):
+    def test_get_mod_queue_multi(self):
         multi = '{0}+{1}'.format(self.sr, 'reddit_api_test2')
-        mod_submissions = list(self.r.get_subreddit(multi).get_modqueue())
+        mod_submissions = list(self.r.get_subreddit(multi).get_mod_queue())
         self.assertTrue(len(mod_submissions) > 0)
 
     def test_get_my_contributions(self):

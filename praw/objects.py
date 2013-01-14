@@ -914,13 +914,13 @@ class Subreddit(Messageable, Refreshable):
                 ('add_flair_template', MFMix.add_flair_template),
                 ('clear_flair_templates', MFMix.clear_flair_templates),
                 ('configure_flair', MFMix.configure_flair),
-                ('flair_list', MFMix.flair_list),
                 ('get_banned', MOMix.get_banned),
                 ('get_contributors', MOMix.get_contributors),
                 ('get_flair', UR.get_flair),
+                ('get_flair_list', MFMix.get_flair_list),
                 ('get_moderators', MOMix.get_moderators),
                 ('get_mod_log', MLMix.get_mod_log),
-                ('get_modqueue', MOMix.get_modqueue),
+                ('get_mod_queue', MOMix.get_mod_queue),
                 ('get_reports', MOMix.get_reports),
                 ('get_settings', MCMix.get_settings),
                 ('get_spam', MOMix.get_spam),
@@ -1003,7 +1003,7 @@ class Subreddit(Messageable, Refreshable):
         clear, otherwise returns None.
 
         """
-        csv = [{'user': x['user']} for x in self.flair_list()]
+        csv = [{'user': x['user']} for x in self.get_flair_list()]
         if csv:
             return self.set_flair_csv(csv)
         else:

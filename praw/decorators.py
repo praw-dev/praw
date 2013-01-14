@@ -266,7 +266,7 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
     mod = mod or scope and 'mod' in scope
     login = login or mod or scope and scope != 'read'
 
-    login_exceptions = ('flair_list',)
+    login_exceptions = ('get_flair_list',)
     moderator_exceptions = ('create_subreddit',)
 
     def wrap(function):

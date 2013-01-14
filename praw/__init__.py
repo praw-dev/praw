@@ -1073,8 +1073,8 @@ class ModFlairMixin(AuthenticatedReddit):
         return self.request_json(self.config['flairconfig'], data=data)
 
     @decorators.restrict_access(scope='modflair')
-    def flair_list(self, subreddit, limit=None):
-        """Return generator of flair mappings.
+    def get_flair_list(self, subreddit, limit=0):
+        """Return a get_contenet generator of flair mappings.
 
         Each flair mapping is a dict with three keys. 'user', 'flair_text' and
         'flair_css_class'.
@@ -1171,22 +1171,20 @@ class ModOnlyMixin(AuthenticatedReddit):
                                  six.text_type(subreddit))
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_modqueue(self, subreddit='mod', limit=None):
-        """Return the mod-queue for the given subreddit."""
+    def get_mod_queue(self, subreddit='mod', limit=0):
+        """Return a get_content_generator for the  moderator queue."""
         return self.get_content(self.config['modqueue'] %
-                                six.text_type(subreddit),
-                                limit=limit)
+                                six.text_type(subreddit), limit=limit)
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_reports(self, subreddit='mod', limit=None):
-        """Return the list of reported submissions for the given subreddit."""
+    def get_reports(self, subreddit='mod', limit=0):
+        """Return a get_content generator of reported submissions."""
         return self.get_content(self.config['reports'] %
-                                six.text_type(subreddit),
-                                limit=limit)
+                                six.text_type(subreddit), limit=limit)
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_spam(self, subreddit='mod', limit=None):
-        """Return the list of spam-filtered items for the given subreddit."""
+    def get_spam(self, subreddit='mod', limit=0):
+        """Return a get_content generator of spam-filtered items."""
         return self.get_content(self.config['spam'] % six.text_type(subreddit),
                                 limit=limit)
 
@@ -1241,7 +1239,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         return self.get_content(self.config['inbox'], limit=limit)
 
     @decorators.restrict_access(scope='privatemessages')
-    def get_modmail(self, limit=0):
+    def get_mod_mail(self, limit=0):
         """Return a generator for moderator messages."""
         return self.get_content(self.config['moderator'], limit=limit)
 
