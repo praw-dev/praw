@@ -866,18 +866,6 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
                           self.r.set_access_credentials,
                           set(('identity',)), 'dummy_access_token')
 
-    @interactive_only
-    def test_refresh_access_information(self):
-        url = self.r.get_authorize_url('dummy_state', refreshable=True)
-        print('Visit this URL: {0}'.format(url))
-        code = prompt('Code from redir URL: ')
-        info = self.r.get_access_information(code)
-        self.assertEqual(self.r.access_token, info['access_token'])
-        self.assertEqual(self.r.refresh_token, info['refresh_token'])
-        new_info = self.r.refresh_access_information()
-        self.assertNotEqual(info['access_token'], new_info['access_token'])
-        self.assertEqual(self.r.access_token, new_info['access_token'])
-
     def test_scope_edit(self):
         self.r.refresh_access_information(self.refresh_token['edit'])
         submission = Submission.from_id(self.r, self.submission_edit_id)
@@ -889,31 +877,28 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
 
     def test_scope_modconfig(self):
         self.r.refresh_access_information(self.refresh_token['modconfig'])
-        sub = self.r.get_subreddit(self.sr)
-        sub.set_settings('foobar')
+        self.r.get_subreddit(self.sr).set_settings('foobar')
+
+    def test_scope_modflair(self):
+        self.r.refresh_access_information(self.refresh_token['modflair'])
+        self.r.get_subreddit(self.sr).set_flair(self.un, 'foobar')
 
     def test_scope_submit(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
         retval = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
         self.assertTrue(isinstance(retval, Submission))
 
-    @interactive_only
     def test_set_access_credentials(self):
-        url = self.r.get_authorize_url('dummy_state')
-        print('Visit this URL: {0}'.format(url))
-        code = prompt('Code from redir URL: ')
-        retval = self.r.get_access_information(code, update_session=False)
+        self.assertTrue(self.r.user is None)
+        retval = self.r.refresh_access_information(
+            self.refresh_token['identity'], update_session=False)
         self.assertTrue(self.r.user is None)
         self.r.set_access_credentials(**retval)
         self.assertFalse(self.r.user is None)
 
-    @interactive_only
     def test_oauth_without_identy_doesnt_set_user(self):
-        url = self.r.get_authorize_url('dummy_state', 'edit')
-        print('Visit this URL: {0}'.format(url))
-        code = prompt('Code from redir URL: ')
         self.assertTrue(self.r.user is None)
-        self.r.get_access_information(code)
+        self.r.refresh_access_information(self.refresh_token['edit'])
         self.assertTrue(self.r.user is None)
 
     def test_set_oauth_info(self):
