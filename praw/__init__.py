@@ -544,6 +544,7 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_content(self.config['reddit_url'], *args, **kwargs)
 
+    @decorators.restrict_access(scope='read')
     def get_info(self, url=None, thing_id=None, limit=None):
         """Look up existing Submissions by thing_id (fullname) or url.
 
@@ -599,6 +600,7 @@ class UnauthenticatedReddit(BaseReddit):
         """Return a Redditor instance for the user_name specified."""
         return objects.Redditor(self, user_name, *args, **kwargs)
 
+    @decorators.restrict_access(scope='read')
     def get_submission(self, url=None, submission_id=None):
         """Return a Submission object for the given url or submission_id."""
         if bool(url) == bool(submission_id):

@@ -98,11 +98,19 @@ class RedditContentObject(object):
 
     def _get_json_dict(self):
         # pylint: disable-msg=W0212
+
+        # OAuth handling needs to be special cased here. For instance, the user
+        # might be calling a method on a Subreddit object that requires first
+        # loading the information about the subreddit. Unless the `read` scope
+        # is set, then this function should try to obtain the information in a
+        # scope-less manor.
         prev_use_oauth = self.reddit_session._use_oauth
-        self.reddit_session._use_oauth = False
-        response = self.reddit_session.request_json(self._info_url,
-                                                    as_objects=False)
-        self.reddit_session._use_oauth = prev_use_oauth
+        self.reddit_session._use_oauth = self.reddit_session.has_scope('read')
+        try:
+            response = self.reddit_session.request_json(self._info_url,
+                                                        as_objects=False)
+        finally:
+            self.reddit_session._use_oauth = prev_use_oauth
         return response['data']
 
     def _populate(self, json_dict, fetch):

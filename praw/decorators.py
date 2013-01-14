@@ -244,8 +244,8 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
 
     :param scope: Indicate the scope that is required for the API call. None or
         False must be passed to indicate that no scope handles the API call.
-        All scopes imply login=True. Scopes with 'mod' in their name imply
-        mod=True.
+        All scopes save for `read` imply login=True. Scopes with 'mod' in their
+        name imply mod=True.
     :param mod: Indicate that a moderator is required. Implies login=True.
     :param login: Indicate that a login is required.
     :param oauth_only: Indicate that only OAuth is supported for the function.
@@ -264,7 +264,7 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
         raise TypeError('`scope` must be set when `oauth_only` is set')
 
     mod = mod or scope and 'mod' in scope
-    login = login or mod or scope
+    login = login or mod or scope and scope != 'read'
 
     login_exceptions = ('flair_list',)
     moderator_exceptions = ('create_subreddit',)
@@ -307,7 +307,7 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
                 obj._use_oauth = True  # pylint: disable-msg=W0212
             elif oauth_only:
                 raise errors.OAuthScopeRequired(function.__name__, scope)
-            elif obj.is_logged_in():
+            elif login and obj.is_logged_in():
                 if subreddit is False:
                     # Now fetch the subreddit attribute. There is no good
                     # reason for it to not be set during a logged in session.
@@ -320,7 +320,7 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
                             function.__name__, scope)
                     else:
                         raise errors.ModeratorRequired(function.__name__)
-            elif function.__name__ not in login_exceptions:
+            elif login and function.__name__ not in login_exceptions:
                 if scope:
                     raise errors.LoginOrScopeRequired(function.__name__, scope)
                 raise errors.LoginRequired(function.__name__)

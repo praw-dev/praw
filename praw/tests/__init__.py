@@ -93,6 +93,7 @@ class BasicHelper(object):
     def configure(self):
         self.r = Reddit(USER_AGENT, disable_update_check=True)
         self.sr = 'reddit_api_test'
+        self.priv_sr = 'reddit_api_test_priv'
         self.un = 'PyAPITestUser2'
         self.other_user_name = 'PyAPITestUser3'
         self.invalid_user_name = 'PyAPITestInvalid'
@@ -103,6 +104,7 @@ class BasicHelper(object):
             self.link_url_link = 'http://imgur.com/Vr8ZZ'
             self.more_comments_url = self.url('/r/redditdev/comments/dqkfz/')
             self.other_user_id = '6c1xj'
+            self.priv_submission_id = '16kbb7'
             self.refresh_token = {
                 'edit':            'mFB93g1nlgt57gd2ch9xy8815ng',
                 'identity':        'pwKb6vuFpbqTQjLPTBK_4LW0x3U',
@@ -895,6 +897,15 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         self.r.refresh_access_information(
             self.refresh_token['privatemessages'])
         self.assertTrue(list(self.r.get_inbox()))
+
+    def test_scope_read(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+        self.assertTrue(self.r.get_subreddit(self.priv_sr).subscribers > 0)
+        fullname = '{0}_{1}'.format(self.r.config.by_object[Submission],
+                                    self.priv_submission_id)
+        method1 = self.r.get_info(thing_id=fullname)
+        method2 = self.r.get_submission(submission_id=self.priv_submission_id)
+        self.assertEqual(method1, method2)
 
     def test_scope_submit(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
