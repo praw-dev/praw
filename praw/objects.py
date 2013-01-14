@@ -97,7 +97,7 @@ class RedditContentObject(object):
         return retval
 
     def _get_json_dict(self):
-        # pylint disable-msg:W0212
+        # pylint: disable-msg=W0212
         prev_use_oauth = self.reddit_session._use_oauth
         self.reddit_session._use_oauth = False
         response = self.reddit_session.request_json(self._info_url,
@@ -705,9 +705,10 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
     """A class for submissions to reddit."""
 
     @staticmethod
-    def from_id(reddit_session, id):
+    def from_id(reddit_session, subreddit_id):
         """Return an edit-only submission object based on the id."""
-        pseudo_data = {'id': id, 'permalink': '/comments/{0}'.format(id)}
+        pseudo_data = {'id': subreddit_id,
+                       'permalink': '/comments/{0}'.format(subreddit_id)}
         return Submission(reddit_session, pseudo_data)
 
     @staticmethod
