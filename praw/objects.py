@@ -446,10 +446,11 @@ class Voteable(RedditContentObject):
         url = self.reddit_session.config['vote']
         data = {'id': self.fullname,
                 'dir': six.text_type(direction)}
-        # pylint: disable-msg=W0212
-        urls = [urljoin(self.reddit_session.user._url, 'disliked'),
-                urljoin(self.reddit_session.user._url, 'liked')]
-        _request.evict(urls)
+        if self.reddit_session.user:
+            # pylint: disable-msg=W0212
+            urls = [urljoin(self.reddit_session.user._url, 'disliked'),
+                    urljoin(self.reddit_session.user._url, 'liked')]
+            _request.evict(urls)
         return self.reddit_session.request_json(url, data=data)
 
 

@@ -912,6 +912,15 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         retval = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
         self.assertTrue(isinstance(retval, Submission))
 
+    def test_scope_subscribe(self):
+        self.r.refresh_access_information(self.refresh_token['subscribe'])
+        self.r.get_subreddit(self.sr).subscribe()
+
+    def test_scope_vote(self):
+        self.r.refresh_access_information(self.refresh_token['vote'])
+        submission = Submission.from_id(self.r, self.submission_edit_id)
+        submission.clear_vote()
+
     def test_set_access_credentials(self):
         self.assertTrue(self.r.user is None)
         retval = self.r.refresh_access_information(
