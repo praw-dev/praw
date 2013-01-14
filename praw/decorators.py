@@ -182,6 +182,24 @@ def limit_chars(function):
     return function_wrapper
 
 
+def oauth_generator(function):
+    """Set the _use_oauth keyword argument to True when appropriate.
+
+    This is needed because generator functions may be called at anytime, and
+    PRAW relies on the Reddit._use_oauth value at original call time to know
+    when to make OAuth requests.
+
+    Returned data is not modified.
+
+    """
+    @wraps(function)
+    def wrapped(reddit_session, *args, **kwargs):
+        if getattr(reddit_session, '_use_oauth', False):
+            kwargs['_use_oauth'] = True
+        return function(reddit_session, *args, **kwargs)
+    return wrapped
+
+
 def parse_api_json_response(function):  # pylint: disable-msg=R0912
     """Raise client side exception(s) when presenet in the API response.
 

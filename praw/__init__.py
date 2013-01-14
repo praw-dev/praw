@@ -291,9 +291,10 @@ class BaseReddit(object):
             return object_class.from_api_response(self, json_data['data'])
         return json_data
 
+    @decorators.oauth_generator
     def get_content(self, url, params=None, limit=0, place_holder=None,
                     root_field='data', thing_field='children',
-                    after_field='after'):
+                    after_field='after', _use_oauth=False):
         """A generator method to return reddit content from a URL.
 
         Starts at the initial url, and fetches content using the `after`
@@ -336,7 +337,14 @@ class BaseReddit(object):
 
         # While we still need to fetch more content to reach our limit, do so.
         while fetch_once or fetch_all or objects_found < limit:
-            page_data = self.request_json(url, params=params)
+            if _use_oauth:  # Set the necessary _use_oauth value
+                assert self._use_oauth is False
+                self._use_oauth = _use_oauth  # pylint: disable-msg=W0201
+            try:
+                page_data = self.request_json(url, params=params)
+            finally:  # Restore _use_oauth value
+                if _use_oauth:
+                    self._use_oauth = False  # pylint: disable-msg=W0201
             fetch_once = False
             if root_field:
                 root = page_data[root_field]
@@ -1175,6 +1183,26 @@ class ModOnlyMixin(AuthenticatedReddit):
                                  six.text_type(subreddit))['data']
 
 
+class MySubredditsMixin(AuthenticatedReddit):
+
+    """Adds methods requiring the 'mysubreddits' scope (or login)."""
+
+    @decorators.restrict_access(scope='mysubreddits')
+    def get_my_contributions(self, limit=0):
+        """Return the subreddits where the session's user is a contributor."""
+        return self.get_content(self.config['my_con_reddits'], limit=limit)
+
+    @decorators.restrict_access(scope='mysubreddits')
+    def get_my_moderation(self, limit=0):
+        """Return the subreddits where the session's user is a mod."""
+        return self.get_content(self.config['my_mod_reddits'], limit=limit)
+
+    @decorators.restrict_access(scope='mysubreddits')
+    def get_my_reddits(self, limit=0):
+        """Return the subreddits that the logged in user is subscribed to."""
+        return self.get_content(self.config['my_reddits'], limit=limit)
+
+
 class PrivateMessagesMixin(AuthenticatedReddit):
 
     """Adds methods requring the 'privatemessages' scope (or login)."""
@@ -1311,7 +1339,7 @@ class SubscribeMixin(AuthenticatedReddit):
         return self.subscribe(subreddit, unsubscribe=True)
 
 
-class Reddit(ModConfigMixin, ModFlairMixin, ModOnlyMixin,
+class Reddit(ModConfigMixin, ModFlairMixin, ModOnlyMixin, MySubredditsMixin,
              PrivateMessagesMixin, SubmitMixin, SubscribeMixin):
 
     """Provides the fullest access to reddit's API."""

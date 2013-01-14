@@ -887,6 +887,10 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         self.r.refresh_access_information(self.refresh_token['modposts'])
         Submission.from_id(self.r, self.submission_edit_id).remove()
 
+    def test_scope_mysubreddits(self):
+        self.r.refresh_access_information(self.refresh_token['mysubreddits'])
+        print list(self.r.get_my_moderation())
+
     def test_scope_submit(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
         retval = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
@@ -1233,22 +1237,22 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         mod_submissions = list(self.r.get_subreddit(multi).get_modqueue())
         self.assertTrue(len(mod_submissions) > 0)
 
-    def test_my_contributions(self):
-        for subreddit in self.r.user.my_contributions():
+    def test_get_my_contributions(self):
+        for subreddit in self.r.get_my_contributions():
             if text_type(subreddit) == self.sr:
                 break
         else:
             self.fail('Could not find contributed reddit in my_contributions.')
 
-    def test_my_moderation(self):
-        for subreddit in self.r.user.my_moderation():
+    def test_get_my_moderation(self):
+        for subreddit in self.r.get_my_moderation():
             if text_type(subreddit) == self.sr:
                 break
         else:
             self.fail('Could not find moderated reddit in my_moderation.')
 
-    def test_my_reddits(self):
-        for subreddit in self.r.user.my_reddits():
+    def test_get_my_reddits(self):
+        for subreddit in self.r.get_my_reddits():
             # pylint: disable-msg=W0212
             self.assertTrue(text_type(subreddit) in subreddit._info_url)
 
@@ -1258,7 +1262,7 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_subscribe_and_verify(self):
         self.subreddit.subscribe()
-        for subreddit in self.r.user.my_reddits():
+        for subreddit in self.r.get_my_reddits():
             if text_type(subreddit) == self.sr:
                 break
         else:
@@ -1266,7 +1270,7 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_subscribe_by_name_and_verify(self):
         self.r.subscribe(self.sr)
-        for subreddit in self.r.user.my_reddits():
+        for subreddit in self.r.get_my_reddits():
             if text_type(subreddit) == self.sr:
                 break
         else:
@@ -1274,13 +1278,13 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_unsubscribe_and_verify(self):
         self.subreddit.unsubscribe()
-        for subreddit in self.r.user.my_reddits():
+        for subreddit in self.r.get_my_reddits():
             if text_type(subreddit) == self.sr:
                 self.fail('Found reddit in my_reddits.')
 
     def test_unsubscribe_by_name_and_verify(self):
         self.r.unsubscribe(self.sr)
-        for subreddit in self.r.user.my_reddits():
+        for subreddit in self.r.get_my_reddits():
             if text_type(subreddit) == self.sr:
                 self.fail('Found reddit in my_reddits.')
 

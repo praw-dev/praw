@@ -651,7 +651,7 @@ class LoggedInRedditor(Redditor):
         """
         if self._mod_subs is None:
             self._mod_subs = {'mod': self.reddit_session.get_subreddit('mod')}
-            for sub in self.my_moderation(limit=None):
+            for sub in self.reddit_session.get_my_moderation(limit=None):
                 self._mod_subs[six.text_type(sub).lower()] = sub
         return self._mod_subs
 
@@ -677,25 +677,6 @@ class LoggedInRedditor(Redditor):
     def get_unread(self, limit=0):
         """Return a generator for unread messages."""
         url = self.reddit_session.config['unread']
-        return self.reddit_session.get_content(url, limit=limit)
-
-    @restrict_access(scope='mysubreddits')
-    def my_contributions(self, limit=0):
-        """Return the subreddits where the logged in user is a contributor."""
-        url = self.reddit_session.config['my_con_reddits']
-        return self.reddit_session.get_content(url, limit=limit)
-
-    @restrict_access(scope='mysubreddits')
-    def my_moderation(self, limit=0):
-        """Return the subreddits where the logged in user is a mod."""
-        url = self.reddit_session.config['my_mod_reddits']
-        retval = self.reddit_session.get_content(url, limit=limit)
-        return retval
-
-    @restrict_access(scope='mysubreddits')
-    def my_reddits(self, limit=0):
-        """Return the subreddits that the logged in user is subscribed to."""
-        url = self.reddit_session.config['my_reddits']
         return self.reddit_session.get_content(url, limit=limit)
 
 
