@@ -889,7 +889,7 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
 
     def test_scope_mysubreddits(self):
         self.r.refresh_access_information(self.refresh_token['mysubreddits'])
-        print list(self.r.get_my_moderation())
+        self.assertTrue(len(list(self.r.get_my_moderation())))
 
     def test_scope_submit(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
