@@ -26,9 +26,9 @@ import six
 import warnings
 from requests.compat import urljoin
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
-                  ModFlairMixin as MFMix, ModOnlyMixin as MOMix,
-                  PrivateMessagesMixin as PMMix, SubmitMixin, SubscribeMixin,
-                  UnauthenticatedReddit as UR)
+                  ModFlairMixin as MFMix, ModLogMixin as MLMix,
+                  ModOnlyMixin as MOMix, PrivateMessagesMixin as PMMix,
+                  SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
 from praw.decorators import alias_function, limit_chars, restrict_access
 from praw.errors import ClientException
 from praw.helpers import (_get_section, _get_sorter, _modify_relationship,
@@ -919,6 +919,7 @@ class Subreddit(Messageable, Refreshable):
                 ('get_contributors', MOMix.get_contributors),
                 ('get_flair', UR.get_flair),
                 ('get_moderators', MOMix.get_moderators),
+                ('get_mod_log', MLMix.get_mod_log),
                 ('get_modqueue', MOMix.get_modqueue),
                 ('get_reports', MOMix.get_reports),
                 ('get_settings', MCMix.get_settings),

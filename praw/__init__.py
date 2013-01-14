@@ -83,6 +83,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'me':                  'api/v1/me',
                  'moderator':           'message/moderator/',
                  'moderators':          'r/%s/about/moderators/',
+                 'modlog':              'r/%s/about/log/',
                  'modqueue':            'r/%s/about/modqueue/',
                  'morechildren':        'api/morechildren/',
                  'my_con_reddits':      'reddits/mine/contributor/',
@@ -1142,6 +1143,17 @@ class ModFlairMixin(AuthenticatedReddit):
         return response
 
 
+class ModLogMixin(AuthenticatedReddit):
+
+    """Adds methods requring the 'modlog' scope (or mod access)."""
+
+    @decorators.restrict_access(scope='modlog')
+    def get_mod_log(self, subreddit, limit=0):
+        """Return a get_content generator for moderation log items."""
+        return self.get_content(self.config['modlog'] %
+                                six.text_type(subreddit), limit=limit)
+
+
 class ModOnlyMixin(AuthenticatedReddit):
 
     """Adds methods requring the logged in moderator access."""
@@ -1361,8 +1373,9 @@ class SubscribeMixin(AuthenticatedReddit):
         return self.subscribe(subreddit, unsubscribe=True)
 
 
-class Reddit(ModConfigMixin, ModFlairMixin, ModOnlyMixin, MySubredditsMixin,
-             PrivateMessagesMixin, SubmitMixin, SubscribeMixin):
+class Reddit(ModConfigMixin, ModFlairMixin, ModLogMixin, ModOnlyMixin,
+             MySubredditsMixin, PrivateMessagesMixin, SubmitMixin,
+             SubscribeMixin):
 
     """Provides the fullest access to reddit's API."""
 

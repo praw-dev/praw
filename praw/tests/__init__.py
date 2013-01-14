@@ -885,6 +885,11 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         self.r.refresh_access_information(self.refresh_token['modflair'])
         self.r.get_subreddit(self.sr).set_flair(self.un, 'foobar')
 
+    def test_scope_modlog(self):
+        self.r.refresh_access_information(self.refresh_token['modlog'])
+        self.assertEqual(25, len(list(
+                    self.r.get_subreddit(self.sr).get_mod_log())))
+
     def test_scope_modposts(self):
         self.r.refresh_access_information(self.refresh_token['modposts'])
         Submission.from_id(self.r, self.submission_edit_id).remove()
