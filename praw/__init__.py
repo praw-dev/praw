@@ -308,10 +308,10 @@ class BaseReddit(object):
         :param place_holder: if not None, the method will fetch `limit`
             content, stopping if it finds content with `id` equal to
             `place_holder`.
-        :param data_field: indicates the field in the json response that holds
+        :param root_field: indicates the field in the json response that holds
             the data. Most objects use 'data', however some (flairlist) don't
             have the 'data' object. Use None for the root object.
-        :param thing_field: indicates the field under the data_field which
+        :param thing_field: indicates the field under the root_field which
             contains the list of things. Most objects use 'children'.
         :param after_field: indicates the field which holds the after item
             element
@@ -1155,10 +1155,22 @@ class ModLogMixin(AuthenticatedReddit):
     """Adds methods requring the 'modlog' scope (or mod access)."""
 
     @decorators.restrict_access(scope='modlog')
-    def get_mod_log(self, subreddit, limit=0):
-        """Return a get_content generator for moderation log items."""
+    def get_mod_log(self, subreddit, limit=0, mod=None, type=None):
+        """Return a get_content generator for moderation log items.
+
+        :param mod: If given, only return the actions made by this moderator.
+                    Both a moderator name or Redditor object can be used here.
+        :param data: If given, only return moderator actions of this type.
+
+        """
+        if mod is not None:
+            mod = six.text_type(mod)
+        if type is not None:
+            type = six.text_type(type)
+        params = {'mod': mod, 'type': type}
         return self.get_content(self.config['modlog'] %
-                                six.text_type(subreddit), limit=limit)
+                                six.text_type(subreddit), limit=limit,
+                                params=params)
 
 
 class ModOnlyMixin(AuthenticatedReddit):

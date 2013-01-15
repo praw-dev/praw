@@ -97,6 +97,7 @@ class BasicHelper(object):
         self.un = 'PyAPITestUser2'
         self.other_user_name = 'PyAPITestUser3'
         self.invalid_user_name = 'PyAPITestInvalid'
+        self.other_mod_name = 'PyAPITestUser4'
 
         if self.r.config.is_reddit:
             self.comment_url = self.url('r/redditdev/comments/dtg4j/')
@@ -1250,6 +1251,31 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_attribute_error(self):
         self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
+
+    def test_get_mod_log(self):
+        mod_actions = list(self.subreddit.get_mod_log())
+        self.assertTrue(len(mod_actions) > 0)
+
+    def test_get_mod_log_with_mod(self):
+        by_other = list(self.subreddit.get_mod_log(mod=self.other_mod_name))
+        other_id = text_type(self.r.get_redditor(self.other_mod_name).id)
+        self.assertTrue(len(by_other) > 0)
+        self.assertTrue(text_type(obj.mod_id36) == other_id
+                        for obj in by_other)
+
+    def test_get_mod_log_with_mod_redditor_object(self):
+        other_mod = self.r.get_redditor(self.other_mod_name)
+        by_other = list(self.subreddit.get_mod_log(mod=other_mod))
+        other_id = text_type(self.r.get_redditor(self.other_mod_name).id)
+        self.assertTrue(len(by_other) > 0)
+        self.assertTrue(text_type(obj.mod_id36) == other_id
+                        for obj in by_other)
+
+    def test_get_mod_log_with_type(self):
+        remove_actions = list(self.subreddit.get_mod_log(type='removelink'))
+        self.assertTrue(len(remove_actions) > 0)
+        self.assertTrue(text_type(obj.action) == 'removelink'
+                        for obj in remove_actions)
 
     def test_get_mod_queue(self):
         mod_submissions = list(self.r.get_subreddit('mod').get_mod_queue())
