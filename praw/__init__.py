@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '2.0rc0'
+__version__ = '2.0rc1'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -150,6 +150,7 @@ class Config(object):  # pylint: disable-msg=R0903
                         obj['redditor_kind']:   objects.Redditor,
                         obj['submission_kind']: objects.Submission,
                         obj['subreddit_kind']:  objects.Subreddit,
+                        'modaction':            objects.ModAction,
                         'more':                 objects.MoreComments,
                         'UserList':             objects.UserList}
         self.by_object = dict((value, key) for (key, value) in

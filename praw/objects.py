@@ -664,6 +664,17 @@ class LoggedInRedditor(Redditor):
         return self._mod_subs
 
 
+class ModAction(RedditContentObject):
+
+    """A moderator action."""
+
+    def __init__(self, reddit_session, json_dict=None, fetch=False):
+        super(ModAction, self).__init__(reddit_session, json_dict, fetch)
+
+    def __unicode__(self):
+        return 'Action: {0}'.format(self.action)
+
+
 class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
                  Saveable, Voteable):
 
