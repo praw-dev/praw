@@ -218,6 +218,12 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertFalse(subreddit != same_subreddit)
         self.assertFalse(subreddit == submission)
 
+    def test_equality_modaction(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        self.r.login(self.un, '1111')
+        modaction = six_next(subreddit.get_mod_log())
+        self.assertRaises(UserWarning, modaction.__eq__, modaction)
+
     def test_get_all_comments(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_all_comments(limit=num))))

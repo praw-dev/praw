@@ -666,10 +666,21 @@ class LoggedInRedditor(Redditor):
 
 class ModAction(RedditContentObject):
 
-    """A moderator action."""
+    """A moderator action.
+
+    Comparing two ModAction objects is broken because Reddit doesn't give
+    ModActions an id attribute.
+
+    """
 
     def __init__(self, reddit_session, json_dict=None, fetch=False):
         super(ModAction, self).__init__(reddit_session, json_dict, fetch)
+
+    def __eq__(self, other):
+        if not isinstance(other, ModAction):
+            return False
+        raise UserWarning("Modaction doesn't have an id. Comparing two is "
+                          "impossible. A upstream fix is needed to fix this.")
 
     def __unicode__(self):
         return 'Action: {0}'.format(self.action)
