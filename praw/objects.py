@@ -23,7 +23,6 @@ that it can be saved and unsaved in the context of a logged in user.
 """
 
 import six
-import warnings
 from requests.compat import urljoin
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
@@ -561,8 +560,8 @@ class MoreComments(RedditContentObject):
             data = {'children': ','.join(children),
                     'link_id': self.submission.fullname,
                     'r': str(self.submission.subreddit)}
-            if self.reddit_session.config.comment_sort:
-                data['where'] = self.reddit_session.config.comment_sort
+            if self.submission._comment_sort:
+                data['where'] = self.submission._comment_sort
             url = self.reddit_session.config['morechildren']
             response = self.reddit_session.request_json(url, data=data)
             self._comments = response['data']['things']
@@ -699,21 +698,24 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
             params['limit'] = comment_limit
         if comment_sort:
             params['sort'] = comment_sort
+
         s_info, c_info = reddit_session.request_json(url, params=params)
         if comments_only:
             return c_info['data']['children']
         submission = s_info['data']['children'][0]
         submission.comments = c_info['data']['children']
+        submission._comment_sort = comment_sort
         return submission
 
     def __init__(self, reddit_session, json_dict):
         super(Submission, self).__init__(reddit_session, json_dict)
         self.permalink = urljoin(reddit_session.config['reddit_url'],
                                  self.permalink)
+        self._comment_sort = None
         self._comments_by_id = {}
-        self._all_comments = False
         self._comments = None
         self._orphaned = {}
+        self._replaced_more = False
 
     @limit_chars
     def __unicode__(self):
@@ -740,12 +742,65 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
             else:
                 self._orphaned[comment.parent_id] = [comment]
 
-    def _replace_more_comments(self):
-        """Replace MoreComments objects with the actual comments."""
+    def _update_comments(self, comments):
+        self._comments = comments
+        for comment in self._comments:
+            comment._update_submission(self)  # pylint: disable-msg=W0212
+
+    def add_comment(self, text):
+        """Comment on the submission using the specified text.
+
+        :returns: A Comment object for the newly created comment.
+
+        """
+        # pylint: disable-msg=E1101, W0212
+        response = self.reddit_session._add_comment(self.fullname, text)
+        _request.evict([self.permalink])
+        return response
+
+    @property
+    def comments(self):  # pylint: disable-msg=E0202
+        """Return forest of comments, with top-level comments as tree roots.
+
+        May contain instances of MoreComment objects. To easily replace these
+        objects with Comment objects, use the replace_more_comments method then
+        fetch this attribute. Use comment replies to walk down the tree. To get
+        an unnested, flat list of comments from this attribute use
+        helpers.flatten_tree.
+
+        """
+        if self._comments is None:
+            self.comments = Submission.from_url(self.reddit_session,
+                                                self.permalink,
+                                                comments_only=True)
+        return self._comments
+
+    @comments.setter  # NOQA
+    def comments(self, new_comments):  # pylint: disable-msg=E0202
+        """Update the list of comments with the provided nested list."""
+        self._update_comments(new_comments)
+        self._orphaned = {}
+
+    def replace_more_comments(self, limit=32, threshold=1):
+        """Update the comment tree by replacing instances of MoreComments.
+
+        :param limit: The maximum number of MoreComments objects to
+            replace. Each replacement requires 1 API request. Set to None to
+            have no limit. Default: 32
+        :param threshold: The minimum number of children comments a
+            MoreComments object must have in order to be replaced. Default: 1
+        :returns: A list of MoreComments objects that were not replaced.
+
+        Note that after making this call, the `comments` attribute of the
+        submission will no longer contain any MoreComments objects. Items that
+        weren't replaced are still removed from the tree.
+
+        """
+        if self._replaced_more:
+            return []
+
         queue = [(None, x) for x in self.comments]
-        remaining = self.reddit_session.config.more_comments_max
-        if remaining < 0:
-            remaining = None
+        remaining = limit
         skipped = []
 
         while len(queue) > 0:
@@ -756,8 +811,9 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
                 elif parent is None:
                     self._comments.remove(comm)
 
-                # Skip after reaching the limit
-                if remaining is not None and remaining <= 0:
+                # Skip after reaching the limit or below threshold
+                if remaining is not None and remaining <= 0 \
+                        or comm.count < threshold:
                     skipped.append(comm)
                     continue
 
@@ -784,63 +840,8 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
                 for item in comm.replies:
                     queue.append((comm, item))
 
-        if skipped:
-            warnings.warn_explicit('Skipped %d more comments objects on %r' %
-                                   (len(skipped), six.text_type(self)),
-                                   UserWarning, '', 0)
-
-    def _update_comments(self, comments):
-        self._comments = comments
-        for comment in self._comments:
-            comment._update_submission(self)  # pylint: disable-msg=W0212
-
-    def add_comment(self, text):
-        """Comment on the submission using the specified text.
-
-        :returns: A Comment object for the newly created comment.
-
-        """
-        # pylint: disable-msg=E1101, W0212
-        response = self.reddit_session._add_comment(self.fullname, text)
-        _request.evict([self.permalink])
-        return response
-
-    @property
-    def all_comments(self):
-        """Return forest of all comments with top-level comments as tree roots.
-
-        Use a comment's replies to walk down the tree. To get an unnested,
-        flat list of comments from this attribute use helpers.flatten_tree.
-
-        """
-        if not self._all_comments:
-            self._replace_more_comments()
-            self._all_comments = True
-        return self._comments
-
-    @property
-    def comments(self):  # pylint: disable-msg=E0202
-        """Return forest of comments, with top-level comments as tree roots.
-
-        May contain instances of MoreComment objects. To easily replace
-        these objects with Comment objects, use the all_comments property
-        instead. Use comment's replies to walk down the tree. To get
-        an unnested, flat list of comments from this attribute use
-        helpers.flatten_tree.
-
-        """
-        if self._comments is None:
-            self.comments = Submission.from_url(self.reddit_session,
-                                                self.permalink,
-                                                comments_only=True)
-        return self._comments
-
-    @comments.setter  # NOQA
-    def comments(self, new_comments):  # pylint: disable-msg=E0202
-        """Update the list of comments with the provided nested list."""
-        self._update_comments(new_comments)
-        self._all_comments = False
-        self._orphaned = {}
+        self._replaced_more = True
+        return skipped
 
     def set_flair(self, *args, **kwargs):
         """Set flair for this submission.

@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '1.1.0rc22'
+__version__ = '2.0rc0'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -161,7 +161,6 @@ class Config(object):  # pylint: disable-msg=R0903
         else:
             self.check_for_updates = False
         self.domain = obj['domain']
-        self.more_comments_max = int(obj['more_comments_max'])
         self.output_chars_limit = int(obj['output_chars_limit'])
         self.log_requests = int(obj['log_requests'])
         self.client_id = obj.get('oauth_client_id') or None

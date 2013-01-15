@@ -382,14 +382,15 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
 class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
-        self.r.config.comment_limit = 10
-        self.submission = self.r.get_submission(url=self.more_comments_url)
+        self.submission = self.r.get_submission(url=self.more_comments_url,
+                                                comment_limit=10)
 
     def test_all_comments(self):
         c_len = len(self.submission.comments)
         cf_len = len(helpers.flatten_tree(self.submission.comments))
-        ac_len = len(self.submission.all_comments)
-        acf_len = len(helpers.flatten_tree(self.submission.all_comments))
+        saved = self.submission.replace_more_comments(threshold=2)
+        ac_len = len(self.submission.comments)
+        acf_len = len(helpers.flatten_tree(self.submission.comments))
 
         # pylint: disable-msg=W0212
         self.assertEqual(len(self.submission._comments_by_id), acf_len)
@@ -397,22 +398,7 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(c_len < cf_len)
         self.assertTrue(ac_len < acf_len)
         self.assertTrue(cf_len < acf_len)
-
-
-class CommentAttributeTest(unittest.TestCase, BasicHelper):
-    def setUp(self):
-        self.configure()
-        self.submission = self.r.get_submission(url=self.comment_url)
-
-    def test_all_comments(self):
-        self.assertTrue(len(self.submission.all_comments))
-
-    def test_comments(self):
-        self.assertTrue(len(self.submission.comments))
-
-    def test_comments_score(self):
-        comment = self.submission.comments[0]
-        self.assertEqual(comment.ups - comment.downs, comment.score)
+        self.assertTrue(saved)
 
 
 class CommentEditTest(unittest.TestCase, AuthenticatedHelper):
