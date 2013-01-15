@@ -763,8 +763,7 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_accept_moderator_invite_fail(self):
         self.r.login('pyapitestuser3', '1111')
-        # TODO: update after reddit PR #623
-        self.assertRaises(errors.APIException,
+        self.assertRaises(errors.InvalidInvite,
                           self.subreddit.accept_moderator_invite)
 
     def test_ban(self):

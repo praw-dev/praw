@@ -223,6 +223,13 @@ class InvalidFlairTarget(APIException):
     ERROR_TYPE = 'BAD_FLAIR_TARGET'
 
 
+class InvalidInvite(APIException):
+
+    """Raised when attempting to accept a nonexistent moderator invite."""
+
+    ERROR_TYPE = 'NO_INVITE_FOUND'
+
+
 class InvalidUser(APIException):
 
     """An exception for when a user doesn't exist."""
