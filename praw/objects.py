@@ -678,35 +678,24 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         return Submission(reddit_session, pseudo_data)
 
     @staticmethod
-    def from_url(reddit_session, url, comments_only=False):
+    def from_url(reddit_session, url, comment_limit=0, comment_sort=None,
+                 comments_only=False):
         """Request the url and return a Submission object.
 
         :param reddit_session: The session to make the request with.
         :param url: The url to build the Submission object from.
+        :param comment_limit: The desired number of comments to fetch. If <= 0
+            fetch the default number for the session's user. If None, fetch the
+            maximum possible.
+        :param comment_sort: The sort order for retrived comments. When None
+            use the default for the session's user.
         :param comments_only: Return only the list of comments.
 
         """
         params = {}
-        comment_limit = reddit_session.config.comment_limit
-        comment_sort = reddit_session.config.comment_sort
-
-        if reddit_session.user and reddit_session.user.is_gold:
-            class_max = reddit_session.config.gold_comments_max
-        else:
-            class_max = reddit_session.config.regular_comments_max
-
-        if comment_limit < 0:  # Use max for user class
-            comment_limit = class_max
-        elif comment_limit == 0:  # Use default
-            comment_limit = None
-        else:  # Use specified value
-            if comment_limit > class_max:
-                warnings.warn_explicit('comment_limit %d is too high (max: %d)'
-                                       % (comment_limit, class_max),
-                                       UserWarning, '', 0)
-                comment_limit = class_max
-
-        if comment_limit:
+        if comment_limit is None:  # Fetch MAX
+            params['limit'] = 2048  # Just use a big number
+        elif comment_limit > 0:  # Use value
             params['limit'] = comment_limit
         if comment_sort:
             params['sort'] = comment_sort

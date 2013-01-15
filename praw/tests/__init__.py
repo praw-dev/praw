@@ -407,14 +407,8 @@ class CommentAttributeTest(unittest.TestCase, BasicHelper):
     def test_all_comments(self):
         self.assertTrue(len(self.submission.all_comments))
 
-    def test_all_comments_flat(self):
-        self.assertTrue(len(self.submission.all_comments_flat))
-
     def test_comments(self):
         self.assertTrue(len(self.submission.comments))
-
-    def test_comments_flat(self):
-        self.assertTrue(len(self.submission.comments_flat))
 
     def test_comments_score(self):
         comment = self.submission.comments[0]
@@ -868,41 +862,50 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
                           self.r.set_access_credentials,
                           set(('identity',)), 'dummy_access_token')
 
+    @reddit_only
     def test_scope_edit(self):
         self.r.refresh_access_information(self.refresh_token['edit'])
         submission = Submission.from_id(self.r, self.submission_edit_id)
         self.assertEqual(submission, submission.edit('Edited text'))
 
+    @reddit_only
     def test_scope_identity(self):
         self.r.refresh_access_information(self.refresh_token['identity'])
         self.assertEqual(self.un, self.r.get_me().name)
 
+    @reddit_only
     def test_scope_modconfig(self):
         self.r.refresh_access_information(self.refresh_token['modconfig'])
         self.r.get_subreddit(self.sr).set_settings('foobar')
 
+    @reddit_only
     def test_scope_modflair(self):
         self.r.refresh_access_information(self.refresh_token['modflair'])
         self.r.get_subreddit(self.sr).set_flair(self.un, 'foobar')
 
+    @reddit_only
     def test_scope_modlog(self):
         self.r.refresh_access_information(self.refresh_token['modlog'])
         self.assertEqual(
             25, len(list(self.r.get_subreddit(self.sr).get_mod_log())))
 
+    @reddit_only
     def test_scope_modposts(self):
         self.r.refresh_access_information(self.refresh_token['modposts'])
         Submission.from_id(self.r, self.submission_edit_id).remove()
 
+    @reddit_only
     def test_scope_mysubreddits(self):
         self.r.refresh_access_information(self.refresh_token['mysubreddits'])
         self.assertTrue(list(self.r.get_my_moderation()))
 
+    @reddit_only
     def test_scope_privatemessages(self):
         self.r.refresh_access_information(
             self.refresh_token['privatemessages'])
         self.assertTrue(list(self.r.get_inbox()))
 
+    @reddit_only
     def test_scope_read(self):
         self.r.refresh_access_information(self.refresh_token['read'])
         self.assertTrue(self.r.get_subreddit(self.priv_sr).subscribers > 0)
@@ -912,20 +915,24 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         method2 = self.r.get_submission(submission_id=self.priv_submission_id)
         self.assertEqual(method1, method2)
 
+    @reddit_only
     def test_scope_submit(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
         retval = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
         self.assertTrue(isinstance(retval, Submission))
 
+    @reddit_only
     def test_scope_subscribe(self):
         self.r.refresh_access_information(self.refresh_token['subscribe'])
         self.r.get_subreddit(self.sr).subscribe()
 
+    @reddit_only
     def test_scope_vote(self):
         self.r.refresh_access_information(self.refresh_token['vote'])
         submission = Submission.from_id(self.r, self.submission_edit_id)
         submission.clear_vote()
 
+    @reddit_only
     def test_set_access_credentials(self):
         self.assertTrue(self.r.user is None)
         retval = self.r.refresh_access_information(
@@ -934,6 +941,7 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         self.r.set_access_credentials(**retval)
         self.assertFalse(self.r.user is None)
 
+    @reddit_only
     def test_oauth_without_identy_doesnt_set_user(self):
         self.assertTrue(self.r.user is None)
         self.r.refresh_access_information(self.refresh_token['edit'])

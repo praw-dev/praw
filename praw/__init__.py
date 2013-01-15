@@ -160,14 +160,10 @@ class Config(object):  # pylint: disable-msg=R0903
             self.check_for_updates = True
         else:
             self.check_for_updates = False
-        self.comment_limit = int(obj['comment_limit'])
-        self.comment_sort = obj['comment_sort']
         self.domain = obj['domain']
-        self.gold_comments_max = int(obj['gold_comments_max'])
         self.more_comments_max = int(obj['more_comments_max'])
         self.output_chars_limit = int(obj['output_chars_limit'])
         self.log_requests = int(obj['log_requests'])
-        self.regular_comments_max = int(obj['regular_comments_max'])
         self.client_id = obj.get('oauth_client_id') or None
         self.client_secret = obj.get('oauth_client_secret') or None
         self.redirect_uri = obj.get('oauth_redirect_uri') or None
@@ -602,13 +598,24 @@ class UnauthenticatedReddit(BaseReddit):
         return objects.Redditor(self, user_name, *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
-    def get_submission(self, url=None, submission_id=None):
-        """Return a Submission object for the given url or submission_id."""
+    def get_submission(self, url=None, submission_id=None, comment_limit=0,
+                       comment_sort=None):
+        """Return a Submission object for the given url or submission_id.
+
+        :param comment_limit: The desired number of comments to fetch. If <= 0
+            fetch the default number for the session's user. If None, fetch the
+            maximum possible.
+        :param comment_sort: The sort order for retrived comments. When None
+            use the default for the session's user.
+
+        """
         if bool(url) == bool(submission_id):
             raise TypeError('One (and only one) of id or url is required!')
         if submission_id:
             url = urljoin(self.config['comments'], submission_id)
-        return objects.Submission.from_url(self, url)
+        return objects.Submission.from_url(self, url,
+                                           comment_limit=comment_limit,
+                                           comment_sort=comment_sort)
 
     def get_subreddit(self, subreddit_name, *args, **kwargs):
         """Return a Subreddit object for the subreddit_name specified."""
