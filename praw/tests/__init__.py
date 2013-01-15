@@ -387,9 +387,9 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_all_comments(self):
         c_len = len(self.submission.comments)
-        cf_len = len(self.submission.comments_flat)
+        cf_len = len(helpers.flatten_tree(self.submission.comments))
         ac_len = len(self.submission.all_comments)
-        acf_len = len(self.submission.all_comments_flat)
+        acf_len = len(helpers.flatten_tree(self.submission.all_comments))
 
         # pylint: disable-msg=W0212
         self.assertEqual(len(self.submission._comments_by_id), acf_len)

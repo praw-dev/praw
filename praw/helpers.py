@@ -150,3 +150,25 @@ def _request(reddit_session, url, params=None, data=None, timeout=45,
     if raw_response:
         return response
     return response.text
+
+
+def flatten_tree(tree, nested_attr='replies', depth_first=False):
+    """Return a flattened version of the passed in tree.
+
+    :param nested_attr: The attribute name that contains the nested items.
+        Defaults to `replies` which is suitable for comments.
+    :param depth_first: When true, add to the list in a depth-first manner
+        rather than the default breath-first manner.
+
+    """
+    stack = tree[:]
+    retval = []
+    while stack:
+        item = stack.pop(0)
+        nested = getattr(item, nested_attr, None)
+        if nested and depth_first:
+            stack.extend(nested)
+        elif nested:
+            stack[0:0] = nested
+        retval.append(item)
+    return retval

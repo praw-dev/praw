@@ -1074,7 +1074,7 @@ class ModFlairMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='modflair')
     def get_flair_list(self, subreddit, limit=0):
-        """Return a get_contenet generator of flair mappings.
+        """Return a get_content generator of flair mappings.
 
         Each flair mapping is a dict with three keys. 'user', 'flair_text' and
         'flair_css_class'.

@@ -103,7 +103,7 @@ class RedditContentObject(object):
         # might be calling a method on a Subreddit object that requires first
         # loading the information about the subreddit. Unless the `read` scope
         # is set, then this function should try to obtain the information in a
-        # scope-less manor.
+        # scope-less manner.
         prev_use_oauth = self.reddit_session._use_oauth
         self.reddit_session._use_oauth = self.reddit_session.has_scope('read')
         try:
@@ -724,7 +724,6 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         self._comments_by_id = {}
         self._all_comments = False
         self._comments = None
-        self._comments_flat = None
         self._orphaned = {}
 
     @limit_chars
@@ -822,26 +821,13 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         """Return forest of all comments with top-level comments as tree roots.
 
         Use a comment's replies to walk down the tree. To get an unnested,
-        flat list if comments use all_comments_flat. Multiple API
-        requests may be needed to get all comments.
+        flat list of comments from this attribute use helpers.flatten_tree.
 
         """
         if not self._all_comments:
             self._replace_more_comments()
             self._all_comments = True
-            self._comments_flat = None
         return self._comments
-
-    @property
-    def all_comments_flat(self):
-        """Return all comments in an unnested, flat list.
-
-        Multiple API requests may be needed to get all comments.
-
-        """
-        if not self._all_comments:
-            self.all_comments  # pylint: disable-msg=W0104
-        return self.comments_flat
 
     @property
     def comments(self):  # pylint: disable-msg=E0202
@@ -850,7 +836,8 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         May contain instances of MoreComment objects. To easily replace
         these objects with Comment objects, use the all_comments property
         instead. Use comment's replies to walk down the tree. To get
-        an unnested, flat list of comments use comments_flat.
+        an unnested, flat list of comments from this attribute use
+        helpers.flatten_tree.
 
         """
         if self._comments is None:
@@ -864,28 +851,7 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         """Update the list of comments with the provided nested list."""
         self._update_comments(new_comments)
         self._all_comments = False
-        self._comments_flat = None
         self._orphaned = {}
-
-    @property
-    def comments_flat(self):
-        """Return comments as an unnested, flat list.
-
-        Note that there may be instances of MoreComment objects. To
-        easily remove these objects, use the all_comments_flat property
-        instead.
-
-        """
-        if not self._comments_flat:
-            stack = self.comments[:]
-            self._comments_flat = []
-            while len(stack) > 0:
-                comment = stack.pop(0)
-                assert(comment not in self._comments_flat)
-                if isinstance(comment, Comment):
-                    stack[0:0] = comment.replies
-                self._comments_flat.append(comment)
-        return self._comments_flat
 
     def set_flair(self, *args, **kwargs):
         """Set flair for this submission.
@@ -1003,7 +969,7 @@ class Subreddit(Messageable, Refreshable):
         clear, otherwise returns None.
 
         """
-        csv = [{'user': x['user']} for x in self.get_flair_list()]
+        csv = [{'user': x['user']} for x in self.get_flair_list(limit=None)]
         if csv:
             return self.set_flair_csv(csv)
         else:
