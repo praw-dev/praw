@@ -97,7 +97,6 @@ class BasicHelper(object):
         self.un = 'PyAPITestUser2'
         self.other_user_name = 'PyAPITestUser3'
         self.invalid_user_name = 'PyAPITestInvalid'
-        self.other_mod_name = 'PyAPITestUser4'
 
         if self.r.config.is_reddit:
             self.comment_url = self.url('r/redditdev/comments/dtg4j/')
@@ -756,6 +755,47 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find removed submission.')
 
 
+class ModeratorSubredditTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
+
+    def test_get_mod_log(self):
+        self.assertTrue(list(self.subreddit.get_mod_log()))
+
+    def test_get_mod_log_with_mod_by_name(self):
+        other = self.r.get_redditor(self.other_user_name)
+        actions = list(self.subreddit.get_mod_log(mod=other.name))
+        self.assertTrue(actions)
+        self.assertTrue(all(x.mod_id36 == other.id for x in actions))
+        # TODO: Use the following when reddit PR #631 is added
+        # self.assertTrue(all(x.mod.lower() == other.name.lower()
+        #                    for x in actions))
+
+    def test_get_mod_log_with_mod_by_redditor_object(self):
+        other = self.r.get_redditor(self.other_user_name)
+        actions = list(self.subreddit.get_mod_log(mod=other))
+        self.assertTrue(actions)
+        self.assertTrue(all(x.mod_id36 == other.id for x in actions))
+        # TODO: Use the following when reddit PR #631 is added
+        # self.assertTrue(all(x.mod.lower() == other.name.lower()
+        #                    for x in actions))
+
+    def test_get_mod_log_with_action_filter(self):
+        actions = list(self.subreddit.get_mod_log(action='removelink'))
+        self.assertTrue(actions)
+        self.assertTrue(all(x.action == 'removelink' for x in actions))
+
+    def test_get_mod_queue(self):
+        mod_submissions = list(self.r.get_subreddit('mod').get_mod_queue())
+        self.assertTrue(len(mod_submissions) > 0)
+
+    def test_get_mod_queue_multi(self):
+        multi = '{0}+{1}'.format(self.sr, 'reddit_api_test2')
+        mod_submissions = list(self.r.get_subreddit(multi).get_mod_queue())
+        self.assertTrue(len(mod_submissions) > 0)
+
+
 class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
@@ -1251,40 +1291,6 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_attribute_error(self):
         self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
-
-    def test_get_mod_log(self):
-        mod_actions = list(self.subreddit.get_mod_log())
-        self.assertTrue(len(mod_actions) > 0)
-
-    def test_get_mod_log_with_mod(self):
-        by_other = list(self.subreddit.get_mod_log(mod=self.other_mod_name))
-        other_id = text_type(self.r.get_redditor(self.other_mod_name).id)
-        self.assertTrue(len(by_other) > 0)
-        self.assertTrue(text_type(obj.mod_id36) == other_id
-                        for obj in by_other)
-
-    def test_get_mod_log_with_mod_redditor_object(self):
-        other_mod = self.r.get_redditor(self.other_mod_name)
-        by_other = list(self.subreddit.get_mod_log(mod=other_mod))
-        other_id = text_type(self.r.get_redditor(self.other_mod_name).id)
-        self.assertTrue(len(by_other) > 0)
-        self.assertTrue(text_type(obj.mod_id36) == other_id
-                        for obj in by_other)
-
-    def test_get_mod_log_with_type(self):
-        remove_actions = list(self.subreddit.get_mod_log(type='removelink'))
-        self.assertTrue(len(remove_actions) > 0)
-        self.assertTrue(text_type(obj.action) == 'removelink'
-                        for obj in remove_actions)
-
-    def test_get_mod_queue(self):
-        mod_submissions = list(self.r.get_subreddit('mod').get_mod_queue())
-        self.assertTrue(len(mod_submissions) > 0)
-
-    def test_get_mod_queue_multi(self):
-        multi = '{0}+{1}'.format(self.sr, 'reddit_api_test2')
-        mod_submissions = list(self.r.get_subreddit(multi).get_mod_queue())
-        self.assertTrue(len(mod_submissions) > 0)
 
     def test_get_my_contributions(self):
         for subreddit in self.r.get_my_contributions():

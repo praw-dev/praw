@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '2.0rc1'
+__version__ = '2.0rc2'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -1155,19 +1155,19 @@ class ModLogMixin(AuthenticatedReddit):
     """Adds methods requring the 'modlog' scope (or mod access)."""
 
     @decorators.restrict_access(scope='modlog')
-    def get_mod_log(self, subreddit, limit=0, mod=None, type=None):
+    def get_mod_log(self, subreddit, limit=0, mod=None, action=None):
         """Return a get_content generator for moderation log items.
 
         :param mod: If given, only return the actions made by this moderator.
                     Both a moderator name or Redditor object can be used here.
-        :param data: If given, only return moderator actions of this type.
+        :param action: If given, only return entries for the specified action.
 
         """
+        params = {}
         if mod is not None:
-            mod = six.text_type(mod)
+            params['mod'] = six.text_type(mod)
         if type is not None:
-            type = six.text_type(type)
-        params = {'mod': mod, 'type': type}
+            params['type'] = six.text_type(action)
         return self.get_content(self.config['modlog'] %
                                 six.text_type(subreddit), limit=limit,
                                 params=params)
