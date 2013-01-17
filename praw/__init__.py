@@ -355,7 +355,7 @@ class BaseReddit(object):
                                               thing.id == place_holder):
                     return
             # Set/update the 'after' parameter for the next iteration
-            if root.get('after_field'):
+            if root.get(after_field):
                 params['after'] = root[after_field]
             else:
                 return
