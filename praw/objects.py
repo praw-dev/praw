@@ -23,6 +23,7 @@ that it can be saved and unsaved in the context of a logged in user.
 """
 
 import six
+from heapq import heappop, heappush
 from requests.compat import urljoin
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
@@ -543,6 +544,10 @@ class MoreComments(RedditContentObject):
         self.submission = None
         self._comments = None
 
+    def __cmp__(self, other):
+        # To work with heapq a "smaller" item is the one with the most comments
+        return -1 * cmp(self.count, other.count)
+
     def __unicode__(self):
         return '[More Comments: %d]' % self.count
 
@@ -681,6 +686,24 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
     """A class for submissions to reddit."""
 
     @staticmethod
+    def _extract_more_comments(tree):
+        """Return a list of MoreComments objects removed from tree."""
+        more_comments = []
+        queue = [(None, x) for x in tree]
+        while len(queue) > 0:
+            parent, comm = queue.pop(0)
+            if isinstance(comm, MoreComments):
+                heappush(more_comments, comm)
+                if parent:  # Remove from parent listing
+                    parent.replies.remove(comm)
+                elif parent is None:  # Remove from tree root
+                    tree.remove(comm)
+            else:
+                for item in comm.replies:
+                    queue.append((comm, item))
+        return more_comments
+
+    @staticmethod
     def from_id(reddit_session, subreddit_id):
         """Return an edit-only submission object based on the id."""
         pseudo_data = {'id': subreddit_id,
@@ -810,49 +833,38 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         if self._replaced_more:
             return []
 
-        queue = [(None, x) for x in self.comments]
         remaining = limit
-        skipped = []
+        more_comments = self._extract_more_comments(self.comments)
 
-        while len(queue) > 0:
-            parent, comm = queue.pop(0)
-            if isinstance(comm, MoreComments):
-                if parent:
-                    parent.replies.remove(comm)
-                elif parent is None:
-                    self._comments.remove(comm)
+        # Fetch largest more_comments until reaching the limit or the threshold
+        while more_comments:
+            item = heappop(more_comments)
+            # Skip after reaching the limit or below threshold
+            if remaining is 0 or item.count < threshold:
+                break
 
-                # Skip after reaching the limit or below threshold
-                if remaining is not None and remaining <= 0 \
-                        or comm.count < threshold:
-                    skipped.append(comm)
-                    continue
+            # Fetch new comments and decrease remaining if a request was made
+            new_comments = item.comments(update=False)
+            if new_comments is not None:
+                remaining -= 1
+            elif new_comments is None:
+                continue
 
-                new_comments = comm.comments(update=False)
-
-                # Don't count if no request was made
-                if new_comments is None:
-                    continue
-                elif remaining is not None:
-                    remaining -= 1
-
-                for comment in new_comments:
-                    if isinstance(comment, MoreComments):
-                        # pylint: disable-msg=W0212
-                        comment._update_submission(self)
-                        queue.insert(0, (0, comment))
-                    else:
-                        # pylint: disable-msg=W0212
-                        assert not comment._replies
-                        # Replies needs to be an empty list
-                        comment._replies = []
-                        self._insert_comment(comment)
-            else:
-                for item in comm.replies:
-                    queue.append((comm, item))
+            # Insert into the tree or re-add to the list of more_comments
+            for comment in new_comments:
+                if isinstance(comment, MoreComments):
+                    # pylint: disable-msg=W0212
+                    comment._update_submission(self)
+                    heappush(more_comments, comment)
+                else:
+                    # pylint: disable-msg=W0212
+                    assert not comment._replies
+                    # Replies needs to be an empty list
+                    comment._replies = []
+                    self._insert_comment(comment)
 
         self._replaced_more = True
-        return skipped
+        return more_comments
 
     def set_flair(self, *args, **kwargs):
         """Set flair for this submission.
