@@ -543,10 +543,13 @@ class MoreComments(RedditContentObject):
         super(MoreComments, self).__init__(reddit_session, json_dict)
         self.submission = None
         self._comments = None
-
-    def __cmp__(self, other):
+        
+    def __lt__(self, other):
         # To work with heapq a "smaller" item is the one with the most comments
-        return -1 * cmp(self.count, other.count)
+        # We are intentionally making the biggest element the smallest element to turn
+        # the min-heap implementation in heapq into a max-heap implementation for
+        # Submission.replace_more_comments()
+        return self.count > other.count
 
     def __unicode__(self):
         return '[More Comments: %d]' % self.count
