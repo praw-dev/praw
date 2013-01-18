@@ -845,7 +845,7 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
 
             # Fetch new comments and decrease remaining if a request was made
             new_comments = item.comments(update=False)
-            if new_comments is not None:
+            if new_comments is not None and remaining is not None:
                 remaining -= 1
             elif new_comments is None:
                 continue
