@@ -547,6 +547,11 @@ class MoreComments(RedditContentObject):
     def __cmp__(self, other):
         # To work with heapq a "smaller" item is the one with the most comments
         return -1 * cmp(self.count, other.count)
+        
+    def __lt__(self, other):
+        # To work with heapq a "smaller" item is the one with the most comments
+        # For Python3 as overriding the __cmp__ and cmp function are gone in Python 3
+        return self.count > other.count
 
     def __unicode__(self):
         return '[More Comments: %d]' % self.count
