@@ -18,7 +18,7 @@
 
 """Tests. Split into classes according to what they test."""
 
-from __future__ import unicode_literals
+from __future__ import print_function, unicode_literals
 
 import os
 import random
@@ -624,7 +624,7 @@ class ImageTests(unittest.TestCase, AuthenticatedHelper):
     def test_delete_image(self):
         images = self.subreddit.get_stylesheet()['images']
         for img_data in images[:5]:
-            print self.subreddit.delete_image(name=img_data['name'])
+            self.subreddit.delete_image(name=img_data['name'])
         updated_images = self.subreddit.get_stylesheet()['images']
         self.assertNotEqual(images, updated_images)
 

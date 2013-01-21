@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '2.0.3'
+__version__ = '2.0.4'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
