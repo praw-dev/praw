@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '2.0.2'
+__version__ = '2.0.3'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -66,6 +66,8 @@ class Config(object):  # pylint: disable-msg=R0903
                  'contributors':        'r/%s/about/contributors/',
                  'controversial':       'controversial/',
                  'del':                 'api/del/',
+                 'delete_sr_header':    'r/%s/api/delete_sr_header',
+                 'delete_sr_image':     'r/%s/api/delete_sr_img',
                  'distinguish':         'api/distinguish/',
                  'edit':                'api/editusertext/',
                  'feedback':            'api/feedback/',
@@ -885,6 +887,28 @@ class ModConfigMixin(AuthenticatedReddit):
                 'wikimode': wikimode,
                 'domain': domain}
         return self.request_json(self.config['site_admin'], data=data)
+
+    @decorators.restrict_access(scope='modconfig')
+    def delete_image(self, subreddit, name=None, header=False):
+        """Delete an image from the subreddit.
+
+        :param name: The name of the image if removing a CSS image.
+        :param header: When true, delete the subreddit header.
+        :returns: The json response from the server.
+
+        """
+        if name and header:
+            raise TypeError('Both name and header cannot be set.')
+        elif name:
+            data = {'img_name': name}
+            url = self.config['delete_sr_image']
+            # pylint: disable-msg=E1101,W0212
+            helpers._request.evict([self.config['stylesheet'] %
+                                    six.text_type(subreddit)])
+        else:
+            data = True
+            url = self.config['delete_sr_header']
+        return self.request_json(url % six.text_type(subreddit), data=data)
 
     @decorators.restrict_access(scope='modconfig')
     def get_settings(self, subreddit):

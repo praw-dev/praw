@@ -611,6 +611,99 @@ class FlairTemplateTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.clear_flair_templates(True)
 
 
+class ImageTests(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
+        test_dir = os.path.dirname(sys.modules[__name__].__file__)
+        self.image_path = os.path.join(test_dir, 'files', '{0}')
+
+    def test_delete_header(self):
+        self.subreddit.delete_image(header=True)
+
+    def test_delete_image(self):
+        images = self.subreddit.get_stylesheet()['images']
+        for img_data in images[:5]:
+            print self.subreddit.delete_image(name=img_data['name'])
+        updated_images = self.subreddit.get_stylesheet()['images']
+        self.assertNotEqual(images, updated_images)
+
+    def test_delete_invalid_image(self):
+        # TODO: Patch reddit to return error when this fails
+        self.subreddit.delete_image(name='invalid_image_name')
+
+    def test_delete_invalid_params(self):
+        self.assertRaises(TypeError, self.subreddit.delete_image, name='Foo',
+                          header=True)
+
+    def test_upload_invalid_file_path(self):
+        self.assertRaises(IOError, self.subreddit.upload_image, 'nonexistent')
+
+    def test_upload_uerinvalid_image(self):
+        image = self.image_path.format('white-square.tiff')
+        self.assertRaises(errors.ClientException, self.subreddit.upload_image,
+                          image)
+
+    def test_upload_invalid_image_too_small(self):
+        image = self.image_path.format('invalid.jpg')
+        self.assertRaises(errors.ClientException, self.subreddit.upload_image,
+                          image)
+
+    def test_upload_invalid_image_too_large(self):
+        image = self.image_path.format('big')
+        self.assertRaises(errors.ClientException, self.subreddit.upload_image,
+                          image)
+
+    def test_upload_invalid_params(self):
+        image = self.image_path.format('white-square.jpg')
+        self.assertRaises(TypeError, self.subreddit.upload_image, image,
+                          name='Foo', header=True)
+
+    def test_upload_invalid_image_path(self):
+        self.assertRaises(IOError, self.subreddit.upload_image, 'bar.png')
+
+    @reddit_only
+    def test_upload_jpg_header(self):
+        image = self.image_path.format('white-square.jpg')
+        self.assertTrue(self.subreddit.upload_image(image, header=True))
+
+    @reddit_only
+    def test_upload_jpg_image(self):
+        image = self.image_path.format('white-square.jpg')
+        self.assertTrue(self.subreddit.upload_image(image))
+
+    @reddit_only
+    def test_upload_jpg_image_named(self):
+        image = self.image_path.format('white-square.jpg')
+        name = text_type(uuid.uuid4())
+        self.assertTrue(self.subreddit.upload_image(image, name))
+        images_json = self.subreddit.get_stylesheet()['images']
+        self.assertTrue(name in text_type(x['name']) for x in images_json)
+
+    @reddit_only
+    def test_upload_jpg_image_no_extension(self):
+        image = self.image_path.format('white-square')
+        self.assertTrue(self.subreddit.upload_image(image))
+
+    @reddit_only
+    def test_upload_png_header(self):
+        image = self.image_path.format('white-square.png')
+        self.assertTrue(self.subreddit.upload_image(image, header=True))
+
+    @reddit_only
+    def test_upload_png_image(self):
+        image = self.image_path.format('white-square.png')
+        self.assertTrue(self.subreddit.upload_image(image))
+
+    @reddit_only
+    def test_upload_png_image_named(self):
+        image = self.image_path.format('white-square.png')
+        name = text_type(uuid.uuid4())
+        self.assertTrue(self.subreddit.upload_image(image, name))
+        images_json = self.subreddit.get_stylesheet()['images']
+        self.assertTrue(name in text_type(x['name']) for x in images_json)
+
+
 class LocalOnlyTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
@@ -1342,81 +1435,6 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         for subreddit in self.r.get_my_reddits():
             if text_type(subreddit) == self.sr:
                 self.fail('Found reddit in my_reddits.')
-
-
-class UploadImageTests(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
-        test_dir = os.path.dirname(sys.modules[__name__].__file__)
-        self.image_path = os.path.join(test_dir, 'files', '{0}')
-
-    def test_invalid_file_path(self):
-        self.assertRaises(IOError, self.subreddit.upload_image, 'nonexistent')
-
-    def test_invalid_image(self):
-        image = self.image_path.format('white-square.tiff')
-        self.assertRaises(errors.ClientException, self.subreddit.upload_image,
-                          image)
-
-    def test_invalid_image_too_small(self):
-        image = self.image_path.format('invalid.jpg')
-        self.assertRaises(errors.ClientException, self.subreddit.upload_image,
-                          image)
-
-    def test_invalid_image_too_large(self):
-        image = self.image_path.format('big')
-        self.assertRaises(errors.ClientException, self.subreddit.upload_image,
-                          image)
-
-    def test_invalid_params(self):
-        image = self.image_path.format('white-square.jpg')
-        self.assertRaises(TypeError, self.subreddit.upload_image, image,
-                          name='Foo', header=True)
-
-    def test_invalid_image_path(self):
-        self.assertRaises(IOError, self.subreddit.upload_image, 'bar.png')
-
-    @reddit_only
-    def test_jpg_header(self):
-        image = self.image_path.format('white-square.jpg')
-        self.assertTrue(self.subreddit.upload_image(image, header=True))
-
-    @reddit_only
-    def test_jpg_image(self):
-        image = self.image_path.format('white-square.jpg')
-        self.assertTrue(self.subreddit.upload_image(image))
-
-    @reddit_only
-    def test_jpg_image_named(self):
-        image = self.image_path.format('white-square.jpg')
-        name = text_type(uuid.uuid4())
-        self.assertTrue(self.subreddit.upload_image(image, name))
-        images_json = self.subreddit.get_stylesheet()['images']
-        self.assertTrue(name in text_type(x['name']) for x in images_json)
-
-    @reddit_only
-    def test_jpg_image_no_extension(self):
-        image = self.image_path.format('white-square')
-        self.assertTrue(self.subreddit.upload_image(image))
-
-    @reddit_only
-    def test_png_header(self):
-        image = self.image_path.format('white-square.png')
-        self.assertTrue(self.subreddit.upload_image(image, header=True))
-
-    @reddit_only
-    def test_png_image(self):
-        image = self.image_path.format('white-square.png')
-        self.assertTrue(self.subreddit.upload_image(image))
-
-    @reddit_only
-    def test_png_image_named(self):
-        image = self.image_path.format('white-square.png')
-        name = text_type(uuid.uuid4())
-        self.assertTrue(self.subreddit.upload_image(image, name))
-        images_json = self.subreddit.get_stylesheet()['images']
-        self.assertTrue(name in text_type(x['name']) for x in images_json)
 
 
 if __name__ == '__main__':
