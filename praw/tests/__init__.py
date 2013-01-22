@@ -221,6 +221,11 @@ class BasicTest(unittest.TestCase, BasicHelper):
         num = 50
         self.assertEqual(num, len(list(self.r.get_all_comments(limit=num))))
 
+    def test_get_all_comments_gilded(self):
+        gilded_comments = self.r.get_all_comments(gilded_only=True)
+        for comment in gilded_comments:
+            self.assertTrue(comment.gilded >= 0)
+
     def test_get_comments(self):
         num = 50
         result = self.r.get_comments(self.sr, limit=num)
