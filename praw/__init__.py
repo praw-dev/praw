@@ -111,6 +111,8 @@ class Config(object):  # pylint: disable-msg=R0903
                  'submit':              'api/submit/',
                  'subreddit':           'r/%s/',
                  'subreddit_about':     'r/%s/about/',
+                 'subreddit_comments':  'r/%s/comments/',
+                 'sub_comments_gilded': 'r/%s/comments/gilded/',
                  'subreddit_css':       'api/subreddit_stylesheet/',
                  'subreddit_settings':  'r/%s/about/edit/',
                  'subscribe':           'api/subscribe/',
@@ -519,9 +521,25 @@ class UnauthenticatedReddit(BaseReddit):
             data.update(captcha)
         return self.request_json(self.config['register'], data=data)
 
-    def get_all_comments(self, *args, **kwargs):
-        """Return all comments (up to the reddit limit)."""
-        return self.get_content(self.config['comments'], *args, **kwargs)
+    def get_all_comments(self, gilded_only=False, *args, **kwargs):
+        """Return all comments (up to the reddit limit).
+
+        :param gilded_only: If True only return gilded comments.
+
+        """
+        return self.get_comments('all', gilded_only, *args, **kwargs)
+
+    def get_comments(self, subreddit, gilded_only=False, *args, **kwargs):
+        """Return latest comments on the given subreddit.
+
+        :param gilded_only: If True only return gilded comments.
+
+        """
+        if gilded_only:
+            url = self.config['sub_comments_gilded'] % six.text_type(subreddit)
+        else:
+            url = self.config['subreddit_comments'] % six.text_type(subreddit)
+        return self.get_content(url, *args, **kwargs)
 
     def get_controversial(self, *args, **kwargs):
         """Return controversial page."""
