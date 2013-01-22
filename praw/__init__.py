@@ -111,6 +111,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'submit':              'api/submit/',
                  'subreddit':           'r/%s/',
                  'subreddit_about':     'r/%s/about/',
+                 'subreddit_comments':  'r/%s/comments/',
                  'subreddit_css':       'api/subreddit_stylesheet/',
                  'subreddit_settings':  'r/%s/about/edit/',
                  'subscribe':           'api/subscribe/',
@@ -521,7 +522,12 @@ class UnauthenticatedReddit(BaseReddit):
 
     def get_all_comments(self, *args, **kwargs):
         """Return all comments (up to the reddit limit)."""
-        return self.get_content(self.config['comments'], *args, **kwargs)
+        return self.get_comments('all', args, kwargs)
+
+    def get_comments(self, subreddit, *args, **kwargs):
+        """Return latest comments on the given subreddit."""
+        return self.get_content(self.config['subreddit_comments'] %
+                                six.text_type(subreddit), *args, **kwargs)
 
     def get_controversial(self, *args, **kwargs):
         """Return controversial page."""

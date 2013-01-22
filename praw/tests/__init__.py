@@ -221,6 +221,11 @@ class BasicTest(unittest.TestCase, BasicHelper):
         num = 50
         self.assertEqual(num, len(list(self.r.get_all_comments(limit=num))))
 
+    def test_get_comments(self):
+        num = 50
+        result = self.r.get_comments(self.sr, limit=num)
+        self.assertEqual(num, len(list(result)))
+
     @reddit_only
     def test_get_controversial(self):
         num = 50

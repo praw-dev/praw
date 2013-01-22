@@ -898,6 +898,7 @@ class Subreddit(Messageable, Refreshable):
                 ('configure_flair', MFMix.configure_flair),
                 ('delete_image', MCMix.delete_image),
                 ('get_banned', MOMix.get_banned),
+                ('get_comments', UR.get_comments),
                 ('get_contributors', MOMix.get_contributors),
                 ('get_flair', UR.get_flair),
                 ('get_flair_list', MFMix.get_flair_list),
@@ -928,7 +929,6 @@ class Subreddit(Messageable, Refreshable):
                                             is_sub=True)
 
     # Generic listing selectors
-    get_comments = _get_section('comments')
     get_controversial = _get_sorter('controversial')
     get_hot = _get_sorter('')
     get_new = _get_sorter('new')
