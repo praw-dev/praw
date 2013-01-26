@@ -120,6 +120,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'unfriend':            'api/unfriend/',
                  'unhide':              'api/unhide/',
                  'unmarknsfw':          'api/unmarknsfw/',
+                 'unmoderated':         'r/%s/about/unmoderated/',
                  'unread':              'message/unread/',
                  'unread_message':      'api/unread_message/',
                  'unsave':              'api/unsave/',
@@ -1254,6 +1255,12 @@ class ModOnlyMixin(AuthenticatedReddit):
         """Return the stylesheet and images for the given subreddit."""
         return self.request_json(self.config['stylesheet'] %
                                  six.text_type(subreddit))['data']
+
+    @decorators.restrict_access(scope=None, mod=True)
+    def get_unmoderated(self, subreddit='mod', limit=0):
+        """Return a get_content generator of unmoderated items."""
+        return self.get_content(self.config['unmoderated'] %
+                                six.text_type(subreddit), limit=limit)
 
 
 class MySubredditsMixin(AuthenticatedReddit):
