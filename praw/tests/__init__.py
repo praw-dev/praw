@@ -898,6 +898,10 @@ class ModeratorSubredditTest(unittest.TestCase, AuthenticatedHelper):
         mod_submissions = list(self.r.get_subreddit(multi).get_mod_queue())
         self.assertTrue(len(mod_submissions) > 0)
 
+    def test_get_unmoderated(self):
+        submissions = list(self.subreddit.get_unmoderated())
+        self.assertTrue(len(submissions) > 0)
+
 
 class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
