@@ -909,6 +909,7 @@ class Subreddit(Messageable, Refreshable):
                 ('get_settings', MCMix.get_settings),
                 ('get_spam', MOMix.get_spam),
                 ('get_stylesheet', MOMix.get_stylesheet),
+                ('get_unmoderated', MOMix.get_unmoderated),
                 ('set_flair', MFMix.set_flair),
                 ('set_flair_csv', MFMix.set_flair_csv),
                 ('set_settings', MCMix.set_settings),
