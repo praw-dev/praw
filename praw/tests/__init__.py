@@ -870,19 +870,17 @@ class ModeratorSubredditTest(unittest.TestCase, AuthenticatedHelper):
         other = self.r.get_redditor(self.other_user_name)
         actions = list(self.subreddit.get_mod_log(mod=other.name))
         self.assertTrue(actions)
-        self.assertTrue(all(x.mod_id36 == other.id for x in actions))
-        # TODO: Use the following when reddit PR #631 is added
-        # self.assertTrue(all(x.mod.lower() == other.name.lower()
-        #                    for x in actions))
+        #self.assertTrue(all(x.mod_id36 == other.id for x in actions))
+        self.assertTrue(all(x.mod.lower() == other.name.lower()
+                            for x in actions))
 
     def test_get_mod_log_with_mod_by_redditor_object(self):
         other = self.r.get_redditor(self.other_user_name)
         actions = list(self.subreddit.get_mod_log(mod=other))
         self.assertTrue(actions)
-        self.assertTrue(all(x.mod_id36 == other.id for x in actions))
-        # TODO: Use the following when reddit PR #631 is added
-        # self.assertTrue(all(x.mod.lower() == other.name.lower()
-        #                    for x in actions))
+        #self.assertTrue(all(x.mod_id36 == other.id for x in actions))
+        self.assertTrue(all(x.mod.lower() == other.name.lower()
+                            for x in actions))
 
     def test_get_mod_log_with_action_filter(self):
         actions = list(self.subreddit.get_mod_log(action='removelink'))
