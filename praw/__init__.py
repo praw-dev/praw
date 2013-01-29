@@ -1122,7 +1122,6 @@ class ModFlairMixin(AuthenticatedReddit):
                 'link_flair_self_assign_enabled': link_flair_self_assign}
         return self.request_json(self.config['flairconfig'], data=data)
 
-    @decorators.restrict_access(scope='modflair')
     def get_flair_list(self, subreddit, limit=0):
         """Return a get_content generator of flair mappings.
 
