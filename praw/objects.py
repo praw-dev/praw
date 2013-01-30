@@ -658,6 +658,11 @@ class LoggedInRedditor(Redditor):
     get_liked = _get_section('liked')
     get_saved = _get_section('saved')
 
+    _methods = (('get_inbox', PMMix.get_inbox),
+                ('get_mod_mail', PMMix.get_mod_mail),
+                ('get_sent', PMMix.get_sent),
+                ('get_unread', PMMix.get_unread))
+
     def get_cached_moderated_reddits(self):
         """Return a cached dictionary of the user's moderated reddits.
 
