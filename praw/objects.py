@@ -727,6 +727,7 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         return Submission(reddit_session, pseudo_data)
 
     @staticmethod
+    @restrict_access(scope='read')
     def from_url(reddit_session, url, comment_limit=0, comment_sort=None,
                  comments_only=False):
         """Request the url and return a Submission object.

@@ -531,6 +531,7 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_comments('all', gilded_only, *args, **kwargs)
 
+    @decorators.restrict_access(scope='read')
     def get_comments(self, subreddit, gilded_only=False, *args, **kwargs):
         """Return latest comments on the given subreddit.
 
@@ -543,6 +544,7 @@ class UnauthenticatedReddit(BaseReddit):
             url = self.config['subreddit_comments'] % six.text_type(subreddit)
         return self.get_content(url, *args, **kwargs)
 
+    @decorators.restrict_access(scope='read')
     def get_controversial(self, *args, **kwargs):
         """Return controversial page."""
         return self.get_content(self.config['controversial'], *args, **kwargs)
@@ -554,6 +556,7 @@ class UnauthenticatedReddit(BaseReddit):
                                  six.text_type(subreddit), params=params)
         return data['users'][0]
 
+    @decorators.restrict_access(scope='read')
     def get_front_page(self, *args, **kwargs):
         """Return the front page submissions.
 
@@ -600,6 +603,7 @@ class UnauthenticatedReddit(BaseReddit):
         return self.request_json(self.config['moderators'] %
                                  six.text_type(subreddit))
 
+    @decorators.restrict_access(scope='read')
     def get_new(self, *args, **kwargs):
         """Return new page."""
         return self.get_content(self.config['new'], *args, **kwargs)
@@ -619,7 +623,6 @@ class UnauthenticatedReddit(BaseReddit):
         """Return a Redditor instance for the user_name specified."""
         return objects.Redditor(self, user_name, *args, **kwargs)
 
-    @decorators.restrict_access(scope='read')
     def get_submission(self, url=None, submission_id=None, comment_limit=0,
                        comment_sort=None):
         """Return a Submission object for the given url or submission_id.
@@ -645,6 +648,7 @@ class UnauthenticatedReddit(BaseReddit):
             return self.get_random_subreddit()
         return objects.Subreddit(self, subreddit_name, *args, **kwargs)
 
+    @decorators.restrict_access(scope='read')
     def get_top(self, *args, **kwargs):
         """Return top page."""
         return self.get_content(self.config['top'], *args, **kwargs)
