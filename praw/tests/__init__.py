@@ -150,6 +150,13 @@ class AccessControlTests(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
 
+    def test_exception_get_flair_list_authenticated(self):
+        self.r.login(self.un, '1111')
+        self.assertTrue(self.r.get_flair_list(self.sr))
+
+    def test_exception_get_flair_list_unauthenticated(self):
+        self.assertTrue(self.r.get_flair_list(self.sr))
+
     def test_login_or_oauth_required_not_logged_in(self):
         self.assertRaises(errors.LoginOrScopeRequired,
                           self.r.add_flair_template, self.sr, 'foo')

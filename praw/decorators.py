@@ -302,12 +302,13 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
             # This function sets _use_oauth for one time use only.
             # Verify that statement is actually true.
             assert not obj._use_oauth  # pylint: disable-msg=W0212
+            login_req = login and function.__name__ not in login_exceptions
 
             if scope and obj.has_scope(scope):
                 obj._use_oauth = True  # pylint: disable-msg=W0212
             elif oauth_only:
                 raise errors.OAuthScopeRequired(function.__name__, scope)
-            elif login and obj.is_logged_in():
+            elif login_req and obj.is_logged_in():
                 if subreddit is False:
                     # Now fetch the subreddit attribute. There is no good
                     # reason for it to not be set during a logged in session.
@@ -320,7 +321,7 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
                             function.__name__, scope)
                     else:
                         raise errors.ModeratorRequired(function.__name__)
-            elif login and function.__name__ not in login_exceptions:
+            elif login_req:
                 if scope:
                     raise errors.LoginOrScopeRequired(function.__name__, scope)
                 raise errors.LoginRequired(function.__name__)
