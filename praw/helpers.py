@@ -36,6 +36,7 @@ def _get_section(subpath=''):
 
 def _get_sorter(subpath='', **defaults):
     """Return function to generate specific subreddit Submission listings."""
+    @restrict_access(scope='read')
     def _sorted(self, *args, **kwargs):
         if not kwargs.get('params'):
             kwargs['params'] = {}

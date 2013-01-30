@@ -1061,6 +1061,39 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         self.assertEqual(method1, method2)
 
     @reddit_only
+    def test_scope_read_get_front_page(self):
+        self.r.refresh_access_information(self.refresh_token['mysubreddits'])
+        subscribed = list(self.r.get_my_reddits(limit=None))
+        self.r.refresh_access_information(self.refresh_token['read'])
+        for post in self.r.get_front_page():
+            self.assertTrue(post.subreddit in subscribed)
+
+    @reddit_only
+    def test_scope_read_get_sub_listingr(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+        subreddit = self.r.get_subreddit(self.priv_sr)
+        self.assertTrue(len(list(subreddit.get_top())))
+
+    @reddit_only
+    def test_scope_read_get_submission_by_url(self):
+        url = ("http://www.reddit.com/r/reddit_api_test_priv/comments/16kbb7/"
+               "google/")
+        self.r.refresh_access_information(self.refresh_token['read'])
+        submission = Submission.from_url(self.r, url)
+        self.assertTrue(submission.num_comments != 0)
+
+    @reddit_only
+    def test_scope_read_priv_sr_comments(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+        self.assertTrue(len(list(self.r.get_comments(self.priv_sr))))
+
+    @reddit_only
+    def test_scope_read_priv_sub_comments(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+        submission = Submission.from_id(self.r, self.priv_submission_id)
+        self.assertTrue(len(list(submission.comments)))
+
+    @reddit_only
     def test_scope_submit(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
         retval = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
