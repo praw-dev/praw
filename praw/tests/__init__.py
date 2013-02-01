@@ -1098,6 +1098,9 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
         self.other_user = self.r.get_redditor(self.other_user_name)
 
+    def test_duplicate_login(self):
+        self.r.login(self.other_user_name, '1111')
+
     def test_friend(self):
         self.other_user.friend()
 

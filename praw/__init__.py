@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '2.0.6'
+__version__ = '2.0.7'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -750,10 +750,16 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         return self.request_json(self.config['accept_mod_invite'], data=data)
 
     def clear_authentication(self):
-        """Clear any existing authentication on the reddit object."""
+        """Clear any existing authentication on the reddit object.
+
+        This function is implicitly called on `login` and
+        `set_access_credentials`.
+
+        """
         self._authentication = None
         self.access_token = None
         self.refresh_token = None
+        self.http.cookies.clear()
         self.user = None
 
     def get_access_information(self, code,  # pylint: disable-msg=W0221
@@ -822,6 +828,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
         data = {'passwd': pswd,
                 'user': user}
+        self.clear_authentication()
         self.request_json(self.config['login'], data=data)
         # Update authentication settings
         self._authentication = True
@@ -867,6 +874,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """
         if not isinstance(scope, set):
             raise TypeError('`scope` parameter must be a set')
+        self.clear_authentication()
         # Update authentication settings
         self._authentication = scope
         self.access_token = access_token
