@@ -1325,14 +1325,19 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         return self.get_content(self.config['sent'], limit=limit)
 
     @decorators.restrict_access(scope='privatemessages')
-    def get_unread(self, limit=0, unset_has_mail=False):
+    def get_unread(self, limit=0, unset_has_mail=False, update_user=False):
         """Return a generator for unread messages.
 
         :param unset_has_mail: When true, clear the has_mail flag (orangered)
             for the user.
+        :param update_user: If both unset_has_mail and update user is true, set
+            the has_mail attribute of the logged-in user to False.
 
         """
         params = {'mark': 'true'} if unset_has_mail else None
+        # Update the user object
+        if unset_has_mail and update_user and hasattr(self.user, 'has_mail'):
+            self.user.has_mail = False
         return self.get_content(self.config['unread'], limit=limit,
                                 params=params)
 

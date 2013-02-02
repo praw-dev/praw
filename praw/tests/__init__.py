@@ -765,6 +765,13 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
+    def test_get_unread_update_has_mail(self):
+        self.r.send_message(self.other_user_name, 'Update has mail', 'body')
+        self.r.login(self.other_user_name, '1111')
+        self.assertTrue(self.r.user.has_mail)
+        self.r.get_unread(limit=1, unset_has_mail=True, update_user=True)
+        self.assertFalse(self.r.user.has_mail)
+
     def test_mark_as_read(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyAPITestUser3', '1111')
