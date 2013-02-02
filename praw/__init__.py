@@ -833,8 +833,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.request_json(self.config['login'], data=data)
         # Update authentication settings
         self._authentication = True
-        self.access_token = None
-        self.refresh_token = None
         self.user = self.get_redditor(user)
         self.user.__class__ = objects.LoggedInRedditor
 
@@ -881,12 +879,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.access_token = access_token
         self.refresh_token = refresh_token
         # Update the user object
-        if not update_user:
-            pass
-        elif 'identity' in scope:
+        if update_user and 'identity' in scope:
             self.user = self.get_me()
-        else:
-            self.user = None
 
 
 class ModConfigMixin(AuthenticatedReddit):
