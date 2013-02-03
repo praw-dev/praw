@@ -1098,11 +1098,24 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
         self.other_user = self.r.get_redditor(self.other_user_name)
 
+    def test_add_remove_friends(self):
+        def verify_add():
+            self.other_user.friend()
+            self.assertTrue(self.other_user in self.r.user.get_friends())
+
+        def verify_remove():
+            self.other_user.unfriend()
+            self.assertTrue(self.other_user not in self.r.user.get_friends())
+
+        if self.other_user in self.r.user.get_friends():
+            verify_remove()
+            verify_add()
+        else:
+            verify_add()
+            verify_remove()
+
     def test_duplicate_login(self):
         self.r.login(self.other_user_name, '1111')
-
-    def test_friend(self):
-        self.other_user.friend()
 
     def test_get_disliked(self):
         # Pulls from get_liked. Problem here may come from get_liked
@@ -1129,9 +1142,6 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_get_redditor(self):
         self.assertEqual(self.other_user_id, self.other_user.id)
-
-    def test_unfriend(self):
-        self.other_user.unfriend()
 
     def test_user_set_on_login(self):
         self.assertTrue(isinstance(self.r.user, LoggedInRedditor))

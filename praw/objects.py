@@ -617,6 +617,7 @@ class Redditor(Messageable, Refreshable):
         :returns: The json response from the server.
 
         """
+        _request.evict([self.reddit_session.config['friends']])
         return _modify_relationship('friend')(self.reddit_session.user, self)
 
     def mark_as_read(self, messages, unread=False):
@@ -645,6 +646,7 @@ class Redditor(Messageable, Refreshable):
         :returns: The json response from the server.
 
         """
+        _request.evict([self.reddit_session.config['friends']])
         return _modify_relationship('friend', unlink=True)(
             self.reddit_session.user, self)
 
@@ -658,6 +660,11 @@ class LoggedInRedditor(Redditor):
     get_liked = _get_section('liked')
     get_saved = _get_section('saved')
 
+    def get_blocked(self):
+        """Return a UserList of Redditors with whom the user has blocked."""
+        url = self.reddit_session.config['friends']
+        return self.reddit_session.request_json(url)[1]
+
     def get_cached_moderated_reddits(self):
         """Return a cached dictionary of the user's moderated reddits.
 
@@ -670,6 +677,11 @@ class LoggedInRedditor(Redditor):
             for sub in self.reddit_session.get_my_moderation(limit=None):
                 self._mod_subs[six.text_type(sub).lower()] = sub
         return self._mod_subs
+
+    def get_friends(self):
+        """Return a UserList of Redditors with whom the user has friended."""
+        url = self.reddit_session.config['friends']
+        return self.reddit_session.request_json(url)[0]
 
 
 class ModAction(RedditContentObject):
@@ -1028,6 +1040,9 @@ class UserList(RedditContentObject):
 
     def __len__(self):
         return len(self.children)
+
+    def __unicode__(self):
+        return six.text_type(self.children)
 
 
 def _add_aliases():

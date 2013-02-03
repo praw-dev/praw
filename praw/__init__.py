@@ -77,6 +77,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'flairlist':           'r/%s/api/flairlist/',
                  'flairtemplate':       'api/flairtemplate/',
                  'friend':              'api/friend/',
+                 'friends':             'prefs/friends/',
                  'help':                'help/',
                  'hide':                'api/hide/',
                  'inbox':               'message/inbox/',
@@ -129,7 +130,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'user_about':          'user/%s/about/',
                  'username_available':  'api/username_available/',
                  'vote':                'api/vote/'}
-    SSL_PATHS = ('access_token_url', 'authorize', 'login')
+    SSL_PATHS = ('access_token_url', 'authorize', 'friends', 'login')
 
     def __init__(self, site_name):
         def config_boolean(item):
