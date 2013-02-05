@@ -130,7 +130,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'user_about':          'user/%s/about/',
                  'username_available':  'api/username_available/',
                  'vote':                'api/vote/'}
-    SSL_PATHS = ('access_token_url', 'authorize', 'friends', 'login')
+    SSL_PATHS = ('access_token_url', 'authorize', 'login')
 
     def __init__(self, site_name):
         def config_boolean(item):

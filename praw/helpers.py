@@ -18,8 +18,8 @@ import sys
 import six
 from requests.compat import urljoin
 from praw.decorators import Memoize, SleepAfter, restrict_access
-from praw.errors import (OAuthException, OAuthInsufficientScope,
-                         OAuthInvalidToken)
+from praw.errors import (ClientException, OAuthException,
+                         OAuthInsufficientScope, OAuthInvalidToken)
 
 
 def _get_section(subpath=''):
@@ -134,7 +134,11 @@ def _request(reddit_session, url, params=None, data=None, timeout=45,
             if response and response.raw._fp.will_close:
                 response.raw._fp.close()
         if response.status_code == 302:
+            prev_url = url
             url = urljoin(url, response.headers['location'])
+            if 'random' not in prev_url:
+                raise ClientException('Unexpected redirect from {0} to {1}'
+                                      .format(prev_url, url))
         else:
             break
     # Raise specific errors on some status codes
