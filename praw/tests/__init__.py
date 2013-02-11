@@ -417,6 +417,14 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(cf_len < acf_len)
         self.assertTrue(saved)
 
+    def test_comments_method(self):
+        for item in self.submission.comments:
+            if isinstance(item, MoreComments):
+                self.assertTrue(item.comments())
+                break
+        else:
+            self.fail('Could not find MoreComment object.')
+
 
 class CommentEditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):

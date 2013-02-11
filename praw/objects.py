@@ -478,8 +478,9 @@ class Comment(Editable, Inboxable, Moderatable, Reportable, Voteable):
         # pylint: disable-msg=W0212
         submission._comments_by_id[self.name] = self
         self._submission = submission
-        for reply in self._replies:
-            reply._update_submission(submission)
+        if self._replies:
+            for reply in self._replies:
+                reply._update_submission(submission)
 
     @property
     def is_root(self):
