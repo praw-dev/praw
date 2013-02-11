@@ -9,7 +9,7 @@ PACKAGE_NAME = 'praw'
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 INIT = open(os.path.join(HERE, PACKAGE_NAME, '__init__.py')).read()
-README = open(os.path.join(HERE, 'README.md')).read()
+README = open(os.path.join(HERE, 'README.rst')).read()
 
 VERSION = re.search("__version__ = '([^']+)'", INIT).group(1)
 
