@@ -26,7 +26,8 @@ PRAW 2.0.5
 
  * **[FEATURE]** Add the parameter ``gilded_only`` to ``get_comments`` and
    ``get_all_comments`` methods in ``Subreddit`` and base reddit objects. If
-   ``gilded_only`` is set to ``True``, then only gilded comments will be returned.
+   ``gilded_only`` is set to ``True``, then only gilded comments will be
+   returned.
  * **[FEATURE]** Add ``get_comments`` method to Reddit object. It works like
    ``get_comments`` in Subreddit objects except it takes the subreddit as the
    first argument.
@@ -39,8 +40,9 @@ PRAW 2.0.4
 PRAW 2.0.3
 ----------
 
- * **[FEATURE]** Add ``delete_image`` method to Subreddit objects (also callable
-   on the base reddit object with the subreddit as the first argument):
+ * **[FEATURE]** Add ``delete_image`` method to Subreddit objects (also
+   callable on the base reddit object with the subreddit as the first
+   argument):
  * **[CHANGE]** PRAW now requires version 0.4 of ``update_checker``.
 
 PRAW 2.0.2
