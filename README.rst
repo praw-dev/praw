@@ -34,19 +34,19 @@ This will display something similar to the following:
 Installation
 ------------
 
-You can install via `pip`
+You can install via `pip <http://pypi.python.org/pypi/pip>`_
 
 .. code-block:: bash
 
    $ pip install praw
 
-Or via `easy_install`
+Or via `easy_install <http://pypi.python.org/pypi/setuptools>`_
 
 .. code-block:: bash
 
     $ easy_install praw
 
-You can also install via `setup.py`, this requires either a download or
+You can also install via ``setup.py``, this requires either a download or
 checkout of the code first. Downloading PRAW from `the cheeseshop
 <http://pypi.python.org/pypi/praw>`_ is recommended, as downloading from github
 or doing a checkout may give you a between releases unstable codestate.
