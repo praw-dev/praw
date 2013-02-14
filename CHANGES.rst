@@ -13,6 +13,78 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
+PRAW 2.0.12
+-----------
+
+ * **[FEATURE]** PRAW can now decode HTML entities, see `#186
+   <https://github.com/praw-dev/praw/issues/186>`_. The parameter
+   ``decode_html_entities`` (default ``False``) has been added to the
+   configuration file to control whether this feature is activated.
+ * **[BUGFIX]** Requesting user specific data such as ``get_unread`` while
+   OAuthenticated as a user, then switching OAuthentication to another user and
+   re-requesting the data within ``cache_timeout`` would return the cached
+   results matching the previously authenticated user.
+ * **[BUGFIX]** ``(un)friend`` used to raise an ``AttributeError`` when called
+   without user/pswd authentication. It now properly raises ``LoginRequired``.
+
+PRAW 2.0.11
+-----------
+
+ * **[FEATURE]** Add the ``raise_captcha_exception`` argument to
+   ``RequireCaptcha`` decorator.  When ``raise_captcha_exception`` is ``True``
+   (default ``False``), PRAW wil not prompt for the captcha information but
+   instead raise a ``InvalidCaptcha`` exception.
+ * **[REDDIT]** An `upstream change
+   <http://www.reddit.com/r/changelog/comments/191ngp/reddit_change_rising_is_now_its_own_tab_instead/>`_
+   has split new and rising into their own independent listings. Use the new
+   ``get_rising`` method instead of the old ``get_new_by_rising`` and
+   ``get_new`` instead of ``get_new_by_date``.
+ * **[CHANGE]** The dependency on ``update_checker`` has been increased from >=
+   0.4 to >= 0.5
+ * **[BUGFIX]** After inviting a moderator invite, the cached set of moderated
+   subreddits would not be updated with the new subreddit. Causing
+   ``@restrict_access`` to prevent performing moderater actions in the
+   subreddit.
+
+PRAW 2.0.10
+-----------
+
+ * **[FEATURE]** Add ``delete_flair`` method to ``Submission`` and ``Reddit``
+   objects.
+
+PRAW 2.0.9
+----------
+
+ * **[FEATURE]** Add parameter ``update_user`` (default False) to
+   ``get_unread`` if it and ``unset_has_mail`` are both True, then the ``user``
+   object in the ``reddit`` object will have it's ``has_mail`` attribute set to
+   ``False``.
+ * **[FEATURE]** Add ``get_friends`` and ``get_blocked`` to
+   ``LoggedInRedditor``.
+ * **[FEATURE]** Add the *read* scope to ``get_all_comments`` in the ``Reddit``
+   object.
+ * **[FEATURE]** Add the *read* scope to ``get_comments`` and the subreddit
+   listings such as ``get_new`` in the ``Reddit`` and ``Subreddit`` object.
+ * **[BUGFIX]** Fix bug in ``MoreComments.comments``.
+ * **[CHANGE]** Break ``get_friends`` and ``get_banned`` until there is an
+   upstream fix to mean that does not require ssl for those endpoints.
+
+PRAW 2.0.8
+----------
+
+ * **[FEATURE]** Add ``unset_has_mail`` parameter to ``get_unread``, if it's
+   set to ``True``, then it will set ``has_mail`` for the logged-in user to
+   ``False``.
+
+PRAW 2.0.7
+----------
+
+ * **[REDDIT]** A `reddit update <`http://redd.it/17oer0>`_ broke PRAW's
+   ability to use ``login`` if it was authenticated as a logged-in user. This
+   update adds the ability to re-login.
+ * **[CHANGE]** ``get_flair_list`` can now be used when logged-in as a regular
+   user, being logged in as a mod of the subreddit is no longer required.
+
 PRAW 2.0.6
 ----------
 
@@ -66,12 +138,14 @@ PRAW 2.0.0
  * **[FEATURE]** Add the following API methods to Subreddit objects (also
    callable on the base reddit object with the subreddit as the first
    argument):
-    * ``accept_moderator_invite`` -- accept a pending moderator invite
-    * ``get_mod_log``  -- return ModAction objects for each item (run
-      vars(item), to see available attributes)
-    * ``configure_flair``  -- interface to subreddit flair options
-    * ``upload_image`` -- upload an image for the subreddit header or use in
-      CSS
+
+   * ``accept_moderator_invite`` -- accept a pending moderator invite
+   * ``get_mod_log``  -- return ModAction objects for each item (run
+     vars(item), to see available attributes)
+   * ``configure_flair``  -- interface to subreddit flair options
+   * ``upload_image`` -- upload an image for the subreddit header or use in
+     CSS
+
  * **[FEATURE]** Support 'admin' distinguishing of items via ``distinguish``
  * **[FEATURE]** Ability to specify max-character limit for object-to-string
    representations via ``output_chars_limit`` in ``praw.ini``
