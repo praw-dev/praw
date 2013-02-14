@@ -386,7 +386,7 @@ class BaseReddit(object):
         :param url: the url to grab content from.
         :param params: a dictionary containing the GET data to put in the url
         :param data: a dictionary containing the extra data to submit
-        :param as_objects: if true return reddit objects else raw json dict.
+        :param as_objects: if True return reddit objects else raw json dict.
         :returns: JSON processed page
 
         """
