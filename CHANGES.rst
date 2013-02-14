@@ -13,6 +13,45 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
+PRAW 2.0.10
+-----------
+
+ * **[FEATURE]** Add ``delete_flair`` method to ``Submission`` and ``Reddit``
+   objects.
+
+PRAW 2.0.9
+----------
+
+ * **[FEATURE]** Add parameter ``update_user`` (default False) to
+   ``get_unread`` if it and ``unset_has_mail`` are both True, then the ``user``
+   object in the ``reddit`` object will have it's ``has_mail`` attribute set to
+   ``False``.
+ * **[FEATURE]** Add ``get_friends`` and ``get_blocked`` to
+   ``LoggedInRedditor``.
+ * **[FEATURE]** Add the *read* scope to ``get_all_comments`` in the ``Reddit``
+   object.
+ * **[FEATURE]** Add the *read* scope to ``get_comments`` and the subreddit
+   listings such as ``get_new`` in the ``Reddit`` and ``Subreddit`` object.
+ * **[BUGFIX]** Fix bug in ``MoreComments.comments``.
+ * **[CHANGE]** Break ``get_friends`` and ``get_banned`` until there is an
+   upstream fix to mean that does not require ssl for those endpoints.
+
+PRAW 2.0.8
+----------
+
+ * **[FEATURE]** Add ``unset_has_mail`` parameter to ``get_unread``, if it's
+   set to ``True``, then it will set ``has_mail`` for the logged-in user to
+   ``False``.
+
+PRAW 2.0.7
+----------
+
+ * **[REDDIT]** A `reddit update <`http://redd.it/17oer0>`_ broke PRAW's
+   ability to use ``login`` if it was authenticated as a logged-in user. This
+   update adds the ability to re-login.
+ * **[CHANGE]** ``get_flair_list`` can now be used when logged-in as a regular
+   user, being logged in as a mod of the subreddit is no longer required.
+
 PRAW 2.0.6
 ----------
 
