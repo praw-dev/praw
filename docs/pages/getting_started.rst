@@ -136,3 +136,23 @@ delay of 2 seconds, to follow the guidelines in the `reddit API wiki page
 will cost 2x4=8 seconds to API delay.
 
 Continue to the next tutorial. :ref:`writing_a_bot`.
+
+The full Karma Breakdown program.
+---------------------------------
+
+.. code-block:: python
+
+    import praw
+
+    user_agent = ("Karma breakdown 1.0 by /u/_Daimon_ "
+                  "github.com/Damgaard/Reddit-Bots/")
+    r = praw.Reddit(user_agent=user_agent)
+    thing_limit = 10
+    user_name = "_Daimon_"
+    user = r.get_redditor(user_name)
+    gen = user.get_submitted(limit=thing_limit)
+    karma_by_subreddit = {}
+    for thing in gen:
+        subreddit = thing.subreddit.display_name
+        karma_by_subreddit[subreddit] = (karma_by_subreddit.get(subreddit, 0)
+                                         + thing.score)
