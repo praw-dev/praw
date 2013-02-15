@@ -3,19 +3,18 @@
 Contributor Guidelines
 ======================
 
-PRAW gladly welcomes new contributions. As with most longer projects, we have
-an established way of doing things around here. And we'd like it to keep it
-that way because having a consistent style increases readability, decreases
-bug-potential and makes it faster to understand how everything works together.
+PRAW gladly welcomes new contributions. As with most larger projects, we have
+an established consistent way of doing things. A consistent style increases
+readability, decreases bug-potential and makes it faster to understand how
+everything works together.
 
-The more you follow these guidelines, the quicker your pull requests will go
-through and the easier our jobs becomes. But don't be afraid to send in a
-request that doesn't match everything.
+PRAW follows :PEP:`8` and :PEP:`257`. You can use ``lint.sh`` to test for
+complience with these PEP's. The following are PRAW-specific guidelines in to
+those PEP's.
 
 Code
 ----
 
-* Unless otherwise stated, PRAW will follow the :PEP:`257`
 * Objects are sorted alphabetically.
 * Things should maintain the same name throughout the code. \*\*kwargs should
   never be \*\*kw.
@@ -32,24 +31,8 @@ Testing
 Documentation
 -------------
 
-* Unless otherwise stated, PRAW will follow the :PEP:`257`
 * All publicly available functions, classes and modules should have a
   docstring.
-* Use the imperative form. Eg "Get the subreddit." not "Gets the subreddit."
-   or "PRAW will get the subreddit."
-* For one-liner docstrings, the entire string including opening and closing
-  """" will be on the same line.
-* For multi-line comments the one-liner summary will be on the line after the
-  opening """ and the closing """ will be on the line after the last line of
-  the docstring. Example
-
-
-   """  
-   Summary line. Sum its up.
-
-   Longer explanation.  
-   """  
-
 * Use correct terminology. A subreddits name is something like ' t3_xyfc7'.
   The correct term for a subreddits "name" like
   `python <http://www.reddit.com/r/python>`_ is it's display name.
