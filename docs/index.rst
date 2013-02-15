@@ -1,6 +1,10 @@
 The Python Reddit API Wrapper (PRAW) Wiki
 =========================================
 
+.. include:: ../README.rst
+   :start-after: begin_description
+   :end-before: end_description
+
 Content Pages
 -------------
 
@@ -33,33 +37,9 @@ References And Other Relevant Pages
 * `r/redditdev <http://www.reddit.com/r/redditdev/>`_. Ask questions about
   Reddit's codebase, PRAW and other API clients here
 
-Installation
-------------
-
-PRAW works with python 2.6, 2.7, 3.2, and 3.3. The easiest way to install PRAW
-is via `pip <http://www.pip-installer.org/en/latest/installing.html>`_:
-
-.. code-block:: bash
-
-    $ pip install praw
-
-Alternatively, using `easy_install <http://pypi.python.org/pypi/setuptools#
-installation-instructions>`_ is pretty simple:
-
-.. code-block:: bash
-
-    $ easy_install praw
-
-Finally, if you have neither of those tools, then can also install via
-``setup.py``. This requires either a download or checkout of the code first.
-Downloading PRAW from `the cheeseshop <http://pypi.python.org/pypi/praw>`_ is
-recommended, as downloading from github or doing a checkout may give you a
-between releases unstable codestate.
-
-.. code-block:: bash
-
-    # First download or checkout the code then run
-    $ python setup.py install
+.. include:: ../README.rst
+   :start-after: begin_installation
+   :end-before: end_installation
 
 A Few Short Examples
 --------------------

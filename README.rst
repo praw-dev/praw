@@ -1,6 +1,8 @@
 PRAW: The Python Reddit Api Wrapper
 ===================================
 
+.. begin_description
+
 .. image:: https://travis-ci.org/praw-dev/praw.png
         :target: https://travis-ci.org/praw-dev/praw
 
@@ -31,6 +33,10 @@ This will display something similar to the following:
      '85 :: Plan 9 - A distributed OS with a unified communicatioprotocol  I/O...',
       '2 :: Open-source webOS is dead on arrival ']
 
+.. end_description
+
+.. begin_installation
+
 Installation
 ------------
 
@@ -57,6 +63,8 @@ or doing a checkout may give you a between releases unstable codestate.
     $ python setup.py install
 
 PRAW works with Python 2.6, 2.7, 3.1, 3.2, and 3.3.
+
+.. end_installation
 
 Examples and Configuration
 --------------------------
