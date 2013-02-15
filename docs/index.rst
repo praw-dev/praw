@@ -1,5 +1,5 @@
-The Python Reddit API Wrapper (PRAW) Wiki
-=========================================
+PRAW: The Python Reddit Api Wrapper
+===================================
 
 .. include:: ../README.rst
    :start-after: begin_description
