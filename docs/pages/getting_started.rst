@@ -84,8 +84,7 @@ that redditor's comments and submissions. Both are a part of the superclass
 ``Thing`` as mentioned on the `reddit API wiki page
 <https://github.com/reddit/reddit/wiki/API>`_. Both functions can be called
 with the parameter ``limit``, which limits how many things we receive. As a
-default, PRAW makes calls to reddit with ``limit=25``. The default can be
-edited in the module's configuration files. When the limit is set to ``None``,
+default, reddit returns 25 items. When the limit is set to ``None``,
 PRAW will try to retrieve all the things. However, due to limitations in the
 reddit API (not PRAW) we might not get all the things, but more about that
 later. During development you should be nice and set the limit lower to reduce

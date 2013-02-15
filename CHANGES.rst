@@ -5,7 +5,7 @@ This is the changelog for the released versions of PRAW. These changes are
 divided into four categories.
 
  * **[FEATURE]** Something new has been added.
- * **[BUGFIX]** Something was broken before, but now is fixed.
+ * **[BUGFIX]** Something was broken before, but is now fixed.
  * **[REDDIT]** A change caused by an upstream change from Reddit.
  * **[CHANGE]** Other changes affecting user programs, such as the renaming of
    a function.
@@ -74,7 +74,7 @@ PRAW 2.0.5
 PRAW 2.0.4
 ----------
 
- * **[BUGFIX]** Fix python 3 failure introduced in 2.0.3 within the test suite.
+ * **[BUGFIX]** Fix python 3 failure within the test suite introduced in 2.0.3.
 
 PRAW 2.0.3
 ----------
