@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '2.0.9'
+__version__ = '2.0.10'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -66,6 +66,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'contributors':        'r/%s/about/contributors/',
                  'controversial':       'controversial/',
                  'del':                 'api/del/',
+                 'deleteflair':         'api/deleteflair',
                  'delete_sr_header':    'r/%s/api/delete_sr_header',
                  'delete_sr_image':     'r/%s/api/delete_sr_img',
                  'distinguish':         'api/distinguish/',
@@ -1128,6 +1129,17 @@ class ModFlairMixin(AuthenticatedReddit):
                 'link_flair_position': link_flair_position,
                 'link_flair_self_assign_enabled': link_flair_self_assign}
         return self.request_json(self.config['flairconfig'], data=data)
+
+    @decorators.restrict_access(scope='modflair')
+    def delete_flair(self, subreddit, user):
+        """Delete the flair for the given user on the given subreddit.
+
+        :returns: The json response from the server.
+
+        """
+        data = {'r': six.text_type(subreddit),
+                'name': six.text_type(user)}
+        return self.request_json(self.config['deleteflair'], data=data)
 
     @decorators.restrict_access(scope='modflair')
     def get_flair_list(self, subreddit, limit=0):

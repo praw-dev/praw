@@ -910,6 +910,7 @@ class Subreddit(Messageable, Refreshable):
                 ('add_flair_template', MFMix.add_flair_template),
                 ('clear_flair_templates', MFMix.clear_flair_templates),
                 ('configure_flair', MFMix.configure_flair),
+                ('delete_flair', MFMix.delete_flair),
                 ('delete_image', MCMix.delete_image),
                 ('get_banned', MOMix.get_banned),
                 ('get_comments', UR.get_comments),
