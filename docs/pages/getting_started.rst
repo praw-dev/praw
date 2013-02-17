@@ -127,12 +127,16 @@ help#Whydothenumberofvoteschangewhenyoureloadapage>`_ of the upvotes and
 downvotes. The obfuscation is done to everything and everybody to thwart
 potential cheaters. There's nothing we can do to prevent this.
 
-Another thing you will probably have noticed is that retrieving a lot of
-elements take a lot of time. Our requests are broken into pieces of 25 things
-by PRAW, and then sent sequentially to reddit. But they are separated by a
-delay of 2 seconds, to follow the guidelines in the `reddit API wiki page
-<https://github.com/reddit/reddit/wiki/API>`_. Therefore retrieving 100 things,
-will cost 2x4=8 seconds to API delay.
+Another thing you may have noticed is that retrieving a lot of elements take
+time. reddit allows requests of up to 100 items at once. So if you request <=
+100 items PRAW can serve your request in a single API call, but for larger
+requests PRAW will break it into multiple API calls of 100 items each separated
+by a small 2 second delay to follow the `api guidelines
+<https://github.com/reddit/reddit/wiki/API>`_. So requesting 250 items will
+require 3 api calls and take at least 2x2=4 seconds due to API delay. PRAW does
+the API calls lazily, i.e. it will not send the next api call until you
+actually need the data. Meaning the runtime is max(api_delay, code execution
+time)
 
 Continue to the next tutorial. :ref:`writing_a_bot`.
 
