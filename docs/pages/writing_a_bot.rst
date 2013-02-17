@@ -56,69 +56,181 @@ Start the Python interpreter and compare the output with `this r/learnpython
 <http://www.reddit.com/r/learnpython/comments/105aru/newbie_stripping_strings_
 of_last_character/>`_ post.
 
->>> import praw
->>> r = praw.reddit('submission variables testing by /u/_daimon')
->>> submission = r.get_submission(submission_id = "105aru")
->>> print "vars: ", vars(submission)
-{'domain': u'self.learnpython', '_comments_by_id': {u't1_c6akv1g': <praw.object
-s.comment object at 0x00000000023f3cf8>, u't1_c6ak4rq': <praw.objects.comment
-object at 0x00000000023f3e48>, u't1_c6akq4n': <praw.objects.comment object at
-0x00000000023f3da0>, u't1_c6ailxt': <praw.objects.comment object at 0x000000000
-23f3f98>, u't1_c6ailrj': <praw.objects.comment object at 0x00000000023f3ef0>,
-u't1_c6aijmu': <praw.objects.comment object at 0x00000000023f3be0>}, '_popu¨
-lated': true, 'banned_by': none, 'media_embed': {}, 'subreddit': <praw.objects.
-subreddit object at 0x00000000023f3b38>, 'selftext_html': u'&lt;!-- sc_off --&g
-t;&lt;div class="md"&gt;&lt;p&gt;update: thanks for the help. got fixed.&lt;/p&
-gt;\n\n&lt;p&gt;i need to strip 3 strings in a list of 4 of their trailing comm
-as to get my formatting right and to convert one of them (a number) to a float
-but i'm confused on the syntax. also, i don&amp;#39;t know of an effici ent way
-of completing the task; i was planning on stripping each of the three s trings
-on a new line.&lt;/p&gt;\n\n&lt;pre&gt;&lt;code&gt;for line in gradefile :\n
-linelist = string.split(line)\n    #strip linelist[0],[1], and [2] of co mmas\n
-linelist = string.rstrip(linelist[0], &amp;quot;,&amp;quot;)\n&lt;/co
-de&gt;&lt;/pre&gt;\n&lt;/div&gt;&lt;!-- sc_on --&gt;', 'selftext': u'update: th
-anks for the help. got fixed.\n\ni need to strip 3 strings in a list of 4 of th
-eir trailing commas to get my formatting right and to convert one of them (a nu
-mber) to a float but i\m confused on the syntax. also, i don't know of an ef
-ficient way of completing the task; i was planning on stripping each of the thr
-ee strings on a new line.\n\n    for line in gradefile:\n        linelist = str
-ing.split(line)\n        #strip linelist[0],[1], and [2] of commas\n lin elist
-= string.rstrip(linelist[0], ",")', 'likes': none, 'link_flair_text': non e,
-'id': u'105aru', 'clicked': false, 'title': u'newbie: stripping strings of l
-ast character', 'num_comments': 6, '_comments_flat': none, '_orphaned': {}, 'sc
-ore': 1, 'approved_by': none, 'over_18': false, '_all_comments': false, 'hidden
-': false, 'thumbnail': u'', 'subreddit_id': u't5_2r8ot', 'edited': 1348083784.0
-, 'link_flair_css_class': none, '_info_url': 'http://www.reddit.com/button_info
-/', 'author_flair_css_class': none, 'reddit_session': <praw.reddit object at 0x
-0000000001e310b8>, 'downs': 0, 'saved': false, 'is_self': true, '_comments': [<
-praw.objects.comment object at 0x00000000023f3be0>, <praw.objects.comment objec
-t at 0x00000000023f3ef0>, <praw.objects.comment object at 0x00000000023f3f98>],
-'_underscore_names': none, 'permalink': u'http://www.reddit.com/r/learnpython/c
-omments/105aru/newbie_stripping_strings_of_last_character/', 'name': u't3_105a
-ru', 'created': 1348102969.0, 'url': u'http://www.reddit.com/r/learnpython/com
-ments/105aru/newbie_stripping_strings_of_last_character/', 'author_flair_text'
-: none, 'author': <praw.objects.redditor object at 0x00000000023f3c18>, 'creat
-ed_utc': 1348077769.0, 'media': none, 'num_reports': none, 'ups': 1}
->>>
->>>
->>> dir(submission) ['__class__', '__delattr__', '__dict__', '__doc__',
-'__eq__', '__format__', '__ getattr__', '__getattribute__', '__hash__',
-'__init__', '__module__', '__new__' , '__reduce__', '__reduce_ex__',
-'__repr__', '__setattr__', '__sizeof__', '__st r__', '__subclasshook__',
-'__unicode__', '__weakref__', '_all_comments', '_comm ents', '_comments_by_id',
-'_comments_flat', '_get_json_dict', '_info_url', '_in sert_comment',
-'_orphaned', '_populate', '_populated', '_replace_more_comments' ,
-'_underscore_names', '_update_comments', 'add_comment', 'all_comments', 'all_
-comments_flat', 'approve', 'approved_by', 'author', 'author_flair_css_class', '
-author_flair_text', 'banned_by', 'clear_vote', 'clicked', 'comments', 'comments
-_flat', 'content_id', 'created', 'created_utc', 'delete', 'distinguish', 'domai
-n', 'downs', 'downvote', 'edit', 'edited', 'from_api_response', 'get_info', 'hi
-dden', 'hide', 'id', 'is_self', 'likes', 'link_flair_css_class', 'link_flair_te
-xt', 'mark_as_nsfw', 'media', 'media_embed', 'name', 'num_comments', 'num_repor
-ts', 'over_18', 'permalink', 'reddit_session', 'refresh', 'remove', 'report', '
-save', 'saved', 'score', 'selftext', 'selftext_html', 'set_flair', 'short_link'
-, 'subreddit', 'subreddit_id', 'thumbnail', 'title', 'undistinguish', 'unhide',
-'unmark_as_nsfw', 'unsave', 'ups', 'upvote', 'url', 'vote']
+.. code-block:: pycon
+
+    >>> import praw
+    >>> from pprint import pprint
+    >>> r = praw.reddit('Submission variables testing by /u/_daimon')
+    >>> submission = r.get_submission(submission_id = "105aru")
+    >>> pprint(vars(submission))
+    {'_comment_sort': None,
+    '_comments': [<praw.objects.Comment object at 0x030FF330>,
+                <praw.objects.Comment object at 0x03107B70>,
+                <praw.objects.Comment object at 0x03107CF0>],
+
+    '_comments_by_id': {u't1_c6aijmu': <praw.objects.Comment object at 0x030FF330>,
+                        u't1_c6ailrj': <praw.objects.Comment object at 0x03107B70>,
+                        u't1_c6ailxt': <praw.objects.Comment object at 0x03107CF0>,
+                        u't1_c6ak4rq': <praw.objects.Comment object at 0x03107C50>,
+                        u't1_c6akq4n': <praw.objects.Comment object at 0x03107BB0>,
+                        u't1_c6akv1g': <praw.objects.Comment object at 0x031077D0>}
+                        ,
+
+    '_info_url': 'http://www.reddit.com/api/info/',
+    '_orphaned': {},
+    '_populated': True,
+    '_replaced_more': False,
+    '_underscore_names': None,
+    'approved_by': None,
+    'author': Redditor(user_name='Blackshirt12'),
+    'author_flair_css_class': u'py32bg',
+    'author_flair_text': u'',
+    'banned_by': None,
+    'clicked': False,
+    'created': 1348081369.0,
+    'created_utc': 1348077769.0,
+    'domain': u'self.learnpython',
+    'downs': 0,
+    'edited': 1348083784.0,
+    'hidden': False,
+    'id': u'105aru',
+    'is_self': True,
+    'likes': None,
+    'link_flair_css_class': None,
+    'link_flair_text': None,
+    'media': None,
+    'media_embed': {},
+    'name': u't3_105aru',
+    'num_comments': 6,
+    'num_reports': None,
+    'over_18': False,
+    'permalink': u'http://www.reddit.com/r/learnpython/comments/105aru/newbie_stri
+    pping_strings_of_last_character/',
+    'reddit_session': <praw.Reddit object at 0x029477F0>,
+    'saved': False,
+    'score': 1,
+    'selftext': u'Update: Thanks for the help. Got fixed.\n\nI need to strip 3
+    strin gs in a list of 4 of their trailing commas to get my formatting right
+    and to conv ert one of them (a number) to a float but I\'m confused on the
+    syntax. Also, I do n\'t know of an efficient way of completing the task; I was
+    planning on stripping each of the three strings on a new line.\n\n    for line
+    in gradefile:\n linelist = string.split(line)\n        #strip linelist[0],[1],
+    and [2] of commas\ n        linelist = string.rstrip(linelist[0], ",")',
+    'selftext_html': u'&lt;!-- SC_OFF --&gt;&lt;div class="md"&gt;&lt;p&gt;Update:
+    Thanks for the help. Got fixed.&lt;/p&gt;\n\n&lt;p&gt;I need to strip 3
+    strings in a list of 4 of their trailing commas to get my formatting right and
+    to convert o ne of them (a number) to a float but I&amp;#39;m confused on the
+    syntax. Also, I don&amp;#39;t know of an efficient way of completing the task;
+    I was planning on stripping each of the three strings on a new
+    line.&lt;/p&gt;\n\n&lt;pre&gt;&lt;co de&gt;for line in gradefile:\n
+    linelist = string.split(line)\n    #strip linel ist[0],[1], and [2] of
+    commas\n    linelist = string.rstrip(linelist[0], &amp;quo
+    t;,&amp;quot;)\n&lt;/code&gt;&lt;/pre&gt;\n&lt;/div&gt;&lt;!-- SC_ON --&gt;',
+    'subreddit': <praw.objects.Subreddit object at 0x030FF030>,
+    'subreddit_id': u't5_2r8ot',
+    'thumbnail': u'',
+    'title': u'Newbie: stripping strings of last character',
+    'ups': 1,
+    'url': u'http://www.reddit.com/r/learnpython/comments/105aru/newbie_stripping_
+    strings_of_last_character/'}
+    >>> pprint(dir(submission))
+    ['__class__',
+    '__delattr__',
+    '__dict__',
+    '__doc__',
+    '__eq__',
+    '__format__',
+    '__getattr__',
+    '__getattribute__',
+    '__hash__',
+    '__init__',
+    '__module__',
+    '__ne__',
+    '__new__',
+    '__reduce__',
+    '__reduce_ex__',
+    '__repr__',
+    '__setattr__',
+    '__sizeof__',
+    '__str__',
+    '__subclasshook__',
+    '__unicode__',
+    '__weakref__',
+    '_comment_sort',
+    '_comments',
+    '_comments_by_id',
+    '_extract_more_comments',
+    '_get_json_dict',
+    '_info_url',
+    '_insert_comment',
+    '_orphaned',
+    '_populate',
+    '_populated',
+    '_replaced_more',
+    '_underscore_names',
+    '_update_comments',
+    'add_comment',
+    'approve',
+    'approved_by',
+    'author',
+    'author_flair_css_class',
+    'author_flair_text',
+    'banned_by',
+    'clear_vote',
+    'clicked',
+    'comments',
+    'created',
+    'created_utc',
+    'delete',
+    'distinguish',
+    'domain',
+    'downs',
+    'downvote',
+    'edit',
+    'edited',
+    'from_api_response',
+    'from_id',
+    'from_url',
+    'fullname',
+    'hidden',
+    'hide',
+    'id',
+    'is_self',
+    'likes',
+    'link_flair_css_class',
+    'link_flair_text',
+    'mark_as_nsfw',
+    'media',
+    'media_embed',
+    'name',
+    'num_comments',
+    'num_reports',
+    'over_18',
+    'permalink',
+    'reddit_session',
+    'refresh',
+    'remove',
+    'replace_more_comments',
+    'report',
+    'save',
+    'saved',
+    'score',
+    'selftext',
+    'selftext_html',
+    'set_flair',
+    'short_link',
+    'subreddit',
+    'subreddit_id',
+    'thumbnail',
+    'title',
+    'undistinguish',
+    'unhide',
+    'unmark_as_nsfw',
+    'unsave',
+    'ups',
+    'upvote',
+    'url',
+    'vote']
 
 ``vars`` contain the objects attributes and the values they contain. For
 instance we can see that it has the variable ``title`` with the value
