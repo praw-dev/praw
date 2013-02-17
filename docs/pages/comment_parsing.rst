@@ -22,25 +22,25 @@ work.
 >>> submission = r.get_submission(submission_id='11v36o')
 
 After getting the submission object we retrieve the comments and look through
-them to find those that match our criteria. There are two ways of retrieving
-comments. Either we use ``comments`` to get the comments as an forest, where
-each tree root is a toplevel comment. Eg. the comments are organised just like
-when you visit the submission via the webend. To get to a lower layer, use
-``replies`` to get the list of replies to the comment. Note that this may
-include ``MoreComment`` objects and not just ``Comments``.
+them to find those that match our criteria. Comments are stored in the
+attribute ``comments`` in a comment forest, with each tree root a toplevel
+comment. Eg. the comments are organised just like when you visit the submission
+via the webend. To get to a lower layer, use ``replies`` to get the list of
+replies to the comment. Note that this may include ``MoreComment`` objects and
+not just ``Comments``.
 
 >>> forest_comments = submission.comments
 
-The alternative way is to use ``comments_flat`` to get the comments in a flat
-unnested list. This is the easiest way to iterate through the comments and is
-preferable when you don't don't care about a comments place in the comment
-forest. We don't, so this is what we are going to use.
+As an alternative, we can flatten the comment forest to get a unordered list
+with the function ``praw.helpers.flatten_tree``. This is the easiest way to
+iterate through the comments and is preferable when you don't don't care about
+a comments place in the comment forest. We don't, so this is what we are going
+to use.
 
->>> flat_comments = submission.comments_flat
+>>> flat_comments = praw.helpers.flatten_tree(submission.comments)
 
 To find out whether any of those comments contains the text we are looking for,
-we simply iterate through the comments created by the generator and see if they
-verify our criteria.
+we simply iterate through the comments.
 
 >>> for comment in flat_comments:
 ...     if comment.body == "Hello":
@@ -53,50 +53,24 @@ test the bot in `r/test <www.reddit.com/r/test>`_ before we let it loose on a
 doesn't test if we've already replied to a comment before replying. We fix this
 bug by storing the content_id of every comment we've replied to and test for
 membership of that list before replying. Just like in :ref:`writing_a_bot`.
-The full program with this fix is included at the bottom of this page. You're
-very welcome to try and test it out.
 
 The number of comments
 ----------------------
 
-The number of comments loaded alongside the loading of a submission is limited,
-just like on the webend. For reddit.com the maximum number of comments that can
-be loaded is 500 for an unauthenticated session / regular account and 1500 for
-a gold account. The default number loaded is 200. These settings are defined in
-``praw.in`` and can be modified as described in :ref:`configuration_files`.
+When we load a submission, we load comments up to a max alongside it. Just like
+on the webend. At reddit.com, this max is 200 comments. If we want more than
+these comments, then we need to replace the MoreComments with the Comments they
+represent. We use the ``replace_more_comments`` method to do this. Let's use
+this function to replace all MoreComments with the comments they represent, so
+we get all comments in the thread.
 
-Both ``comments`` and ``comments_flat`` only returns the comments that have
-been loaded so far. Use  ``all_comments`` or ``all_comments_flat`` to load and
-return all comments. ``all_comments`` returns the comments in a comment forest
-just like ``comments``. ``all_comments_flat`` returns them in a list like
-``comments_flat``.  Once either of these functions have been run, both
-``comments`` and ``comments_flat`` will return all the submissions comments.
+>>> submission.replace_more_comments(limit=None, threshold=0)
+>>> all_comments = s.comments
 
-Note that getting all comments to a submission may take a very long time to
-execute as each MoreComment requires an api call to expand, and each api call
-must be separated by 2 seconds as specified in the `api guidelines
-<https://github.com/reddit/reddit/wiki/API>`_. PRAW comes with an upper limit
-on the number of MoreComments that can expanded with a ``all_comments`` or
-``all_comments_flat`` call to prevent your program hanging too long. The limit
-can be modified in ``praw.ini``.
-
-The full program
-----------------
-
-.. code-block:: python
-
-    import praw
-
-    r = praw.Reddit('Comment Scraper 1.0 by u/_Daimon_ see github.com/'
-                    'praw-dev/praw/wiki/Comment-Parsing')
-    r.login('bot_username', 'bot_password')
-    submission = r.get_submission(submission_id='11v36o')
-    flat_comments = submission.comments_flat
-    already_done = []
-    for comment in flat_comments:
-        if comment.body == "Hello" and comment.id not in already_done:
-            comment.reply(' world!')
-            already_done.append(comment.id)
+It's limited how many MoreComments PRAW can replace with a single API call.
+Replacing all MoreComments in a thread with many comments will require many API
+calls and so take a while due to API delay between each API call as specified
+in the `api guidelines <https://github.com/reddit/reddit/wiki/API>`_.
 
 Getting all recent comments to a subreddit or everywhere
 --------------------------------------------------------
@@ -104,7 +78,7 @@ Getting all recent comments to a subreddit or everywhere
 We can get all comments made anywhere with ``get_all_comments()``.
 
 >>> import praw
->>> r = praw.Reddit('Comment parser')
+>>> r = praw.Reddit('Comment parser example by u/_Daimon_')
 >>> all_comments = r.get_all_comments()
 
 The results are equivalent to `/comments <http://www.reddit.com/comments>`_.
@@ -126,3 +100,22 @@ You can use multi-reddits to get the comments from multiple subreddits.
 
 Which is equivalent to `r/python+learnpython/comments
 <http://www.reddit.com/r/learnpython+python/comments>`_.
+
+The full program
+----------------
+
+.. code-block:: python
+
+    import praw
+
+    r = praw.Reddit('Comment Scraper 1.0 by u/_Daimon_ see github.com/'
+                    'praw-dev/praw/wiki/Comment-Parsing')
+    r.login('bot_username', 'bot_password')
+    submission = r.get_submission(submission_id='11v36o')
+    flat_comments = praw.helpers.flatten_tree(submission.comments_flat)
+    already_done = []
+    for comment in flat_comments:
+        if comment.body == "Hello" and comment.id not in already_done:
+            comment.reply(' world!')
+            already_done.append(comment.id)
+
