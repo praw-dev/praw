@@ -1,3 +1,5 @@
+.. _main_page:
+
 PRAW: The Python Reddit Api Wrapper
 ===================================
 

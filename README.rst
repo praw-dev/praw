@@ -1,3 +1,5 @@
+.. _main_page:
+
 PRAW: The Python Reddit Api Wrapper
 ===================================
 
@@ -40,29 +42,19 @@ This will display something similar to the following:
 Installation
 ------------
 
-You can install via `pip <http://pypi.python.org/pypi/pip>`_
+PRAW works with python 2.6, 2.7, 3.1, 3.2, and 3.3. The recommended way to
+install is via `pip <http://pypi.python.org/pypi/pip>`_
 
 .. code-block:: bash
 
    $ pip install praw
 
-Or via `easy_install <http://pypi.python.org/pypi/setuptools>`_
+Alternatively you can do it via
+`easy_install <http://pypi.python.org/pypi/setuptools>`_
 
 .. code-block:: bash
 
     $ easy_install praw
-
-You can also install via ``setup.py``, this requires either a download or
-checkout of the code first. Downloading PRAW from `the cheeseshop
-<http://pypi.python.org/pypi/praw>`_ is recommended, as downloading from github
-or doing a checkout may give you a between releases unstable codestate.
-
-.. code-block:: bash
-
-    # First download or checkout the code then run
-    $ python setup.py install
-
-PRAW works with Python 2.6, 2.7, 3.1, 3.2, and 3.3.
 
 .. end_installation
 
