@@ -41,6 +41,10 @@ References And Other Relevant Pages
    :start-after: begin_installation
    :end-before: end_installation
 
+.. include:: ../README.rst
+   :start-after: begin_license
+   :end-before: end_license
+
 A Few Short Examples
 --------------------
 
