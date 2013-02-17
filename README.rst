@@ -87,8 +87,12 @@ be spaced out to one call per second. If you're having a specific issue besides
 something covered by one of those two things, please let us know (or file a
 ticket) and we'll check it out.
 
+.. begin_license
 
 License
 -------
 
-All of the code contained here is licensed by the GNU GPLv3.
+All of the code contained here is licensed by
+`the GNU GPLv3 <https://github.com/praw-dev/praw/blob/master/COPYING>`_.
+
+.. end_license
