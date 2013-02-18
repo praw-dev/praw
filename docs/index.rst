@@ -14,12 +14,12 @@ Content Pages
     :maxdepth: 1
 
     pages/getting_started
-    pages/oauth
     pages/writing_a_bot
     pages/comment_parsing
-    pages/changelog
+    pages/oauth
     pages/contributor_guidelines
     pages/configuration_files
+    pages/changelog
     pages/faq
 
 References And Other Relevant Pages
