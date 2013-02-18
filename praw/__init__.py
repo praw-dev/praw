@@ -38,7 +38,7 @@ from warnings import warn_explicit
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
 
-__version__ = '2.0.8'
+__version__ = '2.0.10'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -66,6 +66,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'contributors':        'r/%s/about/contributors/',
                  'controversial':       'controversial/',
                  'del':                 'api/del/',
+                 'deleteflair':         'api/deleteflair',
                  'delete_sr_header':    'r/%s/api/delete_sr_header',
                  'delete_sr_image':     'r/%s/api/delete_sr_img',
                  'distinguish':         'api/distinguish/',
@@ -373,7 +374,7 @@ class BaseReddit(object):
         :param url: the url to grab content from.
         :param params: a dictionary containing the GET data to put in the url
         :param data: a dictionary containing the extra data to submit
-        :param as_objects: if true return reddit objects else raw json dict.
+        :param as_objects: if True return reddit objects else raw json dict.
         :returns: JSON processed page
 
         """
@@ -531,6 +532,7 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_comments('all', gilded_only, *args, **kwargs)
 
+    @decorators.restrict_access(scope='read')
     def get_comments(self, subreddit, gilded_only=False, *args, **kwargs):
         """Return latest comments on the given subreddit.
 
@@ -543,6 +545,7 @@ class UnauthenticatedReddit(BaseReddit):
             url = self.config['subreddit_comments'] % six.text_type(subreddit)
         return self.get_content(url, *args, **kwargs)
 
+    @decorators.restrict_access(scope='read')
     def get_controversial(self, *args, **kwargs):
         """Return controversial page."""
         return self.get_content(self.config['controversial'], *args, **kwargs)
@@ -554,6 +557,7 @@ class UnauthenticatedReddit(BaseReddit):
                                  six.text_type(subreddit), params=params)
         return data['users'][0]
 
+    @decorators.restrict_access(scope='read')
     def get_front_page(self, *args, **kwargs):
         """Return the front page submissions.
 
@@ -600,6 +604,7 @@ class UnauthenticatedReddit(BaseReddit):
         return self.request_json(self.config['moderators'] %
                                  six.text_type(subreddit))
 
+    @decorators.restrict_access(scope='read')
     def get_new(self, *args, **kwargs):
         """Return new page."""
         return self.get_content(self.config['new'], *args, **kwargs)
@@ -619,7 +624,6 @@ class UnauthenticatedReddit(BaseReddit):
         """Return a Redditor instance for the user_name specified."""
         return objects.Redditor(self, user_name, *args, **kwargs)
 
-    @decorators.restrict_access(scope='read')
     def get_submission(self, url=None, submission_id=None, comment_limit=0,
                        comment_sort=None):
         """Return a Submission object for the given url or submission_id.
@@ -645,6 +649,7 @@ class UnauthenticatedReddit(BaseReddit):
             return self.get_random_subreddit()
         return objects.Subreddit(self, subreddit_name, *args, **kwargs)
 
+    @decorators.restrict_access(scope='read')
     def get_top(self, *args, **kwargs):
         """Return top page."""
         return self.get_content(self.config['top'], *args, **kwargs)
@@ -1072,7 +1077,7 @@ class ModConfigMixin(AuthenticatedReddit):
 
 class ModFlairMixin(AuthenticatedReddit):
 
-    """Adds methods requring the 'modflair' scope (or mod access)."""
+    """Adds methods requiring the 'modflair' scope (or mod access)."""
 
     @decorators.restrict_access(scope='modflair')
     def add_flair_template(self, subreddit, text='', css_class='',
@@ -1124,6 +1129,17 @@ class ModFlairMixin(AuthenticatedReddit):
                 'link_flair_position': link_flair_position,
                 'link_flair_self_assign_enabled': link_flair_self_assign}
         return self.request_json(self.config['flairconfig'], data=data)
+
+    @decorators.restrict_access(scope='modflair')
+    def delete_flair(self, subreddit, user):
+        """Delete the flair for the given user on the given subreddit.
+
+        :returns: The json response from the server.
+
+        """
+        data = {'r': six.text_type(subreddit),
+                'name': six.text_type(user)}
+        return self.request_json(self.config['deleteflair'], data=data)
 
     @decorators.restrict_access(scope='modflair')
     def get_flair_list(self, subreddit, limit=0):
@@ -1198,7 +1214,7 @@ class ModFlairMixin(AuthenticatedReddit):
 
 class ModLogMixin(AuthenticatedReddit):
 
-    """Adds methods requring the 'modlog' scope (or mod access)."""
+    """Adds methods requiring the 'modlog' scope (or mod access)."""
 
     @decorators.restrict_access(scope='modlog')
     def get_mod_log(self, subreddit, limit=0, mod=None, action=None):
@@ -1221,7 +1237,7 @@ class ModLogMixin(AuthenticatedReddit):
 
 class ModOnlyMixin(AuthenticatedReddit):
 
-    """Adds methods requring the logged in moderator access."""
+    """Adds methods requiring the logged in moderator access."""
 
     @decorators.restrict_access(scope=None, mod=True)
     def get_banned(self, subreddit):
@@ -1288,7 +1304,7 @@ class MySubredditsMixin(AuthenticatedReddit):
 
 class PrivateMessagesMixin(AuthenticatedReddit):
 
-    """Adds methods requring the 'privatemessages' scope (or login)."""
+    """Adds methods requiring the 'privatemessages' scope (or login)."""
 
     @decorators.restrict_access(scope='privatemessages')
     def _mark_as_read(self, thing_ids, unread=False):
@@ -1366,7 +1382,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
 class SubmitMixin(AuthenticatedReddit):
 
-    """Adds methods requring the 'submit' scope (or login)."""
+    """Adds methods requiring the 'submit' scope (or login)."""
 
     @decorators.restrict_access(scope='submit')
     def _add_comment(self, thing_id, text):
@@ -1426,7 +1442,7 @@ class SubmitMixin(AuthenticatedReddit):
 
 class SubscribeMixin(AuthenticatedReddit):
 
-    """Adds methods requring the 'subscribe' scope (or login)."""
+    """Adds methods requiring the 'subscribe' scope (or login)."""
 
     @decorators.restrict_access(scope='subscribe')
     def subscribe(self, subreddit, unsubscribe=False):

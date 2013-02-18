@@ -727,6 +727,7 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         return Submission(reddit_session, pseudo_data)
 
     @staticmethod
+    @restrict_access(scope='read')
     def from_url(reddit_session, url, comment_limit=0, comment_sort=None,
                  comments_only=False):
         """Request the url and return a Submission object.
@@ -909,6 +910,7 @@ class Subreddit(Messageable, Refreshable):
                 ('add_flair_template', MFMix.add_flair_template),
                 ('clear_flair_templates', MFMix.clear_flair_templates),
                 ('configure_flair', MFMix.configure_flair),
+                ('delete_flair', MFMix.delete_flair),
                 ('delete_image', MCMix.delete_image),
                 ('get_banned', MOMix.get_banned),
                 ('get_comments', UR.get_comments),
