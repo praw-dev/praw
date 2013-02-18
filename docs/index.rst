@@ -20,6 +20,7 @@ Content Pages
     pages/changelog
     pages/contributor_guidelines
     pages/configuration_files
+    pages/faq
 
 References And Other Relevant Pages
 -----------------------------------
@@ -185,18 +186,6 @@ for any ``NameErrors`` you might encounter.
 #. Clear flair templates (requires mod privileges):
 
     >>> r.get_subreddit('python').clear_flair_templates()
-
-Extra usage info
-----------------
-
-* All of the listings (list of stories on subreddit, etc.) are generators,
-  *not* lists. If you need them to be lists, an easy way is to call ``list()``
-  with your variable as the argument.
-* The default limit for fetching Things is 25. You can change this with the
-  ``limit`` param. If you don't want a limit, set ``limit=None``. This will
-  return almost 1000 entires and then stop due to limitations in reddits
-  database.
-
 
 Example Applications/Scripts
 ----------------------------
