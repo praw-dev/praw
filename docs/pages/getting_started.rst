@@ -18,9 +18,8 @@ What we won't go over in this tutorial is the Python code.
 Connecting to Reddit
 --------------------
 
-Start by firing up Python and importing PRAW. You can find the module and
-installation instructions in the `python module description
-<https://github.com/praw-dev/praw>`_.
+Start by firing up Python and importing PRAW. You can find the installation
+instructions on the :ref:`main page <main_page>`
 
 .. code-block:: pycon
 
