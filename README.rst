@@ -58,26 +58,12 @@ Alternatively you can do it via
 
 .. end_installation
 
-Examples and Configuration
---------------------------
+Documentation
+-------------
 
-For a number of simple code examples, details on PRAW's
-configuration files and links to projects which use this package see the
-`wiki <https://github.com/praw-dev/praw/wiki>`_.
-
-
-FAQ
----
-
-> Why is everything so slow?
-
-Usually that has to do with how fast reddit is responding at the moment. Check
-the site, see if it's responding quicker when accessing it in your browser.
-Otherwise, we respect the "no more than one API call per two seconds" rule, so
-if you're trying to do a bunch of quick requests in succession you're going to
-be spaced out to one call per second. If you're having a specific issue besides
-something covered by one of those two things, please let us know (or file a
-ticket) and we'll check it out.
+PRAW's documentation, which includes tutorials, information on configuring PRAW
+and other good stuff can be found at `readthedocs
+<https://praw.readthedocs.org>`_.
 
 .. begin_license
 
