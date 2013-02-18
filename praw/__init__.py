@@ -1094,7 +1094,7 @@ class ModConfigMixin(AuthenticatedReddit):
 
 class ModFlairMixin(AuthenticatedReddit):
 
-    """Adds methods requring the 'modflair' scope (or mod access)."""
+    """Adds methods requiring the 'modflair' scope (or mod access)."""
 
     @decorators.restrict_access(scope='modflair')
     def add_flair_template(self, subreddit, text='', css_class='',
@@ -1231,7 +1231,7 @@ class ModFlairMixin(AuthenticatedReddit):
 
 class ModLogMixin(AuthenticatedReddit):
 
-    """Adds methods requring the 'modlog' scope (or mod access)."""
+    """Adds methods requiring the 'modlog' scope (or mod access)."""
 
     @decorators.restrict_access(scope='modlog')
     def get_mod_log(self, subreddit, limit=0, mod=None, action=None):
@@ -1254,7 +1254,7 @@ class ModLogMixin(AuthenticatedReddit):
 
 class ModOnlyMixin(AuthenticatedReddit):
 
-    """Adds methods requring the logged in moderator access."""
+    """Adds methods requiring the logged in moderator access."""
 
     @decorators.restrict_access(scope=None, mod=True)
     def get_banned(self, subreddit):
@@ -1321,7 +1321,7 @@ class MySubredditsMixin(AuthenticatedReddit):
 
 class PrivateMessagesMixin(AuthenticatedReddit):
 
-    """Adds methods requring the 'privatemessages' scope (or login)."""
+    """Adds methods requiring the 'privatemessages' scope (or login)."""
 
     @decorators.restrict_access(scope='privatemessages')
     def _mark_as_read(self, thing_ids, unread=False):
@@ -1399,7 +1399,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
 class SubmitMixin(AuthenticatedReddit):
 
-    """Adds methods requring the 'submit' scope (or login)."""
+    """Adds methods requiring the 'submit' scope (or login)."""
 
     @decorators.restrict_access(scope='submit')
     def _add_comment(self, thing_id, text):
@@ -1459,7 +1459,7 @@ class SubmitMixin(AuthenticatedReddit):
 
 class SubscribeMixin(AuthenticatedReddit):
 
-    """Adds methods requring the 'subscribe' scope (or login)."""
+    """Adds methods requiring the 'subscribe' scope (or login)."""
 
     @decorators.restrict_access(scope='subscribe')
     def subscribe(self, subreddit, unsubscribe=False):
