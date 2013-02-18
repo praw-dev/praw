@@ -21,6 +21,7 @@ Content Pages
     pages/configuration_files
     pages/faq
     pages/changelog
+    pages/code_overview
 
 References And Other Relevant Pages
 -----------------------------------
