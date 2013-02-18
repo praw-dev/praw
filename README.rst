@@ -58,6 +58,22 @@ Alternatively you can do it via
 
 .. end_installation
 
+.. begin_support
+
+Support
+-------
+
+The official place to ask questions about PRAW, reddit and other API wrappers
+is `r/redditdev <http://www.reddit.com/r/redditdev>`_. If the question is more
+about Python and less about PRAW, such as "what are generators", then you're
+likely to get more, faster and more in-depth answers in `r/learnpython
+<http://www.reddit.com/r/learnpython>`_.
+
+If you've uncovered a bug or have a feature request, then `make an issue on our
+project page at github <https://github.com/praw-dev/praw/issues>`_.
+
+.. end_support
+
 Documentation
 -------------
 

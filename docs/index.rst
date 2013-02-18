@@ -44,6 +44,10 @@ References And Other Relevant Pages
    :end-before: end_installation
 
 .. include:: ../README.rst
+   :start-after: begin_support
+   :end-before: end_support
+
+.. include:: ../README.rst
    :start-after: begin_license
    :end-before: end_license
 
