@@ -883,6 +883,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self._authentication = scope
         self.access_token = access_token
         self.refresh_token = refresh_token
+        helpers._request.evict([self.config['me']])
         # Update the user object
         if update_user and 'identity' in scope:
             self.user = self.get_me()
