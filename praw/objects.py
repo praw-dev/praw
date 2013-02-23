@@ -612,6 +612,7 @@ class Redditor(Messageable, Refreshable):
     def __unicode__(self):
         return self.name
 
+    @restrict_access(scope=None, login=True)
     def friend(self):
         """Friend the user.
 
@@ -641,6 +642,7 @@ class Redditor(Messageable, Refreshable):
         # pylint: disable-msg=W0212
         return self.reddit_session._mark_as_read(ids, unread=unread)
 
+    @restrict_access(scope=None, login=True)
     def unfriend(self):
         """Unfriend the user.
 
