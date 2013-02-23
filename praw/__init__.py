@@ -33,7 +33,7 @@ import sys
 from requests.compat import urljoin
 from requests import Request
 from update_checker import update_check
-from warnings import warn_explicit
+from warnings import simplefilter, warn_explicit
 
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
@@ -47,6 +47,9 @@ MIN_IMAGE_SIZE = 128
 MAX_IMAGE_SIZE = 512000
 JPEG_HEADER = '\xff\xd8\xff'
 PNG_HEADER = '\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
+
+# Enable deprecation warnings
+simplefilter('default')
 
 
 class Config(object):  # pylint: disable-msg=R0903

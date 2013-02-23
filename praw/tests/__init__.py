@@ -326,12 +326,12 @@ class CacheTest(unittest.TestCase, AuthenticatedHelper):
         subreddit = self.r.get_subreddit(self.sr)
         title = 'Test Cache: %s' % uuid.uuid4()
         body = "BODY"
-        original_listing = list(subreddit.get_new_by_date(limit=5))
+        original_listing = list(subreddit.get_new(limit=5))
         subreddit.submit(title, body)
-        new_listing = list(subreddit.get_new_by_date(limit=5))
+        new_listing = list(subreddit.get_new(limit=5))
         self.assertEqual(original_listing, new_listing)
         self.disable_cache()
-        no_cache_listing = list(subreddit.get_new_by_date(limit=5))
+        no_cache_listing = list(subreddit.get_new(limit=5))
         self.assertNotEqual(original_listing, no_cache_listing)
 
     def test_refresh_subreddit(self):
@@ -360,10 +360,10 @@ class CacheTest(unittest.TestCase, AuthenticatedHelper):
         subreddit = self.r.get_subreddit(self.sr)
         title = 'Test User Sharing Of Cache: %s' % uuid.uuid4()
         body = "BODY"
-        original_listing = list(subreddit.get_new_by_date(limit=5))
+        original_listing = list(subreddit.get_new(limit=5))
         subreddit.submit(title, body)
         self.r.login('PyAPITestUser2', '1111')
-        new_user_listing = list(subreddit.get_new_by_date(limit=5))
+        new_user_listing = list(subreddit.get_new(limit=5))
         self.assertEqual(original_listing, new_user_listing)
 
 
@@ -373,7 +373,7 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_author_encoding(self):
         # pylint: disable-msg=E1101
-        a1 = six_next(self.r.get_new(params={'sort': 'new'})).author
+        a1 = six_next(self.r.get_new()).author
         a2 = self.r.get_redditor(text_type(a1))
         self.assertEqual(a1, a2)
         s1 = six_next(a1.get_submitted())
@@ -381,7 +381,7 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(s1, s2)
 
     def test_unicode_comment(self):
-        sub = six_next(self.r.get_subreddit(self.sr).get_new_by_date())
+        sub = six_next(self.r.get_subreddit(self.sr).get_new())
         text = 'Have some unicode: (\xd0, \xdd)'
         comment = sub.add_comment(text)
         self.assertEqual(text, comment.body)
@@ -467,7 +467,7 @@ class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
     def test_add_comment_and_verify(self):
         text = 'Unique comment: %s' % uuid.uuid4()
         # pylint: disable-msg=E1101
-        submission = six_next(self.subreddit.get_new_by_date())
+        submission = six_next(self.subreddit.get_new())
         # pylint: enable-msg=E1101
         comment = submission.add_comment(text)
         self.assertEqual(comment.submission, submission)
@@ -476,7 +476,7 @@ class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
     def test_add_reply_and_verify(self):
         text = 'Unique reply: %s' % uuid.uuid4()
         found = None
-        for submission in self.subreddit.get_new_by_date():
+        for submission in self.subreddit.get_new():
             if submission.num_comments > 0:
                 found = submission
                 break
@@ -532,20 +532,20 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_add_link_flair(self):
         flair_text = 'Flair: %s' % uuid.uuid4()
-        sub = six_next(self.subreddit.get_new_by_date())
+        sub = six_next(self.subreddit.get_new())
         self.subreddit.set_flair(sub, flair_text)
         sub = self.r.get_submission(sub.permalink)
         self.assertEqual(sub.link_flair_text, flair_text)
 
     def test_add_link_flair_through_submission(self):
         flair_text = 'Falir: %s' % uuid.uuid4()
-        sub = six_next(self.subreddit.get_new_by_date())
+        sub = six_next(self.subreddit.get_new())
         sub.set_flair(flair_text)
         sub = self.r.get_submission(sub.permalink)
         self.assertEqual(sub.link_flair_text, flair_text)
 
     def test_add_link_flair_to_invalid_subreddit(self):
-        sub = six_next(self.r.get_subreddit('python').get_new_by_date())
+        sub = six_next(self.r.get_subreddit('python').get_new())
         self.assertRaises(HTTPError, self.subreddit.set_flair, sub, 'text')
 
     def test_add_user_flair_by_subreddit_name(self):
@@ -867,14 +867,14 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
         if not submission:
             self.fail('Could not find a submission to approve.')
         submission.approve()
-        for approved in self.subreddit.get_new_by_date():
+        for approved in self.subreddit.get_new():
             if approved.id == submission.id:
                 break
         else:
             self.fail('Could not find approved submission.')
 
     def test_remove(self):
-        submission = six_next(self.subreddit.get_new_by_date())
+        submission = six_next(self.subreddit.get_new())
         if not submission:
             self.fail('Could not find a submission to remove.')
         submission.remove()
@@ -1385,7 +1385,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         oth.login('PyAPITestUser3', '1111')
         subreddit = oth.get_subreddit(self.sr)
         submission = None
-        for submission in subreddit.get_new_by_date():
+        for submission in subreddit.get_new():
             if not submission.hidden:
                 break
         else:
@@ -1417,7 +1417,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.fail('Could not find submission in saved links.')
 
     def test_short_link(self):
-        submission = six_next(self.r.get_new(params={'sort': 'new'}))
+        submission = six_next(self.r.get_new())
         if self.r.config.is_reddit:
             self.assertTrue(submission.id in submission.short_link)
         else:

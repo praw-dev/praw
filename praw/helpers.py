@@ -16,6 +16,7 @@
 
 import sys
 import six
+from warnings import warn
 from requests.compat import urljoin
 from praw.decorators import Memoize, SleepAfter, restrict_access
 from praw.errors import (ClientException, OAuthException,
@@ -34,10 +35,13 @@ def _get_section(subpath=''):
     return _section
 
 
-def _get_sorter(subpath='', **defaults):
+def _get_sorter(subpath='', deprecated=False, **defaults):
     """Return function to generate specific subreddit Submission listings."""
     @restrict_access(scope='read')
     def _sorted(self, *args, **kwargs):
+        if deprecated:
+            warn('Please use `{0}` instead'.format(deprecated),
+                 DeprecationWarning)
         if not kwargs.get('params'):
             kwargs['params'] = {}
         for key, value in six.iteritems(defaults):
