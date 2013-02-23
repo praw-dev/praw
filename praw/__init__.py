@@ -756,6 +756,10 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
         """
         data = {'r': six.text_type(subreddit)}
+        # Clear moderated subreddits and cache
+        # pylint: disable-msg=W0212
+        self.user._mod_subs = None
+        helpers._request.evict([self.config['my_mod_reddits']])
         return self.request_json(self.config['accept_mod_invite'], data=data)
 
     def clear_authentication(self):
@@ -886,6 +890,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self._authentication = scope
         self.access_token = access_token
         self.refresh_token = refresh_token
+        # pylint: disable-msg=W0212
         helpers._request.evict([self.config['me']])
         # Update the user object
         if update_user and 'identity' in scope:

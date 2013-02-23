@@ -669,7 +669,7 @@ class LoggedInRedditor(Redditor):
     def get_cached_moderated_reddits(self):
         """Return a cached dictionary of the user's moderated reddits.
 
-        This list is used internally. Consider using the `my_moderation`
+        This list is used internally. Consider using the `get_my_moderation`
         function instead.
 
         """
@@ -755,7 +755,7 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
             return c_info['data']['children']
         submission = s_info['data']['children'][0]
         submission.comments = c_info['data']['children']
-        submission._comment_sort = comment_sort
+        submission._comment_sort = comment_sort  # pylint: disable-msg=W0212
         return submission
 
     def __init__(self, reddit_session, json_dict):
