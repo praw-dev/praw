@@ -107,6 +107,11 @@ class RequireCaptcha(object):
         return self.__class__(self.function.__get__(obj, key))
 
     def __call__(self, *args, **kwargs):
+        if 'raise_captcha_exception' in kwargs:
+            raise_captcha_exception = kwargs['raise_captcha_exception']
+            del kwargs['raise_captcha_exception']
+        else:
+            raise_captcha_exception = False
         captcha_id = None
         while True:
             try:
@@ -120,6 +125,8 @@ class RequireCaptcha(object):
                                                          captcha_id)
                 return self.function(*args, **kwargs)
             except errors.InvalidCaptcha as exception:
+                if raise_captcha_exception:
+                    raise
                 captcha_id = exception.response['captcha']
 
 
