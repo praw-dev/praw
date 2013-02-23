@@ -74,6 +74,11 @@ class Memoize(object):
                 if key in self._cache:
                     del self._cache[key]
 
+    def empty(self):
+        """Empty the entire cache."""
+        self._cache = {}
+        self._timeouts = {}
+
     def evict(self, urls):
         """Remove cached RedditContentObject by URL."""
         urls = [self.normalize_url(url) for url in urls]

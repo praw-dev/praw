@@ -773,6 +773,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.access_token = None
         self.refresh_token = None
         self.http.cookies.clear()
+        helpers._request.empty()  # pylint: disable-msg=W0212
         self.user = None
 
     def get_access_information(self, code,  # pylint: disable-msg=W0221
@@ -890,8 +891,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self._authentication = scope
         self.access_token = access_token
         self.refresh_token = refresh_token
-        # pylint: disable-msg=W0212
-        helpers._request.evict([self.config['me']])
         # Update the user object
         if update_user and 'identity' in scope:
             self.user = self.get_me()
