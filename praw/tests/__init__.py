@@ -216,6 +216,15 @@ class BasicTest(unittest.TestCase, BasicHelper):
                           (isinstance(item, Comment) or
                            isinstance(item, MoreComments))])
 
+    def test_decode_entities(self):
+        text = self.r.get_submission(url=self.comment_url).selftext_html
+        self.assertTrue(text.startswith('&lt;'))
+        self.assertTrue(text.endswith('&gt;'))
+        self.r.config.decode_html_entities = True
+        text = self.r.get_submission(url=self.comment_url).selftext_html
+        self.assertTrue(text.startswith('<'))
+        self.assertTrue(text.endswith('>'))
+
     def test_equality(self):
         subreddit = self.r.get_subreddit(self.sr)
         same_subreddit = self.r.get_subreddit(self.sr)

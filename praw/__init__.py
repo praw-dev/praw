@@ -27,16 +27,17 @@ More information about PRAW can be found at https://github.com/praw-dev/praw
 import json
 import os
 import platform
+import re
 import requests
 import six
 import sys
-from requests.compat import urljoin
-from requests import Request
-from update_checker import update_check
-from warnings import simplefilter, warn_explicit
-
 from praw import decorators, errors, helpers
 from praw.settings import CONFIG
+from requests.compat import urljoin
+from requests import Request
+from six.moves import html_entities
+from update_checker import update_check
+from warnings import simplefilter, warn_explicit
 
 __version__ = '2.0.11'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
@@ -50,6 +51,10 @@ PNG_HEADER = '\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
 
 # Enable deprecation warnings
 simplefilter('default')
+
+# Compatability
+if not six.PY3:
+    chr = unichr
 
 
 class Config(object):  # pylint: disable-msg=R0903
@@ -167,10 +172,8 @@ class Config(object):  # pylint: disable-msg=R0903
                               six.iteritems(self.by_kind))
         self.by_object[objects.LoggedInRedditor] = obj['redditor_kind']
         self.cache_timeout = float(obj['cache_timeout'])
-        if config_boolean(obj['check_for_updates']):
-            self.check_for_updates = True
-        else:
-            self.check_for_updates = False
+        self.check_for_updates = config_boolean(obj['check_for_updates'])
+        self.decode_html_entities = config_boolean(obj['decode_html_entities'])
         self.domain = obj['domain']
         self.output_chars_limit = int(obj['output_chars_limit'])
         self.log_requests = int(obj['log_requests'])
@@ -266,14 +269,20 @@ class BaseReddit(object):
         :returns: either the response body or the response object
 
         """
+        def decode(match):
+            return chr(html_entities.name2codepoint[match.group(1)])
+
         # pylint: disable-msg=W0212
         timeout = self.config.timeout if timeout is None else timeout
         remaining_attempts = 3
         while True:
             try:
-                return helpers._request(self, url, params, data, files=files,
-                                        auth=auth, raw_response=raw_response,
-                                        timeout=timeout)
+                retval = helpers._request(self, url, params, data, files=files,
+                                          auth=auth, raw_response=raw_response,
+                                          timeout=timeout)
+                if not raw_response and self.config.decode_html_entities:
+                    retval = re.sub('&([^;]+);', decode, retval)
+                return retval
             except requests.exceptions.HTTPError as error:
                 remaining_attempts -= 1
                 if error.response.status_code not in self.RETRY_CODES or \
