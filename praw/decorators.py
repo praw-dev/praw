@@ -291,11 +291,16 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
                         return False
                 return True
 
+            login_req = login and function.__name__ not in login_exceptions
+
             # This segment of code uses hasattr to determine what instance type
             # the function was called on. We could use isinstance if we wanted
             # to import the types at runtime (decorators is used by all the
             # types).
-            if hasattr(cls, 'reddit_session'):
+            if cls is None:  # Occurs with (un)friend
+                assert login_req
+                raise errors.LoginRequired(function.__name__)
+            elif hasattr(cls, 'reddit_session'):
                 obj = cls.reddit_session
                 if mod:
                     if hasattr(cls, 'display_name'):  # Subreddit object
@@ -314,7 +319,6 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
             # This function sets _use_oauth for one time use only.
             # Verify that statement is actually true.
             assert not obj._use_oauth  # pylint: disable-msg=W0212
-            login_req = login and function.__name__ not in login_exceptions
 
             if scope and obj.has_scope(scope):
                 obj._use_oauth = True  # pylint: disable-msg=W0212
