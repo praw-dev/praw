@@ -26,6 +26,7 @@ Content Pages
 References And Other Relevant Pages
 -----------------------------------
 
+* `PRAW's Source Code <https://github.com/praw-dev/praw>`_
 * `Reddit's Source Code <https://github.com/reddit/reddit>`_
 * `Reddit's API Wiki Page <https://github.com/reddit/reddit/wiki/API>`_
 * `Reddit's API Documentation <http://www.reddit.com/dev/api>`_
