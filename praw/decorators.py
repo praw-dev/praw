@@ -284,14 +284,13 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
     def wrap(function):
         @wraps(function)
         def wrapped(cls, *args, **kwargs):
-            def mods_all():
-                mod_subs = obj.user.get_cached_moderated_reddits()
-                for sub in six.text_type(subreddit).lower().split('+'):
-                    if sub not in mod_subs:
-                        return False
-                return True
+            def is_mod_of_all(user, subreddit):
+                mod_subs = user.get_cached_moderated_reddits()
+                subs = six.text_type(subreddit).lower().split('+')
+                return all(sub in mod_subs for sub in subs)
 
             login_req = login and function.__name__ not in login_exceptions
+            mod_req = mod and function.__name__ not in moderator_exceptions
 
             # This segment of code uses hasattr to determine what instance type
             # the function was called on. We could use isinstance if we wanted
@@ -329,14 +328,11 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
                     # Now fetch the subreddit attribute. There is no good
                     # reason for it to not be set during a logged in session.
                     subreddit = cls.subreddit
-                if not mod or mod and obj.user.is_mod and mods_all():
-                    pass
-                elif function.__name__ not in moderator_exceptions:
+                if mod_req and not is_mod_of_all(obj.user, subreddit):
                     if scope:
                         raise errors.ModeratorOrScopeRequired(
                             function.__name__, scope)
-                    else:
-                        raise errors.ModeratorRequired(function.__name__)
+                    raise errors.ModeratorRequired(function.__name__)
             elif login_req:
                 if scope:
                     raise errors.LoginOrScopeRequired(function.__name__, scope)
