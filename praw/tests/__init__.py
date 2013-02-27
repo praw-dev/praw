@@ -365,16 +365,6 @@ class CacheTest(unittest.TestCase, AuthenticatedHelper):
         submission.refresh()
         self.assertNotEqual(submission.likes, same_submission.likes)
 
-    def test_users_share_cache(self):
-        subreddit = self.r.get_subreddit(self.sr)
-        title = 'Test User Sharing Of Cache: %s' % uuid.uuid4()
-        body = "BODY"
-        original_listing = list(subreddit.get_new(limit=5))
-        subreddit.submit(title, body)
-        self.r.login('PyAPITestUser2', '1111')
-        new_user_listing = list(subreddit.get_new(limit=5))
-        self.assertEqual(original_listing, new_user_listing)
-
 
 class EncodingTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
