@@ -38,6 +38,11 @@ class ClientException(Exception):
         return self.message
 
 
+class InvalidSubreddit(ClientException):
+
+    """Indicates that an invalid subreddit name was supplied."""
+
+
 class OAuthScopeRequired(ClientException):
 
     """Indicates that an OAuth2 scope is required to make the function call.

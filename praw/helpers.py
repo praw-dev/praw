@@ -19,7 +19,7 @@ import six
 from warnings import warn
 from requests.compat import urljoin
 from praw.decorators import Memoize, SleepAfter, restrict_access
-from praw.errors import (ClientException, OAuthException,
+from praw.errors import (ClientException, InvalidSubreddit, OAuthException,
                          OAuthInsufficientScope, OAuthInvalidToken)
 
 
@@ -141,7 +141,11 @@ def _request(reddit_session, url, params=None, data=None, timeout=45,
         if response.status_code == 302:
             prev_url = url
             url = urljoin(url, response.headers['location'])
-            if 'random' not in prev_url:
+            if 'reddits/search?q=' in url:  # Handle non-existent subreddit
+                subreddit = url.rsplit('=', 1)[1]
+                raise InvalidSubreddit('`{0}` is not a valid subreddit'
+                                       .format(subreddit))
+            elif 'random' not in prev_url:
                 raise ClientException('Unexpected redirect from {0} to {1}'
                                       .format(prev_url, url))
         else:
