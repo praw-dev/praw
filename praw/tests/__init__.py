@@ -1281,6 +1281,26 @@ class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
 
+    def test_distinguish_and_undistinguish(self):
+        def verify_distinguish(submission):
+            submission.distinguish()
+            submission.refresh()
+            self.assertTrue(submission.distinguished)
+
+        def verify_undistinguish(submission):
+            submission.undistinguish()
+            submission.refresh()
+            self.assertFalse(submission.distinguished)
+
+        self.disable_cache()
+        submission = six_next(self.subreddit.get_top())
+        if submission.distinguished:
+            verify_undistinguish(submission)
+            verify_distinguish(submission)
+        else:
+            verify_distinguish(submission)
+            verify_undistinguish(submission)
+
     def test_edit_link(self):
         found = None
         for item in self.r.user.get_submitted():
