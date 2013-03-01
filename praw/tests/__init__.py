@@ -277,6 +277,14 @@ class BasicTest(unittest.TestCase, BasicHelper):
             subs.add(self.r.get_subreddit('RANDOM').display_name)
         self.assertTrue(len(subs) > 1)
 
+    def test_get_submissions(self):
+        kind = self.r.config.by_object[Submission]
+        def fullname(url):
+            return '{0}_{1}'.format(kind, url.rsplit('/', 2)[1])
+        fullnames = [fullname(self.comment_url), fullname(self.link_url)] * 100
+        retreived = [x.fullname for x in self.r.get_submissions(fullnames)]
+        self.assertEqual(fullnames, retreived)
+
     @reddit_only
     def test_get_top(self):
         num = 50

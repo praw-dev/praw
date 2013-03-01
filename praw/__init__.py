@@ -66,6 +66,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'approve':             'api/approve/',
                  'authorize':           'api/v1/authorize/',
                  'banned':              'r/%s/about/banned/',
+                 'by_id':               'by_id/',
                  'captcha':             'captcha/',
                  'clearflairtemplates': 'api/clearflairtemplates/',
                  'comment':             'api/comment/',
@@ -546,6 +547,7 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_comments('all', gilded_only, *args, **kwargs)
 
+
     @decorators.restrict_access(scope='read')
     def get_comments(self, subreddit, gilded_only=False, *args, **kwargs):
         """Return latest comments on the given subreddit.
@@ -656,6 +658,24 @@ class UnauthenticatedReddit(BaseReddit):
         return objects.Submission.from_url(self, url,
                                            comment_limit=comment_limit,
                                            comment_sort=comment_sort)
+
+    def get_submissions(self, fullnames, *args, **kwargs):
+        """Yield Submission objects for each fullname provided in `fullnames`.
+
+        A submission fullname looks like `t3_<base36_id>`. Submissions are
+        yielded in the same order they appear in fullnames.
+
+        Up to 100 items are batched at a time, however, this happens
+        transparently.
+
+        """
+        fullnames = fullnames[:]
+        while fullnames:
+            cur = fullnames[:100]
+            fullnames[:100] = []
+            url = self.config['by_id'] + ','.join(cur)
+            for item in self.get_content(url, limit=len(cur), *args, **kwargs):
+                yield item
 
     def get_subreddit(self, subreddit_name, *args, **kwargs):
         """Return a Subreddit object for the subreddit_name specified."""
