@@ -279,6 +279,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_submissions(self):
         kind = self.r.config.by_object[Submission]
+
         def fullname(url):
             return '{0}_{1}'.format(kind, url.rsplit('/', 2)[1])
         fullnames = [fullname(self.comment_url), fullname(self.link_url)] * 100

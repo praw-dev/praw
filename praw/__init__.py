@@ -547,7 +547,6 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_comments('all', gilded_only, *args, **kwargs)
 
-
     @decorators.restrict_access(scope='read')
     def get_comments(self, subreddit, gilded_only=False, *args, **kwargs):
         """Return latest comments on the given subreddit.
