@@ -177,6 +177,7 @@ class Config(object):  # pylint: disable-msg=R0903
         self.domain = obj['domain']
         self.output_chars_limit = int(obj['output_chars_limit'])
         self.log_requests = int(obj['log_requests'])
+        # We use `get(...) or None` because `get` may return an empty string
         self.client_id = obj.get('oauth_client_id') or None
         self.client_secret = obj.get('oauth_client_secret') or None
         self.redirect_uri = obj.get('oauth_redirect_uri') or None
@@ -375,6 +376,7 @@ class BaseReddit(object):
                     return
             # Set/update the 'after' parameter for the next iteration
             if root.get(after_field):
+                # We use `root.get` to also test if the value evaluates to True
                 params['after'] = root[after_field]
             else:
                 return
@@ -1159,7 +1161,7 @@ class ModFlairMixin(AuthenticatedReddit):
         return self.request_json(self.config['deleteflair'], data=data)
 
     @decorators.restrict_access(scope='modflair')
-    def get_flair_list(self, subreddit, limit=0):
+    def get_flair_list(self, subreddit, limit=0, *args, **kwargs):
         """Return a get_content generator of flair mappings.
 
         Each flair mapping is a dict with three keys. 'user', 'flair_text' and
@@ -1169,7 +1171,8 @@ class ModFlairMixin(AuthenticatedReddit):
         return self.get_content(self.config['flairlist'] %
                                 six.text_type(subreddit),
                                 limit=limit, root_field=None,
-                                thing_field='users', after_field='next')
+                                thing_field='users', after_field='next', *args,
+                                **kwargs)
 
     @decorators.restrict_access(scope='modflair')
     def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
@@ -1234,7 +1237,8 @@ class ModLogMixin(AuthenticatedReddit):
     """Adds methods requring the 'modlog' scope (or mod access)."""
 
     @decorators.restrict_access(scope='modlog')
-    def get_mod_log(self, subreddit, limit=0, mod=None, action=None):
+    def get_mod_log(self, subreddit, limit=0, mod=None, action=None, *args,
+                    **kwargs):
         """Return a get_content generator for moderation log items.
 
         :param mod: If given, only return the actions made by this moderator.
@@ -1242,14 +1246,14 @@ class ModLogMixin(AuthenticatedReddit):
         :param action: If given, only return entries for the specified action.
 
         """
-        params = {}
+        params = kwargs.setdefault('params', {})
         if mod is not None:
             params['mod'] = six.text_type(mod)
         if type is not None:
             params['type'] = six.text_type(action)
         return self.get_content(self.config['modlog'] %
-                                six.text_type(subreddit), limit=limit,
-                                params=params)
+                                six.text_type(subreddit), limit=limit, *args,
+                                **kwargs)
 
 
 class ModOnlyMixin(AuthenticatedReddit):
@@ -1269,22 +1273,24 @@ class ModOnlyMixin(AuthenticatedReddit):
                                  six.text_type(subreddit))
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_mod_queue(self, subreddit='mod', limit=0):
+    def get_mod_queue(self, subreddit='mod', limit=0, *args, **kwargs):
         """Return a get_content_generator for the  moderator queue."""
         return self.get_content(self.config['modqueue'] %
-                                six.text_type(subreddit), limit=limit)
+                                six.text_type(subreddit), limit=limit, *args,
+                                **kwargs)
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_reports(self, subreddit='mod', limit=0):
+    def get_reports(self, subreddit='mod', limit=0, *args, **kwargs):
         """Return a get_content generator of reported submissions."""
         return self.get_content(self.config['reports'] %
-                                six.text_type(subreddit), limit=limit)
+                                six.text_type(subreddit), limit=limit, *args,
+                                **kwargs)
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_spam(self, subreddit='mod', limit=0):
+    def get_spam(self, subreddit='mod', limit=0, *args, **kwargs):
         """Return a get_content generator of spam-filtered items."""
         return self.get_content(self.config['spam'] % six.text_type(subreddit),
-                                limit=limit)
+                                limit=limit, *args, **kwargs)
 
     @decorators.restrict_access(scope=None, mod=True)
     def get_stylesheet(self, subreddit):
@@ -1293,10 +1299,11 @@ class ModOnlyMixin(AuthenticatedReddit):
                                  six.text_type(subreddit))['data']
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_unmoderated(self, subreddit='mod', limit=0):
+    def get_unmoderated(self, subreddit='mod', limit=0, *args, **kwargs):
         """Return a get_content generator of unmoderated items."""
         return self.get_content(self.config['unmoderated'] %
-                                six.text_type(subreddit), limit=limit)
+                                six.text_type(subreddit), limit=limit, *args,
+                                **kwargs)
 
 
 class MySubredditsMixin(AuthenticatedReddit):
@@ -1304,19 +1311,22 @@ class MySubredditsMixin(AuthenticatedReddit):
     """Adds methods requiring the 'mysubreddits' scope (or login)."""
 
     @decorators.restrict_access(scope='mysubreddits')
-    def get_my_contributions(self, limit=0):
+    def get_my_contributions(self, limit=0, *args, **kwargs):
         """Return the subreddits where the session's user is a contributor."""
-        return self.get_content(self.config['my_con_reddits'], limit=limit)
+        return self.get_content(self.config['my_con_reddits'], limit=limit,
+                                *args, **kwargs)
 
     @decorators.restrict_access(scope='mysubreddits')
-    def get_my_moderation(self, limit=0):
+    def get_my_moderation(self, limit=0, *args, **kwargs):
         """Return the subreddits where the session's user is a mod."""
-        return self.get_content(self.config['my_mod_reddits'], limit=limit)
+        return self.get_content(self.config['my_mod_reddits'], limit=limit,
+                                *args, **kwargs)
 
     @decorators.restrict_access(scope='mysubreddits')
-    def get_my_reddits(self, limit=0):
+    def get_my_reddits(self, limit=0, *args, **kwargs):
         """Return the subreddits that the logged in user is subscribed to."""
-        return self.get_content(self.config['my_reddits'], limit=limit)
+        return self.get_content(self.config['my_reddits'], limit=limit, *args,
+                                **kwargs)
 
 
 class PrivateMessagesMixin(AuthenticatedReddit):
@@ -1338,22 +1348,26 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         return response
 
     @decorators.restrict_access(scope='privatemessages')
-    def get_inbox(self, limit=0):
+    def get_inbox(self, limit=0, *args, **kwargs):
         """Return a generator for inbox messages."""
-        return self.get_content(self.config['inbox'], limit=limit)
+        return self.get_content(self.config['inbox'], limit=limit, *args,
+                                **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
-    def get_mod_mail(self, limit=0):
+    def get_mod_mail(self, limit=0, *args, **kwargs):
         """Return a generator for moderator messages."""
-        return self.get_content(self.config['moderator'], limit=limit)
+        return self.get_content(self.config['moderator'], limit=limit, *args,
+                                **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
-    def get_sent(self, limit=0):
+    def get_sent(self, limit=0, *args, **kwargs):
         """Return a generator for sent messages."""
-        return self.get_content(self.config['sent'], limit=limit)
+        return self.get_content(self.config['sent'], limit=limit, *args,
+                                **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
-    def get_unread(self, limit=0, unset_has_mail=False, update_user=False):
+    def get_unread(self, limit=0, unset_has_mail=False, update_user=False,
+                   *args, **kwargs):
         """Return a generator for unread messages.
 
         :param unset_has_mail: When true, clear the has_mail flag (orangered)
@@ -1362,12 +1376,13 @@ class PrivateMessagesMixin(AuthenticatedReddit):
             the has_mail attribute of the logged-in user to False.
 
         """
-        params = {'mark': 'true'} if unset_has_mail else None
-        # Update the user object
-        if unset_has_mail and update_user and hasattr(self.user, 'has_mail'):
-            self.user.has_mail = False
-        return self.get_content(self.config['unread'], limit=limit,
-                                params=params)
+        params = kwargs.setdefault('params', {})
+        if unset_has_mail:
+            params['mark'] = 'true'
+            if update_user:  # Update the user object
+                self.user.has_mail = False
+        return self.get_content(self.config['unread'], limit=limit, *args,
+                                **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
     @decorators.RequireCaptcha
