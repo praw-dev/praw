@@ -26,8 +26,7 @@ from praw.errors import (ClientException, InvalidSubreddit, OAuthException,
 def _get_section(subpath=''):
     """Return function to generate various non-subreddit listings."""
     def _section(self, sort='new', time='all', *args, **kwargs):
-        if not kwargs.get('params'):
-            kwargs['params'] = {}
+        kwargs.setdefault('params', {})
         kwargs['params'].setdefault('sort', sort)
         kwargs['params'].setdefault('t', time)
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
