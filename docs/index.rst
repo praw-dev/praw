@@ -249,6 +249,10 @@ Example Applications/Scripts
   video links in a response comment where multiple videos links appear in reply
   to a submission (uses a slightly out-of-date version of PRAW, currently
   requires Submission.all_comments_flat).
+* `RedditAnalysis <https://github.com/rhiever/reddit-analysis>`_ by 
+  `u/rhiever <http://www.reddit.com/user/rhiever>`_. Scrapes a specific subreddit 
+  or user and prints out all of the commonly-used words in the past month. 
+  Contains a data file containing a list of words that should be considered common.
 * \<Your Script Here\> Edit this page to add it yourself.
 
 Note: The following use very outdated versions of the API. Don't expect them
