@@ -1000,7 +1000,7 @@ class Subreddit(Messageable, Refreshable):
         """Remove all user flair on this subreddit.
 
         :returns: The json response from the server when there is flair to
-        clear, otherwise returns None.
+            clear, otherwise returns None.
 
         """
         csv = [{'user': x['user']} for x in self.get_flair_list(limit=None)]

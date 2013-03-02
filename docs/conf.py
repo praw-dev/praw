@@ -11,13 +11,11 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import os
-import re
 import sys
 
-version = re.search("__version__ = '([^']+)'",
-                    open('../praw/__init__.py').read()).group(1)
+sys.path.insert(0, "..")
 
+from praw import __version__
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -48,15 +46,15 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Python Reddit API Wrapper'
 copyright = u'2012, Bryce Boe'
+project = u'PRAW'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = '.'.join(version.split('.', 2)[:2])
+version = '.'.join(__version__.split('.', 2)[:2])
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -178,22 +176,22 @@ htmlhelp_basename = 'PythonRedditAPIWrapperdoc'
 # -- Options for LaTeX output --------------------------------------------------
 
 latex_elements = {
-# The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
+    # The paper size ('letterpaper' or 'a4paper').
+    #'papersize': 'letterpaper',
 
-# The font size ('10pt', '11pt' or '12pt').
-#'pointsize': '10pt',
+    # The font size ('10pt', '11pt' or '12pt').
+    #'pointsize': '10pt',
 
-# Additional stuff for the LaTeX preamble.
-#'preamble': '',
+    # Additional stuff for the LaTeX preamble.
+    #'preamble': '',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'PythonRedditAPIWrapper.tex',
-   u'Python Reddit API Wrapper Documentation',
-   u'Bryce Boe', 'manual'),
+    ('index', 'PythonRedditAPIWrapper.tex',
+     u'Python Reddit API Wrapper Documentation',
+     u'Bryce Boe', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -237,10 +235,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'PythonRedditAPIWrapper',
-   u'Python Reddit API Wrapper Documentation',
-   u'Bryce Boe', 'PythonRedditAPIWrapper', 'One line description of project.',
-   'Miscellaneous'),
+    ('index', 'PythonRedditAPIWrapper',
+     u'Python Reddit API Wrapper Documentation',
+     u'Bryce Boe', 'PythonRedditAPIWrapper',
+     'One line description of project.', 'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
