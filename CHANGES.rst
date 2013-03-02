@@ -13,6 +13,13 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
+PRAW 2.0.13 (Unreleased)
+-----------
+
+ * **[FEATURE]** Added ``get_submissions`` to batch convert fullnames
+   (``t3_bas36id``) into ``Submission`` objects.
+
+
 PRAW 2.0.12
 -----------
 
@@ -20,6 +27,10 @@ PRAW 2.0.12
    <https://github.com/praw-dev/praw/issues/186>`_. The parameter
    ``decode_html_entities`` (default ``False``) has been added to the
    configuration file to control whether this feature is activated.
+ * **[FEATURE]** Add InvalidSubreddit exception which is raised when attempting
+   to get a listing for a nonexistent subreddit.
+ * **[FEATURE]** All functions that use the ``get_content`` generator function
+   now take ``*args, **kwargs``.
  * **[BUGFIX]** Requesting user specific data such as ``get_unread`` while
    OAuthenticated as a user, then switching OAuthentication to another user and
    re-requesting the data within ``cache_timeout`` would return the cached
