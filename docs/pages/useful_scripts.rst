@@ -80,7 +80,8 @@ this page to add in more.
     list of words that should be considered common.
 
 **\<Your Script Here\>**
-    Edit this page to add it yourself.
+    Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
+    docs/pages/useful_scripts.rst>`_ to add your script to this list.
 
 **Note:** The following use very outdated versions of the API. Don't expect
 them to work with the latest version.
