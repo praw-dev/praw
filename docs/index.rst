@@ -193,20 +193,22 @@ for any ``NameErrors`` you might encounter.
 Useful Scripts
 ==============
 
-`AutoModerator <https://github.com/Deimos/AutoModerator>`_ by `Deimos <https://github.com/deimos>`_
-    A bot for automating straightforward reddit moderation tasks and improving 
+`AutoModerator`_ by `Deimos <https://github.com/deimos>`_
+    A bot for automating straightforward reddit moderation tasks and improving
     upon the existing spam-filter.
 
 
-`ClockStalker <https://github.com/ClockStalker/clockstalker>`_ 
-    Examines a redditor's posting history and creates `a comment with a nice activity
-    overview
+`ClockStalker <https://github.com/ClockStalker/clockstalker>`_
+    Examines a redditor's posting history and creates `a comment with a nice
+    activity overview
     <http://www.reddit.com/r/AskReddit/comments/129lyb/what_fact_about_reality_
     terrifies_you_or_gives/c6tbgd7?context=1>`_. ClockStalker uses an older
     version of PRAW, the ``reddit``, module. It should, but may not, work with
     the latest version of PRAW.
 
-`DailyProgBot <https://github.com/nint22/DailyProgBot>`_ 
-    A simple challenge-queue submission bot for r/DailyProgrammer. Users submit 
-    challenges through a Google Documents form, then the bot crawls said form, posting the
-    appropriate challenge on the appropriate day of the week.
+`DailyProgBot <https://github.com/nint22/DailyProgBot>`_
+    A simple challenge-queue submission bot for r/DailyProgrammer. Users submit
+    challenges through a Google Documents form, then the bot crawls said form,
+    posting the appropriate challenge on the appropriate day of the week.
+
+.. _`AutoModerator`: https://github.com/Deimos/AutoModerator

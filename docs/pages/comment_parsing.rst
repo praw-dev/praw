@@ -17,8 +17,9 @@ reddit.com. We also get a submission object, where our script will do it's
 work.
 
 >>> import praw
->>> r = praw.Reddit('Comment Scraper 1.0 by u/_Daimon_ see github.com/'
-...                 'praw-dev/praw/wiki/Comment-Parsing')
+>>> r = praw.Reddit('Comment Scraper 1.0 by u/_Daimon_ see '
+...                 'https://praw.readthedocs.org/en/latest/'
+...                 'pages/comment_parsing.html')
 >>> submission = r.get_submission(submission_id='11v36o')
 
 After getting the submission object we retrieve the comments and look through
@@ -108,8 +109,9 @@ The full program
 
     import praw
 
-    r = praw.Reddit('Comment Scraper 1.0 by u/_Daimon_ see github.com/'
-                    'praw-dev/praw/wiki/Comment-Parsing')
+    r = praw.Reddit('Comment Scraper 1.0 by u/_Daimon_ see '
+                    'https://praw.readthedocs.org/en/latest/'
+                    'pages/comment_parsing.html')
     r.login('bot_username', 'bot_password')
     submission = r.get_submission(submission_id='11v36o')
     flat_comments = praw.helpers.flatten_tree(submission.comments_flat)
