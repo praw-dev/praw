@@ -79,6 +79,11 @@ this page to add in more.
     commonly-used words in the past month. Contains a data file containing a
     list of words that should be considered common.
 
+`AlienFeed`_ by `u/Jawerty <http://www.reddit.com/user/Jawerty>`_
+    AlienFeed is a command line application made for displaying and interacting
+    with Reddit submissions. The client can return a list containing the top
+    submissions in a subreddit, and even open the links up if you'd like.
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -101,6 +106,7 @@ them to work with the latest version.
     outputs random statuses. The statuses can be viewed `here
     <http://identi.ca/redditbot/all>`_.
 
+.. _`AlienFeed`: https://github.com/jawerty/AlienFeed
 .. _`AutoModerator`: https://github.com/Deimos/AutoModerator
 .. _`Butcher bot`: https://github.com/xiphirx/Butcher-Bot
 .. _`Groompbot`: https://github.com/AndrewNeo/groompbot
