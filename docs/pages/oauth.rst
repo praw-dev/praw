@@ -50,7 +50,8 @@ object with a clear and descriptive useragent that follows the `api rules
 
     >>> import praw
     >>> r = praw.Reddit('OAuth testing example by u/_Daimon_ ver 0.1 see '
-    ...                 'github.com/praw-dev/praw/wiki/OAuth for source')
+    ...                 'https://praw.readthedocs.org/en/latest/'
+    ...                 'pages/oauth.html for source')
 
 Next we set the app info to match what we got in step 1.
 
@@ -202,7 +203,8 @@ the screen.
 
     if __name__ == '__main__':
         r = praw.Reddit('OAuth Webserver example by u/_Daimon_ ver 0.1. See '
-                        'github.com/praw-dev/praw/wiki/OAuth for more info.')
+                        'https://praw.readthedocs.org/en/latest/'
+                        'pages/oauth.html for more info.')
         r.set_oauth_app_info(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL)
         app.run(debug=True, port=65010)
 
