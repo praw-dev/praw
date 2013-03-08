@@ -79,6 +79,10 @@ this page to add in more.
     commonly-used words in the past month. Contains a data file containing a
     list of words that should be considered common.
 
+`AlienFeed`_ by `jawerty <http://github.com/jawerty>`_
+    A client command-line application for viewing and opening Reddit links. You 
+    can follow Reddit from your terminal.
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -111,3 +115,4 @@ them to work with the latest version.
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot
 .. _`newsfrbot`: https://github.com/gardaud/newsfrbot
 .. _`u/xiphirx`: http://www.reddit.com/user/xiphirx
+.. _`AlienFeed`: https://github.com/jawerty/AlienFeed
