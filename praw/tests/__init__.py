@@ -968,6 +968,25 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
             test_add()
             test_remove()
 
+    def test_wiki_contributors(self):
+        def test_add():
+            self.subreddit.add_wiki_contributor(self.other)
+            self.assertTrue(self.other in
+                            self.subreddit.get_wiki_contributors())
+
+        def test_remove():
+            self.subreddit.remove_wiki_contributor(self.other)
+            self.assertFalse(self.other in
+                             self.subreddit.get_wiki_contributors())
+
+        self.disable_cache()
+        if self.other in self.subreddit.get_wiki_contributors():
+            test_remove()
+            test_add()
+        else:
+            test_add()
+            test_remove()
+
     def test_make_contributor(self):
         self.subreddit.make_contributor(self.other)
         self.assertTrue(self.other in self.subreddit.get_contributors())

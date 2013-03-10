@@ -926,6 +926,7 @@ class Subreddit(Messageable, Refreshable):
                 ('get_stylesheet', MOMix.get_stylesheet),
                 ('get_unmoderated', MOMix.get_unmoderated),
                 ('get_wiki_banned', MOMix.get_wiki_banned),
+                ('get_wiki_contributors', MOMix.get_wiki_contributors),
                 ('set_flair', MFMix.set_flair),
                 ('set_flair_csv', MFMix.set_flair_csv),
                 ('set_settings', MCMix.set_settings),
@@ -951,6 +952,11 @@ class Subreddit(Messageable, Refreshable):
     wiki_ban = _modify_relationship('wikibanned', is_sub=True)
     remove_wiki_ban = _modify_relationship('wikibanned', unlink=True,
                                            is_sub=True)
+    # Subreddit wiki contributors
+    add_wiki_contributor = _modify_relationship('wikicontributor', is_sub=True)
+    remove_wiki_contributor = _modify_relationship('wikicontributor',
+                                                   unlink=True, is_sub=True)
+
 
     # Generic listing selectors
     get_controversial = _get_sorter('controversial')

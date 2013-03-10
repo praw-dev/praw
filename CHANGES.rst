@@ -21,6 +21,10 @@ PRAW 2.0.13 (Unreleased)
  * **[FEATURE]** Added ``get_wiki_banned`` to get a list of wiki banned users.
  * **[FEATURE]** Added ``wiki_ban`` and ``remove_wiki_ban`` to manage the list
    of wiki banned users.
+ * **[FEATURE]** Added ``get_wiki_contributors`` to get a list of wiki
+   contributors.
+ * **[FEATURE]** Added ``add_wiki_contributor`` and ``remove_wiki_contributor``
+   to manage the list of wiki contributors.
 
 
 PRAW 2.0.12
