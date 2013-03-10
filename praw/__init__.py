@@ -139,7 +139,9 @@ class Config(object):  # pylint: disable-msg=R0903
                  'user':                'user/%s/',
                  'user_about':          'user/%s/about/',
                  'username_available':  'api/username_available/',
-                 'vote':                'api/vote/'}
+                 'vote':                'api/vote/',
+                 'wiki_banned':         'r/%s/about/wikibanned/',
+                 'wiki_contributors':   'r/%s/about/wikicontribute/'}
     SSL_PATHS = ('access_token_url', 'authorize', 'login')
 
     def __init__(self, site_name):
@@ -1323,6 +1325,12 @@ class ModOnlyMixin(AuthenticatedReddit):
         return self.get_content(self.config['unmoderated'] %
                                 six.text_type(subreddit), limit=limit, *args,
                                 **kwargs)
+
+    @decorators.restrict_access(scope=None, mod=True)
+    def get_wiki_banned(self, subreddit):
+        """Return a list of contributors to the wiki."""
+        return self.request_json(self.config['wiki_banned'] %
+                                 six.text_type(subreddit))
 
 
 class MySubredditsMixin(AuthenticatedReddit):

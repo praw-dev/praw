@@ -925,6 +925,7 @@ class Subreddit(Messageable, Refreshable):
                 ('get_spam', MOMix.get_spam),
                 ('get_stylesheet', MOMix.get_stylesheet),
                 ('get_unmoderated', MOMix.get_unmoderated),
+                ('get_wiki_banned', MOMix.get_wiki_banned),
                 ('set_flair', MFMix.set_flair),
                 ('set_flair_csv', MFMix.set_flair_csv),
                 ('set_settings', MCMix.set_settings),
@@ -935,14 +936,21 @@ class Subreddit(Messageable, Refreshable):
                 ('update_settings', MCMix.update_settings),
                 ('upload_image', MCMix.upload_image))
 
+    # Subreddit banned
     ban = _modify_relationship('banned', is_sub=True)
     unban = _modify_relationship('banned', unlink=True, is_sub=True)
+    # Subreddit contributors
     make_contributor = _modify_relationship('contributor', is_sub=True)
     remove_contributor = _modify_relationship('contributor', unlink=True,
                                               is_sub=True)
+    # Subreddit moderators
     make_moderator = _modify_relationship('moderator', is_sub=True)
     remove_moderator = _modify_relationship('moderator', unlink=True,
                                             is_sub=True)
+    # Subreddit wiki banned
+    wiki_ban = _modify_relationship('wikibanned', is_sub=True)
+    remove_wiki_ban = _modify_relationship('wikibanned', unlink=True,
+                                           is_sub=True)
 
     # Generic listing selectors
     get_controversial = _get_sorter('controversial')

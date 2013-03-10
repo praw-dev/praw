@@ -18,6 +18,9 @@ PRAW 2.0.13 (Unreleased)
 
  * **[FEATURE]** Added ``get_submissions`` to batch convert fullnames
    (``t3_bas36id``) into ``Submission`` objects.
+ * **[FEATURE]** Added ``get_wiki_banned`` to get a list of wiki banned users.
+ * **[FEATURE]** Added ``wiki_ban`` and ``remove_wiki_ban`` to manage the list
+   of wiki banned users.
 
 
 PRAW 2.0.12

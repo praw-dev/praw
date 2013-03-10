@@ -951,6 +951,23 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.ban(self.other)
         self.assertTrue(self.other in self.subreddit.get_banned())
 
+    def test_wiki_ban(self):
+        def test_add():
+            self.subreddit.wiki_ban(self.other)
+            self.assertTrue(self.other in self.subreddit.get_wiki_banned())
+
+        def test_remove():
+            self.subreddit.remove_wiki_ban(self.other)
+            self.assertFalse(self.other in self.subreddit.get_wiki_banned())
+
+        self.disable_cache()
+        if self.other in self.subreddit.get_wiki_banned():
+            test_remove()
+            test_add()
+        else:
+            test_add()
+            test_remove()
+
     def test_make_contributor(self):
         self.subreddit.make_contributor(self.other)
         self.assertTrue(self.other in self.subreddit.get_contributors())
