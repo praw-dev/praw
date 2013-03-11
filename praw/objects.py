@@ -938,18 +938,25 @@ class Subreddit(Messageable, Refreshable):
                 ('upload_image', MCMix.upload_image))
 
     # Subreddit banned
-    ban = _modify_relationship('banned', is_sub=True)
-    unban = _modify_relationship('banned', unlink=True, is_sub=True)
+    add_ban = _modify_relationship('banned', is_sub=True)
+    ban = _modify_relationship('banned', is_sub=True, deprecated='add_ban')
+    unban = _modify_relationship('banned', unlink=True, is_sub=True,
+                                 deprecated='remove_ban')
+    remove_ban = _modify_relationship('banned', unlink=True, is_sub=True)
     # Subreddit contributors
-    make_contributor = _modify_relationship('contributor', is_sub=True)
+    add_contributor = _modify_relationship('contributor', is_sub=True)
+    make_contributor = _modify_relationship('contributor', is_sub=True,
+                                            deprecated='add_contributor')
     remove_contributor = _modify_relationship('contributor', unlink=True,
                                               is_sub=True)
     # Subreddit moderators
-    make_moderator = _modify_relationship('moderator', is_sub=True)
+    add_moderator = _modify_relationship('moderator', is_sub=True)
+    make_moderator = _modify_relationship('moderator', is_sub=True,
+                                          deprecated='add_moderator')
     remove_moderator = _modify_relationship('moderator', unlink=True,
                                             is_sub=True)
     # Subreddit wiki banned
-    wiki_ban = _modify_relationship('wikibanned', is_sub=True)
+    add_wiki_ban = _modify_relationship('wikibanned', is_sub=True)
     remove_wiki_ban = _modify_relationship('wikibanned', unlink=True,
                                            is_sub=True)
     # Subreddit wiki contributors

@@ -19,12 +19,15 @@ PRAW 2.0.13 (Unreleased)
  * **[FEATURE]** Added ``get_submissions`` to batch convert fullnames
    (``t3_bas36id``) into ``Submission`` objects.
  * **[FEATURE]** Added ``get_wiki_banned`` to get a list of wiki banned users.
- * **[FEATURE]** Added ``wiki_ban`` and ``remove_wiki_ban`` to manage the list
-   of wiki banned users.
+ * **[FEATURE]** Added ``add_wiki_ban`` and ``remove_wiki_ban`` to manage the
+   list of wiki banned users.
  * **[FEATURE]** Added ``get_wiki_contributors`` to get a list of wiki
    contributors.
  * **[FEATURE]** Added ``add_wiki_contributor`` and ``remove_wiki_contributor``
    to manage the list of wiki contributors.
+ * **[CHANGE]** Deprecated ``ban``, ``unban``, ``make_contributor``, and
+   ``make_moderator`` in favor of the consistently named ``add_ban``,
+   ``remove_ban``, ``add_contributor``, and ``add_moderator`` respectively.
 
 
 PRAW 2.0.12

@@ -50,7 +50,8 @@ def _get_sorter(subpath='', deprecated=False, **defaults):
     return _sorted
 
 
-def _modify_relationship(relationship, unlink=False, is_sub=False):
+def _modify_relationship(relationship, unlink=False, is_sub=False,
+                         deprecated=False):
     """Return a function for relationship modification.
 
     Used to support friending (user-to-user), as well as moderating,
@@ -67,6 +68,10 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 
     @restrict_access(**access)
     def do_relationship(thing, user):
+        if deprecated:
+            warn('Please use `{0}` instead'.format(deprecated),
+                 DeprecationWarning)
+
         data = {'name': six.text_type(user),
                 'type': relationship}
         if is_sub:
