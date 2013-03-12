@@ -25,6 +25,8 @@ PRAW 2.0.13 (Unreleased)
    contributors.
  * **[FEATURE]** Added ``add_wiki_contributor`` and ``remove_wiki_contributor``
    to manage the list of wiki contributors.
+ * **[FEATURE]** Added ``get_wiki_pages`` to get a list of WikiPage
+   objects. These objects currently have no functionality.
  * **[CHANGE]** Deprecated ``ban``, ``unban``, ``make_contributor``, and
    ``make_moderator`` in favor of the consistently named ``add_ban``,
    ``remove_ban``, ``add_contributor``, and ``add_moderator`` respectively.

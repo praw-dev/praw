@@ -1572,5 +1572,13 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
                 self.fail('Found reddit in my_reddits.')
 
 
+class WikiTests(unittest.TestCase, BasicHelper):
+    def setUp(self):
+        self.configure()
+
+    def test_page_listing(self):
+        self.assertTrue(len(self.r.get_wiki_pages('ucsantabarbara')) > 0)
+
+
 if __name__ == '__main__':
     unittest.main()

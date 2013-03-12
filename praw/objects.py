@@ -119,6 +119,11 @@ class RedditContentObject(object):
                 json_dict = self._get_json_dict()
             else:
                 json_dict = {}
+
+        # TODO: Remove this wikipagelisting hack
+        if isinstance(json_dict, list):
+            json_dict = {'_tmp': json_dict}
+
         for name, value in six.iteritems(json_dict):
             if self._underscore_names and name in self._underscore_names:
                 name = '_' + name
@@ -1040,34 +1045,69 @@ class Subreddit(Messageable, Refreshable):
         return self.reddit_session.search(query, self, *args, **kwargs)
 
 
-class UserList(RedditContentObject):
+class PRAWListing(RedditContentObject):
+
+    CHILD_ATTRIBUTE = None
+
+    """An abstract class to coerce a listing into RedditContentObjects."""
+
+    def __init__(self, reddit_session, json_dict=None, fetch=False):
+        super(PRAWListing, self).__init__(reddit_session, json_dict, fetch)
+
+        if not self.CHILD_ATTRIBUTE:
+            raise NotImplemented('PRAWListing must be extended.')
+
+        child_list = getattr(self, self.CHILD_ATTRIBUTE)
+        for i in range(len(child_list)):
+            child_list[i] = self._convert(reddit_session, child_list[i])
+
+    def __contains__(self, item):
+        return item in getattr(self, self.CHILD_ATTRIBUTE)
+
+    def __getitem__(self, index):
+        return getattr(self, self.CHILD_ATTRIBUTE)[index]
+
+    def __iter__(self):
+        return getattr(self, self.CHILD_ATTRIBUTE).__iter__()
+
+    def __len__(self):
+        return len(getattr(self, self.CHILD_ATTRIBUTE))
+
+    def __unicode__(self):
+        return six.text_type(getattr(self, self.CHILD_ATTRIBUTE))
+
+
+
+class UserList(PRAWListing):
 
     """A list of Redditors. Works just like a regular list."""
 
-    def __init__(self, reddit_session, json_dict=None, fetch=False):
-        super(UserList, self).__init__(reddit_session, json_dict, fetch)
+    CHILD_ATTRIBUTE = 'children'
 
-        # HACK: Convert children to Redditor instances
-        for i in range(len(self.children)):
-            tmp = self.children[i]
-            redditor = Redditor(reddit_session, tmp['name'], fetch=False)
-            redditor.id = tmp['id'].split('_')[1]  # pylint: disable-msg=C0103
-            self.children[i] = redditor
+    def _convert(self, reddit_session, data):
+        """Convert the data into a Redditor object."""
+        retval = Redditor(reddit_session, data['name'], fetch=False)
+        retval.id = data['id'].split('_')[1]
+        return retval
 
-    def __contains__(self, item):
-        return item in self.children
 
-    def __getitem__(self, index):
-        return self.children[index]
-
-    def __iter__(self):
-        return self.children.__iter__()
-
-    def __len__(self):
-        return len(self.children)
-
+class WikiPage(RedditContentObject):
     def __unicode__(self):
-        return six.text_type(self.children)
+        return six.text_type('{0}:{1}'.format(self._subreddit, self._page))
+
+
+class WikiPageListing(PRAWListing):
+
+    """A list of WikiPages. Works just like a regular list."""
+
+    CHILD_ATTRIBUTE = '_tmp'
+
+    def _convert(self, reddit_session, data):
+        """Convert the data into a WikiPage object."""
+        subreddit = reddit_session.get_subreddit(
+            reddit_session._request_url.rsplit('/', 4)[1])
+        tmp_data = {'_page': data, '_subreddit': subreddit}
+        return WikiPage(reddit_session, tmp_data, fetch=False)
 
 
 def _add_aliases():

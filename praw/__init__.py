@@ -140,6 +140,8 @@ class Config(object):  # pylint: disable-msg=R0903
                  'user_about':          'user/%s/about/',
                  'username_available':  'api/username_available/',
                  'vote':                'api/vote/',
+                 'wiki_page':           'r/%s/wiki/',
+                 'wiki_pages':          'r/%s/wiki/pages/',
                  'wiki_banned':         'r/%s/about/wikibanned/',
                  'wiki_contributors':   'r/%s/about/wikicontributors/'}
     SSL_PATHS = ('access_token_url', 'authorize', 'login')
@@ -170,6 +172,7 @@ class Config(object):  # pylint: disable-msg=R0903
                         obj['subreddit_kind']:  objects.Subreddit,
                         'modaction':            objects.ModAction,
                         'more':                 objects.MoreComments,
+                        'wikipagelisting':      objects.WikiPageListing,
                         'UserList':             objects.UserList}
         self.by_object = dict((value, key) for (key, value) in
                               six.iteritems(self.by_kind))
@@ -401,7 +404,9 @@ class BaseReddit(object):
             hook = self._json_reddit_objecter
         else:
             hook = None
+        self._request_url = url  # Availabile for objecter to use
         data = json.loads(response, object_hook=hook)
+        delattr(self, '_request_url')
         # Update the modhash
         if isinstance(data, dict) and 'data' in data \
                 and 'modhash' in data['data']:
@@ -1336,6 +1341,11 @@ class ModOnlyMixin(AuthenticatedReddit):
     def get_wiki_contributors(self, subreddit):
         """Return a list of users who can contribute to the wiki."""
         return self.request_json(self.config['wiki_contributors'] %
+                                 six.text_type(subreddit))
+
+    def get_wiki_pages(self, subreddit):
+        """Return a list of WikiPage objects for the subreddit."""
+        return self.request_json(self.config['wiki_pages'] %
                                  six.text_type(subreddit))
 
 
