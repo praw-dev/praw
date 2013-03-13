@@ -45,6 +45,11 @@ class RedditContentObject(object):
     @classmethod
     def from_api_response(cls, reddit_session, json_dict):
         """Return an instance of the appropriate class from the json_dict."""
+        if cls == WikiPage:  # Temporary HACK for WikiPage
+            parts = reddit_session._request_url.rsplit('/', 3)
+            subreddit = parts[1]
+            page = parts[3].split('.')[0]
+            return cls(reddit_session, subreddit, page, json_dict=json_dict)
         return cls(reddit_session, json_dict=json_dict)
 
     def __init__(self, reddit_session, json_dict=None, fetch=True,
@@ -969,7 +974,6 @@ class Subreddit(Messageable, Refreshable):
     remove_wiki_contributor = _modify_relationship('wikicontributor',
                                                    unlink=True, is_sub=True)
 
-
     # Generic listing selectors
     get_controversial = _get_sorter('controversial')
     get_hot = _get_sorter('')
@@ -1077,7 +1081,6 @@ class PRAWListing(RedditContentObject):
         return six.text_type(getattr(self, self.CHILD_ATTRIBUTE))
 
 
-
 class UserList(PRAWListing):
 
     """A list of Redditors. Works just like a regular list."""
@@ -1092,8 +1095,23 @@ class UserList(PRAWListing):
 
 
 class WikiPage(RedditContentObject):
+
+    """An individual WikiPage object."""
+
+    def __init__(self, reddit_session, subreddit=None, page=None,
+                 json_dict=None, fetch=True):
+        if not subreddit and not page:
+            subreddit = json_dict['sr']
+            page = json_dict['page']
+        info_url = reddit_session.config['wiki_page'] % (
+            six.text_type(subreddit), page)
+        super(WikiPage, self).__init__(reddit_session, json_dict, fetch,
+                                       info_url)
+        self.page = page
+        self.subreddit = subreddit
+
     def __unicode__(self):
-        return six.text_type('{0}:{1}'.format(self._subreddit, self._page))
+        return six.text_type('{0}:{1}').format(self.subreddit, self.page)
 
 
 class WikiPageListing(PRAWListing):
@@ -1104,10 +1122,9 @@ class WikiPageListing(PRAWListing):
 
     def _convert(self, reddit_session, data):
         """Convert the data into a WikiPage object."""
-        subreddit = reddit_session.get_subreddit(
-            reddit_session._request_url.rsplit('/', 4)[1])
-        tmp_data = {'_page': data, '_subreddit': subreddit}
-        return WikiPage(reddit_session, tmp_data, fetch=False)
+        # TODO: The _request_url hack shouldn't be necessary
+        subreddit = reddit_session._request_url.rsplit('/', 4)[1]
+        return WikiPage(reddit_session, subreddit, data, fetch=False)
 
 
 def _add_aliases():

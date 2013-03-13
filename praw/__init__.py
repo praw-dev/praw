@@ -140,7 +140,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'user_about':          'user/%s/about/',
                  'username_available':  'api/username_available/',
                  'vote':                'api/vote/',
-                 'wiki_page':           'r/%s/wiki/',
+                 'wiki_page':           'r/%s/wiki/%s',  # No trailing /
                  'wiki_pages':          'r/%s/wiki/pages/',
                  'wiki_banned':         'r/%s/about/wikibanned/',
                  'wiki_contributors':   'r/%s/about/wikicontributors/'}
@@ -172,6 +172,7 @@ class Config(object):  # pylint: disable-msg=R0903
                         obj['subreddit_kind']:  objects.Subreddit,
                         'modaction':            objects.ModAction,
                         'more':                 objects.MoreComments,
+                        'wikipage':             objects.WikiPage,
                         'wikipagelisting':      objects.WikiPageListing,
                         'UserList':             objects.UserList}
         self.by_object = dict((value, key) for (key, value) in
@@ -693,6 +694,16 @@ class UnauthenticatedReddit(BaseReddit):
     def get_top(self, *args, **kwargs):
         """Return top page."""
         return self.get_content(self.config['top'], *args, **kwargs)
+
+    def get_wiki_page(self, subreddit, page):
+        """Return a WikiPage object for the subreddit and page provided."""
+        return self.request_json(self.config['wiki_page'] %
+                                 (six.text_type(subreddit), page))
+
+    def get_wiki_pages(self, subreddit):
+        """Return a list of WikiPage objects for the subreddit."""
+        return self.request_json(self.config['wiki_pages'] %
+                                 six.text_type(subreddit))
 
     def is_username_available(self, username):
         """Return True if username is valid and available, otherwise False."""
@@ -1341,11 +1352,6 @@ class ModOnlyMixin(AuthenticatedReddit):
     def get_wiki_contributors(self, subreddit):
         """Return a list of users who can contribute to the wiki."""
         return self.request_json(self.config['wiki_contributors'] %
-                                 six.text_type(subreddit))
-
-    def get_wiki_pages(self, subreddit):
-        """Return a list of WikiPage objects for the subreddit."""
-        return self.request_json(self.config['wiki_pages'] %
                                  six.text_type(subreddit))
 
 

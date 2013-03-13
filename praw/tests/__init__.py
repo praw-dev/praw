@@ -1576,8 +1576,17 @@ class WikiTests(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
 
-    def test_page_listing(self):
-        self.assertTrue(len(self.r.get_wiki_pages('ucsantabarbara')) > 0)
+    def test_get_wiki_page(self):
+        self.assertEqual(
+            'ucsantabarbara:index',
+            text_type(self.r.get_wiki_page('ucsantabarbara', 'index')))
+
+    def test_get_wiki_pages(self):
+        retval = self.r.get_wiki_pages('ucsantabarbara')
+        self.assertTrue(len(retval) > 0)
+        tmp = self.r.get_wiki_page(retval[0].subreddit,
+                                   retval[0].page).content_md
+        self.assertEqual(retval[0].content_md, tmp)
 
 
 if __name__ == '__main__':
