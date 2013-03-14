@@ -1576,6 +1576,10 @@ class WikiTests(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
 
+    def test_edit_wiki_page(self):
+        self.r.login(self.un, '1111')
+        self.r.edit_wiki_page(self.sr, 'test', 'wii')
+
     def test_get_wiki_page(self):
         self.assertEqual(
             'ucsantabarbara:index',

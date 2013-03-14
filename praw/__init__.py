@@ -140,6 +140,7 @@ class Config(object):  # pylint: disable-msg=R0903
                  'user_about':          'user/%s/about/',
                  'username_available':  'api/username_available/',
                  'vote':                'api/vote/',
+                 'wiki_edit':           'api/wiki/edit/',
                  'wiki_page':           'r/%s/wiki/%s',  # No trailing /
                  'wiki_pages':          'r/%s/wiki/pages/',
                  'wiki_banned':         'r/%s/about/wikibanned/',
@@ -823,6 +824,15 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.http.cookies.clear()
         helpers._request.empty()  # pylint: disable-msg=W0212
         self.user = None
+
+    def edit_wiki_page(self, subreddit, page, content, reason=''):
+        """Create or edit a wiki page with title `page` for `subreddit`."""
+        data = {'content': content,
+                'page': page,
+                'previous': '',
+                'r':  six.text_type(subreddit),
+                'reason': reason}
+        return self.request_json(self.config['wiki_edit'], data=data)
 
     def get_access_information(self, code,  # pylint: disable-msg=W0221
                                update_session=True):
