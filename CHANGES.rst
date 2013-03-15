@@ -13,7 +13,7 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
-PRAW 2.0.13 (Unreleased)
+PRAW 2.0.13
 -----------
 
  * **[FEATURE]** Added ``get_submissions`` to batch convert fullnames
@@ -25,8 +25,11 @@ PRAW 2.0.13 (Unreleased)
    contributors.
  * **[FEATURE]** Added ``add_wiki_contributor`` and ``remove_wiki_contributor``
    to manage the list of wiki contributors.
- * **[FEATURE]** Added ``get_wiki_pages`` to get a list of WikiPage
-   objects. These objects currently have no functionality.
+ * **[FEATURE]** Added ``get_wiki_page`` to fetch an individual WikiPage
+ * **[FEATURE]** Added ``get_wiki_pages`` to get a list of WikiPage objects.
+ * **[FEATURE]** Wiki pages can be edited through either the ``edit`` method of
+   an already existing WikiPage object, or through the ``edit_wiki_page``
+   function. ``edit_wiki_page`` is also used to create new wiki pages.
  * **[CHANGE]** Deprecated ``ban``, ``unban``, ``make_contributor``, and
    ``make_moderator`` in favor of the consistently named ``add_ban``,
    ``remove_ban``, ``add_contributor``, and ``add_moderator`` respectively.

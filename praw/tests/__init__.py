@@ -1575,10 +1575,16 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
 class WikiTests(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
+        self.subreddit = self.r.get_subreddit(self.sr)
 
     def test_edit_wiki_page(self):
         self.r.login(self.un, '1111')
-        self.r.edit_wiki_page(self.sr, 'test', 'wii')
+        page = self.subreddit.get_wiki_page('test')
+        content = 'Body: {0}'.format(uuid.uuid4())
+        page.edit(content)
+        self.disable_cache()
+        page = self.subreddit.get_wiki_page('test')
+        self.assertEqual(content, page.content_md)
 
     def test_get_wiki_page(self):
         self.assertEqual(
@@ -1586,10 +1592,9 @@ class WikiTests(unittest.TestCase, BasicHelper):
             text_type(self.r.get_wiki_page('ucsantabarbara', 'index')))
 
     def test_get_wiki_pages(self):
-        retval = self.r.get_wiki_pages('ucsantabarbara')
+        retval = self.subreddit.get_wiki_pages()
         self.assertTrue(len(retval) > 0)
-        tmp = self.r.get_wiki_page(retval[0].subreddit,
-                                   retval[0].page).content_md
+        tmp = self.subreddit.get_wiki_page(retval[0].page).content_md
         self.assertEqual(retval[0].content_md, tmp)
 
 

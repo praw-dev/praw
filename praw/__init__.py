@@ -39,7 +39,7 @@ from six.moves import html_entities
 from update_checker import update_check
 from warnings import simplefilter, warn_explicit
 
-__version__ = '2.0.12'
+__version__ = '2.0.13'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -829,7 +829,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """Create or edit a wiki page with title `page` for `subreddit`."""
         data = {'content': content,
                 'page': page,
-                'previous': '',
                 'r':  six.text_type(subreddit),
                 'reason': reason}
         return self.request_json(self.config['wiki_edit'], data=data)

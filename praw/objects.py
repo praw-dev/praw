@@ -922,6 +922,7 @@ class Subreddit(Messageable, Refreshable):
                 ('configure_flair', MFMix.configure_flair),
                 ('delete_flair', MFMix.delete_flair),
                 ('delete_image', MCMix.delete_image),
+                ('edit_wiki_page', AR.edit_wiki_page),
                 ('get_banned', MOMix.get_banned),
                 ('get_comments', UR.get_comments),
                 ('get_contributors', MOMix.get_contributors),
@@ -937,6 +938,8 @@ class Subreddit(Messageable, Refreshable):
                 ('get_unmoderated', MOMix.get_unmoderated),
                 ('get_wiki_banned', MOMix.get_wiki_banned),
                 ('get_wiki_contributors', MOMix.get_wiki_contributors),
+                ('get_wiki_page', UR.get_wiki_page),
+                ('get_wiki_pages', UR.get_wiki_pages),
                 ('set_flair', MFMix.set_flair),
                 ('set_flair_csv', MFMix.set_flair_csv),
                 ('set_settings', MCMix.set_settings),
@@ -1112,6 +1115,15 @@ class WikiPage(RedditContentObject):
 
     def __unicode__(self):
         return six.text_type('{0}:{1}').format(self.subreddit, self.page)
+
+    def edit(self, *args, **kwargs):
+        """Edit the wiki page.
+
+        :param content: The content to set the wiki page to.
+        :param reason: The justification for the edit (optional).
+
+        """
+        self.subreddit.edit_wiki_page(self.page, *args, **kwargs)
 
 
 class WikiPageListing(PRAWListing):
