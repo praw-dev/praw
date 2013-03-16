@@ -59,6 +59,6 @@ Non-obvious behaviour and other need to know
 * The default limit for fetching Things is 25. You can change this with the
   ``limit`` param. If want as many Things as you can then set ``limit=None``.
 * We can at most get 1000 results from every listing, this is an upstream
-  limitation in Reddit's database. There is nothing we can do to go past this
+  limitation by reddit. There is nothing we can do to go past this
   limit.  But we may be able to get the results we want with the ``search``
   method instead.

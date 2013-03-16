@@ -19,8 +19,8 @@ this page to add in more.
     A website that displays reddit stories under the guise of Python or Java
     code.
 
-`Reddit Notifier <https://github.com/nemec/reddit-notify>`_ for Gnome3
-    Integrates with Unity and Gnome Shell to display new Reddit mail as it
+`reddit Notifier <https://github.com/nemec/reddit-notify>`_ for Gnome3
+    Integrates with Unity and Gnome Shell to display new reddit mail as it
     arrives.
 
 `Link Unscripter <https://github.com/sparr/reddit-link-unscripter>`_
@@ -74,14 +74,14 @@ this page to add in more.
     videos links appear in reply to a submission (uses a slightly out-of-date
     version of PRAW, currently requires ``Submission.all_comments_flat``).
 
-`RedditAnalysis`_ by `u/rhiever <http://www.reddit.com/user/rhiever>`_
+`reddit-analysis`_ by `u/rhiever <http://www.reddit.com/user/rhiever>`_
     Scrapes a specific subreddit or user and prints out all of the
     commonly-used words in the past month. Contains a data file containing a
     list of words that should be considered common.
 
 `AlienFeed`_ by `u/Jawerty <http://www.reddit.com/user/Jawerty>`_
     AlienFeed is a command line application made for displaying and interacting
-    with Reddit submissions. The client can return a list containing the top
+    with reddit submissions. The client can return a list containing the top
     submissions in a subreddit, and even open the links up if you'd like.
 
 **\<Your Script Here\>**
@@ -111,7 +111,7 @@ them to work with the latest version.
 .. _`Butcher bot`: https://github.com/xiphirx/Butcher-Bot
 .. _`Groompbot`: https://github.com/AndrewNeo/groompbot
 .. _`PRAWtools`: https://github.com/praw-dev/prawtools
-.. _`RedditAnalysis`: https://github.com/rhiever/reddit-analysis
+.. _`reddit-analysis`: https://github.com/rhiever/reddit-analysis
 .. _`r/diablo flair infographic generator`:
     https://github.com/xiphirx/rdiablo-flair-infographic-generator
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot

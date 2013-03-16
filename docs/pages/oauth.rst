@@ -3,7 +3,7 @@
 PRAW and OAuth
 ==============
 
-OAuth support allows you to use Reddit to authenticate on non-Reddit websites.
+OAuth support allows you to use reddit to authenticate on non-reddit websites.
 It also allows a user to authorize an application to perform different groups
 of actions on reddit with his account. A moderator can grant an application the
 right to set flair on his subreddits without simultaneously granting the

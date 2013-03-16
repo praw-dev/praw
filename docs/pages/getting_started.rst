@@ -15,7 +15,7 @@ This is a beginners tutorial to PRAW. We'll go over the hows and whys of
 everything from getting started to writing your first program accessing reddit.
 What we won't go over in this tutorial is the Python code.
 
-Connecting to Reddit
+Connecting to reddit
 --------------------
 
 Start by firing up Python and importing PRAW. You can find the installation

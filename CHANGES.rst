@@ -6,7 +6,7 @@ divided into four categories.
 
  * **[FEATURE]** Something new has been added.
  * **[BUGFIX]** Something was broken before, but is now fixed.
- * **[REDDIT]** A change caused by an upstream change from Reddit.
+ * **[REDDIT]** A change caused by an upstream change from reddit.
  * **[CHANGE]** Other changes affecting user programs, such as the renaming of
    a function.
 
@@ -283,7 +283,7 @@ PRAW 1.0.8
  * **[REDDIT]** Checks for login/moderator in ``get_moderator`` and
    ``get_flair`` for Subreddit are no longer necessary.
  * **[FEATURE]** Added the function ``refresh``to ``Submission``, ``Subreddit``
-   and ``Redditor``. This will make PRAW re-query either the Reddit or the
+   and ``Redditor``. This will make PRAW re-query either reddit or the
    cache, depending on whether the last call was within ``cache_timeout``, for
    the latest values and update the objects values.
  * **[FEATURE]** Added functions ``get_liked``, ``get_disliked`` and

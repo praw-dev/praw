@@ -21,7 +21,7 @@ setup(
     author_email='timothy.mellor+pip@gmail.com',
     maintainer='Bryce Boe',
     maintainer_email='bbzbryce@gmail.com',
-    url='http://python-reddit-api-wrapper.readthedocs.org/',
+    url='http://praw.readthedocs.org/',
     description=('PRAW, an acronym for `Python Reddit API Wrapper`, is a '
                  'python package that allows for simple access to '
                  'reddit\'s API.'),

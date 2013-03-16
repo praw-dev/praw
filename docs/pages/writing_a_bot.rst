@@ -1,6 +1,6 @@
 .. _writing_a_bot:
 
-Writing A Reddit Bot
+Writing a reddit Bot
 ====================
 
 In the :ref:`getting_started` tutorial, we wrote a script to break down a
@@ -242,7 +242,7 @@ you're looking for something that behaves like a variable, it might not be in
 vars. One of these is ``short_link``, which returns a much shorter url to the
 submission and is called as a variable.
 
-Another way of finding out how a Reddit page is translated to variables is to
+Another way of finding out how a reddit page is translated to variables is to
 look at the .json version of that page. Just append .json to a reddit url to
 look at the json version, such as the `previous r/learnpython post
 <http://www.reddit.com/r/learnpython/comments/105aru/newbie_stripping_strings_
