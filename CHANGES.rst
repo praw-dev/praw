@@ -13,6 +13,12 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
+PRAW 2.0.14
+-----------
+ * **[BUGFIX]** Prevent potential invalid redirect exception when using
+   ``get_wiki_page``.
+
+
 PRAW 2.0.13
 -----------
 

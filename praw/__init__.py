@@ -39,7 +39,7 @@ from six.moves import html_entities
 from update_checker import update_check
 from warnings import simplefilter, warn_explicit
 
-__version__ = '2.0.13'
+__version__ = '2.0.14'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -699,7 +699,7 @@ class UnauthenticatedReddit(BaseReddit):
     def get_wiki_page(self, subreddit, page):
         """Return a WikiPage object for the subreddit and page provided."""
         return self.request_json(self.config['wiki_page'] %
-                                 (six.text_type(subreddit), page))
+                                 (six.text_type(subreddit), page.lower()))
 
     def get_wiki_pages(self, subreddit):
         """Return a list of WikiPage objects for the subreddit."""
