@@ -81,7 +81,7 @@ PRAW 2.0.11
 PRAW 2.0.10
 -----------
 
- * **[FEATURE]** Add ``delete_flair`` method to ``Submission`` and ``Reddit``
+ * **[FEATURE]** Add ``delete_flair`` method to ``Subreddit`` and ``Reddit``
    objects.
 
 PRAW 2.0.9
@@ -275,7 +275,7 @@ PRAW 1.0.10
 PRAW 1.0.9
 ----------
 
- * **[FEATURE]** Added the functions ``mark_as_NSFW`` and ``unmark_as_NSFW`` to
+ * **[FEATURE]** Added the functions ``mark_as_nsfw`` and ``unmark_as_nsfw`` to
    ``Submission`` and ``Subreddit`` .
 
 PRAW 1.0.8
