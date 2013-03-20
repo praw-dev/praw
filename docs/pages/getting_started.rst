@@ -69,24 +69,24 @@ our script to break down a user's karma by subreddit. There isn't a function
 that does this, but luckily it's fairly easy to write the python code to do
 this ourselves.
 
-We use the function ``get_redditor`` to get a ``Redditor`` instance that
-represents a user on reddit. In the following case ``user`` will provide access
-to the reddit user "\`\_Daimon\_\`".
+We use the function :meth:`.get_redditor` to get a :class:`.Redditor` instance
+that represents a user on reddit. In the following case ``user`` will provide
+access to the reddit user "\`\_Daimon\_\`".
 
 .. code-block:: pycon
 
     >>> user_name = "_Daimon_"
     >>> user = r.get_redditor(user_name)
 
-Next we can use the functions ``get_comments`` and ``get_submitted`` to get
-that redditor's comments and submissions. Both are a part of the superclass
-``Thing`` as mentioned on the `reddit API wiki page
-<https://github.com/reddit/reddit/wiki/API>`_. Both functions can be called
-with the parameter ``limit``, which limits how many things we receive. As a
-default, reddit returns 25 items. When the limit is set to ``None``,
-PRAW will try to retrieve all the things. However, due to limitations in the
-reddit API (not PRAW) we might not get all the things, but more about that
-later. During development you should be nice and set the limit lower to reduce
+Next we can use the functions :meth:`~.Redditor.get_comments` and
+:meth:`.get_submitted` to get that redditor's comments and submissions. Both
+are a part of the superclass ``Thing`` as mentioned on the `reddit API wiki
+page <https://github.com/reddit/reddit/wiki/API>`_. Both functions can be
+called with the parameter ``limit``, which limits how many things we receive.
+As a default, reddit returns 25 items. When the limit is set to ``None``, PRAW
+will try to retrieve all the things. However, due to limitations in the reddit
+API (not PRAW) we might not get all the things, but more about that later.
+During development you should be nice and set the limit lower to reduce
 reddit's workload, if you don't actually need all the results.
 
 .. code-block:: pycon

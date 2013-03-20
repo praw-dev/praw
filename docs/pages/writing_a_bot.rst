@@ -239,8 +239,8 @@ the local scope. You can also use ``help`` for introspection, if you wish to
 generate a longer help page.  Worth noting is that PRAW contains a lot of
 property-decorated functions eg.  functions that are used as variables. So if
 you're looking for something that behaves like a variable, it might not be in
-vars. One of these is ``short_link``, which returns a much shorter url to the
-submission and is called as a variable.
+vars. One of these is :attr:`.short_link`, which returns a much shorter url to
+the submission and is called as a variable.
 
 Another way of finding out how a reddit page is translated to variables is to
 look at the .json version of that page. Just append .json to a reddit url to

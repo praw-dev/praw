@@ -49,9 +49,9 @@ config file. Each site can overwrite any of these variables.
 * *oauth_https*: A **boolean** that determines whether or not to use HTTPS for
   oauth connections. This should only be changed for development environments.
 * *output_chars_limit*: A **integer** that defines the maximum length of
-  unicode representations of ``Comment``, ``Message`` and ``Submission``
-  objects. This is mainly used to fit them within a terminal window line. A
-  negative value means no limit.
+  unicode representations of :class:`.Comment`, :class:`.Message` and
+  :class:`.Submission` objects. This is mainly used to fit them within a
+  terminal window line. A negative value means no limit.
 * *timeout* Maximum time, a **float**, in seconds, before a single HTTP request
   times out. urllib2.URLError is raised upon timeout.
 * *xxx_kind*: A **string** that maps the *type* returned by json results to a
@@ -89,9 +89,9 @@ variables are:
   ``client_secret`` a reddit object is initialized with.
 * *oauth_redirect_uri* A **string** that, if given, defines the
   ``redirect_uri`` a reddit object is initialized with. If *oauth_client_id*
-  and *oauth_client_secret* is also given, then ``get_authorize_url`` can be
-  run without first setting the oauth settings with running
-  ``set_oauth_app_info``.
+  and *oauth_client_secret* is also given, then :meth:`.get_authorize_url` can
+  be run without first setting the oauth settings with running
+  :meth:`.set_oauth_app_info`.
 
 Note: The tracking for *api_request_delay* and *cache_timeout* is on a
 per-domain, not per-site, basis. Essentially, this means that the time since
