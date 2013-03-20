@@ -24,16 +24,16 @@ work.
 
 After getting the submission object we retrieve the comments and look through
 them to find those that match our criteria. Comments are stored in the
-attribute ``comments`` in a comment forest, with each tree root a toplevel
+attribute :attr:`.comments` in a comment forest, with each tree root a toplevel
 comment. Eg. the comments are organised just like when you visit the submission
-via the webend. To get to a lower layer, use ``replies`` to get the list of
-replies to the comment. Note that this may include ``MoreComment`` objects and
-not just ``Comments``.
+via the webend. To get to a lower layer, use :attr:`.replies` to get the list
+of replies to the comment. Note that this may include :class:`.MoreComments`
+objects and not just :class:`.Comment`.
 
 >>> forest_comments = submission.comments
 
 As an alternative, we can flatten the comment forest to get a unordered list
-with the function ``praw.helpers.flatten_tree``. This is the easiest way to
+with the function :func:`praw.helpers.flatten_tree`. This is the easiest way to
 iterate through the comments and is preferable when you don't don't care about
 a comments place in the comment forest. We don't, so this is what we are going
 to use.
@@ -60,23 +60,25 @@ The number of comments
 
 When we load a submission, we load comments up to a max alongside it. Just like
 on the webend. At reddit.com, this max is 200 comments. If we want more than
-these comments, then we need to replace the MoreComments with the Comments they
-represent. We use the ``replace_more_comments`` method to do this. Let's use
-this function to replace all MoreComments with the comments they represent, so
-we get all comments in the thread.
+these comments, then we need to replace the :class:`.MoreComments` with the
+:class:`.Comment`\s they represent. We use the :meth:`.replace_more_comments`
+method to do this. Let's use this function to replace all
+:class:`.MoreComments` with the :class:`.Comment`\s they represent, so we get
+all comments in the thread.
 
 >>> submission.replace_more_comments(limit=None, threshold=0)
 >>> all_comments = s.comments
 
-It's limited how many MoreComments PRAW can replace with a single API call.
-Replacing all MoreComments in a thread with many comments will require many API
-calls and so take a while due to API delay between each API call as specified
-in the `api guidelines <https://github.com/reddit/reddit/wiki/API>`_.
+It's limited how many :class:`.MoreComments` PRAW can replace with a single API
+call.  Replacing all :class:`.MoreComments` in a thread with many comments will
+require many API calls and so take a while due to API delay between each API
+call as specified in the `api guidelines
+<https://github.com/reddit/reddit/wiki/API>`_.
 
 Getting all recent comments to a subreddit or everywhere
 --------------------------------------------------------
 
-We can get all comments made anywhere with ``get_all_comments()``.
+We can get all comments made anywhere with :meth:`.get_all_comments()`.
 
 >>> import praw
 >>> r = praw.Reddit('Comment parser example by u/_Daimon_')
