@@ -42,7 +42,7 @@ not be shared with anybody. At the bottom is the ``redirect_url``.
 Step 2: Setting up PRAW.
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-We start as usual by importing the PRAW package and creating a ``Reddit``
+We start as usual by importing the PRAW package and creating a :class:`.Reddit`
 object with a clear and descriptive useragent that follows the `api rules
 <https://github.com/reddit/reddit/wiki/API>`_.
 
@@ -73,9 +73,9 @@ to a url, where the access we wish to be granted is listed, then they click
 'allow' and are redirected to ``redirect_url`` with a code in the url
 parameters that is needed for step 4.
 
-The url we send them to is generated using ``r.get_authorize_url``. This takes
-3 parameters. ``state``, which is a unique key that represent this client,
-``scope`` which are the reddit scope we ask permission for (see
+The url we send them to is generated using :meth:`.get_authorize_url`. This
+takes 3 parameters. ``state``, which is a unique key that represent this
+client, ``scope`` which are the reddit scope we ask permission for (see
 :ref:`oauth_scopes`) and finally ``refreshable`` which determines whether we
 can refresh the access_token (step 6) thus gaining permanent access.
 
@@ -108,9 +108,9 @@ This will overwrite any existing authentication and make subsequent requests to
 reddit using this authentication unless we set the argument ``update_session``
 to ``False``.
 
-``get_access_information`` returns a dict with the ``scope``, ``access_token``
-and ``refresh_token`` of the authenticated user. So later we can swap from one
-authenticated user to another with
+:meth:`~.OAuth2Reddit.get_access_information` returns a dict with the
+``scope``, ``access_token`` and ``refresh_token`` of the authenticated user. So
+later we can swap from one authenticated user to another with
 
 .. code-block:: pycon
 
@@ -118,8 +118,8 @@ authenticated user to another with
 
 If ``scope`` contains ``identity`` then ``r.user`` will be set to the
 OAuthenticated user with ``r.get_access_information`` or
-``r.set_access_credentials`` unless we've set the ``update_user`` argument to
-``False``.
+:meth:`.set_access_credentials` unless we've set the ``update_user`` argument
+to ``False``.
 
 Step 5: Use the access.
 ^^^^^^^^^^^^^^^^^^^^^^^

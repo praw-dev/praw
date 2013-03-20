@@ -35,7 +35,7 @@ which require a 2 second delay between each API call.
 When I print a Comment only part of it is printed. How can I get the rest?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A ``Comment`` is an object which contain a number of attributes with
+A :class:`.Comment` is an object which contain a number of attributes with
 information about the object such as ``author``, ``body`` or ``created_utc``.
 When you use ``print`` the object string (well unicode) representation of the
 object is printed. Use ``vars`` to discover what attributes and their values an
@@ -60,5 +60,5 @@ Non-obvious behaviour and other need to know
   ``limit`` param. If want as many Things as you can then set ``limit=None``.
 * We can at most get 1000 results from every listing, this is an upstream
   limitation by reddit. There is nothing we can do to go past this
-  limit.  But we may be able to get the results we want with the ``search``
-  method instead.
+  limit.  But we may be able to get the results we want with the
+  :meth:`~.UnauthenticatedReddit.search` method instead.
