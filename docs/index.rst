@@ -89,7 +89,7 @@ for any ``NameErrors`` you might encounter.
 
 #. Get comments from a given submission:
 
-    >>> submission = submissions.next()
+    >>> submission = next(submissions)
     >>> submission.comments
 
 #. Comment on a submission (requires login):
@@ -159,7 +159,7 @@ for any ``NameErrors`` you might encounter.
 
 #. Get flair mappings for a particular subreddit (requires mod privileges):
 
-    >>> item = r.get_subreddit('python').get_flair_list().next()
+    >>> item = next(r.get_subreddit('python').get_flair_list())
     >>> item['user']
     >>> item['flair_text']
     >>> item['flair_css_class']
