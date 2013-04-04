@@ -1,9 +1,12 @@
 import os
 import re
+import sys
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
+
+from setuptools.command.test import test as TestCommand
 
 PACKAGE_NAME = 'praw'
 
@@ -13,6 +16,17 @@ README = open(os.path.join(HERE, 'README.rst')).read()
 
 VERSION = re.search("__version__ = '([^']+)'", INIT).group(1)
 
+
+class PyTest(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_suite = True
+
+    def run_tests(self):
+        #import here, cause outside the eggs aren't loaded
+        import pytest
+        errno = pytest.main(sys.argv[2:])
+        sys.exit(errno)
 
 setup(
     name=PACKAGE_NAME,
@@ -45,4 +59,6 @@ setup(
     package_data={'': ['COPYING'], PACKAGE_NAME: ['*.ini']},
     install_requires=['requests>=1.0.3', 'six', 'update_checker>=0.5'],
     test_suite='{0}.tests'.format(PACKAGE_NAME),
-    )
+    tests_require=['pytest'],
+    cmdclass = {'test': PyTest},
+)
