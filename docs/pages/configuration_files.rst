@@ -60,6 +60,7 @@ config file. Each site can overwrite any of these variables.
   mappings are created dynamically on site creation and thus isn't consistent
   across sites.
 * *log_requests* A **integer** that determines the level of API call logging.
+* *http_proxy* A **string** that declares an http proxy to be used. It follows the Request URI conventions.
 
  * 0: no logging
  * 1: log only the request URIs

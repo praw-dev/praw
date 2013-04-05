@@ -185,6 +185,7 @@ class Config(object):  # pylint: disable-msg=R0903
         self.domain = obj['domain']
         self.output_chars_limit = int(obj['output_chars_limit'])
         self.log_requests = int(obj['log_requests'])
+        self.http_proxy = obj.get('http_proxy') or None
         # We use `get(...) or None` because `get` may return an empty string
         self.client_id = obj.get('oauth_client_id') or None
         self.client_secret = obj.get('oauth_client_secret') or None

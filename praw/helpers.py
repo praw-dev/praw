@@ -130,11 +130,16 @@ def _request(reddit_session, url, params=None, data=None, timeout=45,
 
     response = None
     while True:
+        proxies = {}
+        if reddit_session.config.http_proxy:
+            proxies["http"] = reddit_session.config.http_proxy
+            
         # pylint: disable-msg=W0212
         try:
             response = method(url, params=params, data=data, files=files,
                               headers=headers, timeout=timeout,
-                              allow_redirects=False, auth=auth)
+                              allow_redirects=False, auth=auth,
+                              proxies=proxies)
         finally:
             # Hack to force-close the connection (if needed) until
             # https://github.com/shazow/urllib3/pull/133 is added to urllib3
