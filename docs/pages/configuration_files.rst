@@ -58,7 +58,7 @@ config file. Each site can overwrite any of these variables.
   local object. **xx** is one of: *comment*, *message*, *more*, *redditor*,
   *submission*, *subreddit*, *userlist*. This mapping is needed as the
   mappings are created dynamically on site creation and thus isn't consistent
-  across sites.  
+  across sites.
 * *log_requests* A **integer** that determines the level of API call logging.
  * 0: no logging
  * 1: log only the request URIs
