@@ -257,6 +257,8 @@ class BaseReddit(object):
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
         self.http = requests.session()
         self.http.headers['User-Agent'] = UA_STRING % user_agent
+        if self.config.http_proxy:
+	    self.proxies = { "http": self.config.http_proxy}
         self.modhash = None
 
         # Check for updates if permitted and this is the first Reddit instance
