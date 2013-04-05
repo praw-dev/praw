@@ -134,8 +134,7 @@ def _request(reddit_session, url, params=None, data=None, timeout=45,
         try:
             response = method(url, params=params, data=data, files=files,
                               headers=headers, timeout=timeout,
-                              allow_redirects=False, auth=auth,
-                              proxies=reddit_session.proxies)
+                              allow_redirects=False, auth=auth)
         finally:
             # Hack to force-close the connection (if needed) until
             # https://github.com/shazow/urllib3/pull/133 is added to urllib3
