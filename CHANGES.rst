@@ -13,6 +13,14 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
+PRAW 2.0.15
+-----------
+ * **[FEATURE]** PRAW can now use a proxy server, see `#206
+   <https://github.com/praw-dev/praw/issues/206>`_. The parameter
+   ``http_proxy`` (optional) has been added to the
+   configuration file to define a proxy server in the form host:ip or http://login:user@host:ip.
+
+
 PRAW 2.0.14
 -----------
  * **[BUGFIX]** Prevent potential invalid redirect exception when using
