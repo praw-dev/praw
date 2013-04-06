@@ -39,7 +39,7 @@ from six.moves import html_entities
 from update_checker import update_check
 from warnings import simplefilter, warn_explicit
 
-__version__ = '2.0.14'
+__version__ = '2.0.15'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -258,7 +258,7 @@ class BaseReddit(object):
         self.http = requests.session()
         self.http.headers['User-Agent'] = UA_STRING % user_agent
         if self.config.http_proxy:
-            self.http.proxies = { "http": self.config.http_proxy}
+            self.http.proxies = {'http': self.config.http_proxy}
         self.modhash = None
 
         # Check for updates if permitted and this is the first Reddit instance
