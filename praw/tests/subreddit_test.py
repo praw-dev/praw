@@ -19,7 +19,7 @@
 import unittest
 from six import text_type
 
-from helper import AuthenticatedHelper, reddit_only
+from helper import AuthenticatedHelper, first, reddit_only
 
 
 class SubredditTest(unittest.TestCase, AuthenticatedHelper):
@@ -31,23 +31,18 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
 
     def test_get_my_contributions(self):
-        for subreddit in self.r.get_my_contributions():
-            if text_type(subreddit) == self.sr:
-                break
-        else:
-            self.fail('Could not find contributed reddit in my_contributions.')
+        found = first(self.r.get_my_contributions(),
+                      lambda subreddit: text_type(subreddit) == self.sr)
+        self.assertTrue(found is not None)
 
     def test_get_my_moderation(self):
-        for subreddit in self.r.get_my_moderation():
-            if text_type(subreddit) == self.sr:
-                break
-        else:
-            self.fail('Could not find moderated reddit in my_moderation.')
+        found = first(self.r.get_my_moderation(),
+                      lambda subreddit: text_type(subreddit) == self.sr)
+        self.assertTrue(found is not None)
 
     def test_get_my_reddits(self):
-        for subreddit in self.r.get_my_reddits():
-            # pylint: disable-msg=W0212
-            self.assertTrue(text_type(subreddit) in subreddit._info_url)
+        self.assertTrue(all(text_type(subreddit) in subreddit._info_url
+                            for subreddit in self.r.get_my_reddits()))
 
     @reddit_only
     def test_search(self):
@@ -55,28 +50,22 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_subscribe_and_verify(self):
         self.subreddit.subscribe()
-        for subreddit in self.r.get_my_reddits():
-            if text_type(subreddit) == self.sr:
-                break
-        else:
-            self.fail('Could not find reddit in my_reddits.')
+        found = first(self.r.get_my_reddits(),
+                      lambda subreddit: text_type(subreddit) == self.sr)
+        self.assertTrue(found is not None)
 
     def test_subscribe_by_name_and_verify(self):
         self.r.subscribe(self.sr)
-        for subreddit in self.r.get_my_reddits():
-            if text_type(subreddit) == self.sr:
-                break
-        else:
-            self.fail('Could not find reddit in my_reddits.')
+        found = first(self.r.get_my_reddits(),
+                      lambda subreddit: text_type(subreddit) == self.sr)
+        self.assertTrue(found is not None)
 
     def test_unsubscribe_and_verify(self):
         self.subreddit.unsubscribe()
-        for subreddit in self.r.get_my_reddits():
-            if text_type(subreddit) == self.sr:
-                self.fail('Found reddit in my_reddits.')
+        self.assertTrue(all(text_type(subreddit) != self.sr
+                            for subreddit in self.r.get_my_reddits()))
 
     def test_unsubscribe_by_name_and_verify(self):
         self.r.unsubscribe(self.sr)
-        for subreddit in self.r.get_my_reddits():
-            if text_type(subreddit) == self.sr:
-                self.fail('Found reddit in my_reddits.')
+        self.assertTrue(all(text_type(subreddit) != self.sr
+                            for subreddit in self.r.get_my_reddits()))

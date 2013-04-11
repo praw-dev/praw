@@ -19,7 +19,7 @@
 import unittest
 from six import next as six_next
 
-from helper import AuthenticatedHelper
+from helper import AuthenticatedHelper, first
 from praw.objects import Comment
 
 
@@ -33,28 +33,19 @@ class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(item._replies, None)
 
     def test_inbox_comment_replies_are_none(self):
-        for item in self.r.get_inbox():
-            if isinstance(item, Comment):
-                # pylint: disable-msg=W0212
-                self.assertEqual(item._replies, None)
-                break
-        else:
-            self.fail('Could not find comment in inbox')
+        found = first(self.r.get_inbox(),
+                      lambda item: isinstance(item, Comment))
+        self.assertTrue(found is not None)
+        self.assertEqual(found._replies, None)
 
     def test_spambox_comments_replies_are_none(self):
-        for item in self.r.get_subreddit(self.sr).get_spam():
-            if isinstance(item, Comment):
-                # pylint: disable-msg=W0212
-                self.assertEqual(item._replies, None)
-                break
-        else:
-            self.fail('Could not find comment in spambox')
+        found = first(self.r.get_subreddit(self.sr).get_spam(),
+                      lambda item: isinstance(item, Comment))
+        self.assertTrue(found is not None)
+        self.assertEqual(found._replies, None)
 
     def test_user_comment_replies_are_none(self):
-        for item in self.r.user.get_comments():
-            if isinstance(item, Comment):
-                # pylint: disable-msg=W0212
-                self.assertEqual(item._replies, None)
-                break
-        else:
-            self.fail('Could not find comment on other user\'s list')
+        found = first(self.r.user.get_comments(),
+                      lambda item: isinstance(item, Comment))
+        self.assertTrue(found is not None)
+        self.assertEqual(found._replies, None)

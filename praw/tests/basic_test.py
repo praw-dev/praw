@@ -59,8 +59,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_all_comments_gilded(self):
         gilded_comments = self.r.get_all_comments(gilded_only=True)
-        for comment in gilded_comments:
-            self.assertTrue(comment.gilded > 0)
+        self.assertTrue(all(comment.gilded > 0 for comment in gilded_comments))
 
     def test_get_comments(self):
         num = 50

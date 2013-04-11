@@ -25,10 +25,15 @@ import sys
 import time
 from functools import wraps
 from requests.compat import urljoin
+from six import next as six_next
 
 from praw import Reddit
 
 USER_AGENT = 'PRAW_test_suite'
+
+
+def first(seq, predicate):
+    return six_next((x for x in seq if predicate(x)), None)
 
 
 def flair_diff(root, other):

@@ -20,7 +20,7 @@ import unittest
 from six import next as six_next
 from requests.exceptions import HTTPError
 
-from helper import AuthenticatedHelper
+from helper import AuthenticatedHelper, first
 
 
 class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
@@ -49,49 +49,33 @@ class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
             verify_undistinguish(submission)
 
     def test_edit_link(self):
-        found = None
-        for item in self.r.user.get_submitted():
-            if not item.is_self:
-                found = item
-                break
-        else:
-            self.fail('Could not find link post')
+        found = first(self.r.user.get_submitted(),
+                      lambda item: not item.is_self)
+        self.assertTrue(found is not None)
         self.assertRaises(HTTPError, found.edit, 'text')
 
     def test_edit_self(self):
-        found = None
-        for item in self.r.user.get_submitted():
-            if item.is_self:
-                found = item
-                break
-        else:
-            self.fail('Could not find self post')
+        found = first(self.r.user.get_submitted(),
+                      lambda item: item.is_self)
+        self.assertTrue(found is not None)
         new_body = '%s\n\n+Edit Text' % found.selftext
         found = found.edit(new_body)
         self.assertEqual(found.selftext, new_body)
 
     def test_mark_as_nsfw(self):
         self.disable_cache()
-        found = None
-        for item in self.subreddit.get_top():
-            if not item.over_18:
-                found = item
-                break
-        else:
-            self.fail("Couldn't find a SFW submission")
+        found = first(self.subreddit.get_top(),
+                      lambda item: not item.over_18)
+        self.assertTrue(found is not None)
         found.mark_as_nsfw()
         found.refresh()
         self.assertTrue(found.over_18)
 
     def test_unmark_as_nsfw(self):
         self.disable_cache()
-        found = None
-        for item in self.subreddit.get_top():
-            if item.over_18:
-                found = item
-                break
-        else:
-            self.fail("Couldn't find a NSFW submission")
+        found = first(self.subreddit.get_top(),
+                      lambda item: item.over_18)
+        self.assertTrue(found is not None)
         found.unmark_as_nsfw()
         found.refresh()
         self.assertFalse(found.over_18)

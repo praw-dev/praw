@@ -20,7 +20,7 @@ import unittest
 import uuid
 from six import next as six_next
 
-from helper import AuthenticatedHelper
+from helper import AuthenticatedHelper, first
 
 
 class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
@@ -39,13 +39,9 @@ class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_add_reply_and_verify(self):
         text = 'Unique reply: %s' % uuid.uuid4()
-        found = None
-        for submission in self.subreddit.get_new():
-            if submission.num_comments > 0:
-                found = submission
-                break
-        else:
-            self.fail('Could not find a submission with comments.')
+        found = first(self.subreddit.get_new(),
+                      lambda submission: submission.num_comments > 0)
+        self.assertTrue(found is not None)
         comment = found.comments[0]
         reply = comment.reply(text)
         self.assertEqual(reply.parent_id, comment.fullname)

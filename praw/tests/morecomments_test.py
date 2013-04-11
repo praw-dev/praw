@@ -18,7 +18,7 @@
 
 import unittest
 
-from helper import AuthenticatedHelper
+from helper import AuthenticatedHelper, first
 from praw import helpers
 from praw.objects import MoreComments
 
@@ -45,9 +45,7 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(saved)
 
     def test_comments_method(self):
-        for item in self.submission.comments:
-            if isinstance(item, MoreComments):
-                self.assertTrue(item.comments())
-                break
-        else:
-            self.fail('Could not find MoreComment object.')
+        found = first(self.submission.comments,
+                      lambda item: isinstance(item, MoreComments))
+        self.assertTrue(found is not None)
+        self.assertTrue(found.comments())
