@@ -18,7 +18,7 @@ import unittest
 import uuid
 from six import next as six_next
 
-from helper import AuthenticatedHelper, USER_AGENT
+from helper import AuthenticatedHelper, first, USER_AGENT
 from praw import errors, Reddit
 from praw.objects import Message
 
@@ -45,14 +45,9 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
     def test_mark_as_unread(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyAPITestUser3', '1111')
-        found = None
-        for msg in oth.get_inbox():
-            if not msg.new:
-                found = msg
-                msg.mark_as_unread()
-                break
-        else:
-            self.fail('Could not find a read message.')
+        found = first(oth.get_inbox(), lambda msg: not msg.new)
+        self.assertTrue(found is not None)
+        found.mark_as_unread()
         self.assertTrue(found in oth.get_unread())
 
     def test_mark_multiple_as_read(self):
@@ -67,38 +62,29 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(2, len(messages))
         oth.user.mark_as_read(messages)
         unread = list(oth.get_unread(limit=5))
-        for msg in messages:
-            self.assertTrue(msg not in unread)
+        self.assertTrue(all(msg not in unread for msg in messages))
 
     def test_mod_mail_send(self):
         subject = 'Unique message: %s' % uuid.uuid4()
         self.r.get_subreddit(self.sr).send_message(subject, 'Content')
-        for msg in self.r.get_mod_mail():
-            if msg.subject == subject:
-                break
-        else:
-            self.fail('Could not find the message we just sent to ourself.')
+        found = first(self.r.get_mod_mail(),
+                      lambda msg: msg.subject == subject)
+        self.assertTrue(found is not None)
 
     def test_reply_to_message_and_verify(self):
         text = 'Unique message reply: %s' % uuid.uuid4()
-        found = None
-        for msg in self.r.get_inbox():
-            if isinstance(msg, Message) and msg.author == self.r.user:
-                found = msg
-                break
-        else:
-            self.fail('Could not find a self-message in the inbox')
+        found = first(self.r.get_inbox(),
+                      lambda msg: isinstance(msg, Message)
+                      and msg.author == self.r.user)
+        self.assertTrue(found is not None)
         reply = found.reply(text)
         self.assertEqual(reply.parent_id, found.fullname)
 
     def test_send(self):
         subject = 'Unique message: %s' % uuid.uuid4()
         self.r.user.send_message(subject, 'Message content')
-        for msg in self.r.get_inbox():
-            if msg.subject == subject:
-                break
-        else:
-            self.fail('Could not find the message we just sent to ourself.')
+        found = first(self.r.get_inbox(), lambda msg: msg.subject == subject)
+        self.assertTrue(found is not None)
 
     def test_send_invalid(self):
         subject = 'Unique message: %s' % uuid.uuid4()

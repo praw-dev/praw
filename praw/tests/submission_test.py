@@ -17,7 +17,7 @@
 import unittest
 from six import next as six_next
 
-from helper import AuthenticatedHelper, USER_AGENT
+from helper import AuthenticatedHelper, first, USER_AGENT
 from praw import errors, Reddit
 
 
@@ -26,12 +26,9 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
 
     def test_clear_vote(self):
-        submission = None
-        for submission in self.r.user.get_submitted():
-            if submission.likes is False:
-                break
-        else:
-            self.fail('Could not find a down-voted submission.')
+        submission = first(self.r.user.get_submitted(),
+                           lambda submission: submission.likes is False)
+        self.assertTrue(submission is not None)
         submission.clear_vote()
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
@@ -45,12 +42,9 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(None, submission.author)
 
     def test_downvote(self):
-        submission = None
-        for submission in self.r.user.get_submitted():
-            if submission.likes is True:
-                break
-        else:
-            self.fail('Could not find an up-voted submission.')
+        submission = first(self.r.user.get_submitted(),
+                           lambda submission: submission.likes is True)
+        self.assertTrue(submission is not None)
         submission.downvote()
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
@@ -58,13 +52,9 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_hide(self):
         self.disable_cache()
-        found = None
-        for item in self.r.user.get_submitted():
-            if not item.hidden:
-                found = item
-                break
-        else:
-            self.fail("Couldn't find an unhidden submission")
+        found = first(self.r.user.get_submitted(),
+                      lambda item: not item.hidden)
+        self.assertTrue(found is not None)
         found.hide()
         found.refresh()
         self.assertTrue(found.hidden)
@@ -74,37 +64,27 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyAPITestUser3', '1111')
         subreddit = oth.get_subreddit(self.sr)
-        submission = None
-        for submission in subreddit.get_new():
-            if not submission.hidden:
-                break
-        else:
-            self.fail('Could not find a non-reported submission.')
+        submission = first(subreddit.get_new(),
+                           lambda submission: not submission.hidden)
+        self.assertTrue(submission is not None)
         submission.report()
         # check if submission was reported
-        for report in self.r.get_subreddit(self.sr).get_reports():
-            if report.id == submission.id:
-                break
-        else:
-            self.fail('Could not find reported submission.')
+        found_report = first(self.r.get_subreddit(self.sr).get_reports(),
+                             lambda report: report.id == submission.id)
+        self.assertTrue(found_report is not None)
 
     def test_save(self):
-        submission = None
-        for submission in self.r.user.get_submitted():
-            if not submission.saved:
-                break
-        else:
-            self.fail('Could not find unsaved submission.')
+        submission = first(self.r.user.get_submitted(),
+                           lambda submission: not submission.saved)
+        self.assertTrue(submission is not None)
         submission.save()
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertTrue(submission.saved)
         # verify in saved_links
-        for item in self.r.user.get_saved():
-            if item == submission:
-                break
-        else:
-            self.fail('Could not find submission in saved links.')
+        saved = first(self.r.user.get_saved(),
+                      lambda item: item == submission)
+        self.assertTrue(saved is not None)
 
     def test_short_link(self):
         submission = six_next(self.r.get_new())
@@ -116,36 +96,26 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_unhide(self):
         self.disable_cache()
-        found = None
-        for item in self.r.user.get_submitted():
-            if item.hidden:
-                found = item
-                break
-        else:
-            self.fail("Couldn't find a hidden submission")
+        found = first(self.r.user.get_submitted(),
+                      lambda item: item.hidden)
+        self.assertTrue(found is not None)
         found.unhide()
         found.refresh()
         self.assertFalse(found.hidden)
 
     def test_unsave(self):
-        submission = None
-        for submission in self.r.user.get_submitted():
-            if submission.saved:
-                break
-        else:
-            self.fail('Could not find saved submission.')
+        submission = first(self.r.user.get_submitted(),
+                           lambda submission: submission.saved)
+        self.assertTrue(submission is not None)
         submission.unsave()
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertFalse(submission.saved)
 
     def test_upvote(self):
-        submission = None
-        for submission in self.r.user.get_submitted():
-            if submission.likes is None:
-                break
-        else:
-            self.fail('Could not find a non-voted submission.')
+        submission = first(self.r.user.get_submitted(),
+                           lambda submission: submission.likes is None)
+        self.assertTrue(submission is not None)
         submission.upvote()
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)

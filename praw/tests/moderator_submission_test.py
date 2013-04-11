@@ -17,7 +17,7 @@
 import unittest
 from six import next as six_next
 
-from helper import AuthenticatedHelper
+from helper import AuthenticatedHelper, first
 
 
 class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
@@ -30,19 +30,15 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
         if not submission:
             self.fail('Could not find a submission to approve.')
         submission.approve()
-        for approved in self.subreddit.get_new():
-            if approved.id == submission.id:
-                break
-        else:
-            self.fail('Could not find approved submission.')
+        found = first(self.subreddit.get_new(),
+                      lambda approved: approved.id == submission.id)
+        self.assertTrue(found is not None)
 
     def test_remove(self):
         submission = six_next(self.subreddit.get_new())
         if not submission:
             self.fail('Could not find a submission to remove.')
         submission.remove()
-        for removed in self.subreddit.get_spam():
-            if removed.id == submission.id:
-                break
-        else:
-            self.fail('Could not find removed submission.')
+        found = first(self.subreddit.get_spam(),
+                      lambda removed: removed.id == submission.id)
+        self.assertTrue(found is not None)

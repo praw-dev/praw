@@ -17,7 +17,7 @@
 import unittest
 from six import next as six_next
 
-from helper import AuthenticatedHelper
+from helper import AuthenticatedHelper, first
 from praw.objects import Comment
 
 
@@ -26,12 +26,10 @@ class CommentPermalinkTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
 
     def test_inbox_permalink(self):
-        for item in self.r.get_inbox():
-            if isinstance(item, Comment):
-                self.assertTrue(item.id in item.permalink)
-                break
-        else:
-            self.fail('Could not find comment reply in inbox')
+        found = first(self.r.get_inbox(),
+                      lambda item: isinstance(item, Comment))
+        self.assertTrue(found is not None)
+        self.assertTrue(found.id in found.permalink)
 
     def test_user_comments_permalink(self):
         item = six_next(self.r.user.get_comments())

@@ -17,7 +17,7 @@
 import unittest
 import uuid
 
-from helper import AuthenticatedHelper
+from helper import AuthenticatedHelper, first
 from praw import errors
 
 
@@ -26,13 +26,9 @@ class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
 
     def test_create_duplicate(self):
-        found = None
-        for item in self.r.user.get_submitted():
-            if not item.is_self:
-                found = item
-                break
-        else:
-            self.fail('Could not find link post')
+        found = first(self.r.user.get_submitted(),
+                      lambda item: not item.is_self)
+        self.assertTrue(found is not None)
         self.assertRaises(errors.AlreadySubmitted, self.r.submit, self.sr,
                           found.title, url=found.url)
 

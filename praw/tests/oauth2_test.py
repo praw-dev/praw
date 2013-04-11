@@ -131,8 +131,8 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         self.r.refresh_access_information(self.refresh_token['mysubreddits'])
         subscribed = list(self.r.get_my_reddits(limit=None))
         self.r.refresh_access_information(self.refresh_token['read'])
-        for post in self.r.get_front_page():
-            self.assertTrue(post.subreddit in subscribed)
+        self.assertTrue(all(post.subreddit in subscribed
+                            for post in self.r.get_front_page()))
 
     @reddit_only
     def test_scope_read_get_sub_listingr(self):
