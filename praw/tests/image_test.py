@@ -16,105 +16,125 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
-import uuid
 import os
+import pytest
 import sys
+import uuid
 
 from six import text_type
 
-from helper import AuthenticatedHelper, reddit_only
+from helper import configure, R, reddit_only, SR
 from praw import errors
 
 
-class ImageTests(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
-        test_dir = os.path.dirname(sys.modules[__name__].__file__)
-        self.image_path = os.path.join(test_dir, 'files', '{0}')
+TEST_DIR = os.path.dirname(sys.modules[__name__].__file__)
+IMAGE_PATH = os.path.join(TEST_DIR, 'files', '{0}')
+SUBREDDIT = R.get_subreddit(SR)
 
-    def test_delete_header(self):
-        self.subreddit.delete_image(header=True)
 
-    def test_delete_image(self):
-        images = self.subreddit.get_stylesheet()['images']
-        for img_data in images[:5]:
-            self.subreddit.delete_image(name=img_data['name'])
-        updated_images = self.subreddit.get_stylesheet()['images']
-        self.assertNotEqual(images, updated_images)
+def setup_function(function):
+    configure()
 
-    def test_delete_invalid_image(self):
-        # TODO: Patch reddit to return error when this fails
-        self.subreddit.delete_image(name='invalid_image_name')
 
-    def test_delete_invalid_params(self):
-        self.assertRaises(TypeError, self.subreddit.delete_image, name='Foo',
-                          header=True)
+def test_delete_header():
+    SUBREDDIT.delete_image(header=True)
 
-    def test_upload_invalid_file_path(self):
-        self.assertRaises(IOError, self.subreddit.upload_image, 'nonexistent')
 
-    def test_upload_uerinvalid_image(self):
-        image = self.image_path.format('white-square.tiff')
-        self.assertRaises(errors.ClientException, self.subreddit.upload_image,
-                          image)
+def test_delete_image():
+    images = SUBREDDIT.get_stylesheet()['images']
+    for img_data in images[5:]:
+        SUBREDDIT.delete_image(name=img_data['name'])
+    updated_images = SUBREDDIT.get_stylesheet()['images']
+    assert images != updated_images
 
-    def test_upload_invalid_image_too_small(self):
-        image = self.image_path.format('invalid.jpg')
-        self.assertRaises(errors.ClientException, self.subreddit.upload_image,
-                          image)
 
-    def test_upload_invalid_image_too_large(self):
-        image = self.image_path.format('big')
-        self.assertRaises(errors.ClientException, self.subreddit.upload_image,
-                          image)
+def test_delete_invalid_image():
+    # TODO: Patch reddit to return error when this fails
+    SUBREDDIT.delete_image(name='invalid_image_name')
 
-    def test_upload_invalid_params(self):
-        image = self.image_path.format('white-square.jpg')
-        self.assertRaises(TypeError, self.subreddit.upload_image, image,
-                          name='Foo', header=True)
 
-    def test_upload_invalid_image_path(self):
-        self.assertRaises(IOError, self.subreddit.upload_image, 'bar.png')
+def test_delete_invalid_params():
+    with pytest.raises(TypeError):
+        SUBREDDIT.delete_image(name='Foo', header=True)
 
-    @reddit_only
-    def test_upload_jpg_header(self):
-        image = self.image_path.format('white-square.jpg')
-        self.assertTrue(self.subreddit.upload_image(image, header=True))
 
-    @reddit_only
-    def test_upload_jpg_image(self):
-        image = self.image_path.format('white-square.jpg')
-        self.assertTrue(self.subreddit.upload_image(image))
+def test_upload_invalid_file_path():
+    with pytest.raises(IOError):
+        SUBREDDIT.upload_image('nonexistent')
 
-    @reddit_only
-    def test_upload_jpg_image_named(self):
-        image = self.image_path.format('white-square.jpg')
-        name = text_type(uuid.uuid4())
-        self.assertTrue(self.subreddit.upload_image(image, name))
-        images_json = self.subreddit.get_stylesheet()['images']
-        self.assertTrue(name in text_type(x['name']) for x in images_json)
 
-    @reddit_only
-    def test_upload_jpg_image_no_extension(self):
-        image = self.image_path.format('white-square')
-        self.assertTrue(self.subreddit.upload_image(image))
+def test_upload_uerinvalid_image():
+    image = IMAGE_PATH.format('white-square.tiff')
+    with pytest.raises(errors.ClientException):
+        SUBREDDIT.upload_image(image)
 
-    @reddit_only
-    def test_upload_png_header(self):
-        image = self.image_path.format('white-square.png')
-        self.assertTrue(self.subreddit.upload_image(image, header=True))
 
-    @reddit_only
-    def test_upload_png_image(self):
-        image = self.image_path.format('white-square.png')
-        self.assertTrue(self.subreddit.upload_image(image))
+def test_upload_invalid_image_too_small():
+    image = IMAGE_PATH.format('invalid.jpg')
+    with pytest.raises(errors.ClientException):
+        SUBREDDIT.upload_image(image)
 
-    @reddit_only
-    def test_upload_png_image_named(self):
-        image = self.image_path.format('white-square.png')
-        name = text_type(uuid.uuid4())
-        self.assertTrue(self.subreddit.upload_image(image, name))
-        images_json = self.subreddit.get_stylesheet()['images']
-        self.assertTrue(name in text_type(x['name']) for x in images_json)
+
+def test_upload_invalid_image_too_large():
+    image = IMAGE_PATH.format('big')
+    with pytest.raises(errors.ClientException):
+        SUBREDDIT.upload_image(image)
+
+
+def test_upload_invalid_params():
+    image = IMAGE_PATH.format('white-square.jpg')
+    with pytest.raises(TypeError):
+        SUBREDDIT.upload_image(image, name='Foo', header=True)
+
+
+def test_upload_invalid_image_path():
+    with pytest.raises(IOError):
+        SUBREDDIT.upload_image('bar.png')
+
+
+@reddit_only
+def test_upload_jpg_header():
+    image = IMAGE_PATH.format('white-square.jpg')
+    assert SUBREDDIT.upload_image(image, header=True)
+
+
+@reddit_only
+def test_upload_jpg_image():
+    image = IMAGE_PATH.format('white-square.jpg')
+    assert SUBREDDIT.upload_image(image)
+
+
+@reddit_only
+def test_upload_jpg_image_named():
+    image = IMAGE_PATH.format('white-square.jpg')
+    name = text_type(uuid.uuid4())
+    assert SUBREDDIT.upload_image(image, name)
+    images_json = SUBREDDIT.get_stylesheet()['images']
+    assert (name in text_type(x['name']) for x in images_json)
+
+
+@reddit_only
+def test_upload_jpg_image_no_extension():
+    image = IMAGE_PATH.format('white-square')
+    assert SUBREDDIT.upload_image(image)
+
+
+@reddit_only
+def test_upload_png_header():
+    image = IMAGE_PATH.format('white-square.png')
+    assert SUBREDDIT.upload_image(image, header=True)
+
+
+@reddit_only
+def test_upload_png_image():
+    image = IMAGE_PATH.format('white-square.png')
+    assert SUBREDDIT.upload_image(image)
+
+
+@reddit_only
+def test_upload_png_image_named():
+    image = IMAGE_PATH.format('white-square.png')
+    name = text_type(uuid.uuid4())
+    assert SUBREDDIT.upload_image(image, name)
+    images_json = SUBREDDIT.get_stylesheet()['images']
+    assert (name in text_type(x['name']) for x in images_json)

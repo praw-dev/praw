@@ -18,37 +18,38 @@
 
 from __future__ import unicode_literals
 
-import unittest
 import uuid
 from six import next as six_next, text_type
 
-from helper import AuthenticatedHelper
+from helper import configure, R, SR
 
 
-class EncodingTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
+def setup_function(function):
+    configure()
 
-    def test_author_encoding(self):
-        # pylint: disable-msg=E1101
-        a1 = six_next(self.r.get_new()).author
-        a2 = self.r.get_redditor(text_type(a1))
-        self.assertEqual(a1, a2)
-        s1 = six_next(a1.get_submitted())
-        s2 = six_next(a2.get_submitted())
-        self.assertEqual(s1, s2)
 
-    def test_unicode_comment(self):
-        sub = six_next(self.r.get_subreddit(self.sr).get_new())
-        text = 'Have some unicode: (\xd0, \xdd)'
-        comment = sub.add_comment(text)
-        self.assertEqual(text, comment.body)
+def test_author_encoding():
+    # pylint: disable-msg=E1101
+    a1 = six_next(R.get_new()).author
+    a2 = R.get_redditor(text_type(a1))
+    assert a1 == a2
+    s1 = six_next(a1.get_submitted())
+    s2 = six_next(a2.get_submitted())
+    assert s1 == s2
 
-    def test_unicode_submission(self):
-        unique = uuid.uuid4()
-        title = 'Wiki Entry on \xC3\x9C'
-        url = 'http://en.wikipedia.org/wiki/\xC3\x9C?id=%s' % unique
-        submission = self.r.submit(self.sr, title, url=url)
-        str(submission)
-        self.assertEqual(title, submission.title)
-        self.assertEqual(url, submission.url)
+
+def test_unicode_comment():
+    sub = six_next(R.get_subreddit(SR).get_new())
+    text = 'Have some unicode: (\xd0, \xdd)'
+    comment = sub.add_comment(text)
+    assert text == comment.body
+
+
+def test_unicode_submission():
+    unique = uuid.uuid4()
+    title = 'Wiki Entry on \xC3\x9C'
+    url = 'http://en.wikipedia.org/wiki/\xC3\x9C?id=%s' % unique
+    submission = R.submit(SR, title, url=url)
+    str(submission)
+    assert title == submission.title
+    assert url == submission.url

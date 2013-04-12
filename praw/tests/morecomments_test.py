@@ -16,36 +16,35 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
-
-from helper import AuthenticatedHelper, first
+from helper import configure, first, MORE_COMMENTS_URL, R
 from praw import helpers
 from praw.objects import MoreComments
 
 
-class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.submission = self.r.get_submission(url=self.more_comments_url,
-                                                comment_limit=10)
+def setup_function(function):
+    configure()
 
-    def test_all_comments(self):
-        c_len = len(self.submission.comments)
-        cf_len = len(helpers.flatten_tree(self.submission.comments))
-        saved = self.submission.replace_more_comments(threshold=2)
-        ac_len = len(self.submission.comments)
-        acf_len = len(helpers.flatten_tree(self.submission.comments))
 
-        # pylint: disable-msg=W0212
-        self.assertEqual(len(self.submission._comments_by_id), acf_len)
-        self.assertTrue(c_len < ac_len)
-        self.assertTrue(c_len < cf_len)
-        self.assertTrue(ac_len < acf_len)
-        self.assertTrue(cf_len < acf_len)
-        self.assertTrue(saved)
+def test_all_comments():
+    submission = R.get_submission(url=MORE_COMMENTS_URL, comment_limit=10)
+    c_len = len(submission.comments)
+    cf_len = len(helpers.flatten_tree(submission.comments))
+    saved = submission.replace_more_comments(threshold=2)
+    ac_len = len(submission.comments)
+    acf_len = len(helpers.flatten_tree(submission.comments))
 
-    def test_comments_method(self):
-        found = first(self.submission.comments,
-                      lambda item: isinstance(item, MoreComments))
-        self.assertTrue(found is not None)
-        self.assertTrue(found.comments())
+    # pylint: disable-msg=W0212
+    assert len(submission._comments_by_id) == acf_len
+    assert c_len < ac_len
+    assert c_len < cf_len
+    assert ac_len < acf_len
+    assert cf_len < acf_len
+    assert saved
+
+
+def test_comments_method():
+    submission = R.get_submission(url=MORE_COMMENTS_URL, comment_limit=10)
+    found = first(submission.comments,
+                  lambda item: isinstance(item, MoreComments))
+    assert found is not None
+    assert found.comments()

@@ -16,109 +16,115 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
+import pytest
 from six import next as six_next
 
-from helper import AuthenticatedHelper, first, USER_AGENT
+from helper import configure, disable_cache, first, R, SR, USER_AGENT
 from praw import errors, Reddit
 
 
-class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
+def setup_function(function):
+    configure()
 
-    def test_clear_vote(self):
-        submission = first(self.r.user.get_submitted(),
-                           lambda submission: submission.likes is False)
-        self.assertTrue(submission is not None)
-        submission.clear_vote()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertEqual(submission.likes, None)
 
-    def test_delete(self):
-        submission = list(self.r.user.get_submitted())[-1]
-        submission.delete()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertEqual(None, submission.author)
+def test_clear_vote():
+    submission = first(R.user.get_submitted(),
+                       lambda submission: submission.likes is False)
+    assert submission is not None
+    submission.clear_vote()
+    # reload the submission
+    submission = R.get_submission(submission_id=submission.id)
+    assert submission.likes is None
 
-    def test_downvote(self):
-        submission = first(self.r.user.get_submitted(),
-                           lambda submission: submission.likes is True)
-        self.assertTrue(submission is not None)
-        submission.downvote()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertEqual(submission.likes, False)
 
-    def test_hide(self):
-        self.disable_cache()
-        found = first(self.r.user.get_submitted(),
-                      lambda item: not item.hidden)
-        self.assertTrue(found is not None)
-        found.hide()
-        found.refresh()
-        self.assertTrue(found.hidden)
+def test_delete():
+    submission = list(R.user.get_submitted())[-1]
+    submission.delete()
+    # reload the submission
+    submission = R.get_submission(submission_id=submission.id)
+    assert None == submission.author
 
-    def test_report(self):
-        # login as new user to report submission
-        oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyAPITestUser3', '1111')
-        subreddit = oth.get_subreddit(self.sr)
-        submission = first(subreddit.get_new(),
-                           lambda submission: not submission.hidden)
-        self.assertTrue(submission is not None)
-        submission.report()
-        # check if submission was reported
-        found_report = first(self.r.get_subreddit(self.sr).get_reports(),
-                             lambda report: report.id == submission.id)
-        self.assertTrue(found_report is not None)
 
-    def test_save(self):
-        submission = first(self.r.user.get_submitted(),
-                           lambda submission: not submission.saved)
-        self.assertTrue(submission is not None)
-        submission.save()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertTrue(submission.saved)
-        # verify in saved_links
-        saved = first(self.r.user.get_saved(),
-                      lambda item: item == submission)
-        self.assertTrue(saved is not None)
+def test_downvote():
+    submission = first(R.user.get_submitted(),
+                       lambda submission: submission.likes is True)
+    assert submission is not None
+    submission.downvote()
+    # reload the submission
+    submission = R.get_submission(submission_id=submission.id)
+    assert not submission.likes
 
-    def test_short_link(self):
-        submission = six_next(self.r.get_new())
-        if self.r.config.is_reddit:
-            self.assertTrue(submission.id in submission.short_link)
-        else:
-            self.assertRaises(errors.ClientException, getattr, submission,
-                              'short_link')
 
-    def test_unhide(self):
-        self.disable_cache()
-        found = first(self.r.user.get_submitted(),
-                      lambda item: item.hidden)
-        self.assertTrue(found is not None)
-        found.unhide()
-        found.refresh()
-        self.assertFalse(found.hidden)
+def test_hide():
+    disable_cache()
+    found = first(R.user.get_submitted(), lambda item: not item.hidden)
+    assert found is not None
+    found.hide()
+    found.refresh()
+    assert found.hidden
 
-    def test_unsave(self):
-        submission = first(self.r.user.get_submitted(),
-                           lambda submission: submission.saved)
-        self.assertTrue(submission is not None)
-        submission.unsave()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertFalse(submission.saved)
 
-    def test_upvote(self):
-        submission = first(self.r.user.get_submitted(),
-                           lambda submission: submission.likes is None)
-        self.assertTrue(submission is not None)
-        submission.upvote()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertEqual(submission.likes, True)
+def test_report():
+    # login as new user to report submission
+    oth = Reddit(USER_AGENT, disable_update_check=True)
+    oth.login('PyAPITestUser3', '1111')
+    subreddit = oth.get_subreddit(SR)
+    submission = first(subreddit.get_new(),
+                       lambda submission: not submission.hidden)
+    assert submission is not None
+    submission.report()
+    # check if submission was reported
+    found_report = first(R.get_subreddit(SR).get_reports(),
+                         lambda report: report.id == submission.id)
+    assert found_report is not None
+
+
+def test_save():
+    submission = first(R.user.get_submitted(),
+                       lambda submission: not submission.saved)
+    assert submission is not None
+    submission.save()
+    # reload the submission
+    submission = R.get_submission(submission_id=submission.id)
+    assert submission.saved
+    # verify in saved_links
+    saved = first(R.user.get_saved(), lambda item: item == submission)
+    assert saved is not None
+
+
+def test_short_link():
+    submission = six_next(R.get_new())
+    if R.config.is_reddit:
+        assert submission.id in submission.short_link
+    else:
+        with pytest.raises(errors.ClientException):
+            getattr(submission, 'short_link')
+
+
+def test_unhide():
+    disable_cache()
+    found = first(R.user.get_submitted(), lambda item: item.hidden)
+    assert found is not None
+    found.unhide()
+    found.refresh()
+    assert not found.hidden
+
+
+def test_unsave():
+    submission = first(R.user.get_submitted(),
+                       lambda submission: submission.saved)
+    assert submission is not None
+    submission.unsave()
+    # reload the submission
+    submission = R.get_submission(submission_id=submission.id)
+    assert not submission.saved
+
+
+def test_upvote():
+    submission = first(R.user.get_submitted(),
+                       lambda submission: submission.likes is None)
+    assert submission is not None
+    submission.upvote()
+    # reload the submission
+    submission = R.get_submission(submission_id=submission.id)
+    assert submission.likes

@@ -16,49 +16,53 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
-
-from helper import AuthenticatedHelper
+from helper import configure, OTHER_USER_NAME, R, SR
 
 
-class ModeratorSubredditTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
+SUBREDDIT = R.get_subreddit(SR)
 
-    def test_get_mod_log(self):
-        self.assertTrue(list(self.subreddit.get_mod_log()))
 
-    def test_get_mod_log_with_mod_by_name(self):
-        other = self.r.get_redditor(self.other_user_name)
-        actions = list(self.subreddit.get_mod_log(mod=other.name))
-        self.assertTrue(actions)
-        #self.assertTrue(all(x.mod_id36 == other.id for x in actions))
-        self.assertTrue(all(x.mod.lower() == other.name.lower()
-                            for x in actions))
+def setup_function(function):
+    configure()
 
-    def test_get_mod_log_with_mod_by_redditor_object(self):
-        other = self.r.get_redditor(self.other_user_name)
-        actions = list(self.subreddit.get_mod_log(mod=other))
-        self.assertTrue(actions)
-        #self.assertTrue(all(x.mod_id36 == other.id for x in actions))
-        self.assertTrue(all(x.mod.lower() == other.name.lower()
-                            for x in actions))
 
-    def test_get_mod_log_with_action_filter(self):
-        actions = list(self.subreddit.get_mod_log(action='removelink'))
-        self.assertTrue(actions)
-        self.assertTrue(all(x.action == 'removelink' for x in actions))
+def test_get_mod_log():
+    assert list(SUBREDDIT.get_mod_log())
 
-    def test_get_mod_queue(self):
-        mod_submissions = list(self.r.get_subreddit('mod').get_mod_queue())
-        self.assertTrue(len(mod_submissions) > 0)
 
-    def test_get_mod_queue_multi(self):
-        multi = '{0}+{1}'.format(self.sr, 'reddit_api_test2')
-        mod_submissions = list(self.r.get_subreddit(multi).get_mod_queue())
-        self.assertTrue(len(mod_submissions) > 0)
+def test_get_mod_log_with_mod_by_name():
+    other = R.get_redditor(OTHER_USER_NAME)
+    actions = list(SUBREDDIT.get_mod_log(mod=other.name))
+    assert actions
+    #.assertTrue(all(x.mod_id36 == other.id for x in actions))
+    assert all(x.mod.lower() == other.name.lower() for x in actions)
 
-    def test_get_unmoderated(self):
-        submissions = list(self.subreddit.get_unmoderated())
-        self.assertTrue(len(submissions) > 0)
+
+def test_get_mod_log_with_mod_by_redditor_object():
+    other = R.get_redditor(OTHER_USER_NAME)
+    actions = list(SUBREDDIT.get_mod_log(mod=other))
+    assert actions
+    #.assertTrue(all(x.mod_id36 == other.id for x in actions))
+    assert all(x.mod.lower() == other.name.lower() for x in actions)
+
+
+def test_get_mod_log_with_action_filter():
+    actions = list(SUBREDDIT.get_mod_log(action='removelink'))
+    assert actions
+    assert all(x.action == 'removelink' for x in actions)
+
+
+def test_get_mod_queue():
+    mod_submissions = list(R.get_subreddit('mod').get_mod_queue())
+    assert len(mod_submissions) > 0
+
+
+def test_get_mod_queue_multi():
+    multi = '{0}+{1}'.format(SR, 'reddit_api_test2')
+    mod_submissions = list(R.get_subreddit(multi).get_mod_queue())
+    assert len(mod_submissions) > 0
+
+
+def test_get_unmoderated():
+    submissions = list(SUBREDDIT.get_unmoderated())
+    assert len(submissions) > 0

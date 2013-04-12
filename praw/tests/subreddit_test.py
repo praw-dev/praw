@@ -16,56 +16,65 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
+import pytest
 from six import text_type
 
-from helper import AuthenticatedHelper, first, reddit_only
+from helper import configure, first, R, reddit_only, SR
 
 
-class SubredditTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
+SUBREDDIT = R.get_subreddit(SR)
 
-    def test_attribute_error(self):
-        self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
 
-    def test_get_my_contributions(self):
-        found = first(self.r.get_my_contributions(),
-                      lambda subreddit: text_type(subreddit) == self.sr)
-        self.assertTrue(found is not None)
+def setup_function(function):
+    configure()
 
-    def test_get_my_moderation(self):
-        found = first(self.r.get_my_moderation(),
-                      lambda subreddit: text_type(subreddit) == self.sr)
-        self.assertTrue(found is not None)
 
-    def test_get_my_reddits(self):
-        self.assertTrue(all(text_type(subreddit) in subreddit._info_url
-                            for subreddit in self.r.get_my_reddits()))
+def test_attribute_error():
+    with pytest.raises(AttributeError):
+        getattr(SUBREDDIT, 'foo')
 
-    @reddit_only
-    def test_search(self):
-        self.assertTrue(len(list(self.subreddit.search('test'))) > 0)
 
-    def test_subscribe_and_verify(self):
-        self.subreddit.subscribe()
-        found = first(self.r.get_my_reddits(),
-                      lambda subreddit: text_type(subreddit) == self.sr)
-        self.assertTrue(found is not None)
+def test_get_my_contributions():
+    found = first(R.get_my_contributions(),
+                  lambda subreddit: text_type(subreddit) == SR)
+    assert found is not None
 
-    def test_subscribe_by_name_and_verify(self):
-        self.r.subscribe(self.sr)
-        found = first(self.r.get_my_reddits(),
-                      lambda subreddit: text_type(subreddit) == self.sr)
-        self.assertTrue(found is not None)
 
-    def test_unsubscribe_and_verify(self):
-        self.subreddit.unsubscribe()
-        self.assertTrue(all(text_type(subreddit) != self.sr
-                            for subreddit in self.r.get_my_reddits()))
+def test_get_my_moderation():
+    found = first(R.get_my_moderation(),
+                  lambda subreddit: text_type(subreddit) == SR)
+    assert found is not None
 
-    def test_unsubscribe_by_name_and_verify(self):
-        self.r.unsubscribe(self.sr)
-        self.assertTrue(all(text_type(subreddit) != self.sr
-                            for subreddit in self.r.get_my_reddits()))
+
+def test_get_my_reddits():
+    assert all(text_type(subreddit) in subreddit._info_url
+               for subreddit in R.get_my_reddits())
+
+
+@reddit_only
+def test_search():
+    assert len(list(SUBREDDIT.search('test'))) > 0
+
+
+def test_subscribe_and_verify():
+    SUBREDDIT.subscribe()
+    found = first(R.get_my_reddits(),
+                  lambda subreddit: text_type(subreddit) == SR)
+    assert found is not None
+
+
+def test_subscribe_by_name_and_verify():
+    R.subscribe(SR)
+    found = first(R.get_my_reddits(),
+                  lambda subreddit: text_type(subreddit) == SR)
+    assert found is not None
+
+
+def test_unsubscribe_and_verify():
+    SUBREDDIT.unsubscribe()
+    assert all(text_type(subreddit) != SR for subreddit in R.get_my_reddits())
+
+
+def test_unsubscribe_by_name_and_verify():
+    R.unsubscribe(SR)
+    assert all(text_type(subreddit) != SR for subreddit in R.get_my_reddits())

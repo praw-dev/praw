@@ -16,48 +16,52 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
+import pytest
 import random
 
-from helper import BasicHelper, local_only
+from helper import configure, local_only, OTHER_USER_NAME, R, SR, UN
 from praw import errors
 
 
-class LocalOnlyTest(unittest.TestCase, BasicHelper):
-    def setUp(self):
-        self.configure()
+def setup_function(function):
+    configure()
 
-    @local_only
-    def test_create_existing_redditor(self):
-        self.r.login(self.un, '1111')
-        self.assertRaises(errors.UsernameExists, self.r.create_redditor,
-                          self.other_user_name, '1111')
 
-    @local_only
-    def test_create_existing_subreddit(self):
-        self.r.login(self.un, '1111')
-        self.assertRaises(errors.SubredditExists, self.r.create_subreddit,
-                          self.sr, 'foo')
+@local_only
+def test_create_existing_redditor():
+    R.login(UN, '1111')
+    with pytest.raises(errors.UsernameExists):
+        R.create_redditor(OTHER_USER_NAME, '1111')
 
-    @local_only
-    def test_create_redditor(self):
-        unique_name = 'PyAPITestUser%d' % random.randint(3, 10240)
-        self.r.create_redditor(unique_name, '1111')
 
-    @local_only
-    def test_create_subreddit(self):
-        unique_name = 'test%d' % random.randint(3, 10240)
-        description = '#Welcome to %s\n\n0 item 1\n0 item 2\n' % unique_name
-        self.r.login(self.un, '1111')
-        self.r.create_subreddit(unique_name, 'The %s' % unique_name,
-                                description)
+@local_only
+def test_create_existing_subreddit():
+    R.login(UN, '1111')
+    with pytest.raises(errors.SubredditExists):
+        R.create_subreddit(SR, 'foo')
 
-    @local_only
-    def test_failed_feedback(self):
-        self.assertRaises(errors.InvalidEmails, self.r.send_feedback,
-                          'a', 'b', 'c')
 
-    @local_only
-    def test_send_feedback(self):
-        msg = 'You guys are awesome. (Sent from the PRAW python module).'
-        self.r.send_feedback('Bryce Boe', 'foo@foo.com', msg)
+@local_only
+def test_create_redditor():
+    unique_name = 'PyAPITestUser%d' % random.randint(3, 10240)
+    R.create_redditor(unique_name, '1111')
+
+
+@local_only
+def test_create_subreddit():
+    unique_name = 'test%d' % random.randint(3, 10240)
+    description = '#Welcome to %s\n\n0 item 1\n0 item 2\n' % unique_name
+    R.login(UN, '1111')
+    R.create_subreddit(unique_name, 'The %s' % unique_name, description)
+
+
+@local_only
+def test_failed_feedback():
+    with pytest.raises(errors.InvalidEmails):
+        R.send_feedback('a', 'b', 'c')
+
+
+@local_only
+def test_send_feedback():
+    msg = 'You guys are awesome. (Sent from the PRAW python module).'
+    R.send_feedback('Bryce Boe', 'foo@foo.com', msg)

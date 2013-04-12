@@ -16,75 +16,81 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
-
+import pytest
 from six import text_type
 
-from helper import AuthenticatedHelper, USER_AGENT
+from helper import configure, disable_cache, USER_AGENT, R, SR
 from praw import errors, Reddit
 
+SUBREDDIT = R.get_subreddit(SR)
+OTHER = R.get_redditor('pyapitestuser3', fetch=True)
 
-class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
-        self.other = self.r.get_redditor('pyapitestuser3', fetch=True)
 
-    def add_remove(self, add, remove, listing, add_callback=None):
-        def test_add():
-            add(self.other)
-            if add_callback:
-                add_callback()
-            self.assertTrue(self.other in listing())
+def setup_function(function):
+    configure()
 
-        def test_remove():
-            remove(self.other)
-            self.assertTrue(self.other not in listing())
 
-        self.disable_cache()
-        if self.other in listing():
-            test_remove()
-            test_add()
-        else:
-            test_add()
-            test_remove()
+def add_remove(add, remove, listing, add_callback=None):
+    def test_add():
+        add(OTHER)
+        if add_callback:
+            add_callback()
+        assert OTHER in listing()
 
-    def test_accept_moderator_invite_fail(self):
-        self.r.login('pyapitestuser3', '1111')
-        self.assertRaises(errors.InvalidInvite,
-                          self.subreddit.accept_moderator_invite)
+    def test_remove():
+        remove(OTHER)
+        assert OTHER not in listing()
 
-    def test_ban(self):
-        self.add_remove(self.subreddit.add_ban, self.subreddit.remove_ban,
-                        self.subreddit.get_banned)
+    disable_cache()
+    if OTHER in listing():
+        test_remove()
+        test_add()
+    else:
+        test_add()
+        test_remove()
 
-    def test_contributors(self):
-        self.add_remove(self.subreddit.add_contributor,
-                        self.subreddit.remove_contributor,
-                        self.subreddit.get_contributors)
 
-    def test_moderator(self):
-        def add_callback():
-            tmp = Reddit(USER_AGENT, disable_update_check=True)
-            tmp.login('pyapitestuser3', '1111')
-            tmp.get_subreddit(self.sr).accept_moderator_invite()
+def test_accept_moderator_invite_fail():
+    R.login('pyapitestuser3', '1111')
+    with pytest.raises(errors.InvalidInvite):
+        SUBREDDIT.accept_moderator_invite()
 
-        self.add_remove(self.subreddit.add_moderator,
-                        self.subreddit.remove_moderator,
-                        self.subreddit.get_moderators,
-                        add_callback)
 
-    def test_make_moderator_by_name_failure(self):
-        self.assertTrue(self.r.user in self.subreddit.get_moderators())
-        self.assertRaises(errors.AlreadyModerator,
-                          self.subreddit.add_moderator, text_type(self.r.user))
+def test_ban():
+    add_remove(SUBREDDIT.add_ban, SUBREDDIT.remove_ban, SUBREDDIT.get_banned)
 
-    def test_wiki_ban(self):
-        self.add_remove(self.subreddit.add_wiki_ban,
-                        self.subreddit.remove_wiki_ban,
-                        self.subreddit.get_wiki_banned)
 
-    def test_wiki_contributors(self):
-        self.add_remove(self.subreddit.add_wiki_contributor,
-                        self.subreddit.remove_wiki_contributor,
-                        self.subreddit.get_wiki_contributors)
+def test_contributors():
+    add_remove(SUBREDDIT.add_contributor,
+               SUBREDDIT.remove_contributor,
+               SUBREDDIT.get_contributors)
+
+
+def test_moderator():
+    def add_callback():
+        tmp = Reddit(USER_AGENT, disable_update_check=True)
+        tmp.login('pyapitestuser3', '1111')
+        tmp.get_subreddit(SR).accept_moderator_invite()
+
+    add_remove(SUBREDDIT.add_moderator,
+               SUBREDDIT.remove_moderator,
+               SUBREDDIT.get_moderators,
+               add_callback)
+
+
+def test_make_moderator_by_name_failure():
+    assert R.user in SUBREDDIT.get_moderators()
+    with pytest.raises(errors.AlreadyModerator):
+        SUBREDDIT.add_moderator(text_type(R.user))
+
+
+def test_wiki_ban():
+    add_remove(SUBREDDIT.add_wiki_ban,
+               SUBREDDIT.remove_wiki_ban,
+               SUBREDDIT.get_wiki_banned)
+
+
+def test_wiki_contributors():
+    add_remove(SUBREDDIT.add_wiki_contributor,
+               SUBREDDIT.remove_wiki_contributor,
+               SUBREDDIT.get_wiki_contributors)

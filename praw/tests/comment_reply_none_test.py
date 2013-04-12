@@ -16,36 +16,37 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
 from six import next as six_next
 
-from helper import AuthenticatedHelper, first
+from helper import configure, first, R, SR
 from praw.objects import Comment
 
 
-class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
+def setup_function(function):
+    configure()
 
-    def test_front_page_comment_replies_are_none(self):
-        # pylint: disable-msg=E1101,W0212
-        item = six_next(self.r.get_all_comments())
-        self.assertEqual(item._replies, None)
 
-    def test_inbox_comment_replies_are_none(self):
-        found = first(self.r.get_inbox(),
-                      lambda item: isinstance(item, Comment))
-        self.assertTrue(found is not None)
-        self.assertEqual(found._replies, None)
+def test_front_page_comment_replies_are_none():
+    # pylint: disable-msg=E1101,W0212
+    item = six_next(R.get_all_comments())
+    assert item._replies is None
 
-    def test_spambox_comments_replies_are_none(self):
-        found = first(self.r.get_subreddit(self.sr).get_spam(),
-                      lambda item: isinstance(item, Comment))
-        self.assertTrue(found is not None)
-        self.assertEqual(found._replies, None)
 
-    def test_user_comment_replies_are_none(self):
-        found = first(self.r.user.get_comments(),
-                      lambda item: isinstance(item, Comment))
-        self.assertTrue(found is not None)
-        self.assertEqual(found._replies, None)
+def test_inbox_comment_replies_are_none():
+    found = first(R.get_inbox(), lambda item: isinstance(item, Comment))
+    assert found is not None
+    assert found._replies is None
+
+
+def test_spambox_comments_replies_are_none():
+    found = first(R.get_subreddit(SR).get_spam(),
+                  lambda item: isinstance(item, Comment))
+    assert found is not None
+    assert found._replies is None
+
+
+def test_user_comment_replies_are_none():
+    found = first(R.user.get_comments(),
+                  lambda item: isinstance(item, Comment))
+    assert found is not None
+    assert found._replies is None

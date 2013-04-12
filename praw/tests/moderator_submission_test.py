@@ -16,31 +16,30 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
 from six import next as six_next
 
-from helper import AuthenticatedHelper, first
+from helper import configure, first, R, SR
+
+SUBREDDIT = R.get_subreddit(SR)
 
 
-class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
+def setup_function(function):
+    configure()
 
-    def test_approve(self):
-        submission = six_next(self.subreddit.get_spam())
-        if not submission:
-            self.fail('Could not find a submission to approve.')
-        submission.approve()
-        found = first(self.subreddit.get_new(),
-                      lambda approved: approved.id == submission.id)
-        self.assertTrue(found is not None)
 
-    def test_remove(self):
-        submission = six_next(self.subreddit.get_new())
-        if not submission:
-            self.fail('Could not find a submission to remove.')
-        submission.remove()
-        found = first(self.subreddit.get_spam(),
-                      lambda removed: removed.id == submission.id)
-        self.assertTrue(found is not None)
+def test_approve():
+    submission = six_next(SUBREDDIT.get_spam())
+    assert submission
+    submission.approve()
+    found = first(SUBREDDIT.get_new(),
+                  lambda approved: approved.id == submission.id)
+    assert found is not None
+
+
+def test_remove():
+    submission = six_next(SUBREDDIT.get_new())
+    assert submission
+    submission.remove()
+    found = first(SUBREDDIT.get_spam(),
+                  lambda removed: removed.id == submission.id)
+    assert found is not None

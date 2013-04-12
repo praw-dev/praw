@@ -16,36 +16,37 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
+import pytest
 import uuid
 
-from helper import AuthenticatedHelper, first
+from helper import configure, first, R, SR
 from praw import errors
 
 
-class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
+def setup_function(function):
+    configure()
 
-    def test_create_duplicate(self):
-        found = first(self.r.user.get_submitted(),
-                      lambda item: not item.is_self)
-        self.assertTrue(found is not None)
-        self.assertRaises(errors.AlreadySubmitted, self.r.submit, self.sr,
-                          found.title, url=found.url)
 
-    def test_create_link_through_subreddit(self):
-        unique = uuid.uuid4()
-        title = 'Test Link: %s' % unique
-        url = 'http://bryceboe.com/?bleh=%s' % unique
-        subreddit = self.r.get_subreddit(self.sr)
-        submission = subreddit.submit(title, url=url)
-        self.assertEqual(submission.title, title)
-        self.assertEqual(submission.url, url)
+def test_create_duplicate():
+    found = first(R.user.get_submitted(), lambda item: not item.is_self)
+    assert found is not None
+    with pytest.raises(errors.AlreadySubmitted):
+        R.submit(SR, found.title, url=found.url)
 
-    def test_create_self_and_verify(self):
-        title = 'Test Self: %s' % uuid.uuid4()
-        content = 'BODY'
-        submission = self.r.submit(self.sr, title, text=content)
-        self.assertEqual(submission.title, title)
-        self.assertEqual(submission.selftext, content)
+
+def test_create_link_through_subreddit():
+    unique = uuid.uuid4()
+    title = 'Test Link: %s' % unique
+    url = 'http://bryceboe.com/?bleh=%s' % unique
+    subreddit = R.get_subreddit(SR)
+    submission = subreddit.submit(title, url=url)
+    assert submission.title == title
+    assert submission.url == url
+
+
+def test_create_self_and_verify():
+    title = 'Test Self: %s' % uuid.uuid4()
+    content = 'BODY'
+    submission = R.submit(SR, title, text=content)
+    assert submission.title == title
+    assert submission.selftext == content

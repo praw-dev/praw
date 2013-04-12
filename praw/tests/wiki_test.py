@@ -17,33 +17,35 @@
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
 from six import text_type
-import unittest
 import uuid
 
-from helper import BasicHelper
+from helper import configure, disable_cache, R, SR, UN
 
 
-class WikiTests(unittest.TestCase, BasicHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
+SUBREDDIT = R.get_subreddit(SR)
 
-    def test_edit_wiki_page(self):
-        self.r.login(self.un, '1111')
-        page = self.subreddit.get_wiki_page('test')
-        content = 'Body: {0}'.format(uuid.uuid4())
-        page.edit(content)
-        self.disable_cache()
-        page = self.subreddit.get_wiki_page('test')
-        self.assertEqual(content, page.content_md)
 
-    def test_get_wiki_page(self):
-        self.assertEqual(
-            'ucsantabarbara:index',
-            text_type(self.r.get_wiki_page('ucsantabarbara', 'index')))
+def setup_function(function):
+    configure()
 
-    def test_get_wiki_pages(self):
-        retval = self.subreddit.get_wiki_pages()
-        self.assertTrue(len(retval) > 0)
-        tmp = self.subreddit.get_wiki_page(retval[0].page).content_md
-        self.assertEqual(retval[0].content_md, tmp)
+
+def test_edit_wiki_page():
+    R.login(UN, '1111')
+    page = SUBREDDIT.get_wiki_page('test')
+    content = 'Body: {0}'.format(uuid.uuid4())
+    page.edit(content)
+    disable_cache()
+    page = SUBREDDIT.get_wiki_page('test')
+    assert content == page.content_md
+
+
+def test_get_wiki_page():
+    assert ('ucsantabarbara:index'
+            == text_type(R.get_wiki_page('ucsantabarbara', 'index')))
+
+
+def test_get_wiki_pages():
+    retval = SUBREDDIT.get_wiki_pages()
+    assert len(retval) > 0
+    tmp = SUBREDDIT.get_wiki_page(retval[0].page).content_md
+    assert retval[0].content_md == tmp
