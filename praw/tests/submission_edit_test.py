@@ -18,10 +18,7 @@ import pytest
 from six import next as six_next
 from requests.exceptions import HTTPError
 
-from helper import configure, disable_cache, first, R, SR
-
-
-SUBREDDIT = R.get_subreddit(SR)
+from helper import configure, disable_cache, first, R, SUBREDDIT
 
 
 def setup_function(function):

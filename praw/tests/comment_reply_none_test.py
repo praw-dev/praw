@@ -16,7 +16,7 @@
 
 from six import next as six_next
 
-from helper import configure, first, R, SR
+from helper import configure, first, R, SUBREDDIT
 from praw.objects import Comment
 
 
@@ -37,8 +37,7 @@ def test_inbox_comment_replies_are_none():
 
 
 def test_spambox_comments_replies_are_none():
-    found = first(R.get_subreddit(SR).get_spam(),
-                  lambda item: isinstance(item, Comment))
+    found = first(SUBREDDIT.get_spam(), lambda item: isinstance(item, Comment))
     assert found is not None
     assert found._replies is None
 

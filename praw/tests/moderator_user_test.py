@@ -17,10 +17,9 @@
 import pytest
 from six import text_type
 
-from helper import configure, disable_cache, USER_AGENT, R, SR
+from helper import configure, disable_cache, USER_AGENT, R, SR, SUBREDDIT
 from praw import errors, Reddit
 
-SUBREDDIT = R.get_subreddit(SR)
 OTHER = R.get_redditor('pyapitestuser3', fetch=True)
 
 

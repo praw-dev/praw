@@ -17,7 +17,7 @@
 import uuid
 from six import next as six_next
 
-from helper import configure, first, R, SR
+from helper import configure, first, SUBREDDIT
 
 
 def setup_function(function):
@@ -25,10 +25,9 @@ def setup_function(function):
 
 
 def test_add_comment_and_verify():
-    subreddit = R.get_subreddit(SR)
     text = 'Unique comment: %s' % uuid.uuid4()
     # pylint: disable-msg=E1101
-    submission = six_next(subreddit.get_new())
+    submission = six_next(SUBREDDIT.get_new())
     # pylint: enable-msg=E1101
     comment = submission.add_comment(text)
     assert comment.submission == submission
@@ -36,9 +35,8 @@ def test_add_comment_and_verify():
 
 
 def test_add_reply_and_verify():
-    subreddit = R.get_subreddit(SR)
     text = 'Unique reply: %s' % uuid.uuid4()
-    found = first(subreddit.get_new(),
+    found = first(SUBREDDIT.get_new(),
                   lambda submission: submission.num_comments > 0)
     assert found is not None
     comment = found.comments[0]

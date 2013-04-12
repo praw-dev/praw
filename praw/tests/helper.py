@@ -103,6 +103,7 @@ def configure():
 USER_AGENT = 'PRAW_test_suite'
 R = Reddit(USER_AGENT, disable_update_check=True)
 SR = 'reddit_api_test'
+SUBREDDIT = R.get_subreddit(SR)
 PRIV_SR = 'reddit_api_test_priv'
 UN = 'PyAPITestUser2'
 OTHER_USER_NAME = 'PyAPITestUser3'

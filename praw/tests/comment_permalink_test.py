@@ -16,7 +16,7 @@
 
 from six import next as six_next
 
-from helper import configure, first, R, SR
+from helper import configure, first, R, SUBREDDIT
 from praw.objects import Comment
 
 
@@ -36,6 +36,5 @@ def test_user_comments_permalink():
 
 
 def test_get_comments_permalink():
-    sub = R.get_subreddit(SR)
-    item = six_next(sub.get_comments())
+    item = six_next(SUBREDDIT.get_comments())
     assert item.id in item.permalink

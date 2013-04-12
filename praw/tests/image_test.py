@@ -21,13 +21,12 @@ import uuid
 
 from six import text_type
 
-from helper import configure, R, reddit_only, SR
+from helper import configure, R, reddit_only, SUBREDDIT
 from praw import errors
 
 
 TEST_DIR = os.path.dirname(sys.modules[__name__].__file__)
 IMAGE_PATH = os.path.join(TEST_DIR, 'files', '{0}')
-SUBREDDIT = R.get_subreddit(SR)
 
 
 def setup_function(function):

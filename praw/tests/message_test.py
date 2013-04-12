@@ -19,7 +19,7 @@ import uuid
 from six import next as six_next
 
 from helper import (configure, first, INVALID_USER_NAME, OTHER_USER_NAME,
-                    USER_AGENT, R, SR)
+                    USER_AGENT, R, SUBREDDIT)
 from praw import errors, Reddit
 from praw.objects import Message
 
@@ -71,7 +71,7 @@ def test_mark_multiple_as_read():
 
 def test_mod_mail_send():
     subject = 'Unique message: %s' % uuid.uuid4()
-    R.get_subreddit(SR).send_message(subject, 'Content')
+    SUBREDDIT.send_message(subject, 'Content')
     found = first(R.get_mod_mail(), lambda msg: msg.subject == subject)
     assert found is not None
 

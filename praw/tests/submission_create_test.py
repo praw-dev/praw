@@ -17,7 +17,7 @@
 import pytest
 import uuid
 
-from helper import configure, first, R, SR
+from helper import configure, first, R, SR, SUBREDDIT
 from praw import errors
 
 
@@ -36,8 +36,7 @@ def test_create_link_through_subreddit():
     unique = uuid.uuid4()
     title = 'Test Link: %s' % unique
     url = 'http://bryceboe.com/?bleh=%s' % unique
-    subreddit = R.get_subreddit(SR)
-    submission = subreddit.submit(title, url=url)
+    submission = SUBREDDIT.submit(title, url=url)
     assert submission.title == title
     assert submission.url == url
 

@@ -19,7 +19,7 @@ from __future__ import unicode_literals
 import uuid
 from six import next as six_next, text_type
 
-from helper import configure, R, SR
+from helper import configure, R, SR, SUBREDDIT
 
 
 def setup_function(function):
@@ -37,7 +37,7 @@ def test_author_encoding():
 
 
 def test_unicode_comment():
-    sub = six_next(R.get_subreddit(SR).get_new())
+    sub = six_next(SUBREDDIT.get_new())
     text = 'Have some unicode: (\xd0, \xdd)'
     comment = sub.add_comment(text)
     assert text == comment.body
