@@ -14,62 +14,69 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
 from six import next as six_next
 
-from helper import AuthenticatedHelper
+from helper import configure, delay, OTHER_USER_ID, OTHER_USER_NAME, R
 from praw.objects import LoggedInRedditor
 
 
-class RedditorTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.other_user = self.r.get_redditor(self.other_user_name)
+OTHER_USER = R.get_redditor(OTHER_USER_NAME)
 
-    def test_add_remove_friends(self):
-        def verify_add():
-            self.other_user.friend()
-            self.assertTrue(self.other_user in self.r.user.get_friends())
 
-        def verify_remove():
-            self.other_user.unfriend()
-            self.assertTrue(self.other_user not in self.r.user.get_friends())
+def setup_function(function):
+    configure()
 
-        if self.other_user in self.r.user.get_friends():
-            verify_remove()
-            verify_add()
-        else:
-            verify_add()
-            verify_remove()
 
-    def test_duplicate_login(self):
-        self.r.login(self.other_user_name, '1111')
+def test_add_remove_friends():
+    def verify_add():
+        OTHER_USER.friend()
+        assert OTHER_USER in R.user.get_friends()
 
-    def test_get_disliked(self):
-        # Pulls from get_liked. Problem here may come from get_liked
-        item = six_next(self.r.user.get_liked())
-        item.downvote()
-        self.delay()  # The queue needs to be processed
-        self.assertFalse(item in list(self.r.user.get_liked()))
+    def verify_remove():
+        OTHER_USER.unfriend()
+        assert OTHER_USER not in R.user.get_friends()
 
-    def test_get_hidden(self):
-        submission = six_next(self.r.user.get_submitted())
-        submission.hide()
-        self.delay()  # The queue needs to be processed
-        item = six_next(self.r.user.get_hidden())
-        item.unhide()
-        self.delay()
-        self.assertFalse(item in list(self.r.user.get_hidden()))
+    if OTHER_USER in R.user.get_friends():
+        verify_remove()
+        verify_add()
+    else:
+        verify_add()
+        verify_remove()
 
-    def test_get_liked(self):
-        # Pulls from get_disliked. Problem here may come from get_disliked
-        item = six_next(self.r.user.get_disliked())
-        item.upvote()
-        self.delay()  # The queue needs to be processed
-        self.assertFalse(item in list(self.r.user.get_disliked()))
 
-    def test_get_redditor(self):
-        self.assertEqual(self.other_user_id, self.other_user.id)
+def test_duplicate_login():
+    R.login(OTHER_USER_NAME, '1111')
 
-    def test_user_set_on_login(self):
-        self.assertTrue(isinstance(self.r.user, LoggedInRedditor))
+
+def test_get_disliked():
+    # Pulls from get_liked. Problem here may come from get_liked
+    item = six_next(R.user.get_liked())
+    item.downvote()
+    delay()  # The queue needs to be processed
+    assert item not in list(R.user.get_liked())
+
+
+def test_get_hidden():
+    submission = six_next(R.user.get_submitted())
+    submission.hide()
+    delay()  # The queue needs to be processed
+    item = six_next(R.user.get_hidden())
+    item.unhide()
+    delay()
+    assert item not in list(R.user.get_hidden())
+
+
+def test_get_liked():
+    # Pulls from get_disliked. Problem here may come from get_disliked
+    item = six_next(R.user.get_disliked())
+    item.upvote()
+    delay()  # The queue needs to be processed
+    assert item not in list(R.user.get_disliked())
+
+
+def test_get_redditor():
+    assert OTHER_USER_ID == OTHER_USER.id
+
+
+def test_user_set_on_login():
+    assert isinstance(R.user, LoggedInRedditor)

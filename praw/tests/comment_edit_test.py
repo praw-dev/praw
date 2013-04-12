@@ -14,18 +14,14 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
 from six import next as six_next
 
-from helper import AuthenticatedHelper
+from helper import configure, R
 
 
-class CommentEditTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    def test_reply(self):
-        comment = six_next(self.r.user.get_comments())
-        new_body = '%s\n\n+Edit Text' % comment.body
-        comment = comment.edit(new_body)
-        self.assertEqual(comment.body, new_body)
+def test_reply():
+    configure()
+    comment = six_next(R.user.get_comments())
+    new_body = '%s\n\n+Edit Text' % comment.body
+    comment = comment.edit(new_body)
+    assert comment.body == new_body

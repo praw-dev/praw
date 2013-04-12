@@ -14,66 +14,69 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
+import pytest
 from six import next as six_next
 from requests.exceptions import HTTPError
 
-from helper import AuthenticatedHelper, first
+from helper import configure, disable_cache, first, R, SR
 
 
-class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
+SUBREDDIT = R.get_subreddit(SR)
 
-    def test_distinguish_and_undistinguish(self):
-        def verify_distinguish(submission):
-            submission.distinguish()
-            submission.refresh()
-            self.assertTrue(submission.distinguished)
 
-        def verify_undistinguish(submission):
-            submission.undistinguish()
-            submission.refresh()
-            self.assertFalse(submission.distinguished)
+def setup_function(function):
+    configure()
 
-        self.disable_cache()
-        submission = six_next(self.subreddit.get_top())
-        if submission.distinguished:
-            verify_undistinguish(submission)
-            verify_distinguish(submission)
-        else:
-            verify_distinguish(submission)
-            verify_undistinguish(submission)
 
-    def test_edit_link(self):
-        found = first(self.r.user.get_submitted(),
-                      lambda item: not item.is_self)
-        self.assertTrue(found is not None)
-        self.assertRaises(HTTPError, found.edit, 'text')
+def test_distinguish_and_undistinguish():
+    def verify_distinguish(submission):
+        submission.distinguish()
+        submission.refresh()
+        assert submission.distinguished
 
-    def test_edit_self(self):
-        found = first(self.r.user.get_submitted(),
-                      lambda item: item.is_self)
-        self.assertTrue(found is not None)
-        new_body = '%s\n\n+Edit Text' % found.selftext
-        found = found.edit(new_body)
-        self.assertEqual(found.selftext, new_body)
+    def verify_undistinguish(submission):
+        submission.undistinguish()
+        submission.refresh()
+        assert not submission.distinguished
 
-    def test_mark_as_nsfw(self):
-        self.disable_cache()
-        found = first(self.subreddit.get_top(),
-                      lambda item: not item.over_18)
-        self.assertTrue(found is not None)
-        found.mark_as_nsfw()
-        found.refresh()
-        self.assertTrue(found.over_18)
+    disable_cache()
+    submission = six_next(SUBREDDIT.get_top())
+    if submission.distinguished:
+        verify_undistinguish(submission)
+        verify_distinguish(submission)
+    else:
+        verify_distinguish(submission)
+        verify_undistinguish(submission)
 
-    def test_unmark_as_nsfw(self):
-        self.disable_cache()
-        found = first(self.subreddit.get_top(),
-                      lambda item: item.over_18)
-        self.assertTrue(found is not None)
-        found.unmark_as_nsfw()
-        found.refresh()
-        self.assertFalse(found.over_18)
+
+def test_edit_link():
+    found = first(R.user.get_submitted(), lambda item: not item.is_self)
+    assert found is not None
+    with pytest.raises(HTTPError):
+        found.edit('text')
+
+
+def test_edit_self():
+    found = first(R.user.get_submitted(), lambda item: item.is_self)
+    assert found is not None
+    new_body = '%s\n\n+Edit Text' % found.selftext
+    found = found.edit(new_body)
+    assert found.selftext == new_body
+
+
+def test_mark_as_nsfw():
+    disable_cache()
+    found = first(SUBREDDIT.get_top(), lambda item: not item.over_18)
+    assert found is not None
+    found.mark_as_nsfw()
+    found.refresh()
+    assert found.over_18
+
+
+def test_unmark_as_nsfw():
+    disable_cache()
+    found = first(SUBREDDIT.get_top(), lambda item: item.over_18)
+    assert found is not None
+    found.unmark_as_nsfw()
+    found.refresh()
+    assert not found.over_18

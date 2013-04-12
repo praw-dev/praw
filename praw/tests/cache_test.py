@@ -14,47 +14,48 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
 import uuid
 from six import next as six_next
 
-from helper import AuthenticatedHelper
+from helper import configure, disable_cache, R, SR
 
 
-class CacheTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
+def setup_function(function):
+    configure()
 
-    def test_cache(self):
-        subreddit = self.r.get_subreddit(self.sr)
-        title = 'Test Cache: %s' % uuid.uuid4()
-        body = "BODY"
-        original_listing = list(subreddit.get_new(limit=5))
-        subreddit.submit(title, body)
-        new_listing = list(subreddit.get_new(limit=5))
-        self.assertEqual(original_listing, new_listing)
-        self.disable_cache()
-        no_cache_listing = list(subreddit.get_new(limit=5))
-        self.assertNotEqual(original_listing, no_cache_listing)
 
-    def test_refresh_subreddit(self):
-        self.disable_cache()
-        subreddit = self.r.get_subreddit(self.sr)
-        new_description = 'Description %s' % uuid.uuid4()
-        subreddit.update_settings(public_description=new_description)
-        self.assertNotEqual(new_description, subreddit.public_description)
-        subreddit.refresh()
-        self.assertEqual(new_description, subreddit.public_description)
+def test_cache():
+    subreddit = R.get_subreddit(SR)
+    title = 'Test Cache: %s' % uuid.uuid4()
+    body = "BODY"
+    original_listing = list(subreddit.get_new(limit=5))
+    subreddit.submit(title, body)
+    new_listing = list(subreddit.get_new(limit=5))
+    assert original_listing == new_listing
+    disable_cache()
+    no_cache_listing = list(subreddit.get_new(limit=5))
+    assert original_listing != no_cache_listing
 
-    def test_refresh_submission(self):
-        self.disable_cache()
-        subreddit = self.r.get_subreddit(self.sr)
-        submission = six_next(subreddit.get_top())
-        same_submission = self.r.get_submission(submission_id=submission.id)
-        if submission.likes:
-            submission.downvote()
-        else:
-            submission.upvote()
-        self.assertEqual(submission.likes, same_submission.likes)
-        submission.refresh()
-        self.assertNotEqual(submission.likes, same_submission.likes)
+
+def test_refresh_subreddit():
+    disable_cache()
+    subreddit = R.get_subreddit(SR)
+    new_description = 'Description %s' % uuid.uuid4()
+    subreddit.update_settings(public_description=new_description)
+    assert new_description != subreddit.public_description
+    subreddit.refresh()
+    assert new_description == subreddit.public_description
+
+
+def test_refresh_submission():
+    disable_cache()
+    subreddit = R.get_subreddit(SR)
+    submission = six_next(subreddit.get_top())
+    same_submission = R.get_submission(submission_id=submission.id)
+    if submission.likes:
+        submission.downvote()
+    else:
+        submission.upvote()
+    assert submission.likes == same_submission.likes
+    submission.refresh()
+    assert submission.likes != same_submission.likes

@@ -14,28 +14,28 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
 from six import next as six_next
 
-from helper import AuthenticatedHelper, first
+from helper import configure, first, R, SR
 from praw.objects import Comment
 
 
-class CommentPermalinkTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
+def setup_function(function):
+    configure()
 
-    def test_inbox_permalink(self):
-        found = first(self.r.get_inbox(),
-                      lambda item: isinstance(item, Comment))
-        self.assertTrue(found is not None)
-        self.assertTrue(found.id in found.permalink)
 
-    def test_user_comments_permalink(self):
-        item = six_next(self.r.user.get_comments())
-        self.assertTrue(item.id in item.permalink)
+def test_inbox_permalink():
+    found = first(R.get_inbox(), lambda item: isinstance(item, Comment))
+    assert found is not None
+    assert found.id in found.permalink
 
-    def test_get_comments_permalink(self):
-        sub = self.r.get_subreddit(self.sr)
-        item = six_next(sub.get_comments())
-        self.assertTrue(item.id in item.permalink)
+
+def test_user_comments_permalink():
+    item = six_next(R.user.get_comments())
+    assert item.id in item.permalink
+
+
+def test_get_comments_permalink():
+    sub = R.get_subreddit(SR)
+    item = six_next(sub.get_comments())
+    assert item.id in item.permalink

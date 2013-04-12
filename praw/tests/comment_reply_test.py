@@ -14,33 +14,34 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
 import uuid
 from six import next as six_next
 
-from helper import AuthenticatedHelper, first
+from helper import configure, first, R, SR
 
 
-class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
+def setup_function(function):
+    configure()
 
-    def test_add_comment_and_verify(self):
-        text = 'Unique comment: %s' % uuid.uuid4()
-        # pylint: disable-msg=E1101
-        submission = six_next(self.subreddit.get_new())
-        # pylint: enable-msg=E1101
-        comment = submission.add_comment(text)
-        self.assertEqual(comment.submission, submission)
-        self.assertEqual(comment.body, text)
 
-    def test_add_reply_and_verify(self):
-        text = 'Unique reply: %s' % uuid.uuid4()
-        found = first(self.subreddit.get_new(),
-                      lambda submission: submission.num_comments > 0)
-        self.assertTrue(found is not None)
-        comment = found.comments[0]
-        reply = comment.reply(text)
-        self.assertEqual(reply.parent_id, comment.fullname)
-        self.assertEqual(reply.body, text)
+def test_add_comment_and_verify():
+    subreddit = R.get_subreddit(SR)
+    text = 'Unique comment: %s' % uuid.uuid4()
+    # pylint: disable-msg=E1101
+    submission = six_next(subreddit.get_new())
+    # pylint: enable-msg=E1101
+    comment = submission.add_comment(text)
+    assert comment.submission == submission
+    assert comment.body == text
+
+
+def test_add_reply_and_verify():
+    subreddit = R.get_subreddit(SR)
+    text = 'Unique reply: %s' % uuid.uuid4()
+    found = first(subreddit.get_new(),
+                  lambda submission: submission.num_comments > 0)
+    assert found is not None
+    comment = found.comments[0]
+    reply = comment.reply(text)
+    assert reply.parent_id == comment.fullname
+    assert reply.body == text

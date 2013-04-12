@@ -27,8 +27,6 @@ from six import next as six_next
 
 from praw import Reddit
 
-USER_AGENT = 'PRAW_test_suite'
-
 
 def first(seq, predicate):
     return six_next((x for x in seq if predicate(x)), None)
@@ -46,31 +44,28 @@ def flair_diff(root, other):
 
 def interactive_only(function):
     @wraps(function)
-    def interactive_only_function(obj):
+    def interactive_only_function():
         if os.getenv('INTERACTIVE'):
-            return function(obj)
-        print('Passing interactive only test: {0}.{1}'
-              .format(obj.__class__.__name__, function.__name__))
+            return function()
+        print('Passing interactive only test: {0}'.format(function.__name__))
     return interactive_only_function
 
 
 def local_only(function):
     @wraps(function)
-    def local_only_function(obj):
-        if not obj.r.config.is_reddit:
-            return function(obj)
-        print('Passing local only test: {0}.{1}'
-              .format(obj.__class__.__name__, function.__name__))
+    def local_only_function():
+        if not R.config.is_reddit:
+            return function()
+        print('Passing local only test: {0}'.format(function.__name__))
     return local_only_function
 
 
 def reddit_only(function):
     @wraps(function)
-    def reddit_only_function(obj):
-        if obj.r.config.is_reddit:
-            return function(obj)
-        print('Passing reddit only test: {0}.{1}'
-              .format(obj.__class__.__name__, function.__name__))
+    def reddit_only_function():
+        if R.config.is_reddit:
+            return function()
+        print('Passing reddit only test: {0}'.format(function.__name__))
     return reddit_only_function
 
 
@@ -85,58 +80,58 @@ def prompt(msg):
     return response.strip()
 
 
-class BasicHelper(object):
-    def configure(self):
-        self.r = Reddit(USER_AGENT, disable_update_check=True)
-        self.sr = 'reddit_api_test'
-        self.priv_sr = 'reddit_api_test_priv'
-        self.un = 'PyAPITestUser2'
-        self.other_user_name = 'PyAPITestUser3'
-        self.invalid_user_name = 'PyAPITestInvalid'
-
-        if self.r.config.is_reddit:
-            self.comment_url = self.url('r/redditdev/comments/dtg4j/')
-            self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
-            self.link_url_link = 'http://imgur.com/Vr8ZZ'
-            self.more_comments_url = self.url('/r/redditdev/comments/dqkfz/')
-            self.other_user_id = '6c1xj'
-            self.priv_submission_id = '16kbb7'
-            self.refresh_token = {
-                'edit':            'mFB93g1nlgt57gd2ch9xy8815ng',
-                'identity':        'pwKb6vuFpbqTQjLPTBK_4LW0x3U',
-                'modconfig':       'm8em73vTHVaA05_DX-m0RHVBXdU',
-                'modflair':        'Zt7sl88AKsljl7VS19gifVHNBaU',
-                'modlog':          'Ql-qe7ad56-5UsIP4GN14__t_aY',
-                'modposts':        'fdbclNlJorCA_GcD42JLxhNM6mc',
-                'mysubreddits':    'HCnSeHp9Rw3fdMd9SkEOdNuys2c',
-                'privatemessages': 'pu7vyu-RtB5Z2LkmHJnwKxoStqw',
-                'read':            'qa43Mc1v9RjsJCm_tjEUFrN27IU',
-                'submit':          'DSJdhcEd9vkwHWqRenDiY042iW0',
-                'subscribe':       '8xgyDmQm9FOfOmKnhGcA2bvfywg',
-                'vote':            'odS8Wkmgt_kgnUiYfvK6v4u1sAQ'}
-            self.submission_edit_id = '16i92b'
-        else:
-            self.comment_url = self.url('/r/reddit_test6/comments/y/')
-            self.link_url = self.url('/r/reddit_test6/comments/y/')
-            self.link_url_link = 'http://google.com/?q=29.9093488449'
-            self.more_comments_url = self.url('/r/reddit_test6/comments/y/')
-            self.other_user_id = 'pk'
-
-    def delay(self, amount=None):
-        if amount:
-            time.sleep(amount)
-        elif self.r.config.api_request_delay == 0:
-            time.sleep(0.1)
-
-    def disable_cache(self):
-        self.r.config.cache_timeout = 0
-
-    def url(self, path):
-        # pylint: disable-msg=W0212
-        return urljoin(self.r.config._site_url, path)
+def delay(amount=None):
+    if amount:
+        time.sleep(amount)
+    elif R.config.api_request_delay == 0:
+        time.sleep(0.1)
 
 
-class AuthenticatedHelper(BasicHelper):
-    def configure(self):
-        super(AuthenticatedHelper, self).configure()
-        self.r.login(self.un, '1111')
+def disable_cache():
+    R.config.cache_timeout = 0
+
+
+def url(path):
+    # pylint: disable-msg=W0212
+    return urljoin(R.config._site_url, path)
+
+
+def configure():
+    R.login(UN, '1111')
+
+
+USER_AGENT = 'PRAW_test_suite'
+R = Reddit(USER_AGENT, disable_update_check=True)
+SR = 'reddit_api_test'
+PRIV_SR = 'reddit_api_test_priv'
+UN = 'PyAPITestUser2'
+OTHER_USER_NAME = 'PyAPITestUser3'
+INVALID_USER_NAME = 'PyAPITestInvalid'
+
+if R.config.is_reddit:
+    COMMENT_URL = url('r/redditdev/comments/dtg4j/')
+    LINK_URL = url('/r/UCSantaBarbara/comments/m77nc/')
+    LINK_URL_LINK = 'http://imgur.com/Vr8ZZ'
+    MORE_COMMENTS_URL = url('/r/redditdev/comments/dqkfz/')
+    OTHER_USER_ID = '6c1xj'
+    PRIV_SUBMISSION_ID = '16kbb7'
+    REFRESH_TOKEN = {
+        'edit':            'mFB93g1nlgt57gd2ch9xy8815ng',
+        'identity':        'pwKb6vuFpbqTQjLPTBK_4LW0x3U',
+        'modconfig':       'm8em73vTHVaA05_DX-m0RHVBXdU',
+        'modflair':        'Zt7sl88AKsljl7VS19gifVHNBaU',
+        'modlog':          'Ql-qe7ad56-5UsIP4GN14__t_aY',
+        'modposts':        'fdbclNlJorCA_GcD42JLxhNM6mc',
+        'mysubreddits':    'HCnSeHp9Rw3fdMd9SkEOdNuys2c',
+        'privatemessages': 'pu7vyu-RtB5Z2LkmHJnwKxoStqw',
+        'read':            'qa43Mc1v9RjsJCm_tjEUFrN27IU',
+        'submit':          'DSJdhcEd9vkwHWqRenDiY042iW0',
+        'subscribe':       '8xgyDmQm9FOfOmKnhGcA2bvfywg',
+        'vote':            'odS8Wkmgt_kgnUiYfvK6v4u1sAQ'}
+    SUBMISSION_EDIT_ID = '16i92b'
+else:
+    COMMENT_URL = url('/r/reddit_test6/comments/y/')
+    LINK_URL = url('/r/reddit_test6/comments/y/')
+    LINK_URL_LINK = 'http://google.com/?q=29.9093488449'
+    MORE_COMMENTS_URL = url('/r/reddit_test6/comments/y/')
+    OTHER_USER_ID = 'pk'

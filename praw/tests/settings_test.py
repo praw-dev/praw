@@ -14,52 +14,53 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-import unittest
 import uuid
 
-from helper import AuthenticatedHelper
+from helper import configure, R, SR
 
 
-class SettingsTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
+SUBREDDIT = R.get_subreddit(SR)
 
-    def test_set_settings(self):
-        title = 'Reddit API Test %s' % uuid.uuid4()
-        self.subreddit.set_settings(title)
-        self.assertEqual(self.subreddit.get_settings()['title'], title)
 
-    def test_set_stylesheet(self):
-        stylesheet = ('div.titlebox span.number:after {\ncontent: " %s"\n' %
-                      uuid.uuid4())
-        self.subreddit.set_stylesheet(stylesheet)
-        self.assertEqual(stylesheet,
-                         self.subreddit.get_stylesheet()['stylesheet'])
+def setup_function(function):
+    configure()
 
-    def test_update_settings_description(self):
-        self.maxDiff = None
-        settings = self.subreddit.get_settings()
-        settings['description'] = 'Description %s' % uuid.uuid4()
-        self.subreddit.update_settings(description=settings['description'])
-        new = self.subreddit.get_settings()
-        # The id should change, but nothing else
-        key = 'prev_description_id'
-        self.assertNotEqual(settings[key], new[key])
-        del settings[key]
-        del new[key]
-        self.assertEqual(settings, new)
 
-    def test_update_settings_public_description(self):
-        self.maxDiff = None
-        settings = self.subreddit.get_settings()
-        settings['public_description'] = 'Description %s' % uuid.uuid4()
-        self.subreddit.update_settings(
-            public_description=settings['public_description'])
-        new = self.subreddit.get_settings()
-        # The id should change, but nothing else
-        key = 'prev_public_description_id'
-        self.assertNotEqual(settings[key], new[key])
-        del settings[key]
-        del new[key]
-        self.assertEqual(settings, new)
+def test_set_settings():
+    title = 'Reddit API Test %s' % uuid.uuid4()
+    SUBREDDIT.set_settings(title)
+    assert SUBREDDIT.get_settings()['title'] == title
+
+
+def test_set_stylesheet():
+    stylesheet = ('div.titlebox span.number:after {\ncontent: " %s"\n' %
+                  uuid.uuid4())
+    SUBREDDIT.set_stylesheet(stylesheet)
+    assert stylesheet == SUBREDDIT.get_stylesheet()['stylesheet']
+
+
+def test_update_settings_description():
+    settings = SUBREDDIT.get_settings()
+    settings['description'] = 'Description %s' % uuid.uuid4()
+    SUBREDDIT.update_settings(description=settings['description'])
+    new = SUBREDDIT.get_settings()
+    # The id should change, but nothing else
+    key = 'prev_description_id'
+    assert settings[key] != new[key]
+    del settings[key]
+    del new[key]
+    assert settings == new
+
+
+def test_update_settings_public_description():
+    settings = SUBREDDIT.get_settings()
+    settings['public_description'] = 'Description %s' % uuid.uuid4()
+    SUBREDDIT.update_settings(
+        public_description=settings['public_description'])
+    new = SUBREDDIT.get_settings()
+    # The id should change, but nothing else
+    key = 'prev_public_description_id'
+    assert settings[key] != new[key]
+    del settings[key]
+    del new[key]
+    assert settings == new
