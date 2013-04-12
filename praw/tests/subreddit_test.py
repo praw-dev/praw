@@ -19,10 +19,7 @@
 import pytest
 from six import text_type
 
-from helper import configure, first, R, reddit_only, SR
-
-
-SUBREDDIT = R.get_subreddit(SR)
+from helper import configure, first, R, reddit_only, SR, SUBREDDIT
 
 
 def setup_function(function):

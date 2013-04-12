@@ -18,10 +18,7 @@
 
 import uuid
 
-from helper import configure, R, SR
-
-
-SUBREDDIT = R.get_subreddit(SR)
+from helper import configure, SUBREDDIT
 
 
 def setup_function(function):

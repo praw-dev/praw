@@ -16,10 +16,7 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-from helper import configure, OTHER_USER_NAME, R, SR
-
-
-SUBREDDIT = R.get_subreddit(SR)
+from helper import configure, OTHER_USER_NAME, R, SR, SUBREDDIT
 
 
 def setup_function(function):

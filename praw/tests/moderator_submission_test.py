@@ -18,9 +18,7 @@
 
 from six import next as six_next
 
-from helper import configure, first, R, SR
-
-SUBREDDIT = R.get_subreddit(SR)
+from helper import configure, first, SUBREDDIT
 
 
 def setup_function(function):

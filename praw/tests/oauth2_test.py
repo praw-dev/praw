@@ -22,8 +22,8 @@ import pytest
 import os
 
 from helper import (configure, interactive_only, PRIV_SR, PRIV_SUBMISSION_ID,
-                    prompt, reddit_only, REFRESH_TOKEN, SR, SUBMISSION_EDIT_ID,
-                    UN, USER_AGENT)
+                    prompt, reddit_only, REFRESH_TOKEN, SR, SUBREDDIT,
+                    SUBMISSION_EDIT_ID, UN, USER_AGENT)
 from praw import errors, Reddit
 from praw.objects import Submission
 
@@ -102,19 +102,19 @@ def test_scope_identity():
 @reddit_only
 def test_scope_modconfig():
     R.refresh_access_information(REFRESH_TOKEN['modconfig'])
-    R.get_subreddit(SR).set_settings('foobar')
+    SUBREDDIT.set_settings('foobar')
 
 
 @reddit_only
 def test_scope_modflair():
     R.refresh_access_information(REFRESH_TOKEN['modflair'])
-    R.get_subreddit(SR).set_flair(UN, 'foobar')
+    SUBREDDIT.set_flair(UN, 'foobar')
 
 
 @reddit_only
 def test_scope_modlog():
     R.refresh_access_information(REFRESH_TOKEN['modlog'])
-    assert 25 == len(list(R.get_subreddit(SR).get_mod_log()))
+    assert 25 == len(list(SUBREDDIT.get_mod_log()))
 
 
 @reddit_only
@@ -194,7 +194,7 @@ def test_scope_submit():
 @reddit_only
 def test_scope_subscribe():
     R.refresh_access_information(REFRESH_TOKEN['subscribe'])
-    R.get_subreddit(SR).subscribe()
+    SUBREDDIT.subscribe()
 
 
 @reddit_only

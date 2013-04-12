@@ -16,7 +16,7 @@
 
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
-from helper import configure, R, SR
+from helper import configure, SUBREDDIT
 
 
 def setup_function(function):
@@ -24,23 +24,19 @@ def setup_function(function):
 
 
 def test_add_user_template():
-    subreddit = R.get_subreddit(SR)
-    subreddit.add_flair_template('text', 'css', True)
+    SUBREDDIT.add_flair_template('text', 'css', True)
 
 
 def test_add_link_template():
-    subreddit = R.get_subreddit(SR)
-    subreddit.add_flair_template('text', 'css', True, True)
-    subreddit.add_flair_template(text='text', is_link=True)
-    subreddit.add_flair_template(css_class='blah', is_link=True)
-    subreddit.add_flair_template(is_link=True)
+    SUBREDDIT.add_flair_template('text', 'css', True, True)
+    SUBREDDIT.add_flair_template(text='text', is_link=True)
+    SUBREDDIT.add_flair_template(css_class='blah', is_link=True)
+    SUBREDDIT.add_flair_template(is_link=True)
 
 
 def test_clear_user_templates():
-    subreddit = R.get_subreddit(SR)
-    subreddit.clear_flair_templates()
+    SUBREDDIT.clear_flair_templates()
 
 
 def test_clear_link_templates():
-    subreddit = R.get_subreddit(SR)
-    subreddit.clear_flair_templates(True)
+    SUBREDDIT.clear_flair_templates(True)

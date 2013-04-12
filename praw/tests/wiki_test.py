@@ -19,10 +19,7 @@
 from six import text_type
 import uuid
 
-from helper import configure, disable_cache, R, SR, UN
-
-
-SUBREDDIT = R.get_subreddit(SR)
+from helper import configure, disable_cache, R, SUBREDDIT, UN
 
 
 def setup_function(function):
