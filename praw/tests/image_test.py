@@ -107,7 +107,7 @@ def test_upload_jpg_image_named():
     name = text_type(uuid.uuid4())
     assert SUBREDDIT.upload_image(image, name)
     images_json = SUBREDDIT.get_stylesheet()['images']
-    assert (name in text_type(x['name']) for x in images_json)
+    assert any(name in text_type(x['name']) for x in images_json)
 
 
 @reddit_only
@@ -134,4 +134,4 @@ def test_upload_png_image_named():
     name = text_type(uuid.uuid4())
     assert SUBREDDIT.upload_image(image, name)
     images_json = SUBREDDIT.get_stylesheet()['images']
-    assert (name in text_type(x['name']) for x in images_json)
+    assert any(name in text_type(x['name']) for x in images_json)
