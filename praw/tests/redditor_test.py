@@ -12,18 +12,17 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 from six import next as six_next
 
-from helper import configure, delay, OTHER_USER_ID, OTHER_USER_NAME, R
 from praw.objects import LoggedInRedditor
+from praw.tests.helper import (configure, delay, OTHER_USER_ID,
+                               OTHER_USER_NAME, R)
 
 
 OTHER_USER = R.get_redditor(OTHER_USER_NAME)
 
 
-def setup_function(function):
+def setup_function(function):  # pylint: disable-msg=W0613
     configure()
 
 

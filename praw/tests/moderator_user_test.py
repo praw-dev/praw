@@ -12,18 +12,17 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 import pytest
 from six import text_type
 
-from helper import configure, disable_cache, USER_AGENT, R, SR, SUBREDDIT
 from praw import errors, Reddit
+from praw.tests.helper import (configure, disable_cache, USER_AGENT, R, SR,
+                               SUBREDDIT)
 
 OTHER = R.get_redditor('pyapitestuser3', fetch=True)
 
 
-def setup_function(function):
+def setup_function(function):  # pylint: disable-msg=W0613
     configure()
 
 
@@ -49,7 +48,7 @@ def add_remove(add, remove, listing, add_callback=None):
 
 def test_accept_moderator_invite_fail():
     R.login('pyapitestuser3', '1111')
-    with pytest.raises(errors.InvalidInvite):
+    with pytest.raises(errors.InvalidInvite):  # pylint: disable-msg=E1101
         SUBREDDIT.accept_moderator_invite()
 
 
@@ -77,7 +76,7 @@ def test_moderator():
 
 def test_make_moderator_by_name_failure():
     assert R.user in SUBREDDIT.get_moderators()
-    with pytest.raises(errors.AlreadyModerator):
+    with pytest.raises(errors.AlreadyModerator):  # pylint: disable-msg=E1101
         SUBREDDIT.add_moderator(text_type(R.user))
 
 

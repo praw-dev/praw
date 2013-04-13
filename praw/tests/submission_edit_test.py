@@ -12,16 +12,14 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 import pytest
 from six import next as six_next
 from requests.exceptions import HTTPError
 
-from helper import configure, disable_cache, first, R, SUBREDDIT
+from praw.tests.helper import configure, disable_cache, first, R, SUBREDDIT
 
 
-def setup_function(function):
+def setup_function(function):  # pylint: disable-msg=W0613
     configure()
 
 
@@ -49,7 +47,7 @@ def test_distinguish_and_undistinguish():
 def test_edit_link():
     found = first(R.user.get_submitted(), lambda item: not item.is_self)
     assert found is not None
-    with pytest.raises(HTTPError):
+    with pytest.raises(HTTPError):  # pylint: disable-msg=E1101
         found.edit('text')
 
 

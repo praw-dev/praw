@@ -12,28 +12,26 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 from __future__ import unicode_literals
 
 import uuid
 from six import next as six_next, text_type
 
-from helper import configure, R, SR, SUBREDDIT
+from praw.tests.helper import configure, R, SR, SUBREDDIT
 
 
-def setup_function(function):
+def setup_function(function):  # pylint: disable-msg=W0613
     configure()
 
 
 def test_author_encoding():
     # pylint: disable-msg=E1101
-    a1 = six_next(R.get_new()).author
-    a2 = R.get_redditor(text_type(a1))
-    assert a1 == a2
-    s1 = six_next(a1.get_submitted())
-    s2 = six_next(a2.get_submitted())
-    assert s1 == s2
+    author1 = six_next(R.get_new()).author
+    author2 = R.get_redditor(text_type(author1))
+    assert author1 == author2
+    subreddit1 = six_next(author1.get_submitted())
+    subreddit2 = six_next(author2.get_submitted())
+    assert subreddit1 == subreddit2
 
 
 def test_unicode_comment():

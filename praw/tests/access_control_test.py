@@ -12,15 +12,13 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 import pytest
 
-from helper import COMMENT_URL, R, SR, UN, USER_AGENT
 from praw import decorators, errors, Reddit
+from praw.tests.helper import COMMENT_URL, R, SR, UN, USER_AGENT
 
 
-def teardown_function(function):
+def teardown_function(function):  # pylint: disable-msg=W0613
     R.clear_authentication()
 
 
@@ -34,28 +32,31 @@ def test_exception_get_flair_list_unauthenticated():
 
 
 def test_login_or_oauth_required_not_logged_in():
+    # pylint: disable-msg=E1101
     with pytest.raises(errors.LoginOrScopeRequired):
         R.add_flair_template(SR, 'foo')
 
 
 def test_login_or_oauth_required_not_logged_in_mod_func():
+    # pylint: disable-msg=E1101
     with pytest.raises(errors.LoginOrScopeRequired):
         R.get_settings(SR)
 
 
 def test_login_required_not_logged_in():
-    with pytest.raises(errors.LoginRequired):
+    with pytest.raises(errors.LoginRequired):  # pylint: disable-msg=E1101
         R.accept_moderator_invite(SR)
 
 
 def test_login_required_not_logged_in_mod_func():
-    with pytest.raises(errors.LoginRequired):
+    with pytest.raises(errors.LoginRequired):  # pylint: disable-msg=E1101
         R.get_banned(SR)
 
 
 def test_oauth_scope_required():
     R.set_oauth_app_info('dummy_client', 'dummy_secret', 'dummy_url')
     R.set_access_credentials(set('dummy_scope',), 'dummy_token')
+    # pylint: disable-msg=E1101
     with pytest.raises(errors.OAuthScopeRequired):
         R.get_me()
 
@@ -63,6 +64,7 @@ def test_oauth_scope_required():
 def test_moderator_or_oauth_required_loged_in_from_reddit_obj():
     oth = Reddit(USER_AGENT, disable_update_check=True)
     oth.login('PyAPITestUser3', '1111')
+    # pylint: disable-msg=E1101
     with pytest.raises(errors.ModeratorOrScopeRequired):
         oth.get_settings(SR)
 
@@ -71,6 +73,7 @@ def test_moderator_or_oauth_required_loged_in_from_submission_obj():
     oth = Reddit(USER_AGENT, disable_update_check=True)
     oth.login('PyAPITestUser3', '1111')
     submission = oth.get_submission(url=COMMENT_URL)
+    # pylint: disable-msg=E1101
     with pytest.raises(errors.ModeratorOrScopeRequired):
         submission.remove()
 
@@ -79,6 +82,7 @@ def test_moderator_or_oauth_required_loged_in_from_subreddit_obj():
     oth = Reddit(USER_AGENT, disable_update_check=True)
     oth.login('PyAPITestUser3', '1111')
     subreddit = oth.get_subreddit(SR)
+    # pylint: disable-msg=E1101
     with pytest.raises(errors.ModeratorOrScopeRequired):
         subreddit.get_settings()
 
@@ -86,10 +90,11 @@ def test_moderator_or_oauth_required_loged_in_from_subreddit_obj():
 def test_moderator_required_multi():
     R.login(UN, '1111')
     sub = R.get_subreddit('{0}+{1}'.format(SR, 'test'))
+    # pylint: disable-msg=E1101
     with pytest.raises(errors.ModeratorRequired):
         sub.get_mod_queue()
 
 
 def test_require_access_failure():
-    with pytest.raises(TypeError):
+    with pytest.raises(TypeError):  # pylint: disable-msg=E1101
         decorators.restrict_access(scope=None, oauth_only=True)

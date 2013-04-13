@@ -12,30 +12,29 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 from __future__ import print_function
 
 import pytest
 import os
 
-from helper import (configure, interactive_only, PRIV_SR, PRIV_SUBMISSION_ID,
-                    prompt, reddit_only, REFRESH_TOKEN, SR, SUBREDDIT,
-                    SUBMISSION_EDIT_ID, UN, USER_AGENT)
 from praw import errors, Reddit
 from praw.objects import Submission
+from praw.tests.helper import (configure, interactive_only, PRIV_SR,
+                               PRIV_SUBMISSION_ID, prompt, reddit_only,
+                               REFRESH_TOKEN, SR, SUBREDDIT,
+                               SUBMISSION_EDIT_ID, UN, USER_AGENT)
 
 
-site_name = (os.getenv('REDDIT_SITE') or 'reddit') + '_oauth_test'
-R = Reddit(USER_AGENT, site_name=site_name, disable_update_check=True)
+SITE_NAME = (os.getenv('REDDIT_SITE') or 'reddit') + '_oauth_test'
+R = Reddit(USER_AGENT, site_name=SITE_NAME, disable_update_check=True)
 INVALID = Reddit(USER_AGENT, disable_update_check=True)
 
 
-def setup_function(function):
+def setup_function(function):  # pylint: disable-msg=W0613
     configure()
 
 
-def teardown_function(function):
+def teardown_function(function):  # pylint: disable-msg=W0613
     R.clear_authentication()
 
 
@@ -65,22 +64,22 @@ def test_get_access_information():
 
 
 def test_get_access_information_with_invalid_code():
-    with pytest.raises(errors.OAuthInvalidGrant):
+    with pytest.raises(errors.OAuthInvalidGrant):  # pylint: disable-msg=E1101
         R.get_access_information('invalid_code')
 
 
 def test_invalid_app_access_token():
-    with pytest.raises(errors.OAuthAppRequired):
+    with pytest.raises(errors.OAuthAppRequired):  # pylint: disable-msg=E1101
         INVALID.get_access_information('dummy_code')
 
 
 def test_invalid_app_authorize_url():
-    with pytest.raises(errors.OAuthAppRequired):
+    with pytest.raises(errors.OAuthAppRequired):  # pylint: disable-msg=E1101
         INVALID.get_authorize_url('dummy_state')
 
 
 def test_invalid_set_access_credentials():
-    with pytest.raises(errors.OAuthInvalidToken):
+    with pytest.raises(errors.OAuthInvalidToken):  # pylint: disable-msg=E1101
         R.set_access_credentials(set(('identity',)), 'dummy_access_token')
 
 
@@ -220,7 +219,7 @@ def test_oauth_without_identy_doesnt_set_user():
 
 
 def test_set_oauth_info():
-    with pytest.raises(errors.OAuthAppRequired):
+    with pytest.raises(errors.OAuthAppRequired):  # pylint: disable-msg=E1101
         INVALID.get_authorize_url('dummy_state')
     INVALID.set_oauth_app_info(R.client_id, R.client_secret,
                                R.redirect_uri)

@@ -12,16 +12,15 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 import pytest
 from six import next as six_next
 
-from helper import configure, disable_cache, first, R, SR, USER_AGENT
 from praw import errors, Reddit
+from praw.tests.helper import (configure, disable_cache, first, R, SR,
+                               USER_AGENT)
 
 
-def setup_function(function):
+def setup_function(function):  # pylint: disable-msg=W0613
     configure()
 
 
@@ -95,6 +94,7 @@ def test_short_link():
     if R.config.is_reddit:
         assert submission.id in submission.short_link
     else:
+        # pylint: disable-msg=E1101
         with pytest.raises(errors.ClientException):
             getattr(submission, 'short_link')
 
