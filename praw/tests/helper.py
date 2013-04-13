@@ -18,10 +18,9 @@
 
 """Tests. Split into classes according to what they test."""
 
-import os
+import pytest
 import sys
 import time
-from functools import wraps
 from requests.compat import urljoin
 from six import next as six_next
 
@@ -40,33 +39,6 @@ def flair_diff(root, other):
     other_items = set(tuple(item[key].lower() if key in item and item[key] else
                             '' for key in keys) for item in other)
     return list(root_items - other_items)
-
-
-def interactive_only(function):
-    @wraps(function)
-    def interactive_only_function():
-        if os.getenv('INTERACTIVE'):
-            return function()
-        print('Passing interactive only test: {0}'.format(function.__name__))
-    return interactive_only_function
-
-
-def local_only(function):
-    @wraps(function)
-    def local_only_function():
-        if not R.config.is_reddit:
-            return function()
-        print('Passing local only test: {0}'.format(function.__name__))
-    return local_only_function
-
-
-def reddit_only(function):
-    @wraps(function)
-    def reddit_only_function():
-        if R.config.is_reddit:
-            return function()
-        print('Passing reddit only test: {0}'.format(function.__name__))
-    return reddit_only_function
 
 
 def prompt(msg):
@@ -98,6 +70,11 @@ def url(path):
 
 def configure():
     R.login(UN, '1111')
+
+
+interactive_only = pytest.mark.skipif("not os.getenv('INTERACTIVE')")
+local_only = pytest.mark.skipif("R.config.is_reddit")
+reddit_only = pytest.mark.skipif("not R.config.is_reddit")
 
 
 USER_AGENT = 'PRAW_test_suite'
