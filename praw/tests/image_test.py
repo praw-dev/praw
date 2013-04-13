@@ -14,8 +14,6 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 import os
 import pytest
 import sys
@@ -23,15 +21,15 @@ import uuid
 
 from six import text_type
 
-from helper import configure, R, reddit_only, SUBREDDIT
 from praw import errors
+from praw.tests.helper import configure, R, reddit_only, SUBREDDIT
 
 
 TEST_DIR = os.path.dirname(sys.modules[__name__].__file__)
 IMAGE_PATH = os.path.join(TEST_DIR, 'files', '{0}')
 
 
-def setup_function(function):
+def setup_function(function):  # pylint: disable-msg=W0613
     configure()
 
 
@@ -53,41 +51,41 @@ def test_delete_invalid_image():
 
 
 def test_delete_invalid_params():
-    with pytest.raises(TypeError):
+    with pytest.raises(TypeError):  # pylint: disable-msg=E1101
         SUBREDDIT.delete_image(name='Foo', header=True)
 
 
 def test_upload_invalid_file_path():
-    with pytest.raises(IOError):
+    with pytest.raises(IOError):  # pylint: disable-msg=E1101
         SUBREDDIT.upload_image('nonexistent')
 
 
 def test_upload_uerinvalid_image():
     image = IMAGE_PATH.format('white-square.tiff')
-    with pytest.raises(errors.ClientException):
+    with pytest.raises(errors.ClientException):  # pylint: disable-msg=E1101
         SUBREDDIT.upload_image(image)
 
 
 def test_upload_invalid_image_too_small():
     image = IMAGE_PATH.format('invalid.jpg')
-    with pytest.raises(errors.ClientException):
+    with pytest.raises(errors.ClientException):  # pylint: disable-msg=E1101
         SUBREDDIT.upload_image(image)
 
 
 def test_upload_invalid_image_too_large():
     image = IMAGE_PATH.format('big')
-    with pytest.raises(errors.ClientException):
+    with pytest.raises(errors.ClientException):  # pylint: disable-msg=E1101
         SUBREDDIT.upload_image(image)
 
 
 def test_upload_invalid_params():
     image = IMAGE_PATH.format('white-square.jpg')
-    with pytest.raises(TypeError):
+    with pytest.raises(TypeError):  # pylint: disable-msg=E1101
         SUBREDDIT.upload_image(image, name='Foo', header=True)
 
 
 def test_upload_invalid_image_path():
-    with pytest.raises(IOError):
+    with pytest.raises(IOError):  # pylint: disable-msg=E1101
         SUBREDDIT.upload_image('bar.png')
 
 

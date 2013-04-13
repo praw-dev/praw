@@ -14,23 +14,21 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 import pytest
 import uuid
 
-from helper import configure, first, R, SR, SUBREDDIT
 from praw import errors
+from praw.tests.helper import configure, first, R, SR, SUBREDDIT
 
 
-def setup_function(function):
+def setup_function(function):  # pylint: disable-msg=W0613
     configure()
 
 
 def test_create_duplicate():
     found = first(R.user.get_submitted(), lambda item: not item.is_self)
     assert found is not None
-    with pytest.raises(errors.AlreadySubmitted):
+    with pytest.raises(errors.AlreadySubmitted):  # pylint: disable-msg=E1101
         R.submit(SR, found.title, url=found.url)
 
 

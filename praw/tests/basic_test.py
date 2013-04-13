@@ -14,16 +14,14 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 from requests.exceptions import Timeout
 from six import next as six_next
 import pytest
 
-from helper import (COMMENT_URL, INVALID_USER_NAME, LINK_URL, LINK_URL_LINK,
-                    R, SR, UN, reddit_only)
 from praw import helpers, Reddit
 from praw.objects import Comment, MoreComments, Submission
+from praw.tests.helper import (COMMENT_URL, INVALID_USER_NAME, LINK_URL,
+                               LINK_URL_LINK, R, SR, UN, reddit_only)
 
 
 def test_comments_contains_no_noncomment_objects():
@@ -152,11 +150,11 @@ def test_not_logged_in_when_initialized():
 
 
 def test_require_user_agent():
-    with pytest.raises(TypeError):
+    with pytest.raises(TypeError):  # pylint: disable-msg=E1101
         Reddit(user_agent=None)
-    with pytest.raises(TypeError):
+    with pytest.raises(TypeError):  # pylint: disable-msg=E1101
         Reddit(user_agent='')
-    with pytest.raises(TypeError):
+    with pytest.raises(TypeError):  # pylint: disable-msg=E1101
         Reddit(user_agent=1)
 
 
@@ -170,5 +168,5 @@ def test_search_reddit_names():
 
 
 def test_timeout():
-    with pytest.raises(Timeout):
+    with pytest.raises(Timeout):  # pylint: disable-msg=E1101
         helpers._request(R, R.config['comments'], timeout=0.001)

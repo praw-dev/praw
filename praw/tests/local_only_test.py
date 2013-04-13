@@ -14,30 +14,28 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 import pytest
 import random
 
-from helper import configure, local_only, OTHER_USER_NAME, R, SR, UN
 from praw import errors
+from praw.tests.helper import configure, local_only, OTHER_USER_NAME, R, SR, UN
 
 
-def setup_function(function):
+def setup_function(function):  # pylint: disable-msg=W0613
     configure()
 
 
 @local_only
 def test_create_existing_redditor():
     R.login(UN, '1111')
-    with pytest.raises(errors.UsernameExists):
+    with pytest.raises(errors.UsernameExists):  # pylint: disable-msg=E1101
         R.create_redditor(OTHER_USER_NAME, '1111')
 
 
 @local_only
 def test_create_existing_subreddit():
     R.login(UN, '1111')
-    with pytest.raises(errors.SubredditExists):
+    with pytest.raises(errors.SubredditExists):  # pylint: disable-msg=E1101
         R.create_subreddit(SR, 'foo')
 
 
@@ -57,7 +55,7 @@ def test_create_subreddit():
 
 @local_only
 def test_failed_feedback():
-    with pytest.raises(errors.InvalidEmails):
+    with pytest.raises(errors.InvalidEmails):  # pylint: disable-msg=E1101
         R.send_feedback('a', 'b', 'c')
 
 

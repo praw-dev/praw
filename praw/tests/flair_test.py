@@ -14,20 +14,18 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 import uuid
 import random
 import pytest
 from six import next as six_next, text_type
 from requests.exceptions import HTTPError
 
-from helper import (configure, delay, flair_diff, INVALID_USER_NAME, R, SR,
-                    SUBREDDIT)
 from praw import errors
+from praw.tests.helper import (configure, delay, flair_diff, INVALID_USER_NAME,
+                               R, SR, SUBREDDIT)
 
 
-def setup_function(function):
+def setup_function(function):  # pylint: disable-msg=W0613
     configure()
 
 
@@ -49,7 +47,7 @@ def test_add_link_flair_through_submission():
 
 def test_add_link_flair_to_invalid_subreddit():
     sub = six_next(R.get_subreddit('python').get_new())
-    with pytest.raises(HTTPError):
+    with pytest.raises(HTTPError):  # pylint: disable-msg=E1101
         SUBREDDIT.set_flair(sub, 'text')
 
 
@@ -62,7 +60,7 @@ def test_add_user_flair_by_subreddit_name():
 
 
 def test_add_user_flair_to_invalid_user():
-    with pytest.raises(errors.InvalidFlairTarget):
+    with pytest.raises(errors.InvalidFlairTarget):  # pylint: disable-msg=E1101
         SUBREDDIT.set_flair(INVALID_USER_NAME)
 
 
@@ -123,11 +121,11 @@ def test_flair_csv_optional_args():
 
 
 def test_flair_csv_empty():
-    with pytest.raises(errors.ClientException):
+    with pytest.raises(errors.ClientException):  # pylint: disable-msg=E1101
         SUBREDDIT.set_flair_csv([])
 
 
 def test_flair_csv_requires_user():
     flair_mapping = [{'flair_text': 'hsdf'}]
-    with pytest.raises(errors.ClientException):
+    with pytest.raises(errors.ClientException):  # pylint: disable-msg=E1101
         SUBREDDIT.set_flair_csv(flair_mapping)

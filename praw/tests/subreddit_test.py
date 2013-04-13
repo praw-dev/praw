@@ -14,20 +14,18 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
-
 import pytest
 from six import text_type
 
-from helper import configure, first, R, reddit_only, SR, SUBREDDIT
+from praw.tests.helper import configure, first, R, reddit_only, SR, SUBREDDIT
 
 
-def setup_function(function):
+def setup_function(function):  # pylint: disable-msg=W0613
     configure()
 
 
 def test_attribute_error():
-    with pytest.raises(AttributeError):
+    with pytest.raises(AttributeError):  # pylint: disable-msg=E1101
         getattr(SUBREDDIT, 'foo')
 
 

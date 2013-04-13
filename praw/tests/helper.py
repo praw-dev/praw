@@ -18,8 +18,6 @@
 
 """Tests. Split into classes according to what they test."""
 
-from __future__ import print_function, unicode_literals
-
 import os
 import sys
 import time
