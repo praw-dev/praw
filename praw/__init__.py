@@ -47,8 +47,8 @@ UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
 
 MIN_IMAGE_SIZE = 128
 MAX_IMAGE_SIZE = 512000
-JPEG_HEADER = '\xff\xd8\xff'
-PNG_HEADER = '\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
+JPEG_HEADER = b'\xff\xd8\xff'
+PNG_HEADER = b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
 
 # Enable deprecation warnings
 simplefilter('default')
