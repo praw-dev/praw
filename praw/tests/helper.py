@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-# pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
+# pylint: disable-msg=C0103, E1101
 
 """Tests. Split into classes according to what they test."""
 

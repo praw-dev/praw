@@ -12,6 +12,8 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
+# pylint: disable-msg=W0611
+
 import os
 import pytest
 import sys
@@ -20,7 +22,7 @@ import uuid
 from six import text_type
 
 from praw import errors
-from praw.tests.helper import configure, R, reddit_only, SUBREDDIT
+from praw.tests.helper import configure, R, reddit_only, SUBREDDIT  # NOQA
 
 
 TEST_DIR = os.path.dirname(sys.modules[__name__].__file__)
