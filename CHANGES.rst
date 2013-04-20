@@ -15,9 +15,15 @@ upstream changes.
 
 PRAW 2.1.0 (Unreleased)
 -----------------------
+ * **[CHANGE]** Remove explicit ``limit`` parameters from functions that utilze
+   :meth:`.get_content` but don't alter the limit. This change will result in
+   broken code if the calling code utilizes positional instead of keyword
+   arguments.
  * **[CHANGE]** :meth:`.get_flair` returns ``None`` when the redditor does not
    exist.
  * **[CHANGE]** Deprecated :meth:`.get_all_comments`.
+ * **[BUGFIX]** Fix a bug in :meth:`.submit`. See
+   https://github.com/praw-dev/praw/issues/213
 
 PRAW 2.0.15
 -----------
