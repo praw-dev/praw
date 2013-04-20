@@ -24,6 +24,8 @@ PRAW 2.1.0 (Unreleased)
  * **[CHANGE]** Deprecated :meth:`.get_all_comments`.
  * **[BUGFIX]** Fix a bug in :meth:`.submit`. See
    https://github.com/praw-dev/praw/issues/213
+ * **[BUGFIX]** Fix a python 3.3 bug in :meth:`.image_upload`. See
+   https://github.com/praw-dev/praw/issues/211
 
 PRAW 2.0.15
 -----------
