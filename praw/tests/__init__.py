@@ -99,7 +99,7 @@ class BasicHelper(object):
         self.invalid_user_name = 'PyAPITestInvalid'
 
         if self.r.config.is_reddit:
-            self.comment_url = self.url('r/redditdev/comments/dtg4j/')
+            self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
             self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
             self.link_url_link = 'http://imgur.com/Vr8ZZ'
             self.more_comments_url = self.url('/r/redditdev/comments/dqkfz/')
@@ -120,7 +120,8 @@ class BasicHelper(object):
                 'vote':            'odS8Wkmgt_kgnUiYfvK6v4u1sAQ'}
             self.submission_edit_id = '16i92b'
         else:
-            self.comment_url = self.url('/r/reddit_test6/comments/y/')
+            self.comment_url = self.url(
+                '/r/reddit_api_test/comments/iq/_/3a7/')
             self.link_url = self.url('/r/reddit_test6/comments/y/')
             self.link_url_link = 'http://google.com/?q=29.9093488449'
             self.more_comments_url = self.url('/r/reddit_test6/comments/y/')

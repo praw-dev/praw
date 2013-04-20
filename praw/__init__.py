@@ -37,9 +37,10 @@ from requests.compat import urljoin
 from requests import Request
 from six.moves import html_entities
 from update_checker import update_check
-from warnings import simplefilter, warn_explicit
+from warnings import simplefilter, warn, warn_explicit
 
-__version__ = '2.0.15'
+
+__version__ = '2.1.0dev0'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -225,7 +226,12 @@ class Config(object):  # pylint: disable-msg=R0903
 
 class BaseReddit(object):
 
-    """A base class that allows acccess to reddit's API."""
+    """A base class that allows acccess to reddit's API.
+
+    You should **not** directly instansiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
 
     RETRY_CODES = [502, 503, 504]
     update_checked = False
@@ -421,7 +427,12 @@ class BaseReddit(object):
 
 class OAuth2Reddit(BaseReddit):
 
-    """Provides functionality for obtaining reddit OAuth2 access tokens."""
+    """Provides functionality for obtaining reddit OAuth2 access tokens.
+
+    You should **not** directly instansiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
 
     def __init__(self, *args, **kwargs):
         super(OAuth2Reddit, self).__init__(*args, **kwargs)
@@ -534,9 +545,12 @@ class UnauthenticatedReddit(BaseReddit):
 
     None of these functions require authenticated access to reddit's API.
 
+    You should **not** directly instansiate instances of this class. Use
+    :class:`.Reddit` instead.
+
     """
 
-    @decorators.RequireCaptcha
+    @decorators.require_captcha
     def create_redditor(self, user_name, password, email='', captcha=None):
         """Register a new user.
 
@@ -551,19 +565,26 @@ class UnauthenticatedReddit(BaseReddit):
             data.update(captcha)
         return self.request_json(self.config['register'], data=data)
 
-    def get_all_comments(self, gilded_only=False, *args, **kwargs):
-        """Return all comments (up to the reddit limit).
+    def get_all_comments(self, *args, **kwargs):
+        """Return a get_content generator for comments from `all` subreddits.
 
-        :param gilded_only: If True only return gilded comments.
+        This is a **deprecated** convenience function for :meth:`.get_comments`
+        with `all` specified for the subreddit. This function will be removed
+        in a future version of PRAW.
 
         """
-        return self.get_comments('all', gilded_only, *args, **kwargs)
+        warn('Please use `get_comments(\'all\', ...)` instead',
+             DeprecationWarning)
+        return self.get_comments('all', *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
     def get_comments(self, subreddit, gilded_only=False, *args, **kwargs):
-        """Return latest comments on the given subreddit.
+        """Return a get_content generator for comments in the given subreddit.
 
         :param gilded_only: If True only return gilded comments.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
         if gilded_only:
@@ -574,22 +595,45 @@ class UnauthenticatedReddit(BaseReddit):
 
     @decorators.restrict_access(scope='read')
     def get_controversial(self, *args, **kwargs):
-        """Return controversial page."""
+        """Return a get_content generator for controversial submissions.
+
+        Corresponds to submissions provided by
+        http://www.reddit.com/controversial/ for the session.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
         return self.get_content(self.config['controversial'], *args, **kwargs)
 
     def get_flair(self, subreddit, redditor):
-        """Return the flair for a user on the given subreddit."""
-        params = {'name': six.text_type(redditor)}
+        """Return the flair for a user on the given subreddit.
+
+        :param subreddit: Can be either a Subreddit object or the name of a
+            subreddit.
+        :param redditor: Can be either a Redditor object or the name of a
+            redditor.
+        :returns: None if the user doesn't exist, otherwise a dictionary
+            containing the keys `flair_css_class`, `flair_text`, and `user`.
+
+        """
+        name = six.text_type(redditor)
+        params = {'name': name}
         data = self.request_json(self.config['flairlist'] %
                                  six.text_type(subreddit), params=params)
+        if not data['users'] or data['users'][0]['user'] != name:
+            return None
         return data['users'][0]
 
     @decorators.restrict_access(scope='read')
     def get_front_page(self, *args, **kwargs):
-        """Return the front page submissions.
+        """Return a get_content generator for the front page submissions.
 
-        Default front page if not logged in, otherwise get logged in redditor's
-        front page.
+        Corresponds to the submissions provided by http://www.reddit.com/ for
+        the session.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
         return self.get_content(self.config['reddit_url'], *args, **kwargs)
@@ -633,22 +677,44 @@ class UnauthenticatedReddit(BaseReddit):
 
     @decorators.restrict_access(scope='read')
     def get_new(self, *args, **kwargs):
-        """Return new page."""
+        """Return a get_content generator for new submissions.
+
+        Corresponds to the submissions provided by http://www.reddit.com/new/
+        for the session.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
         return self.get_content(self.config['new'], *args, **kwargs)
 
     def get_popular_reddits(self, *args, **kwargs):
-        """Return the most active subreddits."""
+        """Return a get_content generator for the most active subreddits.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
         url = self.config['popular_reddits']
         return self.get_content(url, *args, **kwargs)
 
     def get_random_subreddit(self):
-        """Return a random subreddit just like /r/random does."""
+        """Return a random Subreddit object.
+
+        Utilizes the same mechanism as http://www.reddit.com/r/random/.
+
+        """
         response = self._request(self.config['subreddit'] % 'random',
                                  raw_response=True)
         return self.get_subreddit(response.url.rsplit('/', 2)[-2])
 
     def get_redditor(self, user_name, *args, **kwargs):
-        """Return a Redditor instance for the user_name specified."""
+        """Return a Redditor instance for the user_name specified.
+
+        The additional parameters are passed directly into the
+        :class:`.Redditor` constructor.
+
+        """
         return objects.Redditor(self, user_name, *args, **kwargs)
 
     def get_submission(self, url=None, submission_id=None, comment_limit=0,
@@ -671,13 +737,16 @@ class UnauthenticatedReddit(BaseReddit):
                                            comment_sort=comment_sort)
 
     def get_submissions(self, fullnames, *args, **kwargs):
-        """Yield Submission objects for each fullname provided in `fullnames`.
+        """Generate Submission objects for each item provided in `fullnames`.
 
         A submission fullname looks like `t3_<base36_id>`. Submissions are
-        yielded in the same order they appear in fullnames.
+        yielded in the same order they appear in `fullnames`.
 
-        Up to 100 items are batched at a time, however, this happens
-        transparently.
+        Up to 100 items are batched at a time -- this happens transparently.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` and `limit` parameters cannot be
+        altered.
 
         """
         fullnames = fullnames[:]
@@ -689,14 +758,27 @@ class UnauthenticatedReddit(BaseReddit):
                 yield item
 
     def get_subreddit(self, subreddit_name, *args, **kwargs):
-        """Return a Subreddit object for the subreddit_name specified."""
+        """Return a Subreddit object for the subreddit_name specified.
+
+        The additional parameters are passed directly into the
+        :class:`.Subreddit` constructor.
+
+        """
         if subreddit_name.lower() == 'random':
             return self.get_random_subreddit()
         return objects.Subreddit(self, subreddit_name, *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
     def get_top(self, *args, **kwargs):
-        """Return top page."""
+        """Return a get_content generator for top submissions.
+
+        Corresponds to the submissions provided by http://www.reddit.com/top/
+        for the session.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
         return self.get_content(self.config['top'], *args, **kwargs)
 
     def get_wiki_page(self, subreddit, page):
@@ -722,9 +804,16 @@ class UnauthenticatedReddit(BaseReddit):
                 raise
         return result
 
-    def search(self, query, subreddit=None, sort=None, limit=0, *args,
-               **kwargs):
-        """Return submissions that match the search query.
+    def search(self, query, subreddit=None, sort=None, *args, **kwargs):
+        """Return a generator for submissions that match the search query.
+
+        :param query: The query string to search for.
+        :param subreddit: Limit search results to the subreddit if provided.
+        :param sort: The sort order of the results.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` and `param` parameters cannot be
+        altered.
 
         See http://www.reddit.com/help/search for more information on how to
         build a search query.
@@ -738,8 +827,7 @@ class UnauthenticatedReddit(BaseReddit):
             url = self.config['search'] % subreddit
         else:
             url = self.config['search'] % 'all'
-        return self.get_content(url, params=params, limit=limit, *args,
-                                **kwargs)
+        return self.get_content(url, params=params, *args, **kwargs)
 
     def search_reddit_names(self, query):
         """Return subreddits whose display name contains the query."""
@@ -748,7 +836,7 @@ class UnauthenticatedReddit(BaseReddit):
                                     data=data)
         return [self.get_subreddit(name) for name in results['names']]
 
-    @decorators.RequireCaptcha
+    @decorators.require_captcha
     def send_feedback(self, name, email, message, reason='feedback',
                       captcha=None):
         """Send feedback to the admins.
@@ -774,6 +862,9 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
     Authentication can either be login based (through login), or OAuth2 based
     (via set_access_credentials).
+
+    You should **not** directly instansiate instances of this class. Use
+    :class:`.Reddit` instead.
 
     """
 
@@ -958,7 +1049,12 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
 class ModConfigMixin(AuthenticatedReddit):
 
-    """Adds methods requiring the 'modconfig' scope (or mod access)."""
+    """Adds methods requiring the 'modconfig' scope (or mod access).
+
+    You should **not** directly instansiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
 
     @decorators.restrict_access(scope='modconfig')
     def create_subreddit(self, name, title, description='', language='en',
@@ -1145,7 +1241,12 @@ class ModConfigMixin(AuthenticatedReddit):
 
 class ModFlairMixin(AuthenticatedReddit):
 
-    """Adds methods requiring the 'modflair' scope (or mod access)."""
+    """Adds methods requiring the 'modflair' scope (or mod access).
+
+    You should **not** directly instansiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
 
     @decorators.restrict_access(scope='modflair')
     def add_flair_template(self, subreddit, text='', css_class='',
@@ -1210,18 +1311,21 @@ class ModFlairMixin(AuthenticatedReddit):
         return self.request_json(self.config['deleteflair'], data=data)
 
     @decorators.restrict_access(scope='modflair')
-    def get_flair_list(self, subreddit, limit=0, *args, **kwargs):
+    def get_flair_list(self, subreddit, *args, **kwargs):
         """Return a get_content generator of flair mappings.
 
-        Each flair mapping is a dict with three keys. 'user', 'flair_text' and
-        'flair_css_class'.
+        :param subreddit: Either a Subreddit object or the name of the
+            subreddit to return the flair list for.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url`, `root_field`, `thing_field`, and
+        `after_field` parameters cannot be altered.
 
         """
         return self.get_content(self.config['flairlist'] %
-                                six.text_type(subreddit),
-                                limit=limit, root_field=None,
-                                thing_field='users', after_field='next', *args,
-                                **kwargs)
+                                six.text_type(subreddit), *args,
+                                root_field=None, thing_field='users',
+                                after_field='next', **kwargs)
 
     @decorators.restrict_access(scope='modflair')
     def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
@@ -1283,31 +1387,44 @@ class ModFlairMixin(AuthenticatedReddit):
 
 class ModLogMixin(AuthenticatedReddit):
 
-    """Adds methods requiring the 'modlog' scope (or mod access)."""
+    """Adds methods requiring the 'modlog' scope (or mod access).
+
+    You should **not** directly instansiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
 
     @decorators.restrict_access(scope='modlog')
-    def get_mod_log(self, subreddit, limit=0, mod=None, action=None, *args,
-                    **kwargs):
+    def get_mod_log(self, subreddit, mod=None, action=None, *args, **kwargs):
         """Return a get_content generator for moderation log items.
 
+        :param subreddit: Either a Subreddit object or the name of the
+            subreddit to return the flair list for.
         :param mod: If given, only return the actions made by this moderator.
-                    Both a moderator name or Redditor object can be used here.
+            Both a moderator name or Redditor object can be used here.
         :param action: If given, only return entries for the specified action.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
         params = kwargs.setdefault('params', {})
         if mod is not None:
             params['mod'] = six.text_type(mod)
-        if type is not None:
+        if action is not None:
             params['type'] = six.text_type(action)
         return self.get_content(self.config['modlog'] %
-                                six.text_type(subreddit), limit=limit, *args,
-                                **kwargs)
+                                six.text_type(subreddit), *args, **kwargs)
 
 
 class ModOnlyMixin(AuthenticatedReddit):
 
-    """Adds methods requiring the logged in moderator access."""
+    """Adds methods requiring the logged in moderator access.
+
+    You should **not** directly instansiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
 
     @decorators.restrict_access(scope=None, mod=True)
     def get_banned(self, subreddit):
@@ -1322,24 +1439,49 @@ class ModOnlyMixin(AuthenticatedReddit):
                                  six.text_type(subreddit))
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_mod_queue(self, subreddit='mod', limit=0, *args, **kwargs):
-        """Return a get_content_generator for the  moderator queue."""
+    def get_mod_queue(self, subreddit='mod', *args, **kwargs):
+        """Return a get_content_generator for the  moderator queue.
+
+        :param subreddit: Either a Subreddit object or the name of the
+            subreddit to return the flair list for. Defaults to `mod` which
+            includes items for all the subreddits you moderate.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
         return self.get_content(self.config['modqueue'] %
-                                six.text_type(subreddit), limit=limit, *args,
-                                **kwargs)
+                                six.text_type(subreddit), *args, **kwargs)
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_reports(self, subreddit='mod', limit=0, *args, **kwargs):
-        """Return a get_content generator of reported submissions."""
+    def get_reports(self, subreddit='mod', *args, **kwargs):
+        """Return a get_content generator of reported submissions.
+
+        :param subreddit: Either a Subreddit object or the name of the
+            subreddit to return the flair list for. Defaults to `mod` which
+            includes items for all the subreddits you moderate.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
         return self.get_content(self.config['reports'] %
-                                six.text_type(subreddit), limit=limit, *args,
-                                **kwargs)
+                                six.text_type(subreddit), *args, **kwargs)
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_spam(self, subreddit='mod', limit=0, *args, **kwargs):
-        """Return a get_content generator of spam-filtered items."""
+    def get_spam(self, subreddit='mod', *args, **kwargs):
+        """Return a get_content generator of spam-filtered items.
+
+        :param subreddit: Either a Subreddit object or the name of the
+            subreddit to return the flair list for. Defaults to `mod` which
+            includes items for all the subreddits you moderate.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
         return self.get_content(self.config['spam'] % six.text_type(subreddit),
-                                limit=limit, *args, **kwargs)
+                                *args, **kwargs)
 
     @decorators.restrict_access(scope=None, mod=True)
     def get_stylesheet(self, subreddit):
@@ -1348,11 +1490,19 @@ class ModOnlyMixin(AuthenticatedReddit):
                                  six.text_type(subreddit))['data']
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_unmoderated(self, subreddit='mod', limit=0, *args, **kwargs):
-        """Return a get_content generator of unmoderated items."""
+    def get_unmoderated(self, subreddit='mod', *args, **kwargs):
+        """Return a get_content generator of unmoderated items.
+
+        :param subreddit: Either a Subreddit object or the name of the
+            subreddit to return the flair list for. Defaults to `mod` which
+            includes items for all the subreddits you moderate.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
         return self.get_content(self.config['unmoderated'] %
-                                six.text_type(subreddit), limit=limit, *args,
-                                **kwargs)
+                                six.text_type(subreddit), *args, **kwargs)
 
     @decorators.restrict_access(scope=None, mod=True)
     def get_wiki_banned(self, subreddit):
@@ -1369,30 +1519,61 @@ class ModOnlyMixin(AuthenticatedReddit):
 
 class MySubredditsMixin(AuthenticatedReddit):
 
-    """Adds methods requiring the 'mysubreddits' scope (or login)."""
+    """Adds methods requiring the 'mysubreddits' scope (or login).
+
+    You should **not** directly instansiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
 
     @decorators.restrict_access(scope='mysubreddits')
-    def get_my_contributions(self, limit=0, *args, **kwargs):
-        """Return the subreddits where the session's user is a contributor."""
-        return self.get_content(self.config['my_con_reddits'], limit=limit,
-                                *args, **kwargs)
+    def get_my_contributions(self, *args, **kwargs):
+        """Return a get_content generator of subreddits.
+
+        The subreddits generated are those where the session's user is a
+        contributor.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['my_con_reddits'], *args, **kwargs)
 
     @decorators.restrict_access(scope='mysubreddits')
-    def get_my_moderation(self, limit=0, *args, **kwargs):
-        """Return the subreddits where the session's user is a mod."""
-        return self.get_content(self.config['my_mod_reddits'], limit=limit,
-                                *args, **kwargs)
+    def get_my_moderation(self, *args, **kwargs):
+        """Return a get_content generator of subreddits.
+
+        The subreddits generated are those where the session's user is a
+        moderator.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['my_mod_reddits'], *args, **kwargs)
 
     @decorators.restrict_access(scope='mysubreddits')
-    def get_my_reddits(self, limit=0, *args, **kwargs):
-        """Return the subreddits that the logged in user is subscribed to."""
-        return self.get_content(self.config['my_reddits'], limit=limit, *args,
-                                **kwargs)
+    def get_my_reddits(self, *args, **kwargs):
+        """Return a get_content generator of subreddits.
+
+        The subreddits generated are those that the session's user is
+        subscribed to.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['my_reddits'], *args, **kwargs)
 
 
 class PrivateMessagesMixin(AuthenticatedReddit):
 
-    """Adds methods requiring the 'privatemessages' scope (or login)."""
+    """Adds methods requiring the 'privatemessages' scope (or login).
+
+    You should **not** directly instansiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
 
     @decorators.restrict_access(scope='privatemessages')
     def _mark_as_read(self, thing_ids, unread=False):
@@ -1409,32 +1590,47 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         return response
 
     @decorators.restrict_access(scope='privatemessages')
-    def get_inbox(self, limit=0, *args, **kwargs):
-        """Return a generator for inbox messages."""
-        return self.get_content(self.config['inbox'], limit=limit, *args,
-                                **kwargs)
+    def get_inbox(self, *args, **kwargs):
+        """Return a get_content generator for inbox messages.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['inbox'], *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
-    def get_mod_mail(self, limit=0, *args, **kwargs):
-        """Return a generator for moderator messages."""
-        return self.get_content(self.config['moderator'], limit=limit, *args,
-                                **kwargs)
+    def get_mod_mail(self, *args, **kwargs):
+        """Return a get_content generator for moderator messages.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['moderator'], *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
-    def get_sent(self, limit=0, *args, **kwargs):
-        """Return a generator for sent messages."""
-        return self.get_content(self.config['sent'], limit=limit, *args,
-                                **kwargs)
+    def get_sent(self, *args, **kwargs):
+        """Return a get_content generator for sent messages.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['sent'], *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
-    def get_unread(self, limit=0, unset_has_mail=False, update_user=False,
-                   *args, **kwargs):
-        """Return a generator for unread messages.
+    def get_unread(self, unset_has_mail=False, update_user=False, *args,
+                   **kwargs):
+        """Return a get_content generator for unread messages.
 
         :param unset_has_mail: When true, clear the has_mail flag (orangered)
             for the user.
-        :param update_user: If both unset_has_mail and update user is true, set
-            the has_mail attribute of the logged-in user to False.
+        :param update_user: If both `unset_has_mail` and `update user` is true,
+            set the `has_mail` attribute of the logged-in user to False.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
         params = kwargs.setdefault('params', {})
@@ -1442,11 +1638,10 @@ class PrivateMessagesMixin(AuthenticatedReddit):
             params['mark'] = 'true'
             if update_user:  # Update the user object
                 self.user.has_mail = False
-        return self.get_content(self.config['unread'], limit=limit, *args,
-                                **kwargs)
+        return self.get_content(self.config['unread'], *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
-    @decorators.RequireCaptcha
+    @decorators.require_captcha
     def send_message(self, recipient, subject, message, captcha=None):
         """Send a message to a redditor or a subreddit's moderators (mod mail).
 
@@ -1475,7 +1670,12 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
 class SubmitMixin(AuthenticatedReddit):
 
-    """Adds methods requiring the 'submit' scope (or login)."""
+    """Adds methods requiring the 'submit' scope (or login).
+
+    You should **not** directly instansiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
 
     @decorators.restrict_access(scope='submit')
     def _add_comment(self, thing_id, text):
@@ -1491,7 +1691,7 @@ class SubmitMixin(AuthenticatedReddit):
         return retval['data']['things'][0]
 
     @decorators.restrict_access(scope='submit')
-    @decorators.RequireCaptcha
+    @decorators.require_captcha
     def submit(self, subreddit, title, text=None, url=None, captcha=None):
         """Submit a new link to the given subreddit.
 
@@ -1535,7 +1735,12 @@ class SubmitMixin(AuthenticatedReddit):
 
 class SubscribeMixin(AuthenticatedReddit):
 
-    """Adds methods requiring the 'subscribe' scope (or login)."""
+    """Adds methods requiring the 'subscribe' scope (or login).
+
+    You should **not** directly instansiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
 
     @decorators.restrict_access(scope='subscribe')
     def subscribe(self, subreddit, unsubscribe=False):
@@ -1567,7 +1772,12 @@ class Reddit(ModConfigMixin, ModFlairMixin, ModLogMixin, ModOnlyMixin,
              MySubredditsMixin, PrivateMessagesMixin, SubmitMixin,
              SubscribeMixin):
 
-    """Provides the fullest access to reddit's API."""
+    """Provides access to reddit's API.
+
+    See :class:`.BaseReddit`'s documentation for descriptions of the
+    initialization parameters.
+
+    """
 
 
 # Prevent recursive import

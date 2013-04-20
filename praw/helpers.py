@@ -18,7 +18,7 @@ import sys
 import six
 from warnings import warn
 from requests.compat import urljoin
-from praw.decorators import Memoize, SleepAfter, restrict_access
+from praw.decorators import Memoize, restrict_access, sleep_after
 from praw.errors import (ClientException, InvalidSubreddit, OAuthException,
                          OAuthInsufficientScope, OAuthInvalidToken)
 
@@ -26,6 +26,16 @@ from praw.errors import (ClientException, InvalidSubreddit, OAuthException,
 def _get_section(subpath=''):
     """Return function to generate various non-subreddit listings."""
     def _section(self, sort='new', time='all', *args, **kwargs):
+        """Return a get_content generator for some RedditContentObject type.
+
+        :param sort: Specify the sort order of the results if applicable.
+        :param time: Specify the time-period to return submissions if
+            applicable.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
         kwargs.setdefault('params', {})
         kwargs['params'].setdefault('sort', sort)
         kwargs['params'].setdefault('t', time)
@@ -38,6 +48,13 @@ def _get_sorter(subpath='', deprecated=False, **defaults):
     """Return function to generate specific subreddit Submission listings."""
     @restrict_access(scope='read')
     def _sorted(self, *args, **kwargs):
+        """Return a get_content generator for some RedditContentObject type.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+
         if deprecated:
             warn('Please use `{0}` instead'.format(deprecated),
                  DeprecationWarning)
@@ -88,7 +105,7 @@ def _modify_relationship(relationship, unlink=False, is_sub=False,
 
 
 @Memoize
-@SleepAfter
+@sleep_after
 def _request(reddit_session, url, params=None, data=None, timeout=45,
              raw_response=False, auth=None, files=None):
     """Make the http request and return the http response body."""

@@ -13,6 +13,12 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
+PRAW 2.1.0 (Unreleased)
+-----------------------
+ * **[CHANGE]** :meth:`.get_flair` returns ``None`` when the redditor does not
+   exist.
+ * **[CHANGE]** Deprecated :meth:`.get_all_comments`.
+
 PRAW 2.0.15
 -----------
  * **[FEATURE]** PRAW can now use a proxy server, see `#206

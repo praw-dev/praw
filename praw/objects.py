@@ -341,7 +341,7 @@ class Messageable(RedditContentObject):
 
     """Interface for RedditContentObjects that can be messaged."""
 
-    _methods = (('send_message', PMMix.send_message),)
+    _methods = (('send_message', PMMix),)
 
 
 class Refreshable(RedditContentObject):
@@ -896,7 +896,8 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
     def set_flair(self, *args, **kwargs):
         """Set flair for this submission.
 
-        :returns: The json response from the server.
+        Convenience function that utilizes :meth:`.ModFlairMixin.set_flair`
+        populating both the `subreddit` and `item` parameters.
 
         """
         return self.subreddit.set_flair(self, *args, **kwargs)
@@ -916,39 +917,40 @@ class Subreddit(Messageable, Refreshable):
 
     """A class for Subreddits."""
 
-    _methods = (('accept_moderator_invite', AR.accept_moderator_invite),
-                ('add_flair_template', MFMix.add_flair_template),
-                ('clear_flair_templates', MFMix.clear_flair_templates),
-                ('configure_flair', MFMix.configure_flair),
-                ('delete_flair', MFMix.delete_flair),
-                ('delete_image', MCMix.delete_image),
-                ('edit_wiki_page', AR.edit_wiki_page),
-                ('get_banned', MOMix.get_banned),
-                ('get_comments', UR.get_comments),
-                ('get_contributors', MOMix.get_contributors),
-                ('get_flair', UR.get_flair),
-                ('get_flair_list', MFMix.get_flair_list),
-                ('get_moderators', MOMix.get_moderators),
-                ('get_mod_log', MLMix.get_mod_log),
-                ('get_mod_queue', MOMix.get_mod_queue),
-                ('get_reports', MOMix.get_reports),
-                ('get_settings', MCMix.get_settings),
-                ('get_spam', MOMix.get_spam),
-                ('get_stylesheet', MOMix.get_stylesheet),
-                ('get_unmoderated', MOMix.get_unmoderated),
-                ('get_wiki_banned', MOMix.get_wiki_banned),
-                ('get_wiki_contributors', MOMix.get_wiki_contributors),
-                ('get_wiki_page', UR.get_wiki_page),
-                ('get_wiki_pages', UR.get_wiki_pages),
-                ('set_flair', MFMix.set_flair),
-                ('set_flair_csv', MFMix.set_flair_csv),
-                ('set_settings', MCMix.set_settings),
-                ('set_stylesheet', MCMix.set_stylesheet),
-                ('submit', SubmitMixin.submit),
-                ('subscribe', SubscribeMixin.subscribe),
-                ('unsubscribe', SubscribeMixin.unsubscribe),
-                ('update_settings', MCMix.update_settings),
-                ('upload_image', MCMix.upload_image))
+    _methods = (('accept_moderator_invite', AR),
+                ('add_flair_template', MFMix),
+                ('clear_flair_templates', MFMix),
+                ('configure_flair', MFMix),
+                ('delete_flair', MFMix),
+                ('delete_image', MCMix),
+                ('edit_wiki_page', AR),
+                ('get_banned', MOMix),
+                ('get_comments', UR),
+                ('get_contributors', MOMix),
+                ('get_flair', UR),
+                ('get_flair_list', MFMix),
+                ('get_moderators', UR),
+                ('get_mod_log', MLMix),
+                ('get_mod_queue', MOMix),
+                ('get_reports', MOMix),
+                ('get_settings', MCMix),
+                ('get_spam', MOMix),
+                ('get_stylesheet', MOMix),
+                ('get_unmoderated', MOMix),
+                ('get_wiki_banned', MOMix),
+                ('get_wiki_contributors', MOMix),
+                ('get_wiki_page', UR),
+                ('get_wiki_pages', UR),
+                ('search', UR),
+                ('set_flair', MFMix),
+                ('set_flair_csv', MFMix),
+                ('set_settings', MCMix),
+                ('set_stylesheet', MCMix),
+                ('submit', SubmitMixin),
+                ('subscribe', SubscribeMixin),
+                ('unsubscribe', SubscribeMixin),
+                ('update_settings', MCMix),
+                ('upload_image', MCMix))
 
     # Subreddit banned
     add_ban = _modify_relationship('banned', is_sub=True)
@@ -1042,15 +1044,6 @@ class Subreddit(Messageable, Refreshable):
         else:
             return
 
-    def search(self, query, *args, **kwargs):
-        """Return submissions that match the search query from this subreddit.
-
-        See http://www.reddit.com/help/search for more information on how to
-        build a search query.
-
-        """
-        return self.reddit_session.search(query, self, *args, **kwargs)
-
 
 class PRAWListing(RedditContentObject):
 
@@ -1119,8 +1112,9 @@ class WikiPage(RedditContentObject):
     def edit(self, *args, **kwargs):
         """Edit the wiki page.
 
-        :param content: The content to set the wiki page to.
-        :param reason: The justification for the edit (optional).
+        Convenience function that utilizes
+        :meth:`.AuthenticatedReddit.edit_wiki_page` populating both the
+        `subreddit` and `page` parameters.
 
         """
         self.subreddit.edit_wiki_page(self.page, *args, **kwargs)
@@ -1144,6 +1138,7 @@ def _add_aliases():
     import sys
     predicate = lambda x: inspect.isclass(x) and hasattr(x, '_methods')
     for _, cls in inspect.getmembers(sys.modules[__name__], predicate):
-        for name, method in cls._methods:  # pylint: disable-msg=W0212
-            setattr(cls, name, alias_function(method))
+        for name, mixin in cls._methods:  # pylint: disable-msg=W0212
+            setattr(cls, name, alias_function(getattr(mixin, name),
+                                              mixin.__name__))
 _add_aliases()

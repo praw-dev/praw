@@ -20,13 +20,17 @@ failed API requests by testing that the call can be made first. Also limit the
 length of output strings and parse json response for certain errors.
 """
 
+import os
 import six
 import sys
 import time
 from functools import wraps
 from requests.compat import urljoin
-
 from praw import errors
+
+
+# Don't decorate functions when building the documentation
+IS_SPHINX_BUILD = bool(os.getenv('SPHINX_BUILD'))
 
 
 class Memoize(object):
@@ -88,86 +92,7 @@ class Memoize(object):
             del self._timeouts[key]
 
 
-class RequireCaptcha(object):
-
-    """Decorator for methods that require captchas."""
-
-    @staticmethod
-    def get_captcha(reddit_session, captcha_id):
-        """Prompt user for captcha solution and return a prepared result."""
-        url = urljoin(reddit_session.config['captcha'],
-                      captcha_id + '.png')
-        sys.stdout.write('Captcha URL: %s\nCaptcha: ' % url)
-        sys.stdout.flush()
-        captcha = sys.stdin.readline().strip()
-        return {'iden': captcha_id, 'captcha': captcha}
-
-    def __init__(self, function):
-        wraps(function)(self)
-        self.function = function
-
-    def __get__(self, obj, key):
-        if obj is None:
-            return self
-        return self.__class__(self.function.__get__(obj, key))
-
-    def __call__(self, *args, **kwargs):
-        if 'raise_captcha_exception' in kwargs:
-            raise_captcha_exception = kwargs['raise_captcha_exception']
-            del kwargs['raise_captcha_exception']
-        else:
-            raise_captcha_exception = False
-        captcha_id = None
-        while True:
-            try:
-                if captcha_id:
-                    # Differentiate between bound and unbound methods
-                    if hasattr(self.function, '__self__'):
-                        reddit_session = self.function.__self__
-                    else:
-                        reddit_session = args[0]
-                    kwargs['captcha'] = self.get_captcha(reddit_session,
-                                                         captcha_id)
-                return self.function(*args, **kwargs)
-            except errors.InvalidCaptcha as exception:
-                if raise_captcha_exception:
-                    raise
-                captcha_id = exception.response['captcha']
-
-
-class SleepAfter(object):  # pylint: disable-msg=R0903
-
-    """Ensure frequency of API calls doesn't exceed guidelines.
-
-    We are allowed to make a API request every api_request_delay seconds as
-    specified in praw.ini. This value may differ from reddit to reddit. For
-    reddit.com it is 2. Any function decorated with this will be forced to
-    delay api_request_delay seconds from the calling of the last function
-    decorated with this before executing.
-
-    """
-
-    def __init__(self, function):
-        wraps(function)(self)
-        self.function = function
-        self.last_call = {}
-
-    def __call__(self, *args, **kwargs):
-        config = args[0].config
-        if config.domain in self.last_call:
-            last_call = self.last_call[config.domain]
-        else:
-            last_call = 0
-        now = time.time()
-        delay = last_call + int(config.api_request_delay) - now
-        if delay > 0:
-            now += delay
-            time.sleep(delay)
-        self.last_call[config.domain] = now
-        return self.function(*args, **kwargs)
-
-
-def alias_function(function):
+def alias_function(function, class_name):
     """Create a RedditContentObject function mapped to a BaseReddit function.
 
     The BaseReddit classes define the majority of the API's functions. The
@@ -179,19 +104,26 @@ def alias_function(function):
     @wraps(function)
     def wrapped(self, *args, **kwargs):
         return function(self.reddit_session, self, *args, **kwargs)
+    # Only grab the short-line doc and add a link to the complete doc
+    wrapped.__doc__ = wrapped.__doc__.split('\n', 1)[0]
+    wrapped.__doc__ += ('\n\nSee :meth:`.{0}.{1}` for complete usage. '
+                        'Note that you should exclude the first parameter '
+                        'when calling this convenience method.'
+                        .format(class_name, function.__name__))
+    # Don't hide from sphinx as this is a parameter modifying decorator
     return wrapped
 
 
 def limit_chars(function):
     """Truncate the string returned from a function and return the result."""
     @wraps(function)
-    def function_wrapper(self, *args, **kwargs):
+    def wrapped(self, *args, **kwargs):
         output_chars_limit = self.reddit_session.config.output_chars_limit
         output_string = function(self, *args, **kwargs)
         if -1 < output_chars_limit < len(output_string):
             output_string = output_string[:output_chars_limit - 3] + '...'
         return output_string
-    return function_wrapper
+    return function if IS_SPHINX_BUILD else wrapped
 
 
 def oauth_generator(function):
@@ -209,7 +141,7 @@ def oauth_generator(function):
         if getattr(reddit_session, '_use_oauth', False):
             kwargs['_use_oauth'] = True
         return function(reddit_session, *args, **kwargs)
-    return wrapped
+    return function if IS_SPHINX_BUILD else wrapped
 
 
 def parse_api_json_response(function):  # pylint: disable-msg=R0912
@@ -219,7 +151,7 @@ def parse_api_json_response(function):  # pylint: disable-msg=R0912
 
     """
     @wraps(function)
-    def error_checked_function(cls, *args, **kwargs):
+    def wrapped(cls, *args, **kwargs):
         return_value = function(cls, *args, **kwargs)
         if isinstance(return_value, dict):
             if return_value.get('error') == 304:  # Not modified exception
@@ -240,7 +172,45 @@ def parse_api_json_response(function):  # pylint: disable-msg=R0912
                 else:
                     raise errors.ExceptionList(error_list)
         return return_value
-    return error_checked_function
+    return function if IS_SPHINX_BUILD else wrapped
+
+
+def require_captcha(function):
+    """Decorator for methods that require captchas."""
+    def get_captcha(reddit_session, captcha_id):
+        """Prompt user for captcha solution and return a prepared result."""
+        url = urljoin(reddit_session.config['captcha'],
+                      captcha_id + '.png')
+        sys.stdout.write('Captcha URL: %s\nCaptcha: ' % url)
+        sys.stdout.flush()
+        captcha = sys.stdin.readline().strip()
+        return {'iden': captcha_id, 'captcha': captcha}
+
+    @wraps(function)
+    def wrapped(obj, *args, **kwargs):
+        if 'raise_captcha_exception' in kwargs:
+            raise_captcha_exception = kwargs['raise_captcha_exception']
+            del kwargs['raise_captcha_exception']
+        else:
+            raise_captcha_exception = False
+        captcha_id = None
+
+        # Get a handle to the reddit session
+        if hasattr(obj, 'reddit_session'):
+            reddit_session = obj.reddit_session
+        else:
+            reddit_session = obj
+
+        while True:
+            try:
+                if captcha_id:
+                    kwargs['captcha'] = get_captcha(reddit_session, captcha_id)
+                return function(obj, *args, **kwargs)
+            except errors.InvalidCaptcha as exception:
+                if raise_captcha_exception:
+                    raise
+                captcha_id = exception.response['captcha']
+    return function if IS_SPHINX_BUILD else wrapped
 
 
 def restrict_access(scope, mod=False, login=False, oauth_only=False):
@@ -341,7 +311,7 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
                 return function(cls, *args, **kwargs)
             finally:
                 obj._use_oauth = False  # pylint: disable-msg=W0212
-        return wrapped
+        return function if IS_SPHINX_BUILD else wrapped
     return wrap
 
 
@@ -352,14 +322,39 @@ def require_oauth(function):
 
     """
     @wraps(function)
-    def validate_function(self, *args, **kwargs):
+    def wrapped(self, *args, **kwargs):
         if not self.has_oauth_app_info:
             err_msg = ("The OAuth app config parameters client_id, "
                        "client_secret and redirect_url must be specified to "
                        "use this function.")
             raise errors.OAuthAppRequired(err_msg)
         return function(self, *args, **kwargs)
-    return validate_function
+    return function if IS_SPHINX_BUILD else wrapped
+
+
+def sleep_after(function):
+    """Ensure frequency of API calls doesn't exceed guidelines.
+
+    We are allowed to make a API request every api_request_delay seconds as
+    specified in praw.ini. This value may differ from reddit to reddit. For
+    reddit.com it is 2. Any function decorated with this will be forced to
+    delay api_request_delay seconds from the calling of the last function
+    decorated with this before executing.
+
+    """
+    @wraps(function)
+    def wrapped(reddit_session, *args, **kwargs):
+        config = reddit_session.config
+        last = last_call.get(config.domain, 0)
+        now = time.time()
+        delay = last + int(config.api_request_delay) - now
+        if delay > 0:
+            now += delay
+            time.sleep(delay)
+        last_call[config.domain] = now
+        return function(reddit_session, *args, **kwargs)
+    last_call = {}
+    return function if IS_SPHINX_BUILD else wrapped
 
 
 # Avoid circular import: http://effbot.org/zone/import-confusion.htm
