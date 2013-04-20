@@ -192,7 +192,7 @@ def flatten_tree(tree, nested_attr='replies', depth_first=False):
     :param nested_attr: The attribute name that contains the nested items.
         Defaults to `replies` which is suitable for comments.
     :param depth_first: When true, add to the list in a depth-first manner
-        rather than the default breath-first manner.
+        rather than the default breadth-first manner.
 
     """
     stack = tree[:]
