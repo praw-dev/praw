@@ -1728,7 +1728,7 @@ class SubmitMixin(AuthenticatedReddit):
         except requests.exceptions.HTTPError as error:
             # The request may still fail if the submission was made to a
             # private subreddit.
-            if error.code == 403:
+            if error.response.status_code == 403:
                 return url
             raise
 
