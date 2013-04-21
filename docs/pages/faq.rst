@@ -62,7 +62,7 @@ captcha is incorrect.
 I made a change, but it doesn't seem to have an effect?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-PRAW follow the `api guidelines <https://github.com/reddit/reddit/wiki/API>`_
+PRAW follows the `api guidelines <https://github.com/reddit/reddit/wiki/API>`_
 which require that pages not be requested more than every 30 seconds. To do
 this PRAW has an internal cache, which stores results for 30 seconds and give
 you the cached result if you request the same page within 30 seconds.
@@ -70,7 +70,7 @@ you the cached result if you request the same page within 30 seconds.
 Some commands take a while. Why?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-PRAW follow the `api guidelines <https://github.com/reddit/reddit/wiki/API>`_
+PRAW follows the `api guidelines <https://github.com/reddit/reddit/wiki/API>`_
 which require a 2 second delay between each API call.
 
 When I print a Comment only part of it is printed. How can I get the rest?
