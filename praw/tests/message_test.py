@@ -14,7 +14,6 @@
 
 import pytest
 import uuid
-from six import next as six_next
 
 from praw import errors, Reddit
 from praw.objects import Message
@@ -38,7 +37,7 @@ def test_mark_as_read():
     oth = Reddit(USER_AGENT, disable_update_check=True)
     oth.login('PyAPITestUser3', '1111')
     # pylint: disable-msg=E1101
-    msg = six_next(oth.get_unread(limit=1))
+    msg = next(oth.get_unread(limit=1))
     msg.mark_as_read()
     assert msg not in oth.get_unread(limit=5)
 

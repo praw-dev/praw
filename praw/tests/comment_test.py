@@ -13,7 +13,6 @@
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
 import uuid
-from six import next as six_next
 
 from praw.objects import Comment
 from praw.tests.helper import configure, first, R, SUBREDDIT
@@ -26,7 +25,7 @@ def setup_function(function):  # pylint: disable-msg=W0613
 def test_add_comment_and_verify():
     text = 'Unique comment: %s' % uuid.uuid4()
     # pylint: disable-msg=E1101
-    submission = six_next(SUBREDDIT.get_new())
+    submission = next(SUBREDDIT.get_new())
     # pylint: enable-msg=E1101
     comment = submission.add_comment(text)
     assert comment.submission == submission
@@ -46,12 +45,12 @@ def test_add_reply_and_verify():
 
 def test_front_page_comment_replies_are_none():
     # pylint: disable-msg=E1101,W0212
-    item = six_next(R.get_all_comments())
+    item = next(R.get_all_comments())
     assert item._replies is None
 
 
 def test_get_comments_permalink():
-    item = six_next(SUBREDDIT.get_comments())
+    item = next(SUBREDDIT.get_comments())
     assert item.id in item.permalink
 
 
@@ -68,7 +67,7 @@ def test_inbox_permalink():
 
 
 def test_reply():
-    comment = six_next(R.user.get_comments())
+    comment = next(R.user.get_comments())
     new_body = '%s\n\n+Edit Text' % comment.body
     comment = comment.edit(new_body)
     assert comment.body == new_body
@@ -88,5 +87,5 @@ def test_user_comment_replies_are_none():
 
 
 def test_user_comments_permalink():
-    item = six_next(R.user.get_comments())
+    item = next(R.user.get_comments())
     assert item.id in item.permalink

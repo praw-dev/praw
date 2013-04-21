@@ -61,7 +61,7 @@ def test_oauth_scope_required():
         R.get_me()
 
 
-def test_moderator_or_oauth_required_loged_in_from_reddit_obj():
+def test_moderator_or_oauth_required_logged_in_from_reddit_obj():
     oth = Reddit(USER_AGENT, disable_update_check=True)
     oth.login('PyAPITestUser3', '1111')
     # pylint: disable-msg=E1101
@@ -69,7 +69,7 @@ def test_moderator_or_oauth_required_loged_in_from_reddit_obj():
         oth.get_settings(SR)
 
 
-def test_moderator_or_oauth_required_loged_in_from_submission_obj():
+def test_moderator_or_oauth_required_logged_in_from_submission_obj():
     oth = Reddit(USER_AGENT, disable_update_check=True)
     oth.login('PyAPITestUser3', '1111')
     submission = oth.get_submission(url=COMMENT_URL)
@@ -78,7 +78,7 @@ def test_moderator_or_oauth_required_loged_in_from_submission_obj():
         submission.remove()
 
 
-def test_moderator_or_oauth_required_loged_in_from_subreddit_obj():
+def test_moderator_or_oauth_required_logged_in_from_subreddit_obj():
     oth = Reddit(USER_AGENT, disable_update_check=True)
     oth.login('PyAPITestUser3', '1111')
     subreddit = oth.get_subreddit(SR)

@@ -13,7 +13,6 @@
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
 import pytest
-from six import next as six_next
 from requests.exceptions import HTTPError
 
 from praw.tests.helper import configure, disable_cache, first, R, SUBREDDIT
@@ -35,7 +34,7 @@ def test_distinguish_and_undistinguish():
         assert not submission.distinguished
 
     disable_cache()
-    submission = six_next(SUBREDDIT.get_top())
+    submission = next(SUBREDDIT.get_top())
     if submission.distinguished:
         verify_undistinguish(submission)
         verify_distinguish(submission)

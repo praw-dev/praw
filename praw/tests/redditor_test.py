@@ -12,8 +12,6 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-from six import next as six_next
-
 from praw.objects import LoggedInRedditor
 from praw.tests.helper import (configure, delay, OTHER_USER_ID,
                                OTHER_USER_NAME, R)
@@ -49,17 +47,17 @@ def test_duplicate_login():
 
 def test_get_disliked():
     # Pulls from get_liked. Problem here may come from get_liked
-    item = six_next(R.user.get_liked())
+    item = next(R.user.get_liked())
     item.downvote()
     delay()  # The queue needs to be processed
     assert item not in list(R.user.get_liked())
 
 
 def test_get_hidden():
-    submission = six_next(R.user.get_submitted())
+    submission = next(R.user.get_submitted())
     submission.hide()
     delay()  # The queue needs to be processed
-    item = six_next(R.user.get_hidden())
+    item = next(R.user.get_hidden())
     item.unhide()
     delay()
     assert item not in list(R.user.get_hidden())
@@ -67,7 +65,7 @@ def test_get_hidden():
 
 def test_get_liked():
     # Pulls from get_disliked. Problem here may come from get_disliked
-    item = six_next(R.user.get_disliked())
+    item = next(R.user.get_disliked())
     item.upvote()
     delay()  # The queue needs to be processed
     assert item not in list(R.user.get_disliked())

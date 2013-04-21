@@ -13,7 +13,6 @@
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
 import pytest
-from six import next as six_next
 
 from praw import errors, Reddit
 from praw.tests.helper import (configure, disable_cache, first, R, SR,
@@ -90,7 +89,7 @@ def test_save():
 
 
 def test_short_link():
-    submission = six_next(R.get_new())
+    submission = next(R.get_new())
     if R.config.is_reddit:
         assert submission.id in submission.short_link
     else:

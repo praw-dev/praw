@@ -12,8 +12,6 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-from six import next as six_next
-
 from praw.tests.helper import configure, first, SUBREDDIT
 
 
@@ -22,7 +20,7 @@ def setup_function(function):  # pylint: disable-msg=W0613
 
 
 def test_approve():
-    submission = six_next(SUBREDDIT.get_spam())
+    submission = next(SUBREDDIT.get_spam())
     assert submission
     submission.approve()
     found = first(SUBREDDIT.get_new(),
@@ -31,7 +29,7 @@ def test_approve():
 
 
 def test_remove():
-    submission = six_next(SUBREDDIT.get_new())
+    submission = next(SUBREDDIT.get_new())
     assert submission
     submission.remove()
     found = first(SUBREDDIT.get_spam(),

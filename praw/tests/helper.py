@@ -14,19 +14,16 @@
 
 # pylint: disable-msg=C0103, E1101
 
-"""Tests. Split into classes according to what they test."""
-
 import pytest
 import sys
 import time
 from requests.compat import urljoin
-from six import next as six_next
 
 from praw import Reddit
 
 
 def first(seq, predicate):
-    return six_next((x for x in seq if predicate(x)), None)
+    return next((x for x in seq if predicate(x)), None)
 
 
 def flair_diff(root, other):

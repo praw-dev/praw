@@ -15,7 +15,7 @@
 import uuid
 import random
 import pytest
-from six import next as six_next, text_type
+from six import text_type
 from requests.exceptions import HTTPError
 
 from praw import errors
@@ -29,7 +29,7 @@ def setup_function(function):  # pylint: disable-msg=W0613
 
 def test_add_link_flair():
     flair_text = 'Flair: %s' % uuid.uuid4()
-    sub = six_next(SUBREDDIT.get_new())
+    sub = next(SUBREDDIT.get_new())
     SUBREDDIT.set_flair(sub, flair_text)
     sub = R.get_submission(sub.permalink)
     assert sub.link_flair_text == flair_text
@@ -37,14 +37,14 @@ def test_add_link_flair():
 
 def test_add_link_flair_through_submission():
     flair_text = 'Falir: %s' % uuid.uuid4()
-    sub = six_next(SUBREDDIT.get_new())
+    sub = next(SUBREDDIT.get_new())
     sub.set_flair(flair_text)
     sub = R.get_submission(sub.permalink)
     assert sub.link_flair_text == flair_text
 
 
 def test_add_link_flair_to_invalid_subreddit():
-    sub = six_next(R.get_subreddit('python').get_new())
+    sub = next(R.get_subreddit('python').get_new())
     with pytest.raises(HTTPError):  # pylint: disable-msg=E1101
         SUBREDDIT.set_flair(sub, 'text')
 

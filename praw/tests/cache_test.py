@@ -13,7 +13,6 @@
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
 import uuid
-from six import next as six_next
 
 from praw.tests.helper import configure, disable_cache, R, SR
 
@@ -48,7 +47,7 @@ def test_refresh_subreddit():
 def test_refresh_submission():
     disable_cache()
     subreddit = R.get_subreddit(SR)
-    submission = six_next(subreddit.get_top())
+    submission = next(subreddit.get_top())
     same_submission = R.get_submission(submission_id=submission.id)
     if submission.likes:
         submission.downvote()

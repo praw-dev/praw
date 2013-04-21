@@ -13,7 +13,6 @@
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
 from requests.exceptions import Timeout
-from six import next as six_next
 import pytest
 
 from praw import helpers, Reddit
@@ -41,7 +40,7 @@ def test_decode_entities():
 def test_equality():
     subreddit = R.get_subreddit(SR)
     same_subreddit = R.get_subreddit(SR)
-    submission = six_next(subreddit.get_hot())
+    submission = next(subreddit.get_hot())
     assert subreddit == same_subreddit
     assert not subreddit != same_subreddit
     assert not subreddit == submission
@@ -72,7 +71,7 @@ def test_get_controversial():
 
 def test_get_flair_list():
     sub = R.get_subreddit('python')
-    assert six_next(sub.get_flair_list())
+    assert next(sub.get_flair_list())
 
 
 def test_get_front_page():

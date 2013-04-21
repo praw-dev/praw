@@ -15,7 +15,7 @@
 from __future__ import unicode_literals
 
 import uuid
-from six import next as six_next, text_type
+from six import text_type
 
 from praw.tests.helper import configure, R, SR, SUBREDDIT
 
@@ -26,16 +26,16 @@ def setup_function(function):  # pylint: disable-msg=W0613
 
 def test_author_encoding():
     # pylint: disable-msg=E1101
-    author1 = six_next(R.get_new()).author
+    author1 = next(R.get_new()).author
     author2 = R.get_redditor(text_type(author1))
     assert author1 == author2
-    subreddit1 = six_next(author1.get_submitted())
-    subreddit2 = six_next(author2.get_submitted())
+    subreddit1 = next(author1.get_submitted())
+    subreddit2 = next(author2.get_submitted())
     assert subreddit1 == subreddit2
 
 
 def test_unicode_comment():
-    sub = six_next(SUBREDDIT.get_new())
+    sub = next(SUBREDDIT.get_new())
     text = 'Have some unicode: (\xd0, \xdd)'
     comment = sub.add_comment(text)
     assert text == comment.body
