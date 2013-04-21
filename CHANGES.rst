@@ -22,6 +22,8 @@ PRAW 2.1.0 (Unreleased)
  * **[CHANGE]** :meth:`.UnauthenticatedReddit.get_flair` returns ``None`` when the redditor does not
    exist.
  * **[CHANGE]** Deprecated :meth:`.get_all_comments`.
+ * **[BUGFIX]** Allow editing non-top-level wiki pages fetched using
+   :meth:`.Subreddit.get_wiki_page`.
  * **[BUGFIX]** Fix a bug in :meth:`SubmitMixin.submit`. See
    https://github.com/praw-dev/praw/issues/213
  * **[BUGFIX]** Fix a python 3.3 bug in :meth:`.image_upload`. See

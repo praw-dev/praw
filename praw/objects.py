@@ -46,9 +46,9 @@ class RedditContentObject(object):
     def from_api_response(cls, reddit_session, json_dict):
         """Return an instance of the appropriate class from the json_dict."""
         if cls == WikiPage:  # Temporary HACK for WikiPage
-            parts = reddit_session._request_url.rsplit('/', 3)
-            subreddit = parts[1]
-            page = parts[3].split('.')[0]
+            parts = reddit_session._request_url.split('/', 6)
+            subreddit = parts[4]
+            page = parts[6].split('.', 1)[0]
             return cls(reddit_session, subreddit, page, json_dict=json_dict)
         return cls(reddit_session, json_dict=json_dict)
 
