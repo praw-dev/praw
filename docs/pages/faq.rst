@@ -28,7 +28,7 @@ Normally, PRAW will automatically prompt for a response whenever a captcha is
 required. This works great if you're interactively running a program on the
 terminal, but may not be desired for other applications. In order to prevent
 the automatic prompting for captchas, one must add
-`raise_captcha_exception=True` to the function call:
+``raise_captcha_exception=True`` to the function call:
 
 >>> r.submit('reddit_api_test', 'Test Submission', text='Failed Captcha Test',
 ... raise_captcha_exception=True)
@@ -37,11 +37,11 @@ Traceback (most recent call last):
 praw.errors.InvalidCaptcha: `care to try these again?` on field `captcha`
 
 With this added keyword, you program can catch the :class:`.InvalidCaptcha`
-exception and obtain the `captcha_id` via `response['captcha']` of the
+exception and obtain the ``captcha_id`` via ``response['captcha']`` of the
 exception instance.
 
 In order to manually pass the captcha response to the desired function you must
-add a `captcha` keyword argument with a value of the following format:
+add a ``captcha`` keyword argument with a value of the following format:
 
 .. code-block:: pycon
 
