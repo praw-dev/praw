@@ -19,10 +19,10 @@ PRAW 2.1.0 (Unreleased)
    :meth:`.get_content` but don't alter the limit. This change will result in
    broken code if the calling code utilizes positional instead of keyword
    arguments.
- * **[CHANGE]** :meth:`.get_flair` returns ``None`` when the redditor does not
+ * **[CHANGE]** :meth:`.UnauthenticatedReddit.get_flair` returns ``None`` when the redditor does not
    exist.
  * **[CHANGE]** Deprecated :meth:`.get_all_comments`.
- * **[BUGFIX]** Fix a bug in :meth:`.submit`. See
+ * **[BUGFIX]** Fix a bug in :meth:`SubmitMixin.submit`. See
    https://github.com/praw-dev/praw/issues/213
  * **[BUGFIX]** Fix a python 3.3 bug in :meth:`.image_upload`. See
    https://github.com/praw-dev/praw/issues/211

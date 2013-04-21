@@ -186,6 +186,11 @@ def require_captcha(function):
         captcha = sys.stdin.readline().strip()
         return {'iden': captcha_id, 'captcha': captcha}
 
+    function.__doc__ += ('\nThis function may result in a captcha challenege. '
+                         'PRAW will automatically prompt you for a response. '
+                         'See :ref:`handling-captchas` if you want to manually'
+                         ' handle captchas.')
+
     @wraps(function)
     def wrapped(obj, *args, **kwargs):
         if 'raise_captcha_exception' in kwargs:

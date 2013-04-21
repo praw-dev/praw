@@ -18,6 +18,47 @@ permalink, and then the first comment should be the desired one.
 >>> s = r.get_submission('http://www.reddit.com/r/redditdev/comments/s3vcj/_/c4axeer')
 >>> your_comment = s.comments[0]
 
+
+.. _handling-captchas:
+
+How can I handle captchas myself?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Normally, PRAW will automatically prompt for a response whenever a captcha is
+required. This works great if you're interactively running a program on the
+terminal, but may not be desired for other applications. In order to prevent
+the automatic prompting for captchas, one must add
+`raise_captcha_exception=True` to the function call:
+
+>>> r.submit('reddit_api_test', 'Test Submission', text='Failed Captcha Test',
+... raise_captcha_exception=True)
+Traceback (most recent call last):
+...
+praw.errors.InvalidCaptcha: `care to try these again?` on field `captcha`
+
+With this added keyword, you program can catch the :class:`.InvalidCaptcha`
+exception and obtain the `captcha_id` via `response['captcha']` of the
+exception instance.
+
+In order to manually pass the captcha response to the desired function you must
+add a `captcha` keyword argument with a value of the following format:
+
+.. code-block:: pycon
+
+    {'iden' : 'the captcha id', 'captcha': 'the captcha response text'}
+
+For instance if the solution to ``captcha_id``
+``f7UdxDmAEMbyLrb5fRALWJWvI5RPgGve`` is ``FYEMHB`` then the above submission
+can be made with the following call:
+
+>>> captcha = {'iden': 'f7UdxDmAEMbyLrb5fRALWJWvI5RPgGve', 'captcha': 'FYEMHB'}
+>>> r.submit('reddit_api_test', 'Test Submission', text='Failed Captcha Test',
+... raise_captcha_exception=True, captcha=captcha)
+<praw.objects.Submission object at 0x2b726d0>
+
+Note that we still add ``raise_captcha_exception=True`` in case the provided
+captcha is incorrect.
+
 I made a change, but it doesn't seem to have an effect?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
