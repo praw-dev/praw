@@ -1775,7 +1775,7 @@ class SubscribeMixin(AuthenticatedReddit):
                 'sr_name': six.text_type(subreddit)}
         response = self.request_json(self.config['subscribe'], data=data)
         # pylint: disable-msg=E1101,W0212
-        helpers._request.evict([self.config['my_reddits']])
+        helpers._request.evict([self.config['my_subreddits']])
         return response
 
     def unsubscribe(self, subreddit):

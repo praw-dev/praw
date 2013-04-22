@@ -1012,9 +1012,9 @@ class Subreddit(Messageable, Refreshable):
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
                  fetch=False):
-        # Special case for when my_reddits is called as no name is returned so
-        # we have to extract the name from the URL.  The URLs are returned as:
-        # /r/reddit_name/
+        # Special case for when my_subreddits is called as no name is returned
+        # so we have to extract the name from the URL.  The URLs are returned
+        # as: /r/reddit_name/
         if not subreddit_name:
             subreddit_name = json_dict['url'].split('/')[2]
 
