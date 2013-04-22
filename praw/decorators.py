@@ -183,8 +183,13 @@ def require_captcha(function):
                       captcha_id + '.png')
         sys.stdout.write('Captcha URL: %s\nCaptcha: ' % url)
         sys.stdout.flush()
-        captcha = sys.stdin.readline().strip()
-        return {'iden': captcha_id, 'captcha': captcha}
+        raw = sys.stdin.readline()
+        if not raw:  # stdin has reached the end of file
+            # Trigger exception raising next time through. The request is
+            # cached so this will not require and extra request and delay.
+            sys.stdin.close()
+            return None
+        return {'iden': captcha_id, 'captcha': raw.strip()}
 
     function.__doc__ += ('\nThis function may result in a captcha challenege. '
                          'PRAW will automatically prompt you for a response. '
@@ -212,7 +217,7 @@ def require_captcha(function):
                     kwargs['captcha'] = get_captcha(reddit_session, captcha_id)
                 return function(obj, *args, **kwargs)
             except errors.InvalidCaptcha as exception:
-                if raise_captcha_exception:
+                if sys.stdin.closed or raise_captcha_exception:
                     raise
                 captcha_id = exception.response['captcha']
     return function if IS_SPHINX_BUILD else wrapped
