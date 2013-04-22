@@ -14,13 +14,10 @@
 
 """Helper functions"""
 
-import sys
 import six
 from warnings import warn
 from requests.compat import urljoin
-from praw.decorators import Memoize, restrict_access, sleep_after
-from praw.errors import (ClientException, InvalidSubreddit, OAuthException,
-                         OAuthInsufficientScope, OAuthInvalidToken)
+from praw.decorators import restrict_access
 
 
 def _get_section(subpath=''):
@@ -96,94 +93,12 @@ def _modify_relationship(relationship, unlink=False, is_sub=False,
         else:
             data['container'] = thing.fullname
 
+        session = thing.reddit_session
         if relationship == 'moderator':
-            _request.evict([thing.reddit_session.config['moderators'] %
-                            six.text_type(thing)])
-        url = thing.reddit_session.config[url_key]
-        return thing.reddit_session.request_json(url, data=data)
+            session.evict(session.config['moderators'] % six.text_type(thing))
+        url = session.config[url_key]
+        return session.request_json(url, data=data)
     return do_relationship
-
-
-@Memoize
-@sleep_after
-def _request(reddit_session, url, params=None, data=None, timeout=45,
-             raw_response=False, auth=None, files=None):
-    """Make the http request and return the http response body."""
-    if getattr(reddit_session, '_use_oauth', False):
-        headers = {'Authorization': 'bearer %s' % reddit_session.access_token}
-        # Requests using OAuth for authorization must switch to using the oauth
-        # domain.
-        # pylint: disable-msg=W0212
-        for prefix in (reddit_session.config._site_url,
-                       reddit_session.config._ssl_url):
-            if url.startswith(prefix):
-                if reddit_session.config.log_requests >= 1:
-                    sys.stderr.write(
-                        'substituting %s for %s in url\n'
-                        % (reddit_session.config._oauth_url, prefix))
-                url = (reddit_session.config._oauth_url + url[len(prefix):])
-                break
-    else:
-        headers = {}
-
-    if reddit_session.config.log_requests >= 1:
-        sys.stderr.write('retrieving: %s\n' % url)
-    if reddit_session.config.log_requests >= 2:
-        sys.stderr.write('params: %s\n' % (params or 'None'))
-        sys.stderr.write('data: %s\n' % (data or 'None'))
-        if auth:
-            sys.stderr.write('auth: %s\n' % auth)
-
-    if data or files:
-        if data is True:
-            data = {}
-        if not auth:
-            data.setdefault('api_type', 'json')
-            if reddit_session.modhash:
-                data.setdefault('uh', reddit_session.modhash)
-        method = reddit_session.http.post
-    else:
-        method = reddit_session.http.get
-
-    response = None
-    while True:
-        # pylint: disable-msg=W0212
-        try:
-            response = method(url, params=params, data=data, files=files,
-                              headers=headers, timeout=timeout,
-                              allow_redirects=False, auth=auth)
-        finally:
-            # Hack to force-close the connection (if needed) until
-            # https://github.com/shazow/urllib3/pull/133 is added to urllib3
-            # and then the version of urllib3 in requests is updated We also
-            # have to manually handle redirects for now because of this.
-            if response and response.raw._fp.will_close:
-                response.raw._fp.close()
-        if response.status_code == 302:
-            prev_url = url
-            url = urljoin(url, response.headers['location'])
-            if 'reddits/search?q=' in url:  # Handle non-existent subreddit
-                subreddit = url.rsplit('=', 1)[1]
-                raise InvalidSubreddit('`{0}` is not a valid subreddit'
-                                       .format(subreddit))
-            elif 'random' not in prev_url:
-                raise ClientException('Unexpected redirect from {0} to {1}'
-                                      .format(prev_url, url))
-        else:
-            break
-    # Raise specific errors on some status codes
-    if response.status_code != 200 and 'www-authenticate' in response.headers:
-        msg = response.headers['www-authenticate']
-        if 'insufficient_scope' in msg:
-            raise OAuthInsufficientScope('insufficient_scope', url)
-        elif 'invalid_token' in msg:
-            raise OAuthInvalidToken('invalid_token', url)
-        else:
-            raise OAuthException(msg, url)
-    response.raise_for_status()
-    if raw_response:
-        return response
-    return response.text
 
 
 def flatten_tree(tree, nested_attr='replies', depth_first=False):

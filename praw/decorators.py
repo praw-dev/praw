@@ -23,7 +23,6 @@ length of output strings and parse json response for certain errors.
 import os
 import six
 import sys
-import time
 from functools import wraps
 from requests.compat import urljoin
 from praw import errors
@@ -31,65 +30,6 @@ from praw import errors
 
 # Don't decorate functions when building the documentation
 IS_SPHINX_BUILD = bool(os.getenv('SPHINX_BUILD'))
-
-
-class Memoize(object):
-
-    """Memoize decorator with timeout to clear cache of timed out results."""
-
-    @staticmethod
-    def normalize_url(url):
-        """Return url after stripping trailing .json and trailing slashes."""
-        if url.endswith('.json'):
-            url = url[:-5]
-        if url.endswith('/'):
-            url = url[:-1]
-        return url
-
-    def __init__(self, function):
-        wraps(function)(self)
-        self.function = function
-        self._cache = {}
-        self._timeouts = {}
-
-    def __call__(self, reddit_session, url, *args, **kwargs):
-        # Ignore uploads
-        if kwargs.get('files'):
-            return self.function(reddit_session, url, *args, **kwargs)
-
-        normalized_url = self.normalize_url(url)
-        key = (reddit_session, normalized_url, repr(args),
-               frozenset(six.iteritems(kwargs)))
-        call_time = time.time()
-        self.clear_timeouts(call_time, reddit_session.config.cache_timeout)
-        self._timeouts.setdefault(key, call_time)
-        if key in self._cache:
-            return self._cache[key]
-        result = self.function(reddit_session, url, *args, **kwargs)
-        if kwargs.get('raw_response'):
-            return result
-        return self._cache.setdefault(key, result)
-
-    def clear_timeouts(self, call_time, cache_timeout):
-        """Clear the cache of timed out results."""
-        for key in list(self._timeouts):
-            if call_time - self._timeouts[key] > cache_timeout:
-                del self._timeouts[key]
-                if key in self._cache:
-                    del self._cache[key]
-
-    def empty(self):
-        """Empty the entire cache."""
-        self._cache = {}
-        self._timeouts = {}
-
-    def evict(self, urls):
-        """Remove cached RedditContentObject by URL."""
-        urls = [self.normalize_url(url) for url in urls]
-        relevant_caches = [key for key in self._cache if key[1] in urls]
-        for key in relevant_caches:
-            del self._cache[key]
-            del self._timeouts[key]
 
 
 def alias_function(function, class_name):
@@ -144,15 +84,15 @@ def oauth_generator(function):
     return function if IS_SPHINX_BUILD else wrapped
 
 
-def parse_api_json_response(function):  # pylint: disable-msg=R0912
-    """Raise client side exception(s) when presenet in the API response.
+def raise_api_exceptions(function):
+    """Raise client side exception(s) when present in the API response.
 
     Returned data is not modified.
 
     """
     @wraps(function)
-    def wrapped(cls, *args, **kwargs):
-        return_value = function(cls, *args, **kwargs)
+    def wrapped(reddit_session, *args, **kwargs):
+        return_value = function(reddit_session, *args, **kwargs)
         if isinstance(return_value, dict):
             if return_value.get('error') == 304:  # Not modified exception
                 raise errors.NotModified(return_value)
@@ -161,7 +101,7 @@ def parse_api_json_response(function):  # pylint: disable-msg=R0912
                 for error_type, msg, value in return_value['errors']:
                     if error_type in errors.ERROR_MAPPING:
                         if error_type == 'RATELIMIT':
-                            _request.evict(args[0])
+                            reddit_session.evict(args[0])
                         error_class = errors.ERROR_MAPPING[error_type]
                     else:
                         error_class = errors.APIException
@@ -176,7 +116,7 @@ def parse_api_json_response(function):  # pylint: disable-msg=R0912
 
 
 def require_captcha(function):
-    """Decorator for methods that require captchas."""
+    """Return a decorator for methods that require captchas."""
     def get_captcha(reddit_session, captcha_id):
         """Prompt user for captcha solution and return a prepared result."""
         url = urljoin(reddit_session.config['captcha'],
@@ -340,32 +280,3 @@ def require_oauth(function):
             raise errors.OAuthAppRequired(err_msg)
         return function(self, *args, **kwargs)
     return function if IS_SPHINX_BUILD else wrapped
-
-
-def sleep_after(function):
-    """Ensure frequency of API calls doesn't exceed guidelines.
-
-    We are allowed to make a API request every api_request_delay seconds as
-    specified in praw.ini. This value may differ from reddit to reddit. For
-    reddit.com it is 2. Any function decorated with this will be forced to
-    delay api_request_delay seconds from the calling of the last function
-    decorated with this before executing.
-
-    """
-    @wraps(function)
-    def wrapped(reddit_session, *args, **kwargs):
-        config = reddit_session.config
-        last = last_call.get(config.domain, 0)
-        now = time.time()
-        delay = last + int(config.api_request_delay) - now
-        if delay > 0:
-            now += delay
-            time.sleep(delay)
-        last_call[config.domain] = now
-        return function(reddit_session, *args, **kwargs)
-    last_call = {}
-    return function if IS_SPHINX_BUILD else wrapped
-
-
-# Avoid circular import: http://effbot.org/zone/import-confusion.htm
-from .helpers import _request

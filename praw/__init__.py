@@ -31,7 +31,8 @@ import re
 import requests
 import six
 import sys
-from praw import decorators, errors, helpers
+from praw import decorators, errors
+from praw.handlers import DefaultHandler
 from praw.settings import CONFIG
 from requests.compat import urljoin
 from requests import Request
@@ -54,11 +55,13 @@ PNG_HEADER = b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
 simplefilter('default')
 
 # Compatability
-if not six.PY3:
-    chr = unichr
+if six.PY3:
+    CHR = chr
+else:
+    CHR = unichr
 
 
-class Config(object):  # pylint: disable-msg=R0903
+class Config(object):  # pylint: disable-msg=R0903, R0924
 
     """A class containing the configuration for a reddit site."""
 
@@ -261,6 +264,7 @@ class BaseReddit(object):
             raise TypeError('User agent must be a non-empty string.')
 
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
+        self.handler = DefaultHandler()
         self.http = requests.session()
         self.http.headers['User-Agent'] = UA_STRING % user_agent
         if self.config.http_proxy:
@@ -288,16 +292,16 @@ class BaseReddit(object):
 
         """
         def decode(match):
-            return chr(html_entities.name2codepoint[match.group(1)])
+            return CHR(html_entities.name2codepoint[match.group(1)])
 
-        # pylint: disable-msg=W0212
         timeout = self.config.timeout if timeout is None else timeout
         remaining_attempts = 3
         while True:
             try:
-                retval = helpers._request(self, url, params, data, files=files,
-                                          auth=auth, raw_response=raw_response,
-                                          timeout=timeout)
+                retval = self.handler.request(self, url, params, data,
+                                              files=files, auth=auth,
+                                              raw_response=raw_response,
+                                              timeout=timeout)
                 if not raw_response and self.config.decode_html_entities:
                     retval = re.sub('&([^;]+);', decode, retval)
                 return retval
@@ -324,6 +328,12 @@ class BaseReddit(object):
         else:
             return object_class.from_api_response(self, json_data['data'])
         return json_data
+
+    def evict(self, items):
+        """Evict item(s) from the cache."""
+        if not hasattr(items, '__iter__'):
+            items = (items,)
+        self.handler.evict(items)
 
     @decorators.oauth_generator
     def get_content(self, url, params=None, limit=0, place_holder=None,
@@ -398,7 +408,7 @@ class BaseReddit(object):
             else:
                 return
 
-    @decorators.parse_api_json_response
+    @decorators.raise_api_exceptions
     def request_json(self, url, params=None, data=None, as_objects=True):
         """Get the JSON processed from a page.
 
@@ -415,7 +425,8 @@ class BaseReddit(object):
             hook = self._json_reddit_objecter
         else:
             hook = None
-        self._request_url = url  # Availabile for objecter to use
+        # Request url just needs to be available for the objecter to use
+        self._request_url = url  # pylint: disable-msg=W0201
         data = json.loads(response, object_hook=hook)
         delattr(self, '_request_url')
         # Update the modhash
@@ -909,9 +920,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """
         data = {'r': six.text_type(subreddit)}
         # Clear moderated subreddits and cache
-        # pylint: disable-msg=W0212
-        self.user._mod_subs = None
-        helpers._request.evict([self.config['my_mod_reddits']])
+        self.user._mod_subs = None  # pylint: disable-msg=W0212
+        self.evict(self.config['my_mod_reddits'])
         return self.request_json(self.config['accept_mod_invite'], data=data)
 
     def clear_authentication(self):
@@ -925,7 +935,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.access_token = None
         self.refresh_token = None
         self.http.cookies.clear()
-        helpers._request.empty()  # pylint: disable-msg=W0212
+        self.handler.clear_cache()
         self.user = None
 
     def edit_wiki_page(self, subreddit, page, content, reason=''):
@@ -1102,9 +1112,7 @@ class ModConfigMixin(AuthenticatedReddit):
         elif name:
             data = {'img_name': name}
             url = self.config['delete_sr_image']
-            # pylint: disable-msg=E1101,W0212
-            helpers._request.evict([self.config['stylesheet'] %
-                                    six.text_type(subreddit)])
+            self.evict(self.config['stylesheet'] % six.text_type(subreddit))
         else:
             data = True
             url = self.config['delete_sr_header']
@@ -1156,9 +1164,8 @@ class ModConfigMixin(AuthenticatedReddit):
             msg = 'Extra settings fields: {0}'.format(kwargs.keys())
             warn_explicit(msg, UserWarning, '', 0)
             data.update(kwargs)
-        # pylint: disable-msg=E1101,W0212
-        helpers._request.evict([self.config['subreddit_settings'] %
-                                six.text_type(subreddit)])
+        self.evict(self.config['subreddit_settings'] %
+                   six.text_type(subreddit))
         return self.request_json(self.config['site_admin'], data=data)
 
     @decorators.restrict_access(scope='modconfig')
@@ -1173,9 +1180,7 @@ class ModConfigMixin(AuthenticatedReddit):
                 'op': 'save'}  # Options: save / preview
         if prevstyle is not None:
             data['prevstyle'] = prevstyle
-        # pylint: disable-msg=E1101,W0212
-        helpers._request.evict([self.config['stylesheet'] %
-                                six.text_type(subreddit)])
+        self.evict(self.config['stylesheet'] % six.text_type(subreddit))
         return self.request_json(self.config['subreddit_css'], data=data)
 
     @decorators.restrict_access(scope='modconfig')
@@ -1356,8 +1361,7 @@ class ModFlairMixin(AuthenticatedReddit):
             data['name'] = six.text_type(item)
             evict = self.config['flairlist'] % six.text_type(subreddit)
         response = self.request_json(self.config['flair'], data=data)
-        # pylint: disable-msg=E1101,W0212
-        helpers._request.evict([evict])
+        self.evict(evict)
         return response
 
     @decorators.restrict_access(scope='modflair')
@@ -1388,9 +1392,7 @@ class ModFlairMixin(AuthenticatedReddit):
             response.extend(self.request_json(self.config['flaircsv'],
                                               data=data))
             lines = lines[100:]
-        stale_url = self.config['flairlist'] % six.text_type(subreddit)
-        # pylint: disable-msg=E1101,W0212
-        helpers._request.evict([stale_url])
+        self.evict(self.config['flairlist'] % six.text_type(subreddit))
         return response
 
 
@@ -1605,8 +1607,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         data = {'id': ','.join(thing_ids)}
         key = 'unread_message' if unread else 'read_message'
         response = self.request_json(self.config[key], data=data)
-        urls = [self.config[x] for x in ['inbox', 'moderator', 'unread']]
-        helpers._request.evict(urls)  # pylint: disable-msg=E1101,W0212
+        self.evict([self.config[x] for x in ['inbox', 'moderator', 'unread']])
         return response
 
     @decorators.restrict_access(scope='privatemessages')
@@ -1657,7 +1658,8 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         if unset_has_mail:
             params['mark'] = 'true'
             if update_user:  # Update the user object
-                self.user.has_mail = False
+                # Use setattr to avoid pylint error
+                setattr(self.user, 'has_mail', False)
         return self.get_content(self.config['unread'], *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
@@ -1683,8 +1685,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         if captcha:
             data.update(captcha)
         response = self.request_json(self.config['compose'], data=data)
-        # pylint: disable-msg=E1101,W0212
-        helpers._request.evict([self.config['sent']])
+        self.evict(self.config['sent'])
         return response
 
 
@@ -1743,6 +1744,7 @@ class SubmitMixin(AuthenticatedReddit):
             # Hack until reddit/627 is resolved
             if url.startswith(self.config._oauth_url):
                 url = self.config._site_url + url[len(self.config._oauth_url):]
+        # pylint: enable-msg=W0212
         try:
             return self.get_submission(url)
         except requests.exceptions.HTTPError as error:
@@ -1774,8 +1776,7 @@ class SubscribeMixin(AuthenticatedReddit):
         data = {'action': 'unsub' if unsubscribe else 'sub',
                 'sr_name': six.text_type(subreddit)}
         response = self.request_json(self.config['subscribe'], data=data)
-        # pylint: disable-msg=E1101,W0212
-        helpers._request.evict([self.config['my_subreddits']])
+        self.evict(self.config['my_subreddits'])
         return response
 
     def unsubscribe(self, subreddit):
