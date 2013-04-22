@@ -19,9 +19,15 @@ PRAW 2.1.0 (Unreleased)
    :meth:`.get_content` but don't alter the limit. This change will result in
    broken code if the calling code utilizes positional instead of keyword
    arguments.
- * **[CHANGE]** :meth:`.UnauthenticatedReddit.get_flair` returns ``None`` when the redditor does not
-   exist.
- * **[CHANGE]** Deprecated :meth:`.get_all_comments`.
+ * **[CHANGE]** :meth:`.UnauthenticatedReddit.get_flair` returns ``None`` when
+   the redditor does not exist.
+ * **[CHANGE]** Deprecated :meth:`.get_all_comments`. Use
+   :meth:`~.UnauthenticatedReddit.get_comments` with ``all`` as the subreddit
+   argument.
+ * **[CHANGE]** Deprecated :meth:`.get_my_reddits`. Use
+   :meth:`.get_my_subreddits` instead.
+ * **[CHANGE]** Deprecated :meth:`.get_popular_reddits`. Use
+   :meth:`.get_popular_subreddits` instead.
  * **[BUGFIX]** Allow editing non-top-level wiki pages fetched using
    :meth:`.Subreddit.get_wiki_page`.
  * **[BUGFIX]** Fix a bug in :meth:`SubmitMixin.submit`. See

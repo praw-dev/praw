@@ -100,12 +100,12 @@ class Config(object):  # pylint: disable-msg=R0903
                  'modlog':              'r/%s/about/log/',
                  'modqueue':            'r/%s/about/modqueue/',
                  'morechildren':        'api/morechildren/',
-                 'my_con_reddits':      'reddits/mine/contributor/',
-                 'my_mod_reddits':      'reddits/mine/moderator/',
-                 'my_reddits':          'reddits/mine/subscriber/',
+                 'my_con_subreddits':   'subreddits/mine/contributor/',
+                 'my_mod_subreddits':   'subreddits/mine/moderator/',
+                 'my_subreddits':       'subreddits/mine/subscriber/',
                  'new':                 'new/',
                  'marknsfw':            'api/marknsfw/',
-                 'popular_reddits':     'reddits/popular/',
+                 'popular_subreddits':  'subreddits/popular/',
                  'read_message':        'api/read_message/',
                  'reddit_url':          '/',
                  'register':            'api/register/',
@@ -691,11 +691,20 @@ class UnauthenticatedReddit(BaseReddit):
     def get_popular_reddits(self, *args, **kwargs):
         """Return a get_content generator for the most active subreddits.
 
+        This is a **deprecated** version of :meth:`.get_popular_subreddits`.
+
+        """
+        warn('Please use `get_popular_subreddits` instead', DeprecationWarning)
+        return self.get_popular_subreddits(*args, **kwargs)
+
+    def get_popular_subreddits(self, *args, **kwargs):
+        """Return a get_content generator for the most active subreddits.
+
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-        url = self.config['popular_reddits']
+        url = self.config['popular_subreddits']
         return self.get_content(url, *args, **kwargs)
 
     def get_random_subreddit(self):
@@ -1537,7 +1546,8 @@ class MySubredditsMixin(AuthenticatedReddit):
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-        return self.get_content(self.config['my_con_reddits'], *args, **kwargs)
+        return self.get_content(self.config['my_con_subreddits'], *args,
+                                **kwargs)
 
     @decorators.restrict_access(scope='mysubreddits')
     def get_my_moderation(self, *args, **kwargs):
@@ -1550,10 +1560,20 @@ class MySubredditsMixin(AuthenticatedReddit):
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-        return self.get_content(self.config['my_mod_reddits'], *args, **kwargs)
+        return self.get_content(self.config['my_mod_subreddits'], *args,
+                                **kwargs)
+
+    def get_my_reddits(self, *args, **kwargs):
+        """Return a get_content generator of subreddits.
+
+        This is a **deprecated** version of :meth:`.get_my_subreddits`.
+
+        """
+        warn('Please use `get_my_subreddits` instead', DeprecationWarning)
+        return self.get_my_subreddits(*args, **kwargs)
 
     @decorators.restrict_access(scope='mysubreddits')
-    def get_my_reddits(self, *args, **kwargs):
+    def get_my_subreddits(self, *args, **kwargs):
         """Return a get_content generator of subreddits.
 
         The subreddits generated are those that the session's user is
@@ -1563,7 +1583,7 @@ class MySubredditsMixin(AuthenticatedReddit):
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-        return self.get_content(self.config['my_reddits'], *args, **kwargs)
+        return self.get_content(self.config['my_subreddits'], *args, **kwargs)
 
 
 class PrivateMessagesMixin(AuthenticatedReddit):
