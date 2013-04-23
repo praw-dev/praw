@@ -921,7 +921,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         data = {'r': six.text_type(subreddit)}
         # Clear moderated subreddits and cache
         self.user._mod_subs = None  # pylint: disable-msg=W0212
-        self.evict(self.config['my_mod_reddits'])
+        self.evict(self.config['my_mod_subreddits'])
         return self.request_json(self.config['accept_mod_invite'], data=data)
 
     def clear_authentication(self):
