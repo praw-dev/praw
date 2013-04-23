@@ -44,5 +44,6 @@ setup(
     packages=[PACKAGE_NAME, '{0}.tests'.format(PACKAGE_NAME)],
     package_data={'': ['COPYING'], PACKAGE_NAME: ['*.ini']},
     install_requires=['requests>=1.2.0', 'six', 'update_checker>=0.5'],
-    test_suite='{0}.tests'.format(PACKAGE_NAME),
-    )
+    entry_points={'console_scripts':
+                      ['praw-multiprocess = praw.multiprocess:run']},
+    test_suite='{0}.tests'.format(PACKAGE_NAME))

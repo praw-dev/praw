@@ -20,8 +20,8 @@ import sys
 from warnings import warn
 from requests.compat import urljoin
 from praw.decorators import restrict_access
-from praw.errors import (OAuthException, OAuthInsufficientScope,
-                         OAuthInvalidToken)
+from praw.errors import (ClientException, InvalidSubreddit, OAuthException,
+                         OAuthInsufficientScope, OAuthInvalidToken)
 
 
 def _get_section(subpath=''):
@@ -66,6 +66,25 @@ def _get_sorter(subpath='', deprecated=False, **defaults):
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
         return self.reddit_session.get_content(url, *args, **kwargs)
     return _sorted
+
+
+def _handle_redirect(response):
+    """Return the new url or None if there are no redirects.
+
+    Raise exceptions if appropriate.
+
+    """
+    if response.status_code != 302:
+        return None
+    new_url = urljoin(response.url, response.headers['location'])
+    if 'reddits/search?q=' in new_url:  # Handle non-existent subreddit
+        subreddit = new_url.rsplit('=', 1)[1]
+        raise InvalidSubreddit('`{0}` is not a valid subreddit'
+                               .format(subreddit))
+    elif 'random' not in response.url:
+        raise ClientException('Unexpected redirect from {0} to {1}'
+                              .format(response.url, new_url))
+    return new_url
 
 
 def _modify_relationship(relationship, unlink=False, is_sub=False,

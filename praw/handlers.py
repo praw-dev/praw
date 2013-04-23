@@ -1,10 +1,10 @@
 """Provides classes that handle request dispatching."""
+import socket
 import time
 from functools import wraps
-from praw.errors import ClientException, InvalidSubreddit
 from praw.helpers import normalize_url
 from requests import Session
-from requests.compat import urljoin
+from six.moves import cPickle
 
 
 def rate_limit(function):
@@ -60,25 +60,6 @@ class DefaultHandler(object):
     timeouts = {}
     http = Session()
 
-    @staticmethod
-    def _handle_redirect(response):
-        """Return the new url or None if there are no redirects.
-
-        Raise exceptions if appropriate.
-
-        """
-        if response.status_code != 302:
-            return None
-        new_url = urljoin(response.url, response.headers['location'])
-        if 'reddits/search?q=' in new_url:  # Handle non-existent subreddit
-            subreddit = new_url.rsplit('=', 1)[1]
-            raise InvalidSubreddit('`{0}` is not a valid subreddit'
-                                   .format(subreddit))
-        elif 'random' not in response.url:
-            raise ClientException('Unexpected redirect from {0} to {1}'
-                                  .format(response.url, new_url))
-        return new_url
-
     @classmethod
     def clear_cache(cls):
         """Clear the entire cache."""
@@ -106,9 +87,39 @@ class DefaultHandler(object):
     @rate_limit
     def request(self, request, proxies=None, timeout=45):
         """Make the http request and return the http response."""
-        response = None
-        while request.url:  # Manually handle 302 redirects
-            response = self.http.send(request, proxies=proxies,
-                                      timeout=timeout)
-            request.url = self._handle_redirect(response)
-        return response
+        return self.http.send(request, proxies=proxies, timeout=timeout)
+
+
+class MultiprocessHandler(object):
+
+    """A PRAW handler to interact with the PRAW multi-process server."""
+
+    def __init__(self, host='localhost', port=10101):
+        self.host = host
+        self.port = port
+
+    def _relay(self, **kwargs):
+        """Send the request through the Server and return the http response."""
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            sock.connect((self.host, self.port))
+            sock.sendall(cPickle.dumps(kwargs, cPickle.HIGHEST_PROTOCOL))
+            response = ''
+            while True:
+                tmp = sock.recv(1024)
+                if not tmp:
+                    break
+                response += tmp
+            return cPickle.loads(response)
+        finally:
+            sock.close()
+
+    def clear_cache(self):
+        """We don't have a cache yet, so this does nothing."""
+
+    def evict(self, urls):
+        """We don't have a cache yet, so this does nothing."""
+
+    def request(self, **kwargs):
+        """Make the http request and return the http response."""
+        return self._relay(method='request', **kwargs)

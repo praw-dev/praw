@@ -33,8 +33,8 @@ import six
 import sys
 from praw import decorators, errors
 from praw.handlers import DefaultHandler
-from praw.helpers import (_prepare_request, _raise_response_exceptions,
-                          normalize_url)
+from praw.helpers import (_handle_redirect, _prepare_request,
+                          _raise_response_exceptions, normalize_url)
 from praw.settings import CONFIG
 from requests.compat import urljoin
 from requests import Request
@@ -241,7 +241,8 @@ class BaseReddit(object):
     RETRY_CODES = [502, 503, 504]
     update_checked = False
 
-    def __init__(self, user_agent, site_name=None, disable_update_check=False):
+    def __init__(self, user_agent, site_name=None, handler=None,
+                 disable_update_check=False):
         """Initialize our connection with a reddit server.
 
         The user_agent is how your application identifies itself. Read the
@@ -266,7 +267,10 @@ class BaseReddit(object):
             raise TypeError('User agent must be a non-empty string.')
 
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
-        self.handler = DefaultHandler()
+        if handler:
+            self.handler = handler
+        else:
+            self.handler = DefaultHandler()
         self.http = requests.session()  # Dummy session
         self.http.headers['User-Agent'] = UA_STRING % user_agent
         if self.config.http_proxy:
@@ -296,6 +300,15 @@ class BaseReddit(object):
         def decode(match):
             return CHR(html_entities.name2codepoint[match.group(1)])
 
+        def handle_redirect():
+            response = None
+            while request.url:  # Manually handle 302 redirects
+                response = self.handler.request(request=request.prepare(),
+                                                proxies=self.http.proxies,
+                                                timeout=timeout, **kwargs)
+                request.url = _handle_redirect(response)
+            return response
+
         request = _prepare_request(self, url, params, data, auth, files)
         timeout = self.config.timeout if timeout is None else timeout
 
@@ -318,9 +331,7 @@ class BaseReddit(object):
         remaining_attempts = 3
         while True:
             try:
-                response = self.handler.request(request=request.prepare(),
-                                                proxies=self.http.proxies,
-                                                timeout=timeout, **kwargs)
+                response = handle_redirect()
                 _raise_response_exceptions(response)
                 self.http.cookies.update(response.cookies)
                 if raw_response:
