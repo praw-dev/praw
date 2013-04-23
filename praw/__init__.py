@@ -33,11 +33,12 @@ import six
 import sys
 from praw import decorators, errors
 from praw.handlers import DefaultHandler
-from praw.helpers import _prepare_request, normalize_url
+from praw.helpers import (_prepare_request, _raise_response_exceptions,
+                          normalize_url)
 from praw.settings import CONFIG
 from requests.compat import urljoin
 from requests import Request
-from six.moves import html_entities
+from six.moves import html_entities, http_cookiejar
 from update_checker import update_check
 from warnings import simplefilter, warn, warn_explicit
 
@@ -266,7 +267,7 @@ class BaseReddit(object):
 
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
         self.handler = DefaultHandler()
-        self.http = requests.session()
+        self.http = requests.session()  # Dummy session
         self.http.headers['User-Agent'] = UA_STRING % user_agent
         if self.config.http_proxy:
             self.http.proxies = {'http': self.config.http_proxy}
@@ -294,34 +295,40 @@ class BaseReddit(object):
         """
         def decode(match):
             return CHR(html_entities.name2codepoint[match.group(1)])
-        method, url, headers, data = _prepare_request(self, url, params, data,
-                                                      auth, files)
-        timeout = self.config.timeout if timeout is None else timeout
-        remaining_attempts = 3
 
-        # Prepare Extra arguments
-        kwargs = {'params': params, 'data': data, 'headers': headers,
-                  'auth': auth}
+        request = _prepare_request(self, url, params, data, auth, files)
+        timeout = self.config.timeout if timeout is None else timeout
+
+        # Prepare extra arguments
         key_items = []
-        for item, value in kwargs.items():
-            if isinstance(value, dict):
-                key_items.append((item, tuple(value.items())))
+        for key_value in (params, data, request.cookies, auth):
+            if isinstance(key_value, dict):
+                key_items.append(tuple(key_value.items()))
+            elif isinstance(key_value, http_cookiejar.CookieJar):
+                key_items.append(tuple(key_value.get_dict().items()))
             else:
-                key_items.append((item, value))
-        cache_key = (normalize_url(url), frozenset(key_items))
-        kwargs.update({'_rate_domain': self.config.domain,
-                       '_rate_delay': int(self.config.api_request_delay),
-                       '_cache_key': cache_key,
-                       '_cache_timeout': int(self.config.cache_timeout)})
+                key_items.append(key_value)
+        cache_key = (normalize_url(request.url), tuple(key_items))
+        kwargs = {'_rate_domain': self.config.domain,
+                  '_rate_delay': int(self.config.api_request_delay),
+                  '_cache_key': cache_key,
+                  '_cache_ignore': bool(files) or raw_response,
+                  '_cache_timeout': int(self.config.cache_timeout)}
+
+        remaining_attempts = 3
         while True:
             try:
-                retval = self.handler.request(url=url, method=method,
-                                              files=files,
-                                              raw_response=raw_response,
-                                              timeout=timeout, **kwargs)
-                if not raw_response and self.config.decode_html_entities:
-                    retval = re.sub('&([^;]+);', decode, retval)
-                return retval
+                response = self.handler.request(request=request.prepare(),
+                                                proxies=self.http.proxies,
+                                                timeout=timeout, **kwargs)
+                _raise_response_exceptions(response)
+                self.http.cookies.update(response.cookies)
+                if raw_response:
+                    return response
+                elif self.config.decode_html_entities:
+                    return re.sub('&([^;]+);', decode, response.text)
+                else:
+                    return response.text
             except requests.exceptions.HTTPError as error:
                 remaining_attempts -= 1
                 if error.response.status_code not in self.RETRY_CODES or \

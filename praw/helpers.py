@@ -14,11 +14,14 @@
 
 """Helper functions"""
 
+from requests import Request
 import six
 import sys
 from warnings import warn
 from requests.compat import urljoin
 from praw.decorators import restrict_access
+from praw.errors import (OAuthException, OAuthInsufficientScope,
+                         OAuthInvalidToken)
 
 
 def _get_section(subpath=''):
@@ -103,7 +106,7 @@ def _modify_relationship(relationship, unlink=False, is_sub=False,
 
 
 def _prepare_request(reddit_session, url, params, data, auth, files):
-    """Return the request function, url, headers, and data dictionary."""
+    """Return a requests Request object that can be "prepared"."""
     # Requests using OAuth for authorization must switch to using the oauth
     # domain.
     if getattr(reddit_session, '_use_oauth', False):
@@ -118,7 +121,8 @@ def _prepare_request(reddit_session, url, params, data, auth, files):
                 url = config._oauth_url + url[len(prefix):]
                 break
     else:
-        headers = None
+        headers = {}
+    headers.update(reddit_session.http.headers)
     # Log the request if logging is enabled
     if reddit_session.config.log_requests >= 1:
         sys.stderr.write('retrieving: %s\n' % url)
@@ -127,9 +131,11 @@ def _prepare_request(reddit_session, url, params, data, auth, files):
         sys.stderr.write('data: %s\n' % (data or 'None'))
         if auth:
             sys.stderr.write('auth: %s\n' % auth)
-
+    # Prepare request
+    request = Request(method='GET', url=url, headers=headers, params=params,
+                      auth=auth, cookies=reddit_session.http.cookies)
     if not data and not files:  # GET request
-        return reddit_session.http.get, url, headers, data
+        return request
     # Most POST requests require adding `api_type` and `uh` to the data.
     if data is True:
         data = {}
@@ -137,7 +143,24 @@ def _prepare_request(reddit_session, url, params, data, auth, files):
         data.setdefault('api_type', 'json')
         if reddit_session.modhash:
             data.setdefault('uh', reddit_session.modhash)
-    return reddit_session.http.post, url, headers, data
+    request.method = 'POST'
+    request.data = data
+    request.files = files
+    return request
+
+
+def _raise_response_exceptions(response):
+    """Raise specific errors on some status codes."""
+    if response.status_code != 200 and \
+            'www-authenticate' in response.headers:
+        msg = response.headers['www-authenticate']
+        if 'insufficient_scope' in msg:
+            raise OAuthInsufficientScope('insufficient_scope', response.url)
+        elif 'invalid_token' in msg:
+            raise OAuthInvalidToken('invalid_token', response.url)
+        else:
+            raise OAuthException(msg, response.url)
+    response.raise_for_status()
 
 
 def flatten_tree(tree, nested_attr='replies', depth_first=False):
