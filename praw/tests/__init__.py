@@ -1238,7 +1238,7 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_set_settings(self):
         title = 'Reddit API Test %s' % uuid.uuid4()
-        self.subreddit.set_settings(title)
+        self.subreddit.set_settings(title, wikimode='anyone')
         self.assertEqual(self.subreddit.get_settings()['title'], title)
 
     def test_set_stylesheet(self):

@@ -33,6 +33,7 @@ import six
 import sys
 from praw import decorators, errors
 from praw.handlers import DefaultHandler
+from praw.helpers import _prepare_request, normalize_url
 from praw.settings import CONFIG
 from requests.compat import urljoin
 from requests import Request
@@ -293,15 +294,31 @@ class BaseReddit(object):
         """
         def decode(match):
             return CHR(html_entities.name2codepoint[match.group(1)])
-
+        method, url, headers, data = _prepare_request(self, url, params, data,
+                                                      auth, files)
         timeout = self.config.timeout if timeout is None else timeout
         remaining_attempts = 3
+
+        # Prepare Extra arguments
+        kwargs = {'params': params, 'data': data, 'headers': headers,
+                  'auth': auth}
+        key_items = []
+        for item, value in kwargs.items():
+            if isinstance(value, dict):
+                key_items.append((item, tuple(value.items())))
+            else:
+                key_items.append((item, value))
+        cache_key = (normalize_url(url), frozenset(key_items))
+        kwargs.update({'_rate_domain': self.config.domain,
+                       '_rate_delay': int(self.config.api_request_delay),
+                       '_cache_key': cache_key,
+                       '_cache_timeout': int(self.config.cache_timeout)})
         while True:
             try:
-                retval = self.handler.request(self, url, params, data,
-                                              files=files, auth=auth,
+                retval = self.handler.request(url=url, method=method,
+                                              files=files,
                                               raw_response=raw_response,
-                                              timeout=timeout)
+                                              timeout=timeout, **kwargs)
                 if not raw_response and self.config.decode_html_entities:
                     retval = re.sub('&([^;]+);', decode, retval)
                 return retval

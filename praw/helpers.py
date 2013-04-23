@@ -15,6 +15,7 @@
 """Helper functions"""
 
 import six
+import sys
 from warnings import warn
 from requests.compat import urljoin
 from praw.decorators import restrict_access
@@ -101,6 +102,44 @@ def _modify_relationship(relationship, unlink=False, is_sub=False,
     return do_relationship
 
 
+def _prepare_request(reddit_session, url, params, data, auth, files):
+    """Return the request function, url, headers, and data dictionary."""
+    # Requests using OAuth for authorization must switch to using the oauth
+    # domain.
+    if getattr(reddit_session, '_use_oauth', False):
+        headers = {'Authorization': 'bearer %s' % reddit_session.access_token}
+        config = reddit_session.config
+        # pylint: disable-msg=W0212
+        for prefix in (config._site_url, config._ssl_url):
+            if url.startswith(prefix):
+                if config.log_requests >= 1:
+                    sys.stderr.write('substituting %s for %s in url\n'
+                                     % (config._oauth_url, prefix))
+                url = config._oauth_url + url[len(prefix):]
+                break
+    else:
+        headers = None
+    # Log the request if logging is enabled
+    if reddit_session.config.log_requests >= 1:
+        sys.stderr.write('retrieving: %s\n' % url)
+    if reddit_session.config.log_requests >= 2:
+        sys.stderr.write('params: %s\n' % (params or 'None'))
+        sys.stderr.write('data: %s\n' % (data or 'None'))
+        if auth:
+            sys.stderr.write('auth: %s\n' % auth)
+
+    if not data and not files:  # GET request
+        return reddit_session.http.get, url, headers, data
+    # Most POST requests require adding `api_type` and `uh` to the data.
+    if data is True:
+        data = {}
+    if not auth:
+        data.setdefault('api_type', 'json')
+        if reddit_session.modhash:
+            data.setdefault('uh', reddit_session.modhash)
+    return reddit_session.http.post, url, headers, data
+
+
 def flatten_tree(tree, nested_attr='replies', depth_first=False):
     """Return a flattened version of the passed in tree.
 
@@ -121,3 +160,12 @@ def flatten_tree(tree, nested_attr='replies', depth_first=False):
             stack[0:0] = nested
         retval.append(item)
     return retval
+
+
+def normalize_url(url):
+    """Return url after stripping trailing .json and trailing slashes."""
+    if url.endswith('.json'):
+        url = url[:-5]
+    if url.endswith('/'):
+        url = url[:-1]
+    return url

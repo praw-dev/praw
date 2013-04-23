@@ -1,12 +1,10 @@
 """Provides classes that handle request dispatching."""
-
-import six
-import sys
 import time
 from functools import wraps
 from requests.compat import urljoin
 from praw.errors import (ClientException, InvalidSubreddit, OAuthException,
                          OAuthInsufficientScope, OAuthInvalidToken)
+from praw.helpers import normalize_url
 
 
 def rate_limit(function):
@@ -20,16 +18,15 @@ def rate_limit(function):
 
     """
     @wraps(function)
-    def wrapped(obj, reddit_session, *args, **kwargs):
-        config = reddit_session.config
-        last = last_call.get(config.domain, 0)
+    def wrapped(obj, _rate_domain, _rate_delay, **kwargs):
+        last = last_call.get(_rate_domain, 0)
         now = time.time()
-        delay = last + int(config.api_request_delay) - now
+        delay = last + _rate_delay - now
         if delay > 0:
             now += delay
             time.sleep(delay)
-        last_call[config.domain] = now
-        return function(obj, reddit_session, *args, **kwargs)
+        last_call[_rate_domain] = now
+        return function(obj, **kwargs)
     last_call = {}
     return wrapped
 
@@ -37,21 +34,17 @@ def rate_limit(function):
 def use_cache(function):
     """Return a decorator that interacts with a handler's cache."""
     @wraps(function)
-    def wrapped(obj, reddit_session, url, *args, **kwargs):
-        if kwargs.get('files'):  # Ignore file uploads
-            return function(obj, reddit_session, url, *args, **kwargs)
-        normalized_url = obj.normalize_url(url)
-        key = (reddit_session, normalized_url, repr(args),
-               frozenset(six.iteritems(kwargs)))
+    def wrapped(obj, url, _cache_key, _cache_timeout, **kwargs):
+        if kwargs.get('files') or kwargs.get('raw_response'):
+            # Ignore file uploads or raw_response requests
+            return function(obj, url=url, **kwargs)
         call_time = time.time()
-        obj.clear_timeouts(call_time, reddit_session.config.cache_timeout)
-        obj.timeouts.setdefault(key, call_time)
-        if key in obj.cache:
-            return obj.cache[key]
-        result = function(obj, reddit_session, url, *args, **kwargs)
-        if kwargs.get('raw_response'):
-            return result
-        return obj.cache.setdefault(key, result)
+        obj.clear_timeouts(call_time, _cache_timeout)
+        obj.timeouts.setdefault(_cache_key, call_time)  # Does not update
+        if _cache_key in obj.cache:
+            return obj.cache[_cache_key]
+        result = function(obj, url=url, **kwargs)
+        return obj.cache.setdefault(_cache_key, result)
     return wrapped
 
 
@@ -87,53 +80,6 @@ class DefaultHandler(object):
         return new_url
 
     @staticmethod
-    def _log_request(reddit_session, url, params, data, auth):
-        """Log the request if logging is enabled."""
-        if reddit_session.config.log_requests >= 1:
-            sys.stderr.write('retrieving: %s\n' % url)
-        if reddit_session.config.log_requests >= 2:
-            sys.stderr.write('params: %s\n' % (params or 'None'))
-            sys.stderr.write('data: %s\n' % (data or 'None'))
-            if auth:
-                sys.stderr.write('auth: %s\n' % auth)
-
-    @staticmethod
-    def _prepare_oauth(reddit_session, url):
-        """Return the headers and url for the request."""
-        if not getattr(reddit_session, '_use_oauth', False):
-            return {}, url
-
-        headers = {'Authorization': 'bearer %s' % reddit_session.access_token}
-        # Requests using OAuth for authorization must switch to using the oauth
-        # domain.
-        # pylint: disable-msg=W0212
-        for prefix in (reddit_session.config._site_url,
-                       reddit_session.config._ssl_url):
-            if url.startswith(prefix):
-                if reddit_session.config.log_requests >= 1:
-                    sys.stderr.write(
-                        'substituting %s for %s in url\n'
-                        % (reddit_session.config._oauth_url, prefix))
-                url = (reddit_session.config._oauth_url + url[len(prefix):])
-                break
-        # pylint: enable-msg=W0212
-        return headers, url
-
-    @staticmethod
-    def _prepare_request(reddit_session, data, auth, files):
-        """Return the request function and data dictionary."""
-        if not data and not files:
-            return reddit_session.http.get, data
-
-        if data is True:
-            data = {}
-        if not auth:
-            data.setdefault('api_type', 'json')
-            if reddit_session.modhash:
-                data.setdefault('uh', reddit_session.modhash)
-        return reddit_session.http.post, data
-
-    @staticmethod
     def _raise_exceptions(url, response):
         """Raise specific errors on some status codes."""
         if response.status_code != 200 and \
@@ -147,15 +93,6 @@ class DefaultHandler(object):
                 raise OAuthException(msg, url)
         response.raise_for_status()
 
-    @staticmethod
-    def normalize_url(url):
-        """Return url after stripping trailing .json and trailing slashes."""
-        if url.endswith('.json'):
-            url = url[:-5]
-        if url.endswith('/'):
-            url = url[:-1]
-        return url
-
     @classmethod
     def clear_cache(cls):
         """Clear the entire cache."""
@@ -165,29 +102,25 @@ class DefaultHandler(object):
     @classmethod
     def clear_timeouts(cls, call_time, cache_timeout):
         """Clear the cache of timed out results."""
-        for key in list(cls.timeouts):
+        for key in cls.timeouts.keys():
             if call_time - cls.timeouts[key] > cache_timeout:
                 del cls.timeouts[key]
-                if key in cls.cache:
-                    del cls.cache[key]
+                del cls.cache[key]
 
     @classmethod
     def evict(cls, urls):
-        """Remove cached RedditContentObject by URL."""
-        urls = [cls.normalize_url(url) for url in urls]
-        relevant_caches = [key for key in cls.cache if key[1] in urls]
-        for key in relevant_caches:
-            del cls.cache[key]
-            del cls.timeouts[key]
+        """Remove cached responses by URL."""
+        urls = set(normalize_url(url) for url in urls)
+        for key in cls.cache.keys():
+            if key[0] in urls:
+                del cls.cache[key]
+                del cls.timeouts[key]
 
     @use_cache
     @rate_limit
-    def request(self, reddit_session, url, params=None, data=None, timeout=45,
-                raw_response=False, auth=None, files=None):
+    def request(self, url, method, params=None, data=None, files=None,
+                headers=None, auth=None, timeout=45, raw_response=False):
         """Make the http request and return the http response body."""
-        headers, url = self._prepare_oauth(reddit_session, url)
-        self._log_request(reddit_session, url, params, data, auth)
-        method, data = self._prepare_request(reddit_session, data, auth, files)
         response = None
         request_url = url
         while request_url:  # Manually handle 302 redirects
