@@ -283,17 +283,19 @@ class BaseReddit(object):
             update_check(__name__, __version__)
             self.update_checked = True
 
-    def _request(self, url, params=None, data=None, files=None, timeout=None,
-                 raw_response=False, auth=None):
+    def _request(self, url, params=None, data=None, files=None, auth=None,
+                 timeout=45, raw_response=False):
         """Given a page url and a dict of params, open and return the page.
 
         :param url: the url to grab content from.
         :param params: a dictionary containing the GET data to put in the url
         :param data: a dictionary containing the extra data to submit
         :param files: a dictionary specifying the files to upload
+        :param auth: Add the HTTP authentication headers (see requests)
+        :param timeout: Specifies the maximum time that the actual HTTP request
+            can take.
         :param raw_response: return the response object rather than the
             response body
-        :param auth: Add the HTTP authentication headers (see requests)
         :returns: either the response body or the response object
 
         """
@@ -970,7 +972,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.access_token = None
         self.refresh_token = None
         self.http.cookies.clear()
-        self.handler.clear_cache()
         self.user = None
 
     def edit_wiki_page(self, subreddit, page, content, reason=''):

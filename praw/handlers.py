@@ -5,30 +5,7 @@ from functools import wraps
 from praw.helpers import normalize_url
 from requests import Session
 from six.moves import cPickle
-
-
-def rate_limit(function):
-    """Return a decorator that enforces API request limit guidelines.
-
-    We are allowed to make a API request every api_request_delay seconds as
-    specified in praw.ini. This value may differ from reddit to reddit. For
-    reddit.com it is 2. Any function decorated with this will be forced to
-    delay api_request_delay seconds from the calling of the last function
-    decorated with this before executing.
-
-    """
-    @wraps(function)
-    def wrapped(obj, _rate_domain, _rate_delay, **kwargs):
-        last = last_call.get(_rate_domain, 0)
-        now = time.time()
-        delay = last + _rate_delay - now
-        if delay > 0:
-            now += delay
-            time.sleep(delay)
-        last_call[_rate_domain] = now
-        return function(obj, **kwargs)
-    last_call = {}
-    return wrapped
+from threading import Lock
 
 
 def use_cache(function):
@@ -47,24 +24,91 @@ def use_cache(function):
     return wrapped
 
 
-class DefaultHandler(object):
+class RateLimitHandler(object):
 
-    """Provides a basic request handler and cache for single-threaded PRAW.
+    """The base handler that provides thread-safe rate limiting enforcement.
 
-    Rate-limits are enforced on a per-domain basis.
+
+    While this handler is threadsafe, PRAW is not thread safe when the same
+    `Reddit` instance is being utilized from multiple threads.
 
     """
 
-    # The cache is class-level not instance level
-    cache = {}
-    timeouts = {}
-    http = Session()
+    last_call = {}  # Stores a two-item list: [lock, previous_call_time]
+    lock = Lock()  # lock used for adding items to last_call
+
+    def __init__(self):
+        self.http = Session()  # Each instance should have its own session
 
     @classmethod
-    def clear_cache(cls):
-        """Clear the entire cache."""
-        cls.cache = {}
-        cls.timeouts = {}
+    def evict(cls, urls):
+        """Method utilized to evict entries for the given urls.
+
+        :param urls: An interable containing normalized urls.
+
+        By default this method does nothing as a cache need not be present.
+
+        """
+
+    @staticmethod
+    def rate_limit(function):
+        """Return a decorator that enforces API request limit guidelines.
+
+        We are allowed to make a API request every api_request_delay seconds as
+        specified in praw.ini. This value may differ from reddit to reddit. For
+        reddit.com it is 2. Any function decorated with this will be forced to
+        delay _rate_delay seconds from the calling of the last function
+        decorated with this before executing.
+
+        This decorator must be applied to a RateLimitHandler class method or
+        instance method as it assumes `lock` and `last_call` are available.
+
+        """
+        @wraps(function)
+        def wrapped(cls, _rate_domain, _rate_delay, **kwargs):
+            cls.lock.acquire()
+            lock_last = cls.last_call.setdefault(_rate_domain, [Lock(), 0])
+            with lock_last[0]:  # Obtain the domain specific lock
+                cls.lock.release()
+                # Sleep if necessary, then perform the request
+                now = time.time()
+                delay = lock_last[1] + _rate_delay - now
+                if delay > 0:
+                    now += delay
+                    time.sleep(delay)
+                lock_last[1] = now
+                return function(cls, **kwargs)
+        return wrapped
+
+    def request(self, request, proxies, timeout, **_):
+        """Responsible for dispatching the request and returning the result.
+
+        Network level exceptions should be raised and only
+        ``requests.Response`` should be returned.
+
+        :param request: A ``requests.PreparedRequest`` object containing all
+            the data necessary to perform the request.
+        :param proxies: A dictionary of proxy settings to be utilized for the
+            request.
+        :param timeout: Specifies the maximum time that the actual HTTP request
+            can take.
+
+        ``**_`` should be added to the method call to ignore the extra
+        arguments intended for the cache hander.
+
+        """
+        return self.http.send(request, proxies=proxies, timeout=timeout)
+RateLimitHandler.request = RateLimitHandler.rate_limit(
+    RateLimitHandler.request)
+
+
+class DefaultHandler(RateLimitHandler):
+
+    """Extends the RateLimitHandler to add thread-safe caching support."""
+
+    # TODO: Actually make this thread safe
+    cache = {}
+    timeouts = {}
 
     @classmethod
     def clear_timeouts(cls, call_time, cache_timeout):
@@ -84,10 +128,9 @@ class DefaultHandler(object):
                 del cls.timeouts[key]
 
     @use_cache
-    @rate_limit
-    def request(self, request, proxies=None, timeout=45):
-        """Make the http request and return the http response."""
-        return self.http.send(request, proxies=proxies, timeout=timeout)
+    def request(self, **kwargs):
+        """Dispatch the request and return the result."""
+        return super(DefaultHandler, self).request(**kwargs)
 
 
 class MultiprocessHandler(object):
@@ -113,9 +156,6 @@ class MultiprocessHandler(object):
             return cPickle.loads(response)
         finally:
             sock.close()
-
-    def clear_cache(self):
-        """We don't have a cache yet, so this does nothing."""
 
     def evict(self, urls):
         """We don't have a cache yet, so this does nothing."""

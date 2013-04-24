@@ -1,8 +1,9 @@
 """Provides a request server to be used with the multiprocess handler."""
 
-from praw.handlers import rate_limit
+from praw.handlers import RateLimitHandler
 from requests import Session
 from six.moves import cPickle, socketserver
+from threading import Lock
 
 
 class ThreadingTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
@@ -20,12 +21,13 @@ class RequestHandler(socketserver.StreamRequestHandler):
 
     Requests to the same domain are cached and rate-limited.
 
-    TODO: Provide locking around domain access for rate limiting purposes
     TODO: Cache requests (with necessary locking)
 
     """
 
     http = Session()
+    last_call = {}  # Stores a two-item list: [lock, previous_call_time]
+    lock = Lock()  # lock used for adding items to last_call
 
     def handle(self):
         """Parse the RPC, make the call, and pickle up the return value."""
@@ -38,7 +40,7 @@ class RequestHandler(socketserver.StreamRequestHandler):
         cPickle.dump(retval, self.wfile,  # pylint: disable-msg=E1101
                      cPickle.HIGHEST_PROTOCOL)
 
-    @rate_limit  # This is not yet threadsafe
+    @RateLimitHandler.rate_limit
     def do_request(self, request, proxies, timeout, **_):
         """Dispatch the actual request and return the result."""
         print('{0} {1}'.format(request.method, request.url))
