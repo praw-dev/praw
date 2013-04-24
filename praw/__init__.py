@@ -316,7 +316,8 @@ class BaseReddit(object):
 
         # Prepare extra arguments
         key_items = []
-        for key_value in (params, data, request.cookies, auth):
+        oauth = request.headers.get('Authorization', None)
+        for key_value in (params, data, request.cookies, auth, oauth):
             if isinstance(key_value, dict):
                 key_items.append(tuple(key_value.items()))
             elif isinstance(key_value, http_cookiejar.CookieJar):

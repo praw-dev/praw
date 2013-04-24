@@ -149,7 +149,7 @@ def _prepare_request(reddit_session, url, params, data, auth, files):
         sys.stderr.write('params: %s\n' % (params or 'None'))
         sys.stderr.write('data: %s\n' % (data or 'None'))
         if auth:
-            sys.stderr.write('auth: %s\n' % auth)
+            sys.stderr.write('auth: %s\n' % str(auth))
     # Prepare request
     request = Request(method='GET', url=url, headers=headers, params=params,
                       auth=auth, cookies=reddit_session.http.cookies)
