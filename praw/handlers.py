@@ -97,7 +97,8 @@ class RateLimitHandler(object):
         arguments intended for the cache hander.
 
         """
-        return self.http.send(request, proxies=proxies, timeout=timeout)
+        return self.http.send(request, proxies=proxies, timeout=timeout,
+                              allow_redirects=False)
 RateLimitHandler.request = RateLimitHandler.rate_limit(
     RateLimitHandler.request)
 

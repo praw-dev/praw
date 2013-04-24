@@ -44,7 +44,8 @@ class RequestHandler(socketserver.StreamRequestHandler):
     def do_request(self, request, proxies, timeout, **_):
         """Dispatch the actual request and return the result."""
         print('{0} {1}'.format(request.method, request.url))
-        response = self.http.send(request, proxies=proxies, timeout=timeout)
+        response = self.http.send(request, proxies=proxies, timeout=timeout,
+                                  allow_redirects=False)
         response.raw = None  # Make pickleable
         return response
 
