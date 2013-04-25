@@ -22,7 +22,7 @@ class ThreadingTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
         if exc_type is socket.error and exc_value[0] == 32:
             pass
         elif exc_type is cPickle.UnpicklingError:
-            sys.stdout.write('Invalid connection from {0}\n'
+            sys.stderr.write('Invalid connection from {0}\n'
                              .format(client_addr[0]))
         else:
             raise
@@ -65,9 +65,10 @@ class RequestHandler(socketserver.StreamRequestHandler):
         method = data.pop('method')
         try:
             retval = getattr(self, 'do_{0}'.format(method))(**data)
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable-msg=W0703
             # All exceptions should be passed to the client
             # TODO: "Fix" some exceptions that aren't pickle-able
+            # (e.g., timeout)
             retval = exc
         cPickle.dump(retval, self.wfile,  # pylint: disable-msg=E1101
                      cPickle.HIGHEST_PROTOCOL)
