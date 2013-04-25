@@ -33,7 +33,7 @@ import six
 import sys
 from praw import decorators, errors
 from praw.handlers import DefaultHandler
-from praw.helpers import (_handle_redirect, _prepare_request,
+from praw.helpers import (_prepare_request, _raise_redirect_exceptions,
                           _raise_response_exceptions, normalize_url)
 from praw.settings import CONFIG
 from requests.compat import urljoin
@@ -304,11 +304,13 @@ class BaseReddit(object):
 
         def handle_redirect():
             response = None
-            while request.url:  # Manually handle 302 redirects
+            url = request.url
+            while url:  # Manually handle 302 redirects
+                request.url = url
                 response = self.handler.request(request=request.prepare(),
                                                 proxies=self.http.proxies,
                                                 timeout=timeout, **kwargs)
-                request.url = _handle_redirect(response)
+                url = _raise_redirect_exceptions(response)
             return response
 
         request = _prepare_request(self, url, params, data, auth, files)

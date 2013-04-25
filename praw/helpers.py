@@ -68,25 +68,6 @@ def _get_sorter(subpath='', deprecated=False, **defaults):
     return _sorted
 
 
-def _handle_redirect(response):
-    """Return the new url or None if there are no redirects.
-
-    Raise exceptions if appropriate.
-
-    """
-    if response.status_code != 302:
-        return None
-    new_url = urljoin(response.url, response.headers['location'])
-    if 'reddits/search?q=' in new_url:  # Handle non-existent subreddit
-        subreddit = new_url.rsplit('=', 1)[1]
-        raise InvalidSubreddit('`{0}` is not a valid subreddit'
-                               .format(subreddit))
-    elif 'random' not in response.url:
-        raise ClientException('Unexpected redirect from {0} to {1}'
-                              .format(response.url, new_url))
-    return new_url
-
-
 def _modify_relationship(relationship, unlink=False, is_sub=False,
                          deprecated=False):
     """Return a function for relationship modification.
@@ -166,6 +147,25 @@ def _prepare_request(reddit_session, url, params, data, auth, files):
     request.data = data
     request.files = files
     return request
+
+
+def _raise_redirect_exceptions(response):
+    """Return the new url or None if there are no redirects.
+
+    Raise exceptions if appropriate.
+
+    """
+    if response.status_code != 302:
+        return None
+    new_url = urljoin(response.url, response.headers['location'])
+    if 'reddits/search?q=' in new_url:  # Handle non-existent subreddit
+        subreddit = new_url.rsplit('=', 1)[1]
+        raise InvalidSubreddit('`{0}` is not a valid subreddit'
+                               .format(subreddit))
+    elif 'random' not in response.url:
+        raise ClientException('Unexpected redirect from {0} to {1}'
+                              .format(response.url, new_url))
+    return new_url
 
 
 def _raise_response_exceptions(response):
