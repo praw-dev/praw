@@ -1,5 +1,7 @@
 """Provides a request server to be used with the multiprocess handler."""
 
+import socket
+import sys
 from praw.handlers import DefaultHandler
 from requests import Session
 from six.moves import cPickle, socketserver
@@ -12,6 +14,12 @@ class ThreadingTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     """A TCP server that creates new threads per connection."""
 
     allow_reuse_address = True
+
+    def handle_error(self, *args, **kwargs):
+        """Mute connection close errors."""
+        exc_type, exc_value, _ = sys.exc_info()
+        if exc_type is not socket.error or exc_value[0] != 32:
+            raise
 
 
 class RequestHandler(socketserver.StreamRequestHandler):
@@ -49,12 +57,12 @@ class RequestHandler(socketserver.StreamRequestHandler):
         """Parse the RPC, make the call, and pickle up the return value."""
         data = cPickle.load(self.rfile)  # pylint: disable-msg=E1101
         method = data.pop('method')
-        if method == 'evict':
-            retval = self.do_evict(**data)
-        elif method == 'request':
-            retval = self.do_request(**data)
-        else:
-            retval = Exception('Invalid method')
+        try:
+            retval = getattr(self, 'do_{0}'.format(method))(**data)
+        except Exception as exc:
+            # All exceptions should be passed to the client
+            # TODO: "Fix" some exceptions that aren't pickle-able
+            retval = exc
         cPickle.dump(retval, self.wfile,  # pylint: disable-msg=E1101
                      cPickle.HIGHEST_PROTOCOL)
 RequestHandler.do_evict = DefaultHandler.evict

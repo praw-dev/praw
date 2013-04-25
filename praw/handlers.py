@@ -159,6 +159,8 @@ class MultiprocessHandler(object):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock_fp = sock.makefile('rwb')  # Used for pickle
         try:
+            # TODO: Handle failures gracefully... maybe retry periodically
+            # unless the same error results from attempting to load
             sock.connect((self.host, self.port))
             cPickle.dump(kwargs, sock_fp, cPickle.HIGHEST_PROTOCOL)
             sock_fp.flush()
