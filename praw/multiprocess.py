@@ -15,10 +15,16 @@ class ThreadingTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
     allow_reuse_address = True
 
-    def handle_error(self, *args, **kwargs):
-        """Mute connection close errors."""
+    @staticmethod
+    def handle_error(_, client_addr):
+        """Mute tracebacks of common errors."""
         exc_type, exc_value, _ = sys.exc_info()
-        if exc_type is not socket.error or exc_value[0] != 32:
+        if exc_type is socket.error and exc_value[0] == 32:
+            pass
+        elif exc_type is cPickle.UnpicklingError:
+            sys.stdout.write('Invalid connection from {0}\n'
+                             .format(client_addr[0]))
+        else:
             raise
 
 

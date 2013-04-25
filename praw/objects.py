@@ -913,6 +913,8 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         Convenience function that utilizes :meth:`.ModFlairMixin.set_flair`
         populating both the `subreddit` and `item` parameters.
 
+        :returns: The json response from the server.
+
         """
         return self.subreddit.set_flair(self, *args, **kwargs)
 
@@ -1105,7 +1107,7 @@ class UserList(PRAWListing):
 
     @staticmethod
     def _convert(reddit_session, data):
-        """Convert the data into a Redditor object."""
+        """Return a Redditor object from the data."""
         retval = Redditor(reddit_session, data['name'], fetch=False)
         retval.id = data['id'].split('_')[1]  # pylint: disable-msg=C0103,W0201
         return retval
@@ -1149,7 +1151,7 @@ class WikiPageListing(PRAWListing):
 
     @staticmethod
     def _convert(reddit_session, data):
-        """Convert the data into a WikiPage object."""
+        """Return a WikiPage object from the data."""
         # TODO: The _request_url hack shouldn't be necessary
         # pylint: disable-msg=W0212
         subreddit = reddit_session._request_url.rsplit('/', 4)[1]

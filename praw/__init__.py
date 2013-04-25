@@ -978,7 +978,11 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.user = None
 
     def edit_wiki_page(self, subreddit, page, content, reason=''):
-        """Create or edit a wiki page with title `page` for `subreddit`."""
+        """Create or edit a wiki page with title `page` for `subreddit`.
+
+        :returns: The json response from the server.
+
+        """
         data = {'content': content,
                 'page': page,
                 'r':  six.text_type(subreddit),
