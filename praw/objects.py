@@ -31,7 +31,7 @@ from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
 from praw.decorators import alias_function, limit_chars, restrict_access
 from praw.errors import ClientException
-from praw.helpers import _get_section, _get_sorter, _modify_relationship
+from praw.internal import _get_section, _get_sorter, _modify_relationship
 
 
 REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor')
