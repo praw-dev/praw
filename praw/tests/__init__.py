@@ -178,21 +178,21 @@ class AccessControlTests(unittest.TestCase, BasicHelper):
         self.r.set_access_credentials(set('dummy_scope',), 'dummy_token')
         self.assertRaises(errors.OAuthScopeRequired, self.r.get_me)
 
-    def test_moderator_or_oauth_required_loged_in_from_reddit_obj(self):
+    def test_moderator_or_oauth_required_logged_in_from_reddit_obj(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyAPITestUser3', '1111')
+        oth.login('PyAPITestUser4', '1111')
         self.assertRaises(errors.ModeratorOrScopeRequired,
                           oth.get_settings, self.sr)
 
-    def test_moderator_or_oauth_required_loged_in_from_submission_obj(self):
+    def test_moderator_or_oauth_required_logged_in_from_submission_obj(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyAPITestUser3', '1111')
+        oth.login('PyAPITestUser4', '1111')
         submission = oth.get_submission(url=self.comment_url)
         self.assertRaises(errors.ModeratorOrScopeRequired, submission.remove)
 
-    def test_moderator_or_oauth_required_loged_in_from_subreddit_obj(self):
+    def test_moderator_or_oauth_required_logged_in_from_subreddit_obj(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyAPITestUser3', '1111')
+        oth.login('PyAPITestUser4', '1111')
         subreddit = oth.get_subreddit(self.sr)
         self.assertRaises(errors.ModeratorOrScopeRequired,
                           subreddit.get_settings)

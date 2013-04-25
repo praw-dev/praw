@@ -1,6 +1,6 @@
 """Provides a request server to be used with the multiprocess handler."""
 
-from praw.handlers import RateLimitHandler
+from praw.handlers import DefaultHandler
 from requests import Session
 from six.moves import cPickle, socketserver
 from threading import Lock
@@ -21,26 +21,22 @@ class RequestHandler(socketserver.StreamRequestHandler):
 
     Requests to the same domain are cached and rate-limited.
 
-    TODO: Cache requests (with necessary locking)
-
     """
 
-    http = Session()
+    ca_lock = Lock()  # lock around cache and timeouts
+    cache = {}  # caches requests
+    http = Session()  # used to make requests
     last_call = {}  # Stores a two-item list: [lock, previous_call_time]
-    lock = Lock()  # lock used for adding items to last_call
+    rl_lock = Lock()  # lock used for adding items to last_call
+    timeouts = {}  # store the time items in cache were entered
 
-    def handle(self):
-        """Parse the RPC, make the call, and pickle up the return value."""
-        data = cPickle.load(self.rfile)  # pylint: disable-msg=E1101
-        method = data.pop('method')
-        if method == 'request':
-            retval = self.do_request(**data)
-        else:
-            retval = Exception('Invalid method')
-        cPickle.dump(retval, self.wfile,  # pylint: disable-msg=E1101
-                     cPickle.HIGHEST_PROTOCOL)
+    @staticmethod
+    def cache_hit_callback(key):
+        """Output when a cache hit occurs."""
+        print('HIT {0} {1}'.format('POST' if key[1][1] else 'GET', key[0]))
 
-    @RateLimitHandler.rate_limit
+    @DefaultHandler.with_cache
+    @DefaultHandler.rate_limit
     def do_request(self, request, proxies, timeout, **_):
         """Dispatch the actual request and return the result."""
         print('{0} {1}'.format(request.method, request.url))
@@ -48,6 +44,20 @@ class RequestHandler(socketserver.StreamRequestHandler):
                                   allow_redirects=False)
         response.raw = None  # Make pickleable
         return response
+
+    def handle(self):
+        """Parse the RPC, make the call, and pickle up the return value."""
+        data = cPickle.load(self.rfile)  # pylint: disable-msg=E1101
+        method = data.pop('method')
+        if method == 'evict':
+            retval = self.do_evict(**data)
+        elif method == 'request':
+            retval = self.do_request(**data)
+        else:
+            retval = Exception('Invalid method')
+        cPickle.dump(retval, self.wfile,  # pylint: disable-msg=E1101
+                     cPickle.HIGHEST_PROTOCOL)
+RequestHandler.do_evict = DefaultHandler.evict
 
 
 def run():

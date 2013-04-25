@@ -8,22 +8,6 @@ from six.moves import cPickle
 from threading import Lock
 
 
-def use_cache(function):
-    """Return a decorator that interacts with a handler's cache."""
-    @wraps(function)
-    def wrapped(obj, _cache_key, _cache_ignore, _cache_timeout, **kwargs):
-        if _cache_ignore:
-            return function(obj, **kwargs)
-        call_time = time.time()
-        obj.clear_timeouts(call_time, _cache_timeout)
-        obj.timeouts.setdefault(_cache_key, call_time)  # Does not update
-        if _cache_key in obj.cache:
-            return obj.cache[_cache_key]
-        result = function(obj, **kwargs)
-        return obj.cache.setdefault(_cache_key, result)
-    return wrapped
-
-
 class RateLimitHandler(object):
 
     """The base handler that provides thread-safe rate limiting enforcement.
@@ -35,20 +19,7 @@ class RateLimitHandler(object):
     """
 
     last_call = {}  # Stores a two-item list: [lock, previous_call_time]
-    lock = Lock()  # lock used for adding items to last_call
-
-    def __init__(self):
-        self.http = Session()  # Each instance should have its own session
-
-    @classmethod
-    def evict(cls, urls):
-        """Method utilized to evict entries for the given urls.
-
-        :param urls: An interable containing normalized urls.
-
-        By default this method does nothing as a cache need not be present.
-
-        """
+    rl_lock = Lock()  # lock used for adding items to last_call
 
     @staticmethod
     def rate_limit(function):
@@ -61,15 +32,15 @@ class RateLimitHandler(object):
         decorated with this before executing.
 
         This decorator must be applied to a RateLimitHandler class method or
-        instance method as it assumes `lock` and `last_call` are available.
+        instance method as it assumes `rl_lock` and `last_call` are available.
 
         """
         @wraps(function)
         def wrapped(cls, _rate_domain, _rate_delay, **kwargs):
-            cls.lock.acquire()
+            cls.rl_lock.acquire()
             lock_last = cls.last_call.setdefault(_rate_domain, [Lock(), 0])
             with lock_last[0]:  # Obtain the domain specific lock
-                cls.lock.release()
+                cls.rl_lock.release()
                 # Sleep if necessary, then perform the request
                 now = time.time()
                 delay = lock_last[1] + _rate_delay - now
@@ -79,6 +50,19 @@ class RateLimitHandler(object):
                 lock_last[1] = now
                 return function(cls, **kwargs)
         return wrapped
+
+    @classmethod
+    def evict(cls, urls):
+        """Method utilized to evict entries for the given urls.
+
+        :param urls: An interable containing normalized urls.
+
+        By default this method does nothing as a cache need not be present.
+
+        """
+
+    def __init__(self):
+        self.http = Session()  # Each instance should have its own session
 
     def request(self, request, proxies, timeout, **_):
         """Responsible for dispatching the request and returning the result.
@@ -107,31 +91,59 @@ class DefaultHandler(RateLimitHandler):
 
     """Extends the RateLimitHandler to add thread-safe caching support."""
 
-    # TODO: Actually make this thread safe
+    ca_lock = Lock()
     cache = {}
+    cache_hit_callback = None
     timeouts = {}
 
-    @classmethod
-    def clear_timeouts(cls, call_time, cache_timeout):
-        """Clear the cache of timed out results."""
-        for key in list(cls.timeouts):
-            if call_time - cls.timeouts[key] > cache_timeout:
-                del cls.timeouts[key]
-                del cls.cache[key]
+    @staticmethod
+    def with_cache(function):
+        """Return a decorator that interacts with a handler's cache.
+
+        This decorator must be applied to a DefaultHandler class method or
+        instance method as it assumes `cache`, `ca_lock` and `timeouts` are
+        available.
+
+        """
+        @wraps(function)
+        def wrapped(cls, _cache_key, _cache_ignore, _cache_timeout, **kwargs):
+            def clear_timeouts():
+                """Clear the cache of timed out results."""
+                for key in list(cls.timeouts):
+                    if time.time() - cls.timeouts[key] > _cache_timeout:
+                        del cls.timeouts[key]
+                        del cls.cache[key]
+
+            if _cache_ignore:
+                return function(cls, **kwargs)
+            with cls.ca_lock:
+                clear_timeouts()
+                if _cache_key in cls.cache:
+                    if cls.cache_hit_callback:
+                        cls.cache_hit_callback(_cache_key)
+                    return cls.cache[_cache_key]
+            # Releasing the lock before actually making the request allows for
+            # the possibility of more than one thread making the same request
+            # to get through. Without having domain-specific caching (under the
+            # assumption only one request to a domain can be made at a
+            # time), there isn't a better way to handle this.
+            result = function(cls, **kwargs)
+            with cls.ca_lock:
+                cls.timeouts[_cache_key] = time.time()
+                cls.cache[_cache_key] = result
+                return result
+        return wrapped
 
     @classmethod
     def evict(cls, urls):
         """Remove cached responses by URL."""
         urls = set(normalize_url(url) for url in urls)
-        for key in list(cls.cache):
-            if key[0] in urls:
-                del cls.cache[key]
-                del cls.timeouts[key]
-
-    @use_cache
-    def request(self, **kwargs):
-        """Dispatch the request and return the result."""
-        return super(DefaultHandler, self).request(**kwargs)
+        with cls.ca_lock:
+            for key in list(cls.cache):
+                if key[0] in urls:
+                    del cls.cache[key]
+                    del cls.timeouts[key]
+DefaultHandler.request = DefaultHandler.with_cache(RateLimitHandler.request)
 
 
 class MultiprocessHandler(object):
@@ -145,22 +157,20 @@ class MultiprocessHandler(object):
     def _relay(self, **kwargs):
         """Send the request through the Server and return the http response."""
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock_fp = sock.makefile('rwb')  # Used for pickle
         try:
             sock.connect((self.host, self.port))
-            sock.sendall(cPickle.dumps(kwargs, cPickle.HIGHEST_PROTOCOL))
-            response = ''
-            while True:
-                tmp = sock.recv(1024)
-                if not tmp:
-                    break
-                response += tmp
-            return cPickle.loads(response)
+            cPickle.dump(kwargs, sock_fp, cPickle.HIGHEST_PROTOCOL)
+            sock_fp.flush()
+            return cPickle.load(sock_fp)
         finally:
+            sock_fp.close()
             sock.close()
 
     def evict(self, urls):
-        """We don't have a cache yet, so this does nothing."""
+        """Forward the eviction to the server and return its response."""
+        return self._relay(method='evict', urls=urls)
 
     def request(self, **kwargs):
-        """Make the http request and return the http response."""
+        """Forward the request to the server and return its http response."""
         return self._relay(method='request', **kwargs)

@@ -367,11 +367,11 @@ class BaseReddit(object):
             return object_class.from_api_response(self, json_data['data'])
         return json_data
 
-    def evict(self, items):
-        """Evict item(s) from the cache."""
-        if not hasattr(items, '__iter__'):
-            items = (items,)
-        self.handler.evict(items)
+    def evict(self, urls):
+        """Evict url(s) from the cache."""
+        if isinstance(urls, six.string_types):
+            urls = (urls,)
+        self.handler.evict(urls)
 
     @decorators.oauth_generator
     def get_content(self, url, params=None, limit=0, place_holder=None,
