@@ -33,8 +33,9 @@ import six
 import sys
 from praw import decorators, errors
 from praw.handlers import DefaultHandler
-from praw.helpers import (_prepare_request, _raise_redirect_exceptions,
-                          _raise_response_exceptions, normalize_url)
+from praw.helpers import normalize_url
+from praw.internal import (_prepare_request, _raise_redirect_exceptions,
+                           _raise_response_exceptions)
 from praw.settings import CONFIG
 from requests.compat import urljoin
 from requests import Request
