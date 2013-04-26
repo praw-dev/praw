@@ -39,6 +39,8 @@ This will display something similar to the following:
 
 .. begin_installation
 
+.. _installation:
+
 Installation
 ------------
 

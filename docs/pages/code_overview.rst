@@ -25,10 +25,10 @@ conjunction with this nice visual overview.
     :undoc-members:
     :show-inheritance:
 
-:mod:`decorators` Module
-------------------------
+:mod:`helpers` Module
+---------------------
 
-.. automodule:: praw.decorators
+.. automodule:: praw.helpers
     :members:
     :undoc-members:
     :show-inheritance:
@@ -41,10 +41,28 @@ conjunction with this nice visual overview.
     :undoc-members:
     :show-inheritance:
 
-:mod:`helpers` Module
+:mod:`handlers` Module
+----------------------
+
+.. automodule:: praw.handlers
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+:mod:`decorators` Module
+------------------------
+
+.. automodule:: praw.decorators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+:mod:`iternal` Module
 ---------------------
 
-.. automodule:: praw.helpers
+.. automodule:: praw.internal
     :members:
     :undoc-members:
     :show-inheritance:

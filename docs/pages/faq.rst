@@ -91,6 +91,24 @@ help#Whydothenumberofvoteschangewhenyoureloadapage>`_ of the upvotes and
 downvotes. The obfuscation is done to everything and everybody to thwart
 potential cheaters. There's nothing we can do to prevent this.
 
+
+.. _report_an_issue:
+
+How do I report an issue with PRAW?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you believe you found an issue with PRAW that you can reliably reproduce
+please `file an issue on github
+<https://github.com/praw-dev/praw/issues/new>`_.  When reporting an issue,
+please note the version of PRAW you are using (``python -c 'import praw;
+print(praw.__version__)'``), and provide the code necessary to reproduce the
+issue. It is strongly suggested that you condense your code as much as
+possible.
+
+Alternatively, if you cannot reliably reproduce the error, or if you do not
+wish to create a github account, you can make a submission on `/r/redditdev
+<http://www.reddit.com/r/redditdev>`_.
+
 Non-obvious behaviour and other need to know
 --------------------------------------------
 
