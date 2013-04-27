@@ -15,6 +15,8 @@ upstream changes.
 
 PRAW 2.1.0 (Unreleased)
 -----------------------
+ * **[FEATURE]** PRAW now supports proper rate-limiting and shared caching when
+   running multiple processes. See :ref:`multiprocess` for usage information.
  * **[CHANGE]** Remove explicit ``limit`` parameters from functions that
    utilize :meth:`.get_content` but don't alter the limit. This change will
    result in broken code if the calling code utilizes positional instead of
