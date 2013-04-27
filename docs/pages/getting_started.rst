@@ -3,7 +3,7 @@
 Getting Started
 ===============
 
-In this turorial we'll go over everything needed to create a bot or program
+In this tutorial we'll go over everything needed to create a bot or program
 using reddit's API through the Python Reddit API Wrapper (PRAW). We're going to
 write a program that breaks down a redditor's karma by subreddit, just like the
 `reddit gold <http://www.reddit.com/help/gold>`_ feature. Unlike that, our
@@ -120,7 +120,7 @@ will display at most 1000 items. This is true for all listings including
 subreddit submission listings, user submission listings, and user comment
 listings.
 
-You may also have realised that the karma values change from run to run. This
+You may also have realized that the karma values change from run to run. This
 inconsistency is due to `reddit's obfuscation <http://ww.reddit.com/help/faqs/
 help#Whydothenumberofvoteschangewhenyoureloadapage>`_ of the upvotes and
 downvotes. The obfuscation is done to everything and everybody to thwart

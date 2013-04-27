@@ -79,14 +79,14 @@ client, ``scope`` which are the reddit scope we ask permission for (see
 :ref:`oauth_scopes`) and finally ``refreshable`` which determines whether we
 can refresh the access_token (step 6) thus gaining permanent access.
 
-For this tutorial we will need access to the identity scope and be refreshable. 
+For this tutorial we will need access to the identity scope and be refreshable.
 
 .. code-block:: pycon
 
     >>> url = r.get_authorize_url('uniqueKey', 'identity', True)
     >>> import webbrowser
     >>> webbrowser.open(url)
-    >>> # click allow on the webend
+    >>> # click allow on the displayed web page
 
 Step 4: Exchanging the code for an access_token and a refresh_token.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -15,10 +15,10 @@ upstream changes.
 
 PRAW 2.1.0 (Unreleased)
 -----------------------
- * **[CHANGE]** Remove explicit ``limit`` parameters from functions that utilze
-   :meth:`.get_content` but don't alter the limit. This change will result in
-   broken code if the calling code utilizes positional instead of keyword
-   arguments.
+ * **[CHANGE]** Remove explicit ``limit`` parameters from functions that
+   utilize :meth:`.get_content` but don't alter the limit. This change will
+   result in broken code if the calling code utilizes positional instead of
+   keyword arguments.
  * **[CHANGE]** :meth:`.UnauthenticatedReddit.get_flair` returns ``None`` when
    the redditor does not exist.
  * **[CHANGE]** Deprecated :meth:`.get_all_comments`. Use
@@ -348,7 +348,7 @@ PRAW 1.0.8
  * **[FEATURE]** Added prevstyle to set_stylesheet requests.
  * **[BUGFIX]** Putting in ``user`` or ``pswd`` to ``praw.ini`` without values
    will no longer make it impossible to login.
- * **[FEAUTRE]** You can now have just ``user`` filled out in ``praw.ini`` to
+ * **[FEATURE]** You can now have just ``user`` filled out in ``praw.ini`` to
    ease login while remaining safe.
 
 PRAW 1.0.7

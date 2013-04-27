@@ -25,10 +25,10 @@ work.
 After getting the submission object we retrieve the comments and look through
 them to find those that match our criteria. Comments are stored in the
 attribute :attr:`.comments` in a comment forest, with each tree root a toplevel
-comment. Eg. the comments are organised just like when you visit the submission
-via the webend. To get to a lower layer, use :attr:`.replies` to get the list
-of replies to the comment. Note that this may include :class:`.MoreComments`
-objects and not just :class:`.Comment`.
+comment. E.g., the comments are organized just like when you visit the
+submission via the website. To get to a lower layer, use :attr:`.replies` to
+get the list of replies to the comment. Note that this may include
+:class:`.MoreComments` objects and not just :class:`.Comment`.
 
 >>> forest_comments = submission.comments
 
@@ -58,13 +58,13 @@ membership of that list before replying. Just like in :ref:`writing_a_bot`.
 The number of comments
 ----------------------
 
-When we load a submission, we load comments up to a max alongside it. Just like
-on the webend. At reddit.com, this max is 200 comments. If we want more than
-these comments, then we need to replace the :class:`.MoreComments` with the
-:class:`.Comment`\s they represent. We use the :meth:`.replace_more_comments`
-method to do this. Let's use this function to replace all
-:class:`.MoreComments` with the :class:`.Comment`\s they represent, so we get
-all comments in the thread.
+When we load a submission, the comments for the submission are also loaded, up
+to a maximum, just like on the website.. At reddit.com, this max is 200
+comments. If we want more than these comments, then we need to replace the
+:class:`.MoreComments` with the :class:`.Comment`\s they represent. We use the
+:meth:`.replace_more_comments` method to do this. Let's use this function to
+replace all :class:`.MoreComments` with the :class:`.Comment`\s they represent,
+so we get all comments in the thread.
 
 >>> submission.replace_more_comments(limit=None, threshold=0)
 >>> all_comments = s.comments

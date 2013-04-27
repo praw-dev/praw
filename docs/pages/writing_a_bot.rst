@@ -278,7 +278,7 @@ Running Continually.
 
 reddit.com is going to crash and other problems will be met. That's a fact of
 life. Good bots should be able to take this into account and either exit
-gracefully or outwait the problem. This is a simple bot, where the loss of all
+gracefully or survive the problem. This is a simple bot, where the loss of all
 data isn't very problematic. So for now we're simply going to accept that it
 will crash with total loss of data at the first problem encountered.
 

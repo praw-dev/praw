@@ -75,11 +75,11 @@ With all client/server type programs there is the possibility of network issues
 or simply a lack of an available server. PRAW's :class:`.MultiprocessHandler`
 was created to be quite resilient to such issues. PRAW will retry indefinitely
 to connect to **praw-multiprocess** server. This means that a
-**praw-multiprocess** server can be stop and restarted without any effect on
+**praw-multiprocess** server can be stopped and restarted without any effect on
 programs utilizing it.
 
 On the other hand, consecutive network failures where the
 :class:`.MultiprocessHandler` has no issue establishing a connection to a
 **praw-multiprocess** server will result in :class:`.ClientException` after
-three failures. Such failures are **not** exepected to occur and if
+three failures. Such failures are **not** expected to occur and if
 reproducable should be :ref:`reported <report_an_issue>`.

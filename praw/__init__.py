@@ -232,9 +232,9 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
 
 class BaseReddit(object):
 
-    """A base class that allows acccess to reddit's API.
+    """A base class that allows access to reddit's API.
 
-    You should **not** directly instansiate instances of this class. Use
+    You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
 
     """
@@ -261,7 +261,7 @@ class BaseReddit(object):
         will be used.
 
         disable_update_check allows you to prevent an update check from
-        occuring in spite of the check_for_updates setting in praw.ini.
+        occurring in spite of the check_for_updates setting in praw.ini.
 
         """
         if not user_agent or not isinstance(user_agent, six.string_types):
@@ -481,7 +481,7 @@ class OAuth2Reddit(BaseReddit):
 
     """Provides functionality for obtaining reddit OAuth2 access tokens.
 
-    You should **not** directly instansiate instances of this class. Use
+    You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
 
     """
@@ -572,10 +572,10 @@ class OAuth2Reddit(BaseReddit):
                 'scope': set(retval['scope'].split(','))}
 
     def set_oauth_app_info(self, client_id, client_secret, redirect_uri):
-        """Set the App information to use with oauthentication.
+        """Set the App information to use with OAuth2.
 
         This function need only be called if your praw.ini site configuration
-        does not already contain the neccessary information.
+        does not already contain the necessary information.
 
         Go to https://ssl.reddit.com/prefs/apps/ to discover the appropriate
         values for your application.
@@ -597,7 +597,7 @@ class UnauthenticatedReddit(BaseReddit):
 
     None of these functions require authenticated access to reddit's API.
 
-    You should **not** directly instansiate instances of this class. Use
+    You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
 
     """
@@ -785,7 +785,7 @@ class UnauthenticatedReddit(BaseReddit):
         :param comment_limit: The desired number of comments to fetch. If <= 0
             fetch the default number for the session's user. If None, fetch the
             maximum possible.
-        :param comment_sort: The sort order for retrived comments. When None
+        :param comment_sort: The sort order for retrieved comments. When None
             use the default for the session's user.
 
         """
@@ -924,7 +924,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
     Authentication can either be login based (through login), or OAuth2 based
     (via set_access_credentials).
 
-    You should **not** directly instansiate instances of this class. Use
+    You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
 
     """
@@ -1037,7 +1037,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         (username) and pswd (password) to your praw.ini file to allow for auto-
         login.
 
-        A succesful login will overwrite any existing authentication.
+        A successful login will overwrite any existing authentication.
 
         """
         if password and not username:
@@ -1069,7 +1069,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """Return updated access information for an OAuth2 authorization grant.
 
         :param refresh_token: The refresh token used to obtain the updated
-            information. When not provided, use the storred refresh_token.
+            information. When not provided, use the stored refresh_token.
         :param update_session: Update the session with the returned data.
         :returns: A dictionary with the key/value pairs for access_token,
             refresh_token and scope. The refresh_token value will be done when
@@ -1088,7 +1088,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                                update_user=True):
         """Set the credentials used for OAuth2 authentication.
 
-        Calling this funciton will overwrite any currently existing access
+        Calling this function will overwrite any currently existing access
         credentials.
 
         :param scope: A set of reddit scopes the tokens provide access to
@@ -1114,7 +1114,7 @@ class ModConfigMixin(AuthenticatedReddit):
 
     """Adds methods requiring the 'modconfig' scope (or mod access).
 
-    You should **not** directly instansiate instances of this class. Use
+    You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
 
     """
@@ -1301,7 +1301,7 @@ class ModFlairMixin(AuthenticatedReddit):
 
     """Adds methods requiring the 'modflair' scope (or mod access).
 
-    You should **not** directly instansiate instances of this class. Use
+    You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
 
     """
@@ -1444,7 +1444,7 @@ class ModLogMixin(AuthenticatedReddit):
 
     """Adds methods requiring the 'modlog' scope (or mod access).
 
-    You should **not** directly instansiate instances of this class. Use
+    You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
 
     """
@@ -1476,7 +1476,7 @@ class ModOnlyMixin(AuthenticatedReddit):
 
     """Adds methods requiring the logged in moderator access.
 
-    You should **not** directly instansiate instances of this class. Use
+    You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
 
     """
@@ -1576,7 +1576,7 @@ class MySubredditsMixin(AuthenticatedReddit):
 
     """Adds methods requiring the 'mysubreddits' scope (or login).
 
-    You should **not** directly instansiate instances of this class. Use
+    You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
 
     """
@@ -1636,7 +1636,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
     """Adds methods requiring the 'privatemessages' scope (or login).
 
-    You should **not** directly instansiate instances of this class. Use
+    You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
 
     """
@@ -1737,7 +1737,7 @@ class SubmitMixin(AuthenticatedReddit):
 
     """Adds methods requiring the 'submit' scope (or login).
 
-    You should **not** directly instansiate instances of this class. Use
+    You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
 
     """
@@ -1803,7 +1803,7 @@ class SubscribeMixin(AuthenticatedReddit):
 
     """Adds methods requiring the 'subscribe' scope (or login).
 
-    You should **not** directly instansiate instances of this class. Use
+    You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
 
     """

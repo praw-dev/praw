@@ -59,8 +59,8 @@ conjunction with this nice visual overview.
     :show-inheritance:
 
 
-:mod:`iternal` Module
----------------------
+:mod:`internal` Module
+----------------------
 
 .. automodule:: praw.internal
     :members:

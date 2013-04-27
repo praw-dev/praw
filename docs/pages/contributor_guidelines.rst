@@ -9,7 +9,7 @@ readability, decreases bug-potential and makes it faster to understand how
 everything works together.
 
 PRAW follows :PEP:`8` and :PEP:`257`. You can use ``lint.sh`` to test for
-complience with these PEP's. The following are PRAW-specific guidelines in to
+compliance with these PEP's. The following are PRAW-specific guidelines in to
 those PEP's.
 
 Code

@@ -15,7 +15,7 @@
 """
 Error classes
 
-Includes two main execeptions. ClientException, when something goes
+Includes two main exceptions. ClientException, when something goes
 wrong on our end and APIExeception for when something goes wrong on the
 server side. A number of classes extend these two main exceptions for more
 specific exceptions.
@@ -63,8 +63,8 @@ class LoginRequired(ClientException):
 
     """Indicates that a logged in session is required.
 
-    This exception is raised on a preemtive basis, whereas NotLoggedIn occurs
-    in response to a lack of credientials on a priviliged API call.
+    This exception is raised on a preemptive basis, whereas NotLoggedIn occurs
+    in response to a lack of credentials on a privileged API call.
 
     """
 
@@ -151,7 +151,7 @@ class OAuthInsufficientScope(OAuthException):
 
 class OAuthInvalidGrant(OAuthException):
 
-    """Raised when the code to recevie access information is not valid."""
+    """Raised when the code to retrieve access information is not valid."""
 
 
 class OAuthInvalidToken(OAuthException):
@@ -180,7 +180,7 @@ class APIException(Exception):
 
 class ExceptionList(APIException):
 
-    """Raised when more than one exception occured."""
+    """Raised when more than one exception occurred."""
 
     def __init__(self, errors):
         super(ExceptionList, self).__init__(None, None)

@@ -15,7 +15,7 @@
 """
 Decorators.
 
-Mainly do two things. Ensure API guidelines are met and prevent unneccesary
+Mainly do two things. Ensure API guidelines are met and prevent unnecessary
 failed API requests by testing that the call can be made first. Also limit the
 length of output strings and parse json response for certain errors.
 """
@@ -131,7 +131,7 @@ def require_captcha(function):
             return None
         return {'iden': captcha_id, 'captcha': raw.strip()}
 
-    function.__doc__ += ('\nThis function may result in a captcha challenege. '
+    function.__doc__ += ('\nThis function may result in a captcha challenge. '
                          'PRAW will automatically prompt you for a response. '
                          'See :ref:`handling-captchas` if you want to manually'
                          ' handle captchas.')
@@ -187,7 +187,7 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
     This decorator assumes that all mod required functions fit one of:
 
       * have the subreddit as the first argument (Reddit instance functions)
-      * are called upon a subreddit object (Subredit RedditContentObject)
+      * are called upon a subreddit object (Subreddit RedditContentObject)
       * are called upon a RedditContent object with attribute subreddit
 
     """

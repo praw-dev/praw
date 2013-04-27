@@ -58,7 +58,7 @@ class RateLimitHandler(object):
     def evict(cls, urls):
         """Method utilized to evict entries for the given urls.
 
-        :param urls: An interable containing normalized urls.
+        :param urls: An iterable containing normalized urls.
 
         By default this method does nothing as a cache need not be present.
 
@@ -81,7 +81,7 @@ class RateLimitHandler(object):
             can take.
 
         ``**_`` should be added to the method call to ignore the extra
-        arguments intended for the cache hander.
+        arguments intended for the cache handler.
 
         """
         return self.http.send(request, proxies=proxies, timeout=timeout,

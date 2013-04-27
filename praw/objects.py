@@ -157,8 +157,8 @@ class Moderatable(RedditContentObject):
         """Approve object.
 
         This reverts a removal, resets the report counter, marks it with a
-        green checkmark (only visible to other moderators) on the webend and
-        sets the approved_by attribute to the logged in user.
+        green check mark (only visible to other moderators) on the website view
+        and sets the approved_by attribute to the logged in user.
 
         :returns: The json response from the server.
 
@@ -205,7 +205,7 @@ class Moderatable(RedditContentObject):
 
         The object is removed from the subreddit listings and placed into the
         spam listing. If spam is set to True, then the automatic spam filter
-        will try to remove objects with similair attributes in the future.
+        will try to remove objects with similar attributes in the future.
 
         :returns: The json response from the server.
 
@@ -760,7 +760,7 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         :param comment_limit: The desired number of comments to fetch. If <= 0
             fetch the default number for the session's user. If None, fetch the
             maximum possible.
-        :param comment_sort: The sort order for retrived comments. When None
+        :param comment_sort: The sort order for retrieved comments. When None
             use the default for the session's user.
         :param comments_only: Return only the list of comments.
 

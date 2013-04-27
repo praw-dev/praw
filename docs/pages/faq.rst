@@ -4,7 +4,7 @@ Frequently Asked Questions
 ==========================
 
 This is a list of frequently asked questions and a description of non-obvious
-behaviour in PRAW and reddit.
+behavior in PRAW and reddit.
 
 FAQ
 ---
@@ -109,8 +109,8 @@ Alternatively, if you cannot reliably reproduce the error, or if you do not
 wish to create a github account, you can make a submission on `/r/redditdev
 <http://www.reddit.com/r/redditdev>`_.
 
-Non-obvious behaviour and other need to know
---------------------------------------------
+Non-obvious behavior and other need to know
+-------------------------------------------
 
 * All of the listings (list of stories on subreddit, etc.) are generators,
   *not* lists. If you need them to be lists, an easy way is to call ``list()``
