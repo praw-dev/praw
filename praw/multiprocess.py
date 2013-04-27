@@ -6,6 +6,7 @@ from optparse import OptionParser
 from praw import __version__
 from praw.handlers import DefaultHandler
 from requests import Session
+from requests.exceptions import Timeout
 from six.moves import cPickle, socketserver
 from threading import Lock
 
@@ -46,6 +47,8 @@ class RequestHandler(socketserver.StreamRequestHandler):
     rl_lock = Lock()  # lock used for adding items to last_call
     timeouts = {}  # store the time items in cache were entered
 
+    do_evict = DefaultHandler.evict  # Add in the evict method
+
     @staticmethod
     def cache_hit_callback(key):
         """Output when a cache hit occurs."""
@@ -67,14 +70,14 @@ class RequestHandler(socketserver.StreamRequestHandler):
         method = data.pop('method')
         try:
             retval = getattr(self, 'do_{0}'.format(method))(**data)
-        except Exception as exc:  # pylint: disable-msg=W0703
+        except Timeout as retval:
+            # TODO: Remove this hack once my urllib3 patch is added to requests
+            retval.message.url = None
+        except Exception as retval:  # pylint: disable-msg=W0703
             # All exceptions should be passed to the client
-            # TODO: "Fix" some exceptions that aren't pickle-able
-            # (e.g., timeout)
-            retval = exc
+            pass
         cPickle.dump(retval, self.wfile,  # pylint: disable-msg=E1101
                      cPickle.HIGHEST_PROTOCOL)
-RequestHandler.do_evict = DefaultHandler.evict
 
 
 def run():

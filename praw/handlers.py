@@ -55,14 +55,16 @@ class RateLimitHandler(object):
         return wrapped
 
     @classmethod
-    def evict(cls, urls):
+    def evict(cls, urls):  # pylint: disable-msg=W0613
         """Method utilized to evict entries for the given urls.
 
         :param urls: An iterable containing normalized urls.
+        :returns: Whether or not an item was removed from the cache.
 
-        By default this method does nothing as a cache need not be present.
+        By default this method returns False as a cache need not be present.
 
         """
+        return False
 
     def __init__(self):
         self.http = Session()  # Each instance should have its own session
@@ -139,13 +141,20 @@ class DefaultHandler(RateLimitHandler):
 
     @classmethod
     def evict(cls, urls):
-        """Remove cached responses by URL."""
+        """Remove items from cache matching URL.
+
+        Return whether or not any items were removed.
+
+        """
         urls = set(normalize_url(url) for url in urls)
+        retval = False
         with cls.ca_lock:
             for key in list(cls.cache):
                 if key[0] in urls:
+                    retval = True
                     del cls.cache[key]
                     del cls.timeouts[key]
+        return retval
 DefaultHandler.request = DefaultHandler.with_cache(RateLimitHandler.request)
 
 
@@ -162,7 +171,7 @@ class MultiprocessHandler(object):
         retval = None
         delay_time = 2  # For connection retries
         read_attempts = 0  # For reading from socket
-        while not retval:
+        while retval is None:  # Evict can return False
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock_fp = sock.makefile('rwb')  # Used for pickle
             try:
