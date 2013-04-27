@@ -13,7 +13,7 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
-PRAW 2.1.0 (Unreleased)
+PRAW 2.1.0
 -----------------------
  * **[FEATURE]** PRAW now supports proper rate-limiting and shared caching when
    running multiple processes. See :ref:`multiprocess` for usage information.

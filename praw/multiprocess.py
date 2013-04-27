@@ -71,7 +71,8 @@ class RequestHandler(socketserver.StreamRequestHandler):
         try:
             retval = getattr(self, 'do_{0}'.format(method))(**data)
         except Timeout as retval:
-            # TODO: Remove this hack once my urllib3 patch is added to requests
+            # TODO: Remove this hack once my urllib3 PR is pushed downstream to
+            # requests: https://github.com/shazow/urllib3/issues/174
             retval.message.url = None
         except Exception as retval:  # pylint: disable-msg=W0703
             # All exceptions should be passed to the client
