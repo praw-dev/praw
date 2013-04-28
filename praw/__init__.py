@@ -395,7 +395,10 @@ class BaseReddit(object):
             automatically make additional requests as necessary).
         :param place_holder: if not None, the method will fetch `limit`
             content, stopping if it finds content with `id` equal to
-            `place_holder`.
+            `place_holder`. The place_holder item is the last item to be
+            yielded from this generator. Note that the use of `place_holder` is
+            not 100% reliable as the place holder item may no longer exist due
+            to being removed or deleted.
         :param root_field: indicates the field in the json response that holds
             the data. Most objects use 'data', however some (flairlist) don't
             have the 'data' object. Use None for the root object.
@@ -403,8 +406,8 @@ class BaseReddit(object):
             contains the list of things. Most objects use 'children'.
         :param after_field: indicates the field which holds the after item
             element
-        :type place_holder: a string corresponding to a reddit content id, e.g.
-            't3_asdfasdf'
+        :type place_holder: a string corresponding to a reddit base36 id
+            without prefix, e.g. 'asdfasdf'
         :returns: a list of reddit content, of type Subreddit, Comment,
             Submission or user flair.
 
