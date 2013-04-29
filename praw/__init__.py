@@ -676,7 +676,8 @@ class UnauthenticatedReddit(BaseReddit):
         params = {'name': name}
         data = self.request_json(self.config['flairlist'] %
                                  six.text_type(subreddit), params=params)
-        if not data['users'] or data['users'][0]['user'] != name:
+        if not data['users'] or \
+                data['users'][0]['user'].lower() != name.lower():
             return None
         return data['users'][0]
 
@@ -1179,7 +1180,9 @@ class ModConfigMixin(AuthenticatedReddit):
                      domain_sidebar=False, header_hover_text='',
                      prev_description_id=None,
                      prev_public_description_id=None, wikimode='disabled',
-                     wiki_edit_age=30, wiki_edit_karma=100, **kwargs):
+                     wiki_edit_age=30, wiki_edit_karma=100,
+                     submit_link_label='', submit_text_label='',
+                     exclude_banned_modqueue=False, **kwargs):
         """Set the settings for the given subreddit.
 
         :param subreddit: Must be  a subreddit object.
@@ -1196,10 +1199,13 @@ class ModConfigMixin(AuthenticatedReddit):
                 'over_18': 'on' if over_18 else 'off',
                 'allow_top': 'on' if default_set else 'off',
                 'show_media': 'on' if show_media else 'off',
+                'exclude_banned_modqueue': 'on' if show_media else 'off',
                 'domain': domain or '',
                 'domain_css': 'on' if domain_css else 'off',
                 'domain_sidebar': 'on' if domain_sidebar else 'off',
                 'header-title': header_hover_text or '',
+                'submit_link_label': submit_link_label or '',
+                'submit_text_label': submit_text_label or '',
                 'wikimode': wikimode,
                 'wiki_edit_age': six.text_type(wiki_edit_age),
                 'wiki_edit_karma': six.text_type(wiki_edit_karma)}
