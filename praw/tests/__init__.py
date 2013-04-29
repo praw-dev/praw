@@ -234,19 +234,15 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertFalse(subreddit != same_subreddit)
         self.assertFalse(subreddit == submission)
 
-    def test_get_all_comments(self):
-        num = 50
-        self.assertEqual(num, len(list(self.r.get_all_comments(limit=num))))
-
-    def test_get_all_comments_gilded(self):
-        gilded_comments = self.r.get_all_comments(gilded_only=True)
-        for comment in gilded_comments:
-            self.assertTrue(comment.gilded >= 0)
-
     def test_get_comments(self):
         num = 50
         result = self.r.get_comments(self.sr, limit=num)
         self.assertEqual(num, len(list(result)))
+
+    def test_get_comments_gilded(self):
+        gilded_comments = self.r.get_comments('all', gilded_only=True)
+        for comment in gilded_comments:
+            self.assertTrue(comment.gilded >= 0)
 
     @reddit_only
     def test_get_controversial(self):
@@ -268,9 +264,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertEqual(num, len(list(result)))
 
     @reddit_only
-    def test_get_popular_reddits(self):
+    def test_get_popular_subreddits(self):
         num = 50
-        self.assertEqual(num, len(list(self.r.get_popular_reddits(limit=num))))
+        self.assertEqual(num,
+                         len(list(self.r.get_popular_subreddits(limit=num))))
 
     def test_get_random_subreddit(self):
         subs = set()
@@ -280,9 +277,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_submissions(self):
         kind = self.r.config.by_object[Submission]
-
         def fullname(url):
-            return '{0}_{1}'.format(kind, url.rsplit('/', 2)[1])
+            return self.r.get_submission(url).fullname
         fullnames = [fullname(self.comment_url), fullname(self.link_url)] * 100
         retreived = [x.fullname for x in self.r.get_submissions(fullnames)]
         self.assertEqual(fullnames, retreived)
@@ -503,7 +499,7 @@ class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_front_page_comment_replies_are_none(self):
         # pylint: disable-msg=E1101,W0212
-        item = six_next(self.r.get_all_comments())
+        item = six_next(self.r.get_comments('all'))
         self.assertEqual(item._replies, None)
 
     def test_inbox_comment_replies_are_none(self):
@@ -1107,7 +1103,7 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
     @reddit_only
     def test_scope_read_get_front_page(self):
         self.r.refresh_access_information(self.refresh_token['mysubreddits'])
-        subscribed = list(self.r.get_my_reddits(limit=None))
+        subscribed = list(self.r.get_my_subreddits(limit=None))
         self.r.refresh_access_information(self.refresh_token['read'])
         for post in self.r.get_front_page():
             self.assertTrue(post.subreddit in subscribed)
@@ -1535,8 +1531,8 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         else:
             self.fail('Could not find moderated reddit in my_moderation.')
 
-    def test_get_my_reddits(self):
-        for subreddit in self.r.get_my_reddits():
+    def test_get_my_subreddits(self):
+        for subreddit in self.r.get_my_subreddits():
             # pylint: disable-msg=W0212
             self.assertTrue(text_type(subreddit) in subreddit._info_url)
 
@@ -1546,31 +1542,31 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_subscribe_and_verify(self):
         self.subreddit.subscribe()
-        for subreddit in self.r.get_my_reddits():
+        for subreddit in self.r.get_my_subreddits():
             if text_type(subreddit) == self.sr:
                 break
         else:
-            self.fail('Could not find reddit in my_reddits.')
+            self.fail('Could not find reddit in my subreddits.')
 
     def test_subscribe_by_name_and_verify(self):
         self.r.subscribe(self.sr)
-        for subreddit in self.r.get_my_reddits():
+        for subreddit in self.r.get_my_subreddits():
             if text_type(subreddit) == self.sr:
                 break
         else:
-            self.fail('Could not find reddit in my_reddits.')
+            self.fail('Could not find reddit in my subreddits.')
 
     def test_unsubscribe_and_verify(self):
         self.subreddit.unsubscribe()
-        for subreddit in self.r.get_my_reddits():
+        for subreddit in self.r.get_my_subreddits():
             if text_type(subreddit) == self.sr:
-                self.fail('Found reddit in my_reddits.')
+                self.fail('Found reddit in my subreddits.')
 
     def test_unsubscribe_by_name_and_verify(self):
         self.r.unsubscribe(self.sr)
-        for subreddit in self.r.get_my_reddits():
+        for subreddit in self.r.get_my_subreddits():
             if text_type(subreddit) == self.sr:
-                self.fail('Found reddit in my_reddits.')
+                self.fail('Found reddit in my subreddits.')
 
 
 class WikiTests(unittest.TestCase, BasicHelper):
@@ -1580,17 +1576,17 @@ class WikiTests(unittest.TestCase, BasicHelper):
 
     def test_edit_wiki_page(self):
         self.r.login(self.un, '1111')
-        page = self.subreddit.get_wiki_page('test')
+        page = self.subreddit.get_wiki_page('index')
         content = 'Body: {0}'.format(uuid.uuid4())
         page.edit(content)
         self.disable_cache()
-        page = self.subreddit.get_wiki_page('test')
+        page = self.subreddit.get_wiki_page('index')
         self.assertEqual(content, page.content_md)
 
     def test_get_wiki_page(self):
         self.assertEqual(
-            'ucsantabarbara:index',
-            text_type(self.r.get_wiki_page('ucsantabarbara', 'index')))
+            '{0}:index'.format(self.sr),
+            text_type(self.r.get_wiki_page(self.sr, 'index')))
 
     def test_get_wiki_pages(self):
         retval = self.subreddit.get_wiki_pages()
