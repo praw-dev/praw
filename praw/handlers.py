@@ -133,6 +133,11 @@ class DefaultHandler(RateLimitHandler):
             # assumption only one request to a domain can be made at a
             # time), there isn't a better way to handle this.
             result = function(cls, **kwargs)
+            # The handlers don't call `raise_for_status` so we need to ignore
+            # status codes that will result in an exception that should not be
+            # cached.
+            if result.status_code not in (200, 302):
+                return result
             with cls.ca_lock:
                 cls.timeouts[_cache_key] = time.time()
                 cls.cache[_cache_key] = result

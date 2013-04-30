@@ -13,8 +13,13 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
-PRAW 2.1.0
+PRAW 2.1.1 (Unreleased)
 -----------------------
+ * **[BUGFIX]** Don't cache requests whose responses will result in an
+   exception. This bug was introduced in version 2.1.0.
+
+PRAW 2.1.0
+----------
  * **[FEATURE]** PRAW now supports proper rate-limiting and shared caching when
    running multiple processes. See :ref:`multiprocess` for usage information.
  * **[CHANGE]** Remove explicit ``limit`` parameters from functions that
