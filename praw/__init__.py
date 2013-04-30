@@ -1199,7 +1199,8 @@ class ModConfigMixin(AuthenticatedReddit):
                 'over_18': 'on' if over_18 else 'off',
                 'allow_top': 'on' if default_set else 'off',
                 'show_media': 'on' if show_media else 'off',
-                'exclude_banned_modqueue': 'on' if show_media else 'off',
+                'exclude_banned_modqueue': ('on' if exclude_banned_modqueue
+                                            else 'off'),
                 'domain': domain or '',
                 'domain_css': 'on' if domain_css else 'off',
                 'domain_sidebar': 'on' if domain_sidebar else 'off',
