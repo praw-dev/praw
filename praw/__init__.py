@@ -1182,7 +1182,8 @@ class ModConfigMixin(AuthenticatedReddit):
                      prev_public_description_id=None, wikimode='disabled',
                      wiki_edit_age=30, wiki_edit_karma=100,
                      submit_link_label='', submit_text_label='',
-                     exclude_banned_modqueue=False, **kwargs):
+                     exclude_banned_modqueue=False, comment_score_hide_mins=0,
+                     **kwargs):
         """Set the settings for the given subreddit.
 
         :param subreddit: Must be  a subreddit object.
@@ -1190,26 +1191,27 @@ class ModConfigMixin(AuthenticatedReddit):
 
         """
         data = {'sr': subreddit.fullname,
-                'title': title,
-                'public_description': public_description,
-                'description': description,
-                'lang': language,
-                'type': subreddit_type,
-                'link_type': content_options,
-                'over_18': 'on' if over_18 else 'off',
                 'allow_top': 'on' if default_set else 'off',
-                'show_media': 'on' if show_media else 'off',
-                'exclude_banned_modqueue': ('on' if exclude_banned_modqueue
-                                            else 'off'),
+                'comment_score_hide_mins': comment_score_hide_mins,
+                'description': description,
                 'domain': domain or '',
                 'domain_css': 'on' if domain_css else 'off',
                 'domain_sidebar': 'on' if domain_sidebar else 'off',
+                'exclude_banned_modqueue': ('on' if exclude_banned_modqueue
+                                            else 'off'),
                 'header-title': header_hover_text or '',
+                'lang': language,
+                'link_type': content_options,
+                'over_18': 'on' if over_18 else 'off',
+                'public_description': public_description,
+                'show_media': 'on' if show_media else 'off',
                 'submit_link_label': submit_link_label or '',
                 'submit_text_label': submit_text_label or '',
-                'wikimode': wikimode,
+                'title': title,
+                'type': subreddit_type,
                 'wiki_edit_age': six.text_type(wiki_edit_age),
-                'wiki_edit_karma': six.text_type(wiki_edit_karma)}
+                'wiki_edit_karma': six.text_type(wiki_edit_karma),
+                'wikimode': wikimode}
         if prev_description_id is not None:
             data['prev_description_id'] = prev_description_id
         if prev_public_description_id is not None:
