@@ -19,12 +19,75 @@ The functions here provide functionality that is often needed by programs using
 PRAW, but which isn't part of reddit's API.
 """
 
+import six
+import sys
+import time
+from requests.exceptions import HTTPError
+
+BACKOFF_START = 4
+
+
+def comment_stream(reddit_session, subreddit, verbosity=1):
+    """Indefinitely yield new comments from the provided subreddit.
+
+    :param reddit_session: The reddit_session to make requests from. In all the
+        examples this is assigned to the varaible ``r``.
+    :param subreddit: Either a subreddit object, or the name of a
+        subreddit. Use `all` to get the comment stream for all comments made to
+        reddit.
+    :param verbosity: A number representing the level of output to receive. 0,
+        no output; 1, provide a count of the number of items processed; 2,
+        output when handled exceptions occur; 3, output some system
+        state. (Default: 1)
+
+    """
+    def debug(msg, level):
+        if verbosity >= level:
+            sys.stderr.write(msg + '\n')
+    seen = BoundedSet(1024)  # Slightly larger than the amount reddit returns
+    before = None
+    processed = 0
+    backoff = BACKOFF_START
+    while True:
+        try:
+            i = None
+            for i, comment in enumerate(reddit_session.get_comments(
+                    six.text_type(subreddit), limit=None,
+                    params={'before': before})):
+                if comment.fullname in seen:
+                    if i == 0:
+                        assert before is None
+                        # Wait until the request is no longer cached
+                        debug('Nothing new -- Sleeping for {0} seconds'
+                              .format(reddit_session.config.cache_timeout), 3)
+                        time.sleep(reddit_session.config.cache_timeout)
+                    break
+                if i == 0:  # Always the first item in the generator
+                    before = comment.fullname
+                yield comment
+                processed += 1
+                if verbosity >= 1 and processed % 100 == 0:
+                    sys.stderr.write(' Processed {0}\r'.format(processed))
+                    sys.stderr.flush()
+                seen.add(comment.fullname)
+            else:  # Generator exhausted
+                if i is None:  # Generator yielded no items
+                    assert before is not None
+                    # Try again without before as the before item may be too
+                    # old or no longer exist.
+                    before = None
+            backoff = BACKOFF_START
+        except HTTPError as exc:
+            debug('{0} -- sleeping for {1} seconds'.format(exc, backoff), 2)
+            time.sleep(backoff)
+            backoff *= 2
+
 
 def flatten_tree(tree, nested_attr='replies', depth_first=False):
     """Return a flattened version of the passed in tree.
 
     :param nested_attr: The attribute name that contains the nested items.
-        Defaults to `replies` which is suitable for comments.
+        Defaults to ``replies`` which is suitable for comments.
     :param depth_first: When true, add to the list in a depth-first manner
         rather than the default breadth-first manner.
 
@@ -49,3 +112,27 @@ def normalize_url(url):
     if url.endswith('/'):
         url = url[:-1]
     return url
+
+
+class BoundedSet(object):
+
+    """A set with a maxmimum size that evicts the oldest items when necessary.
+
+    This class does not implement the complete set interface.
+
+    """
+
+    def __init__(self, max_items):
+        self.max_items = max_items
+        self._fifo = []
+        self._set = set()
+
+    def __contains__(self, item):
+        return item in self._set
+
+    def add(self, item):
+        """Add an item to the set discarding the oldest item if necessary."""
+        if len(self._set) == self.max_items:
+            self._set.remove(self._fifo.pop(0))
+        self._fifo.append(item)
+        self._set.add(item)

@@ -15,6 +15,8 @@ upstream changes.
 
 PRAW 2.1.1 (Unreleased)
 -----------------------
+ * **[FEATURE]** Added :meth:`praw.helpers.comment_stream` to provide a
+   neverending stream of new comments.
  * **[BUGFIX]** Don't cache requests whose responses will result in an
    exception. This bug was introduced in version 2.1.0.
 
@@ -26,7 +28,7 @@ PRAW 2.1.0
    utilize :meth:`.get_content` but don't alter the limit. This change will
    result in broken code if the calling code utilizes positional instead of
    keyword arguments.
- * **[CHANGE]** :meth:`.UnauthenticatedReddit.get_flair` returns ``None`` when
+ * **[CHANGE]** :meth:`~.UnauthenticatedReddit.get_flair` returns ``None`` when
    the redditor does not exist.
  * **[CHANGE]** Deprecated :meth:`.get_all_comments`. Use
    :meth:`~.UnauthenticatedReddit.get_comments` with ``all`` as the subreddit
@@ -37,9 +39,10 @@ PRAW 2.1.0
    :meth:`.get_popular_subreddits` instead.
  * **[BUGFIX]** Allow editing non-top-level wiki pages fetched using
    :meth:`.Subreddit.get_wiki_page`.
- * **[BUGFIX]** Fix a bug in :meth:`SubmitMixin.submit`. See
+ * **[BUGFIX]** Fix a bug in :meth:`~Subreddit.submit`. See
    https://github.com/praw-dev/praw/issues/213
- * **[BUGFIX]** Fix a python 3.3 bug in :meth:`.image_upload`. See
+ * **[BUGFIX]** Fix a python 3.3 bug in
+   :meth:`~.Subreddit.upload_image`. See
    https://github.com/praw-dev/praw/issues/211
 
 PRAW 2.0.15
