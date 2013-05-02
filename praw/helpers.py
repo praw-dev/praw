@@ -28,14 +28,20 @@ BACKOFF_START = 4  # Minimum number of seconds to sleep during errors
 KEEP_ITEMS = 32  # On each iteration only remember the first # items
 
 
-def comment_stream(reddit_session, subreddit, verbosity=1):
+def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
     """Indefinitely yield new comments from the provided subreddit.
+
+    Comments are yielded from oldest to newest.
 
     :param reddit_session: The reddit_session to make requests from. In all the
         examples this is assigned to the varaible ``r``.
     :param subreddit: Either a subreddit object, or the name of a
         subreddit. Use `all` to get the comment stream for all comments made to
         reddit.
+    :param limit: The maximum number of comments to fetch in a single
+        iteration. When None, fetch all available comments (reddit limits this
+        to 1000 (or multiple of 1000 for multi-subreddits). If this number is
+        too small, comments may be missed.
     :param verbosity: A number representing the level of output to receive. 0,
         no output; 1, provide a count of the number of items processed; 2,
         output when handled exceptions occur; 3, output some system
@@ -51,25 +57,28 @@ def comment_stream(reddit_session, subreddit, verbosity=1):
     processed = 0
     backoff = BACKOFF_START
     while True:
+        comments = []
+        sleep = None
+        start = time.time()
         try:
             i = None
             for i, comment in enumerate(reddit_session.get_comments(
-                    six.text_type(subreddit), limit=None,
+                    six.text_type(subreddit), limit=limit,
                     params={'before': before})):
                 if comment.fullname in seen:
                     if i == 0:
                         assert before is None
                         # Wait until the request is no longer cached
-                        debug('Nothing new -- Sleeping for {0} seconds'
-                              .format(reddit_session.config.cache_timeout), 3)
-                        time.sleep(reddit_session.config.cache_timeout)
+                        sleep = (reddit_session.config.cache_timeout,
+                                 'Nothing new. Sleeping for {0} seconds.', 3)
                     break
                 if i == 0:  # Always the first item in the generator
                     before = comment.fullname
-                yield comment
+                comments.append(comment)
                 processed += 1
                 if verbosity >= 1 and processed % 100 == 0:
-                    sys.stderr.write(' Processed {0}\r'.format(processed))
+                    sys.stderr.write(' Comments: {0}          \r'
+                                     .format(processed))
                     sys.stderr.flush()
                 if i < KEEP_ITEMS:
                     seen.add(comment.fullname)
@@ -81,9 +90,23 @@ def comment_stream(reddit_session, subreddit, verbosity=1):
                     before = None
             backoff = BACKOFF_START
         except HTTPError as exc:
-            debug('{0} -- sleeping for {1} seconds'.format(exc, backoff), 2)
-            time.sleep(backoff)
+            sleep = (backoff, '{0}. Sleeping for {{0}} seconds.'.format(exc),
+                     2)
             backoff *= 2
+        # Provide rate limit
+        if verbosity >= 1:
+            rate = len(comments) / (time.time() - start)
+            sys.stderr.write(' Comments: {0} ({1:.2f} cps)    \r'
+                             .format(processed, rate))
+            sys.stderr.flush()
+        # Yield comments from oldest to newest
+        for comment in comments[::-1]:
+            yield comment
+        # Sleep if necessary
+        if sleep:
+            sleep_time, msg, msg_level = sleep
+            debug(msg.format(sleep_time), msg_level)
+            time.sleep(sleep_time)
 
 
 def flatten_tree(tree, nested_attr='replies', depth_first=False):

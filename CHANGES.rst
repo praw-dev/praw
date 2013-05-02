@@ -17,6 +17,8 @@ PRAW 2.1.2 (Unreleased)
 -----------------------
  * **[BUGFIX]** Avoid occasionally processing duplicates in
    :meth:`~praw.helpers.comment_stream`.
+ * **[CHANGE]** :meth:`~praw.helpers.comment_stream` yields comments in a
+   consitent order (oldest to newest).
 
 
 PRAW 2.1.1
