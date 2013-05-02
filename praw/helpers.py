@@ -24,7 +24,8 @@ import sys
 import time
 from requests.exceptions import HTTPError
 
-BACKOFF_START = 4
+BACKOFF_START = 4  # Minimum number of seconds to sleep during errors
+KEEP_ITEMS = 32  # On each iteration only remember the first # items
 
 
 def comment_stream(reddit_session, subreddit, verbosity=1):
@@ -45,11 +46,7 @@ def comment_stream(reddit_session, subreddit, verbosity=1):
         if verbosity >= level:
             sys.stderr.write(msg + '\n')
 
-    # The seen set needs to be larger than the number of items the comments
-    # listing will provide. For each subreddit (when not using /all) the
-    # listing size is 1000
-    size = 1024 * (1 + six.text_type(subreddit).count('+'))
-    seen = BoundedSet(size)
+    seen = BoundedSet(KEEP_ITEMS * 4)
     before = None
     processed = 0
     backoff = BACKOFF_START
@@ -74,7 +71,8 @@ def comment_stream(reddit_session, subreddit, verbosity=1):
                 if verbosity >= 1 and processed % 100 == 0:
                     sys.stderr.write(' Processed {0}\r'.format(processed))
                     sys.stderr.flush()
-                seen.add(comment.fullname)
+                if i < KEEP_ITEMS:
+                    seen.add(comment.fullname)
             else:  # Generator exhausted
                 if i is None:  # Generator yielded no items
                     assert before is not None
