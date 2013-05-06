@@ -67,7 +67,11 @@ def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
                     params={'before': before})):
                 if comment.fullname in seen:
                     if i == 0:
-                        assert before is None
+                        if before is not None:
+                            # Either we have a logic problem, or reddit sent us
+                            # out of order data -- log it
+                            debug('(INFO) {0} already seen with before of {1}'
+                                  .format(comment.fullname, before), 2)
                         # Wait until the request is no longer cached
                         sleep = (reddit_session.config.cache_timeout,
                                  'Nothing new. Sleeping for {0} seconds.', 3)
