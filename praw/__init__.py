@@ -86,6 +86,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'delete_sr_header':    'r/%s/api/delete_sr_header',
                  'delete_sr_image':     'r/%s/api/delete_sr_img',
                  'distinguish':         'api/distinguish/',
+                 'domain':              'domain/%s/',
                  'edit':                'api/editusertext/',
                  'feedback':            'api/feedback/',
                  'flair':               'api/flair/',
@@ -660,6 +661,40 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         return self.get_content(self.config['controversial'], *args, **kwargs)
+
+    @decorators.restrict_access(scope='read')
+    def get_domain_listing(self, domain, sort='hot', period=None, *args,
+                           **kwargs):
+        """Return a get_content generator for submissions by domain.
+
+        Corresponds to the submissions provided by
+        http://www.reddit.com/domain/{domain}.
+
+        :param domain: The domain to generate a submission listing for.
+        :param sort: When provided must be one of 'hot', 'new', 'rising',
+            'controversial, or 'top'. Defaults to 'hot'.
+        :param period: When sort is either 'controversial', or 'top' the period
+            can be either None (for account default), 'all', 'year', 'month',
+            'week', 'day', or 'hour'.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        # Verify arguments
+        if sort not in ('controversial', 'hot', 'new', 'rising', 'top'):
+            raise TypeError('Invalid sort parameter.')
+        if period not in (None, 'all', 'day', 'hour', 'month', 'week', 'year'):
+            raise TypeError('Invalid period parameter.')
+        if sort not in ('controversial', 'top') and period:
+            raise TypeError('Period cannot be set for that sort argument.')
+        # Build url
+        url = self.config['domain'] % domain
+        if sort != 'hot':
+            url += sort
+        if period:  # Set or overwrite params 't' parameter
+            kwargs.setdefault('params', {})['t'] = period
+        return self.get_content(url, *args, **kwargs)
 
     def get_flair(self, subreddit, redditor):
         """Return the flair for a user on the given subreddit.

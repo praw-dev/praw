@@ -19,6 +19,8 @@ PRAW 2.1.2 (Unreleased)
    :meth:`~praw.helpers.comment_stream`.
  * **[CHANGE]** :meth:`~praw.helpers.comment_stream` yields comments in a
    consitent order (oldest to newest).
+ * **[FEATURE]** Support fetching submission listings for domains via
+   :meth:`.get_domain_listing`.
 
 
 PRAW 2.1.1
