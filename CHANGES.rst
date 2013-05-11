@@ -13,8 +13,8 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
-PRAW 2.1.2 (Unreleased)
------------------------
+PRAW 2.1.2
+----------
  * **[BUGFIX]** Avoid occasionally processing duplicates in
    :meth:`~praw.helpers.comment_stream`.
  * **[CHANGE]** :meth:`~praw.helpers.comment_stream` yields comments in a
