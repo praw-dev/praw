@@ -128,11 +128,12 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'spam':                'r/%s/about/spam/',
                  'stylesheet':          'r/%s/about/stylesheet/',
                  'submit':              'api/submit/',
+                 'sub_comments_gilded': 'r/%s/comments/gilded/',
                  'subreddit':           'r/%s/',
                  'subreddit_about':     'r/%s/about/',
                  'subreddit_comments':  'r/%s/comments/',
-                 'sub_comments_gilded': 'r/%s/comments/gilded/',
                  'subreddit_css':       'api/subreddit_stylesheet/',
+                 'subreddit_random':    'r/%s/random/',
                  'subreddit_settings':  'r/%s/about/edit/',
                  'subscribe':           'api/subscribe/',
                  'top':                 'top/',
@@ -807,6 +808,23 @@ class UnauthenticatedReddit(BaseReddit):
         response = self._request(self.config['subreddit'] % 'random',
                                  raw_response=True)
         return self.get_subreddit(response.url.rsplit('/', 2)[-2])
+
+    def get_random_submission(self, subreddit='all'):
+        """Return a random Submission object.
+
+        :param subreddit: Limit the submission to the specified
+            subreddit(s). Default: all
+
+        TODO: Figure out why calling this more than once in a 30 second period
+        results in the same random submission.
+
+        """
+        url = self.config['subreddit_random'] % six.text_type(subreddit)
+        try:
+            self._request(url, raw_response=True)
+        except errors.RedirectException as exc:
+            return self.get_submission(exc.response_url)
+        raise errors.ClientException('Expected exception not raised.')
 
     def get_redditor(self, user_name, *args, **kwargs):
         """Return a Redditor instance for the user_name specified.

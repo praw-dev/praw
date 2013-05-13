@@ -20,8 +20,9 @@ import sys
 from warnings import warn
 from requests.compat import urljoin
 from praw.decorators import restrict_access
-from praw.errors import (ClientException, InvalidSubreddit, OAuthException,
-                         OAuthInsufficientScope, OAuthInvalidToken)
+from praw.errors import (InvalidSubreddit, OAuthException,
+                         OAuthInsufficientScope, OAuthInvalidToken,
+                         RedirectException)
 
 
 def _get_section(subpath=''):
@@ -163,8 +164,7 @@ def _raise_redirect_exceptions(response):
         raise InvalidSubreddit('`{0}` is not a valid subreddit'
                                .format(subreddit))
     elif 'random' not in response.url:
-        raise ClientException('Unexpected redirect from {0} to {1}'
-                              .format(response.url, new_url))
+        raise RedirectException(response.url, new_url)
     return new_url
 
 

@@ -122,6 +122,18 @@ class OAuthAppRequired(ClientException):
     """
 
 
+class RedirectException(ClientException):
+
+    """Raised when a redirect response occurs that is not expected."""
+
+    def __init__(self, request_url, response_url):
+        super(RedirectException, self).__init__(
+            'Unexpected redirect from {0} to {1}'
+            .format(request_url, response_url))
+        self.request_url = request_url
+        self.response_url = response_url
+
+
 class OAuthException(Exception):
 
     """Base exception class for OAuth API calls.

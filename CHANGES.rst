@@ -13,6 +13,11 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
+PRAW 2.1.3 (Unreleased)
+-----------------------
+ * **[FEATURE]** Added :meth:`.UnauthenticatedReddit.get_random_submission`.
+
+
 PRAW 2.1.2
 ----------
  * **[BUGFIX]** Avoid occasionally processing duplicates in
