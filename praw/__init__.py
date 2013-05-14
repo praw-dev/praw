@@ -496,6 +496,7 @@ class OAuth2Reddit(BaseReddit):
         self.client_id = self.config.client_id
         self.client_secret = self.config.client_secret
         self.redirect_uri = self.config.redirect_uri
+        self._random_count = 0
 
     def _handle_oauth_request(self, data):
         auth = (self.client_id, self.client_secret)
@@ -815,14 +816,13 @@ class UnauthenticatedReddit(BaseReddit):
         :param subreddit: Limit the submission to the specified
             subreddit(s). Default: all
 
-        TODO: Figure out why calling this more than once in a 30 second period
-        results in the same random submission.
-
         """
         url = self.config['subreddit_random'] % six.text_type(subreddit)
         try:
-            self._request(url, raw_response=True)
-        except errors.RedirectException as exc:
+            self._request(url, params={'unique': self._random_count},
+                          raw_response=True)
+        except errors.RedirectException as exc:  # This _should_ occur
+            self._random_count += 1  # Avoid network-level caching
             return self.get_submission(exc.response_url)
         raise errors.ClientException('Expected exception not raised.')
 
