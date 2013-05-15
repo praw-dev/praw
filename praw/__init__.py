@@ -496,7 +496,6 @@ class OAuth2Reddit(BaseReddit):
         self.client_id = self.config.client_id
         self.client_secret = self.config.client_secret
         self.redirect_uri = self.config.redirect_uri
-        self._random_count = 0
 
     def _handle_oauth_request(self, data):
         auth = (self.client_id, self.client_secret)
@@ -607,6 +606,10 @@ class UnauthenticatedReddit(BaseReddit):
     :class:`.Reddit` instead.
 
     """
+
+    def __init__(self, *args, **kwargs):
+        super(UnauthenticatedReddit, self).__init__(*args, **kwargs)
+        self._random_count = 0
 
     @decorators.require_captcha
     def create_redditor(self, user_name, password, email='', captcha=None):
