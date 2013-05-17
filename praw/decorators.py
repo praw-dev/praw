@@ -157,7 +157,8 @@ def require_captcha(function):
                     kwargs['captcha'] = get_captcha(reddit_session, captcha_id)
                 return function(obj, *args, **kwargs)
             except errors.InvalidCaptcha as exception:
-                if sys.stdin.closed or raise_captcha_exception:
+                if raise_captcha_exception or \
+                        not hasattr(sys.stdin, 'closed') or sys.stdin.closed:
                     raise
                 captcha_id = exception.response['captcha']
     return function if IS_SPHINX_BUILD else wrapped

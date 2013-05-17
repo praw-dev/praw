@@ -16,6 +16,8 @@ upstream changes.
 PRAW 2.1.3 (Unreleased)
 -----------------------
  * **[FEATURE]** Added :meth:`.UnauthenticatedReddit.get_random_submission`.
+ * **[BUGFIX]** Verify that ``sys.stdin`` has ``closed`` attribute before
+   checking if the stream is closed.
 
 
 PRAW 2.1.2
