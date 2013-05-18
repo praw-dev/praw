@@ -13,8 +13,8 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
-PRAW 2.1.3 (Unreleased)
------------------------
+PRAW 2.1.3
+----------
  * **[FEATURE]** Added :meth:`.UnauthenticatedReddit.get_random_submission`.
  * **[BUGFIX]** Verify that ``sys.stdin`` has ``closed`` attribute before
    checking if the stream is closed.
