@@ -29,7 +29,7 @@ Step 1: Create an application.
 Go to `reddit.com's app page <https://ssl.reddit.com/prefs/apps/>`_, click on
 the "are you a developer? create an app" button. Fill out the name, description
 and about url. Name must be filled out, but the rest doesn't. Write whatever
-you please. For redirect url set it to
+you please. For redirect uri set it to
 http://127.0.0.1:65010/authorize_callback.  All four variables can be changed
 later. Click create app and you should something like the following.
 
@@ -37,7 +37,7 @@ later. Click create app and you should something like the following.
 
 The random string of letters under your app's name is it's ``client id``. The
 random string of letters next to secret are your ``client_secret`` and should
-not be shared with anybody. At the bottom is the ``redirect_url``.
+not be shared with anybody. At the bottom is the ``redirect_uri``.
 
 Step 2: Setting up PRAW.
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -59,7 +59,7 @@ Next we set the app info to match what we got in step 1.
 
     >>> r.set_oauth_app_info(client_id='stJlUSUbPQe5lQ',
     ...                      client_secret='DoNotSHAREWithANYBODY',
-    ...                      redirect_url='http://127.0.0.1:65010/'
+    ...                      redirect_uri='http://127.0.0.1:65010/'
     ...                                   'authorize_callback')
 
 The OAuth app info can be automatically set, check out
@@ -70,7 +70,7 @@ Step 3: Getting authorization from the user.
 
 Now we need to have a user grant us authorization. We do this by sending them
 to a url, where the access we wish to be granted is listed, then they click
-'allow' and are redirected to ``redirect_url`` with a code in the url
+'allow' and are redirected to ``redirect_uri`` with a code in the url
 parameters that is needed for step 4.
 
 The url we send them to is generated using :meth:`.get_authorize_url`. This
@@ -91,7 +91,7 @@ For this tutorial we will need access to the identity scope and be refreshable.
 Step 4: Exchanging the code for an access_token and a refresh_token.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After completing step 3, you're redirected to the ``redirect_url``. Since we
+After completing step 3, you're redirected to the ``redirect_uri``. Since we
 don't have a webserver running there at the moment, we'll see something like
 this. Notice the code in the url.
 
@@ -175,7 +175,7 @@ the screen.
 
     CLIENT_ID = 'YOUR_CLIENT_ID'
     CLIENT_SECRET = 'YOUR CLIENT SECRET'
-    REDIRECT_URL = 'http://127.0.0.1:65010/authorize_callback'
+    REDIRECT_URI = 'http://127.0.0.1:65010/authorize_callback'
 
     @app.route('/')
     def homepage():
@@ -205,7 +205,7 @@ the screen.
         r = praw.Reddit('OAuth Webserver example by u/_Daimon_ ver 0.1. See '
                         'https://praw.readthedocs.org/en/latest/'
                         'pages/oauth.html for more info.')
-        r.set_oauth_app_info(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL)
+        r.set_oauth_app_info(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
         app.run(debug=True, port=65010)
 
 .. _oauth_scopes:
