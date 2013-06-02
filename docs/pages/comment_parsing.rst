@@ -116,10 +116,10 @@ The full program
                     'pages/comment_parsing.html')
     r.login('bot_username', 'bot_password')
     submission = r.get_submission(submission_id='11v36o')
-    flat_comments = praw.helpers.flatten_tree(submission.comments_flat)
-    already_done = []
+    flat_comments = praw.helpers.flatten_tree(submission.comments)
+    already_done = set()
     for comment in flat_comments:
         if comment.body == "Hello" and comment.id not in already_done:
             comment.reply(' world!')
-            already_done.append(comment.id)
+            already_done.add(comment.id)
 
