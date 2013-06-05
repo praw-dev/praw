@@ -44,7 +44,7 @@ from update_checker import update_check
 from warnings import simplefilter, warn, warn_explicit
 
 
-__version__ = '2.1.3'
+__version__ = '2.1.4'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
@@ -102,10 +102,10 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'info':                'api/info/',
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
-                 'moderator':           'message/moderator/',
                  'moderators':          'r/%s/about/moderators/',
                  'modlog':              'r/%s/about/log/',
                  'modqueue':            'r/%s/about/modqueue/',
+                 'mod_mail':            'r/%s/message/moderator/',
                  'morechildren':        'api/morechildren/',
                  'my_con_subreddits':   'subreddits/mine/contributor/',
                  'my_mod_subreddits':   'subreddits/mine/moderator/',
@@ -1561,6 +1561,21 @@ class ModOnlyMixin(AuthenticatedReddit):
         return self.request_json(self.config['contributors'] %
                                  six.text_type(subreddit))
 
+    @decorators.restrict_access(scope='privatemessages', mod=True)
+    def get_mod_mail(self, subreddit='mod', *args, **kwargs):
+        """Return a get_content generator for moderator messages.
+
+        :param subreddit: Either a Subreddit object or the name of the
+            subreddit to return the moderator mail from. Defaults to `mod`
+            which includes items for all the subreddits you moderate.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['mod_mail'] %
+                                six.text_type(subreddit), *args, **kwargs)
+
     @decorators.restrict_access(scope=None, mod=True)
     def get_mod_queue(self, subreddit='mod', *args, **kwargs):
         """Return a get_content_generator for the  moderator queue.
@@ -1719,7 +1734,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         data = {'id': ','.join(thing_ids)}
         key = 'unread_message' if unread else 'read_message'
         response = self.request_json(self.config[key], data=data)
-        self.evict([self.config[x] for x in ['inbox', 'moderator', 'unread']])
+        self.evict([self.config[x] for x in ['inbox', 'mod_mail', 'unread']])
         return response
 
     @decorators.restrict_access(scope='privatemessages')
@@ -1731,16 +1746,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
         """
         return self.get_content(self.config['inbox'], *args, **kwargs)
-
-    @decorators.restrict_access(scope='privatemessages')
-    def get_mod_mail(self, *args, **kwargs):
-        """Return a get_content generator for moderator messages.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        return self.get_content(self.config['moderator'], *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
     def get_sent(self, *args, **kwargs):
