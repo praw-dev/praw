@@ -922,6 +922,10 @@ class ModeratorSubredditTest(unittest.TestCase, AuthenticatedHelper):
         mod_submissions = list(self.r.get_subreddit('mod').get_mod_queue())
         self.assertTrue(len(mod_submissions) > 0)
 
+    def test_get_mod_queue_with_default_subreddit(self):
+        mod_submissions = list(self.r.get_mod_queue())
+        self.assertTrue(len(mod_submissions) > 0)
+
     def test_get_mod_queue_multi(self):
         multi = '{0}+{1}'.format(self.sr, 'reddit_api_test2')
         mod_submissions = list(self.r.get_subreddit(multi).get_mod_queue())

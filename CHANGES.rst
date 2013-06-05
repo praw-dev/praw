@@ -19,6 +19,12 @@ PRAW 2.1.4
    used to get moderator mail from individual subreddits, instead of all
    moderated subreddits, just like
    :meth:`~praw.__init__.ModOnlyMixin.get_mod_queue`.
+ * **[BUGFIX]** Fixed an error in
+   :meth:`~praw.__init__.ModOnlyMixin.get_mod_queue`,
+   :meth:`~praw.__init__.ModOnlyMixin.get_reports`,
+   :meth:`~praw.__init__.ModOnlyMixin.get_spam` and
+   :meth:`~praw.__init__.ModOnlyMixin.get_unmoderated` when calling them from
+   :obj:`.Reddit` without giving the subreddit argument explicitly.
 
 PRAW 2.1.3
 ----------
