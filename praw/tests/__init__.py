@@ -825,15 +825,6 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         for msg in messages:
             self.assertTrue(msg not in unread)
 
-    def test_mod_mail_send(self):
-        subject = 'Unique message: %s' % uuid.uuid4()
-        self.r.get_subreddit(self.sr).send_message(subject, 'Content')
-        for msg in self.r.get_mod_mail():
-            if msg.subject == subject:
-                break
-        else:
-            self.fail('Could not find the message we just sent to ourself.')
-
     def test_reply_to_message_and_verify(self):
         text = 'Unique message reply: %s' % uuid.uuid4()
         found = None
@@ -918,8 +909,21 @@ class ModeratorSubredditTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(actions)
         self.assertTrue(all(x.action == 'removelink' for x in actions))
 
+    def test_mod_mail_send(self):
+        subject = 'Unique message: %s' % uuid.uuid4()
+        self.r.get_subreddit(self.sr).send_message(subject, 'Content')
+        for msg in self.r.get_mod_mail():
+            if msg.subject == subject:
+                break
+        else:
+            self.fail('Could not find the message we just sent to ourself.')
+
     def test_get_mod_queue(self):
         mod_submissions = list(self.r.get_subreddit('mod').get_mod_queue())
+        self.assertTrue(len(mod_submissions) > 0)
+
+    def test_get_mod_queue_with_default_subreddit(self):
+        mod_submissions = list(self.r.get_mod_queue())
         self.assertTrue(len(mod_submissions) > 0)
 
     def test_get_mod_queue_multi(self):

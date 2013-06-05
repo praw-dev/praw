@@ -948,6 +948,7 @@ class Subreddit(Messageable, Refreshable):
                 ('get_moderators', UR),
                 ('get_mod_log', MLMix),
                 ('get_mod_queue', MOMix),
+                ('get_mod_mail', MOMix),
                 ('get_random_submission', UR),
                 ('get_reports', MOMix),
                 ('get_settings', MCMix),

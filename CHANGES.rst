@@ -13,6 +13,19 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
+PRAW 2.1.4
+----------
+ * **[FEATURE]** :meth:`~praw.__init__.ModOnlyMixin.get_mod_mail` can now be
+   used to get moderator mail from individual subreddits, instead of all
+   moderated subreddits, just like
+   :meth:`~praw.__init__.ModOnlyMixin.get_mod_queue`.
+ * **[BUGFIX]** Fixed an error in
+   :meth:`~praw.__init__.ModOnlyMixin.get_mod_queue`,
+   :meth:`~praw.__init__.ModOnlyMixin.get_reports`,
+   :meth:`~praw.__init__.ModOnlyMixin.get_spam` and
+   :meth:`~praw.__init__.ModOnlyMixin.get_unmoderated` when calling them from
+   :obj:`.Reddit` without giving the subreddit argument explicitly.
+
 PRAW 2.1.3
 ----------
  * **[FEATURE]** Added :meth:`.UnauthenticatedReddit.get_random_submission`.
@@ -298,7 +311,7 @@ PRAW 2.0.0
 
    * :meth:`.get_unread`
    * :meth:`.get_inbox`
-   * :meth:`.get_mod_mail`
+   * :meth:`~praw.__init__.ModOnlyMixin.get_mod_mail`
    * :meth:`.get_sent`
 
 PRAW 1.0.16

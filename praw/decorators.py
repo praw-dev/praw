@@ -234,7 +234,11 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
                     subreddit = None
             else:
                 obj = cls
-                subreddit = args[0] if mod else None
+                if mod:
+                    subreddit = kwargs.get('subreddit', args[0] if args else
+                                           function.func_defaults[0])
+                else:
+                    subreddit = None
 
             # This function sets _use_oauth for one time use only.
             # Verify that statement is actually true.
