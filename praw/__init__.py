@@ -102,7 +102,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'info':                'api/info/',
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
-                 'mentions':			'message/mentions',
+                 'mentions':            'message/mentions',
                  'moderator':           'message/moderator/',
                  'moderators':          'r/%s/about/moderators/',
                  'modlog':              'r/%s/about/log/',
@@ -1774,27 +1774,16 @@ class PrivateMessagesMixin(AuthenticatedReddit):
                 # Use setattr to avoid pylint error
                 setattr(self.user, 'has_mail', False)
         return self.get_content(self.config['unread'], *args, **kwargs)
-        
-    @decorators.restrict_access(scope='privatemessages')
-    def get_mentions(self, unset_has_mail=False, update_user=False, *args,
-                   **kwargs):
-        """Return a get_content generator for username mentions (via reddit gold).
 
-        :param unset_has_mail: When true, clear the has_mail flag (orangered)
-            for the user.
-        :param update_user: If both `unset_has_mail` and `update user` is true,
-            set the `has_mail` attribute of the logged-in user to False.
+    @decorators.restrict_access(scope='privatemessages')
+    def get_mentions(self, *args, **kwargs):
+        """Return a get_content generator for
+        username mentions (via reddit gold).
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-        params = kwargs.setdefault('params', {})
-        if unset_has_mail:
-            params['mark'] = 'true'
-            if update_user:  # Update the user object
-                # Use setattr to avoid pylint error
-                setattr(self.user, 'has_mail', False)
         return self.get_content(self.config['mentions'], *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
