@@ -102,6 +102,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'info':                'api/info/',
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
+                 'mentions':            'message/mentions',
                  'moderators':          'r/%s/about/moderators/',
                  'modlog':              'r/%s/about/log/',
                  'modqueue':            'r/%s/about/modqueue/',
@@ -1778,6 +1779,18 @@ class PrivateMessagesMixin(AuthenticatedReddit):
                 # Use setattr to avoid pylint error
                 setattr(self.user, 'has_mail', False)
         return self.get_content(self.config['unread'], *args, **kwargs)
+
+    @decorators.restrict_access(scope='privatemessages')
+    def get_mentions(self, *args, **kwargs):
+        """Return a get_content generator for username mentions.
+
+        This will only work for users with reddit gold.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['mentions'], *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
     @decorators.require_captcha
