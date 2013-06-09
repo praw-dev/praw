@@ -1777,8 +1777,9 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='privatemessages')
     def get_mentions(self, *args, **kwargs):
-        """Return a get_content generator for
-        username mentions (via reddit gold).
+        """Return a get_content generator for username mentions.
+        
+        This will only work for users with reddit gold.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
