@@ -84,6 +84,10 @@ this page to add in more.
     with reddit submissions. The client can return a list containing the top
     submissions in a subreddit, and even open the links up if you'd like.
 
+`ALTcointip`_ by `u/im14 <http://www.reddit.com/user/im14>`_
+    ALTcointip bot allows Redditors to gift (tip) various cryptocoins (Litecoin, 
+    PPCoin, Namecoin, etc) to each other as a way of saying thanks.
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -107,6 +111,7 @@ them to work with the latest version.
     <http://identi.ca/redditbot/all>`_.
 
 .. _`AlienFeed`: https://github.com/jawerty/AlienFeed
+.. _`ALTcointip`: https://github.com/vindimy/altcointip
 .. _`AutoModerator`: https://github.com/Deimos/AutoModerator
 .. _`Butcher bot`: https://github.com/xiphirx/Butcher-Bot
 .. _`Groompbot`: https://github.com/AndrewNeo/groompbot
