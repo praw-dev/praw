@@ -1028,23 +1028,25 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         return self.request_json(self.config['accept_mod_invite'], data=data)
     
     @decorators.restrict_access(scope=None, login=True)
-    def select_flair(self, subreddit, item, flair_template_id=''):
+    def select_flair(self, item, flair_template_id='', subreddit=None):
         """Selects user flair or link flair on self-assigned allowed subreddits.
         
         Item can be a string, Redditor object, or Submission object. If item is
         a string it will be treated as the name of a Redditor.
         
+        flair_template_id can be found in the HTML of a flair selector.
+        
         :returns: The json response from the server.
 
         """
-        data = {'r': six.text_type(subreddit),
-                'flair_template_id': flair_template_id or ''}
+        data = {'flair_template_id': flair_template_id or ''}
         if isinstance(item, objects.Submission):
             data['link'] = item.fullname
             data['name'] = item.fullname # Need this otherwise it will remove the user's flair
             evict = item.permalink
         else:
             data['name'] = six.text_type(item)
+            data['r'] = six.text_type(subreddit)
             evict = self.config['flairlist'] % six.text_type(subreddit)
         response = self.request_json(self.config['select_flair'], data=data)
         self.evict(evict)
