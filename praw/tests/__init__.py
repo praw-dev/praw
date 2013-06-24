@@ -650,7 +650,7 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(sub.link_flair_text, flair_text)
 
     def test_add_link_flair_through_submission(self):
-        flair_text = 'Falir: %s' % uuid.uuid4()
+        flair_text = 'Flair: %s' % uuid.uuid4()
         sub = six_next(self.subreddit.get_new())
         sub.set_flair(flair_text)
         sub = self.r.get_submission(sub.permalink)
@@ -730,6 +730,108 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         flair_mapping = [{'flair_text': 'hsdf'}]
         self.assertRaises(errors.ClientException,
                           self.subreddit.set_flair_csv, flair_mapping)
+
+
+class FlairSelectTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.priv_sr)
+        self.user_flair_templates = {
+            'UserCssClassOne':  ('21e00aae-09cf-11e3-a4f1-12313d281541',
+                                 'default_user_flair_text_one'),
+            'UserCssClassTwo':  ('2f6504c2-09cf-11e3-9d8d-12313d281541',
+                                 'default_user_flair_text_two')
+        }
+        self.link_flair_templates = {
+            'LinkCssClassOne':  ('36a573c0-09cf-11e3-b5f7-12313d096169',
+                                 'default_link_flair_text_one'),
+            'LinkCssClassTwo':  ('3b73f516-09cf-11e3-9a71-12313d281541',
+                                 'default_link_flair_text_two')
+        }
+
+    def get_different_user_flair_class(self):
+        flair = self.r.get_flair(self.subreddit, self.r.user)
+        if flair == self.user_flair_templates.keys()[0]:
+            different_flair = self.user_flair_templates.keys()[1]
+        else:
+            different_flair = self.user_flair_templates.keys()[0]
+        return different_flair
+
+    def get_different_link_flair_class(self, submission):
+        flair = submission.link_flair_css_class
+        if flair == self.link_flair_templates.keys()[0]:
+            different_flair = self.link_flair_templates.keys()[1]
+        else:
+            different_flair = self.link_flair_templates.keys()[0]
+        return different_flair
+
+    def test_select_user_flair(self):
+        flair_class = self.get_different_user_flair_class()
+        flair_id = self.user_flair_templates[flair_class][0]
+        flair_default_text = self.user_flair_templates[flair_class][1]
+        self.r.select_flair(item=self.subreddit,
+                            flair_template_id=flair_id)
+        flair = self.r.get_flair(self.subreddit, self.r.user)
+        self.assertEqual(flair['flair_text'], flair_default_text)
+        self.assertEqual(flair['flair_css_class'], flair_class)
+
+    def test_select_link_flair(self):
+        sub = six_next(self.subreddit.get_new())
+        flair_class = self.get_different_link_flair_class(sub)
+        flair_id = self.link_flair_templates[flair_class][0]
+        flair_default_text = self.link_flair_templates[flair_class][1]
+        self.r.select_flair(item=sub,
+                            flair_template_id=flair_id)
+        sub = self.r.get_submission(sub.permalink)
+        self.assertEqual(sub.link_flair_text, flair_default_text)
+        self.assertEqual(sub.link_flair_css_class, flair_class)
+
+    def test_select_user_flair_custom_text(self):
+        flair_class = self.get_different_user_flair_class()
+        flair_id = self.user_flair_templates[flair_class][0]
+        flair_text = 'Flair: %s' % uuid.uuid4()
+        self.r.select_flair(item=self.subreddit,
+                            flair_template_id=flair_id,
+                            flair_text=flair_text)
+        flair = self.r.get_flair(self.subreddit, self.r.user)
+        self.assertEqual(flair['flair_text'], flair_text)
+        self.assertEqual(flair['flair_css_class'], flair_class)
+
+    def test_select_link_flair_custom_text(self):
+        sub = six_next(self.subreddit.get_new())
+        flair_class = self.get_different_link_flair_class(sub)
+        flair_id = self.link_flair_templates[flair_class][0]
+        flair_text = 'Flair: %s' % uuid.uuid4()
+        self.r.select_flair(item=sub,
+                            flair_template_id=flair_id,
+                            flair_text=flair_text)
+        sub = self.r.get_submission(sub.permalink)
+        self.assertEqual(sub.link_flair_text, flair_text)
+        self.assertEqual(sub.link_flair_css_class, flair_class)
+
+    def test_select_user_flair_remove(self):
+        flair = self.r.get_flair(self.subreddit, self.r.user)
+        if flair['flair_css_class'] is None:
+            flair_class = self.get_different_user_flair_class()
+            flair_id = self.user_flair_templates[flair_class][0]
+            self.r.select_flair(item=self.subreddit,
+                                flair_template_id=flair_id)
+        self.r.select_flair(item=self.subreddit)
+        flair = self.r.get_flair(self.subreddit, self.r.user)
+        self.assertEqual(flair['flair_text'], None)
+        self.assertEqual(flair['flair_css_class'], None)
+
+    def test_select_link_flair_remove(self):
+        sub = six_next(self.subreddit.get_new())
+        if sub.link_flair_css_class is None:
+            flair_class = self.get_different_link_flair_class(sub)
+            flair_id = self.link_flair_templates[flair_class][0]
+            self.r.select_flair(item=sub,
+                                flair_template_id=flair_id)
+        self.r.select_flair(item=sub)
+        sub = self.r.get_submission(sub.permalink)
+        self.assertEqual(sub.link_flair_text, None)
+        self.assertEqual(sub.link_flair_css_class, None)
 
 
 class FlairTemplateTest(unittest.TestCase, AuthenticatedHelper):

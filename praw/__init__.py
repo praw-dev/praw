@@ -124,6 +124,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'saved':               'saved/',
                  'search':              'r/%s/search/',
                  'search_reddit_names': 'api/search_reddit_names/',
+                 'select_flair':        'api/selectflair/',
                  'sent':                'message/sent/',
                  'sticky_submission':   'api/set_subreddit_sticky/',
                  'site_admin':          'api/site_admin/',
@@ -1151,6 +1152,40 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             refresh_token=refresh_token or self.refresh_token)
         if update_session:
             self.set_access_credentials(**response)
+        return response
+
+    @decorators.restrict_access(scope=None, login=True)
+    def select_flair(self, item, flair_template_id='', flair_text=''):
+        """Select user flair or link flair on subreddits.
+
+        This can only be used for assigning your own name flair or link flair
+        on your own submissions. For assigning other's flairs using moderator
+        access, check :meth:`.set_flair`
+
+        :param item: A string, Subreddit object (for user flair), or
+            Submission object (for link flair). If item is a string it will be
+            treated as the name of a Subreddit.
+        :param flair_template_id: 36 characters id found in the HTML of a
+            flair selector.
+        :param flair_text: A String containing the custom flair text.
+            Used on subreddits that allow it.
+
+        :returns: The json response from the server.
+
+        """
+        data = {'flair_template_id': flair_template_id or '',
+                'text':              flair_text or ''}
+        if isinstance(item, objects.Submission):
+            # Link flair
+            data['link'] = item.fullname
+            evict = item.permalink
+        else:
+            # User flair
+            data['name'] = self.user.name
+            data['r'] = six.text_type(item)
+            evict = self.config['flairlist'] % six.text_type(item)
+        response = self.request_json(self.config['select_flair'], data=data)
+        self.evict(evict)
         return response
 
     @decorators.require_oauth

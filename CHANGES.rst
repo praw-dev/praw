@@ -14,6 +14,9 @@ upstream changes.
 
 Unreleased
 ----------
+ * **[FEATURE]** :meth:`~praw.__init__.AuthenticatedReddit.select_flair` method
+   added, can be used to change your flair without moderator access on
+   subreddits that allow it.
  * **[FEATURE]** Add :meth:`~praw.objects.Submission.sticky` and
    :meth:`~praw.objects.Submission.unsticky` to sticky and unsticky a
    submission to the top of a subreddit.
