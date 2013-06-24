@@ -124,6 +124,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'saved':               'saved/',
                  'search':              'r/%s/search/',
                  'search_reddit_names': 'api/search_reddit_names/',
+                 'select_flair':        'api/selectflair/',
                  'sent':                'message/sent/',
                  'site_admin':          'api/site_admin/',
                  'spam':                'r/%s/about/spam/',
@@ -1025,7 +1026,30 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.user._mod_subs = None  # pylint: disable-msg=W0212
         self.evict(self.config['my_mod_subreddits'])
         return self.request_json(self.config['accept_mod_invite'], data=data)
+    
+    @decorators.restrict_access(scope=None, login=True)
+    def select_flair(self, subreddit, item, flair_template_id=''):
+        """Selects user flair or link flair on self-assigned allowed subreddits.
+        
+        Item can be a string, Redditor object, or Submission object. If item is
+        a string it will be treated as the name of a Redditor.
+        
+        :returns: The json response from the server.
 
+        """
+        data = {'r': six.text_type(subreddit),
+                'flair_template_id': flair_template_id or ''}
+        if isinstance(item, objects.Submission):
+            data['link'] = item.fullname
+            data['name'] = item.fullname # Need this otherwise it will remove the user's flair
+            evict = item.permalink
+        else:
+            data['name'] = six.text_type(item)
+            evict = self.config['flairlist'] % six.text_type(subreddit)
+        response = self.request_json(self.config['select_flair'], data=data)
+        self.evict(evict)
+        return response
+    
     def clear_authentication(self):
         """Clear any existing authentication on the reddit object.
 
