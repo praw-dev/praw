@@ -13,6 +13,11 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
+Unreleased
+----------
+ * **[FEATURE]** Add arguments syntax and time to
+   :meth:`~praw.__init__.UnauthenticatedReddit.search`.
+
 PRAW 2.1.4
 ----------
  * **[FEATURE]** :meth:`~praw.__init__.ModOnlyMixin.get_mod_mail` can now be
