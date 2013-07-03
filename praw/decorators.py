@@ -20,6 +20,7 @@ failed API requests by testing that the call can be made first. Also limit the
 length of output strings and parse json response for certain errors.
 """
 
+import inspect
 import os
 import six
 import sys
@@ -43,11 +44,17 @@ def alias_function(function, class_name):
     """
     @wraps(function)
     def wrapped(self, *args, **kwargs):
-        return function(self.reddit_session, self, *args, **kwargs)
+        func_args = inspect.getargspec(function).args
+        if 'subreddit' in func_args and func_args.index('subreddit') != 1:
+            # Only happens for search
+            kwargs['subreddit'] = self
+            return function(self.reddit_session, *args, **kwargs)
+        else:
+            return function(self.reddit_session, self, *args, **kwargs)
     # Only grab the short-line doc and add a link to the complete doc
     wrapped.__doc__ = wrapped.__doc__.split('\n', 1)[0]
     wrapped.__doc__ += ('\n\nSee :meth:`.{0}.{1}` for complete usage. '
-                        'Note that you should exclude the first parameter '
+                        'Note that you should exclude the subreddit parameter '
                         'when calling this convenience method.'
                         .format(class_name, function.__name__))
     # Don't hide from sphinx as this is a parameter modifying decorator

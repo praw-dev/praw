@@ -17,6 +17,8 @@ Unreleased
 ----------
  * **[FEATURE]** Add arguments syntax and time to
    :meth:`~praw.__init__.UnauthenticatedReddit.search`.
+ * **[BUGFIX]** Fix bug that prevented the usage of
+   :meth:`~praw.objects.Subreddit.search` when called from :obj:`.Subreddit`.
 
 PRAW 2.1.4
 ----------
