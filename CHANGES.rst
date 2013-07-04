@@ -13,11 +13,14 @@ divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
-PRAW 2.1.4
+PRAW 2.1.5 (Unreleased)
 ----------
  * **[FEATURE]** :meth:`~praw.__init__.AuthenticatedReddit.select_flair` method
    added, can be used to change your flair without moderator access on 
    subreddits that allow it.
+
+PRAW 2.1.4
+----------
  * **[FEATURE]** :meth:`~praw.__init__.ModOnlyMixin.get_mod_mail` can now be
    used to get moderator mail from individual subreddits, instead of all
    moderated subreddits, just like
