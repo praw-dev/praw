@@ -17,6 +17,8 @@ Unreleased
 ----------
  * **[FEATURE]** Add arguments syntax and time to
    :meth:`~praw.__init__.UnauthenticatedReddit.search`.
+ * **[FEATURE]** PRAW will now try to use the http_proxy environment variable
+   for proxy settings, if no proxy is set in the configuration file.
  * **[BUGFIX]** Fix bug that prevented the usage of
    :meth:`~praw.objects.Subreddit.search` when called from :obj:`.Subreddit`.
 

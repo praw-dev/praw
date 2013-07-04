@@ -65,10 +65,12 @@ config file. Each site can overwrite any of these variables.
  * **1**: log only the request URIs
  * **2**: log the request URIs as well as any POST data
 
-* *http_proxy* A **string** that declares an http proxy to be used. It follows
+* *http_proxy* A **string** that declares a http proxy to be used. It follows
   the `requests proxy conventions
   <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_, e.g.,
-  ``http_proxy: http://user:pass@addr:port``.
+  ``http_proxy: http://user:pass@addr:port``. If no proxy is specified in the
+  config file, PRAW will pick up the environment variable for http_proxy, if it
+  has been set.
 
 The are additional variables that each site can define. These additional
 variables are:
