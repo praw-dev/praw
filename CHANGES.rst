@@ -15,6 +15,9 @@ upstream changes.
 
 PRAW 2.1.4
 ----------
+ * **[FEATURE]** :meth:`~praw.__init__.AuthenticatedReddit.select_flair` method
+   added, can be used to change your flair without moderator access on 
+   subreddits that allow it.
  * **[FEATURE]** :meth:`~praw.__init__.ModOnlyMixin.get_mod_mail` can now be
    used to get moderator mail from individual subreddits, instead of all
    moderated subreddits, just like
