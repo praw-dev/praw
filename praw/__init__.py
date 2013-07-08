@@ -1026,7 +1026,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.user._mod_subs = None  # pylint: disable-msg=W0212
         self.evict(self.config['my_mod_subreddits'])
         return self.request_json(self.config['accept_mod_invite'], data=data)
-    
+
     def clear_authentication(self):
         """Clear any existing authentication on the reddit object.
 
@@ -1144,22 +1144,26 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         if update_session:
             self.set_access_credentials(**response)
         return response
-    
+
     @decorators.restrict_access(scope=None, login=True)
     def select_flair(self, item, flair_template_id='', subreddit=None):
-        """Selects user flair or link flair on subreddits.
-        
-        :param item: A string, Redditor object, or Submission object. If item is a string it will be treated as the name of a Redditor.
-        :param flair_template_id: 36 characters id found in the HTML of a flair selector
-        :param subreddit: The subreddit where you want to change your name flair. Not needed for link flair.
-        
+        """Select user flair or link flair on subreddits.
+
+        :param item: A string, Redditor object, or Submission object.
+            If item is a string it will be treated as the name of a Redditor.
+        :param flair_template_id: 36 characters id found in the HTML of a
+            flair selector.
+        :param subreddit: The subreddit where you want to change your name
+            flair. Not needed for link flair.
+
         :returns: The json response from the server.
 
         """
         data = {'flair_template_id': flair_template_id or ''}
         if isinstance(item, objects.Submission):
             data['link'] = item.fullname
-            data['name'] = item.fullname # Need this otherwise it will remove the user's flair
+            # Need this otherwise it will remove the user's flair
+            data['name'] = item.fullname
             evict = item.permalink
         else:
             data['name'] = six.text_type(item)
