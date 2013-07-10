@@ -25,6 +25,8 @@ PRAW 2.1.4
    :meth:`~praw.__init__.ModOnlyMixin.get_spam` and
    :meth:`~praw.__init__.ModOnlyMixin.get_unmoderated` when calling them from
    :obj:`.Reddit` without giving the subreddit argument explicitly.
+ * **[CHANGE]** Praw will now try to use the http_proxy environment variable
+   for proxy settings, if no proxy is set in the praw config file.
 
 PRAW 2.1.3
 ----------
