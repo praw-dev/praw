@@ -67,7 +67,7 @@ replace all :class:`.MoreComments` with the :class:`.Comment`\s they represent,
 so we get all comments in the thread.
 
 >>> submission.replace_more_comments(limit=None, threshold=0)
->>> all_comments = s.comments
+>>> all_comments = submission.comments
 
 It's limited how many :class:`.MoreComments` PRAW can replace with a single API
 call.  Replacing all :class:`.MoreComments` in a thread with many comments will
