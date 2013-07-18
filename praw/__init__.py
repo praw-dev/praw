@@ -1240,7 +1240,7 @@ class ModConfigMixin(AuthenticatedReddit):
                      wiki_edit_age=30, wiki_edit_karma=100,
                      submit_link_label='', submit_text_label='',
                      exclude_banned_modqueue=False, comment_score_hide_mins=0,
-                     **kwargs):
+                     public_traffic=False, **kwargs):
         """Set the settings for the given subreddit.
 
         :param subreddit: Must be  a subreddit object.
@@ -1261,6 +1261,7 @@ class ModConfigMixin(AuthenticatedReddit):
                 'link_type': content_options,
                 'over_18': 'on' if over_18 else 'off',
                 'public_description': public_description,
+                'public_traffic': public_traffic,
                 'show_media': 'on' if show_media else 'off',
                 'submit_link_label': submit_link_label or '',
                 'submit_text_label': submit_text_label or '',

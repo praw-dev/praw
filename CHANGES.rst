@@ -25,6 +25,8 @@ PRAW 2.1.4
    :meth:`~praw.__init__.ModOnlyMixin.get_spam` and
    :meth:`~praw.__init__.ModOnlyMixin.get_unmoderated` when calling them from
    :obj:`.Reddit` without giving the subreddit argument explicitly.
+ * **[REDDIT]** New fields ``public_traffic`` added to
+   :meth:`~.Subreddit.set_settings` as per the upstream change
 
 PRAW 2.1.3
 ----------
