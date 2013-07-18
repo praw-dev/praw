@@ -323,6 +323,23 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def test_search(self):
         self.assertTrue(len(list(self.r.search('test'))) > 0)
 
+    @reddit_only
+    def test_search_with_syntax(self):
+        # Searching with timestamps only possible with cloudsearch
+        no_syntax = self.r.search("timestamp:1354348800..1354671600",
+                                  subreddit=self.sr)
+        self.assertFalse(list(no_syntax))
+        with_syntax = self.r.search("timestamp:1354348800..1354671600",
+                                    subreddit=self.sr, syntax='cloudsearch')
+        self.assertTrue(list(with_syntax))
+
+    @reddit_only
+    def test_search_with_time_window(self):
+        submissions = len(list(self.r.search('test', subreddit=self.sr,
+                                             time='week', limit=1000)))
+        self.assertTrue(submissions > 0)
+        self.assertTrue(submissions < 1000)
+
     def test_search_reddit_names(self):
         self.assertTrue(len(self.r.search_reddit_names('reddit')) > 0)
 
