@@ -1146,14 +1146,13 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         return response
 
     @decorators.restrict_access(scope=None, login=True)
-    def select_flair(self, flair_template_id, subreddit=None, submission=None,
+    def select_flair(self, subreddit=None, submission=None, flair_template_id='',
                      text=''):
         """Select user flair or link flair on subreddits.
 
         This can only be used for assigning your own name flair or link flair
-        on your own submissions.
-        For assigning other's flairs using moderator access, check
-        :meth:`.set_flair`
+        on your own submissions. For assigning other's flairs using moderator
+        access, check :meth:`.set_flair`
 
         :param flair_template_id: 36 characters id found in the HTML of a
             flair selector.
@@ -1175,7 +1174,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 'text':              text or ''}
         if subreddit:
             # Name flair
-            data['name'] = self.get_me().name
+            data['name'] = self.user.name
             data['r'] = six.text_type(subreddit)
             evict = self.config['flairlist'] % six.text_type(subreddit)
         else:
