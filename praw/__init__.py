@@ -1146,8 +1146,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         return response
 
     @decorators.restrict_access(scope=None, login=True)
-    def select_flair(self, subreddit=None, submission=None, flair_template_id='',
-                     text=''):
+    def select_flair(self, subreddit=None, submission=None,
+                     flair_template_id='', text=''):
         """Select user flair or link flair on subreddits.
 
         This can only be used for assigning your own name flair or link flair

@@ -960,6 +960,7 @@ class Subreddit(Messageable, Refreshable):
                 ('get_wiki_page', UR),
                 ('get_wiki_pages', UR),
                 ('search', UR),
+                ('select_flair', AR),
                 ('set_flair', MFMix),
                 ('set_flair_csv', MFMix),
                 ('set_settings', MCMix),
