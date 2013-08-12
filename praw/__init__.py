@@ -1146,8 +1146,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         return response
 
     @decorators.restrict_access(scope=None, login=True)
-    def select_flair(self, subreddit=None, submission=None,
-                     flair_template_id='', text=''):
+    def select_flair(self, item, flair_template_id='', flair_text=''):
         """Select user flair or link flair on subreddits.
 
         This can only be used for assigning your own name flair or link flair
@@ -1156,33 +1155,34 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
         :param flair_template_id: 36 characters id found in the HTML of a
             flair selector.
+        :param item: A string, Subreddit object (for user flair), or
+            Submission object (for link flair). If item is a string it will be
+            treated as the name of a Subreddit.
         :param subreddit: A Subreddit object, or string.
             Used for changing your name flair on a given subreddit.
             If it is a string, it will be treated as the name of a Subreddit.
         :param submission: A Submission object.
             Used for changing the link flair of your own submission.
-        :param text: A String containing the custom flair text.
+        :param flair_text: A String containing the custom flair text.
             Used on subreddits that allow it.
 
         :returns: The json response from the server.
 
         """
-        if bool(subreddit) == bool(submission):
-            raise TypeError('One (and only one) of subreddit or submission is'
-                            ' required!')
         data = {'flair_template_id': flair_template_id or '',
-                'text':              text or ''}
-        if subreddit:
-            # Name flair
-            data['name'] = self.user.name
-            data['r'] = six.text_type(subreddit)
-            evict = self.config['flairlist'] % six.text_type(subreddit)
-        else:
+                'text':              flair_text or ''}
+        if isinstance(item, objects.Submission):
             # Link flair
-            data['link'] = submission.fullname
-            # Need this otherwise it will remove the user's flair
-            data['name'] = submission.fullname
-            evict = submission.permalink
+            data['link'] = item.fullname
+            # Need to initialize 'name' otherwise
+            # it will remove the user's flair
+            data['name'] = item.fullname
+            evict = item.permalink
+        else:
+            # User flair
+            data['name'] = self.user.name
+            data['r'] = six.text_type(item)
+            evict = self.config['flairlist'] % six.text_type(item)
         response = self.request_json(self.config['select_flair'], data=data)
         self.evict(evict)
         return response
