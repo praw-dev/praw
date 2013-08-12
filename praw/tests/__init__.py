@@ -623,6 +623,33 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.assertRaises(errors.ClientException,
                           self.subreddit.set_flair_csv, flair_mapping)
 
+    def test_select_user_flair(self):
+        user_flair_id1 = '97530d26-02f5-11e3-b48e-12313b0cf20e'
+        sub = six_next(self.subreddit.get_new())
+        self.r.select_flair(item=self.sr,
+                            flair_template_id=user_flair_id1)
+        flair = self.r.get_flair(self.sr, self.r.user)
+        self.assertEqual(flair['flair_text'], 'default_flair_text_one')
+        self.assertEqual(flair['flair_css_class'], 'CssClassOne')
+
+    def test_select_user_flair_custom_text(self):
+        user_flair_id2 = '9dec0778-02f5-11e3-845b-12313b08e221'
+        flair_text = 'Flair: %s' % uuid.uuid4()
+        sub = six_next(self.subreddit.get_new())
+        self.r.select_flair(item=self.sr,
+                            flair_template_id=user_flair_id2,
+                            flair_text=flair_text)
+        flair = self.r.get_flair(self.sr, self.r.user)
+        self.assertEqual(flair['flair_text'], flair_text)
+        self.assertEqual(flair['flair_css_class'], 'CssClassTwo')
+
+    def test_select_user_flair_remove(self):
+        sub = six_next(self.subreddit.get_new())
+        self.r.select_flair(item=self.sr)
+        flair = self.r.get_flair(self.sr, self.r.user)
+        self.assertEqual(flair['flair_text'], None)
+        self.assertEqual(flair['flair_css_class'], None)
+
 
 class FlairTemplateTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
