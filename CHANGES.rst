@@ -28,6 +28,9 @@ PRAW 2.1.4
    used to get moderator mail from individual subreddits, instead of all
    moderated subreddits, just like
    :meth:`~praw.__init__.ModOnlyMixin.get_mod_queue`.
+ * **[FEATURE]** Added :meth:`~.get_mentions` which is a :meth:`.get_content`
+   generator for username mentions. Only usable if the authenticated user has
+   gold.
  * **[BUGFIX]** Fixed an error in
    :meth:`~praw.__init__.ModOnlyMixin.get_mod_queue`,
    :meth:`~praw.__init__.ModOnlyMixin.get_reports`,
