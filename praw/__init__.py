@@ -127,6 +127,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'sent':                'message/sent/',
                  'site_admin':          'api/site_admin/',
                  'spam':                'r/%s/about/spam/',
+		 'set_subreddit_sticky':'/api/set_subreddit_sticky',
                  'stylesheet':          'r/%s/about/stylesheet/',
                  'submit':              'api/submit/',
                  'sub_comments_gilded': 'r/%s/comments/gilded/',

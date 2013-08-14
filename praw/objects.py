@@ -236,6 +236,18 @@ class Moderatable(RedditContentObject):
         """
         return self.mark_as_nsfw(unmark_nsfw=True)
 
+    def set_sticky_status(self, sticky=True):
+	"""
+	Sets a post as sticky in its subreddit if sticky==True
+	if sticky==False, then attempts to unsticky the post
+
+	:returns: The json response from the server
+	"""
+	url = self.reddit_session.config['set_subreddit_sticky']
+	data = {'id': self.fullname,
+		'state': True if sticky else False}
+
+	return self.reddit_session.request_json(url, data=data)
 
 class Editable(RedditContentObject):
 
