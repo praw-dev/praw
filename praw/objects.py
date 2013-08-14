@@ -237,16 +237,29 @@ class Moderatable(RedditContentObject):
         return self.mark_as_nsfw(unmark_nsfw=True)
         
     @restrict_access(scope='modposts')
-    def set_sticky_status(self, sticky=True):
+    def sticky(self):
 	"""
-	Sets a post as sticky in its subreddit if sticky==True
-	if sticky==False, then attempts to unsticky the post
+	Attempts to sticky a post in its subreddit.
+	If there is already a stickied post in the concerned subreddit then it will be unstickied
 
 	:returns: The json response from the server
 	"""
 	url = self.reddit_session.config['set_subreddit_sticky']
 	data = {'id': self.fullname,
-		'state': True if sticky else False}
+		'state': True}
+
+	return self.reddit_session.request_json(url, data=data)
+
+    @restrict_access(scope='modposts')
+    def unsticky(self):
+	"""
+	Attempts to unsticky a post from its subreddit
+
+	:returns: The json response from the server
+	"""
+	url = self.reddit_session.config['set_subreddit_sticky']
+	data = {'id': self.fullname,
+		'state': False}
 
 	return self.reddit_session.request_json(url, data=data)
 

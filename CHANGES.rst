@@ -15,6 +15,9 @@ upstream changes.
 
 Unreleased
 ----------
+ * **[CHANGE]** Changed 'from praw import decorators, handlers' to 
+   :'import decorators, handlers' in __init__.py to resolve errors w/ Google App Engine
+ * **[FEATURE]** Added methods to sticky and unsticky posts 
  * **[FEATURE]** Add arguments syntax and time to
    :meth:`~praw.__init__.UnauthenticatedReddit.search`.
  * **[FEATURE]** PRAW will now try to use the http_proxy environment variable
