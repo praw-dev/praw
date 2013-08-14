@@ -235,7 +235,8 @@ class Moderatable(RedditContentObject):
 
         """
         return self.mark_as_nsfw(unmark_nsfw=True)
-
+        
+    @restrict_access(scope='modposts')
     def set_sticky_status(self, sticky=True):
 	"""
 	Sets a post as sticky in its subreddit if sticky==True
