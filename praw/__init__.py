@@ -31,7 +31,7 @@ import re
 import requests
 import six
 import sys
-from .praw import decorators, errors
+from praw import decorators, errors
 from handlers import DefaultHandler
 from helpers import normalize_url
 from internal import (_prepare_request, _raise_redirect_exceptions,
@@ -125,9 +125,9 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'search':              'r/%s/search/',
                  'search_reddit_names': 'api/search_reddit_names/',
                  'sent':                'message/sent/',
+		 'set_subreddit_sticky':'/api/set_subreddit_sticky',
                  'site_admin':          'api/site_admin/',
                  'spam':                'r/%s/about/spam/',
-		 'set_subreddit_sticky':'/api/set_subreddit_sticky',
                  'stylesheet':          'r/%s/about/stylesheet/',
                  'submit':              'api/submit/',
                  'sub_comments_gilded': 'r/%s/comments/gilded/',
