@@ -31,7 +31,7 @@ import re
 import requests
 import six
 import sys
-import decorators, errors
+from .praw import decorators, errors
 from handlers import DefaultHandler
 from helpers import normalize_url
 from internal import (_prepare_request, _raise_redirect_exceptions,
