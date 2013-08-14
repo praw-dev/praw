@@ -1153,16 +1153,11 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         on your own submissions. For assigning other's flairs using moderator
         access, check :meth:`.set_flair`
 
-        :param flair_template_id: 36 characters id found in the HTML of a
-            flair selector.
         :param item: A string, Subreddit object (for user flair), or
             Submission object (for link flair). If item is a string it will be
             treated as the name of a Subreddit.
-        :param subreddit: A Subreddit object, or string.
-            Used for changing your name flair on a given subreddit.
-            If it is a string, it will be treated as the name of a Subreddit.
-        :param submission: A Submission object.
-            Used for changing the link flair of your own submission.
+        :param flair_template_id: 36 characters id found in the HTML of a
+            flair selector.
         :param flair_text: A String containing the custom flair text.
             Used on subreddits that allow it.
 
@@ -1174,9 +1169,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         if isinstance(item, objects.Submission):
             # Link flair
             data['link'] = item.fullname
-            # Need to initialize 'name' otherwise
-            # it will remove the user's flair
-            data['name'] = item.fullname
             evict = item.permalink
         else:
             # User flair
