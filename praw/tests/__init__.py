@@ -1491,6 +1491,28 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
             self.assertRaises(errors.ClientException, getattr, submission,
                               'short_link')
 
+    def test_sticky_unsticky(self):
+        def verify_sticky():
+            submission.sticky()
+            submission.refresh()
+            self.assertTrue(submission.stickied)
+
+        def verify_unsticky():
+            submission.unsticky()
+            submission.refresh()
+            self.assertFalse(submission.stickied)
+
+        self.disable_cache()
+        submission_id = self.submission_edit_id
+        submission = self.r.get_submission(submission_id=submission_id)
+
+        if submission.stickied:
+            verify_unsticky()
+            verify_sticky()
+        else:
+            verify_sticky()
+            verify_unsticky()
+
     def test_unhide(self):
         self.disable_cache()
         found = None

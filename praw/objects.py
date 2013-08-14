@@ -928,6 +928,31 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         """
         return urljoin(self.reddit_session.config.short_domain, self.id)
 
+    @restrict_access(scope='modposts')
+    def sticky(self):
+        """Sticky a post in its subreddit.
+
+        If there is already a stickied post in the concerned subreddit then it
+        will be unstickied.
+
+        :returns: The json response from the server
+
+        """
+        url = self.reddit_session.config['sticky_submission']
+        data = {'id': self.fullname, 'state': True}
+        return self.reddit_session.request_json(url, data=data)
+
+    @restrict_access(scope='modposts')
+    def unsticky(self):
+        """Unsticky this post.
+
+        :returns: The json response from the server
+
+        """
+        url = self.reddit_session.config['sticky_submission']
+        data = {'id': self.fullname, 'state': False}
+        return self.reddit_session.request_json(url, data=data)
+
 
 class Subreddit(Messageable, Refreshable):
 

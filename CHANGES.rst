@@ -15,6 +15,9 @@ upstream changes.
 
 Unreleased
 ----------
+ * **[FEATURE]** Add :meth:`~praw.objects.Submission.sticky` and
+   :meth:`~praw.objects.Submission.unsticky` to sticky and unsticky a
+   submission to the top of a subreddit.
  * **[FEATURE]** Add arguments syntax and period to
    :meth:`~praw.__init__.UnauthenticatedReddit.search`.
  * **[FEATURE]** PRAW will now try to use the http_proxy environment variable
