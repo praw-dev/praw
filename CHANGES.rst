@@ -15,6 +15,8 @@ upstream changes.
 
 Unreleased
 ----------
+ * **[BUGFIX]** Fix errors in __init__.py when using praw with
+   Google App Engine
  * **[FEATURE]** Add :meth:`~praw.objects.Submission.sticky` and
    :meth:`~praw.objects.Submission.unsticky` to sticky and unsticky a
    submission to the top of a subreddit.
