@@ -103,7 +103,7 @@ class RedditContentObject(object):
         return retval
 
     def _get_json_dict(self):
-        # (disbled for entire function) pylint: disable-msg=W0212
+        # (disabled for entire function) pylint: disable-msg=W0212
 
         # OAuth handling needs to be special cased here. For instance, the user
         # might be calling a method on a Subreddit object that requires first
@@ -622,7 +622,7 @@ class Redditor(Messageable, Refreshable):
     def __cmp__(self, other):
         """Compare two redditors based on the lowercase of their name.
 
-        :returns: negative, 0, or positive depending on the comparision.
+        :returns: negative, 0, or positive depending on the comparison.
 
         """
         return cmp(self.name.lower(), other.name.lower())
@@ -1023,7 +1023,7 @@ class Subreddit(Messageable, Refreshable):
     def __cmp__(self, other):
         """Compare two subreddits based on the lowercase of their name.
 
-        :returns: negative, 0, or positive depending on the comparision.
+        :returns: negative, 0, or positive depending on the comparison.
 
         """
         return cmp(self.display_name.lower(), other.display_name.lower())
@@ -1031,7 +1031,7 @@ class Subreddit(Messageable, Refreshable):
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
                  fetch=False):
         # Special case for when my_subreddits is called as no name is returned
-        # so we have to extract the name from the URL.  The URLs are returned
+        # so we have to extract the name from the URL. The URLs are returned
         # as: /r/reddit_name/
         if not subreddit_name:
             subreddit_name = json_dict['url'].split('/')[2]

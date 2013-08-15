@@ -57,7 +57,7 @@ PNG_HEADER = b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
 # Enable deprecation warnings
 simplefilter('default')
 
-# Compatability
+# Compatibility
 if six.PY3:
     CHR = chr
 else:
@@ -252,7 +252,7 @@ class BaseReddit(object):
 
         The user_agent is how your application identifies itself. Read the
         official API guidelines for user_agents
-        https://github.com/reddit/reddit/wiki/API.  Applications using default
+        https://github.com/reddit/reddit/wiki/API. Applications using default
         user_agents such as "Python/urllib" are drastically limited.
 
         site_name allows you to specify which reddit you want to connect to.
@@ -1056,7 +1056,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """
         data = {'content': content,
                 'page': page,
-                'r':  six.text_type(subreddit),
+                'r': six.text_type(subreddit),
                 'reason': reason}
         return self.request_json(self.config['wiki_edit'], data=data)
 
@@ -1252,7 +1252,7 @@ class ModConfigMixin(AuthenticatedReddit):
                      public_traffic=False, **kwargs):
         """Set the settings for the given subreddit.
 
-        :param subreddit: Must be  a subreddit object.
+        :param subreddit: Must be a subreddit object.
         :returns: The json response from the server.
 
         """
@@ -1313,7 +1313,7 @@ class ModConfigMixin(AuthenticatedReddit):
         :param image_path: A path to the jpg or png image you want to upload.
         :param name: The name to provide the image. When None the name will be
             filename less any extension.
-        :param header: When true, upload the image as the subreddit header.
+        :param header: When True, upload the image as the subreddit header.
         :returns: True when the upload was successful. False otherwise. Note
             this is subject to change.
 
@@ -1589,7 +1589,7 @@ class ModOnlyMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope=None, mod=True)
     def get_mod_queue(self, subreddit='mod', *args, **kwargs):
-        """Return a get_content_generator for the  moderator queue.
+        """Return a get_content_generator for the moderator queue.
 
         :param subreddit: Either a Subreddit object or the name of the
             subreddit to return the flair list for. Defaults to `mod` which
@@ -1773,9 +1773,9 @@ class PrivateMessagesMixin(AuthenticatedReddit):
                    **kwargs):
         """Return a get_content generator for unread messages.
 
-        :param unset_has_mail: When true, clear the has_mail flag (orangered)
+        :param unset_has_mail: When True, clear the has_mail flag (orangered)
             for the user.
-        :param update_user: If both `unset_has_mail` and `update user` is true,
+        :param update_user: If both `unset_has_mail` and `update user` is True,
             set the `has_mail` attribute of the logged-in user to False.
 
         The additional parameters are passed directly into
@@ -1909,7 +1909,7 @@ class SubscribeMixin(AuthenticatedReddit):
         """Subscribe to the given subreddit.
 
         :param subreddit: Either the subreddit name or a subreddit object.
-        :param unsubscribe: When true, unsubscribe.
+        :param unsubscribe: When True, unsubscribe.
         :returns: The json response from the server.
 
         """
