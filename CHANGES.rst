@@ -15,7 +15,7 @@ upstream changes.
 
 Unreleased
 ----------
- * **[FEATURE]** Add arguments syntax and time to
+ * **[FEATURE]** Add arguments syntax and period to
    :meth:`~praw.__init__.UnauthenticatedReddit.search`.
  * **[FEATURE]** PRAW will now try to use the http_proxy environment variable
    for proxy settings, if no proxy is set in the configuration file.
