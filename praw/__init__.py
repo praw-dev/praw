@@ -31,23 +31,31 @@ import re
 import requests
 import six
 import sys
-from praw import decorators, errors
-from praw.handlers import DefaultHandler
-from praw.helpers import normalize_url
-from praw.internal import (_prepare_request, _raise_redirect_exceptions,
+import decorators, errors
+from .handlers import DefaultHandler
+from .helpers import normalize_url
+from .internal import (_prepare_request, _raise_redirect_exceptions,
                            _raise_response_exceptions)
-from praw.settings import CONFIG
+from .settings import CONFIG
 from requests.compat import urljoin
 from requests import Request
 from six.moves import html_entities, http_cookiejar
-from update_checker import update_check
+try:
+    from update_checker import update_check
+    uc_disabled = False
+except NotImplementedError:
+    uc_disabled = True
 from warnings import simplefilter, warn, warn_explicit
 
 
 __version__ = '2.1.4'
-UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
-                                          sys.version.split()[0],
-                                          platform.platform(True))
+try:
+    UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
+                                              sys.version.split()[0],
+                                              platform.platform(True))
+except IOError:
+    UA_STRING = "%%s PRAW/%s Python %s" % (__version__,
+                                           sys.version.split()[0])
 
 MIN_IMAGE_SIZE = 128
 MAX_IMAGE_SIZE = 512000
@@ -285,7 +293,7 @@ class BaseReddit(object):
 
         # Check for updates if permitted and this is the first Reddit instance
         if not disable_update_check and not self.update_checked \
-                and self.config.check_for_updates:
+                and self.config.check_for_updates and not uc_disabled:
             update_check(__name__, __version__)
             self.update_checked = True
 
