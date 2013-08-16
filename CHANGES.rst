@@ -22,6 +22,9 @@ Unreleased
    :meth:`~praw.__init__.UnauthenticatedReddit.search`.
  * **[FEATURE]** PRAW will now try to use the http_proxy environment variable
    for proxy settings, if no proxy is set in the configuration file.
+ * **[BUGFIX]** :meth:`~praw.__init__.ModOnlyMixin.get_stylesheet` erroneously
+   required moderator access. It now just requires that the authenticated user
+   has access to the subreddit.
  * **[BUGFIX]** Fix bug that prevented the usage of
    :meth:`~praw.objects.Subreddit.search` when called from :obj:`.Subreddit`.
 
