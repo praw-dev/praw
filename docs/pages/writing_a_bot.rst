@@ -60,7 +60,7 @@ of_last_character/>`_ post.
 
     >>> import praw
     >>> from pprint import pprint
-    >>> r = praw.reddit('Submission variables testing by /u/_daimon')
+    >>> r = praw.Reddit('Submission variables testing by /u/_daimon')
     >>> submission = r.get_submission(submission_id = "105aru")
     >>> pprint(vars(submission))
     {'_comment_sort': None,
@@ -261,7 +261,7 @@ any of the strings are within the ``selftext``, and if they are the bot sends
 me a message. But I should only ever receive a single message per submission.
 So we need to maintain a list of the submissions I've already been messaged
 about.  Each ``Thing`` has a unique ID, so we simply store the used ones in a
-list and check for membership before mailing. Finally we sleep 30 mins and
+list and check for membership before mailing. Finally we sleep 30 minutes and
 restart the main loop.
 
 >>> prawWords = ['praw', 'reddit_api', 'mellort']
@@ -272,6 +272,10 @@ restart the main loop.
 ...     r.user.send_message('_Daimon_', msg)
 ...     already_done.append(submission.id)
 >>> time.sleep(1800)
+
+Note that if the authenticated account has less than 2 link karma then PRAW
+will prompt for a captcha on stdin. Similar to how reddit would prompt for a
+captcha if the authenticated user tried to send the message via the webend.
 
 Running Continually.
 ^^^^^^^^^^^^^^^^^^^^

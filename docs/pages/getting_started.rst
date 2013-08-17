@@ -19,7 +19,7 @@ Connecting to reddit
 --------------------
 
 Start by firing up Python and importing PRAW. You can find the installation
-instructions on the :ref:`main page <main_page>`
+instructions on the :ref:`main page <main_page>`.
 
 .. code-block:: pycon
 

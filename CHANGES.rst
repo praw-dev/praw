@@ -1,8 +1,7 @@
 Changelog
 =========
 
-This is the changelog for the released versions of PRAW. These changes are
-divided into four categories.
+The changes listed below are divided into four categories.
 
  * **[FEATURE]** Something new has been added.
  * **[BUGFIX]** Something was broken before, but is now fixed.
