@@ -214,33 +214,26 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False):
                 subs = six.text_type(subreddit).lower().split('+')
                 return all(sub in mod_subs for sub in subs)
 
+            if cls is None:  # Occurs with (un)friend
+                assert login
+                raise errors.LoginRequired(function.__name__)
             # This segment of code uses hasattr to determine what instance type
             # the function was called on. We could use isinstance if we wanted
             # to import the types at runtime (decorators is used by all the
             # types).
-            if cls is None:  # Occurs with (un)friend
-                assert login
-                raise errors.LoginRequired(function.__name__)
-            elif hasattr(cls, 'reddit_session'):
-                obj = cls.reddit_session
-                if mod:
-                    if hasattr(cls, 'display_name'):  # Subreddit object
-                        subreddit = cls
-                    else:
-                        # Defer access until necessary for RedditContentObject.
-                        # This is because scoped sessions may not require this
-                        # attribute to exist, thus it might not be set.
-                        subreddit = False
+            if mod:
+                if hasattr(cls, 'reddit_session'):
+                    # Defer access until necessary for RedditContentObject.
+                    # This is because scoped sessions may not require this
+                    # attribute to exist, thus it might not be set.
+                    subreddit = cls if hasattr(cls, 'display_name') else False
                 else:
-                    subreddit = None
-            else:
-                obj = cls
-                if mod:
                     subreddit = kwargs.get('subreddit', args[0] if args else
                                            function.func_defaults[0])
-                else:
-                    subreddit = None
+            else:
+                subreddit = None
 
+            obj = getattr(cls, 'reddit_session', cls)
             # This function sets _use_oauth for one time use only.
             # Verify that statement is actually true.
             assert not obj._use_oauth  # pylint: disable-msg=W0212
