@@ -177,10 +177,11 @@ def require_captcha(function):
             return None
         return {'iden': captcha_id, 'captcha': raw.strip()}
 
-    function.__doc__ += ('\nThis function may result in a captcha challenge. '
-                         'PRAW will automatically prompt you for a response. '
-                         'See :ref:`handling-captchas` if you want to manually'
-                         ' handle captchas.')
+    captcha_text = ('This function may result in a captcha challenge. PRAW '
+                    'will automatically prompt you for a response. See '
+                    ':ref:`handling-captchas` if you want to manually handle '
+                    'captchas.')
+    function.__doc__ = _embed_text(function.__doc__, captcha_text)
 
     @wraps(function)
     def wrapped(obj, *args, **kwargs):
