@@ -22,6 +22,7 @@ length of output strings and parse json response for certain errors.
 
 import inspect
 import os
+import re
 import six
 import sys
 from functools import wraps
@@ -71,6 +72,44 @@ def limit_chars(function):
             output_string = output_string[:output_chars_limit - 3] + '...'
         return output_string
     return function if IS_SPHINX_BUILD else wrapped
+
+
+def _embed_text(docstring, text):
+    """Return the docstring with the text embedded."""
+    if docstring is None:
+        return text
+    if len(docstring.split("\n")) == 1:
+        return docstring + "\n\n" + text
+    search_string = "^(?P<indentation> *):(returns|param)"
+    regex = re.compile(search_string, re.MULTILINE)
+    rex = regex.search(docstring)
+    if rex is None:
+        return docstring + text + "\n\n"
+    else:
+        before = docstring[:rex.end('indentation')]
+        after = rex.group('indentation') + docstring[rex.end('indentation'):]
+        return before + text + "\n\n" + after
+
+
+def _build_access_text(scope, mod, login):
+    """Return access text based on required authentication."""
+    if scope == 'read':
+        access_text = "May use the read oauth scope to see"
+        access_text += "content only visible to the authenticated user"
+    elif scope:
+        access_text = "Requires the %s oauth scope" % scope
+    else:
+        access_text = "Requires"
+    if scope and (mod or login):
+        access_text += " or"
+    if mod:
+        access_text += " user/password authentication as a mod of "
+        access_text += "the subreddit."
+    elif login:
+        access_text += " user/password authentication."
+    else:
+        access_text += "."
+    return access_text
 
 
 def oauth_generator(function):
@@ -207,6 +246,9 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False):
     login = login is not False and (login or mod or scope and scope != 'read')
 
     def wrap(function):
+        access_info = _build_access_text(scope, mod, login)
+        function.__doc__ = _embed_text(function.__doc__, access_info)
+
         @wraps(function)
         def wrapped(cls, *args, **kwargs):
             def is_mod_of_all(user, subreddit):
