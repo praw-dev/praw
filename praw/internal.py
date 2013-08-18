@@ -170,8 +170,7 @@ def _raise_redirect_exceptions(response):
 
 def _raise_response_exceptions(response):
     """Raise specific errors on some status codes."""
-    if response.status_code != 200 and \
-            'www-authenticate' in response.headers:
+    if not response.ok and 'www-authenticate' in response.headers:
         msg = response.headers['www-authenticate']
         if 'insufficient_scope' in msg:
             raise OAuthInsufficientScope('insufficient_scope', response.url)
