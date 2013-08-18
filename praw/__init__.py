@@ -1189,7 +1189,7 @@ class ModConfigMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope='modconfig')
+    @decorators.restrict_access(scope='modconfig', mod=False, login=True)
     def create_subreddit(self, name, title, description='', language='en',
                          subreddit_type='public', content_options='any',
                          over_18=False, default_set=True, show_media=False,
@@ -1447,7 +1447,7 @@ class ModFlairMixin(AuthenticatedReddit):
                 'name': six.text_type(user)}
         return self.request_json(self.config['deleteflair'], data=data)
 
-    @decorators.restrict_access(scope='modflair')
+    @decorators.restrict_access(scope='modflair', mod=False, login=False)
     def get_flair_list(self, subreddit, *args, **kwargs):
         """Return a get_content generator of flair mappings.
 

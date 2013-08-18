@@ -171,7 +171,7 @@ def require_captcha(function):
     return function if IS_SPHINX_BUILD else wrapped
 
 
-def restrict_access(scope, mod=False, login=False, oauth_only=False):
+def restrict_access(scope, mod=None, login=None, oauth_only=False):
     """Restrict function access unless the user has the necessary permissions.
 
     Raises one of the following exceptions when appropriate:
@@ -203,11 +203,8 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
     if not scope and oauth_only:
         raise TypeError('`scope` must be set when `oauth_only` is set')
 
-    mod = mod or scope and 'mod' in scope
-    login = login or mod or scope and scope != 'read'
-
-    login_exceptions = ('get_flair_list',)
-    moderator_exceptions = ('create_subreddit',)
+    mod = mod is not False and (mod or scope and 'mod' in scope)
+    login = login is not False and (login or mod or scope and scope != 'read')
 
     def wrap(function):
         @wraps(function)
@@ -217,15 +214,12 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
                 subs = six.text_type(subreddit).lower().split('+')
                 return all(sub in mod_subs for sub in subs)
 
-            login_req = login and function.__name__ not in login_exceptions
-            mod_req = mod and function.__name__ not in moderator_exceptions
-
             # This segment of code uses hasattr to determine what instance type
             # the function was called on. We could use isinstance if we wanted
             # to import the types at runtime (decorators is used by all the
             # types).
             if cls is None:  # Occurs with (un)friend
-                assert login_req
+                assert login
                 raise errors.LoginRequired(function.__name__)
             elif hasattr(cls, 'reddit_session'):
                 obj = cls.reddit_session
@@ -255,17 +249,17 @@ def restrict_access(scope, mod=False, login=False, oauth_only=False):
                 obj._use_oauth = True  # pylint: disable-msg=W0212
             elif oauth_only:
                 raise errors.OAuthScopeRequired(function.__name__, scope)
-            elif login_req and obj.is_logged_in():
+            elif login and obj.is_logged_in():
                 if subreddit is False:
                     # Now fetch the subreddit attribute. There is no good
                     # reason for it to not be set during a logged in session.
                     subreddit = cls.subreddit
-                if mod_req and not is_mod_of_all(obj.user, subreddit):
+                if mod and not is_mod_of_all(obj.user, subreddit):
                     if scope:
                         raise errors.ModeratorOrScopeRequired(
                             function.__name__, scope)
                     raise errors.ModeratorRequired(function.__name__)
-            elif login_req:
+            elif login:
                 if scope:
                     raise errors.LoginOrScopeRequired(function.__name__, scope)
                 raise errors.LoginRequired(function.__name__)
