@@ -1432,7 +1432,8 @@ class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
             self.assertFalse(submission.distinguished)
 
         self.disable_cache()
-        submission = six_next(self.subreddit.get_top())
+        sub_id = self.submission_edit_id
+        submission = self.r.get_submission(submission_id=sub_id)
         if submission.distinguished:
             verify_undistinguish(submission)
             verify_distinguish(submission)
