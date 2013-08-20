@@ -147,7 +147,7 @@ class BasicHelper(object):
         # pylint: disable-msg=W0212
         return urljoin(self.r.config._site_url, path)
 
-    def getDifferentUserFlairClass(self):
+    def get_different_user_flair_class(self):
         flair = self.r.get_flair(self.sr, self.r.user)
         if flair == self.flair_templates.keys()[0]:
             different_flair = self.flair_templates.keys()[1]
@@ -639,7 +639,7 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
                           self.subreddit.set_flair_csv, flair_mapping)
 
     def test_select_user_flair(self):
-        flair_class = self.getDifferentUserFlairClass()
+        flair_class = self.get_different_user_flair_class()
         user_flair_id = self.flair_templates[flair_class][0]
         flair_default_text = self.flair_templates[flair_class][1]
         self.r.select_flair(item=self.sr,
@@ -649,7 +649,7 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(flair['flair_css_class'], flair_class)
 
     def test_select_user_flair_custom_text(self):
-        flair_class = self.getDifferentUserFlairClass()
+        flair_class = self.get_different_user_flair_class()
         user_flair_id = self.flair_templates[flair_class][0]
         flair_text = 'Flair: %s' % uuid.uuid4()
         self.r.select_flair(item=self.sr,
