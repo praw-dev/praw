@@ -702,8 +702,11 @@ class FlairSelectTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_select_user_flair_remove(self):
         flair = self.r.get_flair(self.subreddit, self.r.user)
-        self.assertNotEqual(flair['flair_text'], None)
-        self.assertNotEqual(flair['flair_css_class'], None)
+        if flair['flair_css_class'] is None:
+            flair_class = self.get_different_user_flair_class()
+            flair_id = self.user_flair_templates[flair_class][0]
+            self.r.select_flair(item=self.subreddit,
+                                flair_template_id=flair_id)
         self.r.select_flair(item=self.subreddit)
         flair = self.r.get_flair(self.subreddit, self.r.user)
         self.assertEqual(flair['flair_text'], None)
@@ -711,8 +714,11 @@ class FlairSelectTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_select_link_flair_remove(self):
         sub = six_next(self.subreddit.get_new())
-        self.assertNotEqual(sub.link_flair_text, None)
-        self.assertNotEqual(sub.link_flair_css_class, None)
+        if sub.link_flair_css_class is None:
+            flair_class = self.get_different_link_flair_class(sub)
+            flair_id = self.link_flair_templates[flair_class][0]
+            self.r.select_flair(item=sub,
+                                flair_template_id=flair_id)
         self.r.select_flair(item=sub)
         sub = self.r.get_submission(sub.permalink)
         self.assertEqual(sub.link_flair_text, None)
