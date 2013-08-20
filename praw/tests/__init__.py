@@ -97,6 +97,13 @@ class BasicHelper(object):
         self.un = 'PyAPITestUser2'
         self.other_user_name = 'PyAPITestUser3'
         self.invalid_user_name = 'PyAPITestInvalid'
+        # TODO: These flair templates have been deleted and aren't valid anymore, must be updated
+        self.flair_templates = {
+            'CssClassOne':  ('97530d26-02f5-11e3-b48e-12313b0cf20e',
+                             'default_flair_text_one'),
+            'CssClassTwo':  ('9dec0778-02f5-11e3-845b-12313b08e221',
+                             'default_flair_text_two')
+        }
 
         if self.r.config.is_reddit:
             self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
@@ -139,6 +146,14 @@ class BasicHelper(object):
     def url(self, path):
         # pylint: disable-msg=W0212
         return urljoin(self.r.config._site_url, path)
+
+    def getDifferentUserFlairClass(self):
+        flair = self.r.get_flair(self.sr, self.r.user)
+        if flair == self.flair_templates.keys()[0]:
+            different_flair = self.flair_templates.keys()[1]
+        else:
+            different_flair = self.flair_templates.keys()[0]
+        return different_flair
 
 
 class AuthenticatedHelper(BasicHelper):
@@ -624,22 +639,25 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
                           self.subreddit.set_flair_csv, flair_mapping)
 
     def test_select_user_flair(self):
-        user_flair_id1 = '97530d26-02f5-11e3-b48e-12313b0cf20e'
+        flair_class = self.getDifferentUserFlairClass()
+        user_flair_id = self.flair_templates[flair_class][0]
+        flair_default_text = self.flair_templates[flair_class][1]
         self.r.select_flair(item=self.sr,
-                            flair_template_id=user_flair_id1)
+                            flair_template_id=user_flair_id)
         flair = self.r.get_flair(self.sr, self.r.user)
-        self.assertEqual(flair['flair_text'], 'default_flair_text_one')
-        self.assertEqual(flair['flair_css_class'], 'CssClassOne')
+        self.assertEqual(flair['flair_text'], flair_default_text)
+        self.assertEqual(flair['flair_css_class'], flair_class)
 
     def test_select_user_flair_custom_text(self):
-        user_flair_id2 = '9dec0778-02f5-11e3-845b-12313b08e221'
+        flair_class = self.getDifferentUserFlairClass()
+        user_flair_id = self.flair_templates[flair_class][0]
         flair_text = 'Flair: %s' % uuid.uuid4()
         self.r.select_flair(item=self.sr,
-                            flair_template_id=user_flair_id2,
+                            flair_template_id=user_flair_id,
                             flair_text=flair_text)
         flair = self.r.get_flair(self.sr, self.r.user)
         self.assertEqual(flair['flair_text'], flair_text)
-        self.assertEqual(flair['flair_css_class'], 'CssClassTwo')
+        self.assertEqual(flair['flair_css_class'], flair_class)
 
     def test_select_user_flair_remove(self):
         self.r.select_flair(item=self.sr)
