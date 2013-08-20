@@ -97,14 +97,12 @@ class BasicHelper(object):
         self.un = 'PyAPITestUser2'
         self.other_user_name = 'PyAPITestUser3'
         self.invalid_user_name = 'PyAPITestInvalid'
-        # TODO: These flair templates have been deleted and aren't valid anymore, must be updated
         self.flair_templates = {
-            'CssClassOne':  ('97530d26-02f5-11e3-b48e-12313b0cf20e',
-                             'default_flair_text_one'),
-            'CssClassTwo':  ('9dec0778-02f5-11e3-845b-12313b08e221',
-                             'default_flair_text_two')
+            'UserCssClassOne':  ('21e00aae-09cf-11e3-a4f1-12313d281541',
+                                 'default_user_flair_text_one'),
+            'UserCssClassTwo':  ('2f6504c2-09cf-11e3-9d8d-12313d281541',
+                                 'default_user_flair_text_two')
         }
-
         if self.r.config.is_reddit:
             self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
             self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
