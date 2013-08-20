@@ -660,6 +660,9 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(flair['flair_css_class'], flair_class)
 
     def test_select_user_flair_remove(self):
+        flair = self.r.get_flair(self.sr, self.r.user)
+        self.assertNotEqual(flair['flair_text'], None)
+        self.assertNotEqual(flair['flair_css_class'], None)
         self.r.select_flair(item=self.sr)
         flair = self.r.get_flair(self.sr, self.r.user)
         self.assertEqual(flair['flair_text'], None)
