@@ -97,12 +97,6 @@ class BasicHelper(object):
         self.un = 'PyAPITestUser2'
         self.other_user_name = 'PyAPITestUser3'
         self.invalid_user_name = 'PyAPITestInvalid'
-        self.flair_templates = {
-            'UserCssClassOne':  ('21e00aae-09cf-11e3-a4f1-12313d281541',
-                                 'default_user_flair_text_one'),
-            'UserCssClassTwo':  ('2f6504c2-09cf-11e3-9d8d-12313d281541',
-                                 'default_user_flair_text_two')
-        }
         if self.r.config.is_reddit:
             self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
             self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
@@ -144,14 +138,6 @@ class BasicHelper(object):
     def url(self, path):
         # pylint: disable-msg=W0212
         return urljoin(self.r.config._site_url, path)
-
-    def get_different_user_flair_class(self):
-        flair = self.r.get_flair(self.sr, self.r.user)
-        if flair == self.flair_templates.keys()[0]:
-            different_flair = self.flair_templates.keys()[1]
-        else:
-            different_flair = self.flair_templates.keys()[0]
-        return different_flair
 
 
 class AuthenticatedHelper(BasicHelper):
@@ -635,6 +621,26 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         flair_mapping = [{'flair_text': 'hsdf'}]
         self.assertRaises(errors.ClientException,
                           self.subreddit.set_flair_csv, flair_mapping)
+
+
+class FlairSelectTest(unittest.TestCase, BasicHelper):
+    def setUp(self):
+        self.configure()
+        self.subreddit = self.r.get_subreddit(self.priv_sr)
+        self.flair_templates = {
+            'UserCssClassOne':  ('21e00aae-09cf-11e3-a4f1-12313d281541',
+                                 'default_user_flair_text_one'),
+            'UserCssClassTwo':  ('2f6504c2-09cf-11e3-9d8d-12313d281541',
+                                 'default_user_flair_text_two')
+        }
+
+    def get_different_user_flair_class(self):
+        flair = self.r.get_flair(self.sr, self.r.user)
+        if flair == self.flair_templates.keys()[0]:
+            different_flair = self.flair_templates.keys()[1]
+        else:
+            different_flair = self.flair_templates.keys()[0]
+        return different_flair
 
     def test_select_user_flair(self):
         flair_class = self.get_different_user_flair_class()
