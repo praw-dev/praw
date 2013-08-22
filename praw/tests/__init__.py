@@ -1457,6 +1457,10 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(stylesheet,
                          self.subreddit.get_stylesheet()['stylesheet'])
 
+    def test_set_stylesheet_invalid_css(self):
+        self.assertRaises(errors.BadCSS, self.subreddit.set_stylesheet,
+                          'INVALID CSS')
+
     def test_update_settings_description(self):
         self.maxDiff = None
         settings = self.subreddit.get_settings()

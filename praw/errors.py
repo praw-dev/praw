@@ -219,6 +219,20 @@ class AlreadyModerator(APIException):
     ERROR_TYPE = 'ALREADY_MODERATOR'
 
 
+class BadCSS(APIException):
+
+    """An exception to indicate bad CSS (such as invalid) was used."""
+
+    ERROR_TYPE = 'BAD_CSS'
+
+
+class BadCSSName(APIException):
+
+    """An exception to indicate a bad CSS name (such as invalid) was used."""
+
+    ERROR_TYPE = 'BAD_CSS_NAME'
+
+
 class InvalidCaptcha(APIException):
 
     """An exception for when an incorrect captcha error is returned."""
