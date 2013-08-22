@@ -873,8 +873,8 @@ class ImageTests(unittest.TestCase, AuthenticatedHelper):
         self.assertNotEqual(images, updated_images)
 
     def test_delete_invalid_image(self):
-        # TODO: Patch reddit to return error when this fails
-        self.subreddit.delete_image(name='invalid_image_name')
+        self.assertRaises(errors.BadCSSName,
+                          self.subreddit.delete_image, 'invalid_image_name')
 
     def test_delete_invalid_params(self):
         self.assertRaises(TypeError, self.subreddit.delete_image, name='Foo',
