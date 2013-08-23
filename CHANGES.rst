@@ -12,7 +12,7 @@ The changes listed below are divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
-Unreleased
+PRAW 2.1.5
 ----------
  * **[FEATURE]** :meth:`~praw.__init__.AuthenticatedReddit.select_flair` method
    added, can be used to change your flair without moderator access on
