@@ -922,7 +922,7 @@ class ImageTests(unittest.TestCase, AuthenticatedHelper):
         name = text_type(uuid.uuid4())
         self.assertTrue(self.subreddit.upload_image(image, name))
         images_json = self.subreddit.get_stylesheet()['images']
-        self.assertTrue(name in text_type(x['name']) for x in images_json)
+        self.assertTrue(any(name in text_type(x['name']) for x in images_json))
 
     @reddit_only
     def test_upload_jpg_image_no_extension(self):
@@ -945,7 +945,7 @@ class ImageTests(unittest.TestCase, AuthenticatedHelper):
         name = text_type(uuid.uuid4())
         self.assertTrue(self.subreddit.upload_image(image, name))
         images_json = self.subreddit.get_stylesheet()['images']
-        self.assertTrue(name in text_type(x['name']) for x in images_json)
+        self.assertTrue(any(name in text_type(x['name']) for x in images_json))
 
 
 class LocalOnlyTest(unittest.TestCase, BasicHelper):
