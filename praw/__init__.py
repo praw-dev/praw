@@ -291,7 +291,7 @@ class BaseReddit(object):
             self.update_checked = True
 
     def _request(self, url, params=None, data=None, files=None, auth=None,
-                 timeout=45, raw_response=False):
+                 timeout=45, raw_response=False, retry_on_error=True):
         """Given a page url and a dict of params, open and return the page.
 
         :param url: the url to grab content from.
@@ -303,6 +303,8 @@ class BaseReddit(object):
             can take.
         :param raw_response: return the response object rather than the
             response body
+        :param retry_on_error: if True retry the request, if it fails, for up
+            to 3 attempts
         :returns: either the response body or the response object
 
         """
@@ -340,7 +342,7 @@ class BaseReddit(object):
                   '_cache_ignore': bool(files) or raw_response,
                   '_cache_timeout': int(self.config.cache_timeout)}
 
-        remaining_attempts = 3
+        remaining_attempts = 3 if retry_on_error else 1
         while True:
             try:
                 response = handle_redirect()
@@ -459,18 +461,25 @@ class BaseReddit(object):
                 return
 
     @decorators.raise_api_exceptions
-    def request_json(self, url, params=None, data=None, as_objects=True):
+    def request_json(self, url, params=None, data=None, as_objects=True,
+                     retry_on_error=None):
         """Get the JSON processed from a page.
 
         :param url: the url to grab content from.
         :param params: a dictionary containing the GET data to put in the url
         :param data: a dictionary containing the extra data to submit
         :param as_objects: if True return reddit objects else raw json dict.
+        :param retry_on_error: if True retry the request, if it fails, for up
+            to 3 attempts
         :returns: JSON processed page
 
         """
         url += '.json'
-        response = self._request(url, params, data)
+        if retry_on_error is None:
+            response = self._request(url, params, data)
+        else:
+            response = self._request(url, params, data,
+                                     retry_on_error=retry_on_error)
         if as_objects:
             hook = self._json_reddit_objecter
         else:
@@ -985,7 +994,8 @@ class UnauthenticatedReddit(BaseReddit):
                 'text': message}
         if captcha:
             data.update(captcha)
-        return self.request_json(self.config['feedback'], data=data)
+        return self.request_json(self.config['feedback'], data=data,
+                                 retry_on_error=False)
 
 
 class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
@@ -1381,7 +1391,8 @@ class ModConfigMixin(AuthenticatedReddit):
                     name = os.path.splitext(os.path.basename(image.name))[0]
                 data['name'] = name
             response = self._request(self.config['upload_image'], data=data,
-                                     files={'file': image})
+                                     files={'file': image},
+                                     retry_on_error=False)
         # HACK: Until json response, attempt to parse the errors
         json_start = response.find('[[')
         json_end = response.find(']]')
@@ -1861,7 +1872,8 @@ class PrivateMessagesMixin(AuthenticatedReddit):
                 'to': recipient}
         if captcha:
             data.update(captcha)
-        response = self.request_json(self.config['compose'], data=data)
+        response = self.request_json(self.config['compose'], data=data,
+                                     retry_on_error=False)
         self.evict(self.config['sent'])
         return response
 
@@ -1884,7 +1896,8 @@ class SubmitMixin(AuthenticatedReddit):
         """
         data = {'thing_id': thing_id,
                 'text': text}
-        retval = self.request_json(self.config['comment'], data=data)
+        retval = self.request_json(self.config['comment'], data=data,
+                                   retry_on_error=False)
         # REDDIT: reddit's end should only ever return a single comment
         return retval['data']['things'][0]
 
@@ -1912,7 +1925,8 @@ class SubmitMixin(AuthenticatedReddit):
             data['url'] = url
         if captcha:
             data.update(captcha)
-        result = self.request_json(self.config['submit'], data=data)
+        result = self.request_json(self.config['submit'], data=data,
+                                   retry_on_error=False)
         url = result['data']['url']
         # Clear the OAUth setting when attempting to fetch the submission
         # pylint: disable-msg=W0212

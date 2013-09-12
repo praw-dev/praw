@@ -12,6 +12,22 @@ The changes listed below are divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
+Unreleased
+----------
+ * **[BUGFIX]** PRAW automatically retries failed requests to reddit if the
+   error is likely to be a temporary one. This resulted in spamming reddit if
+   the error occurred after content had been saved to reddit's database.
+   Therefore the following methods will no longer retry failed request
+   :meth:`~praw.__init__.ModConfigMixin.upload_image`,
+   :meth:`~praw.__init__.PrivateMessagesMixin.send_message`,
+   :meth:`~praw.__init__.SubmitMixin.submit`,
+   :meth:`~praw.__init__.UnauthenticatedReddit.send_feedback`,
+   :meth:`~praw.objects.Inboxable.reply` and
+   :meth:`~praw.objects.Submission.add_comment`.
+   Additionally :meth:`~praw.__init__.BaseReddit.request_json` now has the
+   ``retry_on_error`` argument, which if set to ``True`` will prevent retries
+   of the request if it fails.
+
 PRAW 2.1.5
 ----------
  * **[FEATURE]** :meth:`~praw.__init__.AuthenticatedReddit.select_flair` method
