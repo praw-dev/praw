@@ -12,7 +12,7 @@ The changes listed below are divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
-Unreleased
+PRAW 2.1.6
 ----------
  * **[BUGFIX]** PRAW automatically retries failed requests to reddit if the
    error is likely to be a temporary one. This resulted in spamming reddit if
