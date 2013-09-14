@@ -122,4 +122,3 @@ The full program
         if comment.body == "Hello" and comment.id not in already_done:
             comment.reply(' world!')
             already_done.add(comment.id)
-

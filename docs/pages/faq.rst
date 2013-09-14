@@ -91,7 +91,6 @@ help#Whydothenumberofvoteschangewhenyoureloadapage>`_ of the upvotes and
 downvotes. The obfuscation is done to everything and everybody to thwart
 potential cheaters. There's nothing we can do to prevent this.
 
-
 .. _report_an_issue:
 
 How do I report an issue with PRAW?

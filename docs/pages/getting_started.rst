@@ -135,7 +135,7 @@ by a small 2 second delay to follow the `api guidelines
 require 3 api calls and take at least 2x2=4 seconds due to API delay. PRAW does
 the API calls lazily, i.e. it will not send the next api call until you
 actually need the data. Meaning the runtime is max(api_delay, code execution
-time)
+time).
 
 Continue to the next tutorial. :ref:`writing_a_bot`.
 

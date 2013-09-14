@@ -127,7 +127,6 @@ Example praw.ini file
 The following is an example ``praw.ini`` file which has 4 sites defined. 2 for
 a reddit proper accounts and 2 for local reddit testing.
 
-
 .. code-block:: text
 
     [bboe]

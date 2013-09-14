@@ -292,7 +292,7 @@ Keeping Within API Guidelines.
 PRAW was designed to make following the `API guidelines
 <https://github.com/reddit/reddit/wiki/API>`_ simple. It will not send a
 request more often than every 2 seconds and it caches every page for 30
-seconds. This can be modified in :ref:`configuration_files`
+seconds. This can be modified in :ref:`configuration_files`.
 
 The problem comes when we run multiple bots / scripts at the same time, PRAW
 cannot share these settings between programs. So there will be at least 2
@@ -306,7 +306,7 @@ don't combined exceed the API guidelines or :ref:`edit the configuration files
 All 3 bot problems will be covered more in-depth in a future tutorial.
 
 For now, you can continue to the next part of our tutorial series.
-:ref:`comment_parsing`
+:ref:`comment_parsing`.
 
 The full Question-Discover program
 ----------------------------------
