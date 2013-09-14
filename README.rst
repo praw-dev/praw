@@ -51,6 +51,15 @@ install is via `pip <http://pypi.python.org/pypi/pip>`_
 
    $ pip install praw
 
+If you don't have ``pip`` installed, then the Hitchhiker's Guide to Python has
+a section for setting it up on `Windows
+<http://docs.python-guide.org/en/latest/starting/install/win/>`_,
+`Mac <http://docs.python-guide.org/en/latest/starting/install/osx/>`_ and
+`Linux <http://docs.python-guide.org/en/latest/starting/install/linux/>`_.
+There is also a `Stack overflow question on installing pip on Windows
+<http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows>`_
+that might prove helpful.
+
 Alternatively you can do it via
 `easy_install <http://pypi.python.org/pypi/setuptools>`_
 
