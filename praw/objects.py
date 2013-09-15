@@ -608,6 +608,8 @@ class Redditor(Messageable, Refreshable):
 
     get_overview = _get_section('')
     get_comments = _get_section('comments')
+    get_disliked = _get_section('disliked')
+    get_liked = _get_section('liked')
     get_submitted = _get_section('submitted')
 
     def __init__(self, reddit_session, user_name=None, json_dict=None,
@@ -679,9 +681,7 @@ class LoggedInRedditor(Redditor):
 
     """A class representing a currently logged in Redditor."""
 
-    get_disliked = _get_section('disliked')
     get_hidden = _get_section('hidden')
-    get_liked = _get_section('liked')
     get_saved = _get_section('saved')
 
     def get_blocked(self):

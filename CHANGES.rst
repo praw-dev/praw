@@ -12,6 +12,13 @@ The changes listed below are divided into four categories.
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
+Unreleased
+----------
+ * **[FEATURE]** Move methods :meth:`.get_liked` and :meth:`.get_liked` to
+   :class:`.Redditor` from :class:`.LoggedInRedditor`. Redditors can make their
+   likes and dislikes public. Having :meth:`.get_liked` and :meth:`.get_liked`
+   on :class:`.Redditor` allows PRAW to access this info.
+
 PRAW 2.1.6
 ----------
 
