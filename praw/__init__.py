@@ -292,7 +292,7 @@ class BaseReddit(object):
             self.update_checked = True
 
     def _request(self, url, params=None, data=None, files=None, auth=None,
-                 timeout=45, raw_response=False, retry_on_error=True):
+                 timeout=None, raw_response=False, retry_on_error=True):
         """Given a page url and a dict of params, open and return the page.
 
         :param url: the url to grab content from.

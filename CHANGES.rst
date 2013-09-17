@@ -24,6 +24,9 @@ Unreleased
    :class:`.Redditor` from :class:`.LoggedInRedditor`. Redditors can make their
    likes and dislikes public. Having :meth:`.get_liked` and :meth:`.get_liked`
    on :class:`.Redditor` allows PRAW to access this info.
+ * **[BUGFIX]** Fixed a bug that caused the ``timeout`` configuration setting
+   to always be the default 45 irrespective of what it was set to in
+   ``praw.ini``.
 
 PRAW 2.1.6
 ----------
