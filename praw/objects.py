@@ -918,6 +918,31 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         """
         return self.subreddit.set_flair(self, *args, **kwargs)
 
+    @restrict_access(scope='modposts')
+    def set_contest_mode(self, state=True):
+        """Set 'Contest Mode' for the comments of this submission.
+
+        Contest mode have the following effects.
+          * The comment thread will default to being sorted randomly.
+          * Replies to top-level comments will be hidden behind
+              "[show replies]" buttons.
+          * Scores will be hidden from non-moderators.
+          * Scores accessed through the API (mobile apps, bots) will be
+              obscured to "1" for non-moderators.
+
+        Source for effects: http://www.reddit.com/r/bestof2012/comments/159bww/
+                            introducing_contest_mode_a_tool_for_your_voting
+
+        :returns: The json response from the server.
+
+        """
+        # TODO: Whether a submission is in contest mode is not exposed via the
+        # API. Adding a test of this method is thus currently impossible.
+        # Add a test when it becomes possible.
+        url = self.reddit_session.config['contest_mode']
+        data = {'id': self.fullname, 'state': state}
+        return self.reddit_session.request_json(url, data=data)
+
     @property
     def short_link(self):
         """Return a short link to the submission.
@@ -941,6 +966,26 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         url = self.reddit_session.config['sticky_submission']
         data = {'id': self.fullname, 'state': True}
         return self.reddit_session.request_json(url, data=data)
+
+    @restrict_access(scope='modposts')
+    def unset_contest_mode(self):
+        """Unset 'Contest Mode' for the comments of this submission.
+
+        Contest mode have the following effects.
+          * The comment thread will default to being sorted randomly.
+          * Replies to top-level comments will be hidden behind
+              "[show replies]" buttons.
+          * Scores will be hidden from non-moderators.
+          * Scores accessed through the API (mobile apps, bots) will be
+              obscured to "1" for non-moderators.
+
+        Source for effects: http://www.reddit.com/r/bestof2012/comments/159bww/
+                            introducing_contest_mode_a_tool_for_your_voting
+
+        :returns: The json response from the server.
+
+        """
+        return self.set_contest_mode(False)
 
     @restrict_access(scope='modposts')
     def unsticky(self):

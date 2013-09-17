@@ -14,6 +14,12 @@ upstream changes.
 
 Unreleased
 ----------
+ * **[FEATURE]** Add methods :meth:`.set_contest_mode` and
+   :meth:`.unset_contest_mode` to :class:`.Submission`, for (un)setting of
+   contest modes. See `this Reddit post
+   <http://www.reddit.com/r/bestof2012/comments/159bww/
+   introducing_contest_mode_a_tool_for_your_voting/>`_
+   for information about contest mode.
  * **[FEATURE]** Move methods :meth:`.get_liked` and :meth:`.get_liked` to
    :class:`.Redditor` from :class:`.LoggedInRedditor`. Redditors can make their
    likes and dislikes public. Having :meth:`.get_liked` and :meth:`.get_liked`

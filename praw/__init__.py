@@ -79,6 +79,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'comment':             'api/comment/',
                  'comments':            'comments/',
                  'compose':             'api/compose/',
+                 'contest_mode':        'api/set_contest_mode/',
                  'contributors':        'r/%s/about/contributors/',
                  'controversial':       'controversial/',
                  'del':                 'api/del/',
