@@ -17,6 +17,7 @@ Content Pages
     pages/writing_a_bot
     pages/comment_parsing
     pages/oauth
+    pages/lazy-loading
     pages/multiprocess
     pages/contributor_guidelines
     pages/configuration_files
