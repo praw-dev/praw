@@ -65,15 +65,15 @@ class RedditContentObject(object):
         self._info_url = info_url or reddit_session.config['info']
         self.reddit_session = reddit_session
         self._underscore_names = underscore_names
-        self._populated = self._populate(json_dict, fetch)
+        self.has_fetched = self._populate(json_dict, fetch)
 
     def __eq__(self, other):
         return (isinstance(other, RedditContentObject) and
                 self.fullname == other.fullname)
 
     def __getattr__(self, attr):
-        if not self._populated:
-            self._populated = self._populate(None, True)
+        if not self.has_fetched:
+            self.has_fetched = self._populate(None, True)
             return getattr(self, attr)
         raise AttributeError('\'%s\' has no attribute \'%s\'' % (type(self),
                                                                  attr))
