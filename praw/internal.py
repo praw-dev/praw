@@ -77,7 +77,7 @@ def _modify_relationship(relationship, unlink=False, is_sub=False,
     contributor creating, and banning (user-to-subreddit).
 
     """
-    # the API uses friend and unfriend to manage all of these relationships
+    # The API uses friend and unfriend to manage all of these relationships.
     url_key = 'unfriend' if unlink else 'friend'
 
     if relationship == 'friend':

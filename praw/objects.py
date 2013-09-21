@@ -62,10 +62,7 @@ class RedditContentObject(object):
         json_dict).
 
         """
-        if info_url:
-            self._info_url = info_url
-        else:
-            self._info_url = reddit_session.config['info']
+        self._info_url = info_url or reddit_session.config['info']
         self.reddit_session = reddit_session
         self._underscore_names = underscore_names
         self._populated = self._populate(json_dict, fetch)
@@ -121,10 +118,7 @@ class RedditContentObject(object):
 
     def _populate(self, json_dict, fetch):
         if json_dict is None:
-            if fetch:
-                json_dict = self._get_json_dict()
-            else:
-                json_dict = {}
+            json_dict = self._get_json_dict() if fetch else {}
 
         # TODO: Remove this wikipagelisting hack
         if isinstance(json_dict, list):
@@ -606,10 +600,10 @@ class Redditor(Messageable, Refreshable):
 
     """A class representing the users of reddit."""
 
-    get_overview = _get_section('')
     get_comments = _get_section('comments')
     get_disliked = _get_section('disliked')
     get_liked = _get_section('liked')
+    get_overview = _get_section('')
     get_submitted = _get_section('submitted')
 
     def __init__(self, reddit_session, user_name=None, json_dict=None,

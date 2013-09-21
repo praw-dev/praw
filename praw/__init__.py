@@ -275,10 +275,7 @@ class BaseReddit(object):
             raise TypeError('User agent must be a non-empty string.')
 
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
-        if handler:
-            self.handler = handler
-        else:
-            self.handler = DefaultHandler()
+        self.handler = handler or DefaultHandler()
         self.http = requests.session()  # Dummy session
         self.http.headers['User-Agent'] = UA_STRING % user_agent
         if self.config.http_proxy:
@@ -443,10 +440,7 @@ class BaseReddit(object):
                 if _use_oauth:
                     self._use_oauth = False  # pylint: disable-msg=W0201
             fetch_once = False
-            if root_field:
-                root = page_data[root_field]
-            else:
-                root = page_data
+            root = page_data.get(root_field, page_data)
             for thing in root[thing_field]:
                 yield thing
                 objects_found += 1
@@ -481,10 +475,7 @@ class BaseReddit(object):
         else:
             response = self._request(url, params, data,
                                      retry_on_error=retry_on_error)
-        if as_objects:
-            hook = self._json_reddit_objecter
-        else:
-            hook = None
+        hook = self._json_reddit_objecter if as_objects else None
         # Request url just needs to be available for the objecter to use
         self._request_url = url  # pylint: disable-msg=W0201
         data = json.loads(response, object_hook=hook)
@@ -515,7 +506,7 @@ class OAuth2Reddit(BaseReddit):
         auth = (self.client_id, self.client_secret)
         url = self.config['access_token_url']
         response = self._request(url, auth=auth, data=data, raw_response=True)
-        if response.status_code != 200:
+        if not response.ok:
             raise errors.OAuthException('Unexpected OAuthReturn: %d' %
                                         response.status_code, url)
         retval = response.json()
@@ -662,10 +653,8 @@ class UnauthenticatedReddit(BaseReddit):
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-        if gilded_only:
-            url = self.config['sub_comments_gilded'] % six.text_type(subreddit)
-        else:
-            url = self.config['subreddit_comments'] % six.text_type(subreddit)
+        key = 'sub_comments_gilded' if gilded_only else 'subreddit_comments'
+        url = self.config[key] % six.text_type(subreddit)
         return self.get_content(url, *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
