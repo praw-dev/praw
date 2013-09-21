@@ -22,7 +22,7 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-Unreleased
+PRAW 2.1.7
 ----------
  * **[FEATURE]** Add methods :meth:`.set_contest_mode` and
    :meth:`.unset_contest_mode` to :class:`.Submission`, for (un)setting of
