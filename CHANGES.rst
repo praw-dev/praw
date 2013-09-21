@@ -1,3 +1,5 @@
+.. begin_changelog_intro
+
 Changelog
 =========
 
@@ -11,6 +13,14 @@ The changes listed below are divided into four categories.
 
 Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
+
+.. end_changelog_intro
+
+Visit `the changelog on ReadTheDocs
+<http://praw.readthedocs.org/en/latest/pages/changelog.html>`_ for properly
+formatted links that link to the relevant place in the code overview.
+
+.. begin_changelog_body
 
 Unreleased
 ----------
@@ -499,3 +509,5 @@ PRAW 1.0.1
 
 PRAW 1.0.0
 ----------
+
+.. end_changelog_body
