@@ -233,6 +233,13 @@ class BadCSSName(APIException):
     ERROR_TYPE = 'BAD_CSS_NAME'
 
 
+class BadUsername(APIException):
+
+    """An exception to indicate an invalid username was used."""
+
+    ERROR_TYPE = 'BAD_USERNAME'
+
+
 class InvalidCaptcha(APIException):
 
     """An exception for when an incorrect captcha error is returned."""

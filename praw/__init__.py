@@ -921,11 +921,8 @@ class UnauthenticatedReddit(BaseReddit):
         try:
             result = self.request_json(self.config['username_available'],
                                        params=params)
-        except errors.APIException as exception:
-            if exception.error_type == 'BAD_USERNAME':
-                result = False
-            else:
-                raise
+        except errors.BadUsername:
+            return False
         return result
 
     def search(self, query, subreddit=None, sort=None, syntax=None,
