@@ -286,6 +286,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
         retreived = [x.fullname for x in self.r.get_submissions(fullnames)]
         self.assertEqual(fullnames, retreived)
 
+    def test_get_subreddit_recommendations(self):
+        result = self.r.get_subreddit_recommendations('python')
+        self.assertTrue(len(result) > 0)
+
     @reddit_only
     def test_get_top(self):
         num = 50

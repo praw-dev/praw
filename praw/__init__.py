@@ -133,6 +133,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'stylesheet':          'r/%s/about/stylesheet/',
                  'submit':              'api/submit/',
                  'sub_comments_gilded': 'r/%s/comments/gilded/',
+                 'sub_recommendations': 'api/subreddit_recommendations/',
                  'subreddit':           'r/%s/',
                  'subreddit_about':     'r/%s/about/',
                  'subreddit_comments':  'r/%s/comments/',
@@ -888,6 +889,21 @@ class UnauthenticatedReddit(BaseReddit):
         if subreddit_name.lower() == 'random':
             return self.get_random_subreddit()
         return objects.Subreddit(self, subreddit_name, *args, **kwargs)
+
+    def get_subreddit_recommendations(self, subreddits, omitted=None):
+        """Return a list of recommended subreddits as Subreddit objects.
+
+        :param subreddits: A list of subreddits (either names or Subreddit
+            objects) to base the recommendations on.
+        :param omitted: A list of subreddits (either names or Subreddit
+            objects) that will be filtered out of the result.
+        """
+        omitted = omitted or []
+        params = {'srnames': _to_reddit_list(subreddits),
+                  'omitted': _to_reddit_list(omitted)}
+        result = self.request_json(self.config['sub_recommendations'],
+                                   params=params)
+        return [objects.Subreddit(self, sub) for sub in result]
 
     @decorators.restrict_access(scope='read')
     def get_top(self, *args, **kwargs):

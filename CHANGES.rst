@@ -24,6 +24,8 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[FEATURE]** Add :meth:`.get_subreddit_recommendations` to get a
+   recommendation of subreddits based on a list of provided subreddits.
  * **[FEATURE]** :class:`.Subreddit` now has an ``__repr__`` method. So it's
    now possible to identify what subreddit the object represents from the human
    readable representation of the object.
