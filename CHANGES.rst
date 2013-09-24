@@ -22,6 +22,12 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[FEATURE]** :class:`.Subreddit` now has an ``__repr__`` method. So it's
+   now possible to identify what subreddit the object represents from the human
+   readable representation of the object.
+
 PRAW 2.1.7
 ----------
  * **[FEATURE]** Add methods :meth:`.set_contest_mode` and

@@ -1139,6 +1139,9 @@ class Subreddit(Messageable, Refreshable):
         base = (reddit_session.config['subreddit'] % self.display_name)
         self._listing_urls = [base + x + '.json' for x in listings]
 
+    def __repr__(self):
+        return 'Subreddit(display_name=\'{0}\')'.format(self.display_name)
+
     def __unicode__(self):
         return self.display_name
 
