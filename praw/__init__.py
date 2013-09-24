@@ -35,7 +35,7 @@ from praw import decorators, errors
 from praw.handlers import DefaultHandler
 from praw.helpers import normalize_url
 from praw.internal import (_prepare_request, _raise_redirect_exceptions,
-                           _raise_response_exceptions)
+                           _raise_response_exceptions, _to_reddit_list)
 from praw.settings import CONFIG
 from requests.compat import urljoin
 from requests import Request
@@ -547,11 +547,8 @@ class OAuth2Reddit(BaseReddit):
 
         """
         params = {'client_id': self.client_id, 'response_type': 'code',
-                  'redirect_uri': self.redirect_uri, 'state': state}
-        if isinstance(scope, six.string_types):
-            params['scope'] = scope
-        else:
-            params['scope'] = ','.join(scope)
+                  'redirect_uri': self.redirect_uri, 'state': state,
+                  'scope': _to_reddit_list(scope)}
         params['duration'] = 'permanent' if refreshable else 'temporary'
         request = Request('GET', self.config['authorize'], params=params)
         return request.prepare().url

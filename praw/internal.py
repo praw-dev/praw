@@ -179,3 +179,18 @@ def _raise_response_exceptions(response):
         else:
             raise OAuthException(msg, response.url)
     response.raise_for_status()
+
+
+def _to_reddit_list(arg):
+    """Return an argument converted to a reddit-formatted list.
+
+    The returned format is a comma deliminated list. Each element is a string
+    representation of an object. Either given as a string or as an object that
+    is then converted to its string representation.
+    """
+    if (isinstance(arg, six.string_types)
+            or not (hasattr(arg, "__getitem__")
+                    or hasattr(arg, "__iter__"))):
+        return six.text_type(arg)
+    else:
+        return ','.join(six.text_type(a) for a in arg)

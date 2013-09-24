@@ -31,7 +31,7 @@ from requests.compat import urljoin
 from requests.exceptions import HTTPError
 from six import advance_iterator as six_next, text_type
 
-from praw import Reddit, decorators, errors, helpers
+from praw import Reddit, decorators, errors, helpers, internal
 from praw.objects import (Comment, LoggedInRedditor, Message, MoreComments,
                           Submission)
 
@@ -1685,6 +1685,49 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         self.r.unsubscribe(self.sr)
         predicate = lambda subreddit: text_type(subreddit) == self.sr
         self.first(self.r.get_my_subreddits(), predicate)
+
+
+class ToRedditListTest(unittest.TestCase, BasicHelper):
+    def setUp(self):
+        self.configure()
+
+    def test__to_reddit_list(self):
+        # pylint: disable-msg=W0212
+        output = internal._to_reddit_list('hello')
+        self.assertEquals('hello', output)
+
+    def test__to_reddit_list_with_list(self):
+        # pylint: disable-msg=W0212
+        output = internal._to_reddit_list(['hello'])
+        self.assertEqual('hello', output)
+
+    def test__to_reddit_list_with_empty_list(self):
+        # pylint: disable-msg=W0212
+        output = internal._to_reddit_list([])
+        self.assertEqual('', output)
+
+    def test__to_reddit_list_with_big_list(self):
+        # pylint: disable-msg=W0212
+        output = internal._to_reddit_list(['hello', 'world'])
+        self.assertEqual('hello,world', output)
+
+    def test__to_reddit_list_with_object(self):
+        obj = self.r.get_subreddit(self.sr)
+        # pylint: disable-msg=W0212
+        output = internal._to_reddit_list(obj)
+        self.assertEqual(self.sr, output)
+
+    def test__to_reddit_list_with_object_in_list(self):
+        obj = self.r.get_subreddit(self.sr)
+        # pylint: disable-msg=W0212
+        output = internal._to_reddit_list([obj])
+        self.assertEqual(self.sr, output)
+
+    def test__to_reddit_list_with_mix(self):
+        obj = self.r.get_subreddit(self.sr)
+        # pylint: disable-msg=W0212
+        output = internal._to_reddit_list([obj, 'hello'])
+        self.assertEqual("{0},{1}".format(self.sr, 'hello'), output)
 
 
 class WikiTests(unittest.TestCase, BasicHelper):
