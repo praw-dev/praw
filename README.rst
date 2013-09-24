@@ -1,6 +1,6 @@
 .. _main_page:
 
-PRAW: The Python Reddit Api Wrapper
+PRAW: The Python Reddit API Wrapper
 ===================================
 
 .. begin_description
