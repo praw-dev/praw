@@ -96,7 +96,11 @@ class BasicHelper(object):
         self.priv_sr = 'reddit_api_test_priv'
         self.un = 'PyAPITestUser2'
         self.other_user_name = 'PyAPITestUser3'
+        self.other_non_mod_name = 'PyAPITestUser4'
         self.invalid_user_name = 'PyAPITestInvalid'
+        self.un_pswd = '1111'
+        self.other_user_pswd = '1111'
+        self.other_non_mod_pswd = '1111'
 
         if self.r.config.is_reddit:
             self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
@@ -152,7 +156,7 @@ class BasicHelper(object):
 class AuthenticatedHelper(BasicHelper):
     def configure(self):
         super(AuthenticatedHelper, self).configure()
-        self.r.login(self.un, '1111')
+        self.r.login(self.un, self.un_pswd)
 
 
 class AccessControlTests(unittest.TestCase, BasicHelper):
@@ -160,7 +164,7 @@ class AccessControlTests(unittest.TestCase, BasicHelper):
         self.configure()
 
     def test_exception_get_flair_list_authenticated(self):
-        self.r.login(self.un, '1111')
+        self.r.login(self.un, self.un_pswd)
         self.assertTrue(self.r.get_flair_list(self.sr))
 
     def test_exception_get_flair_list_unauthenticated(self):
@@ -188,25 +192,25 @@ class AccessControlTests(unittest.TestCase, BasicHelper):
 
     def test_moderator_or_oauth_required_logged_in_from_reddit_obj(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyAPITestUser4', '1111')
+        oth.login(self.other_non_mod_name, self.other_non_mod_pswd)
         self.assertRaises(errors.ModeratorOrScopeRequired,
                           oth.get_settings, self.sr)
 
     def test_moderator_or_oauth_required_logged_in_from_submission_obj(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyAPITestUser4', '1111')
+        oth.login(self.other_non_mod_name, self.other_non_mod_pswd)
         submission = oth.get_submission(url=self.comment_url)
         self.assertRaises(errors.ModeratorOrScopeRequired, submission.remove)
 
     def test_moderator_or_oauth_required_logged_in_from_subreddit_obj(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyAPITestUser4', '1111')
+        oth.login(self.other_non_mod_name, self.other_non_mod_pswd)
         subreddit = oth.get_subreddit(self.sr)
         self.assertRaises(errors.ModeratorOrScopeRequired,
                           subreddit.get_settings)
 
     def test_moderator_required_multi(self):
-        self.r.login(self.un, '1111')
+        self.r.login(self.un, self.un_pswd)
         sub = self.r.get_subreddit('{0}+{1}'.format(self.sr, 'test'))
         self.assertRaises(errors.ModeratorRequired, sub.get_mod_queue)
 
@@ -249,7 +253,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_comments_gilded(self):
         gilded_comments = self.r.get_comments('all', gilded_only=True)
-        self.first(gilded_comments, lambda comment: comment.gilded > 0)
+        self.assertTrue(all(comment.gilded > 0 for comment in
+                            gilded_comments))
 
     @reddit_only
     def test_get_controversial(self):
@@ -267,7 +272,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_new(self):
         num = 50
-        result = self.r.get_new(limit=num, params={'sort': 'new'})
+        result = self.r.get_new(limit=num)
         self.assertEqual(num, len(list(result)))
 
     @reddit_only
@@ -291,7 +296,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_subreddit_recommendations(self):
         result = self.r.get_subreddit_recommendations('python')
-        self.assertTrue(len(result) > 0)
+        self.assertTrue(result)
 
     @reddit_only
     def test_get_top(self):
@@ -332,7 +337,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     @reddit_only
     def test_search(self):
-        self.assertTrue(len(list(self.r.search('test'))) > 0)
+        self.assertTrue(list(self.r.search('test')))
 
     @reddit_only
     def test_search_with_syntax(self):
@@ -346,13 +351,13 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     @reddit_only
     def test_search_with_time_window(self):
+        num = 50
         submissions = len(list(self.r.search('test', subreddit=self.sr,
-                                             period='week', limit=1000)))
-        self.assertTrue(submissions > 0)
-        self.assertTrue(submissions < 1000)
+                                             period='week', limit=num)))
+        self.assertTrue(submissions == num)
 
     def test_search_reddit_names(self):
-        self.assertTrue(len(self.r.search_reddit_names('reddit')) > 0)
+        self.assertTrue(self.r.search_reddit_names('reddit'))
 
     #def test_timeout(self):
     #    self.assertRaises(Timeout, helpers._request, self.r,
@@ -695,15 +700,16 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
 
         # Set flair
         flair_mapping = [{'user': 'reddit', 'flair_text': 'dev'},
-                         {'user': 'PyAPITestUser2', 'flair_css_class': 'xx'},
-                         {'user': 'PyAPITestUser3', 'flair_text': 'AWESOME',
+                         {'user': self.un, 'flair_css_class': 'xx'},
+                         {'user': self.other_user_name,
+                          'flair_text': 'AWESOME',
                           'flair_css_class': 'css'}]
         self.subreddit.set_flair_csv(flair_mapping)
         self.assertEqual([], flair_diff(flair_mapping,
                                         list(self.subreddit.get_flair_list())))
 
     def test_flair_csv_many(self):
-        users = ('reddit', 'pyapitestuser2', 'pyapitestuser3')
+        users = ('reddit', self.un, self.other_user_name)
         flair_text_a = 'Flair: %s' % uuid.uuid4()
         flair_text_b = 'Flair: %s' % uuid.uuid4()
         flair_mapping = [{'user': 'reddit', 'flair_text': flair_text_a}] * 99
@@ -716,7 +722,8 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_flair_csv_optional_args(self):
         flair_mapping = [{'user': 'reddit', 'flair_text': 'reddit'},
-                         {'user': 'pyapitestuser3', 'flair_css_class': 'blah'}]
+                         {'user': self.other_user_name, 'flair_css_class':
+                          'blah'}]
         self.subreddit.set_flair_csv(flair_mapping)
 
     def test_flair_csv_empty(self):
@@ -951,13 +958,13 @@ class LocalOnlyTest(unittest.TestCase, BasicHelper):
 
     @local_only
     def test_create_existing_redditor(self):
-        self.r.login(self.un, '1111')
+        self.r.login(self.un, self.un_pswd)
         self.assertRaises(errors.UsernameExists, self.r.create_redditor,
-                          self.other_user_name, '1111')
+                          self.other_user_name, self.other_user_pswd)
 
     @local_only
     def test_create_existing_subreddit(self):
-        self.r.login(self.un, '1111')
+        self.r.login(self.un, self.un_pswd)
         self.assertRaises(errors.SubredditExists, self.r.create_subreddit,
                           self.sr, 'foo')
 
@@ -970,7 +977,7 @@ class LocalOnlyTest(unittest.TestCase, BasicHelper):
     def test_create_subreddit(self):
         unique_name = 'test%d' % random.randint(3, 10240)
         description = '#Welcome to %s\n\n0 item 1\n0 item 2\n' % unique_name
-        self.r.login(self.un, '1111')
+        self.r.login(self.un, self.un_pswd)
         self.r.create_subreddit(unique_name, 'The %s' % unique_name,
                                 description)
 
@@ -991,14 +998,14 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_get_unread_update_has_mail(self):
         self.r.send_message(self.other_user_name, 'Update has mail', 'body')
-        self.r.login(self.other_user_name, '1111')
+        self.r.login(self.other_user_name, self.other_user_pswd)
         self.assertTrue(self.r.user.has_mail)
         self.r.get_unread(limit=1, unset_has_mail=True, update_user=True)
         self.assertFalse(self.r.user.has_mail)
 
     def test_mark_as_read(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyAPITestUser3', '1111')
+        oth.login(self.other_user_name, self.other_user_pswd)
         # pylint: disable-msg=E1101
         msg = next(oth.get_unread(limit=1))
         msg.mark_as_read()
@@ -1006,14 +1013,14 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_mark_as_unread(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyAPITestUser3', '1111')
+        oth.login(self.other_user_name, self.other_user_pswd)
         msg = self.first(oth.get_inbox(), lambda msg: not msg.new)
         msg.mark_as_unread()
         self.assertTrue(msg in oth.get_unread())
 
     def test_mark_multiple_as_read(self):
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyAPITestUser3', '1111')
+        oth.login(self.other_user_name, self.other_user_pswd)
         messages = []
         for msg in oth.get_unread(limit=None):
             if msg.author != oth.user.name:
@@ -1023,8 +1030,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(2, len(messages))
         oth.user.mark_as_read(messages)
         unread = list(oth.get_unread(limit=5))
-        for msg in messages:
-            self.assertTrue(msg not in unread)
+        self.assertTrue(all(msg not in unread for msg in messages))
 
     def test_reply_to_message_and_verify(self):
         text = 'Unique message reply: %s' % uuid.uuid4()
@@ -1102,28 +1108,24 @@ class ModeratorSubredditTest(unittest.TestCase, AuthenticatedHelper):
         self.first(self.r.get_mod_mail(), lambda msg: msg.subject == subject)
 
     def test_get_mod_queue(self):
-        mod_submissions = list(self.r.get_subreddit('mod').get_mod_queue())
-        self.assertTrue(len(mod_submissions) > 0)
+        self.assertTrue(list(self.r.get_subreddit('mod').get_mod_queue()))
 
     def test_get_mod_queue_with_default_subreddit(self):
-        mod_submissions = list(self.r.get_mod_queue())
-        self.assertTrue(len(mod_submissions) > 0)
+        self.assertTrue(list(self.r.get_mod_queue()))
 
     def test_get_mod_queue_multi(self):
-        multi = '{0}+{1}'.format(self.sr, 'reddit_api_test2')
-        mod_submissions = list(self.r.get_subreddit(multi).get_mod_queue())
-        self.assertTrue(len(mod_submissions) > 0)
+        multi = '{0}+{1}'.format(self.sr, self.priv_sr)
+        self.assertTrue(list(self.r.get_subreddit(multi).get_mod_queue()))
 
     def test_get_unmoderated(self):
-        submissions = list(self.subreddit.get_unmoderated())
-        self.assertTrue(len(submissions) > 0)
+        self.assertTrue(list(self.subreddit.get_unmoderated()))
 
 
 class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
         self.subreddit = self.r.get_subreddit(self.sr)
-        self.other = self.r.get_redditor('pyapitestuser3', fetch=True)
+        self.other = self.r.get_redditor(self.other_user_name, fetch=True)
 
     def add_remove(self, add, remove, listing, add_callback=None):
         def test_add():
@@ -1145,7 +1147,7 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
             test_remove()
 
     def test_accept_moderator_invite_fail(self):
-        self.r.login('pyapitestuser3', '1111')
+        self.r.login(self.other_user_name, self.other_user_pswd)
         self.assertRaises(errors.InvalidInvite,
                           self.subreddit.accept_moderator_invite)
 
@@ -1161,7 +1163,7 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
     def test_moderator(self):
         def add_callback():
             tmp = Reddit(USER_AGENT, disable_update_check=True)
-            tmp.login('pyapitestuser3', '1111')
+            tmp.login(self.other_user_name, self.other_user_pswd)
             tmp.get_subreddit(self.sr).accept_moderator_invite()
 
         self.add_remove(self.subreddit.add_moderator,
@@ -1256,9 +1258,10 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
 
     @reddit_only
     def test_scope_modlog(self):
+        num = 50
         self.r.refresh_access_information(self.refresh_token['modlog'])
-        self.assertEqual(
-            25, len(list(self.r.get_subreddit(self.sr).get_mod_log())))
+        result = self.r.get_subreddit(self.sr).get_mod_log(limit=num)
+        self.assertEqual(num, len(list(result)))
 
     @reddit_only
     def test_scope_modposts(self):
@@ -1298,7 +1301,7 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
     def test_scope_read_get_sub_listingr(self):
         self.r.refresh_access_information(self.refresh_token['read'])
         subreddit = self.r.get_subreddit(self.priv_sr)
-        self.assertTrue(len(list(subreddit.get_top())))
+        self.assertTrue(list(subreddit.get_top()))
 
     @reddit_only
     def test_scope_read_get_submission_by_url(self):
@@ -1311,19 +1314,19 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
     @reddit_only
     def test_scope_read_priv_sr_comments(self):
         self.r.refresh_access_information(self.refresh_token['read'])
-        self.assertTrue(len(list(self.r.get_comments(self.priv_sr))))
+        self.assertTrue(list(self.r.get_comments(self.priv_sr)))
 
     @reddit_only
     def test_scope_read_priv_sub_comments(self):
         self.r.refresh_access_information(self.refresh_token['read'])
         submission = Submission.from_id(self.r, self.priv_submission_id)
-        self.assertTrue(len(list(submission.comments)))
+        self.assertTrue(submission.comments)
 
     @reddit_only
     def test_scope_submit(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
-        retval = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
-        self.assertTrue(isinstance(retval, Submission))
+        result = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
+        self.assertTrue(isinstance(result, Submission))
 
     @reddit_only
     def test_scope_subscribe(self):
@@ -1339,10 +1342,10 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
     @reddit_only
     def test_set_access_credentials(self):
         self.assertTrue(self.r.user is None)
-        retval = self.r.refresh_access_information(
+        result = self.r.refresh_access_information(
             self.refresh_token['identity'], update_session=False)
         self.assertTrue(self.r.user is None)
-        self.r.set_access_credentials(**retval)
+        self.r.set_access_credentials(**result)
         self.assertFalse(self.r.user is None)
 
     @reddit_only
@@ -1381,14 +1384,14 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
             verify_remove()
 
     def test_duplicate_login(self):
-        self.r.login(self.other_user_name, '1111')
+        self.r.login(self.other_user_name, self.other_user_pswd)
 
     def test_get_disliked(self):
         # Pulls from get_liked. Problem here may come from get_liked
         item = next(self.r.user.get_liked())
         item.downvote()
         self.delay()  # The queue needs to be processed
-        self.assertFalse(item in list(self.r.user.get_liked()))
+        self.assertFalse(item in self.r.user.get_liked())
 
     def test_get_hidden(self):
         submission = next(self.r.user.get_submitted())
@@ -1397,14 +1400,14 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         item = next(self.r.user.get_hidden())
         item.unhide()
         self.delay()
-        self.assertFalse(item in list(self.r.user.get_hidden()))
+        self.assertFalse(item in self.r.user.get_hidden())
 
     def test_get_liked(self):
         # Pulls from get_disliked. Problem here may come from get_disliked
         item = next(self.r.user.get_disliked())
         item.upvote()
         self.delay()  # The queue needs to be processed
-        self.assertFalse(item in list(self.r.user.get_disliked()))
+        self.assertFalse(item in self.r.user.get_disliked())
 
     def test_get_redditor(self):
         self.assertEqual(self.other_user_id, self.other_user.id)
@@ -1582,7 +1585,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
     def test_report(self):
         # login as new user to report submission
         oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login('PyAPITestUser3', '1111')
+        oth.login(self.other_user_name, self.other_user_pswd)
         subreddit = oth.get_subreddit(self.sr)
         predicate = lambda submission: not submission.hidden
         submission = self.first(subreddit.get_new(), predicate)
@@ -1679,7 +1682,7 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
 
     @reddit_only
     def test_search(self):
-        self.assertTrue(len(list(self.subreddit.search('test'))) > 0)
+        self.assertTrue(list(self.subreddit.search('test')))
 
     def test_subscribe_and_verify(self):
         self.subreddit.subscribe()
@@ -1693,13 +1696,13 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_unsubscribe_and_verify(self):
         self.subreddit.unsubscribe()
-        predicate = lambda subreddit: text_type(subreddit) == self.sr
-        self.first(self.r.get_my_subreddits(), predicate)
+        pred = lambda subreddit: text_type(subreddit) != self.sr
+        self.assertTrue(all(pred(sub) for sub in self.r.get_my_subreddits()))
 
     def test_unsubscribe_by_name_and_verify(self):
         self.r.unsubscribe(self.sr)
-        predicate = lambda subreddit: text_type(subreddit) == self.sr
-        self.first(self.r.get_my_subreddits(), predicate)
+        pred = lambda subreddit: text_type(subreddit) != self.sr
+        self.assertTrue(all(pred(sub) for sub in self.r.get_my_subreddits()))
 
 
 class ToRedditListTest(unittest.TestCase, BasicHelper):
@@ -1751,7 +1754,7 @@ class WikiTests(unittest.TestCase, BasicHelper):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     def test_edit_wiki_page(self):
-        self.r.login(self.un, '1111')
+        self.r.login(self.un, self.un_pswd)
         page = self.subreddit.get_wiki_page('index')
         content = 'Body: {0}'.format(uuid.uuid4())
         page.edit(content)
@@ -1765,10 +1768,10 @@ class WikiTests(unittest.TestCase, BasicHelper):
             text_type(self.r.get_wiki_page(self.sr, 'index')))
 
     def test_get_wiki_pages(self):
-        retval = self.subreddit.get_wiki_pages()
-        self.assertTrue(len(retval) > 0)
-        tmp = self.subreddit.get_wiki_page(retval[0].page).content_md
-        self.assertEqual(retval[0].content_md, tmp)
+        result = self.subreddit.get_wiki_pages()
+        self.assertTrue(result)
+        tmp = self.subreddit.get_wiki_page(result[0].page).content_md
+        self.assertEqual(result[0].content_md, tmp)
 
 
 if __name__ == '__main__':
