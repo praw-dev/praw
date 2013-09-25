@@ -138,6 +138,9 @@ class BasicHelper(object):
 
     def first(self, seq, predicate):
         first_hit = next((x for x in seq if predicate(x)), None)
+        # Usage of self.assertTrue assumes all inheritance of this Class also
+        # inherits from unittest.Testcase
+        # pylint: disable-msg=E1101
         self.assertTrue(first_hit is not None)
         return first_hit
 
@@ -352,7 +355,6 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(len(self.r.search_reddit_names('reddit')) > 0)
 
     #def test_timeout(self):
-        # pylint: disable-msg=W0212
     #    self.assertRaises(Timeout, helpers._request, self.r,
     #                      self.r.config['comments'], timeout=0.001)
 
@@ -400,10 +402,12 @@ class EmbedTextTest(unittest.TestCase):
     embed_text = "Hello"
 
     def test_no_docstring(self):
+        # pylint: disable-msg=W0212
         new_doc = decorators._embed_text(None, self.embed_text)
         self.assertEqual(new_doc, self.embed_text)
 
     def test_one_liner(self):
+        # pylint: disable-msg=W0212
         new_doc = decorators._embed_text("Returns something cool",
                                          self.embed_text)
         self.assertEqual(new_doc,
@@ -415,6 +419,7 @@ class EmbedTextTest(unittest.TestCase):
               Only run if foo is instantiated.
 
               """
+        # pylint: disable-msg=W0212
         new_doc = decorators._embed_text(doc, self.embed_text)
         self.assertEqual(new_doc, doc + self.embed_text + "\n\n")
 
@@ -431,6 +436,7 @@ class EmbedTextTest(unittest.TestCase):
               :params foo: Self explanatory.
 
               """.format(self.embed_text)
+        # pylint: disable-msg=W0212
         new_doc = decorators._embed_text(doc, self.embed_text)
         self.assertEqual(new_doc, expected_doc)
 
@@ -453,6 +459,7 @@ class EmbedTextTest(unittest.TestCase):
               :returns: The jiggered bar.
 
               """.format(self.embed_text)
+        # pylint: disable-msg=W0212
         new_doc = decorators._embed_text(doc, self.embed_text)
         self.assertEqual(new_doc, expected_doc)
 
@@ -483,6 +490,7 @@ class EmbedTextTest(unittest.TestCase):
               altered.
 
               """.format(self.embed_text)
+        # pylint: disable-msg=W0212
         new_doc = decorators._embed_text(doc, self.embed_text)
         self.assertEqual(new_doc, expected_doc)
 
@@ -609,17 +617,20 @@ class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
     def test_inbox_comment_replies_are_none(self):
         predicate = lambda item: isinstance(item, Comment)
         comment = self.first(self.r.get_inbox(), predicate)
+        # pylint: disable-msg=W0212
         self.assertEqual(comment._replies, None)
 
     def test_spambox_comments_replies_are_none(self):
         predicate = lambda item: isinstance(item, Comment)
         sequence = self.r.get_subreddit(self.sr).get_spam()
         comment = self.first(sequence, predicate)
+        # pylint: disable-msg=W0212
         self.assertEqual(comment._replies, None)
 
     def test_user_comment_replies_are_none(self):
         predicate = lambda item: isinstance(item, Comment)
         comment = self.first(self.r.user.get_comments(), predicate)
+        # pylint: disable-msg=W0212
         self.assertEqual(comment._replies, None)
 
 
