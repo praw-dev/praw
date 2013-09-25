@@ -29,7 +29,7 @@ import uuid
 from functools import wraps
 from requests.compat import urljoin
 from requests.exceptions import HTTPError
-from six import advance_iterator as six_next, text_type
+from six import text_type
 
 from praw import Reddit, decorators, errors, helpers, internal
 from praw.objects import (Comment, LoggedInRedditor, Message, MoreComments,
@@ -137,7 +137,7 @@ class BasicHelper(object):
         self.r.config.cache_timeout = 0
 
     def first(self, seq, predicate):
-        first_hit = six_next((x for x in seq if predicate(x)), None)
+        first_hit = next((x for x in seq if predicate(x)), None)
         self.assertTrue(first_hit is not None)
         return first_hit
 
@@ -234,7 +234,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def test_equality(self):
         subreddit = self.r.get_subreddit(self.sr)
         same_subreddit = self.r.get_subreddit(self.sr)
-        submission = six_next(subreddit.get_hot())
+        submission = next(subreddit.get_hot())
         self.assertTrue(subreddit == same_subreddit)
         self.assertFalse(subreddit != same_subreddit)
         self.assertFalse(subreddit == submission)
@@ -256,7 +256,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_get_flair_list(self):
         sub = self.r.get_subreddit('python')
-        self.assertTrue(six_next(sub.get_flair_list()))
+        self.assertTrue(next(sub.get_flair_list()))
 
     def test_get_front_page(self):
         num = 50
@@ -385,7 +385,7 @@ class CacheTest(unittest.TestCase, AuthenticatedHelper):
     def test_refresh_submission(self):
         self.disable_cache()
         subreddit = self.r.get_subreddit(self.sr)
-        submission = six_next(subreddit.get_top())
+        submission = next(subreddit.get_top())
         same_submission = self.r.get_submission(submission_id=submission.id)
         if submission.likes:
             submission.downvote()
@@ -493,15 +493,15 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_author_encoding(self):
         # pylint: disable-msg=E1101
-        a1 = six_next(self.r.get_new()).author
+        a1 = next(self.r.get_new()).author
         a2 = self.r.get_redditor(text_type(a1))
         self.assertEqual(a1, a2)
-        s1 = six_next(a1.get_submitted())
-        s2 = six_next(a2.get_submitted())
+        s1 = next(a1.get_submitted())
+        s2 = next(a2.get_submitted())
         self.assertEqual(s1, s2)
 
     def test_unicode_comment(self):
-        sub = six_next(self.r.get_subreddit(self.sr).get_new())
+        sub = next(self.r.get_subreddit(self.sr).get_new())
         text = 'Have some unicode: (\xd0, \xdd)'
         comment = sub.add_comment(text)
         self.assertEqual(text, comment.body)
@@ -548,7 +548,7 @@ class CommentEditTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
 
     def test_reply(self):
-        comment = six_next(self.r.user.get_comments())
+        comment = next(self.r.user.get_comments())
         new_body = '%s\n\n+Edit Text' % comment.body
         comment = comment.edit(new_body)
         self.assertEqual(comment.body, new_body)
@@ -564,12 +564,12 @@ class CommentPermalinkTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(item.id in item.permalink)
 
     def test_user_comments_permalink(self):
-        item = six_next(self.r.user.get_comments())
+        item = next(self.r.user.get_comments())
         self.assertTrue(item.id in item.permalink)
 
     def test_get_comments_permalink(self):
         sub = self.r.get_subreddit(self.sr)
-        item = six_next(sub.get_comments())
+        item = next(sub.get_comments())
         self.assertTrue(item.id in item.permalink)
 
 
@@ -581,7 +581,7 @@ class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
     def test_add_comment_and_verify(self):
         text = 'Unique comment: %s' % uuid.uuid4()
         # pylint: disable-msg=E1101
-        submission = six_next(self.subreddit.get_new())
+        submission = next(self.subreddit.get_new())
         # pylint: enable-msg=E1101
         comment = submission.add_comment(text)
         self.assertEqual(comment.submission, submission)
@@ -603,7 +603,7 @@ class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_front_page_comment_replies_are_none(self):
         # pylint: disable-msg=E1101,W0212
-        item = six_next(self.r.get_comments('all'))
+        item = next(self.r.get_comments('all'))
         self.assertEqual(item._replies, None)
 
     def test_inbox_comment_replies_are_none(self):
@@ -630,20 +630,20 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_add_link_flair(self):
         flair_text = 'Flair: %s' % uuid.uuid4()
-        sub = six_next(self.subreddit.get_new())
+        sub = next(self.subreddit.get_new())
         self.subreddit.set_flair(sub, flair_text)
         sub = self.r.get_submission(sub.permalink)
         self.assertEqual(sub.link_flair_text, flair_text)
 
     def test_add_link_flair_through_submission(self):
         flair_text = 'Flair: %s' % uuid.uuid4()
-        sub = six_next(self.subreddit.get_new())
+        sub = next(self.subreddit.get_new())
         sub.set_flair(flair_text)
         sub = self.r.get_submission(sub.permalink)
         self.assertEqual(sub.link_flair_text, flair_text)
 
     def test_add_link_flair_to_invalid_subreddit(self):
-        sub = six_next(self.r.get_subreddit('python').get_new())
+        sub = next(self.r.get_subreddit('python').get_new())
         self.assertRaises(HTTPError, self.subreddit.set_flair, sub, 'text')
 
     def test_add_user_flair_by_subreddit_name(self):
@@ -762,7 +762,7 @@ class FlairSelectTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(flair['flair_css_class'], flair_class)
 
     def test_select_link_flair(self):
-        sub = six_next(self.subreddit.get_new())
+        sub = next(self.subreddit.get_new())
         flair_class = self.get_different_link_flair_class(sub)
         flair_id = self.link_flair_templates[flair_class][0]
         flair_default_text = self.link_flair_templates[flair_class][1]
@@ -784,7 +784,7 @@ class FlairSelectTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(flair['flair_css_class'], flair_class)
 
     def test_select_link_flair_custom_text(self):
-        sub = six_next(self.subreddit.get_new())
+        sub = next(self.subreddit.get_new())
         flair_class = self.get_different_link_flair_class(sub)
         flair_id = self.link_flair_templates[flair_class][0]
         flair_text = 'Flair: %s' % uuid.uuid4()
@@ -808,7 +808,7 @@ class FlairSelectTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(flair['flair_css_class'], None)
 
     def test_select_link_flair_remove(self):
-        sub = six_next(self.subreddit.get_new())
+        sub = next(self.subreddit.get_new())
         if sub.link_flair_css_class is None:
             flair_class = self.get_different_link_flair_class(sub)
             flair_id = self.link_flair_templates[flair_class][0]
@@ -989,7 +989,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login('PyAPITestUser3', '1111')
         # pylint: disable-msg=E1101
-        msg = six_next(oth.get_unread(limit=1))
+        msg = next(oth.get_unread(limit=1))
         msg.mark_as_read()
         self.assertTrue(msg not in oth.get_unread(limit=5))
 
@@ -1040,7 +1040,7 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     def test_approve(self):
-        submission = six_next(self.subreddit.get_spam())
+        submission = next(self.subreddit.get_spam())
         if not submission:
             self.fail('Could not find a submission to approve.')
         submission.approve()
@@ -1048,7 +1048,7 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.first(self.subreddit.get_new(), predicate)
 
     def test_remove(self):
-        submission = six_next(self.subreddit.get_new())
+        submission = next(self.subreddit.get_new())
         if not submission:
             self.fail('Could not find a submission to remove.')
         submission.remove()
@@ -1374,23 +1374,23 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_get_disliked(self):
         # Pulls from get_liked. Problem here may come from get_liked
-        item = six_next(self.r.user.get_liked())
+        item = next(self.r.user.get_liked())
         item.downvote()
         self.delay()  # The queue needs to be processed
         self.assertFalse(item in list(self.r.user.get_liked()))
 
     def test_get_hidden(self):
-        submission = six_next(self.r.user.get_submitted())
+        submission = next(self.r.user.get_submitted())
         submission.hide()
         self.delay()  # The queue needs to be processed
-        item = six_next(self.r.user.get_hidden())
+        item = next(self.r.user.get_hidden())
         item.unhide()
         self.delay()
         self.assertFalse(item in list(self.r.user.get_hidden()))
 
     def test_get_liked(self):
         # Pulls from get_disliked. Problem here may come from get_disliked
-        item = six_next(self.r.user.get_disliked())
+        item = next(self.r.user.get_disliked())
         item.upvote()
         self.delay()  # The queue needs to be processed
         self.assertFalse(item in list(self.r.user.get_disliked()))
@@ -1591,7 +1591,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.first(self.r.user.get_saved(), lambda item: item == submission)
 
     def test_short_link(self):
-        submission = six_next(self.r.get_new())
+        submission = next(self.r.get_new())
         if self.r.config.is_reddit:
             self.assertTrue(submission.id in submission.short_link)
         else:
