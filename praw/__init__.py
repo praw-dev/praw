@@ -121,6 +121,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'remove':              'api/remove/',
                  'report':              'api/report/',
                  'reports':             'r/%s/about/reports/',
+                 'rising':              'rising/',
                  'save':                'api/save/',
                  'saved':               'saved/',
                  'search':              'r/%s/search/',
@@ -838,6 +839,19 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         return objects.Redditor(self, user_name, *args, **kwargs)
+
+    @decorators.restrict_access(scope='read')
+    def get_rising(self, *args, **kwargs):
+        """Return a get_content generator for rising submissions.
+
+        Corresponds to the submissions provided by
+        http://www.reddit.com/rising/ for the session.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['rising'], *args, **kwargs)
 
     def get_submission(self, url=None, submission_id=None, comment_limit=0,
                        comment_sort=None):

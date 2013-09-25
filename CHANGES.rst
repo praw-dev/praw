@@ -29,6 +29,9 @@ Unreleased
  * **[FEATURE]** :class:`.Subreddit` now has an ``__repr__`` method. So it's
    now possible to identify what subreddit the object represents from the human
    readable representation of the object.
+ * **[FEATURE]** Add :meth:`praw.__init__.UnauthenticatedReddit.get_rising`
+   that returns the rising listing of the front page in the context of the
+   currently logged-in user (if any).
 
 PRAW 2.1.7
 ----------
@@ -226,8 +229,9 @@ PRAW 2.0.11
    <http://www.reddit.com/r/changelog/comments/191ngp/
    reddit_change_rising_is_now_its_own_tab_instead/>`_
    has split new and rising into their own independent listings. Use the new
-   :meth:`.get_rising` method instead of the old :meth:`.get_new_by_rising` and
-   :meth:`~.Subreddit.get_new` instead of :meth:`.get_new_by_date`.
+   :meth:`.praw.objects.Subreddit.get_rising` method instead of the old
+   :meth:`.get_new_by_rising` and :meth:`~.Subreddit.get_new` instead of
+   :meth:`.get_new_by_date`.
  * **[CHANGE]** The dependency on ``update_checker`` has been increased from >=
    0.4 to >= 0.5.
  * **[BUGFIX]** After inviting a moderator invite, the cached set of moderated

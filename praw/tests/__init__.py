@@ -287,6 +287,13 @@ class BasicTest(unittest.TestCase, BasicHelper):
             subs.add(self.r.get_subreddit('RANDOM').display_name)
         self.assertTrue(len(subs) > 1)
 
+    def test_get_rising(self):
+        # Use low limit as rising listing has few elements. Keeping the limit
+        # prevents this test from becoming flaky.
+        num = 5
+        result = self.r.get_rising(limit=num)
+        self.assertEqual(num, len(list(result)))
+
     def test_get_submissions(self):
         def fullname(url):
             return self.r.get_submission(url).fullname
