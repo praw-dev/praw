@@ -22,7 +22,7 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-Unreleased
+PRAW 2.1.8
 ----------
  * **[FEATURE]** Add :meth:`.get_subreddit_recommendations` to get a
    recommendation of subreddits based on a list of provided subreddits.
