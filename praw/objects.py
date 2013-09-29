@@ -980,7 +980,7 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         """Sticky a post in its subreddit.
 
         If there is already a stickied post in the concerned subreddit then it
-        will be unstickied.
+        will be unstickied. Only self submissions can be stickied.
 
         :returns: The json response from the server
 
