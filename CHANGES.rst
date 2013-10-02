@@ -22,6 +22,12 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[BUGFIX]** Fixed :class:`.Comment` erroneously having the methods
+   ``mark_as_nsfw`` and ``unmark_as_nsfw``, despite comments not being able to
+   be marked as NSFW.
+
 PRAW 2.1.8
 ----------
  * **[FEATURE]** Add :meth:`.get_subreddit_recommendations` to get a

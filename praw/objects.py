@@ -182,18 +182,6 @@ class Moderatable(RedditContentObject):
         return self.reddit_session.request_json(url, data=data)
 
     @restrict_access(scope='modposts')
-    def mark_as_nsfw(self, unmark_nsfw=False):
-        """Mark object as Not Safe For Work.
-
-        :returns: The json response from the server.
-
-        """
-        url = self.reddit_session.config['unmarknsfw' if unmark_nsfw else
-                                         'marknsfw']
-        data = {'id': self.fullname}
-        return self.reddit_session.request_json(url, data=data)
-
-    @restrict_access(scope='modposts')
     def remove(self, spam=False):
         """Remove object. This is the moderator version of delete.
 
@@ -221,14 +209,6 @@ class Moderatable(RedditContentObject):
 
         """
         return self.distinguish(as_made_by='no')
-
-    def unmark_as_nsfw(self):
-        """Mark object as Safe For Work.
-
-        :returns: The json response from the server.
-
-        """
-        return self.mark_as_nsfw(unmark_nsfw=True)
 
 
 class Editable(RedditContentObject):
@@ -878,6 +858,18 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         self._update_comments(new_comments)
         self._orphaned = {}
 
+    @restrict_access(scope='modposts')
+    def mark_as_nsfw(self, unmark_nsfw=False):
+        """Mark as Not Safe For Work.
+
+        :returns: The json response from the server.
+
+        """
+        url = self.reddit_session.config['unmarknsfw' if unmark_nsfw else
+                                         'marknsfw']
+        data = {'id': self.fullname}
+        return self.reddit_session.request_json(url, data=data)
+
     def replace_more_comments(self, limit=32, threshold=1):
         """Update the comment tree by replacing instances of MoreComments.
 
@@ -988,6 +980,14 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         url = self.reddit_session.config['sticky_submission']
         data = {'id': self.fullname, 'state': True}
         return self.reddit_session.request_json(url, data=data)
+
+    def unmark_as_nsfw(self):
+        """Mark as Safe For Work.
+
+        :returns: The json response from the server.
+
+        """
+        return self.mark_as_nsfw(unmark_nsfw=True)
 
     @restrict_access(scope='modposts')
     def unset_contest_mode(self):
