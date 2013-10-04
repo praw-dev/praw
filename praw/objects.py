@@ -858,17 +858,31 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         self._update_comments(new_comments)
         self._orphaned = {}
 
-    @restrict_access(scope='modposts')
     def mark_as_nsfw(self, unmark_nsfw=False):
         """Mark as Not Safe For Work.
+
+        Requires that the currently authenticated user is the author of the
+        submission, has the modposts oauth scope or has user/password
+        authentication as a mod of the subreddit.
 
         :returns: The json response from the server.
 
         """
-        url = self.reddit_session.config['unmarknsfw' if unmark_nsfw else
-                                         'marknsfw']
-        data = {'id': self.fullname}
-        return self.reddit_session.request_json(url, data=data)
+        def mark_as_nsfw_helper(self):  # pylint: disable-msg=W0613
+            # It is necessary to have the 'self' argument as it's needed in
+            # restrict_access to determine what class the decorator is
+            # operating on.
+            url = self.reddit_session.config['unmarknsfw' if unmark_nsfw else
+                                             'marknsfw']
+            data = {'id': self.fullname}
+            return self.reddit_session.request_json(url, data=data)
+
+        is_author = (self.reddit_session.is_logged_in() and self.author ==
+                     self.reddit_session.user)
+        if is_author:
+            return mark_as_nsfw_helper(self)
+        else:
+            return restrict_access('modposts')(mark_as_nsfw_helper)(self)
 
     def replace_more_comments(self, limit=32, threshold=1):
         """Update the comment tree by replacing instances of MoreComments.

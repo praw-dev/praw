@@ -24,6 +24,8 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[FEATURE]** :meth:`mark_as_nsfw` and :meth:`unmark_as_nsfw` can now be
+   used if the currently authenticated user is the author of the Submission.
  * **[BUGFIX]** Fixed :class:`.Comment` erroneously having the methods
    ``mark_as_nsfw`` and ``unmark_as_nsfw``, despite comments not being able to
    be marked as NSFW.

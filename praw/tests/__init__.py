@@ -1537,21 +1537,39 @@ class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
         found = found.edit(new_body)
         self.assertEqual(found.selftext, new_body)
 
-    def test_mark_as_nsfw(self):
+    def test_mark_as_nsfw_as_author(self):
         self.disable_cache()
-        predicate = lambda item: not item.over_18
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        submission = self.r.get_submission(submission_id="1nt8co")
+        self.assertEqual(submission.author, self.r.user)
+        originally_nsfw = submission.over_18
+        if originally_nsfw:
+            submission.unmark_as_nsfw()
+        else:
+            submission.mark_as_nsfw()
+        submission.refresh()
+        self.assertNotEqual(originally_nsfw, submission.over_18)
+
+    def test_mark_as_nsfw_as_mod(self):
+        self.disable_cache()
+        submission = self.r.get_submission(submission_id="1nt8co")
+        submission.mark_as_nsfw()
+        submission.refresh()
+        self.assertTrue(submission.over_18)
+
+    def test_mark_as_nsfw_exception(self):
+        self.disable_cache()
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        predicate = lambda item: item.author != self.r.user
         found = self.first(self.subreddit.get_top(), predicate)
-        found.mark_as_nsfw()
-        found.refresh()
-        self.assertTrue(found.over_18)
+        self.assertRaises(errors.ModeratorOrScopeRequired, found.mark_as_nsfw)
 
     def test_unmark_as_nsfw(self):
         self.disable_cache()
-        predicate = lambda item: item.over_18
-        found = self.first(self.subreddit.get_top(), predicate)
-        found.unmark_as_nsfw()
-        found.refresh()
-        self.assertFalse(found.over_18)
+        submission = self.r.get_submission(submission_id="1nt8co")
+        submission.unmark_as_nsfw()
+        submission.refresh()
+        self.assertFalse(submission.over_18)
 
 
 class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
