@@ -917,7 +917,7 @@ class UnauthenticatedReddit(BaseReddit):
                   'omitted': _to_reddit_list(omitted)}
         result = self.request_json(self.config['sub_recommendations'],
                                    params=params)
-        return [objects.Subreddit(self, sub) for sub in result]
+        return [objects.Subreddit(self, sub['sr_name']) for sub in result]
 
     @decorators.restrict_access(scope='read')
     def get_top(self, *args, **kwargs):

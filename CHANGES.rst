@@ -29,6 +29,8 @@ Unreleased
  * **[BUGFIX]** Fixed :class:`.Comment` erroneously having the methods
    ``mark_as_nsfw`` and ``unmark_as_nsfw``, despite comments not being able to
    be marked as NSFW.
+ * **[REDDIT]** Update :meth:`.get_subreddit_recommendations` to handle changed
+   returned data format.
 
 PRAW 2.1.8
 ----------
