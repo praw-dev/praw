@@ -26,6 +26,10 @@ Unreleased
 ----------
  * **[FEATURE]** :meth:`mark_as_nsfw` and :meth:`unmark_as_nsfw` can now be
    used if the currently authenticated user is the author of the Submission.
+ * **[FEATURE]** :meth:`~.ModOnlyMixin.get_contributors` can now be used for
+   accessing the contributor list of protected/private subreddits without
+   requiring moderator access. See issue `issue 246
+   <https://github.com/praw-dev/praw/issues/246>`_.
  * **[BUGFIX]** Fixed :class:`.Comment` erroneously having the methods
    ``mark_as_nsfw`` and ``unmark_as_nsfw``, despite comments not being able to
    be marked as NSFW.

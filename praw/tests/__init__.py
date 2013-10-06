@@ -1692,6 +1692,19 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def test_attribute_error(self):
         self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
 
+    def test_get_contributors_private(self):
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        private_sub = self.r.get_subreddit(self.priv_sr)
+        self.assertTrue(list(private_sub.get_contributors()))
+
+    def test_get_contributors_public(self):
+        self.assertTrue(list(self.subreddit.get_contributors()))
+
+    def test_get_contributors_public_exception(self):
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        self.assertRaises(errors.ModeratorRequired,
+                          self.subreddit.get_contributors)
+
     def test_get_my_contributions(self):
         predicate = lambda subreddit: text_type(subreddit) == self.sr
         self.first(self.r.get_my_contributions(), predicate)

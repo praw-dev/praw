@@ -1626,11 +1626,30 @@ class ModOnlyMixin(AuthenticatedReddit):
         return self.request_json(self.config['banned'] %
                                  six.text_type(subreddit))
 
-    @decorators.restrict_access(scope=None, mod=True)
     def get_contributors(self, subreddit):
-        """Return the list of contributors for the given subreddit."""
-        return self.request_json(self.config['contributors'] %
-                                 six.text_type(subreddit))
+        """
+        Return the list of contributors for the given subreddit.
+
+        If it's a public subreddit, then user/pswd authentication as a
+        moderator of the subreddit is required. For protected/private
+        subreddits only access is required. See issue #246.
+
+        """
+        # pylint: disable-msg=W0613
+        def get_contributors_helper(self, subreddit):
+            # It is necessary to have the 'self' argument as it's needed in
+            # restrict_access to determine what class the decorator is
+            # operating on.
+            return self.request_json(self.config['contributors'] %
+                                     six.text_type(subreddit))
+
+        if self.is_logged_in():
+            if not isinstance(subreddit, objects.Subreddit):
+                subreddit = self.get_subreddit(subreddit)
+            if subreddit.subreddit_type == "public":
+                decorator = decorators.restrict_access(scope=None, mod=True)
+                return decorator(get_contributors_helper)(self, subreddit)
+        return get_contributors_helper(self, subreddit)
 
     @decorators.restrict_access(scope='privatemessages', mod=True)
     def get_mod_mail(self, subreddit='mod', *args, **kwargs):
