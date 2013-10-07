@@ -22,7 +22,7 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-Unreleased
+PRAW 2.1.9
 ----------
  * **[FEATURE]** :meth:`mark_as_nsfw` and :meth:`unmark_as_nsfw` can now be
    used if the currently authenticated user is the author of the Submission.
