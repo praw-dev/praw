@@ -111,6 +111,7 @@ class BasicHelper(object):
             self.priv_submission_id = '16kbb7'
             self.refresh_token = {
                 'edit':            'FFx_0G7Zumyh4AWzIo39bG9KdIM',
+                'history':         'j_RKymm8srC3j6cxysYFQZbB4vc',
                 'identity':        'E4BgmO7iho0KOB1XlT8WEtyySf8',
                 'modconfig':       'bBGRgMY9Ai9_SZLZsaFvS647Mgk',
                 'modflair':        'UrMbtk4bOa040XAVz0uQn2gTE3s',
@@ -1247,6 +1248,11 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         self.r.refresh_access_information(self.refresh_token['edit'])
         submission = Submission.from_id(self.r, self.submission_edit_id)
         self.assertEqual(submission, submission.edit('Edited text'))
+
+    @reddit_only
+    def test_scope_history(self):
+        self.r.refresh_access_information(self.refresh_token['history'])
+        self.assertTrue(list(self.r.get_redditor(self.un).get_liked()))
 
     @reddit_only
     def test_scope_identity(self):

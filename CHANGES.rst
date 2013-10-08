@@ -22,6 +22,13 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[FEATURE]** Create and add ``history`` scope to
+   :meth:`~praw.objects.Redditor.get_comments`, :meth:`.get_disliked`,
+   :meth:`.get_liked`, :meth:`.get_overview`, :meth:`.get_submitted`,
+   :meth:`.get_hidden` and :meth:`.get_saved`.
+
 PRAW 2.1.9
 ----------
  * **[FEATURE]** :meth:`mark_as_nsfw` and :meth:`unmark_as_nsfw` can now be

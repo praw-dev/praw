@@ -27,6 +27,7 @@ from praw.errors import (InvalidSubreddit, OAuthException,
 
 def _get_redditor_listing(subpath=''):
     """Return function to generate Redditor listings."""
+    @restrict_access(scope='history')
     def _listing(self, sort='new', time='all', *args, **kwargs):
         """Return a get_content generator for some RedditContentObject type.
 
