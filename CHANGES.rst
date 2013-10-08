@@ -24,6 +24,8 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[FEATURE]** Add the arguments ``save`` and ``send_replies`` to
+   :meth:`~praw.__init__.SubmitMixin.submit`.
  * **[FEATURE]** Create and add ``history`` scope to
    :meth:`~praw.objects.Redditor.get_comments`, :meth:`.get_disliked`,
    :meth:`.get_liked`, :meth:`.get_overview`, :meth:`.get_submitted`,

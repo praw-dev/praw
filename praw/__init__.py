@@ -1936,11 +1936,19 @@ class SubmitMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='submit')
     @decorators.require_captcha
-    def submit(self, subreddit, title, text=None, url=None, captcha=None):
+    def submit(self, subreddit, title, text=None, url=None, captcha=None,
+               save=None, send_replies=None):
         """Submit a new link to the given subreddit.
 
         Accepts either a Subreddit object or a str containing the subreddit's
         display name.
+
+        :param save: If True the new Submission will be saved after creation.
+        :param send_replies: Gold Only Feature. If True, inbox replies will be
+            received when people comment on the Submission. If set to None or
+            the currently authenticated user doesn't have gold, then the
+            default of True for text posts and False for link posts will be
+            used.
 
         :returns: The newly created Submission object if the reddit instance
             can access it. Otherwise, return the url to the submission.
@@ -1958,6 +1966,10 @@ class SubmitMixin(AuthenticatedReddit):
             data['url'] = url
         if captcha:
             data.update(captcha)
+        if save is not None:
+            data['save'] = save
+        if send_replies is not None:
+            data['sendreplies'] = send_replies
         result = self.request_json(self.config['submit'], data=data,
                                    retry_on_error=False)
         url = result['data']['url']
