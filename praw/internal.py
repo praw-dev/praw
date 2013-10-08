@@ -25,9 +25,9 @@ from praw.errors import (InvalidSubreddit, OAuthException,
                          RedirectException)
 
 
-def _get_section(subpath=''):
-    """Return function to generate various non-subreddit listings."""
-    def _section(self, sort='new', time='all', *args, **kwargs):
+def _get_redditor_listing(subpath=''):
+    """Return function to generate Redditor listings."""
+    def _listing(self, sort='new', time='all', *args, **kwargs):
         """Return a get_content generator for some RedditContentObject type.
 
         :param sort: Specify the sort order of the results if applicable.
@@ -43,7 +43,7 @@ def _get_section(subpath=''):
         kwargs['params'].setdefault('t', time)
         url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
         return self.reddit_session.get_content(url, *args, **kwargs)
-    return _section
+    return _listing
 
 
 def _get_sorter(subpath='', deprecated=False, **defaults):

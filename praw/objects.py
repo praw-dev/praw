@@ -31,7 +31,8 @@ from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
 from praw.decorators import alias_function, limit_chars, restrict_access
 from praw.errors import ClientException
-from praw.internal import _get_section, _get_sorter, _modify_relationship
+from praw.internal import (_get_redditor_listing, _get_sorter,
+                           _modify_relationship)
 
 
 REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor')
@@ -608,11 +609,11 @@ class Redditor(Messageable, Refreshable):
 
     """A class representing the users of reddit."""
 
-    get_comments = _get_section('comments')
-    get_disliked = _get_section('disliked')
-    get_liked = _get_section('liked')
-    get_overview = _get_section('')
-    get_submitted = _get_section('submitted')
+    get_comments = _get_redditor_listing('comments')
+    get_disliked = _get_redditor_listing('disliked')
+    get_liked = _get_redditor_listing('liked')
+    get_overview = _get_redditor_listing('')
+    get_submitted = _get_redditor_listing('submitted')
 
     def __init__(self, reddit_session, user_name=None, json_dict=None,
                  fetch=True):
@@ -683,8 +684,8 @@ class LoggedInRedditor(Redditor):
 
     """A class representing a currently logged in Redditor."""
 
-    get_hidden = _get_section('hidden')
-    get_saved = _get_section('saved')
+    get_hidden = _get_redditor_listing('hidden')
+    get_saved = _get_redditor_listing('saved')
 
     def get_blocked(self):
         """Return a UserList of Redditors with whom the user has blocked."""
