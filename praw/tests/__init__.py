@@ -277,6 +277,12 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertEqual(num, len(list(result)))
 
     @reddit_only
+    def test_get_new_subreddits(self):
+        num = 50
+        self.assertEqual(num,
+                         len(list(self.r.get_new_subreddits(limit=num))))
+
+    @reddit_only
     def test_get_popular_subreddits(self):
         num = 50
         self.assertEqual(num,

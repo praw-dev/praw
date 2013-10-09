@@ -113,6 +113,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'my_mod_subreddits':   'subreddits/mine/moderator/',
                  'my_subreddits':       'subreddits/mine/subscriber/',
                  'new':                 'new/',
+                 'new_subreddits':      'subreddits/new/',
                  'marknsfw':            'api/marknsfw/',
                  'popular_subreddits':  'subreddits/popular/',
                  'read_message':        'api/read_message/',
@@ -785,6 +786,16 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         return self.get_content(self.config['new'], *args, **kwargs)
+
+    def get_new_subreddits(self, *args, **kwargs):
+        """Return a get_content generator for the newest subreddits.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        url = self.config['new_subreddits']
+        return self.get_content(url, *args, **kwargs)
 
     def get_popular_reddits(self, *args, **kwargs):
         """Return a get_content generator for the most active subreddits.

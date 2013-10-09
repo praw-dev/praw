@@ -24,6 +24,8 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[FEATURE]** Add :meth:`.get_new_subreddits` to return the newest
+   subreddits.
  * **[FEATURE]** Add the arguments ``save`` and ``send_replies`` to
    :meth:`~praw.__init__.SubmitMixin.submit`.
  * **[FEATURE]** Create and add ``history`` scope to
