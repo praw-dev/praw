@@ -1319,7 +1319,9 @@ class ModConfigMixin(AuthenticatedReddit):
                      wiki_edit_age=30, wiki_edit_karma=100,
                      submit_link_label='', submit_text_label='',
                      exclude_banned_modqueue=False, comment_score_hide_mins=0,
-                     public_traffic=False, **kwargs):
+                     public_traffic=False, prev_submit_text_id=None,
+                     spam_comments='low', spam_links='high',
+                     spam_selfposts='high', submit_text='', **kwargs):
         """Set the settings for the given subreddit.
 
         :param subreddit: Must be a subreddit object.
@@ -1343,7 +1345,11 @@ class ModConfigMixin(AuthenticatedReddit):
                 'public_traffic': public_traffic,
                 'show_media': 'on' if show_media else 'off',
                 'submit_link_label': submit_link_label or '',
+                'submit_text': submit_text,
                 'submit_text_label': submit_text_label or '',
+                'spam_comments': spam_comments,
+                'spam_links': spam_links,
+                'spam_selfposts': spam_selfposts,
                 'title': title,
                 'type': subreddit_type,
                 'wiki_edit_age': six.text_type(wiki_edit_age),
@@ -1353,6 +1359,8 @@ class ModConfigMixin(AuthenticatedReddit):
             data['prev_description_id'] = prev_description_id
         if prev_public_description_id is not None:
             data['prev_public_description_id'] = prev_public_description_id
+        if prev_submit_text_id is not None:
+            data['prev_submit_text_id'] = prev_submit_text_id
         if kwargs:
             msg = 'Extra settings fields: {0}'.format(kwargs.keys())
             warn_explicit(msg, UserWarning, '', 0)
