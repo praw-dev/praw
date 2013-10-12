@@ -22,8 +22,8 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-Unreleased
-----------
+PRAW 2.1.10
+-----------
  * **[FEATURE]** Add :meth:`.get_new_subreddits` to return the newest
    subreddits.
  * **[FEATURE]** Add the arguments ``save`` and ``send_replies`` to
