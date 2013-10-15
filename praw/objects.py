@@ -706,7 +706,12 @@ class LoggedInRedditor(Redditor):
         return self._mod_subs
 
     def get_friends(self):
-        """Return a UserList of Redditors with whom the user has friended."""
+        """Return a UserList of Redditors with whom the user has friended.
+
+        Will throw a RedirectException while
+        https://github.com/praw-dev/praw/issues/175 is unresolved.
+
+        """
         url = self.reddit_session.config['friends']
         return self.reddit_session.request_json(url)[0]
 
