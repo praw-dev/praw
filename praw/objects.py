@@ -684,8 +684,8 @@ class LoggedInRedditor(Redditor):
 
     """A class representing a currently logged in Redditor."""
 
-    get_hidden = _get_redditor_listing('hidden')
-    get_saved = _get_redditor_listing('saved')
+    get_hidden = restrict_access("history")(_get_redditor_listing('hidden'))
+    get_saved = restrict_access("history")(_get_redditor_listing('saved'))
 
     def get_blocked(self):
         """Return a UserList of Redditors with whom the user has blocked."""

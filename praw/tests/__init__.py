@@ -1431,6 +1431,10 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
     def test_get_redditor(self):
         self.assertEqual(self.other_user_id, self.other_user.id)
 
+    def test_get_submitted(self):
+        redditor = self.r.get_redditor(self.other_non_mod_name)
+        self.assertTrue(list(redditor.get_submitted()))
+
     def test_user_set_on_login(self):
         self.assertTrue(isinstance(self.r.user, LoggedInRedditor))
 
@@ -1620,6 +1624,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(submission.hidden)
 
     def test_report(self):
+        self.disable_cache()
         # login as new user to report submission
         oth = Reddit(USER_AGENT, disable_update_check=True)
         oth.login(self.other_user_name, self.other_user_pswd)

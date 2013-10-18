@@ -22,6 +22,17 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[BUGFIX]** The ``history`` scope is not required for
+   :meth:`~praw.objects.Redditor.get_comments`, :meth:`.get_overview` and
+   :meth:`.get_submitted` despite the official `reddit documentation
+   <http://www.reddit.com/dev/api#GET_user_{username}_{where}>`_ saying so.
+   Redditors may choose to make their voting record public, in which case no
+   authentication is required for :meth:`.get_disliked` or :meth:`.get_liked`.
+   The ``history`` scope requirement for the above-mentioned methods has been
+   removed.
+
 PRAW 2.1.10
 -----------
  * **[FEATURE]** Add :meth:`.get_new_subreddits` to return the newest
