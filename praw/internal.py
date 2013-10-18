@@ -17,7 +17,6 @@
 from requests import Request
 import six
 import sys
-from warnings import warn
 from requests.compat import urljoin
 from praw.decorators import restrict_access
 from praw.errors import (InvalidSubreddit, OAuthException,
@@ -46,7 +45,7 @@ def _get_redditor_listing(subpath=''):
     return _listing
 
 
-def _get_sorter(subpath='', deprecated=False, **defaults):
+def _get_sorter(subpath='', **defaults):
     """Return function to generate specific subreddit Submission listings."""
     @restrict_access(scope='read')
     def _sorted(self, *args, **kwargs):
@@ -57,9 +56,6 @@ def _get_sorter(subpath='', deprecated=False, **defaults):
 
         """
 
-        if deprecated:
-            warn('Please use `{0}` instead'.format(deprecated),
-                 DeprecationWarning)
         if not kwargs.get('params'):
             kwargs['params'] = {}
         for key, value in six.iteritems(defaults):
@@ -69,8 +65,7 @@ def _get_sorter(subpath='', deprecated=False, **defaults):
     return _sorted
 
 
-def _modify_relationship(relationship, unlink=False, is_sub=False,
-                         deprecated=False):
+def _modify_relationship(relationship, unlink=False, is_sub=False):
     """Return a function for relationship modification.
 
     Used to support friending (user-to-user), as well as moderating,
@@ -87,10 +82,6 @@ def _modify_relationship(relationship, unlink=False, is_sub=False,
 
     @restrict_access(**access)
     def do_relationship(thing, user):
-        if deprecated:
-            warn('Please use `{0}` instead'.format(deprecated),
-                 DeprecationWarning)
-
         data = {'name': six.text_type(user),
                 'type': relationship}
         if is_sub:

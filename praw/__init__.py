@@ -41,7 +41,7 @@ from requests.compat import urljoin
 from requests import Request
 from six.moves import html_entities, http_cookiejar
 from update_checker import update_check
-from warnings import simplefilter, warn, warn_explicit
+from warnings import warn_explicit
 
 
 __version__ = '2.1.10'
@@ -53,9 +53,6 @@ MIN_IMAGE_SIZE = 128
 MAX_IMAGE_SIZE = 512000
 JPEG_HEADER = b'\xff\xd8\xff'
 PNG_HEADER = b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
-
-# Enable deprecation warnings
-simplefilter('default')
 
 # Compatibility
 if six.PY3:
@@ -631,16 +628,12 @@ class UnauthenticatedReddit(BaseReddit):
             data.update(captcha)
         return self.request_json(self.config['register'], data=data)
 
+    @decorators.depreciated(msg="Please use `get_comments(\'all\', ...)` "
+                                "instead.")
     def get_all_comments(self, *args, **kwargs):
         """Return a get_content generator for comments from `all` subreddits.
 
-        This is a **deprecated** convenience function for :meth:`.get_comments`
-        with `all` specified for the subreddit. This function will be removed
-        in a future version of PRAW.
-
         """
-        warn('Please use `get_comments(\'all\', ...)` instead',
-             DeprecationWarning)
         return self.get_comments('all', *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
@@ -797,13 +790,9 @@ class UnauthenticatedReddit(BaseReddit):
         url = self.config['new_subreddits']
         return self.get_content(url, *args, **kwargs)
 
+    @decorators.depreciated(msg="Please use `get_popular_subreddits` instead.")
     def get_popular_reddits(self, *args, **kwargs):
-        """Return a get_content generator for the most active subreddits.
-
-        This is a **deprecated** version of :meth:`.get_popular_subreddits`.
-
-        """
-        warn('Please use `get_popular_subreddits` instead', DeprecationWarning)
+        """Return a get_content generator for the most active subreddits."""
         return self.get_popular_subreddits(*args, **kwargs)
 
     def get_popular_subreddits(self, *args, **kwargs):
@@ -1803,13 +1792,9 @@ class MySubredditsMixin(AuthenticatedReddit):
         return self.get_content(self.config['my_mod_subreddits'], *args,
                                 **kwargs)
 
+    @decorators.depreciated(msg="Please use `get_my_subreddits` instead.")
     def get_my_reddits(self, *args, **kwargs):
-        """Return a get_content generator of subreddits.
-
-        This is a **deprecated** version of :meth:`.get_my_subreddits`.
-
-        """
-        warn('Please use `get_my_subreddits` instead', DeprecationWarning)
+        """Return a get_content generator of subreddits."""
         return self.get_my_subreddits(*args, **kwargs)
 
     @decorators.restrict_access(scope='mysubreddits')

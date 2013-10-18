@@ -28,6 +28,7 @@ import sys
 from functools import wraps
 from requests.compat import urljoin
 from praw import errors
+from warnings import warn
 
 
 # Don't decorate functions when building the documentation
@@ -60,6 +61,22 @@ def alias_function(function, class_name):
                         .format(class_name, function.__name__))
     # Don't hide from sphinx as this is a parameter modifying decorator
     return wrapped
+
+
+def depreciated(msg=""):
+    """Depreciate decorated methods."""
+    docstring_text = ("**DEPRECIATED**. Will be removed in a future version "
+                      "of PRAW. %s" % msg)
+
+    def wrap(function):
+        warn(msg, DeprecationWarning)
+        function.__doc__ = _embed_text(function.__doc__, docstring_text)
+
+        @wraps(function)
+        def wrapped(self, *args, **kwargs):
+            return function(args, kwargs)
+        return function if IS_SPHINX_BUILD else wrapped
+    return wrap
 
 
 def limit_chars(function):
