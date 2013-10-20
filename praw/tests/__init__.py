@@ -1078,6 +1078,16 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
         predicate = lambda approved: approved.id == submission.id
         self.first(self.subreddit.get_new(), predicate)
 
+    def test_ignore_reports(self):
+        submission = next(self.subreddit.get_new())
+        self.assertFalse(submission in self.subreddit.get_mod_log())
+        submission.ignore_reports()
+        submission.report()
+        self.disable_cache()
+        submission.refresh()
+        self.assertFalse(submission in self.subreddit.get_mod_log())
+        self.assertTrue(submission.num_reports > 0)
+
     def test_remove(self):
         submission = next(self.subreddit.get_new())
         if not submission:

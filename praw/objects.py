@@ -184,6 +184,19 @@ class Moderatable(RedditContentObject):
         return self.reddit_session.request_json(url, data=data)
 
     @restrict_access(scope='modposts')
+    def ignore_reports(self):
+        """Ignore future reports on this object.
+
+        This prevents future reports from causing notifications or appearing
+        in the various moderation listing. The report count will still
+        increment.
+
+        """
+        url = self.reddit_session.config['ignore_reports']
+        data = {'id': self.fullname}
+        return self.reddit_session.request_json(url, data=data)
+
+    @restrict_access(scope='modposts')
     def remove(self, spam=False):
         """Remove object. This is the moderator version of delete.
 
@@ -211,6 +224,18 @@ class Moderatable(RedditContentObject):
 
         """
         return self.distinguish(as_made_by='no')
+
+    @restrict_access(scope='modposts')
+    def unignore_reports(self):
+        """Remove ignoring of future reports on this object.
+
+        Undoes 'ignore_reports'. Future reports will now cause notifications
+        and appear in the various moderation listings.
+
+        """
+        url = self.reddit_session.config['unignore_reports']
+        data = {'id': self.fullname}
+        return self.reddit_session.request_json(url, data=data)
 
 
 class Editable(RedditContentObject):

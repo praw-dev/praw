@@ -24,6 +24,9 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[FEATURE]** Added :meth:`~praw.objects.Moderatable.ignore_reports` and
+   :meth:`~praw.objects.Moderatable.unignore_reports` to :class:`.Comment` and
+   :class:`.Submission`.
  * **[BUGFIX]** The ``history`` scope is not required for
    :meth:`~praw.objects.Redditor.get_comments`, :meth:`.get_overview` and
    :meth:`.get_submitted` despite the official `reddit documentation
