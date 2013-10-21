@@ -81,9 +81,10 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
         access = {'scope': None, 'mod': True}
 
     @restrict_access(**access)
-    def do_relationship(thing, user):
+    def do_relationship(thing, user, **kwargs):
         data = {'name': six.text_type(user),
                 'type': relationship}
+        data.update(kwargs)
         if is_sub:
             data['r'] = six.text_type(thing)
         else:
