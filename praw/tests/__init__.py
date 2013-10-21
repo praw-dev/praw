@@ -367,7 +367,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def test_search_with_time_window(self):
         num = 50
         submissions = len(list(self.r.search('test', subreddit=self.sr,
-                                             period='week', limit=num)))
+                                             period='all', limit=num)))
         self.assertTrue(submissions == num)
 
     def test_search_reddit_names(self):
