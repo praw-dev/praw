@@ -636,8 +636,6 @@ class Redditor(Messageable, Refreshable):
     """A class representing the users of reddit."""
 
     get_comments = _get_redditor_listing('comments')
-    get_disliked = _get_redditor_listing('disliked')
-    get_liked = _get_redditor_listing('liked')
     get_overview = _get_redditor_listing('')
     get_submitted = _get_redditor_listing('submitted')
 
@@ -672,6 +670,35 @@ class Redditor(Messageable, Refreshable):
         """
         self.reddit_session.evict(self.reddit_session.config['friends'])
         return _modify_relationship('friend')(self.reddit_session.user, self)
+
+    def get_disliked(self):
+        """Return a listing of the things the user has downvoted.
+
+        As a default, this listing is only accessible by the user. Thereby
+        requirering either user/pswd authentication or OAuth authentication
+        with the 'history' scope. Users may choose to make their voting record
+        public by changing a user preference. In this case, no authentication
+        will be needed to access this listing.
+
+        """
+        # Sending an OAuth authenticated request for a redditor, who isn't the
+        # authenticated user. But who has a public voting record will be
+        # successful.
+        use_oauth = self.reddit_session.is_oauth_session()
+        return _get_redditor_listing('disliked')(self, _use_oauth=use_oauth)
+
+    def get_liked(self):
+        """Return a listing of the things the user has upvoted.
+
+        As a default, this listing is only accessible by the user. Thereby
+        requirering either user/pswd authentication or OAuth authentication
+        with the 'history' scope. Users may choose to make their voting record
+        public by changing a user preference. In this case, no authentication
+        will be needed to access this listing.
+
+        """
+        use_oauth = self.reddit_session.is_oauth_session()
+        return _get_redditor_listing('liked')(self, _use_oauth=use_oauth)
 
     def mark_as_read(self, messages, unread=False):
         """Mark message(s) as read or unread.
