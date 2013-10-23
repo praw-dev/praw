@@ -22,8 +22,8 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-Unreleased
-----------
+PRAW 2.1.11
+-----------
  * **[FEATURE]** Added :meth:`~praw.objects.Moderatable.ignore_reports` and
    :meth:`~praw.objects.Moderatable.unignore_reports` to :class:`.Comment` and
    :class:`.Submission`.

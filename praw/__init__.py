@@ -44,7 +44,7 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '2.1.10'
+__version__ = '2.1.11'
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
                                           platform.platform(True))
