@@ -193,8 +193,8 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
     ('index', 'PythonRedditAPIWrapper.tex',
-    u'Python Reddit API Wrapper Documentation',
-    u'Bryce Boe', 'manual'),
+     u'Python Reddit API Wrapper Documentation',
+     u'Bryce Boe', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -224,8 +224,8 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'pythonredditapiwrapper',
-    u'Python Reddit API Wrapper Documentation',
-    [u'Bryce Boe'], 1)
+     u'Python Reddit API Wrapper Documentation',
+     [u'Bryce Boe'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -239,9 +239,9 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'PythonRedditAPIWrapper',
-    u'Python Reddit API Wrapper Documentation',
-    u'Bryce Boe', 'PythonRedditAPIWrapper',
-    'One line description of project.', 'Miscellaneous'),
+     u'Python Reddit API Wrapper Documentation',
+     u'Bryce Boe', 'PythonRedditAPIWrapper',
+     'One line description of project.', 'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
