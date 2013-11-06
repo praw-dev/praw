@@ -98,13 +98,9 @@ pygments_style = 'sphinx'
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-
-# setting it to default to allow RTD builds to pickup the new default theme
+# a list of builtin themes. Currently Setting it to default to allow RTD 
+# builds to pickup the new default theme.
 html_theme = 'default'
-
-# setting an additional parameter to force using the new RTD theme
-RTD_NEW_THEME = True
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -183,23 +179,23 @@ htmlhelp_basename = 'PythonRedditAPIWrapperdoc'
 # -- Options for LaTeX output --------------------------------------------------
 
 latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #'papersize': 'letterpaper',
+        # The paper size ('letterpaper' or 'a4paper').
+        #'papersize': 'letterpaper',
 
-    # The font size ('10pt', '11pt' or '12pt').
-    #'pointsize': '10pt',
+        # The font size ('10pt', '11pt' or '12pt').
+        #'pointsize': '10pt',
 
-    # Additional stuff for the LaTeX preamble.
-    #'preamble': '',
-}
+        # Additional stuff for the LaTeX preamble.
+        #'preamble': '',
+        }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ('index', 'PythonRedditAPIWrapper.tex',
-     u'Python Reddit API Wrapper Documentation',
-     u'Bryce Boe', 'manual'),
-]
+        ('index', 'PythonRedditAPIWrapper.tex',
+            u'Python Reddit API Wrapper Documentation',
+            u'Bryce Boe', 'manual'),
+        ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
@@ -227,10 +223,10 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'pythonredditapiwrapper',
-     u'Python Reddit API Wrapper Documentation',
-     [u'Bryce Boe'], 1)
-]
+        ('index', 'pythonredditapiwrapper',
+            u'Python Reddit API Wrapper Documentation',
+            [u'Bryce Boe'], 1)
+        ]
 
 # If true, show URL addresses after external links.
 #man_show_urls = False
@@ -242,11 +238,11 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'PythonRedditAPIWrapper',
-     u'Python Reddit API Wrapper Documentation',
-     u'Bryce Boe', 'PythonRedditAPIWrapper',
-     'One line description of project.', 'Miscellaneous'),
-]
+        ('index', 'PythonRedditAPIWrapper',
+            u'Python Reddit API Wrapper Documentation',
+            u'Bryce Boe', 'PythonRedditAPIWrapper',
+            'One line description of project.', 'Miscellaneous'),
+        ]
 
 # Documents to append as an appendix to all manuals.
 #texinfo_appendices = []
