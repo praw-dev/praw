@@ -88,6 +88,10 @@ this page to add in more.
     ALTcointip bot allows Redditors to gift (tip) various cryptocoins (Litecoin, 
     PPCoin, Namecoin, etc) to each other as a way of saying thanks.
 
+`RedditAgain`_ by `Karan Goel <http://www.github.com/thekarangoel>`_
+    Migrate an old Reddit account to a new one. Backs up existing content
+    and submissions, and copies subscriptions to a new account.
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -117,6 +121,7 @@ them to work with the latest version.
 .. _`Groompbot`: https://github.com/AndrewNeo/groompbot
 .. _`PRAWtools`: https://github.com/praw-dev/prawtools
 .. _`reddit-analysis`: https://github.com/rhiever/reddit-analysis
+.. _`RedditAgain`: https://github.com/thekarangoel/RedditAgain
 .. _`r/diablo flair infographic generator`:
     https://github.com/xiphirx/rdiablo-flair-infographic-generator
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot
