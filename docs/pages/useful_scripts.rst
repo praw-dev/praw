@@ -11,6 +11,10 @@ this page to add in more.
     a program useful to subreddit moderators, and ``subreddit_stats``, a tool
     to compute submission / comment statistics for a subreddit.
 
+`RedditAgain`_ by `Karan Goel <http://www.github.com/thekarangoel>`_
+    Migrate an old Reddit account to a new one. Backs up existing content 
+    and submissions, and copies subscriptions to a new account.
+
 `AutoModerator`_ by `Deimos <https://github.com/deimos>`_
     A bot for automating straightforward reddit moderation tasks and improving
     upon the existing spam-filter.
@@ -115,6 +119,7 @@ them to work with the latest version.
     <http://identi.ca/redditbot/all>`_.
 
 .. _`AlienFeed`: https://github.com/jawerty/AlienFeed
+.. _`RedditAgain`: https://github.com/thekarangoel/RedditAgain
 .. _`ALTcointip`: https://github.com/vindimy/altcointip
 .. _`AutoModerator`: https://github.com/Deimos/AutoModerator
 .. _`Butcher bot`: https://github.com/xiphirx/Butcher-Bot
