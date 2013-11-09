@@ -65,9 +65,9 @@ this page to add in more.
 
 `DailyPromptBot <http://hg.arenthil.net/dailypromptbot>`_
     The management bot for the `r/TheDailyPrompt
-    <www.reddit.com/r/TheDailyPrompt>`_ reddit community.  Main functions
-    include managing a queue of prompts, posting prompts daily, and posting
-    suggestion threads weekly.
+    <http://www.reddit.com/r/TheDailyPrompt>`_ reddit community. Main
+    functions include managing a queue of prompts, posting prompts daily, and
+    posting suggestion threads weekly.
 
 `VideoLinkBot`_ by `u/shaggorama <http://www.reddit.com/u/shaggorama>`_
     A bot that aggregates video links in a response comment where multiple

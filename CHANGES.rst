@@ -317,7 +317,7 @@ PRAW 2.0.8
 PRAW 2.0.7
 ----------
 
- * **[REDDIT]** A `reddit update <`http://redd.it/17oer0>`_ broke PRAW's
+ * **[REDDIT]** A `reddit update <http://www.redd.it/17oer0>`_ broke PRAW's
    ability to use :meth:`.login` if it was authenticated as a logged-in user.
    This update adds the ability to re-login.
  * **[CHANGE]** :meth:`~.Subreddit.get_flair_list` can now be used when

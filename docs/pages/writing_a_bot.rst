@@ -19,9 +19,10 @@ The Problem
 From time to time questions are submitted to reddit.com about PRAW, mellort's
 depreciated fork and the reddit API in general. I want to be notified of these
 submissions, so I can help the submitter. The bot will monitor the subreddits
-`r/python <www.reddit.com/r/python>`_, `r/learnpython <www.reddit.com/r/
-python>`_ and `r/redditdev <www.reddit.com/r/python>`_ and send me a private
-message, whenever it detects a post with such a question.
+`r/python <http://www.reddit.com/r/python>`_, `r/learnpython
+<http://www.reddit.com/r/learnpython>`_ and `r/redditdev
+<http://www.reddit.com/r/python>`_ and send me a private message, whenever it
+detects a post with such a question.
 
 We start by importing PRAW and logging in.
 
@@ -35,8 +36,8 @@ We start by importing PRAW and logging in.
 
 The next step is the main loop, where we look at each of the subreddit in turn.
 For this tutorial we will implement a subset of the bot, that only look at the
-submissions in `r/learnpython <www.reddit.com/r/python>`_ to make the example
-code as clear as possible.
+submissions in `r/learnpython <http://www.reddit.com/r/python>`_ to make the
+example code as clear as possible.
 
 >>> while True:
 >>> subreddit = r.get_subreddit('learnpython')
