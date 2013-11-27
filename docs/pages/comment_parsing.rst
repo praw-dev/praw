@@ -78,7 +78,7 @@ call as specified in the `api guidelines
 Getting all recent comments to a subreddit or everywhere
 --------------------------------------------------------
 
-We can get all comments made anywhere with :meth:`.get_comments()`.
+We can get all comments made anywhere with :meth:`.get_comments('all')`.
 
 >>> import praw
 >>> r = praw.Reddit('Comment parser example by u/_Daimon_')
