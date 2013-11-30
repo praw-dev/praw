@@ -70,7 +70,7 @@ lazy object is created, but instead when the API call is actually made::
     >> private_subreddit = r.get_subreddit('lounge')
     >> private_subreddit.has_fetched
     False
-    >> private_subreddit.subscribers.
+    >> private_subreddit.subscribers
 
     Traceback (most recent call last):
     ....
