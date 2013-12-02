@@ -92,6 +92,11 @@ this page to add in more.
     Migrate an old Reddit account to a new one. Backs up existing content
     and submissions, and copies subscriptions to a new account.
 
+`reddit-cloud`_ by `Paul Nechifor <http://www.github.com/paul-nechifor>`_
+    Generates word clouds for submissions (or users), posts them to Imgur and
+    the URL to Reddit. It's what I run on
+    `u/WordCloudBot2 <http://www.reddit.com/user/WordCloudBot2>`.
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -122,6 +127,7 @@ them to work with the latest version.
 .. _`PRAWtools`: https://github.com/praw-dev/prawtools
 .. _`reddit-analysis`: https://github.com/rhiever/reddit-analysis
 .. _`RedditAgain`: https://github.com/thekarangoel/RedditAgain
+.. _`reddit-cloud`: https://github.com/paul-nechifor/reddit-cloud
 .. _`r/diablo flair infographic generator`:
     https://github.com/xiphirx/rdiablo-flair-infographic-generator
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot
