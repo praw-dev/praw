@@ -95,7 +95,7 @@ this page to add in more.
 `reddit-cloud`_ by `Paul Nechifor <http://www.github.com/paul-nechifor>`_
     Generates word clouds for submissions (or users), posts them to Imgur and
     the URL to Reddit. It's what I run on
-    `u/WordCloudBot2 <http://www.reddit.com/user/WordCloudBot2>`.
+    `u/WordCloudBot2 <http://www.reddit.com/user/WordCloudBot2>`_.
 
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
