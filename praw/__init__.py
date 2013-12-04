@@ -909,6 +909,9 @@ class UnauthenticatedReddit(BaseReddit):
     def get_subreddit_recommendations(self, subreddits, omitted=None):
         """Return a list of recommended subreddits as Subreddit objects.
 
+        Subreddits with activity less than a certain threshold, will not have
+        any recommendations due to lack of data.
+
         :param subreddits: A list of subreddits (either names or Subreddit
             objects) to base the recommendations on.
         :param omitted: A list of subreddits (either names or Subreddit
