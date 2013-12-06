@@ -22,6 +22,10 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[FEATURE]** Add :attr:`.json_dict` to :class:`.RedditContentObject`.
+
 PRAW 2.1.11
 -----------
  * **[FEATURE]** Added :meth:`~praw.objects.Moderatable.ignore_reports` and

@@ -373,6 +373,13 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def test_search_reddit_names(self):
         self.assertTrue(self.r.search_reddit_names('reddit'))
 
+    def test_store_json_result(self):
+        self.r.config.store_json_result = True
+        sub_url = ('http://www.reddit.com/r/reddit_api_test/comments/'
+                   '1f7ojw/oauth_submit/')
+        sub = self.r.get_submission(url=sub_url)
+        self.assertEqual(sub.json_dict['url'], sub_url)
+
     #def test_timeout(self):
     #    self.assertRaises(Timeout, helpers._request, self.r,
     #                      self.r.config['comments'], timeout=0.001)
