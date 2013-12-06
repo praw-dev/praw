@@ -69,11 +69,7 @@ class RedditContentObject(object):
         self.reddit_session = reddit_session
         self._underscore_names = underscore_names
         self.has_fetched = self._populate(json_dict, fetch)
-        self.json_dict = {
-            'ts' : int(time.time()),
-            'data' : json_dict,
-            'cls' : self.__class__.__name__,
-        }
+        self.json_dict = json_dict
 
     def __eq__(self, other):
         return (isinstance(other, RedditContentObject) and
