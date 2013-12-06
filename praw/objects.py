@@ -22,7 +22,6 @@ extends over multiple Things. An object that extends from Saveable indicates
 that it can be saved and unsaved in the context of a logged in user.
 """
 
-import time
 import six
 from heapq import heappop, heappush
 from requests.compat import urljoin
