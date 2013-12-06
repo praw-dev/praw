@@ -143,6 +143,28 @@ def normalize_url(url):
         url = url[:-1]
     return url
 
+def convert_numeric_id_to_id36(numeric_id):
+    """Convert numeric ID into id36 using to36 as seen here;
+    https://github.com/reddit/reddit/blob/master/r2/r2/lib/utils/_utils.pyx"""
+
+    def to_base(q, alphabet):
+        if q < 0: raise ValueError, "must supply a positive integer"
+        l = len(alphabet)
+        converted = []
+        while q != 0:
+            q, r = divmod(q, l)
+            converted.insert(0, alphabet[r])
+        return "".join(converted) or '0'
+
+    def to36(q):
+        return to_base(q, '0123456789abcdefghijklmnopqrstuvwxyz')
+
+    return to36(numeric_id)
+
+def convert_id36_to_numeric_id(id36):
+    """Convert id36 to numeric ID, see `convert_numeric_id_to_id36`"""
+    assert id36.count("_") == 0, "use id, not fullname (e.g. use xxxxxm, not t3_xxxxx)"
+    return int(fullname, id36)
 
 class BoundedSet(object):
 
