@@ -149,7 +149,7 @@ def convert_numeric_id_to_id36(numeric_id):
 
     def to_base(q, alphabet):
         if q < 0: 
-            raise ValueError, "must supply a positive integer"
+            raise ValueError("must supply a positive integer")
         l = len(alphabet)
         converted = []
         while q != 0:
