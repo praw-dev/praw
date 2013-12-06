@@ -19,6 +19,8 @@ The functions here provide functionality that is often needed by programs using
 PRAW, but which isn't part of reddit's API.
 """
 
+from __future__ import unicode_literals
+
 import six
 import sys
 import time
@@ -111,6 +113,51 @@ def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
             sleep_time, msg, msg_level = sleep
             debug(msg.format(sleep_time), msg_level)
             time.sleep(sleep_time)
+
+
+def convert_id36_to_numeric_id(id36):
+    """
+    Convert base 36 into numeric ID
+    """
+    if not isinstance(id36, six.string_types) or id36.count("_") > 0:
+        raise ValueError("must supply base36 string, not fullname (e.g. use "
+                         "xxxxx, not t3_xxxxx)")
+    return int(id36, 36)
+
+
+def convert_numeric_id_to_id36(numeric_id):
+    """
+    Convert numeric ID into base36, method has been cleaned up slightly
+    to improve readability. For more info see;
+
+    https://github.com/reddit/reddit/blob/master/r2/r2/lib/utils/_utils.pyx
+    http://www.reddit.com/r/redditdev/comments/n624n/submission_ids_question/
+    http://en.wikipedia.org/wiki/Base_36#Python_implementation
+    """
+
+    # base36 does allows negative numbers, but reddit does not
+    if not isinstance(numeric_id, six.integer_types) or numeric_id < 0:
+        raise ValueError("must supply a positive int/long")
+
+    # Alphabet used for base 36 conversion
+    alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
+    alphabet_len = len(alphabet)
+
+    # Temp assign
+    current_number = numeric_id
+    base36 = []
+
+    # Current_number must be greater than alphabet length to while/divmod
+    if 0 <= current_number < alphabet_len:
+        return alphabet[current_number]
+
+    # Break up into chunks
+    while current_number != 0:
+        current_number, rem = divmod(current_number, alphabet_len)
+        base36.append(alphabet[rem])
+
+    # String is built in reverse order
+    return ''.join(reversed(base36))
 
 
 def flatten_tree(tree, nested_attr='replies', depth_first=False):
