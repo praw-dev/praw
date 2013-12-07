@@ -68,7 +68,7 @@ class RedditContentObject(object):
         self.reddit_session = reddit_session
         self._underscore_names = underscore_names
         self.has_fetched = self._populate(json_dict, fetch)
-        self.json_dict = json_dict
+        self.json_dict = json_dict if reddit_session.config.store_json_result is True else None
 
     def __eq__(self, other):
         return (isinstance(other, RedditContentObject) and

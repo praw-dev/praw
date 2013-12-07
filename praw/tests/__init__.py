@@ -373,6 +373,21 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def test_search_reddit_names(self):
         self.assertTrue(self.r.search_reddit_names('reddit'))
 
+    def test_store_json_result(self):
+        # default
+        text = self.r.get_submission(url=self.comment_url)
+        self.assertEqual(text.json_dict, None)
+
+        # force false
+        self.r.config.store_json_result = False
+        text = self.r.get_submission(url=self.comment_url)
+        self.assertEqual(text.json_dict, None)
+
+        # force true
+        self.r.config.store_json_result = True
+        text = self.r.get_submission(url=self.comment_url)
+        self.assertNotEqual(text.json_dict, None)
+
     #def test_timeout(self):
     #    self.assertRaises(Timeout, helpers._request, self.r,
     #                      self.r.config['comments'], timeout=0.001)
