@@ -164,7 +164,8 @@ def convert_numeric_id_to_id36(numeric_id):
 
 def convert_id36_to_numeric_id(id36):
     """Convert id36 to numeric ID, see `convert_numeric_id_to_id36`"""
-    assert id36.count("_") == 0, "use id, not fullname (e.g. use xxxxxm, not t3_xxxxx)"
+    if id36.count("_") != 0:
+        raise ValueError, "Not a valid ID36 (you cannot use fullname here, e.g. use xxxxxm, not t3_xxxxx)"
     return int(id36, 36)
 
 class BoundedSet(object):
