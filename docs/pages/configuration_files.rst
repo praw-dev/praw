@@ -71,6 +71,11 @@ config file. Each site can overwrite any of these variables.
   ``http_proxy: http://user:pass@addr:port``. If no proxy is specified in the
   config file, PRAW will pick up the environment variable for http_proxy, if it
   has been set.
+  
+* *store_json_result* A **boolean** to indicate if json_dict, which contains the original API 
+  response, should be stored on every object. Default is False as
+  memory usage will double if enabled.
+
 
 The are additional variables that each site can define. These additional
 variables are:
