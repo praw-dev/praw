@@ -155,7 +155,7 @@ def convert_numeric_id_to_id36(numeric_id):
 
     # base 36 does allows negative numbers, but reddit does not
     if not isinstance(numeric_id, (int, long)) or numeric_id < 0: 
-        raise ValueError, "must supply a positive int/long"
+        raise ValueError("must supply a positive int/long")
 
     # alphabet used for base 36 conversion
     alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
@@ -183,7 +183,7 @@ def convert_id36_to_numeric_id(id36):
     Convert base 36 into numeric ID
     """
     if not isinstance(id36, (str,unicode)) or id36.count("_") > 0:
-        raise ValueError, "must supply base36 string, not fullname (e.g. use xxxxx, not t3_xxxxx)"
+        raise ValueError("must supply base36 string, not fullname (e.g. use xxxxx, not t3_xxxxx)")
     return int(id36, 36)
 
 class BoundedSet(object):
