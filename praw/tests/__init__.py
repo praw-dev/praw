@@ -224,6 +224,21 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
 
+    def test_base_36_conversion(self):
+        self.assertEquals(helpers.convert_numeric_id_to_id36(295), '87')
+        self.assertEquals(helpers.convert_id36_to_numeric_id('87'), 295)
+
+        self.assertEquals(helpers.convert_numeric_id_to_id36(275492), '5wkk')
+        self.assertEquals(helpers.convert_id36_to_numeric_id('5wkk'), 275492)
+
+        self.assertRaises(TypeError, helpers.convert_numeric_id_to_id36)
+        self.assertRaises(ValueError, helpers.convert_numeric_id_to_id36, '1')
+        self.assertRaises(ValueError, helpers.convert_numeric_id_to_id36, -1)
+
+        self.assertRaises(TypeError, helpers.convert_id36_to_numeric_id)
+        self.assertRaises(ValueError, helpers.convert_id36_to_numeric_id, 't3_87')
+        self.assertRaises(ValueError, helpers.convert_id36_to_numeric_id, 87)
+
     def test_comments_contains_no_noncomment_objects(self):
         comments = self.r.get_submission(url=self.comment_url).comments
         self.assertFalse([item for item in comments if not

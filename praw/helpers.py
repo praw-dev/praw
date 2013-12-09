@@ -144,28 +144,46 @@ def normalize_url(url):
     return url
 
 def convert_numeric_id_to_id36(numeric_id):
-    """Convert numeric ID into id36 using to36 as seen here;
-    https://github.com/reddit/reddit/blob/master/r2/r2/lib/utils/_utils.pyx"""
+    """
+    Convert numeric ID into base36, method has been cleaned up slightly 
+    to improve readability. For more info see;
+    
+    https://github.com/reddit/reddit/blob/master/r2/r2/lib/utils/_utils.pyx
+    http://www.reddit.com/r/redditdev/comments/n624n/submission_ids_question/
+    http://en.wikipedia.org/wiki/Base_36#Python_implementation
+    """
 
-    def to_base(q, alphabet):
-        if q < 0: 
-            raise ValueError("must supply a positive integer")
-        l = len(alphabet)
-        converted = []
-        while q != 0:
-            q, r = divmod(q, l)
-            converted.insert(0, alphabet[r])
-        return "".join(converted) or '0'
+    # base 36 does allows negative numbers, but reddit does not
+    if not isinstance(numeric_id, (int, long)) or numeric_id < 0: 
+        raise ValueError, "must supply a positive int/long"
 
-    def to36(q):
-        return to_base(q, '0123456789abcdefghijklmnopqrstuvwxyz')
+    # alphabet used for base 36 conversion
+    alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
+    alphabet_len = len(alphabet)
 
-    return to36(numeric_id)
+    # temp assign
+    current_number = numeric_id
+    base36 = []
+
+    # current_number must be greater than alphabet length to while/divmod
+    if 0 <= current_number < alphabet_len:
+        return alphabet[current_number]
+ 
+    # break up into chunks
+    while current_number != 0:
+        current_number, rem = divmod(current_number, alphabet_len)
+        base36.append(alphabet[rem])
+
+    # string is built in reverse order
+    result = ''.join(reversed(base36))
+    return result
 
 def convert_id36_to_numeric_id(id36):
-    """Convert id36 to numeric ID, see `convert_numeric_id_to_id36`"""
-    if id36.count("_") != 0:
-        raise ValueError, "Not a valid ID36 (you cannot use fullname here, e.g. use xxxxxm, not t3_xxxxx)"
+    """
+    Convert base 36 into numeric ID
+    """
+    if not isinstance(id36, (str,unicode)) or id36.count("_") > 0:
+        raise ValueError, "must supply base36 string, not fullname (e.g. use xxxxx, not t3_xxxxx)"
     return int(id36, 36)
 
 class BoundedSet(object):
