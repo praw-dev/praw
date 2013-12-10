@@ -303,7 +303,7 @@ class Hideable(RedditContentObject):
 
 class Inboxable(RedditContentObject):
 
-    """Interface for Reddit content objects that appear in the Inbox."""
+    """Interface for objects that appear in the inbox (orangereds)."""
 
     def mark_as_read(self):
         """Mark object as read.
@@ -567,7 +567,7 @@ class Comment(Editable, Inboxable, Moderatable, Reportable, Voteable):
 
 class Message(Inboxable):
 
-    """A class for reddit messages (orangereds)."""
+    """A class for private messages."""
 
     def __init__(self, reddit_session, json_dict):
         super(Message, self).__init__(reddit_session, json_dict)
