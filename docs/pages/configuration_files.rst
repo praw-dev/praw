@@ -74,7 +74,8 @@ config file. Each site can overwrite any of these variables.
 
 * *store_json_result* A **boolean** to indicate if json_dict, which contains
   the original API response, should be stored on every object in the json_dict
-  attribute. Default is `False` as memory usage will double if enabled.
+  attribute. Default is `False` as memory usage will double if enabled. For
+  lazy objects, json_dict will be `None` until the data has been fetched.
 
 The are additional variables that each site can define. These additional
 variables are:
