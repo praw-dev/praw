@@ -380,6 +380,15 @@ class BasicTest(unittest.TestCase, BasicHelper):
         sub = self.r.get_submission(url=sub_url)
         self.assertEqual(sub.json_dict['url'], sub_url)
 
+    def test_store_lazy_json_result(self):
+        self.r.config.store_json_result = True
+        display_name = 'reddit_api_test'
+
+        subreddit = self.r.get_subreddit(display_name)
+        # force object to load
+        subreddit.title
+        self.assertEqual(subreddit.json_dict['display_name'], display_name)
+
     #def test_timeout(self):
     #    self.assertRaises(Timeout, helpers._request, self.r,
     #                      self.r.config['comments'], timeout=0.001)
