@@ -25,6 +25,7 @@ Content Pages
     pages/changelog
     pages/code_overview
     pages/useful_scripts
+    pages/exceptions
 
 References And Other Relevant Pages
 -----------------------------------
