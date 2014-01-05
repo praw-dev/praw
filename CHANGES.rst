@@ -25,6 +25,9 @@ formatted links that link to the relevant place in the code overview.
 Unreleased
 ----------
  * **[FEATURE]** Add :attr:`.json_dict` to :class:`.RedditContentObject`.
+ * **[FEATURE]** You can now give configuration settings directly when
+   instantiating a :class:`.BaseReddit` object. See `the configuration files
+   <https://praw.readthedocs.org/en/latest/pages/configuration_files.html>`_
 
 PRAW 2.1.11
 -----------

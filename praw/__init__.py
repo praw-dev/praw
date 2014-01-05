@@ -162,11 +162,16 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'wiki_contributors':   'r/%s/about/wikicontributors/'}
     SSL_PATHS = ('access_token_url', 'authorize', 'login')
 
-    def __init__(self, site_name):
+    def __init__(self, site_name, **kwargs):
         def config_boolean(item):
             return item and item.lower() in ('1', 'yes', 'true', 'on')
 
         obj = dict(CONFIG.items(site_name))
+        # Overwrite configuration file settings with those given during
+        # instantiation of the Reddit instance.
+        for key, value in kwargs.items():
+            obj[key] = value
+
         self._site_url = 'http://' + obj['domain']
         if 'ssl_domain' in obj:
             self._ssl_url = 'https://' + obj['ssl_domain']
@@ -253,7 +258,7 @@ class BaseReddit(object):
     update_checked = False
 
     def __init__(self, user_agent, site_name=None, handler=None,
-                 disable_update_check=False):
+                 disable_update_check=False, **kwargs):
         """Initialize our connection with a reddit server.
 
         The user_agent is how your application identifies itself. Read the
@@ -273,11 +278,18 @@ class BaseReddit(object):
         disable_update_check allows you to prevent an update check from
         occurring in spite of the check_for_updates setting in praw.ini.
 
+        All additional parameters specified via kwargs will be used to
+        initialize the Config object. This can be used to specify configuration
+        settings during instantiation of the Reddit instance. See
+        https://praw.readthedocs.org/en/latest/pages/configuration_files.html
+        for more details.
+
         """
         if not user_agent or not isinstance(user_agent, six.string_types):
             raise TypeError('User agent must be a non-empty string.')
 
-        self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit')
+        self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit',
+                             **kwargs)
         self.handler = handler or DefaultHandler()
         self.http = requests.session()  # Dummy session
         self.http.headers['User-Agent'] = UA_STRING % user_agent

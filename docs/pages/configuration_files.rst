@@ -3,13 +3,26 @@
 The Configuration Files
 =======================
 
-PRAW is configured on the global, user and local level. Allowing for easy
-custom configuration to fit your needs.
+PRAW can be configured on the global, user, local and ``Reddit`` instance
+level. Allowing for easy custom configuration to fit your needs.
 
-The global configuration file is loaded first, then user and finally local with
-each loaded files adding their settings to form a combined configuration. If a
-setting has already been added, then the settings value in the last loaded file
-is used.
+To build the configuration settings, first the global configuration file is
+loaded. It contains the default settings for all PRAW applications and should
+never be modified. Then PRAW opens the user level configuration file (if it
+exists) and any settings here will take precedence over those in the global
+configuration file. Then PRAW opens the local level configuration file (if it
+exists) and any settings here will take precedence over those previously
+defined. Finally you can set configurations settings by giving them as
+additional arguments when instantiating the ``Reddit`` object, settings given
+this way will take precedence over those previously defined.
+
+.. code-block:: python
+
+    import praw
+
+    user_agent = ("Configuration setting example by /u/_Daimon_. See "
+                  "https://praw.readthedocs.org/en/latest/pages/configuration_files.html")
+    r = praw.Reddit(user_agent=user_agent, log_requests=1)
 
 Config File Locations
 ---------------------
@@ -32,8 +45,8 @@ path for specific operating systems should be:
 The *local* configuration file is located in the current working directory.
 This location works best if you want script-specific configuration files.
 
-Config File Variables
----------------------
+Configuration Variables
+-----------------------
 
 The following variables are provided in the [DEFAULT] section of the *global*
 config file. Each site can overwrite any of these variables.
@@ -68,9 +81,8 @@ config file. Each site can overwrite any of these variables.
 * *http_proxy* A **string** that declares a http proxy to be used. It follows
   the `requests proxy conventions
   <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_, e.g.,
-  ``http_proxy: http://user:pass@addr:port``. If no proxy is specified in the
-  config file, PRAW will pick up the environment variable for http_proxy, if it
-  has been set.
+  ``http_proxy: http://user:pass@addr:port``. If no proxy is specified, PRAW
+  will pick up the environment variable for http_proxy, if it has been set.
 
 * *store_json_result* A **boolean** to indicate if json_dict, which contains
   the original API response, should be stored on every object in the json_dict
