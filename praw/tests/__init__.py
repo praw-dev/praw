@@ -26,6 +26,7 @@ import sys
 import time
 import unittest
 import uuid
+import warnings
 from functools import wraps
 from requests.compat import urljoin
 from requests.exceptions import HTTPError
@@ -254,6 +255,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
         text = self.r.get_submission(url=self.comment_url).selftext_html
         self.assertTrue(text.startswith('<'))
         self.assertTrue(text.endswith('>'))
+
+    def test_deprecation(self):
+        with warnings.catch_warnings():
+            self.r.get_all_comments()
 
     def test_equality(self):
         subreddit = self.r.get_subreddit(self.sr)

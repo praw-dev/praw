@@ -28,6 +28,8 @@ Unreleased
  * **[FEATURE]** You can now give configuration settings directly when
    instantiating a :class:`.BaseReddit` object. See `the configuration files
    <https://praw.readthedocs.org/en/latest/pages/configuration_files.html>`_
+ * **[BUGFIX]** Fixed a bug that caused an ``AttributeError`` to be raised when
+   using a deprecated method.
 
 PRAW 2.1.11
 -----------

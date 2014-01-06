@@ -28,11 +28,14 @@ import sys
 from functools import wraps
 from requests.compat import urljoin
 from praw import errors
-from warnings import warn
+from warnings import simplefilter, warn
 
 
 # Don't decorate functions when building the documentation
 IS_SPHINX_BUILD = bool(os.getenv('SPHINX_BUILD'))
+
+# Enable deprecation warnings
+simplefilter('default')
 
 
 def alias_function(function, class_name):
@@ -69,12 +72,12 @@ def depreciated(msg=""):
                       "of PRAW. %s" % msg)
 
     def wrap(function):
-        warn(msg, DeprecationWarning)
         function.__doc__ = _embed_text(function.__doc__, docstring_text)
 
         @wraps(function)
         def wrapped(self, *args, **kwargs):
-            return function(args, kwargs)
+            warn(msg, DeprecationWarning)
+            return function(self, *args, **kwargs)
         return function if IS_SPHINX_BUILD else wrapped
     return wrap
 
