@@ -22,8 +22,8 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-Unreleased
-----------
+PRAW 2.1.12
+-----------
  * **[FEATURE]** Add :attr:`.json_dict` to :class:`.RedditContentObject`.
  * **[FEATURE]** You can now give configuration settings directly when
    instantiating a :class:`.BaseReddit` object. See `the configuration files
