@@ -22,6 +22,10 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+UNRELEASED
+----------
+ * **[BUGFIX]** Fix duplicate bug in :class:`.BoundedSet`.
+
 PRAW 2.1.12
 -----------
  * **[FEATURE]** Add :attr:`.json_dict` to :class:`.RedditContentObject`.

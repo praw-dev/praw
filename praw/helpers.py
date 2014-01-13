@@ -209,7 +209,9 @@ class BoundedSet(object):
 
     def add(self, item):
         """Add an item to the set discarding the oldest item if necessary."""
-        if len(self._set) == self.max_items:
+        if item in self._set:
+            self._fifo.remove(item)
+        elif len(self._set) == self.max_items:
             self._set.remove(self._fifo.pop(0))
         self._fifo.append(item)
         self._set.add(item)
