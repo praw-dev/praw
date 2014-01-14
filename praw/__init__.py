@@ -211,7 +211,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
         self.client_id = obj.get('oauth_client_id') or None
         self.client_secret = obj.get('oauth_client_secret') or None
         self.redirect_uri = obj.get('oauth_redirect_uri') or None
-        self.store_json_result = obj.get('store_json_result') or None
+        self.store_json_result = config_boolean(obj.get('store_json_result')) or None
 
         if 'short_domain' in obj:
             self._short_domain = 'http://' + obj['short_domain']
