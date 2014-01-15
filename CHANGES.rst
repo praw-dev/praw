@@ -24,6 +24,7 @@ formatted links that link to the relevant place in the code overview.
 
 UNRELEASED
 ----------
+ * **[BUGFIX]** Fix configuration parsing for ``store_json_result``.
  * **[BUGFIX]** Fix duplicate bug in :class:`.BoundedSet`.
 
 PRAW 2.1.12
