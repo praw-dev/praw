@@ -322,7 +322,7 @@ class RateLimitExceeded(APIException):
     def __init__(self, error_type, message, field='', response=None):
         super(RateLimitExceeded, self).__init__(error_type, message,
                                                 field, response)
-        self.sleep_time = self.response['ratelimit']
+        self.sleep_time = self.response['delay']
 
 
 class UsernameExists(APIException):
