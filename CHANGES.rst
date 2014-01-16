@@ -24,6 +24,7 @@ formatted links that link to the relevant place in the code overview.
 
 UNRELEASED
 ----------
+ * **[FEATURE]** Support building wheel binary distributions.
  * **[BUGFIX]** Fix configuration parsing for ``store_json_result``.
  * **[BUGFIX]** Fix duplicate bug in :class:`.BoundedSet`.
 

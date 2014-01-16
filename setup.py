@@ -7,11 +7,12 @@ except ImportError:
 
 PACKAGE_NAME = 'praw'
 
-HERE = os.path.abspath(os.path.dirname(__file__))
-INIT = open(os.path.join(HERE, PACKAGE_NAME, '__init__.py')).read()
-README = open(os.path.join(HERE, 'README.rst')).read()
 
-VERSION = re.search("__version__ = '([^']+)'", INIT).group(1)
+HERE = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(HERE, 'README.rst')) as fp:
+    README = fp.read()
+with open(os.path.join(HERE, PACKAGE_NAME, '__init__.py')) as fp:
+    VERSION = re.search("__version__ = '([^']+)'", fp.read()).group(1)
 
 
 setup(
@@ -43,7 +44,7 @@ setup(
     keywords='reddit api wrapper',
     packages=[PACKAGE_NAME, '{0}.tests'.format(PACKAGE_NAME)],
     package_data={'': ['COPYING'], PACKAGE_NAME: ['*.ini']},
-    install_requires=['requests>=1.2.0', 'six', 'update_checker>=0.6'],
-    entry_points={'console_scripts':
-                      ['praw-multiprocess = praw.multiprocess:run']},
+    install_requires=['requests>=1.2.0', 'six', 'update_checker>=0.7'],
+    entry_points={'console_scripts': [
+            'praw-multiprocess = praw.multiprocess:run']},
     test_suite='{0}.tests'.format(PACKAGE_NAME))

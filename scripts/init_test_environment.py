@@ -73,18 +73,16 @@ def main():
     #make_submissions(r)
     adjust_subscriptions(r)
 
-
     print('If this is the first time you are running this script, you may want'
           ' to update the default subreddits on your local instance.')
     print('To do that run: sudo /sbin/start --quiet reddit-job-update_reddits')
-    return
 
     # Add a comment
-    c = s.add_comment('some more text')
+    #c = s.add_comment('some more text')
     # Spam the comment
-    c.remove()
+    #c.remove()
     # add flair to subreddit
-    r.set_flair('python', 'pyapitestuser2', 'some flair test', 'flair-class')
+    #r.set_flair('python', 'pyapitestuser2', 'some flair test', 'flair-class')
 
 
 if __name__ == '__main__':
