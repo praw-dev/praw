@@ -869,7 +869,7 @@ class UnauthenticatedReddit(BaseReddit):
         return self.get_content(self.config['rising'], *args, **kwargs)
 
     def get_submission(self, url=None, submission_id=None, comment_limit=0,
-                       comment_sort=None):
+                       comment_sort=None, params={}):
         """Return a Submission object for the given url or submission_id.
 
         :param comment_limit: The desired number of comments to fetch. If <= 0
@@ -877,6 +877,7 @@ class UnauthenticatedReddit(BaseReddit):
             maximum possible.
         :param comment_sort: The sort order for retrieved comments. When None
             use the default for the session's user.
+        :param params: Dictionary containing extra GET data to put in the url.
 
         """
         if bool(url) == bool(submission_id):
@@ -885,7 +886,8 @@ class UnauthenticatedReddit(BaseReddit):
             url = urljoin(self.config['comments'], submission_id)
         return objects.Submission.from_url(self, url,
                                            comment_limit=comment_limit,
-                                           comment_sort=comment_sort)
+                                           comment_sort=comment_sort,
+                                           params=params)
 
     def get_submissions(self, fullnames, *args, **kwargs):
         """Generate Submission objects for each item provided in `fullnames`.

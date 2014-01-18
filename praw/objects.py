@@ -818,7 +818,7 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
     @staticmethod
     @restrict_access(scope='read')
     def from_url(reddit_session, url, comment_limit=0, comment_sort=None,
-                 comments_only=False):
+                 comments_only=False, params={}):
         """Request the url and return a Submission object.
 
         :param reddit_session: The session to make the request with.
@@ -829,9 +829,14 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         :param comment_sort: The sort order for retrieved comments. When None
             use the default for the session's user.
         :param comments_only: Return only the list of comments.
+        :param params: dictionary containing extra GET data to put in the url.
 
         """
-        params = {}
+        if "?" in url:
+            url, get_params_string = url.split("?")
+            get_params = dict(arg.split("=")
+                              for arg in get_params_string.split("&"))
+            params.update(get_params)
         if comment_limit is None:  # Fetch MAX
             params['limit'] = 2048  # Just use a big number
         elif comment_limit > 0:  # Use value
