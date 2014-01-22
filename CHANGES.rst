@@ -25,6 +25,8 @@ formatted links that link to the relevant place in the code overview.
 UNRELEASED
 ----------
  * **[FEATURE]** Support building wheel binary distributions.
+ * **[CHANGE]** The dependency on ``update_checker`` has been increased
+   to >= 0.8.
  * **[BUGFIX]** Fix configuration parsing for ``store_json_result``.
  * **[BUGFIX]** Fix duplicate bug in :class:`.BoundedSet`.
 
