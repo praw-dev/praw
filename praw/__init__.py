@@ -973,7 +973,7 @@ class UnauthenticatedReddit(BaseReddit):
         return result
 
     def search(self, query, subreddit=None, sort=None, syntax=None,
-               period=None, *args, **kwargs):
+               period=None, before=None, after=None, *args, **kwargs):
         """Return a generator for submissions that match the search query.
 
         :param query: The query string to search for.
@@ -981,6 +981,10 @@ class UnauthenticatedReddit(BaseReddit):
         :param sort: The sort order of the results.
         :param syntax: The syntax of the search query.
         :param period: The time period of the results.
+        :param before: Limit search results to submissions that were posted
+            before `before`.
+        :param after: Limit search results to submissions that were posted
+            after `after`.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` and `param` parameters cannot be
@@ -997,6 +1001,10 @@ class UnauthenticatedReddit(BaseReddit):
             params['syntax'] = syntax
         if period:
             params['t'] = period
+        if before:
+            params['before'] = before
+        if after:
+            params['after'] = after
         if subreddit:
             params['restrict_sr'] = 'on'
             url = self.config['search'] % subreddit

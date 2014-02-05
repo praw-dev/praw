@@ -391,6 +391,20 @@ class BasicTest(unittest.TestCase, BasicHelper):
                                              period='all', limit=num)))
         self.assertTrue(submissions == num)
 
+    @reddit_only
+    def test_search_with_before(self):
+        num = 2
+        submissions = len(list(self.r.search('test', subreddit=self.sr,
+                                             before='t3_19bmrv', limit=num)))
+        self.assertEqual(submissions, num)
+
+    @reddit_only
+    def test_search_with_after(self):
+        num = 2
+        submissions = len(list(self.r.search('test', subreddit=self.sr,
+                                             after='t3_19bmrv', limit=num)))
+        self.assertEqual(submissions, num)
+
     def test_search_reddit_names(self):
         self.assertTrue(self.r.search_reddit_names('reddit'))
 
