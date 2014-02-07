@@ -747,8 +747,8 @@ class LoggedInRedditor(Redditor):
 
     def get_blocked(self):
         """Return a UserList of Redditors with whom the user has blocked."""
-        url = self.reddit_session.config['friends']
-        return self.reddit_session.request_json(url)[1]
+        url = self.reddit_session.config['blocked']
+        return self.reddit_session.request_json(url)
 
     def get_cached_moderated_reddits(self):
         """Return a cached dictionary of the user's moderated reddits.
