@@ -94,6 +94,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'flairtemplate':       'api/flairtemplate/',
                  'friend':              'api/friend/',
                  'friends':             'prefs/friends/',
+                 'blocked':             'prefs/blocked/',
                  'help':                'help/',
                  'hide':                'api/hide/',
                  'ignore_reports':      'api/ignore_reports/',
@@ -1648,15 +1649,23 @@ class ModOnlyMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope=None, mod=True)
-    def get_banned(self, subreddit):
-        """Return the list of banned users for the given subreddit."""
-        return self.request_json(self.config['banned'] %
-                                 six.text_type(subreddit))
+    def get_userlist_listing(self, url, *args, **kwargs):
+        content = self.get_content(url, *args, **kwargs)
+        for data in content:
+            user = objects.Redditor(self, data['name'], fetch=False)
+            user.id = data['id'].split('_')[1]  # pylint: disable-msg=C0103,W0201
+            yield user
 
-    def get_contributors(self, subreddit):
+    @decorators.restrict_access(scope=None, mod=True)
+    def get_banned(self, subreddit, *args, **kwargs):
+        """Return the get_content generator of banned users for the given subreddit."""
+        return self.get_userlist_listing(self.config['banned'] %
+                                         six.text_type(subreddit),
+                                         *args, **kwargs)
+
+    def get_contributors(self, subreddit, *args, **kwargs):
         """
-        Return the list of contributors for the given subreddit.
+        Return the get_content generator of contributors for the given subreddit.
 
         If it's a public subreddit, then user/pswd authentication as a
         moderator of the subreddit is required. For protected/private
@@ -1668,8 +1677,9 @@ class ModOnlyMixin(AuthenticatedReddit):
             # It is necessary to have the 'self' argument as it's needed in
             # restrict_access to determine what class the decorator is
             # operating on.
-            return self.request_json(self.config['contributors'] %
-                                     six.text_type(subreddit))
+            return self.get_userlist_listing(self.config['contributors'] %
+                                             six.text_type(subreddit),
+                                             *args, **kwargs)
 
         if self.is_logged_in():
             if not isinstance(subreddit, objects.Subreddit):
@@ -1763,16 +1773,18 @@ class ModOnlyMixin(AuthenticatedReddit):
                                 six.text_type(subreddit), *args, **kwargs)
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_wiki_banned(self, subreddit):
-        """Return a list of users banned from the wiki."""
-        return self.request_json(self.config['wiki_banned'] %
-                                 six.text_type(subreddit))
+    def get_wiki_banned(self, subreddit, *args, **kwargs):
+        """Return a get_content generator of users banned from the wiki."""
+        return self.get_userlist_listing(self.config['wiki_banned'] %
+                                         six.text_type(subreddit),
+                                         *args, **kwargs)
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_wiki_contributors(self, subreddit):
-        """Return a list of users who can contribute to the wiki."""
-        return self.request_json(self.config['wiki_contributors'] %
-                                 six.text_type(subreddit))
+    def get_wiki_contributors(self, subreddit, *args, **kwargs):
+        """Return a get_content generator of users who can contribute to the wiki."""
+        return self.get_userlist_listing(self.config['wiki_contributors'] %
+                                         six.text_type(subreddit),
+                                         *args, **kwargs)
 
 
 class MySubredditsMixin(AuthenticatedReddit):
