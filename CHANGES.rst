@@ -25,6 +25,9 @@ formatted links that link to the relevant place in the code overview.
 UNRELEASED
 ----------
  * **[FEATURE]** Support building wheel binary distributions.
+ * **[FEATURE]** :meth:`~praw.__init__.UnauthenticatedReddit.get_submission`
+   and :meth:`~praw.objects.Submission.from_url` now supports url parameters.
+   Both included within the url and explicitly via the "params" argument.
  * **[CHANGE]** The dependency on ``update_checker`` has been increased
    to >= 0.8.
  * **[REDDIT]** Add support for changes to UserLists on reddit.

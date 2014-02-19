@@ -23,6 +23,7 @@ that it can be saved and unsaved in the context of a logged in user.
 """
 
 import six
+from six.moves.urllib.parse import parse_qs, urlparse, urlunparse
 from heapq import heappop, heappush
 from requests.compat import urljoin
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
@@ -832,11 +833,10 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         :param params: dictionary containing extra GET data to put in the url.
 
         """
-        if "?" in url:
-            url, get_params_string = url.split("?")
-            get_params = dict(arg.split("=")
-                              for arg in get_params_string.split("&"))
-            params.update(get_params)
+        query_pairs = parse_qs(urlparse(url).query)
+        get_params = dict((k, ",".join(v)) for k, v in query_pairs.items())
+        params.update(get_params)
+        url = urlunparse(urlparse(url)[:3] + ("", "", ""))
         if comment_limit is None:  # Fetch MAX
             params['limit'] = 2048  # Just use a big number
         elif comment_limit > 0:  # Use value

@@ -20,6 +20,7 @@
 
 from __future__ import print_function, unicode_literals
 
+import mock
 import os
 import random
 import sys
@@ -326,6 +327,22 @@ class BasicTest(unittest.TestCase, BasicHelper):
         fullnames = [fullname(self.comment_url), fullname(self.link_url)] * 100
         retreived = [x.fullname for x in self.r.get_submissions(fullnames)]
         self.assertEqual(fullnames, retreived)
+
+    @mock.patch.object(Reddit, 'request_json')
+    def test_get_submissions_with_params(self, mock_my_method):
+        fake_submission = Submission(self.r, {'permalink': 'meh', 'score': 2,
+                                              'title': 'test'})
+        mock_resp = ({'data': {'children': [fake_submission]}},
+                     {'data': {'children': []}})
+        mock_my_method.return_value = mock_resp
+        url = ("http://www.reddit.com/r/redditgetsdrawn/comments/"
+               "1ts9hi/surprise_me_thanks_in_advance/cec0897?context=3")
+        self.assertTrue(self.r.get_submission(url).score == 2)
+        self.assertTrue(self.r.get_submission(url).title == 'test')
+        base_url = ("http://www.reddit.com/r/redditgetsdrawn/comments/"
+                    "1ts9hi/surprise_me_thanks_in_advance/cec0897")
+        params = {"context": "3"}
+        mock_my_method.assert_called_with(base_url, params=params)
 
     def test_get_subreddit_recommendations(self):
         result = self.r.get_subreddit_recommendations('python')
