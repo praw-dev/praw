@@ -1536,7 +1536,7 @@ class ModFlairMixin(AuthenticatedReddit):
                 'name': six.text_type(user)}
         return self.request_json(self.config['deleteflair'], data=data)
 
-    @decorators.restrict_access(scope='modflair', mod=False, login=False)
+    @decorators.restrict_access(scope='modflair')
     def get_flair_list(self, subreddit, *args, **kwargs):
         """Return a get_content generator of flair mappings.
 

@@ -28,6 +28,9 @@ UNRELEASED
  * **[CHANGE]** The dependency on ``update_checker`` has been increased
    to >= 0.8.
  * **[REDDIT]** Add support for changes to UserLists on reddit.
+ * **[REDDIT]** Using get_flair_list now requires moderator access. See
+   `this r/redditdev thread <http://www.reddit.com/r/redditdev/comments/1xreor/
+   has_there_been_a_change_to_the_permissions/>`_
  * **[BUGFIX]** Fix configuration parsing for ``store_json_result``.
  * **[BUGFIX]** Fix duplicate bug in :class:`.BoundedSet`.
 

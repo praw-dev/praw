@@ -165,12 +165,9 @@ class AccessControlTests(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
 
-    def test_exception_get_flair_list_authenticated(self):
-        self.r.login(self.un, self.un_pswd)
-        self.assertTrue(self.r.get_flair_list(self.sr))
-
     def test_exception_get_flair_list_unauthenticated(self):
-        self.assertTrue(self.r.get_flair_list(self.sr))
+        self.assertRaises(errors.LoginOrScopeRequired, self.r.get_flair_list,
+                          self.sr)
 
     def test_login_or_oauth_required_not_logged_in(self):
         self.assertRaises(errors.LoginOrScopeRequired,
@@ -285,7 +282,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertEqual(num, len(list(result)))
 
     def test_get_flair_list(self):
-        sub = self.r.get_subreddit('python')
+        self.r.login(self.un, self.un_pswd)
+        sub = self.r.get_subreddit(self.sr)
         self.assertTrue(next(sub.get_flair_list()))
 
     def test_get_front_page(self):
