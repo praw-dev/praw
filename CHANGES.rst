@@ -22,8 +22,8 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-UNRELEASED
-----------
+PRAW 2.1.13
+-----------
  * **[FEATURE]** Support building wheel binary distributions.
  * **[FEATURE]** :meth:`~praw.__init__.UnauthenticatedReddit.get_submission`
    and :meth:`~praw.objects.Submission.from_url` now supports url parameters.
