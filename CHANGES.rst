@@ -22,7 +22,7 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-UNRELEASED
+PRAW 2.1.14
 ----------
  * **[CHANGE]** Increase the dependency of ``six`` to 1.4 or later.
 
