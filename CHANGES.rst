@@ -22,6 +22,10 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+UNRELEASED
+----------
+ * **[CHANGE]** Increase the dependency of ``six`` to 1.4 or later.
+
 PRAW 2.1.13
 -----------
  * **[FEATURE]** Support building wheel binary distributions.
