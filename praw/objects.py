@@ -402,7 +402,7 @@ class Saveable(RedditContentObject):
 
     """Interface for RedditContentObjects that can be saved."""
 
-    @restrict_access(scope=None, login=True)
+    @restrict_access(scope='save')
     def save(self, unsave=False):
         """Save the object.
 
