@@ -22,8 +22,14 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-PRAW 2.1.14
+UNRELEASED
 ----------
+ * **[FEATURE]** Add ``save`` OAuth scope to
+   :meth:`~praw.objects.Saveable.save` and
+   :meth:`~praw.objects.Saveable.unsave`.
+
+PRAW 2.1.14
+-----------
  * **[CHANGE]** Increase the dependency of ``six`` to 1.4 or later.
 
 PRAW 2.1.13
