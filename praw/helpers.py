@@ -29,6 +29,27 @@ from requests.exceptions import HTTPError
 BACKOFF_START = 4  # Minimum number of seconds to sleep during errors
 KEEP_ITEMS = 32  # On each iteration only remember the first # items
 
+def submission_stream(reddit_session, subreddit, limit=None, verbosity=1):
+    """Indefinitely yield new submissions from the provided subreddit.
+
+    Submissions are yielded from oldest to newest.
+
+    :param reddit_session: The reddit_session to make requests from. In all the
+        examples this is assigned to the varaible ``r``.
+    :param subreddit: Either a subreddit object, or the name of a
+        subreddit. Use `all` to get the comment stream for all comments made to
+        reddit.
+    :param limit: The maximum number of submissions to fetch in a single
+        iteration. When None, fetch all available submissions (reddit limits this
+        to 100 (or multiple of 100 for multi-subreddits). If this number is
+        too small, comments may be missed.
+    :param verbosity: A number representing the level of output to receive. 0,
+        no output; 1, provide a count of the number of items processed; 2,
+        output when handled exceptions occur; 3, output some system
+        state. (Default: 1)
+
+    """
+    _stream_generator("get_submissions", reddit_session, subreddit, limit, verbosity)
 
 def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
     """Indefinitely yield new comments from the provided subreddit.
@@ -50,10 +71,17 @@ def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
         state. (Default: 1)
 
     """
+    _stream_generator("get_comments", reddit_session, subreddit, limit, verbosity)
+
+def _stream_generator(get_function_name, reddit_session, subreddit, limit=None, verbosity=1):
     def debug(msg, level):
         if verbosity >= level:
             sys.stderr.write(msg + '\n')
 
+    try:
+        get_function = getattr(reddit_session, get_function_name)
+    except AttributeError:
+        raise AttributeError("Invalid Reddit generator function name specified: " + get_function_name)
     seen = BoundedSet(KEEP_ITEMS * 4)
     before = None
     processed = 0
@@ -64,7 +92,7 @@ def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
         start = time.time()
         try:
             i = None
-            for i, comment in enumerate(reddit_session.get_comments(
+            for i, comment in enumerate(get_function(
                     six.text_type(subreddit), limit=limit,
                     params={'before': before})):
                 if comment.fullname in seen:
