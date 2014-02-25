@@ -79,7 +79,7 @@ for any ``NameErrors`` you might encounter.
 
 #. Send a message (requires login):
 
-    >>> r.send_message('bboe', 'Subject Line', 'You are awesome!')
+    >>> r.send_message('user', 'Subject Line', 'You are awesome!')
 
 #. Mark all unread messages as read (requires login):
 
@@ -169,15 +169,15 @@ for any ``NameErrors`` you might encounter.
 
 #. Set / update user flair (requires mod privileges):
 
-    >>> r.get_subreddit('python').set_flair('bboe', 'text flair', 'css-class')
+    >>> r.get_subreddit('python').set_flair('user', 'text flair', 'css-class')
 
 #. Clear user flair (requires mod privileges):
 
-    >>> r.get_subreddit('python').set_flair('bboe')
+    >>> r.get_subreddit('python').set_flair('user')
 
 #. Bulk set user flair (requires mod privileges):
 
-    >>> flair_mapping = [{'user':'bboe', 'flair_text':'dev'},
+    >>> flair_mapping = [{'user':'user', 'flair_text':'dev'},
     ...                  {'user':'pyapitestuser3', 'flair_css_class':'css2'},
     ...                  {'user':'pyapitestuser2', 'flair_text':'AWESOME',
     ...                  'flair_css_class':'css'}]
