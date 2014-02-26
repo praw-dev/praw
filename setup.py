@@ -44,7 +44,7 @@ setup(
     keywords='reddit api wrapper',
     packages=[PACKAGE_NAME, '{0}.tests'.format(PACKAGE_NAME)],
     package_data={'': ['COPYING'], PACKAGE_NAME: ['*.ini']},
-    install_requires=['requests>=1.2.0', 'six>=1.4', 'update_checker>=0.8'],
+    install_requires=['requests>=1.2.0', 'six>=1.4', 'update_checker>=0.9'],
     tests_require=['mock>=1.0.0'],
     entry_points={'console_scripts': [
             'praw-multiprocess = praw.multiprocess:run']},
