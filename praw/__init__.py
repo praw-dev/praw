@@ -43,7 +43,7 @@ from six.moves import html_entities, http_cookiejar
 try:
     from update_checker import update_check
     updchck_import_success = True
-except Error:
+except:
     updchk_import_success = False
 from warnings import warn_explicit
 
