@@ -31,7 +31,7 @@ import re
 import requests
 import six
 import sys
-from praw import decorators, errors
+from .praw import decorators, errors
 from praw.handlers import DefaultHandler
 from praw.helpers import normalize_url
 from praw.internal import (_prepare_request, _raise_redirect_exceptions,
