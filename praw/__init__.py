@@ -40,7 +40,11 @@ from praw.settings import CONFIG
 from requests.compat import urljoin
 from requests import Request
 from six.moves import html_entities, http_cookiejar
-from update_checker import update_check
+try:
+    from update_checker import update_check
+    updchck_import_success = True
+except Error:
+    updchk_import_success = False
 from warnings import warn_explicit
 
 
@@ -300,7 +304,7 @@ class BaseReddit(object):
 
         # Check for updates if permitted and this is the first Reddit instance
         if not disable_update_check and not self.update_checked \
-                and self.config.check_for_updates:
+                and self.config.check_for_updates and updchk_import_success:
             update_check(__name__, __version__)
             self.update_checked = True
 
