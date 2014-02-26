@@ -49,9 +49,13 @@ from warnings import warn_explicit
 
 
 __version__ = '2.1.14'
-UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
-                                          sys.version.split()[0],
-                                          platform.platform(True))
+try:
+    UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
+                                              sys.version.split()[0],
+                                              platform.platform(True))
+except:
+    UA_STRING = '%%s PRAW/%s Python/%s' % (__version__,
+                                           sys.version.split()[0])
 
 MIN_IMAGE_SIZE = 128
 MAX_IMAGE_SIZE = 512000
