@@ -54,7 +54,7 @@ try:
     UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                               sys.version.split()[0],
                                               platform.platform(True))
-except:
+except IOError:
     UA_STRING = '%%s PRAW/%s Python/%s' % (__version__,
                                            sys.version.split()[0])
 
