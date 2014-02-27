@@ -24,6 +24,7 @@ formatted links that link to the relevant place in the code overview.
 
 UNRELEASED
 ----------
+ * **[BUGFIX]** Fix Google AppEngine bug with ``platform.platform``.
  * **[FEATURE]** Add ``save`` OAuth scope to
    :meth:`~praw.objects.Saveable.save` and
    :meth:`~praw.objects.Saveable.unsave`.
