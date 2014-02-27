@@ -24,6 +24,7 @@ from __future__ import unicode_literals
 import six
 import sys
 import time
+from functools import partial
 from requests.exceptions import HTTPError
 
 BACKOFF_START = 4  # Minimum number of seconds to sleep during errors
@@ -36,7 +37,7 @@ def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
     Comments are yielded from oldest to newest.
 
     :param reddit_session: The reddit_session to make requests from. In all the
-        examples this is assigned to the varaible ``r``.
+        examples this is assigned to the variable ``r``.
     :param subreddit: Either a subreddit object, or the name of a
         subreddit. Use `all` to get the comment stream for all comments made to
         reddit.
@@ -50,6 +51,43 @@ def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
         state. (Default: 1)
 
     """
+    get_function = partial(reddit_session.get_comments,
+                           six.text_type(subreddit))
+    return _stream_generator(get_function, reddit_session, limit, verbosity)
+
+
+def submission_stream(reddit_session, subreddit, limit=None, verbosity=1):
+    """Indefinitely yield new submissions from the provided subreddit.
+
+    Submissions are yielded from oldest to newest.
+
+    :param reddit_session: The reddit_session to make requests from. In all the
+        examples this is assigned to the variable ``r``.
+    :param subreddit: Either a subreddit object, or the name of a
+        subreddit. Use `all` to get the submissions stream for all submissions
+        made to reddit.
+    :param limit: The maximum number of submissions to fetch in a single
+        iteration. When None, fetch all available submissions (reddit limits
+        this to 1000 (or multiple of 1000 for multi-subreddits). If this number
+        is too small, submissions may be missed. Since there isn't a limit to
+        the number of submissions that can be retrieved from r/all, the limit
+        will be set to 1000 when limit is None.
+    :param verbosity: A number representing the level of output to receive. 0,
+        no output; 1, provide a count of the number of items processed; 2,
+        output when handled exceptions occur; 3, output some system
+        state. (Default: 1)
+
+    """
+    if six.text_type(subreddit).lower() == "all":
+        if limit is None:
+            limit = 1000
+    if not hasattr(subreddit, 'reddit_session'):
+        subreddit = reddit_session.get_subreddit(subreddit)
+    return _stream_generator(subreddit.get_new, reddit_session, limit,
+                             verbosity)
+
+
+def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
     def debug(msg, level):
         if verbosity >= level:
             sys.stderr.write(msg + '\n')
@@ -59,35 +97,35 @@ def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
     processed = 0
     backoff = BACKOFF_START
     while True:
-        comments = []
+        items = []
         sleep = None
         start = time.time()
         try:
             i = None
-            for i, comment in enumerate(reddit_session.get_comments(
-                    six.text_type(subreddit), limit=limit,
-                    params={'before': before})):
-                if comment.fullname in seen:
+            gen = enumerate(get_function(limit=limit,
+                                         params={'before': before}))
+            for i, item in gen:
+                if item.fullname in seen:
                     if i == 0:
                         if before is not None:
                             # Either we have a logic problem, or reddit sent us
                             # out of order data -- log it
                             debug('(INFO) {0} already seen with before of {1}'
-                                  .format(comment.fullname, before), 2)
+                                  .format(item.fullname, before), 2)
                         # Wait until the request is no longer cached
                         sleep = (reddit_session.config.cache_timeout,
                                  'Nothing new. Sleeping for {0} seconds.', 3)
                     break
                 if i == 0:  # Always the first item in the generator
-                    before = comment.fullname
-                comments.append(comment)
+                    before = item.fullname
+                items.append(item)
                 processed += 1
                 if verbosity >= 1 and processed % 100 == 0:
-                    sys.stderr.write(' Comments: {0}          \r'
+                    sys.stderr.write(' Items: {0}          \r'
                                      .format(processed))
                     sys.stderr.flush()
                 if i < KEEP_ITEMS:
-                    seen.add(comment.fullname)
+                    seen.add(item.fullname)
             else:  # Generator exhausted
                 if i is None:  # Generator yielded no items
                     assert before is not None
@@ -101,13 +139,13 @@ def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
             backoff *= 2
         # Provide rate limit
         if verbosity >= 1:
-            rate = len(comments) / (time.time() - start)
-            sys.stderr.write(' Comments: {0} ({1:.2f} cps)    \r'
+            rate = len(items) / (time.time() - start)
+            sys.stderr.write(' Items: {0} ({1:.2f} ips)    \r'
                              .format(processed, rate))
             sys.stderr.flush()
-        # Yield comments from oldest to newest
-        for comment in comments[::-1]:
-            yield comment
+        # Yield items from oldest to newest
+        for item in items[::-1]:
+            yield item
         # Sleep if necessary
         if sleep:
             sleep_time, msg, msg_level = sleep

@@ -344,10 +344,6 @@ class BasicTest(unittest.TestCase, BasicHelper):
         params = {"context": "3"}
         mock_my_method.assert_called_with(base_url, params=params)
 
-    def test_get_subreddit_recommendations(self):
-        result = self.r.get_subreddit_recommendations('python')
-        self.assertTrue(result)
-
     @reddit_only
     def test_get_top(self):
         num = 50
@@ -1788,6 +1784,10 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     @reddit_only
     def test_search(self):
         self.assertTrue(list(self.subreddit.search('test')))
+
+    def test_get_subreddit_recommendations(self):
+        result = self.r.get_subreddit_recommendations('python')
+        self.assertTrue(result)
 
     def test_subscribe_and_verify(self):
         self.subreddit.subscribe()

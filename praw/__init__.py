@@ -31,7 +31,8 @@ import re
 import requests
 import six
 import sys
-from praw import decorators, errors
+import praw.decorators
+import praw.errors
 from praw.handlers import DefaultHandler
 from praw.helpers import normalize_url
 from praw.internal import (_prepare_request, _raise_redirect_exceptions,
@@ -44,10 +45,14 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '2.1.13'
-UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
-                                          sys.version.split()[0],
-                                          platform.platform(True))
+__version__ = '2.1.14'
+try:
+    UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
+                                              sys.version.split()[0],
+                                              platform.platform(True))
+except IOError:
+    UA_STRING = '%%s PRAW/%s Python/%s' % (__version__,
+                                           sys.version.split()[0])
 
 MIN_IMAGE_SIZE = 128
 MAX_IMAGE_SIZE = 512000
