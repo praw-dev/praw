@@ -17,7 +17,7 @@ The Problem
 -----------
 
 From time to time questions are submitted to reddit.com about PRAW, mellort's
-depreciated fork and the reddit API in general. I want to be notified of these
+deprecated fork and the reddit API in general. I want to be notified of these
 submissions, so I can help the submitter. The bot will monitor the subreddits
 `r/python <http://www.reddit.com/r/python>`_, `r/learnpython
 <http://www.reddit.com/r/learnpython>`_ and `r/redditdev
