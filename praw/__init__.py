@@ -45,9 +45,17 @@ from warnings import warn_explicit
 
 
 __version__ = '2.1.14'
+
+#Check if the enironment is a development web server like Google App Engine, \
+#Which might cause platform.platform to function incorrectly.
+if os.environ.get("SERVER_SOFTWARE") is not None: 
+    platform_info = os.environ.get("SERVER_SOFTWARE")
+else:
+    platform_info = platform.platform(True)
+
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
-                                          platform.platform(True))
+                                          platform_info)
 
 MIN_IMAGE_SIZE = 128
 MAX_IMAGE_SIZE = 512000
