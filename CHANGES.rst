@@ -324,7 +324,7 @@ PRAW 2.0.9
 
  * **[FEATURE]** Add parameter ``update_user`` (default False) to
    :meth:`.get_unread` if it and ``unset_has_mail`` are both True, then the
-   ``user`` object in the :class:`.Reddit` object will have it's ``has_mail``
+   ``user`` object in the :class:`.Reddit` object will have its ``has_mail``
    attribute set to ``False``.
  * **[FEATURE]** Add :meth:`.get_friends` and :meth:`.get_blocked` to
    :class:`.LoggedInRedditor`.

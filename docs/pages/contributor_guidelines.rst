@@ -35,7 +35,7 @@ Documentation
   docstring.
 * Use correct terminology. A subreddits name is something like ' t3_xyfc7'.
   The correct term for a subreddits "name" like
-  `python <http://www.reddit.com/r/python>`_ is it's display name.
+  `python <http://www.reddit.com/r/python>`_ is its display name.
 * When referring to any reddit. Refer to it as 'reddit'. When you are speaking
   of the specific reddit instance with the website reddit.com, refer to it as
   'reddit.com'. This helps prevent any confusion between what is universally
