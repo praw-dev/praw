@@ -35,7 +35,7 @@ later. Click create app and you should something like the following.
 
  .. image:: ../_static/CreateApp.png
 
-The random string of letters under your app's name is it's ``client id``. The
+The random string of letters under your app's name is its ``client id``. The
 random string of letters next to secret are your ``client_secret`` and should
 not be shared with anybody. At the bottom is the ``redirect_uri``.
 
@@ -141,7 +141,7 @@ need to refresh the access token.
 
     >>> r.refresh_access_information(access_information['refresh_token'])
 
-This returns a dict, where the ``access_token`` key has had it's value updated.
+This returns a dict, where the ``access_token`` key has had its value updated.
 Neither ``scope`` or ``refresh_token`` will have changed.
 
 .. _oauth_webserver:

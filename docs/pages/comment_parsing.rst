@@ -13,7 +13,7 @@ Submission Comments
 -------------------
 
 As usual, we start by importing PRAW and initializing our contact with
-reddit.com. We also get a submission object, where our script will do it's
+reddit.com. We also get a submission object, where our script will do its
 work.
 
 >>> import praw
