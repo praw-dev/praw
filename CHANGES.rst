@@ -25,6 +25,7 @@ formatted links that link to the relevant place in the code overview.
 UNRELEASED
 ----------
  * **[BUGFIX]** Fix Google AppEngine bug with ``platform.platform``.
+ * **[CHANGE]** Increase the dependency of ``update_checker`` to 0.9 or later.
  * **[FEATURE]** Add ``save`` OAuth scope to
    :meth:`~praw.objects.Saveable.save` and
    :meth:`~praw.objects.Saveable.unsave`.
