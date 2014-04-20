@@ -66,9 +66,9 @@ def alias_function(function, class_name):
     return wrapped
 
 
-def depreciated(msg=""):
-    """Depreciate decorated methods."""
-    docstring_text = ("**DEPRECIATED**. Will be removed in a future version "
+def deprecated(msg=""):
+    """Deprecate decorated method."""
+    docstring_text = ("**DEPRECATED**. Will be removed in a future version "
                       "of PRAW. %s" % msg)
 
     def wrap(function):
