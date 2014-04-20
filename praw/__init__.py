@@ -722,6 +722,7 @@ class UnauthenticatedReddit(BaseReddit):
             kwargs.setdefault('params', {})['t'] = period
         return self.get_content(url, *args, **kwargs)
 
+    @decorators.restrict_access(scope='modflair')
     def get_flair(self, subreddit, redditor):
         """Return the flair for a user on the given subreddit.
 

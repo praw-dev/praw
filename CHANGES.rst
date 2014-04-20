@@ -29,6 +29,10 @@ UNRELEASED
  * **[FEATURE]** Add ``save`` OAuth scope to
    :meth:`~praw.objects.Saveable.save` and
    :meth:`~praw.objects.Saveable.unsave`.
+ * **[REDDIT]** Using :meth:`~praw.__init__.UnauthenticatedReddit.get_flair`
+   now requires moderator access. See `this r/redditdev thread
+   <http://www.reddit.com/r/redditdev/comments/1xreor/
+   has_there_been_a_change_to_the_permissions/>`_
 
 PRAW 2.1.14
 -----------
