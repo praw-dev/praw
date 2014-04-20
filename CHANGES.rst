@@ -22,8 +22,8 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-UNRELEASED
-----------
+PRAW 2.1.15
+-----------
  * **[FEATURE]** Add ``save`` OAuth scope to
    :meth:`~praw.objects.Saveable.save` and
    :meth:`~praw.objects.Saveable.unsave`.
