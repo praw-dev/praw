@@ -24,15 +24,15 @@ formatted links that link to the relevant place in the code overview.
 
 UNRELEASED
 ----------
- * **[BUGFIX]** Fix Google AppEngine bug with ``platform.platform``.
- * **[CHANGE]** Increase the dependency of ``update_checker`` to 0.9 or later.
  * **[FEATURE]** Add ``save`` OAuth scope to
    :meth:`~praw.objects.Saveable.save` and
    :meth:`~praw.objects.Saveable.unsave`.
+ * **[BUGFIX]** Fix Google AppEngine bug with ``platform.platform``.
  * **[REDDIT]** Using :meth:`~praw.__init__.UnauthenticatedReddit.get_flair`
    now requires moderator access. See `this r/redditdev thread
    <http://www.reddit.com/r/redditdev/comments/1xreor/
    has_there_been_a_change_to_the_permissions/>`_
+ * **[CHANGE]** Increase the dependency of ``update_checker`` to 0.9 or later.
 
 PRAW 2.1.14
 -----------
