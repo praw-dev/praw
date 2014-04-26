@@ -22,6 +22,12 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[CHANGE]** Increase the dependency of ``update_checker`` to 0.10 or later
+   to prevent ImportWarnings (issue 291).
+
+
 PRAW 2.1.15
 -----------
  * **[FEATURE]** Add ``save`` OAuth scope to
