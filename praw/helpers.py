@@ -28,7 +28,7 @@ from functools import partial
 from requests.exceptions import HTTPError
 
 BACKOFF_START = 4  # Minimum number of seconds to sleep during errors
-KEEP_ITEMS = 32  # On each iteration only remember the first # items
+KEEP_ITEMS = 128  # On each iteration only remember the first # items
 
 
 def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
@@ -92,7 +92,10 @@ def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
         if verbosity >= level:
             sys.stderr.write(msg + '\n')
 
-    seen = BoundedSet(KEEP_ITEMS * 4)
+    def b36_id(item):
+        return int(item.id, 36)
+
+    seen = BoundedSet(KEEP_ITEMS * 16)
     before = None
     count = 0  # Count is incremented to bypass the cache
     processed = 0
@@ -109,25 +112,25 @@ def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
                 params['before'] = before
             gen = enumerate(get_function(limit=limit, params=params))
             for i, item in gen:
-                if item.fullname in seen:
+                if b36_id(item) in seen:
                     if i == 0:
                         if before is not None:
-                            # Either we have a logic problem, or reddit sent us
-                            # out of order data -- log it
+                            # reddit sent us out of order data  -- log it
                             debug('(INFO) {0} already seen with before of {1}'
                                   .format(item.fullname, before), 2)
                             before = None
                     break
                 if i == 0:  # Always the first item in the generator
                     before = item.fullname
-                items.append(item)
-                processed += 1
+                if b36_id(item) not in seen:
+                    items.append(item)
+                    processed += 1
                 if verbosity >= 1 and processed % 100 == 0:
                     sys.stderr.write(' Items: {0}          \r'
                                      .format(processed))
                     sys.stderr.flush()
                 if i < KEEP_ITEMS:
-                    seen.add(item.fullname)
+                    seen.add(b36_id(item))
             else:  # Generator exhausted
                 if i is None:  # Generator yielded no items
                     assert before is not None
