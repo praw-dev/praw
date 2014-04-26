@@ -94,6 +94,7 @@ def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
 
     seen = BoundedSet(KEEP_ITEMS * 4)
     before = None
+    count = 0  # Count is incremented to bypass the cache
     processed = 0
     backoff = BACKOFF_START
     while True:
@@ -102,8 +103,11 @@ def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
         start = time.time()
         try:
             i = None
-            gen = enumerate(get_function(limit=limit,
-                                         params={'before': before}))
+            params = {'count': count}
+            count = (count + 1) % 100
+            if before:
+                params['before'] = before
+            gen = enumerate(get_function(limit=limit, params=params))
             for i, item in gen:
                 if item.fullname in seen:
                     if i == 0:
@@ -112,9 +116,7 @@ def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
                             # out of order data -- log it
                             debug('(INFO) {0} already seen with before of {1}'
                                   .format(item.fullname, before), 2)
-                        # Wait until the request is no longer cached
-                        sleep = (reddit_session.config.cache_timeout,
-                                 'Nothing new. Sleeping for {0} seconds.', 3)
+                            before = None
                     break
                 if i == 0:  # Always the first item in the generator
                     before = item.fullname
