@@ -45,10 +45,12 @@ def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
         iteration. When None, fetch all available comments (reddit limits this
         to 1000 (or multiple of 1000 for multi-subreddits). If this number is
         too small, comments may be missed.
-    :param verbosity: A number representing the level of output to receive. 0,
-        no output; 1, provide a count of the number of items processed; 2,
-        output when handled exceptions occur; 3, output some system
-        state. (Default: 1)
+    :param verbosity: A number that controls the amount of output produced to
+        stderr. <= 0: no output; >= 1: output the total number of comments
+        processed and provide the short-term number of comments processed per
+        second; >= 2: output when additional delays are added in order to avoid
+        subsequent unexpected http errors. >= 3: output debugging information
+        regarding the comment stream. (Default: 1)
 
     """
     get_function = partial(reddit_session.get_comments,
@@ -72,10 +74,12 @@ def submission_stream(reddit_session, subreddit, limit=None, verbosity=1):
         is too small, submissions may be missed. Since there isn't a limit to
         the number of submissions that can be retrieved from r/all, the limit
         will be set to 1000 when limit is None.
-    :param verbosity: A number representing the level of output to receive. 0,
-        no output; 1, provide a count of the number of items processed; 2,
-        output when handled exceptions occur; 3, output some system
-        state. (Default: 1)
+    :param verbosity: A number that controls the amount of output produced to
+        stderr. <= 0: no output; >= 1: output the total number of submissions
+        processed and provide the short-term number of submissions processed
+        per second; >= 2: output when additional delays are added in order to
+        avoid subsequent unexpected http errors. >= 3: output debugging
+        information regarding the submission stream. (Default: 1)
 
     """
     if six.text_type(subreddit).lower() == "all":
@@ -117,7 +121,7 @@ def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
                         if before is not None:
                             # reddit sent us out of order data  -- log it
                             debug('(INFO) {0} already seen with before of {1}'
-                                  .format(item.fullname, before), 2)
+                                  .format(item.fullname, before), 3)
                             before = None
                     break
                 if i == 0:  # Always the first item in the generator
