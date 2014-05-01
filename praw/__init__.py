@@ -95,6 +95,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'delete_sr_image':     'r/%s/api/delete_sr_img',
                  'distinguish':         'api/distinguish/',
                  'domain':              'domain/%s/',
+                 'duplicates':          'duplicates/%s/',
                  'edit':                'api/editusertext/',
                  'feedback':            'api/feedback/',
                  'flair':               'api/flair/',
@@ -410,7 +411,8 @@ class BaseReddit(object):
     @decorators.oauth_generator
     def get_content(self, url, params=None, limit=0, place_holder=None,
                     root_field='data', thing_field='children',
-                    after_field='after', _use_oauth=False):
+                    after_field='after', _use_oauth=False,
+                    object_filter=None):
         """A generator method to return reddit content from a URL.
 
         Starts at the initial url, and fetches content using the `after`
@@ -437,6 +439,11 @@ class BaseReddit(object):
             contains the list of things. Most objects use 'children'.
         :param after_field: indicates the field which holds the after item
             element
+        :param object_filter: if set to an integer value, fetch content from
+            the corresponding list index in the JSON response. For example
+            the JSON response for submission duplicates is a list of objects,
+            and the object we want to fetch from is at index 1. So we set
+            object_filter=1 to filter out the other useless list elements.
         :type place_holder: a string corresponding to a reddit base36 id
             without prefix, e.g. 'asdfasdf'
         :returns: a list of reddit content, of type Subreddit, Comment,
@@ -461,6 +468,8 @@ class BaseReddit(object):
                 self._use_oauth = _use_oauth  # pylint: disable-msg=W0201
             try:
                 page_data = self.request_json(url, params=params)
+                if object_filter:
+                    page_data = page_data[object_filter]
             finally:  # Restore _use_oauth value
                 if _use_oauth:
                     self._use_oauth = False  # pylint: disable-msg=W0201
