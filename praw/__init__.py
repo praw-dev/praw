@@ -95,6 +95,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'delete_sr_image':     'r/%s/api/delete_sr_img',
                  'distinguish':         'api/distinguish/',
                  'domain':              'domain/%s/',
+                 'duplicates':          'r/%s/duplicates/%s/',
                  'edit':                'api/editusertext/',
                  'feedback':            'api/feedback/',
                  'flair':               'api/flair/',

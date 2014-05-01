@@ -927,6 +927,20 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         self._update_comments(new_comments)
         self._orphaned = {}
 
+    @property
+    def duplicates(self):
+        """Get duplicate submissions for this submission.
+
+        :returns: List of duplicate submissions as Submission objects,
+        empty list if no duplicates.
+
+        """
+        url = (self.reddit_session.config['duplicates'] %
+               (self.subreddit.display_name, self.id))
+        new_json = self.reddit_session.request_json(url)
+        duplicate_list = new_json[1]['data']['children']
+        return duplicate_list
+
     def mark_as_nsfw(self, unmark_nsfw=False):
         """Mark as Not Safe For Work.
 

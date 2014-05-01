@@ -24,8 +24,11 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
- * **[CHANGE]** Increase the dependency of ``update_checker`` to 0.10 or later
+ * **[CHANGE]** Increase the dependency of ``update_checker`` to 0.10 or 
+   later
    to prevent ImportWarnings (issue 291).
+ * **[FEATURE]** Enable gathering of duplicate submissions for a 
+   Submission object (issue 290).
 
 
 PRAW 2.1.15
