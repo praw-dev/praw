@@ -4,7 +4,7 @@ The Configuration Files
 =======================
 
 PRAW can be configured on the global, user, local and ``Reddit`` instance
-level. Allowing for easy custom configuration to fit your needs.
+levels. This allows for easy custom configuration to fit your needs.
 
 To build the configuration settings, first the global configuration file is
 loaded. It contains the default settings for all PRAW applications and should
@@ -12,8 +12,8 @@ never be modified. Then PRAW opens the user level configuration file (if it
 exists) and any settings here will take precedence over those in the global
 configuration file. Then PRAW opens the local level configuration file (if it
 exists) and any settings here will take precedence over those previously
-defined. Finally you can set configurations settings by giving them as
-additional arguments when instantiating the ``Reddit`` object, settings given
+defined. Finally you can set configuration settings by giving them as
+additional arguments when instantiating the ``Reddit`` object. Settings given
 this way will take precedence over those previously defined.
 
 .. code-block:: python
@@ -32,7 +32,7 @@ The configuration on all levels is stored in a file called ``praw.ini``.
 The *global* configuration file is located in the **praw** package location.
 This file provides the system wide default and should never be modified.
 
-The *user* configuration file location, depends on your operating system.
+The *user* configuration file location depends on your operating system.
 Assuming typical operating system installations and the username *foobar* the
 path for specific operating systems should be:
 
@@ -57,8 +57,8 @@ config file. Each site can overwrite any of these variables.
   package updates.
 * *cache_timeout*: An **integer** that defines the number of seconds to
   internally cache GET/POST requests based on URL.
-* *decode_html_entities*: An **boolean** that controls whether HTML entities
-  are decoded.
+* *decode_html_entities*: A **boolean** that controls whether or not HTML
+  entities are decoded.
 * *oauth_https*: A **boolean** that determines whether or not to use HTTPS for
   oauth connections. This should only be changed for development environments.
 * *output_chars_limit*: A **integer** that defines the maximum length of
@@ -68,10 +68,10 @@ config file. Each site can overwrite any of these variables.
 * *timeout* Maximum time, a **float**, in seconds, before a single HTTP request
   times out. urllib2.URLError is raised upon timeout.
 * *xxx_kind*: A **string** that maps the *type* returned by json results to a
-  local object. **xx** is one of: *comment*, *message*, *more*, *redditor*,
-  *submission*, *subreddit*, *userlist*. This mapping is needed as the
-  mappings are created dynamically on site creation and thus isn't consistent
-  across sites.
+  local object. **xxx** is one of: *comment*, *message*, *more*, *redditor*,
+  *submission*, *subreddit*, *userlist*. This variable is needed as the
+  object-to-kind mapping is created dynamically on site creation and thus isn't
+  consistent across sites.
 * *log_requests* A **integer** that determines the level of API call logging.
 
  * **0**: no logging
@@ -141,7 +141,7 @@ provide an additional set of credentials for easy access to that account.
 Example praw.ini file
 ^^^^^^^^^^^^^^^^^^^^^
 
-The following is an example ``praw.ini`` file which has 4 sites defined. 2 for
+The following is an example ``praw.ini`` file which has 4 sites defined: 2 for
 a reddit proper accounts and 2 for local reddit testing.
 
 .. code-block:: text

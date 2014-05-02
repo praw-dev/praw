@@ -26,10 +26,11 @@ description, is not needed to get the hot listing. So PRAW doesn't request
 it and avoids an unnecessary API call, making the code above run about 2
 seconds faster due to lazy objects.
 
-When do the lazy loaded object become non-lazy?
+When do the lazy loaded objects become non-lazy?
 -----------------------------------------------
 
-When it's needed. It's really that simple. Continuing the code from above::
+When the information is needed. It's really that simple. Continuing the code
+from above::
 
     >>> subreddit.has_fetched
     False # Data has not been fetched from reddit. It's a lazily loaded object.
@@ -43,7 +44,7 @@ Where are the lazy objects?
 
 PRAW uses lazy objects whenever possible. Objects created with
 :meth:`.get_subreddit` or :meth:`.get_redditor` are lazy, unless you call the
-methods with ``fetch=True``. In which case all data about the object will be
+methods with ``fetch=True``. In this case all data about the object will be
 fetched at creation::
 
     >>> non_lazy_subreddit = r.get_subreddit('askhistorians', fetch=True)
