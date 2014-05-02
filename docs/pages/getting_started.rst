@@ -61,11 +61,11 @@ included for the sake of completion.
 In addition to reddit's recommendations, it's nice to to add a link to the
 script's source (if available).
 
-Breaking down Redditor Karma by Subreddit
+Breaking Down Redditor Karma by Subreddit
 -----------------------------------------
 
 Now that we've established contact with reddit, it's time for the next step in
-our script to break down a user's karma by subreddit. There isn't a function
+our script: to break down a user's karma by subreddit. There isn't a function
 that does this, but luckily it's fairly easy to write the python code to do
 this ourselves.
 

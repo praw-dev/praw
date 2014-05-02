@@ -71,7 +71,7 @@ the issue and can solve it.
 
 A temporary issue at reddit's end. Usually only happens when the servers are
 under very heavy pressure. Since it's a temporary issue, PRAW will
-automatically retry the request to you. If you're seeing this error then PRAW
+automatically retry the request for you. If you're seeing this error then PRAW
 has either failed with this request 3 times in a row or it's a request that
 adds something to reddit's database like
 :meth:`~praw.objects.Submission.add_comment`. In this case, the error may be

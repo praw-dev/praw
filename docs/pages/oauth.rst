@@ -75,7 +75,7 @@ parameters that is needed for step 4.
 
 The url we send them to is generated using :meth:`.get_authorize_url`. This
 takes 3 parameters. ``state``, which is a unique key that represent this
-client, ``scope`` which are the reddit scope we ask permission for (see
+client, ``scope`` which are the reddit scope(s) we ask permission for (see
 :ref:`oauth_scopes`) and finally ``refreshable`` which determines whether we
 can refresh the access_token (step 6) thus gaining permanent access.
 

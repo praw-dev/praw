@@ -13,8 +13,8 @@ Submission Comments
 -------------------
 
 As usual, we start by importing PRAW and initializing our contact with
-reddit.com. We also get a submission object, where our script will do its
-work.
+reddit.com. We also get a :class:`.Submission` object, where our script will
+do its work.
 
 >>> import praw
 >>> r = praw.Reddit('Comment Scraper 1.0 by u/_Daimon_ see '
@@ -22,10 +22,10 @@ work.
 ...                 'pages/comment_parsing.html')
 >>> submission = r.get_submission(submission_id='11v36o')
 
-After getting the submission object we retrieve the comments and look through
-them to find those that match our criteria. Comments are stored in the
-attribute :attr:`.comments` in a comment forest, with each tree root a toplevel
-comment. E.g., the comments are organized just like when you visit the
+After getting the :class:`.Submission` object we retrieve the comments and
+look through them to find those that match our criteria. Comments are stored in 
+the attribute :attr:`.comments` in a comment forest, with each tree root a
+toplevel comment. E.g., the comments are organized just like when you visit the
 submission via the website. To get to a lower layer, use :attr:`.replies` to
 get the list of replies to the comment. Note that this may include
 :class:`.MoreComments` objects and not just :class:`.Comment`.
@@ -34,8 +34,8 @@ get the list of replies to the comment. Note that this may include
 
 As an alternative, we can flatten the comment forest to get a unordered list
 with the function :func:`praw.helpers.flatten_tree`. This is the easiest way to
-iterate through the comments and is preferable when you don't don't care about
-a comments place in the comment forest. We don't, so this is what we are going
+iterate through the comments and is preferable when you don't care about
+a comment's place in the comment forest. We don't, so this is what we are going
 to use.
 
 >>> flat_comments = praw.helpers.flatten_tree(submission.comments)
@@ -60,21 +60,21 @@ The number of comments
 ----------------------
 
 When we load a submission, the comments for the submission are also loaded, up
-to a maximum, just like on the website.. At reddit.com, this max is 200
-comments. If we want more than these comments, then we need to replace the
-:class:`.MoreComments` with the :class:`.Comment`\s they represent. We use the
-:meth:`.replace_more_comments` method to do this. Let's use this function to
-replace all :class:`.MoreComments` with the :class:`.Comment`\s they represent,
-so we get all comments in the thread.
+to a maximum, just like on the website. At reddit.com, this max is 200
+comments. If we want more than the maximum number of comments, then we need
+to replace the :class:`.MoreComments` with the :class:`.Comment`\s they represent.
+We use the :meth:`.replace_more_comments` method to do this. Let's use this
+function to replace all :class:`.MoreComments` with the :class:`.Comment`\s they
+represent, so we get all comments in the thread.
 
 >>> submission.replace_more_comments(limit=None, threshold=0)
 >>> all_comments = submission.comments
 
-It's limited how many :class:`.MoreComments` PRAW can replace with a single API
-call.  Replacing all :class:`.MoreComments` in a thread with many comments will
-require many API calls and so take a while due to API delay between each API
-call as specified in the `api guidelines
-<https://github.com/reddit/reddit/wiki/API>`_.
+The number of :class:`.MoreComments` PRAW can replace with a single API
+call is limited. Replacing all :class:`.MoreComments` in a thread with many
+comments will require many API calls and so take a while due to API delay between
+each API call as specified in the
+`api guidelines <https://github.com/reddit/reddit/wiki/API>`_.
 
 Getting all recent comments to a subreddit or everywhere
 --------------------------------------------------------
