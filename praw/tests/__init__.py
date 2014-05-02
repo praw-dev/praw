@@ -1240,6 +1240,13 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
         self.add_remove(self.subreddit.add_ban, self.subreddit.remove_ban,
                         self.subreddit.get_banned)
 
+    def test_get_banned_note(self):
+        # TODO: Update this test to add/update the ban note when ban note
+        # adding is supported.
+        params = {'user': self.other_non_mod_name}
+        data = next(self.subreddit.get_banned(user_only=False, params=params))
+        self.assertEqual(data['note'], 'no reason in particular 2')
+
     def test_contributors(self):
         self.add_remove(self.subreddit.add_contributor,
                         self.subreddit.remove_contributor,

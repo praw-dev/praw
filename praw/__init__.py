@@ -1687,20 +1687,30 @@ class ModOnlyMixin(AuthenticatedReddit):
 
     """
 
-    def _get_userlist_listing(self, url, *args, **kwargs):
+    def _get_userlist(self, url, user_only, *args, **kwargs):
         content = self.get_content(url, *args, **kwargs)
         for data in content:
             user = objects.Redditor(self, data['name'], fetch=False)
-            # pylint: disable-msg=C0103,W0201
             user.id = data['id'].split('_')[1]
-            yield user
+            if user_only:
+                yield user
+            else:
+                data['name'] = user
+                yield data
 
     @decorators.restrict_access(scope=None, mod=True)
-    def get_banned(self, subreddit, *args, **kwargs):
-        """Return a get_content generator of banned users for the subreddit."""
-        return self._get_userlist_listing(self.config['banned'] %
-                                          six.text_type(subreddit),
-                                          *args, **kwargs)
+    def get_banned(self, subreddit, user_only=True, *args, **kwargs):
+        """Return a get_content generator of banned users for the subreddit.
+
+        :param subreddit: The subreddit to get the banned user list for.
+        :param user_only: When False, the generator yields a dictionary of data
+            associated with the server response for that user. In such cases,
+            the Redditor will be in key 'name' (default: True).
+
+        """
+        return self._get_userlist(
+            self.config['banned'] % six.text_type(subreddit), user_only, *args,
+            **kwargs)
 
     def get_contributors(self, subreddit, *args, **kwargs):
         """
@@ -1716,9 +1726,9 @@ class ModOnlyMixin(AuthenticatedReddit):
             # It is necessary to have the 'self' argument as it's needed in
             # restrict_access to determine what class the decorator is
             # operating on.
-            return self._get_userlist_listing(self.config['contributors'] %
-                                              six.text_type(subreddit),
-                                              *args, **kwargs)
+            return self._get_userlist(
+                self.config['contributors'] % six.text_type(subreddit),
+                user_only=True, *args, **kwargs)
 
         if self.is_logged_in():
             if not isinstance(subreddit, objects.Subreddit):
@@ -1814,9 +1824,9 @@ class ModOnlyMixin(AuthenticatedReddit):
     @decorators.restrict_access(scope=None, mod=True)
     def get_wiki_banned(self, subreddit, *args, **kwargs):
         """Return a get_content generator of users banned from the wiki."""
-        return self._get_userlist_listing(self.config['wiki_banned'] %
-                                          six.text_type(subreddit),
-                                          *args, **kwargs)
+        return self._get_userlist(
+            self.config['wiki_banned'] % six.text_type(subreddit),
+            user_only=True, *args, **kwargs)
 
     @decorators.restrict_access(scope=None, mod=True)
     def get_wiki_contributors(self, subreddit, *args, **kwargs):
@@ -1828,9 +1838,9 @@ class ModOnlyMixin(AuthenticatedReddit):
         contributors is all that matters.
 
         """
-        return self._get_userlist_listing(self.config['wiki_contributors'] %
-                                          six.text_type(subreddit),
-                                          *args, **kwargs)
+        return self._get_userlist(
+            self.config['wiki_contributors'] % six.text_type(subreddit),
+            user_only=True, *args, **kwargs)
 
 
 class MySubredditsMixin(AuthenticatedReddit):
