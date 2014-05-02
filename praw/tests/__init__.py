@@ -419,10 +419,6 @@ class BasicTest(unittest.TestCase, BasicHelper):
         subreddit.title
         self.assertEqual(subreddit.json_dict['display_name'], self.sr)
 
-    #def test_timeout(self):
-    #    self.assertRaises(Timeout, helpers._request, self.r,
-    #                      self.r.config['comments'], timeout=0.001)
-
 
 class CacheTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
@@ -1155,7 +1151,6 @@ class ModeratorSubredditTest(unittest.TestCase, AuthenticatedHelper):
         other = self.r.get_redditor(self.other_user_name)
         actions = list(self.subreddit.get_mod_log(mod=other.name))
         self.assertTrue(actions)
-        #self.assertTrue(all(x.mod_id36 == other.id for x in actions))
         self.assertTrue(all(x.mod.lower() == other.name.lower()
                             for x in actions))
 
@@ -1163,7 +1158,6 @@ class ModeratorSubredditTest(unittest.TestCase, AuthenticatedHelper):
         other = self.r.get_redditor(self.other_user_name)
         actions = list(self.subreddit.get_mod_log(mod=other))
         self.assertTrue(actions)
-        #self.assertTrue(all(x.mod_id36 == other.id for x in actions))
         self.assertTrue(all(x.mod.lower() == other.name.lower()
                             for x in actions))
 
