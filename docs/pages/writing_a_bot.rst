@@ -4,15 +4,17 @@ Writing a reddit Bot
 ====================
 
 In the :ref:`getting_started` tutorial, we wrote a script to break down a
-redditor's karma. In this we will write a bot, which differ from scripts in
-that they are normally running continually and automate some task, that could
-be performed by a user, such as posting, commenting or moderating. Writing
-bots have some additional problems compared to scripts. We need to make sure
-they keep working continually, that they don't unnecessarily perform the same
-task twice and keep within `API Guidelines
-<https://github.com/reddit/reddit/wiki/API>`_. This tutorial will introduce
-you to all three of the problems and show how to use PRAW's and reddit's
-documentation.
+redditor's karma. In this tutorial we will write a bot.
+
+Bots differ from scripts in a few different ways. First, bots normally run
+continuously whereas scripts are most often one-off jobs. Second, bots
+usually automate some task that could be performed by a user, such as posting,
+commenting or moderating. Bots also present unique design challenges not
+applicable to writing scripts. We need to make sure that bots keep working
+continuously, don't unnecessarily perform the same task twice and keep within
+`API Guidelines<https://github.com/reddit/reddit/wiki/API>`_. This tutorial
+will introduce you to all three of these problems and show how to use PRAW's
+and reddit's documentation.
 
 The Problem
 -----------
@@ -35,10 +37,10 @@ We start by importing PRAW and logging in.
 >>> r.login()
 >>> already_done = [] # Ignore this for now
 
-The next step is the main loop, where we look at each of the subreddit in turn.
-For this tutorial we will implement a subset of the bot, whcih only looks at
-the submissions in `r/learnpython <http://www.reddit.com/r/python>`_ to make
-the example code as clear as possible.
+The next step is the main loop, where we look at each of the subreddits in
+turn. For this tutorial we will implement a subset of the bot, which only
+looks at the submissions in `r/learnpython <http://www.reddit.com/r/python>`_
+to make the example code as clear as possible.
 
 >>> while True:
 >>> subreddit = r.get_subreddit('learnpython')
@@ -239,7 +241,7 @@ instance we can see that it has the variable ``title`` with the value
 ``u'Newbie: stripping strings of last character``. ``dir`` returns the names in
 the local scope. You can also use ``help`` for introspection, if you wish to
 generate a longer help page.  Worth noting is that PRAW contains a lot of
-property-decorated functions, i.e. functions that are used as variables. So if
+property-decorated functions, i.e., functions that are used as variables. So if
 you're looking for something that behaves like a variable, it might not be in
 vars. One of these is :attr:`.short_link`, which returns a much shorter url to
 the submission and is called as a variable.

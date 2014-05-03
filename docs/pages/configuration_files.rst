@@ -57,7 +57,7 @@ config file. Each site can overwrite any of these variables.
   package updates.
 * *cache_timeout*: An **integer** that defines the number of seconds to
   internally cache GET/POST requests based on URL.
-* *decode_html_entities*: An **boolean** that controls whether or not HTML
+* *decode_html_entities*: A **boolean** that controls whether or not HTML
   entities are decoded.
 * *oauth_https*: A **boolean** that determines whether or not to use HTTPS for
   oauth connections. This should only be changed for development environments.
@@ -68,10 +68,10 @@ config file. Each site can overwrite any of these variables.
 * *timeout* Maximum time, a **float**, in seconds, before a single HTTP request
   times out. urllib2.URLError is raised upon timeout.
 * *xxx_kind*: A **string** that maps the *type* returned by json results to a
-  local object. **xx** is one of: *comment*, *message*, *more*, *redditor*,
-  *submission*, *subreddit*, *userlist*. This mapping is needed as the
-  mappings are created dynamically on site creation and thus aren't consistent
-  across sites.
+  local object. **xxx** is one of: *comment*, *message*, *more*, *redditor*,
+  *submission*, *subreddit*, *userlist*. This variable is needed as the
+  object-to-kind mapping is created dynamically on site creation and thus isn't
+  consistent across sites.
 * *log_requests* A **integer** that determines the level of API call logging.
 
  * **0**: no logging
