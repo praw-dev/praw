@@ -927,15 +927,19 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         self._update_comments(new_comments)
         self._orphaned = {}
 
-    def get_duplicates(self):
+    def get_duplicates(self, *args, **kwargs):
         """Return a get_content generator for the submission's duplicates.
 
         :returns: get_content generator iterating over Submission objects.
 
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` and `object_fileter` parameters
+        cannot be altered.
+
         """
         url = self.reddit_session.config['duplicates'] % self.id
-        return self.reddit_session.get_content(url, object_filter=1,
-                                               limit=None)
+        return self.reddit_session.get_content(url, *args, object_filter=1,
+                                               **kwargs)
 
     def mark_as_nsfw(self, unmark_nsfw=False):
         """Mark as Not Safe For Work.
