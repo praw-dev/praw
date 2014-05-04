@@ -91,6 +91,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'controversial':       'controversial/',
                  'del':                 'api/del/',
                  'deleteflair':         'api/deleteflair',
+                 'delete_redditor':     'api/delete_user',
                  'delete_sr_header':    'r/%s/api/delete_sr_header',
                  'delete_sr_image':     'r/%s/api/delete_sr_img',
                  'distinguish':         'api/distinguish/',
@@ -1112,6 +1113,24 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.refresh_token = None
         self.http.cookies.clear()
         self.user = None
+
+    def delete(self, password, message=""):
+        """Delete the currently authenticated redditor. WARNING!
+
+        This action is IRREVERSIBLE. Use only if you're okay 
+        with NEVER accessing this reddit account again. 
+
+        :param password: password for currently authenticated account
+        :param message: optional 'reason for deletion' message.
+        :returns: json response from the server.
+
+        """
+
+        data = {'user': self.user.name,
+                'passwd': password,
+                'delete_message': message,
+                'confirm': True}
+        return self.request_json(self.config['delete_redditor'], data=data)
 
     def edit_wiki_page(self, subreddit, page, content, reason=''):
         """Create or edit a wiki page with title `page` for `subreddit`.

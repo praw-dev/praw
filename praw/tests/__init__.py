@@ -1008,7 +1008,7 @@ class ImageTests(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(any(name in text_type(x['name']) for x in images_json))
 
 
-class LocalOnlyTest(unittest.TestCase, BasicHelper):
+class LocalOnlyTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
@@ -1036,6 +1036,27 @@ class LocalOnlyTest(unittest.TestCase, BasicHelper):
         self.r.login(self.un, self.un_pswd)
         self.r.create_subreddit(unique_name, 'The %s' % unique_name,
                                 description)
+
+    @local_only
+    def test_delete_redditor(self):
+        random_u = 'PyAPITestUser%d' % random.randint(3, 10240)
+        random_p = 'pass%d' % random.randint(3, 10240)
+        self.r.create_redditor(random_u, random_p)
+        self.r.login(random_u, random_p)
+        self.assertTrue(self.r.is_logged_in())
+        self.r.delete(random_p)
+        self.r.clear_authentication()
+        self.assertRaises(errors.InvalidUserPass, self.r.login, random_u, 
+                          random_p)
+
+    @local_only
+    def test_delete_redditor_wrong_password(self):
+        random_u = 'PyAPITestUser%d' % random.randint(3, 10240)
+        random_p = 'pass%d' % random.randint(3, 10240)
+        self.r.create_redditor(random_u, random_p)
+        self.r.login(random_u, random_p)
+        self.assertTrue(self.r.is_logged_in())
+        self.assertRaises(errors.InvalidUserPass, self.r.delete, 'wxyz')
 
     @local_only
     def test_failed_feedback(self):
