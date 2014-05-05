@@ -29,6 +29,8 @@ Unreleased
  * **[FEATURE]** Enable gathering of duplicate submissions for a Submission
    object (issue 290).
  * **[FEATURE]** Add :meth:`~praw.__init__.LoggedInReddior.delete`.
+ * **[BUGFIX]** Fix user_name=None when building Redditor objects from wikipage
+   submissions. Now grabs proper name.
 
 
 PRAW 2.1.15
