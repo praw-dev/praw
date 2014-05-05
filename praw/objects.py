@@ -55,6 +55,11 @@ class RedditContentObject(object):
             subreddit = parts[4]
             page = parts[6].split('.', 1)[0]
             return cls(reddit_session, subreddit, page, json_dict=json_dict)
+        # Following hack required to initialize Redditor objects with username
+        # explicitly, fixes bug where WikiPage authors weren't being recognized
+        if cls == Redditor:
+            return cls(reddit_session, user_name=json_dict['name'], 
+                       json_dict=json_dict)
         return cls(reddit_session, json_dict=json_dict)
 
     def __init__(self, reddit_session, json_dict=None, fetch=True,
