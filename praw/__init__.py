@@ -1117,8 +1117,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
     def delete(self, password, message=""):
         """Delete the currently authenticated redditor. WARNING!
 
-        This action is IRREVERSIBLE. Use only if you're okay 
-        with NEVER accessing this reddit account again. 
+        This action is IRREVERSIBLE. Use only if you're okay with NEVER
+        accessing this reddit account again.
 
         :param password: password for currently authenticated account
         :param message: optional 'reason for deletion' message.

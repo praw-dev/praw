@@ -28,6 +28,7 @@ Unreleased
    to prevent ImportWarnings (issue 291).
  * **[FEATURE]** Enable gathering of duplicate submissions for a Submission
    object (issue 290).
+ * **[FEATURE]** Add :meth:`~praw.__init__.LoggedInReddior.delete`.
 
 
 PRAW 2.1.15

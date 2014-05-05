@@ -1046,7 +1046,7 @@ class LocalOnlyTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(self.r.is_logged_in())
         self.r.delete(random_p)
         self.r.clear_authentication()
-        self.assertRaises(errors.InvalidUserPass, self.r.login, random_u, 
+        self.assertRaises(errors.InvalidUserPass, self.r.login, random_u,
                           random_p)
 
     @local_only
