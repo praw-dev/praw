@@ -32,7 +32,6 @@ from functools import wraps
 from requests.compat import urljoin
 from requests.exceptions import HTTPError
 from six import text_type
-from string import lowercase
 
 from praw import Reddit, decorators, errors, helpers, internal
 from praw.objects import (Comment, LoggedInRedditor, Message, MoreComments,
@@ -1040,8 +1039,8 @@ class LocalOnlyTest(unittest.TestCase, AuthenticatedHelper):
 
     @local_only
     def test_delete_redditor(self):
-        random_u = ''.join(random.choice(lowercase) for x in range(15))
-        random_p = ''.join(random.choice(lowercase) for x in range(5))
+        random_u = 'PyAPITestUser%d' % random.randint(3, 10240)
+        random_p = 'pass%d' % random.randint(3, 10240)
         self.r.create_redditor(random_u, random_p)
         self.r.login(random_u, random_p)
         self.assertTrue(self.r.is_logged_in())
@@ -1052,8 +1051,8 @@ class LocalOnlyTest(unittest.TestCase, AuthenticatedHelper):
 
     @local_only
     def test_delete_redditor_wrong_password(self):
-        random_u = ''.join(random.choice(lowercase) for x in range(15))
-        random_p = ''.join(random.choice(lowercase) for x in range(5))
+        random_u = 'PyAPITestUser%d' % random.randint(3, 10240)
+        random_p = 'pass%d' % random.randint(3, 10240)
         self.r.create_redditor(random_u, random_p)
         self.r.login(random_u, random_p)
         self.assertTrue(self.r.is_logged_in())
