@@ -1893,6 +1893,10 @@ class WikiTests(unittest.TestCase, BasicHelper):
         tmp = self.subreddit.get_wiki_page(result[0].page).content_md
         self.assertEqual(result[0].content_md, tmp)
 
+    def test_revision_by(self):
+        self.assertTrue(any(x.revision_by for x in
+                            self.subreddit.get_wiki_pages()))
+
 
 if __name__ == '__main__':
     unittest.main()

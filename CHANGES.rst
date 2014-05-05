@@ -24,6 +24,8 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[BUGFIX]** Fix incorrect username when building Redditor objects from
+    wikipage submissions.
  * **[CHANGE]** Increase the dependency of ``update_checker`` to 0.10 or later
    to prevent ImportWarnings (issue 291).
  * **[FEATURE]** Enable gathering of duplicate submissions for a Submission

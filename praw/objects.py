@@ -37,7 +37,8 @@ from praw.internal import (_get_redditor_listing, _get_sorter,
                            _modify_relationship)
 
 
-REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor')
+REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor',
+                 'revision_by')
 
 
 class RedditContentObject(object):
@@ -92,6 +93,8 @@ class RedditContentObject(object):
         elif value and name in REDDITOR_KEYS:
             if isinstance(value, bool):
                 pass
+            elif isinstance(value, dict):
+                value = Redditor(self.reddit_session, json_dict=value['data'])
             elif not value or value == '[deleted]':
                 value = None
             else:
@@ -648,10 +651,12 @@ class Redditor(Messageable, Refreshable):
     def __init__(self, reddit_session, user_name=None, json_dict=None,
                  fetch=True):
         info_url = reddit_session.config['user_about'] % user_name
+        # name is set before calling the parent constructor so that the
+        # json_dict 'name' attribute (if available) has precedence
+        self.name = user_name
         super(Redditor, self).__init__(reddit_session, json_dict,
                                        fetch, info_url)
-        self.name = user_name
-        self._url = reddit_session.config['user'] % user_name
+        self._url = reddit_session.config['user'] % self.name
         self._mod_subs = None
 
     def __cmp__(self, other):
