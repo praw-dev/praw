@@ -36,9 +36,6 @@ Unreleased
  * **[FEATURE]** Enable gathering of duplicate submissions for a Submission
    object (issue 290).
  * **[FEATURE]** Add :meth:`~praw.__init__.LoggedInReddior.delete`.
- * **[FEATURE]** ``Redditor`` objects returned via a user listing now have a
-     ``userlist_data`` attribute which contains addition information provided
-     by reddit's API.
 
 PRAW 2.1.15
 -----------
