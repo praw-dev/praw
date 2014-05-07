@@ -97,6 +97,10 @@ this page to add in more.
     the URL to Reddit. It's what I run on
     `u/WordCloudBot2 <http://www.reddit.com/user/WordCloudBot2>`_.
 
+`Reddit-to-Diigo-Copier <http://www.github.com/OdinsHat/Reddit-to-Diigo-Copier>`_ by `Doug <http://www.github.com/OdinsHat>`_
+    Copies your Reddit saved links to a Diigo account of your choice. Makes use 
+    of PRAW and the Diigo API. 
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
