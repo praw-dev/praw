@@ -85,21 +85,21 @@ this page to add in more.
     submissions in a subreddit, and even open the links up if you'd like.
 
 `ALTcointip`_ by `u/im14 <http://www.reddit.com/user/im14>`_
-    ALTcointip bot allows Redditors to gift (tip) various cryptocoins (Litecoin, 
-    PPCoin, Namecoin, etc) to each other as a way of saying thanks.
+    ALTcointip bot allows redditors to gift (tip) various cryptocoins
+    (Litecoin, PPCoin, Namecoin, etc) to each other as a way of saying thanks.
 
 `RedditAgain`_ by `Karan Goel <http://www.github.com/thekarangoel>`_
-    Migrate an old Reddit account to a new one. Backs up existing content
-    and submissions, and copies subscriptions to a new account.
+    Migrate an old reddit account to a new one. Backs up existing content and
+    submissions, and copies subscriptions to a new account.
 
 `reddit-cloud`_ by `Paul Nechifor <http://www.github.com/paul-nechifor>`_
     Generates word clouds for submissions (or users), posts them to Imgur and
-    the URL to Reddit. It's what I run on
+    the URL to reddit. It's what I run on
     `u/WordCloudBot2 <http://www.reddit.com/user/WordCloudBot2>`_.
 
-`Reddit-to-Diigo-Copier <http://www.github.com/OdinsHat/Reddit-to-Diigo-Copier>`_ by `Doug <http://www.github.com/OdinsHat>`_
-    Copies your Reddit saved links to a Diigo account of your choice. Makes use 
-    of PRAW and the Diigo API. 
+`Reddit-to-Diigo-Copier`_ by `Doug <http://www.github.com/OdinsHat>`_
+    Copies your reddit saved links to a Diigo account of your choice. Makes use
+    of PRAW and the Diigo API.
 
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
@@ -132,6 +132,8 @@ them to work with the latest version.
 .. _`reddit-analysis`: https://github.com/rhiever/reddit-analysis
 .. _`RedditAgain`: https://github.com/thekarangoel/RedditAgain
 .. _`reddit-cloud`: https://github.com/paul-nechifor/reddit-cloud
+.. _`Reddit-to-Diigo-Copier`:
+    http://www.github.com/OdinsHat/Reddit-to-Diigo-Copier
 .. _`r/diablo flair infographic generator`:
     https://github.com/xiphirx/rdiablo-flair-infographic-generator
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot
