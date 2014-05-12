@@ -44,7 +44,7 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '2.1.15'
+__version__ = '2.1.16'
 
 if os.environ.get('SERVER_SOFTWARE') is not None:
     # Google App Engine information
@@ -1243,7 +1243,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
         This can only be used for assigning your own name flair or link flair
         on your own submissions. For assigning other's flairs using moderator
-        access, check :meth:`.set_flair`
+        access, check :meth:`~praw.__init__.ModFlairMixin.set_flair`
 
         :param item: A string, Subreddit object (for user flair), or
             Submission object (for link flair). If item is a string it will be

@@ -27,7 +27,7 @@ it and avoids an unnecessary API call, making the code above run about 2
 seconds faster due to lazy objects.
 
 When do the lazy loaded objects become non-lazy?
------------------------------------------------
+------------------------------------------------
 
 When the information is needed. It's really that simple. Continuing the code
 from above::

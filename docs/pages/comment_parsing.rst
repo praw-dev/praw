@@ -79,8 +79,9 @@ each API call as specified in the
 Getting all recent comments to a subreddit or everywhere
 --------------------------------------------------------
 
-We can get comments made to all subreddits by using :meth:`.get_comments` and
-setting the subreddit argument to the value "all".
+We can get comments made to all subreddits by using
+:meth:`~praw.__init__.UnauthenticatedReddit.get_comments` and setting the
+subreddit argument to the value "all".
 
 >>> import praw
 >>> r = praw.Reddit('Comment parser example by u/_Daimon_')

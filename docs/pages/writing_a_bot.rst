@@ -12,7 +12,7 @@ usually automate some task that could be performed by a user, such as posting,
 commenting or moderating. Bots also present unique design challenges not
 applicable to writing scripts. We need to make sure that bots keep working
 continuously, don't unnecessarily perform the same task twice and keep within
-`API Guidelines<https://github.com/reddit/reddit/wiki/API>`_. This tutorial
+`API Guidelines <https://github.com/reddit/reddit/wiki/API>`_. This tutorial
 will introduce you to all three of these problems and show how to use PRAW's
 and reddit's documentation.
 
@@ -22,10 +22,9 @@ The Problem
 From time to time questions are submitted to reddit.com about PRAW, mellort's
 deprecated fork and the reddit API in general. I want to be notified of these
 submissions, so I can help the submitter. The bot will monitor the subreddits
-`r/python <http://www.reddit.com/r/python>`_, `r/learnpython
-<http://www.reddit.com/r/learnpython>`_ and `r/redditdev
-<http://www.reddit.com/r/python>`_ and send me a private message, whenever it
-detects a post with such a question.
+`r/python <http://www.reddit.com/r/python>`_, `r/learnpython`_ and `r/redditdev
+<http://www.reddit.com/r/redditdev>`_ and send me a private message, whenever
+it detects a post with such a question.
 
 We start by importing PRAW and logging in.
 
@@ -38,9 +37,9 @@ We start by importing PRAW and logging in.
 >>> already_done = [] # Ignore this for now
 
 The next step is the main loop, where we look at each of the subreddits in
-turn. For this tutorial we will implement a subset of the bot, which only
-looks at the submissions in `r/learnpython <http://www.reddit.com/r/python>`_
-to make the example code as clear as possible.
+turn. For this tutorial we will implement a subset of the bot, which only looks
+at the submissions in `r/learnpython`_ to make the example code as clear as
+possible.
 
 >>> while True:
 >>> subreddit = r.get_subreddit('learnpython')
@@ -346,3 +345,5 @@ The full Question-Discover program
                 r.user.send_message('_Daimon_', msg)
                 already_done.append(submission.id)
         time.sleep(1800)
+
+.. _`r/learnpython`: http://www.reddit.com/r/learnpython
