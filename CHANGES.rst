@@ -24,7 +24,7 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
- * **[FEATURE]** :meth:`praw.__init__.AuthenticatedReddit.submit` now supports
+ * **[FEATURE]** :meth:`~praw.__init__.SubmitMixin.submit` now supports
    a ``resubmit`` argument to allow the submission of an already submitted url.
 
 PRAW 2.1.16
