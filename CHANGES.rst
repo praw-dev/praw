@@ -22,17 +22,22 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[FEATURE]** :meth:`praw.__init__.AuthenticatedReddit.submit` now supports
+   a ``resubmit`` argument to allow the submission of an already submitted url.
+
 PRAW 2.1.16
 -----------
  * **[BUGFIX]** Fix incorrect username when building Redditor objects from
    wikipage submissions.
  * **[CHANGE]** Increase the dependency of ``update_checker`` to 0.10 or later
    to prevent ImportWarnings (issue 291).
- * **[CHANGE]** :meth:`~.Subreddit.get_banned` now takes a `user_only` argument
-   (default: ``True``). When the value is explicitly passed as ``False`` the
-   return value is not a generator of ``Redditor`` objects, but a generator of
-   dictionaries whose ``name`` key corresponds to the ``Redditor`` object and
-   whose ban-note is at key ``note``.
+ * **[CHANGE]** :meth:`~.Subreddit.get_banned` now takes a ``user_only``
+   argument (default: ``True``). When the value is explicitly passed as
+   ``False`` the return value is not a generator of ``Redditor`` objects, but a
+   generator of dictionaries whose ``name`` key corresponds to the ``Redditor``
+   object and whose ban-note is at key ``note``.
  * **[FEATURE]** Enable gathering of duplicate submissions for a Submission
    object (issue 290).
  * **[FEATURE]** Add :meth:`praw.__init__.AuthenticatedReddit.delete`.

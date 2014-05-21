@@ -1560,11 +1560,19 @@ class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
-    def test_create_duplicate(self):
+    def test_create_duplicate_failure(self):
         predicate = lambda item: not item.is_self
         found = self.first(self.r.user.get_submitted(), predicate)
         self.assertRaises(errors.AlreadySubmitted, self.r.submit, self.sr,
                           found.title, url=found.url)
+
+    def test_create_duplicate_success(self):
+        predicate = lambda item: not item.is_self
+        found = self.first(self.r.user.get_submitted(), predicate)
+        submission = self.r.submit(self.sr, found.title, url=found.url,
+                                   resubmit=True)
+        self.assertEqual(submission.title, found.title)
+        self.assertEqual(submission.url, found.url)
 
     def test_create_link_through_subreddit(self):
         unique = uuid.uuid4()
