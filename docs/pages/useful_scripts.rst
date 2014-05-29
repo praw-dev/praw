@@ -101,6 +101,11 @@ this page to add in more.
     Copies your reddit saved links to a Diigo account of your choice. Makes use
     of PRAW and the Diigo API.
 
+`NetflixBot <http://github.com/alanwright/netflixbot>`_ by `Alan Wright <http://www.github.com/alanwright>`_
+    Parses comments for calls and determines if a movie is availble for streaming
+    on Netflix. Makes use of PRAW and the NetflixRouletteAPI. Run on 
+    `u/NetflixBot <http://www.reddit.com/user/NetflixBot>`_.
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
