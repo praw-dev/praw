@@ -558,11 +558,6 @@ class Comment(Editable, Inboxable, Moderatable, Reportable, Voteable):
         return self._replies
 
     @property
-    def score(self):
-        """Return the comment's score."""
-        return self.ups - self.downs
-
-    @property
     def submission(self):
         """Return the submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
