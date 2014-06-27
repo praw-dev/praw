@@ -138,7 +138,15 @@ class RedditContentObject(object):
         for name, value in six.iteritems(json_dict):
             if self._underscore_names and name in self._underscore_names:
                 name = '_' + name
-            setattr(self, name, value)
+            try:
+                setattr(self, name, value)
+            except AttributeError as exc:
+                # Handle conflicts with PRAW properties.
+                # The attribute from reddit will be suffixed with `_reddit`
+                if exc.args == ('can\'t set attribute',):
+                    setattr(self, 'name' + '_reddit', value)
+                else:
+                    raise
         return bool(json_dict) or fetch
 
     @property

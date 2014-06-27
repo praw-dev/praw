@@ -4,7 +4,6 @@ Changelog
 =========
 
 The changes listed below are divided into four categories.
-
  * **[FEATURE]** Something new has been added.
  * **[BUGFIX]** Something was broken before, but is now fixed.
  * **[REDDIT]** A change caused by an upstream change from reddit.
@@ -24,6 +23,15 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[REDDIT]** Avoid exceptions caused by upstream changes by reddit with
+   respect to conflicts between json attributes and
+   :class:`.RedditContentObject` properties. In such cases, the attribute from
+   reddit will be suffixed with "_reddit".
+
+PRAW 2.1.17
+-----------
+ * **[BUGFIX]** Remove the built-in ``score`` property from comments as reddit
+   provides that attribute as of 2014/06/18.
  * **[FEATURE]** :meth:`~praw.__init__.SubmitMixin.submit` now supports
    a ``resubmit`` argument to allow the submission of an already submitted url.
 
