@@ -1536,29 +1536,19 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
     def test_update_settings_description(self):
         self.maxDiff = None
         settings = self.subreddit.get_settings()
-        settings['description'] = 'Description %s' % uuid.uuid4()
-        self.subreddit.update_settings(description=settings['description'])
+        new_description = 'Description %s' % uuid.uuid4()
+        self.subreddit.update_settings(description=new_description)
         new = self.subreddit.get_settings()
-        # The id should change, but nothing else
-        key = 'prev_description_id'
-        self.assertNotEqual(settings[key], new[key])
-        del settings[key]
-        del new[key]
-        self.assertEqual(settings, new)
+        self.assertNotEqual(settings['description'], new['description'])
 
     def test_update_settings_public_description(self):
         self.maxDiff = None
         settings = self.subreddit.get_settings()
-        settings['public_description'] = 'Description %s' % uuid.uuid4()
+        new_public_description = 'Description %s' % uuid.uuid4()
         self.subreddit.update_settings(
-            public_description=settings['public_description'])
+            public_description=new_public_description)
         new = self.subreddit.get_settings()
-        # The id should change, but nothing else
-        key = 'prev_public_description_id'
-        self.assertNotEqual(settings[key], new[key])
-        del settings[key]
-        del new[key]
-        self.assertEqual(settings, new)
+        self.assertNotEqual(settings['public_description'], new['public_description'])
 
 
 class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
