@@ -106,6 +106,12 @@ this page to add in more.
     on Netflix. Makes use of PRAW and the NetflixRouletteAPI. Run on 
     `u/NetflixBot <http://www.reddit.com/user/NetflixBot>`_.
 
+`RemindMeBot <https://github.com/SIlver--/remindmebot-reddit>`_ by `Joey <http://www.github.com/Silver-->`_
+    Called upon with the ``RemindMeBot!`` command on any subreddit, the user
+    is able to set a reminder for themselves about the current thread or comment. 
+    The bot will then send them a private message with the date they specified.
+    `u/RemindMeBot <http://www.reddit.com/user/RemindMeBot>`_.
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
