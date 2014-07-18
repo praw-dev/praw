@@ -23,6 +23,7 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[BUGFIX]** Fix python3 issue with ``func_defaults``.
  * **[REDDIT]** Avoid exceptions caused by upstream changes by reddit with
    respect to conflicts between json attributes and
    :class:`.RedditContentObject` properties. In such cases, the attribute from
