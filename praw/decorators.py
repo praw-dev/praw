@@ -291,10 +291,9 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False):
                     # attribute to exist, thus it might not be set.
                     subreddit = cls if hasattr(cls, 'display_name') else False
                 else:
-                    if args:
-                        subreddit = kwargs.get('subreddit', args[0])
-                    else:
-                        subreddit = six.get_function_defaults(function)[0]
+                    subreddit = kwargs.get(
+                        'subreddit', args[0] if args else
+                        six.get_function_defaults(function)[0])
             else:
                 subreddit = None
 
