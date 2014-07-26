@@ -17,6 +17,6 @@ if [ -n "$output" ]; then
 fi
 
 # pep257
-find $dir/praw -name [A-Za-z_]\*.py | xargs pep257
+find $dir/praw -name [A-Za-z_]\*.py | grep  -v "/tests/" | xargs pep257 2>&1
 
 exit 0

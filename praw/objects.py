@@ -948,6 +948,7 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         url = self.reddit_session.config['duplicates'] % self.id
         return self.reddit_session.get_content(url, *args, object_filter=1,
                                                **kwargs)
+
     def get_flair_choices(self, *args, **kwargs):
         """Return available flair choices and current flair.
 

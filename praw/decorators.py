@@ -259,7 +259,6 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False):
       * are called upon a RedditContent object with attribute subreddit
 
     """
-
     if not scope and oauth_only:
         raise TypeError('`scope` must be set when `oauth_only` is set')
 

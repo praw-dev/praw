@@ -13,7 +13,7 @@
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Error classes
+Error classes.
 
 Includes two main exceptions. ClientException, when something goes
 wrong on our end and APIExeception for when something goes wrong on the

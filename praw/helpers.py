@@ -163,9 +163,7 @@ def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
 
 
 def convert_id36_to_numeric_id(id36):
-    """
-    Convert base 36 into numeric ID
-    """
+    """Convert strings representing base36 numbers into an integer."""
     if not isinstance(id36, six.string_types) or id36.count("_") > 0:
         raise ValueError("must supply base36 string, not fullname (e.g. use "
                          "xxxxx, not t3_xxxxx)")
@@ -173,16 +171,16 @@ def convert_id36_to_numeric_id(id36):
 
 
 def convert_numeric_id_to_id36(numeric_id):
-    """
-    Convert numeric ID into base36, method has been cleaned up slightly
-    to improve readability. For more info see;
+    """Convert an integer into its base36 string representation.
+
+    This method has been cleaned up slightlyto improve readability. For more
+    info see:
 
     https://github.com/reddit/reddit/blob/master/r2/r2/lib/utils/_utils.pyx
     http://www.reddit.com/r/redditdev/comments/n624n/submission_ids_question/
     http://en.wikipedia.org/wiki/Base_36#Python_implementation
     """
-
-    # base36 does allows negative numbers, but reddit does not
+    # base36 allows negative numbers, but reddit does not
     if not isinstance(numeric_id, six.integer_types) or numeric_id < 0:
         raise ValueError("must supply a positive int/long")
 

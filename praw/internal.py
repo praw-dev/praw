@@ -55,7 +55,6 @@ def _get_sorter(subpath='', **defaults):
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-
         if not kwargs.get('params'):
             kwargs['params'] = {}
         for key, value in six.iteritems(defaults):

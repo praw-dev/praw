@@ -628,7 +628,6 @@ class OAuth2Reddit(BaseReddit):
         :param redirect_uri: the redirect_uri of your application
 
         """
-
         self.client_id = client_id
         self.client_secret = client_secret
         self.redirect_uri = redirect_uri
@@ -667,9 +666,7 @@ class UnauthenticatedReddit(BaseReddit):
     @decorators.deprecated(msg="Please use `get_comments(\'all\', ...)` "
                                "instead.")
     def get_all_comments(self, *args, **kwargs):
-        """Return a get_content generator for comments from `all` subreddits.
-
-        """
+        """Return a get_content generator for comments from all subreddits."""
         return self.get_comments('all', *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
@@ -1116,7 +1113,9 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.user = None
 
     def delete(self, password, message=""):
-        """Delete the currently authenticated redditor. WARNING!
+        """Delete the currently authenticated redditor.
+
+        WARNING!
 
         This action is IRREVERSIBLE. Use only if you're okay with NEVER
         accessing this reddit account again.
@@ -1126,7 +1125,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         :returns: json response from the server.
 
         """
-
         data = {'user': self.user.name,
                 'passwd': password,
                 'delete_message': message,
@@ -2149,7 +2147,6 @@ class Reddit(ModConfigMixin, ModFlairMixin, ModLogMixin, ModOnlyMixin,
     initialization parameters.
 
     """
-
 
 # Prevent recursive import
 from praw import objects
