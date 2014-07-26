@@ -948,6 +948,16 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         url = self.reddit_session.config['duplicates'] % self.id
         return self.reddit_session.get_content(url, *args, object_filter=1,
                                                **kwargs)
+    def get_flair_choices(self, *args, **kwargs):
+        """Return available flair choices and current flair.
+
+        Convenience function for :meth:`.AuthenticatedReddit.get_flair_choices`
+        populating both the `subreddit` and `link` parameters.
+
+        :returns: The json response from the server.
+
+        """
+        return self.subreddit.get_flair_choices(self.fullname, *args, **kwargs)
 
     def mark_as_nsfw(self, unmark_nsfw=False):
         """Mark as Not Safe For Work.
@@ -1141,6 +1151,7 @@ class Subreddit(Messageable, Refreshable):
                 ('get_comments', UR),
                 ('get_contributors', MOMix),
                 ('get_flair', UR),
+                ('get_flair_choices', AR),
                 ('get_flair_list', MFMix),
                 ('get_moderators', UR),
                 ('get_mod_log', MLMix),
