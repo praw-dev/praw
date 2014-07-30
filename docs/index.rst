@@ -213,5 +213,12 @@ Useful Scripts
     A simple challenge-queue submission bot for r/DailyProgrammer. Users submit
     challenges through a Google Documents form, then the bot crawls said form,
     posting the appropriate challenge on the appropriate day of the week.
+    
+`Massdrop Multi Bot <http://github.com/darkmio/Massdrop-Reddit-Bot>`_
+   A bot which made Massdrop available for everyone and then grew into an
+   assortment of different fixes for links that regularly get mistakenly used,
+   like Gfycat, Massdrop and Subreddit-Names in titles.
 
 .. _`AutoModerator`: https://github.com/Deimos/AutoModerator
+
+
