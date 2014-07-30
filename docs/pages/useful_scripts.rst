@@ -102,16 +102,16 @@ this page to add in more.
     of PRAW and the Diigo API.
 
 `NetflixBot <http://github.com/alanwright/netflixbot>`_ by `Alan Wright <http://www.github.com/alanwright>`_
-    Parses comments for calls and determines if a movie is availble for streaming
-    on Netflix. Makes use of PRAW and the NetflixRouletteAPI. Run on 
+    Parses comments for calls and determines if a movie is availble for
+    streaming on Netflix. Makes use of PRAW and the NetflixRouletteAPI. Run on
     `u/NetflixBot <http://www.reddit.com/user/NetflixBot>`_.
 
 `RemindMeBot <https://github.com/SIlver--/remindmebot-reddit>`_ by `Joey <http://www.github.com/Silver-->`_
-    Called upon with the ``RemindMeBot!`` command on any subreddit, the user
-    is able to set a reminder for themselves about the current thread or comment. 
+    Called upon with the ``RemindMeBot!`` command on any subreddit, the user is
+    able to set a reminder for themselves about the current thread or comment.
     The bot will then send them a private message with the date they specified.
     `u/RemindMeBot <http://www.reddit.com/user/RemindMeBot>`_.
-    
+
 `Massdrop Multi Bot <http://github.com/darkmio/Massdrop-Reddit-Bot>`_
    A bot which made Massdrop available for everyone and then grew into an
    assortment of different fixes for links that regularly get mistakenly used,
