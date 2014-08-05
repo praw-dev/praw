@@ -23,6 +23,12 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[FEATURE]** Add the :meth:`~praw.objects.Subreddit.get_flair_choices`
+   method to the :class:`.Submission` class, which returns the choices for user
+   flair in the subreddit and the current flair of the authenticated user.
+ * **[FEATURE]** Add the :meth:`~praw.objects.Submission.get_flair_choices`
+   method to the :class:`.Submission` class, which returns the choices for
+   link flair on this submission as well as it's current flair.
  * **[BUGFIX]** Fix python3 issue with ``func_defaults``.
  * **[REDDIT]** Avoid exceptions caused by upstream changes by reddit with
    respect to conflicts between json attributes and
