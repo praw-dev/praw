@@ -57,12 +57,3 @@ conjunction with this nice visual overview.
     :members:
     :undoc-members:
     :show-inheritance:
-
-
-:mod:`internal` Module
-----------------------
-
-.. automodule:: praw.internal
-    :members:
-    :undoc-members:
-    :show-inheritance:
