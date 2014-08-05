@@ -1259,13 +1259,15 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
         This can only be used for assigning your own name flair or link flair
         on your own submissions. For assigning other's flairs using moderator
-        access, check :meth:`~praw.__init__.ModFlairMixin.set_flair`
+        access, see :meth:`~praw.__init__.ModFlairMixin.set_flair`.
 
         :param item: A string, Subreddit object (for user flair), or
             Submission object (for link flair). If item is a string it will be
             treated as the name of a Subreddit.
-        :param flair_template_id: 36 characters id found in the HTML of a
-            flair selector.
+        :param flair_template_id: The id for the desired flair template. Use
+            the :meth:`~praw.objects.Subreddit.get_flair_choices` and
+            :meth:`~praw.objects.Submission.get_flair_choices` methods to find
+            the ids for the available user and link flair choices.
         :param flair_text: A String containing the custom flair text.
             Used on subreddits that allow it.
 
@@ -1613,6 +1615,10 @@ class ModFlairMixin(AuthenticatedReddit):
 
         Item can be a string, Redditor object, or Submission object. If item is
         a string it will be treated as the name of a Redditor.
+
+        This method can only be called by the subreddit moderator. To set flair
+        on yourself or your own links use
+        :meth:`~praw.__init__.AuthenticatedReddit.select_flair`.
 
         :returns: The json response from the server.
 

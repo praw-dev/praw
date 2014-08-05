@@ -950,10 +950,11 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
                                                **kwargs)
 
     def get_flair_choices(self, *args, **kwargs):
-        """Return available flair choices and current flair.
+        """Return available link flair choices and current flair.
 
-        Convenience function for :meth:`.AuthenticatedReddit.get_flair_choices`
-        populating both the `subreddit` and `link` parameters.
+        Convenience function for
+        :meth:`~.AuthenticatedReddit.get_flair_choices` populating both the
+        `subreddit` and `link` parameters.
 
         :returns: The json response from the server.
 
