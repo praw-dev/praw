@@ -21,7 +21,7 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-Unreleased
+PRAW 2.1.18
 ----------
  * **[FEATURE]** Add the :meth:`~praw.objects.Subreddit.get_flair_choices`
    method to the :class:`.Submission` class, which returns the choices for user
