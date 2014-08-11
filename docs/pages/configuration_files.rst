@@ -84,6 +84,12 @@ config file. Each site can overwrite any of these variables.
   ``http_proxy: http://user:pass@addr:port``. If no proxy is specified, PRAW
   will pick up the environment variable for http_proxy, if it has been set.
 
+* *https_proxy* A **string** that declares a https proxy to be used. It follows
+  the `requests proxy conventions
+  <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_, e.g.,
+  ``https_proxy: http://user:pass@addr:port``. If no proxy is specified, PRAW
+  will pick up the environment variable for https_proxy, if it has been set.
+
 * *store_json_result* A **boolean** to indicate if json_dict, which contains
   the original API response, should be stored on every object in the json_dict
   attribute. Default is ``False`` as memory usage will double if enabled. For
