@@ -220,6 +220,8 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
         self.log_requests = int(obj['log_requests'])
         self.http_proxy = (obj.get('http_proxy') or os.getenv('http_proxy') or
                            None)
+        self.https_proxy = (obj.get('https_proxy') or os.getenv('https_proxy') or
+                           None)
         # We use `get(...) or None` because `get` may return an empty string
         self.client_id = obj.get('oauth_client_id') or None
         self.client_secret = obj.get('oauth_client_secret') or None
@@ -306,8 +308,12 @@ class BaseReddit(object):
         self.handler = handler or DefaultHandler()
         self.http = requests.session()  # Dummy session
         self.http.headers['User-Agent'] = UA_STRING % user_agent
-        if self.config.http_proxy:
-            self.http.proxies = {'http': self.config.http_proxy}
+        if self.config.http_proxy or self.config.https_proxy:
+            self.http.proxies = {}
+            if self.config.http_proxy:
+                self.http.proxies['http'] = self.config.http_proxy
+            if self.config.https_proxy:
+                self.http.proxies['https'] = self.config.https_proxy
         self.modhash = None
 
         # Check for updates if permitted and this is the first Reddit instance
