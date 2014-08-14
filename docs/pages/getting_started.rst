@@ -108,7 +108,7 @@ subreddits as values.
 Finally, let's output the karma breakdown in a pretty format.
 
 >>> import pprint
->>> pprint.pprint(karama_by_subreddit)
+>>> pprint.pprint(karma_by_subreddit)
 
 And we're done. The program could use a better way of displaying the data,
 exception catching, etc. If you're interested, you can check out a more
