@@ -105,9 +105,14 @@ subreddits as values.
 ...     karma_by_subreddit[subreddit] = (karma_by_subreddit.get(subreddit, 0)
 ...                                     + thing.score)
 
-And we're done. The program could use a way of displaying the data, exception
-catching, etc. If you're interested, you can check out a more fleshed out
-version of this `Karma-Breakdown
+Finally, let's output the karma breakdown in a pretty format.
+
+>>> import pprint
+>>> pprint.pprint(karama_by_subreddit)
+
+And we're done. The program could use a better way of displaying the data,
+exception catching, etc. If you're interested, you can check out a more
+fleshed out version of this `Karma-Breakdown
 <https://github.com/Damgaard/Reddit-Bots/blob/master/karma_breakdown.py>`_
 program.
 
@@ -158,3 +163,5 @@ The full Karma Breakdown program.
         subreddit = thing.subreddit.display_name
         karma_by_subreddit[subreddit] = (karma_by_subreddit.get(subreddit, 0)
                                          + thing.score)
+    import pprint
+    pprint.pprint(karma_by_subreddit)
