@@ -69,6 +69,10 @@ class RateLimitHandler(object):
     def __init__(self):
         self.http = Session()  # Each instance should have its own session
 
+    def __exit__(self):
+        if hasattr(self, 'http'):
+            self.http.close()
+
     def request(self, request, proxies, timeout, **_):
         """Responsible for dispatching the request and returning the result.
 
