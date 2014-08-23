@@ -272,7 +272,7 @@ restart the main loop.
 >>> has_praw = any(string in op_text for string in prawWords)
 >>> if submission.id not in already_done and has_praw:
 ...     msg = '[PRAW related thread](%s)' % submission.short_link
-...     r.user.send_message('_Daimon_', msg)
+...     r.send_message('_Daimon_', 'PRAW Thread', msg)
 ...     already_done.append(submission.id)
 >>> time.sleep(1800)
 
@@ -342,7 +342,7 @@ The full Question-Discover program
             # Test if it contains a PRAW-related question
             if submission.id not in already_done and has_praw:
                 msg = '[PRAW related thread](%s)' % submission.short_link
-                r.user.send_message('_Daimon_', msg)
+                r.send_message('_Daimon_', 'PRAW Thread', msg)
                 already_done.append(submission.id)
         time.sleep(1800)
 
