@@ -70,8 +70,6 @@ class RedditContentObject(object):
         self.reddit_session = reddit_session
         self._underscore_names = underscore_names
         self.has_fetched = self._populate(json_dict, fetch)
-        self.json_dict = (json_dict if reddit_session.config.store_json_result
-                          is True else None)
 
     def __eq__(self, other):
         return (isinstance(other, RedditContentObject) and
@@ -127,9 +125,8 @@ class RedditContentObject(object):
     def _populate(self, json_dict, fetch):
         if json_dict is None:
             json_dict = self._get_json_dict() if fetch else {}
-            self.json_dict = (json_dict
-                              if self.reddit_session.config.store_json_result
-                              is True else None)
+        self.json_dict = (json_dict if self.reddit_session.config.store_json_result
+                          is True else None)
 
         # TODO: Remove this wikipagelisting hack
         if isinstance(json_dict, list):
