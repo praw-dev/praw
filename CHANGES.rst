@@ -21,8 +21,15 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-PRAW 2.1.18
+Unreleased
 ----------
+* **[FEATURE]** Support providing HTTPS proxies, that is, proxies specific to
+handling HTTPS requests.
+* **[BUGFIX]** Fix bug where ``json_dict`` was set to ``None`` when it should
+    not have been.
+
+PRAW 2.1.18
+-----------
  * **[FEATURE]** Add the :meth:`~praw.objects.Subreddit.get_flair_choices`
    method to the :class:`.Submission` class, which returns the choices for user
    flair in the subreddit and the current flair of the authenticated user.
