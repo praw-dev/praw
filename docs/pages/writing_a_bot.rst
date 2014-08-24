@@ -20,17 +20,18 @@ The Problem
 -----------
 
 From time to time questions are submitted to reddit.com about PRAW, mellort's
-deprecated fork and the reddit API in general. I want to be notified of these
-submissions, so I can help the submitter. The bot will monitor the subreddits
-`r/python <http://www.reddit.com/r/python>`_, `r/learnpython`_ and `r/redditdev
-<http://www.reddit.com/r/redditdev>`_ and send me a private message, whenever
-it detects a post with such a question.
+deprecated fork and the reddit API in general. `\u\_Daimon_` wants to be
+notified of these submissions, so he can help the submitter. The bot will
+monitor the subreddits `r/python <http://www.reddit.com/r/python>`_,
+`r/learnpython`_ and `r/redditdev <http://www.reddit.com/r/redditdev>`_ and
+send `\u\_Daimon_` a private message, whenever it detects a post with such a
+question.
 
 We start by importing PRAW and logging in.
 
 >>> import time
 >>> import praw
->>> r = praw.Reddit('PRAW related-question monitor by u/_Daimon_ v 1.0. '
+>>> r = praw.Reddit('PRAW related-question monitor by /u/_Daimon_ v 1.0. '
 ...                 'Url: https://praw.readthedocs.org/en/latest/'
 ...                 'pages/writing_a_bot.html')
 >>> r.login()
@@ -51,8 +52,7 @@ Finding what we need
 
 Now that we have the submissions, we need to see if they contain a PRAW-related
 question. We are going to look at the text part of a submission to see if it
-contains one of the strings "reddit api", "praw" or "mellort". I know which of
-a submission's variables match the text part, but you might not. So we're going
+contains one of the strings "reddit api", "praw" or "mellort". So we're going
 to go through how you can find out stuff like this on your own.
 
 Start the Python interpreter and compare the output with `this r/learnpython
@@ -63,7 +63,7 @@ of_last_character/>`_ post.
 
     >>> import praw
     >>> from pprint import pprint
-    >>> r = praw.Reddit('Submission variables testing by /u/_daimon')
+    >>> r = praw.Reddit('Submission variables testing by /u/_Daimon_')
     >>> submission = r.get_submission(submission_id = "105aru")
     >>> pprint(vars(submission))
     {'_comment_sort': None,
@@ -261,11 +261,11 @@ Not Doing The Same Work Twice.
 From the information we gained in the previous section, we see that the text
 portion of a submission is stored in the variable ``selftext``. So we test if
 any of the strings are within the ``selftext``, and if they are the bot sends
-me a message. But I should only ever receive a single message per submission.
-So we need to maintain a list of the submissions I've already been messaged
-about.  Each ``Thing`` has a unique ID, so we simply store the used ones in a
-list and check for membership before mailing. Finally we sleep 30 minutes and
-restart the main loop.
+me a message. But `\u\_Daimon_` should only ever receive a single message per
+submission.  So we need to maintain a list of the submissions we've already
+notified `\u\_Daimon_` about.  Each ``Thing`` has a unique ID, so we simply
+store the used ones in a list and check for membership before mailing. Finally
+we sleep 30 minutes and restart the main loop.
 
 >>> prawWords = ['praw', 'reddit_api', 'mellort']
 >>> op_text = submission.selftext.lower()
