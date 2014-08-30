@@ -782,8 +782,8 @@ class UnauthenticatedReddit(BaseReddit):
             up by url. When None, uses account default settings.
         :returns: When a single thing_id is provided, return the corresponding
             thing object, or None if not found. When a list of thing_ids or a
-            url is provided return a list of Submission objects (up to limit)
-            for the url.
+            url is provided return a list of thing objects (up to limit). None
+            is returned if any one of the thing_ids or the URL is invalid.
 
         """
         if bool(url) == bool(thing_id):
@@ -795,14 +795,14 @@ class UnauthenticatedReddit(BaseReddit):
             if limit:
                 params['limit'] = limit
         else:
-            if hasattr(thing_id, '__iter__'):
+            if not isinstance(thing_id, six.string_types):
                 thing_id = ','.join(thing_id)
                 url = True  # Enable returning a list
             params = {'id': thing_id}
         items = self.request_json(self.config['info'],
                                   params=params)['data']['children']
         if url:
-            return items
+            return items if items else None
         elif items:
             return items[0]
         else:

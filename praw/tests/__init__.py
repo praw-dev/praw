@@ -106,6 +106,7 @@ class BasicHelper(object):
 
         if self.r.config.is_reddit:
             self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
+            self.link_id = 't3_dtg4j'
             self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
             self.link_url_link = 'http://imgur.com/Vr8ZZ'
             self.more_comments_url = self.url('/r/redditdev/comments/dqkfz/')
@@ -349,6 +350,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
         num = 50
         result = self.r.get_top(limit=num, params={'t': 'all'})
         self.assertEqual(num, len(list(result)))
+
+    def test_info_by_id(self):
+        self.assertEqual(self.link_id,
+                         self.r.get_info(thing_id=self.link_id).fullname)
 
     def test_info_by_invalid_id(self):
         self.assertEqual(None, self.r.get_info(thing_id='INVALID'))
