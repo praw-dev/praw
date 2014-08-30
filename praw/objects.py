@@ -125,7 +125,8 @@ class RedditContentObject(object):
     def _populate(self, json_dict, fetch):
         if json_dict is None:
             json_dict = self._get_json_dict() if fetch else {}
-        self.json_dict = (json_dict if self.reddit_session.config.store_json_result
+        self.json_dict = (json_dict if
+                          self.reddit_session.config.store_json_result
                           is True else None)
 
         # TODO: Remove this wikipagelisting hack

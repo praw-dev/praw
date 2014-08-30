@@ -27,6 +27,7 @@ Unreleased
 handling HTTPS requests.
 * **[BUGFIX]** Fix bug where ``json_dict`` was set to ``None`` when it should
     not have been.
+* **[REDDIT]** Support ``thing_id`` lists.
 
 PRAW 2.1.18
 -----------

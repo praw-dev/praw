@@ -220,8 +220,8 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
         self.log_requests = int(obj['log_requests'])
         self.http_proxy = (obj.get('http_proxy') or os.getenv('http_proxy') or
                            None)
-        self.https_proxy = (obj.get('https_proxy') or os.getenv('https_proxy') or
-                           None)
+        self.https_proxy = (obj.get('https_proxy') or os.getenv('https_proxy')
+                            or None)
         # We use `get(...) or None` because `get` may return an empty string
         self.client_id = obj.get('oauth_client_id') or None
         self.client_secret = obj.get('oauth_client_secret') or None
@@ -772,15 +772,18 @@ class UnauthenticatedReddit(BaseReddit):
 
     @decorators.restrict_access(scope='read')
     def get_info(self, url=None, thing_id=None, limit=None):
-        """Look up existing Submissions by thing_id (fullname) or url.
+        """Look up existing items by thing_id (fullname) or url.
 
         :param url: The url to lookup.
-        :param thing_id: The submission to lookup by fullname.
+        :param thing_id: A single thing_id, or a list of thing_ids. A thing_id
+            can be any one of Comment (t1_), Link (t3_), or Subreddit (t5_) to
+            lookup by fullname.
         :param limit: The maximum number of Submissions to return when looking
             up by url. When None, uses account default settings.
-        :returns: When thing_id is provided, return the corresponding
-            Submission object, or None if not found. When url is provided
-            return a list of Submission objects (up to limit) for the url.
+        :returns: When a single thing_id is provided, return the corresponding
+            thing object, or None if not found. When a list of thing_ids or a
+            url is provided return a list of Submission objects (up to limit)
+            for the url.
 
         """
         if bool(url) == bool(thing_id):
@@ -792,6 +795,9 @@ class UnauthenticatedReddit(BaseReddit):
             if limit:
                 params['limit'] = limit
         else:
+            if hasattr(thing_id, '__iter__'):
+                thing_id = ','.join(thing_id)
+                url = True  # Enable returning a list
             params = {'id': thing_id}
         items = self.request_json(self.config['info'],
                                   params=params)['data']['children']
