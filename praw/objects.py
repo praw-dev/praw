@@ -389,14 +389,18 @@ class Reportable(RedditContentObject):
     """Interface for RedditContentObjects that can be reported."""
 
     @restrict_access(scope=None, login=True)
-    def report(self):
+    def report(self, reason=None):
         """Report this object to the moderators.
 
+        :param reason: The user-supplied reason for reporting a comment
+            or submission. Default: None (blank reason)
         :returns: The json response from the server.
 
         """
         url = self.reddit_session.config['report']
         data = {'id': self.fullname}
+        if reason:
+            data['reason'] = reason
         response = self.reddit_session.request_json(url, data=data)
         # Reported objects are automatically hidden as well
         # pylint: disable-msg=W0212
