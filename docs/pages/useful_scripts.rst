@@ -116,6 +116,10 @@ this page to add in more.
    A bot which made Massdrop available for everyone and then grew into an
    assortment of different fixes for links that regularly get mistakenly used,
    like Gfycat, Massdrop and Subreddit-Names in titles.
+   
+`Reddit Keyword Tracking Bot <https://github.com/SwedishBotMafia/RScanBot.Gen>`_ by Jermell Beane
+    <requires Kivy> A bot that will watch any subreddits and email you with updates when it finds words that matter to you.
+    settings are configured via a GUI making it easy for people who don't know how to edit python scripts. 
 
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
