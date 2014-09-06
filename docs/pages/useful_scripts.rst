@@ -101,25 +101,30 @@ this page to add in more.
     Copies your reddit saved links to a Diigo account of your choice. Makes use
     of PRAW and the Diigo API.
 
-`NetflixBot <http://github.com/alanwright/netflixbot>`_ by `Alan Wright <http://www.github.com/alanwright>`_
-    Parses comments for calls and determines if a movie is availble for
-    streaming on Netflix. Makes use of PRAW and the NetflixRouletteAPI. Run on
-    `u/NetflixBot <http://www.reddit.com/user/NetflixBot>`_.
+`NetflixBot <http://github.com/alanwright/netflixbot>`_ by `Alan Wright
+    <http://www.github.com/alanwright>`_ Parses comments for calls and
+    determines if a movie is availble for streaming on Netflix. Makes use of
+    PRAW and the NetflixRouletteAPI. Run on `u/NetflixBot
+    <http://www.reddit.com/user/NetflixBot>`_.
 
-`RemindMeBot <https://github.com/SIlver--/remindmebot-reddit>`_ by `Joey <http://www.github.com/Silver-->`_
-    Called upon with the ``RemindMeBot!`` command on any subreddit, the user is
-    able to set a reminder for themselves about the current thread or comment.
-    The bot will then send them a private message with the date they specified.
-    `u/RemindMeBot <http://www.reddit.com/user/RemindMeBot>`_.
+`RemindMeBot <https://github.com/SIlver--/remindmebot-reddit>`_ by `Joey
+    <http://www.github.com/Silver-->`_ Called upon with the ``RemindMeBot!``
+    command on any subreddit, the user is able to set a reminder for themselves
+    about the current thread or comment.  The bot will then send them a private
+    message with the date they specified.  `u/RemindMeBot
+    <http://www.reddit.com/user/RemindMeBot>`_.
 
 `Massdrop Multi Bot <http://github.com/darkmio/Massdrop-Reddit-Bot>`_
    A bot which made Massdrop available for everyone and then grew into an
    assortment of different fixes for links that regularly get mistakenly used,
    like Gfycat, Massdrop and Subreddit-Names in titles.
    
-`Reddit Keyword Tracking Bot <https://github.com/SwedishBotMafia/RScanBot.Gen>`_ by Jermell Beane
-    <requires Kivy> A bot that will watch any subreddits and email you with updates when it finds words that matter to you.
-    settings are configured via a GUI making it easy for people who don't know how to edit python scripts. 
+`Reddit Keyword Tracking Bot
+    <https://github.com/SwedishBotMafia/RScanBot.Gen>`_ by Jermell Beane
+    <requires Kivy> A bot that will watch any subreddits and email you with
+    updates when it finds words that matter to you.  settings are configured
+    via a GUI making it easy for people who don't know how to edit python
+    scripts.
 
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
