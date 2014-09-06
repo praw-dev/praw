@@ -23,11 +23,15 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
-* **[FEATURE]** Support providing HTTPS proxies, that is, proxies specific to
-handling HTTPS requests.
 * **[BUGFIX]** Fix bug where ``json_dict`` was set to ``None`` when it should
     not have been.
 * **[REDDIT]** Support ``thing_id`` lists.
+* **[FEATURE]** Support providing HTTPS proxies, that is, proxies specific to
+handling HTTPS requests.
+* **[FEATURE]** :meth:`~praw.objects.Redditor.get_liked` and
+    :meth:`~praw.objects.Redditor.get_disliked` now accept additional
+    arguments, e.g., limit.
+
 
 PRAW 2.1.18
 -----------
