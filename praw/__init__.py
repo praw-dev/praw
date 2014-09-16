@@ -173,7 +173,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'wiki_pages':          'r/%s/wiki/pages/',
                  'wiki_banned':         'r/%s/about/wikibanned/',
                  'wiki_contributors':   'r/%s/about/wikicontributors/'}
-    SSL_PATHS = ('access_token_url', 'authorize', 'login')
+    SSL_PATHS = ('access_token_url', 'authorize', 'friends', 'login')
 
     def __init__(self, site_name, **kwargs):
         def config_boolean(item):

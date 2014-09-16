@@ -1469,6 +1469,22 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
         self.other_user = self.r.get_redditor(self.other_user_name)
 
+    def test_add_remove_friends(self):
+        def verify_add():
+            self.other_user.friend()
+            self.assertTrue(self.other_user in self.r.user.get_friends())
+
+        def verify_remove():
+            self.other_user.unfriend()
+            self.assertTrue(self.other_user not in self.r.user.get_friends())
+
+        if self.other_user in self.r.user.get_friends():
+            verify_remove()
+            verify_add()
+        else:
+            verify_add()
+            verify_remove()
+
     def test_duplicate_login(self):
         self.r.login(self.other_user_name, self.other_user_pswd)
 
@@ -1478,12 +1494,6 @@ class RedditorTest(unittest.TestCase, AuthenticatedHelper):
         item.downvote()
         self.delay()  # The queue needs to be processed
         self.assertFalse(item in self.r.user.get_liked())
-
-    def test_get_friends(self):
-        # See issue 175.
-        # If this test fails and doesn't raise an exception, but smoothly calls
-        # self.r.user.get_friends, then issue 175 has been resolved.
-        self.assertRaises(errors.RedirectException, self.r.user.get_friends)
 
     def test_get_hidden(self):
         submission = next(self.r.user.get_submitted())
