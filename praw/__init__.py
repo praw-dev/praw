@@ -1392,10 +1392,11 @@ class ModConfigMixin(AuthenticatedReddit):
                      content_options='any', over_18=False, default_set=True,
                      show_media=False, domain='', domain_css=False,
                      domain_sidebar=False, header_hover_text='',
-                     wikimode='disabled', wiki_edit_age=30, wiki_edit_karma=100,
+                     wikimode='disabled', wiki_edit_age=30,
+                     wiki_edit_karma=100,
                      submit_link_label='', submit_text_label='',
                      exclude_banned_modqueue=False, comment_score_hide_mins=0,
-                     public_traffic=False, prev_submit_text_id=None,
+                     public_traffic=False,
                      spam_comments='low', spam_links='high',
                      spam_selfposts='high', submit_text='', **kwargs):
         """Set the settings for the given subreddit.
@@ -1432,8 +1433,6 @@ class ModConfigMixin(AuthenticatedReddit):
                 'wiki_edit_karma': six.text_type(wiki_edit_karma),
                 'wikimode': wikimode}
 
-        if prev_submit_text_id is not None:
-            data['prev_submit_text_id'] = prev_submit_text_id
         if kwargs:
             msg = 'Extra settings fields: {0}'.format(kwargs.keys())
             warn_explicit(msg, UserWarning, '', 0)

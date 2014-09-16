@@ -1534,21 +1534,17 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
                           'INVALID CSS')
 
     def test_update_settings_description(self):
-        self.maxDiff = None
         settings = self.subreddit.get_settings()
-        new_description = 'Description %s' % uuid.uuid4()
-        self.subreddit.update_settings(description=new_description)
-        new = self.subreddit.get_settings()
-        self.assertNotEqual(settings['description'], new['description'])
+        settings['description'] = 'Description %s' % uuid.uuid4()
+        self.subreddit.update_settings(description=settings['description'])
+        self.assertEqual(settings, self.subreddit.get_settings())
 
     def test_update_settings_public_description(self):
-        self.maxDiff = None
         settings = self.subreddit.get_settings()
-        new_public_description = 'Description %s' % uuid.uuid4()
+        settings['public_description'] = 'Description %s' % uuid.uuid4()
         self.subreddit.update_settings(
-            public_description=new_public_description)
-        new = self.subreddit.get_settings()
-        self.assertNotEqual(settings['public_description'], new['public_description'])
+            public_description=settings['public_description'])
+        self.assertEqual(settings, self.subreddit.get_settings())
 
 
 class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
