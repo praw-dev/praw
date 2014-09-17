@@ -104,13 +104,13 @@ def _prepare_request(reddit_session, url, params, data, auth, files):
     if getattr(reddit_session, '_use_oauth', False):
         headers = {'Authorization': 'bearer %s' % reddit_session.access_token}
         config = reddit_session.config
-        # pylint: disable-msg=W0212
-        for prefix in (config._site_url, config._ssl_url):
+        # TODO: Verify this works as expected
+        for prefix in (config.api_url, config.permalink_url):
             if url.startswith(prefix):
                 if config.log_requests >= 1:
-                    sys.stderr.write('substituting %s for %s in url\n'
-                                     % (config._oauth_url, prefix))
-                url = config._oauth_url + url[len(prefix):]
+                    sys.stderr.write('substituting {} for {} in url\n'
+                                     .format(config.oauth_url, prefix))
+                url = config.oauth_url + url[len(prefix):]
                 break
     else:
         headers = {}

@@ -32,6 +32,7 @@ Unreleased
    again work.
  * **[CHANGE]** :meth:`.is_root` no longer requires fetching submission
    objects.
+ * **[CHANGE]** All requests should now be through HTTPS.
  * **[REDDIT]** Support ``thing_id`` lists in :meth:`.get_info`.
  * **[FEATURE]** Support providing HTTPS proxies, that is, proxies specific to
    handling HTTPS requests.
