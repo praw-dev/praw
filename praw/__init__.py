@@ -147,7 +147,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'stylesheet':          'r/%s/about/stylesheet/',
                  'submit':              'api/submit/',
                  'sub_comments_gilded': 'r/%s/comments/gilded/',
-                 'sub_recommendations': 'api/subreddit_recommendations/',
+                 'sub_recommendations': 'api/recommend/sr/{0}',
                  'subreddit':           'r/%s/',
                  'subreddit_about':     'r/%s/about/',
                  'subreddit_comments':  'r/%s/comments/',
@@ -954,7 +954,7 @@ class UnauthenticatedReddit(BaseReddit):
             return self.get_random_subreddit()
         return objects.Subreddit(self, subreddit_name, *args, **kwargs)
 
-    def get_subreddit_recommendations(self, subreddits, omitted=None):
+    def get_subreddit_recommendations(self, subreddits, omit=None):
         """Return a list of recommended subreddits as Subreddit objects.
 
         Subreddits with activity less than a certain threshold, will not have
@@ -962,13 +962,13 @@ class UnauthenticatedReddit(BaseReddit):
 
         :param subreddits: A list of subreddits (either names or Subreddit
             objects) to base the recommendations on.
-        :param omitted: A list of subreddits (either names or Subreddit
+        :param omit: A list of subreddits (either names or Subreddit
             objects) that will be filtered out of the result.
+
         """
-        omitted = omitted or []
-        params = {'srnames': _to_reddit_list(subreddits),
-                  'omitted': _to_reddit_list(omitted)}
-        result = self.request_json(self.config['sub_recommendations'],
+        params = {'omit': _to_reddit_list(omit or [])}
+        result = self.request_json(self.config['sub_recommendations']
+                                   .format(_to_reddit_list(subreddits)),
                                    params=params)
         return [objects.Subreddit(self, sub['sr_name']) for sub in result]
 

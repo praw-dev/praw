@@ -35,7 +35,7 @@ from six import text_type
 
 from praw import Reddit, decorators, errors, helpers, internal
 from praw.objects import (Comment, LoggedInRedditor, Message, MoreComments,
-                          Submission)
+                          Submission, Subreddit)
 
 USER_AGENT = 'PRAW_test_suite'
 
@@ -1684,28 +1684,12 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
-    def test_clear_vote(self):
-        predicate = lambda submission: submission.likes is False
-        submission = self.first(self.r.user.get_submitted(), predicate)
-        submission.clear_vote()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertEqual(submission.likes, None)
-
     def test_delete(self):
         submission = list(self.r.user.get_submitted())[-1]
         submission.delete()
         # reload the submission
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertEqual(None, submission.author)
-
-    def test_downvote(self):
-        predicate = lambda submission: submission.likes is True
-        submission = self.first(self.r.user.get_submitted(), predicate)
-        submission.downvote()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertEqual(submission.likes, False)
 
     def test_hide(self):
         self.disable_cache()
@@ -1784,13 +1768,34 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         submission = self.r.get_submission(submission_id=submission.id)
         self.assertFalse(submission.saved)
 
-    def test_upvote(self):
-        predicate = lambda submission: submission.likes is None
-        submission = self.first(self.r.user.get_submitted(), predicate)
-        submission.upvote()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertEqual(submission.likes, True)
+    def test_voting(self):
+        def upvote():
+            submission.upvote()
+            self.r.evict(submission.permalink)
+            submission.refresh()
+            self.assertTrue(submission.likes)
+
+        def downvote():
+            submission.downvote()
+            self.r.evict(submission.permalink)
+            submission.refresh()
+            self.assertFalse(submission.likes)
+
+        def clear_vote():
+            submission.clear_vote()
+            self.r.evict(submission.permalink)
+            submission.refresh()
+            self.assertEqual(submission.likes, None)
+
+        submission = next(self.r.user.get_submitted())
+        if submission.likes:
+            downvote()
+            upvote()
+            clear_vote()
+        else:
+            upvote()
+            downvote()
+            clear_vote()
 
 
 class SubredditTest(unittest.TestCase, AuthenticatedHelper):
@@ -1832,8 +1837,9 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(list(self.subreddit.search('test')))
 
     def test_get_subreddit_recommendations(self):
-        result = self.r.get_subreddit_recommendations('python')
+        result = self.r.get_subreddit_recommendations(['python', 'redditdev'])
         self.assertTrue(result)
+        self.assertTrue(all(isinstance(x, Subreddit) for x in result))
 
     def test_subscribe_and_verify(self):
         self.subreddit.subscribe()
