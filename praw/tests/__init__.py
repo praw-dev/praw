@@ -386,9 +386,41 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertRaises(TypeError, Reddit, user_agent='')
         self.assertRaises(TypeError, Reddit, user_agent=1)
 
+    def test_store_json_result(self):
+        self.r.config.store_json_result = True
+        sub_url = ('http://www.reddit.com/r/reddit_api_test/comments/'
+                   '1f7ojw/oauth_submit/')
+        sub = self.r.get_submission(url=sub_url)
+        self.assertEqual(sub.json_dict['url'], sub_url)
+
+    def test_store_lazy_json_result(self):
+        self.r.config.store_json_result = True
+        subreddit = self.r.get_subreddit(self.sr)
+        # Force object to load
+        subreddit.title
+        self.assertEqual(subreddit.json_dict['display_name'], self.sr)
+
+
+class SearchTest(unittest.TestCase, BasicHelper):
+    def setUp(self):
+        self.configure()
+
     @reddit_only
     def test_search(self):
-        self.assertTrue(list(self.r.search('test')))
+        self.assertTrue(len(list(self.r.search('test'))) > 2)
+
+    @reddit_only
+    def test_search_multiply_submitted_url(self):
+        self.assertTrue(
+            len(list(self.r.search('http://www.livememe.com/'))) > 2)
+
+    def test_search_reddit_names(self):
+        self.assertTrue(self.r.search_reddit_names('reddit'))
+
+    @reddit_only
+    def test_search_single_submitted_url(self):
+        self.assertEqual(
+            1, len(list(self.r.search('http://www.livememe.com/vg972qp'))))
 
     @reddit_only
     def test_search_with_syntax(self):
@@ -406,23 +438,6 @@ class BasicTest(unittest.TestCase, BasicHelper):
         submissions = len(list(self.r.search('test', subreddit=self.sr,
                                              period='all', limit=num)))
         self.assertTrue(submissions == num)
-
-    def test_search_reddit_names(self):
-        self.assertTrue(self.r.search_reddit_names('reddit'))
-
-    def test_store_json_result(self):
-        self.r.config.store_json_result = True
-        sub_url = ('http://www.reddit.com/r/reddit_api_test/comments/'
-                   '1f7ojw/oauth_submit/')
-        sub = self.r.get_submission(url=sub_url)
-        self.assertEqual(sub.json_dict['url'], sub_url)
-
-    def test_store_lazy_json_result(self):
-        self.r.config.store_json_result = True
-        subreddit = self.r.get_subreddit(self.sr)
-        # Force object to load
-        subreddit.title
-        self.assertEqual(subreddit.json_dict['display_name'], self.sr)
 
 
 class CacheTest(unittest.TestCase, AuthenticatedHelper):

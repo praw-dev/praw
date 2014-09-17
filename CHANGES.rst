@@ -10,7 +10,7 @@ The changes listed below are divided into four categories.
  * **[CHANGE]** Other changes affecting user programs, such as the renaming of
    a function.
 
-Read `r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
+Read `/r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
 .. end_changelog_intro
@@ -23,14 +23,17 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
-* **[BUGFIX]** Fix bug where ``json_dict`` was set to ``None`` when it should
-    not have been.
-* **[REDDIT]** Support ``thing_id`` lists.
-* **[FEATURE]** Support providing HTTPS proxies, that is, proxies specific to
-handling HTTPS requests.
-* **[FEATURE]** :meth:`~praw.objects.Redditor.get_liked` and
-    :meth:`~praw.objects.Redditor.get_disliked` now accept additional
-    arguments, e.g., limit.
+ * **[BUGFIX]** Support URLs in :meth:`~praw.__init__.UnauthenticatedReddit.search`.
+ * **[BUGFIX]** Fix bug where ``json_dict`` was set to ``None`` when it should
+   not have been.
+ * **[CHANGE]** :meth:`.get_friends` and :meth:`~.Subreddit.get_banned` once
+   again work.
+ * **[REDDIT]** Support ``thing_id`` lists in :meth:`.get_info`.
+ * **[FEATURE]** Support providing HTTPS proxies, that is, proxies specific to
+   handling HTTPS requests.
+ * **[FEATURE]** :meth:`~praw.objects.Redditor.get_liked` and
+   :meth:`~praw.objects.Redditor.get_disliked` now accept additional
+   arguments, e.g., limit.
 
 
 PRAW 2.1.18
@@ -76,7 +79,7 @@ PRAW 2.1.15
    :meth:`~praw.objects.Saveable.unsave`.
  * **[BUGFIX]** Fix Google AppEngine bug with ``platform.platform``.
  * **[REDDIT]** Using :meth:`~praw.__init__.UnauthenticatedReddit.get_flair`
-   now requires moderator access. See `this r/redditdev thread
+   now requires moderator access. See `this /r/redditdev thread
    <http://www.reddit.com/r/redditdev/comments/1xreor/
    has_there_been_a_change_to_the_permissions/>`_
  * **[CHANGE]** Increase the dependency of ``update_checker`` to 0.9 or later.
@@ -95,7 +98,7 @@ PRAW 2.1.13
    to >= 0.8.
  * **[REDDIT]** Add support for changes to UserLists on reddit.
  * **[REDDIT]** Using get_flair_list now requires moderator access. See
-   `this r/redditdev thread <http://www.reddit.com/r/redditdev/comments/1xreor/
+   `this /r/redditdev thread <http://www.reddit.com/r/redditdev/comments/1xreor/
    has_there_been_a_change_to_the_permissions/>`_
  * **[BUGFIX]** Fix configuration parsing for ``store_json_result``.
  * **[BUGFIX]** Fix duplicate bug in :class:`.BoundedSet`.
@@ -526,7 +529,7 @@ PRAW 2.0.0
 PRAW 1.0.16
 -----------
 
- * **[FEATURE]** Add support for r/random.
+ * **[FEATURE]** Add support for /r/random.
 
 PRAW 1.0.15
 -----------

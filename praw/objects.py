@@ -850,10 +850,11 @@ class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
         :param params: dictionary containing extra GET data to put in the url.
 
         """
-        query_pairs = parse_qs(urlparse(url).query)
+        parsed = urlparse(url)
+        query_pairs = parse_qs(parsed.query)
         get_params = dict((k, ",".join(v)) for k, v in query_pairs.items())
         params.update(get_params)
-        url = urlunparse(urlparse(url)[:3] + ("", "", ""))
+        url = urlunparse(parsed[:3] + ("", "", ""))
         if comment_limit is None:  # Fetch MAX
             params['limit'] = 2048  # Just use a big number
         elif comment_limit > 0:  # Use value

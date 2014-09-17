@@ -40,6 +40,7 @@ from praw.settings import CONFIG
 from requests.compat import urljoin
 from requests import Request
 from six.moves import html_entities, http_cookiejar
+from six.moves.urllib.parse import parse_qs, urlparse, urlunparse
 from update_checker import update_check
 from warnings import warn_explicit
 
@@ -511,7 +512,8 @@ class BaseReddit(object):
         :returns: JSON processed page
 
         """
-        url += '.json'
+        if not url.endswith('.json'):
+            url += '.json'
         if retry_on_error is None:
             response = self._request(url, params, data)
         else:
@@ -1007,7 +1009,8 @@ class UnauthenticatedReddit(BaseReddit):
                period=None, *args, **kwargs):
         """Return a generator for submissions that match the search query.
 
-        :param query: The query string to search for.
+        :param query: The query string to search for. If query is a URL only
+            submissions which link to that URL will be returned.
         :param subreddit: Limit search results to the subreddit if provided.
         :param sort: The sort order of the results.
         :param syntax: The syntax of the search query.
@@ -1033,7 +1036,24 @@ class UnauthenticatedReddit(BaseReddit):
             url = self.config['search'] % subreddit
         else:
             url = self.config['search'] % 'all'
-        return self.get_content(url, params=params, *args, **kwargs)
+
+        depth = 2
+        while depth > 0:
+            depth -= 1
+            try:
+                for item in self.get_content(url, params=params, *args,
+                                             **kwargs):
+                    yield item
+                break
+            except errors.RedirectException as exc:
+                parsed = urlparse(exc.response_url)
+                params = dict((k, ",".join(v)) for k, v in
+                              parse_qs(parsed.query).items())
+                url = urlunparse(parsed[:3] + ("", "", ""))
+                # Handle redirects from URL searches
+                if 'already_submitted' in params:
+                    yield self.get_submission(url)
+                    break
 
     def search_reddit_names(self, query):
         """Return subreddits whose display name contains the query."""
