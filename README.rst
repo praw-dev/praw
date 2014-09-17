@@ -7,7 +7,6 @@ PRAW: The Python Reddit API Wrapper
 
 .. image:: https://travis-ci.org/praw-dev/praw.svg?branch=master
            :target: https://travis-ci.org/praw-dev/praw
-		   
 .. image:: https://coveralls.io/repos/praw-dev/praw/badge.svg?branch=master
   :target: https://coveralls.io/r/praw-dev/praw?branch=master
 
@@ -79,10 +78,10 @@ Support
 -------
 
 The official place to ask questions about PRAW, reddit and other API wrappers
-is `r/redditdev <http://www.reddit.com/r/redditdev>`_. If the question is more
+is `r/redditdev <https://www.reddit.com/r/redditdev>`_. If the question is more
 about Python and less about PRAW, such as "what are generators", then you're
 likely to get more, faster and more in-depth answers in `r/learnpython
-<http://www.reddit.com/r/learnpython>`_.
+<https://www.reddit.com/r/learnpython>`_.
 
 If you've uncovered a bug or have a feature request, then `make an issue on our
 project page at github <https://github.com/praw-dev/praw/issues>`_.

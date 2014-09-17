@@ -151,7 +151,7 @@ class OAuth2RedditTest(PRAWTest):
 
     @betamax
     def test_scope_read_get_submission_by_url(self):
-        url = ("http://www.reddit.com/r/reddit_api_test_priv/comments/16kbb7/"
+        url = ("https://www.reddit.com/r/reddit_api_test_priv/comments/16kbb7/"
                "google/")
         self.r.refresh_access_information(self.refresh_token['read'])
         submission = Submission.from_url(self.r, url)

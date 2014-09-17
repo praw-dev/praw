@@ -45,7 +45,7 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '2.1.21'
+__version__ = '3.0a1'
 
 if os.environ.get('SERVER_SOFTWARE') is not None:
     # Google App Engine information
@@ -181,7 +181,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'wiki_pages':          'r/%s/wiki/pages/',
                  'wiki_banned':         'r/%s/about/wikibanned/',
                  'wiki_contributors':   'r/%s/about/wikicontributors/'}
-    SSL_PATHS = ('access_token_url', 'authorize', 'friends', 'login')
+    WWW_PATHS = set(['authorize'])
 
     def __init__(self, site_name, **kwargs):
         """Initialize PRAW's configuration."""
@@ -194,19 +194,10 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
         for key, value in kwargs.items():
             obj[key] = value
 
-        self._site_url = 'http://' + obj['domain']
-        if 'ssl_domain' in obj:
-            self._ssl_url = 'https://' + obj['ssl_domain']
-        else:
-            self._ssl_url = None
-        if 'oauth_domain' in obj:
-            if config_boolean(obj['oauth_https']):
-                self._oauth_url = 'https://' + obj['oauth_domain']
-            else:
-                self._oauth_url = 'http://' + obj['oauth_domain']
-        else:
-            self._oauth_url = self._ssl_url
-
+        self.api_url = 'https://' + obj['api_domain']
+        self.permalink_url = 'https://' + obj['permalink_domain']
+        self.oauth_url = ('https://' if config_boolean(obj['oauth_https'])
+                          else 'http://') + obj['oauth_domain']
         self.api_request_delay = float(obj['api_request_delay'])
         self.by_kind = {obj['comment_kind']:    objects.Comment,
                         obj['message_kind']:    objects.Message,
@@ -225,7 +216,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
         self.cache_timeout = float(obj['cache_timeout'])
         self.check_for_updates = config_boolean(obj['check_for_updates'])
         self.decode_html_entities = config_boolean(obj['decode_html_entities'])
-        self.domain = obj['domain']
+        self.domain = obj['permalink_domain']
         self.output_chars_limit = int(obj['output_chars_limit'])
         self.log_requests = int(obj['log_requests'])
         self.http_proxy = (obj.get('http_proxy') or os.getenv('http_proxy') or
@@ -248,13 +239,12 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
             self.pswd = obj['pswd']
         except KeyError:
             self.user = self.pswd = None
-        self.is_reddit = obj['domain'].endswith('reddit.com')
+        self.is_reddit = self.domain.endswith('reddit.com')
 
     def __getitem__(self, key):
         """Return the URL for key."""
-        if self._ssl_url and key in self.SSL_PATHS:
-            return urljoin(self._ssl_url, self.API_PATHS[key])
-        return urljoin(self._site_url, self.API_PATHS[key])
+        prefix = self.permalink_url if key in self.WWW_PATHS else self.api_url
+        return urljoin(prefix, self.API_PATHS[key])
 
     @property
     def short_domain(self):
@@ -669,7 +659,7 @@ class OAuth2Reddit(BaseReddit):
         This function need only be called if your praw.ini site configuration
         does not already contain the necessary information.
 
-        Go to https://ssl.reddit.com/prefs/apps/ to discover the appropriate
+        Go to https://www.reddit.com/prefs/apps/ to discover the appropriate
         values for your application.
 
         :param client_id: the client_id of your application
@@ -979,6 +969,7 @@ class UnauthenticatedReddit(BaseReddit):
             raise TypeError('One (and only one) of id or url is required!')
         if submission_id:
             url = urljoin(self.config['comments'], submission_id)
+        # TODO: This request 403s if on HTTPS and given an HTTP url.
         return objects.Submission.from_url(self, url,
                                            comment_limit=comment_limit,
                                            comment_sort=comment_sort,
@@ -2219,14 +2210,13 @@ class SubmitMixin(AuthenticatedReddit):
         result = self.request_json(self.config['submit'], data=data,
                                    retry_on_error=False)
         url = result['data']['url']
-        # Clear the OAUth setting when attempting to fetch the submission
-        # pylint: disable-msg=W0212
+        # Clear the OAuth setting when attempting to fetch the submission
         if self._use_oauth:
             self._use_oauth = False
+            # TODO Verify this hack
             # Hack until reddit/627 is resolved
-            if url.startswith(self.config._oauth_url):
-                url = self.config._site_url + url[len(self.config._oauth_url):]
-        # pylint: enable-msg=W0212
+            if url.startswith(self.config.oauth_url):
+                url = self.config.api_url + url[len(self.config.oauth_url):]
         try:
             return self.get_submission(url)
         except requests.exceptions.HTTPError as error:

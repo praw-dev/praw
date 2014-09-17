@@ -21,6 +21,9 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[CHANGE]** All requests should now be through HTTPS.
 
 PRAW 2.1.21
 -----------
@@ -29,7 +32,7 @@ PRAW 2.1.21
  * **[BUGFIX]** :meth:`.refresh` on :class:`praw.objects.Submission` no longer
    loses comment sort order and other manually specified parameters.
  * **[REDDIT]** Add ``hide_ads`` as a parameter to
- :meth:`~praw.__init__.ModConfigMixin.set_settings`.
+   :meth:`~praw.__init__.ModConfigMixin.set_settings`.
  * **[REDDIT]** :meth:`.create_redditor` no longer requires a captcha
  * **[REDDIT]** :meth:`.create_subreddit` may require a captcha
 

@@ -385,7 +385,7 @@ class Inboxable(RedditContentObject):
         # pylint: enable-msg=W0212
         urls = [self.reddit_session.config['inbox']]
         if isinstance(self, Comment):
-            urls.append(self.submission.permalink)
+            urls.append(self.submission._api_link)
         elif isinstance(self, Message):
             urls.append(self.reddit_session.config['sent'])
         self.reddit_session.evict(urls)
@@ -966,7 +966,8 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
     def __init__(self, reddit_session, json_dict):
         """Construct an instance of the Subreddit object."""
         super(Submission, self).__init__(reddit_session, json_dict)
-        self.permalink = urljoin(reddit_session.config['reddit_url'],
+        self._api_link = urljoin(reddit_session.config.api_url, self.permalink)
+        self.permalink = urljoin(reddit_session.config.permalink_url,
                                  self.permalink)
         self._comment_sort = None
         self._comments_by_id = {}
@@ -1018,7 +1019,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         # pylint: disable-msg=W0212
         response = self.reddit_session._add_comment(self.fullname, text)
         # pylint: enable-msg=W0212
-        self.reddit_session.evict(self.permalink)
+        self.reddit_session.evict(self._api_link)
         return response
 
     @property
@@ -1034,7 +1035,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         """
         if self._comments is None:
             self.comments = Submission.from_url(self.reddit_session,
-                                                self.permalink,
+                                                self._api_link,
                                                 comments_only=True)
         return self._comments
 

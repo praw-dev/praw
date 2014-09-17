@@ -89,8 +89,7 @@ class BasicHelper(object):
         return first_hit
 
     def url(self, path):
-        # pylint: disable-msg=W0212
-        return urljoin(self.r.config._site_url, path)
+        return urljoin(self.r.config.permalink_url, path)
 
 
 class PRAWTest(unittest.TestCase, BasicHelper):
