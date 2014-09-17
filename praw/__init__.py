@@ -906,6 +906,7 @@ class UnauthenticatedReddit(BaseReddit):
             raise TypeError('One (and only one) of id or url is required!')
         if submission_id:
             url = urljoin(self.config['comments'], submission_id)
+        # TODO: This request 403s if on HTTPS and given an HTTP url.
         return objects.Submission.from_url(self, url,
                                            comment_limit=comment_limit,
                                            comment_sort=comment_sort,
