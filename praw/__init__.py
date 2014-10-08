@@ -116,6 +116,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
                  'mentions':            'message/mentions',
+                 'messages':            'message/messages/',
                  'moderators':          'r/%s/about/moderators/',
                  'modlog':              'r/%s/about/log/',
                  'modqueue':            'r/%s/about/modqueue/',
@@ -1966,18 +1967,29 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         data = {'id': ','.join(thing_ids)}
         key = 'unread_message' if unread else 'read_message'
         response = self.request_json(self.config[key], data=data)
-        self.evict([self.config[x] for x in ['inbox', 'mod_mail', 'unread']])
+        self.evict([self.config[x] for x in ['inbox', 'messages',
+                                             'mod_mail', 'unread']])
         return response
 
     @decorators.restrict_access(scope='privatemessages')
     def get_inbox(self, *args, **kwargs):
-        """Return a get_content generator for inbox messages.
+        """Return a get_content generator for inbox (messages and comments).
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
         return self.get_content(self.config['inbox'], *args, **kwargs)
+
+    @decorators.restrict_access(scope='privatemessages')
+    def get_messages(self, *args, **kwargs):
+        """Return a get_content generator for inbox (messages only).
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['messages'], *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
     def get_sent(self, *args, **kwargs):
