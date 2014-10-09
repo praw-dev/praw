@@ -549,8 +549,8 @@ class Comment(Editable, Inboxable, Moderatable, Reportable, Voteable):
     @property
     def is_root(self):
         """Return True when the comment is a top level comment."""
-        return (self.parent_id is None or
-                self.parent_id == self.submission.fullname)
+        sub_prefix = self.reddit_session.config.by_object[Submission]
+        return self.parent_id.startswith(sub_prefix)
 
     @property
     def permalink(self):

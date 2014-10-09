@@ -4,11 +4,11 @@ Changelog
 =========
 
 The changes listed below are divided into four categories.
- * **[FEATURE]** Something new has been added.
  * **[BUGFIX]** Something was broken before, but is now fixed.
- * **[REDDIT]** A change caused by an upstream change from reddit.
  * **[CHANGE]** Other changes affecting user programs, such as the renaming of
    a function.
+ * **[FEATURE]** Something new has been added.
+ * **[REDDIT]** A change caused by an upstream change from reddit.
 
 Read `/r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
@@ -26,14 +26,20 @@ Unreleased
  * **[BUGFIX]** Support URLs in :meth:`~praw.__init__.UnauthenticatedReddit.search`.
  * **[BUGFIX]** Fix bug where ``json_dict`` was set to ``None`` when it should
    not have been.
+ * **[BUGFIX]** Fix :meth:`.get_subreddit_recommendations` to work with the
+   updated API route.
  * **[CHANGE]** :meth:`.get_friends` and :meth:`~.Subreddit.get_banned` once
    again work.
+ * **[CHANGE]** :meth:`.is_root` no longer requires fetching submission
+   objects.
  * **[REDDIT]** Support ``thing_id`` lists in :meth:`.get_info`.
  * **[FEATURE]** Support providing HTTPS proxies, that is, proxies specific to
    handling HTTPS requests.
  * **[FEATURE]** :meth:`~praw.objects.Redditor.get_liked` and
    :meth:`~praw.objects.Redditor.get_disliked` now accept additional
    arguments, e.g., limit.
+ * **[FEATURE]** Add :meth:`.get_messages` for specifically retreiving messages
+   (not replies).
 
 
 PRAW 2.1.18
