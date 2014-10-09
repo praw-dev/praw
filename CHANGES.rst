@@ -40,6 +40,8 @@ Unreleased
    arguments, e.g., limit.
  * **[FEATURE]** Add :meth:`.get_messages` for specifically retreiving messages
    (not replies).
+ * **[REDDIT]** Add ``collapse_deleted_comments`` as a parameter to
+   :meth:`.set_settings`.
 
 
 PRAW 2.1.18

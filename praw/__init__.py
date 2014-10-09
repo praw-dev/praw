@@ -1417,7 +1417,7 @@ class ModConfigMixin(AuthenticatedReddit):
                      wiki_edit_karma=100,
                      submit_link_label='', submit_text_label='',
                      exclude_banned_modqueue=False, comment_score_hide_mins=0,
-                     public_traffic=False,
+                     public_traffic=False, collapse_deleted_comments=False,
                      spam_comments='low', spam_links='high',
                      spam_selfposts='high', submit_text='', **kwargs):
         """Set the settings for the given subreddit.
@@ -1426,22 +1426,23 @@ class ModConfigMixin(AuthenticatedReddit):
         :returns: The json response from the server.
 
         """
+
         data = {'sr': subreddit.fullname,
-                'allow_top': 'on' if default_set else 'off',
+                'allow_top': default_set,
                 'comment_score_hide_mins': comment_score_hide_mins,
+                'collapse_deleted_comments': collapse_deleted_comments,
                 'description': description,
                 'domain': domain or '',
-                'domain_css': 'on' if domain_css else 'off',
-                'domain_sidebar': 'on' if domain_sidebar else 'off',
-                'exclude_banned_modqueue': ('on' if exclude_banned_modqueue
-                                            else 'off'),
+                'domain_css': domain_css,
+                'domain_sidebar': domain_sidebar,
+                'exclude_banned_modqueue': exclude_banned_modqueue,
                 'header-title': header_hover_text or '',
                 'lang': language,
                 'link_type': content_options,
-                'over_18': 'on' if over_18 else 'off',
+                'over_18': over_18,
                 'public_description': public_description,
                 'public_traffic': public_traffic,
-                'show_media': 'on' if show_media else 'off',
+                'show_media': show_media,
                 'submit_link_label': submit_link_label or '',
                 'submit_text': submit_text,
                 'submit_text_label': submit_text_label or '',
