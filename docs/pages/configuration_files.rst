@@ -53,18 +53,26 @@ config file. Each site can overwrite any of these variables.
 
 * *api_request_delay*: A **float** that defines the number of seconds required
   between calls to the same domain.
+* *api_domain*: A **string** that defines the *domain* to use for all
+  standard API requests.
 * *check_for_updates* A **boolean** to indicate whether or not to check for
   package updates.
 * *cache_timeout*: An **integer** that defines the number of seconds to
   internally cache GET/POST requests based on URL.
 * *decode_html_entities*: A **boolean** that controls whether or not HTML
   entities are decoded.
+* *oauth_domain*: A **string** that defines the *domain* where OAuth
+  authenticated requests are sent.
 * *oauth_https*: A **boolean** that determines whether or not to use HTTPS for
   oauth connections. This should only be changed for development environments.
 * *output_chars_limit*: A **integer** that defines the maximum length of
   unicode representations of :class:`.Comment`, :class:`.Message` and
   :class:`.Submission` objects. This is mainly used to fit them within a
   terminal window line. A negative value means no limit.
+* *permalink_domain*: A **string** that defines the *domain* that is used for
+   the display *permalink* for Submissions and Comments.
+* *short_domain*: A **string** that defines the *domain* that is used for
+   short urls.
 * *timeout* Maximum time, a **float**, in seconds, before a single HTTP request
   times out. urllib2.URLError is raised upon timeout.
 * *xxx_kind*: A **string** that maps the *type* returned by json results to a
@@ -110,9 +118,6 @@ variables are:
 * *ssl_domain*: A **string** that defines the *domain*  where encrypted
   requests are sent. This is used for logging in, both OAuth and user/password.
   When not provided, these requests are sent in plaintext (unencrypted).
-* *oauth_domain*: A **string** that defines the *domain* where OAuth
-  authenticated requests are sent. If it's not given, then OAuth cannot be
-  used.
 * *oauth_client_id:* A **string** that, if given, defines the ``client_id`` a
   reddit object is initialized with.
 * *oauth_client_secret:* A **string** that, if given, defines the

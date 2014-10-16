@@ -153,8 +153,7 @@ class BasicHelper(object):
         return first_hit
 
     def url(self, path):
-        # pylint: disable-msg=W0212
-        return urljoin(self.r.config._site_url, path)
+        return urljoin(self.r.config.permalink_url, path)
 
 
 class AuthenticatedHelper(BasicHelper):
@@ -1422,7 +1421,7 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
 
     @reddit_only
     def test_scope_read_get_submission_by_url(self):
-        url = ("http://www.reddit.com/r/reddit_api_test_priv/comments/16kbb7/"
+        url = ("https://www.reddit.com/r/reddit_api_test_priv/comments/16kbb7/"
                "google/")
         self.r.refresh_access_information(self.refresh_token['read'])
         submission = Submission.from_url(self.r, url)
