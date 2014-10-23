@@ -41,7 +41,7 @@ Unreleased
  * **[FEATURE]** Add :meth:`.get_messages` for specifically retreiving messages
    (not replies).
  * **[REDDIT]** Add ``collapse_deleted_comments`` as a parameter to
-   :meth:`.set_settings`.
+   :meth:`~praw.__init__.ModConfigMixin.set_settings`.
 
 
 PRAW 2.1.18
@@ -243,7 +243,8 @@ PRAW 2.1.4
    :meth:`~praw.__init__.ModOnlyMixin.get_unmoderated` when calling them from
    :obj:`.Reddit` without giving the subreddit argument explicitly.
  * **[REDDIT]** New fields ``public_traffic`` added to
-   :meth:`~.Subreddit.set_settings` as per the upstream change.
+   :meth:`~praw.__init__.ModConfigMixin.set_settings` as per the upstream
+   change.
 
 PRAW 2.1.3
 ----------
@@ -615,8 +616,9 @@ PRAW 1.0.7
 ----------
 
  * **[REDDIT]** New fields ``prev_description_id`` and
-   ``prev_public_description_id`` added to :meth:`~.Subreddit.set_settings` as
-   per the upstream change.
+   ``prev_public_description_id`` added to
+   :meth:`~praw.__init__.ModConfigMixin.set_settings` as per the upstream
+   change.
 
 PRAW 1.0.6
 ----------
