@@ -42,6 +42,18 @@ not be shared with anybody. At the bottom is the ``redirect_uri``.
 Step 2: Setting up PRAW.
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. WARNING:: This example, like most of the PRAW examples, binds an instance of
+  PRAW to the ``r`` varaible. While we've made no distinction before, ``r`` (or
+  any instance of PRAW) should not be bound to a global variable due to the
+  fact that a single instance of PRAW cannot concurrently manage multiple
+  distinct user-sessions.
+
+  If you want to persist instances of PRAW across multiple requests in a web
+  application, we recommend that you create an new instance per distinct
+  authentication. Furthermore, if your web application spawns multiple
+  processes, it is highly recommended that you utilize PRAW's
+  :ref:`multiprocess <multiprocess>` functionality.
+
 We start as usual by importing the PRAW package and creating a :class:`.Reddit`
 object with a clear and descriptive useragent that follows the `api rules
 <https://github.com/reddit/reddit/wiki/API>`_.
