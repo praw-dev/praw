@@ -1367,6 +1367,8 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
     def test_scope_modconfig(self):
         self.r.refresh_access_information(self.refresh_token['modconfig'])
         self.r.get_subreddit(self.sr).set_settings('foobar')
+        retval = self.r.get_subreddit(self.sr).get_stylesheet()
+        self.assertTrue('images' in retval)
 
     @reddit_only
     def test_scope_modflair(self):

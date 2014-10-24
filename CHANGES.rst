@@ -42,6 +42,10 @@ Unreleased
    (not replies).
  * **[REDDIT]** Add ``collapse_deleted_comments`` as a parameter to
    :meth:`~praw.__init__.ModConfigMixin.set_settings`.
+ * **[REDDIT]** :meth:`~praw.__init__.ModOnlyMixin.get_stylesheet` now supports
+   using the ``modconfg`` OAuth scope.
+ * **[REDDIT]** :meth:`~praw.__init__.ModOnlyMixin.get_stylesheet` no longer
+   accepts the ``prevstyle`` argument.
 
 
 PRAW 2.1.18

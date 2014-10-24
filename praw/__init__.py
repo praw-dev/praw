@@ -1464,7 +1464,7 @@ class ModConfigMixin(AuthenticatedReddit):
         return self.request_json(self.config['site_admin'], data=data)
 
     @decorators.restrict_access(scope='modconfig')
-    def set_stylesheet(self, subreddit, stylesheet, prevstyle=None):
+    def set_stylesheet(self, subreddit, stylesheet):
         """Set stylesheet for the given subreddit.
 
         :returns: The json response from the server.
@@ -1473,8 +1473,6 @@ class ModConfigMixin(AuthenticatedReddit):
         data = {'r': six.text_type(subreddit),
                 'stylesheet_contents': stylesheet,
                 'op': 'save'}  # Options: save / preview
-        if prevstyle is not None:
-            data['prevstyle'] = prevstyle
         self.evict(self.config['stylesheet'] % six.text_type(subreddit))
         return self.request_json(self.config['subreddit_css'], data=data)
 
@@ -1848,9 +1846,7 @@ class ModOnlyMixin(AuthenticatedReddit):
         return self.get_content(self.config['spam'] % six.text_type(subreddit),
                                 *args, **kwargs)
 
-    # OAuth scope modconfig for this method cannot be added until there has
-    # been an upstream change. See issue #174. Then the restriction will be
-    # @restrict_access('modconfig', mod=False, login=False)
+    @decorators.restrict_access('modconfig', mod=False, login=False)
     def get_stylesheet(self, subreddit):
         """Return the stylesheet and images for the given subreddit."""
         return self.request_json(self.config['stylesheet'] %
