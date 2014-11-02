@@ -26,6 +26,7 @@ import sys
 import time
 from functools import partial
 from requests.exceptions import HTTPError
+from timeit import default_timer as timer
 
 BACKOFF_START = 4  # Minimum number of seconds to sleep during errors
 KEEP_ITEMS = 128  # On each iteration only remember the first # items
@@ -107,7 +108,7 @@ def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
     while True:
         items = []
         sleep = None
-        start = time.time()
+        start = timer()
         try:
             i = None
             params = {'count': count}
@@ -148,7 +149,7 @@ def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
             backoff *= 2
         # Provide rate limit
         if verbosity >= 1:
-            rate = len(items) / (time.time() - start)
+            rate = len(items) / (timer() - start)
             sys.stderr.write(' Items: {0} ({1:.2f} ips)    \r'
                              .format(processed, rate))
             sys.stderr.flush()

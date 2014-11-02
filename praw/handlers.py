@@ -9,6 +9,7 @@ from praw.helpers import normalize_url
 from requests import Session
 from six.moves import cPickle
 from threading import Lock
+from timeit import default_timer as timer
 
 
 class RateLimitHandler(object):
@@ -45,7 +46,7 @@ class RateLimitHandler(object):
             with lock_last[0]:  # Obtain the domain specific lock
                 cls.rl_lock.release()
                 # Sleep if necessary, then perform the request
-                now = time.time()
+                now = timer()
                 delay = lock_last[1] + _rate_delay - now
                 if delay > 0:
                     now += delay
@@ -115,7 +116,7 @@ class DefaultHandler(RateLimitHandler):
             def clear_timeouts():
                 """Clear the cache of timed out results."""
                 for key in list(cls.timeouts):
-                    if time.time() - cls.timeouts[key] > _cache_timeout:
+                    if timer() - cls.timeouts[key] > _cache_timeout:
                         del cls.timeouts[key]
                         del cls.cache[key]
 
@@ -139,7 +140,7 @@ class DefaultHandler(RateLimitHandler):
             if result.status_code not in (200, 302):
                 return result
             with cls.ca_lock:
-                cls.timeouts[_cache_key] = time.time()
+                cls.timeouts[_cache_key] = timer()
                 cls.cache[_cache_key] = result
                 return result
         return wrapped
