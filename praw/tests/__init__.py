@@ -224,12 +224,18 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
 
-    def test_base_36_conversion(self):
-        self.assertEquals(helpers.convert_numeric_id_to_id36(295), '87')
-        self.assertEquals(helpers.convert_id36_to_numeric_id('87'), 295)
+    def test_comparison(self):
+        self.assertEqual(self.r.get_redditor('bboe'),
+                         self.r.get_redditor('BBOE'))
+        self.assertEqual(self.r.get_subreddit('bboe'),
+                         self.r.get_subreddit('BBOE'))
 
-        self.assertEquals(helpers.convert_numeric_id_to_id36(275492), '5wkk')
-        self.assertEquals(helpers.convert_id36_to_numeric_id('5wkk'), 275492)
+    def test_base_36_conversion(self):
+        self.assertEqual(helpers.convert_numeric_id_to_id36(295), '87')
+        self.assertEqual(helpers.convert_id36_to_numeric_id('87'), 295)
+
+        self.assertEqual(helpers.convert_numeric_id_to_id36(275492), '5wkk')
+        self.assertEqual(helpers.convert_id36_to_numeric_id('5wkk'), 275492)
 
         self.assertRaises(TypeError, helpers.convert_numeric_id_to_id36)
         self.assertRaises(ValueError, helpers.convert_numeric_id_to_id36, '1')
@@ -1871,7 +1877,7 @@ class ToRedditListTest(unittest.TestCase, BasicHelper):
     def test__to_reddit_list(self):
         # pylint: disable-msg=W0212
         output = internal._to_reddit_list('hello')
-        self.assertEquals('hello', output)
+        self.assertEqual('hello', output)
 
     def test__to_reddit_list_with_list(self):
         # pylint: disable-msg=W0212

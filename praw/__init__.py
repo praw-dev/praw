@@ -68,7 +68,7 @@ PNG_HEADER = b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
 if six.PY3:
     CHR = chr
 else:
-    CHR = unichr
+    CHR = unichr  # NOQA
 
 
 class Config(object):  # pylint: disable-msg=R0903, R0924

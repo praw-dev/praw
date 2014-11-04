@@ -664,14 +664,6 @@ class Redditor(Messageable, Refreshable):
         self._url = reddit_session.config['user'] % self.name
         self._mod_subs = None
 
-    def __cmp__(self, other):
-        """Compare two redditors based on the lowercase of their name.
-
-        :returns: negative, 0, or positive depending on the comparison.
-
-        """
-        return cmp(self.name.lower(), other.name.lower())
-
     def __repr__(self):
         return 'Redditor(user_name=\'{0}\')'.format(self.name)
 
@@ -1247,14 +1239,6 @@ class Subreddit(Messageable, Refreshable):
     get_top_from_month = _get_sorter('top', t='month')
     get_top_from_week = _get_sorter('top', t='week')
     get_top_from_year = _get_sorter('top', t='year')
-
-    def __cmp__(self, other):
-        """Compare two subreddits based on the lowercase of their name.
-
-        :returns: negative, 0, or positive depending on the comparison.
-
-        """
-        return cmp(self.display_name.lower(), other.display_name.lower())
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
                  fetch=False):
