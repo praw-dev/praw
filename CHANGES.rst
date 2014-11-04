@@ -21,13 +21,14 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-Unreleased
-----------
+PRAW 2.1.19
+-----------
  * **[BUGFIX]** Support URLs in :meth:`~praw.__init__.UnauthenticatedReddit.search`.
  * **[BUGFIX]** Fix bug where ``json_dict`` was set to ``None`` when it should
    not have been.
  * **[BUGFIX]** Fix :meth:`.get_subreddit_recommendations` to work with the
    updated API route.
+ * **[BUGFIX]** Track time between requests using ``timeit.default_timer``.
  * **[CHANGE]** :meth:`.get_friends` and :meth:`~.Subreddit.get_banned` once
    again work.
  * **[CHANGE]** :meth:`.is_root` no longer requires fetching submission

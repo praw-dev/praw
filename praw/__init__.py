@@ -45,7 +45,7 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '2.1.18'
+__version__ = '2.1.19'
 
 if os.environ.get('SERVER_SOFTWARE') is not None:
     # Google App Engine information
@@ -1426,7 +1426,6 @@ class ModConfigMixin(AuthenticatedReddit):
         :returns: The json response from the server.
 
         """
-
         data = {'sr': subreddit.fullname,
                 'allow_top': default_set,
                 'comment_score_hide_mins': comment_score_hide_mins,
