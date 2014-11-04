@@ -5,6 +5,8 @@ python:
   - 3.2
   - 3.3
   - 3.4
-script: REDDIT_SITE=reddit_bypass_cdn python setup.py test -s praw.tests.BasicTest && python setup.py test -s praw.tests.OAuth2Test && python setup.py test -s praw.tests.ModeratorSubredditTest.test_mod_mail_send
 install:
+  - pip install flake8 --use-mirrors
   - python setup.py install
+before_script: flake8 praw
+script: REDDIT_SITE=reddit_bypass_cdn python setup.py test -s praw.tests.BasicTest && python setup.py test -s praw.tests.OAuth2Test && python setup.py test -s praw.tests.ModeratorSubredditTest.test_mod_mail_send
