@@ -854,31 +854,27 @@ class UnauthenticatedReddit(BaseReddit):
         url = self.config['popular_subreddits']
         return self.get_content(url, *args, **kwargs)
 
-    def get_random_subreddit(self):
+    def get_random_subreddit(self, nsfw=False):
         """Return a random Subreddit object.
 
-        Utilizes the same mechanism as http://www.reddit.com/r/random/.
+        Utilizes the same mechanism as http://www.reddit.com/r/random/ 
+        and /r/randnsfw
 
         """
-        response = self._request(self.config['subreddit'] % 'random',
-                                 raw_response=True)
-        return self.get_subreddit(response.url.rsplit('/', 2)[-2])
-
-    def get_randnsfw_subreddit(self):
-        """Return a random nsfw Subreddit object.
-
-        Utilizes the same mechanism as http://www.reddit.com/r/randnsfw/.
-
-        """
-
-        try:
-            response = self._request(self.config['subreddit'] % 'randnsfw',
-                                 raw_response=True)
+        if not nsfw:
+            response = self._request(self.config['subreddit'] % 'random',
+                                     raw_response=True)
             return self.get_subreddit(response.url.rsplit('/', 2)[-2])
-        except errors.RedirectException as e:
-            e = e.response_url
-            e = e.split('/')[-2]
-            return self.get_subreddit(e)
+
+        else:
+            try:
+                response = self._request(self.config['subreddit'] % 'randnsfw',
+                                     raw_response=True)
+                return self.get_subreddit(response.url.rsplit('/', 2)[-2])
+            except errors.RedirectException as e:
+                e = e.response_url
+                e = e.split('/')[-2]
+                return self.get_subreddit(e)
 
     def get_random_submission(self, subreddit='all'):
         """Return a random Submission object.
