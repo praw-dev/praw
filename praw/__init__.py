@@ -861,20 +861,15 @@ class UnauthenticatedReddit(BaseReddit):
         and /r/randnsfw
 
         """
-        if not nsfw:
-            response = self._request(self.config['subreddit'] % 'random',
-                                     raw_response=True)
+        path = 'randnsfw' if nsfw else 'random'
+        try:
+            response = self._request(self.config['subreddit'] % path,
+                                 raw_response=True)
             return self.get_subreddit(response.url.rsplit('/', 2)[-2])
-
-        else:
-            try:
-                response = self._request(self.config['subreddit'] % 'randnsfw',
-                                     raw_response=True)
-                return self.get_subreddit(response.url.rsplit('/', 2)[-2])
-            except errors.RedirectException as e:
-                e = e.response_url
-                e = e.split('/')[-2]
-                return self.get_subreddit(e)
+        except errors.RedirectException as e:
+            e = e.response_url
+            e = e.split('/')[-2]
+            return self.get_subreddit(e)
 
     def get_random_submission(self, subreddit='all'):
         """Return a random Submission object.
