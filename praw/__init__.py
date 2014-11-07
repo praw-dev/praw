@@ -864,6 +864,22 @@ class UnauthenticatedReddit(BaseReddit):
                                  raw_response=True)
         return self.get_subreddit(response.url.rsplit('/', 2)[-2])
 
+    def get_randnsfw_subreddit(self):
+        """Return a random nsfw Subreddit object.
+
+        Utilizes the same mechanism as http://www.reddit.com/r/randnsfw/.
+
+        """
+
+        try:
+            response = self._request(self.config['subreddit'] % 'randnsfw',
+                                 raw_response=True)
+            return self.get_subreddit(response.url.rsplit('/', 2)[-2])
+        except errors.RedirectException as e:
+            e = e.response_url
+            e = e.split('/')[-2]
+            return self.get_subreddit(e)
+
     def get_random_submission(self, subreddit='all'):
         """Return a random Submission object.
 
