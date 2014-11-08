@@ -957,7 +957,7 @@ class UnauthenticatedReddit(BaseReddit):
         :class:`.Subreddit` constructor.
 
         """
-        sr_name_lower = subreddit_name
+        sr_name_lower = subreddit_name.lower()
         if sr_name_lower == 'random':
             return self.get_random_subreddit()
         elif sr_name_lower == 'randnsfw':
