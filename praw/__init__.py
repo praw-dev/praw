@@ -854,14 +854,18 @@ class UnauthenticatedReddit(BaseReddit):
         url = self.config['popular_subreddits']
         return self.get_content(url, *args, **kwargs)
 
-    def get_random_subreddit(self):
+    def get_random_subreddit(self, nsfw=False):
         """Return a random Subreddit object.
 
-        Utilizes the same mechanism as http://www.reddit.com/r/random/.
+        Utilizes the same mechanism as http://www.reddit.com/r/random/ 
+        and /r/randnsfw
 
         """
-        response = self._request(self.config['subreddit'] % 'random',
-                                 raw_response=True)
+        if nsfw:
+            self.http.cookies.set('over18', '1')
+        path = 'randnsfw' if nsfw else 'random'
+        response = self._request(self.config['subreddit'] % path,
+                             raw_response=True)
         return self.get_subreddit(response.url.rsplit('/', 2)[-2])
 
     def get_random_submission(self, subreddit='all'):
