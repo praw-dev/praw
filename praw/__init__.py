@@ -857,15 +857,17 @@ class UnauthenticatedReddit(BaseReddit):
     def get_random_subreddit(self, nsfw=False):
         """Return a random Subreddit object.
 
-        Utilizes the same mechanism as http://www.reddit.com/r/random/ 
-        and /r/randnsfw
+        :param nsfw: When true, return a random NSFW Subreddit object. Calling
+            in this manner will set the 'over18' cookie for the duration of the
+            PRAW session.
 
         """
+        path = 'random'
         if nsfw:
             self.http.cookies.set('over18', '1')
-        path = 'randnsfw' if nsfw else 'random'
+            path = 'randnsfw'
         response = self._request(self.config['subreddit'] % path,
-                             raw_response=True)
+                                 raw_response=True)
         return self.get_subreddit(response.url.rsplit('/', 2)[-2])
 
     def get_random_submission(self, subreddit='all'):
@@ -955,8 +957,11 @@ class UnauthenticatedReddit(BaseReddit):
         :class:`.Subreddit` constructor.
 
         """
-        if subreddit_name.lower() == 'random':
+        sr_name_lower = subreddit_name
+        if sr_name_lower == 'random':
             return self.get_random_subreddit()
+        elif sr_name_lower == 'randnsfw':
+            return self.get_random_subreddit(nsfw=True)
         return objects.Subreddit(self, subreddit_name, *args, **kwargs)
 
     def get_subreddit_recommendations(self, subreddits, omit=None):

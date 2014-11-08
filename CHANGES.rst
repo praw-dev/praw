@@ -21,6 +21,13 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+
+Unreleased
+----------
+ * **[FEATURE]** Added a ``nsfw`` parameter to :meth:`.get_random_subreddit`
+   that permits fetching a random NSFW Subreddit. This change also supports
+   fetching these subreddits via ``get_subreddit('randnsfw')``.
+
 PRAW 2.1.19
 -----------
  * **[BUGFIX]** Support URLs in :meth:`~praw.__init__.UnauthenticatedReddit.search`.

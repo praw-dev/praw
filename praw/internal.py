@@ -15,6 +15,7 @@
 """Internal helper functions."""
 
 from requests import Request
+import re
 import six
 import sys
 from requests.compat import urljoin
@@ -22,6 +23,9 @@ from praw.decorators import restrict_access
 from praw.errors import (InvalidSubreddit, OAuthException,
                          OAuthInsufficientScope, OAuthInvalidToken,
                          RedirectException)
+
+
+RE_RANDOM = re.compile('rand(om|nsfw)')
 
 
 def _get_redditor_listing(subpath=''):
@@ -150,12 +154,11 @@ def _raise_redirect_exceptions(response):
     if response.status_code != 302:
         return None
     new_url = urljoin(response.url, response.headers['location'])
-    #print(response.url)
     if 'reddits/search?q=' in new_url:  # Handle non-existent subreddit
         subreddit = new_url.rsplit('=', 1)[1]
         raise InvalidSubreddit('`{0}` is not a valid subreddit'
                                .format(subreddit))
-    elif 'random' not in response.url and 'randnsfw' not in response.url:
+    elif not RE_RANDOM.search(response.url):
         raise RedirectException(response.url, new_url)
     return new_url
 

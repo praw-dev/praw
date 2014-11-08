@@ -315,10 +315,16 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertEqual(num,
                          len(list(self.r.get_popular_subreddits(limit=num))))
 
+    def test_get_randnsfw_subreddit(self):
+        subs = set()
+        for _ in range(3):
+            subs.add(self.r.get_subreddit('randnsfw').display_name)
+        self.assertTrue(len(subs) > 1)
+
     def test_get_random_subreddit(self):
         subs = set()
         for _ in range(3):
-            subs.add(self.r.get_subreddit('RANDOM').display_name)
+            subs.add(self.r.get_subreddit('random').display_name)
         self.assertTrue(len(subs) > 1)
 
     def test_get_rising(self):
