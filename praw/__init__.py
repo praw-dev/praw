@@ -2042,12 +2042,15 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='privatemessages')
     @decorators.require_captcha
-    def send_message(self, recipient, subject, message, captcha=None):
+    def send_message(self, recipient, subject, message, from_sr=None,
+                     captcha=None):
         """Send a message to a redditor or a subreddit's moderators (mod mail).
 
         When sending a message to a subreddit the recipient parameter must
         either be a subreddit object or the subreddit name needs to be prefixed
         with either '/r/' or '#'.
+
+        :param:`from_sr` can be a Subreddit obj or str. Requires mod permission
 
         :returns: The json response from the server.
 
@@ -2060,6 +2063,8 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         data = {'text': message,
                 'subject': subject,
                 'to': recipient}
+        if from_sr:
+            data['from_sr'] = six.text_type(from_sr)
         if captcha:
             data.update(captcha)
         response = self.request_json(self.config['compose'], data=data,

@@ -1154,6 +1154,17 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         self.r.user.send_message(subject, 'Message content')
         self.first(self.r.get_inbox(), lambda msg: msg.subject == subject)
 
+    def test_send_from_sr(self):
+        subject = 'Unique message: %s' % uuid.uuid4()
+        self.r.send_message(self.other_user_name, subject, 'Message content',
+                            from_sr=self.sr)
+        self.r.login(self.other_user_name, self.other_user_pswd)
+        predicate = lambda msg: (msg.author is None and
+                                 msg.subreddit == self.sr and
+                                 msg.subject == subject)
+        message = self.first(self.r.get_unread(limit=1), predicate)
+        self.assertFalse(message is None)
+
     def test_send_invalid(self):
         subject = 'Unique message: %s' % uuid.uuid4()
         self.assertRaises(errors.InvalidUser, self.r.send_message,
