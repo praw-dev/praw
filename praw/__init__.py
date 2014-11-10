@@ -2050,7 +2050,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         either be a subreddit object or the subreddit name needs to be prefixed
         with either '/r/' or '#'.
 
-        from_sr can be a Subreddit object or str. Must be logged in as mod.
+        :param:`from_sr` can be a Subreddit obj or str. Requires mod permission
 
         :returns: The json response from the server.
 

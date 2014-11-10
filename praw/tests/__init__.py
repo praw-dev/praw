@@ -1159,6 +1159,17 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         self.assertRaises(errors.InvalidUser, self.r.send_message,
                           self.invalid_user_name, subject, 'Message content')
 
+    def test_send_from_sr(self):
+        subject = 'Unique message: %s' % uui.uuid4()
+        self.r.send_message(self.other_user_name, subject, 'Message content',
+                            from_sr=self.sr)
+        self.r.login(self.other_user_name, self.other_user_pswd)
+        unread = list(self.r.get_unread(limit=1))
+        self.assertTrue(len(unread) == 1)
+        message = unread[0]
+        self.assertTrue(message.author is None)
+        self.assertTrue(isinstance(message.subreddit, Subreddit)
+
 
 class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
