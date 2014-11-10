@@ -2064,9 +2064,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
                 'subject': subject,
                 'to': recipient}
         if from_sr:
-            if isinstance(from_sr, objects.Subreddit):
-                from_sr = from_sr.display_name
-            data['from_sr'] = from_sr
+            data['from_sr'] = six.text_type(from_sr)
         if captcha:
             data.update(captcha)
         response = self.request_json(self.config['compose'], data=data,

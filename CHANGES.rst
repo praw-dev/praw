@@ -28,6 +28,11 @@ Unreleased
    that permits fetching a random NSFW Subreddit. This change also supports
    fetching these subreddits via ``get_subreddit('randnsfw')``.
 
+ * **[FEATURE]** Added a ``from_sr`` parameter to :meth:`.send_message` to
+   send the private message from a subreddit you moderate (Like the "From"
+   dropdown box when composing a message).
+   
+
 PRAW 2.1.19
 -----------
  * **[BUGFIX]** Support URLs in :meth:`~praw.__init__.UnauthenticatedReddit.search`.
