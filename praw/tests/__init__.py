@@ -1165,7 +1165,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
                             from_sr=self.sr)
         self.r.login(self.other_user_name, self.other_user_pswd)
         predicate = lambda msg: (msg.author is None and
-                                 isinstance(msg.subreddit, Subreddit) and
+                                 msg.subreddit == self.sr and
                                  msg.subject == subject)
         message = self.first(self.r.get_unread(limit=1), predicate)
         self.assertFalse(message is None)
