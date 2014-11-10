@@ -2042,7 +2042,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='privatemessages')
     @decorators.require_captcha
-    def send_message(self, recipient, subject, message, from_sr=None, 
+    def send_message(self, recipient, subject, message, from_sr=None,
                      captcha=None):
         """Send a message to a redditor or a subreddit's moderators (mod mail).
 
