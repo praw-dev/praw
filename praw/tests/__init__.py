@@ -1170,6 +1170,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         self.assertRaises(errors.InvalidUser, self.r.send_message,
                           self.invalid_user_name, subject, 'Message content')
 
+
 class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
