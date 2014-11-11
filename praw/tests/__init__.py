@@ -1154,11 +1154,6 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         self.r.user.send_message(subject, 'Message content')
         self.first(self.r.get_inbox(), lambda msg: msg.subject == subject)
 
-    def test_send_invalid(self):
-        subject = 'Unique message: %s' % uuid.uuid4()
-        self.assertRaises(errors.InvalidUser, self.r.send_message,
-                          self.invalid_user_name, subject, 'Message content')
-
     def test_send_from_sr(self):
         subject = 'Unique message: %s' % uuid.uuid4()
         self.r.send_message(self.other_user_name, subject, 'Message content',
@@ -1169,6 +1164,11 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
                                  msg.subject == subject)
         message = self.first(self.r.get_unread(limit=1), predicate)
         self.assertFalse(message is None)
+
+    def test_send_invalid(self):
+        subject = 'Unique message: %s' % uuid.uuid4()
+        self.assertRaises(errors.InvalidUser, self.r.send_message,
+                          self.invalid_user_name, subject, 'Message content')
 
 class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
