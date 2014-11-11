@@ -2046,11 +2046,16 @@ class PrivateMessagesMixin(AuthenticatedReddit):
                      captcha=None):
         """Send a message to a redditor or a subreddit's moderators (mod mail).
 
-        When sending a message to a subreddit the recipient parameter must
-        either be a subreddit object or the subreddit name needs to be prefixed
-        with either '/r/' or '#'.
-
-        :param:`from_sr` can be a Subreddit obj or str. Requires mod permission
+        :param recipient: A Redditor or Subreddit instance to send a message
+            to. A string can also be used in which case the string is treated
+            as a redditor unless it is prefixed with either '/r/' or '#', in
+            which case it will be treated as a subreddit.
+        :param subject: The subject of the message to send.
+        :param message: The actual message content.
+        :param from_sr: A Subreddit instance or string to send the message
+            from. When provided, messages are sent from the subreddit rather
+            than from the authenticated user. Note that the authenticated user
+            must be a moderator of the subreddit.
 
         :returns: The json response from the server.
 
