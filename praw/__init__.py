@@ -2057,6 +2057,8 @@ class PrivateMessagesMixin(AuthenticatedReddit):
             than from the authenticated user. Note that the authenticated user
             must be a moderator of the subreddit.
 
+        :param:`from_sr` can be a Subreddit obj or str. Requires mod permission
+
         :returns: The json response from the server.
 
         """
