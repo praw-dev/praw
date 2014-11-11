@@ -24,6 +24,7 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[FEATURE]** Added :meth:`praw.helpers.valid_redditors`.
  * **[FEATURE]** Added a ``nsfw`` parameter to :meth:`.get_random_subreddit`
    that permits fetching a random NSFW Subreddit. This change also supports
    fetching these subreddits via ``get_subreddit('randnsfw')``.

@@ -92,6 +92,25 @@ def submission_stream(reddit_session, subreddit, limit=None, verbosity=1):
                              verbosity)
 
 
+def valid_redditors(redditors, sub):
+    """Return a verified list of valid Redditor instances.
+
+    :param redditors: A list comprised of Redditor instances and/or strings
+        that are to be verified as actual redditor accounts.
+    :param sub: A Subreddit instance that the authenticated account has
+        flair changing permission on.
+
+    Note: Flair will be unset for all valid redditors in `redditors` on the
+    subreddit `mod_sub`.
+
+    """
+    simplified = list(set(six.text_type(x).lower() for x in redditors))
+    return [sub.reddit_session.get_redditor(simplified[i], fetch=False)
+            for (i, resp) in enumerate(sub.set_flair_csv(
+                ({'user': x, 'flair_text': x} for x in simplified)))
+            if resp['ok']]
+
+
 def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
     def debug(msg, level):
         if verbosity >= level:
