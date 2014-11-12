@@ -24,6 +24,9 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[BUGFIX]** Attempting to lazyload an attribute of a comment that has been
+   removed will explicitly raise a :meth:`praw.errors.InvalidComment`
+   exception, rather than an ``IndexError`` (issue #339).
  * **[FEATURE]** Added :meth:`praw.helpers.valid_redditors`.
  * **[FEATURE]** Added a ``nsfw`` parameter to :meth:`.get_random_subreddit`
    that permits fetching a random NSFW Subreddit. This change also supports
@@ -31,7 +34,6 @@ Unreleased
  * **[FEATURE]** Added a ``from_sr`` parameter to :meth:`.send_message` to
    send the private message from a subreddit you moderate (Like the "From"
    dropdown box when composing a message).
-   
 
 PRAW 2.1.19
 -----------

@@ -32,7 +32,7 @@ from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
 from praw.decorators import (alias_function, deprecated, limit_chars,
                              restrict_access)
-from praw.errors import ClientException
+from praw.errors import ClientException, InvalidComment
 from praw.internal import (_get_redditor_listing, _get_sorter,
                            _modify_relationship)
 
@@ -572,6 +572,9 @@ class Comment(Editable, Inboxable, Moderatable, Reportable, Voteable):
         """Return a list of the comment replies to this comment."""
         if self._replies is None:
             response = self.reddit_session.request_json(self._fast_permalink)
+            if not response[1]['data']['children']:
+                raise InvalidComment('Comment is no longer accessible: {0}'
+                                     .format(self._fast_permalink))
             # pylint: disable-msg=W0212
             self._replies = response[1]['data']['children'][0]._replies
             # pylint: enable-msg=W0212

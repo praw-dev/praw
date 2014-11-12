@@ -38,6 +38,11 @@ class ClientException(Exception):
         return self.message
 
 
+class InvalidComment(ClientException):
+
+    """Indicate that the comment is no longer available on reddit."""
+
+
 class InvalidSubreddit(ClientException):
 
     """Indicates that an invalid subreddit name was supplied."""
