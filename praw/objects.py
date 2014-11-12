@@ -534,6 +534,16 @@ class Comment(Editable, Inboxable, Moderatable, Reportable, Voteable):
     def __unicode__(self):
         return getattr(self, 'body', '[Unloaded Comment]')
 
+    @property
+    def _fast_permalink(self):
+        """Return the short permalink to the comment."""
+        if hasattr(self, 'link_id'):  # from /r or /u comments page
+            sid = self.link_id.split('_')[1]
+        else:  # from user's /message page
+            sid = self.context.split('/')[4]
+        return urljoin(self.reddit_session.config['comments'], '{0}/_/{1}'
+                       .format(sid, self.id))
+
     def _update_submission(self, submission):
         """Submission isn't set on __init__ thus we need to update it."""
         # pylint: disable-msg=W0212
@@ -561,21 +571,21 @@ class Comment(Editable, Inboxable, Moderatable, Reportable, Voteable):
     def replies(self):
         """Return a list of the comment replies to this comment."""
         if self._replies is None:
-            response = self.reddit_session.request_json(self.permalink)
+            response = self.reddit_session.request_json(self._fast_permalink)
             # pylint: disable-msg=W0212
             self._replies = response[1]['data']['children'][0]._replies
             # pylint: enable-msg=W0212
+            # Set the submission object if it is not set.
+            if not self._submission:
+                self._submission = response[0]['data']['children'][0]
         return self._replies
 
     @property
     def submission(self):
         """Return the submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
-            if hasattr(self, 'link_id'):  # from user comments page
-                sid = self.link_id.split('_')[1]
-            else:  # from user inbox
-                sid = self.context.split('/')[4]
-            self._submission = self.reddit_session.get_submission(None, sid)
+            self._submission = self.reddit_session.get_submission(
+                url=self._fast_permalink)
         return self._submission
 
 
