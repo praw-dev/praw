@@ -31,8 +31,7 @@ from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
                   ModOnlyMixin as MOMix, PrivateMessagesMixin as PMMix,
                   SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
-from praw.decorators import (alias_function, deprecated, limit_chars,
-                             restrict_access)
+from praw.decorators import alias_function, limit_chars, restrict_access
 from praw.errors import ClientException, InvalidComment
 from praw.internal import (_get_redditor_listing, _get_sorter,
                            _modify_relationship)
@@ -1292,25 +1291,13 @@ class Subreddit(Messageable, Refreshable):
 
     # Subreddit banned
     add_ban = _modify_relationship('banned', is_sub=True)
-    ban = (deprecated(msg="Please use `add_ban` instead.")
-                     (_modify_relationship('banned', is_sub=True)))
-    unban = (deprecated(msg="Please use `remove_ban` instead.")
-                       (_modify_relationship('banned', unlink=True,
-                                             is_sub=True)))
     remove_ban = _modify_relationship('banned', unlink=True, is_sub=True)
     # Subreddit contributors
     add_contributor = _modify_relationship('contributor', is_sub=True)
-    make_contributor = (deprecated(msg="Please use `add_contributor` "
-                                       "instead.")
-                                  (_modify_relationship('contributor',
-                                                        is_sub=True)))
     remove_contributor = _modify_relationship('contributor', unlink=True,
                                               is_sub=True)
     # Subreddit moderators
     add_moderator = _modify_relationship('moderator', is_sub=True)
-    make_moderator = (deprecated(msg="Please use `add_moderator` instead.")
-                                (_modify_relationship('moderator',
-                                                      is_sub=True)))
     remove_moderator = _modify_relationship('moderator', unlink=True,
                                             is_sub=True)
     # Subreddit wiki banned
@@ -1335,10 +1322,6 @@ class Subreddit(Messageable, Refreshable):
     get_controversial_from_month = _get_sorter('controversial', t='month')
     get_controversial_from_week = _get_sorter('controversial', t='week')
     get_controversial_from_year = _get_sorter('controversial', t='year')
-    get_new_by_date = (deprecated(msg="Please use `get_new` instead.")
-                                 (_get_sorter('new')))
-    get_new_by_rising = (deprecated(msg="Please use `get_rising` instead.")
-                                   (_get_sorter('rising')))
     get_rising = _get_sorter('rising')
     get_top_from_all = _get_sorter('top', t='all')
     get_top_from_day = _get_sorter('top', t='day')

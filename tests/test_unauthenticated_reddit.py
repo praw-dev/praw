@@ -52,13 +52,6 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertTrue(text.endswith('>'))
 
     @betamax
-    def test_deprecation(self):
-        with warnings.catch_warnings(record=True) as w:
-            self.r.get_all_comments()
-            assert len(w) == 1
-            assert isinstance(w[0].message, DeprecationWarning)
-
-    @betamax
     def test_equality(self):
         subreddit = self.r.get_subreddit(self.sr)
         same_subreddit = self.r.get_subreddit(self.sr)
