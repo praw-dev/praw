@@ -308,8 +308,16 @@ class BaseReddit(object):
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit',
                              **kwargs)
         self.handler = handler or DefaultHandler()
-        self.http = requests.session()  # Dummy session
+        self.http = requests.session()
         self.http.headers['User-Agent'] = UA_STRING % user_agent
+        # This _session_ object is only used to store request information that
+        # is used to make prepared requests. It _should_ never be used to make
+        # a direct request, thus we raise an exception when it is used.
+
+        def _req_error(*_, **__):
+            raise errors.ClientException('Do not make direct requests.')
+        self.http.request = _req_error
+
         if self.config.http_proxy or self.config.https_proxy:
             self.http.proxies = {}
             if self.config.http_proxy:

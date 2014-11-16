@@ -102,4 +102,6 @@ def run():
     try:
         server.serve_forever()  # pylint: disable-msg=E1101
     except KeyboardInterrupt:
+        server.socket.close()
+        RequestHandler.http.close()
         print('Goodbye!')

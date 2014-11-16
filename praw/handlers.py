@@ -67,6 +67,9 @@ class RateLimitHandler(object):
         """
         return False
 
+    def __del__(self):
+        self.http.close()
+
     def __init__(self):
         self.http = Session()  # Each instance should have its own session
 
