@@ -1291,6 +1291,65 @@ class Subreddit(Messageable, Refreshable):
             return
 
 
+class Multireddit(Refreshable):
+
+    """A class for users' Multireddits"""
+
+    # Generic listing selectors
+    get_controversial = _get_sorter('controversial')
+    get_hot = _get_sorter('')
+    get_new = _get_sorter('new')
+    get_top = _get_sorter('top')
+
+    # Explicit listing selectors
+    get_controversial_from_all = _get_sorter('controversial', t='all')
+    get_controversial_from_day = _get_sorter('controversial', t='day')
+    get_controversial_from_hour = _get_sorter('controversial', t='hour')
+    get_controversial_from_month = _get_sorter('controversial', t='month')
+    get_controversial_from_week = _get_sorter('controversial', t='week')
+    get_controversial_from_year = _get_sorter('controversial', t='year')
+    get_new_by_date = (deprecated(msg="Please use `get_new` instead.")
+                                 (_get_sorter('new')))
+    get_new_by_rising = (deprecated(msg="Please use `get_rising` instead.")
+                                   (_get_sorter('rising')))
+    get_rising = _get_sorter('rising')
+    get_top_from_all = _get_sorter('top', t='all')
+    get_top_from_day = _get_sorter('top', t='day')
+    get_top_from_hour = _get_sorter('top', t='hour')
+    get_top_from_month = _get_sorter('top', t='month')
+    get_top_from_week = _get_sorter('top', t='week')
+    get_top_from_year = _get_sorter('top', t='year')
+
+    def __init__(self, reddit_session, multi_author=None, multi_name=None,
+                 json_dict=None, fetch=False):
+        # Special case for when my_multireddits is called, no name is returned
+        # so we have to extract the name from the URL. The URLs are returned
+        # as: /user/author_name/m/multi_name
+        if not multi_name:
+            multi_name = json_dict['path'].split('/')[-1]
+
+        info_url = reddit_session.config['multireddit_about'] % (multi_author,
+                                                                 multi_name)
+        super(Multireddit, self).__init__(reddit_session, json_dict, fetch,
+                                          info_url)
+        self.display_name = multi_name
+        self.author = multi_author
+        self._url = reddit_session.config['multireddit'] % (self.author,
+                                                            self.display_name)
+
+        listings = ['new/', '', 'top/', 'controversial/', 'rising/']
+        base = (reddit_session.config['multireddit'] % (self.author,
+                                                        self.display_name))
+        self._listing_urls = [base + x + '.json' for x in listings]
+
+    def __repr__(self):
+        return 'Multireddit(owner=\'{0}\', name=\'{1}\')'.format(
+            self.author, self.display_name)
+
+    def __unicode__(self):
+        return self.display_name
+
+
 class PRAWListing(RedditContentObject):
 
     """An abstract class to coerce a listing into RedditContentObjects."""

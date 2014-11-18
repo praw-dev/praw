@@ -124,10 +124,13 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'morechildren':        'api/morechildren/',
                  'my_con_subreddits':   'subreddits/mine/contributor/',
                  'my_mod_subreddits':   'subreddits/mine/moderator/',
+                 'my_multis':           '/api/multi/mine/',
                  'my_subreddits':       'subreddits/mine/subscriber/',
                  'new':                 'new/',
                  'new_subreddits':      'subreddits/new/',
                  'marknsfw':            'api/marknsfw/',
+                 'multireddit':         '/user/%s/m/%s/',
+                 'multireddit_about':   '/api/multi/user/%s/m/%s',
                  'popular_subreddits':  'subreddits/popular/',
                  'read_message':        'api/read_message/',
                  'reddit_url':          '/',
@@ -823,6 +826,16 @@ class UnauthenticatedReddit(BaseReddit):
         """Return the list of moderators for the given subreddit."""
         return self.request_json(self.config['moderators'] %
                                  six.text_type(subreddit))
+
+    def get_multireddit(self, author_name, multi_name, *args, **kwargs):
+        """Return a Multireddit object for the author and name specified.
+
+        The additional parameters are passed directly into the
+        :class:`.Multireddit` constructor.
+
+        """
+        return objects.Multireddit(self, author_name, multi_name,
+                                   *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
     def get_new(self, *args, **kwargs):
@@ -1941,6 +1954,19 @@ class MySubredditsMixin(AuthenticatedReddit):
         """
         return self.get_content(self.config['my_mod_subreddits'], *args,
                                 **kwargs)
+
+    @decorators.restrict_access(scope='mysubreddits')
+    def get_my_multis(self, *args, **kwargs):
+        """Return a get_content_generator of multireddits.
+
+        The multireddits generated are those that the session's user is
+        the owner of.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['my_multis'], *args, **kwargs)
 
     @decorators.deprecated(msg="Please use `get_my_subreddits` instead.")
     def get_my_reddits(self, *args, **kwargs):
