@@ -302,7 +302,8 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def test_get_multireddit(self):
         multi_path = "/user/%s/m/%s/" % (self.un, self.multi_name)
         multireddit = self.r.get_multireddit(self.un, self.multi_name)
-        self.assertEqual(self.multi_name.lower(), multireddit.display_name.lower())
+        self.assertEqual(self.multi_name.lower(),
+                         multireddit.display_name.lower())
         self.assertEqual(self.un.lower(), multireddit.author.name.lower())
         self.assertEqual(multi_path.lower(), multireddit.path.lower())
 
@@ -1330,14 +1331,15 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
                         self.subreddit.get_wiki_contributors)
 
 
-class MultiredditTest(unittest.TestCase, AuthenticatedHelper)
+class MultiredditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
 
     def test_get_my_multis(self):
         mymultis = self.r.get_my_multis()
         multireddit = mymultis[0]
-        self.assertEqual(self.multi_name.lower(), multireddit.display_name.lower())
+        self.assertEqual(self.multi_name.lower(),
+                         multireddit.display_name.lower())
         self.assertEqual([], multireddit.subreddits)
         self.assertEqual(1, len(mymultis))
 

@@ -1964,6 +1964,8 @@ class MySubredditsMixin(AuthenticatedReddit):
         the owner of.
 
         """
+        # The JSON data for multireddits is returned from Reddit as a list
+        # Therefore, we cannot use :meth:`get_content` to retrieve the objects
         url = self.config['my_multis']
         response = self.request_json(url)
         return response
