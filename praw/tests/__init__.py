@@ -300,7 +300,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
 
     def test_get_multireddit(self):
-        multi_path = "/user/%s/m/%s/" % (self.un, self.multi_name)
+        multi_path = "/user/%s/m/%s" % (self.un, self.multi_name)
         multireddit = self.r.get_multireddit(self.un, self.multi_name)
         self.assertEqual(self.multi_name.lower(),
                          multireddit.display_name.lower())
