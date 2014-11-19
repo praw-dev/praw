@@ -130,7 +130,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'new_subreddits':      'subreddits/new/',
                  'marknsfw':            'api/marknsfw/',
                  'multireddit':         '/user/%s/m/%s/',
-                 'multireddit_about':   '/api/multi/user/%s/m/%s',
+                 'multireddit_about':   '/api/multi/user/%s/m/%s/',
                  'popular_subreddits':  'subreddits/popular/',
                  'read_message':        'api/read_message/',
                  'reddit_url':          '/',
@@ -1958,12 +1958,7 @@ class MySubredditsMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='mysubreddits')
     def get_my_multis(self, *args, **kwargs):
-        """Return a get_content_generator of multireddits.
-
-        The multireddits generated are those that the session's user is
-        the owner of.
-
-        """
+        """Return a list of all the Multireddits the current user owns"""
         # The JSON data for multireddits is returned from Reddit as a list
         # Therefore, we cannot use :meth:`get_content` to retrieve the objects
         url = self.config['my_multis']
