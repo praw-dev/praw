@@ -209,6 +209,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                         obj['redditor_kind']:   objects.Redditor,
                         obj['submission_kind']: objects.Submission,
                         obj['subreddit_kind']:  objects.Subreddit,
+                        'LabeledMulti':         objects.Multireddit,
                         'modaction':            objects.ModAction,
                         'more':                 objects.MoreComments,
                         'wikipage':             objects.WikiPage,
@@ -1962,11 +1963,10 @@ class MySubredditsMixin(AuthenticatedReddit):
         The multireddits generated are those that the session's user is
         the owner of.
 
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
         """
-        return self.get_content(self.config['my_multis'], *args, **kwargs)
+        url = self.config['my_multis']
+        response = self.request_json(url)
+        return response
 
     @decorators.deprecated(msg="Please use `get_my_subreddits` instead.")
     def get_my_reddits(self, *args, **kwargs):

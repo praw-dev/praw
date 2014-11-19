@@ -1341,9 +1341,11 @@ class Multireddit(Refreshable):
         base = (reddit_session.config['multireddit'] % (self.author,
                                                         self.display_name))
         self._listing_urls = [base + x + '.json' for x in listings]
+        self.subreddits = [
+            Subreddit(reddit_session, x['name']) for x in self.subreddits]
 
     def __repr__(self):
-        return 'Multireddit(owner=\'{0}\', name=\'{1}\')'.format(
+        return 'Multireddit(author=\'{0}\', name=\'{1}\')'.format(
             self.author, self.display_name)
 
     def __unicode__(self):

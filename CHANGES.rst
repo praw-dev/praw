@@ -34,6 +34,10 @@ Unreleased
  * **[FEATURE]** Added a ``from_sr`` parameter to :meth:`.send_message` to
    send the private message from a subreddit you moderate (Like the "From"
    dropdown box when composing a message).
+ * **[FEATURE]** Added :class:`Multireddit
+ * **[FEATURE]** Added :meth:`get_multireddit` to get a single multireddit obj
+ * **[FEATURE]** Added :meth:`get_my_multis` to get all multireddits owned
+   by the logged in user.
 
 PRAW 2.1.19
 -----------
