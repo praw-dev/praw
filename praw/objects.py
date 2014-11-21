@@ -733,6 +733,16 @@ class Redditor(Messageable, Refreshable):
         return _get_redditor_listing('liked')(self, *args,
                                               _use_oauth=use_oauth, **kwargs)
 
+    def get_multireddit(self, multi, *args, **kwargs):
+        """Return a multireddit that belongs to this user.
+
+        :param multi: The name of the multireddit
+
+        :returns: Multireddit object with author=Redditor and name=multi
+
+        """
+        return self.reddit_session.get_multireddit(self, multi)
+
     def mark_as_read(self, messages, unread=False):
         """Mark message(s) as read or unread.
 
@@ -1289,6 +1299,71 @@ class Subreddit(Messageable, Refreshable):
             return self.set_flair_csv(csv)
         else:
             return
+
+
+class Multireddit(Refreshable):
+
+    """A class for users' Multireddits"""
+
+    # Generic listing selectors
+    get_controversial = _get_sorter('controversial')
+    get_hot = _get_sorter('')
+    get_new = _get_sorter('new')
+    get_top = _get_sorter('top')
+
+    # Explicit listing selectors
+    get_controversial_from_all = _get_sorter('controversial', t='all')
+    get_controversial_from_day = _get_sorter('controversial', t='day')
+    get_controversial_from_hour = _get_sorter('controversial', t='hour')
+    get_controversial_from_month = _get_sorter('controversial', t='month')
+    get_controversial_from_week = _get_sorter('controversial', t='week')
+    get_controversial_from_year = _get_sorter('controversial', t='year')
+    get_new_by_date = (deprecated(msg="Please use `get_new` instead.")
+                                 (_get_sorter('new')))
+    get_new_by_rising = (deprecated(msg="Please use `get_rising` instead.")
+                                   (_get_sorter('rising')))
+    get_rising = _get_sorter('rising')
+    get_top_from_all = _get_sorter('top', t='all')
+    get_top_from_day = _get_sorter('top', t='day')
+    get_top_from_hour = _get_sorter('top', t='hour')
+    get_top_from_month = _get_sorter('top', t='month')
+    get_top_from_week = _get_sorter('top', t='week')
+    get_top_from_year = _get_sorter('top', t='year')
+
+    def __init__(self, reddit_session, redditor=None, multi=None,
+                 json_dict=None, fetch=False):
+        # Special case for when get_my_multis is called, no name is returned
+        # so we have to extract the name from the URL. The URLs are returned
+        # as: /user/redditor/m/multi
+        if not multi:
+            multi = json_dict['path'].split('/')[-1]
+        if not redditor:
+            redditor = json_dict['path'].split('/')[-3]
+        else:
+            redditor = six.text_type(redditor)
+
+        info_url = reddit_session.config['multireddit_about'] % (redditor,
+                                                                 multi)
+        super(Multireddit, self).__init__(reddit_session, json_dict, fetch,
+                                          info_url)
+        self.display_name = multi
+        self.author = redditor
+        self._url = reddit_session.config['multireddit'] % (self.author,
+                                                            self.display_name)
+
+        listings = ['new/', '', 'top/', 'controversial/', 'rising/']
+        base = (reddit_session.config['multireddit'] % (self.author,
+                                                        self.display_name))
+        self._listing_urls = [base + x + '.json' for x in listings]
+        self.subreddits = [
+            Subreddit(reddit_session, x['name']) for x in self.subreddits]
+
+    def __repr__(self):
+        return 'Multireddit(author=\'{0}\', name=\'{1}\')'.format(
+            self.author, self.display_name)
+
+    def __unicode__(self):
+        return self.display_name
 
 
 class PRAWListing(RedditContentObject):

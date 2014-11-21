@@ -95,6 +95,7 @@ class BasicHelper(object):
     def configure(self):
         self.r = Reddit(USER_AGENT, disable_update_check=True)
         self.sr = 'reddit_api_test'
+        self.multi_name = "publicempty"
         self.priv_sr = 'reddit_api_test_priv'
         self.un = 'PyAPITestUser2'
         self.other_user_name = 'PyAPITestUser3'
@@ -297,6 +298,14 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def test_get_front_page(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
+
+    def test_get_multireddit(self):
+        multi_path = "/user/%s/m/%s" % (self.un, self.multi_name)
+        multireddit = self.r.get_multireddit(self.un, self.multi_name)
+        self.assertEqual(self.multi_name.lower(),
+                         multireddit.display_name.lower())
+        self.assertEqual(self.un.lower(), multireddit.author.name.lower())
+        self.assertEqual(multi_path.lower(), multireddit.path.lower())
 
     def test_get_new(self):
         num = 50
@@ -1320,6 +1329,27 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
         self.add_remove(self.subreddit.add_wiki_contributor,
                         self.subreddit.remove_wiki_contributor,
                         self.subreddit.get_wiki_contributors)
+
+
+class MultiredditTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+
+    def test_get_my_multis(self):
+        mymultis = self.r.get_my_multis()
+        multireddit = mymultis[0]
+        self.assertEqual(self.multi_name.lower(),
+                         multireddit.display_name.lower())
+        self.assertEqual([], multireddit.subreddits)
+
+    def test_get_multireddit_from_user(self):
+        multi = self.r.user.get_multireddit(self.multi_name)
+        self.assertEqual(self.r.user.name.lower(), multi.author.name.lower())
+
+    def test_get_new(self):
+        multi = self.r.user.get_multireddit(self.multi_name)
+        new = list(multi.get_new())
+        self.assertEqual(0, len(new))
 
 
 class OAuth2Test(unittest.TestCase, BasicHelper):
