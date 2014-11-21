@@ -1341,7 +1341,15 @@ class MultiredditTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(self.multi_name.lower(),
                          multireddit.display_name.lower())
         self.assertEqual([], multireddit.subreddits)
-        self.assertEqual(1, len(mymultis))
+
+    def test_get_multireddit_from_user(self):
+        multi = self.r.user.get_multireddit(self.multi_name)
+        self.assertEqual(self.r.user.name.lower(), multi.author.name.lower())
+
+    def test_get_new(self):
+        multi = self.r.user.get_multireddit(self.multi_name)
+        new = list(multi.get_new())
+        self.assertEqual(0, len(new))
 
 
 class OAuth2Test(unittest.TestCase, BasicHelper):

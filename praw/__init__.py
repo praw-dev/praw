@@ -124,13 +124,14 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'morechildren':        'api/morechildren/',
                  'my_con_subreddits':   'subreddits/mine/contributor/',
                  'my_mod_subreddits':   'subreddits/mine/moderator/',
-                 'my_multis':           '/api/multi/mine/',
+                 'my_multis':           'api/multi/mine/',
                  'my_subreddits':       'subreddits/mine/subscriber/',
                  'new':                 'new/',
                  'new_subreddits':      'subreddits/new/',
                  'marknsfw':            'api/marknsfw/',
-                 'multireddit':         '/user/%s/m/%s/',
-                 'multireddit_about':   '/api/multi/user/%s/m/%s/',
+                 'multireddit':         'user/%s/m/%s/',
+                 'multireddit_mine':    'me/m/%s/',
+                 'multireddit_about':   'api/multi/user/%s/m/%s/',
                  'popular_subreddits':  'subreddits/popular/',
                  'read_message':        'api/read_message/',
                  'reddit_url':          '/',
@@ -483,6 +484,14 @@ class BaseReddit(object):
         else:
             fetch_once = True
 
+        # When getting posts from a multireddit owned by the authenticated
+        # Redditor, we are redirected to me/m/multi/. Handle that now
+        # instead of catching later.
+        if re.search('user/.*/m/.*', url):
+            redditor = url.split('/')[-4]
+            if self.user and self.user.name.lower() == redditor.lower():
+                url = url.replace("user/"+redditor, 'me')
+
         # While we still need to fetch more content to reach our limit, do so.
         while fetch_once or fetch_all or objects_found < limit:
             if _use_oauth:  # Set the necessary _use_oauth value
@@ -828,14 +837,19 @@ class UnauthenticatedReddit(BaseReddit):
         return self.request_json(self.config['moderators'] %
                                  six.text_type(subreddit))
 
-    def get_multireddit(self, author_name, multi_name, *args, **kwargs):
+    def get_multireddit(self, redditor, multi, *args, **kwargs):
         """Return a Multireddit object for the author and name specified.
+
+        :param redditor: The username or Redditor object of the user
+            who owns the multireddit.
+        :param multi: The name of the multireddit to fetch.
 
         The additional parameters are passed directly into the
         :class:`.Multireddit` constructor.
 
         """
-        return objects.Multireddit(self, author_name, multi_name,
+        redditor = six.text_type(redditor)
+        return objects.Multireddit(self, redditor, multi,
                                    *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
@@ -1958,7 +1972,10 @@ class MySubredditsMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='mysubreddits')
     def get_my_multis(self, *args, **kwargs):
-        """Return a list of all the Multireddits the current user owns"""
+        """Return a list of all the Multireddits for the
+        authenticated Redditor.
+
+        """
         # The JSON data for multireddits is returned from Reddit as a list
         # Therefore, we cannot use :meth:`get_content` to retrieve the objects
         url = self.config['my_multis']

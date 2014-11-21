@@ -733,6 +733,16 @@ class Redditor(Messageable, Refreshable):
         return _get_redditor_listing('liked')(self, *args,
                                               _use_oauth=use_oauth, **kwargs)
 
+    def get_multireddit(self, multi, *args, **kwargs):
+        """Return a multireddit that belongs to this user.
+
+        :param multi: The name of the multireddit
+
+        :returns: Multireddit object with author=Redditor and name=multi
+
+        """
+        return self.reddit_session.get_multireddit(self, multi)
+
     def mark_as_read(self, messages, unread=False):
         """Mark message(s) as read or unread.
 
@@ -1320,20 +1330,24 @@ class Multireddit(Refreshable):
     get_top_from_week = _get_sorter('top', t='week')
     get_top_from_year = _get_sorter('top', t='year')
 
-    def __init__(self, reddit_session, multi_author=None, multi_name=None,
+    def __init__(self, reddit_session, redditor=None, multi=None,
                  json_dict=None, fetch=False):
-        # Special case for when my_multireddits is called, no name is returned
+        # Special case for when get_my_multis is called, no name is returned
         # so we have to extract the name from the URL. The URLs are returned
-        # as: /user/author_name/m/multi_name
-        if not multi_name:
-            multi_name = json_dict['path'].split('/')[-1]
+        # as: /user/redditor/m/multi
+        if not multi:
+            multi = json_dict['path'].split('/')[-1]
+        if not redditor:
+            redditor = json_dict['path'].split('/')[-3]
+        else:
+            redditor = six.text_type(redditor)
 
-        info_url = reddit_session.config['multireddit_about'] % (multi_author,
-                                                                 multi_name)
+        info_url = reddit_session.config['multireddit_about'] % (redditor,
+                                                                 multi)
         super(Multireddit, self).__init__(reddit_session, json_dict, fetch,
                                           info_url)
-        self.display_name = multi_name
-        self.author = multi_author
+        self.display_name = multi
+        self.author = redditor
         self._url = reddit_session.config['multireddit'] % (self.author,
                                                             self.display_name)
 
