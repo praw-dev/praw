@@ -9,4 +9,4 @@ install:
   - pip install flake8 --use-mirrors
   - python setup.py install
 before_script: flake8 praw
-script: REDDIT_SITE=reddit_bypass_cdn python setup.py test -s praw.tests.BasicTest && python setup.py test -s praw.tests.OAuth2Test && python setup.py test -s praw.tests.ModeratorSubredditTest.test_mod_mail_send
+script: REDDIT_SITE=reddit_bypass_cdn python setup.py test -s tests.BasicTest && python setup.py test -s tests.OAuth2Test && python setup.py test -s tests.ModeratorSubredditTest.test_mod_mail_send

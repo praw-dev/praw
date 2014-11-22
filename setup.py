@@ -43,10 +43,10 @@ setup(
                  'Topic :: Utilities'],
     license='GPLv3',
     keywords='reddit api wrapper',
-    packages=[PACKAGE_NAME, '{0}.tests'.format(PACKAGE_NAME)],
+    packages=[PACKAGE_NAME],
     package_data={'': ['COPYING'], PACKAGE_NAME: ['*.ini']},
     install_requires=['requests>=2.3.0', 'six>=1.4', 'update_checker>=0.11'],
     tests_require=['mock>=1.0.0'],
     entry_points={'console_scripts': [
             'praw-multiprocess = praw.multiprocess:run']},
-    test_suite='{0}.tests'.format(PACKAGE_NAME))
+    test_suite='tests')
