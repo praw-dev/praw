@@ -1342,24 +1342,24 @@ class Multireddit(Refreshable):
                                                                  multi)
         super(Multireddit, self).__init__(reddit_session, json_dict, fetch,
                                           info_url)
-        self.display_name = multi
+        self._name = multi
         self.author = redditor
         self._url = reddit_session.config['multireddit'] % (self.author,
-                                                            self.display_name)
+                                                            self._name)
 
         listings = ['new/', '', 'top/', 'controversial/', 'rising/']
         base = (reddit_session.config['multireddit'] % (self.author,
-                                                        self.display_name))
+                                                        self._name))
         self._listing_urls = [base + x + '.json' for x in listings]
         self.subreddits = [
             Subreddit(reddit_session, x['name']) for x in self.subreddits]
 
     def __repr__(self):
         return 'Multireddit(author=\'{0}\', name=\'{1}\')'.format(
-            self.author, self.display_name)
+            self.author, self._name)
 
     def __unicode__(self):
-        return self.display_name
+        return self._name
 
 
 class PRAWListing(RedditContentObject):

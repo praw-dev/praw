@@ -303,7 +303,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
         multi_path = "/user/%s/m/%s" % (self.un, self.multi_name)
         multireddit = self.r.get_multireddit(self.un, self.multi_name)
         self.assertEqual(self.multi_name.lower(),
-                         multireddit.display_name.lower())
+                         text_type(multireddit).lower())
         self.assertEqual(self.un.lower(), multireddit.author.name.lower())
         self.assertEqual(multi_path.lower(), multireddit.path.lower())
 
@@ -327,13 +327,13 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def test_get_randnsfw_subreddit(self):
         subs = set()
         for _ in range(3):
-            subs.add(self.r.get_subreddit('RANDNSFW').display_name)
+            subs.add(text_type(self.r.get_subreddit('RANDNSFW')))
         self.assertTrue(len(subs) > 1)
 
     def test_get_random_subreddit(self):
         subs = set()
         for _ in range(3):
-            subs.add(self.r.get_subreddit('RANDOM').display_name)
+            subs.add(text_type(self.r.get_subreddit('RANDOM')))
         self.assertTrue(len(subs) > 1)
 
     def test_get_rising(self):
@@ -621,7 +621,7 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
         title = 'Wiki Entry on \xC3\x9C'
         url = 'http://en.wikipedia.org/wiki/\xC3\x9C?id=%s' % unique
         submission = self.r.submit(self.sr, title, url=url)
-        str(submission)
+        self.assertTrue(title in text_type(submission))
         self.assertEqual(title, submission.title)
         self.assertEqual(url, submission.url)
 
