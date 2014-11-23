@@ -254,7 +254,8 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False):
 
     This decorator assumes that all mod required functions fit one of:
 
-      * have the subreddit as the first argument (Reddit instance functions)
+      * have the subreddit as the first argument (Reddit instance functions) or
+        have a subreddit keyword argument
       * are called upon a subreddit object (Subreddit RedditContentObject)
       * are called upon a RedditContent object with attribute subreddit
 
@@ -291,8 +292,10 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False):
                     subreddit = cls if hasattr(cls, 'display_name') else False
                 else:
                     subreddit = kwargs.get(
-                        'subreddit', args[0] if args else
-                        six.get_function_defaults(function)[0])
+                        'subreddit', args[0] if args else None)
+                    if subreddit is None:  # Try the default value
+                        defaults = six.get_function_defaults(function)
+                        subreddit = defaults[0] if defaults else None
             else:
                 subreddit = None
 

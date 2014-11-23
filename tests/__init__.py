@@ -1608,6 +1608,9 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.set_stylesheet(stylesheet)
         self.assertEqual(stylesheet,
                          self.subreddit.get_stylesheet()['stylesheet'])
+        self.r.set_stylesheet(subreddit=self.subreddit, stylesheet='')
+        self.assertEqual('',
+                         self.r.get_stylesheet(self.subreddit)['stylesheet'])
 
     def test_set_stylesheet_invalid_css(self):
         self.assertRaises(errors.BadCSS, self.subreddit.set_stylesheet,
