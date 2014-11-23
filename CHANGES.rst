@@ -40,6 +40,9 @@ Unreleased
    by the logged in user.
  * **[FEATURE]** Added :meth:`get_multireddit` to :class:`Redditor` to quickly
    get a multireddit belonging to that user.
+ * **[FEATURE]** :class:`praw.objects.Comment`,
+   :class:`praw.objects.Redditor`, and :class:`praw.objects.Submission` are now
+   gildable.
 
 PRAW 2.1.19
 -----------

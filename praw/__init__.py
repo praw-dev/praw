@@ -108,6 +108,8 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
                  'flairtemplate':       'api/flairtemplate/',
                  'friend':              'api/friend/',
                  'friends':             'prefs/friends/',
+                 'gild_thing':          'api/v1/gold/gild/{fullname}/',
+                 'gild_user':           'api/v1/gold/give/{username}/',
                  'help':                'help/',
                  'hide':                'api/hide/',
                  'ignore_reports':      'api/ignore_reports/',

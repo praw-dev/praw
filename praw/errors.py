@@ -287,6 +287,13 @@ class InvalidUserPass(APIException):
     ERROR_TYPE = 'WRONG_PASSWORD'
 
 
+class InsufficientCreddits(APIException):
+
+    """Raised when there are not enough creddits to complete the action."""
+
+    ERROR_TYPE = 'INSUFFICIENT_CREDDITS'
+
+
 class NotLoggedIn(APIException):
 
     """An exception for when a Reddit user isn't logged in."""

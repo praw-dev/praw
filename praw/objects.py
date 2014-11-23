@@ -286,6 +286,33 @@ class Editable(RedditContentObject):
         return response['data']['things'][0]
 
 
+class Gildable(RedditContentObject):
+
+    """Interface for RedditContentObjects that can be gilded."""
+
+    @restrict_access(scope='creddits', oauth_only=True)
+    def gild(self, months=None):
+        """Gild the Redditor or author of the content.
+
+        :param months: Specifies the number of months to gild. This parameter
+            is Only valid when the instance called upon is of type
+            Redditor. When not provided, the value defaults to 1.
+        """
+        if isinstance(self, Redditor):
+            months = int(months) if months is not None else 1
+            if months < 1:
+                raise TypeError('months must be at least 1')
+            return self.reddit_session.request_json(
+                self.reddit_session.config['gild_user'].format(
+                    username=six.text_type(self)), data={'months': months})
+        if months is not None:
+            raise TypeError('months is not a valid parameter for {0}'
+                            .format(type(self)))
+        return self.reddit_session.request_json(
+            self.reddit_session.config['gild_thing']
+            .format(fullname=self.fullname), data=True)
+
+
 class Hideable(RedditContentObject):
 
     """Interface for objects that can be hidden."""
@@ -515,7 +542,8 @@ class Voteable(RedditContentObject):
         return self.reddit_session.request_json(url, data=data)
 
 
-class Comment(Editable, Inboxable, Moderatable, Reportable, Voteable):
+class Comment(Editable, Gildable, Inboxable, Moderatable, Reportable,
+              Voteable):
 
     """A class that represents a reddit comments."""
 
@@ -658,7 +686,7 @@ class MoreComments(RedditContentObject):
         return self._comments
 
 
-class Redditor(Messageable, Refreshable):
+class Redditor(Gildable, Messageable, Refreshable):
 
     """A class representing the users of reddit."""
 
@@ -818,8 +846,8 @@ class ModAction(RedditContentObject):
         return 'Action: {0}'.format(self.action)
 
 
-class Submission(Editable, Hideable, Moderatable, Refreshable, Reportable,
-                 Saveable, Voteable):
+class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
+                 Reportable, Saveable, Voteable):
 
     """A class for submissions to reddit."""
 

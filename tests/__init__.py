@@ -114,6 +114,7 @@ class BasicHelper(object):
             self.other_user_id = '6c1xj'
             self.priv_submission_id = '16kbb7'
             self.refresh_token = {
+                'creddits':        'jLC5Yw9LgoNr4Ldd9j1ESuqJ5DE',
                 'edit':            'FFx_0G7Zumyh4AWzIo39bG9KdIM',
                 'history':         'j_RKymm8srC3j6cxysYFQZbB4vc',
                 'identity':        'E4BgmO7iho0KOB1XlT8WEtyySf8',
@@ -1444,6 +1445,24 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
     def test_scope_mysubreddits(self):
         self.r.refresh_access_information(self.refresh_token['mysubreddits'])
         self.assertTrue(list(self.r.get_my_moderation()))
+
+    @reddit_only
+    def test_scope_creddits(self):
+        # Assume there are insufficient creddits.
+        self.r.refresh_access_information(
+            self.refresh_token['creddits'])
+        redditor = self.r.get_redditor('bboe')
+        sub = self.r.get_submission(url=self.comment_url)
+
+        # Test error conditions
+        self.assertRaises(TypeError, sub.gild, months=1)
+        for value in (False, 0, -1, '0', '-1'):
+            self.assertRaises(TypeError, redditor.gild, value)
+
+        # Test object gilding
+        self.assertRaises(errors.InsufficientCreddits, redditor.gild)
+        self.assertRaises(errors.InsufficientCreddits, sub.gild)
+        self.assertRaises(errors.InsufficientCreddits, sub.comments[0].gild)
 
     @reddit_only
     def test_scope_privatemessages(self):
