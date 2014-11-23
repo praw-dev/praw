@@ -425,7 +425,7 @@ class Refreshable(RedditContentObject):
                                         comment_sort=self._comment_sort,
                                         params=params)
         elif isinstance(self, Subreddit):
-            other = Subreddit(self.reddit_session, self.display_name)
+            other = Subreddit(self.reddit_session, self._fast_name)
         self.__dict__ = other.__dict__  # pylint: disable-msg=W0201
 
 
@@ -1342,20 +1342,26 @@ class Subreddit(Messageable, Refreshable):
         info_url = reddit_session.config['subreddit_about'] % subreddit_name
         super(Subreddit, self).__init__(reddit_session, json_dict, fetch,
                                         info_url)
-        self.display_name = subreddit_name
+        self._fast_name = subreddit_name
         self._url = reddit_session.config['subreddit'] % subreddit_name
         # '' is the hot listing
         listings = ['new/', '', 'top/', 'controversial/', 'rising/']
-        base = (reddit_session.config['subreddit'] % self.display_name)
+        base = (reddit_session.config['subreddit'] % self._fast_name)
         self._listing_urls = [base + x + '.json' for x in listings]
 
     def __repr__(self):
         """Return a code representation of the Subreddit."""
-        return 'Subreddit(subreddit_name=\'{0}\')'.format(self.display_name)
+        return 'Subreddit(subreddit_name=\'{0}\')'.format(self._fast_name)
 
     def __unicode__(self):
         """Return a string representation of the Subreddit."""
-        return self.display_name
+        return self._fast_name
+
+    def _populate(self, json_dict, fetch):
+        retval = super(Subreddit, self)._populate(json_dict, fetch)
+        if fetch:  # Update _fast_name
+            self._fast_name = self.display_name
+        return retval
 
     def clear_all_flair(self):
         """Remove all user flair on this subreddit.

@@ -25,6 +25,11 @@ Unreleased
 ----------
  * **[CHANGE]** All requests should now be through HTTPS.
  * **[CHANGE]** All previously deprecated methods have been removed.
+ * **[CHANGE]** The ``display_name`` attribute on instances
+   of:class:`Subreddit` is now lazily loaded and will match the casing on the
+   site, not the casing used to construct the Subreddit instance. To quickly
+   fetch the name of an unloaded Subreddit, use ``str(sub_instance)``, or
+   ``unicode(sub_instance)``.
 
 PRAW 2.1.21
 -----------

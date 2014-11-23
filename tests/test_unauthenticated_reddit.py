@@ -206,9 +206,9 @@ class UnauthenticatedRedditTest(PRAWTest):
     def test_store_lazy_json_result(self):
         self.r.config.store_json_result = True
         subreddit = self.r.get_subreddit(self.sr)
-        # Force object to load
-        subreddit.title
-        self.assertEqual(subreddit.json_dict['display_name'], self.sr)
+        self.assertFalse(subreddit.json_dict)
+        subreddit.display_name  # Force object to load
+        self.assertTrue(subreddit.json_dict)
 
     def test_user_agent(self):
         with warnings.catch_warnings(record=True) as w:

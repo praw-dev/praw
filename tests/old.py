@@ -1321,6 +1321,22 @@ class SubredditTest(unittest.TestCase, AuthenticatedHelper):
     def test_attribute_error(self):
         self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
 
+    def test_display_name_lazy_update(self):
+        augmented_name = self.sr.upper()
+        subreddit = self.r.get_subreddit(augmented_name)
+        self.assertEqual(augmented_name, text_type(subreddit))
+        self.assertNotEqual(augmented_name, subreddit.display_name)
+        self.assertEqual(self.sr, subreddit.display_name)
+        self.assertEqual(subreddit.display_name, text_type(subreddit))
+
+    def test_display_name_refresh(self):
+        augmented_name = self.sr.upper()
+        subreddit = self.r.get_subreddit(augmented_name)
+        self.assertEqual(augmented_name, text_type(subreddit))
+        subreddit.refresh()
+        self.assertEqual(self.sr, subreddit.display_name)
+        self.assertEqual(subreddit.display_name, text_type(subreddit))
+
     def test_get_contributors_private(self):
         self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
         private_sub = self.r.get_subreddit(self.priv_sr)
