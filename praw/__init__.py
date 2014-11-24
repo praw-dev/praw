@@ -184,6 +184,7 @@ class Config(object):  # pylint: disable-msg=R0903, R0924
     SSL_PATHS = ('access_token_url', 'authorize', 'friends', 'login')
 
     def __init__(self, site_name, **kwargs):
+        """Initialize PRAW's configuration."""
         def config_boolean(item):
             return item and item.lower() in ('1', 'yes', 'true', 'on')
 
@@ -565,6 +566,7 @@ class OAuth2Reddit(BaseReddit):
     """
 
     def __init__(self, *args, **kwargs):
+        """Initialize an OAuth2Reddit instance."""
         super(OAuth2Reddit, self).__init__(*args, **kwargs)
         self.client_id = self.config.client_id
         self.client_secret = self.config.client_secret
@@ -677,6 +679,7 @@ class UnauthenticatedReddit(BaseReddit):
     """
 
     def __init__(self, *args, **kwargs):
+        """Initialze an UnauthenticatedReddit instance."""
         super(UnauthenticatedReddit, self).__init__(*args, **kwargs)
         self._random_count = 0
 
@@ -1144,6 +1147,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
     """
 
     def __init__(self, *args, **kwargs):
+        """Initialize an AuthenticatedReddit instance."""
         super(AuthenticatedReddit, self).__init__(*args, **kwargs)
         # Add variable to distinguish between authentication type
         #  * None means unauthenticated
@@ -1156,6 +1160,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.user = None
 
     def __str__(self):
+        """Return a string representation of the AuthenticatedReddit."""
         if isinstance(self._authentication, set):
             return 'OAuth2 reddit session (scopes: {0})'.format(
                 ', '.join(self._authentication))
@@ -1978,10 +1983,7 @@ class MySubredditsMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='mysubreddits')
     def get_my_multis(self, *args, **kwargs):
-        """Return a list of all the Multireddits for the
-        authenticated Redditor.
-
-        """
+        """Return a list of the authenticated Redditor's Multireddits."""
         # The JSON data for multireddits is returned from Reddit as a list
         # Therefore, we cannot use :meth:`get_content` to retrieve the objects
         url = self.config['my_multis']
