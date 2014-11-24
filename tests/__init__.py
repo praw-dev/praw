@@ -1367,7 +1367,7 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         params = dict(x.split('=', 1) for x in params.split('&'))
         expected = {'client_id': self.r.config.client_id,
                     'duration': 'temporary',
-                    'redirect_uri': ('http%3A%2F%2F127.0.0.1%3A65010%2F'
+                    'redirect_uri': ('https%3A%2F%2F127.0.0.1%3A65010%2F'
                                      'authorize_callback'),
                     'response_type': 'code', 'scope': 'identity',
                     'state': '...'}
