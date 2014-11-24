@@ -1259,7 +1259,11 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
     @decorators.restrict_access(scope='identity', oauth_only=True)
     def get_me(self):
-        """Return a LoggedInRedditor object."""
+        """Return a LoggedInRedditor object.
+
+        Note: This function is only intended to be used with a 'identity'
+        providing OAuth2 grant.
+        """
         response = self.request_json(self.config['me'])
         user = objects.Redditor(self, response['name'], response)
         user.__class__ = objects.LoggedInRedditor
