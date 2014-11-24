@@ -1982,7 +1982,7 @@ class MySubredditsMixin(AuthenticatedReddit):
                                 **kwargs)
 
     @decorators.restrict_access(scope='mysubreddits')
-    def get_my_multis(self, *args, **kwargs):
+    def get_my_multireddits(self, *args, **kwargs):
         """Return a list of the authenticated Redditor's Multireddits."""
         # The JSON data for multireddits is returned from Reddit as a list
         # Therefore, we cannot use :meth:`get_content` to retrieve the objects

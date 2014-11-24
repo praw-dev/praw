@@ -36,8 +36,8 @@ Unreleased
    dropdown box when composing a message).
  * **[FEATURE]** Added :class:`Multireddit`
  * **[FEATURE]** Added :meth:`get_multireddit` to get a single multireddit obj
- * **[FEATURE]** Added :meth:`get_my_multis` to get all multireddits owned
-   by the logged in user.
+ * **[FEATURE]** Added :meth:`get_my_multireddits` to get all multireddits
+   owned by the logged in user.
  * **[FEATURE]** Added :meth:`get_multireddit` to :class:`Redditor` to quickly
    get a multireddit belonging to that user.
  * **[FEATURE]** :class:`praw.objects.Comment`,
