@@ -72,10 +72,12 @@ class RedditContentObject(object):
         self.has_fetched = self._populate(json_dict, fetch)
 
     def __eq__(self, other):
+        """Return whether the other instance equals the current."""
         return (isinstance(other, RedditContentObject) and
                 self.fullname == other.fullname)
 
     def __getattr__(self, attr):
+        """Return the value of the `attr` attribute."""
         if not self.has_fetched:
             self.has_fetched = self._populate(None, True)
             return getattr(self, attr)
@@ -83,9 +85,11 @@ class RedditContentObject(object):
                                                                  attr))
 
     def __ne__(self, other):
+        """Return whether the other instance differs from the current."""
         return not (self == other)
 
     def __setattr__(self, name, value):
+        """Set the `name` attribute to `value."""
         if value and name == 'subreddit':
             value = Subreddit(self.reddit_session, value, fetch=False)
         elif value and name in REDDITOR_KEYS:
@@ -100,6 +104,7 @@ class RedditContentObject(object):
         object.__setattr__(self, name, value)
 
     def __str__(self):
+        """Return a string representation of the RedditContentObject."""
         retval = self.__unicode__()
         if not six.PY3:
             retval = retval.encode('utf-8')
@@ -553,6 +558,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Reportable,
     """A class that represents a reddit comments."""
 
     def __init__(self, reddit_session, json_dict):
+        """Construct an instance of the Comment object."""
         super(Comment, self).__init__(reddit_session, json_dict,
                                       underscore_names=['replies'])
         if self._replies:
@@ -565,6 +571,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Reportable,
 
     @limit_chars
     def __unicode__(self):
+        """Return a string representation of the comment."""
         return getattr(self, 'body', '[Unloaded Comment]')
 
     @property
@@ -630,6 +637,7 @@ class Message(Inboxable):
     """A class for private messages."""
 
     def __init__(self, reddit_session, json_dict):
+        """Construct an instnace of the Message object."""
         super(Message, self).__init__(reddit_session, json_dict)
         if self.replies:
             self.replies = self.replies['data']['children']
@@ -638,6 +646,7 @@ class Message(Inboxable):
 
     @limit_chars
     def __unicode__(self):
+        """Return a string representation of the Message."""
         return 'From: %s\nSubject: %s\n\n%s' % (self.author, self.subject,
                                                 self.body)
 
@@ -647,11 +656,13 @@ class MoreComments(RedditContentObject):
     """A class indicating there are more comments."""
 
     def __init__(self, reddit_session, json_dict):
+        """Construct an instance of the MoreComment object."""
         super(MoreComments, self).__init__(reddit_session, json_dict)
         self.submission = None
         self._comments = None
 
     def __lt__(self, other):
+        """Proide a sort order on the MoreComments object."""
         # To work with heapq a "smaller" item is the one with the most comments
         # We are intentionally making the biggest element the smallest element
         # to turn the min-heap implementation in heapq into a max-heap
@@ -659,6 +670,7 @@ class MoreComments(RedditContentObject):
         return self.count > other.count
 
     def __unicode__(self):
+        """Return a string representation of the MoreComments object."""
         return '[More Comments: %d]' % self.count
 
     def _update_submission(self, submission):
@@ -701,6 +713,7 @@ class Redditor(Gildable, Messageable, Refreshable):
 
     def __init__(self, reddit_session, user_name=None, json_dict=None,
                  fetch=True):
+        """Construct an instance of the Redditor object."""
         info_url = reddit_session.config['user_about'] % user_name
         # name is set before calling the parent constructor so that the
         # json_dict 'name' attribute (if available) has precedence
@@ -711,9 +724,11 @@ class Redditor(Gildable, Messageable, Refreshable):
         self._mod_subs = None
 
     def __repr__(self):
+        """Return a code representation of the Redditor."""
         return 'Redditor(user_name=\'{0}\')'.format(self.name)
 
     def __unicode__(self):
+        """Return a string representation of the Redditor."""
         return self.name
 
     def friend(self):
@@ -845,9 +860,11 @@ class ModAction(RedditContentObject):
     """A moderator action."""
 
     def __init__(self, reddit_session, json_dict=None, fetch=False):
+        """Construct an instance of the ModAction object."""
         super(ModAction, self).__init__(reddit_session, json_dict, fetch)
 
     def __unicode__(self):
+        """Return a string reprsentation of the moderator action."""
         return 'Action: {0}'.format(self.action)
 
 
@@ -919,6 +936,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         return submission
 
     def __init__(self, reddit_session, json_dict):
+        """Construct an instance of the Subreddit object."""
         super(Submission, self).__init__(reddit_session, json_dict)
         self.permalink = urljoin(reddit_session.config['reddit_url'],
                                  self.permalink)
@@ -930,6 +948,10 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
     @limit_chars
     def __unicode__(self):
+        """Return a string representation of the Subreddit.
+
+        Note: The representation is truncated to a fix number of characters.
+        """
         title = self.title.replace('\r\n', ' ')
         return six.text_type('{0} :: {1}').format(self.score, title)
 
@@ -1298,6 +1320,7 @@ class Subreddit(Messageable, Refreshable):
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
                  fetch=False):
+        """Construct an instance of the Subreddit object."""
         # Special case for when my_subreddits is called as no name is returned
         # so we have to extract the name from the URL. The URLs are returned
         # as: /r/reddit_name/
@@ -1315,9 +1338,11 @@ class Subreddit(Messageable, Refreshable):
         self._listing_urls = [base + x + '.json' for x in listings]
 
     def __repr__(self):
-        return 'Subreddit(display_name=\'{0}\')'.format(self.display_name)
+        """Return a code representation of the Subreddit."""
+        return 'Subreddit(subreddit_name=\'{0}\')'.format(self.display_name)
 
     def __unicode__(self):
+        """Return a string representation of the Subreddit."""
         return self.display_name
 
     def clear_all_flair(self):
@@ -1336,7 +1361,7 @@ class Subreddit(Messageable, Refreshable):
 
 class Multireddit(Refreshable):
 
-    """A class for users' Multireddits"""
+    """A class for users' Multireddits."""
 
     # Generic listing selectors
     get_controversial = _get_sorter('controversial')
@@ -1361,6 +1386,7 @@ class Multireddit(Refreshable):
 
     def __init__(self, reddit_session, redditor=None, multi=None,
                  json_dict=None, fetch=False):
+        """Construct an instance of the Multireddit object."""
         # Special case for when get_my_multis is called, no name is returned
         # so we have to extract the name from the URL. The URLs are returned
         # as: /user/redditor/m/multi
@@ -1388,10 +1414,12 @@ class Multireddit(Refreshable):
             Subreddit(reddit_session, x['name']) for x in self.subreddits]
 
     def __repr__(self):
+        """Return a code representation of the Multireddit."""
         return 'Multireddit(author=\'{0}\', name=\'{1}\')'.format(
             self.author, self._name)
 
     def __unicode__(self):
+        """Return a string representation of the Multireddit."""
         return self._name
 
 
@@ -1402,6 +1430,7 @@ class PRAWListing(RedditContentObject):
     CHILD_ATTRIBUTE = None
 
     def __init__(self, reddit_session, json_dict=None, fetch=False):
+        """Construct an instance of the PRAWListing object."""
         super(PRAWListing, self).__init__(reddit_session, json_dict, fetch)
 
         if not self.CHILD_ATTRIBUTE:
@@ -1412,24 +1441,31 @@ class PRAWListing(RedditContentObject):
             child_list[i] = self._convert(reddit_session, child_list[i])
 
     def __contains__(self, item):
+        """Test if item exists in the listing."""
         return item in getattr(self, self.CHILD_ATTRIBUTE)
 
     def __delitem__(self, index):
+        """Remove the item at position index from the listing."""
         del getattr(self, self.CHILD_ATTRIBUTE)[index]
 
     def __getitem__(self, index):
+        """Return the item at position index in the listing."""
         return getattr(self, self.CHILD_ATTRIBUTE)[index]
 
     def __iter__(self):
+        """Return an iterator to the listing."""
         return getattr(self, self.CHILD_ATTRIBUTE).__iter__()
 
     def __len__(self):
+        """Return the number of items in the listing."""
         return len(getattr(self, self.CHILD_ATTRIBUTE))
 
     def __setitem__(self, index, item):
+        """Set item at position `index` in the listing."""
         getattr(self, self.CHILD_ATTRIBUTE)[index] = item
 
     def __unicode__(self):
+        """Return a string representation of the listing."""
         return six.text_type(getattr(self, self.CHILD_ATTRIBUTE))
 
 
@@ -1453,6 +1489,7 @@ class WikiPage(RedditContentObject):
 
     def __init__(self, reddit_session, subreddit=None, page=None,
                  json_dict=None, fetch=True):
+        """Construct an instance of the WikiPage object."""
         if not subreddit and not page:
             subreddit = json_dict['sr']
             page = json_dict['page']
@@ -1464,6 +1501,7 @@ class WikiPage(RedditContentObject):
         self.subreddit = subreddit
 
     def __unicode__(self):
+        """Return a string representation of the page."""
         return six.text_type('{0}:{1}').format(self.subreddit, self.page)
 
     def edit(self, *args, **kwargs):

@@ -68,9 +68,11 @@ class RateLimitHandler(object):
         return False
 
     def __del__(self):
+        """Cleanup the HTTP session."""
         self.http.close()
 
     def __init__(self):
+        """Establish the HTTP session."""
         self.http = Session()  # Each instance should have its own session
 
     def request(self, request, proxies, timeout, **_):
@@ -172,6 +174,7 @@ class MultiprocessHandler(object):
     """A PRAW handler to interact with the PRAW multi-process server."""
 
     def __init__(self, host='localhost', port=10101):
+        """Construct an instance of the MultiprocessHandler."""
         self.host = host
         self.port = port
 

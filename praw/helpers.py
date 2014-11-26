@@ -265,11 +265,13 @@ class BoundedSet(object):
     """
 
     def __init__(self, max_items):
+        """Construct an instance of the BoundedSet."""
         self.max_items = max_items
         self._fifo = []
         self._set = set()
 
     def __contains__(self, item):
+        """Test if the BoundedSet contains item."""
         return item in self._set
 
     def add(self, item):
