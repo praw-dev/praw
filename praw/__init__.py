@@ -524,8 +524,22 @@ class BaseReddit(object):
                 return
 
     @decorators.raise_api_exceptions
+    def request(self, url, params=None, data=None, retry_on_error=True):
+        """Make a HTTP request and return the response.
+
+        :param url: the url to grab content from.
+        :param params: a dictionary containing the GET data to put in the url
+        :param data: a dictionary containing the extra data to submit
+        :param retry_on_error: if True retry the request, if it fails, for up
+            to 3 attempts
+        :returns: The HTTP response.
+        """
+        return self._request(url, params, data, raw_response=True,
+                             retry_on_error=retry_on_error)
+
+    @decorators.raise_api_exceptions
     def request_json(self, url, params=None, data=None, as_objects=True,
-                     retry_on_error=None):
+                     retry_on_error=True):
         """Get the JSON processed from a page.
 
         :param url: the url to grab content from.
@@ -539,11 +553,8 @@ class BaseReddit(object):
         """
         if not url.endswith('.json'):
             url += '.json'
-        if retry_on_error is None:
-            response = self._request(url, params, data)
-        else:
-            response = self._request(url, params, data,
-                                     retry_on_error=retry_on_error)
+        response = self._request(url, params, data,
+                                 retry_on_error=retry_on_error)
         hook = self._json_reddit_objecter if as_objects else None
         # Request url just needs to be available for the objecter to use
         self._request_url = url  # pylint: disable-msg=W0201

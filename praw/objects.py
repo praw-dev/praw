@@ -297,20 +297,25 @@ class Gildable(RedditContentObject):
         :param months: Specifies the number of months to gild. This parameter
             is Only valid when the instance called upon is of type
             Redditor. When not provided, the value defaults to 1.
+        :returns: True on success, otherwise raises an exception.
         """
         if isinstance(self, Redditor):
             months = int(months) if months is not None else 1
             if months < 1:
                 raise TypeError('months must be at least 1')
-            return self.reddit_session.request_json(
+            if months > 36:
+                raise TypeError('months must be no more than 36')
+            response = self.reddit_session.request(
                 self.reddit_session.config['gild_user'].format(
                     username=six.text_type(self)), data={'months': months})
-        if months is not None:
+        elif months is not None:
             raise TypeError('months is not a valid parameter for {0}'
                             .format(type(self)))
-        return self.reddit_session.request_json(
-            self.reddit_session.config['gild_thing']
-            .format(fullname=self.fullname), data=True)
+        else:
+            response = self.reddit_session.request(
+                self.reddit_session.config['gild_thing']
+                .format(fullname=self.fullname), data=True)
+        return response.status_code == 200
 
 
 class Hideable(RedditContentObject):
