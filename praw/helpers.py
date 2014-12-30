@@ -150,7 +150,7 @@ def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
                     items.append(item)
                     processed += 1
                 if verbosity >= 1 and processed % 100 == 0:
-                    sys.stderr.write(' Items: {0}          \r'
+                    sys.stderr.write(' Items: {0}            \r'
                                      .format(processed))
                     sys.stderr.flush()
                 if i < KEEP_ITEMS:
