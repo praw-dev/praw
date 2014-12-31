@@ -69,7 +69,11 @@ class RateLimitHandler(object):
 
     def __del__(self):
         """Cleanup the HTTP session."""
-        self.http.close()
+        if self.http:
+            try:
+                self.http.close()
+            except:  # Never fail
+                pass
 
     def __init__(self):
         """Establish the HTTP session."""
