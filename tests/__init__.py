@@ -654,6 +654,37 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(item.comments())
 
 
+class SaveableTest(unittest.TestCase, AuthenticatedHelper):
+    def setUp(self):
+        self.configure()
+
+    def _helper(self, item):
+        def save():
+            item.save()
+            item.refresh()
+            self.assertTrue(item.saved)
+            self.first(self.r.user.get_saved(params={'uniq': item.id}),
+                       lambda x: x == item)
+
+        def unsave():
+            item.unsave()
+            item.refresh()
+            self.assertFalse(item.saved)
+
+        if item.saved:
+            unsave()
+            save()
+        else:
+            save()
+            unsave()
+
+    def test_comment(self):
+        self._helper(next(self.r.user.get_comments()))
+
+    def test_submission(self):
+        self._helper(next(self.r.user.get_submitted()))
+
+
 class CommentEditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
@@ -1789,16 +1820,6 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         predicate = lambda report: report.id == submission.id
         self.first(self.r.get_subreddit(self.sr).get_reports(), predicate)
 
-    def test_save(self):
-        predicate = lambda submission: not submission.saved
-        submission = self.first(self.r.user.get_submitted(), predicate)
-        submission.save()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertTrue(submission.saved)
-        # verify in saved_links
-        self.first(self.r.user.get_saved(), lambda item: item == submission)
-
     def test_short_link(self):
         submission = next(self.r.get_new())
         if self.r.config.is_reddit:
@@ -1836,14 +1857,6 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
         submission.unhide()
         submission.refresh()
         self.assertFalse(submission.hidden)
-
-    def test_unsave(self):
-        predicate = lambda submission: submission.saved
-        submission = self.first(self.r.user.get_submitted(), predicate)
-        submission.unsave()
-        # reload the submission
-        submission = self.r.get_submission(submission_id=submission.id)
-        self.assertFalse(submission.saved)
 
     def test_voting(self):
         def upvote():

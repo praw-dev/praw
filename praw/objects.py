@@ -25,6 +25,7 @@ that it can be saved and unsaved in the context of a logged in user.
 import six
 from six.moves.urllib.parse import parse_qs, urlparse, urlunparse
 from heapq import heappop, heappush
+from random import randint
 from requests.compat import urljoin
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
@@ -414,8 +415,13 @@ class Refreshable(RedditContentObject):
         """
         if isinstance(self, Redditor):
             other = Redditor(self.reddit_session, self.name)
+        elif isinstance(self, Comment):
+            sub = Submission.from_url(self.reddit_session, self.permalink,
+                                      params={'uniq': randint(0, 65536)})
+            other = sub.comments[0]
         elif isinstance(self, Submission):
-            other = Submission.from_url(self.reddit_session, self.permalink)
+            other = Submission.from_url(self.reddit_session, self.permalink,
+                                        params={'uniq': randint(0, 65536)})
         elif isinstance(self, Subreddit):
             other = Subreddit(self.reddit_session, self.display_name)
         self.__dict__ = other.__dict__  # pylint: disable-msg=W0201
@@ -552,8 +558,8 @@ class Voteable(RedditContentObject):
         return self.reddit_session.request_json(url, data=data)
 
 
-class Comment(Editable, Gildable, Inboxable, Moderatable, Reportable,
-              Voteable):
+class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
+              Reportable, Saveable, Voteable):
 
     """A class that represents a reddit comments."""
 

@@ -43,6 +43,7 @@ Unreleased
  * **[FEATURE]** :class:`praw.objects.Comment`,
    :class:`praw.objects.Redditor`, and :class:`praw.objects.Submission` are now
    gildable.
+ * **[FEATURE]** :class:`praw.objects.Comment` is now saveable.
 
 PRAW 2.1.19
 -----------
