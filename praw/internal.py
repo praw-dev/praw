@@ -33,9 +33,11 @@ def _get_redditor_listing(subpath=''):
     def _listing(self, sort='new', time='all', *args, **kwargs):
         """Return a get_content generator for some RedditContentObject type.
 
-        :param sort: Specify the sort order of the results if applicable.
+        :param sort: Specify the sort order of the results if applicable
+            (one of ``'hot'``, ``'new'``, ``'top'``, ``'controversial'``).
         :param time: Specify the time-period to return submissions if
-            applicable.
+            applicable (one of ``'hour'``, ``'day'``, ``'week'``, 
+            ``'month'``, ``'year'``, ``'all'``).
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
