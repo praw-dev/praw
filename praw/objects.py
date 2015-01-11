@@ -679,12 +679,25 @@ class MoreComments(RedditContentObject):
         """Return a string representation of the MoreComments object."""
         return '[More Comments: %d]' % self.count
 
+    def _continue_comments(self, update):
+        assert len(self.children) == 1 and self.id == self.children[0]
+        self._comments = self.reddit_session.get_submission(
+            urljoin(self.submission.permalink, self.id)).comments
+        assert len(self._comments) == 1
+        if update:
+            # pylint: disable-msg=W0212
+            self._comments[0]._update_submission(self.submission)
+            # pylint: enable-msg=W0212
+        return self._comments
+
     def _update_submission(self, submission):
         self.submission = submission
 
     def comments(self, update=True):
         """Fetch and return the comments for a single MoreComments object."""
         if not self._comments:
+            if self.count == 0:  # Handle 'continue this thread' type
+                return self._continue_comments(update)
             # pylint: disable-msg=W0212
             children = [x for x in self.children if 't1_%s' % x
                         not in self.submission._comments_by_id]
@@ -888,9 +901,9 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
             parent, comm = queue.pop(0)
             if isinstance(comm, MoreComments):
                 heappush(more_comments, comm)
-                if parent:  # Remove from parent listing
+                if parent:
                     parent.replies.remove(comm)
-                elif parent is None:  # Remove from tree root
+                else:
                     tree.remove(comm)
             else:
                 for item in comm.replies:
@@ -1093,13 +1106,17 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
         remaining = limit
         more_comments = self._extract_more_comments(self.comments)
+        skipped = []
 
         # Fetch largest more_comments until reaching the limit or the threshold
         while more_comments:
             item = heappop(more_comments)
-            # Skip after reaching the limit or below threshold
-            if remaining is 0 or item.count < threshold:
+            if remaining == 0:  # We're not going to replace any more
+                heappush(more_comments, item)  # It wasn't replaced
                 break
+            elif len(item.children) == 0 or 0 < item.count < threshold:
+                heappush(skipped, item)  # It wasn't replaced
+                continue
 
             # Fetch new comments and decrease remaining if a request was made
             new_comments = item.comments(update=False)
@@ -1108,21 +1125,16 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
             elif new_comments is None:
                 continue
 
-            # Insert into the tree or re-add to the list of more_comments
+            # Re-add new MoreComment objects to the heap of more_comments
+            for more in self._extract_more_comments(new_comments):
+                more._update_submission(self)
+                heappush(more_comments, more)
+            # Insert the new comments into the tree
             for comment in new_comments:
-                # pylint: disable-msg=W0212
-                if isinstance(comment, MoreComments):
-                    comment._update_submission(self)
-                    heappush(more_comments, comment)
-                else:
-                    # Replies needs to be an empty list
-                    assert not comment._replies
-                    comment._replies = []
-                    self._insert_comment(comment)
-                # pylint: enable-msg=W0212
+                self._insert_comment(comment)
 
         self._replaced_more = True
-        return more_comments
+        return more_comments + skipped
 
     def set_flair(self, *args, **kwargs):
         """Set flair for this submission.

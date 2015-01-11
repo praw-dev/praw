@@ -110,7 +110,7 @@ class BasicHelper(object):
             self.link_id = 't3_dtg4j'
             self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
             self.link_url_link = 'http://imgur.com/Vr8ZZ'
-            self.more_comments_url = self.url('/r/redditdev/comments/dqkfz/')
+            self.more_comments_url = self.url('/r/redditdev/comments/yjk55')
             self.other_user_id = '6c1xj'
             self.priv_submission_id = '16kbb7'
             self.refresh_token = {
@@ -631,14 +631,21 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
         self.submission = self.r.get_submission(url=self.more_comments_url,
-                                                comment_limit=10)
+                                                comment_limit=130)
 
     def test_all_comments(self):
         c_len = len(self.submission.comments)
-        cf_len = len(helpers.flatten_tree(self.submission.comments))
+        flat = helpers.flatten_tree(self.submission.comments)
+        continue_items = [x for x in flat if isinstance(x, MoreComments) and
+                         x.count == 0]
+        self.assertTrue(continue_items)
+        cf_len = len(flat)
         saved = self.submission.replace_more_comments(threshold=2)
         ac_len = len(self.submission.comments)
-        acf_len = len(helpers.flatten_tree(self.submission.comments))
+        flat = helpers.flatten_tree(self.submission.comments)
+        acf_len = len(flat)
+        for item in continue_items:
+            self.assertTrue(item.id in [x.id for x in flat])
 
         # pylint: disable-msg=W0212
         self.assertEqual(len(self.submission._comments_by_id), acf_len)

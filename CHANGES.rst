@@ -27,6 +27,8 @@ Unreleased
  * **[BUGFIX]** Attempting to lazyload an attribute of a comment that has been
    removed will explicitly raise a :meth:`praw.errors.InvalidComment`
    exception, rather than an ``IndexError`` (issue #339).
+ * **[BUGFIX]** :meth:`.replace_more_comments` handles `continue this thread`
+   type ``MoreComments`` objects.
  * **[FEATURE]** Added :meth:`praw.helpers.valid_redditors`.
  * **[FEATURE]** Added a ``nsfw`` parameter to :meth:`.get_random_subreddit`
    that permits fetching a random NSFW Subreddit. This change also supports
