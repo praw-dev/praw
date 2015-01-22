@@ -614,7 +614,7 @@ class OAuth2Reddit(BaseReddit):
         retval = self._handle_oauth_request(data)
         return {'access_token': retval['access_token'],
                 'refresh_token': retval.get('refresh_token'),
-                'scope': set(retval['scope'].split(','))}
+                'scope': set(retval['scope'].split(' '))}
 
     @decorators.require_oauth
     def get_authorize_url(self, state, scope='identity', refreshable=False):
@@ -657,7 +657,7 @@ class OAuth2Reddit(BaseReddit):
         retval = self._handle_oauth_request(data)
         return {'access_token': retval['access_token'],
                 'refresh_token': refresh_token,
-                'scope': set(retval['scope'].split(','))}
+                'scope': set(retval['scope'].split(' '))}
 
     def set_oauth_app_info(self, client_id, client_secret, redirect_uri):
         """Set the App information to use with OAuth2.
