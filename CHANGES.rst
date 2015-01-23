@@ -22,8 +22,8 @@ formatted links that link to the relevant place in the code overview.
 .. begin_changelog_body
 
 
-Unreleased
-----------
+PRAW 2.1.20
+-----------
  * **[BUGFIX]** Attempting to lazyload an attribute of a comment that has been
    removed will explicitly raise a :meth:`praw.errors.InvalidComment`
    exception, rather than an ``IndexError`` (issue #339).
@@ -46,6 +46,7 @@ Unreleased
    :class:`praw.objects.Redditor`, and :class:`praw.objects.Submission` are now
    gildable.
  * **[FEATURE]** :class:`praw.objects.Comment` is now saveable.
+ * **[REDDIT]** Handle upstream change in reddit's OAuth2 scope parsing.
 
 PRAW 2.1.19
 -----------
