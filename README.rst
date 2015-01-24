@@ -44,7 +44,7 @@ This will display something similar to the following:
 Installation
 ------------
 
-PRAW works with python 2.6, 2.7, 3.1, 3.2, and 3.3. The recommended way to
+PRAW works with python 2.6, 2.7, 3.1, 3.2, 3.3, and 3.4. The recommended way to
 install is via `pip <http://pypi.python.org/pypi/pip>`_
 
 .. code-block:: bash
