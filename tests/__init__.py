@@ -637,7 +637,7 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
         c_len = len(self.submission.comments)
         flat = helpers.flatten_tree(self.submission.comments)
         continue_items = [x for x in flat if isinstance(x, MoreComments) and
-                         x.count == 0]
+                          x.count == 0]
         self.assertTrue(continue_items)
         cf_len = len(flat)
         saved = self.submission.replace_more_comments(threshold=2)
