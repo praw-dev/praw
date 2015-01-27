@@ -680,14 +680,16 @@ class MoreComments(RedditContentObject):
         return '[More Comments: %d]' % self.count
 
     def _continue_comments(self, update):
-        assert len(self.children) == 1 and self.id == self.children[0]
-        self._comments = self.reddit_session.get_submission(
-            urljoin(self.submission.permalink, self.id)).comments
-        assert len(self._comments) == 1
+        assert len(self.children) > 0
+        tmp = self.reddit_session.get_submission(urljoin(
+            self.submission.permalink, self.parent_id.split('_', 1)[1]))
+        assert len(tmp.comments) == 1
+        self._comments = tmp.comments[0].replies
         if update:
-            # pylint: disable-msg=W0212
-            self._comments[0]._update_submission(self.submission)
-            # pylint: enable-msg=W0212
+            for comment in self._comments:
+                # pylint: disable-msg=W0212
+                comment._update_submission(self.submission)
+                # pylint: enable-msg=W0212
         return self._comments
 
     def _update_submission(self, submission):
