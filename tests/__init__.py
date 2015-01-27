@@ -264,8 +264,10 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(text.endswith('>'))
 
     def test_deprecation(self):
-        with warnings.catch_warnings():
+        with warnings.catch_warnings(record=True) as w:
             self.r.get_all_comments()
+            assert len(w) == 1
+            assert isinstance(w[0].message, DeprecationWarning)
 
     def test_equality(self):
         subreddit = self.r.get_subreddit(self.sr)
@@ -421,6 +423,12 @@ class BasicTest(unittest.TestCase, BasicHelper):
         # Force object to load
         subreddit.title
         self.assertEqual(subreddit.json_dict['display_name'], self.sr)
+
+    def test_user_agent(self):
+        with warnings.catch_warnings(record=True) as w:
+            r = Reddit('robot agent')
+            assert len(w) == 1
+            assert isinstance(w[0].message, UserWarning)
 
 
 class SearchTest(unittest.TestCase, BasicHelper):

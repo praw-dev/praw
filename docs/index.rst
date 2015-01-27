@@ -69,9 +69,9 @@ for any ``NameErrors`` you might encounter.
 
     >>> import praw
 
-#. Create the Reddit object (requires a user agent):
+#. Create the Reddit object (requires a user-agent):
 
-    >>> r = praw.Reddit(user_agent='example')
+    >>> r = praw.Reddit(user_agent='Test Script by /u/bboe')
 
 #. Logging in:
 

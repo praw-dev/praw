@@ -311,7 +311,11 @@ class BaseReddit(object):
 
         """
         if not user_agent or not isinstance(user_agent, six.string_types):
-            raise TypeError('User agent must be a non-empty string.')
+            raise TypeError('user_agent must be a non-empty string.')
+        if 'bot' in user_agent.lower():
+            warn_explicit(
+                'The keyword `bot` in your user_agent may be problematic.',
+                UserWarning, '', 0)
 
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit',
                              **kwargs)

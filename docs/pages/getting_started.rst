@@ -50,8 +50,9 @@ included for the sake of completion.
     * Many default User-Agents (like "Python/urllib" or "Java") are drastically
       limited to encourage unique and descriptive user-agent strings.
     * If you're making an application for others to use, please include a
-      version number in the user agent. This allows us to block buggy versions
+      version number in the user-agent. This allows us to block buggy versions
       without blocking all versions of your app.
+    * Your user-agent should not contain the keyword ``bot``.
     * **NEVER lie about your user-agent.** This includes spoofing popular
       browsers and spoofing other bots. We will ban liars with extreme
       prejudice.

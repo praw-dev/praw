@@ -49,7 +49,7 @@ creating the :class:`.Reddit` instance. Below is an example to connect to a
     from praw.handlers import MultiprocessHandler
 
     handler = MultiprocessHandler()
-    r = praw.Reddit(user_agent='a descriptive user agent', handler=handler)
+    r = praw.Reddit(user_agent='a descriptive user-agent', handler=handler)
 
 With this configuration, all network requests made from your program(s) that
 include the above code will be *proxied* through the `praw-multiprocess`
@@ -65,7 +65,7 @@ address ``10.0.0.1`` port 65000 then you would create the PRAW instance via:
     from praw.handlers import MultiprocessHandler
 
     handler = MultiprocessHandler('10.0.0.1', 65000)
-    r = praw.Reddit(user_agent='a descriptive user agent', handler=handler)
+    r = praw.Reddit(user_agent='a descriptive user-agent', handler=handler)
 
 
 PRAW Multiprocess Resiliency
