@@ -426,7 +426,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
 
     def test_user_agent(self):
         with warnings.catch_warnings(record=True) as w:
-            r = Reddit('robot agent')
+            Reddit('robot agent')
             assert len(w) == 1
             assert isinstance(w[0].message, UserWarning)
 
