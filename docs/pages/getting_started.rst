@@ -30,37 +30,17 @@ the ``user_agent`` we supply when our script first connects to reddit.
 
 .. code-block:: pycon
 
-    >>> user_agent = ("Karma breakdown 1.0 by /u/_Daimon_ "
-    ...               "github.com/Damgaard/Reddit-Bots/")
+    >>> user_agent = "Karma breakdown 1.0 by /u/_Daimon_"
     >>> r = praw.Reddit(user_agent=user_agent)
 
 Care should be taken when we decide on what user_agent to send to reddit. The
 ``user_agent`` field is how we uniquely identify our script. The `reddit API
 wiki page <https://github.com/reddit/reddit/wiki/API>`_ has the official and
 updated recommendations on user_agent strings and everything else. Reading it
-is *highly recommended*. Here's the part about user_agent recommendations
-included for the sake of completion.
+is *highly recommended*.
 
-----
-
-* Change your client's User-Agent string to something unique and descriptive,
-  preferably referencing your reddit username.
-
-    * Example: ``User-Agent: super happy flair bot v1.0 by /u/spladug``
-    * Many default User-Agents (like "Python/urllib" or "Java") are drastically
-      limited to encourage unique and descriptive user-agent strings.
-    * If you're making an application for others to use, please include a
-      version number in the user-agent. This allows us to block buggy versions
-      without blocking all versions of your app.
-    * Your user-agent should not contain the keyword ``bot``.
-    * **NEVER lie about your user-agent.** This includes spoofing popular
-      browsers and spoofing other bots. We will ban liars with extreme
-      prejudice.
-
-----
-
-In addition to reddit's recommendations, it's nice to to add a link to the
-script's source (if available).
+In addition to reddit's recommendations, your user_agent string should not
+contain the keyword ``bot``.
 
 Breaking Down Redditor Karma by Subreddit
 -----------------------------------------
