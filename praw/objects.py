@@ -420,8 +420,11 @@ class Refreshable(RedditContentObject):
                                       params={'uniq': randint(0, 65536)})
             other = sub.comments[0]
         elif isinstance(self, Submission):
+            params = self._params.copy()
+            params['uniq'] = randint(0, 65536)
             other = Submission.from_url(self.reddit_session, self.permalink,
-                                        params={'uniq': randint(0, 65536)})
+                                        comment_sort=self._comment_sort,
+                                        params=params)
         elif isinstance(self, Subreddit):
             other = Subreddit(self.reddit_session, self.display_name)
         self.__dict__ = other.__dict__  # pylint: disable-msg=W0201
@@ -922,7 +925,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
     @staticmethod
     @restrict_access(scope='read')
     def from_url(reddit_session, url, comment_limit=0, comment_sort=None,
-                 comments_only=False, params={}):
+                 comments_only=False, params=None):
         """Request the url and return a Submission object.
 
         :param reddit_session: The session to make the request with.
@@ -936,6 +939,9 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         :param params: dictionary containing extra GET data to put in the url.
 
         """
+        if params is None:
+            params = {}
+
         parsed = urlparse(url)
         query_pairs = parse_qs(parsed.query)
         get_params = dict((k, ",".join(v)) for k, v in query_pairs.items())
@@ -954,6 +960,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         submission = s_info['data']['children'][0]
         submission.comments = c_info['data']['children']
         submission._comment_sort = comment_sort  # pylint: disable-msg=W0212
+        submission._params = params  # pylint: disable-msg=W0212
         return submission
 
     def __init__(self, reddit_session, json_dict):
@@ -966,6 +973,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         self._comments = None
         self._orphaned = {}
         self._replaced_more = False
+        self._params = {}
 
     @limit_chars
     def __unicode__(self):

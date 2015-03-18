@@ -965,7 +965,7 @@ class UnauthenticatedReddit(BaseReddit):
         return self.get_content(self.config['rising'], *args, **kwargs)
 
     def get_submission(self, url=None, submission_id=None, comment_limit=0,
-                       comment_sort=None, params={}):
+                       comment_sort=None, params=None):
         """Return a Submission object for the given url or submission_id.
 
         :param comment_limit: The desired number of comments to fetch. If <= 0
