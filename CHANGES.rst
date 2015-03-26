@@ -22,10 +22,16 @@ formatted links that link to the relevant place in the code overview.
 .. begin_changelog_body
 
 
-Unreleased
-----------
+PRAW 2.1.21
+-----------
  * **[BUGFIX]** Fix assertion error in :meth:`.replace_more_comments` with
    continue this thread links that have more than one child.
+ * **[BUGFIX]** :meth:`.refresh` on :class:`praw.objects.Submission` no longer
+   loses comment sort order and other manually specified parameters.
+ * **[REDDIT]** Add ``hide_ads`` as a parameter to
+ :meth:`~praw.__init__.ModConfigMixin.set_settings`.
+ * **[REDDIT]** :meth:`.create_redditor` no longer requires a captcha
+ * **[REDDIT]** :meth:`.create_subreddit` may require a captcha
 
 PRAW 2.1.20
 -----------
