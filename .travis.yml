@@ -6,7 +6,13 @@ python:
   - 3.3
   - 3.4
 install:
-  - pip install flake8 --use-mirrors
+  - pip install flake8 pep257 --use-mirrors
   - python setup.py install
-before_script: flake8 praw
-script: REDDIT_SITE=reddit_bypass_cdn python setup.py test -s tests.BasicTest && python setup.py test -s tests.OAuth2Test && python setup.py test -s tests.ModeratorSubredditTest.test_mod_mail_send
+before_script:
+  - flake8 praw
+  - flake8 tests
+  - pep257 praw
+script:
+  - REDDIT_SITE=reddit_bypass_cdn python setup.py test -s tests.BasicTest
+  - REDDIT_SITE=reddit_bypass_cdn python setup.py test -s tests.OAuth2Test
+  - REDDIT_SITE=reddit_bypass_cdn python setup.py test -s tests.ModeratorSubredditTest.test_mod_mail_send
