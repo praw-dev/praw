@@ -698,8 +698,7 @@ class UnauthenticatedReddit(BaseReddit):
         super(UnauthenticatedReddit, self).__init__(*args, **kwargs)
         self._random_count = 0
 
-    @decorators.require_captcha
-    def create_redditor(self, user_name, password, email='', captcha=None):
+    def create_redditor(self, user_name, password, email=''):
         """Register a new user.
 
         :returns: The json response from the server.
@@ -709,8 +708,6 @@ class UnauthenticatedReddit(BaseReddit):
                 'passwd': password,
                 'passwd2': password,
                 'user': user_name}
-        if captcha:
-            data.update(captcha)
         return self.request_json(self.config['register'], data=data)
 
     @decorators.deprecated(msg="Please use `get_comments(\'all\', ...)` "
@@ -1430,10 +1427,11 @@ class ModConfigMixin(AuthenticatedReddit):
     """
 
     @decorators.restrict_access(scope='modconfig', mod=False, login=True)
+    @decorators.require_captcha
     def create_subreddit(self, name, title, description='', language='en',
                          subreddit_type='public', content_options='any',
                          over_18=False, default_set=True, show_media=False,
-                         domain='', wikimode='disabled'):
+                         domain='', wikimode='disabled', captcha=None):
         """Create a new subreddit.
 
         :returns: The json response from the server.
@@ -1450,6 +1448,8 @@ class ModConfigMixin(AuthenticatedReddit):
                 'show_media': 'on' if show_media else 'off',
                 'wikimode': wikimode,
                 'domain': domain}
+        if captcha:
+            data.update(captcha)
         return self.request_json(self.config['site_admin'], data=data)
 
     @decorators.restrict_access(scope='modconfig')
