@@ -16,7 +16,6 @@ class RateLimitHandler(object):
 
     """The base handler that provides thread-safe rate limiting enforcement.
 
-
     While this handler is threadsafe, PRAW is not thread safe when the same
     `Reddit` instance is being utilized from multiple threads.
 
