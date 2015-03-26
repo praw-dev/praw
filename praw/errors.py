@@ -31,10 +31,16 @@ class ClientException(Exception):
     """Base exception class for errors that don't involve the remote API."""
 
     def __init__(self, message):
+        """Construct a ClientException.
+
+        :params message: The error message to display.
+
+        """
         super(ClientException, self).__init__()
         self.message = message
 
     def __str__(self):
+        """Return the message of the error."""
         return self.message
 
 
@@ -57,6 +63,15 @@ class OAuthScopeRequired(ClientException):
     """
 
     def __init__(self, function, scope, message=None):
+        """Contruct an OAuthScopeRequiredClientException.
+
+        :param function: The function that requires a scope.
+        :param scope: The scope required for the function.
+
+        :param message: A custom message to associate with the
+            exception. Default: `function` requires the OAuth2 scope `scope`
+
+        """
         if not message:
             message = '`{0}` requires the OAuth2 scope `{1}`'.format(function,
                                                                      scope)
@@ -74,6 +89,13 @@ class LoginRequired(ClientException):
     """
 
     def __init__(self, function, message=None):
+        """Construct a LoginRequired exception.
+
+        :param function: The function that requires login-based authentication.
+        :param message: A custom message to associate with the exception.
+            Default: `function` requires a logged in session
+
+        """
         if not message:
             message = '`{0}` requires a logged in session'.format(function)
         super(LoginRequired, self).__init__(message)
@@ -88,6 +110,15 @@ class LoginOrScopeRequired(OAuthScopeRequired, LoginRequired):
     """
 
     def __init__(self, function, scope, message=None):
+        """Construct a LoginOrScopeRequired exception.
+
+        :param function: The function that requires authentication.
+        :param scope: The scope that is required if not logged in.
+        :param message: A custom message to associate with the exception.
+            Default: `function` requires a logged in session or the OAuth2
+            scope `scope`
+
+        """
         if not message:
             message = ('`{0}` requires a logged in session or the '
                        'OAuth2 scope `{1}`').format(function, scope)
@@ -99,6 +130,11 @@ class ModeratorRequired(LoginRequired):
     """Indicates that a moderator of the subreddit is required."""
 
     def __init__(self, function):
+        """Construct a ModeratorRequired exception.
+
+        :param function: The function that requires moderator access.
+
+        """
         msg = '`{0}` requires a moderator of the subreddit'.format(function)
         super(ModeratorRequired, self).__init__(msg)
 
@@ -112,6 +148,14 @@ class ModeratorOrScopeRequired(LoginOrScopeRequired, ModeratorRequired):
     """
 
     def __init__(self, function, scope):
+        """Construct a ModeratorOrScopeRequired exception.
+
+        :param function: The function that requires moderator authentication or
+            a moderator scope..
+        :param scope: The scope that is required if not logged in with
+            moderator access..
+
+        """
         message = ('`{0}` requires a moderator of the subreddit or the '
                    'OAuth2 scope `{1}`').format(function, scope)
         super(ModeratorOrScopeRequired, self).__init__(function, scope,
@@ -132,6 +176,12 @@ class RedirectException(ClientException):
     """Raised when a redirect response occurs that is not expected."""
 
     def __init__(self, request_url, response_url):
+        """Construct a RedirectException.
+
+        :param request_url: The url requested.
+        :param response_url: The url being redirected to.
+
+        """
         super(RedirectException, self).__init__(
             'Unexpected redirect from {0} to {1}'
             .format(request_url, response_url))
@@ -149,11 +199,18 @@ class OAuthException(Exception):
     """
 
     def __init__(self, message, url):
+        """Construct a OAuthException.
+
+        :param message: The message associated with the exception.
+        :param url: The url that resulted in error.
+
+        """
         super(OAuthException, self).__init__()
         self.message = message
         self.url = url
 
     def __str__(self):
+        """Return the message along with the url."""
         return self.message + " on url {0}".format(self.url)
 
 
@@ -178,9 +235,21 @@ class OAuthInvalidToken(OAuthException):
 
 class APIException(Exception):
 
-    """Base exception class for the reddit API error message exceptions."""
+    """Base exception class for the reddit API error message exceptions.
+
+    All exceptions of this type _should_ have their own subclass.
+
+    """
 
     def __init__(self, error_type, message, field='', response=None):
+        """Construct an APIException.
+
+        :param error_type: The error type set on reddit's end.
+        :param message: The associated message for the error.
+        :param field: The input field associated with the error, or ''.
+        :param response: The HTTP response that resulted in the exception.
+
+        """
         super(APIException, self).__init__()
         self.error_type = error_type
         self.message = message
@@ -188,6 +257,7 @@ class APIException(Exception):
         self.response = response
 
     def __str__(self):
+        """Return a string containing the error message and field."""
         if hasattr(self, 'ERROR_TYPE'):
             return '`%s` on field `%s`' % (self.message, self.field)
         else:
@@ -200,10 +270,16 @@ class ExceptionList(APIException):
     """Raised when more than one exception occurred."""
 
     def __init__(self, errors):
+        """Construct an ExceptionList.
+
+        :param errors: The list of errors.
+
+        """
         super(ExceptionList, self).__init__(None, None)
         self.errors = errors
 
     def __str__(self):
+        """Return a string representation for all the errors."""
         ret = '\n'
         for i, error in enumerate(self.errors):
             ret += '\tError %d) %s\n' % (i, six.text_type(error))
@@ -312,9 +388,15 @@ class NotModified(APIException):
     """
 
     def __init__(self, response):
+        """Construct an instance of the NotModified exception.
+
+        This error does not have an error_type, message, nor field.
+
+        """
         super(NotModified, self).__init__(None, None, response=response)
 
     def __str__(self):
+        """Return: That page has not been modified."""
         return 'That page has not been modified.'
 
 
@@ -327,11 +409,23 @@ class SubredditExists(APIException):
 
 class RateLimitExceeded(APIException):
 
-    """An exception for when something has happened too frequently."""
+    """An exception for when something has happened too frequently.
+
+    Contains a `sleep_time` attribute for the number of seconds that must
+    transpire prior to the next request.
+
+    """
 
     ERROR_TYPE = 'RATELIMIT'
 
-    def __init__(self, error_type, message, field='', response=None):
+    def __init__(self, error_type, message, field, response):
+        """Construct an instance of the RateLimitExceeded exception.
+
+        The parameters match that of :class:`APIException`.
+
+        The `sleep_time` attribute is extracted from the response object.
+
+        """
         super(RateLimitExceeded, self).__init__(error_type, message,
                                                 field, response)
         self.sleep_time = self.response['ratelimit']
