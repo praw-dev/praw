@@ -1750,19 +1750,27 @@ class ModFlairMixin(AuthenticatedReddit):
             raise errors.ClientException('flair_mapping must be set')
         item_order = ['user', 'flair_text', 'flair_css_class']
         lines = []
+        comma_response = []
         for mapping in flair_mapping:
             if 'user' not in mapping:
                 raise errors.ClientException('flair_mapping must '
                                              'contain `user` key')
-            lines.append(','.join([mapping.get(x, '') for x in item_order]))
+            if any((mapping.get(x, '').find(',') != -1) for x in mapping):
+                comma_response.append(self.set_flair(subreddit, mapping.get('user'), mapping.get('flair_text'),
+                                                     mapping.get('flair_css_class')))
+            else:
+                lines.append(','.join([mapping.get(x, '') for x in item_order]))
         response = []
-        while len(lines):
-            data = {'r': six.text_type(subreddit),
-                    'flair_csv': '\n'.join(lines[:100])}
-            response.extend(self.request_json(self.config['flaircsv'],
-                                              data=data))
-            lines = lines[100:]
-        self.evict(self.config['flairlist'] % six.text_type(subreddit))
+        if len(lines):
+            while len(lines):
+                data = {'r': six.text_type(subreddit),
+                        'flair_csv': '\n'.join(lines[:100])}
+                response.extend(self.request_json(self.config['flaircsv'],
+                                                  data=data))
+                lines = lines[100:]
+            self.evict(self.config['flairlist'] % six.text_type(subreddit))
+        if comma_response:
+            return [response, comma_response]
         return response
 
 
@@ -2196,11 +2204,11 @@ class SubmitMixin(AuthenticatedReddit):
             can access it. Otherwise, return the url to the submission.
 
         """
-        if text is None and bool(text) == bool(url):
+        if bool(text) == bool(url):
             raise TypeError('One (and only one) of text or url is required!')
         data = {'sr': six.text_type(subreddit),
                 'title': title}
-        if text or text == '':
+        if text:
             data['kind'] = 'self'
             data['text'] = text
         else:
