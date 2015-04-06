@@ -2204,11 +2204,11 @@ class SubmitMixin(AuthenticatedReddit):
             can access it. Otherwise, return the url to the submission.
 
         """
-        if bool(text) == bool(url):
+        if text is None and bool(text) == bool(url):
             raise TypeError('One (and only one) of text or url is required!')
         data = {'sr': six.text_type(subreddit),
                 'title': title}
-        if text:
+        if text or text == '':
             data['kind'] = 'self'
             data['text'] = text
         else:
