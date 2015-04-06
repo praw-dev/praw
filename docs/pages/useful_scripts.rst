@@ -126,7 +126,7 @@ this page to add in more.
     via a GUI making it easy for people who don't know how to edit python
     scripts.
     
-`Reddit-paper <https://github.com/cameron-gagnon/reddit-paper>'_ by Cameron Gagnon.
+`Reddit-Paper`_ by Cameron Gagnon.
     Command line interface program that will download the top 5 images from r/earthporn,
     r/spaceporn, etc. and set them as the computer's wallpaper. Currently only
     tested and used on Ubuntu, but more OS's coming soon.
@@ -170,3 +170,4 @@ them to work with the latest version.
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot
 .. _`newsfrbot`: https://github.com/gardaud/newsfrbot
 .. _`u/xiphirx`: http://www.reddit.com/user/xiphirx
+.. _`Reddit-Paper` : https://github.com/cameron-gagnon/reddit-paper
