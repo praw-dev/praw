@@ -1750,27 +1750,19 @@ class ModFlairMixin(AuthenticatedReddit):
             raise errors.ClientException('flair_mapping must be set')
         item_order = ['user', 'flair_text', 'flair_css_class']
         lines = []
-        comma_response = []
         for mapping in flair_mapping:
             if 'user' not in mapping:
                 raise errors.ClientException('flair_mapping must '
                                              'contain `user` key')
-            if any((mapping.get(x, '').find(',') != -1) for x in mapping):
-                comma_response.append(self.set_flair(subreddit, mapping.get('user'), mapping.get('flair_text'),
-                                                     mapping.get('flair_css_class')))
-            else:
-                lines.append(','.join([mapping.get(x, '') for x in item_order]))
+            lines.append(','.join([mapping.get(x, '') for x in item_order]))
         response = []
-        if len(lines):
-            while len(lines):
-                data = {'r': six.text_type(subreddit),
-                        'flair_csv': '\n'.join(lines[:100])}
-                response.extend(self.request_json(self.config['flaircsv'],
-                                                  data=data))
-                lines = lines[100:]
-            self.evict(self.config['flairlist'] % six.text_type(subreddit))
-        if comma_response:
-            return [response, comma_response]
+        while len(lines):
+            data = {'r': six.text_type(subreddit),
+                    'flair_csv': '\n'.join(lines[:100])}
+            response.extend(self.request_json(self.config['flaircsv'],
+                                              data=data))
+            lines = lines[100:]
+        self.evict(self.config['flairlist'] % six.text_type(subreddit))
         return response
 
 
