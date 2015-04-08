@@ -1729,6 +1729,13 @@ class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(submission.title, title)
         self.assertEqual(submission.selftext, content)
 
+    def test_create_self_no_body(self):
+        title = 'Test Self: %s' % uuid.uuid4()
+        content = ''
+        submission = self.r.submit(self.sr, title, text=content)
+        self.assertEqual(submission.title, title)
+        self.assertEqual(submission.selftext, content)
+
 
 class SubmissionEditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
