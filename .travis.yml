@@ -6,6 +6,8 @@ python:
   - 3.3
   - 3.4
   - nightly
+  - pypy
+  - pypy3
 matrix:
   allow_failures:
     - python: nightly
