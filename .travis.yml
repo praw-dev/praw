@@ -5,6 +5,7 @@ python:
   - 3.2
   - 3.3
   - 3.4
+sudo: false
 install:
   - pip install flake8 pep257 --use-mirrors
   - python setup.py install
