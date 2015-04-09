@@ -11,6 +11,7 @@ python:
 matrix:
   allow_failures:
     - python: nightly
+sudo: false
 install:
   - pip install flake8 pep257
   - python setup.py install
