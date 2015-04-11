@@ -1,19 +1,3 @@
-#!/usr/bin/env python
-
-# This file is part of PRAW.
-#
-# PRAW is free software: you can redistribute it and/or modify it under the
-# terms of the GNU General Public License as published by the Free Software
-# Foundation, either version 3 of the License, or (at your option) any later
-# version.
-#
-# PRAW is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along with
-# PRAW.  If not, see <http://www.gnu.org/licenses/>.
-
 # pylint: disable-msg=C0103, C0302, R0903, R0904, W0201
 
 """Tests. Split into classes according to what they test."""
@@ -24,181 +8,17 @@ import mock
 import os
 import random
 import sys
-import time
 import unittest
 import uuid
 import warnings
-from betamax import Betamax, BaseMatcher
-from betamax.cassette.util import deserialize_prepared_request
-from functools import wraps
-from requests.compat import urljoin
 from requests.exceptions import HTTPError
 from six import text_type
-
 from praw import Reddit, decorators, errors, helpers, internal
 from praw.objects import (Comment, LoggedInRedditor, Message, MoreComments,
                           Submission, Subreddit)
-
-USER_AGENT = 'PRAW_test_suite'
-
-
-class BodyMatcher(BaseMatcher):
-    name = 'ByteBody'
-
-    def match(self, request, recorded_request):
-        prev_body = deserialize_prepared_request(recorded_request).body
-        if not prev_body and not request.body:
-            return True
-
-        def parts(params):
-            return sorted(params.split('&'))
-
-        return parts(prev_body) == parts(request.body)
-
-Betamax.register_request_matcher(BodyMatcher)
-
-
-with Betamax.configure() as config:
-    config.cassette_library_dir = 'tests/fixtures/cassettes'
-    config.default_cassette_options['match_requests_on'].append('ByteBody')
-
-
-def flair_diff(root, other):
-    """Function for comparing two flairlists supporting optional arguments."""
-    keys = ['user', 'flair_text', 'flair_css_class']
-    root_items = set(tuple(item[key].lower() if key in item and item[key] else
-                           '' for key in keys) for item in root)
-    other_items = set(tuple(item[key].lower() if key in item and item[key] else
-                            '' for key in keys) for item in other)
-    return list(root_items - other_items)
-
-
-def betamax(function):
-    @wraps(function)
-    def betamax_function(obj):
-        with Betamax(obj.r.handler.http).use_cassette(function.__name__):
-            # We need to set the delay to zero for betamaxed requests.
-            # Unfortunately, we don't know if the request actually happened so
-            # tests should only be updated one at a time rather than in bulk to
-            # prevent exceeding reddit's rate limit.
-            obj.r.config.api_request_delay = 0
-            return function(obj)
-    return betamax_function
-
-
-def interactive_only(function):
-    @wraps(function)
-    def interactive_only_function(obj):
-        if os.getenv('INTERACTIVE'):
-            return function(obj)
-        print('Passing interactive only test: {0}.{1}'
-              .format(obj.__class__.__name__, function.__name__))
-    return interactive_only_function
-
-
-def local_only(function):
-    @wraps(function)
-    def local_only_function(obj):
-        if not obj.r.config.is_reddit:
-            return function(obj)
-        print('Passing local only test: {0}.{1}'
-              .format(obj.__class__.__name__, function.__name__))
-    return local_only_function
-
-
-def reddit_only(function):
-    @wraps(function)
-    def reddit_only_function(obj):
-        if obj.r.config.is_reddit:
-            return function(obj)
-        print('Passing reddit only test: {0}.{1}'
-              .format(obj.__class__.__name__, function.__name__))
-    return reddit_only_function
-
-
-def prompt(msg):
-    sys.stdout.write(msg)
-    sys.stdout.flush()
-    response = ''
-    cur = ''
-    while cur != '\n':
-        cur = sys.stdin.read(1)
-        response += cur
-    return response.strip()
-
-
-class BasicHelper(object):
-    def configure(self):
-        self.r = Reddit(USER_AGENT, disable_update_check=True)
-        self.sr = 'reddit_api_test'
-        self.multi_name = "publicempty"
-        self.priv_sr = 'reddit_api_test_priv'
-        self.un = 'PyAPITestUser2'
-        self.other_user_name = 'PyAPITestUser3'
-        self.other_non_mod_name = 'PyAPITestUser4'
-        self.invalid_user_name = 'PyAPITestInvalid'
-        self.un_pswd = '1111'
-        self.other_user_pswd = '1111'
-        self.other_non_mod_pswd = '1111'
-
-        if self.r.config.is_reddit:
-            self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
-            self.link_id = 't3_dtg4j'
-            self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
-            self.link_url_link = 'http://imgur.com/Vr8ZZ'
-            self.more_comments_url = self.url('/r/redditdev/comments/yjk55')
-            self.other_user_id = '6c1xj'
-            self.priv_submission_id = '16kbb7'
-            self.refresh_token = {
-                'creddits':        'jLC5Yw9LgoNr4Ldd9j1ESuqJ5DE',
-                'edit':            'FFx_0G7Zumyh4AWzIo39bG9KdIM',
-                'history':         'j_RKymm8srC3j6cxysYFQZbB4vc',
-                'identity':        'E4BgmO7iho0KOB1XlT8WEtyySf8',
-                'modconfig':       'bBGRgMY9Ai9_SZLZsaFvS647Mgk',
-                'modflair':        'UrMbtk4bOa040XAVz0uQn2gTE3s',
-                'modlog':          'ADW_EDS9-bh7Zicc7ARx7w8ZLMA',
-                'modposts':        'Ffnae7s4K-uXYZB5ZaYJgh0d8DI',
-                'mysubreddits':    'O7tfWhqem6fQZqxhoTiLca1s7VA',
-                'privatemessages': 'kr_pHPO3sqTn_m5f_FX9TW4joEU',
-                'read':            '_mmtb8YjDym0eC26G-rTxXUMea0',
-                'submit':          'k69WTwa2bEQOQY9t61nItd4twhw',
-                'subscribe':       'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
-                'vote':            '5RPnDwg56vAbf7F9yO81cXZAPSQ'}
-            self.submission_edit_id = '16i92b'
-        else:
-            self.comment_url = self.url(
-                '/r/reddit_api_test/comments/iq/_/3a7/')
-            self.link_url = self.url('/r/reddit_test6/comments/y/')
-            self.link_url_link = 'http://google.com/?q=29.9093488449'
-            self.more_comments_url = self.url('/r/reddit_test6/comments/y/')
-            self.other_user_id = 'pk'
-
-    def delay(self, amount=None):
-        if amount:
-            time.sleep(amount)
-        elif self.r.config.api_request_delay == 0:
-            time.sleep(0.1)
-
-    def disable_cache(self):
-        self.r.config.cache_timeout = 0
-
-    def first(self, seq, predicate):
-        first_hit = next((x for x in seq if predicate(x)), None)
-        # Usage of self.assertTrue assumes all inheritance of this Class also
-        # inherits from unittest.Testcase
-        # pylint: disable-msg=E1101
-        self.assertTrue(first_hit is not None)
-        return first_hit
-
-    def url(self, path):
-        # pylint: disable-msg=W0212
-        return urljoin(self.r.config._site_url, path)
-
-
-class AuthenticatedHelper(BasicHelper):
-    def configure(self):
-        super(AuthenticatedHelper, self).configure()
-        self.r.login(self.un, self.un_pswd)
+from .helper import (USER_AGENT, AuthenticatedHelper, BasicHelper, betamax,
+                     flair_diff, interactive_only, local_only, prompt,
+                     reddit_only)
 
 
 class AccessControlTests(unittest.TestCase, BasicHelper):
