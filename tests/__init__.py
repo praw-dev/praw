@@ -28,7 +28,8 @@ import time
 import unittest
 import uuid
 import warnings
-from betamax import Betamax
+from betamax import Betamax, BaseMatcher
+from betamax.cassette.util import deserialize_prepared_request
 from functools import wraps
 from requests.compat import urljoin
 from requests.exceptions import HTTPError
@@ -40,9 +41,20 @@ from praw.objects import (Comment, LoggedInRedditor, Message, MoreComments,
 
 USER_AGENT = 'PRAW_test_suite'
 
+
+class ByteBodyMatcher(BaseMatcher):
+    name = 'ByteBody'
+
+    def match(self, request, recorded_request):
+        recorded_request = deserialize_prepared_request(recorded_request)
+        return recorded_request.body == (request.body or b'')
+
+Betamax.register_request_matcher(ByteBodyMatcher)
+
+
 with Betamax.configure() as config:
     config.cassette_library_dir = 'tests/fixtures/cassettes'
-    config.default_cassette_options['match_requests_on'].append('body')
+    config.default_cassette_options['match_requests_on'].append('ByteBody')
 
 
 def flair_diff(root, other):
