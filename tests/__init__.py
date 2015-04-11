@@ -1429,9 +1429,14 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         site_name = (os.getenv('REDDIT_SITE') or 'reddit') + '_oauth_test'
         self.r = Reddit(USER_AGENT, site_name=site_name,
                         disable_update_check=True)
-        self.invalid = Reddit(USER_AGENT, disable_update_check=True)
 
     def test_authorize_url(self):
+        self.r.set_oauth_app_info(None, None, None)
+        self.assertRaises(errors.OAuthAppRequired, self.r.get_authorize_url,
+                          'dummy_state')
+        self.r.set_oauth_app_info(self.r.config.client_id,
+                                  self.r.config.client_secret,
+                                  self.r.config.redirect_uri)
         url, params = self.r.get_authorize_url('...').split('?', 1)
         self.assertTrue('api/v1/authorize/' in url)
         params = dict(x.split('=', 1) for x in params.split('&'))
@@ -1459,12 +1464,16 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
                           self.r.get_access_information, 'invalid_code')
 
     def test_invalid_app_access_token(self):
+        self.r.clear_authentication()
+        self.r.set_oauth_app_info(None, None, None)
         self.assertRaises(errors.OAuthAppRequired,
-                          self.invalid.get_access_information, 'dummy_code')
+                          self.r.get_access_information, 'dummy_code')
 
     def test_invalid_app_authorize_url(self):
+        self.r.clear_authentication()
+        self.r.set_oauth_app_info(None, None, None)
         self.assertRaises(errors.OAuthAppRequired,
-                          self.invalid.get_authorize_url, 'dummy_state')
+                          self.r.get_authorize_url, 'dummy_state')
 
     def test_invalid_set_access_credentials(self):
         self.assertRaises(errors.OAuthInvalidToken,
@@ -1614,13 +1623,6 @@ class OAuth2Test(unittest.TestCase, BasicHelper):
         self.assertTrue(self.r.user is None)
         self.r.refresh_access_information(self.refresh_token['edit'])
         self.assertTrue(self.r.user is None)
-
-    def test_set_oauth_info(self):
-        self.assertRaises(errors.OAuthAppRequired,
-                          self.invalid.get_authorize_url, 'dummy_state')
-        self.invalid.set_oauth_app_info(self.r.client_id, self.r.client_secret,
-                                        self.r.redirect_uri)
-        self.invalid.get_authorize_url('dummy_state')
 
 
 class RedditorTest(unittest.TestCase, AuthenticatedHelper):
