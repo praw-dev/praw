@@ -42,14 +42,20 @@ from praw.objects import (Comment, LoggedInRedditor, Message, MoreComments,
 USER_AGENT = 'PRAW_test_suite'
 
 
-class ByteBodyMatcher(BaseMatcher):
+class BodyMatcher(BaseMatcher):
     name = 'ByteBody'
 
     def match(self, request, recorded_request):
-        recorded_request = deserialize_prepared_request(recorded_request)
-        return recorded_request.body == (request.body or b'')
+        prev_body = deserialize_prepared_request(recorded_request).body
+        if not prev_body and not request.body:
+            return True
 
-Betamax.register_request_matcher(ByteBodyMatcher)
+        def parts(params):
+            return sorted(params.split('&'))
+
+        return parts(prev_body) == parts(request.body)
+
+Betamax.register_request_matcher(BodyMatcher)
 
 
 with Betamax.configure() as config:
