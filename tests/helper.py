@@ -5,6 +5,7 @@ from __future__ import print_function, unicode_literals
 import os
 import sys
 import time
+import unittest
 from betamax import Betamax, BaseMatcher
 from betamax_matchers.form_urlencoded import URLEncodedBodyMatcher
 from functools import wraps
@@ -90,6 +91,11 @@ class BasicHelper(object):
     def url(self, path):
         # pylint: disable-msg=W0212
         return urljoin(self.r.config._site_url, path)
+
+
+class PRAWTest(unittest.TestCase, BasicHelper):
+    def setUp(self):
+        self.configure()
 
 
 class AuthenticatedHelper(BasicHelper):
