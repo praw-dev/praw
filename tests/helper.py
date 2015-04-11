@@ -6,7 +6,7 @@ import os
 import sys
 import time
 from betamax import Betamax, BaseMatcher
-from betamax.cassette.util import deserialize_prepared_request
+from betamax_matchers.form_urlencoded import URLEncodedBodyMatcher
 from functools import wraps
 from praw import Reddit
 from requests.compat import urljoin
@@ -16,17 +16,12 @@ USER_AGENT = 'PRAW_test_suite'
 
 
 class BodyMatcher(BaseMatcher):
-    name = 'ByteBody'
+    name = 'PRAWBody'
 
     def match(self, request, recorded_request):
-        prev_body = deserialize_prepared_request(recorded_request).body
-        if not prev_body and not request.body:
+        if not recorded_request['body']['string'] and not request.body:
             return True
-
-        def parts(params):
-            return sorted(params.split('&'))
-
-        return parts(prev_body) == parts(request.body)
+        return URLEncodedBodyMatcher().match(request, recorded_request)
 
 
 class BasicHelper(object):
@@ -106,7 +101,7 @@ class AuthenticatedHelper(BasicHelper):
 Betamax.register_request_matcher(BodyMatcher)
 with Betamax.configure() as config:
     config.cassette_library_dir = 'tests/fixtures/cassettes'
-    config.default_cassette_options['match_requests_on'].append('ByteBody')
+    config.default_cassette_options['match_requests_on'].append('PRAWBody')
 
 
 def betamax(function):
