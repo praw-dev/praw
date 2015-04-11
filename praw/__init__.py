@@ -920,7 +920,9 @@ class UnauthenticatedReddit(BaseReddit):
             self.http.cookies.set('over18', '1')
             path = 'randnsfw'
         response = self._request(self.config['subreddit'] % path,
+                                 params={'unique': self._random_count},
                                  raw_response=True)
+        self._random_count += 1
         return self.get_subreddit(response.url.rsplit('/', 2)[-2])
 
     def get_random_submission(self, subreddit='all'):

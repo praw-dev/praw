@@ -28,6 +28,7 @@ import time
 import unittest
 import uuid
 import warnings
+from betamax import Betamax
 from functools import wraps
 from requests.compat import urljoin
 from requests.exceptions import HTTPError
@@ -39,6 +40,9 @@ from praw.objects import (Comment, LoggedInRedditor, Message, MoreComments,
 
 USER_AGENT = 'PRAW_test_suite'
 
+with Betamax.configure() as config:
+    config.cassette_library_dir = 'tests/fixtures/cassettes'
+
 
 def flair_diff(root, other):
     """Function for comparing two flairlists supporting optional arguments."""
@@ -48,6 +52,19 @@ def flair_diff(root, other):
     other_items = set(tuple(item[key].lower() if key in item and item[key] else
                             '' for key in keys) for item in other)
     return list(root_items - other_items)
+
+
+def betamax(function):
+    @wraps(function)
+    def betamax_function(obj):
+        with Betamax(obj.r.handler.http).use_cassette(function.__name__):
+            # We need to set the delay to zero for betamaxed requests.
+            # Unfortunately, we don't know if the request actually happened so
+            # tests should only be updated one at a time rather than in bulk to
+            # prevent exceeding reddit's rate limit.
+            obj.r.config.api_request_delay = 0
+            return function(obj)
+    return betamax_function
 
 
 def interactive_only(function):
@@ -194,21 +211,18 @@ class AccessControlTests(unittest.TestCase, BasicHelper):
         self.assertRaises(errors.OAuthScopeRequired, self.r.get_me)
 
     def test_moderator_or_oauth_required_logged_in_from_reddit_obj(self):
-        oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
         self.assertRaises(errors.ModeratorOrScopeRequired,
-                          oth.get_settings, self.sr)
+                          self.r.get_settings, self.sr)
 
     def test_moderator_or_oauth_required_logged_in_from_submission_obj(self):
-        oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login(self.other_non_mod_name, self.other_non_mod_pswd)
-        submission = oth.get_submission(url=self.comment_url)
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        submission = self.r.get_submission(url=self.comment_url)
         self.assertRaises(errors.ModeratorOrScopeRequired, submission.remove)
 
     def test_moderator_or_oauth_required_logged_in_from_subreddit_obj(self):
-        oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login(self.other_non_mod_name, self.other_non_mod_pswd)
-        subreddit = oth.get_subreddit(self.sr)
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        subreddit = self.r.get_subreddit(self.sr)
         self.assertRaises(errors.ModeratorOrScopeRequired,
                           subreddit.get_settings)
 
@@ -226,6 +240,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
 
+    @betamax
     def test_comparison(self):
         self.assertEqual(self.r.get_redditor('bboe'),
                          self.r.get_redditor('BBOE'))
@@ -248,12 +263,14 @@ class BasicTest(unittest.TestCase, BasicHelper):
                           't3_87')
         self.assertRaises(ValueError, helpers.convert_id36_to_numeric_id, 87)
 
+    @betamax
     def test_comments_contains_no_noncomment_objects(self):
         comments = self.r.get_submission(url=self.comment_url).comments
         self.assertFalse([item for item in comments if not
                           (isinstance(item, Comment) or
                            isinstance(item, MoreComments))])
 
+    @betamax
     def test_decode_entities(self):
         text = self.r.get_submission(url=self.comment_url).selftext_html
         self.assertTrue(text.startswith('&lt;'))
@@ -263,12 +280,14 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertTrue(text.startswith('<'))
         self.assertTrue(text.endswith('>'))
 
+    @betamax
     def test_deprecation(self):
         with warnings.catch_warnings(record=True) as w:
             self.r.get_all_comments()
             assert len(w) == 1
             assert isinstance(w[0].message, DeprecationWarning)
 
+    @betamax
     def test_equality(self):
         subreddit = self.r.get_subreddit(self.sr)
         same_subreddit = self.r.get_subreddit(self.sr)
@@ -277,17 +296,19 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertFalse(subreddit != same_subreddit)
         self.assertFalse(subreddit == submission)
 
+    @betamax
     def test_get_comments(self):
         num = 50
         result = self.r.get_comments(self.sr, limit=num)
         self.assertEqual(num, len(list(result)))
 
+    @betamax
     def test_get_comments_gilded(self):
         gilded_comments = self.r.get_comments('all', gilded_only=True)
         self.assertTrue(all(comment.gilded > 0 for comment in
                             gilded_comments))
 
-    @reddit_only
+    @betamax
     def test_get_controversial(self):
         num = 50
         result = self.r.get_controversial(limit=num, params={'t': 'all'})
@@ -298,10 +319,12 @@ class BasicTest(unittest.TestCase, BasicHelper):
         sub = self.r.get_subreddit(self.sr)
         self.assertTrue(next(sub.get_flair_list()))
 
+    @betamax
     def test_get_front_page(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
 
+    @betamax
     def test_get_multireddit(self):
         multi_path = "/user/%s/m/%s" % (self.un, self.multi_name)
         multireddit = self.r.get_multireddit(self.un, self.multi_name)
@@ -310,42 +333,45 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertEqual(self.un.lower(), multireddit.author.name.lower())
         self.assertEqual(multi_path.lower(), multireddit.path.lower())
 
+    @betamax
     def test_get_new(self):
         num = 50
         result = self.r.get_new(limit=num)
         self.assertEqual(num, len(list(result)))
 
-    @reddit_only
+    @betamax
     def test_get_new_subreddits(self):
         num = 50
         self.assertEqual(num,
                          len(list(self.r.get_new_subreddits(limit=num))))
 
-    @reddit_only
+    @betamax
     def test_get_popular_subreddits(self):
         num = 50
         self.assertEqual(num,
                          len(list(self.r.get_popular_subreddits(limit=num))))
 
+    @betamax
     def test_get_randnsfw_subreddit(self):
         subs = set()
         for _ in range(3):
             subs.add(text_type(self.r.get_subreddit('RANDNSFW')))
         self.assertTrue(len(subs) > 1)
 
+    @betamax
     def test_get_random_subreddit(self):
         subs = set()
         for _ in range(3):
             subs.add(text_type(self.r.get_subreddit('RANDOM')))
         self.assertTrue(len(subs) > 1)
 
+    @betamax
     def test_get_rising(self):
-        # Use low limit as rising listing has few elements. Keeping the limit
-        # prevents this test from becoming flaky.
-        num = 5
+        num = 25
         result = self.r.get_rising(limit=num)
         self.assertEqual(num, len(list(result)))
 
+    @betamax
     def test_get_submissions(self):
         def fullname(url):
             return self.r.get_submission(url).fullname
@@ -354,49 +380,48 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertEqual(fullnames, retreived)
 
     @mock.patch.object(Reddit, 'request_json')
-    def test_get_submissions_with_params(self, mock_my_method):
-        fake_submission = Submission(self.r, {'permalink': 'meh', 'score': 2,
-                                              'title': 'test'})
-        mock_resp = ({'data': {'children': [fake_submission]}},
-                     {'data': {'children': []}})
-        mock_my_method.return_value = mock_resp
-        url = ("http://www.reddit.com/r/redditgetsdrawn/comments/"
-               "1ts9hi/surprise_me_thanks_in_advance/cec0897?context=3")
-        self.assertTrue(self.r.get_submission(url).score == 2)
-        self.assertTrue(self.r.get_submission(url).title == 'test')
-        base_url = ("http://www.reddit.com/r/redditgetsdrawn/comments/"
-                    "1ts9hi/surprise_me_thanks_in_advance/cec0897")
-        params = {"context": "3"}
-        mock_my_method.assert_called_with(base_url, params=params)
+    def test_get_submissions_with_params(self, mocked):
+        sub = Submission(self.r, {'foo': 'meh', 'permalink': ''})
+        mocked.return_value = ({'data': {'children': [sub]}},
+                               {'data': {'children': []}})
+        url = 'http://www.reddit.com/comments/1/_/2?context=3&foo=bar'
+        self.assertEqual('meh', self.r.get_submission(url).foo)
+        mocked.assert_called_with('http://www.reddit.com/comments/1/_/2',
+                                  params={'context': '3', 'foo': 'bar'})
 
-    @reddit_only
+    @betamax
     def test_get_top(self):
         num = 50
         result = self.r.get_top(limit=num, params={'t': 'all'})
         self.assertEqual(num, len(list(result)))
 
+    @betamax
     def test_info_by_id(self):
         self.assertEqual(self.link_id,
                          self.r.get_info(thing_id=self.link_id).fullname)
 
+    @betamax
     def test_info_by_invalid_id(self):
         self.assertEqual(None, self.r.get_info(thing_id='INVALID'))
 
+    @betamax
     def test_info_by_known_url_returns_known_id_link_post(self):
         found_links = self.r.get_info(self.link_url_link)
         tmp = self.r.get_submission(url=self.link_url)
         self.assertTrue(tmp in found_links)
 
+    @betamax
     def test_info_by_url_also_found_by_id(self):
         found_by_url = self.r.get_info(self.link_url_link)[0]
         found_by_id = self.r.get_info(thing_id=found_by_url.fullname)
         self.assertEqual(found_by_id, found_by_url)
 
-    @reddit_only
+    @betamax
     def test_info_by_url_maximum_listing(self):
         self.assertEqual(100, len(self.r.get_info('http://www.reddit.com',
                                                   limit=101)))
 
+    @betamax
     def test_is_username_available(self):
         self.assertFalse(self.r.is_username_available(self.un))
         self.assertTrue(self.r.is_username_available(self.invalid_user_name))
@@ -410,6 +435,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
         self.assertRaises(TypeError, Reddit, user_agent='')
         self.assertRaises(TypeError, Reddit, user_agent=1)
 
+    @betamax
     def test_store_json_result(self):
         self.r.config.store_json_result = True
         sub_url = ('http://www.reddit.com/r/reddit_api_test/comments/'
@@ -417,6 +443,7 @@ class BasicTest(unittest.TestCase, BasicHelper):
         sub = self.r.get_submission(url=sub_url)
         self.assertEqual(sub.json_dict['url'], sub_url)
 
+    @betamax
     def test_store_lazy_json_result(self):
         self.r.config.store_json_result = True
         subreddit = self.r.get_subreddit(self.sr)
@@ -1169,32 +1196,29 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         self.assertFalse(self.r.user.has_mail)
 
     def test_mark_as_read(self):
-        oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login(self.other_user_name, self.other_user_pswd)
+        self.r.login(self.other_user_name, self.other_user_pswd)
         # pylint: disable-msg=E1101
-        msg = next(oth.get_unread(limit=1))
+        msg = next(self.r.get_unread(limit=1))
         msg.mark_as_read()
-        self.assertTrue(msg not in oth.get_unread(limit=5))
+        self.assertTrue(msg not in self.r.get_unread(limit=5))
 
     def test_mark_as_unread(self):
-        oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login(self.other_user_name, self.other_user_pswd)
-        msg = self.first(oth.get_inbox(), lambda msg: not msg.new)
+        self.r.login(self.other_user_name, self.other_user_pswd)
+        msg = self.first(self.r.get_inbox(), lambda msg: not msg.new)
         msg.mark_as_unread()
-        self.assertTrue(msg in oth.get_unread())
+        self.assertTrue(msg in self.r.get_unread())
 
     def test_mark_multiple_as_read(self):
-        oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login(self.other_user_name, self.other_user_pswd)
+        self.r.login(self.other_user_name, self.other_user_pswd)
         messages = []
-        for msg in oth.get_unread(limit=None):
-            if msg.author != oth.user.name:
+        for msg in self.r.get_unread(limit=None):
+            if msg.author != self.r.user.name:
                 messages.append(msg)
                 if len(messages) >= 2:
                     break
         self.assertEqual(2, len(messages))
-        oth.user.mark_as_read(messages)
-        unread = list(oth.get_unread(limit=5))
+        self.r.user.mark_as_read(messages)
+        unread = list(self.r.get_unread(limit=5))
         self.assertTrue(all(msg not in unread for msg in messages))
 
     def test_reply_to_message_and_verify(self):
@@ -1832,9 +1856,8 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
     def test_report(self):
         self.disable_cache()
         # login as new user to report submission
-        oth = Reddit(USER_AGENT, disable_update_check=True)
-        oth.login(self.other_user_name, self.other_user_pswd)
-        subreddit = oth.get_subreddit(self.sr)
+        self.r.login(self.other_user_name, self.other_user_pswd)
+        subreddit = self.r.get_subreddit(self.sr)
         predicate = lambda submission: not submission.hidden
         submission = self.first(subreddit.get_new(), predicate)
         submission.report()
