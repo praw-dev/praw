@@ -736,7 +736,7 @@ class Redditor(Gildable, Messageable, Refreshable):
     get_submitted = _get_redditor_listing('submitted')
 
     def __init__(self, reddit_session, user_name=None, json_dict=None,
-                 fetch=True):
+                 fetch=False):
         """Construct an instance of the Redditor object."""
         info_url = reddit_session.config['user_about'] % user_name
         # name is set before calling the parent constructor so that the
