@@ -111,6 +111,11 @@ with Betamax.configure() as config:
 
 
 def betamax(function):
+    """Utilze betamax to record/replay any network activity of the test.
+
+    The wrapped function's `betmax_init` method will be invoked if it exists.
+
+    """
     @wraps(function)
     def betamax_function(obj):
         with Betamax(obj.r.handler.http).use_cassette(function.__name__):
@@ -119,6 +124,8 @@ def betamax(function):
             # tests should only be updated one at a time rather than in bulk to
             # prevent exceeding reddit's rate limit.
             obj.r.config.api_request_delay = 0
+            if hasattr(obj, 'betamax_init'):
+                obj.betamax_init()
             return function(obj)
     return betamax_function
 

@@ -13,5 +13,5 @@ def travis_suite():
     load = unittest.defaultTestLoader.loadTestsFromNames
     tests = load(['tests.test_unauthenticated_reddit',
                   'tests.test_oauth2_reddit',
-                  'tests.old.ModeratorSubredditTest.test_mod_mail_send'])
+                  'tests.test_subreddit'])
     return tests

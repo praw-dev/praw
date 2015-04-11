@@ -936,11 +936,6 @@ class ModeratorSubredditTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(actions)
         self.assertTrue(all(x.action == 'removelink' for x in actions))
 
-    def test_mod_mail_send(self):
-        subject = 'Unique message: %s' % uuid.uuid4()
-        self.r.get_subreddit(self.sr).send_message(subject, 'Content')
-        self.first(self.r.get_mod_mail(), lambda msg: msg.subject == subject)
-
     def test_get_mod_queue(self):
         self.assertTrue(list(self.r.get_subreddit('mod').get_mod_queue()))
 
