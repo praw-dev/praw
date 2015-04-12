@@ -58,11 +58,12 @@ def alias_function(function, class_name):
         else:
             return function(self.reddit_session, self, *args, **kwargs)
     # Only grab the short-line doc and add a link to the complete doc
-    wrapped.__doc__ = wrapped.__doc__.split('\n', 1)[0]
-    wrapped.__doc__ += ('\n\nSee :meth:`.{0}.{1}` for complete usage. '
-                        'Note that you should exclude the subreddit parameter '
-                        'when calling this convenience method.'
-                        .format(class_name, function.__name__))
+    if wrapped.__doc__ is not None:
+        wrapped.__doc__ = wrapped.__doc__.split('\n', 1)[0]
+        wrapped.__doc__ += ('\n\nSee :meth:`.{0}.{1}` for complete usage. '
+                            'Note that you should exclude the subreddit '
+                            'parameter when calling this convenience method.'
+                            .format(class_name, function.__name__))
     # Don't hide from sphinx as this is a parameter modifying decorator
     return wrapped
 
