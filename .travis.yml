@@ -13,10 +13,12 @@ matrix:
     - python: nightly
 sudo: false
 install:
-  - pip install flake8 pep257
+  - pip install flake8 pep257 coveralls
   - python setup.py install
 before_script:
   - flake8 praw
   - flake8 tests
   - pep257 praw
-script: python setup.py test -s tests.travis_suite
+script: coverage run --source=praw setup.py test -s tests.travis_suite
+after_success:
+  coveralls
