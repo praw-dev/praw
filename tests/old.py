@@ -909,47 +909,6 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.first(self.subreddit.get_spam(), predicate)
 
 
-class ModeratorSubredditTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
-
-    def test_get_mod_log(self):
-        self.assertTrue(list(self.subreddit.get_mod_log()))
-
-    def test_get_mod_log_with_mod_by_name(self):
-        other = self.r.get_redditor(self.other_user_name)
-        actions = list(self.subreddit.get_mod_log(mod=other.name))
-        self.assertTrue(actions)
-        self.assertTrue(all(x.mod.lower() == other.name.lower()
-                            for x in actions))
-
-    def test_get_mod_log_with_mod_by_redditor_object(self):
-        other = self.r.get_redditor(self.other_user_name)
-        actions = list(self.subreddit.get_mod_log(mod=other))
-        self.assertTrue(actions)
-        self.assertTrue(all(x.mod.lower() == other.name.lower()
-                            for x in actions))
-
-    def test_get_mod_log_with_action_filter(self):
-        actions = list(self.subreddit.get_mod_log(action='removelink'))
-        self.assertTrue(actions)
-        self.assertTrue(all(x.action == 'removelink' for x in actions))
-
-    def test_get_mod_queue(self):
-        self.assertTrue(list(self.r.get_subreddit('mod').get_mod_queue()))
-
-    def test_get_mod_queue_with_default_subreddit(self):
-        self.assertTrue(list(self.r.get_mod_queue()))
-
-    def test_get_mod_queue_multi(self):
-        multi = '{0}+{1}'.format(self.sr, self.priv_sr)
-        self.assertTrue(list(self.r.get_subreddit(multi).get_mod_queue()))
-
-    def test_get_unmoderated(self):
-        self.assertTrue(list(self.subreddit.get_unmoderated()))
-
-
 class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
