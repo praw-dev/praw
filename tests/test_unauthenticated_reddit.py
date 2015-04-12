@@ -10,7 +10,7 @@ from praw.objects import Comment, MoreComments, Submission
 from .helper import PRAWTest, betamax
 
 
-class UnAuthenticatedRedditTest(PRAWTest):
+class UnauthenticatedRedditTest(PRAWTest):
     def test_base_36_conversion(self):
         self.assertEqual(helpers.convert_numeric_id_to_id36(295), '87')
         self.assertEqual(helpers.convert_id36_to_numeric_id('87'), 295)
@@ -84,11 +84,6 @@ class UnAuthenticatedRedditTest(PRAWTest):
         num = 50
         result = self.r.get_controversial(limit=num, params={'t': 'all'})
         self.assertEqual(num, len(list(result)))
-
-    def test_get_flair_list(self):
-        self.r.login(self.un, self.un_pswd)
-        sub = self.r.get_subreddit(self.sr)
-        self.assertTrue(next(sub.get_flair_list()))
 
     @betamax
     def test_get_front_page(self):

@@ -154,6 +154,13 @@ class DefaultHandler(RateLimitHandler):
         return wrapped
 
     @classmethod
+    def clear_cache(cls):
+        """Remove all items from the cache."""
+        with cls.ca_lock:
+            cls.cache = {}
+            cls.timeouts = {}
+
+    @classmethod
     def evict(cls, urls):
         """Remove items from cache matching URL.
 

@@ -126,6 +126,8 @@ def betamax(function):
             # tests should only be updated one at a time rather than in bulk to
             # prevent exceeding reddit's rate limit.
             obj.r.config.api_request_delay = 0
+            # PRAW's cache is global, so we need to clear it for each test.
+            obj.r.handler.clear_cache()
             if hasattr(obj, 'betamax_init'):
                 obj.betamax_init()
             return function(obj)

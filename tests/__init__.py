@@ -10,8 +10,6 @@ def travis_suite():
     Until all tests are betamax compatible, this subset of tests is necessary.
 
     """
-    load = unittest.defaultTestLoader.loadTestsFromNames
-    tests = load(['tests.test_unauthenticated_reddit',
-                  'tests.test_oauth2_reddit',
-                  'tests.test_subreddit'])
-    return tests
+    import glob
+    return unittest.defaultTestLoader.loadTestsFromNames(
+        x[:-3].replace('/', '.') for x in glob.glob('tests/test_*.py'))
