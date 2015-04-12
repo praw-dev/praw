@@ -106,6 +106,8 @@ class AuthenticatedHelper(BasicHelper):
 
 Betamax.register_request_matcher(BodyMatcher)
 with Betamax.configure() as config:
+    if os.getenv('TRAVIS'):
+        config.default_cassette_options['record_mode'] = 'none'
     config.cassette_library_dir = 'tests/cassettes'
     config.default_cassette_options['match_requests_on'].append('PRAWBody')
 
