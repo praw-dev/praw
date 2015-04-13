@@ -71,11 +71,9 @@ class BasicHelper(object):
             self.more_comments_url = self.url('/r/reddit_test6/comments/y/')
             self.other_user_id = 'pk'
 
-    def delay(self, amount=None):
-        if amount:
-            time.sleep(amount)
-        elif self.r.config.api_request_delay == 0:
-            time.sleep(0.1)
+    def delay_for_listing_update(self):
+        if not os.getenv('TRAVIS') and self.r.config.api_request_delay == 0:
+            time.sleep(.1)
 
     def disable_cache(self):
         self.r.config.cache_timeout = 0

@@ -851,8 +851,8 @@ class LoggedInRedditor(Redditor):
 
     """A class representing a currently logged in Redditor."""
 
-    get_hidden = restrict_access("history")(_get_redditor_listing('hidden'))
-    get_saved = restrict_access("history")(_get_redditor_listing('saved'))
+    get_hidden = restrict_access('history')(_get_redditor_listing('hidden'))
+    get_saved = restrict_access('history')(_get_redditor_listing('saved'))
 
     def get_blocked(self):
         """Return a UserList of Redditors with whom the user has blocked."""
@@ -872,10 +872,10 @@ class LoggedInRedditor(Redditor):
                 self._mod_subs[six.text_type(sub).lower()] = sub
         return self._mod_subs
 
-    def get_friends(self):
+    def get_friends(self, **params):
         """Return a UserList of Redditors with whom the user has friended."""
         url = self.reddit_session.config['friends']
-        return self.reddit_session.request_json(url)[0]
+        return self.reddit_session.request_json(url, params=params)[0]
 
 
 class ModAction(RedditContentObject):

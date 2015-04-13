@@ -10,7 +10,7 @@ import uuid
 from requests.exceptions import HTTPError
 from six import text_type
 from praw import Reddit, decorators, errors, helpers, internal
-from praw.objects import (Comment, LoggedInRedditor, Message, MoreComments,
+from praw.objects import (Comment, Message, MoreComments,
                           Subreddit)
 from .helper import (USER_AGENT, AuthenticatedHelper, BasicHelper, flair_diff,
                      interactive_only, local_only, prompt, reddit_only)
@@ -1001,64 +1001,6 @@ class MultiredditTest(unittest.TestCase, AuthenticatedHelper):
         multi = self.r.user.get_multireddit(self.multi_name)
         new = list(multi.get_new())
         self.assertEqual(0, len(new))
-
-
-class RedditorTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.other_user = self.r.get_redditor(self.other_user_name)
-
-    def test_add_remove_friends(self):
-        def verify_add():
-            self.other_user.friend()
-            self.assertTrue(self.other_user in self.r.user.get_friends())
-
-        def verify_remove():
-            self.other_user.unfriend()
-            self.assertTrue(self.other_user not in self.r.user.get_friends())
-
-        if self.other_user in self.r.user.get_friends():
-            verify_remove()
-            verify_add()
-        else:
-            verify_add()
-            verify_remove()
-
-    def test_duplicate_login(self):
-        self.r.login(self.other_user_name, self.other_user_pswd)
-
-    def test_get_disliked(self):
-        # Pulls from get_liked. Problem here may come from get_liked
-        item = next(self.r.user.get_liked())
-        item.downvote()
-        self.delay()  # The queue needs to be processed
-        self.assertFalse(item in self.r.user.get_liked())
-
-    def test_get_hidden(self):
-        submission = next(self.r.user.get_submitted())
-        submission.hide()
-        self.delay()  # The queue needs to be processed
-        item = next(self.r.user.get_hidden())
-        item.unhide()
-        self.delay()
-        self.assertFalse(item in self.r.user.get_hidden())
-
-    def test_get_liked(self):
-        # Pulls from get_disliked. Problem here may come from get_disliked
-        item = next(self.r.user.get_disliked())
-        item.upvote()
-        self.delay()  # The queue needs to be processed
-        self.assertFalse(item in self.r.user.get_disliked())
-
-    def test_get_redditor(self):
-        self.assertEqual(self.other_user_id, self.other_user.id)
-
-    def test_get_submitted(self):
-        redditor = self.r.get_redditor(self.other_non_mod_name)
-        self.assertTrue(list(redditor.get_submitted()))
-
-    def test_user_set_on_login(self):
-        self.assertTrue(isinstance(self.r.user, LoggedInRedditor))
 
 
 class SettingsTest(unittest.TestCase, AuthenticatedHelper):

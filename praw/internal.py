@@ -110,7 +110,6 @@ def _prepare_request(reddit_session, url, params, data, auth, files):
     if getattr(reddit_session, '_use_oauth', False):
         headers = {'Authorization': 'bearer %s' % reddit_session.access_token}
         config = reddit_session.config
-        # TODO: Verify this works as expected
         for prefix in (config.api_url, config.permalink_url):
             if url.startswith(prefix):
                 if config.log_requests >= 1:
