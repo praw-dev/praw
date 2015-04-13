@@ -46,7 +46,7 @@ setup(
     packages=[PACKAGE_NAME],
     package_data={'': ['COPYING'], PACKAGE_NAME: ['*.ini']},
     dependency_links=[
-        'https://github.com/sigmavirus24/betamax/archive/7e4efa10f47fc34de1b05bc9387d8255cc469633.zip#egg=betamax-0.4.1'],
+        'https://github.com/sigmavirus24/betamax/archive/b30047146f35f622f70dfeb6db81fc4eb522b811.zip#egg=betamax-0.4.1'],
     install_requires=['requests>=2.3.0', 'six>=1.4', 'update_checker>=0.11'],
     tests_require=['betamax>=0.4.1', 'betamax-matchers>=0.1.0', 'mock>=1.0.0'],
     entry_points={'console_scripts': [
