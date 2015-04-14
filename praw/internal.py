@@ -12,7 +12,11 @@
 # You should have received a copy of the GNU General Public License along with
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Internal helper functions."""
+"""Internal helper functions.
+
+The functions in this module are not to be relied upon by third-parties.
+
+"""
 
 from requests import Request
 import re
