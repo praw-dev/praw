@@ -80,9 +80,6 @@ class BasicHelper(object):
 
     def first(self, seq, predicate):
         first_hit = next((x for x in seq if predicate(x)), None)
-        # Usage of self.assertTrue assumes all inheritance of this Class also
-        # inherits from unittest.Testcase
-        # pylint: disable-msg=E1101
         self.assertTrue(first_hit is not None)
         return first_hit
 

@@ -10,8 +10,7 @@ import uuid
 from requests.exceptions import HTTPError
 from six import text_type
 from praw import Reddit, decorators, errors, helpers
-from praw.objects import (Comment, Message, MoreComments,
-                          Subreddit)
+from praw.objects import Comment, Message, MoreComments
 from .helper import (USER_AGENT, AuthenticatedHelper, BasicHelper, flair_diff,
                      interactive_only, local_only, prompt, reddit_only)
 
@@ -1253,83 +1252,3 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
             upvote()
             downvote()
             clear_vote()
-
-
-class SubredditTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
-
-    def test_attribute_error(self):
-        self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
-
-    def test_display_name_lazy_update(self):
-        augmented_name = self.sr.upper()
-        subreddit = self.r.get_subreddit(augmented_name)
-        self.assertEqual(augmented_name, text_type(subreddit))
-        self.assertNotEqual(augmented_name, subreddit.display_name)
-        self.assertEqual(self.sr, subreddit.display_name)
-        self.assertEqual(subreddit.display_name, text_type(subreddit))
-
-    def test_display_name_refresh(self):
-        augmented_name = self.sr.upper()
-        subreddit = self.r.get_subreddit(augmented_name)
-        self.assertEqual(augmented_name, text_type(subreddit))
-        subreddit.refresh()
-        self.assertEqual(self.sr, subreddit.display_name)
-        self.assertEqual(subreddit.display_name, text_type(subreddit))
-
-    def test_get_contributors_private(self):
-        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
-        private_sub = self.r.get_subreddit(self.priv_sr)
-        self.assertTrue(list(private_sub.get_contributors()))
-
-    def test_get_contributors_public(self):
-        self.assertTrue(list(self.subreddit.get_contributors()))
-
-    def test_get_contributors_public_exception(self):
-        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
-        self.assertRaises(errors.ModeratorRequired,
-                          self.subreddit.get_contributors)
-
-    def test_get_my_contributions(self):
-        predicate = lambda subreddit: text_type(subreddit) == self.sr
-        self.first(self.r.get_my_contributions(), predicate)
-
-    def test_get_my_moderation(self):
-        predicate = lambda subreddit: text_type(subreddit) == self.sr
-        self.first(self.r.get_my_moderation(), predicate)
-
-    def test_get_my_subreddits(self):
-        for subreddit in self.r.get_my_subreddits():
-            # pylint: disable-msg=W0212
-            self.assertTrue(text_type(subreddit) in subreddit._info_url)
-
-    @reddit_only
-    def test_search(self):
-        self.assertTrue(list(self.subreddit.search('test')))
-
-    def test_get_subreddit_recommendations(self):
-        result = self.r.get_subreddit_recommendations(['python', 'redditdev'])
-        self.assertTrue(result)
-        self.assertTrue(all(isinstance(x, Subreddit) for x in result))
-
-    def test_subscribe_and_verify(self):
-        self.subreddit.subscribe()
-        predicate = lambda subreddit: text_type(subreddit) == self.sr
-        self.first(self.r.get_my_subreddits(), predicate)
-
-    def test_subscribe_by_name_and_verify(self):
-        self.r.subscribe(self.sr)
-        predicate = lambda subreddit: text_type(subreddit) == self.sr
-        self.first(self.r.get_my_subreddits(), predicate)
-
-    def test_unsubscribe_and_verify(self):
-        self.subreddit.unsubscribe()
-        pred = lambda subreddit: text_type(subreddit) != self.sr
-        self.assertTrue(all(pred(sub) for sub in self.r.get_my_subreddits()))
-
-    def test_unsubscribe_by_name_and_verify(self):
-        self.r.unsubscribe(self.sr)
-        pred = lambda subreddit: text_type(subreddit) != self.sr
-        self.assertTrue(all(pred(sub) for sub in self.r.get_my_subreddits()))

@@ -1,7 +1,93 @@
 """Tests for Subreddit class."""
 
 from __future__ import print_function, unicode_literals
+from praw import errors
+from praw.objects import Subreddit
+from six import text_type
 from .helper import PRAWTest, betamax
+
+
+class SubredditTest(PRAWTest):
+    def betamax_init(self):
+        self.r.login(self.un, self.un_pswd)
+        self.subreddit = self.r.get_subreddit(self.sr)
+
+    @betamax
+    def test_attribute_error(self):
+        self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
+
+    @betamax
+    def test_display_name_lazy_update(self):
+        augmented_name = self.sr.upper()
+        subreddit = self.r.get_subreddit(augmented_name)
+        self.assertEqual(augmented_name, text_type(subreddit))
+        self.assertNotEqual(augmented_name, subreddit.display_name)
+        self.assertEqual(self.sr, subreddit.display_name)
+        self.assertEqual(subreddit.display_name, text_type(subreddit))
+
+    @betamax
+    def test_display_name_refresh(self):
+        augmented_name = self.sr.upper()
+        subreddit = self.r.get_subreddit(augmented_name)
+        self.assertEqual(augmented_name, text_type(subreddit))
+        subreddit.refresh()
+        self.assertEqual(self.sr, subreddit.display_name)
+        self.assertEqual(subreddit.display_name, text_type(subreddit))
+
+    @betamax
+    def test_get_contributors_private(self):
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        private_sub = self.r.get_subreddit(self.priv_sr)
+        self.assertEqual('private', private_sub.subreddit_type)
+        self.assertTrue(list(private_sub.get_contributors()))
+
+    @betamax
+    def test_get_contributors_public(self):
+        self.assertEqual('public', self.subreddit.subreddit_type)
+        self.assertTrue(list(self.subreddit.get_contributors()))
+
+    @betamax
+    def test_get_contributors_public_exception(self):
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        self.assertRaises(errors.ModeratorRequired,
+                          self.subreddit.get_contributors)
+
+    @betamax
+    def test_get_my_contributions(self):
+        predicate = lambda subreddit: text_type(subreddit) == self.sr
+        self.first(self.r.get_my_contributions(), predicate)
+
+    @betamax
+    def test_get_my_moderation(self):
+        predicate = lambda subreddit: text_type(subreddit) == self.sr
+        self.first(self.r.get_my_moderation(), predicate)
+
+    @betamax
+    def test_get_my_subreddits(self):
+        for subreddit in self.r.get_my_subreddits():
+            self.assertTrue(text_type(subreddit) in subreddit._info_url)
+
+    @betamax
+    def test_subreddit_search(self):
+        self.assertTrue(list(self.subreddit.search('test')))
+
+    @betamax
+    def test_get_subreddit_recommendations(self):
+        result = self.r.get_subreddit_recommendations(['python', 'redditdev'])
+        self.assertTrue(result)
+        self.assertTrue(all(isinstance(x, Subreddit) for x in result))
+
+    @betamax
+    def test_subscribe_and_unsubscribe(self):
+        self.subreddit.subscribe()
+
+        self.delay_for_listing_update()
+        self.assertTrue(self.subreddit in self.r.get_my_subreddits())
+        self.subreddit.unsubscribe()
+
+        self.delay_for_listing_update()
+        self.assertFalse(self.subreddit in
+                         self.r.get_my_subreddits(params={'u': 1}))
 
 
 class ModeratorSubredditTest(PRAWTest):
