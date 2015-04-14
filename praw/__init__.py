@@ -24,6 +24,8 @@ violating them.
 More information about PRAW can be found at https://github.com/praw-dev/praw
 """
 
+from __future__ import print_function, unicode_literals
+
 import json
 import os
 import platform
@@ -39,8 +41,10 @@ from praw.internal import (_prepare_request, _raise_redirect_exceptions,
 from praw.settings import CONFIG
 from requests.compat import urljoin
 from requests import Request
+# pylint: disable=F0401
 from six.moves import html_entities, http_cookiejar
 from six.moves.urllib.parse import parse_qs, urlparse, urlunparse
+# pylint: enable=F0401
 from update_checker import update_check
 from warnings import warn_explicit
 
@@ -50,14 +54,14 @@ __version__ = '3.0a1'
 if os.environ.get('SERVER_SOFTWARE') is not None:
     # Google App Engine information
     # https://developers.google.com/appengine/docs/python/
-    platform_info = os.environ.get('SERVER_SOFTWARE')
+    PLATFORM_INFO = os.environ.get('SERVER_SOFTWARE')
 else:
     # Standard platform information
-    platform_info = platform.platform(True)
+    PLATFORM_INFO = platform.platform(True)
 
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
-                                          platform_info)
+                                          PLATFORM_INFO)
 
 MIN_IMAGE_SIZE = 128
 MAX_IMAGE_SIZE = 512000
@@ -71,7 +75,7 @@ else:
     CHR = unichr  # NOQA
 
 
-class Config(object):  # pylint: disable-msg=R0903, R0924
+class Config(object):  # pylint: disable=R0903
 
     """A class containing the configuration for a reddit site."""
 
@@ -334,6 +338,9 @@ class BaseReddit(object):
             update_check(__name__, __version__)
             self.update_checked = True
 
+        # Initial values
+        self._use_oauth = False
+
     def _request(self, url, params=None, data=None, files=None, auth=None,
                  timeout=None, raw_response=False, retry_on_error=True):
         """Given a page url and a dict of params, open and return the page.
@@ -481,26 +488,21 @@ class BaseReddit(object):
         else:
             fetch_once = True
 
-        # When getting posts from a multireddit owned by the authenticated
-        # Redditor, we are redirected to me/m/multi/. Handle that now
-        # instead of catching later.
-        if re.search('user/.*/m/.*', url):
-            redditor = url.split('/')[-4]
-            if self.user and self.user.name.lower() == redditor.lower():
-                url = url.replace("user/"+redditor, 'me')
+        if hasattr(self, '_url_update'):
+            url = self._url_update(url)  # pylint: disable=E1101
 
         # While we still need to fetch more content to reach our limit, do so.
         while fetch_once or fetch_all or objects_found < limit:
             if _use_oauth:  # Set the necessary _use_oauth value
                 assert self._use_oauth is False
-                self._use_oauth = _use_oauth  # pylint: disable-msg=W0201
+                self._use_oauth = _use_oauth
             try:
                 page_data = self.request_json(url, params=params)
                 if object_filter:
                     page_data = page_data[object_filter]
             finally:  # Restore _use_oauth value
                 if _use_oauth:
-                    self._use_oauth = False  # pylint: disable-msg=W0201
+                    self._use_oauth = False
             fetch_once = False
             root = page_data.get(root_field, page_data)
             for thing in root[thing_field]:
@@ -551,7 +553,7 @@ class BaseReddit(object):
                                  retry_on_error=retry_on_error)
         hook = self._json_reddit_objecter if as_objects else None
         # Request url just needs to be available for the objecter to use
-        self._request_url = url  # pylint: disable-msg=W0201
+        self._request_url = url  # pylint: disable=W0201
         data = json.loads(response, object_hook=hook)
         delattr(self, '_request_url')
         # Update the modhash
@@ -1149,7 +1151,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         #  * True mean login authenticated
         #  * set(...) means OAuth authenticated with the scopes in the set
         self._authentication = None
-        self._use_oauth = False  # Updated on a request by request basis
         self.access_token = None
         self.refresh_token = None
         self.user = None
@@ -1164,6 +1165,16 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         else:
             return 'Unauthenticated reddit sesssion'
 
+    def _url_update(self, url):
+        # When getting posts from a multireddit owned by the authenticated
+        # Redditor, we are redirected to me/m/multi/. Handle that now
+        # instead of catching later.
+        if re.search('user/.*/m/.*', url):
+            redditor = url.split('/')[-4]
+            if self.user and self.user.name.lower() == redditor.lower():
+                url = url.replace("user/"+redditor, 'me')
+        return url
+
     @decorators.restrict_access(scope=None, login=True)
     def accept_moderator_invite(self, subreddit):
         """Accept a moderator invite to the given subreddit.
@@ -1175,7 +1186,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """
         data = {'r': six.text_type(subreddit)}
         # Clear moderated subreddits and cache
-        self.user._mod_subs = None  # pylint: disable-msg=W0212
+        self.user._mod_subs = None  # pylint: disable=W0212
         self.evict(self.config['my_mod_subreddits'])
         return self.request_json(self.config['accept_mod_invite'], data=data)
 
@@ -1225,7 +1236,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                                                page.lower()))
         return self.request_json(self.config['wiki_edit'], data=data)
 
-    def get_access_information(self, code,  # pylint: disable-msg=W0221
+    def get_access_information(self, code,  # pylint: disable=W0221
                                update_session=True):
         """Return the access information for an OAuth2 authorization grant.
 
@@ -1319,7 +1330,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.user = self.get_redditor(user)
         self.user.__class__ = objects.LoggedInRedditor
 
-    def refresh_access_information(self,  # pylint: disable-msg=W0221
+    def refresh_access_information(self,  # pylint: disable=W0221
                                    refresh_token=None,
                                    update_session=True):
         """Return updated access information for an OAuth2 authorization grant.
@@ -1580,7 +1591,7 @@ class ModConfigMixin(AuthenticatedReddit):
         json_end = response.find(']]')
         try:
             image_errors = dict(json.loads(response[json_start:json_end + 2]))
-        except Exception:  # pylint: disable-msg=W0703
+        except Exception:  # pylint: disable=W0703
             warn_explicit('image_upload parsing issue', UserWarning, '', 0)
             return False
         if image_errors['BAD_CSS_NAME']:
@@ -1826,7 +1837,7 @@ class ModOnlyMixin(AuthenticatedReddit):
         subreddits only access is required. See issue #246.
 
         """
-        # pylint: disable-msg=W0613
+        # pylint: disable=W0613
         def get_contributors_helper(self, subreddit):
             # It is necessary to have the 'self' argument as it's needed in
             # restrict_access to determine what class the decorator is
@@ -1984,13 +1995,11 @@ class MySubredditsMixin(AuthenticatedReddit):
                                 **kwargs)
 
     @decorators.restrict_access(scope='mysubreddits')
-    def get_my_multireddits(self, *args, **kwargs):
+    def get_my_multireddits(self):
         """Return a list of the authenticated Redditor's Multireddits."""
         # The JSON data for multireddits is returned from Reddit as a list
         # Therefore, we cannot use :meth:`get_content` to retrieve the objects
-        url = self.config['my_multis']
-        response = self.request_json(url)
-        return response
+        return self.request_json(self.config['my_multis'])
 
     @decorators.restrict_access(scope='mysubreddits')
     def get_my_subreddits(self, *args, **kwargs):
@@ -2200,8 +2209,6 @@ class SubmitMixin(AuthenticatedReddit):
         # Clear the OAuth setting when attempting to fetch the submission
         if self._use_oauth:
             self._use_oauth = False
-            # TODO Verify this hack
-            # Hack until reddit/627 is resolved
             if url.startswith(self.config.oauth_url):
                 url = self.config.api_url + url[len(self.config.oauth_url):]
         try:

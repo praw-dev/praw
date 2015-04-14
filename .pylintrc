@@ -33,7 +33,7 @@ load-plugins=
 # can either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
-disable=C0111,I0011,W0142
+disable=C0111,I0011,I0012,W0142
 
 
 [REPORTS]
@@ -118,7 +118,7 @@ no-docstring-rgx=__.*__
 max-line-length=80
 
 # Maximum number of lines in a module
-max-module-lines=2048
+max-module-lines=2304
 
 # String used as indentation unit. This is usually " " (4 spaces) or "\t" (1
 # tab).
@@ -224,7 +224,7 @@ max-locals=32
 # max-returns=0
 
 # Maximum number of branch for function / method body
-max-branchs=32
+max-branches=32
 
 # Maximum number of statements in function / method body
 # max-statements=0

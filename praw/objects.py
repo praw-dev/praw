@@ -22,8 +22,11 @@ extends over multiple Things. An object that extends from Saveable indicates
 that it can be saved and unsaved in the context of a logged in user.
 """
 
+from __future__ import print_function, unicode_literals
+
 import six
-from six.moves.urllib.parse import parse_qs, urlparse, urlunparse
+from six.moves.urllib.parse import (  # pylint: disable=F0401
+    parse_qs, urlparse, urlunparse)
 from heapq import heappop, heappush
 from random import randint
 from requests.compat import urljoin
@@ -79,7 +82,7 @@ class RedditContentObject(object):
 
     def __ne__(self, other):
         """Return whether the other instance differs from the current."""
-        return not (self == other)
+        return not self == other
 
     def __setattr__(self, name, value):
         """Set the `name` attribute to `value."""
@@ -104,7 +107,7 @@ class RedditContentObject(object):
         return retval
 
     def _get_json_dict(self):
-        # (disabled for entire function) pylint: disable-msg=W0212
+        # (disabled for entire function) pylint: disable=W0212
 
         # OAuth handling needs to be special cased here. For instance, the user
         # might be calling a method on a Subreddit object that requires first
@@ -177,7 +180,7 @@ class Moderatable(RedditContentObject):
         response = self.reddit_session.request_json(url, data=data)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
         if isinstance(self, Submission):
-            urls += self.subreddit._listing_urls  # pylint: disable-msg=W0212
+            urls += self.subreddit._listing_urls  # pylint: disable=W0212
         self.reddit_session.evict(urls)
         return response
 
@@ -226,7 +229,7 @@ class Moderatable(RedditContentObject):
         response = self.reddit_session.request_json(url, data=data)
         urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
         if isinstance(self, Submission) and hasattr(self, 'subreddit'):
-            urls += self.subreddit._listing_urls  # pylint: disable-msg=W0212
+            urls += self.subreddit._listing_urls  # pylint: disable=W0212
         self.reddit_session.evict(urls)
         return response
 
@@ -331,9 +334,9 @@ class Hideable(RedditContentObject):
         data = {'id': self.fullname,
                 'executed': 'unhide' if unhide else 'hide'}
         response = self.reddit_session.request_json(url, data=data)
-        # pylint: disable-msg=W0212
+        # pylint: disable=W0212
         urls = [urljoin(self.reddit_session.user._url, 'hidden')]
-        # pylint: enable-msg=W0212
+        # pylint: enable=W0212
         self.reddit_session.evict(urls)
         return response
 
@@ -372,12 +375,12 @@ class Inboxable(RedditContentObject):
         :returns: A Comment object for the newly created comment (reply).
 
         """
-        # pylint: disable-msg=W0212
+        # pylint: disable=W0212
         response = self.reddit_session._add_comment(self.fullname, text)
-        # pylint: enable-msg=W0212
+        # pylint: enable=W0212
         urls = [self.reddit_session.config['inbox']]
         if isinstance(self, Comment):
-            urls.append(self.submission._api_link)
+            urls.append(self.submission._api_link)  # pylint: disable=W0212
         elif isinstance(self, Message):
             urls.append(self.reddit_session.config['sent'])
         self.reddit_session.evict(urls)
@@ -419,7 +422,7 @@ class Refreshable(RedditContentObject):
                                         params=params)
         elif isinstance(self, Subreddit):
             other = Subreddit(self.reddit_session, self._fast_name)
-        self.__dict__ = other.__dict__  # pylint: disable-msg=W0201
+        self.__dict__ = other.__dict__  # pylint: disable=W0201
 
 
 class Reportable(RedditContentObject):
@@ -441,11 +444,11 @@ class Reportable(RedditContentObject):
             data['reason'] = reason
         response = self.reddit_session.request_json(url, data=data)
         # Reported objects are automatically hidden as well
-        # pylint: disable-msg=W0212
-        urls = [self.reddit_session.config['user'],
-                urljoin(self.reddit_session.user._url, 'hidden')]
-        # pylint: enable-msg=W0212
-        self.reddit_session.evict(urls)
+        # pylint: disable=W0212
+        self.reddit_session.evict(
+            [self.reddit_session.config['user'],
+             urljoin(self.reddit_session.user._url, 'hidden')])
+        # pylint: enable=W0212
         return response
 
 
@@ -545,10 +548,10 @@ class Voteable(RedditContentObject):
         data = {'id': self.fullname,
                 'dir': six.text_type(direction)}
         if self.reddit_session.user:
-            # pylint: disable-msg=W0212
+            # pylint: disable=W0212
             urls = [urljoin(self.reddit_session.user._url, 'disliked'),
                     urljoin(self.reddit_session.user._url, 'liked')]
-            # pylint: enable-msg=W0212
+            # pylint: enable=W0212
             self.reddit_session.evict(urls)
         return self.reddit_session.request_json(url, data=data)
 
@@ -587,15 +590,11 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
     def _update_submission(self, submission):
         """Submission isn't set on __init__ thus we need to update it."""
-        # pylint: disable-msg=W0212
-        submission._comments_by_id[self.name] = self
-        # pylint: enable-msg=W0212
+        submission._comments_by_id[self.name] = self  # pylint: disable=W0212
         self._submission = submission
         if self._replies:
             for reply in self._replies:
-                # pylint: disable-msg=W0212
-                reply._update_submission(submission)
-                # pylint: enable-msg=W0212
+                reply._update_submission(submission)  # pylint: disable=W0212
 
     @property
     def is_root(self):
@@ -616,9 +615,9 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
             if not response[1]['data']['children']:
                 raise InvalidComment('Comment is no longer accessible: {0}'
                                      .format(self._fast_permalink))
-            # pylint: disable-msg=W0212
+            # pylint: disable=W0212
             self._replies = response[1]['data']['children'][0]._replies
-            # pylint: enable-msg=W0212
+            # pylint: enable=W0212
             # Set the submission object if it is not set.
             if not self._submission:
                 self._submission = response[0]['data']['children'][0]
@@ -682,9 +681,9 @@ class MoreComments(RedditContentObject):
         self._comments = tmp.comments[0].replies
         if update:
             for comment in self._comments:
-                # pylint: disable-msg=W0212
+                # pylint: disable=W0212
                 comment._update_submission(self.submission)
-                # pylint: enable-msg=W0212
+                # pylint: enable=W0212
         return self._comments
 
     def _update_submission(self, submission):
@@ -695,27 +694,28 @@ class MoreComments(RedditContentObject):
         if not self._comments:
             if self.count == 0:  # Handle 'continue this thread' type
                 return self._continue_comments(update)
-            # pylint: disable-msg=W0212
+            # pylint: disable=W0212
             children = [x for x in self.children if 't1_%s' % x
                         not in self.submission._comments_by_id]
-            # pylint: enable-msg=W0212
+            # pylint: enable=W0212
             if not children:
                 return None
             data = {'children': ','.join(children),
                     'link_id': self.submission.fullname,
                     'r': str(self.submission.subreddit)}
-            # pylint: disable-msg=W0212
+
+            # pylint: disable=W0212
             if self.submission._comment_sort:
                 data['where'] = self.submission._comment_sort
-            # pylint: enable-msg=W0212
+            # pylint: enable=W0212
             url = self.reddit_session.config['morechildren']
             response = self.reddit_session.request_json(url, data=data)
             self._comments = response['data']['things']
             if update:
                 for comment in self._comments:
-                    # pylint: disable-msg=W0212
+                    # pylint: disable=W0212
                     comment._update_submission(self.submission)
-                    # pylint: enable-msg=W0212
+                    # pylint: enable=W0212
         return self._comments
 
 
@@ -797,7 +797,7 @@ class Redditor(Gildable, Messageable, Refreshable):
         return _get_redditor_listing('liked')(self, *args,
                                               _use_oauth=use_oauth, **kwargs)
 
-    def get_multireddit(self, multi, *args, **kwargs):
+    def get_multireddit(self, multi):
         """Return a multireddit that belongs to this user.
 
         :param multi: The name of the multireddit
@@ -824,9 +824,9 @@ class Redditor(Gildable, Messageable, Refreshable):
                 ids.append(msg.fullname)
         else:
             raise ClientException('Invalid message type: %s' % type(messages))
-        # pylint: disable-msg=W0212
+        # pylint: disable=W0212
         retval = self.reddit_session._mark_as_read(ids, unread=unread)
-        # pylint: enable-msg=W0212
+        # pylint: enable=W0212
         return retval
 
     def unfriend(self):
@@ -951,8 +951,8 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
             return c_info['data']['children']
         submission = s_info['data']['children'][0]
         submission.comments = c_info['data']['children']
-        submission._comment_sort = comment_sort  # pylint: disable-msg=W0212
-        submission._params = params  # pylint: disable-msg=W0212
+        submission._comment_sort = comment_sort  # pylint: disable=W0212
+        submission._params = params  # pylint: disable=W0212
         return submission
 
     def __init__(self, reddit_session, json_dict):
@@ -981,7 +981,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         if comment.name in self._comments_by_id:  # Skip existing comments
             return
 
-        comment._update_submission(self)  # pylint: disable-msg=W0212
+        comment._update_submission(self)  # pylint: disable=W0212
 
         if comment.name in self._orphaned:  # Reunite children with parent
             comment.replies.extend(self._orphaned[comment.name])
@@ -1000,7 +1000,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
     def _update_comments(self, comments):
         self._comments = comments
         for comment in self._comments:
-            comment._update_submission(self)  # pylint: disable-msg=W0212
+            comment._update_submission(self)  # pylint: disable=W0212
 
     def add_comment(self, text):
         """Comment on the submission using the specified text.
@@ -1008,14 +1008,14 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         :returns: A Comment object for the newly created comment.
 
         """
-        # pylint: disable-msg=W0212
+        # pylint: disable=W0212
         response = self.reddit_session._add_comment(self.fullname, text)
-        # pylint: enable-msg=W0212
-        self.reddit_session.evict(self._api_link)
+        # pylint: enable=W0212
+        self.reddit_session.evict(self._api_link)  # pylint: disable=W0212
         return response
 
     @property
-    def comments(self):  # pylint: disable-msg=E0202
+    def comments(self):  # pylint: disable=E0202
         """Return forest of comments, with top-level comments as tree roots.
 
         May contain instances of MoreComment objects. To easily replace these
@@ -1026,13 +1026,12 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
         """
         if self._comments is None:
-            self.comments = Submission.from_url(self.reddit_session,
-                                                self._api_link,
-                                                comments_only=True)
+            self.comments = Submission.from_url(  # pylint: disable=W0212
+                self.reddit_session, self._api_link, comments_only=True)
         return self._comments
 
     @comments.setter  # NOQA
-    def comments(self, new_comments):  # pylint: disable-msg=E0202
+    def comments(self, new_comments):  # pylint: disable=E0202
         """Update the list of comments with the provided nested list."""
         self._update_comments(new_comments)
         self._orphaned = {}
@@ -1073,7 +1072,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         :returns: The json response from the server.
 
         """
-        def mark_as_nsfw_helper(self):  # pylint: disable-msg=W0613
+        def mark_as_nsfw_helper(self):  # pylint: disable=W0613
             # It is necessary to have the 'self' argument as it's needed in
             # restrict_access to determine what class the decorator is
             # operating on.
@@ -1130,7 +1129,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
             # Re-add new MoreComment objects to the heap of more_comments
             for more in self._extract_more_comments(new_comments):
-                more._update_submission(self)
+                more._update_submission(self)  # pylint: disable=W0212
                 heappush(more_comments, more)
             # Insert the new comments into the tree
             for comment in new_comments:
@@ -1490,7 +1489,7 @@ class UserList(PRAWListing):
     def _convert(reddit_session, data):
         """Return a Redditor object from the data."""
         retval = Redditor(reddit_session, data['name'], fetch=False)
-        retval.id = data['id'].split('_')[1]  # pylint: disable-msg=C0103,W0201
+        retval.id = data['id'].split('_')[1]  # pylint: disable=C0103,W0201
         return retval
 
 
@@ -1505,9 +1504,9 @@ class WikiPage(RedditContentObject):
         # in the JSON response to determine the name of the page nor the
         # subreddit it belongs to. Thus we must extract this information
         # from the request URL.
-        # pylint: disable-msg=W0212
+        # pylint: disable=W0212
         parts = reddit_session._request_url.split('/', 6)
-        # pylint: enable-msg=W0212
+        # pylint: enable=W0212
         subreddit = parts[4]
         page = parts[6].split('.', 1)[0]
         return cls(reddit_session, subreddit, page, json_dict=json_dict)
@@ -1550,9 +1549,9 @@ class WikiPageListing(PRAWListing):
     def _convert(reddit_session, data):
         """Return a WikiPage object from the data."""
         # TODO: The _request_url hack shouldn't be necessary
-        # pylint: disable-msg=W0212
+        # pylint: disable=W0212
         subreddit = reddit_session._request_url.rsplit('/', 4)[1]
-        # pylint: enable-msg=W0212
+        # pylint: enable=W0212
         return WikiPage(reddit_session, subreddit, data, fetch=False)
 
 
@@ -1561,7 +1560,7 @@ def _add_aliases():
     import sys
     predicate = lambda x: inspect.isclass(x) and hasattr(x, '_methods')
     for _, cls in inspect.getmembers(sys.modules[__name__], predicate):
-        for name, mixin in cls._methods:  # pylint: disable-msg=W0212
+        for name, mixin in cls._methods:  # pylint: disable=W0212
             setattr(cls, name, alias_function(getattr(mixin, name),
                                               mixin.__name__))
 _add_aliases()

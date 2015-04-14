@@ -1,5 +1,7 @@
 """Provides classes that handle request dispatching."""
 
+from __future__ import print_function, unicode_literals
+
 import socket
 import sys
 import time
@@ -8,7 +10,7 @@ from praw.errors import ClientException
 from praw.helpers import normalize_url
 from requests import Session
 from six import text_type
-from six.moves import cPickle
+from six.moves import cPickle  # pylint: disable=F0401
 from threading import Lock
 from timeit import default_timer as timer
 
@@ -56,7 +58,7 @@ class RateLimitHandler(object):
         return wrapped
 
     @classmethod
-    def evict(cls, urls):  # pylint: disable-msg=W0613
+    def evict(cls, urls):  # pylint: disable=W0613
         """Method utilized to evict entries for the given urls.
 
         :param urls: An iterable containing normalized urls.
@@ -72,7 +74,7 @@ class RateLimitHandler(object):
         if self.http:
             try:
                 self.http.close()
-            except:  # Never fail
+            except:  # Never fail  pylint: disable=W0702
                 pass
 
     def __init__(self):
@@ -204,7 +206,7 @@ class MultiprocessHandler(object):
                 cPickle.dump(kwargs, sock_fp, cPickle.HIGHEST_PROTOCOL)
                 sock_fp.flush()
                 retval = cPickle.load(sock_fp)
-            except:  # pylint: disable-msg=W0702
+            except:  # pylint: disable=W0702
                 exc_type, exc, _ = sys.exc_info()
                 socket_error = exc_type is socket.error
                 if socket_error and exc.errno == 111:  # Connection refused
@@ -227,7 +229,7 @@ class MultiprocessHandler(object):
                 sock_fp.close()
                 sock.close()
         if isinstance(retval, Exception):
-            raise retval  # pylint: disable-msg=E0702
+            raise retval  # pylint: disable=E0702
         return retval
 
     def evict(self, urls):

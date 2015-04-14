@@ -14,15 +14,17 @@
 
 """Provides the code to load PRAW's configuration file `praw.ini`."""
 
+from __future__ import print_function, unicode_literals
+
 import os
 import sys
 
 try:
     import ConfigParser as configparser
 except ImportError:
-    # pylint: disable-msg=F0401
+    # pylint: disable=F0401
     import configparser  # NOQA
-    # pylint: enable-msg=F0401
+    # pylint: enable=F0401
 
 
 def _load_configuration():

@@ -18,6 +18,8 @@ The functions in this module are not to be relied upon by third-parties.
 
 """
 
+from __future__ import print_function, unicode_literals
+
 from requests import Request
 import re
 import six
@@ -50,7 +52,7 @@ def _get_redditor_listing(subpath=''):
         kwargs.setdefault('params', {})
         kwargs['params'].setdefault('sort', sort)
         kwargs['params'].setdefault('t', time)
-        url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
+        url = urljoin(self._url, subpath)  # pylint: disable=W0212
         return self.reddit_session.get_content(url, *args, **kwargs)
     return _listing
 
@@ -69,7 +71,7 @@ def _get_sorter(subpath='', **defaults):
             kwargs['params'] = {}
         for key, value in six.iteritems(defaults):
             kwargs['params'].setdefault(key, value)
-        url = urljoin(self._url, subpath)  # pylint: disable-msg=W0212
+        url = urljoin(self._url, subpath)  # pylint: disable=W0212
         return self.reddit_session.get_content(url, *args, **kwargs)
     return _sorted
 

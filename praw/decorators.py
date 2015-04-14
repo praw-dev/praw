@@ -20,6 +20,8 @@ failed API requests by testing that the call can be made first. Also limit the
 length of output strings and parse json response for certain errors.
 """
 
+from __future__ import print_function, unicode_literals
+
 import inspect
 import os
 import re
@@ -315,10 +317,10 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False):
             obj = getattr(cls, 'reddit_session', cls)
             # This function sets _use_oauth for one time use only.
             # Verify that statement is actually true.
-            assert not obj._use_oauth  # pylint: disable-msg=W0212
+            assert not obj._use_oauth  # pylint: disable=W0212
 
             if scope and obj.has_scope(scope):
-                obj._use_oauth = True  # pylint: disable-msg=W0212
+                obj._use_oauth = True  # pylint: disable=W0212
             elif oauth_only:
                 raise errors.OAuthScopeRequired(function.__name__, scope)
             elif login and obj.is_logged_in():
@@ -338,7 +340,7 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False):
             try:
                 return function(cls, *args, **kwargs)
             finally:
-                obj._use_oauth = False  # pylint: disable-msg=W0212
+                obj._use_oauth = False  # pylint: disable=W0212
         return function if IS_SPHINX_BUILD else wrapped
     return wrap
 

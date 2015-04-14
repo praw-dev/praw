@@ -56,7 +56,7 @@ def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
     """
     get_function = partial(reddit_session.get_comments,
                            six.text_type(subreddit))
-    return _stream_generator(get_function, reddit_session, limit, verbosity)
+    return _stream_generator(get_function, limit, verbosity)
 
 
 def submission_stream(reddit_session, subreddit, limit=None, verbosity=1):
@@ -88,8 +88,7 @@ def submission_stream(reddit_session, subreddit, limit=None, verbosity=1):
             limit = 1000
     if not hasattr(subreddit, 'reddit_session'):
         subreddit = reddit_session.get_subreddit(subreddit)
-    return _stream_generator(subreddit.get_new, reddit_session, limit,
-                             verbosity)
+    return _stream_generator(subreddit.get_new, limit, verbosity)
 
 
 def valid_redditors(redditors, sub):
@@ -111,7 +110,7 @@ def valid_redditors(redditors, sub):
             if resp['ok']]
 
 
-def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
+def _stream_generator(get_function, limit=None, verbosity=1):
     def debug(msg, level):
         if verbosity >= level:
             sys.stderr.write(msg + '\n')
@@ -177,7 +176,7 @@ def _stream_generator(get_function, reddit_session, limit=None, verbosity=1):
             yield item
         # Sleep if necessary
         if sleep:
-            sleep_time, msg, msg_level = sleep
+            sleep_time, msg, msg_level = sleep  # pylint: disable=W0633
             debug(msg.format(sleep_time), msg_level)
             time.sleep(sleep_time)
 

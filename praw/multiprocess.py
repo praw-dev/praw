@@ -1,5 +1,7 @@
 """Provides a request server to be used with the multiprocess handler."""
 
+from __future__ import print_function, unicode_literals
+
 import socket
 import sys
 from optparse import OptionParser
@@ -7,12 +9,12 @@ from praw import __version__
 from praw.handlers import DefaultHandler
 from requests import Session
 from requests.exceptions import Timeout
-from six.moves import cPickle, socketserver
+from six.moves import cPickle, socketserver  # pylint: disable=F0401
 from threading import Lock
 
 
 class ThreadingTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
-    # pylint: disable-msg=R0903,W0232
+    # pylint: disable=R0903,W0232
 
     """A TCP server that creates new threads per connection."""
 
@@ -32,7 +34,7 @@ class ThreadingTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
 
 class RequestHandler(socketserver.StreamRequestHandler):
-    # pylint: disable-msg=W0232
+    # pylint: disable=W0232
 
     """A class that handles incoming requests.
 
@@ -66,7 +68,7 @@ class RequestHandler(socketserver.StreamRequestHandler):
 
     def handle(self):
         """Parse the RPC, make the call, and pickle up the return value."""
-        data = cPickle.load(self.rfile)  # pylint: disable-msg=E1101
+        data = cPickle.load(self.rfile)  # pylint: disable=E1101
         method = data.pop('method')
         try:
             retval = getattr(self, 'do_{0}'.format(method))(**data)
@@ -74,10 +76,10 @@ class RequestHandler(socketserver.StreamRequestHandler):
             # TODO: Remove this hack once my urllib3 PR is pushed downstream to
             # requests: https://github.com/shazow/urllib3/issues/174
             retval.message.url = None
-        except Exception as retval:  # pylint: disable-msg=W0703
+        except Exception as retval:  # pylint: disable=W0703
             # All exceptions should be passed to the client
             pass
-        cPickle.dump(retval, self.wfile,  # pylint: disable-msg=E1101
+        cPickle.dump(retval, self.wfile,  # pylint: disable=E1101
                      cPickle.HIGHEST_PROTOCOL)
 
 
@@ -100,8 +102,8 @@ def run():
         sys.exit(1)
     print('Listening on {0} port {1}'.format(options.addr, options.port))
     try:
-        server.serve_forever()  # pylint: disable-msg=E1101
+        server.serve_forever()  # pylint: disable=E1101
     except KeyboardInterrupt:
-        server.socket.close()
+        server.socket.close()  # pylint: disable=E1101
         RequestHandler.http.close()
         print('Goodbye!')
