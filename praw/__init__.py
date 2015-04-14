@@ -1030,10 +1030,11 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_content(self.config['top'], *args, **kwargs)
 
-    def get_wiki_page(self, subreddit, page):
+    def get_wiki_page(self, subreddit, page, **params):
         """Return a WikiPage object for the subreddit and page provided."""
         return self.request_json(self.config['wiki_page'] %
-                                 (six.text_type(subreddit), page.lower()))
+                                 (six.text_type(subreddit), page.lower()),
+                                 params=params)
 
     def get_wiki_pages(self, subreddit):
         """Return a list of WikiPage objects for the subreddit."""
@@ -1220,6 +1221,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 'page': page,
                 'r': six.text_type(subreddit),
                 'reason': reason}
+        self.evict(self.config['wiki_page'] % (six.text_type(subreddit),
+                                               page.lower()))
         return self.request_json(self.config['wiki_edit'], data=data)
 
     def get_access_information(self, code,  # pylint: disable-msg=W0221

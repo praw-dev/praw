@@ -7,6 +7,7 @@ from functools import wraps
 from praw.errors import ClientException
 from praw.helpers import normalize_url
 from requests import Session
+from six import text_type
 from six.moves import cPickle
 from threading import Lock
 from timeit import default_timer as timer
@@ -162,11 +163,13 @@ class DefaultHandler(RateLimitHandler):
 
     @classmethod
     def evict(cls, urls):
-        """Remove items from cache matching URL.
+        """Remove items from cache matching URLs.
 
         Return whether or not any items were removed.
 
         """
+        if isinstance(urls, text_type):
+            urls = [urls]
         urls = set(normalize_url(url) for url in urls)
         retval = False
         with cls.ca_lock:

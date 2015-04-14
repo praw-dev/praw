@@ -48,13 +48,6 @@ class RedditContentObject(object):
     @classmethod
     def from_api_response(cls, reddit_session, json_dict):
         """Return an instance of the appropriate class from the json_dict."""
-        if cls == WikiPage:  # Temporary HACK for WikiPage
-            # pylint: disable-msg=W0212
-            parts = reddit_session._request_url.split('/', 6)
-            # pylint: enable-msg=W0212
-            subreddit = parts[4]
-            page = parts[6].split('.', 1)[0]
-            return cls(reddit_session, subreddit, page, json_dict=json_dict)
         return cls(reddit_session, json_dict=json_dict)
 
     def __init__(self, reddit_session, json_dict=None, fetch=True,
@@ -1505,6 +1498,20 @@ class WikiPage(RedditContentObject):
 
     """An individual WikiPage object."""
 
+    @classmethod
+    def from_api_response(cls, reddit_session, json_dict):
+        """Return an instance of the appropriate class from the json_dict."""
+        # The WikiPage response does not contain the necessary information
+        # in the JSON response to determine the name of the page nor the
+        # subreddit it belongs to. Thus we must extract this information
+        # from the request URL.
+        # pylint: disable-msg=W0212
+        parts = reddit_session._request_url.split('/', 6)
+        # pylint: enable-msg=W0212
+        subreddit = parts[4]
+        page = parts[6].split('.', 1)[0]
+        return cls(reddit_session, subreddit, page, json_dict=json_dict)
+
     def __init__(self, reddit_session, subreddit=None, page=None,
                  json_dict=None, fetch=True):
         """Construct an instance of the WikiPage object."""
@@ -1530,7 +1537,7 @@ class WikiPage(RedditContentObject):
         `subreddit` and `page` parameters.
 
         """
-        self.subreddit.edit_wiki_page(self.page, *args, **kwargs)
+        return self.subreddit.edit_wiki_page(self.page, *args, **kwargs)
 
 
 class WikiPageListing(PRAWListing):

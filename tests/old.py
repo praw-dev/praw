@@ -1376,33 +1376,3 @@ class ToRedditListTest(unittest.TestCase, BasicHelper):
         # pylint: disable-msg=W0212
         output = internal._to_reddit_list([obj, 'hello'])
         self.assertEqual("{0},{1}".format(self.sr, 'hello'), output)
-
-
-class WikiTests(unittest.TestCase, BasicHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
-
-    def test_edit_wiki_page(self):
-        self.r.login(self.un, self.un_pswd)
-        page = self.subreddit.get_wiki_page('index')
-        content = 'Body: {0}'.format(uuid.uuid4())
-        page.edit(content)
-        self.disable_cache()
-        page = self.subreddit.get_wiki_page('index')
-        self.assertEqual(content, page.content_md)
-
-    def test_get_wiki_page(self):
-        self.assertEqual(
-            '{0}:index'.format(self.sr),
-            text_type(self.r.get_wiki_page(self.sr, 'index')))
-
-    def test_get_wiki_pages(self):
-        result = self.subreddit.get_wiki_pages()
-        self.assertTrue(result)
-        tmp = self.subreddit.get_wiki_page(result[0].page).content_md
-        self.assertEqual(result[0].content_md, tmp)
-
-    def test_revision_by(self):
-        self.assertTrue(any(x.revision_by for x in
-                            self.subreddit.get_wiki_pages()))
