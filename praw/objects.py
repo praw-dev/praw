@@ -649,7 +649,7 @@ class Message(Inboxable):
 
         """
         # Reduce fullname to ID if necessary
-        message_id = message_id.replace('t4_', '')
+        message_id = message_id.split('_', 1)[-1]
         url = reddit_session.config['message'] % message_id
         message_info = reddit_session.request_json(url, *args, **kwargs)
         message = message_info['data']['children'][0]
