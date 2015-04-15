@@ -39,37 +39,29 @@ class BasicHelper(object):
         self.other_user_pswd = '1111'
         self.other_non_mod_pswd = '1111'
 
-        if self.r.config.is_reddit:
-            self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
-            self.link_id = 't3_dtg4j'
-            self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
-            self.link_url_link = 'http://imgur.com/Vr8ZZ'
-            self.more_comments_url = self.url('/r/redditdev/comments/yjk55')
-            self.other_user_id = '6c1xj'
-            self.priv_submission_id = '16kbb7'
-            self.refresh_token = {
-                'creddits':        'jLC5Yw9LgoNr4Ldd9j1ESuqJ5DE',
-                'edit':            'FFx_0G7Zumyh4AWzIo39bG9KdIM',
-                'history':         'j_RKymm8srC3j6cxysYFQZbB4vc',
-                'identity':        'E4BgmO7iho0KOB1XlT8WEtyySf8',
-                'modconfig':       'bBGRgMY9Ai9_SZLZsaFvS647Mgk',
-                'modflair':        'UrMbtk4bOa040XAVz0uQn2gTE3s',
-                'modlog':          'ADW_EDS9-bh7Zicc7ARx7w8ZLMA',
-                'modposts':        'Ffnae7s4K-uXYZB5ZaYJgh0d8DI',
-                'mysubreddits':    'O7tfWhqem6fQZqxhoTiLca1s7VA',
-                'privatemessages': 'kr_pHPO3sqTn_m5f_FX9TW4joEU',
-                'read':            '_mmtb8YjDym0eC26G-rTxXUMea0',
-                'submit':          'k69WTwa2bEQOQY9t61nItd4twhw',
-                'subscribe':       'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
-                'vote':            '5RPnDwg56vAbf7F9yO81cXZAPSQ'}
-            self.submission_edit_id = '16i92b'
-        else:
-            self.comment_url = self.url(
-                '/r/reddit_api_test/comments/iq/_/3a7/')
-            self.link_url = self.url('/r/reddit_test6/comments/y/')
-            self.link_url_link = 'http://google.com/?q=29.9093488449'
-            self.more_comments_url = self.url('/r/reddit_test6/comments/y/')
-            self.other_user_id = 'pk'
+        self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
+        self.link_id = 't3_dtg4j'
+        self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
+        self.link_url_link = 'http://imgur.com/Vr8ZZ'
+        self.more_comments_url = self.url('/r/redditdev/comments/yjk55')
+        self.other_user_id = '6c1xj'
+        self.priv_submission_id = '16kbb7'
+        self.refresh_token = {
+            'creddits':        'jLC5Yw9LgoNr4Ldd9j1ESuqJ5DE',
+            'edit':            'FFx_0G7Zumyh4AWzIo39bG9KdIM',
+            'history':         'j_RKymm8srC3j6cxysYFQZbB4vc',
+            'identity':        'E4BgmO7iho0KOB1XlT8WEtyySf8',
+            'modconfig':       'bBGRgMY9Ai9_SZLZsaFvS647Mgk',
+            'modflair':        'UrMbtk4bOa040XAVz0uQn2gTE3s',
+            'modlog':          'ADW_EDS9-bh7Zicc7ARx7w8ZLMA',
+            'modposts':        'Ffnae7s4K-uXYZB5ZaYJgh0d8DI',
+            'mysubreddits':    'O7tfWhqem6fQZqxhoTiLca1s7VA',
+            'privatemessages': 'kr_pHPO3sqTn_m5f_FX9TW4joEU',
+            'read':            '_mmtb8YjDym0eC26G-rTxXUMea0',
+            'submit':          'k69WTwa2bEQOQY9t61nItd4twhw',
+            'subscribe':       'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
+            'vote':            '5RPnDwg56vAbf7F9yO81cXZAPSQ'}
+        self.submission_edit_id = '16i92b'
 
     def delay_for_listing_update(self):
         if not os.getenv('TRAVIS') and self.r.config.api_request_delay == 0:
@@ -161,13 +153,3 @@ def prompt(msg):
         cur = sys.stdin.read(1)
         response += cur
     return response.strip()
-
-
-def reddit_only(function):
-    @wraps(function)
-    def reddit_only_function(obj):
-        if obj.r.config.is_reddit:
-            return function(obj)
-        print('Passing reddit only test: {0}.{1}'
-              .format(obj.__class__.__name__, function.__name__))
-    return reddit_only_function

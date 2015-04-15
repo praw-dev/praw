@@ -30,6 +30,7 @@ Unreleased
    site, not the casing used to construct the Subreddit instance. To quickly
    fetch the name of an unloaded Subreddit, use ``str(sub_instance)``, or
    ``unicode(sub_instance)``.
+ * **[CHANGE]** Removed :class:`praw.Config` instance attribute ``is_reddit``.
  * **[FEATURE]** Added :meth:`get_message` to fetch a single Message object
    by its ID.
  * **[REDDIT]** Removed ``send_feedback`` as it is no longer supported by

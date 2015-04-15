@@ -243,7 +243,6 @@ class Config(object):  # pylint: disable=R0903
             self.pswd = obj['pswd']
         except KeyError:
             self.user = self.pswd = None
-        self.is_reddit = self.domain.endswith('reddit.com')
 
     def __getitem__(self, key):
         """Return the URL for key."""

@@ -10,7 +10,7 @@ from six import text_type
 from praw import Reddit, decorators, errors, helpers
 from praw.objects import Comment, MoreComments
 from .helper import (USER_AGENT, AuthenticatedHelper, BasicHelper, flair_diff,
-                     interactive_only, prompt, reddit_only)
+                     interactive_only, prompt)
 
 
 class OtherTests(unittest.TestCase):
@@ -85,11 +85,9 @@ class SearchTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
 
-    @reddit_only
     def test_search(self):
         self.assertTrue(len(list(self.r.search('test'))) > 2)
 
-    @reddit_only
     def test_search_multiply_submitted_url(self):
         self.assertTrue(
             len(list(self.r.search('http://www.livememe.com/'))) > 2)
@@ -97,12 +95,10 @@ class SearchTest(unittest.TestCase, BasicHelper):
     def test_search_reddit_names(self):
         self.assertTrue(self.r.search_reddit_names('reddit'))
 
-    @reddit_only
     def test_search_single_submitted_url(self):
         self.assertEqual(
             1, len(list(self.r.search('http://www.livememe.com/vg972qp'))))
 
-    @reddit_only
     def test_search_with_syntax(self):
         # Searching with timestamps only possible with cloudsearch
         no_syntax = self.r.search("timestamp:1354348800..1354671600",
@@ -112,7 +108,6 @@ class SearchTest(unittest.TestCase, BasicHelper):
                                     subreddit=self.sr, syntax='cloudsearch')
         self.assertTrue(list(with_syntax))
 
-    @reddit_only
     def test_search_with_time_window(self):
         num = 50
         submissions = len(list(self.r.search('test', subreddit=self.sr,
@@ -690,17 +685,14 @@ class ImageTests(unittest.TestCase, AuthenticatedHelper):
     def test_upload_invalid_image_path(self):
         self.assertRaises(IOError, self.subreddit.upload_image, 'bar.png')
 
-    @reddit_only
     def test_upload_jpg_header(self):
         image = self.image_path.format('white-square.jpg')
         self.assertTrue(self.subreddit.upload_image(image, header=True))
 
-    @reddit_only
     def test_upload_jpg_image(self):
         image = self.image_path.format('white-square.jpg')
         self.assertTrue(self.subreddit.upload_image(image))
 
-    @reddit_only
     def test_upload_jpg_image_named(self):
         image = self.image_path.format('white-square.jpg')
         name = text_type(self.r.modhash)
@@ -708,22 +700,18 @@ class ImageTests(unittest.TestCase, AuthenticatedHelper):
         images_json = self.subreddit.get_stylesheet()['images']
         self.assertTrue(any(name in text_type(x['name']) for x in images_json))
 
-    @reddit_only
     def test_upload_jpg_image_no_extension(self):
         image = self.image_path.format('white-square')
         self.assertTrue(self.subreddit.upload_image(image))
 
-    @reddit_only
     def test_upload_png_header(self):
         image = self.image_path.format('white-square.png')
         self.assertTrue(self.subreddit.upload_image(image, header=True))
 
-    @reddit_only
     def test_upload_png_image(self):
         image = self.image_path.format('white-square.png')
         self.assertTrue(self.subreddit.upload_image(image))
 
-    @reddit_only
     def test_upload_png_image_named(self):
         image = self.image_path.format('white-square.png')
         name = text_type(self.r.modhash)
@@ -1044,11 +1032,7 @@ class SubmissionTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_short_link(self):
         submission = next(self.r.get_new())
-        if self.r.config.is_reddit:
-            self.assertTrue(submission.id in submission.short_link)
-        else:
-            self.assertRaises(errors.ClientException, getattr, submission,
-                              'short_link')
+        self.assertTrue(submission.id in submission.short_link)
 
     def test_sticky_unsticky(self):
         def verify_sticky():
