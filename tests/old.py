@@ -827,7 +827,7 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(isinstance(message2, Message))
         self.assertTrue(message1 == message2)
         self.assertTrue(isinstance(message2.replies), list)
-        self.assertTrue(message2.dest.lower() == self.user.name.lower())
+        self.assertTrue(message2.dest.lower() == self.r.user.name.lower())
 
     def test_mark_as_read(self):
         self.r.login(self.other_user_name, self.other_user_pswd)
