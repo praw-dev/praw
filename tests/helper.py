@@ -78,9 +78,9 @@ class BasicHelper(object):
     def disable_cache(self):
         self.r.config.cache_timeout = 0
 
-    def first(self, seq, predicate):
-        first_hit = next((x for x in seq if predicate(x)), None)
-        self.assertTrue(first_hit is not None)
+    def first(self, sequence, predicate):
+        first_hit = next((x for x in sequence if predicate(x)), None)
+        self.assertNotEqual(None, first_hit)
         return first_hit
 
     def url(self, path):
@@ -88,6 +88,10 @@ class BasicHelper(object):
 
 
 class PRAWTest(unittest.TestCase, BasicHelper):
+    def none(self, sequence, predicate):
+        self.assertEqual(
+            None, next((x for x in sequence if predicate(x)), None))
+
     def setUp(self):
         self.configure()
 

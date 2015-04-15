@@ -10,7 +10,7 @@ import uuid
 from requests.exceptions import HTTPError
 from six import text_type
 from praw import Reddit, decorators, errors, helpers
-from praw.objects import Comment, Message, MoreComments
+from praw.objects import Comment, MoreComments
 from .helper import (USER_AGENT, AuthenticatedHelper, BasicHelper, flair_diff,
                      interactive_only, local_only, prompt, reddit_only)
 
@@ -165,12 +165,10 @@ class EmbedTextTest(unittest.TestCase):
     embed_text = "Hello"
 
     def test_no_docstring(self):
-        # pylint: disable-msg=W0212
         new_doc = decorators._embed_text(None, self.embed_text)
         self.assertEqual(new_doc, self.embed_text)
 
     def test_one_liner(self):
-        # pylint: disable-msg=W0212
         new_doc = decorators._embed_text("Returns something cool",
                                          self.embed_text)
         self.assertEqual(new_doc,
@@ -182,7 +180,6 @@ class EmbedTextTest(unittest.TestCase):
               Only run if foo is instantiated.
 
               """
-        # pylint: disable-msg=W0212
         new_doc = decorators._embed_text(doc, self.embed_text)
         self.assertEqual(new_doc, doc + self.embed_text + "\n\n")
 
@@ -199,7 +196,6 @@ class EmbedTextTest(unittest.TestCase):
               :params foo: Self explanatory.
 
               """.format(self.embed_text)
-        # pylint: disable-msg=W0212
         new_doc = decorators._embed_text(doc, self.embed_text)
         self.assertEqual(new_doc, expected_doc)
 
@@ -222,7 +218,6 @@ class EmbedTextTest(unittest.TestCase):
               :returns: The jiggered bar.
 
               """.format(self.embed_text)
-        # pylint: disable-msg=W0212
         new_doc = decorators._embed_text(doc, self.embed_text)
         self.assertEqual(new_doc, expected_doc)
 
@@ -253,7 +248,6 @@ class EmbedTextTest(unittest.TestCase):
               altered.
 
               """.format(self.embed_text)
-        # pylint: disable-msg=W0212
         new_doc = decorators._embed_text(doc, self.embed_text)
         self.assertEqual(new_doc, expected_doc)
 
@@ -263,7 +257,6 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
 
     def test_author_encoding(self):
-        # pylint: disable-msg=E1101
         a1 = next(self.r.get_new()).author
         a2 = self.r.get_redditor(text_type(a1))
         self.assertEqual(a1, a2)
@@ -307,7 +300,6 @@ class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
         for item in continue_items:
             self.assertTrue(item.id in [x.id for x in flat])
 
-        # pylint: disable-msg=W0212
         self.assertEqual(len(self.submission._comments_by_id), acf_len)
         self.assertTrue(c_len < ac_len)
         self.assertTrue(c_len < cf_len)
@@ -389,9 +381,7 @@ class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_add_comment_and_verify(self):
         text = 'Unique comment: %s' % uuid.uuid4()
-        # pylint: disable-msg=E1101
         submission = next(self.subreddit.get_new())
-        # pylint: enable-msg=E1101
         comment = submission.add_comment(text)
         self.assertEqual(comment.submission, submission)
         self.assertEqual(comment.body, text)
@@ -411,27 +401,23 @@ class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
         self.configure()
 
     def test_front_page_comment_replies_are_none(self):
-        # pylint: disable-msg=E1101,W0212
         item = next(self.r.get_comments('all'))
         self.assertEqual(item._replies, None)
 
     def test_inbox_comment_replies_are_none(self):
         predicate = lambda item: isinstance(item, Comment)
         comment = self.first(self.r.get_inbox(), predicate)
-        # pylint: disable-msg=W0212
         self.assertEqual(comment._replies, None)
 
     def test_spambox_comments_replies_are_none(self):
         predicate = lambda item: isinstance(item, Comment)
         sequence = self.r.get_subreddit(self.sr).get_spam()
         comment = self.first(sequence, predicate)
-        # pylint: disable-msg=W0212
         self.assertEqual(comment._replies, None)
 
     def test_user_comment_replies_are_none(self):
         predicate = lambda item: isinstance(item, Comment)
         comment = self.first(self.r.user.get_comments(), predicate)
-        # pylint: disable-msg=W0212
         self.assertEqual(comment._replies, None)
 
 
@@ -807,80 +793,6 @@ class LocalOnlyTest(unittest.TestCase, AuthenticatedHelper):
     def test_send_feedback(self):
         msg = 'You guys are awesome. (Sent from the PRAW python module).'
         self.r.send_feedback('Bryce Boe', 'foo@foo.com', msg)
-
-
-class MessageTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    def test_get_unread_update_has_mail(self):
-        self.r.send_message(self.other_user_name, 'Update has mail', 'body')
-        self.r.login(self.other_user_name, self.other_user_pswd)
-        self.assertTrue(self.r.user.has_mail)
-        self.r.get_unread(limit=1, unset_has_mail=True, update_user=True)
-        self.assertFalse(self.r.user.has_mail)
-
-    def test_get_message(self):
-        message1 = next(self.r.get_inbox(limit=1))
-        message2 = self.r.get_message(message1.id)
-        self.assertEqual(message1, message2)
-        self.assertEqual(self.r.user.name.lower(), message2.dest.lower())
-        self.assertTrue(isinstance(message2.replies, list))
-
-    def test_mark_as_read(self):
-        self.r.login(self.other_user_name, self.other_user_pswd)
-        # pylint: disable-msg=E1101
-        msg = next(self.r.get_unread(limit=1))
-        msg.mark_as_read()
-        self.assertTrue(msg not in self.r.get_unread(limit=5))
-
-    def test_mark_as_unread(self):
-        self.r.login(self.other_user_name, self.other_user_pswd)
-        msg = self.first(self.r.get_inbox(), lambda msg: not msg.new)
-        msg.mark_as_unread()
-        self.assertTrue(msg in self.r.get_unread())
-
-    def test_mark_multiple_as_read(self):
-        self.r.login(self.other_user_name, self.other_user_pswd)
-        messages = []
-        for msg in self.r.get_unread(limit=None):
-            if msg.author != self.r.user.name:
-                messages.append(msg)
-                if len(messages) >= 2:
-                    break
-        self.assertEqual(2, len(messages))
-        self.r.user.mark_as_read(messages)
-        unread = list(self.r.get_unread(limit=5))
-        self.assertTrue(all(msg not in unread for msg in messages))
-
-    def test_reply_to_message_and_verify(self):
-        text = 'Unique message reply: %s' % uuid.uuid4()
-        predicate = lambda msg: (isinstance(msg, Message)
-                                 and msg.author == self.r.user)
-        msg = self.first(self.r.get_inbox(), predicate)
-        reply = msg.reply(text)
-        self.assertEqual(reply.parent_id, msg.fullname)
-
-    def test_send(self):
-        subject = 'Unique message: %s' % uuid.uuid4()
-        self.r.user.send_message(subject, 'Message content')
-        self.first(self.r.get_inbox(), lambda msg: msg.subject == subject)
-
-    def test_send_from_sr(self):
-        subject = 'Unique message: %s' % uuid.uuid4()
-        self.r.send_message(self.other_user_name, subject, 'Message content',
-                            from_sr=self.sr)
-        self.r.login(self.other_user_name, self.other_user_pswd)
-        predicate = lambda msg: (msg.author is None and
-                                 msg.subreddit == self.sr and
-                                 msg.subject == subject)
-        message = self.first(self.r.get_unread(limit=1), predicate)
-        self.assertFalse(message is None)
-
-    def test_send_invalid(self):
-        subject = 'Unique message: %s' % uuid.uuid4()
-        self.assertRaises(errors.InvalidUser, self.r.send_message,
-                          self.invalid_user_name, subject, 'Message content')
 
 
 class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
