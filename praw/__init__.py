@@ -103,7 +103,6 @@ class Config(object):  # pylint: disable=R0903
                  'domain':              'domain/%s/',
                  'duplicates':          'duplicates/%s/',
                  'edit':                'api/editusertext/',
-                 'feedback':            'api/feedback/',
                  'flair':               'api/flair/',
                  'flairconfig':         'api/flairconfig/',
                  'flaircsv':            'api/flaircsv/',
@@ -1110,26 +1109,6 @@ class UnauthenticatedReddit(BaseReddit):
         results = self.request_json(self.config['search_reddit_names'],
                                     data=data)
         return [self.get_subreddit(name) for name in results['names']]
-
-    @decorators.require_captcha
-    def send_feedback(self, name, email, message, reason='feedback',
-                      captcha=None):
-        """Send feedback to the admins.
-
-        Please don't abuse this. Read the send feedback page at
-        http://www.reddit.com/feedback/ (for reddit.com) before use.
-
-        :returns: The json response from the server.
-
-        """
-        data = {'name': name,
-                'email': email,
-                'reason': reason,
-                'text': message}
-        if captcha:
-            data.update(captcha)
-        return self.request_json(self.config['feedback'], data=data,
-                                 retry_on_error=False)
 
 
 class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):

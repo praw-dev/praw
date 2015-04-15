@@ -32,6 +32,8 @@ Unreleased
    ``unicode(sub_instance)``.
  * **[FEATURE]** Added :meth:`get_message` to fetch a single Message object
    by its ID.
+ * **[REDDIT]** Removed ``send_feedback`` as it is no longer supported by
+   reddit.
 
 PRAW 2.1.21
 -----------

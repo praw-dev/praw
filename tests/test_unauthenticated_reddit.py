@@ -5,7 +5,7 @@ from __future__ import print_function, unicode_literals
 import mock
 import warnings
 from six import text_type
-from praw import Reddit, helpers
+from praw import Reddit, errors, helpers
 from praw.objects import Comment, MoreComments, Submission
 from .helper import PRAWTest, betamax
 
@@ -40,6 +40,30 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertFalse([item for item in comments if not
                           (isinstance(item, Comment) or
                            isinstance(item, MoreComments))])
+
+    @betamax
+    def test_create_and_delete_redditor(self):
+        # This test has to be updated everytime the cassette needs to be
+        # updated because we have to use consistent values for saved-runs
+        # but it needs to be unique each time we actually hit reddit's
+        # servers.
+        key = '10'
+        username = 'PyAPITestUser{0}'.format(key)
+        password = 'pass{0}'.format(key)
+
+        self.assertRaises(errors.UsernameExists, self.r.create_redditor,
+                          self.other_user_name, self.other_user_pswd)
+
+        self.r.create_redditor(username, password)
+        self.r.login(username, password)
+        self.assertTrue(self.r.is_logged_in())
+
+        self.assertRaises(errors.InvalidUserPass, self.r.delete, 'bad_pswd')
+
+        self.r.delete(password)
+        self.r.clear_authentication()
+        self.assertRaises(errors.InvalidUserPass, self.r.login, username,
+                          password)
 
     @betamax
     def test_decode_entities(self):

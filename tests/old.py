@@ -3,16 +3,14 @@
 from __future__ import print_function, unicode_literals
 
 import os
-import random
 import sys
 import unittest
-import uuid
 from requests.exceptions import HTTPError
 from six import text_type
 from praw import Reddit, decorators, errors, helpers
 from praw.objects import Comment, MoreComments
 from .helper import (USER_AGENT, AuthenticatedHelper, BasicHelper, flair_diff,
-                     interactive_only, local_only, prompt, reddit_only)
+                     interactive_only, prompt, reddit_only)
 
 
 class OtherTests(unittest.TestCase):
@@ -128,7 +126,7 @@ class CacheTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_cache(self):
         subreddit = self.r.get_subreddit(self.sr)
-        title = 'Test Cache: %s' % uuid.uuid4()
+        title = 'Test Cache: %s' % self.r.modhash
         body = "BODY"
         original_listing = list(subreddit.get_new(limit=5))
         subreddit.submit(title, body)
@@ -141,7 +139,7 @@ class CacheTest(unittest.TestCase, AuthenticatedHelper):
     def test_refresh_subreddit(self):
         self.disable_cache()
         subreddit = self.r.get_subreddit(self.sr)
-        new_description = 'Description %s' % uuid.uuid4()
+        new_description = 'Description %s' % self.r.modhash
         subreddit.update_settings(public_description=new_description)
         self.assertNotEqual(new_description, subreddit.public_description)
         subreddit.refresh()
@@ -271,7 +269,7 @@ class EncodingTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(text, comment.body)
 
     def test_unicode_submission(self):
-        unique = uuid.uuid4()
+        unique = self.r.modhash
         title = 'Wiki Entry on \xC3\x9C'
         url = 'http://en.wikipedia.org/wiki/\xC3\x9C?id=%s' % unique
         submission = self.r.submit(self.sr, title, url=url)
@@ -380,14 +378,14 @@ class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     def test_add_comment_and_verify(self):
-        text = 'Unique comment: %s' % uuid.uuid4()
+        text = 'Unique comment: %s' % self.r.modhash
         submission = next(self.subreddit.get_new())
         comment = submission.add_comment(text)
         self.assertEqual(comment.submission, submission)
         self.assertEqual(comment.body, text)
 
     def test_add_reply_and_verify(self):
-        text = 'Unique reply: %s' % uuid.uuid4()
+        text = 'Unique reply: %s' % self.r.modhash
         predicate = lambda submission: submission.num_comments > 0
         submission = self.first(self.subreddit.get_new(), predicate)
         comment = submission.comments[0]
@@ -427,14 +425,14 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     def test_add_link_flair(self):
-        flair_text = 'Flair: %s' % uuid.uuid4()
+        flair_text = 'Flair: %s' % self.r.modhash
         sub = next(self.subreddit.get_new())
         self.subreddit.set_flair(sub, flair_text)
         sub = self.r.get_submission(sub.permalink)
         self.assertEqual(sub.link_flair_text, flair_text)
 
     def test_add_link_flair_through_submission(self):
-        flair_text = 'Flair: %s' % uuid.uuid4()
+        flair_text = 'Flair: %s' % self.r.modhash
         sub = next(self.subreddit.get_new())
         sub.set_flair(flair_text)
         sub = self.r.get_submission(sub.permalink)
@@ -445,7 +443,7 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
         self.assertRaises(HTTPError, self.subreddit.set_flair, sub, 'text')
 
     def test_add_user_flair_by_subreddit_name(self):
-        flair_text = 'Flair: %s' % uuid.uuid4()
+        flair_text = 'Flair: %s' % self.r.modhash
         self.r.set_flair(self.sr, self.r.user, flair_text)
         flair = self.r.get_flair(self.sr, self.r.user)
         self.assertEqual(flair['flair_text'], flair_text)
@@ -456,8 +454,8 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
                           self.invalid_user_name)
 
     def test_add_user_flair_by_name(self):
-        flair_text = 'Flair: %s' % uuid.uuid4()
-        flair_css = 'a%d' % random.randint(0, 1024)
+        flair_text = 'Flair: {0}'.format(self.r.modhash)
+        flair_css = self.r.modhash
         self.subreddit.set_flair(text_type(self.r.user), flair_text, flair_css)
         flair = self.subreddit.get_flair(self.r.user)
         self.assertEqual(flair['flair_text'], flair_text)
@@ -492,8 +490,8 @@ class FlairTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_flair_csv_many(self):
         users = ('reddit', self.un, self.other_user_name)
-        flair_text_a = 'Flair: %s' % uuid.uuid4()
-        flair_text_b = 'Flair: %s' % uuid.uuid4()
+        flair_text_a = 'Flair: %s' % self.r.modhash
+        flair_text_b = 'Flair: %s' % self.r.modhash
         flair_mapping = [{'user': 'reddit', 'flair_text': flair_text_a}] * 99
         for user in users:
             flair_mapping.append({'user': user, 'flair_text': flair_text_b})
@@ -575,7 +573,7 @@ class FlairSelectTest(unittest.TestCase, AuthenticatedHelper):
     def test_select_user_flair_custom_text(self):
         flair_class = self.get_different_user_flair_class()
         flair_id = self.user_flair_templates[flair_class][0]
-        flair_text = 'Flair: %s' % uuid.uuid4()
+        flair_text = 'Flair: %s' % self.r.modhash
         self.r.select_flair(item=self.subreddit,
                             flair_template_id=flair_id,
                             flair_text=flair_text)
@@ -587,7 +585,7 @@ class FlairSelectTest(unittest.TestCase, AuthenticatedHelper):
         sub = next(self.subreddit.get_new())
         flair_class = self.get_different_link_flair_class(sub)
         flair_id = self.link_flair_templates[flair_class][0]
-        flair_text = 'Flair: %s' % uuid.uuid4()
+        flair_text = 'Flair: %s' % self.r.modhash
         self.r.select_flair(item=sub,
                             flair_template_id=flair_id,
                             flair_text=flair_text)
@@ -705,7 +703,7 @@ class ImageTests(unittest.TestCase, AuthenticatedHelper):
     @reddit_only
     def test_upload_jpg_image_named(self):
         image = self.image_path.format('white-square.jpg')
-        name = text_type(uuid.uuid4())
+        name = text_type(self.r.modhash)
         self.assertTrue(self.subreddit.upload_image(image, name))
         images_json = self.subreddit.get_stylesheet()['images']
         self.assertTrue(any(name in text_type(x['name']) for x in images_json))
@@ -728,71 +726,10 @@ class ImageTests(unittest.TestCase, AuthenticatedHelper):
     @reddit_only
     def test_upload_png_image_named(self):
         image = self.image_path.format('white-square.png')
-        name = text_type(uuid.uuid4())
+        name = text_type(self.r.modhash)
         self.assertTrue(self.subreddit.upload_image(image, name))
         images_json = self.subreddit.get_stylesheet()['images']
         self.assertTrue(any(name in text_type(x['name']) for x in images_json))
-
-
-class LocalOnlyTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    @local_only
-    def test_create_existing_redditor(self):
-        self.r.login(self.un, self.un_pswd)
-        self.assertRaises(errors.UsernameExists, self.r.create_redditor,
-                          self.other_user_name, self.other_user_pswd)
-
-    @local_only
-    def test_create_existing_subreddit(self):
-        self.r.login(self.un, self.un_pswd)
-        self.assertRaises(errors.SubredditExists, self.r.create_subreddit,
-                          self.sr, 'foo')
-
-    @local_only
-    def test_create_redditor(self):
-        unique_name = 'PyAPITestUser%d' % random.randint(3, 10240)
-        self.r.create_redditor(unique_name, '1111')
-
-    @local_only
-    def test_create_subreddit(self):
-        unique_name = 'test%d' % random.randint(3, 10240)
-        description = '#Welcome to %s\n\n0 item 1\n0 item 2\n' % unique_name
-        self.r.login(self.un, self.un_pswd)
-        self.r.create_subreddit(unique_name, 'The %s' % unique_name,
-                                description)
-
-    @local_only
-    def test_delete_redditor(self):
-        random_u = 'PyAPITestUser%d' % random.randint(3, 10240)
-        random_p = 'pass%d' % random.randint(3, 10240)
-        self.r.create_redditor(random_u, random_p)
-        self.r.login(random_u, random_p)
-        self.assertTrue(self.r.is_logged_in())
-        self.r.delete(random_p)
-        self.r.clear_authentication()
-        self.assertRaises(errors.InvalidUserPass, self.r.login, random_u,
-                          random_p)
-
-    @local_only
-    def test_delete_redditor_wrong_password(self):
-        random_u = 'PyAPITestUser%d' % random.randint(3, 10240)
-        random_p = 'pass%d' % random.randint(3, 10240)
-        self.r.create_redditor(random_u, random_p)
-        self.r.login(random_u, random_p)
-        self.assertTrue(self.r.is_logged_in())
-        self.assertRaises(errors.InvalidUserPass, self.r.delete, 'wxyz')
-
-    @local_only
-    def test_failed_feedback(self):
-        self.assertRaises(errors.InvalidEmails, self.r.send_feedback,
-                          'a', 'b', 'c')
-
-    @local_only
-    def test_send_feedback(self):
-        msg = 'You guys are awesome. (Sent from the PRAW python module).'
-        self.r.send_feedback('Bryce Boe', 'foo@foo.com', msg)
 
 
 class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
@@ -927,13 +864,13 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     def test_set_settings(self):
-        title = 'Reddit API Test %s' % uuid.uuid4()
+        title = 'Reddit API Test %s' % self.r.modhash
         self.subreddit.set_settings(title, wikimode='anyone')
         self.assertEqual(self.subreddit.get_settings()['title'], title)
 
     def test_set_stylesheet(self):
         stylesheet = ('div.titlebox span.number:after {\ncontent: " %s"\n' %
-                      uuid.uuid4())
+                      self.r.modhash)
         self.subreddit.set_stylesheet(stylesheet)
         self.assertEqual(stylesheet,
                          self.subreddit.get_stylesheet()['stylesheet'])
@@ -947,13 +884,13 @@ class SettingsTest(unittest.TestCase, AuthenticatedHelper):
 
     def test_update_settings_description(self):
         settings = self.subreddit.get_settings()
-        settings['description'] = 'Description %s' % uuid.uuid4()
+        settings['description'] = 'Description %s' % self.r.modhash
         self.subreddit.update_settings(description=settings['description'])
         self.assertEqual(settings, self.subreddit.get_settings())
 
     def test_update_settings_public_description(self):
         settings = self.subreddit.get_settings()
-        settings['public_description'] = 'Description %s' % uuid.uuid4()
+        settings['public_description'] = 'Description %s' % self.r.modhash
         self.subreddit.update_settings(
             public_description=settings['public_description'])
         self.assertEqual(settings, self.subreddit.get_settings())
@@ -978,7 +915,7 @@ class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(submission.url, found.url)
 
     def test_create_link_through_subreddit(self):
-        unique = uuid.uuid4()
+        unique = self.r.modhash
         title = 'Test Link: %s' % unique
         url = 'http://bryceboe.com/?bleh=%s' % unique
         subreddit = self.r.get_subreddit(self.sr)
@@ -987,14 +924,14 @@ class SubmissionCreateTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(submission.url, url)
 
     def test_create_self_and_verify(self):
-        title = 'Test Self: %s' % uuid.uuid4()
+        title = 'Test Self: %s' % self.r.modhash
         content = 'BODY'
         submission = self.r.submit(self.sr, title, text=content)
         self.assertEqual(submission.title, title)
         self.assertEqual(submission.selftext, content)
 
     def test_create_self_no_body(self):
-        title = 'Test Self: %s' % uuid.uuid4()
+        title = 'Test Self: %s' % self.r.modhash
         content = ''
         submission = self.r.submit(self.sr, title, text=content)
         self.assertEqual(submission.title, title)

@@ -152,16 +152,6 @@ def interactive_only(function):
     return interactive_only_function
 
 
-def local_only(function):
-    @wraps(function)
-    def local_only_function(obj):
-        if not obj.r.config.is_reddit:
-            return function(obj)
-        print('Passing local only test: {0}.{1}'
-              .format(obj.__class__.__name__, function.__name__))
-    return local_only_function
-
-
 def prompt(msg):
     sys.stdout.write(msg)
     sys.stdout.flush()
