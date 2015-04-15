@@ -687,7 +687,7 @@ class UnauthenticatedReddit(BaseReddit):
     def __init__(self, *args, **kwargs):
         """Initialze an UnauthenticatedReddit instance."""
         super(UnauthenticatedReddit, self).__init__(*args, **kwargs)
-        self._random_count = 0
+        self._unique_count = 0
 
     def create_redditor(self, user_name, password, email=''):
         """Register a new user.
@@ -900,9 +900,9 @@ class UnauthenticatedReddit(BaseReddit):
             self.http.cookies.set('over18', '1')
             path = 'randnsfw'
         response = self._request(self.config['subreddit'] % path,
-                                 params={'unique': self._random_count},
+                                 params={'unique': self._unique_count},
                                  raw_response=True)
-        self._random_count += 1
+        self._unique_count += 1
         return self.get_subreddit(response.url.rsplit('/', 2)[-2])
 
     def get_random_submission(self, subreddit='all'):
@@ -914,10 +914,10 @@ class UnauthenticatedReddit(BaseReddit):
         """
         url = self.config['subreddit_random'] % six.text_type(subreddit)
         try:
-            self._request(url, params={'unique': self._random_count},
+            self._request(url, params={'unique': self._unique_count},
                           raw_response=True)
         except errors.RedirectException as exc:  # This _should_ occur
-            self._random_count += 1  # Avoid network-level caching
+            self._unique_count += 1  # Avoid network-level caching
             return self.get_submission(exc.response_url)
         raise errors.ClientException('Expected exception not raised.')
 

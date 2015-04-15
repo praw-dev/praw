@@ -28,7 +28,6 @@ import six
 from six.moves.urllib.parse import (  # pylint: disable=F0401
     parse_qs, urlparse, urlunparse)
 from heapq import heappop, heappush
-from random import randint
 from requests.compat import urljoin
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
@@ -399,7 +398,7 @@ class Refreshable(RedditContentObject):
     """Interface for objects that can be refreshed."""
 
     def refresh(self):
-        """Re-query to update object with latest values.
+        """Re-query to update object with latest values. Return the object.
 
         Note that if this call is made within cache_timeout as specified in
         praw.ini then this will return the cached content. Any listing, such
@@ -408,21 +407,25 @@ class Refreshable(RedditContentObject):
         comments.
 
         """
+        unique = self.reddit_session._unique_count  # pylint: disable=W0201
+        self.reddit_session._unique_count += 1  # pylint: disable=W0201
+
         if isinstance(self, Redditor):
             other = Redditor(self.reddit_session, self.name)
         elif isinstance(self, Comment):
             sub = Submission.from_url(self.reddit_session, self.permalink,
-                                      params={'uniq': randint(0, 65536)})
+                                      params={'uniq': unique})
             other = sub.comments[0]
         elif isinstance(self, Submission):
             params = self._params.copy()
-            params['uniq'] = randint(0, 65536)
+            params['uniq'] = unique
             other = Submission.from_url(self.reddit_session, self.permalink,
                                         comment_sort=self._comment_sort,
                                         params=params)
         elif isinstance(self, Subreddit):
             other = Subreddit(self.reddit_session, self._fast_name)
         self.__dict__ = other.__dict__  # pylint: disable=W0201
+        return self
 
 
 class Reportable(RedditContentObject):
