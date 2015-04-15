@@ -820,6 +820,13 @@ class MessageTest(unittest.TestCase, AuthenticatedHelper):
         self.r.get_unread(limit=1, unset_has_mail=True, update_user=True)
         self.assertFalse(self.r.user.has_mail)
 
+    def test_get_single_message(self):
+        message1 = next(self.r.get_inbox(limit=1))
+        message2 = self.r.get_message(message1.id)
+        self.assertEqual(message1, message2)
+        self.assertEqual(self.r.user.name.lower(), message2.dest.lower())
+        self.assertTrue(isinstance(message2.replies), list)
+
     def test_mark_as_read(self):
         self.r.login(self.other_user_name, self.other_user_pswd)
         # pylint: disable-msg=E1101
