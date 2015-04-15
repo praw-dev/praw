@@ -636,6 +636,33 @@ class Message(Inboxable):
 
     """A class for private messages."""
 
+    @staticmethod
+    @restrict_access(scope='privatemessages')
+    def from_id(reddit_session, message_id, *args, **kwargs):
+        """Request the url for a Message and return a Message object.
+
+        :param reddit_session: The session to make the request with.
+        :param message_id: The ID of the message to request.
+
+        The additional parameters are passed directly into
+        :meth:`.request_json`.
+
+        """
+        # Reduce fullname to ID if necessary
+        message_id = message_id.replace('t4_', '')
+        url = reddit_session.config['message'] % message_id
+        message_info = reddit_session.request_json(url, *args, **kwargs)
+        message = message_info['data']['children'][0]
+
+        # Messages are received as a listing such that
+        # the first item is always the thread's root.
+        # The ID requested by the user may be a child.
+        if message.id == message_id:
+            return message
+        for child in message.replies:
+            if child.id == message_id:
+                return child
+
     def __init__(self, reddit_session, json_dict):
         """Construct an instnace of the Message object."""
         super(Message, self).__init__(reddit_session, json_dict)
