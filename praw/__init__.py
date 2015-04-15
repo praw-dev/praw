@@ -122,6 +122,7 @@ class Config(object):  # pylint: disable=R0903
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
                  'mentions':            'message/mentions',
+                 'message':             'message/messages/%s/',
                  'messages':            'message/messages/',
                  'moderators':          'r/%s/about/moderators/',
                  'modlog':              'r/%s/about/log/',
@@ -2047,6 +2048,19 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
         """
         return self.get_content(self.config['inbox'], *args, **kwargs)
+
+    @decorators.restrict_access(scope='privatemessages')
+    def get_message(self, message_id, *args, **kwargs):
+        """Return a Message object corresponding to the given ID.
+
+        :param message_id: The ID or Fullname for a Message
+
+        The additional parameters are passed into
+        :meth:`.from_id` of Message, and subsequently into
+        :meth:`.request_json`.
+
+        """
+        return objects.Message.from_id(self, message_id, *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
     def get_messages(self, *args, **kwargs):

@@ -30,6 +30,8 @@ Unreleased
    site, not the casing used to construct the Subreddit instance. To quickly
    fetch the name of an unloaded Subreddit, use ``str(sub_instance)``, or
    ``unicode(sub_instance)``.
+ * **[FEATURE]** Added :meth:`get_message` to fetch a single Message object
+   by its ID.
 
 PRAW 2.1.21
 -----------
