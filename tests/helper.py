@@ -72,7 +72,7 @@ class BasicHelper(object):
 
     def first(self, sequence, predicate):
         first_hit = next((x for x in sequence if predicate(x)), None)
-        self.assertNotEqual(None, first_hit)
+        self.assertTrue(first_hit)
         return first_hit
 
     def url(self, path):

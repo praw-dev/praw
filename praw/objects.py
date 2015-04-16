@@ -282,7 +282,6 @@ class Editable(RedditContentObject):
                 'text': text}
         response = self.reddit_session.request_json(url, data=data)
         self.reddit_session.evict(self.reddit_session.config['user'])
-        # REDDIT: reddit's end should only ever return a single comment
         return response['data']['things'][0]
 
 
