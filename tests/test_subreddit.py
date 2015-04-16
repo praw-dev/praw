@@ -9,7 +9,7 @@ from .helper import PRAWTest, betamax
 
 class SubredditTest(PRAWTest):
     def betamax_init(self):
-        self.r.login(self.un, self.un_pswd)
+        self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.subreddit = self.r.get_subreddit(self.sr)
 
     @betamax
@@ -36,7 +36,8 @@ class SubredditTest(PRAWTest):
 
     @betamax
     def test_get_contributors_private(self):
-        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd,
+                     disable_warning=True)
         private_sub = self.r.get_subreddit(self.priv_sr)
         self.assertEqual('private', private_sub.subreddit_type)
         self.assertTrue(list(private_sub.get_contributors()))
@@ -48,7 +49,8 @@ class SubredditTest(PRAWTest):
 
     @betamax
     def test_get_contributors_public_exception(self):
-        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd,
+                     disable_warning=True)
         self.assertRaises(errors.ModeratorRequired,
                           self.subreddit.get_contributors)
 
@@ -92,7 +94,7 @@ class SubredditTest(PRAWTest):
 
 class ModeratorSubredditTest(PRAWTest):
     def betamax_init(self):
-        self.r.login(self.un, self.un_pswd)
+        self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.subreddit = self.r.get_subreddit(self.sr)
 
     @betamax

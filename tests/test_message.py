@@ -9,7 +9,7 @@ from .helper import PRAWTest, betamax
 
 class MessageTest(PRAWTest):
     def betamax_init(self):
-        self.r.login(self.un, self.un_pswd)
+        self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.other_user = self.r.get_redditor(self.other_user_name)
 
     @betamax
@@ -24,14 +24,16 @@ class MessageTest(PRAWTest):
     def test_get_unread_update_has_mail(self):
         self.r.send_message(self.other_user_name, 'Update has mail', 'body')
 
-        self.r.login(self.other_user_name, self.other_user_pswd)
+        self.r.login(self.other_user_name, self.other_user_pswd,
+                     disable_warning=True)
         self.assertTrue(self.r.user.has_mail)
         self.r.get_unread(limit=1, unset_has_mail=True, update_user=True)
         self.assertFalse(self.r.user.has_mail)
 
     @betamax
     def test_mark_as_read(self):
-        self.r.login(self.other_user_name, self.other_user_pswd)
+        self.r.login(self.other_user_name, self.other_user_pswd,
+                     disable_warning=True)
         msg = next(self.r.get_unread(limit=1))
         msg.mark_as_read()
 
@@ -40,7 +42,8 @@ class MessageTest(PRAWTest):
 
     @betamax
     def test_mark_as_unread(self):
-        self.r.login(self.other_user_name, self.other_user_pswd)
+        self.r.login(self.other_user_name, self.other_user_pswd,
+                     disable_warning=True)
         msg = self.first(self.r.get_inbox(), lambda msg: not msg.new)
         self.assertFalse(msg in self.r.get_unread())
         msg.mark_as_unread()
@@ -50,7 +53,8 @@ class MessageTest(PRAWTest):
 
     @betamax
     def test_mark_multiple_as_read(self):
-        self.r.login(self.other_user_name, self.other_user_pswd)
+        self.r.login(self.other_user_name, self.other_user_pswd,
+                     disable_warning=True)
         message_generator = self.r.get_unread(limit=None)
         messages = []
         while len(messages) < 2:
@@ -88,7 +92,8 @@ class MessageTest(PRAWTest):
         self.r.send_message(self.other_user_name, subject, 'Message content',
                             from_sr=self.sr)
 
-        self.r.login(self.other_user_name, self.other_user_pswd)
+        self.r.login(self.other_user_name, self.other_user_pswd,
+                     disable_warning=True)
         message = next(self.r.get_unread(limit=1))
         self.assertEqual(None, message.author)
         self.assertEqual(self.sr, text_type(message.subreddit))

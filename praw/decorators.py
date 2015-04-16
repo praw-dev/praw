@@ -70,17 +70,22 @@ def alias_function(function, class_name):
     return wrapped
 
 
-def deprecated(msg=""):
+def deprecated(msg=''):
     """Deprecate decorated method."""
-    docstring_text = ("**DEPRECATED**. Will be removed in a future version "
-                      "of PRAW. %s" % msg)
+    docstring_text = ('**DEPRECATED**. Will be removed in a future version '
+                      'of PRAW. {0}'.format(msg))
 
     def wrap(function):
         function.__doc__ = _embed_text(function.__doc__, docstring_text)
 
         @wraps(function)
         def wrapped(self, *args, **kwargs):
-            warn(msg, DeprecationWarning)
+            disable_warning = False
+            if 'disable_warning' in kwargs:
+                disable_warning = kwargs['disable_warning']
+                del kwargs['disable_warning']
+            if not disable_warning:
+                warn(msg, DeprecationWarning)
             return function(self, *args, **kwargs)
         return function if IS_SPHINX_BUILD else wrapped
     return wrap

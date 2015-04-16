@@ -8,7 +8,7 @@ from .helper import PRAWTest, betamax
 
 class SubmissionTest(PRAWTest):
     def betamax_init(self):
-        self.r.login(self.un, self.un_pswd)
+        self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.subreddit = self.r.get_subreddit(self.sr)
 
     @betamax
@@ -18,7 +18,8 @@ class SubmissionTest(PRAWTest):
 
     @betamax
     def test_mark_as_nsfw_and_umark_as_nsfw__as_author(self):
-        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd,
+                     disable_warning=True)
         submission = self.r.get_submission(submission_id="1nt8co")
         self.assertEqual(self.r.user, submission.author)
 
@@ -101,7 +102,7 @@ class SubmissionTest(PRAWTest):
 
 class SubmissionModeratorTest(PRAWTest):
     def betamax_init(self):
-        self.r.login(self.un, self.un_pswd)
+        self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.subreddit = self.r.get_subreddit(self.sr)
 
     @betamax

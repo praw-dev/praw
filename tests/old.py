@@ -56,23 +56,26 @@ class AccessControlTests(unittest.TestCase, BasicHelper):
         self.assertRaises(errors.OAuthScopeRequired, self.r.get_me)
 
     def test_moderator_or_oauth_required_logged_in_from_reddit_obj(self):
-        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd,
+                     disable_warning=True)
         self.assertRaises(errors.ModeratorOrScopeRequired,
                           self.r.get_settings, self.sr)
 
     def test_moderator_or_oauth_required_logged_in_from_submission_obj(self):
-        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd,
+                     disable_warning=True)
         submission = self.r.get_submission(url=self.comment_url)
         self.assertRaises(errors.ModeratorOrScopeRequired, submission.remove)
 
     def test_moderator_or_oauth_required_logged_in_from_subreddit_obj(self):
-        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd)
+        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd,
+                     disable_warning=True)
         subreddit = self.r.get_subreddit(self.sr)
         self.assertRaises(errors.ModeratorOrScopeRequired,
                           subreddit.get_settings)
 
     def test_moderator_required_multi(self):
-        self.r.login(self.un, self.un_pswd)
+        self.r.login(self.un, self.un_pswd, disable_warning=True)
         sub = self.r.get_subreddit('{0}+{1}'.format(self.sr, 'test'))
         self.assertRaises(errors.ModeratorRequired, sub.get_mod_queue)
 
@@ -778,7 +781,8 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
             test_remove()
 
     def test_accept_moderator_invite_fail(self):
-        self.r.login(self.other_user_name, self.other_user_pswd)
+        self.r.login(self.other_user_name, self.other_user_pswd,
+                     disable_warning=True)
         self.assertRaises(errors.InvalidInvite,
                           self.subreddit.accept_moderator_invite)
 
@@ -801,7 +805,8 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
     def test_moderator(self):
         def add_callback():
             tmp = Reddit(USER_AGENT, disable_update_check=True)
-            tmp.login(self.other_user_name, self.other_user_pswd)
+            tmp.login(self.other_user_name, self.other_user_pswd,
+                      disable_warning=True)
             tmp.get_subreddit(self.sr).accept_moderator_invite()
 
         self.add_remove(self.subreddit.add_moderator,

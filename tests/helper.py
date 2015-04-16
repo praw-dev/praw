@@ -91,7 +91,7 @@ class PRAWTest(unittest.TestCase, BasicHelper):
 class AuthenticatedHelper(BasicHelper):
     def configure(self):
         super(AuthenticatedHelper, self).configure()
-        self.r.login(self.un, self.un_pswd)
+        self.r.login(self.un, self.un_pswd, disable_warning=True)
 
 
 Betamax.register_request_matcher(BodyMatcher)

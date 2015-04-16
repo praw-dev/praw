@@ -55,7 +55,7 @@ class UnauthenticatedRedditTest(PRAWTest):
                           self.other_user_name, self.other_user_pswd)
 
         self.r.create_redditor(username, password)
-        self.r.login(username, password)
+        self.r.login(username, password, disable_warning=True)
         self.assertTrue(self.r.is_logged_in())
 
         self.assertRaises(errors.InvalidUserPass, self.r.delete, 'bad_pswd')
@@ -63,7 +63,7 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.r.delete(password)
         self.r.clear_authentication()
         self.assertRaises(errors.InvalidUserPass, self.r.login, username,
-                          password)
+                          password, disable_warning=True)
 
     @betamax
     def test_decode_entities(self):

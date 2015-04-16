@@ -1273,6 +1273,12 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """Return True when the current session is an OAuth2 session."""
         return isinstance(self._authentication, set)
 
+    @decorators.deprecated('Password-based authentication will stop working '
+                           'on 2015/08/03 and as a result will be removed '
+                           'in PRAW4.\nFor more information please see: '
+                           'https://www.reddit.com/comments/2ujhkr/\nPass '
+                           '`disable_warning=True` to `login` to disable this '
+                           'warning.')
     def login(self, username=None, password=None):
         """Login to a reddit site.
 

@@ -7,7 +7,7 @@ from .helper import PRAWTest, betamax
 
 class RedditorTest(PRAWTest):
     def betamax_init(self):
-        self.r.login(self.un, self.un_pswd)
+        self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.other_user = self.r.get_redditor(self.other_user_name)
 
     @betamax
@@ -25,7 +25,10 @@ class RedditorTest(PRAWTest):
 
     @betamax
     def test_duplicate_login(self):
-        self.r.login(self.other_user_name, self.other_user_pswd)
+        self.assertEqual(self.un, self.r.user.name)
+        self.r.login(self.other_user_name, self.other_user_pswd,
+                     disable_warning=True)
+        self.assertEqual(self.other_user_name, self.r.user.name)
 
     @betamax
     def test_get_liked_and_disliked(self):
