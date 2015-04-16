@@ -35,6 +35,8 @@ Unreleased
    by its ID.
  * **[REDDIT]** Removed ``send_feedback`` as it is no longer supported by
    reddit.
+ * **[REDDIT]** Added ``DeprecationWarning`` to :meth:`login` as reddit will
+   stop supporting cookie-based authentication on 2015/08/03.
 
 PRAW 2.1.21
 -----------
