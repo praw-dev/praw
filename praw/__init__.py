@@ -1454,10 +1454,11 @@ class ModConfigMixin(AuthenticatedReddit):
         return self.request_json(url % six.text_type(subreddit), data=data)
 
     @decorators.restrict_access(scope='modconfig')
-    def get_settings(self, subreddit):
+    def get_settings(self, subreddit, **params):
         """Return the settings for the given subreddit."""
         return self.request_json(self.config['subreddit_settings'] %
-                                 six.text_type(subreddit))['data']
+                                 six.text_type(subreddit),
+                                 params=params)['data']
 
     @decorators.restrict_access(scope='modconfig')
     def set_settings(self, subreddit, title, public_description='',
@@ -1900,10 +1901,11 @@ class ModOnlyMixin(AuthenticatedReddit):
                                 *args, **kwargs)
 
     @decorators.restrict_access('modconfig', mod=False, login=False)
-    def get_stylesheet(self, subreddit):
+    def get_stylesheet(self, subreddit, **params):
         """Return the stylesheet and images for the given subreddit."""
         return self.request_json(self.config['stylesheet'] %
-                                 six.text_type(subreddit))['data']
+                                 six.text_type(subreddit),
+                                 params=params)['data']
 
     @decorators.restrict_access(scope=None, mod=True)
     def get_unmoderated(self, subreddit='mod', *args, **kwargs):

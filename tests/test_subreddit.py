@@ -145,3 +145,41 @@ class ModeratorSubredditTest(PRAWTest):
         subject = 'Unique message: AAAA'
         self.r.get_subreddit(self.sr).send_message(subject, 'Content')
         self.first(self.r.get_mod_mail(), lambda msg: msg.subject == subject)
+
+    @betamax
+    def test_set_settings(self):
+        # The only required argument is title. All others will be set
+        # to their defaults.
+        title = 'Reddit API Test {0}'.format(self.r.modhash)
+        self.subreddit.set_settings(title)
+        settings = self.subreddit.get_settings()
+        self.assertEqual(title, settings['title'])
+        for setting in ['description', 'public_description']:
+            self.assertEqual('', settings[setting])
+
+    @betamax
+    def test_set_stylesheet(self):
+        self.assertRaises(errors.BadCSS, self.subreddit.set_stylesheet,
+                          'INVALID CSS')
+
+        stylesheet = ('div.titlebox span.number:after {{\ncontent: " {0}"\n}}'
+                      .format(self.r.modhash))
+        self.subreddit.set_stylesheet(stylesheet)
+        self.assertEqual(stylesheet,
+                         self.subreddit.get_stylesheet()['stylesheet'])
+
+        self.subreddit.set_stylesheet('')
+        self.assertEqual(
+            '', self.subreddit.get_stylesheet(uniq=1)['stylesheet'])
+
+    @betamax
+    def test_update_settings__descriptions(self):
+        self.maxDiff = None
+        settings = self.subreddit.get_settings()
+        settings['description'] = 'Description {0}'.format(self.r.modhash)
+        settings['public_description'] = ('Public Description {0}'
+                                          .format(self.r.modhash))
+        self.subreddit.update_settings(
+            description=settings['description'],
+            public_description=settings['public_description'])
+        self.assertEqual(settings, self.subreddit.get_settings(uniq=1))
