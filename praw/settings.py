@@ -22,12 +22,11 @@ import sys
 try:
     import ConfigParser as configparser
 except ImportError:
-    # pylint: disable=F0401
-    import configparser  # NOQA
-    # pylint: enable=F0401
+    import configparser  # NOQA pylint: disable=F0401
 
 
 def _load_configuration():
+    """Attempt to load settings from various praw.ini files."""
     config = configparser.RawConfigParser()
     module_dir = os.path.dirname(sys.modules[__name__].__file__)
     if 'APPDATA' in os.environ:  # Windows
@@ -42,6 +41,8 @@ def _load_configuration():
     if os_config_path is not None:
         locations.insert(1, os.path.join(os_config_path, 'praw.ini'))
     if not config.read(locations):
-        raise Exception('Could not find config file in any of: %s' % locations)
+        raise Exception('Could not find config file in any of: {0}'
+                        .format(locations))
     return config
 CONFIG = _load_configuration()
+del _load_configuration
