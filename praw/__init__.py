@@ -986,10 +986,23 @@ class UnauthenticatedReddit(BaseReddit):
             for item in self.get_content(url, limit=len(cur), *args, **kwargs):
                 yield item
 
-    def get_comment(self,comment_id=None):
+    def get_comment(self, comment_id):
         """Return a Comment object for the given comment_id"""
-        if comment_id is None: return None
-        return get_info(thing_id='t1_%s'%comment_id)
+        url=None
+        comment_id = 't1_%s'%comment_id
+        if not isinstance(comment_id,six.string_types):
+            comment_id = ','.join(comment_id)
+            url = True
+        params = {'id': comment_id}
+        items = self.request_json(self.config['info'],
+                                    params=params)['data']['children']
+        if url:
+            return items if items else None
+        elif items:
+            return items[0]
+        else:
+            return None
+
     def get_subreddit(self, subreddit_name, *args, **kwargs):
         """Return a Subreddit object for the subreddit_name specified.
 
