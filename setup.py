@@ -45,10 +45,8 @@ setup(
     keywords='reddit api wrapper',
     packages=[PACKAGE_NAME],
     package_data={'': ['COPYING'], PACKAGE_NAME: ['*.ini']},
-    dependency_links=[
-        'https://github.com/sigmavirus24/betamax/archive/b30047146f35f622f70dfeb6db81fc4eb522b811.zip#egg=betamax-0.4.1'],
     install_requires=['requests>=2.3.0', 'six>=1.4', 'update_checker>=0.11'],
-    tests_require=['betamax>=0.4.1', 'betamax-matchers>=0.1.0', 'mock>=1.0.0'],
+    tests_require=['betamax>=0.4.2', 'betamax-matchers>=0.1.0', 'mock>=1.0.0'],
     entry_points={'console_scripts': [
             'praw-multiprocess = praw.multiprocess:run']},
     test_suite='tests')
