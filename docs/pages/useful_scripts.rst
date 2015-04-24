@@ -131,6 +131,9 @@ this page to add in more.
     r/spaceporn, etc. and set them as the computer's wallpaper. Currently only
     tested and used on Ubuntu, but more OS's coming soon.
     
+`QR Codify <https://github.com/JstnPwll/QRCodify>`_ by JstnPwll
+    Fetches username mentions and converts the comment data into a QR code. The code is
+    then posted via ASCII characters as a followup comment.
 
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
