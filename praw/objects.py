@@ -1122,14 +1122,15 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
         :param limit: The maximum number of MoreComments objects to
             replace. Each replacement requires 1 API request. Set to None to
-            have no limit. Default: 32
+            have no limit, or to 0 to make no extra requests. Default: 32
         :param threshold: The minimum number of children comments a
             MoreComments object must have in order to be replaced. Default: 1
         :returns: A list of MoreComments objects that were not replaced.
 
         Note that after making this call, the `comments` attribute of the
         submission will no longer contain any MoreComments objects. Items that
-        weren't replaced are still removed from the tree.
+        weren't replaced are still removed from the tree, and will be included
+        in the returned list.
 
         """
         if self._replaced_more:
