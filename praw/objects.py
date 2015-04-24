@@ -1293,6 +1293,7 @@ class Subreddit(Messageable, Refreshable):
                 ('get_reports', MOMix),
                 ('get_settings', MCMix),
                 ('get_spam', MOMix),
+                ('get_sticky', UR),
                 ('get_stylesheet', MOMix),
                 ('get_unmoderated', MOMix),
                 ('get_wiki_banned', MOMix),
