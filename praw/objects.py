@@ -1451,6 +1451,7 @@ class Multireddit(Refreshable):
                                                                  multi)
         super(Multireddit, self).__init__(reddit_session, json_dict, fetch,
                                           info_url)
+        self.name = multi
         self.update_urls(reddit_session, redditor, multi)
 
     def __repr__(self):
@@ -1463,13 +1464,12 @@ class Multireddit(Refreshable):
         """Add a subreddit to the user's multireddit.
 
         :param subreddit: The subreddit name or Subreddit object to add
-        :param delete: Optionally, convert this request into a DELETE, 
+        :param delete: Optionally, convert this request into a DELETE,
             removing the subreddit from the multireddit.
         Any additional parameters are passed directly into
         :meth:`request_json` of the reddit_session
 
         """
-
         subreddit = six.text_type(subreddit)
         url = self.reddit_session.config['multireddit_add']
         url = url % (self.author.name, self.name, subreddit)
@@ -1484,7 +1484,8 @@ class Multireddit(Refreshable):
             method = 'PUT'
             model = json.dumps({'name': subreddit})
             data['model'] = model
-        return self.reddit_session.request_json(url, data=data, method=method)
+        return self.reddit_session.request_json(url, data=data, method=method,
+                                                *args, **kwargs)
 
     @restrict_access(scope='subscribe')
     def copy(self, to_name):
@@ -1494,34 +1495,33 @@ class Multireddit(Refreshable):
         :meth:`copy_multireddit` of the reddit_session
 
         """
-
         return self.reddit_session.copy_multireddit(self.author, self.name,
                                                     to_name)
 
     @restrict_access(scope='subscribe')
     def edit(self, description=None, icon_name=None,
-                           key_color=None, subreddits=None, visibility=None,
-                           weighting_scheme=None,
-                           *args, **kwargs):
+             key_color=None, subreddits=None, visibility=None,
+             weighting_scheme=None,
+             *args, **kwargs):
         """Edit this multireddit.
 
         This function is a handy shortcut to
         :meth:`edit_multireddit` of the reddit_session
 
         """
-
-        return self.reddit_session.edit_multireddit(name=self.name,
-                                       description=description,
-                                       icon_name=icon_name,
-                                       key_color=key_color,
-                                       subreddits=subreddits,
-                                       visibility=visibility,
-                                       weighting_scheme=weighting_scheme,
-                                       *args, **kwargs)
+        return self.reddit_session.edit_multireddit(
+            name=self.name,
+            description=description,
+            icon_name=icon_name,
+            key_color=key_color,
+            subreddits=subreddits,
+            visibility=visibility,
+            weighting_scheme=weighting_scheme,
+            *args, **kwargs)
 
     @restrict_access(scope='subscribe')
     def remove_subreddit(self, subreddit, *args, **kwargs):
-        """Remove a subreddit from the user's multireddit"""
+        """Remove a subreddit from the user's multireddit."""
         return self.add_subreddit(subreddit, True, *args, **kwargs)
 
     @restrict_access(scope='subscribe')
@@ -1532,19 +1532,20 @@ class Multireddit(Refreshable):
         :meth:`rename_multireddit` of the reddit_session.
 
         """
-        response = self.reddit_session.rename_multireddit(self.name, new_name)
+        response = self.reddit_session.rename_multireddit(self.name, new_name,
+                                                          *args, **kwargs)
         self.name = new_name
-        #self._name = new_name
+        # self._name = new_name
         self.update_urls(self.reddit_session, self.author.name, new_name)
         return response
 
     def update_urls(self, reddit_session, redditor, multi):
-        """Rebuild URLs for this object. 
+        """Rebuild URLs for this object.
+
         This is necessary because calling :meth:`rename` breaks
         all sorters and paths.
 
         """
-
         self._name = multi
         self.author = redditor
         self.path = '/user/%s/m/%s' % (redditor, multi)

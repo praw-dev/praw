@@ -860,7 +860,8 @@ class UnauthenticatedReddit(BaseReddit):
         return objects.Multireddit(self, redditor, multi, *args, **kwargs)
 
     def get_multireddits(self, redditor, *args, **kwargs):
-        """ Return a list of multireddits belonging to a redditor.
+        """Return a list of multireddits belonging to a redditor.
+
         If the requested redditor is the current user, all multireddits
         are visible. Otherwise, only public multireddits are returned.
 
@@ -869,7 +870,7 @@ class UnauthenticatedReddit(BaseReddit):
 
         :returns: The json response from the server
 
-        The additional parameters are passed directly into 
+        The additional parameters are passed directly into
         :meth:`request_json`
 
         """
@@ -1212,7 +1213,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
         :param from_redditor: The username or Redditor object for the user
             who owns the original multireddit
-        :param from_name: The name of the multireddit, belonging to 
+        :param from_name: The name of the multireddit, belonging to
             from_redditor
         :param to_name: The name to copy the multireddit as. If None, uses
             the name of the original
@@ -1221,7 +1222,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         :meth:`request_json`
 
         """
-
         if to_name is None:
             to_name = from_name
 
@@ -1274,8 +1274,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
         The additional parameters are passed into
         :meth:`request_json`
-        """
 
+        """
         url = self.config['multireddit_about']
         multipath = '/user/%s/m/%s' % (self.user.name, name)
 
@@ -1283,15 +1283,15 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         # where each dict is {'name':'subredditname'}
         if subreddits:
             subreddits = [six.text_type(sr) for sr in subreddits]
-            subreddits = [{'name':sr} for sr in subreddits]
+            subreddits = [{'name': sr} for sr in subreddits]
 
         model = {
-            'description_md':description,
-            'icon_name':icon_name,
-            'key_color':key_color,
-            'subreddits':subreddits,
-            'visibility':visibility,
-            'weighting_scheme':weighting_scheme
+            'description_md': description,
+            'icon_name': icon_name,
+            'key_color': key_color,
+            'subreddits': subreddits,
+            'visibility': visibility,
+            'weighting_scheme': weighting_scheme
         }
 
         # Remove any keys that have not been specified by the user.
@@ -1303,8 +1303,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 del model[key]
         model = json.dumps(model)
         data = {
-        'multipath':multipath,
-        'model':model
+            'multipath': multipath,
+            'model': model
         }
         if overwrite:
             method = 'PUT'
@@ -1335,30 +1335,29 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
     @decorators.restrict_access(scope='subscribe')
     def delete_multireddit(self, name, *args, **kwargs):
-        """Delete a Multireddit
+        """Delete a Multireddit.
 
         Any additional parameters are passed directly into
         :meth:`request_json`
 
         """
-
         url = self.config['multireddit_about']
         multipath = '/user/%s/m/%s' % (self.user.name, name)
-
-        response = self.request_json(url, data={}, method='DELETE', *args, **kwargs)
+        data = {'multipath': multipath}
+        response = self.request_json(url, data=data, method='DELETE',
+                                     *args, **kwargs)
         return response
 
     @decorators.restrict_access(scope='subscribe')
     def edit_multireddit(self, name, description=None, icon_name=None,
-                           key_color=None, subreddits=None, visibility=None,
-                           weighting_scheme=None,
-                           *args, **kwargs):
+                         key_color=None, subreddits=None, visibility=None,
+                         weighting_scheme=None,
+                         *args, **kwargs):
         """Create a multireddit, or edit it if it already exists.
 
         See :meth:`create_multireddit` for parameter notes.
 
         """
-
         return self.create_multireddit(name=name,
                                        description=description,
                                        icon_name=icon_name,
