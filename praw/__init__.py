@@ -152,6 +152,7 @@ class Config(object):  # pylint: disable=R0903
                  'search_reddit_names': 'api/search_reddit_names/',
                  'select_flair':        'api/selectflair/',
                  'sent':                'message/sent/',
+                 'sticky':              'r/%s/about/sticky/',
                  'sticky_submission':   'api/set_subreddit_sticky/',
                  'site_admin':          'api/site_admin/',
                  'spam':                'r/%s/about/spam/',
@@ -942,6 +943,17 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         return self.get_content(self.config['rising'], *args, **kwargs)
+
+    @decorators.restrict_access(scope='read')
+    def get_sticky(self, subreddit=None):
+        """Return a Submission object for the sticky of the subreddit."""
+        try:
+            self.request_json(self.config['sticky'] %
+                              six.text_type(subreddit))
+        except errors.RedirectException as exc:  # This _should_ occur
+            # TODO: This request 404s if no thread is stickied.
+            return self.get_submission(exc.response_url)
+        raise errors.ClientException('Expected exception not raised.')
 
     def get_submission(self, url=None, submission_id=None, comment_limit=0,
                        comment_sort=None, params=None):
