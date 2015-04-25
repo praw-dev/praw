@@ -42,6 +42,16 @@ Unreleased
  * **[FEATURE]** Added :meth:`get_sticky` to get a Subreddit's sticky post.
  * **[FEATURE]** Refresh tokens can be specified in ``praw.ini`` via
    ``oauth_refresh_token``.
+ * **[FEATURE]** Added :meth:`create_multireddit` to create a new Multireddit
+ * **[FEATURE]** Added :meth:`copy_multireddit` to copy a Multireddit
+ * **[FEATURE]** Added :meth:`edit_multireddit` to edit an existing Multireddit
+ * **[FEATURE]** Added :meth:`get_multireddits` to get a list of Multireddits
+   belonging to the requested user.
+ * **[FEATURE]** Added :meth:`rename_multireddit` to rename an existing
+   Multireddit
+ * **[FEATURE]** Added ``method`` as optional parameter to
+   :meth:`request_json`, so that a request method other than 'POST' can be
+   specified.
  * **[REDDIT]** Removed ``send_feedback`` as it is no longer supported by
    reddit.
  * **[REDDIT]** Added ``DeprecationWarning`` to :meth:`login` as reddit will

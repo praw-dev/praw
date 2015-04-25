@@ -108,7 +108,8 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
     return do_relationship
 
 
-def _prepare_request(reddit_session, url, params, data, auth, files):
+def _prepare_request(reddit_session, url, params, data, auth, files,
+                     method=None):
     """Return a requests Request object that can be "prepared"."""
     # Requests using OAuth for authorization must switch to using the oauth
     # domain.
@@ -136,7 +137,7 @@ def _prepare_request(reddit_session, url, params, data, auth, files):
     # Prepare request
     request = Request(method='GET', url=url, headers=headers, params=params,
                       auth=auth, cookies=reddit_session.http.cookies)
-    if not data and not files:  # GET request
+    if not data and not files and not method:  # GET request
         return request
     # Most POST requests require adding `api_type` and `uh` to the data.
     if data is True:
@@ -145,7 +146,10 @@ def _prepare_request(reddit_session, url, params, data, auth, files):
         data.setdefault('api_type', 'json')
         if reddit_session.modhash:
             data.setdefault('uh', reddit_session.modhash)
-    request.method = 'POST'
+    if method is None:
+        request.method = 'POST'
+    else:
+        request.method = method
     request.data = data
     request.files = files
     return request
