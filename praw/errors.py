@@ -28,7 +28,16 @@ import six
 import sys
 
 
-class ClientException(Exception):
+class PRAWException(Exception):
+
+    """The base PRAW Exception class.
+
+    Ideally, this can be caught to handle any exception from PRAW.
+
+    """
+
+
+class ClientException(PRAWException):
 
     """Base exception class for errors that don't involve the remote API."""
 
@@ -44,16 +53,6 @@ class ClientException(Exception):
     def __str__(self):
         """Return the message of the error."""
         return self.message
-
-
-class InvalidComment(ClientException):
-
-    """Indicate that the comment is no longer available on reddit."""
-
-
-class InvalidSubreddit(ClientException):
-
-    """Indicates that an invalid subreddit name was supplied."""
 
 
 class OAuthScopeRequired(ClientException):
@@ -173,7 +172,22 @@ class OAuthAppRequired(ClientException):
     """
 
 
-class RedirectException(ClientException):
+class InvalidComment(PRAWException):
+
+    """Indicate that the comment is no longer available on reddit."""
+
+
+class InvalidSubreddit(PRAWException):
+
+    """Indicates that an invalid subreddit name was supplied."""
+
+
+class NotFound(PRAWException):
+
+    """Raised when the requested entity is not found."""
+
+
+class RedirectException(PRAWException):
 
     """Raised when a redirect response occurs that is not expected."""
 
@@ -191,7 +205,7 @@ class RedirectException(ClientException):
         self.response_url = response_url
 
 
-class OAuthException(Exception):
+class OAuthException(PRAWException):
 
     """Base exception class for OAuth API calls.
 
@@ -235,7 +249,7 @@ class OAuthInvalidToken(OAuthException):
     """Raised when the current OAuth access token is not valid."""
 
 
-class APIException(Exception):
+class APIException(PRAWException):
 
     """Base exception class for the reddit API error message exceptions.
 
@@ -402,13 +416,6 @@ class NotModified(APIException):
         return 'That page has not been modified.'
 
 
-class SubredditExists(APIException):
-
-    """An exception to indicate that a subreddit name is not available."""
-
-    ERROR_TYPE = 'SUBREDDIT_EXISTS'
-
-
 class RateLimitExceeded(APIException):
 
     """An exception for when something has happened too frequently.
@@ -431,6 +438,13 @@ class RateLimitExceeded(APIException):
         super(RateLimitExceeded, self).__init__(error_type, message,
                                                 field, response)
         self.sleep_time = self.response['ratelimit']
+
+
+class SubredditExists(APIException):
+
+    """An exception to indicate that a subreddit name is not available."""
+
+    ERROR_TYPE = 'SUBREDDIT_EXISTS'
 
 
 class UsernameExists(APIException):
