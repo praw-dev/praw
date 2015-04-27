@@ -367,10 +367,13 @@ class BaseReddit(object):
             url = request.url
             while url:  # Manually handle 302 redirects
                 request.url = url
+                kwargs['_cache_key'] = (normalize_url(request.url),
+                                        tuple(key_items))
                 response = self.handler.request(request=request.prepare(),
                                                 proxies=self.http.proxies,
                                                 timeout=timeout, **kwargs)
                 url = _raise_redirect_exceptions(response)
+                assert url != request.url
             return response
 
         request = _prepare_request(self, url, params, data, auth, files)
@@ -386,10 +389,8 @@ class BaseReddit(object):
                 key_items.append(tuple(key_value.get_dict().items()))
             else:
                 key_items.append(key_value)
-        cache_key = (normalize_url(request.url), tuple(key_items))
         kwargs = {'_rate_domain': self.config.domain,
                   '_rate_delay': int(self.config.api_request_delay),
-                  '_cache_key': cache_key,
                   '_cache_ignore': bool(files) or raw_response,
                   '_cache_timeout': int(self.config.cache_timeout)}
 
@@ -803,8 +804,8 @@ class UnauthenticatedReddit(BaseReddit):
 
         :param url: The url to lookup.
         :param thing_id: A single thing_id, or a list of thing_ids. A thing_id
-            can be any one of Comment (t1_), Link (t3_), or Subreddit (t5_) to
-            lookup by fullname.
+            can be any one of Comment (``t1_``), Link (``t3_``), or Subreddit
+            (``t5_``) to lookup by fullname.
         :param limit: The maximum number of Submissions to return when looking
             up by url. When None, uses account default settings.
         :returns: When a single thing_id is provided, return the corresponding
@@ -947,13 +948,8 @@ class UnauthenticatedReddit(BaseReddit):
     @decorators.restrict_access(scope='read')
     def get_sticky(self, subreddit=None):
         """Return a Submission object for the sticky of the subreddit."""
-        try:
-            self.request_json(self.config['sticky'] %
-                              six.text_type(subreddit))
-        except errors.RedirectException as exc:  # This _should_ occur
-            # TODO: This request 404s if no thread is stickied.
-            return self.get_submission(exc.response_url)
-        raise errors.ClientException('Expected exception not raised.')
+        return objects.Submission.from_json(self.request_json(
+            self.config['sticky'] % six.text_type(subreddit)))
 
     def get_submission(self, url=None, submission_id=None, comment_limit=0,
                        comment_sort=None, params=None):
@@ -1298,8 +1294,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         were empty get it from stdin. Look for password in parameter, then
         praw.ini (but only if username matches that in praw.ini) and finally
         if they both are empty get it with getpass. Add the variables user
-        (username) and pswd (password) to your praw.ini file to allow for auto-
-        login.
+        (username) and pswd (password) to your praw.ini file to allow for
+        auto-login.
 
         A successful login will overwrite any existing authentication.
 
@@ -2054,7 +2050,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         :param message_id: The ID or Fullname for a Message
 
         The additional parameters are passed into
-        :meth:`.from_id` of Message, and subsequently into
+        :meth:`~praw.objects.Message.from_id` of Message, and subsequently into
         :meth:`.request_json`.
 
         """

@@ -155,6 +155,15 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertEqual(num, len(list(result)))
 
     @betamax
+    def test_get_sticky(self):
+        self.assertEqual('2ujhkr', self.r.get_sticky('redditdev').id)
+
+    @betamax
+    def test_get_sticky__not_found(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        self.assertRaises(errors.NotFound, subreddit.get_sticky)
+
+    @betamax
     def test_get_submissions(self):
         def fullname(url):
             return self.r.get_submission(url).fullname

@@ -33,17 +33,17 @@ References And Other Relevant Pages
 * `PRAW's Source Code <https://github.com/praw-dev/praw>`_
 * `reddit's Source Code <https://github.com/reddit/reddit>`_
 * `reddit's API Wiki Page <https://github.com/reddit/reddit/wiki/API>`_
-* `reddit's API Documentation <http://www.reddit.com/dev/api>`_
+* `reddit's API Documentation <https://www.reddit.com/dev/api>`_
 
 * `reddit Markdown Primer
-  <http://www.reddit.com/r/reddit.com/comments/6ewgt/reddit_markdown_primer_or
+  <https://www.reddit.com/r/reddit.com/comments/6ewgt/reddit_markdown_primer_or
   _how_do_you_do_all_that/c03nik6>`_
-* `reddit.com's FAQ <http://www.reddit.com/help/faq>`_
+* `reddit.com's FAQ <https://www.reddit.com/help/faq>`_
 * `reddit.com's Status Twitterbot <https://twitter.com/redditstatus/>`_.
   Tweets when reddit goes up or down
-* `r/changelog <http://www.reddit.com/r/changelog/>`_. Significant changes to
+* `r/changelog <https://www.reddit.com/r/changelog/>`_. Significant changes to
   reddit's codebase will be announced here in non-developer speak
-* `r/redditdev <http://www.reddit.com/r/redditdev>`_. Ask questions about
+* `r/redditdev <https://www.reddit.com/r/redditdev>`_. Ask questions about
   reddit's codebase, PRAW and other API clients here
 
 .. include:: ../README.rst
@@ -204,7 +204,7 @@ Useful Scripts
 `ClockStalker <https://github.com/ClockStalker/clockstalker>`_
     Examines a redditor's posting history and creates `a comment with a nice
     activity overview
-    <http://www.reddit.com/r/AskReddit/comments/129lyb/what_fact_about_reality_
+    <https://www.reddit.com/r/AskReddit/comments/129lyb/what_fact_about_reality_
     terrifies_you_or_gives/c6tbgd7?context=1>`_. ClockStalker uses an older
     version of PRAW, the ``reddit``, module. It should, but may not, work with
     the latest version of PRAW.

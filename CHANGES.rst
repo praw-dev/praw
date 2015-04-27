@@ -33,6 +33,7 @@ Unreleased
  * **[CHANGE]** Removed :class:`praw.Config` instance attribute ``is_reddit``.
  * **[FEATURE]** Added :meth:`get_message` to fetch a single Message object
    by its ID.
+ * **[FEATURE]** Added :meth:`get_sticky` to get a Subreddit's sticky post.
  * **[REDDIT]** Removed ``send_feedback`` as it is no longer supported by
    reddit.
  * **[REDDIT]** Added ``DeprecationWarning`` to :meth:`login` as reddit will
@@ -60,9 +61,10 @@ PRAW 2.1.20
  * **[FEATURE]** Added a ``nsfw`` parameter to :meth:`.get_random_subreddit`
    that permits fetching a random NSFW Subreddit. This change also supports
    fetching these subreddits via ``get_subreddit('randnsfw')``.
- * **[FEATURE]** Added a ``from_sr`` parameter to :meth:`.send_message` to
-   send the private message from a subreddit you moderate (Like the "From"
-   dropdown box when composing a message).
+ * **[FEATURE]** Added a ``from_sr`` parameter to
+   :meth:`~.PrivateMessagesMixin.send_message` to send the private message from
+   a subreddit you moderate (Like the "From" dropdown box when composing a
+   message).
  * **[FEATURE]** Added :class:`Multireddit`
  * **[FEATURE]** Added :meth:`get_multireddit` to get a single multireddit obj
  * **[FEATURE]** Added :meth:`get_my_multireddits` to get all multireddits

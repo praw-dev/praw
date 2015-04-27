@@ -944,6 +944,13 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         return Submission(reddit_session, pseudo_data)
 
     @staticmethod
+    def from_json(json_response):
+        """Return a submission object from the json response."""
+        submission = json_response[0]['data']['children'][0]
+        submission.comments = json_response[1]['data']['children']
+        return submission
+
+    @staticmethod
     @restrict_access(scope='read')
     def from_url(reddit_session, url, comment_limit=0, comment_sort=None,
                  comments_only=False, params=None):
@@ -975,11 +982,10 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         if comment_sort:
             params['sort'] = comment_sort
 
-        s_info, c_info = reddit_session.request_json(url, params=params)
+        response = reddit_session.request_json(url, params=params)
         if comments_only:
-            return c_info['data']['children']
-        submission = s_info['data']['children'][0]
-        submission.comments = c_info['data']['children']
+            return response[1]['data']['children']
+        submission = Submission.from_json(response)
         submission._comment_sort = comment_sort  # pylint: disable=W0212
         submission._params = params  # pylint: disable=W0212
         return submission

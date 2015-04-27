@@ -20,18 +20,18 @@ The functions in this module are not to be relied upon by third-parties.
 
 from __future__ import print_function, unicode_literals
 
-from requests import Request
+from requests import Request, codes
 import re
 import six
 import sys
 from requests.compat import urljoin
 from praw.decorators import restrict_access
-from praw.errors import (InvalidSubreddit, OAuthException,
+from praw.errors import (InvalidSubreddit, NotFound, OAuthException,
                          OAuthInsufficientScope, OAuthInvalidToken,
                          RedirectException)
 
 
-RE_RANDOM = re.compile('rand(om|nsfw)')
+RE_REDIRECT = re.compile('(rand(om|nsfw))|about/sticky')
 
 
 def _get_redditor_listing(subpath=''):
@@ -165,7 +165,7 @@ def _raise_redirect_exceptions(response):
         subreddit = new_url.rsplit('=', 1)[1]
         raise InvalidSubreddit('`{0}` is not a valid subreddit'
                                .format(subreddit))
-    elif not RE_RANDOM.search(response.url):
+    elif not RE_REDIRECT.search(response.url):
         raise RedirectException(response.url, new_url)
     return new_url
 
@@ -180,7 +180,9 @@ def _raise_response_exceptions(response):
             raise OAuthInvalidToken('invalid_token', response.url)
         else:
             raise OAuthException(msg, response.url)
-    response.raise_for_status()
+    if response.status_code == codes.not_found:
+        raise NotFound(response)
+    response.raise_for_status()  # TODO: Map all codes to a PRAWException
 
 
 def _to_reddit_list(arg):
