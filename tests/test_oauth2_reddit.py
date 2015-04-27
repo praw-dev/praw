@@ -5,6 +5,7 @@ from __future__ import print_function, unicode_literals
 import os
 from praw import Reddit, errors
 from praw.objects import Submission
+from six import text_type
 from .helper import PRAWTest, USER_AGENT, betamax
 
 
@@ -32,6 +33,18 @@ class OAuth2RedditTest(PRAWTest):
                     'response_type': 'code', 'scope': 'identity',
                     'state': '...'}
         self.assertEqual(expected, params)
+
+    @betamax
+    def test_get_access_information(self):
+        # If this test fails, the following URL will need to be visted in order
+        # to obtain a new code to pass to `get_access_information`:
+        # self.r.get_authorize_url('...')
+        token = self.r.get_access_information('MQALrr1di8GzcnT8szbTWhLcBUQ')
+        expected = {'access_token': self.r.access_token,
+                    'refresh_token': None,
+                    'scope': set(('identity',))}
+        self.assertEqual(expected, token)
+        self.assertEqual('PyAPITestUser2', text_type(self.r.user))
 
     @betamax
     def test_get_access_information_with_invalid_code(self):

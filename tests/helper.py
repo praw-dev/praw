@@ -3,7 +3,6 @@
 from __future__ import print_function, unicode_literals
 
 import os
-import sys
 import time
 import unittest
 from betamax import Betamax, BaseMatcher
@@ -132,24 +131,3 @@ def flair_diff(root, other):
     other_items = set(tuple(item[key].lower() if key in item and item[key] else
                             '' for key in keys) for item in other)
     return list(root_items - other_items)
-
-
-def interactive_only(function):
-    @wraps(function)
-    def interactive_only_function(obj):
-        if os.getenv('INTERACTIVE'):
-            return function(obj)
-        print('Passing interactive only test: {0}.{1}'
-              .format(obj.__class__.__name__, function.__name__))
-    return interactive_only_function
-
-
-def prompt(msg):
-    sys.stdout.write(msg)
-    sys.stdout.flush()
-    response = ''
-    cur = ''
-    while cur != '\n':
-        cur = sys.stdin.read(1)
-        response += cur
-    return response.strip()

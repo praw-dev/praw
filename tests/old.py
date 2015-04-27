@@ -1,4 +1,10 @@
-"""PRAW outdated test suite."""
+"""PRAW outdated test suite.
+
+The tests in this file do not run on travis.ci and need to each be moved
+into a respective test_NAME.py module. Individual test functions that require
+network connectivity should be wrapped with a @betamax decorator.
+
+"""
 
 from __future__ import print_function, unicode_literals
 
@@ -9,22 +15,7 @@ from requests.exceptions import HTTPError
 from six import text_type
 from praw import decorators, errors, helpers
 from praw.objects import Comment, MoreComments
-from .helper import (AuthenticatedHelper, BasicHelper, flair_diff,
-                     interactive_only, prompt)
-
-
-class OtherTests(unittest.TestCase):
-    @interactive_only
-    def test_get_access_information(self):
-        """TODO: Remove the interactive requirement via betamax."""
-        print('Visit this URL: {0}'.format(self.r.get_authorize_url('...')))
-        code = prompt('Code from redir URL: ')
-        token = self.r.get_access_information(code)
-        expected = {'access_token': self.r.access_token,
-                    'refresh_token': None,
-                    'scope': set(('identity',))}
-        self.assertEqual(expected, token)
-        self.assertNotEqual(None, self.r.user)
+from .helper import AuthenticatedHelper, BasicHelper, flair_diff
 
 
 class AccessControlTests(unittest.TestCase, BasicHelper):
