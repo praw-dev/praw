@@ -836,10 +836,10 @@ class UnauthenticatedReddit(BaseReddit):
         else:
             return None
 
-    def get_moderators(self, subreddit):
+    def get_moderators(self, subreddit, **kwargs):
         """Return the list of moderators for the given subreddit."""
         return self.request_json(self.config['moderators'] %
-                                 six.text_type(subreddit))
+                                 six.text_type(subreddit), **kwargs)
 
     def get_multireddit(self, redditor, multi, *args, **kwargs):
         """Return a Multireddit object for the author and name specified.

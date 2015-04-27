@@ -7,9 +7,9 @@ import sys
 import unittest
 from requests.exceptions import HTTPError
 from six import text_type
-from praw import Reddit, decorators, errors, helpers
+from praw import decorators, errors, helpers
 from praw.objects import Comment, MoreComments
-from .helper import (USER_AGENT, AuthenticatedHelper, BasicHelper, flair_diff,
+from .helper import (AuthenticatedHelper, BasicHelper, flair_diff,
                      interactive_only, prompt)
 
 
@@ -753,81 +753,6 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
         submission.remove()
         predicate = lambda removed: removed.id == submission.id
         self.first(self.subreddit.get_spam(), predicate)
-
-
-class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
-        self.other = self.r.get_redditor(self.other_user_name, fetch=True)
-
-    def add_remove(self, add, remove, listing, add_callback=None):
-        def test_add():
-            add(self.other)
-            if add_callback:
-                add_callback()
-            self.assertTrue(self.other in listing())
-
-        def test_remove():
-            remove(self.other)
-            self.assertTrue(self.other not in listing())
-
-        self.disable_cache()
-        if self.other in listing():
-            test_remove()
-            test_add()
-        else:
-            test_add()
-            test_remove()
-
-    def test_accept_moderator_invite_fail(self):
-        self.r.login(self.other_user_name, self.other_user_pswd,
-                     disable_warning=True)
-        self.assertRaises(errors.InvalidInvite,
-                          self.subreddit.accept_moderator_invite)
-
-    def test_ban(self):
-        self.add_remove(self.subreddit.add_ban, self.subreddit.remove_ban,
-                        self.subreddit.get_banned)
-
-    def test_get_banned_note(self):
-        # TODO: Update this test to add/update the ban note when ban note
-        # adding is supported.
-        params = {'user': self.other_non_mod_name}
-        data = next(self.subreddit.get_banned(user_only=False, params=params))
-        self.assertEqual(data['note'], 'no reason in particular 2')
-
-    def test_contributors(self):
-        self.add_remove(self.subreddit.add_contributor,
-                        self.subreddit.remove_contributor,
-                        self.subreddit.get_contributors)
-
-    def test_moderator(self):
-        def add_callback():
-            tmp = Reddit(USER_AGENT, disable_update_check=True)
-            tmp.login(self.other_user_name, self.other_user_pswd,
-                      disable_warning=True)
-            tmp.get_subreddit(self.sr).accept_moderator_invite()
-
-        self.add_remove(self.subreddit.add_moderator,
-                        self.subreddit.remove_moderator,
-                        self.subreddit.get_moderators,
-                        add_callback)
-
-    def test_make_moderator_by_name_failure(self):
-        self.assertTrue(self.r.user in self.subreddit.get_moderators())
-        self.assertRaises(errors.AlreadyModerator,
-                          self.subreddit.add_moderator, text_type(self.r.user))
-
-    def test_wiki_ban(self):
-        self.add_remove(self.subreddit.add_wiki_ban,
-                        self.subreddit.remove_wiki_ban,
-                        self.subreddit.get_wiki_banned)
-
-    def test_wiki_contributors(self):
-        self.add_remove(self.subreddit.add_wiki_contributor,
-                        self.subreddit.remove_wiki_contributor,
-                        self.subreddit.get_wiki_contributors)
 
 
 class MultiredditTest(unittest.TestCase, AuthenticatedHelper):

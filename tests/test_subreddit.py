@@ -93,9 +93,50 @@ class SubredditTest(PRAWTest):
 
 
 class ModeratorSubredditTest(PRAWTest):
+    def add_remove(self, add, remove, listing, add_callback=None):
+        other = self.r.get_redditor(self.other_user_name)
+
+        add(other)
+        if add_callback:
+            add_callback()
+        self.assertTrue(other in listing())
+
+        remove(other)
+        self.assertFalse(other in listing(params={'u': 1}))
+
     def betamax_init(self):
         self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.subreddit = self.r.get_subreddit(self.sr)
+
+    @betamax
+    def test_accept_moderator_invite_fail(self):
+        self.assertRaises(errors.InvalidInvite,
+                          self.subreddit.accept_moderator_invite)
+
+    @betamax
+    def test_add_moderator__failure(self):
+        self.assertTrue(self.r.user in self.subreddit.get_moderators())
+        self.assertRaises(errors.AlreadyModerator,
+                          self.subreddit.add_moderator, text_type(self.r.user))
+        self.assertRaises(errors.AlreadyModerator,
+                          self.subreddit.add_moderator, self.r.user)
+
+    @betamax
+    def test_ban(self):
+        self.add_remove(self.subreddit.add_ban, self.subreddit.remove_ban,
+                        self.subreddit.get_banned)
+
+    @betamax
+    def test_contributors(self):
+        self.add_remove(self.subreddit.add_contributor,
+                        self.subreddit.remove_contributor,
+                        self.subreddit.get_contributors)
+
+    @betamax
+    def test_get_banned__note(self):
+        params = {'user': self.other_non_mod_name}
+        data = next(self.subreddit.get_banned(user_only=False, params=params))
+        self.assertEqual('no reason in particular 2', data['note'])
 
     @betamax
     def test_get_mod_log(self):
@@ -147,6 +188,19 @@ class ModeratorSubredditTest(PRAWTest):
         self.first(self.r.get_mod_mail(), lambda msg: msg.subject == subject)
 
     @betamax
+    def test_moderator(self):
+        def add_callback():
+            self.r.login(self.other_user_name, self.other_user_pswd,
+                         disable_warning=True)
+            self.r.get_subreddit(self.sr).accept_moderator_invite()
+            self.r.login(self.un, self.un_pswd, disable_warning=True)
+
+        self.add_remove(self.subreddit.add_moderator,
+                        self.subreddit.remove_moderator,
+                        self.subreddit.get_moderators,
+                        add_callback)
+
+    @betamax
     def test_set_settings(self):
         # The only required argument is title. All others will be set
         # to their defaults.
@@ -183,3 +237,15 @@ class ModeratorSubredditTest(PRAWTest):
             description=settings['description'],
             public_description=settings['public_description'])
         self.assertEqual(settings, self.subreddit.get_settings(uniq=1))
+
+    @betamax
+    def test_wiki_ban(self):
+        self.add_remove(self.subreddit.add_wiki_ban,
+                        self.subreddit.remove_wiki_ban,
+                        self.subreddit.get_wiki_banned)
+
+    @betamax
+    def test_wiki_contributors(self):
+        self.add_remove(self.subreddit.add_wiki_contributor,
+                        self.subreddit.remove_wiki_contributor,
+                        self.subreddit.get_wiki_contributors)
