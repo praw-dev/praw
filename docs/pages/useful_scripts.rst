@@ -65,9 +65,9 @@ this page to add in more.
 
 `DailyPromptBot <http://hg.arenthil.net/dailypromptbot>`_
     The management bot for the `r/TheDailyPrompt
-    <http://www.reddit.com/r/TheDailyPrompt>`_ reddit community. Main
-    functions include managing a queue of prompts, posting prompts daily, and
-    posting suggestion threads weekly.
+    <http://www.reddit.com/r/TheDailyPrompt>`_ reddit community. Main functions
+    include managing a queue of prompts, posting prompts daily, and posting
+    suggestion threads weekly.
 
 `VideoLinkBot`_ by `u/shaggorama <http://www.reddit.com/u/shaggorama>`_
     A bot that aggregates video links in a response comment where multiple
@@ -101,39 +101,37 @@ this page to add in more.
     Copies your reddit saved links to a Diigo account of your choice. Makes use
     of PRAW and the Diigo API.
 
-`NetflixBot <http://github.com/alanwright/netflixbot>`_ by `Alan Wright
-    <http://www.github.com/alanwright>`_ Parses comments for calls and
-    determines if a movie is availble for streaming on Netflix. Makes use of
-    PRAW and the NetflixRouletteAPI. Run on `u/NetflixBot
-    <http://www.reddit.com/user/NetflixBot>`_.
+`NetflixBot`_ by `Alan Wright <http://www.github.com/alanwright>`_
+    Parses comments for calls and determines if a movie is availble for
+    streaming on Netflix. Makes use of PRAW and the NetflixRouletteAPI. Run on
+    `u/NetflixBot <http://www.reddit.com/user/NetflixBot>`_.
 
-`RemindMeBot <https://github.com/SIlver--/remindmebot-reddit>`_ by `Joey
-    <http://www.github.com/Silver-->`_ Called upon with the ``RemindMeBot!``
-    command on any subreddit, the user is able to set a reminder for themselves
-    about the current thread or comment.  The bot will then send them a private
-    message with the date they specified.  `u/RemindMeBot
-    <http://www.reddit.com/user/RemindMeBot>`_.
+`RemindMeBot`_ by `Joey <http://www.github.com/Silver-->`_
+    Called upon with the ``RemindMeBot!`` command on any subreddit, the user is
+    able to set a reminder for themselves about the current thread or comment.
+    The bot will then send them a private message with the date they specified.
+    `u/RemindMeBot <http://www.reddit.com/user/RemindMeBot>`_.
 
 `Massdrop Multi Bot <http://github.com/darkmio/Massdrop-Reddit-Bot>`_
-   A bot which made Massdrop available for everyone and then grew into an
-   assortment of different fixes for links that regularly get mistakenly used,
-   like Gfycat, Massdrop and Subreddit-Names in titles.
-   
-`Reddit Keyword Tracking Bot
-    <https://github.com/SwedishBotMafia/RScanBot.Gen>`_ by Jermell Beane
+    A bot which made Massdrop available for everyone and then grew into an
+    assortment of different fixes for links that regularly get mistakenly used,
+    like Gfycat, Massdrop and Subreddit-Names in titles.
+
+`Reddit Keyword Tracking Bot`_ by Jermell Beane
     <requires Kivy> A bot that will watch any subreddits and email you with
     updates when it finds words that matter to you.  settings are configured
     via a GUI making it easy for people who don't know how to edit python
     scripts.
-    
+
 `Reddit-Paper`_ by Cameron Gagnon.
-    Command line interface program that will download the top 5 images from r/earthporn,
-    r/spaceporn, etc. and set them as the computer's wallpaper. Currently only
-    tested and used on Ubuntu, but more OS's coming soon.
-    
+    Command line interface program that will download the top 5 images from
+    r/earthporn, r/spaceporn, etc. and set them as the computer's
+    wallpaper. Currently only tested and used on Ubuntu, but more OS's coming
+    soon.
+
 `QR Codify <https://github.com/JstnPwll/QRCodify>`_ by JstnPwll
-    Fetches username mentions and converts the comment data into a QR code. The code is
-    then posted via ASCII characters as a followup comment.
+    Fetches username mentions and converts the comment data into a QR code. The
+    code is then posted via ASCII characters as a followup comment.
 
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
@@ -157,20 +155,26 @@ them to work with the latest version.
     outputs random statuses. The statuses can be viewed `here
     <http://identi.ca/redditbot/all>`_.
 
+
+.. Please keep this list of links lexicographically sorted
 .. _`AlienFeed`: https://github.com/jawerty/AlienFeed
 .. _`ALTcointip`: https://github.com/vindimy/altcointip
 .. _`AutoModerator`: https://github.com/Deimos/AutoModerator
 .. _`Butcher bot`: https://github.com/xiphirx/Butcher-Bot
 .. _`Groompbot`: https://github.com/AndrewNeo/groompbot
+.. _`NetflixBot`: http://github.com/alanwright/netflixbot
 .. _`PRAWtools`: https://github.com/praw-dev/prawtools
-.. _`reddit-analysis`: https://github.com/rhiever/reddit-analysis
-.. _`RedditAgain`: https://github.com/thekarangoel/RedditAgain
-.. _`reddit-cloud`: https://github.com/paul-nechifor/reddit-cloud
+.. _`Reddit Keyword Tracking Bot`:
+     https://github.com/SwedishBotMafia/RScanBot.Gen
+.. _`Reddit-Paper` : https://github.com/cameron-gagnon/reddit-paper
 .. _`Reddit-to-Diigo-Copier`:
-    http://www.github.com/OdinsHat/Reddit-to-Diigo-Copier
-.. _`r/diablo flair infographic generator`:
-    https://github.com/xiphirx/rdiablo-flair-infographic-generator
+     http://www.github.com/OdinsHat/Reddit-to-Diigo-Copier
+.. _`RedditAgain`: https://github.com/thekarangoel/RedditAgain
+.. _`RemindMeBot`: https://github.com/SIlver--/remindmebot-reddit
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot
 .. _`newsfrbot`: https://github.com/gardaud/newsfrbot
+.. _`r/diablo flair infographic generator`:
+     https://github.com/xiphirx/rdiablo-flair-infographic-generator
+.. _`reddit-analysis`: https://github.com/rhiever/reddit-analysis
+.. _`reddit-cloud`: https://github.com/paul-nechifor/reddit-cloud
 .. _`u/xiphirx`: http://www.reddit.com/user/xiphirx
-.. _`Reddit-Paper` : https://github.com/cameron-gagnon/reddit-paper
