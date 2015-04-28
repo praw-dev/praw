@@ -70,14 +70,34 @@ class SubredditTest(PRAWTest):
             self.assertTrue(text_type(subreddit) in subreddit._info_url)
 
     @betamax
-    def test_subreddit_search(self):
-        self.assertTrue(list(self.subreddit.search('test')))
-
-    @betamax
     def test_get_subreddit_recommendations(self):
         result = self.r.get_subreddit_recommendations(['python', 'redditdev'])
         self.assertTrue(result)
         self.assertTrue(all(isinstance(x, Subreddit) for x in result))
+
+    @betamax
+    def test_subreddit_refresh(self):
+        new_description = 'Description {0}'.format(self.r.modhash)
+        self.subreddit.update_settings(public_description=new_description)
+        # Headers are not included in the cached key so this will have no
+        # affect when the request is cached
+        self.r.http.headers['SKIP_BETAMAX'] = 1
+        # No refresh, settings not updated
+        self.assertNotEqual(new_description, self.subreddit.public_description)
+        # Refresh made within cache expiration, settings not updated
+        self.subreddit.refresh()
+        self.assertNotEqual(new_description, self.subreddit.public_description)
+        # Evict subreddit page
+        url = 'https://api.reddit.com/r/reddit_api_test/about'
+        self.assertEqual(1, self.r.evict(url))
+        self.assertEqual(0, self.r.evict(url))
+        # Actually perform a refresh
+        self.subreddit.refresh()
+        self.assertEqual(new_description, self.subreddit.public_description)
+
+    @betamax
+    def test_subreddit_search(self):
+        self.assertTrue(list(self.subreddit.search('test')))
 
     @betamax
     def test_subscribe_and_unsubscribe(self):

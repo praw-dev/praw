@@ -431,10 +431,15 @@ class BaseReddit(object):
         return json_data
 
     def evict(self, urls):
-        """Evict url(s) from the cache."""
+        """Evict url(s) from the cache.
+
+        :param urls: An iterable containing normalized urls.
+        :returns: The number of items removed from the cache.
+
+        """
         if isinstance(urls, six.string_types):
             urls = (urls,)
-        self.handler.evict(urls)
+        return self.handler.evict(urls)
 
     @decorators.oauth_generator
     def get_content(self, url, params=None, limit=0, place_holder=None,

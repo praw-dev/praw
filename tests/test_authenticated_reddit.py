@@ -14,9 +14,33 @@ class AuthenticatedRedditTest(PRAWTest):
                      disable_warning=True)
 
     @betamax
+    def test_cache(self):
+        # Other account is "too new"
+        self.r.login(self.un, self.un_pswd, disable_warning=True)
+
+        subreddit = self.r.get_subreddit(self.sr)
+        original_listing = list(subreddit.get_new(limit=5))
+        subreddit.submit('Test Cache: {0}'.format(self.r.modhash), 'BODY')
+
+        # Headers are not included in the cached key so this will have no
+        # affect when the request is cached
+        self.r.http.headers['SKIP_BETAMAX'] = 1
+
+        cached_listing = list(subreddit.get_new(limit=5))
+        self.assertEqual(original_listing, cached_listing)
+
+        url = 'https://api.reddit.com/r/reddit_api_test/new'
+        self.assertEqual(1, self.r.evict(url))
+        self.assertEqual(0, self.r.evict(url))
+
+        no_cache_listing = list(subreddit.get_new(limit=5))
+        self.assertNotEqual(original_listing, no_cache_listing)
+
+    @betamax
     def test_create_subreddit(self):
         # Other account is "too new"
         self.r.login(self.un, self.un_pswd, disable_warning=True)
+
         unique_name = 'PRAW_{0}'.format(self.r.modhash)[:15]
         self.assertRaises(errors.SubredditExists, self.r.create_subreddit,
                           self.sr, 'PRAW test_create_subreddit')

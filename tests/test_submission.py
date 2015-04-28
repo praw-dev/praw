@@ -67,6 +67,16 @@ class SubmissionTest(PRAWTest):
         self.assertFalse(submission.refresh().hidden)
 
     @betamax
+    def test_submission_refresh(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        submission = next(subreddit.get_top())
+        same_submission = self.r.get_submission(submission_id=submission.id)
+        submission.clear_vote() if submission.likes else submission.upvote()
+        self.assertEqual(submission.likes, same_submission.likes)
+        submission.refresh()
+        self.assertNotEqual(submission.likes, same_submission.likes)
+
+    @betamax
     def test_submit__self(self):
         submission = self.r.submit(self.sr, 'Title', text='BODY')
         self.assertEqual('Title', submission.title)

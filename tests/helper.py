@@ -19,6 +19,9 @@ class BodyMatcher(BaseMatcher):
     name = 'PRAWBody'
 
     def match(self, request, recorded_request):
+        if request.headers.get('SKIP_BETAMAX', 0) > 0:
+            request.headers['SKIP_BETAMAX'] -= 1
+            return False
         if not recorded_request['body']['string'] and not request.body:
             return True
         return URLEncodedBodyMatcher().match(request, recorded_request)
@@ -65,9 +68,6 @@ class PRAWTest(unittest.TestCase):
     def delay_for_listing_update(self):
         if not os.getenv('TRAVIS') and self.r.config.api_request_delay == 0:
             time.sleep(.1)
-
-    def disable_cache(self):
-        self.r.config.cache_timeout = 0
 
     def first(self, sequence, predicate):
         first_hit = next((x for x in sequence if predicate(x)), None)

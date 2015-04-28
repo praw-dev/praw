@@ -18,45 +18,6 @@ from praw.objects import Comment, MoreComments
 from .helper import AuthenticatedHelper, flair_diff
 
 
-class CacheTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    def test_cache(self):
-        subreddit = self.r.get_subreddit(self.sr)
-        title = 'Test Cache: %s' % self.r.modhash
-        body = "BODY"
-        original_listing = list(subreddit.get_new(limit=5))
-        subreddit.submit(title, body)
-        new_listing = list(subreddit.get_new(limit=5))
-        self.assertEqual(original_listing, new_listing)
-        self.disable_cache()
-        no_cache_listing = list(subreddit.get_new(limit=5))
-        self.assertNotEqual(original_listing, no_cache_listing)
-
-    def test_refresh_subreddit(self):
-        self.disable_cache()
-        subreddit = self.r.get_subreddit(self.sr)
-        new_description = 'Description %s' % self.r.modhash
-        subreddit.update_settings(public_description=new_description)
-        self.assertNotEqual(new_description, subreddit.public_description)
-        subreddit.refresh()
-        self.assertEqual(new_description, subreddit.public_description)
-
-    def test_refresh_submission(self):
-        self.disable_cache()
-        subreddit = self.r.get_subreddit(self.sr)
-        submission = next(subreddit.get_top())
-        same_submission = self.r.get_submission(submission_id=submission.id)
-        if submission.likes:
-            submission.downvote()
-        else:
-            submission.upvote()
-        self.assertEqual(submission.likes, same_submission.likes)
-        submission.refresh()
-        self.assertNotEqual(submission.likes, same_submission.likes)
-
-
 class EncodingTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
@@ -529,7 +490,7 @@ class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
         self.assertFalse(submission in self.subreddit.get_mod_log())
         submission.ignore_reports()
         submission.report()
-        self.disable_cache()
+        # TODO: Evict submission about url
         submission.refresh()
         self.assertFalse(submission in self.subreddit.get_mod_log())
         self.assertTrue(submission.num_reports > 0)

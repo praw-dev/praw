@@ -62,12 +62,12 @@ class RateLimitHandler(object):
         """Method utilized to evict entries for the given urls.
 
         :param urls: An iterable containing normalized urls.
-        :returns: Whether or not an item was removed from the cache.
+        :returns: The number of items removed from the cache.
 
         By default this method returns False as a cache need not be present.
 
         """
-        return False
+        return 0
 
     def __del__(self):
         """Cleanup the HTTP session."""
@@ -167,17 +167,17 @@ class DefaultHandler(RateLimitHandler):
     def evict(cls, urls):
         """Remove items from cache matching URLs.
 
-        Return whether or not any items were removed.
+        Return the number of items removed.
 
         """
         if isinstance(urls, text_type):
             urls = [urls]
         urls = set(normalize_url(url) for url in urls)
-        retval = False
+        retval = 0
         with cls.ca_lock:
             for key in list(cls.cache):
                 if key[0] in urls:
-                    retval = True
+                    retval += 1
                     del cls.cache[key]
                     del cls.timeouts[key]
         return retval
