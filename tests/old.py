@@ -13,7 +13,7 @@ import sys
 import unittest
 from requests.exceptions import HTTPError
 from six import text_type
-from praw import decorators, errors, helpers
+from praw import errors, helpers
 from praw.objects import Comment, MoreComments
 from .helper import AuthenticatedHelper, flair_diff
 
@@ -55,97 +55,6 @@ class CacheTest(unittest.TestCase, AuthenticatedHelper):
         self.assertEqual(submission.likes, same_submission.likes)
         submission.refresh()
         self.assertNotEqual(submission.likes, same_submission.likes)
-
-
-class EmbedTextTest(unittest.TestCase):
-    embed_text = "Hello"
-
-    def test_no_docstring(self):
-        new_doc = decorators._embed_text(None, self.embed_text)
-        self.assertEqual(new_doc, self.embed_text)
-
-    def test_one_liner(self):
-        new_doc = decorators._embed_text("Returns something cool",
-                                         self.embed_text)
-        self.assertEqual(new_doc,
-                         "Returns something cool\n\n" + self.embed_text)
-
-    def test_multi_liner(self):
-        doc = """Jiggers the bar
-
-              Only run if foo is instantiated.
-
-              """
-        new_doc = decorators._embed_text(doc, self.embed_text)
-        self.assertEqual(new_doc, doc + self.embed_text + "\n\n")
-
-    def test_single_plus_params(self):
-        doc = """Jiggers the bar
-
-              :params foo: Self explanatory.
-
-              """
-        expected_doc = """Jiggers the bar
-
-              {}
-
-              :params foo: Self explanatory.
-
-              """.format(self.embed_text)
-        new_doc = decorators._embed_text(doc, self.embed_text)
-        self.assertEqual(new_doc, expected_doc)
-
-    def test_multi_plus_params(self):
-        doc = """Jiggers the bar
-
-              Jolly importment.
-
-              :params foo: Self explanatory.
-              :returns: The jiggered bar.
-
-              """
-        expected_doc = """Jiggers the bar
-
-              Jolly importment.
-
-              {}
-
-              :params foo: Self explanatory.
-              :returns: The jiggered bar.
-
-              """.format(self.embed_text)
-        new_doc = decorators._embed_text(doc, self.embed_text)
-        self.assertEqual(new_doc, expected_doc)
-
-    def test_additional_params(self):
-        doc = """Jiggers the bar
-
-              Jolly important.
-
-              :params foo: Self explanatory.
-              :returns: The jiggered bar.
-
-              The additional parameters are passed directly into
-              :meth:`.get_content`. Note: the `url` parameter cannot be
-              altered.
-
-              """
-        expected_doc = """Jiggers the bar
-
-              Jolly important.
-
-              {}
-
-              :params foo: Self explanatory.
-              :returns: The jiggered bar.
-
-              The additional parameters are passed directly into
-              :meth:`.get_content`. Note: the `url` parameter cannot be
-              altered.
-
-              """.format(self.embed_text)
-        new_doc = decorators._embed_text(doc, self.embed_text)
-        self.assertEqual(new_doc, expected_doc)
 
 
 class EncodingTest(unittest.TestCase, AuthenticatedHelper):
