@@ -59,5 +59,24 @@ class ModFlairMixinTest(PRAWTest):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     @betamax
+    def test_add_user_template(self):
+        self.subreddit.add_flair_template('text', 'css', True)
+
+    @betamax
+    def test_add_link_template(self):
+        self.subreddit.add_flair_template('text', 'css', True, True)
+        self.subreddit.add_flair_template(text='text', is_link=True)
+        self.subreddit.add_flair_template(css_class='blah', is_link=True)
+        self.subreddit.add_flair_template(is_link=True)
+
+    @betamax
+    def test_clear_user_templates(self):
+        self.subreddit.clear_flair_templates()
+
+    @betamax
+    def test_clear_link_templates(self):
+        self.subreddit.clear_flair_templates(True)
+
+    @betamax
     def test_get_flair_list(self):
         self.assertTrue(next(self.subreddit.get_flair_list()))
