@@ -69,6 +69,11 @@ class OAuth2RedditTest(PRAWTest):
                           self.r.set_access_credentials,
                           set(('identity',)), 'dummy_access_token')
 
+    def test_oauth_scope_required(self):
+        self.r.set_oauth_app_info('dummy_client', 'dummy_secret', 'dummy_url')
+        self.r.set_access_credentials(set('dummy_scope',), 'dummy_token')
+        self.assertRaises(errors.OAuthScopeRequired, self.r.get_me)
+
     @betamax
     def test_scope_edit(self):
         self.r.refresh_access_information(self.refresh_token['edit'])

@@ -18,63 +18,6 @@ from praw.objects import Comment, MoreComments
 from .helper import AuthenticatedHelper, BasicHelper, flair_diff
 
 
-class AccessControlTests(unittest.TestCase, BasicHelper):
-    def setUp(self):
-        self.configure()
-
-    def test_exception_get_flair_list_unauthenticated(self):
-        self.assertRaises(errors.LoginOrScopeRequired, self.r.get_flair_list,
-                          self.sr)
-
-    def test_login_or_oauth_required_not_logged_in(self):
-        self.assertRaises(errors.LoginOrScopeRequired,
-                          self.r.add_flair_template, self.sr, 'foo')
-
-    def test_login_or_oauth_required_not_logged_in_mod_func(self):
-        self.assertRaises(errors.LoginOrScopeRequired,
-                          self.r.get_settings, self.sr)
-
-    def test_login_required_not_logged_in(self):
-        self.assertRaises(errors.LoginRequired, self.r.accept_moderator_invite,
-                          self.sr)
-
-    def test_login_required_not_logged_in_mod_func(self):
-        self.assertRaises(errors.LoginRequired, self.r.get_banned, self.sr)
-
-    def test_oauth_scope_required(self):
-        self.r.set_oauth_app_info('dummy_client', 'dummy_secret', 'dummy_url')
-        self.r.set_access_credentials(set('dummy_scope',), 'dummy_token')
-        self.assertRaises(errors.OAuthScopeRequired, self.r.get_me)
-
-    def test_moderator_or_oauth_required_logged_in_from_reddit_obj(self):
-        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd,
-                     disable_warning=True)
-        self.assertRaises(errors.ModeratorOrScopeRequired,
-                          self.r.get_settings, self.sr)
-
-    def test_moderator_or_oauth_required_logged_in_from_submission_obj(self):
-        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd,
-                     disable_warning=True)
-        submission = self.r.get_submission(url=self.comment_url)
-        self.assertRaises(errors.ModeratorOrScopeRequired, submission.remove)
-
-    def test_moderator_or_oauth_required_logged_in_from_subreddit_obj(self):
-        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd,
-                     disable_warning=True)
-        subreddit = self.r.get_subreddit(self.sr)
-        self.assertRaises(errors.ModeratorOrScopeRequired,
-                          subreddit.get_settings)
-
-    def test_moderator_required_multi(self):
-        self.r.login(self.un, self.un_pswd, disable_warning=True)
-        sub = self.r.get_subreddit('{0}+{1}'.format(self.sr, 'test'))
-        self.assertRaises(errors.ModeratorRequired, sub.get_mod_queue)
-
-    def test_require_access_failure(self):
-        self.assertRaises(TypeError, decorators.restrict_access, scope=None,
-                          oauth_only=True)
-
-
 class SearchTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()

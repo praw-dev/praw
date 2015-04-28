@@ -107,6 +107,21 @@ class UnauthenticatedRedditTest(PRAWTest):
         num = 50
         self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
 
+    def test_login_or_oauth_required__not_logged_in(self):
+        self.assertRaises(errors.LoginOrScopeRequired,
+                          self.r.add_flair_template, self.sr, 'foo')
+
+    def test_login_or_oauth_required__not_logged_in_mod_func(self):
+        self.assertRaises(errors.LoginOrScopeRequired,
+                          self.r.get_settings, self.sr)
+
+    def test_login_required__not_logged_in(self):
+        self.assertRaises(errors.LoginRequired, self.r.accept_moderator_invite,
+                          self.sr)
+
+    def test_login_required__not_logged_in_mod_func(self):
+        self.assertRaises(errors.LoginRequired, self.r.get_banned, self.sr)
+
     @betamax
     def test_get_multireddit(self):
         multi_path = "/user/%s/m/%s" % (self.un, self.multi_name)
