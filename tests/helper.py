@@ -24,7 +24,7 @@ class BodyMatcher(BaseMatcher):
         return URLEncodedBodyMatcher().match(request, recorded_request)
 
 
-class BasicHelper(object):
+class PRAWTest(unittest.TestCase):
     def configure(self):
         self.r = Reddit(USER_AGENT, disable_update_check=True)
         self.sr = 'reddit_api_test'
@@ -74,11 +74,6 @@ class BasicHelper(object):
         self.assertTrue(first_hit)
         return first_hit
 
-    def url(self, path):
-        return urljoin(self.r.config.permalink_url, path)
-
-
-class PRAWTest(unittest.TestCase, BasicHelper):
     def none(self, sequence, predicate):
         self.assertEqual(
             None, next((x for x in sequence if predicate(x)), None))
@@ -86,8 +81,11 @@ class PRAWTest(unittest.TestCase, BasicHelper):
     def setUp(self):
         self.configure()
 
+    def url(self, path):
+        return urljoin(self.r.config.permalink_url, path)
 
-class AuthenticatedHelper(BasicHelper):
+
+class AuthenticatedHelper(PRAWTest):
     def configure(self):
         super(AuthenticatedHelper, self).configure()
         self.r.login(self.un, self.un_pswd, disable_warning=True)

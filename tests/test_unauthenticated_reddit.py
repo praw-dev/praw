@@ -243,6 +243,40 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertRaises(TypeError, Reddit, user_agent=1)
 
     @betamax
+    def test_search(self):
+        self.assertTrue(len(list(self.r.search('test'))) > 2)
+
+    @betamax
+    def test_search_multiply_submitted_url(self):
+        self.assertTrue(
+            len(list(self.r.search('http://www.livememe.com/'))) > 2)
+
+    @betamax
+    def test_search_reddit_names(self):
+        self.assertTrue(self.r.search_reddit_names('reddit'))
+
+    @betamax
+    def test_search_single_submitted_url(self):
+        self.assertEqual(
+            1, len(list(self.r.search('http://www.livememe.com/vg972qp'))))
+
+    @betamax
+    def test_search_with_syntax(self):
+        no_syntax = self.r.search("timestamp:1354348800..1354671600",
+                                  subreddit=self.sr)
+        self.assertFalse(list(no_syntax))
+        with_syntax = self.r.search("timestamp:1354348800..1354671600",
+                                    subreddit=self.sr, syntax='cloudsearch')
+        self.assertTrue(list(with_syntax))
+
+    @betamax
+    def test_search_with_time_window(self):
+        num = 50
+        submissions = len(list(self.r.search('test', subreddit=self.sr,
+                                             period='all', limit=num)))
+        self.assertTrue(submissions == num)
+
+    @betamax
     def test_store_json_result(self):
         self.r.config.store_json_result = True
         sub_url = ('http://www.reddit.com/r/reddit_api_test/comments/'
