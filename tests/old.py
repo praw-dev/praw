@@ -18,17 +18,6 @@ from praw.objects import Comment
 from .helper import AuthenticatedHelper, flair_diff
 
 
-class CommentEditTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    def test_reply(self):
-        comment = next(self.r.user.get_comments())
-        new_body = '%s\n\n+Edit Text' % comment.body
-        comment = comment.edit(new_body)
-        self.assertEqual(comment.body, new_body)
-
-
 class CommentPermalinkTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
@@ -46,53 +35,6 @@ class CommentPermalinkTest(unittest.TestCase, AuthenticatedHelper):
         sub = self.r.get_subreddit(self.sr)
         item = next(sub.get_comments())
         self.assertTrue(item.id in item.permalink)
-
-
-class CommentReplyTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
-
-    def test_add_comment_and_verify(self):
-        text = 'Unique comment: %s' % self.r.modhash
-        submission = next(self.subreddit.get_new())
-        comment = submission.add_comment(text)
-        self.assertEqual(comment.submission, submission)
-        self.assertEqual(comment.body, text)
-
-    def test_add_reply_and_verify(self):
-        text = 'Unique reply: %s' % self.r.modhash
-        predicate = lambda submission: submission.num_comments > 0
-        submission = self.first(self.subreddit.get_new(), predicate)
-        comment = submission.comments[0]
-        reply = comment.reply(text)
-        self.assertEqual(reply.parent_id, comment.fullname)
-        self.assertEqual(reply.body, text)
-
-
-class CommentReplyNoneTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    def test_front_page_comment_replies_are_none(self):
-        item = next(self.r.get_comments('all'))
-        self.assertEqual(item._replies, None)
-
-    def test_inbox_comment_replies_are_none(self):
-        predicate = lambda item: isinstance(item, Comment)
-        comment = self.first(self.r.get_inbox(), predicate)
-        self.assertEqual(comment._replies, None)
-
-    def test_spambox_comments_replies_are_none(self):
-        predicate = lambda item: isinstance(item, Comment)
-        sequence = self.r.get_subreddit(self.sr).get_spam()
-        comment = self.first(sequence, predicate)
-        self.assertEqual(comment._replies, None)
-
-    def test_user_comment_replies_are_none(self):
-        predicate = lambda item: isinstance(item, Comment)
-        comment = self.first(self.r.user.get_comments(), predicate)
-        self.assertEqual(comment._replies, None)
 
 
 class FlairTest(unittest.TestCase, AuthenticatedHelper):
