@@ -12,6 +12,20 @@ class CommentTest(PRAWTest):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     @betamax
+    def test_save_comment(self):
+        comment = next(self.r.user.get_comments())
+
+        comment.save()
+        comment.refresh()
+        self.assertTrue(comment.saved)
+        self.first(self.r.user.get_saved(), lambda x: x == comment)
+
+        comment.unsave()
+        comment.refresh()
+        self.assertFalse(comment.saved)
+        self.assertFalse(comment in self.r.user.get_saved(params={'u': 1}))
+
+    @betamax
     def test_unicode_comment(self):
         sub = next(self.subreddit.get_new())
         text = 'Have some unicode: (\xd0, \xdd)'

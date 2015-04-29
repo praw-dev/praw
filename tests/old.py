@@ -18,37 +18,6 @@ from praw.objects import Comment
 from .helper import AuthenticatedHelper, flair_diff
 
 
-class SaveableTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    def _helper(self, item):
-        def save():
-            item.save()
-            item.refresh()
-            self.assertTrue(item.saved)
-            self.first(self.r.user.get_saved(params={'uniq': item.id}),
-                       lambda x: x == item)
-
-        def unsave():
-            item.unsave()
-            item.refresh()
-            self.assertFalse(item.saved)
-
-        if item.saved:
-            unsave()
-            save()
-        else:
-            save()
-            unsave()
-
-    def test_comment(self):
-        self._helper(next(self.r.user.get_comments()))
-
-    def test_submission(self):
-        self._helper(next(self.r.user.get_submitted()))
-
-
 class CommentEditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()

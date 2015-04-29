@@ -30,6 +30,20 @@ class SubmissionTest(PRAWTest):
         self.assertFalse(submission.refresh().over_18)
 
     @betamax
+    def test_save_submission(self):
+        submission = next(self.r.user.get_submitted())
+
+        submission.save()
+        submission.refresh()
+        self.assertTrue(submission.saved)
+        self.first(self.r.user.get_saved(), lambda x: x == submission)
+
+        submission.unsave()
+        submission.refresh()
+        self.assertFalse(submission.saved)
+        self.assertFalse(submission in self.r.user.get_saved(params={'u': 1}))
+
+    @betamax
     def test_submit__duplicate_url(self):
         url = 'https://praw.readthedocs.org/'
         self.assertRaises(errors.AlreadySubmitted, self.subreddit.submit,
