@@ -18,34 +18,6 @@ from praw.objects import Comment, MoreComments
 from .helper import AuthenticatedHelper, flair_diff
 
 
-class EncodingTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    def test_author_encoding(self):
-        a1 = next(self.r.get_new()).author
-        a2 = self.r.get_redditor(text_type(a1))
-        self.assertEqual(a1, a2)
-        s1 = next(a1.get_submitted())
-        s2 = next(a2.get_submitted())
-        self.assertEqual(s1, s2)
-
-    def test_unicode_comment(self):
-        sub = next(self.r.get_subreddit(self.sr).get_new())
-        text = 'Have some unicode: (\xd0, \xdd)'
-        comment = sub.add_comment(text)
-        self.assertEqual(text, comment.body)
-
-    def test_unicode_submission(self):
-        unique = self.r.modhash
-        title = 'Wiki Entry on \xC3\x9C'
-        url = 'http://en.wikipedia.org/wiki/\xC3\x9C?id=%s' % unique
-        submission = self.r.submit(self.sr, title, url=url)
-        self.assertTrue(title in text_type(submission))
-        self.assertEqual(title, submission.title)
-        self.assertEqual(url, submission.url)
-
-
 class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()

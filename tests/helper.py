@@ -10,6 +10,7 @@ from betamax_matchers.form_urlencoded import URLEncodedBodyMatcher
 from functools import wraps
 from praw import Reddit
 from requests.compat import urljoin
+from six import text_type
 
 
 USER_AGENT = 'PRAW_test_suite'
@@ -24,7 +25,12 @@ class BodyMatcher(BaseMatcher):
             return False
         if not recorded_request['body']['string'] and not request.body:
             return True
-        return URLEncodedBodyMatcher().match(request, recorded_request)
+
+        # Comparison body should be unicode
+        to_compare = request.copy()
+        to_compare.body = text_type(to_compare.body)
+
+        return URLEncodedBodyMatcher().match(to_compare, recorded_request)
 
 
 class PRAWTest(unittest.TestCase):

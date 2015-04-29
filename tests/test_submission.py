@@ -3,6 +3,7 @@
 from __future__ import print_function, unicode_literals
 from praw import errors
 from requests.exceptions import HTTPError
+from six import text_type
 from .helper import PRAWTest, betamax
 
 
@@ -98,6 +99,15 @@ class SubmissionTest(PRAWTest):
     def test_short_link(self):
         submission = next(self.r.get_new())
         self.assertTrue(submission.id in submission.short_link)
+
+    @betamax
+    def test_unicode_submission(self):
+        title = 'Wiki Entry on \xC3\x9C'
+        url = 'http://en.wikipedia.org/\xC3\x9C?id={0}'.format(self.r.modhash)
+        submission = self.subreddit.submit(title, url=url)
+        self.assertTrue(title in text_type(submission))
+        self.assertEqual(title, submission.title)
+        self.assertEqual(url, submission.url)
 
     @betamax
     def test_voting(self):

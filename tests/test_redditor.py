@@ -2,6 +2,7 @@
 
 from __future__ import print_function, unicode_literals
 from praw.objects import LoggedInRedditor
+from six import text_type
 from .helper import PRAWTest, betamax
 
 
@@ -70,6 +71,15 @@ class RedditorTest(PRAWTest):
     def test_get_submitted(self):
         redditor = self.r.get_redditor(self.other_non_mod_name)
         self.assertTrue(list(redditor.get_submitted()))
+
+    @betamax
+    def test_redditor_comparison(self):
+        a1 = next(self.r.get_new()).author
+        a2 = self.r.get_redditor(text_type(a1))
+        self.assertEqual(a1, a2)
+        s1 = next(a1.get_submitted())
+        s2 = next(a2.get_submitted())
+        self.assertEqual(s1, s2)
 
     @betamax
     def test_user_set_on_login(self):
