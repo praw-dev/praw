@@ -161,7 +161,7 @@ def _raise_redirect_exceptions(response):
     if response.status_code not in [301, 302, 307]:
         return None
     new_url = urljoin(response.url, response.headers['location'])
-    if 'reddits/search?q=' in new_url:  # Handle non-existent subreddit
+    if 'reddits/search' in new_url:  # Handle non-existent subreddit
         subreddit = new_url.rsplit('=', 1)[1]
         raise InvalidSubreddit('`{0}` is not a valid subreddit'
                                .format(subreddit))

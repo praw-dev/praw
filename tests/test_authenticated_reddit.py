@@ -42,10 +42,17 @@ class AuthenticatedRedditTest(PRAWTest):
         self.r.login(self.un, self.un_pswd, disable_warning=True)
 
         unique_name = 'PRAW_{0}'.format(self.r.modhash)[:15]
+        title = 'The {0}'.format(unique_name)
+        # Verify duplicate creation raises an exception
         self.assertRaises(errors.SubredditExists, self.r.create_subreddit,
                           self.sr, 'PRAW test_create_subreddit')
-        self.r.create_subreddit(unique_name, 'The %s' % unique_name,
+        # Verify the subreddit does not exist
+        self.assertRaises(errors.InvalidSubreddit,
+                          next, self.r.get_subreddit(unique_name).get_new())
+        # Create and verify
+        self.r.create_subreddit(unique_name, title,
                                 'PRAW test_create_subreddit')
+        self.assertEqual(title, self.r.get_subreddit(unique_name).title)
 
     @betamax
     def test_login__deprecation_warning(self):

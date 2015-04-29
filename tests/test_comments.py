@@ -42,6 +42,17 @@ class CommentTest(PRAWTest):
         self.assertEqual(item._replies, None)
 
     @betamax
+    def test_get_comments_permalink(self):
+        item = next(self.subreddit.get_comments())
+        self.assertTrue(item.id in item.permalink)
+
+    @betamax
+    def test_inbox_comment_permalink(self):
+        predicate = lambda item: isinstance(item, Comment)
+        item = self.first(self.r.get_inbox(), predicate)
+        self.assertTrue(item.id in item.permalink)
+
+    @betamax
     def test_inbox_comment_replies_are_none(self):
         predicate = lambda item: isinstance(item, Comment)
         comment = self.first(self.r.get_inbox(), predicate)
@@ -74,6 +85,11 @@ class CommentTest(PRAWTest):
         text = 'Have some unicode: (\xd0, \xdd)'
         comment = sub.add_comment(text)
         self.assertEqual(text, comment.body)
+
+    @betamax
+    def test_user_comment_permalink(self):
+        item = next(self.r.user.get_comments())
+        self.assertTrue(item.id in item.permalink)
 
     @betamax
     def test_user_comment_replies_are_none(self):

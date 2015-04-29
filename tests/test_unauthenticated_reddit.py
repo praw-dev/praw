@@ -124,7 +124,7 @@ class UnauthenticatedRedditTest(PRAWTest):
 
     @betamax
     def test_get_multireddit(self):
-        multi_path = "/user/%s/m/%s" % (self.un, self.multi_name)
+        multi_path = '/user/{0}/m/{1}'.format(self.un, self.multi_name)
         multireddit = self.r.get_multireddit(self.un, self.multi_name)
         self.assertEqual(self.multi_name.lower(),
                          text_type(multireddit).lower())
@@ -262,10 +262,10 @@ class UnauthenticatedRedditTest(PRAWTest):
 
     @betamax
     def test_search_with_syntax(self):
-        no_syntax = self.r.search("timestamp:1354348800..1354671600",
+        no_syntax = self.r.search('timestamp:1354348800..1354671600',
                                   subreddit=self.sr)
         self.assertFalse(list(no_syntax))
-        with_syntax = self.r.search("timestamp:1354348800..1354671600",
+        with_syntax = self.r.search('timestamp:1354348800..1354671600',
                                     subreddit=self.sr, syntax='cloudsearch')
         self.assertTrue(list(with_syntax))
 

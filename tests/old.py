@@ -14,27 +14,7 @@ import unittest
 from requests.exceptions import HTTPError
 from six import text_type
 from praw import errors
-from praw.objects import Comment
 from .helper import AuthenticatedHelper, flair_diff
-
-
-class CommentPermalinkTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    def test_inbox_permalink(self):
-        predicate = lambda item: isinstance(item, Comment)
-        item = self.first(self.r.get_inbox(), predicate)
-        self.assertTrue(item.id in item.permalink)
-
-    def test_user_comments_permalink(self):
-        item = next(self.r.user.get_comments())
-        self.assertTrue(item.id in item.permalink)
-
-    def test_get_comments_permalink(self):
-        sub = self.r.get_subreddit(self.sr)
-        item = next(sub.get_comments())
-        self.assertTrue(item.id in item.permalink)
 
 
 class FlairTest(unittest.TestCase, AuthenticatedHelper):
