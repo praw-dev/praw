@@ -13,42 +13,9 @@ import sys
 import unittest
 from requests.exceptions import HTTPError
 from six import text_type
-from praw import errors, helpers
-from praw.objects import Comment, MoreComments
+from praw import errors
+from praw.objects import Comment
 from .helper import AuthenticatedHelper, flair_diff
-
-
-class MoreCommentsTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.submission = self.r.get_submission(url=self.more_comments_url,
-                                                comment_limit=130)
-
-    def test_all_comments(self):
-        c_len = len(self.submission.comments)
-        flat = helpers.flatten_tree(self.submission.comments)
-        continue_items = [x for x in flat if isinstance(x, MoreComments) and
-                          x.count == 0]
-        self.assertTrue(continue_items)
-        cf_len = len(flat)
-        saved = self.submission.replace_more_comments(threshold=2)
-        ac_len = len(self.submission.comments)
-        flat = helpers.flatten_tree(self.submission.comments)
-        acf_len = len(flat)
-        for item in continue_items:
-            self.assertTrue(item.id in [x.id for x in flat])
-
-        self.assertEqual(len(self.submission._comments_by_id), acf_len)
-        self.assertTrue(c_len < ac_len)
-        self.assertTrue(c_len < cf_len)
-        self.assertTrue(ac_len < acf_len)
-        self.assertTrue(cf_len < acf_len)
-        self.assertTrue(saved)
-
-    def test_comments_method(self):
-        predicate = lambda item: isinstance(item, MoreComments)
-        item = self.first(self.submission.comments, predicate)
-        self.assertTrue(item.comments())
 
 
 class SaveableTest(unittest.TestCase, AuthenticatedHelper):
