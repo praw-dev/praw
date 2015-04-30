@@ -11,107 +11,9 @@ from __future__ import print_function, unicode_literals
 import os
 import sys
 import unittest
-from requests.exceptions import HTTPError
 from six import text_type
 from praw import errors
-from .helper import AuthenticatedHelper, flair_diff
-
-
-class FlairTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
-
-    def test_add_link_flair(self):
-        flair_text = 'Flair: %s' % self.r.modhash
-        sub = next(self.subreddit.get_new())
-        self.subreddit.set_flair(sub, flair_text)
-        sub = self.r.get_submission(sub.permalink)
-        self.assertEqual(sub.link_flair_text, flair_text)
-
-    def test_add_link_flair_through_submission(self):
-        flair_text = 'Flair: %s' % self.r.modhash
-        sub = next(self.subreddit.get_new())
-        sub.set_flair(flair_text)
-        sub = self.r.get_submission(sub.permalink)
-        self.assertEqual(sub.link_flair_text, flair_text)
-
-    def test_add_link_flair_to_invalid_subreddit(self):
-        sub = next(self.r.get_subreddit('python').get_new())
-        self.assertRaises(HTTPError, self.subreddit.set_flair, sub, 'text')
-
-    def test_add_user_flair_by_subreddit_name(self):
-        flair_text = 'Flair: %s' % self.r.modhash
-        self.r.set_flair(self.sr, self.r.user, flair_text)
-        flair = self.r.get_flair(self.sr, self.r.user)
-        self.assertEqual(flair['flair_text'], flair_text)
-        self.assertEqual(flair['flair_css_class'], None)
-
-    def test_add_user_flair_to_invalid_user(self):
-        self.assertRaises(errors.InvalidFlairTarget, self.subreddit.set_flair,
-                          self.invalid_user_name)
-
-    def test_add_user_flair_by_name(self):
-        flair_text = 'Flair: {0}'.format(self.r.modhash)
-        flair_css = self.r.modhash
-        self.subreddit.set_flair(text_type(self.r.user), flair_text, flair_css)
-        flair = self.subreddit.get_flair(self.r.user)
-        self.assertEqual(flair['flair_text'], flair_text)
-        self.assertEqual(flair['flair_css_class'], flair_css)
-
-    def test_clear_user_flair(self):
-        self.subreddit.set_flair(self.r.user)
-        flair = self.subreddit.get_flair(self.r.user)
-        self.assertEqual(flair['flair_text'], None)
-        self.assertEqual(flair['flair_css_class'], None)
-
-    def test_delete_flair(self):
-        flair = list(self.subreddit.get_flair_list(limit=1))[0]
-        self.subreddit.delete_flair(flair['user'])
-        self.assertTrue(flair not in self.subreddit.get_flair_list())
-
-    def test_flair_csv_and_flair_list(self):
-        # Clear all flair
-        self.subreddit.clear_all_flair()
-        self.delay(5)  # Wait for flair to clear
-        self.assertEqual([], list(self.subreddit.get_flair_list()))
-
-        # Set flair
-        flair_mapping = [{'user': 'reddit', 'flair_text': 'dev'},
-                         {'user': self.un, 'flair_css_class': 'xx'},
-                         {'user': self.other_user_name,
-                          'flair_text': 'AWESOME',
-                          'flair_css_class': 'css'}]
-        self.subreddit.set_flair_csv(flair_mapping)
-        self.assertEqual([], flair_diff(flair_mapping,
-                                        list(self.subreddit.get_flair_list())))
-
-    def test_flair_csv_many(self):
-        users = ('reddit', self.un, self.other_user_name)
-        flair_text_a = 'Flair: %s' % self.r.modhash
-        flair_text_b = 'Flair: %s' % self.r.modhash
-        flair_mapping = [{'user': 'reddit', 'flair_text': flair_text_a}] * 99
-        for user in users:
-            flair_mapping.append({'user': user, 'flair_text': flair_text_b})
-        self.subreddit.set_flair_csv(flair_mapping)
-        for user in users:
-            flair = self.subreddit.get_flair(user)
-            self.assertEqual(flair['flair_text'], flair_text_b)
-
-    def test_flair_csv_optional_args(self):
-        flair_mapping = [{'user': 'reddit', 'flair_text': 'reddit'},
-                         {'user': self.other_user_name, 'flair_css_class':
-                          'blah'}]
-        self.subreddit.set_flair_csv(flair_mapping)
-
-    def test_flair_csv_empty(self):
-        self.assertRaises(errors.ClientException,
-                          self.subreddit.set_flair_csv, [])
-
-    def test_flair_csv_requires_user(self):
-        flair_mapping = [{'flair_text': 'hsdf'}]
-        self.assertRaises(errors.ClientException,
-                          self.subreddit.set_flair_csv, flair_mapping)
+from .helper import AuthenticatedHelper
 
 
 class FlairSelectTest(unittest.TestCase, AuthenticatedHelper):
@@ -146,6 +48,11 @@ class FlairSelectTest(unittest.TestCase, AuthenticatedHelper):
         else:
             different_flair = self.link_flair_templates.keys()[0]
         return different_flair
+
+    def test_add_link_flair_to_invalid_subreddit(self):
+        submission = next(self.r.get_subreddit('python').get_new())
+        self.assertRaises(errors.PRAWException,
+                          self.subreddit.set_flair, submission, 'text')
 
     def test_select_user_flair(self):
         flair_class = self.get_different_user_flair_class()

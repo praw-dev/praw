@@ -33,6 +33,8 @@ Unreleased
  * **[CHANGE]** Removed :class:`praw.Config` instance attribute ``is_reddit``.
  * **[CHANGE]** :meth:`~praw.__init__.BaseReddit.evict` now returns the number
    of items evicted.
+ * **[CHANGE]** Removed ``praw.ini`` parameter ``decode_html_entities``.
+   Entities, e.g., ``&``, ``<`` ``>``, are now always decoded.
  * **[FEATURE]** Added :meth:`get_message` to fetch a single Message object
    by its ID.
  * **[FEATURE]** Added :meth:`get_sticky` to get a Subreddit's sticky post.

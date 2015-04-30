@@ -59,8 +59,6 @@ config file. Each site can overwrite any of these variables.
   package updates.
 * *cache_timeout*: An **integer** that defines the number of seconds to
   internally cache GET/POST requests based on URL.
-* *decode_html_entities*: A **boolean** that controls whether or not HTML
-  entities are decoded.
 * *oauth_domain*: A **string** that defines the *domain* where OAuth
   authenticated requests are sent.
 * *oauth_https*: A **boolean** that determines whether or not to use HTTPS for

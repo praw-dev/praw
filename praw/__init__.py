@@ -220,7 +220,6 @@ class Config(object):  # pylint: disable=R0903
         self.by_object[objects.LoggedInRedditor] = obj['redditor_kind']
         self.cache_timeout = float(obj['cache_timeout'])
         self.check_for_updates = config_boolean(obj['check_for_updates'])
-        self.decode_html_entities = config_boolean(obj['decode_html_entities'])
         self.domain = obj['permalink_domain']
         self.output_chars_limit = int(obj['output_chars_limit'])
         self.log_requests = int(obj['log_requests'])
@@ -402,10 +401,8 @@ class BaseReddit(object):
                 self.http.cookies.update(response.cookies)
                 if raw_response:
                     return response
-                elif self.config.decode_html_entities:
-                    return re.sub('&([^;]+);', decode, response.text)
                 else:
-                    return response.text
+                    return re.sub('&([^;]+);', decode, response.text)
             except requests.exceptions.HTTPError as error:
                 remaining_attempts -= 1
                 if error.response.status_code not in self.RETRY_CODES or \

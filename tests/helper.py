@@ -71,9 +71,9 @@ class PRAWTest(unittest.TestCase):
             'vote':            '5RPnDwg56vAbf7F9yO81cXZAPSQ'}
         self.submission_edit_id = '16i92b'
 
-    def delay_for_listing_update(self):
+    def delay_for_listing_update(self, duration=0.1):
         if not os.getenv('TRAVIS') and self.r.config.api_request_delay == 0:
-            time.sleep(.1)
+            time.sleep(duration)
 
     def first(self, sequence, predicate):
         first_hit = next((x for x in sequence if predicate(x)), None)

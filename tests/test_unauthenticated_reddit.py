@@ -68,10 +68,6 @@ class UnauthenticatedRedditTest(PRAWTest):
     @betamax
     def test_decode_entities(self):
         text = self.r.get_submission(url=self.comment_url).selftext_html
-        self.assertTrue(text.startswith('&lt;'))
-        self.assertTrue(text.endswith('&gt;'))
-        self.r.config.decode_html_entities = True
-        text = self.r.get_submission(url=self.comment_url).selftext_html
         self.assertTrue(text.startswith('<'))
         self.assertTrue(text.endswith('>'))
 
