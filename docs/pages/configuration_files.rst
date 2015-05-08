@@ -39,7 +39,7 @@ path for specific operating systems should be:
 * **WINDOWS XP:** C:\\Documents and Settings\\foobar\\Application
   Data\\praw.ini
 * **WINDOWS Vista/7:** C:\\Users\\foobar\\AppData\\Roaming\\praw.ini
-* **OS with XDG_CONFIG_HOME defined**: $XDG_CONFIG_HOME/praw.ini
+* **OS with XDG_CONFIG_HOME defined:** $XDG_CONFIG_HOME/praw.ini
 * **OS X** / **Linux:** /home/foobar/.config/praw.ini
 
 The *local* configuration file is located in the current working directory.
