@@ -128,7 +128,7 @@ variables are:
 * *oauth_refresh_token:* A **string** that, if given, defines the
   ``refresh_token`` a reddit object is initialized with. If *oauth_client_id*,
   *oauth_client_secret*, and *oauth_redirect_uri* are also given, then
-  :meth:`.refresh_access_information` can be run with no arugments to acquire
+  :meth:`.refresh_access_information` can be run with no arguments to acquire
   new access information without first running :meth:`.get_authorize_url` and
   :meth:`.get_access_information`.
 
