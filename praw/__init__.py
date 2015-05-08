@@ -582,6 +582,7 @@ class OAuth2Reddit(BaseReddit):
         self.client_id = self.config.client_id
         self.client_secret = self.config.client_secret
         self.redirect_uri = self.config.redirect_uri
+        self.refresh_token = self.config.refresh_token
 
     def _handle_oauth_request(self, data):
         auth = (self.client_id, self.client_secret)
