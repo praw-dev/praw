@@ -231,6 +231,7 @@ class Config(object):  # pylint: disable=R0903
         self.client_id = obj.get('oauth_client_id') or None
         self.client_secret = obj.get('oauth_client_secret') or None
         self.redirect_uri = obj.get('oauth_redirect_uri') or None
+        self.refresh_token = obj.get('oauth_refresh_token') or None
         self.store_json_result = config_boolean(obj.get('store_json_result'))
 
         if 'short_domain' in obj:
@@ -1141,7 +1142,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         #  * set(...) means OAuth authenticated with the scopes in the set
         self._authentication = None
         self.access_token = None
-        self.refresh_token = None
+        self.refresh_token = self.config.refresh_token or None
         self.user = None
 
     def __str__(self):
