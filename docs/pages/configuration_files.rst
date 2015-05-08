@@ -125,6 +125,14 @@ variables are:
   and *oauth_client_secret* is also given, then :meth:`.get_authorize_url` can
   be run without first setting the oauth settings with running
   :meth:`.set_oauth_app_info`.
+* *oauth_refresh_token* A **string** that, if given, defines the
+  ``refresh_token`` a reddit object is initialized with. If *oauth_client_id*,
+  *oauth_client_secret*, and *oauth_redirect_uri* are also given, then
+  :meth:`.refresh_access_information` can be run without first setting the
+  oauth settings by running :meth:`.set_oauth_app_info`.  Also allows 
+  :meth:`.refresh_access_information` to be run without arguments to acquire
+  a new access token without first running :meth:`.get_authorize_url` and
+  :meth:`.get_access_information`.
 
 Note: The tracking for *api_request_delay* and *cache_timeout* is on a
 per-domain, not per-site, basis. Essentially, this means that the time since
