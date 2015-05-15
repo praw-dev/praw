@@ -43,7 +43,7 @@ Step 2: Setting up PRAW.
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. WARNING:: This example, like most of the PRAW examples, binds an instance of
-  PRAW to the ``r`` varaible. While we've made no distinction before, ``r`` (or
+  PRAW to the ``r`` variable. While we've made no distinction before, ``r`` (or
   any instance of PRAW) should not be bound to a global variable due to the
   fact that a single instance of PRAW cannot concurrently manage multiple
   distinct user-sessions.
