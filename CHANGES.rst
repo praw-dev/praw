@@ -25,8 +25,8 @@ Unreleased
 ----------
  * **[CHANGE]** All requests should now be through HTTPS.
  * **[CHANGE]** All previously deprecated methods have been removed.
- * **[CHANGE]** The ``display_name`` attribute on instances
-   of:class:`Subreddit` is now lazily loaded and will match the casing on the
+ * **[CHANGE]** The ``display_name`` attribute on instances of
+   :class:`Subreddit` is now lazily loaded and will match the casing on the
    site, not the casing used to construct the Subreddit instance. To quickly
    fetch the name of an unloaded Subreddit, use ``str(sub_instance)``, or
    ``unicode(sub_instance)``.
@@ -38,6 +38,8 @@ Unreleased
  * **[FEATURE]** Added :meth:`get_message` to fetch a single Message object
    by its ID.
  * **[FEATURE]** Added :meth:`get_sticky` to get a Subreddit's sticky post.
+ * **[FEATURE]** Refresh tokens can be specified in ``praw.ini`` via
+   ``oauth_refresh_token``.
  * **[REDDIT]** Removed ``send_feedback`` as it is no longer supported by
    reddit.
  * **[REDDIT]** Added ``DeprecationWarning`` to :meth:`login` as reddit will
@@ -83,7 +85,8 @@ PRAW 2.1.20
 
 PRAW 2.1.19
 -----------
- * **[BUGFIX]** Support URLs in :meth:`~praw.__init__.UnauthenticatedReddit.search`.
+ * **[BUGFIX]** Support URLs in
+   :meth:`~praw.__init__.UnauthenticatedReddit.search`.
  * **[BUGFIX]** Fix bug where ``json_dict`` was set to ``None`` when it should
    not have been.
  * **[BUGFIX]** Fix :meth:`.get_subreddit_recommendations` to work with the
@@ -170,8 +173,8 @@ PRAW 2.1.13
  * **[CHANGE]** The dependency on ``update_checker`` has been increased
    to >= 0.8.
  * **[REDDIT]** Add support for changes to UserLists on reddit.
- * **[REDDIT]** Using get_flair_list now requires moderator access. See
-   `this /r/redditdev thread <http://www.reddit.com/r/redditdev/comments/1xreor/
+ * **[REDDIT]** Using get_flair_list now requires moderator access. See `this
+   /r/redditdev thread <http://www.reddit.com/r/redditdev/comments/1xreor/
    has_there_been_a_change_to_the_permissions/>`_
  * **[BUGFIX]** Fix configuration parsing for ``store_json_result``.
  * **[BUGFIX]** Fix duplicate bug in :class:`.BoundedSet`.
