@@ -551,8 +551,8 @@ class Voteable(RedditContentObject):
                 'dir': six.text_type(direction)}
         if self.reddit_session.user:
             # pylint: disable=W0212
-            urls = [urljoin(self.reddit_session.user._url, 'disliked'),
-                    urljoin(self.reddit_session.user._url, 'liked')]
+            urls = [urljoin(self.reddit_session.user._url, 'downvoted'),
+                    urljoin(self.reddit_session.user._url, 'upvoted')]
             # pylint: enable=W0212
             self.reddit_session.evict(urls)
         return self.reddit_session.request_json(url, data=data)
