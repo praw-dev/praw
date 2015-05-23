@@ -804,7 +804,7 @@ class Redditor(Gildable, Messageable, Refreshable):
         # authenticated user. But who has a public voting record will be
         # successful.
         use_oauth = self.reddit_session.is_oauth_session()
-        return _get_redditor_listing('disliked')(
+        return _get_redditor_listing('downvoted')(
             self, *args, _use_oauth=use_oauth, **kwargs)
 
     def get_liked(self, *args, **kwargs):
@@ -816,14 +816,14 @@ class Redditor(Gildable, Messageable, Refreshable):
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         As a default, this listing is only accessible by the user. Thereby
-        requirering either user/pswd authentication or OAuth authentication
-        with the 'history' scope. Users may choose to make their voting record
+        requiring either user/pswd authentication or OAuth authentication with
+        the 'history' scope. Users may choose to make their voting record
         public by changing a user preference. In this case, no authentication
         will be needed to access this listing.
 
         """
         use_oauth = self.reddit_session.is_oauth_session()
-        return _get_redditor_listing('liked')(self, *args,
+        return _get_redditor_listing('upvoted')(self, *args,
                                               _use_oauth=use_oauth, **kwargs)
 
     def get_multireddit(self, multi):
