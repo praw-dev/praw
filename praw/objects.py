@@ -567,6 +567,10 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         """Construct an instance of the Comment object."""
         super(Comment, self).__init__(reddit_session, json_dict,
                                       underscore_names=['replies'])
+        if hasattr(self, 'was_comment'):
+            self._has_fetched_replies = False
+        else:
+            self._has_fetched_replies = True
         if self._replies:
             self._replies = self._replies['data']['children']
         elif self._replies == '':  # Comment tree was built and there are none
@@ -612,7 +616,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
     @property
     def replies(self):
         """Return a list of the comment replies to this comment."""
-        if self._replies is None:
+        if self._replies is None or not self._has_fetched_replies:
             response = self.reddit_session.request_json(self._fast_permalink)
             if not response[1]['data']['children']:
                 raise InvalidComment('Comment is no longer accessible: {0}'
@@ -620,6 +624,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
             # pylint: disable=W0212
             self._replies = response[1]['data']['children'][0]._replies
             # pylint: enable=W0212
+            self._has_fetched_replies = True
             # Set the submission object if it is not set.
             if not self._submission:
                 self._submission = response[0]['data']['children'][0]
