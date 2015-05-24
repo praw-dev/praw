@@ -569,8 +569,6 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
                                       underscore_names=['replies'])
         if self._replies:
             self._replies = self._replies['data']['children']
-        elif self._replies == '':  # Comment tree was built and there are none
-            self._replies = []
         else:
             self._replies = None
         self._submission = None
