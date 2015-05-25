@@ -113,3 +113,92 @@ class FlairTest(PRAWTest):
         flair_mapping = [{'flair_text': 'hsdf'}]
         self.assertRaises(errors.ClientException,
                           self.subreddit.set_flair_csv, flair_mapping)
+
+
+class FlairSelectorTest(PRAWTest):
+    def betamax_init(self):
+        self.r.login(self.un, self.un_pswd, disable_warning=True)
+        self.subreddit = self.r.get_subreddit(self.priv_sr)
+        self.user_flair_templates = (
+            ('UserCssClassOne', ('21e00aae-09cf-11e3-a4f1-12313d281541',
+                                 'default_user_flair_text_one')),
+            ('UserCssClassTwo', ('2f6504c2-09cf-11e3-9d8d-12313d281541',
+                                 'default_user_flair_text_two')))
+        self.link_flair_templates = (
+            ('LinkCssClassOne', ('36a573c0-09cf-11e3-b5f7-12313d096169',
+                                 'default_link_flair_text_one')),
+            ('LinkCssClassTwo', ('3b73f516-09cf-11e3-9a71-12313d281541',
+                                 'default_link_flair_text_two')))
+
+    def new_user_flair_class(self):
+        flair = self.subreddit.get_flair(self.r.user)['flair_css_class']
+        return next(x for x in self.user_flair_templates if x[0] != flair)
+
+    def new_link_flair_class(self, submission):
+        flair = submission.link_flair_css_class
+        return next(x for x in self.link_flair_templates if x[0] != flair)
+
+    @betamax
+    def test_add_link_flair_to_invalid_subreddit(self):
+        submission = next(self.r.get_subreddit('python').get_new())
+        self.assertRaises(errors.Forbidden,
+                          self.subreddit.set_flair, submission, 'text')
+
+    @betamax
+    def test_select_link_flair(self):
+        sub = next(self.subreddit.get_new())
+        f_class, (f_id, f_default_text) = self.new_link_flair_class(sub)
+        sub.select_flair(flair_template_id=f_id)
+        sub.refresh()
+        self.assertEqual(f_default_text, sub.link_flair_text)
+        self.assertEqual(f_class, sub.link_flair_css_class)
+
+    @betamax
+    def test_select_link_flair_custom_text(self):
+        sub = next(self.subreddit.get_new())
+        flair_class, (flair_id, _) = self.new_link_flair_class(sub)
+        flair_text = 'Flair: {0}'.format(self.r.modhash)
+        sub.select_flair(flair_template_id=flair_id, flair_text=flair_text)
+        sub.refresh()
+        self.assertEqual(flair_text, sub.link_flair_text)
+        self.assertEqual(flair_class, sub.link_flair_css_class)
+
+    @betamax
+    def test_select_link_flair_remove(self):
+        sub = next(self.subreddit.get_new())
+        if sub.link_flair_css_class is None:
+            flair_id = self.new_link_flair_class(sub)[0][1]
+            sub.select_flair(flair_template_id=flair_id)
+        sub.select_flair()
+        sub.refresh()
+        self.assertEqual(None, sub.link_flair_text)
+        self.assertEqual(None, sub.link_flair_css_class)
+
+    @betamax
+    def test_select_user_flair(self):
+        f_class, (f_id, f_default_text) = self.new_user_flair_class()
+        self.subreddit.select_flair(flair_template_id=f_id)
+        flair = self.subreddit.get_flair(self.r.user, uniq=1)
+        self.assertEqual(f_default_text, flair['flair_text'])
+        self.assertEqual(f_class, flair['flair_css_class'])
+
+    @betamax
+    def test_select_user_flair_custom_text(self):
+        flair_class, (flair_id, _) = self.new_user_flair_class()
+        flair_text = 'Flair: {0}'.format(self.r.modhash)
+        self.subreddit.select_flair(flair_template_id=flair_id,
+                                    flair_text=flair_text)
+        flair = self.subreddit.get_flair(self.r.user, uniq=1)
+        self.assertEqual(flair_text, flair['flair_text'])
+        self.assertEqual(flair_class, flair['flair_css_class'])
+
+    @betamax
+    def test_select_user_flair_remove(self):
+        flair = self.subreddit.get_flair(self.r.user)
+        if flair['flair_css_class'] is None:
+            flair_id = self.new_user_flair_class()[1][0]
+            self.subreddit.select_flair(flair_template_id=flair_id)
+        self.subreddit.select_flair()
+        flair = self.subreddit.get_flair(self.r.user, uniq=1)
+        self.assertEqual(None, flair['flair_text'])
+        self.assertEqual(None, flair['flair_css_class'])

@@ -765,7 +765,7 @@ class UnauthenticatedReddit(BaseReddit):
         return self.get_content(url, *args, **kwargs)
 
     @decorators.restrict_access(scope='modflair')
-    def get_flair(self, subreddit, redditor):
+    def get_flair(self, subreddit, redditor, **params):
         """Return the flair for a user on the given subreddit.
 
         :param subreddit: Can be either a Subreddit object or the name of a
@@ -777,7 +777,7 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         name = six.text_type(redditor)
-        params = {'name': name}
+        params.update(name=name)
         data = self.request_json(self.config['flairlist'] %
                                  six.text_type(subreddit), params=params)
         if not data['users'] or \

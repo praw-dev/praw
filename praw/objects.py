@@ -920,6 +920,8 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
     """A class for submissions to reddit."""
 
+    _methods = (('select_flair', AR),)
+
     @staticmethod
     def _extract_more_comments(tree):
         """Return a list of MoreComments objects removed from tree."""

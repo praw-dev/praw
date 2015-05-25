@@ -2,6 +2,7 @@
 *.egg
 *.pyc
 .coverage
+*.eggs/
 *.egg-info/
 _build/
 build/
