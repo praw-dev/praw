@@ -139,6 +139,22 @@ class SubmissionModeratorTest(PRAWTest):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     @betamax
+    def test_approve_and_remove(self):
+        submission = next(self.subreddit.get_spam())
+        self.assertEqual(None, submission.approved_by)
+        self.assertTrue(submission.banned_by)
+
+        submission.approve()
+        submission.refresh()
+        self.assertEqual(self.un, submission.approved_by.name)
+        self.assertEqual(None, submission.banned_by)
+
+        submission.remove()
+        submission.refresh()
+        self.assertEqual(None, submission.approved_by)
+        self.assertEqual(self.un, submission.banned_by.name)
+
+    @betamax
     def test_distinguish_and_undistinguish(self):
         submission_id = self.submission_edit_id
         submission = self.r.get_submission(submission_id=submission_id)
@@ -147,6 +163,19 @@ class SubmissionModeratorTest(PRAWTest):
         self.assertTrue(submission.refresh().distinguished)
         submission.undistinguish()
         self.assertFalse(submission.refresh().distinguished)
+
+    @betamax
+    def test_ignore_and_unignore_reports(self):
+        submission = next(self.subreddit.get_new())
+        submission.ignore_reports()
+        log = next(self.subreddit.get_mod_log())
+        self.assertEqual('ignorereports', log.action)
+        self.assertEqual(submission.fullname, log.target_fullname)
+
+        submission.unignore_reports()
+        log = next(self.subreddit.get_mod_log(params={'uniq': 2}))
+        self.assertEqual('unignorereports', log.action)
+        self.assertEqual(submission.fullname, log.target_fullname)
 
     @betamax
     def test_mark_as_nsfw_and_umark_as_nsfw__as_moderator(self):

@@ -102,38 +102,6 @@ class ImageTests(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(any(name in text_type(x['name']) for x in images_json))
 
 
-class ModeratorSubmissionTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-        self.subreddit = self.r.get_subreddit(self.sr)
-
-    def test_approve(self):
-        submission = next(self.subreddit.get_spam())
-        if not submission:
-            self.fail('Could not find a submission to approve.')
-        submission.approve()
-        predicate = lambda approved: approved.id == submission.id
-        self.first(self.subreddit.get_new(), predicate)
-
-    def test_ignore_reports(self):
-        submission = next(self.subreddit.get_new())
-        self.assertFalse(submission in self.subreddit.get_mod_log())
-        submission.ignore_reports()
-        submission.report()
-        # TODO: Evict submission about url
-        submission.refresh()
-        self.assertFalse(submission in self.subreddit.get_mod_log())
-        self.assertTrue(submission.num_reports > 0)
-
-    def test_remove(self):
-        submission = next(self.subreddit.get_new())
-        if not submission:
-            self.fail('Could not find a submission to remove.')
-        submission.remove()
-        predicate = lambda removed: removed.id == submission.id
-        self.first(self.subreddit.get_spam(), predicate)
-
-
 class MultiredditTest(unittest.TestCase, AuthenticatedHelper):
     def setUp(self):
         self.configure()
