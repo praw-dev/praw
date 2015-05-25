@@ -567,10 +567,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         """Construct an instance of the Comment object."""
         super(Comment, self).__init__(reddit_session, json_dict,
                                       underscore_names=['replies'])
-        if hasattr(self, 'was_comment'):
-            self._has_fetched_replies = False
-        else:
-            self._has_fetched_replies = True
+        self._has_fetched_replies = not hasattr(self, 'was_comment')
         if self._replies:
             self._replies = self._replies['data']['children']
         elif self._replies == '':  # Comment tree was built and there are none
