@@ -46,6 +46,15 @@ Unreleased
    reddit.
  * **[REDDIT]** Added ``DeprecationWarning`` to :meth:`login` as reddit will
    stop supporting cookie-based authentication on 2015/08/03.
+ * **[FEATURE]** Added :meth:`create_multireddit` to create a new Multireddit
+ * **[FEATURE]** Added :meth:`get_multireddits` to get a list of multis
+   belonging to the requested user.
+ * **[FEATURE]** Added :meth:`rename_multireddit` to rename an existing Multi
+ * **[FEATURE]** Added :meth:`copy_multireddit` to copy a Multi
+ * **[FEATURE]** Added :meth:`edit_multireddit` to edit an existing Multi
+ * **[FEATURE]** Added ``method`` as optional parameter to
+   :meth:`request_json`, :meth:`_request`, and :meth:`_prepare_request`,
+   so that a request method other than 'POST' can be specified.
 
 PRAW 2.1.21
 -----------
