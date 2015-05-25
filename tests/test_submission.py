@@ -2,7 +2,6 @@
 
 from __future__ import print_function, unicode_literals
 from praw import errors
-from requests.exceptions import HTTPError
 from six import text_type
 from .helper import PRAWTest, betamax
 
@@ -57,7 +56,7 @@ class SubmissionTest(PRAWTest):
     def test_submission_edit__link_failure(self):
         predicate = lambda item: not item.is_self
         found = self.first(self.r.user.get_submitted(), predicate)
-        self.assertRaises(HTTPError, found.edit, 'text')
+        self.assertRaises(errors.HTTPException, found.edit, 'text')
 
     @betamax
     def test_submission_edit__self(self):

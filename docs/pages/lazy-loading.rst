@@ -74,5 +74,5 @@ lazy object is created, but instead when the API call is actually made::
     >> private_subreddit.subscribers
 
     Traceback (most recent call last):
-    ....
-    requests.exceptions.HTTPError: 403 Client Error: Forbidden
+    ...
+    praw.errors.Forbidden: <Response [403]>

@@ -406,8 +406,8 @@ class Refreshable(RedditContentObject):
         comments.
 
         """
-        unique = self.reddit_session._unique_count  # pylint: disable=W0201
-        self.reddit_session._unique_count += 1  # pylint: disable=W0201
+        unique = self.reddit_session._unique_count  # pylint: disable=W0212
+        self.reddit_session._unique_count += 1  # pylint: disable=W0212
 
         if isinstance(self, Redditor):
             other = Redditor(self.reddit_session, self.name)
@@ -670,7 +670,7 @@ class Message(Inboxable):
     def __init__(self, reddit_session, json_dict):
         """Construct an instnace of the Message object."""
         super(Message, self).__init__(reddit_session, json_dict)
-        if self.replies:
+        if self.replies:  # pylint: disable=E0203
             self.replies = self.replies['data']['children']
         else:
             self.replies = []
@@ -995,7 +995,9 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
     def __init__(self, reddit_session, json_dict):
         """Construct an instance of the Subreddit object."""
         super(Submission, self).__init__(reddit_session, json_dict)
+        # pylint: disable=E0203
         self._api_link = urljoin(reddit_session.config.api_url, self.permalink)
+        # pylint: enable=E0203
         self.permalink = urljoin(reddit_session.config.permalink_url,
                                  self.permalink)
         self._comment_sort = None

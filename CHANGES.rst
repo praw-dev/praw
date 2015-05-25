@@ -24,6 +24,8 @@ formatted links that link to the relevant place in the code overview.
 Unreleased
 ----------
  * **[CHANGE]** All requests should now be through HTTPS.
+ * **[CHANGE]** All exceptions should be in the PRAW namespace. In particular,
+   there should be no more exceptions under the ``requests`` namespace.
  * **[CHANGE]** All previously deprecated methods have been removed.
  * **[CHANGE]** The ``display_name`` attribute on instances of
    :class:`Subreddit` is now lazily loaded and will match the casing on the

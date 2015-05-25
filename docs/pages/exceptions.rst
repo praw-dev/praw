@@ -25,17 +25,19 @@ APIException
 
 Something went wrong on the server side of the request. All exceptions of this
 nature inherit from the exception class ``APIException``. They deal with all
-sorts of errors that can occur with requests such as trying to login with the
-incorrect password, which raise a ``InvalidUserPass``.
+sorts of errors that can occur when communicating with a remote API such as
+trying to login with the incorrect password, which raise a ``InvalidUserPass``.
 
 
-Other
------
+HTTPException
+-------------
 
-All other errors. The most common occurrence is when reddit return a non-200
-status code that isn't handled by PRAW. This will raise a ``HttpError`` from
-the ``requests`` library that PRAW uses to make the HTTP requests. What they
-mean depend on the status code that raised the ``HttpError``.
+All other errors. The most common occurrence is when reddit returns a non-200
+status code. This will raise an exception that is either an object of the
+:class:`.HTTPException` or one of its subclasses.
+
+Each of these exceptions will likely have an associated HTTP response status
+code. The meanings of some of these status codes are:
 
 301, 302
 ^^^^^^^^
@@ -43,8 +45,8 @@ mean depend on the status code that raised the ``HttpError``.
 Redirects. Are automatically handled in PRAW, but may result in a
 ``RedirectException`` if an unexpected redirect is encountered.
 
-403
-^^^
+403 (:class:`.Forbiden`)
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 This will occur if you try to access a restricted resource. For instance a
 private subreddit that the currently logged-in user doesn't have access to.
@@ -54,6 +56,11 @@ private subreddit that the currently logged-in user doesn't have access to.
     >>> import praw
     >>> r = praw.Reddit('404 test by u/_Daimon_')
     >>> r.get_subreddit('lounge', fetch=True)
+
+404 (:class:`.NotFound`)
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Indicates that the requested resource does not exist.
 
 500
 ^^^

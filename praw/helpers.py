@@ -25,8 +25,8 @@ import six
 import sys
 import time
 from functools import partial
-from requests.exceptions import HTTPError
 from timeit import default_timer as timer
+from praw.errors import HTTPException
 
 BACKOFF_START = 4  # Minimum number of seconds to sleep during errors
 KEEP_ITEMS = 128  # On each iteration only remember the first # items
@@ -161,7 +161,7 @@ def _stream_generator(get_function, limit=None, verbosity=1):
                     # old or no longer exist.
                     before = None
             backoff = BACKOFF_START
-        except HTTPError as exc:
+        except HTTPException as exc:
             sleep = (backoff, '{0}. Sleeping for {{0}} seconds.'.format(exc),
                      2)
             backoff *= 2

@@ -172,6 +172,31 @@ class OAuthAppRequired(ClientException):
     """
 
 
+class HTTPException(PRAWException):
+
+    """Base class for HTTP related exceptions."""
+
+    def __init__(self, _raw):
+        """Construct a ClientException.
+
+        :params _raw: The internal request library response object. This object
+            is mapped to attribute `_raw` whose format may change at any time.
+
+        """
+        super(HTTPException, self).__init__()
+        self._raw = _raw
+
+
+class Forbidden(HTTPException):
+
+    """Raised when the user does not have permission to the entity."""
+
+
+class NotFound(HTTPException):
+
+    """Raised when the requested entity is not found."""
+
+
 class InvalidComment(PRAWException):
 
     """Indicate that the comment is no longer available on reddit."""
@@ -180,11 +205,6 @@ class InvalidComment(PRAWException):
 class InvalidSubreddit(PRAWException):
 
     """Indicates that an invalid subreddit name was supplied."""
-
-
-class NotFound(PRAWException):
-
-    """Raised when the requested entity is not found."""
 
 
 class RedirectException(PRAWException):

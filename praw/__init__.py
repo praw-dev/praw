@@ -30,7 +30,6 @@ import json
 import os
 import platform
 import re
-import requests
 import six
 import sys
 from praw import decorators, errors
@@ -39,6 +38,7 @@ from praw.helpers import normalize_url
 from praw.internal import (_prepare_request, _raise_redirect_exceptions,
                            _raise_response_exceptions, _to_reddit_list)
 from praw.settings import CONFIG
+from requests import Session
 from requests.compat import urljoin
 from requests import Request
 # pylint: disable=F0401
@@ -314,9 +314,9 @@ class BaseReddit(object):
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit',
                              **kwargs)
         self.handler = handler or DefaultHandler()
-        self.http = requests.session()
+        self.http = Session()
         self.http.headers['User-Agent'] = UA_STRING % user_agent
-        # This _session_ object is only used to store request information that
+        # This `Session` object is only used to store request information that
         # is used to make prepared requests. It _should_ never be used to make
         # a direct request, thus we raise an exception when it is used.
 
@@ -404,14 +404,11 @@ class BaseReddit(object):
                     return response
                 else:
                     return re.sub('&([^;]+);', decode, response.text)
-            except requests.exceptions.HTTPError as error:
+            except errors.HTTPException as error:
                 remaining_attempts -= 1
-                if error.response.status_code not in self.RETRY_CODES or \
+                # pylint: disable=W0212
+                if error._raw.status_code not in self.RETRY_CODES or \
                         remaining_attempts == 0:
-                    raise
-            except requests.exceptions.RequestException:
-                remaining_attempts -= 1
-                if remaining_attempts == 0:
                     raise
 
     def _json_reddit_objecter(self, json_data):
@@ -970,7 +967,6 @@ class UnauthenticatedReddit(BaseReddit):
             raise TypeError('One (and only one) of id or url is required!')
         if submission_id:
             url = urljoin(self.config['comments'], submission_id)
-        # TODO: This request 403s if on HTTPS and given an HTTP url.
         return objects.Submission.from_url(self, url,
                                            comment_limit=comment_limit,
                                            comment_sort=comment_sort,
@@ -2214,12 +2210,10 @@ class SubmitMixin(AuthenticatedReddit):
                 url = self.config.api_url + url[len(self.config.oauth_url):]
         try:
             return self.get_submission(url)
-        except requests.exceptions.HTTPError as error:
-            # The request may still fail if the submission was made to a
-            # private subreddit.
-            if error.response.status_code == 403:
-                return url
-            raise
+        except errors.Forbidden:
+            # While the user may be able to submit to a subreddit,
+            # that does not guarantee they have read access.
+            return url
 
 
 class SubscribeMixin(AuthenticatedReddit):

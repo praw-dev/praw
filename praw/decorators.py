@@ -29,7 +29,6 @@ import six
 import sys
 from functools import wraps
 from requests.compat import urljoin
-from requests.exceptions import HTTPError
 from praw import errors
 from warnings import simplefilter, warn
 
@@ -169,11 +168,11 @@ def raise_api_exceptions(function):
     def wrapped(reddit_session, *args, **kwargs):
         try:
             return_value = function(reddit_session, *args, **kwargs)
-        except HTTPError as exc:
-            if exc.response.status_code != 400:
+        except errors.HTTPException as exc:
+            if exc._raw.status_code != 400:  # pylint: disable=W0212
                 raise  # Unhandled HTTPErrors
             try:  # Attempt to convert v1 errors into older format (for now)
-                data = exc.response.json()
+                data = exc._raw.json()  # pylint: disable=W0212
                 assert len(data) == 2
                 return_value = {'errors': [(data['reason'],
                                             data['explanation'], '')]}
