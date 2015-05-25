@@ -1549,8 +1549,7 @@ class ModConfigMixin(AuthenticatedReddit):
         :param name: The name to provide the image. When None the name will be
             filename less any extension.
         :param header: When True, upload the image as the subreddit header.
-        :returns: True when the upload was successful. False otherwise. Note
-            this is subject to change.
+        :returns: A link to the uploaded image. Raises an exception otherwise.
 
         """
         if name and header:
@@ -1580,22 +1579,13 @@ class ModConfigMixin(AuthenticatedReddit):
                 if not name:
                     name = os.path.splitext(os.path.basename(image.name))[0]
                 data['name'] = name
-            response = self._request(self.config['upload_image'], data=data,
-                                     files={'file': image},
-                                     retry_on_error=False)
-        # HACK: Until json response, attempt to parse the errors
-        json_start = response.find('[[')
-        json_end = response.find(']]')
-        try:
-            image_errors = dict(json.loads(response[json_start:json_end + 2]))
-        except Exception:  # pylint: disable=W0703
-            warn_explicit('image_upload parsing issue', UserWarning, '', 0)
-            return False
-        if image_errors['BAD_CSS_NAME']:
-            raise errors.APIException(image_errors['BAD_CSS_NAME'], None)
-        elif image_errors['IMAGE_ERROR']:
-            raise errors.APIException(image_errors['IMAGE_ERROR'], None)
-        return True
+            response = json.loads(self._request(
+                self.config['upload_image'], data=data, files={'file': image},
+                retry_on_error=False))
+
+        if response['errors']:
+            raise errors.APIException(response['errors'], None)
+        return response['img_src']
 
     def update_settings(self, subreddit, **kwargs):
         """Update only the given settings for the given subreddit.
