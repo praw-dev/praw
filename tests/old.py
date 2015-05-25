@@ -100,24 +100,3 @@ class ImageTests(unittest.TestCase, AuthenticatedHelper):
         self.assertTrue(self.subreddit.upload_image(image, name))
         images_json = self.subreddit.get_stylesheet()['images']
         self.assertTrue(any(name in text_type(x['name']) for x in images_json))
-
-
-class MultiredditTest(unittest.TestCase, AuthenticatedHelper):
-    def setUp(self):
-        self.configure()
-
-    def test_get_my_multis(self):
-        mymultis = self.r.get_my_multis()
-        multireddit = mymultis[0]
-        self.assertEqual(self.multi_name.lower(),
-                         multireddit.display_name.lower())
-        self.assertEqual([], multireddit.subreddits)
-
-    def test_get_multireddit_from_user(self):
-        multi = self.r.user.get_multireddit(self.multi_name)
-        self.assertEqual(self.r.user.name.lower(), multi.author.name.lower())
-
-    def test_get_new(self):
-        multi = self.r.user.get_multireddit(self.multi_name)
-        new = list(multi.get_new())
-        self.assertEqual(0, len(new))

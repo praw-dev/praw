@@ -37,7 +37,6 @@ class PRAWTest(unittest.TestCase):
     def configure(self):
         self.r = Reddit(USER_AGENT, disable_update_check=True)
         self.sr = 'reddit_api_test'
-        self.multi_name = "publicempty"
         self.priv_sr = 'reddit_api_test_priv'
         self.un = 'PyAPITestUser2'
         self.other_user_name = 'PyAPITestUser3'

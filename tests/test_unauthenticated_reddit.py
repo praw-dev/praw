@@ -120,12 +120,11 @@ class UnauthenticatedRedditTest(PRAWTest):
 
     @betamax
     def test_get_multireddit(self):
-        multi_path = '/user/{0}/m/{1}'.format(self.un, self.multi_name)
-        multireddit = self.r.get_multireddit(self.un, self.multi_name)
-        self.assertEqual(self.multi_name.lower(),
-                         text_type(multireddit).lower())
-        self.assertEqual(self.un.lower(), multireddit.author.name.lower())
-        self.assertEqual(multi_path.lower(), multireddit.path.lower())
+        multi = self.r.get_multireddit(self.un, 'publicempty')
+        self.assertEqual('publicempty', text_type(multi))
+        self.assertEqual(self.un, multi.author.name)
+        self.assertEqual('/user/{0}/m/{1}'.format(self.un, 'publicempty'),
+                         multi.path)
 
     @betamax
     def test_get_new(self):
