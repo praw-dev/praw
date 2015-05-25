@@ -847,39 +847,6 @@ class UnauthenticatedReddit(BaseReddit):
         return self.request_json(self.config['moderators'] %
                                  six.text_type(subreddit), **kwargs)
 
-    def get_multireddit(self, redditor, multi, *args, **kwargs):
-        """Return a Multireddit object for the author and name specified.
-
-        :param redditor: The username or Redditor object of the user
-            who owns the multireddit.
-        :param multi: The name of the multireddit to fetch.
-
-        The additional parameters are passed directly into the
-        :class:`.Multireddit` constructor.
-
-        """
-        redditor = six.text_type(redditor)
-        return objects.Multireddit(self, redditor, multi, *args, **kwargs)
-
-    def get_multireddits(self, redditor, *args, **kwargs):
-        """Return a list of multireddits belonging to a redditor.
-
-        If the requested redditor is the current user, all multireddits
-        are visible. Otherwise, only public multireddits are returned.
-
-        :param redditor: The username or Redditor object to find multireddits
-            from.
-
-        :returns: The json response from the server
-
-        The additional parameters are passed directly into
-        :meth:`request_json`
-
-        """
-        redditor = six.text_type(redditor)
-        url = self.config['multireddit_user'] % redditor
-        return self.request_json(url, *args, **kwargs)
-
     @decorators.restrict_access(scope='read')
     def get_new(self, *args, **kwargs):
         """Return a get_content generator for new submissions.
@@ -1213,114 +1180,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.http.cookies.clear()
         self.user = None
 
-    @decorators.restrict_access(scope='subscribe')
-    def copy_multireddit(self, from_redditor, from_name, to_name=None,
-                         *args, **kwargs):
-        """Copy a multireddit.
-
-        :param from_redditor: The username or Redditor object for the user
-            who owns the original multireddit
-        :param from_name: The name of the multireddit, belonging to
-            from_redditor
-        :param to_name: The name to copy the multireddit as. If None, uses
-            the name of the original
-
-        The additional parameters are passed directly into
-        :meth:`request_json`
-
-        """
-        if to_name is None:
-            to_name = from_name
-
-        from_multipath = '/user/%s/m/%s' % (from_redditor, from_name)
-        to_multipath = '/user/%s/m/%s' % (self.user.name, to_name)
-
-        url = self.config['multireddit_copy']
-        data = {
-            'display_name': to_name,
-            'from': from_multipath,
-            'to': to_multipath
-        }
-        return self.request_json(url, data=data, *args, **kwargs)
-
-    @decorators.restrict_access(scope='subscribe')
-    def create_multireddit(self, name, description=None, icon_name=None,
-                           key_color=None, subreddits=None, visibility=None,
-                           weighting_scheme=None, overwrite=False,
-                           *args, **kwargs):
-        """Create a new multireddit.
-
-        :param name: The name of the new multireddit.
-        :param description: Optional description for the multireddit,
-            formatted in markdown.
-        :param icon_name: Optional, choose an icon name from this list:
-            `art and design`, `ask`, `books`, `business`, `cars`,
-            `comics`, `cute animals`, `diy`, `entertainment`,
-            `food and drink`, `funny`, `games`, `grooming`, `health`,
-            `life advice`, `military`, `models pinup`, `music`, `news`,
-            `philosophy`, `pictures and gifs`, `science`, `shopping`,
-            `sports`, `style`, `tech`, `travel`, `unusual stories`, `video`,
-            ``, `None`
-        :param key_color: Optional rgb hex color code of the form `#xxxxxx`.
-        :param subreddits: Optional list of subreddit names or Subreddit
-            objects to initialise the Multireddit with. You can always
-            add more later with :meth:`Multireddit.add_subreddit`.
-        :param visibility: Choose a privacy setting from this list:
-            `public`, `private`, `hidden`
-            Defaults to private if blank.
-        :param weighting_scheme: Choose a weighting scheme from this list:
-            `classic`, `fresh`
-            Defaults to classic if blank.
-        :param overwrite: Allow for overwriting / updating multis.
-            If False, and the multi name already exists, throw 409 error.
-            If True, and the multi name already exists, use the given
-            properties to update that multi.
-            If True, and the multi name does not exist, create it normally.
-
-        :returns: The newly created Multireddit object.
-
-        The additional parameters are passed into
-        :meth:`request_json`
-
-        """
-        url = self.config['multireddit_about']
-        multipath = '/user/%s/m/%s' % (self.user.name, name)
-
-        # `subreddits` needs to be a list of dicts,
-        # where each dict is {'name':'subredditname'}
-        if subreddits:
-            subreddits = [six.text_type(sr) for sr in subreddits]
-            subreddits = [{'name': sr} for sr in subreddits]
-
-        model = {
-            'description_md': description,
-            'icon_name': icon_name,
-            'key_color': key_color,
-            'subreddits': subreddits,
-            'visibility': visibility,
-            'weighting_scheme': weighting_scheme
-        }
-
-        # Remove any keys that have not been specified by the user.
-        # When creating a multi, unspecified keys use reddit defaults.
-        # When editing a multi, unspecified keys will remain the same
-        # So this function can fill both roles.
-        for key in list(model.keys()):
-            if model[key] is None:
-                del model[key]
-        model = json.dumps(model)
-        data = {
-            'multipath': multipath,
-            'model': model
-        }
-        if overwrite:
-            method = 'PUT'
-        else:
-            method = 'POST'
-        response = self.request_json(url, data=data, method=method,
-                                     *args, **kwargs)
-        return response
-
     def delete(self, password, message=""):
         """Delete the currently authenticated redditor.
 
@@ -1339,41 +1198,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 'delete_message': message,
                 'confirm': True}
         return self.request_json(self.config['delete_redditor'], data=data)
-
-    @decorators.restrict_access(scope='subscribe')
-    def delete_multireddit(self, name, *args, **kwargs):
-        """Delete a Multireddit.
-
-        Any additional parameters are passed directly into
-        :meth:`request_json`
-
-        """
-        url = self.config['multireddit_about']
-        multipath = '/user/%s/m/%s' % (self.user.name, name)
-        data = {'multipath': multipath}
-        response = self.request_json(url, data=data, method='DELETE',
-                                     *args, **kwargs)
-        return response
-
-    @decorators.restrict_access(scope='subscribe')
-    def edit_multireddit(self, name, description=None, icon_name=None,
-                         key_color=None, subreddits=None, visibility=None,
-                         weighting_scheme=None,
-                         *args, **kwargs):
-        """Create a multireddit, or edit it if it already exists.
-
-        See :meth:`create_multireddit` for parameter notes.
-
-        """
-        return self.create_multireddit(name=name,
-                                       description=description,
-                                       icon_name=icon_name,
-                                       key_color=key_color,
-                                       subreddits=subreddits,
-                                       visibility=visibility,
-                                       weighting_scheme=weighting_scheme,
-                                       overwrite=True,
-                                       *args, **kwargs)
 
     def edit_wiki_page(self, subreddit, page, content, reason=''):
         """Create or edit a wiki page with title `page` for `subreddit`.
@@ -1508,27 +1332,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         if update_session:
             self.set_access_credentials(**response)
         return response
-
-    @decorators.restrict_access(scope='subscribe')
-    def rename_multireddit(self, current_name, new_name, *args, **kwargs):
-        """Rename a Multireddit.
-
-        :param current_name: The name of the multireddit to rename
-        :param new_name: The new name to assign to this multireddit
-
-        The additional parameters are passed directly into
-        :meth:`request_json`
-
-        """
-        url = self.config['multireddit_rename']
-        current_multipath = '/user/%s/m/%s' % (self.user.name, current_name)
-        new_multipath = '/user/%s/m/%s' % (self.user.name, new_name)
-        data = {
-            'display_name': new_name,
-            'from': current_multipath,
-            'to': new_multipath
-        }
-        return self.request_json(url, data=data, *args, **kwargs)
 
     @decorators.restrict_access(scope=None, login=True)
     def select_flair(self, item, flair_template_id='', flair_text=''):
@@ -2129,6 +1932,209 @@ class ModOnlyMixin(AuthenticatedReddit):
             user_only=True, *args, **kwargs)
 
 
+class MultiredditMixin(AuthenticatedReddit):
+
+    """Adds methods pertaining to multireddits.
+
+    You should **not** directly instantiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
+
+    @decorators.restrict_access(scope='subscribe')
+    def copy_multireddit(self, from_redditor, from_name, to_name=None,
+                         *args, **kwargs):
+        """Copy a multireddit.
+
+        :param from_redditor: The username or Redditor object for the user
+            who owns the original multireddit
+        :param from_name: The name of the multireddit, belonging to
+            from_redditor
+        :param to_name: The name to copy the multireddit as. If None, uses
+            the name of the original
+
+        The additional parameters are passed directly into
+        :meth:`request_json`
+
+        """
+        if to_name is None:
+            to_name = from_name
+
+        from_multipath = '/user/{0}/m/{1}'.format(from_redditor, from_name)
+        to_multipath = '/user/{0}/m/{1}'.format(self.user.name, to_name)
+
+        url = self.config['multireddit_copy']
+        data = {
+            'display_name': to_name,
+            'from': from_multipath,
+            'to': to_multipath
+        }
+        return self.request_json(url, data=data, *args, **kwargs)
+
+    @decorators.restrict_access(scope='subscribe')
+    def create_multireddit(self, name, description=None, icon_name=None,
+                           key_color=None, subreddits=None, visibility=None,
+                           weighting_scheme=None, overwrite=False,
+                           *args, **kwargs):
+        """Create a new multireddit.
+
+        :param name: The name of the new multireddit.
+        :param description: Optional description for the multireddit,
+            formatted in markdown.
+        :param icon_name: Optional, choose an icon name from this list:
+            `art and design`, `ask`, `books`, `business`, `cars`,
+            `comics`, `cute animals`, `diy`, `entertainment`,
+            `food and drink`, `funny`, `games`, `grooming`, `health`,
+            `life advice`, `military`, `models pinup`, `music`, `news`,
+            `philosophy`, `pictures and gifs`, `science`, `shopping`,
+            `sports`, `style`, `tech`, `travel`, `unusual stories`, `video`,
+            ``, `None`
+        :param key_color: Optional rgb hex color code of the form `#xxxxxx`.
+        :param subreddits: Optional list of subreddit names or Subreddit
+            objects to initialize the Multireddit with. You can always
+            add more later with :meth:`Multireddit.add_subreddit`.
+        :param visibility: Choose a privacy setting from this list:
+            `public`, `private`, `hidden`. Defaults to private if blank.
+        :param weighting_scheme: Choose a weighting scheme from this list:
+            `classic`, `fresh`. Defaults to classic if blank.
+        :param overwrite: Allow for overwriting / updating multireddits.
+            If False, and the multi name already exists, throw 409 error.
+            If True, and the multi name already exists, use the given
+            properties to update that multi.
+            If True, and the multi name does not exist, create it normally.
+
+        :returns: The newly created Multireddit object.
+
+        The additional parameters are passed directly into
+        :meth:`request_json`
+
+        """
+        url = self.config['multireddit_about']
+        multipath = '/user/%s/m/%s' % (self.user.name, name)
+
+        # `subreddits` needs to be a list of dicts,
+        # where each dict is {'name':'subredditname'}
+        if subreddits:
+            subreddits = [six.text_type(sr) for sr in subreddits]
+            subreddits = [{'name': sr} for sr in subreddits]
+
+        model = {
+            'description_md': description,
+            'icon_name': icon_name,
+            'key_color': key_color,
+            'subreddits': subreddits,
+            'visibility': visibility,
+            'weighting_scheme': weighting_scheme
+        }
+
+        # Remove any keys that have not been specified by the user.
+        # When creating a multi, unspecified keys use reddit defaults.
+        # When editing a multi, unspecified keys will remain the same
+        # So this function can fill both roles.
+        for key in list(model.keys()):
+            if model[key] is None:
+                del model[key]
+        model = json.dumps(model)
+        data = {
+            'multipath': multipath,
+            'model': model
+        }
+        if overwrite:
+            method = 'PUT'
+        else:
+            method = 'POST'
+        response = self.request_json(url, data=data, method=method,
+                                     *args, **kwargs)
+        return response
+
+    @decorators.restrict_access(scope='subscribe')
+    def delete_multireddit(self, name, *args, **kwargs):
+        """Delete a Multireddit.
+
+        Any additional parameters are passed directly into
+        :meth:`request_json`
+
+        """
+        url = self.config['multireddit_about']
+        multipath = '/user/%s/m/%s' % (self.user.name, name)
+        data = {'multipath': multipath}
+        response = self.request_json(url, data=data, method='DELETE',
+                                     *args, **kwargs)
+        return response
+
+    @decorators.restrict_access(scope='subscribe')
+    def edit_multireddit(self, name, description=None, icon_name=None,
+                         key_color=None, subreddits=None, visibility=None,
+                         weighting_scheme=None,
+                         *args, **kwargs):
+        """Create a multireddit, or edit it if it already exists.
+
+        See :meth:`create_multireddit` for parameter notes.
+
+        """
+        return self.create_multireddit(name=name,
+                                       description=description,
+                                       icon_name=icon_name,
+                                       key_color=key_color,
+                                       subreddits=subreddits,
+                                       visibility=visibility,
+                                       weighting_scheme=weighting_scheme,
+                                       overwrite=True,
+                                       *args, **kwargs)
+
+    def get_multireddit(self, redditor, multi, *args, **kwargs):
+        """Return a Multireddit object for the author and name specified.
+
+        :param redditor: The username or Redditor object of the user
+            who owns the multireddit.
+        :param multi: The name of the multireddit to fetch.
+
+        The additional parameters are passed directly into the
+        :class:`.Multireddit` constructor.
+
+        """
+        redditor = six.text_type(redditor)
+        return objects.Multireddit(self, redditor, multi, *args, **kwargs)
+
+    def get_multireddits(self, redditor, *args, **kwargs):
+        """Return a list of multireddits belonging to a redditor.
+
+        :param redditor: The username or Redditor object to find multireddits
+            from.
+        :returns: The json response from the server
+
+        The additional parameters are passed directly into
+        :meth:`request_json`
+
+        If the requested redditor is the current user, all multireddits
+        are visible. Otherwise, only public multireddits are returned.
+
+        """
+        url = self.config['multireddit_user'] % six.text_type(redditor)
+        return self.request_json(url, *args, **kwargs)
+
+    @decorators.restrict_access(scope='subscribe')
+    def rename_multireddit(self, current_name, new_name, *args, **kwargs):
+        """Rename a Multireddit.
+
+        :param current_name: The name of the multireddit to rename
+        :param new_name: The new name to assign to this multireddit
+
+        The additional parameters are passed directly into
+        :meth:`request_json`
+
+        """
+        url = self.config['multireddit_rename']
+        current_multipath = '/user/%s/m/%s' % (self.user.name, current_name)
+        new_multipath = '/user/%s/m/%s' % (self.user.name, new_name)
+        data = {
+            'display_name': new_name,
+            'from': current_multipath,
+            'to': new_multipath
+        }
+        return self.request_json(url, data=data, *args, **kwargs)
+
+
 class MySubredditsMixin(AuthenticatedReddit):
 
     """Adds methods requiring the 'mysubreddits' scope (or login).
@@ -2226,7 +2232,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
         :param message_id: The ID or Fullname for a Message
 
-        The additional parameters are passed into
+        The additional parameters are passed directly into
         :meth:`~praw.objects.Message.from_id` of Message, and subsequently into
         :meth:`.request_json`.
 
@@ -2439,8 +2445,8 @@ class SubscribeMixin(AuthenticatedReddit):
 
 
 class Reddit(ModConfigMixin, ModFlairMixin, ModLogMixin, ModOnlyMixin,
-             MySubredditsMixin, PrivateMessagesMixin, SubmitMixin,
-             SubscribeMixin):
+             MultiredditMixin, MySubredditsMixin, PrivateMessagesMixin,
+             SubmitMixin, SubscribeMixin):
 
     """Provides access to reddit's API.
 

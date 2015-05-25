@@ -32,8 +32,9 @@ from heapq import heappop, heappush
 from requests.compat import urljoin
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
-                  ModOnlyMixin as MOMix, PrivateMessagesMixin as PMMix,
-                  SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
+                  ModOnlyMixin as MOMix, MultiredditMixin as MultiMix,
+                  PrivateMessagesMixin as PMMix, SubmitMixin, SubscribeMixin,
+                  UnauthenticatedReddit as UR)
 from praw.decorators import alias_function, limit_chars, restrict_access
 from praw.errors import ClientException, InvalidComment
 from praw.internal import (_get_redditor_listing, _get_sorter,
@@ -755,6 +756,8 @@ class Redditor(Gildable, Messageable, Refreshable):
 
     """A class representing the users of reddit."""
 
+    _methods = (('get_multireddit', MultiMix), ('get_multireddits', MultiMix))
+
     get_comments = _get_redditor_listing('comments')
     get_overview = _get_redditor_listing('')
     get_submitted = _get_redditor_listing('submitted')
@@ -828,25 +831,6 @@ class Redditor(Gildable, Messageable, Refreshable):
         use_oauth = self.reddit_session.is_oauth_session()
         return _get_redditor_listing('liked')(self, *args,
                                               _use_oauth=use_oauth, **kwargs)
-
-    def get_multireddit(self, multi):
-        """Return a multireddit that belongs to this user.
-
-        :param multi: The name of the multireddit
-
-        :returns: Multireddit object with author=Redditor and name=multi
-
-        """
-        return self.reddit_session.get_multireddit(self, multi)
-
-    def get_multireddits(self):
-        """Return the list of multireddits belonging to this user.
-
-        If this is the signed in user, all multis are visible.
-        Otherwise, only public multireddits are seen.
-
-        """
-        return self.reddit_session.get_multireddits(self.name)
 
     def mark_as_read(self, messages, unread=False):
         """Mark message(s) as read or unread.
@@ -1450,9 +1434,9 @@ class Multireddit(Refreshable):
     def __init__(self, reddit_session, redditor=None, multi=None,
                  json_dict=None, fetch=False):
         """Construct an instance of the Multireddit object."""
-        # Special case for when get_my_multis is called, no name is returned
-        # so we have to extract the name from the URL. The URLs are returned
-        # as: /user/redditor/m/multi
+        # Special case for when get_my_multireddits is called, no name is
+        # returned so we have to extract the name from the URL. The URLs are
+        # returned as: /user/redditor/m/multi
         if not multi:
             multi = json_dict['path'].split('/')[-1]
         if not redditor:
@@ -1465,94 +1449,18 @@ class Multireddit(Refreshable):
         super(Multireddit, self).__init__(reddit_session, json_dict, fetch,
                                           info_url)
         self.name = multi
-        self.update_urls(reddit_session, redditor, multi)
+        self._update_urls(reddit_session, redditor, multi)
 
     def __repr__(self):
         """Return a code representation of the Multireddit."""
         return 'Multireddit(author=\'{0}\', name=\'{1}\')'.format(
             self.author, self._name)
 
-    @restrict_access(scope='subscribe')
-    def add_subreddit(self, subreddit, delete=False, *args, **kwargs):
-        """Add a subreddit to the user's multireddit.
+    def __unicode__(self):
+        """Return a string representation of the Multireddit."""
+        return self._name
 
-        :param subreddit: The subreddit name or Subreddit object to add
-        :param delete: Optionally, convert this request into a DELETE,
-            removing the subreddit from the multireddit.
-        Any additional parameters are passed directly into
-        :meth:`request_json` of the reddit_session
-
-        """
-        subreddit = six.text_type(subreddit)
-        url = self.reddit_session.config['multireddit_add']
-        url = url % (self.author.name, self.name, subreddit)
-        multipath = 'user/%s/m/%s/' % (self.author.name, self.name)
-
-        data = {
-            'multipath': multipath,
-            'srname': subreddit}
-        if delete:
-            method = 'DELETE'
-        else:
-            method = 'PUT'
-            model = json.dumps({'name': subreddit})
-            data['model'] = model
-        return self.reddit_session.request_json(url, data=data, method=method,
-                                                *args, **kwargs)
-
-    @restrict_access(scope='subscribe')
-    def copy(self, to_name):
-        """Copy this multireddit.
-
-        This function is a handy shortcut to
-        :meth:`copy_multireddit` of the reddit_session
-
-        """
-        return self.reddit_session.copy_multireddit(self.author, self.name,
-                                                    to_name)
-
-    @restrict_access(scope='subscribe')
-    def edit(self, description=None, icon_name=None,
-             key_color=None, subreddits=None, visibility=None,
-             weighting_scheme=None,
-             *args, **kwargs):
-        """Edit this multireddit.
-
-        This function is a handy shortcut to
-        :meth:`edit_multireddit` of the reddit_session
-
-        """
-        return self.reddit_session.edit_multireddit(
-            name=self.name,
-            description=description,
-            icon_name=icon_name,
-            key_color=key_color,
-            subreddits=subreddits,
-            visibility=visibility,
-            weighting_scheme=weighting_scheme,
-            *args, **kwargs)
-
-    @restrict_access(scope='subscribe')
-    def remove_subreddit(self, subreddit, *args, **kwargs):
-        """Remove a subreddit from the user's multireddit."""
-        return self.add_subreddit(subreddit, True, *args, **kwargs)
-
-    @restrict_access(scope='subscribe')
-    def rename(self, new_name, *args, **kwargs):
-        """Rename this multireddit.
-
-        This function is a handy shortcut to
-        :meth:`rename_multireddit` of the reddit_session.
-
-        """
-        response = self.reddit_session.rename_multireddit(self.name, new_name,
-                                                          *args, **kwargs)
-        self.name = new_name
-        # self._name = new_name
-        self.update_urls(self.reddit_session, self.author.name, new_name)
-        return response
-
-    def update_urls(self, reddit_session, redditor, multi):
+    def _update_urls(self, reddit_session, redditor, multi):
         """Rebuild URLs for this object.
 
         This is necessary because calling :meth:`rename` breaks
@@ -1573,9 +1481,75 @@ class Multireddit(Refreshable):
             Subreddit(reddit_session, x['name']) for x in self.subreddits
             if isinstance(x, dict)]
 
-    def __unicode__(self):
-        """Return a string representation of the Multireddit."""
-        return self._name
+    @restrict_access(scope='subscribe')
+    def add_subreddit(self, subreddit, _delete=False, *args, **kwargs):
+        """Add a subreddit to the multireddit.
+
+        :param subreddit: The subreddit name or Subreddit object to add
+
+        The additional parameters are passed directly into
+        :meth:`request_json`.
+
+        """
+        subreddit = six.text_type(subreddit)
+        url = self.reddit_session.config['multireddit_add']
+        url = url % (self.author.name, self.name, subreddit)
+        multipath = 'user/%s/m/%s/' % (self.author.name, self.name)
+
+        data = {
+            'multipath': multipath,
+            'srname': subreddit}
+        if _delete:
+            method = 'DELETE'
+        else:
+            method = 'PUT'
+            data['model'] = json.dumps({'name': subreddit})
+        return self.reddit_session.request_json(url, data=data, method=method,
+                                                *args, **kwargs)
+
+    @restrict_access(scope='subscribe')
+    def copy(self, to_name):
+        """Copy this multireddit.
+
+        Convenience function that utilizes
+        :meth:`.MultiredditMixin.copy_multireddit` populating both
+        the `from_redditor` and `from_name` parameters.
+
+        """
+        return self.reddit_session.copy_multireddit(self.author, self.name,
+                                                    to_name)
+
+    @restrict_access(scope='subscribe')
+    def edit(self, *args, **kwargs):
+        """Edit this multireddit.
+
+        Convenience function that utilizes
+        :meth:`.MultiredditMixin.copy_multireddit` populating the `name`
+        parameter.
+
+        """
+        return self.reddit_session.edit_multireddit(name=self.name, *args,
+                                                    **kwargs)
+
+    @restrict_access(scope='subscribe')
+    def remove_subreddit(self, subreddit, *args, **kwargs):
+        """Remove a subreddit from the user's multireddit."""
+        return self.add_subreddit(subreddit, True, *args, **kwargs)
+
+    @restrict_access(scope='subscribe')
+    def rename(self, new_name, *args, **kwargs):
+        """Rename this multireddit.
+
+        This function is a handy shortcut to
+        :meth:`rename_multireddit` of the reddit_session.
+
+        """
+        response = self.reddit_session.rename_multireddit(self.name, new_name,
+                                                          *args, **kwargs)
+        self.name = new_name
+        # self._name = new_name
+        self._update_urls(self.reddit_session, self.author.name, new_name)
+        return response
 
 
 class PRAWListing(RedditContentObject):

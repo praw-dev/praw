@@ -146,10 +146,7 @@ def _prepare_request(reddit_session, url, params, data, auth, files,
         data.setdefault('api_type', 'json')
         if reddit_session.modhash:
             data.setdefault('uh', reddit_session.modhash)
-    if method is None:
-        request.method = 'POST'
-    else:
-        request.method = method
+    request.method = 'POST' if method is None else method
     request.data = data
     request.files = files
     return request
