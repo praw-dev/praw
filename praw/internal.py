@@ -208,9 +208,8 @@ def _to_reddit_list(arg):
     representation of an object. Either given as a string or as an object that
     is then converted to its string representation.
     """
-    if (isinstance(arg, six.string_types)
-            or not (hasattr(arg, "__getitem__")
-                    or hasattr(arg, "__iter__"))):
+    if (isinstance(arg, six.string_types) or not (
+            hasattr(arg, "__getitem__") or hasattr(arg, "__iter__"))):
         return six.text_type(arg)
     else:
         return ','.join(six.text_type(a) for a in arg)

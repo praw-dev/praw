@@ -54,14 +54,14 @@ class SubmissionTest(PRAWTest):
 
     @betamax
     def test_submission_edit__link_failure(self):
-        predicate = lambda item: not item.is_self
-        found = self.first(self.r.user.get_submitted(), predicate)
+        found = self.first(self.r.user.get_submitted(),
+                           lambda item: not item.is_self)
         self.assertRaises(errors.HTTPException, found.edit, 'text')
 
     @betamax
     def test_submission_edit__self(self):
-        predicate = lambda item: item.is_self
-        found = self.first(self.r.user.get_submitted(), predicate)
+        found = self.first(self.r.user.get_submitted(),
+                           lambda item: item.is_self)
         content = '' if len(found.selftext) > 100 else found.selftext + 'a'
         self.assertEqual(content, found.edit(content).selftext)
 

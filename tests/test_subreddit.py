@@ -56,13 +56,13 @@ class SubredditTest(PRAWTest):
 
     @betamax
     def test_get_my_contributions(self):
-        predicate = lambda subreddit: text_type(subreddit) == self.sr
-        self.first(self.r.get_my_contributions(), predicate)
+        self.first(self.r.get_my_contributions(),
+                   lambda subreddit: text_type(subreddit) == self.sr)
 
     @betamax
     def test_get_my_moderation(self):
-        predicate = lambda subreddit: text_type(subreddit) == self.sr
-        self.first(self.r.get_my_moderation(), predicate)
+        self.first(self.r.get_my_moderation(),
+                   lambda subreddit: text_type(subreddit) == self.sr)
 
     @betamax
     def test_get_my_subreddits(self):

@@ -22,8 +22,8 @@ class CommentTest(PRAWTest):
     @betamax
     def test_add_reply(self):
         text = 'Unique reply: {0}'.format(self.r.modhash)
-        predicate = lambda submission: submission.num_comments > 0
-        submission = self.first(self.subreddit.get_new(), predicate)
+        submission = self.first(self.subreddit.get_new(),
+                                lambda submission: submission.num_comments > 0)
         comment = submission.comments[0]
         reply = comment.reply(text)
         self.assertEqual(reply.parent_id, comment.fullname)
@@ -48,14 +48,14 @@ class CommentTest(PRAWTest):
 
     @betamax
     def test_inbox_comment_permalink(self):
-        predicate = lambda item: isinstance(item, Comment)
-        item = self.first(self.r.get_inbox(), predicate)
+        item = self.first(self.r.get_inbox(),
+                          lambda item: isinstance(item, Comment))
         self.assertTrue(item.id in item.permalink)
 
     @betamax
     def test_inbox_comment_replies_are_none(self):
-        predicate = lambda item: isinstance(item, Comment)
-        comment = self.first(self.r.get_inbox(), predicate)
+        comment = self.first(self.r.get_inbox(),
+                             lambda item: isinstance(item, Comment))
         self.assertEqual(comment._replies, None)
 
     @betamax
@@ -74,9 +74,9 @@ class CommentTest(PRAWTest):
 
     @betamax
     def test_spambox_comments_replies_are_none(self):
-        predicate = lambda item: isinstance(item, Comment)
         sequence = self.r.get_subreddit(self.sr).get_spam()
-        comment = self.first(sequence, predicate)
+        comment = self.first(sequence,
+                             lambda item: isinstance(item, Comment))
         self.assertEqual(comment._replies, None)
 
     @betamax
@@ -93,8 +93,8 @@ class CommentTest(PRAWTest):
 
     @betamax
     def test_user_comment_replies_are_none(self):
-        predicate = lambda item: isinstance(item, Comment)
-        comment = self.first(self.r.user.get_comments(), predicate)
+        comment = self.first(self.r.user.get_comments(),
+                             lambda item: isinstance(item, Comment))
         self.assertEqual(comment._replies, None)
 
 
@@ -128,6 +128,6 @@ class MoreCommentsTest(PRAWTest):
 
     @betamax
     def test_comments_method(self):
-        predicate = lambda item: isinstance(item, MoreComments)
-        item = self.first(self.submission.comments, predicate)
+        item = self.first(self.submission.comments,
+                          lambda item: isinstance(item, MoreComments))
         self.assertTrue(item.comments())

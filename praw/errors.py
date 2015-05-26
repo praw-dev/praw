@@ -475,8 +475,10 @@ class UsernameExists(APIException):
 
 
 def _build_error_mapping():
+    def predicate(obj):
+        return inspect.isclass(obj) and hasattr(obj, 'ERROR_TYPE')
+
     tmp = {}
-    predicate = lambda x: inspect.isclass(x) and hasattr(x, 'ERROR_TYPE')
     for _, obj in inspect.getmembers(sys.modules[__name__], predicate):
         tmp[obj.ERROR_TYPE] = obj
     return tmp

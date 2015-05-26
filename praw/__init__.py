@@ -229,8 +229,8 @@ class Config(object):  # pylint: disable=R0903
         self.log_requests = int(obj['log_requests'])
         self.http_proxy = (obj.get('http_proxy') or os.getenv('http_proxy') or
                            None)
-        self.https_proxy = (obj.get('https_proxy') or os.getenv('https_proxy')
-                            or None)
+        self.https_proxy = (obj.get('https_proxy') or
+                            os.getenv('https_proxy') or None)
         # We use `get(...) or None` because `get` may return an empty string
         self.client_id = obj.get('oauth_client_id') or None
         self.client_secret = obj.get('oauth_client_secret') or None
@@ -2434,4 +2434,4 @@ class Reddit(ModConfigMixin, ModFlairMixin, ModLogMixin, ModOnlyMixin,
     """
 
 # Prevent recursive import
-from praw import objects
+from praw import objects  # NOQA

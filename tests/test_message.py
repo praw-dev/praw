@@ -70,8 +70,9 @@ class MessageTest(PRAWTest):
 
     @betamax
     def test_reply_to_message_and_verify(self):
-        predicate = lambda msg: (
-            isinstance(msg, Message) and msg.author == self.r.user)
+        def predicate(msg):
+            return isinstance(msg, Message) and msg.author == self.r.user
+
         message = self.first(self.r.get_inbox(), predicate)
         reply = message.reply('Message reply')
         self.assertEqual(message.fullname, reply.parent_id)
@@ -79,12 +80,12 @@ class MessageTest(PRAWTest):
     @betamax
     def test_send(self):
         subject = 'Subject: {0}'.format(self.r.modhash)
-        predicate = lambda msg: msg.subject == subject
-        self.none(self.r.get_inbox(), predicate)
+        self.none(self.r.get_inbox(), lambda msg: msg.subject == subject)
         self.r.user.send_message(subject, 'Message content')
 
         self.delay_for_listing_update()
-        self.first(self.r.get_inbox(limit=24), predicate)
+        self.first(self.r.get_inbox(limit=24),
+                   lambda msg: msg.subject == subject)
 
     @betamax
     def test_send_from_subreddit(self):

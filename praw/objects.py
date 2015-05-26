@@ -1658,9 +1658,12 @@ class WikiPageListing(PRAWListing):
 
 
 def _add_aliases():
+    def predicate(obj):
+        return inspect.isclass(obj) and hasattr(obj, '_methods')
+
     import inspect
     import sys
-    predicate = lambda x: inspect.isclass(x) and hasattr(x, '_methods')
+
     for _, cls in inspect.getmembers(sys.modules[__name__], predicate):
         for name, mixin in cls._methods:  # pylint: disable=W0212
             setattr(cls, name, alias_function(getattr(mixin, name),
