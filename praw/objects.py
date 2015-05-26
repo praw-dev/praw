@@ -1520,6 +1520,17 @@ class Multireddit(Refreshable):
                                                     to_name)
 
     @restrict_access(scope='subscribe')
+    def delete(self):
+        """Delete this multireddit.
+
+        Convenience function that utilizes
+        :meth:`.MultiredditMixin.delete_multireddit` populating the `name`
+        parameter.
+
+        """
+        return self.reddit_session.delete_multireddit(self.name)
+
+    @restrict_access(scope='subscribe')
     def edit(self, *args, **kwargs):
         """Edit this multireddit.
 

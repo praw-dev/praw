@@ -527,7 +527,8 @@ class BaseReddit(object):
                 return
 
     @decorators.raise_api_exceptions
-    def request(self, url, params=None, data=None, retry_on_error=True):
+    def request(self, url, params=None, data=None, retry_on_error=True,
+                method=None):
         """Make a HTTP request and return the response.
 
         :param url: the url to grab content from.
@@ -535,10 +536,11 @@ class BaseReddit(object):
         :param data: a dictionary containing the extra data to submit
         :param retry_on_error: if True retry the request, if it fails, for up
             to 3 attempts
+        :param method: The HTTP method to use in the request.
         :returns: The HTTP response.
         """
         return self._request(url, params, data, raw_response=True,
-                             retry_on_error=retry_on_error)
+                             retry_on_error=retry_on_error, method=method)
 
     @decorators.raise_api_exceptions
     def request_json(self, url, params=None, data=None, as_objects=True,
@@ -2039,10 +2041,7 @@ class MultiredditMixin(AuthenticatedReddit):
             'multipath': multipath,
             'model': model
         }
-        if overwrite:
-            method = 'PUT'
-        else:
-            method = 'POST'
+        method = 'PUT' if overwrite else 'POST'
         response = self.request_json(url, data=data, method=method,
                                      *args, **kwargs)
         return response
@@ -2052,15 +2051,15 @@ class MultiredditMixin(AuthenticatedReddit):
         """Delete a Multireddit.
 
         Any additional parameters are passed directly into
-        :meth:`request_json`
+        :meth:`request`
 
         """
-        url = self.config['multireddit_about']
-        multipath = '/user/%s/m/%s' % (self.user.name, name)
-        data = {'multipath': multipath}
-        response = self.request_json(url, data=data, method='DELETE',
-                                     *args, **kwargs)
-        return response
+        url = self.config['multireddit_about'] % (self.user.name, name)
+        self.http.headers['x-modhash'] = self.modhash
+        try:
+            self.request(url, data={}, method='DELETE', *args, **kwargs)
+        finally:
+            del self.http.headers['x-modhash']
 
     @decorators.restrict_access(scope='subscribe')
     def edit_multireddit(self, name, description=None, icon_name=None,
