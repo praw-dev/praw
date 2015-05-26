@@ -119,14 +119,6 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertRaises(errors.LoginRequired, self.r.get_banned, self.sr)
 
     @betamax
-    def test_get_multireddit(self):
-        multi = self.r.get_multireddit(self.un, 'publicempty')
-        self.assertEqual('publicempty', text_type(multi))
-        self.assertEqual(self.un, multi.author.name)
-        self.assertEqual('/user/{0}/m/{1}'.format(self.un, 'publicempty'),
-                         multi.path)
-
-    @betamax
     def test_get_new(self):
         num = 50
         result = self.r.get_new(limit=num)

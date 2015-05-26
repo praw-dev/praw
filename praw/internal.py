@@ -126,18 +126,28 @@ def _prepare_request(reddit_session, url, params, data, auth, files,
     else:
         headers = {}
     headers.update(reddit_session.http.headers)
+
+    if method:
+        pass
+    elif data or files:
+        method = 'POST'
+    else:
+        method = 'GET'
+
     # Log the request if logging is enabled
     if reddit_session.config.log_requests >= 1:
-        sys.stderr.write('retrieving: %s\n' % url)
+        sys.stderr.write('{0}: {1}\n'.format(method, url))
     if reddit_session.config.log_requests >= 2:
-        sys.stderr.write('params: %s\n' % (params or 'None'))
-        sys.stderr.write('data: %s\n' % (data or 'None'))
+        if params:
+            sys.stderr.write('params: {0}\n'.format(params))
+        if data:
+            sys.stderr.write('data: {0}\n'.format(data))
         if auth:
-            sys.stderr.write('auth: %s\n' % str(auth))
+            sys.stderr.write('auth: {0}\n'.format(auth))
     # Prepare request
-    request = Request(method='GET', url=url, headers=headers, params=params,
+    request = Request(method=method, url=url, headers=headers, params=params,
                       auth=auth, cookies=reddit_session.http.cookies)
-    if not data and not files and not method:  # GET request
+    if method == 'GET':
         return request
     # Most POST requests require adding `api_type` and `uh` to the data.
     if data is True:
@@ -146,7 +156,6 @@ def _prepare_request(reddit_session, url, params, data, auth, files,
         data.setdefault('api_type', 'json')
         if reddit_session.modhash:
             data.setdefault('uh', reddit_session.modhash)
-    request.method = 'POST' if method is None else method
     request.data = data
     request.files = files
     return request

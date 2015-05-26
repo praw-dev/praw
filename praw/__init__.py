@@ -1974,14 +1974,14 @@ class MultiredditMixin(AuthenticatedReddit):
         return self.request_json(url, data=data, *args, **kwargs)
 
     @decorators.restrict_access(scope='subscribe')
-    def create_multireddit(self, name, description=None, icon_name=None,
+    def create_multireddit(self, name, description_md=None, icon_name=None,
                            key_color=None, subreddits=None, visibility=None,
                            weighting_scheme=None, overwrite=False,
-                           *args, **kwargs):
+                           *args, **kwargs):  # pylint: disable=W0613
         """Create a new multireddit.
 
         :param name: The name of the new multireddit.
-        :param description: Optional description for the multireddit,
+        :param description_md: Optional description for the multireddit,
             formatted in markdown.
         :param icon_name: Optional, choose an icon name from this list:
             `art and design`, `ask`, `books`, `business`, `cars`,
@@ -2011,40 +2011,19 @@ class MultiredditMixin(AuthenticatedReddit):
         :meth:`request_json`
 
         """
-        url = self.config['multireddit_about']
-        multipath = '/user/%s/m/%s' % (self.user.name, name)
-
-        # `subreddits` needs to be a list of dicts,
-        # where each dict is {'name':'subredditname'}
+        url = self.config['multireddit_about'] % (self.user.name, name)
         if subreddits:
-            subreddits = [six.text_type(sr) for sr in subreddits]
-            subreddits = [{'name': sr} for sr in subreddits]
+            subreddits = [{'name': six.text_type(sr)} for sr in subreddits]
+        model = {}
+        for key in ('description_md', 'icon_name', 'key_color', 'subreddits',
+                    'visibility', 'weighting_scheme'):
+            value = locals()[key]
+            if value:
+                model[key] = value
 
-        model = {
-            'description_md': description,
-            'icon_name': icon_name,
-            'key_color': key_color,
-            'subreddits': subreddits,
-            'visibility': visibility,
-            'weighting_scheme': weighting_scheme
-        }
-
-        # Remove any keys that have not been specified by the user.
-        # When creating a multi, unspecified keys use reddit defaults.
-        # When editing a multi, unspecified keys will remain the same
-        # So this function can fill both roles.
-        for key in list(model.keys()):
-            if model[key] is None:
-                del model[key]
-        model = json.dumps(model)
-        data = {
-            'multipath': multipath,
-            'model': model
-        }
         method = 'PUT' if overwrite else 'POST'
-        response = self.request_json(url, data=data, method=method,
-                                     *args, **kwargs)
-        return response
+        return self.request_json(url, data={'model': json.dumps(model)},
+                                 method=method, *args, **kwargs)
 
     @decorators.restrict_access(scope='subscribe')
     def delete_multireddit(self, name, *args, **kwargs):

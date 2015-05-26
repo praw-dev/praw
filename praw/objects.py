@@ -23,12 +23,11 @@ that it can be saved and unsaved in the context of a logged in user.
 """
 
 from __future__ import print_function, unicode_literals
-
-import json
 import six
 from six.moves.urllib.parse import (  # pylint: disable=F0401
     parse_qs, urlparse, urlunparse)
 from heapq import heappop, heappush
+from json import dumps
 from requests.compat import urljoin
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
@@ -55,7 +54,7 @@ class RedditContentObject(object):
         return cls(reddit_session, json_dict=json_dict)
 
     def __init__(self, reddit_session, json_dict=None, fetch=True,
-                 info_url=None, underscore_names=None):
+                 info_url=None, underscore_names=None, uniq=None):
         """Create a new object from the dict of attributes returned by the API.
 
         The fetch parameter specifies whether to retrieve the object's
@@ -66,6 +65,7 @@ class RedditContentObject(object):
         self._info_url = info_url or reddit_session.config['info']
         self.reddit_session = reddit_session
         self._underscore_names = underscore_names
+        self._uniq = uniq
         self.has_fetched = self._populate(json_dict, fetch)
 
     def __eq__(self, other):
@@ -118,8 +118,9 @@ class RedditContentObject(object):
         prev_use_oauth = self.reddit_session._use_oauth
         self.reddit_session._use_oauth = self.reddit_session.has_scope('read')
         try:
-            response = self.reddit_session.request_json(self._info_url,
-                                                        as_objects=False)
+            params = {'uniq': self._uniq} if self._uniq else {}
+            response = self.reddit_session.request_json(
+                self._info_url, params=params, as_objects=False)
         finally:
             self.reddit_session._use_oauth = prev_use_oauth
         return response['data']
@@ -417,6 +418,9 @@ class Refreshable(RedditContentObject):
             sub = Submission.from_url(self.reddit_session, self.permalink,
                                       params={'uniq': unique})
             other = sub.comments[0]
+        elif isinstance(self, Multireddit):
+            other = Multireddit(self.reddit_session, author=self._author,
+                                name=self.name, uniq=unique, fetch=True)
         elif isinstance(self, Submission):
             params = self._params.copy()
             params['uniq'] = unique
@@ -1431,55 +1435,29 @@ class Multireddit(Refreshable):
     get_top_from_week = _get_sorter('top', t='week')
     get_top_from_year = _get_sorter('top', t='year')
 
-    def __init__(self, reddit_session, redditor=None, multi=None,
-                 json_dict=None, fetch=False):
+    def __init__(self, reddit_session, author=None, name=None,
+                 json_dict=None, fetch=False, **kwargs):
         """Construct an instance of the Multireddit object."""
-        # Special case for when get_my_multireddits is called, no name is
-        # returned so we have to extract the name from the URL. The URLs are
-        # returned as: /user/redditor/m/multi
-        if not multi:
-            multi = json_dict['path'].split('/')[-1]
-        if not redditor:
-            redditor = json_dict['path'].split('/')[-3]
-        else:
-            redditor = six.text_type(redditor)
+        author = six.text_type(author) if author \
+            else json_dict['path'].split('/')[-3]
+        if not name:
+            name = json_dict['path'].split('/')[-1]
 
-        info_url = reddit_session.config['multireddit_about'] % (redditor,
-                                                                 multi)
+        info_url = reddit_session.config['multireddit_about'] % (author, name)
         super(Multireddit, self).__init__(reddit_session, json_dict, fetch,
-                                          info_url)
-        self.name = multi
-        self._update_urls(reddit_session, redditor, multi)
+                                          info_url, **kwargs)
+        self.name = name
+        self._author = author
+        self._url = reddit_session.config['multireddit'] % (author, name)
 
     def __repr__(self):
         """Return a code representation of the Multireddit."""
         return 'Multireddit(author=\'{0}\', name=\'{1}\')'.format(
-            self.author, self._name)
+            self._author, self.name)
 
     def __unicode__(self):
         """Return a string representation of the Multireddit."""
-        return self._name
-
-    def _update_urls(self, reddit_session, redditor, multi):
-        """Rebuild URLs for this object.
-
-        This is necessary because calling :meth:`rename` breaks
-        all sorters and paths.
-
-        """
-        self._name = multi
-        self.author = redditor
-        self.path = '/user/%s/m/%s' % (redditor, multi)
-        self._url = reddit_session.config['multireddit'] % (self.author,
-                                                            self._name)
-
-        listings = ['new/', '', 'top/', 'controversial/', 'rising/']
-        base = (reddit_session.config['multireddit'] % (self.author,
-                                                        self._name))
-        self._listing_urls = [base + x + '.json' for x in listings]
-        self.subreddits = [
-            Subreddit(reddit_session, x['name']) for x in self.subreddits
-            if isinstance(x, dict)]
+        return self.name
 
     @restrict_access(scope='subscribe')
     def add_subreddit(self, subreddit, _delete=False, *args, **kwargs):
@@ -1492,20 +1470,17 @@ class Multireddit(Refreshable):
 
         """
         subreddit = six.text_type(subreddit)
-        url = self.reddit_session.config['multireddit_add']
-        url = url % (self.author.name, self.name, subreddit)
-        multipath = 'user/%s/m/%s/' % (self.author.name, self.name)
-
-        data = {
-            'multipath': multipath,
-            'srname': subreddit}
-        if _delete:
-            method = 'DELETE'
-        else:
-            method = 'PUT'
-            data['model'] = json.dumps({'name': subreddit})
-        return self.reddit_session.request_json(url, data=data, method=method,
-                                                *args, **kwargs)
+        url = self.reddit_session.config['multireddit_add'] % (
+            self._author, self.name, subreddit)
+        method = 'DELETE' if _delete else 'PUT'
+        self.reddit_session.http.headers['x-modhash'] = \
+            self.reddit_session.modhash
+        data = {'model': dumps({'name': subreddit})}
+        try:
+            self.reddit_session.request(url, data=data, method=method,
+                                        *args, **kwargs)
+        finally:
+            del self.reddit_session.http.headers['x-modhash']
 
     @restrict_access(scope='subscribe')
     def copy(self, to_name):
@@ -1516,7 +1491,7 @@ class Multireddit(Refreshable):
         the `from_redditor` and `from_name` parameters.
 
         """
-        return self.reddit_session.copy_multireddit(self.author, self.name,
+        return self.reddit_session.copy_multireddit(self._author, self.name,
                                                     to_name)
 
     @restrict_access(scope='subscribe')
@@ -1555,12 +1530,9 @@ class Multireddit(Refreshable):
         :meth:`rename_multireddit` of the reddit_session.
 
         """
-        response = self.reddit_session.rename_multireddit(self.name, new_name,
-                                                          *args, **kwargs)
-        self.name = new_name
-        # self._name = new_name
-        self._update_urls(self.reddit_session, self.author.name, new_name)
-        return response
+        self.reddit_session.rename_multireddit(self.name, new_name,
+                                               *args, **kwargs)
+        self.refresh()
 
 
 class PRAWListing(RedditContentObject):

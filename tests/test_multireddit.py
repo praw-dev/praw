@@ -11,6 +11,18 @@ class MultiredditTest(PRAWTest):
         self.r.login(self.un, self.un_pswd, disable_warning=True)
 
     @betamax
+    def test_add_and_remove_subreddit(self):
+        multi = self.r.user.get_multireddits()[0]
+        self.assertTrue(self.sr in (x['name'] for x in multi.subreddits))
+        multi.remove_subreddit(self.sr)
+        multi.refresh()
+
+        self.assertFalse(self.sr in (x['name'] for x in multi.subreddits))
+        multi.add_subreddit(self.sr)
+        multi.refresh()
+        self.assertTrue(self.sr in (x['name'] for x in multi.subreddits))
+
+    @betamax
     def test_create_and_delete_multireddit(self):
         name = 'PRAW_{0}'.format(self.r.modhash)[:15]
         multi = self.r.create_multireddit(name)
@@ -18,7 +30,7 @@ class MultiredditTest(PRAWTest):
         self.assertEqual([], multi.subreddits)
 
         multi.delete()
-        self.assertRaises(errors.NotFound, self.r.user.get_multireddit, name)
+        self.assertRaises(errors.NotFound, multi.refresh)
 
     @betamax
     def test_get_my_multis(self):
@@ -27,9 +39,10 @@ class MultiredditTest(PRAWTest):
         self.assertEqual([], multi.subreddits)
 
     @betamax
-    def test_get_multireddit_from_user(self):
+    def test_get_multireddit(self):
         multi = self.r.user.get_multireddit('publicempty')
-        self.assertEqual(self.r.user, multi.author)
+        self.assertEqual('/user/{0}/m/{1}'.format(self.un, 'publicempty'),
+                         multi.path)
 
     @betamax
     def test_multireddit_get_new(self):
