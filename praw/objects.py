@@ -1214,6 +1214,20 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         data = {'id': self.fullname, 'state': state}
         return self.reddit_session.request_json(url, data=data)
 
+    @restrict_access(scope='modposts')
+    def set_suggested_sort(self, sort='blank'):
+        """Set 'Suggested Sort' for the comments of the submission.
+
+        Comments can be sorted in one of (confidence, top, new, hot,
+            controversial, old, random, qa, blank).
+
+        :returns: The json response from the server.
+
+        """
+        url = self.reddit_session.config['suggested_sort']
+        data = {'id': self.fullname, 'sort': sort}
+        return self.reddit_session.request_json(url, data=data)
+
     @property
     def short_link(self):
         """Return a short link to the submission.
