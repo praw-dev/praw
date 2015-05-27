@@ -171,7 +171,7 @@ class Config(object):  # pylint: disable=R0903
                  'subreddit_random':    'r/%s/random/',
                  'subreddit_settings':  'r/%s/about/edit/',
                  'subscribe':           'api/subscribe/',
-                 'suggested_sort':      'api/set_suggested_sort',
+                 'suggested_sort':      'api/set_suggested_sort/',
                  'top':                 'top/',
                  'unfriend':            'api/unfriend/',
                  'unhide':              'api/unhide/',
