@@ -1986,22 +1986,22 @@ class MultiredditMixin(AuthenticatedReddit):
         :param name: The name of the new multireddit.
         :param description_md: Optional description for the multireddit,
             formatted in markdown.
-        :param icon_name: Optional, choose an icon name from this list:
-            `art and design`, `ask`, `books`, `business`, `cars`,
-            `comics`, `cute animals`, `diy`, `entertainment`,
-            `food and drink`, `funny`, `games`, `grooming`, `health`,
-            `life advice`, `military`, `models pinup`, `music`, `news`,
-            `philosophy`, `pictures and gifs`, `science`, `shopping`,
-            `sports`, `style`, `tech`, `travel`, `unusual stories`, `video`,
-            ``, `None`
+        :param icon_name: Optional, choose an icon name from this list: ``art
+            and design``, ``ask``, ``books``, ``business``, ``cars``,
+            ``comics``, ``cute animals``, ``diy``, ``entertainment``, ``food
+            and drink``, ``funny``, ``games``, ``grooming``, ``health``, ``life
+            advice``, ``military``, ``models pinup``, ``music``, ``news``,
+            ``philosophy``, ``pictures and gifs``, ``science``, ``shopping``,
+            ``sports``, ``style``, ``tech``, ``travel``, ``unusual stories``,
+            ``video``, or ``None``.
         :param key_color: Optional rgb hex color code of the form `#xxxxxx`.
         :param subreddits: Optional list of subreddit names or Subreddit
             objects to initialize the Multireddit with. You can always
             add more later with :meth:`Multireddit.add_subreddit`.
         :param visibility: Choose a privacy setting from this list:
-            `public`, `private`, `hidden`. Defaults to private if blank.
+            ``public``, ``private``, ``hidden``. Defaults to private if blank.
         :param weighting_scheme: Choose a weighting scheme from this list:
-            `classic`, `fresh`. Defaults to classic if blank.
+            ``classic``, ``fresh``. Defaults to classic if blank.
         :param overwrite: Allow for overwriting / updating multireddits.
             If False, and the multi name already exists, throw 409 error.
             If True, and the multi name already exists, use the given

@@ -128,9 +128,10 @@ variables are:
 * *oauth_refresh_token:* A **string** that, if given, defines the
   ``refresh_token`` a reddit object is initialized with. If *oauth_client_id*,
   *oauth_client_secret*, and *oauth_redirect_uri* are also given, then
-  :meth:`.refresh_access_information` can be run with no arguments to acquire
-  new access information without first running :meth:`.get_authorize_url` and
-  :meth:`.get_access_information`.
+  :meth:`~praw.__init__.AuthenticatedReddit.refresh_access_information` can be
+  run with no arguments to acquire new access information without first running
+  :meth:`.get_authorize_url` and
+  :meth:`~praw.__init__.AuthenticatedReddit.get_access_information`.
 
 Note: The tracking for *api_request_delay* and *cache_timeout* is on a
 per-domain, not per-site, basis. Essentially, this means that the time since
