@@ -1221,7 +1221,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         Comments can be sorted in one of (confidence, top, new, hot,
             controversial, old, random, qa, blank).
 
-        :returns: The json respones from the server.
+        :returns: The json response from the server.
 
         """
         url = self.reddit_session.config['suggested_sort']
