@@ -378,6 +378,9 @@ class BaseReddit(object):
                 response = self.handler.request(request=request.prepare(),
                                                 proxies=self.http.proxies,
                                                 timeout=timeout, **kwargs)
+                if self.config.log_requests >= 2:
+                    sys.stderr.write('status: {0}\n'
+                                     .format(response.status_code))
                 url = _raise_redirect_exceptions(response)
                 assert url != request.url
             return response
@@ -1944,6 +1947,8 @@ class MultiredditMixin(AuthenticatedReddit):
 
     """
 
+    MULTI_PATH = '/user/{0}/m/{1}'
+
     @decorators.restrict_access(scope='subscribe')
     def copy_multireddit(self, from_redditor, from_name, to_name=None,
                          *args, **kwargs):
@@ -1963,16 +1968,13 @@ class MultiredditMixin(AuthenticatedReddit):
         if to_name is None:
             to_name = from_name
 
-        from_multipath = '/user/{0}/m/{1}'.format(from_redditor, from_name)
-        to_multipath = '/user/{0}/m/{1}'.format(self.user.name, to_name)
-
-        url = self.config['multireddit_copy']
-        data = {
-            'display_name': to_name,
-            'from': from_multipath,
-            'to': to_multipath
-        }
-        return self.request_json(url, data=data, *args, **kwargs)
+        from_multipath = self.MULTI_PATH.format(from_redditor, from_name)
+        to_multipath = self.MULTI_PATH.format(self.user.name, to_name)
+        data = {'display_name': to_name,
+                'from': from_multipath,
+                'to': to_multipath}
+        return self.request_json(self.config['multireddit_copy'], data=data,
+                                 *args, **kwargs)
 
     @decorators.restrict_access(scope='subscribe')
     def create_multireddit(self, name, description_md=None, icon_name=None,
@@ -2042,24 +2044,13 @@ class MultiredditMixin(AuthenticatedReddit):
             del self.http.headers['x-modhash']
 
     @decorators.restrict_access(scope='subscribe')
-    def edit_multireddit(self, name, description=None, icon_name=None,
-                         key_color=None, subreddits=None, visibility=None,
-                         weighting_scheme=None,
-                         *args, **kwargs):
-        """Create a multireddit, or edit it if it already exists.
+    def edit_multireddit(self, *args, **kwargs):
+        """Edit a multireddit, or create one if it doesn't already exist.
 
-        See :meth:`create_multireddit` for parameter notes.
+        See :meth:`create_multireddit` for accepted parameters.
 
         """
-        return self.create_multireddit(name=name,
-                                       description=description,
-                                       icon_name=icon_name,
-                                       key_color=key_color,
-                                       subreddits=subreddits,
-                                       visibility=visibility,
-                                       weighting_scheme=weighting_scheme,
-                                       overwrite=True,
-                                       *args, **kwargs)
+        return self.create_multireddit(*args, overwrite=True, **kwargs)
 
     def get_multireddit(self, redditor, multi, *args, **kwargs):
         """Return a Multireddit object for the author and name specified.
@@ -2072,8 +2063,8 @@ class MultiredditMixin(AuthenticatedReddit):
         :class:`.Multireddit` constructor.
 
         """
-        redditor = six.text_type(redditor)
-        return objects.Multireddit(self, redditor, multi, *args, **kwargs)
+        return objects.Multireddit(self, six.text_type(redditor), multi,
+                                   *args, **kwargs)
 
     def get_multireddits(self, redditor, *args, **kwargs):
         """Return a list of multireddits belonging to a redditor.
@@ -2103,15 +2094,12 @@ class MultiredditMixin(AuthenticatedReddit):
         :meth:`request_json`
 
         """
-        url = self.config['multireddit_rename']
-        current_multipath = '/user/%s/m/%s' % (self.user.name, current_name)
-        new_multipath = '/user/%s/m/%s' % (self.user.name, new_name)
-        data = {
-            'display_name': new_name,
-            'from': current_multipath,
-            'to': new_multipath
-        }
-        return self.request_json(url, data=data, *args, **kwargs)
+        current_path = self.MULTI_PATH.format(self.user.name, current_name)
+        new_path = self.MULTI_PATH.format(self.user.name, new_name)
+        data = {'from': current_path,
+                'to': new_path}
+        return self.request_json(self.config['multireddit_rename'], data=data,
+                                 *args, **kwargs)
 
 
 class MySubredditsMixin(AuthenticatedReddit):

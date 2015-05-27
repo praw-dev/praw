@@ -1524,7 +1524,7 @@ class Multireddit(Refreshable):
         """Edit this multireddit.
 
         Convenience function that utilizes
-        :meth:`.MultiredditMixin.copy_multireddit` populating the `name`
+        :meth:`.MultiredditMixin.edit_multireddit` populating the `name`
         parameter.
 
         """
@@ -1544,9 +1544,10 @@ class Multireddit(Refreshable):
         :meth:`rename_multireddit` of the reddit_session.
 
         """
-        self.reddit_session.rename_multireddit(self.name, new_name,
-                                               *args, **kwargs)
-        self.refresh()
+        new = self.reddit_session.rename_multireddit(self.name, new_name,
+                                                     *args, **kwargs)
+        self.__dict__ = new.__dict__  # pylint: disable=W0201
+        return self
 
 
 class PRAWListing(RedditContentObject):
