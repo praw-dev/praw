@@ -40,6 +40,7 @@ from praw.internal import (_prepare_request, _raise_redirect_exceptions,
 from praw.settings import CONFIG
 from requests import Session
 from requests.compat import urljoin
+from requests.utils import to_native_string
 from requests import Request
 # pylint: disable=F0401
 from six.moves import html_entities, http_cookiejar
@@ -1572,9 +1573,10 @@ class ModConfigMixin(AuthenticatedReddit):
                 if not name:
                     name = os.path.splitext(os.path.basename(image.name))[0]
                 data['name'] = name
+
             response = json.loads(self._request(
                 self.config['upload_image'], data=data, files={'file': image},
-                retry_on_error=False))
+                method=to_native_string('POST'), retry_on_error=False))
 
         if response['errors']:
             raise errors.APIException(response['errors'], None)

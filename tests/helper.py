@@ -90,12 +90,6 @@ class PRAWTest(unittest.TestCase):
         return urljoin(self.r.config.permalink_url, path)
 
 
-class AuthenticatedHelper(PRAWTest):
-    def configure(self):
-        super(AuthenticatedHelper, self).configure()
-        self.r.login(self.un, self.un_pswd, disable_warning=True)
-
-
 Betamax.register_request_matcher(BodyMatcher)
 with Betamax.configure() as config:
     if os.getenv('TRAVIS'):

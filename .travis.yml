@@ -17,5 +17,5 @@ script:
   - flake8 praw
   - flake8 tests
   - pep257 praw
-  - coverage run --source=praw setup.py test -s tests.travis_suite
+  - coverage run --source=praw setup.py test
 after_success: coveralls
