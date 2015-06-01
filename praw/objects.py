@@ -331,15 +331,7 @@ class Hideable(RedditContentObject):
         :returns: The json response from the server.
 
         """
-        url = self.reddit_session.config['unhide' if unhide else 'hide']
-        data = {'id': self.fullname,
-                'executed': 'unhide' if unhide else 'hide'}
-        response = self.reddit_session.request_json(url, data=data)
-        # pylint: disable=W0212
-        urls = [urljoin(self.reddit_session.user._url, 'hidden')]
-        # pylint: enable=W0212
-        self.reddit_session.evict(urls)
-        return response
+        return self.reddit_session.hide(self.fullname, unhide=unhide)
 
     def unhide(self):
         """Unhide object in the context of the logged in user.
