@@ -2310,26 +2310,26 @@ class ReportMixin(AuthenticatedReddit):
     """
 
     @decorators.restrict_access(scope='report')
-    def hide(self, thing_id, unhide=False):
+    def hide(self, thing_id, _unhide=False):
         """Hide up to 50 objects in the context of the logged in user.
 
         :param thing_id: A single fullname or list of fullnames,
             representing objects which will be hidden.
-        :param unhide: If True, unhide the object(s) instead.
+        :param _unhide: If True, unhide the object(s) instead.
+            Use :meth:`unhide` rather than setting this manually.
 
         :returns: The json response from the server.
 
         """
         if not isinstance(thing_id, six.string_types):
             thing_id = ','.join(thing_id)
-        method = 'unhide' if unhide else 'hide'
+        method = 'unhide' if _unhide else 'hide'
         url = self.config[method]
         data = {'id': thing_id,
                 'executed': method}
         response = self.request_json(url, data=data)
-        urls = [urljoin(self.user._url, 'hidden')]
         # pylint: enable=W0212
-        self.evict(urls)
+        self.evict([urljoin(self.user._url, 'hidden')])
         return response
 
     def unhide(self, thing_id):
@@ -2341,7 +2341,7 @@ class ReportMixin(AuthenticatedReddit):
         :returns: The json response from the server.
 
         """
-        return self.hide(thing_id, unhide=True)
+        return self.hide(thing_id, _unhide=True)
 
 
 class SubmitMixin(AuthenticatedReddit):
