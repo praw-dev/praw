@@ -324,22 +324,17 @@ class Hideable(RedditContentObject):
 
     """Interface for objects that can be hidden."""
 
-    @restrict_access(scope=None, login=True)
-    def hide(self, unhide=False):
+    @restrict_access(scope='report')
+    def hide(self, _unhide=False):
         """Hide object in the context of the logged in user.
+
+        :param _unhide: If True, unhide the item instead.
+            Use :meth:`unhide` instead of setting this manually.
 
         :returns: The json response from the server.
 
         """
-        url = self.reddit_session.config['unhide' if unhide else 'hide']
-        data = {'id': self.fullname,
-                'executed': 'unhide' if unhide else 'hide'}
-        response = self.reddit_session.request_json(url, data=data)
-        # pylint: disable=W0212
-        urls = [urljoin(self.reddit_session.user._url, 'hidden')]
-        # pylint: enable=W0212
-        self.reddit_session.evict(urls)
-        return response
+        return self.reddit_session.hide(self.fullname, _unhide=_unhide)
 
     def unhide(self):
         """Unhide object in the context of the logged in user.
@@ -347,7 +342,7 @@ class Hideable(RedditContentObject):
         :returns: The json response from the server.
 
         """
-        return self.hide(unhide=True)
+        return self.hide(_unhide=True)
 
 
 class Inboxable(RedditContentObject):

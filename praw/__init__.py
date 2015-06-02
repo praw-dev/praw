@@ -2300,6 +2300,50 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         return response
 
 
+class ReportMixin(AuthenticatedReddit):
+
+    """Adds methods requiring the 'report' scope (or login).
+
+    You should **not** directly instantiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
+
+    @decorators.restrict_access(scope='report')
+    def hide(self, thing_id, _unhide=False):
+        """Hide up to 50 objects in the context of the logged in user.
+
+        :param thing_id: A single fullname or list of fullnames,
+            representing objects which will be hidden.
+        :param _unhide: If True, unhide the object(s) instead.
+            Use :meth:`unhide` rather than setting this manually.
+
+        :returns: The json response from the server.
+
+        """
+        if not isinstance(thing_id, six.string_types):
+            thing_id = ','.join(thing_id)
+        method = 'unhide' if _unhide else 'hide'
+        url = self.config[method]
+        data = {'id': thing_id,
+                'executed': method}
+        response = self.request_json(url, data=data)
+        # pylint: enable=W0212
+        self.evict([urljoin(self.user._url, 'hidden')])
+        return response
+
+    def unhide(self, thing_id):
+        """Unhide up to 50 objects in the context of the logged in user.
+
+        :param thing_id: A single fullname or list of fullnames,
+            representing objects which will be unhidden.
+
+        :returns: The json response from the server.
+
+        """
+        return self.hide(thing_id, _unhide=True)
+
+
 class SubmitMixin(AuthenticatedReddit):
 
     """Adds methods requiring the 'submit' scope (or login).
@@ -2415,7 +2459,7 @@ class SubscribeMixin(AuthenticatedReddit):
 
 class Reddit(ModConfigMixin, ModFlairMixin, ModLogMixin, ModOnlyMixin,
              MultiredditMixin, MySubredditsMixin, PrivateMessagesMixin,
-             SubmitMixin, SubscribeMixin):
+             ReportMixin, SubmitMixin, SubscribeMixin):
 
     """Provides access to reddit's API.
 
