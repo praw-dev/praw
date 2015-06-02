@@ -55,9 +55,10 @@ Unreleased
  * **[FEATURE]** Added ``method`` as optional parameter to
    :meth:`request_json`, so that a request method other than 'POST' can be
    specified.
- * **[FEATURE]** Added :meth:`hide` and :meth:`unhide`, which accept up to 50
-   fullnames to be hidden at one time. The appropriate methods in
-   :class:`objects.Hideable` now point here instead.
+ * **[FEATURE]** Added :meth:`praw.__init__.ReportMixin.hide` and
+   :meth:`praw.__init__.ReportMixin.unhide`, which accept up to 50 fullnames to
+   be hidden at one time. The appropriate methods in :class:`objects.Hideable`
+   now point here instead.
  * **[REDDIT]** Removed ``send_feedback`` as it is no longer supported by
    reddit.
  * **[REDDIT]** Added ``DeprecationWarning`` to :meth:`login` as reddit will
@@ -629,8 +630,8 @@ PRAW 1.0.16
 PRAW 1.0.15
 -----------
 
- * **[FEATURE]** Added the functions :meth:`.hide` and :meth:`.unhide` to
-   :class:`.Submission`.
+ * **[FEATURE]** Added the functions :meth:`~praw.objects.Hideable` and
+   :meth:`~praw.objects.Hideable.unhide` to :class:`.Submission`.
  * **[FEATURE]** Added function :meth:`.is_username_available` to
    :class:`.Reddit`.
 

@@ -2315,8 +2315,9 @@ class ReportMixin(AuthenticatedReddit):
 
         :param thing_id: A single fullname or list of fullnames,
             representing objects which will be hidden.
-        :param _unhide: If True, unhide the object(s) instead.
-            Use :meth:`unhide` rather than setting this manually.
+        :param _unhide: If True, unhide the object(s) instead.  Use
+            :meth:`~praw.__init__.ReportMixin.unhide` rather than setting this
+            manually.
 
         :returns: The json response from the server.
 
@@ -2324,12 +2325,10 @@ class ReportMixin(AuthenticatedReddit):
         if not isinstance(thing_id, six.string_types):
             thing_id = ','.join(thing_id)
         method = 'unhide' if _unhide else 'hide'
-        url = self.config[method]
         data = {'id': thing_id,
                 'executed': method}
-        response = self.request_json(url, data=data)
-        # pylint: enable=W0212
-        self.evict([urljoin(self.user._url, 'hidden')])
+        response = self.request_json(self.config[method], data=data)
+        self.evict(urljoin(self.user._url, 'hidden'))  # pylint: disable=W0212
         return response
 
     def unhide(self, thing_id):

@@ -328,8 +328,9 @@ class Hideable(RedditContentObject):
     def hide(self, _unhide=False):
         """Hide object in the context of the logged in user.
 
-        :param _unhide: If True, unhide the item instead.
-            Use :meth:`unhide` instead of setting this manually.
+        :param _unhide: If True, unhide the item instead.  Use
+            :meth:`~praw.objects.Hideable.unhide` instead of setting this
+            manually.
 
         :returns: The json response from the server.
 
