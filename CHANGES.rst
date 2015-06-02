@@ -55,13 +55,13 @@ Unreleased
  * **[FEATURE]** Added ``method`` as optional parameter to
    :meth:`request_json`, so that a request method other than 'POST' can be
    specified.
+ * **[FEATURE]** Added :meth:`hide` and :meth:`unhide`, which accept up to 50
+   fullnames to be hidden at one time. The appropriate methods in
+   :class:`objects.Hideable` now point here instead.
  * **[REDDIT]** Removed ``send_feedback`` as it is no longer supported by
    reddit.
  * **[REDDIT]** Added ``DeprecationWarning`` to :meth:`login` as reddit will
    stop supporting cookie-based authentication on 2015/08/03.
- * **[FEATURE]** Added :meth:`hide` and :meth:`unhide`, which accept up to 50
-   fullnames to be hidden at one time. The appropriate methods in
-   :class:`objects.Hideable` now point here instead.
 
 PRAW 2.1.21
 -----------
