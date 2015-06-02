@@ -88,17 +88,6 @@ class AuthenticatedRedditTest(PRAWTest):
         sub = self.r.get_subreddit(self.sr)
         new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 1}))
 
-        # Individuals first...
-        submission = new[0]
-
-        submission.hide()
-        self.assertTrue(submission.refresh().hidden)
-
-        submission.unhide()
-        self.assertFalse(submission.refresh().hidden)
-
-        # Now groups.
-        # Increment count to bypass cache.
         self.r.hide([item.fullname for item in new])
         new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 2}))
         self.assertTrue(all(item.hidden for item in new))
