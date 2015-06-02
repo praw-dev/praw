@@ -86,26 +86,27 @@ class AuthenticatedRedditTest(PRAWTest):
     @betamax
     def test_submission_hide_and_unhide_batch(self):
         sub = self.r.get_subreddit(self.sr)
-        new = list(sub.get_new(limit=5, params={'show':'all', 'count': 1}))
+        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 1}))
 
         # Individuals first...
-        item = new[0]
-        
-        item.hide()
-        self.assertTrue(item.refresh().hidden)
+        submission = new[0]
 
-        item.unhide()
-        self.assertFalse(item.refresh().hidden)
+        submission.hide()
+        self.assertTrue(submission.refresh().hidden)
+
+        submission.unhide()
+        self.assertFalse(submission.refresh().hidden)
 
         # Now groups.
         # Increment count to bypass cache.
         self.r.hide([item.fullname for item in new])
-        new = list(sub.get_new(limit=5, params={'show':'all', 'count': 2}))
+        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 2}))
         self.assertTrue(all(item.hidden for item in new))
 
         self.r.unhide([item.fullname for item in new])
-        new = list(sub.get_new(limit=5, params={'show':'all', 'count': 3}))
+        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 3}))
         self.assertTrue(not any(item.hidden for item in new))
+
 
 class ModFlairMixinTest(PRAWTest):
     def betamax_init(self):
