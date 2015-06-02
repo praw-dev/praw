@@ -133,6 +133,10 @@ this page to add in more.
     Fetches username mentions and converts the comment data into a QR code. The
     code is then posted via ASCII characters as a followup comment.
 
+`EVE Killmail Reddit Bot`_ by `ArnoldM904 <https://github.com/ArnoldM904>`_
+    Searches for comments in /r/eve that contain zkillboard killmail links.
+    Then replies to comments with web-scraped TL;DR of the information.
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -161,6 +165,7 @@ them to work with the latest version.
 .. _`ALTcointip`: https://github.com/vindimy/altcointip
 .. _`AutoModerator`: https://github.com/Deimos/AutoModerator
 .. _`Butcher bot`: https://github.com/xiphirx/Butcher-Bot
+.. _`EVE Killmail Reddit Bot`: https://github.com/ArnoldM904/EK_Reddit_Bot
 .. _`Groompbot`: https://github.com/AndrewNeo/groompbot
 .. _`NetflixBot`: http://github.com/alanwright/netflixbot
 .. _`PRAWtools`: https://github.com/praw-dev/prawtools
