@@ -86,10 +86,10 @@ Why does the karma change from run to run?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This inconsistency is due to `reddit's obfuscation
-<http://ww.reddit.com/help/faqs/
-help#Whydothenumberofvoteschangewhenyoureloadapage>`_ of the upvotes and
-downvotes. The obfuscation is done to everything and everybody to thwart
-potential cheaters. There's nothing we can do to prevent this.
+<https://www.reddit.com/wiki/faq#wiki_how_is_a_submission.27s_score_determined.3F>`_
+of the upvotes and downvotes. The obfuscation is done to everything and
+everybody to thwart potential cheaters. There's nothing we can do to prevent
+this.
 
 .. _report_an_issue:
 

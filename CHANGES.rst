@@ -215,7 +215,7 @@ PRAW 2.1.11
  * **[BUGFIX]** The ``history`` scope is not required for
    :meth:`~praw.objects.Redditor.get_comments`, :meth:`.get_overview` and
    :meth:`.get_submitted` despite the official `reddit documentation
-   <http://www.reddit.com/dev/api#GET_user_{username}_{where}>`_ saying so.
+   <https://www.reddit.com/dev/api#GET_user_{username}_submitted>`_ saying so.
    Redditors may choose to make their voting record public, in which case no
    authentication is required for :meth:`.get_disliked` or :meth:`.get_liked`.
    The ``history`` scope requirement for the above-mentioned methods has been
@@ -388,7 +388,7 @@ PRAW 2.0.15
 -----------
 
  * **[FEATURE]** PRAW can now use a proxy server, see `#206
-   <https://github.com/praw-dev/praw/issues/206>`_. The parameter
+   <https://github.com/praw-dev/praw/pull/206>`_. The parameter
    ``http_proxy`` (optional) has been added to the configuration file to define
    a proxy server in the form host:ip or http://login:user@host:ip.
 
@@ -499,9 +499,10 @@ PRAW 2.0.8
 PRAW 2.0.7
 ----------
 
- * **[REDDIT]** A `reddit update <http://www.redd.it/17oer0>`_ broke PRAW's
-   ability to use :meth:`.login` if it was authenticated as a logged-in user.
-   This update adds the ability to re-login.
+ * **[REDDIT]** A `reddit update
+   <http://www.reddit.com/r/redditdev/comments/17oer0/api_change_login_requests_containing_a_session/>`_
+   broke PRAW's ability to use :meth:`.login` if it was authenticated as a
+   logged-in user.  This update adds the ability to re-login.
  * **[CHANGE]** :meth:`~.Subreddit.get_flair_list` can now be used when
    logged-in as a regular user, being logged in as a mod of the subreddit is no
    longer required.
@@ -596,8 +597,7 @@ PRAW 2.0.0
    instead.
  * **[CHANGE]** Remove depreciated method ``compose_message``.
  * **[CHANGE]** Refactored and add a number of exception classes (`docs
-   <https://python-reddit-api-wrapper.readthedocs.org/en/latest/
-   praw.html#module-praw.errors>`_,
+   <https://praw.readthedocs.org/en/latest/pages/code_overview.html#module-praw.errors>`_,
    `source <https://github.com/praw-dev/praw/blob/master/praw/errors.py>`_)
    This includes the renaming of:
 

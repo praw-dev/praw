@@ -38,7 +38,7 @@ References And Other Relevant Pages
 * `reddit Markdown Primer
   <https://www.reddit.com/r/reddit.com/comments/6ewgt/reddit_markdown_primer_or
   _how_do_you_do_all_that/c03nik6>`_
-* `reddit.com's FAQ <https://www.reddit.com/help/faq>`_
+* `reddit.com's FAQ <https://www.reddit.com/wiki/faq>`_
 * `reddit.com's Status Twitterbot <https://twitter.com/redditstatus/>`_.
   Tweets when reddit goes up or down
 * `r/changelog <https://www.reddit.com/r/changelog/>`_. Significant changes to

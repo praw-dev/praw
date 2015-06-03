@@ -258,10 +258,10 @@ class Config(object):  # pylint: disable=R0903
 
     @property
     def short_domain(self):
-        """Return the short domain of the reddit.
+        """Return the short domain of the reddit server.
 
         Used to generate the shortlink. For reddit.com the short_domain is
-        redd.it and generate shortlinks like http://redd.it/y3r8u
+        redd.it.
 
         """
         if self._short_domain:
@@ -735,7 +735,7 @@ class UnauthenticatedReddit(BaseReddit):
         """Return a get_content generator for controversial submissions.
 
         Corresponds to submissions provided by
-        http://www.reddit.com/controversial/ for the session.
+        ``https://www.reddit.com/controversial/`` for the session.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
@@ -749,7 +749,7 @@ class UnauthenticatedReddit(BaseReddit):
         """Return a get_content generator for submissions by domain.
 
         Corresponds to the submissions provided by
-        http://www.reddit.com/domain/{domain}.
+        ``https://www.reddit.com/domain/{domain}``.
 
         :param domain: The domain to generate a submission listing for.
         :param sort: When provided must be one of 'hot', 'new', 'rising',
@@ -802,8 +802,8 @@ class UnauthenticatedReddit(BaseReddit):
     def get_front_page(self, *args, **kwargs):
         """Return a get_content generator for the front page submissions.
 
-        Corresponds to the submissions provided by http://www.reddit.com/ for
-        the session.
+        Corresponds to the submissions provided by ``https://www.reddit.com/``
+        for the session.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
@@ -858,8 +858,8 @@ class UnauthenticatedReddit(BaseReddit):
     def get_new(self, *args, **kwargs):
         """Return a get_content generator for new submissions.
 
-        Corresponds to the submissions provided by http://www.reddit.com/new/
-        for the session.
+        Corresponds to the submissions provided by
+        ``https://www.reddit.com/new/`` for the session.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
@@ -935,7 +935,7 @@ class UnauthenticatedReddit(BaseReddit):
         """Return a get_content generator for rising submissions.
 
         Corresponds to the submissions provided by
-        http://www.reddit.com/rising/ for the session.
+        ``https://www.reddit.com/rising/`` for the session.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
@@ -1027,8 +1027,8 @@ class UnauthenticatedReddit(BaseReddit):
     def get_top(self, *args, **kwargs):
         """Return a get_content generator for top submissions.
 
-        Corresponds to the submissions provided by http://www.reddit.com/top/
-        for the session.
+        Corresponds to the submissions provided by
+        ``https://www.reddit.com/top/`` for the session.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
@@ -1072,7 +1072,7 @@ class UnauthenticatedReddit(BaseReddit):
         :meth:`.get_content`. Note: the `url` and `param` parameters cannot be
         altered.
 
-        See http://www.reddit.com/help/search for more information on how to
+        See https://www.reddit.com/wiki/search for more information on how to
         build a search query.
 
         """

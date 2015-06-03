@@ -6,7 +6,7 @@ Getting Started
 In this tutorial we'll go over everything needed to create a bot or program
 using reddit's API through the Python Reddit API Wrapper (PRAW). We're going to
 write a program that breaks down a redditor's karma by subreddit, just like the
-`reddit gold <http://www.reddit.com/help/gold>`_ feature. Unlike that, our
+`reddit gold <https://www.reddit.com/gold/about>`_ feature. Unlike that, our
 program can break it down for any redditor, not just us. However, it will be
 less precise due to limitations in the reddit API, but we're getting ahead of
 ourselves.
@@ -107,10 +107,11 @@ subreddit submission listings, user submission listings, and user comment
 listings.
 
 You may also have realized that the karma values change from run to run. This
-inconsistency is due to `reddit's obfuscation <http://ww.reddit.com/help/faqs/
-help#Whydothenumberofvoteschangewhenyoureloadapage>`_ of the upvotes and
-downvotes. The obfuscation is done to everything and everybody to thwart
-potential cheaters. There's nothing we can do to prevent this.
+inconsistency is due to `reddit's obfuscation
+<https://www.reddit.com/wiki/faq#wiki_how_is_a_submission.27s_score_determined.3F>`_
+of the upvotes and downvotes. The obfuscation is done to everything and
+everybody to thwart potential cheaters. There's nothing we can do to prevent
+this.
 
 Another thing you may have noticed is that retrieving a lot of elements take
 time. reddit allows requests of up to 100 items at once. So if you request <=

@@ -48,7 +48,7 @@ Installation
 ------------
 
 PRAW works with python 2.6, 2.7, 3.1, 3.2, 3.3, and 3.4. The recommended way to
-install is via `pip <http://pypi.python.org/pypi/pip>`_
+install is via `pip <https://pypi.python.org/pypi/pip>`_
 
 .. code-block:: bash
 
@@ -64,7 +64,7 @@ There is also a `Stack overflow question on installing pip on Windows
 that might prove helpful.
 
 Alternatively you can do it via
-`easy_install <http://pypi.python.org/pypi/setuptools>`_
+`easy_install <https://pypi.python.org/pypi/setuptools>`_
 
 .. code-block:: bash
 

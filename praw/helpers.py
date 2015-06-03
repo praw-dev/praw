@@ -197,7 +197,7 @@ def convert_numeric_id_to_id36(numeric_id):
 
     https://github.com/reddit/reddit/blob/master/r2/r2/lib/utils/_utils.pyx
     http://www.reddit.com/r/redditdev/comments/n624n/submission_ids_question/
-    http://en.wikipedia.org/wiki/Base_36#Python_implementation
+    http://en.wikipedia.org/wiki/Base36
     """
     # base36 allows negative numbers, but reddit does not
     if not isinstance(numeric_id, six.integer_types) or numeric_id < 0:

@@ -63,13 +63,7 @@ this page to add in more.
     through a Google Documents form, then the bot crawls said form, posting the
     appropriate challenge on the appropriate day of the week.
 
-`DailyPromptBot <http://hg.arenthil.net/dailypromptbot>`_
-    The management bot for the `r/TheDailyPrompt
-    <http://www.reddit.com/r/TheDailyPrompt>`_ reddit community. Main functions
-    include managing a queue of prompts, posting prompts daily, and posting
-    suggestion threads weekly.
-
-`VideoLinkBot`_ by `u/shaggorama <http://www.reddit.com/u/shaggorama>`_
+`VideoLinkBot`_ by `u/shaggorama <http://www.reddit.com/user/shaggorama>`_
     A bot that aggregates video links in a response comment where multiple
     videos links appear in reply to a submission (uses a slightly out-of-date
     version of PRAW, currently requires ``Submission.all_comments_flat``).
@@ -88,31 +82,31 @@ this page to add in more.
     ALTcointip bot allows redditors to gift (tip) various cryptocoins
     (Litecoin, PPCoin, Namecoin, etc) to each other as a way of saying thanks.
 
-`RedditAgain`_ by `Karan Goel <http://www.github.com/thekarangoel>`_
+`RedditAgain`_ by `Karan Goel <https://github.com/karan>`_
     Migrate an old reddit account to a new one. Backs up existing content and
     submissions, and copies subscriptions to a new account.
 
-`reddit-cloud`_ by `Paul Nechifor <http://www.github.com/paul-nechifor>`_
+`reddit-cloud`_ by `Paul Nechifor <https://github.com/paul-nechifor>`_
     Generates word clouds for submissions (or users), posts them to Imgur and
     the URL to reddit. It's what I run on
     `u/WordCloudBot2 <http://www.reddit.com/user/WordCloudBot2>`_.
 
-`Reddit-to-Diigo-Copier`_ by `Doug <http://www.github.com/OdinsHat>`_
+`Reddit-to-Diigo-Copier`_ by `Doug <https://github.com/OdinsHat>`_
     Copies your reddit saved links to a Diigo account of your choice. Makes use
     of PRAW and the Diigo API.
 
-`NetflixBot`_ by `Alan Wright <http://www.github.com/alanwright>`_
+`NetflixBot`_ by `Alan Wright <https://github.com/alanwright>`_
     Parses comments for calls and determines if a movie is availble for
     streaming on Netflix. Makes use of PRAW and the NetflixRouletteAPI. Run on
     `u/NetflixBot <http://www.reddit.com/user/NetflixBot>`_.
 
-`RemindMeBot`_ by `Joey <http://www.github.com/Silver-->`_
+`RemindMeBot`_ by `Joey <https://github.com/Silver-->`_
     Called upon with the ``RemindMeBot!`` command on any subreddit, the user is
     able to set a reminder for themselves about the current thread or comment.
     The bot will then send them a private message with the date they specified.
     `u/RemindMeBot <http://www.reddit.com/user/RemindMeBot>`_.
 
-`Massdrop Multi Bot <http://github.com/darkmio/Massdrop-Reddit-Bot>`_
+`Massdrop Multi Bot <https://github.com/darkmio/Massdrop-Reddit-Bot>`_
     A bot which made Massdrop available for everyone and then grew into an
     assortment of different fixes for links that regularly get mistakenly used,
     like Gfycat, Massdrop and Subreddit-Names in titles.
@@ -141,24 +135,6 @@ this page to add in more.
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
 
-**Note:** The following use very outdated versions of the API. Don't expect
-them to work with the latest version.
-
-`comment tracker <https://github.com/mellort/reddit_comment_tracker>`_
-    Repeatedly looks at new reddit comments and can take an action if they meet
-    a specified condition. The example use I gave is replying with an automated
-    message if the body of a comment contains a certain word. <Novelty
-    accounts, anyone?>
-
-`account cloner <https://github.com/mellort/reddit_account_cloner>`_
-    Given two logins and passwords, it will transfer all of the saved links and
-    subscribed subreddits from the first account to the second.
-
-`comment generator <https://github.com/mellort/reddit_comment_bot>`_
-    Pulls comments from reddit, puts them in a Markov chain, and periodically
-    outputs random statuses. The statuses can be viewed `here
-    <http://identi.ca/redditbot/all>`_.
-
 
 .. Please keep this list of links lexicographically sorted
 .. _`AlienFeed`: https://github.com/jawerty/AlienFeed
@@ -167,14 +143,14 @@ them to work with the latest version.
 .. _`Butcher bot`: https://github.com/xiphirx/Butcher-Bot
 .. _`EVE Killmail Reddit Bot`: https://github.com/ArnoldM904/EK_Reddit_Bot
 .. _`Groompbot`: https://github.com/AndrewNeo/groompbot
-.. _`NetflixBot`: http://github.com/alanwright/netflixbot
+.. _`NetflixBot`: https://github.com/alanwright/netflixbot
 .. _`PRAWtools`: https://github.com/praw-dev/prawtools
 .. _`Reddit Keyword Tracking Bot`:
      https://github.com/SwedishBotMafia/RScanBot.Gen
 .. _`Reddit-Paper` : https://github.com/cameron-gagnon/reddit-paper
 .. _`Reddit-to-Diigo-Copier`:
-     http://www.github.com/OdinsHat/Reddit-to-Diigo-Copier
-.. _`RedditAgain`: https://github.com/thekarangoel/RedditAgain
+     https://github.com/OdinsHat/Reddit-to-Diigo-Copier
+.. _`RedditAgain`: https://github.com/karan/RedditAgain
 .. _`RemindMeBot`: https://github.com/SIlver--/remindmebot-reddit
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot
 .. _`newsfrbot`: https://github.com/gardaud/newsfrbot

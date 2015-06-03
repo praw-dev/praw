@@ -1229,7 +1229,8 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         """Return a short link to the submission.
 
         The short link points to a page on the short_domain that redirects to
-        the main. http://redd.it/y3r8u is a short link for reddit.com.
+        the main. For example http://redd.it/eorhm is a short link for
+        https://www.reddit.com/r/announcements/comments/eorhm/reddit_30_less_typing/.
 
         """
         return urljoin(self.reddit_session.config.short_domain, self.id)

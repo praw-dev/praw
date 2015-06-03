@@ -26,12 +26,12 @@ superior. In the next section there is an :ref:`oauth_webserver`.
 Step 1: Create an application.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Go to `reddit.com's app page <https://ssl.reddit.com/prefs/apps/>`_, click on
+Go to `reddit.com's app page <https://www.reddit.com/prefs/apps/>`_, click on
 the "are you a developer? create an app" button. Fill out the name, description
 and about url. Name must be filled out, but the rest doesn't. Write whatever
 you please. For redirect uri set it to
-http://127.0.0.1:65010/authorize_callback.  All four variables can be changed
-later. Click create app and you should something like the following.
+``http://127.0.0.1:65010/authorize_callback``.  All four variables can be
+changed later. Click create app and you should something like the following.
 
  .. image:: ../_static/CreateApp.png
 
@@ -169,10 +169,10 @@ To run the example webserver, first install flask.
 
 Then save the code below into a file called example_webserver.py, set the
 ``CLIENT_ID`` & ``CLIENT_SECRET`` to the correct values and run the program.
-Now you have a webserver running on http://127.0.0.1:65010 Go there and click
-on one of the links. You'll be asked to authorize your own application, click
-allow. Now you'll be redirected back and your user details will be written to
-the screen.
+Now you have a webserver running on ``http://127.0.0.1:65010`` Go there and
+click on one of the links. You'll be asked to authorize your own application,
+click allow. Now you'll be redirected back and your user details will be
+written to the screen.
 
 .. code-block:: python
 
