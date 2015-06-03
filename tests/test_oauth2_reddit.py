@@ -181,6 +181,11 @@ class OAuth2RedditTest(PRAWTest):
         self.assertTrue(list(self.r.get_comments(self.priv_sr)))
 
     @betamax
+    def test_scope_wikiread_wiki_page(self):
+        self.r.refresh_access_information(self.refresh_token['wikiread'])
+        self.assertTrue(list(self.r.get_wiki_page(self.sr, 'index')))
+
+    @betamax
     def test_scope_read_priv_sub_comments(self):
         self.r.refresh_access_information(self.refresh_token['read'])
         submission = Submission.from_id(self.r, self.priv_submission_id)

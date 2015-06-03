@@ -1,8 +1,9 @@
 """Tests for WikiPage class."""
 
 from __future__ import print_function, unicode_literals
+from praw import Reddit
 from six import text_type
-from .helper import PRAWTest, betamax
+from .helper import PRAWTest, USER_AGENT, betamax
 
 
 class WikiPageTests(PRAWTest):
@@ -20,6 +21,7 @@ class WikiPageTests(PRAWTest):
 
     @betamax
     def test_get_wiki_page(self):
+        # import ipdb; ipdb.set_trace()
         self.assertEqual(
             '{0}:index'.format(self.sr),
             text_type(self.r.get_wiki_page(self.sr, 'index')))

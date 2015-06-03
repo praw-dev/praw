@@ -1036,14 +1036,14 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_content(self.config['top'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='wikiread')
+    @decorators.restrict_access(scope='wikiread', login=False)
     def get_wiki_page(self, subreddit, page, **params):
         """Return a WikiPage object for the subreddit and page provided."""
         return self.request_json(self.config['wiki_page'] %
                                  (six.text_type(subreddit), page.lower()),
                                  params=params)
 
-    @decorators.restrict_access(scope='wikiread')
+    @decorators.restrict_access(scope='wikiread', login=False)
     def get_wiki_pages(self, subreddit):
         """Return a list of WikiPage objects for the subreddit."""
         return self.request_json(self.config['wiki_pages'] %
