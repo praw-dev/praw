@@ -65,6 +65,7 @@ class PRAWTest(unittest.TestCase):
             'mysubreddits':    'O7tfWhqem6fQZqxhoTiLca1s7VA',
             'privatemessages': 'kr_pHPO3sqTn_m5f_FX9TW4joEU',
             'read':            '_mmtb8YjDym0eC26G-rTxXUMea0',
+            'wikiread':        '7302867-PMZfquNPUVYHcrbJkTYpFe9UdAY',
             'submit':          'k69WTwa2bEQOQY9t61nItd4twhw',
             'subscribe':       'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
             'vote':            '5RPnDwg56vAbf7F9yO81cXZAPSQ'}
