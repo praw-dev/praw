@@ -53,6 +53,12 @@ class SubmissionTest(PRAWTest):
         self.assertEqual(url, submission.url)
 
     @betamax
+    def test_submit__invalid_arguments(self):
+        for text, url in [(None, None), ('text', 'url'), ('', 'url')]:
+            self.assertRaises(TypeError, self.subreddit.submit, 'Title',
+                              text=text, url=url)
+
+    @betamax
     def test_submission_edit__link_failure(self):
         found = self.first(self.r.user.get_submitted(),
                            lambda item: not item.is_self)
