@@ -2,7 +2,6 @@
 
 from __future__ import print_function, unicode_literals
 
-import os
 from praw import Reddit, errors
 from praw.objects import Submission
 from six import text_type
@@ -12,8 +11,7 @@ from .helper import PRAWTest, USER_AGENT, betamax
 class OAuth2RedditTest(PRAWTest):
     def setUp(self):
         self.configure()
-        site_name = (os.getenv('REDDIT_SITE') or 'reddit') + '_oauth_test'
-        self.r = Reddit(USER_AGENT, site_name=site_name,
+        self.r = Reddit(USER_AGENT, site_name='reddit_oauth_test',
                         disable_update_check=True)
 
     def test_authorize_url(self):
