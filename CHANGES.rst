@@ -59,6 +59,9 @@ Unreleased
    :meth:`praw.__init__.ReportMixin.unhide`, which accept up to 50 fullnames to
    be hidden at one time. The appropriate methods in :class:`objects.Hideable`
    now point here instead.
+ * **[FEATURE]** Added :meth:`add_editor`, :meth:`remove_editor`,
+   :meth:`get_settings` and :meth:`edit_settings` to :class:`WikiPage`
+   for managing editors and permission levels of individual wiki pages.
  * **[REDDIT]** Removed ``send_feedback`` as it is no longer supported by
    reddit.
  * **[REDDIT]** Added ``DeprecationWarning`` to :meth:`login` as reddit will

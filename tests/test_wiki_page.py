@@ -19,6 +19,33 @@ class WikiPageTests(PRAWTest):
             content, self.subreddit.get_wiki_page('index', u=1).content_md)
 
     @betamax
+    def test_edit_wiki_page_settings(self):
+        self.r.login(self.un, self.un_pswd, disable_warning=True)
+        page = self.subreddit.get_wiki_page('index')
+        current = page.get_settings()
+        newperm = (current['permlevel'] + 1) % 3  # Roll to next permlevel
+        newlisted = not current['listed']
+        updated = page.edit_settings(permlevel=newperm, listed=newlisted)
+
+        self.assertEqual(newperm, updated['permlevel'])
+        self.assertEqual(newlisted, updated['listed'])
+
+    @betamax
+    def test_edit_wiki_page_editors(self):
+        self.r.login(self.un, self.un_pswd, disable_warning=True)
+        page = self.subreddit.get_wiki_page('index')
+
+        page.remove_editor(self.un)
+        page.add_editor(self.un)
+
+        self.r.evict(self.r.config['wiki_page_settings'] % (
+                     self.subreddit.display_name, 'index'))
+
+        editors = page.get_settings()['editors']
+        self.assertTrue(any(
+            user.name.lower() == self.un.lower() for user in editors))
+
+    @betamax
     def test_get_wiki_page(self):
         self.assertEqual(
             '{0}:index'.format(self.sr),
