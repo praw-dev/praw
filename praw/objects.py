@@ -1642,15 +1642,85 @@ class WikiPage(RedditContentObject):
         """Return a string representation of the page."""
         return six.text_type('{0}:{1}').format(self.subreddit, self.page)
 
+    @restrict_access(scope='modwiki')
+    def add_editor(self, username, _delete=False, *args, **kwargs):
+        """Add an editor to this wiki page.
+
+        :param username: The name or Redditor object of the user to add.
+        :param _delete: If True, remove the user as an editor instead.
+            Please use :meth:`remove_editor` rather than setting it manually.
+
+        Additional parameters are passed into :meth:`request_json`.
+        """
+        url = self.reddit_session.config['wiki_page_editor']
+        url = url % (six.text_type(self.subreddit),
+                     'del' if _delete else 'add')
+
+        data = {'page': self.page,
+                'username': six.text_type(username)}
+        return self.reddit_session.request_json(url, data=data, *args,
+                                                **kwargs)
+
+    @restrict_access(scope='modwiki')
+    def get_settings(self, *args, **kwargs):
+        """Return the settings for this wiki page.
+
+        Includes permission level, names of editors, and whether
+        the page is listed on /wiki/pages.
+
+        Additional parameters are passed into :meth:`request_json`
+        """
+        url = self.reddit_session.config['wiki_page_settings']
+        url = url % (six.text_type(self.subreddit), self.page)
+        return self.reddit_session.request_json(url, *args, **kwargs)['data']
+
     def edit(self, *args, **kwargs):
         """Edit the wiki page.
 
         Convenience function that utilizes
         :meth:`.AuthenticatedReddit.edit_wiki_page` populating both the
         `subreddit` and `page` parameters.
-
         """
         return self.subreddit.edit_wiki_page(self.page, *args, **kwargs)
+
+    @restrict_access(scope='modwiki')
+    def edit_settings(self, permlevel, listed, *args, **kwargs):
+        """Edit the settings for this individual wiki page.
+
+        :param permlevel: Who can edit this page?
+            0 - use subreddit wiki permissions
+            1 - only approved wiki contributors for this page may edit
+                (see :meth:`~praw.objects.WikiPage.add_editor)
+            2 - only mods may edit and view
+        :param listed: Show this page on the listing?
+            True - Appear in /wiki/pages
+            False - Do not appear in /wiki/pages
+
+        :returns: The updated settings data.
+
+        Additional parameters are passed into :meth:`request_json`.
+        """
+        url = self.reddit_session.config['wiki_page_settings']
+        url = url % (six.text_type(self.subreddit), self.page)
+        data = {'permlevel': permlevel,
+                'listed': 'on' if listed else 'off'}
+
+        return self.reddit_session.request_json(url, data=data, *args,
+                                                **kwargs)['data']
+
+    @restrict_access(scope='modwiki')
+    def remove_editor(self, username, *args, **kwargs):
+        """Remove an editor from this wiki page.
+
+        :param username: The name or Redditor object of the user to remove.
+
+        This method points to :meth:`add_editor` with _delete=True.
+
+        Additional parameters are are passed to :meth:`add_editor` and
+        subsequently into :meth:`request_json`.
+        """
+        return self.add_editor(username=username, _delete=True, *args,
+                               **kwargs)
 
 
 class WikiPageListing(PRAWListing):

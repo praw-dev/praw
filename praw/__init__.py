@@ -189,6 +189,8 @@ class Config(object):  # pylint: disable=R0903
                  'vote':                'api/vote/',
                  'wiki_edit':           'api/wiki/edit/',
                  'wiki_page':           'r/%s/wiki/%s',  # No trailing /
+                 'wiki_page_editor':    'r/%s/api/wiki/alloweditor/%s',
+                 'wiki_page_settings':  'r/%s/wiki/settings/%s',
                  'wiki_pages':          'r/%s/wiki/pages/',
                  'wiki_banned':         'r/%s/about/wikibanned/',
                  'wiki_contributors':   'r/%s/about/wikicontributors/'}
