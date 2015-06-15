@@ -75,7 +75,7 @@ class RedditContentObject(object):
 
     def __getattr__(self, attr):
         """Return the value of the `attr` attribute."""
-        if not self.has_fetched:
+        if attr != '__setstate__' and not self.has_fetched:
             self.has_fetched = self._populate(None, True)
             return getattr(self, attr)
         raise AttributeError('\'%s\' has no attribute \'%s\'' % (type(self),

@@ -1,6 +1,7 @@
 """Tests for Comment class."""
 
 from __future__ import print_function, unicode_literals
+import pickle
 from praw import helpers
 from praw.objects import Comment, MoreComments
 from .helper import PRAWTest, betamax
@@ -96,6 +97,15 @@ class CommentTest(PRAWTest):
         comment = self.first(self.r.user.get_comments(),
                              lambda item: isinstance(item, Comment))
         self.assertEqual(comment._replies, None)
+
+    @betamax
+    def test_unpickle_comment(self):
+        item = next(self.r.user.get_comments())
+        pkl = pickle.dumps(item)
+        try:
+            pickle.loads(pkl)
+        except RuntimeError:
+            self.fail("unpickling shouldn't throw a RuntimeError exception")
 
 
 class MoreCommentsTest(PRAWTest):
