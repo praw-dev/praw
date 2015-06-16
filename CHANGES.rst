@@ -21,7 +21,7 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-Unreleased
+PRAW 3.0.0
 ----------
  * **[CHANGE]** All requests should now be through HTTPS.
  * **[CHANGE]** All exceptions should be in the PRAW namespace. In particular,

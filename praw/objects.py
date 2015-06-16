@@ -1679,7 +1679,7 @@ class WikiPage(RedditContentObject):
 
         Convenience function that utilizes
         :meth:`.AuthenticatedReddit.edit_wiki_page` populating both the
-        `subreddit` and `page` parameters.
+        ``subreddit`` and ``page`` parameters.
         """
         return self.subreddit.edit_wiki_page(self.page, *args, **kwargs)
 
@@ -1688,17 +1688,17 @@ class WikiPage(RedditContentObject):
         """Edit the settings for this individual wiki page.
 
         :param permlevel: Who can edit this page?
-            0 - use subreddit wiki permissions
-            1 - only approved wiki contributors for this page may edit
-                (see :meth:`~praw.objects.WikiPage.add_editor)
-            2 - only mods may edit and view
+            (0) use subreddit wiki permissions, (1) only approved wiki
+            contributors for this page may edit (see
+            :meth:`~praw.objects.WikiPage.add_editor`), (2) only mods may edit
+            and view
         :param listed: Show this page on the listing?
             True - Appear in /wiki/pages
             False - Do not appear in /wiki/pages
-
         :returns: The updated settings data.
 
         Additional parameters are passed into :meth:`request_json`.
+
         """
         url = self.reddit_session.config['wiki_page_settings']
         url = url % (six.text_type(self.subreddit), self.page)
