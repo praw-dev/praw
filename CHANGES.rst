@@ -23,6 +23,9 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[CHANGE]** Replaced instances of "liked" and "disliked" with "upvoted"
+   and "downvoted". The get_liked and get_disliked methods in
+   :class:`objects.Redditor` still exist, but point to the new methods.
  * **[FEATURE]** Addded :meth:`get_comment_replies` and
    :meth:`get_post_replies` to the :class:`praw.__init__.PrivateMessagesMixin`
 
