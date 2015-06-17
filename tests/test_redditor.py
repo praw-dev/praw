@@ -32,24 +32,6 @@ class RedditorTest(PRAWTest):
         self.assertEqual(self.other_user_name, self.r.user.name)
 
     @betamax
-    def test_get_liked_and_disliked(self):
-        user = self.r.user
-        sub = self.r.submit(self.sr, 'Sub Title', 'Sub Body')
-
-        self.delay_for_listing_update()
-        self.assertEqual(sub, next(user.get_liked()))
-        sub.downvote()
-
-        self.delay_for_listing_update()
-        self.assertEqual(sub, next(user.get_disliked()))
-        self.assertNotEqual(sub, next(user.get_liked(params={'u': 1})))
-        sub.upvote()
-
-        self.delay_for_listing_update()
-        self.assertEqual(sub, next(user.get_liked(params={'u': 2})))
-        self.assertNotEqual(sub, next(user.get_disliked(params={'u': 2})))
-
-    @betamax
     def test_get_hidden(self):
         submission = next(self.r.user.get_hidden())
         submission.hide()
@@ -71,6 +53,24 @@ class RedditorTest(PRAWTest):
     def test_get_submitted(self):
         redditor = self.r.get_redditor(self.other_non_mod_name)
         self.assertTrue(list(redditor.get_submitted()))
+
+    @betamax
+    def test_get_upvoted_and_downvoted(self):
+        user = self.r.user
+        sub = self.r.submit(self.sr, 'Sub Title', 'Sub Body')
+
+        self.delay_for_listing_update()
+        self.assertEqual(sub, next(user.get_upvoted()))
+        sub.downvote()
+
+        self.delay_for_listing_update()
+        self.assertEqual(sub, next(user.get_downvoted()))
+        self.assertNotEqual(sub, next(user.get_upvoted(params={'u': 1})))
+        sub.upvote()
+
+        self.delay_for_listing_update()
+        self.assertEqual(sub, next(user.get_upvoted(params={'u': 2})))
+        self.assertNotEqual(sub, next(user.get_downvoted(params={'u': 2})))
 
     @betamax
     def test_redditor_comparison(self):

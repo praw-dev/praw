@@ -21,6 +21,12 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[CHANGE]** Replaced instances of "liked" and "disliked" with "upvoted"
+   and "downvoted". The get_liked and get_disliked methods in 
+   :class:`objects.Redditor` still exist, but point to the new methods.
+
 PRAW 3.0.0
 ----------
  * **[CHANGE]** All requests should now be through HTTPS.

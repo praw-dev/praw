@@ -794,6 +794,14 @@ class Redditor(Gildable, Messageable, Refreshable):
     def get_disliked(self, *args, **kwargs):
         """Return a listing of the Submissions the user has downvoted.
 
+        This method points to :meth:`get_downvoted`, as the "disliked" name
+        is being phased out.
+        """
+        return self.get_downvoted(*args, **kwargs)
+
+    def get_downvoted(self, *args, **kwargs):
+        """Return a listing of the Submissions the user has downvoted.
+
         :returns: get_content generator of Submission items.
 
         The additional parameters are passed directly into
@@ -810,10 +818,18 @@ class Redditor(Gildable, Messageable, Refreshable):
         # authenticated user. But who has a public voting record will be
         # successful.
         use_oauth = self.reddit_session.is_oauth_session()
-        return _get_redditor_listing('disliked')(
+        return _get_redditor_listing('downvoted')(
             self, *args, _use_oauth=use_oauth, **kwargs)
 
     def get_liked(self, *args, **kwargs):
+        """Return a listing of the Submissions the user has upvoted.
+
+        This method points to :meth:`get_upvoted`, as the "liked" name
+        is being phased out.
+        """
+        return self.get_upvoted(*args, **kwargs)
+
+    def get_upvoted(self, *args, **kwargs):
         """Return a listing of the Submissions the user has upvoted.
 
         :returns: get_content generator of Submission items.
@@ -829,8 +845,8 @@ class Redditor(Gildable, Messageable, Refreshable):
 
         """
         use_oauth = self.reddit_session.is_oauth_session()
-        return _get_redditor_listing('liked')(self, *args,
-                                              _use_oauth=use_oauth, **kwargs)
+        return _get_redditor_listing('upvoted')(self, *args,
+                                                _use_oauth=use_oauth, **kwargs)
 
     def mark_as_read(self, messages, unread=False):
         """Mark message(s) as read or unread.
