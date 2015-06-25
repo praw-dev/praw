@@ -21,6 +21,11 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[FEATURE]** Addded :meth:`get_comment_replies` and
+   :meth:`get_post_replies` to the :class:`praw.__init__.PrivateMessagesMixin`
+
 PRAW 3.0.0
 ----------
  * **[CHANGE]** All requests should now be through HTTPS.

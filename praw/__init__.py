@@ -90,6 +90,7 @@ class Config(object):  # pylint: disable=R0903
                  'captcha':             'captcha/',
                  'clearflairtemplates': 'api/clearflairtemplates/',
                  'comment':             'api/comment/',
+                 'comment_replies':     'message/comments/',
                  'comments':            'comments/',
                  'compose':             'api/compose/',
                  'contest_mode':        'api/set_contest_mode/',
@@ -144,6 +145,7 @@ class Config(object):  # pylint: disable=R0903
                  'multireddit_rename':  'api/multi/rename/',
                  'multireddit_user':    'api/multi/user/%s/',
                  'popular_subreddits':  'subreddits/popular/',
+                 'post_replies':        'message/selfreply/',
                  'read_message':        'api/read_message/',
                  'reddit_url':          '/',
                  'register':            'api/register/',
@@ -2190,6 +2192,17 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         return response
 
     @decorators.restrict_access(scope='privatemessages')
+    def get_comment_replies(self, *args, **kwargs):
+        """Return a get_content generator for inboxed comment replies.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['comment_replies'],
+                                *args, **kwargs)
+
+    @decorators.restrict_access(scope='privatemessages')
     def get_inbox(self, *args, **kwargs):
         """Return a get_content generator for inbox (messages and comments).
 
@@ -2221,6 +2234,16 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
         """
         return self.get_content(self.config['messages'], *args, **kwargs)
+
+    @decorators.restrict_access(scope='privatemessages')
+    def get_post_replies(self, *args, **kwargs):
+        """Return a get_content generator for inboxed submission replies.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['post_replies'], *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
     def get_sent(self, *args, **kwargs):
