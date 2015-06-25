@@ -2253,12 +2253,12 @@ class PrivateMessagesMixin(AuthenticatedReddit):
                 # Use setattr to avoid pylint error
                 setattr(self.user, 'has_mail', False)
         return self.get_content(self.config['unread'], *args, **kwargs)
-    
+
     @decorators.restrict_access(scope='privatemessages')
     def has_unread(self):
         """Checks to see if user has unread messages."""
         try:
-            message = next(self.get_unread())
+            next(self.get_unread())
             return True
         except StopIteration:
             return False
