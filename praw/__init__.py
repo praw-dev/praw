@@ -2256,7 +2256,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='privatemessages')
     def has_unread(self):
-        """Checks to see if user has unread messages."""
+        """Check if user has unread messages."""
         try:
             next(self.get_unread())
             return True
