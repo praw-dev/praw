@@ -13,12 +13,25 @@ class MessageTest(PRAWTest):
         self.other_user = self.r.get_redditor(self.other_user_name)
 
     @betamax
+    def test_get_comment_replies(self):
+        comment_reply = next(self.r.get_comment_replies(limit=1))
+        comment_parent = self.r.get_info(thing_id=comment_reply.parent_id)
+        self.assertEqual(comment_parent.author.name, self.r.user.name)
+
+    @betamax
     def test_get_message(self):
         message1 = next(self.r.get_inbox(limit=1))
         message2 = self.r.get_message(message1.id)
         self.assertEqual(message1, message2)
         self.assertEqual(self.r.user.name.lower(), message2.dest.lower())
         self.assertTrue(isinstance(message2.replies, list))
+
+    @betamax
+    def test_get_post_replies(self):
+        comment_reply = next(self.r.get_post_replies(limit=1))
+        self.assertTrue(comment_reply.is_root)
+        comment_parent = self.r.get_info(thing_id=comment_reply.parent_id)
+        self.assertEqual(comment_parent.author.name, self.r.user.name)
 
     @betamax
     def test_get_unread_update_has_mail(self):
