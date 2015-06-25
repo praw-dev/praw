@@ -12,7 +12,7 @@ matrix:
   allow_failures:
     - python: nightly
 sudo: false
-install: pip install coveralls flake8 pep257
+install: pip install coveralls flake8 pep257 betamax_matchers
 script:
   - flake8 praw
   - flake8 tests
