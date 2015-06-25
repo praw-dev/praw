@@ -101,11 +101,7 @@ class CommentTest(PRAWTest):
     @betamax
     def test_unpickle_comment(self):
         item = next(self.r.user.get_comments())
-        pkl = pickle.dumps(item)
-        try:
-            pickle.loads(pkl)
-        except RuntimeError:
-            self.fail("unpickling shouldn't throw a RuntimeError exception")
+        self.assertEqual(item, pickle.loads(pickle.dumps(item)))
 
 
 class MoreCommentsTest(PRAWTest):
