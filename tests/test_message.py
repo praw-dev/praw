@@ -29,6 +29,16 @@ class MessageTest(PRAWTest):
         self.assertTrue(self.r.user.has_mail)
         self.r.get_unread(limit=1, unset_has_mail=True, update_user=True)
         self.assertFalse(self.r.user.has_mail)
+    
+    @betamax
+    def test_has_unread(self):
+        self.r.send_message(self.other_user_name, 'Update has mail', 'body')
+        
+        self.r.login(self.other_user_name, self.other_user_pswd,
+                     disable_warning=True)
+        self.assertTrue(self.r.has_unread())
+        self.r.get_unread(limit=1,unset_has_mail=True,update_user=True)
+        self.assertFalse(self.r.has_unread())
 
     @betamax
     def test_mark_as_read(self):
