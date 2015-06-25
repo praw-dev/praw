@@ -81,7 +81,7 @@ class OAuth2RedditTest(PRAWTest):
     @betamax
     def test_scope_history(self):
         self.r.refresh_access_information(self.refresh_token['history'])
-        self.assertTrue(list(self.r.get_redditor(self.un).get_liked()))
+        self.assertTrue(list(self.r.get_redditor(self.un).get_upvoted()))
 
     @betamax
     def test_scope_identity(self):
