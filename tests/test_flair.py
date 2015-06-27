@@ -10,14 +10,14 @@ class FlairTest(PRAWTest):
         self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.subreddit = self.r.get_subreddit(self.sr)
 
-    @betamax
+    @betamax()
     def test_add_link_flair(self):
         flair_text = 'Flair: {0}'.format(self.r.modhash)
         submission = next(self.subreddit.get_new())
         submission.set_flair(flair_text)
         self.assertEqual(flair_text, submission.refresh().link_flair_text)
 
-    @betamax
+    @betamax()
     def test_add_user_flair__css_only(self):
         flair_css = self.r.modhash
         self.subreddit.set_flair(self.r.user, flair_css_class=flair_css)
@@ -25,7 +25,7 @@ class FlairTest(PRAWTest):
         self.assertEqual(None, flair['flair_text'])
         self.assertEqual(flair_css, flair['flair_css_class'])
 
-    @betamax
+    @betamax()
     def test_add_user_flair__text_and_css(self):
         flair_text = 'Text & CSS: {0}'.format(self.r.modhash)
         flair_css = self.r.modhash
@@ -34,7 +34,7 @@ class FlairTest(PRAWTest):
         self.assertEqual(flair_text, flair['flair_text'])
         self.assertEqual(flair_css, flair['flair_css_class'])
 
-    @betamax
+    @betamax()
     def test_add_user_flair__text_only(self):
         flair_text = 'Text Only: {0}'.format(self.r.modhash)
         self.subreddit.set_flair(self.r.user, flair_text)
@@ -42,25 +42,25 @@ class FlairTest(PRAWTest):
         self.assertEqual(flair_text, flair['flair_text'])
         self.assertEqual(None, flair['flair_css_class'])
 
-    @betamax
+    @betamax()
     def test_add_user_flair_to_invalid_user(self):
         self.assertRaises(errors.InvalidFlairTarget, self.subreddit.set_flair,
                           self.invalid_user_name)
 
-    @betamax
+    @betamax()
     def test_clear_user_flair(self):
         self.subreddit.set_flair(self.r.user)
         flair = self.subreddit.get_flair(self.r.user)
         self.assertEqual(None, flair['flair_text'])
         self.assertEqual(None, flair['flair_css_class'])
 
-    @betamax
+    @betamax()
     def test_delete_flair(self):
         flair = next(self.subreddit.get_flair_list(limit=1))
         self.subreddit.delete_flair(flair['user'])
         self.assertTrue(flair not in self.subreddit.get_flair_list())
 
-    @betamax
+    @betamax()
     def test_flair_csv_and_flair_list(self):
         # Clear all flair
         self.subreddit.clear_all_flair()
@@ -76,12 +76,12 @@ class FlairTest(PRAWTest):
         self.assertEqual([], flair_diff(flair_mapping,
                                         list(self.subreddit.get_flair_list())))
 
-    @betamax
+    @betamax()
     def test_flair_csv_empty(self):
         self.assertRaises(errors.ClientException,
                           self.subreddit.set_flair_csv, [])
 
-    @betamax
+    @betamax()
     def test_flair_csv_many(self):
         users = ('reddit', self.un, self.other_user_name)
         flair_text_a = 'Flair: {0}'.format(self.r.modhash)
@@ -94,7 +94,7 @@ class FlairTest(PRAWTest):
             flair = self.subreddit.get_flair(user)
             self.assertEqual(flair_text_b, flair['flair_text'])
 
-    @betamax
+    @betamax()
     def test_flair_csv_optional_args(self):
         flair_mapping = [{'user': 'reddit', 'flair_text': 'reddit'},
                          {'user': self.other_user_name, 'flair_css_class':
@@ -108,7 +108,7 @@ class FlairTest(PRAWTest):
         self.assertEqual(expected,
                          self.subreddit.get_flair(self.other_user_name))
 
-    @betamax
+    @betamax()
     def test_flair_csv_requires_user(self):
         flair_mapping = [{'flair_text': 'hsdf'}]
         self.assertRaises(errors.ClientException,
@@ -138,13 +138,13 @@ class FlairSelectorTest(PRAWTest):
         flair = submission.link_flair_css_class
         return next(x for x in self.link_flair_templates if x[0] != flair)
 
-    @betamax
+    @betamax()
     def test_add_link_flair_to_invalid_subreddit(self):
         submission = next(self.r.get_subreddit('python').get_new())
         self.assertRaises(errors.Forbidden,
                           self.subreddit.set_flair, submission, 'text')
 
-    @betamax
+    @betamax()
     def test_select_link_flair(self):
         sub = next(self.subreddit.get_new())
         f_class, (f_id, f_default_text) = self.new_link_flair_class(sub)
@@ -153,7 +153,7 @@ class FlairSelectorTest(PRAWTest):
         self.assertEqual(f_default_text, sub.link_flair_text)
         self.assertEqual(f_class, sub.link_flair_css_class)
 
-    @betamax
+    @betamax()
     def test_select_link_flair_custom_text(self):
         sub = next(self.subreddit.get_new())
         flair_class, (flair_id, _) = self.new_link_flair_class(sub)
@@ -163,7 +163,7 @@ class FlairSelectorTest(PRAWTest):
         self.assertEqual(flair_text, sub.link_flair_text)
         self.assertEqual(flair_class, sub.link_flair_css_class)
 
-    @betamax
+    @betamax()
     def test_select_link_flair_remove(self):
         sub = next(self.subreddit.get_new())
         if sub.link_flair_css_class is None:
@@ -174,7 +174,7 @@ class FlairSelectorTest(PRAWTest):
         self.assertEqual(None, sub.link_flair_text)
         self.assertEqual(None, sub.link_flair_css_class)
 
-    @betamax
+    @betamax()
     def test_select_user_flair(self):
         f_class, (f_id, f_default_text) = self.new_user_flair_class()
         self.subreddit.select_flair(flair_template_id=f_id)
@@ -182,7 +182,7 @@ class FlairSelectorTest(PRAWTest):
         self.assertEqual(f_default_text, flair['flair_text'])
         self.assertEqual(f_class, flair['flair_css_class'])
 
-    @betamax
+    @betamax()
     def test_select_user_flair_custom_text(self):
         flair_class, (flair_id, _) = self.new_user_flair_class()
         flair_text = 'Flair: {0}'.format(self.r.modhash)
@@ -192,7 +192,7 @@ class FlairSelectorTest(PRAWTest):
         self.assertEqual(flair_text, flair['flair_text'])
         self.assertEqual(flair_class, flair['flair_css_class'])
 
-    @betamax
+    @betamax()
     def test_select_user_flair_remove(self):
         flair = self.subreddit.get_flair(self.r.user)
         if flair['flair_css_class'] is None:

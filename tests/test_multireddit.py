@@ -15,7 +15,7 @@ class MultiredditTest(PRAWTest):
         self.assertEqual("Multireddit(author='Foo', name='Bar')", repr(multi))
         self.assertEqual('Bar', str(multi))
 
-    @betamax
+    @betamax()
     def test_add_and_remove_subreddit(self):
         multi = self.r.user.get_multireddits()[0]
         self.assertTrue(self.sr in (x['name'] for x in multi.subreddits))
@@ -27,7 +27,7 @@ class MultiredditTest(PRAWTest):
         multi.refresh()
         self.assertTrue(self.sr in (x['name'] for x in multi.subreddits))
 
-    @betamax
+    @betamax()
     def test_create_and_delete_multireddit(self):
         name = 'PRAW_{0}'.format(self.r.modhash)[:15]
         multi = self.r.create_multireddit(name)
@@ -37,7 +37,7 @@ class MultiredditTest(PRAWTest):
         multi.delete()
         self.assertRaises(errors.NotFound, multi.refresh)
 
-    @betamax
+    @betamax()
     def test_copy_multireddit(self):
         name = 'praw_{0}'.format(self.r.modhash)[:15]
         multi = self.r.user.get_multireddits()[0]
@@ -47,7 +47,7 @@ class MultiredditTest(PRAWTest):
         self.assertEqual(name, new_multi.name)
         self.assertEqual(multi.subreddits, new_multi.subreddits)
 
-    @betamax
+    @betamax()
     def test_edit_multireddit(self):
         name = 'PRAW_{0}'.format(self.r.modhash)[:15]
         multi = self.r.user.get_multireddits()[0]
@@ -55,24 +55,24 @@ class MultiredditTest(PRAWTest):
         self.assertEqual(name, multi.edit(description_md=name).description_md)
         self.assertEqual(name, multi.refresh().description_md)
 
-    @betamax
+    @betamax()
     def test_get_my_multis(self):
         multi = self.r.get_my_multireddits()[0]
         self.assertEqual('publicempty', multi.display_name)
         self.assertEqual([], multi.subreddits)
 
-    @betamax
+    @betamax()
     def test_get_multireddit(self):
         multi = self.r.user.get_multireddit('publicempty')
         self.assertEqual('/user/{0}/m/{1}'.format(self.un, 'publicempty'),
                          multi.path)
 
-    @betamax
+    @betamax()
     def test_multireddit_get_new(self):
         multi = self.r.user.get_multireddit('publicempty')
         self.assertEqual([], list(multi.get_new()))
 
-    @betamax
+    @betamax()
     def test_rename_multireddit(self):
         name = 'renamed_{0}'.format(self.r.modhash)[:15]
         multi = self.r.user.get_multireddits()[0]

@@ -12,13 +12,13 @@ class MessageTest(PRAWTest):
         self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.other_user = self.r.get_redditor(self.other_user_name)
 
-    @betamax
+    @betamax()
     def test_get_comment_replies(self):
         comment_reply = next(self.r.get_comment_replies(limit=1))
         comment_parent = self.r.get_info(thing_id=comment_reply.parent_id)
         self.assertEqual(comment_parent.author.name, self.r.user.name)
 
-    @betamax
+    @betamax()
     def test_get_message(self):
         message1 = next(self.r.get_inbox(limit=1))
         message2 = self.r.get_message(message1.id)
@@ -26,14 +26,14 @@ class MessageTest(PRAWTest):
         self.assertEqual(self.r.user.name.lower(), message2.dest.lower())
         self.assertTrue(isinstance(message2.replies, list))
 
-    @betamax
+    @betamax()
     def test_get_post_replies(self):
         comment_reply = next(self.r.get_post_replies(limit=1))
         self.assertTrue(comment_reply.is_root)
         comment_parent = self.r.get_info(thing_id=comment_reply.parent_id)
         self.assertEqual(comment_parent.author.name, self.r.user.name)
 
-    @betamax
+    @betamax()
     def test_get_unread_update_has_mail(self):
         self.r.send_message(self.other_user_name, 'Update has mail', 'body')
 
@@ -43,7 +43,7 @@ class MessageTest(PRAWTest):
         self.r.get_unread(limit=1, unset_has_mail=True, update_user=True)
         self.assertFalse(self.r.user.has_mail)
 
-    @betamax
+    @betamax()
     def test_mark_as_read(self):
         self.r.login(self.other_user_name, self.other_user_pswd,
                      disable_warning=True)
@@ -53,7 +53,7 @@ class MessageTest(PRAWTest):
         self.delay_for_listing_update()
         self.assertFalse(msg in self.r.get_unread(limit=5))
 
-    @betamax
+    @betamax()
     def test_mark_as_unread(self):
         self.r.login(self.other_user_name, self.other_user_pswd,
                      disable_warning=True)
@@ -64,7 +64,7 @@ class MessageTest(PRAWTest):
         self.delay_for_listing_update()
         self.assertTrue(msg in self.r.get_unread(limit=24))
 
-    @betamax
+    @betamax()
     def test_mark_multiple_as_read(self):
         self.r.login(self.other_user_name, self.other_user_pswd,
                      disable_warning=True)
@@ -81,7 +81,7 @@ class MessageTest(PRAWTest):
         unread = list(self.r.get_unread(limit=25))
         self.assertFalse(any(msg in unread for msg in messages))
 
-    @betamax
+    @betamax()
     def test_reply_to_message_and_verify(self):
         def predicate(msg):
             return isinstance(msg, Message) and msg.author == self.r.user
@@ -90,7 +90,7 @@ class MessageTest(PRAWTest):
         reply = message.reply('Message reply')
         self.assertEqual(message.fullname, reply.parent_id)
 
-    @betamax
+    @betamax()
     def test_send(self):
         subject = 'Subject: {0}'.format(self.r.modhash)
         self.none(self.r.get_inbox(), lambda msg: msg.subject == subject)
@@ -100,7 +100,7 @@ class MessageTest(PRAWTest):
         self.first(self.r.get_inbox(limit=24),
                    lambda msg: msg.subject == subject)
 
-    @betamax
+    @betamax()
     def test_send_from_subreddit(self):
         subject = 'Subject: {0}'.format(self.r.modhash)
         self.r.send_message(self.other_user_name, subject, 'Message content',
@@ -113,7 +113,7 @@ class MessageTest(PRAWTest):
         self.assertEqual(self.sr, text_type(message.subreddit))
         self.assertEqual(subject, message.subject)
 
-    @betamax
+    @betamax()
     def test_send_invalid(self):
         self.assertRaises(errors.InvalidUser, self.r.send_message,
                           self.invalid_user_name, 'Subject', 'Content')

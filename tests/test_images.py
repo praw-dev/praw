@@ -15,11 +15,11 @@ class ImageTests(PRAWTest):
         test_dir = os.path.dirname(sys.modules[__name__].__file__)
         self.image_path = os.path.join(test_dir, 'files', '{0}')
 
-    @betamax
+    @betamax()
     def test_delete_header(self):
         self.subreddit.delete_image(header=True)
 
-    @betamax
+    @betamax()
     def test_delete_image(self):
         images = self.subreddit.get_stylesheet()['images']
         self.assertTrue(images)
@@ -28,45 +28,45 @@ class ImageTests(PRAWTest):
         updated_images = self.subreddit.get_stylesheet(uniq=1)['images']
         self.assertNotEqual(images, updated_images)
 
-    @betamax
+    @betamax()
     def test_delete_invalid_image(self):
         self.assertRaises(errors.BadCSSName,
                           self.subreddit.delete_image, 'invalid_image_name')
 
-    @betamax
+    @betamax()
     def test_delete_invalid_params(self):
         self.assertRaises(TypeError, self.subreddit.delete_image, name='Foo',
                           header=True)
 
-    @betamax
+    @betamax()
     def test_upload_invalid_file_path(self):
         self.assertRaises(IOError, self.subreddit.upload_image, 'nonexistent')
 
-    @betamax
+    @betamax()
     def test_upload_invalid_image(self):
         image = self.image_path.format('white-square.tiff')
         self.assertRaises(errors.ClientException, self.subreddit.upload_image,
                           image)
 
-    @betamax
+    @betamax()
     def test_upload_invalid_image_too_small(self):
         image = self.image_path.format('invalid.jpg')
         self.assertRaises(errors.ClientException, self.subreddit.upload_image,
                           image)
 
-    @betamax
+    @betamax()
     def test_upload_invalid_image_too_large(self):
         image = self.image_path.format('big')
         self.assertRaises(errors.ClientException, self.subreddit.upload_image,
                           image)
 
-    @betamax
+    @betamax()
     def test_upload_invalid_params(self):
         image = self.image_path.format('white-square.jpg')
         self.assertRaises(TypeError, self.subreddit.upload_image, image,
                           name='Foo', header=True)
 
-    @betamax
+    @betamax()
     def test_upload_invalid_image_path(self):
         self.assertRaises(IOError, self.subreddit.upload_image, 'bar.png')
 

@@ -12,7 +12,7 @@ class CommentTest(PRAWTest):
         self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.subreddit = self.r.get_subreddit(self.sr)
 
-    @betamax
+    @betamax()
     def test_add_comment(self):
         text = 'Unique comment: {0}'.format(self.r.modhash)
         submission = next(self.subreddit.get_new())
@@ -20,7 +20,7 @@ class CommentTest(PRAWTest):
         self.assertEqual(comment.submission, submission)
         self.assertEqual(comment.body, text)
 
-    @betamax
+    @betamax()
     def test_add_reply(self):
         text = 'Unique reply: {0}'.format(self.r.modhash)
         submission = self.first(self.subreddit.get_new(),
@@ -30,36 +30,36 @@ class CommentTest(PRAWTest):
         self.assertEqual(reply.parent_id, comment.fullname)
         self.assertEqual(reply.body, text)
 
-    @betamax
+    @betamax()
     def test_edit(self):
         comment = next(self.r.user.get_comments())
         new_body = '{0}\n\n+Edit Text'.format(comment.body)
         comment = comment.edit(new_body)
         self.assertEqual(comment.body, new_body)
 
-    @betamax
+    @betamax()
     def test_front_page_comment_replies_are_none(self):
         item = next(self.r.get_comments('all'))
         self.assertEqual(item._replies, None)
 
-    @betamax
+    @betamax()
     def test_get_comments_permalink(self):
         item = next(self.subreddit.get_comments())
         self.assertTrue(item.id in item.permalink)
 
-    @betamax
+    @betamax()
     def test_inbox_comment_permalink(self):
         item = self.first(self.r.get_inbox(),
                           lambda item: isinstance(item, Comment))
         self.assertTrue(item.id in item.permalink)
 
-    @betamax
+    @betamax()
     def test_inbox_comment_replies_are_none(self):
         comment = self.first(self.r.get_inbox(),
                              lambda item: isinstance(item, Comment))
         self.assertEqual(comment._replies, None)
 
-    @betamax
+    @betamax()
     def test_save_comment(self):
         comment = next(self.r.user.get_comments())
 
@@ -73,32 +73,32 @@ class CommentTest(PRAWTest):
         self.assertFalse(comment.saved)
         self.assertFalse(comment in self.r.user.get_saved(params={'u': 1}))
 
-    @betamax
+    @betamax()
     def test_spambox_comments_replies_are_none(self):
         sequence = self.r.get_subreddit(self.sr).get_spam()
         comment = self.first(sequence,
                              lambda item: isinstance(item, Comment))
         self.assertEqual(comment._replies, None)
 
-    @betamax
+    @betamax()
     def test_unicode_comment(self):
         sub = next(self.subreddit.get_new())
         text = 'Have some unicode: (\xd0, \xdd)'
         comment = sub.add_comment(text)
         self.assertEqual(text, comment.body)
 
-    @betamax
+    @betamax()
     def test_user_comment_permalink(self):
         item = next(self.r.user.get_comments())
         self.assertTrue(item.id in item.permalink)
 
-    @betamax
+    @betamax()
     def test_user_comment_replies_are_none(self):
         comment = self.first(self.r.user.get_comments(),
                              lambda item: isinstance(item, Comment))
         self.assertEqual(comment._replies, None)
 
-    @betamax
+    @betamax()
     def test_unpickle_comment(self):
         item = next(self.r.user.get_comments())
         self.assertEqual(item, pickle.loads(pickle.dumps(item)))
@@ -110,7 +110,7 @@ class MoreCommentsTest(PRAWTest):
         self.submission = self.r.get_submission(url=self.more_comments_url,
                                                 comment_limit=130)
 
-    @betamax
+    @betamax()
     def test_all_comments(self):
         c_len = len(self.submission.comments)
         flat = helpers.flatten_tree(self.submission.comments)
@@ -132,7 +132,7 @@ class MoreCommentsTest(PRAWTest):
         self.assertTrue(cf_len < acf_len)
         self.assertTrue(saved)
 
-    @betamax
+    @betamax()
     def test_comments_method(self):
         item = self.first(self.submission.comments,
                           lambda item: isinstance(item, MoreComments))

@@ -27,21 +27,21 @@ class UnauthenticatedRedditTest(PRAWTest):
                           't3_87')
         self.assertRaises(ValueError, helpers.convert_id36_to_numeric_id, 87)
 
-    @betamax
+    @betamax()
     def test_comparison(self):
         self.assertEqual(self.r.get_redditor('bboe'),
                          self.r.get_redditor('BBOE'))
         self.assertEqual(self.r.get_subreddit('bboe'),
                          self.r.get_subreddit('BBOE'))
 
-    @betamax
+    @betamax()
     def test_comments_contains_no_noncomment_objects(self):
         comments = self.r.get_submission(url=self.comment_url).comments
         self.assertFalse([item for item in comments if not
                           (isinstance(item, Comment) or
                            isinstance(item, MoreComments))])
 
-    @betamax
+    @betamax()
     def test_create_and_delete_redditor(self):
         # This test has to be updated everytime the cassette needs to be
         # updated because we have to use consistent values for saved-runs
@@ -65,13 +65,13 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertRaises(errors.InvalidUserPass, self.r.login, username,
                           password, disable_warning=True)
 
-    @betamax
+    @betamax()
     def test_decode_entities(self):
         text = self.r.get_submission(url=self.comment_url).selftext_html
         self.assertTrue(text.startswith('<'))
         self.assertTrue(text.endswith('>'))
 
-    @betamax
+    @betamax()
     def test_equality(self):
         subreddit = self.r.get_subreddit(self.sr)
         same_subreddit = self.r.get_subreddit(self.sr)
@@ -80,25 +80,25 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertFalse(subreddit != same_subreddit)
         self.assertFalse(subreddit == submission)
 
-    @betamax
+    @betamax()
     def test_get_comments(self):
         num = 50
         result = self.r.get_comments(self.sr, limit=num)
         self.assertEqual(num, len(list(result)))
 
-    @betamax
+    @betamax()
     def test_get_comments_gilded(self):
         gilded_comments = self.r.get_comments('all', gilded_only=True)
         self.assertTrue(all(comment.gilded > 0 for comment in
                             gilded_comments))
 
-    @betamax
+    @betamax()
     def test_get_controversial(self):
         num = 50
         result = self.r.get_controversial(limit=num, params={'t': 'all'})
         self.assertEqual(num, len(list(result)))
 
-    @betamax
+    @betamax()
     def test_get_front_page(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
@@ -118,54 +118,54 @@ class UnauthenticatedRedditTest(PRAWTest):
     def test_login_required__not_logged_in_mod_func(self):
         self.assertRaises(errors.LoginRequired, self.r.get_banned, self.sr)
 
-    @betamax
+    @betamax()
     def test_get_new(self):
         num = 50
         result = self.r.get_new(limit=num)
         self.assertEqual(num, len(list(result)))
 
-    @betamax
+    @betamax()
     def test_get_new_subreddits(self):
         num = 50
         self.assertEqual(num,
                          len(list(self.r.get_new_subreddits(limit=num))))
 
-    @betamax
+    @betamax()
     def test_get_popular_subreddits(self):
         num = 50
         self.assertEqual(num,
                          len(list(self.r.get_popular_subreddits(limit=num))))
 
-    @betamax
+    @betamax()
     def test_get_randnsfw_subreddit(self):
         subs = set()
         for _ in range(3):
             subs.add(text_type(self.r.get_subreddit('RANDNSFW')))
         self.assertTrue(len(subs) > 1)
 
-    @betamax
+    @betamax()
     def test_get_random_subreddit(self):
         subs = set()
         for _ in range(3):
             subs.add(text_type(self.r.get_subreddit('RANDOM')))
         self.assertTrue(len(subs) > 1)
 
-    @betamax
+    @betamax()
     def test_get_rising(self):
         num = 25
         result = self.r.get_rising(limit=num)
         self.assertEqual(num, len(list(result)))
 
-    @betamax
+    @betamax()
     def test_get_sticky(self):
         self.assertEqual('2ujhkr', self.r.get_sticky('redditdev').id)
 
-    @betamax
+    @betamax()
     def test_get_sticky__not_found(self):
         subreddit = self.r.get_subreddit(self.sr)
         self.assertRaises(errors.NotFound, subreddit.get_sticky)
 
-    @betamax
+    @betamax()
     def test_get_submissions(self):
         def fullname(url):
             return self.r.get_submission(url).fullname
@@ -183,39 +183,39 @@ class UnauthenticatedRedditTest(PRAWTest):
         mocked.assert_called_with('http://www.reddit.com/comments/1/_/2',
                                   params={'context': '3', 'foo': 'bar'})
 
-    @betamax
+    @betamax()
     def test_get_top(self):
         num = 50
         result = self.r.get_top(limit=num, params={'t': 'all'})
         self.assertEqual(num, len(list(result)))
 
-    @betamax
+    @betamax()
     def test_info_by_id(self):
         self.assertEqual(self.link_id,
                          self.r.get_info(thing_id=self.link_id).fullname)
 
-    @betamax
+    @betamax()
     def test_info_by_invalid_id(self):
         self.assertEqual(None, self.r.get_info(thing_id='INVALID'))
 
-    @betamax
+    @betamax()
     def test_info_by_known_url_returns_known_id_link_post(self):
         found_links = self.r.get_info(self.link_url_link)
         tmp = self.r.get_submission(url=self.link_url)
         self.assertTrue(tmp in found_links)
 
-    @betamax
+    @betamax()
     def test_info_by_url_also_found_by_id(self):
         found_by_url = self.r.get_info(self.link_url_link)[0]
         found_by_id = self.r.get_info(thing_id=found_by_url.fullname)
         self.assertEqual(found_by_id, found_by_url)
 
-    @betamax
+    @betamax()
     def test_info_by_url_maximum_listing(self):
         self.assertEqual(100, len(self.r.get_info('http://www.reddit.com',
                                                   limit=101)))
 
-    @betamax
+    @betamax()
     def test_is_username_available(self):
         self.assertFalse(self.r.is_username_available(self.un))
         self.assertTrue(self.r.is_username_available(self.invalid_user_name))
@@ -229,25 +229,25 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertRaises(TypeError, Reddit, user_agent='')
         self.assertRaises(TypeError, Reddit, user_agent=1)
 
-    @betamax
+    @betamax()
     def test_search(self):
         self.assertTrue(len(list(self.r.search('test'))) > 2)
 
-    @betamax
+    @betamax()
     def test_search_multiply_submitted_url(self):
         self.assertTrue(
             len(list(self.r.search('http://www.livememe.com/'))) > 2)
 
-    @betamax
+    @betamax()
     def test_search_reddit_names(self):
         self.assertTrue(self.r.search_reddit_names('reddit'))
 
-    @betamax
+    @betamax()
     def test_search_single_submitted_url(self):
         self.assertEqual(
             1, len(list(self.r.search('http://www.livememe.com/vg972qp'))))
 
-    @betamax
+    @betamax()
     def test_search_with_syntax(self):
         no_syntax = self.r.search('timestamp:1354348800..1354671600',
                                   subreddit=self.sr)
@@ -256,14 +256,14 @@ class UnauthenticatedRedditTest(PRAWTest):
                                     subreddit=self.sr, syntax='cloudsearch')
         self.assertTrue(list(with_syntax))
 
-    @betamax
+    @betamax()
     def test_search_with_time_window(self):
         num = 50
         submissions = len(list(self.r.search('test', subreddit=self.sr,
                                              period='all', limit=num)))
         self.assertTrue(submissions == num)
 
-    @betamax
+    @betamax()
     def test_store_json_result(self):
         self.r.config.store_json_result = True
         sub_url = ('http://www.reddit.com/r/reddit_api_test/comments/'
@@ -271,7 +271,7 @@ class UnauthenticatedRedditTest(PRAWTest):
         sub = self.r.get_submission(url=sub_url)
         self.assertEqual(sub.json_dict['url'], sub_url)
 
-    @betamax
+    @betamax()
     def test_store_lazy_json_result(self):
         self.r.config.store_json_result = True
         subreddit = self.r.get_subreddit(self.sr)

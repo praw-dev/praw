@@ -20,7 +20,7 @@ class InternalTest(PRAWTest):
         output = _to_reddit_list(['hello', 'world'])
         self.assertEqual('hello,world', output)
 
-    @betamax
+    @betamax()
     def test__to_reddit_list_with_object(self):
         output = _to_reddit_list(self.r.get_subreddit(self.sr))
         self.assertEqual(self.sr, output)

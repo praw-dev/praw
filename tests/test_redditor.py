@@ -11,7 +11,7 @@ class RedditorTest(PRAWTest):
         self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.other_user = self.r.get_redditor(self.other_user_name)
 
-    @betamax
+    @betamax()
     def test_add_remove_friends(self):
         friends = self.r.user.get_friends()
         redditor = friends[0] if friends else self.other_user
@@ -24,14 +24,14 @@ class RedditorTest(PRAWTest):
         self.delay_for_listing_update()
         self.assertTrue(redditor in self.r.user.get_friends(u=2))
 
-    @betamax
+    @betamax()
     def test_duplicate_login(self):
         self.assertEqual(self.un, self.r.user.name)
         self.r.login(self.other_user_name, self.other_user_pswd,
                      disable_warning=True)
         self.assertEqual(self.other_user_name, self.r.user.name)
 
-    @betamax
+    @betamax()
     def test_get_hidden(self):
         submission = next(self.r.user.get_hidden())
         submission.hide()
@@ -45,16 +45,16 @@ class RedditorTest(PRAWTest):
         self.assertNotEqual(submission,
                             next(self.r.user.get_hidden(params={'u': 2})))
 
-    @betamax
+    @betamax()
     def test_get_redditor(self):
         self.assertEqual(self.other_user_id, self.other_user.id)
 
-    @betamax
+    @betamax()
     def test_get_submitted(self):
         redditor = self.r.get_redditor(self.other_non_mod_name)
         self.assertTrue(list(redditor.get_submitted()))
 
-    @betamax
+    @betamax()
     def test_get_upvoted_and_downvoted(self):
         user = self.r.user
         sub = self.r.submit(self.sr, 'Sub Title', 'Sub Body')
@@ -72,7 +72,7 @@ class RedditorTest(PRAWTest):
         self.assertEqual(sub, next(user.get_upvoted(params={'u': 2})))
         self.assertNotEqual(sub, next(user.get_downvoted(params={'u': 2})))
 
-    @betamax
+    @betamax()
     def test_redditor_comparison(self):
         a1 = next(self.r.get_new()).author
         a2 = self.r.get_redditor(text_type(a1))
@@ -81,6 +81,6 @@ class RedditorTest(PRAWTest):
         s2 = next(a2.get_submitted())
         self.assertEqual(s1, s2)
 
-    @betamax
+    @betamax()
     def test_user_set_on_login(self):
         self.assertTrue(isinstance(self.r.user, LoggedInRedditor))

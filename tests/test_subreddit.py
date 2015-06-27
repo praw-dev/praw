@@ -12,11 +12,11 @@ class SubredditTest(PRAWTest):
         self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.subreddit = self.r.get_subreddit(self.sr)
 
-    @betamax
+    @betamax()
     def test_attribute_error(self):
         self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
 
-    @betamax
+    @betamax()
     def test_display_name_lazy_update(self):
         augmented_name = self.sr.upper()
         subreddit = self.r.get_subreddit(augmented_name)
@@ -25,7 +25,7 @@ class SubredditTest(PRAWTest):
         self.assertEqual(self.sr, subreddit.display_name)
         self.assertEqual(subreddit.display_name, text_type(subreddit))
 
-    @betamax
+    @betamax()
     def test_display_name_refresh(self):
         augmented_name = self.sr.upper()
         subreddit = self.r.get_subreddit(augmented_name)
@@ -34,7 +34,7 @@ class SubredditTest(PRAWTest):
         self.assertEqual(self.sr, subreddit.display_name)
         self.assertEqual(subreddit.display_name, text_type(subreddit))
 
-    @betamax
+    @betamax()
     def test_get_contributors_private(self):
         self.r.login(self.other_non_mod_name, self.other_non_mod_pswd,
                      disable_warning=True)
@@ -42,40 +42,40 @@ class SubredditTest(PRAWTest):
         self.assertEqual('private', private_sub.subreddit_type)
         self.assertTrue(list(private_sub.get_contributors()))
 
-    @betamax
+    @betamax()
     def test_get_contributors_public(self):
         self.assertEqual('public', self.subreddit.subreddit_type)
         self.assertTrue(list(self.subreddit.get_contributors()))
 
-    @betamax
+    @betamax()
     def test_get_contributors_public_exception(self):
         self.r.login(self.other_non_mod_name, self.other_non_mod_pswd,
                      disable_warning=True)
         self.assertRaises(errors.ModeratorRequired,
                           self.subreddit.get_contributors)
 
-    @betamax
+    @betamax()
     def test_get_my_contributions(self):
         self.first(self.r.get_my_contributions(),
                    lambda subreddit: text_type(subreddit) == self.sr)
 
-    @betamax
+    @betamax()
     def test_get_my_moderation(self):
         self.first(self.r.get_my_moderation(),
                    lambda subreddit: text_type(subreddit) == self.sr)
 
-    @betamax
+    @betamax()
     def test_get_my_subreddits(self):
         for subreddit in self.r.get_my_subreddits():
             self.assertTrue(text_type(subreddit) in subreddit._info_url)
 
-    @betamax
+    @betamax()
     def test_get_subreddit_recommendations(self):
         result = self.r.get_subreddit_recommendations(['python', 'redditdev'])
         self.assertTrue(result)
         self.assertTrue(all(isinstance(x, Subreddit) for x in result))
 
-    @betamax
+    @betamax()
     def test_subreddit_refresh(self):
         new_description = 'Description {0}'.format(self.r.modhash)
         self.subreddit.update_settings(public_description=new_description)
@@ -95,11 +95,11 @@ class SubredditTest(PRAWTest):
         self.subreddit.refresh()
         self.assertEqual(new_description, self.subreddit.public_description)
 
-    @betamax
+    @betamax()
     def test_subreddit_search(self):
         self.assertTrue(list(self.subreddit.search('test')))
 
-    @betamax
+    @betamax()
     def test_subscribe_and_unsubscribe(self):
         self.subreddit.subscribe()
 
@@ -128,12 +128,12 @@ class ModeratorSubredditTest(PRAWTest):
         self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.subreddit = self.r.get_subreddit(self.sr)
 
-    @betamax
+    @betamax()
     def test_accept_moderator_invite_fail(self):
         self.assertRaises(errors.InvalidInvite,
                           self.subreddit.accept_moderator_invite)
 
-    @betamax
+    @betamax()
     def test_add_moderator__failure(self):
         self.assertTrue(self.r.user in self.subreddit.get_moderators())
         self.assertRaises(errors.AlreadyModerator,
@@ -141,28 +141,28 @@ class ModeratorSubredditTest(PRAWTest):
         self.assertRaises(errors.AlreadyModerator,
                           self.subreddit.add_moderator, self.r.user)
 
-    @betamax
+    @betamax()
     def test_ban(self):
         self.add_remove(self.subreddit.add_ban, self.subreddit.remove_ban,
                         self.subreddit.get_banned)
 
-    @betamax
+    @betamax()
     def test_contributors(self):
         self.add_remove(self.subreddit.add_contributor,
                         self.subreddit.remove_contributor,
                         self.subreddit.get_contributors)
 
-    @betamax
+    @betamax()
     def test_get_banned__note(self):
         params = {'user': self.other_non_mod_name}
         data = next(self.subreddit.get_banned(user_only=False, params=params))
         self.assertEqual('no reason in particular 2', data['note'])
 
-    @betamax
+    @betamax()
     def test_get_mod_log(self):
         self.assertTrue(list(self.subreddit.get_mod_log()))
 
-    @betamax
+    @betamax()
     def test_get_mod_log_with_mod_by_name(self):
         other = self.r.get_redditor(self.other_user_name)
         actions = list(self.subreddit.get_mod_log(mod=other.name))
@@ -170,7 +170,7 @@ class ModeratorSubredditTest(PRAWTest):
         self.assertTrue(all(x.mod.lower() == other.name.lower()
                             for x in actions))
 
-    @betamax
+    @betamax()
     def test_get_mod_log_with_mod_by_redditor_object(self):
         other = self.r.get_redditor(self.other_user_name)
         actions = list(self.subreddit.get_mod_log(mod=other))
@@ -178,36 +178,36 @@ class ModeratorSubredditTest(PRAWTest):
         self.assertTrue(all(x.mod.lower() == other.name.lower()
                             for x in actions))
 
-    @betamax
+    @betamax()
     def test_get_mod_log_with_action_filter(self):
         actions = list(self.subreddit.get_mod_log(action='removelink'))
         self.assertTrue(actions)
         self.assertTrue(all(x.action == 'removelink' for x in actions))
 
-    @betamax
+    @betamax()
     def test_get_mod_queue(self):
         self.assertTrue(list(self.r.get_subreddit('mod').get_mod_queue()))
 
-    @betamax
+    @betamax()
     def test_get_mod_queue_with_default_subreddit(self):
         self.assertTrue(list(self.r.get_mod_queue()))
 
-    @betamax
+    @betamax()
     def test_get_mod_queue_multi(self):
         multi = '{0}+{1}'.format(self.sr, self.priv_sr)
         self.assertTrue(list(self.r.get_subreddit(multi).get_mod_queue()))
 
-    @betamax
+    @betamax()
     def test_get_unmoderated(self):
         self.assertTrue(list(self.subreddit.get_unmoderated()))
 
-    @betamax
+    @betamax()
     def test_mod_mail_send(self):
         subject = 'Unique message: AAAA'
         self.r.get_subreddit(self.sr).send_message(subject, 'Content')
         self.first(self.r.get_mod_mail(), lambda msg: msg.subject == subject)
 
-    @betamax
+    @betamax()
     def test_moderator(self):
         def add_callback():
             self.r.login(self.other_user_name, self.other_user_pswd,
@@ -220,7 +220,7 @@ class ModeratorSubredditTest(PRAWTest):
                         self.subreddit.get_moderators,
                         add_callback)
 
-    @betamax
+    @betamax()
     def test_set_settings(self):
         # The only required argument is title. All others will be set
         # to their defaults.
@@ -231,7 +231,7 @@ class ModeratorSubredditTest(PRAWTest):
         for setting in ['description', 'public_description']:
             self.assertEqual('', settings[setting])
 
-    @betamax
+    @betamax()
     def test_set_stylesheet(self):
         self.assertRaises(errors.BadCSS, self.subreddit.set_stylesheet,
                           'INVALID CSS')
@@ -246,7 +246,7 @@ class ModeratorSubredditTest(PRAWTest):
         self.assertEqual(
             '', self.subreddit.get_stylesheet(uniq=1)['stylesheet'])
 
-    @betamax
+    @betamax()
     def test_update_settings__descriptions(self):
         self.maxDiff = None
         settings = self.subreddit.get_settings()
@@ -258,13 +258,13 @@ class ModeratorSubredditTest(PRAWTest):
             public_description=settings['public_description'])
         self.assertEqual(settings, self.subreddit.get_settings(uniq=1))
 
-    @betamax
+    @betamax()
     def test_wiki_ban(self):
         self.add_remove(self.subreddit.add_wiki_ban,
                         self.subreddit.remove_wiki_ban,
                         self.subreddit.get_wiki_banned)
 
-    @betamax
+    @betamax()
     def test_wiki_contributors(self):
         self.add_remove(self.subreddit.add_wiki_contributor,
                         self.subreddit.remove_wiki_contributor,

@@ -99,26 +99,29 @@ with Betamax.configure() as config:
     config.default_cassette_options['match_requests_on'].append('PRAWBody')
 
 
-def betamax(function):
+def betamax(cassette_name=None, **cassette_options):
     """Utilze betamax to record/replay any network activity of the test.
 
     The wrapped function's `betmax_init` method will be invoked if it exists.
 
     """
-    @wraps(function)
-    def betamax_function(obj):
-        with Betamax(obj.r.handler.http).use_cassette(function.__name__):
-            # We need to set the delay to zero for betamaxed requests.
-            # Unfortunately, we don't know if the request actually happened so
-            # tests should only be updated one at a time rather than in bulk to
-            # prevent exceeding reddit's rate limit.
-            obj.r.config.api_request_delay = 0
-            # PRAW's cache is global, so we need to clear it for each test.
-            obj.r.handler.clear_cache()
-            if hasattr(obj, 'betamax_init'):
-                obj.betamax_init()
-            return function(obj)
-    return betamax_function
+    def factory(function):
+        @wraps(function)
+        def betamax_function(obj):
+            with Betamax(obj.r.handler.http).use_cassette(
+                    cassette_name or function.__name__, **cassette_options):
+                # We need to set the delay to zero for betamaxed requests.
+                # Unfortunately, we don't know if the request actually happened
+                # so tests should only be updated one at a time rather than in
+                # bulk to prevent exceeding reddit's rate limit.
+                obj.r.config.api_request_delay = 0
+                # PRAW's cache is global, so we need to clear it for each test.
+                obj.r.handler.clear_cache()
+                if hasattr(obj, 'betamax_init'):
+                    obj.betamax_init()
+                return function(obj)
+        return betamax_function
+    return factory
 
 
 def flair_diff(root, other):
