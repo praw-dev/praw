@@ -93,6 +93,7 @@ class RateLimitHandler(object):
             request.
         :param timeout: Specifies the maximum time that the actual HTTP request
             can take.
+        :param verify: Specifies if SSL certificates should be validated.
 
         ``**_`` should be added to the method call to ignore the extra
         arguments intended for the cache handler.

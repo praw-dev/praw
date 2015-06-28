@@ -96,6 +96,11 @@ config file. Each site can overwrite any of these variables.
   ``https_proxy: http://user:pass@addr:port``. If no proxy is specified, PRAW
   will pick up the environment variable for https_proxy, if it has been set.
 
+* *validate_certs:* A **boolean** to indicate if SSL certificates should be
+  validated or not.  If not specified, will default to ``True``.  This is
+  mainly for testing local reddit installation with self-signed
+  certificates.
+
 * *store_json_result:* A **boolean** to indicate if json_dict, which contains
   the original API response, should be stored on every object in the json_dict
   attribute. Default is ``False`` as memory usage will double if enabled. For
