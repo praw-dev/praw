@@ -59,6 +59,21 @@ config file. Each site can overwrite any of these variables.
   package updates.
 * *cache_timeout:* An **integer** that defines the number of seconds to
   internally cache GET/POST requests based on URL.
+* *http_proxy:* A **string** that declares a http proxy to be used. It follows
+  the `requests proxy conventions
+  <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_, e.g.,
+  ``http_proxy: http://user:pass@addr:port``. If no proxy is specified, PRAW
+  will pick up the environment variable for http_proxy, if it has been set.
+* *https_proxy:* A **string** that declares a https proxy to be used. It follows
+  the `requests proxy conventions
+  <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_, e.g.,
+  ``https_proxy: http://user:pass@addr:port``. If no proxy is specified, PRAW
+  will pick up the environment variable for https_proxy, if it has been set.
+* *log_requests:* An **integer** that determines the level of API call logging.
+
+ * **0:** no logging
+ * **1:** log only the request URIs
+ * **2:** log the request URIs as well as any POST data
 * *oauth_domain:* A **string** that defines the *domain* where OAuth
   authenticated requests are sent.
 * *oauth_https:* A **boolean** that determines whether or not to use HTTPS for
@@ -71,39 +86,22 @@ config file. Each site can overwrite any of these variables.
    the display *permalink* for Submissions and Comments.
 * *short_domain:* A **string** that defines the *domain* that is used for
    short urls.
+* *store_json_result:* A **boolean** to indicate if json_dict, which contains
+  the original API response, should be stored on every object in the json_dict
+  attribute. Default is ``False`` as memory usage will double if enabled. For
+  lazy objects, json_dict will be ``None`` until the data has been fetched.
 * *timeout:* Maximum time, a **float**, in seconds, before a single HTTP request
   times out. urllib2.URLError is raised upon timeout.
+* *validate_certs:* A **boolean** to indicate if SSL certificates should be
+  validated or not.  If not specified, will default to ``True``.  This is
+  mainly for testing local reddit installations with self-signed certificates.
 * *xxx_kind:* A **string** that maps the *type* returned by json results to a
   local object. **xxx** is one of: *comment*, *message*, *more*, *redditor*,
   *submission*, *subreddit*, *userlist*. This variable is needed as the
   object-to-kind mapping is created dynamically on site creation and thus isn't
   consistent across sites.
-* *log_requests:* An **integer** that determines the level of API call logging.
 
- * **0:** no logging
- * **1:** log only the request URIs
- * **2:** log the request URIs as well as any POST data
 
-* *http_proxy:* A **string** that declares a http proxy to be used. It follows
-  the `requests proxy conventions
-  <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_, e.g.,
-  ``http_proxy: http://user:pass@addr:port``. If no proxy is specified, PRAW
-  will pick up the environment variable for http_proxy, if it has been set.
-
-* *https_proxy:* A **string** that declares a https proxy to be used. It follows
-  the `requests proxy conventions
-  <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_, e.g.,
-  ``https_proxy: http://user:pass@addr:port``. If no proxy is specified, PRAW
-  will pick up the environment variable for https_proxy, if it has been set.
-
-* *validate_certs:* A **boolean** to indicate if SSL certificates should be
-  validated or not.  If not specified, will default to ``True``.  This is
-  mainly for testing local reddit installations with self-signed certificates.
-
-* *store_json_result:* A **boolean** to indicate if json_dict, which contains
-  the original API response, should be stored on every object in the json_dict
-  attribute. Default is ``False`` as memory usage will double if enabled. For
-  lazy objects, json_dict will be ``None`` until the data has been fetched.
 
 The are additional variables that each site can define. These additional
 variables are:
