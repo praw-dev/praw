@@ -81,7 +81,7 @@ class RateLimitHandler(object):
         """Establish the HTTP session."""
         self.http = Session()  # Each instance should have its own session
 
-    def request(self, request, proxies, timeout, **_):
+    def request(self, request, proxies, timeout, verify, **_):
         """Responsible for dispatching the request and returning the result.
 
         Network level exceptions should be raised and only
@@ -99,7 +99,7 @@ class RateLimitHandler(object):
 
         """
         return self.http.send(request, proxies=proxies, timeout=timeout,
-                              allow_redirects=False)
+                              allow_redirects=False, verify=verify)
 RateLimitHandler.request = RateLimitHandler.rate_limit(
     RateLimitHandler.request)
 

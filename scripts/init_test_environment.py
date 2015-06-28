@@ -3,7 +3,7 @@ import praw
 import sys
 
 
-PASSWORD = '1111'
+PASSWORD = '111111'
 SUBMISSIONS = ({'subreddit': 'reddit_api_test', 'text': 'blah blah blah',
                 'title': 'Init Submission', 'username': 'pyapitestuser3'},
                {'subreddit': 'python', 'title': 'Python Website',
@@ -56,8 +56,8 @@ def adjust_subscriptions(r):
 
     for username in USER_TO_SUBS:
         r.login(username, PASSWORD)
-        subscribed = set(x.display_name.lower()
-                         for x in r.user.my_reddits(limit=None))
+        subscribed = set(x['data']['display_name'].lower()
+                         for x in r.get_my_subreddits(limit=None))
         for subreddit_name in subscribed - subreddits:
             r.unsubscribe(subreddit_name)
             print('{0} unsubscribed from {1}'.format(username, subreddit_name))
