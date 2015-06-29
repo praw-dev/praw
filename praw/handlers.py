@@ -81,7 +81,7 @@ class RateLimitHandler(object):
         """Establish the HTTP session."""
         self.http = Session()  # Each instance should have its own session
 
-    def request(self, request, proxies, timeout, **_):
+    def request(self, request, proxies, timeout, verify, **_):
         """Responsible for dispatching the request and returning the result.
 
         Network level exceptions should be raised and only
@@ -93,13 +93,14 @@ class RateLimitHandler(object):
             request.
         :param timeout: Specifies the maximum time that the actual HTTP request
             can take.
+        :param verify: Specifies if SSL certificates should be validated.
 
         ``**_`` should be added to the method call to ignore the extra
         arguments intended for the cache handler.
 
         """
         return self.http.send(request, proxies=proxies, timeout=timeout,
-                              allow_redirects=False)
+                              allow_redirects=False, verify=verify)
 RateLimitHandler.request = RateLimitHandler.rate_limit(
     RateLimitHandler.request)
 

@@ -238,6 +238,9 @@ class Config(object):  # pylint: disable=R0903
         self.https_proxy = (obj.get('https_proxy') or
                             os.getenv('https_proxy') or None)
         # We use `get(...) or None` because `get` may return an empty string
+
+        self.validate_certs = config_boolean(obj.get('validate_certs'))
+
         self.client_id = obj.get('oauth_client_id') or None
         self.client_secret = obj.get('oauth_client_secret') or None
         self.redirect_uri = obj.get('oauth_redirect_uri') or None
@@ -326,6 +329,8 @@ class BaseReddit(object):
         self.handler = handler or DefaultHandler()
         self.http = Session()
         self.http.headers['User-Agent'] = UA_STRING % user_agent
+        self.http.validate_certs = self.config.validate_certs
+
         # This `Session` object is only used to store request information that
         # is used to make prepared requests. It _should_ never be used to make
         # a direct request, thus we raise an exception when it is used.
@@ -380,9 +385,12 @@ class BaseReddit(object):
                 request.url = url
                 kwargs['_cache_key'] = (normalize_url(request.url),
                                         tuple(key_items))
-                response = self.handler.request(request=request.prepare(),
-                                                proxies=self.http.proxies,
-                                                timeout=timeout, **kwargs)
+                response = self.handler.request(
+                    request=request.prepare(),
+                    proxies=self.http.proxies,
+                    timeout=timeout,
+                    verify=self.http.validate_certs, **kwargs)
+
                 if self.config.log_requests >= 2:
                     sys.stderr.write('status: {0}\n'
                                      .format(response.status_code))
