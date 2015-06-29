@@ -1462,6 +1462,16 @@ class Multireddit(Refreshable):
     get_top_from_week = _get_sorter('top', t='week')
     get_top_from_year = _get_sorter('top', t='year')
 
+    @classmethod
+    def from_api_response(cls, reddit_session, json_dict):
+        """Return an instance of the appropriate class from the json dict."""
+        # The Multireddit response contains the Subreddits attribute as a list
+        # of dicts of the form {'name': 'subredditname'}.
+        # We must convert each of these into a Subreddit object.
+        json_dict['subreddits'] = [Subreddit(reddit_session, item['name'])
+                                   for item in json_dict['subreddits']]
+        return cls(reddit_session, None, None, json_dict)
+
     def __init__(self, reddit_session, author=None, name=None,
                  json_dict=None, fetch=False, **kwargs):
         """Construct an instance of the Multireddit object."""
@@ -1485,6 +1495,15 @@ class Multireddit(Refreshable):
     def __unicode__(self):
         """Return a string representation of the Multireddit."""
         return self.name
+
+    def _populate(self, json_dict, fetch):
+        retval = super(Multireddit, self)._populate(json_dict, fetch)
+        if fetch:
+            # Subreddits are returned as dictionaries in the form
+            # {'name': 'subredditname'}. Convert them to Subreddit objects.
+            self.subreddits = [Subreddit(self.reddit_session, item['name'])
+                               for item in self.subreddits]
+        return retval
 
     @restrict_access(scope='subscribe')
     def add_subreddit(self, subreddit, _delete=False, *args, **kwargs):
