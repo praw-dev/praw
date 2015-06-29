@@ -26,6 +26,9 @@ Unreleased
  * **[CHANGE]** Replaced instances of "liked" and "disliked" with "upvoted"
    and "downvoted". The get_liked and get_disliked methods in
    :class:`objects.Redditor` still exist, but point to the new methods.
+ * **[CHANGE]** Fixed the `subreddits` attribute of
+   :class:`praw.objects.Multireddit` being returned as a list of dicts.
+   It is now a list of Subreddit objects.
  * **[FEATURE]** Addded :meth:`get_comment_replies` and
    :meth:`get_post_replies` to the :class:`praw.__init__.PrivateMessagesMixin`
 

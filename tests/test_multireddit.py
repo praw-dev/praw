@@ -18,14 +18,14 @@ class MultiredditTest(PRAWTest):
     @betamax()
     def test_add_and_remove_subreddit(self):
         multi = self.r.user.get_multireddits()[0]
-        self.assertTrue(self.sr in (x['name'] for x in multi.subreddits))
+        self.assertTrue(self.sr in (x.display_name for x in multi.subreddits))
         multi.remove_subreddit(self.sr)
         multi.refresh()
 
-        self.assertFalse(self.sr in (x['name'] for x in multi.subreddits))
+        self.assertFalse(self.sr in (x.display_name for x in multi.subreddits))
         multi.add_subreddit(self.sr)
         multi.refresh()
-        self.assertTrue(self.sr in (x['name'] for x in multi.subreddits))
+        self.assertTrue(self.sr in (x.display_name for x in multi.subreddits))
 
     @betamax()
     def test_create_and_delete_multireddit(self):
