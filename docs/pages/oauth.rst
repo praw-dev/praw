@@ -86,7 +86,7 @@ to a url, where the access we wish to be granted is listed, then they click
 parameters that is needed for step 4.
 
 The url we send them to is generated using :meth:`.get_authorize_url`. This
-takes 3 parameters. ``state``, which is a unique key that represent this
+takes 3 parameters. ``state``, which is a string of your choice that represents this
 client, ``scope`` which are the reddit scope(s) we ask permission for (see
 :ref:`oauth_scopes`) and finally ``refreshable`` which determines whether we
 can refresh the access_token (step 6) thus gaining permanent access.
@@ -154,7 +154,7 @@ need to refresh the access token.
     >>> r.refresh_access_information(access_information['refresh_token'])
 
 This returns a dict, where the ``access_token`` key has had its value updated.
-Neither ``scope`` or ``refresh_token`` will have changed.
+Neither ``scope`` nor ``refresh_token`` will have changed.
 
 .. _oauth_webserver:
 
@@ -226,7 +226,7 @@ OAuth Scopes.
 -------------
 
 The following list of access types can be combined in any way you please. Just
-give a list of the scopes you want in the scope argument of the
+pass a string containing each scope that you want (if you want several, they should be seperated by spaces, e.g. ``"identity submit edit"``) to the scope argument of the
 ``get_authorize_url`` method. The description of each scope is identical to the
 one users will see when they have to authorize your application.
 
