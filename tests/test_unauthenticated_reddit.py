@@ -151,6 +151,14 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertTrue(len(subs) > 1)
 
     @betamax()
+    def test_get_random_submission(self):
+        submission = self.r.get_random_submission()
+        self.assertTrue(isinstance(submission, Submission))
+
+        submission = self.r.get_random_submission('redditdev')
+        self.assertEqual(submission.subreddit.display_name, 'redditdev')
+
+    @betamax()
     def test_get_rising(self):
         num = 25
         result = self.r.get_rising(limit=num)
