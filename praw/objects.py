@@ -107,6 +107,22 @@ class RedditContentObject(object):
             retval = retval.encode('utf-8')
         return retval
 
+    def __getstate__(self):
+        """Needed for `pickle`.
+
+        Without this, pickle protocol version 0 will make HTTP requests
+        upon serialization, hence slowing it down significantly.
+        """
+        return self.__dict__
+
+    def __reduce_ex__(self, protocol):
+        """Needed for `pickle`.
+
+        Without this, `pickle` protocol version 2 will make HTTP requests
+        upon serialization, hence slowing it down significantly.
+        """
+        return self.__reduce__()
+
     def _get_json_dict(self):
         # (disabled for entire function) pylint: disable=W0212
 

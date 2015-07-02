@@ -2,6 +2,7 @@
 
 from __future__ import print_function, unicode_literals
 import pickle
+import mock
 from praw import helpers
 from praw.objects import Comment, MoreComments
 from .helper import PRAWTest, betamax
@@ -98,10 +99,24 @@ class CommentTest(PRAWTest):
                              lambda item: isinstance(item, Comment))
         self.assertEqual(comment._replies, None)
 
+    def _test_pickling(self, protocol):
+        comment = next(self.r.user.get_comments())
+        with mock.patch('praw.BaseReddit.request_json') as request_json_func:
+            unpickled_comment = pickle.loads(pickle.dumps(comment, protocol))
+            self.assertEqual(comment, unpickled_comment)
+            self.assertEqual(request_json_func.called, 0)
+
     @betamax()
-    def test_unpickle_comment(self):
-        item = next(self.r.user.get_comments())
-        self.assertEqual(item, pickle.loads(pickle.dumps(item)))
+    def test_pickling_v0(self):
+        self._test_pickling(0)
+
+    @betamax()
+    def test_pickling_v1(self):
+        self._test_pickling(1)
+
+    @betamax()
+    def test_pickling_v2(self):
+        self._test_pickling(2)
 
 
 class MoreCommentsTest(PRAWTest):
