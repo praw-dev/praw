@@ -1173,7 +1173,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 url = url.replace("user/"+redditor, 'me')
         return url
 
-    @decorators.restrict_access(scope=None, login=True)
+    @decorators.restrict_access(scope='modself', login=True)
     def accept_moderator_invite(self, subreddit):
         """Accept a moderator invite to the given subreddit.
 
@@ -1354,7 +1354,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             self.set_access_credentials(**response)
         return response
 
-    @decorators.restrict_access(scope=None, login=True)
+    @decorators.restrict_access(scope='flair', login=True)
     def select_flair(self, item, flair_template_id='', flair_text=''):
         """Select user flair or link flair on subreddits.
 
@@ -1810,7 +1810,7 @@ class ModOnlyMixin(AuthenticatedReddit):
                 data['name'] = user
                 yield data
 
-    @decorators.restrict_access(scope=None, mod=True)
+    @decorators.restrict_access(scope='read', mod=True)
     def get_banned(self, subreddit, user_only=True, *args, **kwargs):
         """Return a get_content generator of banned users for the subreddit.
 
@@ -1865,7 +1865,7 @@ class ModOnlyMixin(AuthenticatedReddit):
         return self.get_content(self.config['mod_mail'] %
                                 six.text_type(subreddit), *args, **kwargs)
 
-    @decorators.restrict_access(scope=None, mod=True)
+    @decorators.restrict_access(scope='read', mod=True)
     def get_mod_queue(self, subreddit='mod', *args, **kwargs):
         """Return a get_content_generator for the moderator queue.
 
@@ -1880,7 +1880,7 @@ class ModOnlyMixin(AuthenticatedReddit):
         return self.get_content(self.config['modqueue'] %
                                 six.text_type(subreddit), *args, **kwargs)
 
-    @decorators.restrict_access(scope=None, mod=True)
+    @decorators.restrict_access(scope='read', mod=True)
     def get_reports(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator of reported submissions.
 
@@ -1895,7 +1895,7 @@ class ModOnlyMixin(AuthenticatedReddit):
         return self.get_content(self.config['reports'] %
                                 six.text_type(subreddit), *args, **kwargs)
 
-    @decorators.restrict_access(scope=None, mod=True)
+    @decorators.restrict_access(scope='read', mod=True)
     def get_spam(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator of spam-filtered items.
 
@@ -1917,7 +1917,7 @@ class ModOnlyMixin(AuthenticatedReddit):
                                  six.text_type(subreddit),
                                  params=params)['data']
 
-    @decorators.restrict_access(scope=None, mod=True)
+    @decorators.restrict_access(scope='read', mod=True)
     def get_unmoderated(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator of unmoderated items.
 
@@ -1932,14 +1932,14 @@ class ModOnlyMixin(AuthenticatedReddit):
         return self.get_content(self.config['unmoderated'] %
                                 six.text_type(subreddit), *args, **kwargs)
 
-    @decorators.restrict_access(scope=None, mod=True)
+    @decorators.restrict_access(scope='read', mod=True)
     def get_wiki_banned(self, subreddit, *args, **kwargs):
         """Return a get_content generator of users banned from the wiki."""
         return self._get_userlist(
             self.config['wiki_banned'] % six.text_type(subreddit),
             user_only=True, *args, **kwargs)
 
-    @decorators.restrict_access(scope=None, mod=True)
+    @decorators.restrict_access(scope='read', mod=True)
     def get_wiki_contributors(self, subreddit, *args, **kwargs):
         """Return a get_content generator of wiki contributors.
 
