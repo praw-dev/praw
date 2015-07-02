@@ -81,9 +81,25 @@ class RedditContentObject(object):
         raise AttributeError('\'%s\' has no attribute \'%s\'' % (type(self),
                                                                  attr))
 
+    def __getstate__(self):
+        """Needed for `pickle`.
+
+        Without this, pickle protocol version 0 will make HTTP requests
+        upon serialization, hence slowing it down significantly.
+        """
+        return self.__dict__
+
     def __ne__(self, other):
         """Return whether the other instance differs from the current."""
         return not self == other
+
+    def __reduce_ex__(self, protocol):
+        """Needed for `pickle`.
+
+        Without this, `pickle` protocol version 2 will make HTTP requests
+        upon serialization, hence slowing it down significantly.
+        """
+        return self.__reduce__()
 
     def __setattr__(self, name, value):
         """Set the `name` attribute to `value."""
@@ -106,22 +122,6 @@ class RedditContentObject(object):
         if not six.PY3:
             retval = retval.encode('utf-8')
         return retval
-
-    def __getstate__(self):
-        """Needed for `pickle`.
-
-        Without this, pickle protocol version 0 will make HTTP requests
-        upon serialization, hence slowing it down significantly.
-        """
-        return self.__dict__
-
-    def __reduce_ex__(self, protocol):
-        """Needed for `pickle`.
-
-        Without this, `pickle` protocol version 2 will make HTTP requests
-        upon serialization, hence slowing it down significantly.
-        """
-        return self.__reduce__()
 
     def _get_json_dict(self):
         # (disabled for entire function) pylint: disable=W0212
