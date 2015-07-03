@@ -1356,7 +1356,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             self.set_access_credentials(**response)
         return response
 
-    @decorators.restrict_access(scope='flair', login=True)
+    @decorators.restrict_access(scope='flair')
     def select_flair(self, item, flair_template_id='', flair_text=''):
         """Select user flair or link flair on subreddits.
 
@@ -1428,7 +1428,7 @@ class ModConfigMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope='modconfig', mod=False, login=True)
+    @decorators.restrict_access(scope='modconfig', mod=False)
     @decorators.require_captcha
     def create_subreddit(self, name, title, description='', language='en',
                          subreddit_type='public', content_options='any',

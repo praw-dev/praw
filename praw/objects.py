@@ -449,7 +449,7 @@ class Reportable(RedditContentObject):
 
     """Interface for RedditContentObjects that can be reported."""
 
-    @restrict_access(scope="report")
+    @restrict_access(scope='report')
     def report(self, reason=None):
         """Report this object to the moderators.
 
