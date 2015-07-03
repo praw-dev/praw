@@ -1297,7 +1297,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
     @decorators.deprecated('Password-based authentication will stop working '
                            'on 2015/08/03 and as a result will be removed '
                            'in PRAW4.\nFor more information please see: '
-                           'https://www.reddit.com/comments/2ujhkr/\nPass '
+                           'https://www.reddit.com/comments/2ujhkr/\n\nPass '
                            '`disable_warning=True` to `login` to disable this '
                            'warning.')
     def login(self, username=None, password=None):
@@ -1306,8 +1306,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         Look for username first in parameter, then praw.ini and finally if both
         were empty get it from stdin. Look for password in parameter, then
         praw.ini (but only if username matches that in praw.ini) and finally
-        if they both are empty get it with getpass. Add the variables user
-        (username) and pswd (password) to your praw.ini file to allow for
+        if they both are empty get it with getpass. Add the variables ``user``
+        (username) and ``pswd`` (password) to your praw.ini file to allow for
         auto-login.
 
         A successful login will overwrite any existing authentication.

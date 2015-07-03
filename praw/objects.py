@@ -316,6 +316,7 @@ class Gildable(RedditContentObject):
             is Only valid when the instance called upon is of type
             Redditor. When not provided, the value defaults to 1.
         :returns: True on success, otherwise raises an exception.
+
         """
         if isinstance(self, Redditor):
             months = int(months) if months is not None else 1

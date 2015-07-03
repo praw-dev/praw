@@ -24,7 +24,6 @@ from __future__ import print_function, unicode_literals
 
 import inspect
 import os
-import re
 import six
 import sys
 from functools import wraps
@@ -38,6 +37,8 @@ IS_SPHINX_BUILD = bool(os.getenv('SPHINX_BUILD'))
 
 # Enable deprecation warnings
 simplefilter('default')
+
+DOC_SEPARATOR = '\n\n'
 
 
 def alias_function(function, class_name):
@@ -105,39 +106,40 @@ def limit_chars(function):
 def _embed_text(docstring, text):
     """Return the docstring with the text embedded."""
     if docstring is None:
-        return text
-    if len(docstring.split("\n")) == 1:
-        return docstring + "\n\n" + text
-    search_string = "^(?P<indentation> *):(returns|param)"
-    regex = re.compile(search_string, re.MULTILINE)
-    rex = regex.search(docstring)
-    if rex is None:
-        return docstring + text + "\n\n"
-    else:
-        before = docstring[:rex.end('indentation')]
-        after = rex.group('indentation') + docstring[rex.end('indentation'):]
-        return before + text + "\n\n" + after
+        return text + DOC_SEPARATOR
 
+    split = docstring.rsplit('\n', 1)
+    if len(split) == 1:  # Single line
+        return docstring + DOC_SEPARATOR + text + DOC_SEPARATOR
+
+    indent = split[1]
+    lines = text.split('\n')
+    text = lines[0] + '\n' + '\n'.join(indent + x for x in lines[1:])
+
+    # We readd the indent at the end of the docstring so that `_embed_text
+    # can functions can be applied multiple times.
+    return docstring + text + DOC_SEPARATOR + indent
 
 def _build_access_text(scope, mod, login):
     """Return access text based on required authentication."""
     if scope == 'read':
-        access_text = "May use the read oauth scope to see"
-        access_text += "content only visible to the authenticated user"
+        text = ('May use the read oauth scope to see content only visible to '
+                'the authenticated user')
     elif scope:
-        access_text = "Requires the %s oauth scope" % scope
+        text = 'Requires the {0} oauth scope'.format(scope)
     else:
-        access_text = "Requires"
+        text = 'Requires'
+
     if scope and (mod or login):
-        access_text += " or"
+        text += ' or'
+
     if mod:
-        access_text += " user/password authentication as a mod of "
-        access_text += "the subreddit."
+        text += 'user/password authentication as a mod of the subreddit.'
     elif login:
-        access_text += " user/password authentication."
+        text += ' user/password authentication.'
     else:
-        access_text += "."
-    return access_text
+        text += '.'
+    return text
 
 
 def oauth_generator(function):

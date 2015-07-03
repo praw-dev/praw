@@ -74,6 +74,7 @@ config file. Each site can overwrite any of these variables.
  * **0:** no logging
  * **1:** log only the request URIs
  * **2:** log the request URIs as well as any POST data
+
 * *oauth_domain:* A **string** that defines the *domain* where OAuth
   authenticated requests are sent.
 * *oauth_https:* A **boolean** that determines whether or not to use HTTPS for
