@@ -1173,7 +1173,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 url = url.replace("user/"+redditor, 'me')
         return url
 
-    @decorators.restrict_access(scope=None, login=True)
+    @decorators.restrict_access(scope='modself', mod=False)
     def accept_moderator_invite(self, subreddit):
         """Accept a moderator invite to the given subreddit.
 
