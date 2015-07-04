@@ -37,8 +37,7 @@ class OAuth2RedditTest(PRAWTest):
         # If this test fails, the following URL will need to be visted in order
         # to obtain a new code to pass to `get_access_information`:
         # self.r.get_authorize_url('...')
-        token = self.r.get_access_information(
-            'MQALrr1di8GzcnT8szbTWhLcBUQ')
+        token = self.r.get_access_information('MQALrr1di8GzcnT8szbTWhLcBUQ')
         expected = {'access_token': self.r.access_token,
                     'refresh_token': None,
                     'scope': set(('identity',))}
@@ -98,7 +97,6 @@ class OAuth2RedditTest(PRAWTest):
 
     @betamax()
     def test_scope_modflair(self):
-        print(self.refresh_token['modflair'])
         self.r.refresh_access_information(self.refresh_token['modflair'])
         self.r.get_subreddit(self.sr).set_flair(self.un, 'foobar')
 
@@ -116,14 +114,10 @@ class OAuth2RedditTest(PRAWTest):
         subreddit.add_moderator(self.other_user_name)
 
         # log in as other user
-        # This token must be updated when the test needs to be rerun.
-        # # self.r.get_authorize_url('...')
-        self.r.get_access_information('4GzgJgLUQ64iGn6WdgBto6lrd24')
         self.r.refresh_access_information(self.other_refresh_token['modself'])
         self.r.accept_moderator_invite(self.sr)
 
         # now return to original user.
-        self.test_get_access_information()
         self.r.refresh_access_information(self.refresh_token['modothers'])
         subreddit.remove_moderator(self.other_user_name)
 
