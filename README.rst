@@ -52,7 +52,14 @@ install is via `pip <https://pypi.python.org/pypi/pip>`_
 
 .. code-block:: bash
 
-   $ pip install praw
+    $ pip install praw
+
+
+If you want to run the development version of PRAW try:
+
+.. code-block:: bash
+
+    $ pip install --upgrade https://github.com/praw-dev/praw/archive/master.zip
 
 If you don't have ``pip`` installed, then the Hitchhiker's Guide to Python has
 a section for setting it up on `Windows
