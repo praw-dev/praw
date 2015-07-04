@@ -61,6 +61,7 @@ class PRAWTest(unittest.TestCase):
             'modconfig':       'bBGRgMY9Ai9_SZLZsaFvS647Mgk',
             'modflair':        'UrMbtk4bOa040XAVz0uQn2gTE3s',
             'modlog':          'ADW_EDS9-bh7Zicc7ARx7w8ZLMA',
+            'modothers':       '7302867-uHta-txRBG7sBUx1I3pSNq5UCic',
             'modposts':        'Ffnae7s4K-uXYZB5ZaYJgh0d8DI',
             'mysubreddits':    'O7tfWhqem6fQZqxhoTiLca1s7VA',
             'privatemessages': 'kr_pHPO3sqTn_m5f_FX9TW4joEU',
@@ -69,6 +70,10 @@ class PRAWTest(unittest.TestCase):
             'submit':          'k69WTwa2bEQOQY9t61nItd4twhw',
             'subscribe':       'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
             'vote':            '5RPnDwg56vAbf7F9yO81cXZAPSQ'}
+
+        self.other_refresh_token = {
+             'modself':        '10640071-v2ZWipt20gPZvfBnvILkBUDq0P4'}
+
         self.submission_edit_id = '16i92b'
 
     def delay_for_listing_update(self, duration=0.1):
