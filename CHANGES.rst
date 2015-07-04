@@ -23,6 +23,8 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[BUGFIX]** Fixed method `get_random_submission` which failed to raise
+   the expected redirect exception.
  * **[CHANGE]** Replaced instances of "liked" and "disliked" with "upvoted"
    and "downvoted". The get_liked and get_disliked methods in
    :class:`objects.Redditor` still exist, but point to the new methods.

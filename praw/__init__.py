@@ -926,10 +926,12 @@ class UnauthenticatedReddit(BaseReddit):
         """
         url = self.config['subreddit_random'] % six.text_type(subreddit)
         try:
-            self._request(url, params={'unique': self._unique_count},
-                          raw_response=True)
-        except errors.RedirectException as exc:  # This _should_ occur
+            item = self.request_json(url,
+                                     params={'unique': self._unique_count})
             self._unique_count += 1  # Avoid network-level caching
+            return objects.Submission.from_json(item)
+        except errors.RedirectException as exc:
+            self._unique_count += 1
             return self.get_submission(exc.response_url)
         raise errors.ClientException('Expected exception not raised.')
 
