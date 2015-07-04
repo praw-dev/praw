@@ -93,7 +93,7 @@ class RedditContentObject(object):
         """Return whether the other instance differs from the current."""
         return not self == other
 
-    def __reduce_ex__(self, protocol):
+    def __reduce_ex__(self, _):
         """Needed for `pickle`.
 
         Without this, `pickle` protocol version 2 will make HTTP requests

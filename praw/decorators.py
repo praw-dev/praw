@@ -120,6 +120,7 @@ def _embed_text(docstring, text):
     # can functions can be applied multiple times.
     return docstring + text + DOC_SEPARATOR + indent
 
+
 def _build_access_text(scope, mod, login):
     """Return access text based on required authentication."""
     if scope == 'read':
