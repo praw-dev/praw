@@ -38,7 +38,7 @@ class OAuth2RedditTest(PRAWTest):
         # to obtain a new code to pass to `get_access_information`:
         # self.r.get_authorize_url('...')
         token = self.r.get_access_information(
-                              'MQALrr1di8GzcnT8szbTWhLcBUQ')
+            'MQALrr1di8GzcnT8szbTWhLcBUQ')
         expected = {'access_token': self.r.access_token,
                     'refresh_token': None,
                     'scope': set(('identity',))}
@@ -118,7 +118,7 @@ class OAuth2RedditTest(PRAWTest):
         # log in as other user
         # This token must be updated when the test needs to be rerun.
         # # self.r.get_authorize_url('...')
-        token = self.r.get_access_information('4GzgJgLUQ64iGn6WdgBto6lrd24')
+        self.r.get_access_information('4GzgJgLUQ64iGn6WdgBto6lrd24')
         self.r.refresh_access_information(self.other_refresh_token['modself'])
         self.r.accept_moderator_invite(self.sr)
 

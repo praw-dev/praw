@@ -72,7 +72,7 @@ class PRAWTest(unittest.TestCase):
             'vote':            '5RPnDwg56vAbf7F9yO81cXZAPSQ'}
 
         self.other_refresh_token = {
-             'modself':        '10640071-v2ZWipt20gPZvfBnvILkBUDq0P4'}
+            'modself':        '10640071-v2ZWipt20gPZvfBnvILkBUDq0P4'}
 
         self.submission_edit_id = '16i92b'
 
