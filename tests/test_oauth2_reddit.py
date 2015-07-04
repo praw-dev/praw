@@ -108,6 +108,20 @@ class OAuth2RedditTest(PRAWTest):
         self.assertEqual(num, len(list(result)))
 
     @betamax()
+    def test_scope_modothers_modself(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        self.r.refresh_access_information(self.refresh_token['modothers'])
+        subreddit.add_moderator(self.other_user_name)
+
+        # log in as other user
+        self.r.refresh_access_information(self.other_refresh_token['modself'])
+        self.r.accept_moderator_invite(self.sr)
+
+        # now return to original user.
+        self.r.refresh_access_information(self.refresh_token['modothers'])
+        subreddit.remove_moderator(self.other_user_name)
+
+    @betamax()
     def test_scope_modposts(self):
         self.r.refresh_access_information(self.refresh_token['modposts'])
         Submission.from_id(self.r, self.submission_edit_id).remove()

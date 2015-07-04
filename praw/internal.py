@@ -87,6 +87,8 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 
     if relationship == 'friend':
         access = {'scope': None, 'login': True}
+    elif relationship == 'moderator':
+        access = {'scope': 'modothers'}
     else:
         access = {'scope': None, 'mod': True}
 
