@@ -59,6 +59,7 @@ class PRAWTest(unittest.TestCase):
             'history':         'j_RKymm8srC3j6cxysYFQZbB4vc',
             'identity':        'E4BgmO7iho0KOB1XlT8WEtyySf8',
             'modconfig':       'bBGRgMY9Ai9_SZLZsaFvS647Mgk',
+            'modcontributors': '7302867-nk3NcmGLLHnaDmFdX26tTjYQcSg',
             'modflair':        'UrMbtk4bOa040XAVz0uQn2gTE3s',
             'modlog':          'ADW_EDS9-bh7Zicc7ARx7w8ZLMA',
             'modothers':       '7302867-uHta-txRBG7sBUx1I3pSNq5UCic',
