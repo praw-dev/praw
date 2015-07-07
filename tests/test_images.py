@@ -70,18 +70,19 @@ class ImageTests(PRAWTest):
     def test_upload_invalid_image_path(self):
         self.assertRaises(IOError, self.subreddit.upload_image, 'bar.png')
 
-    def test_upload_jpg_header(self):
-        self.betamax_init()
-        image = self.image_path.format('white-square.jpg')
-        self.assertTrue(self.subreddit.upload_image(image, header=True))
-
-    def test_upload_jpg_image(self):
-        self.betamax_init()
-        image = self.image_path.format('white-square.jpg')
-        self.assertTrue(self.subreddit.upload_image(image))
-
     # TODO: readd the following when we can handle the image uploads with
     # betamax.
+
+    # def test_upload_jpg_header(self):
+    #     self.betamax_init()
+    #     image = self.image_path.format('white-square.jpg')
+    #     self.assertTrue(self.subreddit.upload_image(image, header=True))
+
+    # def test_upload_jpg_image(self):
+    #     self.betamax_init()
+    #     image = self.image_path.format('white-square.jpg')
+    #     self.assertTrue(self.subreddit.upload_image(image))
+
 
 # def test_upload_jpg_image_named(self):
 #     self.betamax_init()
