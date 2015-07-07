@@ -145,9 +145,11 @@ class RedditContentObject(object):
     def _populate(self, json_dict, fetch):
         if json_dict is None:
             json_dict = self._get_json_dict() if fetch else {}
-        self.json_dict = (json_dict if
-                          self.reddit_session.config.store_json_result
-                          is True else None)
+
+        if self.reddit_session.config.store_json_result is True:
+            self.json_dict = json_dict
+        else:
+            self.json_dict = None
 
         # TODO: Remove this wikipagelisting hack
         if isinstance(json_dict, list):
@@ -156,16 +158,13 @@ class RedditContentObject(object):
         for name, value in six.iteritems(json_dict):
             if self._underscore_names and name in self._underscore_names:
                 name = '_' + name
-            try:
-                setattr(self, name, value)
-            except AttributeError as exc:
-                # Handle conflicts with PRAW properties.
-                # The attribute from reddit will be suffixed with `_reddit`
-                if exc.args == ('can\'t set attribute',):
-                    setattr(self, 'name' + '_reddit', value)
-                else:
-                    raise
+            setattr(self, name, value)
+
+        self._post_populate(fetch)
         return bool(json_dict) or fetch
+
+    def _post_populate(self, fetch):
+        """Called after populating the attributes of the instance."""
 
     @property
     def fullname(self):
@@ -810,16 +809,13 @@ class Redditor(Gildable, Messageable, Refreshable):
         """Return a string representation of the Redditor."""
         return self.name
 
-    def _populate(self, json_dict, fetch):
-        retval = super(Redditor, self)._populate(json_dict, fetch)
+    def _post_populate(self, fetch):
         if fetch:
             # Maintain a consistent `name` until the user
             # explicitly calls `redditor.refresh()`
-            temp = self._case_name
-            self.created_utc  # induce a fetch
+            tmp = self._case_name
             self._case_name = self.name
-            self.name = temp
-        return retval
+            self.name = tmp
 
     def friend(self):
         """Friend the user.
@@ -1457,16 +1453,13 @@ class Subreddit(Messageable, Refreshable):
         """Return a string representation of the Subreddit."""
         return self.display_name
 
-    def _populate(self, json_dict, fetch):
-        retval = super(Subreddit, self)._populate(json_dict, fetch)
+    def _post_populate(self, fetch):
         if fetch:
             # Maintain a consistent `display_name` until the user
             # explicitly calls `subreddit.refresh()`
-            temp = self._case_name
-            self.created_utc  # induce a fetch
+            tmp = self._case_name
             self._case_name = self.display_name
-            self.display_name = temp
-        return retval
+            self.display_name = tmp
 
     def clear_all_flair(self):
         """Remove all user flair on this subreddit.
@@ -1541,14 +1534,12 @@ class Multireddit(Refreshable):
         """Return a string representation of the Multireddit."""
         return self.name
 
-    def _populate(self, json_dict, fetch):
-        retval = super(Multireddit, self)._populate(json_dict, fetch)
+    def _post_populate(self, fetch):
         if fetch:
             # Subreddits are returned as dictionaries in the form
             # {'name': 'subredditname'}. Convert them to Subreddit objects.
             self.subreddits = [Subreddit(self.reddit_session, item['name'])
                                for item in self.subreddits]
-        return retval
 
     @restrict_access(scope='subscribe')
     def add_subreddit(self, subreddit, _delete=False, *args, **kwargs):
