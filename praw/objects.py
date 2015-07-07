@@ -34,7 +34,8 @@ from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModOnlyMixin as MOMix, MultiredditMixin as MultiMix,
                   PrivateMessagesMixin as PMMix, SubmitMixin, SubscribeMixin,
                   UnauthenticatedReddit as UR)
-from praw.decorators import alias_function, limit_chars, restrict_access
+from praw.decorators import (alias_function, limit_chars, restrict_access,
+                             deprecated)
 from praw.errors import ClientException, InvalidComment
 from praw.internal import (_get_redditor_listing, _get_sorter,
                            _modify_relationship)
@@ -66,7 +67,7 @@ class RedditContentObject(object):
         self.reddit_session = reddit_session
         self._underscore_names = underscore_names
         self._uniq = uniq
-        self.has_fetched = self._populate(json_dict, fetch)
+        self._has_fetched = self._populate(json_dict, fetch)
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
@@ -75,8 +76,8 @@ class RedditContentObject(object):
 
     def __getattr__(self, attr):
         """Return the value of the `attr` attribute."""
-        if attr != '__setstate__' and not self.has_fetched:
-            self.has_fetched = self._populate(None, True)
+        if attr != '__setstate__' and not self._has_fetched:
+            self._has_fetched = self._populate(None, True)
             return getattr(self, attr)
         raise AttributeError('\'%s\' has no attribute \'%s\'' % (type(self),
                                                                  attr))
@@ -176,6 +177,12 @@ class RedditContentObject(object):
         """
         by_object = self.reddit_session.config.by_object
         return '%s_%s' % (by_object[self.__class__], self.id)
+
+    @property
+    @deprecated('``has_fetched`` will not be a public attribute in PRAW4.')
+    def has_fetched(self):
+        """Return whether the object has been fully fetched from reddit."""
+        return self._has_fetched
 
 
 class Moderatable(RedditContentObject):
@@ -426,7 +433,7 @@ class Refreshable(RedditContentObject):
         self.reddit_session._unique_count += 1  # pylint: disable=W0212
 
         if isinstance(self, Redditor):
-            other = Redditor(self.reddit_session, self.name)
+            other = Redditor(self.reddit_session, self._case_name, fetch=True)
         elif isinstance(self, Comment):
             sub = Submission.from_url(self.reddit_session, self.permalink,
                                       params={'uniq': unique})
@@ -441,7 +448,8 @@ class Refreshable(RedditContentObject):
                                         comment_sort=self._comment_sort,
                                         params=params)
         elif isinstance(self, Subreddit):
-            other = Subreddit(self.reddit_session, self._fast_name)
+            other = Subreddit(self.reddit_session, self._case_name, fetch=True)
+
         self.__dict__ = other.__dict__  # pylint: disable=W0201
         return self
 
@@ -782,12 +790,15 @@ class Redditor(Gildable, Messageable, Refreshable):
     def __init__(self, reddit_session, user_name=None, json_dict=None,
                  fetch=False):
         """Construct an instance of the Redditor object."""
+        if not user_name:
+            user_name = json_dict['name']
         info_url = reddit_session.config['user_about'] % user_name
         # name is set before calling the parent constructor so that the
         # json_dict 'name' attribute (if available) has precedence
-        self.name = user_name
+        self._case_name = user_name
         super(Redditor, self).__init__(reddit_session, json_dict,
                                        fetch, info_url)
+        self.name = self._case_name
         self._url = reddit_session.config['user'] % self.name
         self._mod_subs = None
 
@@ -798,6 +809,17 @@ class Redditor(Gildable, Messageable, Refreshable):
     def __unicode__(self):
         """Return a string representation of the Redditor."""
         return self.name
+
+    def _populate(self, json_dict, fetch):
+        retval = super(Redditor, self)._populate(json_dict, fetch)
+        if fetch:
+            # Maintain a consistent `name` until the user
+            # explicitly calls `redditor.refresh()`
+            temp = self._case_name
+            self.created_utc  # induce a fetch
+            self._case_name = self.name
+            self.name = temp
+        return retval
 
     def friend(self):
         """Friend the user.
@@ -1417,27 +1439,33 @@ class Subreddit(Messageable, Refreshable):
             subreddit_name = json_dict['url'].split('/')[2]
 
         info_url = reddit_session.config['subreddit_about'] % subreddit_name
+        self._case_name = subreddit_name
         super(Subreddit, self).__init__(reddit_session, json_dict, fetch,
                                         info_url)
-        self._fast_name = subreddit_name
-        self._url = reddit_session.config['subreddit'] % subreddit_name
+        self.display_name = self._case_name
+        self._url = reddit_session.config['subreddit'] % self.display_name
         # '' is the hot listing
         listings = ['new/', '', 'top/', 'controversial/', 'rising/']
-        base = (reddit_session.config['subreddit'] % self._fast_name)
+        base = (reddit_session.config['subreddit'] % self.display_name)
         self._listing_urls = [base + x + '.json' for x in listings]
 
     def __repr__(self):
         """Return a code representation of the Subreddit."""
-        return 'Subreddit(subreddit_name=\'{0}\')'.format(self._fast_name)
+        return 'Subreddit(subreddit_name=\'{0}\')'.format(self.display_name)
 
     def __unicode__(self):
         """Return a string representation of the Subreddit."""
-        return self._fast_name
+        return self.display_name
 
     def _populate(self, json_dict, fetch):
         retval = super(Subreddit, self)._populate(json_dict, fetch)
-        if fetch:  # Update _fast_name
-            self._fast_name = self.display_name
+        if fetch:
+            # Maintain a consistent `display_name` until the user
+            # explicitly calls `subreddit.refresh()`
+            temp = self._case_name
+            self.created_utc  # induce a fetch
+            self._case_name = self.display_name
+            self.display_name = temp
         return retval
 
     def clear_all_flair(self):
