@@ -73,6 +73,16 @@ class RedditorTest(PRAWTest):
         self.assertNotEqual(sub, next(user.get_downvoted(params={'u': 2})))
 
     @betamax()
+    def test_name_lazy_update(self):
+        augmented_name = self.other_non_mod_name.upper()
+        redditor = self.r.get_redditor(augmented_name)
+        self.assertEqual(augmented_name, text_type(redditor))
+        redditor.created_utc  # induce a lazy load
+        self.assertEqual(augmented_name, redditor.name)
+        redditor.refresh()
+        self.assertEqual(self.other_non_mod_name, redditor.name)
+
+    @betamax()
     def test_redditor_comparison(self):
         a1 = next(self.r.get_new()).author
         a2 = self.r.get_redditor(text_type(a1))
