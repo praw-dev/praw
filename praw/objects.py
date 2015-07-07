@@ -34,7 +34,8 @@ from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModOnlyMixin as MOMix, MultiredditMixin as MultiMix,
                   PrivateMessagesMixin as PMMix, SubmitMixin, SubscribeMixin,
                   UnauthenticatedReddit as UR)
-from praw.decorators import alias_function, limit_chars, restrict_access
+from praw.decorators import (alias_function, limit_chars, restrict_access,
+                             deprecated)
 from praw.errors import ClientException, InvalidComment
 from praw.internal import (_get_redditor_listing, _get_sorter,
                            _modify_relationship)
@@ -176,6 +177,12 @@ class RedditContentObject(object):
         """
         by_object = self.reddit_session.config.by_object
         return '%s_%s' % (by_object[self.__class__], self.id)
+
+    @property
+    @deprecated('``has_fetched`` will not be a public attribute in PRAW4.')
+    def has_fetched(self):
+        """Return whether the object has been fully fetched from reddit"""
+        return self._has_fetched
 
 
 class Moderatable(RedditContentObject):
@@ -426,13 +433,7 @@ class Refreshable(RedditContentObject):
         self.reddit_session._unique_count += 1  # pylint: disable=W0212
 
         if isinstance(self, Redditor):
-            if self._has_fetched:
-                # If so, then _case_name is already correct, and
-                # the instantiated object will be correct
-                other = Redditor(self.reddit_session, self._case_name)
-            else:
-                other = Redditor(self.reddit_session, self._case_name,
-                                 fetch=True)
+            other = Redditor(self.reddit_session, self._case_name, fetch=True)
         elif isinstance(self, Comment):
             sub = Submission.from_url(self.reddit_session, self.permalink,
                                       params={'uniq': unique})
@@ -447,14 +448,7 @@ class Refreshable(RedditContentObject):
                                         comment_sort=self._comment_sort,
                                         params=params)
         elif isinstance(self, Subreddit):
-            if self._has_fetched:
-                # If so, then _case_name is already correct, and
-                # the instantiated object will be correct
-                other = Subreddit(self.reddit_session, self._case_name)
-            else:
-                other = Subreddit(self.reddit_session, self._case_name,
-                                  fetch=True)
-                other.display_name = other._case_name
+            other = Subreddit(self.reddit_session, self._case_name, fetch=True)
 
         self.__dict__ = other.__dict__  # pylint: disable=W0201
         return self
