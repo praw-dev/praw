@@ -181,7 +181,7 @@ class RedditContentObject(object):
     @property
     @deprecated('``has_fetched`` will not be a public attribute in PRAW4.')
     def has_fetched(self):
-        """Return whether the object has been fully fetched from reddit"""
+        """Return whether the object has been fully fetched from reddit."""
         return self._has_fetched
 
 
