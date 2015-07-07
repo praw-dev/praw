@@ -89,6 +89,8 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
         access = {'scope': None, 'login': True}
     elif relationship == 'moderator':
         access = {'scope': 'modothers'}
+    elif relationship == 'banned' or relationship == 'contributor':
+        access = {'scope': 'modcontributors'}
     else:
         access = {'scope': None, 'mod': True}
 
