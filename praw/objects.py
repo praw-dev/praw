@@ -66,7 +66,7 @@ class RedditContentObject(object):
         self.reddit_session = reddit_session
         self._underscore_names = underscore_names
         self._uniq = uniq
-        self.has_fetched = self._populate(json_dict, fetch)
+        self._has_fetched = self._populate(json_dict, fetch)
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
@@ -75,8 +75,8 @@ class RedditContentObject(object):
 
     def __getattr__(self, attr):
         """Return the value of the `attr` attribute."""
-        if attr != '__setstate__' and not self.has_fetched:
-            self.has_fetched = self._populate(None, True)
+        if attr != '__setstate__' and not self._has_fetched:
+            self._has_fetched = self._populate(None, True)
             return getattr(self, attr)
         raise AttributeError('\'%s\' has no attribute \'%s\'' % (type(self),
                                                                  attr))
@@ -426,7 +426,13 @@ class Refreshable(RedditContentObject):
         self.reddit_session._unique_count += 1  # pylint: disable=W0212
 
         if isinstance(self, Redditor):
-            other = Redditor(self.reddit_session, self.name)
+            if self._has_fetched:
+                # If so, then _case_name is already correct, and
+                # the instantiated object will be correct
+                other = Redditor(self.reddit_session, self._case_name)
+            else:
+                other = Redditor(self.reddit_session, self._case_name,
+                                 fetch=True)
         elif isinstance(self, Comment):
             sub = Submission.from_url(self.reddit_session, self.permalink,
                                       params={'uniq': unique})
@@ -441,7 +447,15 @@ class Refreshable(RedditContentObject):
                                         comment_sort=self._comment_sort,
                                         params=params)
         elif isinstance(self, Subreddit):
-            other = Subreddit(self.reddit_session, self._fast_name)
+            if self._has_fetched:
+                # If so, then _case_name is already correct, and
+                # the instantiated object will be correct
+                other = Subreddit(self.reddit_session, self._case_name)
+            else:
+                other = Subreddit(self.reddit_session, self._case_name,
+                                  fetch=True)
+                other.display_name = other._case_name
+
         self.__dict__ = other.__dict__  # pylint: disable=W0201
         return self
 
@@ -586,7 +600,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         """Construct an instance of the Comment object."""
         super(Comment, self).__init__(reddit_session, json_dict,
                                       underscore_names=['replies'])
-        self._has_fetched_replies = not hasattr(self, 'was_comment')
+        self.__has_fetched_replies = not hasattr(self, 'was_comment')
         if self._replies:
             self._replies = self._replies['data']['children']
         elif self._replies == '':  # Comment tree was built and there are none
@@ -632,7 +646,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
     @property
     def replies(self):
         """Return a list of the comment replies to this comment."""
-        if self._replies is None or not self._has_fetched_replies:
+        if self._replies is None or not self.__has_fetched_replies:
             response = self.reddit_session.request_json(self._fast_permalink)
             if not response[1]['data']['children']:
                 raise InvalidComment('Comment is no longer accessible: {0}'
@@ -640,7 +654,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
             # pylint: disable=W0212
             self._replies = response[1]['data']['children'][0]._replies
             # pylint: enable=W0212
-            self._has_fetched_replies = True
+            self.__has_fetched_replies = True
             # Set the submission object if it is not set.
             if not self._submission:
                 self._submission = response[0]['data']['children'][0]
@@ -782,12 +796,15 @@ class Redditor(Gildable, Messageable, Refreshable):
     def __init__(self, reddit_session, user_name=None, json_dict=None,
                  fetch=False):
         """Construct an instance of the Redditor object."""
+        if not user_name:
+            user_name = json_dict['name']
         info_url = reddit_session.config['user_about'] % user_name
         # name is set before calling the parent constructor so that the
         # json_dict 'name' attribute (if available) has precedence
-        self.name = user_name
+        self._case_name = user_name
         super(Redditor, self).__init__(reddit_session, json_dict,
                                        fetch, info_url)
+        self.name = self._case_name
         self._url = reddit_session.config['user'] % self.name
         self._mod_subs = None
 
@@ -798,6 +815,17 @@ class Redditor(Gildable, Messageable, Refreshable):
     def __unicode__(self):
         """Return a string representation of the Redditor."""
         return self.name
+
+    def _populate(self, json_dict, fetch):
+        retval = super(Redditor, self)._populate(json_dict, fetch)
+        if fetch:
+            # Maintain a consistent `name` until the user
+            # explicitly calls `redditor.refresh()`
+            temp = self._case_name
+            self.created_utc  # induce a fetch
+            self._case_name = self.name
+            self.name = temp
+        return retval
 
     def friend(self):
         """Friend the user.
@@ -1417,27 +1445,33 @@ class Subreddit(Messageable, Refreshable):
             subreddit_name = json_dict['url'].split('/')[2]
 
         info_url = reddit_session.config['subreddit_about'] % subreddit_name
+        self._case_name = subreddit_name
         super(Subreddit, self).__init__(reddit_session, json_dict, fetch,
                                         info_url)
-        self._fast_name = subreddit_name
-        self._url = reddit_session.config['subreddit'] % subreddit_name
+        self.display_name = self._case_name
+        self._url = reddit_session.config['subreddit'] % self.display_name
         # '' is the hot listing
         listings = ['new/', '', 'top/', 'controversial/', 'rising/']
-        base = (reddit_session.config['subreddit'] % self._fast_name)
+        base = (reddit_session.config['subreddit'] % self.display_name)
         self._listing_urls = [base + x + '.json' for x in listings]
 
     def __repr__(self):
         """Return a code representation of the Subreddit."""
-        return 'Subreddit(subreddit_name=\'{0}\')'.format(self._fast_name)
+        return 'Subreddit(subreddit_name=\'{0}\')'.format(self.display_name)
 
     def __unicode__(self):
         """Return a string representation of the Subreddit."""
-        return self._fast_name
+        return self.display_name
 
     def _populate(self, json_dict, fetch):
         retval = super(Subreddit, self)._populate(json_dict, fetch)
-        if fetch:  # Update _fast_name
-            self._fast_name = self.display_name
+        if fetch:
+            # Maintain a consistent `display_name` until the user
+            # explicitly calls `subreddit.refresh()`
+            temp = self._case_name
+            self.created_utc  # induce a fetch
+            self._case_name = self.display_name
+            self.display_name = temp
         return retval
 
     def clear_all_flair(self):

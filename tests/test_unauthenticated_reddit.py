@@ -290,7 +290,7 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.r.config.store_json_result = True
         subreddit = self.r.get_subreddit(self.sr)
         self.assertFalse(subreddit.json_dict)
-        subreddit.display_name  # Force object to load
+        subreddit.refresh()  # Force object to load
         self.assertTrue(subreddit.json_dict)
 
     def test_user_agent(self):

@@ -31,6 +31,11 @@ Unreleased
  * **[CHANGE]** Fixed the `subreddits` attribute of
    :class:`praw.objects.Multireddit` being returned as a list of dicts.
    It is now a list of Subreddit objects.
+ * **[CHANGE]** The `display_name` attr of :class:`objects.Subreddit`
+   and the `name` attr of :class:`objects.Redditor` are now set when
+   instantiated, and do not lazyload. To guarantee that these strings are
+   properly cased, the user must instantiate the object with `fetch=True`, or
+   call `object.refresh()`.
  * **[FEATURE]** Added :meth:`get_comment_replies` and
    :meth:`get_post_replies` to the :class:`praw.__init__.PrivateMessagesMixin`
 

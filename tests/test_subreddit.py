@@ -21,9 +21,11 @@ class SubredditTest(PRAWTest):
         augmented_name = self.sr.upper()
         subreddit = self.r.get_subreddit(augmented_name)
         self.assertEqual(augmented_name, text_type(subreddit))
-        self.assertNotEqual(augmented_name, subreddit.display_name)
-        self.assertEqual(self.sr, subreddit.display_name)
-        self.assertEqual(subreddit.display_name, text_type(subreddit))
+        subreddit.created_utc  # induce a lazy load
+        self.assertNotEqual(augmented_name, subreddit._case_name)
+        self.assertEqual(augmented_name, subreddit.display_name)
+        subreddit.refresh()
+        self.assertEqual(subreddit.display_name, subreddit._case_name)
 
     @betamax()
     def test_display_name_refresh(self):
