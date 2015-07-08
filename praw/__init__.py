@@ -625,9 +625,9 @@ class OAuth2Reddit(BaseReddit):
         """Return the access information for an OAuth2 authorization grant.
 
         :param code: the code received in the request from the OAuth2 server
-        :returns: A dictionary with the key/value pairs for access_token,
-            refresh_token and scope. The refresh_token value will be done when
-            the OAuth2 grant is not refreshable. The scope value will be a set
+        :returns: A dictionary with the key/value pairs for ``access_token``,
+            ``refresh_token`` and ``scope``. The ``refresh_token`` value will be None when
+            the OAuth2 grant is not refreshable. The ``scope`` value will be a set
             containing the scopes the tokens are valid for.
 
         """
@@ -642,7 +642,7 @@ class OAuth2Reddit(BaseReddit):
     def get_authorize_url(self, state, scope='identity', refreshable=False):
         """Return the URL to send the user to for OAuth2 authorization.
 
-        :param state: a unique key that represents this individual client
+        :param state: a unique string of your choice that represents this individual client
         :param scope: the reddit scope to ask permissions for. Multiple scopes
             can be enabled by passing in a container of strings.
         :param refreshable: when True, a permanent "refreshable" token is
@@ -658,7 +658,7 @@ class OAuth2Reddit(BaseReddit):
 
     @property
     def has_oauth_app_info(self):
-        """Return True if all the necessary OAuth settings are set."""
+        """Return True if ``client_id``, ``client_secret`` and ``redirect_uri`` are set."""
         return all((self.client_id, self.client_secret, self.redirect_uri))
 
     @decorators.require_oauth
@@ -682,7 +682,7 @@ class OAuth2Reddit(BaseReddit):
                 'scope': set(retval['scope'].split(' '))}
 
     def set_oauth_app_info(self, client_id, client_secret, redirect_uri):
-        """Set the App information to use with OAuth2.
+        """Set the app information to use with OAuth2.
 
         This function need only be called if your praw.ini site configuration
         does not already contain the necessary information.
@@ -712,7 +712,7 @@ class UnauthenticatedReddit(BaseReddit):
     """
 
     def __init__(self, *args, **kwargs):
-        """Initialze an UnauthenticatedReddit instance."""
+        """Initialize an UnauthenticatedReddit instance."""
         super(UnauthenticatedReddit, self).__init__(*args, **kwargs)
         self._unique_count = 0
 
@@ -833,9 +833,9 @@ class UnauthenticatedReddit(BaseReddit):
             (``t5_``) to lookup by fullname.
         :param limit: The maximum number of Submissions to return when looking
             up by url. When None, uses account default settings.
-        :returns: When a single thing_id is provided, return the corresponding
-            thing object, or None if not found. When a list of thing_ids or a
-            url is provided return a list of thing objects (up to limit). None
+        :returns: When a single ``thing_id`` is provided, return the corresponding
+            thing object, or ``None`` if not found. When a list of ``thing_id``s or a
+            ``url`` is provided return a list of thing objects (up to ``limit``). ``None``
             is returned if any one of the thing_ids or the URL is invalid.
 
         """
@@ -1135,8 +1135,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
     """This class adds the methods necessary for authenticating with reddit.
 
-    Authentication can either be login based (through login), or OAuth2 based
-    (via set_access_credentials).
+    Authentication can either be login based (through :meth:`~praw.__init__.AuthenticatedReddit.login`), or OAuth2 based
+    (via :meth:`~praw.__init__.AuthenticatedReddit.set_access_credentials`).
 
     You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
@@ -1260,7 +1260,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         :param link: If link is given, return the flair options for this
             submission. Not normally given directly, but instead set by calling
             the flair_choices method for Submission objects.
-            use the default for the session's user.
+            Use the default for the session's user.
 
         :returns: A dictionary with 2 keys. 'current' containing current flair
             settings for the authenticated user and 'choices' containing a list
@@ -1274,7 +1274,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
     def get_me(self):
         """Return a LoggedInRedditor object.
 
-        Note: This function is only intended to be used with a 'identity'
+        Note: This function is only intended to be used with an 'identity'
         providing OAuth2 grant.
         """
         response = self.request_json(self.config['me'])
@@ -1287,7 +1287,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         return self.is_oauth_session() and scope in self._authentication
 
     def is_logged_in(self):
-        """Return True when session is authenticated via login."""
+        """Return True when session is authenticated via :meth:`~praw.__init__.AuthenticatedReddit.login`."""
         return self._authentication is True
 
     def is_oauth_session(self):
@@ -1349,9 +1349,9 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         :param refresh_token: The refresh token used to obtain the updated
             information. When not provided, use the stored refresh_token.
         :param update_session: Update the session with the returned data.
-        :returns: A dictionary with the key/value pairs for access_token,
-            refresh_token and scope. The refresh_token value will be done when
-            the OAuth2 grant is not refreshable. The scope value will be a set
+        :returns: A dictionary with the key/value pairs for ``access_token``,
+            ``refresh_token`` and ``scope``. The ``refresh_token`` value will be None when
+            the OAuth2 grant is not refreshable. The ``scope`` value will be a set
             containing the scopes the tokens are valid for.
 
         """
@@ -1370,13 +1370,13 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         access, see :meth:`~praw.__init__.ModFlairMixin.set_flair`.
 
         :param item: A string, Subreddit object (for user flair), or
-            Submission object (for link flair). If item is a string it will be
+            Submission object (for link flair). If ``item`` is a string it will be
             treated as the name of a Subreddit.
         :param flair_template_id: The id for the desired flair template. Use
             the :meth:`~praw.objects.Subreddit.get_flair_choices` and
             :meth:`~praw.objects.Submission.get_flair_choices` methods to find
             the ids for the available user and link flair choices.
-        :param flair_text: A String containing the custom flair text.
+        :param flair_text: A string containing the custom flair text.
             Used on subreddits that allow it.
 
         :returns: The json response from the server.
@@ -1406,7 +1406,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         credentials.
 
         :param scope: A set of reddit scopes the tokens provide access to
-        :param access_token: the access_token of the authentication
+        :param access_token: the access token of the authentication
         :param refresh_token: the refresh token of the authentication
         :param update_user: Whether or not to set the user attribute for
             identity scopes
@@ -1985,7 +1985,7 @@ class MultiredditMixin(AuthenticatedReddit):
             the name of the original
 
         The additional parameters are passed directly into
-        :meth:`request_json`
+        :meth:`~praw.__init__.BaseReddit.request_json`
 
         """
         if to_name is None:
@@ -2020,7 +2020,7 @@ class MultiredditMixin(AuthenticatedReddit):
         :param key_color: Optional rgb hex color code of the form `#xxxxxx`.
         :param subreddits: Optional list of subreddit names or Subreddit
             objects to initialize the Multireddit with. You can always
-            add more later with :meth:`Multireddit.add_subreddit`.
+            add more later with :meth:`~praw.objects.Multireddit.add_subreddit`.
         :param visibility: Choose a privacy setting from this list:
             ``public``, ``private``, ``hidden``. Defaults to private if blank.
         :param weighting_scheme: Choose a weighting scheme from this list:
@@ -2034,7 +2034,7 @@ class MultiredditMixin(AuthenticatedReddit):
         :returns: The newly created Multireddit object.
 
         The additional parameters are passed directly into
-        :meth:`request_json`
+        :meth:`~praw.__init__.BaseReddit.request_json`
 
         """
         url = self.config['multireddit_about'] % (self.user.name, name)
@@ -2056,7 +2056,7 @@ class MultiredditMixin(AuthenticatedReddit):
         """Delete a Multireddit.
 
         Any additional parameters are passed directly into
-        :meth:`request`
+        :meth:`~praw.__init__.BaseReddit.request`
 
         """
         url = self.config['multireddit_about'] % (self.user.name, name)
@@ -2097,7 +2097,7 @@ class MultiredditMixin(AuthenticatedReddit):
         :returns: The json response from the server
 
         The additional parameters are passed directly into
-        :meth:`request_json`
+        :meth:`~praw.__init__.BaseReddit.request_json`
 
         If the requested redditor is the current user, all multireddits
         are visible. Otherwise, only public multireddits are returned.
@@ -2114,7 +2114,7 @@ class MultiredditMixin(AuthenticatedReddit):
         :param new_name: The new name to assign to this multireddit
 
         The additional parameters are passed directly into
-        :meth:`request_json`
+        :meth:`~praw.__init__.BaseReddit.request_json`
 
         """
         current_path = self.MULTI_PATH.format(self.user.name, current_name)
@@ -2150,9 +2150,7 @@ class MySubredditsMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='mysubreddits')
     def get_my_moderation(self, *args, **kwargs):
-        """Return a get_content generator of subreddits.
-
-        The subreddits generated are those where the session's user is a
+        """Return a get_content generator of subreddits where the session's user is a
         moderator.
 
         The additional parameters are passed directly into
@@ -2171,9 +2169,7 @@ class MySubredditsMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='mysubreddits')
     def get_my_subreddits(self, *args, **kwargs):
-        """Return a get_content generator of subreddits.
-
-        The subreddits generated are those that the session's user is
+        """Return a get_content generator of subreddits that the session's user is
         subscribed to.
 
         The additional parameters are passed directly into
@@ -2319,7 +2315,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         :param from_sr: A Subreddit instance or string to send the message
             from. When provided, messages are sent from the subreddit rather
             than from the authenticated user. Note that the authenticated user
-            must be a moderator of the subreddit.
+            must be a moderator of the subreddit and have mail permissions.
 
         :returns: The json response from the server.
 
@@ -2421,7 +2417,7 @@ class SubmitMixin(AuthenticatedReddit):
             submitted.
         :param save: If True the new Submission will be saved after creation.
         :param send_replies: Gold Only Feature. If True, inbox replies will be
-            received when people comment on the Submission. If set to None or
+            received when people comment on the submission. If set to None or
             the currently authenticated user doesn't have gold, then the
             default of True for text posts and False for link posts will be
             used.
