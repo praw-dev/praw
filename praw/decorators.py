@@ -13,10 +13,8 @@
 # PRAW.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Decorators.
-
-Mainly do two things. Ensure API guidelines are met and prevent unnecessary
-failed API requests by testing that the call can be made first. Also limit the
+Decorators mainly do two things: ensure API guidelines are met and prevent unnecessary
+failed API requests by testing that the call can be made first. Also, they can limit the
 length of output strings and parse json response for certain errors.
 """
 
@@ -274,7 +272,7 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False):
 
     Returned data is not modified.
 
-    This decorator assumes that all mod required functions fit one of:
+    This decorator assumes that all mod required functions fit one of these categories:
 
       * have the subreddit as the first argument (Reddit instance functions) or
         have a subreddit keyword argument
