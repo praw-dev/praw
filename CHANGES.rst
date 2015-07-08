@@ -21,7 +21,7 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-Unreleased
+PRAW 3.1.0
 ----------
  * **[BUGFIX]** Fixed method `get_random_submission` which failed to raise
    the expected redirect exception.
