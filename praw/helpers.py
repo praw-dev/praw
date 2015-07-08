@@ -192,12 +192,14 @@ def convert_id36_to_numeric_id(id36):
 def convert_numeric_id_to_id36(numeric_id):
     """Convert an integer into its base36 string representation.
 
-    This method has been cleaned up slightlyto improve readability. For more
+    This method has been cleaned up slightly to improve readability. For more
     info see:
 
     https://github.com/reddit/reddit/blob/master/r2/r2/lib/utils/_utils.pyx
-    http://www.reddit.com/r/redditdev/comments/n624n/submission_ids_question/
-    http://en.wikipedia.org/wiki/Base36
+    
+    https://www.reddit.com/r/redditdev/comments/n624n/submission_ids_question/
+    
+    https://en.wikipedia.org/wiki/Base36
     """
     # base36 allows negative numbers, but reddit does not
     if not isinstance(numeric_id, six.integer_types) or numeric_id < 0:
@@ -257,7 +259,7 @@ def normalize_url(url):
 
 class BoundedSet(object):
 
-    """A set with a maxmimum size that evicts the oldest items when necessary.
+    """A set with a maximum size that evicts the oldest items when necessary.
 
     This class does not implement the complete set interface.
 
