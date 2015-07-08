@@ -214,7 +214,7 @@ class Moderatable(RedditContentObject):
         """Distinguish object as made by mod, admin or special.
 
         Distinguished objects have a different author color. With Reddit
-        enhancement suite it is the background color that changes.
+        Enhancement Suite it is the background color that changes.
 
         :returns: The json response from the server.
 
@@ -660,7 +660,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
     @property
     def submission(self):
-        """Return the submission object this comment belongs to."""
+        """Return the Submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
             self._submission = self.reddit_session.get_submission(
                 url=self._fast_permalink)
@@ -1243,16 +1243,15 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
     def set_contest_mode(self, state=True):
         """Set 'Contest Mode' for the comments of this submission.
 
-        Contest mode have the following effects.
+        Contest mode have the following effects:
           * The comment thread will default to being sorted randomly.
           * Replies to top-level comments will be hidden behind
-              "[show replies]" buttons.
+            "[show replies]" buttons.
           * Scores will be hidden from non-moderators.
-          * Scores accessed through the API (mobile apps, bots) will be
-              obscured to "1" for non-moderators.
+          * Scores accessed through the API (mobile apps, bots) will be obscured to "1"
+            for non-moderators.
 
-        Source for effects: http://www.reddit.com/r/bestof2012/comments/159bww/
-                            introducing_contest_mode_a_tool_for_your_voting
+        Source for effects: https://www.reddit.com/159bww/
 
         :returns: The json response from the server.
 
@@ -1269,7 +1268,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         """Set 'Suggested Sort' for the comments of the submission.
 
         Comments can be sorted in one of (confidence, top, new, hot,
-            controversial, old, random, qa, blank).
+        controversial, old, random, qa, blank).
 
         :returns: The json response from the server.
 
@@ -1315,16 +1314,15 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
     def unset_contest_mode(self):
         """Unset 'Contest Mode' for the comments of this submission.
 
-        Contest mode have the following effects.
+        Contest mode have the following effects:
           * The comment thread will default to being sorted randomly.
           * Replies to top-level comments will be hidden behind
-              "[show replies]" buttons.
+            "[show replies]" buttons.
           * Scores will be hidden from non-moderators.
-          * Scores accessed through the API (mobile apps, bots) will be
-              obscured to "1" for non-moderators.
+          * Scores accessed through the API (mobile apps, bots) will be obscured to "1"
+            for non-moderators.
 
-        Source for effects: http://www.reddit.com/r/bestof2012/comments/159bww/
-                            introducing_contest_mode_a_tool_for_your_voting
+        Source for effects: http://www.reddit.com/159bww/
 
         :returns: The json response from the server.
 
@@ -1562,7 +1560,7 @@ class Multireddit(Refreshable):
         :param subreddit: The subreddit name or Subreddit object to add
 
         The additional parameters are passed directly into
-        :meth:`request_json`.
+        :meth:`~praw.__init__.BaseReddit.request_json`.
 
         """
         subreddit = six.text_type(subreddit)
@@ -1735,7 +1733,8 @@ class WikiPage(Refreshable):
         :param _delete: If True, remove the user as an editor instead.
             Please use :meth:`remove_editor` rather than setting it manually.
 
-        Additional parameters are passed into :meth:`request_json`.
+        Additional parameters are passed into
+        :meth:`~praw.__init__.BaseReddit.request_json`.
         """
         url = self.reddit_session.config['wiki_page_editor']
         url = url % (six.text_type(self.subreddit),
@@ -1753,7 +1752,8 @@ class WikiPage(Refreshable):
         Includes permission level, names of editors, and whether
         the page is listed on /wiki/pages.
 
-        Additional parameters are passed into :meth:`request_json`
+        Additional parameters are passed into
+        :meth:`~praw.__init__.BaseReddit.request_json`
         """
         url = self.reddit_session.config['wiki_page_settings']
         url = url % (six.text_type(self.subreddit), self.page)
@@ -1801,7 +1801,7 @@ class WikiPage(Refreshable):
         This method points to :meth:`add_editor` with _delete=True.
 
         Additional parameters are are passed to :meth:`add_editor` and
-        subsequently into :meth:`request_json`.
+        subsequently into :meth:`~praw.__init__.BaseReddit.request_json`.
         """
         return self.add_editor(username=username, _delete=True, *args,
                                **kwargs)
