@@ -379,7 +379,7 @@ class Inboxable(RedditContentObject):
         :returns: The json response from the server.
 
         """
-        return self.reddit_session.user.mark_as_read(self)
+        return self.reddit_session._mark_as_read([self.fullname])
 
     def mark_as_unread(self):
         """Mark object as unread.
@@ -387,7 +387,7 @@ class Inboxable(RedditContentObject):
         :returns: The json response from the server.
 
         """
-        return self.reddit_session.user.mark_as_read(self, unread=True)
+        return self.reddit_session._mark_as_read([self.fullname], unread=True)
 
     def reply(self, text):
         """Reply to object with the specified text.
