@@ -195,7 +195,7 @@ class MultiprocessHandler(object):
         self.port = port
 
     def _relay(self, **kwargs):
-        """Send the request through the Server and return the http response."""
+        """Send the request through the server and return the HTTP response."""
         retval = None
         delay_time = 2  # For connection retries
         read_attempts = 0  # For reading from socket
@@ -238,5 +238,5 @@ class MultiprocessHandler(object):
         return self._relay(method='evict', urls=urls)
 
     def request(self, **kwargs):
-        """Forward the request to the server and return its http response."""
+        """Forward the request to the server and return its HTTP response."""
         return self._relay(method='request', **kwargs)
