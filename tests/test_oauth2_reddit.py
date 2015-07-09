@@ -131,15 +131,16 @@ class OAuth2RedditTest(PRAWTest):
         subreddit = self.r.get_subreddit(self.sr)
         self.r.refresh_access_information(self.refresh_token['modothers'])
         subreddit.add_moderator(self.other_user_name)
-        self.r.refresh_access_information(self.refresh_token['modcontributors'])
+        self.r.refresh_access_information(
+            self.refresh_token['modcontributors'])
         subreddit.add_contributor(self.other_user_name)
 
         # log in as other user
         self.r.refresh_access_information(self.other_refresh_token['modself'])
         self.r.accept_moderator_invite(self.sr)
 
-        self.r.leave_moderator(subreddit)
-        self.r.leave_contributor(subreddit)
+        self.r.leave_moderator(self.sr)
+        self.r.leave_contributor(self.sr)
 
     @betamax()
     def test_scope_mysubreddits(self):
