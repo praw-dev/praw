@@ -1474,6 +1474,26 @@ class Subreddit(Messageable, Refreshable):
         else:
             return
 
+    def leave_contributor(self):
+        """Abdicate approved submitter status in a subreddit. Use with care.
+
+        See :meth:`~praw.__init__.AuthenticatedReddit.leave_contributor`
+        for more details.
+
+        :returns: the json response from the server.
+        """
+        return self.reddit_session.leave_contributor(fullname=self.fullname)
+
+    def leave_moderator(self):
+        """Abdicate moderator status in a subreddit. Use with care.
+
+        See :meth:`~praw.__init__.AuthenticatedReddit.leave_moderator`
+        for more details.
+
+        :returns: The json response from the server.
+        """
+        return self.reddit_session.leave_moderator(fullname=self.fullname)
+
 
 class Multireddit(Refreshable):
 
@@ -1779,7 +1799,6 @@ class WikiPage(RedditContentObject):
         return self.reddit_session.request_json(url, data=data, *args,
                                                 **kwargs)['data']
 
-    @restrict_access(scope='modwiki')
     def remove_editor(self, username, *args, **kwargs):
         """Remove an editor from this wiki page.
 

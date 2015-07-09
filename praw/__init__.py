@@ -120,6 +120,8 @@ class Config(object):  # pylint: disable=R0903
                  'ignore_reports':      'api/ignore_reports/',
                  'inbox':               'message/inbox/',
                  'info':                'api/info/',
+                 'leavemoderator':      'api/leavemoderator',
+                 'leavecontributor':    'api/leavecontributor',
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
                  'mentions':            'message/mentions',
@@ -1283,8 +1285,11 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         return user
 
     def has_scope(self, scope):
-        """Return True if OAuth2 authorized for the passed in scope."""
-        return self.is_oauth_session() and scope in self._authentication
+        """Return True if OAuth2 authorized for the passed in scope(s)."""
+        if isinstance(scope, six.string_types):
+            scope = [scope]
+        return self.is_oauth_session() and all(s in self._authentication
+                                               for s in scope)
 
     def is_logged_in(self):
         """Return True when session is authenticated via login."""
@@ -1293,6 +1298,59 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
     def is_oauth_session(self):
         """Return True when the current session is an OAuth2 session."""
         return isinstance(self._authentication, set)
+
+    def leave_contributor(self, subreddit=None, fullname=None):
+        """Abdicate approved submitter status in a subreddit. Use with care.
+
+        Callable upon an instance of Subreddit with no arguments.
+        See :meth:`~praw.__init__.AuthenticatedReddit.leave_status` for
+        more details.
+
+        :returns: The json response from the server.
+        """
+        return self.leave_status(subreddit, fullname, status='contributor')
+
+    def leave_moderator(self, subreddit=None, fullname=None):
+        """Abdicate moderator status in a subreddit. Use with care.
+
+        Callable upon an instance of Subreddit with no arguments.
+        See :meth:`~praw.__init__.AuthenticatedReddit.leave_status` for
+        more details.
+
+        :returns: The json response from the server.
+        """
+        self.evict(self.config['my_mod_subreddits'])
+        return self.leave_status(subreddit, fullname, status='moderator')
+
+    @decorators.restrict_access(scope='modself', mod=False)
+    def leave_status(self, subreddit=None, fullname=None, status=None):
+        """Abdicate status in a subreddit.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+        :param fullname: The fullname of the subreddit to leave `status` from.
+            `subreddit` and `fullname` cannot both be provided!
+        :param status: The status to leave. One of 'moderator', 'contributor'.
+            Defaults to None as a precaution against accidents.
+            Please use :meth:`leave_contributor` or :meth:`leave_moderator`
+            rather than setting this directly.
+
+        :returns: the json response from the server.
+        """
+        if status == 'contributor':
+            url = self.config['leavecontributor']
+        elif status == 'moderator':
+            url = self.config['leavemoderator']
+        else:
+            raise TypeError('Please enter a value for `status`. '
+                            'One of \'moderator\' or \'contributor\'')
+        if bool(subreddit) == bool(fullname):
+            raise TypeError('Only one of subreddit or fullname is required!')
+        if not fullname:
+            if isinstance(subreddit, six.string_types):
+                subreddit = self.get_subreddit(subreddit)
+            fullname = subreddit.fullname
+        data = {'id': fullname}
+        return self.request_json(url, data=data)
 
     @decorators.deprecated('reddit intends to disable password-based '
                            'authentication of API clients sometime in the '

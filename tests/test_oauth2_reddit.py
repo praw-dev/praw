@@ -132,6 +132,26 @@ class OAuth2RedditTest(PRAWTest):
         self.assertTrue(list(self.r.get_my_moderation()))
 
     @betamax()
+    def test_scope_modwiki(self):
+        self.r.refresh_access_information(self.refresh_token['wikiread'])
+        subreddit = self.r.get_subreddit(self.sr)
+        page = subreddit.get_wiki_page('index')
+        self.r.refresh_access_information(self.refresh_token['modwiki'])
+        page.add_editor(self.other_user_name)
+        page.remove_editor(self.other_user_name)
+
+    @betamax()
+    def test_scope_modwiki_modcontributors(self):
+        self.r.refresh_access_information(self.refresh_token['modwiki+contr'])
+        subreddit = self.r.get_subreddit(self.sr)
+
+        subreddit.add_wiki_ban(self.other_user_name)
+        subreddit.remove_wiki_ban(self.other_user_name)
+
+        subreddit.add_wiki_contributor(self.other_user_name)
+        subreddit.remove_wiki_contributor(self.other_user_name)
+
+    @betamax()
     def test_scope_creddits(self):
         # Assume there are insufficient creddits.
         self.r.refresh_access_information(

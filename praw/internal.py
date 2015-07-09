@@ -89,6 +89,10 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
         access = {'scope': None, 'login': True}
     elif relationship == 'moderator':
         access = {'scope': 'modothers'}
+    elif relationship in ['banned', 'contributor']:
+        access = {'scope': 'modcontributors'}
+    elif relationship in ['wikibanned', 'wikicontributor']:
+        access = {'scope': ['modcontributors', 'modwiki']}
     else:
         access = {'scope': None, 'mod': True}
 

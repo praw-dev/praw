@@ -21,6 +21,15 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+* **[BUGFIX]** Fixed methods which require more than one OAuth scope.
+* **[BUGFIX]** Fixed :meth:`praw.objects.WikiPage.remove_editor` raising
+  AssertionError when used through OAuth.
+* **[FEATURE]** Added methods :meth:`leave_moderator` and
+  :meth:`leave_contributor` to :class:`praw.__init__.AuthenticatedReddit`
+  and :class:`praw.objects.Subreddit`.
+
 PRAW 3.1.0
 ----------
  * **[BUGFIX]** Fixed method `get_random_submission` which failed to raise
