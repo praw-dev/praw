@@ -15,8 +15,8 @@
 """
 Error classes.
 
-Includes two main exceptions. ClientException, when something goes
-wrong on our end and APIExeception for when something goes wrong on the
+Includes two main exceptions: ClientException, when something goes
+wrong on our end, and APIExeception for when something goes wrong on the
 server side. A number of classes extend these two main exceptions for more
 specific exceptions.
 """
@@ -273,7 +273,7 @@ class APIException(PRAWException):
 
     """Base exception class for the reddit API error message exceptions.
 
-    All exceptions of this type _should_ have their own subclass.
+    All exceptions of this type should have their own subclass.
 
     """
 
