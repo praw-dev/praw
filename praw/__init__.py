@@ -1222,6 +1222,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 'confirm': True}
         return self.request_json(self.config['delete_redditor'], data=data)
 
+    @decorators.restrict_access(scope='wikiedit')
     def edit_wiki_page(self, subreddit, page, content, reason=''):
         """Create or edit a wiki page with title `page` for `subreddit`.
 
