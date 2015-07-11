@@ -29,6 +29,7 @@ from six.moves.urllib.parse import (  # pylint: disable=F0401
 from heapq import heappop, heappush
 from json import dumps
 from requests.compat import urljoin
+from warnings import warn_explicit
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
                   ModOnlyMixin as MOMix, ModSelfMixin as MSMix,
@@ -1437,6 +1438,11 @@ class Subreddit(Messageable, Refreshable):
         # as: /r/reddit_name/
         if not subreddit_name:
             subreddit_name = json_dict['url'].split('/')[2]
+
+        if fetch and ('+' in subreddit_name or '-' in subreddit_name):
+            fetch = False
+            warn_explicit('fetch=True has no effect on multireddits',
+                          UserWarning, '', 0)
 
         info_url = reddit_session.config['subreddit_about'] % subreddit_name
         self._case_name = subreddit_name
