@@ -29,6 +29,7 @@ from six.moves.urllib.parse import (  # pylint: disable=F0401
 from heapq import heappop, heappush
 from json import dumps
 from requests.compat import urljoin
+from warnings import warn_explicit
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
                   ModOnlyMixin as MOMix, ModSelfMixin as MSMix,
@@ -856,9 +857,8 @@ class Redditor(Gildable, Messageable, Refreshable):
         # Sending an OAuth authenticated request for a redditor, who isn't the
         # authenticated user. But who has a public voting record will be
         # successful.
-        use_oauth = self.reddit_session.is_oauth_session()
-        return _get_redditor_listing('downvoted')(
-            self, *args, _use_oauth=use_oauth, **kwargs)
+        kwargs['_use_oauth'] = self.reddit_session.is_oauth_session()
+        return _get_redditor_listing('downvoted')(self, *args, **kwargs)
 
     def get_liked(self, *args, **kwargs):
         """Return a listing of the Submissions the user has upvoted.
@@ -883,9 +883,8 @@ class Redditor(Gildable, Messageable, Refreshable):
         will be needed to access this listing.
 
         """
-        use_oauth = self.reddit_session.is_oauth_session()
-        return _get_redditor_listing('upvoted')(self, *args,
-                                                _use_oauth=use_oauth, **kwargs)
+        kwargs['_use_oauth'] = self.reddit_session.is_oauth_session()
+        return _get_redditor_listing('upvoted')(self, *args, **kwargs)
 
     def mark_as_read(self, messages, unread=False):
         """Mark message(s) as read or unread.
@@ -1439,6 +1438,11 @@ class Subreddit(Messageable, Refreshable):
         # as: /r/reddit_name/
         if not subreddit_name:
             subreddit_name = json_dict['url'].split('/')[2]
+
+        if fetch and ('+' in subreddit_name or '-' in subreddit_name):
+            fetch = False
+            warn_explicit('fetch=True has no effect on multireddits',
+                          UserWarning, '', 0)
 
         info_url = reddit_session.config['subreddit_about'] % subreddit_name
         self._case_name = subreddit_name

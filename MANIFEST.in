@@ -1,3 +1,6 @@
 include CHANGES.rst COPYING README.rst
 include praw/praw.ini
-recursive-include praw/tests/files *
+include docs/Makefile
+recursive-include docs *.png *.py *.rst
+recursive-include tests *.json *.py
+recursive-include tests/files *
