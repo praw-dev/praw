@@ -143,8 +143,14 @@ class OAuth2RedditTest(PRAWTest):
                           subreddit.fullname)
         self.assertRaises(TypeError, self.r.leave_moderator, None, None)
         self.assertRaises(TypeError, self.r._leave_status, None, None, None)
-        self.r.leave_moderator(self.sr)
-        self.r.leave_contributor(self.sr)
+
+        self.r.leave_moderator(subreddit=subreddit)
+        self.r.leave_contributor(fullname=subreddit.fullname)
+
+        # Upper case to bypass cache
+        subreddit = self.r.get_subreddit(self.sr.upper())
+        self.assertFalse(subreddit.user_is_moderator)
+        self.assertFalse(subreddit.user_is_contributor)
 
     @betamax()
     def test_scope_mysubreddits(self):

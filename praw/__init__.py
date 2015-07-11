@@ -1298,60 +1298,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """Return True when the current session is an OAuth2 session."""
         return isinstance(self._authentication, set)
 
-    def leave_contributor(self, subreddit=None, fullname=None):
-        """Abdicate approved submitter status in a subreddit. Use with care.
-
-        :param subreddit: The name of the subreddit to leave `status` from.
-        :param fullname: The fullname of the subreddit to leave `status` from.
-            `subreddit` and `fullname` cannot both be provided!
-
-        :returns: the json response from the server.
-        """
-        return self._leave_status(subreddit, fullname, status='contributor')
-
-    def leave_moderator(self, subreddit=None, fullname=None):
-        """Abdicate moderator status in a subreddit. Use with care.
-
-        :param subreddit: The name of the subreddit to leave `status` from.
-        :param fullname: The fullname of the subreddit to leave `status` from.
-            `subreddit` and `fullname` cannot both be provided!
-
-        :returns: the json response from the server.
-        """
-        self.evict(self.config['my_mod_subreddits'])
-        return self._leave_status(subreddit, fullname, status='moderator')
-
-    @decorators.restrict_access(scope='modself', mod=False)
-    def _leave_status(self, subreddit=None, fullname=None, status=None):
-        """Abdicate status in a subreddit.
-
-        :param subreddit: The name of the subreddit to leave `status` from.
-        :param fullname: The fullname of the subreddit to leave `status` from.
-            `subreddit` and `fullname` cannot both be provided!
-        :param status: The status to leave. One of 'moderator', 'contributor'.
-            Defaults to None as a precaution against accidents.
-            Please use :meth:`leave_contributor` or :meth:`leave_moderator`
-            rather than setting this directly.
-
-        :returns: the json response from the server.
-        """
-        if status == 'contributor':
-            url = self.config['leavecontributor']
-        elif status == 'moderator':
-            url = self.config['leavemoderator']
-        else:
-            raise TypeError('Please enter a value for `status`. '
-                            'One of \'moderator\' or \'contributor\'')
-        if bool(subreddit) == bool(fullname):
-            raise TypeError('Exactly one of `subreddit` or `fullname` is '
-                            'required!')
-        if not fullname:
-            if isinstance(subreddit, six.string_types):
-                subreddit = self.get_subreddit(subreddit)
-            fullname = subreddit.fullname
-        data = {'id': fullname}
-        return self.request_json(url, data=data)
-
     @decorators.deprecated('reddit intends to disable password-based '
                            'authentication of API clients sometime in the '
                            'near future. As a result this method will be '
@@ -2019,6 +1965,68 @@ class ModOnlyMixin(AuthenticatedReddit):
             user_only=True, *args, **kwargs)
 
 
+class ModSelfMixin(AuthenticatedReddit):
+
+    """Adds methods pertaining to the 'modself' OAuth scope (or login).
+
+    You should **not** directly instantiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
+
+    def leave_contributor(self, subreddit=None, fullname=None):
+        """Abdicate approved submitter status in a subreddit. Use with care.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+        :param fullname: The fullname of the subreddit to leave `status` from.
+            `subreddit` and `fullname` cannot both be provided!
+
+        :returns: the json response from the server.
+        """
+        return self._leave_status(subreddit, fullname,
+                                  statusurl=self.config['leavecontributor'])
+
+    def leave_moderator(self, subreddit=None, fullname=None):
+        """Abdicate moderator status in a subreddit. Use with care.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+        :param fullname: The fullname of the subreddit to leave `status` from.
+            `subreddit` and `fullname` cannot both be provided!
+
+        :returns: the json response from the server.
+        """
+        self.evict(self.config['my_mod_subreddits'])
+        return self._leave_status(subreddit, fullname,
+                                  statusurl=self.config['leavemoderator'])
+
+    @decorators.restrict_access(scope='modself', mod=False)
+    def _leave_status(self, subreddit=None, fullname=None, statusurl=None):
+        """Abdicate status in a subreddit.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+        :param fullname: The fullname of the subreddit to leave `status` from.
+            `subreddit` and `fullname` cannot both be provided!
+        :param status: The status to leave. One of 'moderator', 'contributor'.
+            Defaults to None as a precaution against accidents.
+            Please use :meth:`leave_contributor` or :meth:`leave_moderator`
+            rather than setting this directly.
+
+        :returns: the json response from the server.
+        """
+        if statusurl is None:
+            raise TypeError('Please enter a value for `status`. '
+                            'One of \'moderator\' or \'contributor\'')
+        if bool(subreddit) == bool(fullname):
+            raise TypeError('Exactly one of `subreddit` or `fullname` is '
+                            'required!')
+        if not fullname:
+            if isinstance(subreddit, six.string_types):
+                subreddit = self.get_subreddit(subreddit)
+            fullname = subreddit.fullname
+        data = {'id': fullname}
+        return self.request_json(statusurl, data=data)
+
+
 class MultiredditMixin(AuthenticatedReddit):
 
     """Adds methods pertaining to multireddits.
@@ -2557,8 +2565,8 @@ class SubscribeMixin(AuthenticatedReddit):
 
 
 class Reddit(ModConfigMixin, ModFlairMixin, ModLogMixin, ModOnlyMixin,
-             MultiredditMixin, MySubredditsMixin, PrivateMessagesMixin,
-             ReportMixin, SubmitMixin, SubscribeMixin):
+             ModSelfMixin, MultiredditMixin, MySubredditsMixin,
+             PrivateMessagesMixin, ReportMixin, SubmitMixin, SubscribeMixin):
 
     """Provides access to reddit's API.
 

@@ -31,9 +31,9 @@ from json import dumps
 from requests.compat import urljoin
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
-                  ModOnlyMixin as MOMix, MultiredditMixin as MultiMix,
-                  PrivateMessagesMixin as PMMix, SubmitMixin, SubscribeMixin,
-                  UnauthenticatedReddit as UR)
+                  ModOnlyMixin as MOMix, ModSelfMixin as MSMix,
+                  MultiredditMixin as MultiMix, PrivateMessagesMixin as PMMix,
+                  SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
 from praw.decorators import (alias_function, limit_chars, restrict_access,
                              deprecated)
 from praw.errors import ClientException, InvalidComment
@@ -1376,6 +1376,8 @@ class Subreddit(Messageable, Refreshable):
                 ('get_wiki_contributors', MOMix),
                 ('get_wiki_page', UR),
                 ('get_wiki_pages', UR),
+                ('leave_contributor', MSMix),
+                ('leave_moderator', MSMix),
                 ('search', UR),
                 ('select_flair', AR),
                 ('set_flair', MFMix),
@@ -1477,26 +1479,6 @@ class Subreddit(Messageable, Refreshable):
             return self.set_flair_csv(csv)
         else:
             return
-
-    def leave_contributor(self):
-        """Abdicate approved submitter status in a subreddit. Use with care.
-
-        See :meth:`~praw.__init__.AuthenticatedReddit.leave_contributor`
-        for more details.
-
-        :returns: the json response from the server.
-        """
-        return self.reddit_session.leave_contributor(fullname=self.fullname)
-
-    def leave_moderator(self):
-        """Abdicate moderator status in a subreddit. Use with care.
-
-        See :meth:`~praw.__init__.AuthenticatedReddit.leave_moderator`
-        for more details.
-
-        :returns: The json response from the server.
-        """
-        return self.reddit_session.leave_moderator(fullname=self.fullname)
 
 
 class Multireddit(Refreshable):
