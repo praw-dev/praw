@@ -127,9 +127,48 @@ class OAuth2RedditTest(PRAWTest):
         Submission.from_id(self.r, self.submission_edit_id).remove()
 
     @betamax()
+    def test_scope_modself(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        self.r.refresh_access_information(self.refresh_token['modothers'])
+        subreddit.add_moderator(self.other_user_name)
+        self.r.refresh_access_information(
+            self.refresh_token['modcontributors'])
+        subreddit.add_contributor(self.other_user_name)
+
+        # log in as other user
+        self.r.refresh_access_information(self.other_refresh_token['modself'])
+        self.r.accept_moderator_invite(self.sr)
+
+        self.r.leave_moderator(subreddit)
+        subreddit.leave_contributor()
+
+        subreddit.refresh()
+        self.assertFalse(subreddit.user_is_moderator)
+        self.assertFalse(subreddit.user_is_contributor)
+
+    @betamax()
     def test_scope_mysubreddits(self):
         self.r.refresh_access_information(self.refresh_token['mysubreddits'])
         self.assertTrue(list(self.r.get_my_moderation()))
+
+    @betamax()
+    def test_scope_modwiki(self):
+        self.r.refresh_access_information(self.refresh_token['modwiki'])
+        subreddit = self.r.get_subreddit(self.sr)
+        page = subreddit.get_wiki_page('index')
+        page.add_editor(self.other_user_name)
+        page.remove_editor(self.other_user_name)
+
+    @betamax()
+    def test_scope_modwiki_modcontributors(self):
+        self.r.refresh_access_information(self.refresh_token['modwiki+contr'])
+        subreddit = self.r.get_subreddit(self.sr)
+
+        subreddit.add_wiki_ban(self.other_user_name)
+        subreddit.remove_wiki_ban(self.other_user_name)
+
+        subreddit.add_wiki_contributor(self.other_user_name)
+        subreddit.remove_wiki_contributor(self.other_user_name)
 
     @betamax()
     def test_scope_creddits(self):

@@ -120,6 +120,8 @@ class Config(object):  # pylint: disable=R0903
                  'ignore_reports':      'api/ignore_reports/',
                  'inbox':               'message/inbox/',
                  'info':                'api/info/',
+                 'leavecontributor':    'api/leavecontributor',
+                 'leavemoderator':      'api/leavemoderator',
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
                  'mentions':            'message/mentions',
@@ -1051,11 +1053,9 @@ class UnauthenticatedReddit(BaseReddit):
         return self.get_content(self.config['top'], *args, **kwargs)
 
     @decorators.restrict_access(scope='wikiread', login=False)
-    def get_wiki_page(self, subreddit, page, **params):
+    def get_wiki_page(self, subreddit, page):
         """Return a WikiPage object for the subreddit and page provided."""
-        return self.request_json(self.config['wiki_page'] %
-                                 (six.text_type(subreddit), page.lower()),
-                                 params=params)
+        return objects.WikiPage(self, six.text_type(subreddit), page.lower())
 
     @decorators.restrict_access(scope='wikiread', login=False)
     def get_wiki_pages(self, subreddit):
@@ -1284,8 +1284,11 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         return user
 
     def has_scope(self, scope):
-        """Return True if OAuth2 authorized for the passed in scope."""
-        return self.is_oauth_session() and scope in self._authentication
+        """Return True if OAuth2 authorized for the passed in scope(s)."""
+        if isinstance(scope, six.string_types):
+            scope = [scope]
+        return self.is_oauth_session() and all(s in self._authentication
+                                               for s in scope)
 
     def is_logged_in(self):
         """Return True when session is authenticated via login."""
@@ -1962,6 +1965,52 @@ class ModOnlyMixin(AuthenticatedReddit):
             user_only=True, *args, **kwargs)
 
 
+class ModSelfMixin(AuthenticatedReddit):
+
+    """Adds methods pertaining to the 'modself' OAuth scope (or login).
+
+    You should **not** directly instantiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
+
+    def leave_contributor(self, subreddit):
+        """Abdicate approved submitter status in a subreddit. Use with care.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+
+        :returns: the json response from the server.
+        """
+        return self._leave_status(subreddit, self.config['leavecontributor'])
+
+    def leave_moderator(self, subreddit):
+        """Abdicate moderator status in a subreddit. Use with care.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+
+        :returns: the json response from the server.
+        """
+        self.evict(self.config['my_mod_subreddits'])
+        return self._leave_status(subreddit, self.config['leavemoderator'])
+
+    @decorators.restrict_access(scope='modself', mod=False)
+    def _leave_status(self, subreddit, statusurl):
+        """Abdicate status in a subreddit.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+        :param statusurl: The API URL which will be used in the leave request.
+            Please use :meth:`leave_contributor` or :meth:`leave_moderator`
+            rather than setting this directly.
+
+        :returns: the json response from the server.
+        """
+        if isinstance(subreddit, six.string_types):
+            subreddit = self.get_subreddit(subreddit)
+
+        data = {'id': subreddit.fullname}
+        return self.request_json(statusurl, data=data)
+
+
 class MultiredditMixin(AuthenticatedReddit):
 
     """Adds methods pertaining to multireddits.
@@ -2500,8 +2549,8 @@ class SubscribeMixin(AuthenticatedReddit):
 
 
 class Reddit(ModConfigMixin, ModFlairMixin, ModLogMixin, ModOnlyMixin,
-             MultiredditMixin, MySubredditsMixin, PrivateMessagesMixin,
-             ReportMixin, SubmitMixin, SubscribeMixin):
+             ModSelfMixin, MultiredditMixin, MySubredditsMixin,
+             PrivateMessagesMixin, ReportMixin, SubmitMixin, SubscribeMixin):
 
     """Provides access to reddit's API.
 

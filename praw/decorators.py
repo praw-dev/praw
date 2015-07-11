@@ -311,7 +311,8 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False):
                     # Defer access until necessary for RedditContentObject.
                     # This is because scoped sessions may not require this
                     # attribute to exist, thus it might not be set.
-                    subreddit = cls if hasattr(cls, '_case_name') else False
+                    from praw.objects import Subreddit
+                    subreddit = cls if isinstance(cls, Subreddit) else False
                 else:
                     subreddit = kwargs.get(
                         'subreddit', args[0] if args else None)

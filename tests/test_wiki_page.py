@@ -15,8 +15,8 @@ class WikiPageTests(PRAWTest):
         page = self.subreddit.get_wiki_page('index')
         content = '' if len(page.content_md) > 100 else page.content_md + 'a'
         page.edit(content)
-        self.assertEqual(
-            content, self.subreddit.get_wiki_page('index', u=1).content_md)
+        page.refresh()
+        self.assertEqual(content, page.content_md)
 
     @betamax()
     def test_edit_wiki_page_settings(self):
