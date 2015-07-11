@@ -60,3 +60,22 @@ class WikiPageTests(PRAWTest):
     def test_revision_by(self):
         self.assertTrue(any(x.revision_by for x in
                             self.subreddit.get_wiki_pages()))
+
+    @betamax()
+    def test_unique_count_zero(self):
+        # When `reddit_session._unique_count` = 0, WikiPages pull from cache.
+        # So do Redditors and Multireddits
+        page = self.r.get_wiki_page(self.sr, 'index')
+
+        original_content = page.content_md
+        content = '' if len(page.content_md) > 100 else original_content + 'a'
+        page.edit(content)
+
+        # Should not update
+        self.r._unique_count = 0
+        page.refresh()
+        self.assertEqual(original_content, page.content_md)
+        # Okay, now it will update.
+        self.r._unique_count = 1
+        page.refresh()
+        self.assertEqual(content, page.content_md)

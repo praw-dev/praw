@@ -717,7 +717,9 @@ class UnauthenticatedReddit(BaseReddit):
     def __init__(self, *args, **kwargs):
         """Initialze an UnauthenticatedReddit instance."""
         super(UnauthenticatedReddit, self).__init__(*args, **kwargs)
-        self._unique_count = 0
+        # initialize to 1 instead of 0, because 0 does not reliably make
+        # new requests.
+        self._unique_count = 1
 
     def create_redditor(self, user_name, password, email=''):
         """Register a new user.
