@@ -153,10 +153,9 @@ class OAuth2RedditTest(PRAWTest):
 
     @betamax()
     def test_scope_modwiki(self):
-        self.r.refresh_access_information(self.refresh_token['wikiread'])
+        self.r.refresh_access_information(self.refresh_token['modwiki'])
         subreddit = self.r.get_subreddit(self.sr)
         page = subreddit.get_wiki_page('index')
-        self.r.refresh_access_information(self.refresh_token['modwiki'])
         page.add_editor(self.other_user_name)
         page.remove_editor(self.other_user_name)
 

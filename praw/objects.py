@@ -448,6 +448,10 @@ class Refreshable(RedditContentObject):
                                         params=params)
         elif isinstance(self, Subreddit):
             other = Subreddit(self.reddit_session, self._case_name, fetch=True)
+        elif isinstance(self, WikiPage):
+            other = WikiPage(self.reddit_session,
+                             six.text_type(self.subreddit), self.page,
+                             fetch=True)
 
         self.__dict__ = other.__dict__  # pylint: disable=W0201
         return self
@@ -1698,7 +1702,7 @@ class UserList(PRAWListing):
         return retval
 
 
-class WikiPage(RedditContentObject):
+class WikiPage(Refreshable):
 
     """An individual WikiPage object."""
 
@@ -1717,7 +1721,7 @@ class WikiPage(RedditContentObject):
         return cls(reddit_session, subreddit, page, json_dict=json_dict)
 
     def __init__(self, reddit_session, subreddit=None, page=None,
-                 json_dict=None, fetch=True):
+                 json_dict=None, fetch=False):
         """Construct an instance of the WikiPage object."""
         if not subreddit and not page:
             subreddit = json_dict['sr']

@@ -1053,11 +1053,9 @@ class UnauthenticatedReddit(BaseReddit):
         return self.get_content(self.config['top'], *args, **kwargs)
 
     @decorators.restrict_access(scope='wikiread', login=False)
-    def get_wiki_page(self, subreddit, page, **params):
+    def get_wiki_page(self, subreddit, page):
         """Return a WikiPage object for the subreddit and page provided."""
-        return self.request_json(self.config['wiki_page'] %
-                                 (six.text_type(subreddit), page.lower()),
-                                 params=params)
+        return objects.WikiPage(self, six.text_type(subreddit), page.lower())
 
     @decorators.restrict_access(scope='wikiread', login=False)
     def get_wiki_pages(self, subreddit):
@@ -1224,6 +1222,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 'confirm': True}
         return self.request_json(self.config['delete_redditor'], data=data)
 
+    @decorators.restrict_access(scope='wikiedit')
     def edit_wiki_page(self, subreddit, page, content, reason=''):
         """Create or edit a wiki page with title `page` for `subreddit`.
 
