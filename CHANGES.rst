@@ -27,7 +27,10 @@ Unreleased
 * **[BUGFIX]** Fixed :meth:`praw.objects.WikiPage.remove_editor` raising
   AssertionError when used through OAuth.
 * **[CHANGE]** :meth:`praw.objects.Refreshable.refresh` will now always return
-  a fresh object. Previously it would use cache content when available.
+  a fresh object. Previously, Subreddits and Redditors would use cache content
+  when available.
+* **[CHANGE]** :class:`praw.objects.WikiPage` is now refreshable, and will
+lazy-load.
 * **[FEATURE]** Added methods :meth:`leave_moderator` and
   :meth:`leave_contributor` to :class:`praw.__init__.AuthenticatedReddit`
   and :class:`praw.objects.Subreddit`.

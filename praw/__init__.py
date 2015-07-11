@@ -1978,8 +1978,6 @@ class ModSelfMixin(AuthenticatedReddit):
         """Abdicate approved submitter status in a subreddit. Use with care.
 
         :param subreddit: The name of the subreddit to leave `status` from.
-        :param fullname: The fullname of the subreddit to leave `status` from.
-            `subreddit` and `fullname` cannot both be provided!
 
         :returns: the json response from the server.
         """
@@ -1989,8 +1987,6 @@ class ModSelfMixin(AuthenticatedReddit):
         """Abdicate moderator status in a subreddit. Use with care.
 
         :param subreddit: The name of the subreddit to leave `status` from.
-        :param fullname: The fullname of the subreddit to leave `status` from.
-            `subreddit` and `fullname` cannot both be provided!
 
         :returns: the json response from the server.
         """
@@ -2002,10 +1998,7 @@ class ModSelfMixin(AuthenticatedReddit):
         """Abdicate status in a subreddit.
 
         :param subreddit: The name of the subreddit to leave `status` from.
-        :param fullname: The fullname of the subreddit to leave `status` from.
-            `subreddit` and `fullname` cannot both be provided!
-        :param statusurl: The status to leave. One of 'moderator',
-            'contributor'. Defaults to None as a precaution against accidents.
+        :param statusurl: The API URL which will be used in the leave request.
             Please use :meth:`leave_contributor` or :meth:`leave_moderator`
             rather than setting this directly.
 
