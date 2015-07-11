@@ -421,18 +421,17 @@ class Refreshable(RedditContentObject):
     def refresh(self):
         """Re-query to update object with latest values. Return the object.
 
-        Note that if this call is made within cache_timeout as specified in
-        praw.ini then this will return the cached content. Any listing, such
-        as the submissions on a subreddits top page, will automatically be
-        refreshed serverside. Refreshing a submission will also refresh all its
-        comments.
+        Any listing, such as the submissions on a subreddits top page, will
+        automatically be refreshed serverside. Refreshing a submission will
+        also refresh all its comments.
 
         """
-        unique = self.reddit_session._unique_count  # pylint: disable=W0212
         self.reddit_session._unique_count += 1  # pylint: disable=W0212
+        unique = self.reddit_session._unique_count  # pylint: disable=W0212
 
         if isinstance(self, Redditor):
-            other = Redditor(self.reddit_session, self._case_name, fetch=True)
+            other = Redditor(self.reddit_session, self._case_name, fetch=True,
+                             uniq=unique)
         elif isinstance(self, Comment):
             sub = Submission.from_url(self.reddit_session, self.permalink,
                                       params={'uniq': unique})
@@ -447,11 +446,12 @@ class Refreshable(RedditContentObject):
                                         comment_sort=self._comment_sort,
                                         params=params)
         elif isinstance(self, Subreddit):
-            other = Subreddit(self.reddit_session, self._case_name, fetch=True)
+            other = Subreddit(self.reddit_session, self._case_name, fetch=True,
+                              uniq=unique)
         elif isinstance(self, WikiPage):
             other = WikiPage(self.reddit_session,
                              six.text_type(self.subreddit), self.page,
-                             fetch=True)
+                             fetch=True, uniq=unique)
 
         self.__dict__ = other.__dict__  # pylint: disable=W0201
         return self
@@ -791,7 +791,7 @@ class Redditor(Gildable, Messageable, Refreshable):
     get_submitted = _get_redditor_listing('submitted')
 
     def __init__(self, reddit_session, user_name=None, json_dict=None,
-                 fetch=False):
+                 fetch=False, **kwargs):
         """Construct an instance of the Redditor object."""
         if not user_name:
             user_name = json_dict['name']
@@ -800,7 +800,7 @@ class Redditor(Gildable, Messageable, Refreshable):
         # json_dict 'name' attribute (if available) has precedence
         self._case_name = user_name
         super(Redditor, self).__init__(reddit_session, json_dict,
-                                       fetch, info_url)
+                                       fetch, info_url, **kwargs)
         self.name = self._case_name
         self._url = reddit_session.config['user'] % self.name
         self._mod_subs = None
@@ -1432,7 +1432,7 @@ class Subreddit(Messageable, Refreshable):
     get_top_from_year = _get_sorter('top', t='year')
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
-                 fetch=False):
+                 fetch=False, **kwargs):
         """Construct an instance of the Subreddit object."""
         # Special case for when my_subreddits is called as no name is returned
         # so we have to extract the name from the URL. The URLs are returned
@@ -1443,7 +1443,7 @@ class Subreddit(Messageable, Refreshable):
         info_url = reddit_session.config['subreddit_about'] % subreddit_name
         self._case_name = subreddit_name
         super(Subreddit, self).__init__(reddit_session, json_dict, fetch,
-                                        info_url)
+                                        info_url, **kwargs)
         self.display_name = self._case_name
         self._url = reddit_session.config['subreddit'] % self.display_name
         # '' is the hot listing
@@ -1525,10 +1525,10 @@ class Multireddit(Refreshable):
             name = json_dict['path'].split('/')[-1]
 
         info_url = reddit_session.config['multireddit_about'] % (author, name)
-        super(Multireddit, self).__init__(reddit_session, json_dict, fetch,
-                                          info_url, **kwargs)
         self.name = name
         self._author = author
+        super(Multireddit, self).__init__(reddit_session, json_dict, fetch,
+                                          info_url, **kwargs)
         self._url = reddit_session.config['multireddit'] % (author, name)
 
     def __repr__(self):
@@ -1546,6 +1546,13 @@ class Multireddit(Refreshable):
             # {'name': 'subredditname'}. Convert them to Subreddit objects.
             self.subreddits = [Subreddit(self.reddit_session, item['name'])
                                for item in self.subreddits]
+
+            # paths are of the form "/user/USERNAME/m/MULTINAME"
+            author = self.path.split('/')
+            assert 'user' in author and 'm' in author
+            author = author[2]
+            assert author.lower() == self._author.lower()
+            self.author = Redditor(self.reddit_session, author)
 
     @restrict_access(scope='subscribe')
     def add_subreddit(self, subreddit, _delete=False, *args, **kwargs):
@@ -1703,7 +1710,7 @@ class WikiPage(Refreshable):
         return cls(reddit_session, subreddit, page, json_dict=json_dict)
 
     def __init__(self, reddit_session, subreddit=None, page=None,
-                 json_dict=None, fetch=False):
+                 json_dict=None, fetch=False, **kwargs):
         """Construct an instance of the WikiPage object."""
         if not subreddit and not page:
             subreddit = json_dict['sr']
@@ -1711,7 +1718,7 @@ class WikiPage(Refreshable):
         info_url = reddit_session.config['wiki_page'] % (
             six.text_type(subreddit), page)
         super(WikiPage, self).__init__(reddit_session, json_dict, fetch,
-                                       info_url)
+                                       info_url, **kwargs)
         self.page = page
         self.subreddit = subreddit
 

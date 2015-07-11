@@ -12,11 +12,10 @@ class WikiPageTests(PRAWTest):
 
     @betamax()
     def test_edit_wiki_page(self):
-        # Use different sr cases to bypass the cache
-        page = self.r.get_wiki_page(self.sr.upper(), 'index')
+        page = self.subreddit.get_wiki_page('index')
         content = '' if len(page.content_md) > 100 else page.content_md + 'a'
         page.edit(content)
-        page = self.subreddit.get_wiki_page('index')
+        page.refresh()
         self.assertEqual(content, page.content_md)
 
     @betamax()

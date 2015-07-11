@@ -139,16 +139,10 @@ class OAuth2RedditTest(PRAWTest):
         self.r.refresh_access_information(self.other_refresh_token['modself'])
         self.r.accept_moderator_invite(self.sr)
 
-        self.assertRaises(TypeError, self.r.leave_moderator, self.sr,
-                          subreddit.fullname)
-        self.assertRaises(TypeError, self.r.leave_moderator, None, None)
-        self.assertRaises(TypeError, self.r._leave_status, None, None, None)
+        self.r.leave_moderator(subreddit)
+        subreddit.leave_contributor()
 
-        self.r.leave_moderator(subreddit=subreddit)
-        self.r.leave_contributor(fullname=subreddit.fullname)
-
-        # Upper case to bypass cache
-        subreddit = self.r.get_subreddit(self.sr.upper())
+        subreddit.refresh()
         self.assertFalse(subreddit.user_is_moderator)
         self.assertFalse(subreddit.user_is_contributor)
 

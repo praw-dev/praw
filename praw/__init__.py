@@ -1974,7 +1974,7 @@ class ModSelfMixin(AuthenticatedReddit):
 
     """
 
-    def leave_contributor(self, subreddit=None, fullname=None):
+    def leave_contributor(self, subreddit):
         """Abdicate approved submitter status in a subreddit. Use with care.
 
         :param subreddit: The name of the subreddit to leave `status` from.
@@ -1983,10 +1983,9 @@ class ModSelfMixin(AuthenticatedReddit):
 
         :returns: the json response from the server.
         """
-        return self._leave_status(subreddit, fullname,
-                                  statusurl=self.config['leavecontributor'])
+        return self._leave_status(subreddit, self.config['leavecontributor'])
 
-    def leave_moderator(self, subreddit=None, fullname=None):
+    def leave_moderator(self, subreddit):
         """Abdicate moderator status in a subreddit. Use with care.
 
         :param subreddit: The name of the subreddit to leave `status` from.
@@ -1996,34 +1995,26 @@ class ModSelfMixin(AuthenticatedReddit):
         :returns: the json response from the server.
         """
         self.evict(self.config['my_mod_subreddits'])
-        return self._leave_status(subreddit, fullname,
-                                  statusurl=self.config['leavemoderator'])
+        return self._leave_status(subreddit, self.config['leavemoderator'])
 
     @decorators.restrict_access(scope='modself', mod=False)
-    def _leave_status(self, subreddit=None, fullname=None, statusurl=None):
+    def _leave_status(self, subreddit, statusurl):
         """Abdicate status in a subreddit.
 
         :param subreddit: The name of the subreddit to leave `status` from.
         :param fullname: The fullname of the subreddit to leave `status` from.
             `subreddit` and `fullname` cannot both be provided!
-        :param status: The status to leave. One of 'moderator', 'contributor'.
-            Defaults to None as a precaution against accidents.
+        :param statusurl: The status to leave. One of 'moderator',
+            'contributor'. Defaults to None as a precaution against accidents.
             Please use :meth:`leave_contributor` or :meth:`leave_moderator`
             rather than setting this directly.
 
         :returns: the json response from the server.
         """
-        if statusurl is None:
-            raise TypeError('Please enter a value for `status`. '
-                            'One of \'moderator\' or \'contributor\'')
-        if bool(subreddit) == bool(fullname):
-            raise TypeError('Exactly one of `subreddit` or `fullname` is '
-                            'required!')
-        if not fullname:
-            if isinstance(subreddit, six.string_types):
-                subreddit = self.get_subreddit(subreddit)
-            fullname = subreddit.fullname
-        data = {'id': fullname}
+        if isinstance(subreddit, six.string_types):
+            subreddit = self.get_subreddit(subreddit)
+
+        data = {'id': subreddit.fullname}
         return self.request_json(statusurl, data=data)
 
 

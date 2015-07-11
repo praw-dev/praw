@@ -79,20 +79,8 @@ class SubredditTest(PRAWTest):
     @betamax()
     def test_subreddit_refresh(self):
         new_description = 'Description {0}'.format(self.r.modhash)
+        self.assertNotEqual(new_description, self.subreddit.public_description)
         self.subreddit.update_settings(public_description=new_description)
-        # Headers are not included in the cached key so this will have no
-        # affect when the request is cached
-        self.r.http.headers['SKIP_BETAMAX'] = 1
-        # No refresh, settings not updated
-        self.assertNotEqual(new_description, self.subreddit.public_description)
-        # Refresh made within cache expiration, settings not updated
-        self.subreddit.refresh()
-        self.assertNotEqual(new_description, self.subreddit.public_description)
-        # Evict subreddit page
-        url = 'https://api.reddit.com/r/reddit_api_test/about'
-        self.assertEqual(1, self.r.evict(url))
-        self.assertEqual(0, self.r.evict(url))
-        # Actually perform a refresh
         self.subreddit.refresh()
         self.assertEqual(new_description, self.subreddit.public_description)
 
