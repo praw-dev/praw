@@ -464,8 +464,7 @@ class BaseReddit(object):
     @decorators.oauth_generator
     def get_content(self, url, params=None, limit=0, place_holder=None,
                     root_field='data', thing_field='children',
-                    after_field='after', _use_oauth=False,
-                    object_filter=None):
+                    after_field='after', object_filter=None, **kwargs):
         """A generator method to return reddit content from a URL.
 
         Starts at the initial url, and fetches content using the `after`
@@ -503,6 +502,8 @@ class BaseReddit(object):
             Submission or user flair.
 
         """
+        _use_oauth = kwargs.get('_use_oauth', False)
+
         objects_found = 0
         params = params or {}
         fetch_all = fetch_once = False
@@ -1309,8 +1310,13 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                            'https://www.reddit.com/comments/37e2mv/\n\n'
                            'Pass ``disable_warning=True`` to ``login`` to '
                            'disable this warning.')
-    def login(self, username=None, password=None):
+    def login(self, username=None, password=None, **kwargs):
         """Login to a reddit site.
+
+        **DEPRECATED**. Will be removed in a future version of PRAW.
+
+        https://www.reddit.com/comments/2ujhkr/
+        https://www.reddit.com/comments/37e2mv/
 
         Look for username first in parameter, then praw.ini and finally if both
         were empty get it from stdin. Look for password in parameter, then
@@ -1442,10 +1448,15 @@ class ModConfigMixin(AuthenticatedReddit):
     def create_subreddit(self, name, title, description='', language='en',
                          subreddit_type='public', content_options='any',
                          over_18=False, default_set=True, show_media=False,
-                         domain='', wikimode='disabled', captcha=None):
+                         domain='', wikimode='disabled', captcha=None,
+                         **kwargs):
         """Create a new subreddit.
 
         :returns: The json response from the server.
+
+        This function may result in a captcha challenge. PRAW will
+        automatically prompt you for a response. See :ref:`handling-captchas`
+        if you want to manually handle captchas.
 
         """
         data = {'name': name,
@@ -2357,7 +2368,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
     @decorators.restrict_access(scope='privatemessages')
     @decorators.require_captcha
     def send_message(self, recipient, subject, message, from_sr=None,
-                     captcha=None):
+                     captcha=None, **kwargs):
         """Send a message to a redditor or a subreddit's moderators (mod mail).
 
         :param recipient: A Redditor or Subreddit instance to send a message
@@ -2372,6 +2383,10 @@ class PrivateMessagesMixin(AuthenticatedReddit):
             must be a moderator of the subreddit.
 
         :returns: The json response from the server.
+
+        This function may result in a captcha challenge. PRAW will
+        automatically prompt you for a response. See :ref:`handling-captchas`
+        if you want to manually handle captchas.
 
         """
         if isinstance(recipient, objects.Subreddit):
@@ -2461,7 +2476,7 @@ class SubmitMixin(AuthenticatedReddit):
     @decorators.restrict_access(scope='submit')
     @decorators.require_captcha
     def submit(self, subreddit, title, text=None, url=None, captcha=None,
-               save=None, send_replies=None, resubmit=None):
+               save=None, send_replies=None, resubmit=None, **kwargs):
         """Submit a new link to the given subreddit.
 
         Accepts either a Subreddit object or a str containing the subreddit's
@@ -2478,6 +2493,10 @@ class SubmitMixin(AuthenticatedReddit):
 
         :returns: The newly created Submission object if the reddit instance
             can access it. Otherwise, return the url to the submission.
+
+        This function may result in a captcha challenge. PRAW will
+        automatically prompt you for a response. See :ref:`handling-captchas`
+        if you want to manually handle captchas.
 
         """
         if isinstance(text, six.string_types) == bool(url):
