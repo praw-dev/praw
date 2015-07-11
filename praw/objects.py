@@ -1551,7 +1551,7 @@ class Multireddit(Refreshable):
             self.subreddits = [Subreddit(self.reddit_session, item['name'])
                                for item in self.subreddits]
 
-            # paths are of the form "/user/USERNAME/m/MULTINAME"
+            # paths are of the form "/user/{USERNAME}/m/{MULTINAME}"
             author = self.path.split('/')[2]
             self.author = Redditor(self.reddit_session, author)
 
