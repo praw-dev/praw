@@ -426,8 +426,8 @@ class Refreshable(RedditContentObject):
         also refresh all its comments.
 
         """
-        self.reddit_session._unique_count += 1  # pylint: disable=W0212
         unique = self.reddit_session._unique_count  # pylint: disable=W0212
+        self.reddit_session._unique_count += 1  # pylint: disable=W0212
 
         if isinstance(self, Redditor):
             other = Redditor(self.reddit_session, self._case_name, fetch=True,
@@ -1548,10 +1548,7 @@ class Multireddit(Refreshable):
                                for item in self.subreddits]
 
             # paths are of the form "/user/USERNAME/m/MULTINAME"
-            author = self.path.split('/')
-            assert 'user' in author and 'm' in author
-            author = author[2]
-            assert author.lower() == self._author.lower()
+            author = self.path.split('/')[2]
             self.author = Redditor(self.reddit_session, author)
 
     @restrict_access(scope='subscribe')
