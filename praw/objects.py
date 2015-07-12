@@ -698,20 +698,6 @@ class Message(Inboxable):
             if child.id == message_id:
                 return child
 
-    @restrict_access(scope='privatemessages')
-    def collapse(self):
-        """Collapse a private message or modmail."""
-        data = {'id': self.name}
-        url = self.reddit_session.config['collapse_message']
-        self.reddit_session.request_json(url, data=data)
-
-    @restrict_access(scope='privatemessages')
-    def uncollapse(self):
-        """Uncollapse a private message or modmail."""
-        data = {'id': self.name}
-        url = self.reddit_session.config['uncollapse_message']
-        self.reddit_session.request_json(url, data=data)
-
     def __init__(self, reddit_session, json_dict):
         """Construct an instance of the Message object."""
         super(Message, self).__init__(reddit_session, json_dict)
@@ -725,6 +711,18 @@ class Message(Inboxable):
         """Return a string representation of the Message."""
         return 'From: %s\nSubject: %s\n\n%s' % (self.author, self.subject,
                                                 self.body)
+
+    @restrict_access(scope='privatemessages')
+    def collapse(self):
+        """Collapse a private message or modmail."""
+        url = self.reddit_session.config['collapse_message']
+        self.reddit_session.request_json(url, data={'id': self.name})
+
+    @restrict_access(scope='privatemessages')
+    def uncollapse(self):
+        """Uncollapse a private message or modmail."""
+        url = self.reddit_session.config['uncollapse_message']
+        self.reddit_session.request_json(url, data={'id': self.name})
 
 
 class MoreComments(RedditContentObject):
