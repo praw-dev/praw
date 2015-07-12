@@ -700,20 +700,14 @@ class Message(Inboxable):
 
     @restrict_access(scope='privatemessages')
     def collapse(self):
-        """Collapse a private message or modmail
-
-        """
-
+        """Collapse a private message or modmail."""
         data = {'id': self.name}
         url = self.reddit_session.config['collapse_message']
         self.reddit_session.request_json(url, data=data)
-   
+
     @restrict_access(scope='privatemessages')
     def uncollapse(self):
-        """Uncollapse a private message or modmail
-
-        """
-
+        """Uncollapse a private message or modmail."""
         data = {'id': self.name}
         url = self.reddit_session.config['uncollapse_message']
         self.reddit_session.request_json(url, data=data)
