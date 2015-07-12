@@ -1,6 +1,7 @@
 """Tests for Subreddit class."""
 
 from __future__ import print_function, unicode_literals
+import warnings
 from praw import errors
 from praw.objects import Subreddit
 from six import text_type
@@ -77,22 +78,17 @@ class SubredditTest(PRAWTest):
         self.assertTrue(all(isinstance(x, Subreddit) for x in result))
 
     @betamax()
+    def test_multiple_subreddit__fetch(self):
+        with warnings.catch_warnings(record=True) as w:
+            self.r.get_subreddit('python+redditdev', fetch=True)
+            assert len(w) == 1
+            assert isinstance(w[0].message, UserWarning)
+
+    @betamax()
     def test_subreddit_refresh(self):
         new_description = 'Description {0}'.format(self.r.modhash)
+        self.assertNotEqual(new_description, self.subreddit.public_description)
         self.subreddit.update_settings(public_description=new_description)
-        # Headers are not included in the cached key so this will have no
-        # affect when the request is cached
-        self.r.http.headers['SKIP_BETAMAX'] = 1
-        # No refresh, settings not updated
-        self.assertNotEqual(new_description, self.subreddit.public_description)
-        # Refresh made within cache expiration, settings not updated
-        self.subreddit.refresh()
-        self.assertNotEqual(new_description, self.subreddit.public_description)
-        # Evict subreddit page
-        url = 'https://api.reddit.com/r/reddit_api_test/about'
-        self.assertEqual(1, self.r.evict(url))
-        self.assertEqual(0, self.r.evict(url))
-        # Actually perform a refresh
         self.subreddit.refresh()
         self.assertEqual(new_description, self.subreddit.public_description)
 

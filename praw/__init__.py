@@ -120,6 +120,8 @@ class Config(object):  # pylint: disable=R0903
                  'ignore_reports':      'api/ignore_reports/',
                  'inbox':               'message/inbox/',
                  'info':                'api/info/',
+                 'leavecontributor':    'api/leavecontributor',
+                 'leavemoderator':      'api/leavemoderator',
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
                  'mentions':            'message/mentions',
@@ -462,8 +464,7 @@ class BaseReddit(object):
     @decorators.oauth_generator
     def get_content(self, url, params=None, limit=0, place_holder=None,
                     root_field='data', thing_field='children',
-                    after_field='after', _use_oauth=False,
-                    object_filter=None):
+                    after_field='after', object_filter=None, **kwargs):
         """A generator method to return reddit content from a URL.
 
         Starts at the initial url, and fetches content using the `after`
@@ -501,6 +502,8 @@ class BaseReddit(object):
             Submission or user flair.
 
         """
+        _use_oauth = kwargs.get('_use_oauth', False)
+
         objects_found = 0
         params = params or {}
         fetch_all = fetch_once = False
@@ -714,7 +717,9 @@ class UnauthenticatedReddit(BaseReddit):
     def __init__(self, *args, **kwargs):
         """Initialze an UnauthenticatedReddit instance."""
         super(UnauthenticatedReddit, self).__init__(*args, **kwargs)
-        self._unique_count = 0
+        # initialize to 1 instead of 0, because 0 does not reliably make
+        # new requests.
+        self._unique_count = 1
 
     def create_redditor(self, user_name, password, email=''):
         """Register a new user.
@@ -1051,11 +1056,9 @@ class UnauthenticatedReddit(BaseReddit):
         return self.get_content(self.config['top'], *args, **kwargs)
 
     @decorators.restrict_access(scope='wikiread', login=False)
-    def get_wiki_page(self, subreddit, page, **params):
+    def get_wiki_page(self, subreddit, page):
         """Return a WikiPage object for the subreddit and page provided."""
-        return self.request_json(self.config['wiki_page'] %
-                                 (six.text_type(subreddit), page.lower()),
-                                 params=params)
+        return objects.WikiPage(self, six.text_type(subreddit), page.lower())
 
     @decorators.restrict_access(scope='wikiread', login=False)
     def get_wiki_pages(self, subreddit):
@@ -1284,8 +1287,11 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         return user
 
     def has_scope(self, scope):
-        """Return True if OAuth2 authorized for the passed in scope."""
-        return self.is_oauth_session() and scope in self._authentication
+        """Return True if OAuth2 authorized for the passed in scope(s)."""
+        if isinstance(scope, six.string_types):
+            scope = [scope]
+        return self.is_oauth_session() and all(s in self._authentication
+                                               for s in scope)
 
     def is_logged_in(self):
         """Return True when session is authenticated via login."""
@@ -1306,8 +1312,13 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                            'https://www.reddit.com/comments/37e2mv/\n\n'
                            'Pass ``disable_warning=True`` to ``login`` to '
                            'disable this warning.')
-    def login(self, username=None, password=None):
+    def login(self, username=None, password=None, **kwargs):
         """Login to a reddit site.
+
+        **DEPRECATED**. Will be removed in a future version of PRAW.
+
+        https://www.reddit.com/comments/2ujhkr/
+        https://www.reddit.com/comments/37e2mv/
 
         Look for username first in parameter, then praw.ini and finally if both
         were empty get it from stdin. Look for password in parameter, then
@@ -1439,10 +1450,15 @@ class ModConfigMixin(AuthenticatedReddit):
     def create_subreddit(self, name, title, description='', language='en',
                          subreddit_type='public', content_options='any',
                          over_18=False, default_set=True, show_media=False,
-                         domain='', wikimode='disabled', captcha=None):
+                         domain='', wikimode='disabled', captcha=None,
+                         **kwargs):
         """Create a new subreddit.
 
         :returns: The json response from the server.
+
+        This function may result in a captcha challenge. PRAW will
+        automatically prompt you for a response. See :ref:`handling-captchas`
+        if you want to manually handle captchas.
 
         """
         data = {'name': name,
@@ -1962,6 +1978,52 @@ class ModOnlyMixin(AuthenticatedReddit):
             user_only=True, *args, **kwargs)
 
 
+class ModSelfMixin(AuthenticatedReddit):
+
+    """Adds methods pertaining to the 'modself' OAuth scope (or login).
+
+    You should **not** directly instantiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
+
+    def leave_contributor(self, subreddit):
+        """Abdicate approved submitter status in a subreddit. Use with care.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+
+        :returns: the json response from the server.
+        """
+        return self._leave_status(subreddit, self.config['leavecontributor'])
+
+    def leave_moderator(self, subreddit):
+        """Abdicate moderator status in a subreddit. Use with care.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+
+        :returns: the json response from the server.
+        """
+        self.evict(self.config['my_mod_subreddits'])
+        return self._leave_status(subreddit, self.config['leavemoderator'])
+
+    @decorators.restrict_access(scope='modself', mod=False)
+    def _leave_status(self, subreddit, statusurl):
+        """Abdicate status in a subreddit.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+        :param statusurl: The API URL which will be used in the leave request.
+            Please use :meth:`leave_contributor` or :meth:`leave_moderator`
+            rather than setting this directly.
+
+        :returns: the json response from the server.
+        """
+        if isinstance(subreddit, six.string_types):
+            subreddit = self.get_subreddit(subreddit)
+
+        data = {'id': subreddit.fullname}
+        return self.request_json(statusurl, data=data)
+
+
 class MultiredditMixin(AuthenticatedReddit):
 
     """Adds methods pertaining to multireddits.
@@ -2308,7 +2370,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
     @decorators.restrict_access(scope='privatemessages')
     @decorators.require_captcha
     def send_message(self, recipient, subject, message, from_sr=None,
-                     captcha=None):
+                     captcha=None, **kwargs):
         """Send a message to a redditor or a subreddit's moderators (mod mail).
 
         :param recipient: A Redditor or Subreddit instance to send a message
@@ -2323,6 +2385,10 @@ class PrivateMessagesMixin(AuthenticatedReddit):
             must be a moderator of the subreddit.
 
         :returns: The json response from the server.
+
+        This function may result in a captcha challenge. PRAW will
+        automatically prompt you for a response. See :ref:`handling-captchas`
+        if you want to manually handle captchas.
 
         """
         if isinstance(recipient, objects.Subreddit):
@@ -2412,7 +2478,7 @@ class SubmitMixin(AuthenticatedReddit):
     @decorators.restrict_access(scope='submit')
     @decorators.require_captcha
     def submit(self, subreddit, title, text=None, url=None, captcha=None,
-               save=None, send_replies=None, resubmit=None):
+               save=None, send_replies=None, resubmit=None, **kwargs):
         """Submit a new link to the given subreddit.
 
         Accepts either a Subreddit object or a str containing the subreddit's
@@ -2429,6 +2495,10 @@ class SubmitMixin(AuthenticatedReddit):
 
         :returns: The newly created Submission object if the reddit instance
             can access it. Otherwise, return the url to the submission.
+
+        This function may result in a captcha challenge. PRAW will
+        automatically prompt you for a response. See :ref:`handling-captchas`
+        if you want to manually handle captchas.
 
         """
         if isinstance(text, six.string_types) == bool(url):
@@ -2500,8 +2570,8 @@ class SubscribeMixin(AuthenticatedReddit):
 
 
 class Reddit(ModConfigMixin, ModFlairMixin, ModLogMixin, ModOnlyMixin,
-             MultiredditMixin, MySubredditsMixin, PrivateMessagesMixin,
-             ReportMixin, SubmitMixin, SubscribeMixin):
+             ModSelfMixin, MultiredditMixin, MySubredditsMixin,
+             PrivateMessagesMixin, ReportMixin, SubmitMixin, SubscribeMixin):
 
     """Provides access to reddit's API.
 

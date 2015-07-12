@@ -21,6 +21,20 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+* **[BUGFIX]** Fixed methods which require more than one OAuth scope.
+* **[BUGFIX]** Fixed :meth:`praw.objects.WikiPage.remove_editor` raising
+  AssertionError when used through OAuth.
+* **[CHANGE]** :meth:`praw.objects.Refreshable.refresh` will now always return
+  a fresh object. Previously, Subreddits and Redditors would use cache content
+  when available.
+* **[CHANGE]** :class:`praw.objects.WikiPage` is now refreshable, and will
+lazy-load.
+* **[FEATURE]** Added methods :meth:`leave_moderator` and
+  :meth:`leave_contributor` to :class:`praw.__init__.AuthenticatedReddit`
+  and :class:`praw.objects.Subreddit`.
+
 PRAW 3.1.0
 ----------
  * **[BUGFIX]** Fixed method `get_random_submission` which failed to raise

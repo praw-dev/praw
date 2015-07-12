@@ -29,11 +29,12 @@ from six.moves.urllib.parse import (  # pylint: disable=F0401
 from heapq import heappop, heappush
 from json import dumps
 from requests.compat import urljoin
+from warnings import warn_explicit
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
-                  ModOnlyMixin as MOMix, MultiredditMixin as MultiMix,
-                  PrivateMessagesMixin as PMMix, SubmitMixin, SubscribeMixin,
-                  UnauthenticatedReddit as UR)
+                  ModOnlyMixin as MOMix, ModSelfMixin as MSMix,
+                  MultiredditMixin as MultiMix, PrivateMessagesMixin as PMMix,
+                  SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
 from praw.decorators import (alias_function, limit_chars, restrict_access,
                              deprecated)
 from praw.errors import ClientException, InvalidComment
@@ -421,18 +422,17 @@ class Refreshable(RedditContentObject):
     def refresh(self):
         """Re-query to update object with latest values. Return the object.
 
-        Note that if this call is made within cache_timeout as specified in
-        praw.ini then this will return the cached content. Any listing, such
-        as the submissions on a subreddits top page, will automatically be
-        refreshed serverside. Refreshing a submission will also refresh all its
-        comments.
+        Any listing, such as the submissions on a subreddits top page, will
+        automatically be refreshed serverside. Refreshing a submission will
+        also refresh all its comments.
 
         """
         unique = self.reddit_session._unique_count  # pylint: disable=W0212
         self.reddit_session._unique_count += 1  # pylint: disable=W0212
 
         if isinstance(self, Redditor):
-            other = Redditor(self.reddit_session, self._case_name, fetch=True)
+            other = Redditor(self.reddit_session, self._case_name, fetch=True,
+                             uniq=unique)
         elif isinstance(self, Comment):
             sub = Submission.from_url(self.reddit_session, self.permalink,
                                       params={'uniq': unique})
@@ -447,7 +447,12 @@ class Refreshable(RedditContentObject):
                                         comment_sort=self._comment_sort,
                                         params=params)
         elif isinstance(self, Subreddit):
-            other = Subreddit(self.reddit_session, self._case_name, fetch=True)
+            other = Subreddit(self.reddit_session, self._case_name, fetch=True,
+                              uniq=unique)
+        elif isinstance(self, WikiPage):
+            other = WikiPage(self.reddit_session,
+                             six.text_type(self.subreddit), self.page,
+                             fetch=True, uniq=unique)
 
         self.__dict__ = other.__dict__  # pylint: disable=W0201
         return self
@@ -787,7 +792,7 @@ class Redditor(Gildable, Messageable, Refreshable):
     get_submitted = _get_redditor_listing('submitted')
 
     def __init__(self, reddit_session, user_name=None, json_dict=None,
-                 fetch=False):
+                 fetch=False, **kwargs):
         """Construct an instance of the Redditor object."""
         if not user_name:
             user_name = json_dict['name']
@@ -796,7 +801,7 @@ class Redditor(Gildable, Messageable, Refreshable):
         # json_dict 'name' attribute (if available) has precedence
         self._case_name = user_name
         super(Redditor, self).__init__(reddit_session, json_dict,
-                                       fetch, info_url)
+                                       fetch, info_url, **kwargs)
         self.name = self._case_name
         self._url = reddit_session.config['user'] % self.name
         self._mod_subs = None
@@ -852,9 +857,8 @@ class Redditor(Gildable, Messageable, Refreshable):
         # Sending an OAuth authenticated request for a redditor, who isn't the
         # authenticated user. But who has a public voting record will be
         # successful.
-        use_oauth = self.reddit_session.is_oauth_session()
-        return _get_redditor_listing('downvoted')(
-            self, *args, _use_oauth=use_oauth, **kwargs)
+        kwargs['_use_oauth'] = self.reddit_session.is_oauth_session()
+        return _get_redditor_listing('downvoted')(self, *args, **kwargs)
 
     def get_liked(self, *args, **kwargs):
         """Return a listing of the Submissions the user has upvoted.
@@ -879,9 +883,8 @@ class Redditor(Gildable, Messageable, Refreshable):
         will be needed to access this listing.
 
         """
-        use_oauth = self.reddit_session.is_oauth_session()
-        return _get_redditor_listing('upvoted')(self, *args,
-                                                _use_oauth=use_oauth, **kwargs)
+        kwargs['_use_oauth'] = self.reddit_session.is_oauth_session()
+        return _get_redditor_listing('upvoted')(self, *args, **kwargs)
 
     def mark_as_read(self, messages, unread=False):
         """Mark message(s) as read or unread.
@@ -1372,6 +1375,8 @@ class Subreddit(Messageable, Refreshable):
                 ('get_wiki_contributors', MOMix),
                 ('get_wiki_page', UR),
                 ('get_wiki_pages', UR),
+                ('leave_contributor', MSMix),
+                ('leave_moderator', MSMix),
                 ('search', UR),
                 ('select_flair', AR),
                 ('set_flair', MFMix),
@@ -1426,7 +1431,7 @@ class Subreddit(Messageable, Refreshable):
     get_top_from_year = _get_sorter('top', t='year')
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
-                 fetch=False):
+                 fetch=False, **kwargs):
         """Construct an instance of the Subreddit object."""
         # Special case for when my_subreddits is called as no name is returned
         # so we have to extract the name from the URL. The URLs are returned
@@ -1434,10 +1439,15 @@ class Subreddit(Messageable, Refreshable):
         if not subreddit_name:
             subreddit_name = json_dict['url'].split('/')[2]
 
+        if fetch and ('+' in subreddit_name or '-' in subreddit_name):
+            fetch = False
+            warn_explicit('fetch=True has no effect on multireddits',
+                          UserWarning, '', 0)
+
         info_url = reddit_session.config['subreddit_about'] % subreddit_name
         self._case_name = subreddit_name
         super(Subreddit, self).__init__(reddit_session, json_dict, fetch,
-                                        info_url)
+                                        info_url, **kwargs)
         self.display_name = self._case_name
         self._url = reddit_session.config['subreddit'] % self.display_name
         # '' is the hot listing
@@ -1519,10 +1529,10 @@ class Multireddit(Refreshable):
             name = json_dict['path'].split('/')[-1]
 
         info_url = reddit_session.config['multireddit_about'] % (author, name)
-        super(Multireddit, self).__init__(reddit_session, json_dict, fetch,
-                                          info_url, **kwargs)
         self.name = name
         self._author = author
+        super(Multireddit, self).__init__(reddit_session, json_dict, fetch,
+                                          info_url, **kwargs)
         self._url = reddit_session.config['multireddit'] % (author, name)
 
     def __repr__(self):
@@ -1540,6 +1550,10 @@ class Multireddit(Refreshable):
             # {'name': 'subredditname'}. Convert them to Subreddit objects.
             self.subreddits = [Subreddit(self.reddit_session, item['name'])
                                for item in self.subreddits]
+
+            # paths are of the form "/user/{USERNAME}/m/{MULTINAME}"
+            author = self.path.split('/')[2]
+            self.author = Redditor(self.reddit_session, author)
 
     @restrict_access(scope='subscribe')
     def add_subreddit(self, subreddit, _delete=False, *args, **kwargs):
@@ -1678,7 +1692,7 @@ class UserList(PRAWListing):
         return retval
 
 
-class WikiPage(RedditContentObject):
+class WikiPage(Refreshable):
 
     """An individual WikiPage object."""
 
@@ -1697,7 +1711,7 @@ class WikiPage(RedditContentObject):
         return cls(reddit_session, subreddit, page, json_dict=json_dict)
 
     def __init__(self, reddit_session, subreddit=None, page=None,
-                 json_dict=None, fetch=True):
+                 json_dict=None, fetch=False, **kwargs):
         """Construct an instance of the WikiPage object."""
         if not subreddit and not page:
             subreddit = json_dict['sr']
@@ -1705,7 +1719,7 @@ class WikiPage(RedditContentObject):
         info_url = reddit_session.config['wiki_page'] % (
             six.text_type(subreddit), page)
         super(WikiPage, self).__init__(reddit_session, json_dict, fetch,
-                                       info_url)
+                                       info_url, **kwargs)
         self.page = page
         self.subreddit = subreddit
 
@@ -1779,7 +1793,6 @@ class WikiPage(RedditContentObject):
         return self.reddit_session.request_json(url, data=data, *args,
                                                 **kwargs)['data']
 
-    @restrict_access(scope='modwiki')
     def remove_editor(self, username, *args, **kwargs):
         """Remove an editor from this wiki page.
 
