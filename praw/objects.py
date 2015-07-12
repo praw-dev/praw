@@ -1242,11 +1242,13 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
         Contest mode have the following effects:
           * The comment thread will default to being sorted randomly.
-          * Replies to top-level comments will be hidden behind "[show replies]" buttons.
+          * Replies to top-level comments will be hidden behind
+            "[show replies]" buttons.
           * Scores will be hidden from non-moderators.
-          * Scores accessed through the API (mobile apps, bots) will be obscured to "1" for non-moderators.
+          * Scores accessed through the API (mobile apps, bots) will be obscured to "1"
+            for non-moderators.
 
-        Source for effects: http://www.reddit.com/r/bestof2012/comments/159bww/introducing_contest_mode_a_tool_for_your_voting
+        Source for effects: https://www.reddit.com/159bww/
 
         :returns: The json response from the server.
 
@@ -1262,7 +1264,8 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
     def set_suggested_sort(self, sort='blank'):
         """Set 'Suggested Sort' for the comments of the submission.
 
-        Comments can be sorted in one of (confidence, top, new, hot, controversial, old, random, qa, blank).
+        Comments can be sorted in one of (confidence, top, new, hot,
+        controversial, old, random, qa, blank).
 
         :returns: The json response from the server.
 
@@ -1310,11 +1313,13 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
         Contest mode have the following effects:
           * The comment thread will default to being sorted randomly.
-          * Replies to top-level comments will be hidden behind "[show replies]" buttons.
+          * Replies to top-level comments will be hidden behind
+            "[show replies]" buttons.
           * Scores will be hidden from non-moderators.
-          * Scores accessed through the API (mobile apps, bots) will be obscured to "1" for non-moderators.
+          * Scores accessed through the API (mobile apps, bots) will be obscured to "1"
+            for non-moderators.
 
-        Source for effects: http://www.reddit.com/r/bestof2012/comments/159bww/introducing_contest_mode_a_tool_for_your_voting
+        Source for effects: http://www.reddit.com/159bww/
 
         :returns: The json response from the server.
 
@@ -1714,7 +1719,8 @@ class WikiPage(RedditContentObject):
         :param _delete: If True, remove the user as an editor instead.
             Please use :meth:`remove_editor` rather than setting it manually.
 
-        Additional parameters are passed into :meth:`~praw.__init__.BaseReddit.request_json`.
+        Additional parameters are passed into
+        :meth:`~praw.__init__.BaseReddit.request_json`.
         """
         url = self.reddit_session.config['wiki_page_editor']
         url = url % (six.text_type(self.subreddit),
@@ -1732,7 +1738,8 @@ class WikiPage(RedditContentObject):
         Includes permission level, names of editors, and whether
         the page is listed on /wiki/pages.
 
-        Additional parameters are passed into :meth:`~praw.__init__.BaseReddit.request_json`
+        Additional parameters are passed into
+        :meth:`~praw.__init__.BaseReddit.request_json`
         """
         url = self.reddit_session.config['wiki_page_settings']
         url = url % (six.text_type(self.subreddit), self.page)
