@@ -698,8 +698,28 @@ class Message(Inboxable):
             if child.id == message_id:
                 return child
 
+    @restrict_access(scope='privatemessages')
+    def collapse(self):
+        """Collapse a private message or modmail
+
+        """
+
+        data = {'id': self.name}
+        url = 'https://api.reddit.com/api/collapse_message/'
+        request = self.reddit_session.request_json(url, data=data)
+   
+    @restrict_access(scope='privatemessages')
+    def uncollapse(self):
+        """Collapse a private message or modmail
+ 
+        """
+
+        data = {'id': self.name}
+        url = 'https://api.reddit.com/api/uncollapse_message/'
+        request = self.reddit_session.request_json(url, data=data)
+
     def __init__(self, reddit_session, json_dict):
-        """Construct an instnace of the Message object."""
+        """Construct an instance of the Message object."""
         super(Message, self).__init__(reddit_session, json_dict)
         if self.replies:  # pylint: disable=E0203
             self.replies = self.replies['data']['children']
