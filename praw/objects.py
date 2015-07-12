@@ -710,8 +710,8 @@ class Message(Inboxable):
    
     @restrict_access(scope='privatemessages')
     def uncollapse(self):
-        """Collapse a private message or modmail
- 
+        """Uncollapse a private message or modmail
+
         """
 
         data = {'id': self.name}
