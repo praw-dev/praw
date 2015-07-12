@@ -4,7 +4,7 @@ Code Overview
 =============
 
 Here you will find an overview of PRAW's objects and methods, but not the
-objects attributes who are generated dynamically from reddit's responses and
+objects attributes which are generated dynamically from reddit's responses and
 are thus impossible to accurately describe statically. In :ref:`writing_a_bot`
 there is a longer discussion of how to introspect PRAW, which you can use in
 conjunction with this nice visual overview.
