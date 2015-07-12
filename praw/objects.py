@@ -706,7 +706,7 @@ class Message(Inboxable):
 
         data = {'id': self.name}
         url = 'https://api.reddit.com/api/collapse_message/'
-        request = self.reddit_session.request_json(url, data=data)
+        self.reddit_session.request_json(url, data=data)
    
     @restrict_access(scope='privatemessages')
     def uncollapse(self):
@@ -716,7 +716,7 @@ class Message(Inboxable):
 
         data = {'id': self.name}
         url = 'https://api.reddit.com/api/uncollapse_message/'
-        request = self.reddit_session.request_json(url, data=data)
+        self.reddit_session.request_json(url, data=data)
 
     def __init__(self, reddit_session, json_dict):
         """Construct an instance of the Message object."""
