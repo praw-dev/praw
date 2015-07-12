@@ -626,9 +626,9 @@ class OAuth2Reddit(BaseReddit):
 
         :param code: the code received in the request from the OAuth2 server
         :returns: A dictionary with the key/value pairs for ``access_token``,
-            ``refresh_token`` and ``scope``. The ``refresh_token`` value will be None when
-            the OAuth2 grant is not refreshable. The ``scope`` value will be a set
-            containing the scopes the tokens are valid for.
+            ``refresh_token`` and ``scope``. The ``refresh_token`` value will
+            be None when the OAuth2 grant is not refreshable. The ``scope``
+            value will be a set containing the scopes the tokens are valid for.
 
         """
         data = {'code': code, 'grant_type': 'authorization_code',
@@ -642,7 +642,8 @@ class OAuth2Reddit(BaseReddit):
     def get_authorize_url(self, state, scope='identity', refreshable=False):
         """Return the URL to send the user to for OAuth2 authorization.
 
-        :param state: a unique string of your choice that represents this individual client
+        :param state: a unique string of your choice that represents this individual
+            client
         :param scope: the reddit scope to ask permissions for. Multiple scopes
             can be enabled by passing in a container of strings.
         :param refreshable: when True, a permanent "refreshable" token is
@@ -658,7 +659,8 @@ class OAuth2Reddit(BaseReddit):
 
     @property
     def has_oauth_app_info(self):
-        """Return True if ``client_id``, ``client_secret`` and ``redirect_uri`` are set."""
+        """Return True if ``client_id``, ``client_secret`` and
+        ``redirect_uri`` are set."""
         return all((self.client_id, self.client_secret, self.redirect_uri))
 
     @decorators.require_oauth
@@ -833,10 +835,11 @@ class UnauthenticatedReddit(BaseReddit):
             (``t5_``) to lookup by fullname.
         :param limit: The maximum number of Submissions to return when looking
             up by url. When None, uses account default settings.
-        :returns: When a single ``thing_id`` is provided, return the corresponding
-            thing object, or ``None`` if not found. When a list of ``thing_id``s or a
-            ``url`` is provided return a list of thing objects (up to ``limit``). ``None``
-            is returned if any one of the thing_ids or the URL is invalid.
+        :returns: When a single ``thing_id`` is provided, return the
+            corresponding thing object, or ``None`` if not found. When a list
+            of ``thing_id``s or a ``url`` is provided return a list of thing
+            objects (up to ``limit``). ``None`` is returned if any one of the
+            thing_ids or the URL is invalid.
 
         """
         if bool(url) == bool(thing_id):
@@ -1135,7 +1138,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
     """This class adds the methods necessary for authenticating with reddit.
 
-    Authentication can either be login based (through :meth:`~praw.__init__.AuthenticatedReddit.login`), or OAuth2 based
+    Authentication can either be login based
+    (through :meth:`~praw.__init__.AuthenticatedReddit.login`), or OAuth2 based
     (via :meth:`~praw.__init__.AuthenticatedReddit.set_access_credentials`).
 
     You should **not** directly instantiate instances of this class. Use
@@ -1287,7 +1291,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         return self.is_oauth_session() and scope in self._authentication
 
     def is_logged_in(self):
-        """Return True when session is authenticated via :meth:`~praw.__init__.AuthenticatedReddit.login`."""
+        """Return True when session is authenticated via
+        :meth:`~praw.__init__.AuthenticatedReddit.login`."""
         return self._authentication is True
 
     def is_oauth_session(self):
@@ -1350,9 +1355,9 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             information. When not provided, use the stored refresh_token.
         :param update_session: Update the session with the returned data.
         :returns: A dictionary with the key/value pairs for ``access_token``,
-            ``refresh_token`` and ``scope``. The ``refresh_token`` value will be None when
-            the OAuth2 grant is not refreshable. The ``scope`` value will be a set
-            containing the scopes the tokens are valid for.
+            ``refresh_token`` and ``scope``. The ``refresh_token`` value will
+            be None when the OAuth2 grant is not refreshable. The ``scope``
+            value will be a set containing the scopes the tokens are valid for.
 
         """
         response = super(AuthenticatedReddit, self).refresh_access_information(
@@ -1370,8 +1375,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         access, see :meth:`~praw.__init__.ModFlairMixin.set_flair`.
 
         :param item: A string, Subreddit object (for user flair), or
-            Submission object (for link flair). If ``item`` is a string it will be
-            treated as the name of a Subreddit.
+            Submission object (for link flair). If ``item`` is a string it
+            will be treated as the name of a Subreddit.
         :param flair_template_id: The id for the desired flair template. Use
             the :meth:`~praw.objects.Subreddit.get_flair_choices` and
             :meth:`~praw.objects.Submission.get_flair_choices` methods to find
@@ -2020,7 +2025,8 @@ class MultiredditMixin(AuthenticatedReddit):
         :param key_color: Optional rgb hex color code of the form `#xxxxxx`.
         :param subreddits: Optional list of subreddit names or Subreddit
             objects to initialize the Multireddit with. You can always
-            add more later with :meth:`~praw.objects.Multireddit.add_subreddit`.
+            add more later with
+            :meth:`~praw.objects.Multireddit.add_subreddit`.
         :param visibility: Choose a privacy setting from this list:
             ``public``, ``private``, ``hidden``. Defaults to private if blank.
         :param weighting_scheme: Choose a weighting scheme from this list:
@@ -2138,7 +2144,7 @@ class MySubredditsMixin(AuthenticatedReddit):
     def get_my_contributions(self, *args, **kwargs):
         """Return a get_content generator of subreddits.
 
-        The subreddits generated are those where the session's user is a
+        The Subreddits generated are those where the session's user is a
         contributor.
 
         The additional parameters are passed directly into
@@ -2150,7 +2156,9 @@ class MySubredditsMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='mysubreddits')
     def get_my_moderation(self, *args, **kwargs):
-        """Return a get_content generator of subreddits where the session's user is a
+        """Return a get_content generator of subreddits.
+        
+        The Subreddits generated are those where the session's user is a
         moderator.
 
         The additional parameters are passed directly into
@@ -2169,7 +2177,9 @@ class MySubredditsMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='mysubreddits')
     def get_my_subreddits(self, *args, **kwargs):
-        """Return a get_content generator of subreddits that the session's user is
+        """Return a get_content generator of subreddits.
+        
+        The subreddits generated are those that hat the session's user is
         subscribed to.
 
         The additional parameters are passed directly into
