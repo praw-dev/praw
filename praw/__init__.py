@@ -645,8 +645,8 @@ class OAuth2Reddit(BaseReddit):
     def get_authorize_url(self, state, scope='identity', refreshable=False):
         """Return the URL to send the user to for OAuth2 authorization.
 
-        :param state: a unique string of your choice that represents this individual
-            client
+        :param state: a unique string of your choice that represents this
+            individual client
         :param scope: the reddit scope to ask permissions for. Multiple scopes
             can be enabled by passing in a container of strings.
         :param refreshable: when True, a permanent "refreshable" token is
@@ -662,8 +662,12 @@ class OAuth2Reddit(BaseReddit):
 
     @property
     def has_oauth_app_info(self):
-        """Return True if ``client_id``, ``client_secret`` and
-        ``redirect_uri`` are set."""
+        """Return True when OAuth credentials are associated with the instance.
+
+        The necessary credentials are: ``client_id``, ``client_secret`` and
+        ``redirect_uri``.
+
+        """
         return all((self.client_id, self.client_secret, self.redirect_uri))
 
     @decorators.require_oauth
@@ -1298,8 +1302,12 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                                                for s in scope)
 
     def is_logged_in(self):
-        """Return True when session is authenticated via
-        :meth:`~praw.__init__.AuthenticatedReddit.login`."""
+        """Return True when the session is authenticated via username/password.
+
+        Username and passwords are provided via
+        :meth:`~praw.__init__.AuthenticatedReddit.login`.
+
+        """
         return self._authentication is True
 
     def is_oauth_session(self):
@@ -2220,7 +2228,7 @@ class MySubredditsMixin(AuthenticatedReddit):
     @decorators.restrict_access(scope='mysubreddits')
     def get_my_moderation(self, *args, **kwargs):
         """Return a get_content generator of subreddits.
-        
+
         The Subreddits generated are those where the session's user is a
         moderator.
 
@@ -2241,7 +2249,7 @@ class MySubredditsMixin(AuthenticatedReddit):
     @decorators.restrict_access(scope='mysubreddits')
     def get_my_subreddits(self, *args, **kwargs):
         """Return a get_content generator of subreddits.
-        
+
         The subreddits generated are those that hat the session's user is
         subscribed to.
 

@@ -1248,8 +1248,8 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
           * Replies to top-level comments will be hidden behind
             "[show replies]" buttons.
           * Scores will be hidden from non-moderators.
-          * Scores accessed through the API (mobile apps, bots) will be obscured to "1"
-            for non-moderators.
+          * Scores accessed through the API (mobile apps, bots) will be
+            obscured to "1" for non-moderators.
 
         Source for effects: https://www.reddit.com/159bww/
 
@@ -1319,8 +1319,8 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
           * Replies to top-level comments will be hidden behind
             "[show replies]" buttons.
           * Scores will be hidden from non-moderators.
-          * Scores accessed through the API (mobile apps, bots) will be obscured to "1"
-            for non-moderators.
+          * Scores accessed through the API (mobile apps, bots) will be
+            obscured to "1" for non-moderators.
 
         Source for effects: http://www.reddit.com/159bww/
 
