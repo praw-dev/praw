@@ -705,7 +705,7 @@ class Message(Inboxable):
         """
 
         data = {'id': self.name}
-        url = 'https://api.reddit.com/api/collapse_message/'
+        url = self.reddit_session.config['collapse_message']
         self.reddit_session.request_json(url, data=data)
    
     @restrict_access(scope='privatemessages')
@@ -715,7 +715,7 @@ class Message(Inboxable):
         """
 
         data = {'id': self.name}
-        url = 'https://api.reddit.com/api/uncollapse_message/'
+        url = self.reddit_session.config['uncollapse_message']
         self.reddit_session.request_json(url, data=data)
 
     def __init__(self, reddit_session, json_dict):
