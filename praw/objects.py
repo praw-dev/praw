@@ -1301,18 +1301,18 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         return urljoin(self.reddit_session.config.short_domain, self.id)
 
     @restrict_access(scope='modposts')
-    def sticky(self, num=1):
+    def sticky(self, num=2):
         """Sticky a post in its subreddit.
 
-        If there is already a stickied post in the concerned subreddit then it
-        will be unstickied. Only self submissions can be stickied.
+        If there is already a stickied post in the designated slot it will be
+        unstickied.
 
         :param num: The sticky slot number - 1 or 2
         :returns: The json response from the server
 
         """
         if num > 2 or num < 1:
-            num = 1
+            num = 2
         url = self.reddit_session.config['sticky_submission']
         data = {'id': self.fullname, 'num': num, 'state': True}
         return self.reddit_session.request_json(url, data=data)
