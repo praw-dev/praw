@@ -1314,7 +1314,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         if num > 2 or num < 1:
             num = 1
         url = self.reddit_session.config['sticky_submission']
-        data = {'id': self.fullname, 'num': num,  'state': True}
+        data = {'id': self.fullname, 'num': num, 'state': True}
         return self.reddit_session.request_json(url, data=data)
 
     def unmark_as_nsfw(self):
