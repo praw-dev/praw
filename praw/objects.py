@@ -1301,7 +1301,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         return urljoin(self.reddit_session.config.short_domain, self.id)
 
     @restrict_access(scope='modposts')
-    def sticky(self, num=2):
+    def sticky(self, num=None):
         """Sticky a post in its subreddit.
 
         If there is already a stickied post in the designated slot it will be
@@ -1311,10 +1311,12 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         :returns: The json response from the server
 
         """
-        if num > 2 or num < 1:
-            num = 2
         url = self.reddit_session.config['sticky_submission']
-        data = {'id': self.fullname, 'num': num, 'state': True}
+        data = {'id': self.fullname, 'state': True}
+        if num:
+            if num > 2 or num < 1:
+                num = 2
+            data['num'] = num
         return self.reddit_session.request_json(url, data=data)
 
     def unmark_as_nsfw(self):
