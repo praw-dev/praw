@@ -37,13 +37,11 @@ class OAuth2RedditTest(PRAWTest):
         self.r.refresh_access_information(self.refresh_token['identity'])
         old_token = self.r.access_token
 
-        self.r.config.oauth_auto_refresh = 0.05
+        self.r.access_token += 'x'  # break the token
         self.r.user.refresh()
-        self.r.user.refresh() # Need to waste some time
         current_token = self.r.access_token
         self.assertNotEqual(old_token, current_token)
 
-        self.r.config.oauth_auto_refresh = 100
         self.r.user.refresh()
         self.assertEqual(current_token, self.r.access_token)
 

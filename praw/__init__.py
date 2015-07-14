@@ -219,8 +219,6 @@ class Config(object):  # pylint: disable=R0903
         self.oauth_url = ('https://' if config_boolean(obj['oauth_https'])
                           else 'http://') + obj['oauth_domain']
         self.api_request_delay = float(obj['api_request_delay'])
-        # TODO: Remove this fallback of 3590 when PRAW4 is released.
-        self.oauth_auto_refresh = float(obj.get('oauth_auto_refresh', 3590))
         self.by_kind = {obj['comment_kind']:    objects.Comment,
                         obj['message_kind']:    objects.Message,
                         obj['redditor_kind']:   objects.Redditor,
@@ -382,10 +380,26 @@ class BaseReddit(object):
         :returns: either the response body or the response object
 
         """
-        if 'access_token' not in url:
-            # Only do this if the user isn't already on their
-            # way to perform a refresh.
-            self.auto_refresh_oauth()
+        def build_key_items():
+            request = _prepare_request(self, url, params, data, auth, files,
+                                       method)
+
+            # Prepare extra arguments
+            key_items = []
+            oauth = request.headers.get('Authorization', None)
+            for key_value in (params, data, request.cookies, auth, oauth):
+                if isinstance(key_value, dict):
+                    key_items.append(tuple(key_value.items()))
+                elif isinstance(key_value, http_cookiejar.CookieJar):
+                    key_items.append(tuple(key_value.get_dict().items()))
+                else:
+                    key_items.append(key_value)
+            kwargs = {'_rate_domain': self.config.domain,
+                      '_rate_delay': int(self.config.api_request_delay),
+                      '_cache_ignore': bool(files) or raw_response,
+                      '_cache_timeout': int(self.config.cache_timeout)}
+
+            return (request, key_items, kwargs)
 
         def decode(match):
             return CHR(html_entities.name2codepoint[match.group(1)])
@@ -410,26 +424,11 @@ class BaseReddit(object):
                 assert url != request.url
             return response
 
-        request = _prepare_request(self, url, params, data, auth, files,
-                                   method)
         timeout = self.config.timeout if timeout is None else timeout
-
-        # Prepare extra arguments
-        key_items = []
-        oauth = request.headers.get('Authorization', None)
-        for key_value in (params, data, request.cookies, auth, oauth):
-            if isinstance(key_value, dict):
-                key_items.append(tuple(key_value.items()))
-            elif isinstance(key_value, http_cookiejar.CookieJar):
-                key_items.append(tuple(key_value.get_dict().items()))
-            else:
-                key_items.append(key_value)
-        kwargs = {'_rate_domain': self.config.domain,
-                  '_rate_delay': int(self.config.api_request_delay),
-                  '_cache_ignore': bool(files) or raw_response,
-                  '_cache_timeout': int(self.config.cache_timeout)}
+        request, key_items, kwargs = build_key_items()
 
         remaining_attempts = 3 if retry_on_error else 1
+        remaining_refresh = True
         while True:
             try:
                 response = handle_redirect()
@@ -439,6 +438,15 @@ class BaseReddit(object):
                     return response
                 else:
                     return re.sub('&([^;]+);', decode, response.text)
+            except errors.OAuthInvalidToken as error:
+                if remaining_refresh is False or self.refresh_token is None:
+                    raise
+                remaining_refresh = False
+                tempauth = self._use_oauth
+                self._use_oauth = False
+                self.refresh_access_information()
+                self._use_oauth = tempauth
+                request, key_items, kwargs = build_key_items()
             except errors.HTTPException as error:
                 remaining_attempts -= 1
                 # pylint: disable=W0212
@@ -1211,22 +1219,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.user._mod_subs = None  # pylint: disable=W0212
         self.evict(self.config['my_mod_subreddits'])
         return self.request_json(self.config['accept_mod_invite'], data=data)
-
-    def auto_refresh_oauth(self):
-        """Refresh the access_token if we have not done so in a while.
-
-        The number of seconds between OAuth refreshes is specified in praw.ini
-
-        """
-        if self.refresh_token is None:
-            return
-
-        now = timer()
-        if now - self._last_oauth_refresh > self.config.oauth_auto_refresh:
-            tempauth = self._use_oauth
-            self._use_oauth = False
-            self.refresh_access_information()
-            self._use_oauth = tempauth
 
     def clear_authentication(self):
         """Clear any existing authentication on the reddit object.
