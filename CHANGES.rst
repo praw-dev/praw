@@ -35,6 +35,8 @@ Unreleased
  * **[FEATURE]** Added methods :meth:`leave_moderator` and
    :meth:`leave_contributor` to :class:`praw.__init__.AuthenticatedReddit`
    and :class:`praw.objects.Subreddit`.
+ * **[FEATURE]** Added support for double stickies. Use the parameter `num`
+   when setting or getting a sticky. 1 for top, 2 for bottom.
  * **[FEATURE]** Added methods :meth:`praw.objects.Message.collapse` and
    :meth:`praw.objects.Message.uncollapse`.
 

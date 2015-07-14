@@ -204,9 +204,24 @@ class SubmissionModeratorTest(PRAWTest):
 
     @betamax()
     def test_sticky_unsticky(self):
-        submission_id = self.submission_edit_id
-        submission = self.r.get_submission(submission_id=submission_id)
-        submission.sticky()
-        self.assertTrue(submission.refresh().stickied)
-        submission.unsticky()
-        self.assertFalse(submission.refresh().stickied)
+        subreddit = self.r.get_subreddit(self.sr)
+        submission_a = self.r.get_submission(
+            submission_id=self.submission_sticky_id)
+        submission_b = self.r.get_submission(
+            submission_id=self.submission_sticky_id2)
+
+        # Set the bottom one first on purpose, to make sure
+        # using num=1 sets B on top properly.
+        submission_a.sticky(num=2)
+        submission_b.sticky(num=1)
+
+        submission_sa = subreddit.get_sticky(2)
+        submission_sb = self.r.get_sticky(subreddit, 1)
+
+        self.assertEqual(submission_sa.id, submission_a.id)
+        self.assertEqual(submission_sb.id, submission_b.id)
+
+        submission_a.unsticky()
+        submission_b.unsticky()
+        self.assertFalse(submission_a.refresh().stickied)
+        self.assertFalse(submission_b.refresh().stickied)
