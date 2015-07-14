@@ -45,7 +45,6 @@ from requests import Request
 # pylint: disable=F0401
 from six.moves import html_entities, http_cookiejar
 from six.moves.urllib.parse import parse_qs, urlparse, urlunparse
-from timeit import default_timer as timer
 # pylint: enable=F0401
 from update_checker import update_check
 from warnings import warn_explicit
@@ -1183,7 +1182,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.access_token = None
         self.refresh_token = self.config.refresh_token or None
         self.user = None
-        self._last_oauth_refresh = 0
 
     def __str__(self):
         """Return a string representation of the AuthenticatedReddit."""
@@ -1463,7 +1461,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self._authentication = scope
         self.access_token = access_token
         self.refresh_token = refresh_token
-        self._last_oauth_refresh = timer()
         # Update the user object
         if update_user and 'identity' in scope:
             self.user = self.get_me()
