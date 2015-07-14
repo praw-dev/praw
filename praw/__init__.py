@@ -45,6 +45,7 @@ from requests import Request
 # pylint: disable=F0401
 from six.moves import html_entities, http_cookiejar
 from six.moves.urllib.parse import parse_qs, urlparse, urlunparse
+from timeit import default_timer as timer
 # pylint: enable=F0401
 from update_checker import update_check
 from warnings import warn_explicit
@@ -218,6 +219,8 @@ class Config(object):  # pylint: disable=R0903
         self.oauth_url = ('https://' if config_boolean(obj['oauth_https'])
                           else 'http://') + obj['oauth_domain']
         self.api_request_delay = float(obj['api_request_delay'])
+        # TODO: Remove this fallback of 3590 when PRAW4 is released.
+        self.oauth_auto_refresh = float(obj.get('oauth_auto_refresh', 3590))
         self.by_kind = {obj['comment_kind']:    objects.Comment,
                         obj['message_kind']:    objects.Message,
                         obj['redditor_kind']:   objects.Redditor,
@@ -379,6 +382,11 @@ class BaseReddit(object):
         :returns: either the response body or the response object
 
         """
+        if 'access_token' not in url:
+            # Only do this if the user isn't already on their
+            # way to perform a refresh.
+            self.auto_refresh_oauth()
+
         def decode(match):
             return CHR(html_entities.name2codepoint[match.group(1)])
 
@@ -1167,6 +1175,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.access_token = None
         self.refresh_token = self.config.refresh_token or None
         self.user = None
+        self._last_oauth_refresh = 0
 
     def __str__(self):
         """Return a string representation of the AuthenticatedReddit."""
@@ -1202,6 +1211,22 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.user._mod_subs = None  # pylint: disable=W0212
         self.evict(self.config['my_mod_subreddits'])
         return self.request_json(self.config['accept_mod_invite'], data=data)
+
+    def auto_refresh_oauth(self):
+        """Refresh the access_token if we have not done so in a while.
+
+        The number of seconds between OAuth refreshes is specified in praw.ini
+
+        """
+        if self.refresh_token is None:
+            return
+
+        now = timer()
+        if now - self._last_oauth_refresh > self.config.oauth_auto_refresh:
+            tempauth = self._use_oauth
+            self._use_oauth = False
+            self.refresh_access_information()
+            self._use_oauth = tempauth
 
     def clear_authentication(self):
         """Clear any existing authentication on the reddit object.
@@ -1446,6 +1471,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self._authentication = scope
         self.access_token = access_token
         self.refresh_token = refresh_token
+        self._last_oauth_refresh = timer()
         # Update the user object
         if update_user and 'identity' in scope:
             self.user = self.get_me()

@@ -37,6 +37,9 @@ Unreleased
    and :class:`praw.objects.Subreddit`.
  * **[FEATURE]** Added methods :meth:`praw.objects.Message.collapse` and
    :meth:`praw.objects.Message.uncollapse`.
+ * **[FEATURE]** If an OAuth2 refresh token is available, and it has been over
+   an hour since the access token was last refreshed, PRAW will perform a
+   refresh automatically the next time you make an API request.
 
 PRAW 3.1.0
 ----------
