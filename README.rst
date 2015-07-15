@@ -93,6 +93,10 @@ likely to get more, faster and more in-depth answers in `r/learnpython
 If you've uncovered a bug or have a feature request, then `make an issue on our
 project page at github <https://github.com/praw-dev/praw/issues>`_.
 
+Please note that this project is released with a `Contributor Code of Conduct
+<https://github.com/praw-dev/praw/blob/master/CODE_OF_CONDUCT.md>`_. By
+participating in this project you agree to abide by its terms.
+
 .. end_support
 
 Documentation
