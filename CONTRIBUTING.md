@@ -1,5 +1,12 @@
 # Guidelines for Contributing
 
+## Code of Conduct
+
+This project is released with a
+[Contributor Code of Conduct](https://github.com/praw-dev/praw/blob/master/CODE_OF_CONDUCT.md). By
+participating in this project you agree to abide by its terms.
+
+
 ## Issue Filing
 
 0. Please do not create issues for questions you have. The appropriate location
