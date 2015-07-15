@@ -379,7 +379,7 @@ class BaseReddit(object):
         :returns: either the response body or the response object
 
         """
-        def build_key_items():
+        def build_key_items(url, params, data, auth, files, method):
             request = _prepare_request(self, url, params, data, auth, files,
                                        method)
 
@@ -424,10 +424,11 @@ class BaseReddit(object):
             return response
 
         timeout = self.config.timeout if timeout is None else timeout
-        request, key_items, kwargs = build_key_items()
+        request, key_items, kwargs = build_key_items(url, params, data,
+                                                     auth, files, method)
 
         remaining_attempts = 3 if retry_on_error else 1
-        remaining_refresh = True
+        attempt_oauth_refresh = bool(self.refresh_token)
         while True:
             try:
                 response = handle_redirect()
@@ -438,14 +439,16 @@ class BaseReddit(object):
                 else:
                     return re.sub('&([^;]+);', decode, response.text)
             except errors.OAuthInvalidToken as error:
-                if remaining_refresh is False or self.refresh_token is None:
+                if not attempt_oauth_refresh:
                     raise
-                remaining_refresh = False
+                attempt_oauth_refresh = False
                 tempauth = self._use_oauth
                 self._use_oauth = False
                 self.refresh_access_information()
                 self._use_oauth = tempauth
-                request, key_items, kwargs = build_key_items()
+                request, key_items, kwargs = build_key_items(url, params,
+                                                             data, auth, files,
+                                                             method)
             except errors.HTTPException as error:
                 remaining_attempts -= 1
                 # pylint: disable=W0212
