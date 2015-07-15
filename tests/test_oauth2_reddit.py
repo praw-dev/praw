@@ -32,6 +32,19 @@ class OAuth2RedditTest(PRAWTest):
                     'state': '...'}
         self.assertEqual(expected, params)
 
+    # @betamax() is currently broken for this test
+    def test_auto_refresh_token(self):
+        self.r.refresh_access_information(self.refresh_token['identity'])
+        old_token = self.r.access_token
+
+        self.r.access_token += 'x'  # break the token
+        self.r.user.refresh()
+        current_token = self.r.access_token
+        self.assertNotEqual(old_token, current_token)
+
+        self.r.user.refresh()
+        self.assertEqual(current_token, self.r.access_token)
+
     @betamax()
     def test_get_access_information(self):
         # If this test fails, the following URL will need to be visted in order

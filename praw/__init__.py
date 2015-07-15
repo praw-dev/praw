@@ -379,6 +379,27 @@ class BaseReddit(object):
         :returns: either the response body or the response object
 
         """
+        def build_key_items(url, params, data, auth, files, method):
+            request = _prepare_request(self, url, params, data, auth, files,
+                                       method)
+
+            # Prepare extra arguments
+            key_items = []
+            oauth = request.headers.get('Authorization', None)
+            for key_value in (params, data, request.cookies, auth, oauth):
+                if isinstance(key_value, dict):
+                    key_items.append(tuple(key_value.items()))
+                elif isinstance(key_value, http_cookiejar.CookieJar):
+                    key_items.append(tuple(key_value.get_dict().items()))
+                else:
+                    key_items.append(key_value)
+            kwargs = {'_rate_domain': self.config.domain,
+                      '_rate_delay': int(self.config.api_request_delay),
+                      '_cache_ignore': bool(files) or raw_response,
+                      '_cache_timeout': int(self.config.cache_timeout)}
+
+            return (request, key_items, kwargs)
+
         def decode(match):
             return CHR(html_entities.name2codepoint[match.group(1)])
 
@@ -402,26 +423,12 @@ class BaseReddit(object):
                 assert url != request.url
             return response
 
-        request = _prepare_request(self, url, params, data, auth, files,
-                                   method)
         timeout = self.config.timeout if timeout is None else timeout
-
-        # Prepare extra arguments
-        key_items = []
-        oauth = request.headers.get('Authorization', None)
-        for key_value in (params, data, request.cookies, auth, oauth):
-            if isinstance(key_value, dict):
-                key_items.append(tuple(key_value.items()))
-            elif isinstance(key_value, http_cookiejar.CookieJar):
-                key_items.append(tuple(key_value.get_dict().items()))
-            else:
-                key_items.append(key_value)
-        kwargs = {'_rate_domain': self.config.domain,
-                  '_rate_delay': int(self.config.api_request_delay),
-                  '_cache_ignore': bool(files) or raw_response,
-                  '_cache_timeout': int(self.config.cache_timeout)}
+        request, key_items, kwargs = build_key_items(url, params, data,
+                                                     auth, files, method)
 
         remaining_attempts = 3 if retry_on_error else 1
+        attempt_oauth_refresh = bool(self.refresh_token)
         while True:
             try:
                 response = handle_redirect()
@@ -431,6 +438,17 @@ class BaseReddit(object):
                     return response
                 else:
                     return re.sub('&([^;]+);', decode, response.text)
+            except errors.OAuthInvalidToken as error:
+                if not attempt_oauth_refresh:
+                    raise
+                attempt_oauth_refresh = False
+                tempauth = self._use_oauth
+                self._use_oauth = False
+                self.refresh_access_information()
+                self._use_oauth = tempauth
+                request, key_items, kwargs = build_key_items(url, params,
+                                                             data, auth, files,
+                                                             method)
             except errors.HTTPException as error:
                 remaining_attempts -= 1
                 # pylint: disable=W0212
