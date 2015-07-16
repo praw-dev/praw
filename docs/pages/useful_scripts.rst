@@ -130,6 +130,9 @@ this page to add in more.
 `EVE Killmail Reddit Bot`_ by `ArnoldM904 <https://github.com/ArnoldM904>`_
     Searches for comments in /r/eve that contain zkillboard killmail links.
     Then replies to comments with web-scraped TL;DR of the information.
+    
+`ButtsBot`_ by `Judson Dunaway-Barlow <https://github.com/jadunawa>`_
+    A silly bot that posts a picture of a (clothed) butt from the Astros team whenever somebody in the /r/Astros subreddit       uses any of a few certain keywords in a comment.
 
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
@@ -141,6 +144,7 @@ this page to add in more.
 .. _`ALTcointip`: https://github.com/vindimy/altcointip
 .. _`AutoModerator`: https://github.com/Deimos/AutoModerator
 .. _`Butcher bot`: https://github.com/xiphirx/Butcher-Bot
+.. _`ButtsBot`: https://github.com/jadunawa/ButtsBot
 .. _`EVE Killmail Reddit Bot`: https://github.com/ArnoldM904/EK_Reddit_Bot
 .. _`Groompbot`: https://github.com/AndrewNeo/groompbot
 .. _`NetflixBot`: https://github.com/alanwright/netflixbot
