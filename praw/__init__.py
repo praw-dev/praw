@@ -972,14 +972,14 @@ class UnauthenticatedReddit(BaseReddit):
         return self.get_content(self.config['rising'], *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
-    def get_sticky(self, subreddit, num=1):
+    def get_sticky(self, subreddit, bottom=False):
         """Return a Submission object for the sticky of the subreddit.
 
-        :param num: Either 1 or 2 to get the top sticky or bottom sticky.
+        :param bottom: Get the top or bottom sticky.
 
         """
         url = self.config['sticky'] % six.text_type(subreddit)
-        param = {'num': 2} if num == 2 else None
+        param = {'num': 2} if bottom else None
         return objects.Submission.from_json(self.request_json(url,
                                                               params=param))
 

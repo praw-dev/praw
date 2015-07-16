@@ -212,11 +212,11 @@ class SubmissionModeratorTest(PRAWTest):
 
         # Set the bottom one first on purpose, to make sure
         # using num=1 sets B on top properly.
-        submission_a.sticky(num=2)
-        submission_b.sticky(num=1)
+        submission_a.sticky()  # default to True
+        submission_b.sticky(bottom=False)
 
-        submission_sa = subreddit.get_sticky(2)
-        submission_sb = self.r.get_sticky(subreddit, 1)
+        submission_sa = subreddit.get_sticky(True)
+        submission_sb = self.r.get_sticky(subreddit)  # default to False
 
         self.assertEqual(submission_sa.id, submission_a.id)
         self.assertEqual(submission_sb.id, submission_b.id)
