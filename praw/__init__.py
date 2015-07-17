@@ -2399,8 +2399,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
     def get_mentions(self, *args, **kwargs):
         """Return a get_content generator for username mentions.
 
-        This will only work for users with reddit gold.
-
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
@@ -2527,11 +2525,9 @@ class SubmitMixin(AuthenticatedReddit):
         :param resubmit: If True, submit the link even if it has already been
             submitted.
         :param save: If True the new Submission will be saved after creation.
-        :param send_replies: Gold Only Feature. If True, inbox replies will be
-            received when people comment on the submission. If set to None or
-            the currently authenticated user doesn't have gold, then the
-            default of True for text posts and False for link posts will be
-            used.
+        :param send_replies: If True, inbox replies will be received when
+            people comment on the submission. If set to None, the default of
+            True for text posts and False for link posts will be used.
 
         :returns: The newly created Submission object if the reddit instance
             can access it. Otherwise, return the url to the submission.
