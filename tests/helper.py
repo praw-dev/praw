@@ -78,6 +78,8 @@ class PRAWTest(unittest.TestCase):
             'modself':        '10640071-v2ZWipt20gPZvfBnvILkBUDq0P4'}
 
         self.submission_edit_id = '16i92b'
+        self.submission_sticky_id = '32eucy'
+        self.submission_sticky_id2 = '32exei'
 
     def delay_for_listing_update(self, duration=0.1):
         if not os.getenv('TRAVIS') and self.r.config.api_request_delay == 0:

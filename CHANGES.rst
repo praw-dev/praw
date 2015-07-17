@@ -35,6 +35,8 @@ Unreleased
  * **[FEATURE]** Added methods :meth:`leave_moderator` and
    :meth:`leave_contributor` to :class:`praw.__init__.AuthenticatedReddit`
    and :class:`praw.objects.Subreddit`.
+ * **[FEATURE]** Added support for double stickies. Use boolean parameter
+   `bottom` to choose which sticky to set or get.
  * **[FEATURE]** Added methods :meth:`praw.objects.Message.collapse` and
    :meth:`praw.objects.Message.uncollapse`.
  * **[FEATURE]** If an OAuth2 refresh token is available, and PRAW encounters
