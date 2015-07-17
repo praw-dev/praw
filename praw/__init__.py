@@ -2324,7 +2324,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         """
         return self.get_content(self.config['inbox'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='privatemessages')
     def get_message(self, message_id, *args, **kwargs):
         """Return a Message object corresponding to the given ID.
 
