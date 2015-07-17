@@ -975,7 +975,8 @@ class UnauthenticatedReddit(BaseReddit):
     def get_sticky(self, subreddit, bottom=False):
         """Return a Submission object for the sticky of the subreddit.
 
-        :param bottom: Get the top or bottom sticky.
+        :param bottom: Get the top or bottom sticky. If the subreddit has only
+            a single sticky, it is considered the top one.
 
         """
         url = self.config['sticky'] % six.text_type(subreddit)

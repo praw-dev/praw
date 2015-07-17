@@ -1307,7 +1307,9 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         If there is already a stickied post in the designated slot it will be
         unstickied.
 
-        :param num: The sticky slot number - 1 or 2
+        :param bottom: Set this as the top or bottom sticky. If no top sticky
+            exists, this submission will become the top sticky regardless.
+
         :returns: The json response from the server
 
         """

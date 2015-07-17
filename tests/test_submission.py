@@ -215,7 +215,7 @@ class SubmissionModeratorTest(PRAWTest):
         submission_a.sticky()  # default to True
         submission_b.sticky(bottom=False)
 
-        submission_sa = subreddit.get_sticky(True)
+        submission_sa = subreddit.get_sticky(bottom=True)
         submission_sb = self.r.get_sticky(subreddit)  # default to False
 
         self.assertEqual(submission_sa.id, submission_a.id)
