@@ -1122,14 +1122,16 @@ class UnauthenticatedReddit(BaseReddit):
         :param period: The time period of the results.
 
         The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` and `param` parameters cannot be
-        altered.
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         See https://www.reddit.com/wiki/search for more information on how to
         build a search query.
 
         """
         params = {'q': query}
+        if 'params' in kwargs:
+            params.update(kwargs['params'])
+            kwargs.pop('params')
         if sort:
             params['sort'] = sort
         if syntax:
