@@ -1,9 +1,10 @@
-"""Tests for Subreddit class."""
+"""Tests for Submission class."""
 
 from __future__ import print_function, unicode_literals
-from praw import errors
+from praw import Reddit, errors
+from praw.objects import Submission
 from six import text_type
-from .helper import PRAWTest, betamax
+from .helper import PRAWTest, USER_AGENT, betamax
 
 
 class SubmissionTest(PRAWTest):
@@ -225,3 +226,40 @@ class SubmissionModeratorTest(PRAWTest):
         submission_b.unsticky()
         self.assertFalse(submission_a.refresh().stickied)
         self.assertFalse(submission_b.refresh().stickied)
+
+
+class OAuthSubmissionTest(PRAWTest):
+    def betamax_init(self):
+        self.r.set_oauth_app_info(self.client_id,
+                                  self.client_secret,
+                                  self.redirect_uri)
+
+    def setUp(self):
+        self.configure()
+        self.r = Reddit(USER_AGENT, site_name='reddit_oauth_test',
+                        disable_update_check=True)
+
+    @betamax()
+    def test_edit_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['edit'])
+        submission = Submission.from_id(self.r, self.submission_edit_id)
+        self.assertEqual(submission, submission.edit('Edited text'))
+
+    @betamax()
+    def test_get_priv_submission_comments_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+        submission = Submission.from_id(self.r, self.priv_submission_id)
+        self.assertTrue(submission.comments)
+
+    @betamax()
+    def test_get_submission_by_url_oauth(self):
+        url = ("https://www.reddit.com/r/reddit_api_test_priv/comments/16kbb7/"
+               "google/")
+        self.r.refresh_access_information(self.refresh_token['read'])
+        submission = Submission.from_url(self.r, url)
+        self.assertTrue(submission.num_comments != 0)
+
+    @betamax()
+    def test_remove_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['modposts'])
+        Submission.from_id(self.r, self.submission_edit_id).remove()
