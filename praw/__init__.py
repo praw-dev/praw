@@ -427,13 +427,16 @@ class BaseReddit(object):
         request, key_items, kwargs = build_key_items(url, params, data,
                                                      auth, files, method)
 
+        tempauth = self._use_oauth
         remaining_attempts = 3 if retry_on_error else 1
         attempt_oauth_refresh = bool(self.refresh_token)
         while True:
             try:
+                self._use_oauth = self.is_oauth_session()
                 response = handle_redirect()
                 _raise_response_exceptions(response)
                 self.http.cookies.update(response.cookies)
+                self._use_oauth = tempauth
                 if raw_response:
                     return response
                 else:
@@ -442,7 +445,6 @@ class BaseReddit(object):
                 if not attempt_oauth_refresh:
                     raise
                 attempt_oauth_refresh = False
-                tempauth = self._use_oauth
                 self._use_oauth = False
                 self.refresh_access_information()
                 self._use_oauth = tempauth
@@ -522,7 +524,7 @@ class BaseReddit(object):
             Submission or user flair.
 
         """
-        _use_oauth = kwargs.get('_use_oauth', False)
+        _use_oauth = kwargs.get('_use_oauth', self.is_oauth_session())
 
         objects_found = 0
         params = params or {}
@@ -893,6 +895,7 @@ class UnauthenticatedReddit(BaseReddit):
         else:
             return None
 
+    @decorators.restrict_access(scope='read')
     def get_moderators(self, subreddit, **kwargs):
         """Return the list of moderators for the given subreddit."""
         return self.request_json(self.config['moderators'] %
@@ -1912,7 +1915,7 @@ class ModOnlyMixin(AuthenticatedReddit):
             if not isinstance(subreddit, objects.Subreddit):
                 subreddit = self.get_subreddit(subreddit)
             if subreddit.subreddit_type == "public":
-                decorator = decorators.restrict_access(scope=None, mod=True)
+                decorator = decorators.restrict_access(scope='read', mod=True)
                 return decorator(get_contributors_helper)(self, subreddit)
         return get_contributors_helper(self, subreddit)
 

@@ -32,7 +32,8 @@ class OAuth2RedditTest(PRAWTest):
                     'state': '...'}
         self.assertEqual(expected, params)
 
-    # @betamax() is currently broken for this test
+    # @betamax() is currently broken for this test because the cassettes
+    # are caching too aggressively and not performing a token refresh.
     def test_auto_refresh_token(self):
         self.r.refresh_access_information(self.refresh_token['identity'])
         old_token = self.r.access_token
@@ -86,12 +87,6 @@ class OAuth2RedditTest(PRAWTest):
         self.assertRaises(errors.OAuthScopeRequired, self.r.get_me)
 
     @betamax()
-    def test_scope_edit(self):
-        self.r.refresh_access_information(self.refresh_token['edit'])
-        submission = Submission.from_id(self.r, self.submission_edit_id)
-        self.assertEqual(submission, submission.edit('Edited text'))
-
-    @betamax()
     def test_scope_history(self):
         self.r.refresh_access_information(self.refresh_token['history'])
         self.assertTrue(list(self.r.get_redditor(self.un).get_upvoted()))
@@ -112,52 +107,6 @@ class OAuth2RedditTest(PRAWTest):
     def test_scope_modflair(self):
         self.r.refresh_access_information(self.refresh_token['modflair'])
         self.r.get_subreddit(self.sr).set_flair(self.un, 'foobar')
-
-    @betamax()
-    def test_scope_modlog(self):
-        num = 50
-        self.r.refresh_access_information(self.refresh_token['modlog'])
-        result = self.r.get_subreddit(self.sr).get_mod_log(limit=num)
-        self.assertEqual(num, len(list(result)))
-
-    @betamax()
-    def test_scope_modothers_modself(self):
-        subreddit = self.r.get_subreddit(self.sr)
-        self.r.refresh_access_information(self.refresh_token['modothers'])
-        subreddit.add_moderator(self.other_user_name)
-
-        # log in as other user
-        self.r.refresh_access_information(self.other_refresh_token['modself'])
-        self.r.accept_moderator_invite(self.sr)
-
-        # now return to original user.
-        self.r.refresh_access_information(self.refresh_token['modothers'])
-        subreddit.remove_moderator(self.other_user_name)
-
-    @betamax()
-    def test_scope_modposts(self):
-        self.r.refresh_access_information(self.refresh_token['modposts'])
-        Submission.from_id(self.r, self.submission_edit_id).remove()
-
-    @betamax()
-    def test_scope_modself(self):
-        subreddit = self.r.get_subreddit(self.sr)
-        self.r.refresh_access_information(self.refresh_token['modothers'])
-        subreddit.add_moderator(self.other_user_name)
-        self.r.refresh_access_information(
-            self.refresh_token['modcontributors'])
-        subreddit.add_contributor(self.other_user_name)
-
-        # log in as other user
-        self.r.refresh_access_information(self.other_refresh_token['modself'])
-        self.r.accept_moderator_invite(self.sr)
-
-        self.r.leave_moderator(subreddit)
-        subreddit.leave_contributor()
-
-        subreddit.refresh()
-        self.assertFalse(subreddit.user_is_moderator)
-        self.assertFalse(subreddit.user_is_contributor)
 
     @betamax()
     def test_scope_mysubreddits(self):
@@ -226,45 +175,15 @@ class OAuth2RedditTest(PRAWTest):
             self.assertTrue(post.subreddit in subscribed)
 
     @betamax()
-    def test_scope_read_get_sub_listingr(self):
-        self.r.refresh_access_information(self.refresh_token['read'])
-        subreddit = self.r.get_subreddit(self.priv_sr)
-        self.assertTrue(list(subreddit.get_top()))
-
-    @betamax()
-    def test_scope_read_get_submission_by_url(self):
-        url = ("https://www.reddit.com/r/reddit_api_test_priv/comments/16kbb7/"
-               "google/")
-        self.r.refresh_access_information(self.refresh_token['read'])
-        submission = Submission.from_url(self.r, url)
-        self.assertTrue(submission.num_comments != 0)
-
-    @betamax()
-    def test_scope_read_priv_sr_comments(self):
-        self.r.refresh_access_information(self.refresh_token['read'])
-        self.assertTrue(list(self.r.get_comments(self.priv_sr)))
-
-    @betamax()
     def test_scope_wikiread_wiki_page(self):
         self.r.refresh_access_information(self.refresh_token['wikiread'])
         self.assertTrue(self.r.get_wiki_page(self.sr, 'index'))
-
-    @betamax()
-    def test_scope_read_priv_sub_comments(self):
-        self.r.refresh_access_information(self.refresh_token['read'])
-        submission = Submission.from_id(self.r, self.priv_submission_id)
-        self.assertTrue(submission.comments)
 
     @betamax()
     def test_scope_submit(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
         result = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
         self.assertTrue(isinstance(result, Submission))
-
-    @betamax()
-    def test_scope_subscribe(self):
-        self.r.refresh_access_information(self.refresh_token['subscribe'])
-        self.r.get_subreddit(self.sr).subscribe()
 
     @betamax()
     def test_scope_vote(self):

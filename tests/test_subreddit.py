@@ -5,7 +5,7 @@ import warnings
 from praw import errors
 from praw.objects import Subreddit
 from six import text_type
-from .helper import PRAWTest, betamax
+from .helper import OAuthPRAWTest, PRAWTest, betamax
 
 
 class SubredditTest(PRAWTest):
@@ -266,3 +266,91 @@ class ModeratorSubredditTest(PRAWTest):
         self.add_remove(self.subreddit.add_wiki_contributor,
                         self.subreddit.remove_wiki_contributor,
                         self.subreddit.get_wiki_contributors)
+
+
+class OAuthSubredditTest(OAuthPRAWTest):
+    @betamax()
+    def test_add_remove_moderator_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['modothers'])
+        subreddit = self.r.get_subreddit(self.sr)
+        subreddit.add_moderator(self.other_user_name)
+
+        # log in as other user
+        self.r.refresh_access_information(self.other_refresh_token['modself'])
+        self.r.accept_moderator_invite(self.sr)
+
+        # now return to original user.
+        self.r.refresh_access_information(self.refresh_token['modothers'])
+        subreddit.remove_moderator(self.other_user_name)
+
+        self.assertFalse(self.other_user_name.lower() in [user.name.lower()
+                         for user in subreddit.get_moderators()])
+
+    @betamax()
+    def test_get_moderators_contributors_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+
+        subreddit = self.r.get_subreddit(self.sr)
+        self.assertTrue(list(subreddit.get_moderators()))
+        self.assertTrue(list(subreddit.get_contributors()))
+
+        subreddit = self.r.get_subreddit('redditdev')
+        self.assertTrue(list(subreddit.get_moderators()))
+        self.assertRaises(errors.Forbidden, list, subreddit.get_contributors())
+
+    @betamax()
+    def test_get_modlog_oauth(self):
+        num = 50
+        self.r.refresh_access_information(self.refresh_token['modlog'])
+        result = self.r.get_subreddit(self.sr).get_mod_log(limit=num)
+        self.assertEqual(num, len(list(result)))
+
+    @betamax()
+    def test_get_priv_sr_comments_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+        self.assertTrue(list(self.r.get_comments(self.priv_sr)))
+
+    @betamax()
+    def test_get_priv_sr_listing_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+        subreddit = self.r.get_subreddit(self.priv_sr)
+        self.assertTrue(list(subreddit.get_top()))
+
+    @betamax()
+    def test_join_leave_moderator_oauth(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        self.r.refresh_access_information(self.refresh_token['modothers'])
+        subreddit.add_moderator(self.other_user_name)
+        self.r.refresh_access_information(
+            self.refresh_token['modcontributors'])
+        subreddit.add_contributor(self.other_user_name)
+
+        # log in as other user
+        self.r.refresh_access_information(self.other_refresh_token['modself'])
+        self.r.accept_moderator_invite(self.sr)
+
+        self.r.leave_moderator(subreddit)
+        subreddit.leave_contributor()
+
+        subreddit.refresh()
+        self.assertFalse(subreddit.user_is_moderator)
+        self.assertFalse(subreddit.user_is_contributor)
+
+    @betamax()
+    def test_subscribe_oauth(self):
+        subreddit = self.r.get_subreddit(self.sr)
+
+        # Subreddit.user_is_subscriber returns NoneType without `read`.
+        # Refreshing back and forth is inconvenient, but less hackish
+        # than storing / reassigning access tokens manually, so it's okay.
+        self.r.refresh_access_information(self.refresh_token['subscribe'])
+        subreddit.subscribe()
+        self.r.refresh_access_information(self.refresh_token['read'])
+        subreddit.refresh()
+        self.assertTrue(subreddit.user_is_subscriber)
+
+        self.r.refresh_access_information(self.refresh_token['subscribe'])
+        subreddit.unsubscribe()
+        self.r.refresh_access_information(self.refresh_token['read'])
+        subreddit.refresh()
+        self.assertFalse(subreddit.user_is_subscriber)
