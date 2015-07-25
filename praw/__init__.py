@@ -1766,12 +1766,12 @@ class ModFlairMixin(AuthenticatedReddit):
     @decorators.restrict_access(scope='modflair')
     def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
         """Set flair for the user in the given subreddit.
-
-        Item can be a string, Redditor object, or Submission object. If item is
+        
+        `item` can be a string, Redditor object, or Submission object. If `item` is
         a string it will be treated as the name of a Redditor.
 
-        This method can only be called by the subreddit moderator. To set flair
-        on yourself or your own links use
+        This method can only be called by a subreddit moderator with flair
+        permissions. To set flair on yourself or your own links use
         :meth:`~praw.__init__.AuthenticatedReddit.select_flair`.
 
         :returns: The json response from the server.
@@ -1795,9 +1795,9 @@ class ModFlairMixin(AuthenticatedReddit):
         """Set flair for a group of users in the given subreddit.
 
         flair_mapping should be a list of dictionaries with the following keys:
-          user: the user name
-          flair_text: the flair text for the user (optional)
-          flair_css_class: the flair css class for the user (optional)
+          `user`: the user name,
+          `flair_text`: the flair text for the user (optional),
+          `flair_css_class`: the flair css class for the user (optional)
 
         :returns: The json response from the server.
 
