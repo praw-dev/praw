@@ -1,10 +1,10 @@
 """Tests for Submission class."""
 
 from __future__ import print_function, unicode_literals
-from praw import Reddit, errors
+from praw import errors
 from praw.objects import Submission
 from six import text_type
-from .helper import PRAWTest, USER_AGENT, betamax
+from .helper import OAuthPRAWTest, PRAWTest, betamax
 
 
 class SubmissionTest(PRAWTest):
@@ -228,17 +228,7 @@ class SubmissionModeratorTest(PRAWTest):
         self.assertFalse(submission_b.refresh().stickied)
 
 
-class OAuthSubmissionTest(PRAWTest):
-    def betamax_init(self):
-        self.r.set_oauth_app_info(self.client_id,
-                                  self.client_secret,
-                                  self.redirect_uri)
-
-    def setUp(self):
-        self.configure()
-        self.r = Reddit(USER_AGENT, site_name='reddit_oauth_test',
-                        disable_update_check=True)
-
+class OAuthSubmissionTest(OAuthPRAWTest):
     @betamax()
     def test_edit_oauth(self):
         self.r.refresh_access_information(self.refresh_token['edit'])
