@@ -1766,7 +1766,7 @@ class ModFlairMixin(AuthenticatedReddit):
     @decorators.restrict_access(scope='modflair')
     def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
         """Set flair for the user in the given subreddit.
-        
+
         `item` can be a string, Redditor object, or Submission object.
         If `item` is a string it will be treated as the name of a Redditor.
 
