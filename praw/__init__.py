@@ -1767,8 +1767,8 @@ class ModFlairMixin(AuthenticatedReddit):
     def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
         """Set flair for the user in the given subreddit.
         
-        `item` can be a string, Redditor object, or Submission object. If `item` is
-        a string it will be treated as the name of a Redditor.
+        `item` can be a string, Redditor object, or Submission object.
+        If `item` is a string it will be treated as the name of a Redditor.
 
         This method can only be called by a subreddit moderator with flair
         permissions. To set flair on yourself or your own links use
