@@ -46,6 +46,10 @@ class PRAWTest(unittest.TestCase):
         self.other_user_pswd = '1111'
         self.other_non_mod_pswd = '1111'
 
+        self.client_id = 'stJlUSUbPQe5lQ'
+        self.client_secret = 'iU-LsOzyJH7BDVoq-qOWNEq2zuI'
+        self.redirect_uri = 'https://127.0.0.1:65010/authorize_callback'
+
         self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
         self.link_id = 't3_dtg4j'
         self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
@@ -69,13 +73,14 @@ class PRAWTest(unittest.TestCase):
             'mysubreddits':     'O7tfWhqem6fQZqxhoTiLca1s7VA',
             'privatemessages':  'kr_pHPO3sqTn_m5f_FX9TW4joEU',
             'read':             '_mmtb8YjDym0eC26G-rTxXUMea0',
-            'wikiread':         '7302867-PMZfquNPUVYHcrbJkTYpFe9UdAY',
             'submit':           'k69WTwa2bEQOQY9t61nItd4twhw',
             'subscribe':        'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
-            'vote':             '5RPnDwg56vAbf7F9yO81cXZAPSQ'}
+            'vote':             '5RPnDwg56vAbf7F9yO81cXZAPSQ',
+            'wikiread':         '7302867-PMZfquNPUVYHcrbJkTYpFe9UdAY'}
 
         self.other_refresh_token = {
-            'modself':        '10640071-v2ZWipt20gPZvfBnvILkBUDq0P4'}
+            'read':             '10640071-wxnYQyK9knNV1PCt9a7CxvJH8TI',
+            'modself':          '10640071-v2ZWipt20gPZvfBnvILkBUDq0P4'}
 
         self.submission_edit_id = '16i92b'
         self.submission_sticky_id = '32eucy'
@@ -99,6 +104,18 @@ class PRAWTest(unittest.TestCase):
 
     def url(self, path):
         return urljoin(self.r.config.permalink_url, path)
+
+
+class OAuthPRAWTest(PRAWTest):
+    def betamax_init(self):
+        self.r.set_oauth_app_info(self.client_id,
+                                  self.client_secret,
+                                  self.redirect_uri)
+
+    def setUp(self):
+        self.configure()
+        self.r = Reddit(USER_AGENT, site_name='reddit_oauth_test',
+                        disable_update_check=True)
 
 
 Betamax.register_request_matcher(BodyMatcher)
