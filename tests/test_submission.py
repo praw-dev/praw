@@ -250,6 +250,26 @@ class OAuthSubmissionTest(OAuthPRAWTest):
         self.assertTrue(submission.num_comments != 0)
 
     @betamax()
+    def test_raise_invalidsubmission_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        submission = self.r.get_submission(
+            submission_id=self.submission_deleted_id)
+        self.assertRaises(errors.InvalidSubmission, submission.add_comment,
+                          'test')
+
+    @betamax()
     def test_remove_oauth(self):
         self.r.refresh_access_information(self.refresh_token['modposts'])
         Submission.from_id(self.r, self.submission_edit_id).remove()
+
+    @betamax()
+    def test_submit_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        result = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
+        self.assertTrue(isinstance(result, Submission))
+
+    @betamax()
+    def test_vote_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['vote'])
+        submission = Submission.from_id(self.r, self.submission_edit_id)
+        submission.clear_vote()

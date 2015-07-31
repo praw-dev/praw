@@ -337,6 +337,29 @@ class OAuthSubredditTest(OAuthPRAWTest):
         self.assertFalse(subreddit.user_is_contributor)
 
     @betamax()
+    def test_raise_invalidsubreddit_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        self.assertRaises(errors.InvalidSubreddit, self.r.submit, '?', 'title',
+                          'body')
+
+    @betamax()
+    def test_set_stylesheet_oauth(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        self.r.refresh_access_information(self.refresh_token['modconfig'])
+        subreddit.set_stylesheet('*{}')
+        self.assertEqual(subreddit.get_stylesheet()['stylesheet'], '*{}')
+        subreddit.set_stylesheet('')
+
+    @betamax()
+    def test_set_settings_oauth(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        self.r.refresh_access_information(self.refresh_token['modconfig'])
+        new_title = subreddit.title + 'x' if len(subreddit.title) < 99 else 'x'
+        subreddit.set_settings(title=new_title)
+        subreddit.refresh()
+        self.assertEqual(subreddit.title, new_title)
+
+    @betamax()
     def test_subscribe_oauth(self):
         subreddit = self.r.get_subreddit(self.sr)
 

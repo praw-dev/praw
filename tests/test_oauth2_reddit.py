@@ -97,40 +97,9 @@ class OAuth2RedditTest(PRAWTest):
         self.assertEqual(self.un, self.r.get_me().name)
 
     @betamax()
-    def test_scope_modconfig(self):
-        self.r.refresh_access_information(self.refresh_token['modconfig'])
-        self.r.get_subreddit(self.sr).set_settings('foobar')
-        retval = self.r.get_subreddit(self.sr).get_stylesheet()
-        self.assertTrue('images' in retval)
-
-    @betamax()
-    def test_scope_modflair(self):
-        self.r.refresh_access_information(self.refresh_token['modflair'])
-        self.r.get_subreddit(self.sr).set_flair(self.un, 'foobar')
-
-    @betamax()
     def test_scope_mysubreddits(self):
         self.r.refresh_access_information(self.refresh_token['mysubreddits'])
         self.assertTrue(list(self.r.get_my_moderation()))
-
-    @betamax()
-    def test_scope_modwiki(self):
-        self.r.refresh_access_information(self.refresh_token['modwiki'])
-        subreddit = self.r.get_subreddit(self.sr)
-        page = subreddit.get_wiki_page('index')
-        page.add_editor(self.other_user_name)
-        page.remove_editor(self.other_user_name)
-
-    @betamax()
-    def test_scope_modwiki_modcontributors(self):
-        self.r.refresh_access_information(self.refresh_token['modwiki+contr'])
-        subreddit = self.r.get_subreddit(self.sr)
-
-        subreddit.add_wiki_ban(self.other_user_name)
-        subreddit.remove_wiki_ban(self.other_user_name)
-
-        subreddit.add_wiki_contributor(self.other_user_name)
-        subreddit.remove_wiki_contributor(self.other_user_name)
 
     @betamax()
     def test_scope_creddits(self):
@@ -173,23 +142,6 @@ class OAuth2RedditTest(PRAWTest):
         self.r.refresh_access_information(self.refresh_token['read'])
         for post in self.r.get_front_page():
             self.assertTrue(post.subreddit in subscribed)
-
-    @betamax()
-    def test_scope_wikiread_wiki_page(self):
-        self.r.refresh_access_information(self.refresh_token['wikiread'])
-        self.assertTrue(self.r.get_wiki_page(self.sr, 'index'))
-
-    @betamax()
-    def test_scope_submit(self):
-        self.r.refresh_access_information(self.refresh_token['submit'])
-        result = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
-        self.assertTrue(isinstance(result, Submission))
-
-    @betamax()
-    def test_scope_vote(self):
-        self.r.refresh_access_information(self.refresh_token['vote'])
-        submission = Submission.from_id(self.r, self.submission_edit_id)
-        submission.clear_vote()
 
     @betamax()
     def test_set_access_credentials(self):
