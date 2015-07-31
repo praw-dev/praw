@@ -130,11 +130,18 @@ class RedditContentObject(object):
 
         # OAuth handling needs to be special cased here. For instance, the user
         # might be calling a method on a Subreddit object that requires first
-        # loading the information about the subreddit. Unless the `read` scope
-        # is set, then this function should try to obtain the information in a
-        # scope-less manner.
+        # loading the information about the subreddit. This method should try
+        # to obtain the information in a scope-less manner unless either:
+        # a) The object is a WikiPage and the reddit_session has the `wikiread`
+        #    scope.
+        # b) The object is not a WikiPage and the reddit_session has the
+        #    `read` scope.
         prev_use_oauth = self.reddit_session._use_oauth
-        self.reddit_session._use_oauth = self.reddit_session.has_scope('read')
+        self.reddit_session._use_oauth = (
+            isinstance(self, WikiPage) and
+            self.reddit_session.has_scope('wikiread')) or \
+            (not isinstance(self, WikiPage) and
+                self.reddit_session.has_scope('read'))
         try:
             params = {'uniq': self._uniq} if self._uniq else {}
             response = self.reddit_session.request_json(
