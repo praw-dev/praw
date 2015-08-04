@@ -82,6 +82,9 @@ class PRAWTest(unittest.TestCase):
             'read':             '10640071-wxnYQyK9knNV1PCt9a7CxvJH8TI',
             'modself':          '10640071-v2ZWipt20gPZvfBnvILkBUDq0P4'}
 
+        self.comment_deleted_id = 'ctkznxq'
+        self.submission_deleted_id = '3f8q10'
+
         self.submission_edit_id = '16i92b'
         self.submission_sticky_id = '32eucy'
         self.submission_sticky_id2 = '32exei'

@@ -2,7 +2,7 @@
 
 from __future__ import print_function, unicode_literals
 from six import text_type
-from .helper import PRAWTest, betamax
+from .helper import OAuthPRAWTest, PRAWTest, betamax
 
 
 class WikiPageTests(PRAWTest):
@@ -79,3 +79,65 @@ class WikiPageTests(PRAWTest):
         self.r._unique_count = 1
         page.refresh()
         self.assertEqual(content, page.content_md)
+
+
+class OAuthWikiPageTest(OAuthPRAWTest):
+    @betamax()
+    def test_add_remove_wiki_ban_contributor_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['modwiki+contr'])
+        subreddit = self.r.get_subreddit(self.sr)
+        other_user = self.r.get_redditor(self.other_user_name)
+
+        def scope_switch(method, u=0):
+            # the wiki bans and contributors pages require the read scope
+            self.r.refresh_access_information(self.refresh_token['read'])
+            retval = list(method(params={'u': u}))
+            self.r.refresh_access_information(
+                self.refresh_token['modwiki+contr'])
+            return retval
+
+        subreddit.add_wiki_ban(other_user)
+        self.assertTrue(other_user in scope_switch(
+            subreddit.get_wiki_banned))
+        subreddit.remove_wiki_ban(other_user)
+        self.assertFalse(other_user in scope_switch(
+            subreddit.get_wiki_banned, 1))
+
+        subreddit.add_wiki_contributor(other_user)
+        self.assertTrue(other_user in scope_switch(
+            subreddit.get_wiki_contributors))
+        subreddit.remove_wiki_contributor(other_user)
+        self.assertFalse(other_user in scope_switch(
+            subreddit.get_wiki_contributors, 1))
+
+    @betamax()
+    def test_add_remove_wiki_editor_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['modwiki'])
+        subreddit = self.r.get_subreddit(self.sr)
+        page = subreddit.get_wiki_page('index')
+        other_user = self.r.get_redditor(self.other_user_name)
+
+        page.add_editor(other_user)
+        self.assertTrue(other_user in page.get_settings()['editors'])
+
+        page.remove_editor(other_user)
+        self.assertFalse(other_user in page.get_settings(
+            params={'u': 1})['editors'])
+
+    @betamax()
+    def test_read_wikipage_oauth(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        self.r.refresh_access_information(self.refresh_token['modconfig'])
+        subreddit.set_settings(subreddit.title, wikimode='modonly')
+
+        self.r.refresh_access_information(self.refresh_token['wikiread'])
+        page = subreddit.get_wiki_page('index')
+        self.assertTrue(page.content_md)
+
+        # Let's make sure we have access even when the wiki is disabled
+        self.r.refresh_access_information(self.refresh_token['modconfig'])
+        subreddit.set_settings(subreddit.title, wikimode='disabled')
+
+        self.r.refresh_access_information(self.refresh_token['wikiread'])
+        page = page.refresh()
+        self.assertTrue(page.content_md)
