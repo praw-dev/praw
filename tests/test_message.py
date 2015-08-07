@@ -135,5 +135,6 @@ class OAuthMessageTest(OAuthPRAWTest):
         message = next(self.r.get_sent(limit=1))
 
         reply = message.reply('body2')
-        self.assertIsInstance(reply, Message)
+        # Must use assertTrue because Python 2.6 doesn't have assertIsInstance
+        self.assertTrue(isinstance(reply, Message))
         self.assertEqual(reply.parent_id, message.fullname)
