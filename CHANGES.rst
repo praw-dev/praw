@@ -43,6 +43,9 @@ Unreleased
  * **[FEATURE]** If an OAuth2 refresh token is available, and PRAW encounters
    an "Invalid Token" error, it will attempt to refresh the token for you
    automatically.
+ * **[REDDIT]** Fixed case where the user could not reply to private messages
+   with the `privatemessages` scope because the endpoint required the `submit`
+   scope. reddit has fixed this quirk, and PRAW now chooses the proper scope.
 
 PRAW 3.1.0
 ----------
