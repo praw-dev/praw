@@ -1925,7 +1925,7 @@ class ModOnlyMixin(AuthenticatedReddit):
         """Return a get_content generator of edited items.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
+            subreddit to return the edited items for. Defaults to `mod` which
             includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
@@ -1955,7 +1955,7 @@ class ModOnlyMixin(AuthenticatedReddit):
         """Return a get_content generator for the moderator queue.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
+            subreddit to return the modqueue for. Defaults to `mod` which
             includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
@@ -1967,10 +1967,10 @@ class ModOnlyMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_reports(self, subreddit='mod', *args, **kwargs):
-        """Return a get_content generator of reported submissions.
+        """Return a get_content generator of reported items.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
+            subreddit to return the reported items. Defaults to `mod` which
             includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
@@ -1985,7 +1985,7 @@ class ModOnlyMixin(AuthenticatedReddit):
         """Return a get_content generator of spam-filtered items.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
+            subreddit to return the spam-filtered items for. Defaults to `mod` which
             includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
@@ -2004,10 +2004,10 @@ class ModOnlyMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_unmoderated(self, subreddit='mod', *args, **kwargs):
-        """Return a get_content generator of unmoderated items.
+        """Return a get_content generator of unmoderated submissions.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
+            subreddit to return the unmoderated submissions for. Defaults to `mod` which
             includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
