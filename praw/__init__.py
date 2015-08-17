@@ -1922,7 +1922,7 @@ class ModOnlyMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_edited(self, subreddit='mod', *args, **kwargs):
-        """Return a get_content generator for the moderator queue.
+        """Return a get_content generator of edited items.
 
         :param subreddit: Either a Subreddit object or the name of the
             subreddit to return the flair list for. Defaults to `mod` which
