@@ -1842,7 +1842,7 @@ class ModLogMixin(AuthenticatedReddit):
         """Return a get_content generator for moderation log items.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for.
+            subreddit to return the modlog for.
         :param mod: If given, only return the actions made by this moderator.
             Both a moderator name or Redditor object can be used here.
         :param action: If given, only return entries for the specified action.
