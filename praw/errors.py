@@ -36,24 +36,33 @@ class PRAWException(Exception):
 
     """
 
-
-class ClientException(PRAWException):
-
-    """Base exception class for errors that don't involve the remote API."""
-
-    def __init__(self, message):
-        """Construct a ClientException.
+    def __init__(self, message=None):
+        """Construct a PRAWException.
 
         :params message: The error message to display.
 
         """
-        super(ClientException, self).__init__()
+        if not message:
+            message = 'Ambiguous Error'
         self.message = message
 
     def __str__(self):
         """Return the message of the error."""
         return self.message
 
+class ClientException(PRAWException):
+
+    """Base exception class for errors that don't involve the remote API."""
+
+    def __init__(self, message=None):
+        """Construct a ClientException.
+
+        :params message: The error message to display.
+
+        """
+        if not message:
+            message = 'Unrelated to remote API'
+        super(ClientException, self).__init__(message)
 
 class OAuthScopeRequired(ClientException):
 
@@ -68,7 +77,6 @@ class OAuthScopeRequired(ClientException):
 
         :param function: The function that requires a scope.
         :param scope: The scope required for the function.
-
         :param message: A custom message to associate with the
             exception. Default: `function` requires the OAuth2 scope `scope`
 
@@ -130,14 +138,17 @@ class ModeratorRequired(LoginRequired):
 
     """Indicates that a moderator of the subreddit is required."""
 
-    def __init__(self, function):
+    def __init__(self, function, message=None):
         """Construct a ModeratorRequired exception.
 
         :param function: The function that requires moderator access.
+        :param message: A custom message to associate with the exception.
 
         """
-        msg = '`{0}` requires a moderator of the subreddit'.format(function)
-        super(ModeratorRequired, self).__init__(msg)
+        if not message:
+            message = ('`{0}` requires a moderator of the '
+                      'subreddit').format(function)
+        super(ModeratorRequired, self).__init__(message)
 
 
 class ModeratorOrScopeRequired(LoginOrScopeRequired, ModeratorRequired):
@@ -148,16 +159,18 @@ class ModeratorOrScopeRequired(LoginOrScopeRequired, ModeratorRequired):
 
     """
 
-    def __init__(self, function, scope):
+    def __init__(self, function, scope, message=None):
         """Construct a ModeratorOrScopeRequired exception.
 
         :param function: The function that requires moderator authentication or
             a moderator scope..
         :param scope: The scope that is required if not logged in with
             moderator access..
+        :param message: A custom message to associate with the exception.
 
         """
-        message = ('`{0}` requires a moderator of the subreddit or the '
+        if not message:
+            message = ('`{0}` requires a moderator of the subreddit or the '
                    'OAuth2 scope `{1}`').format(function, scope)
         super(ModeratorOrScopeRequired, self).__init__(function, scope,
                                                        message)
@@ -171,31 +184,61 @@ class OAuthAppRequired(ClientException):
 
     """
 
+    def __init__(self, message=None):
+        """Construct a ModeratorOrScopeRequired exception.
+
+        :param message: A custom message to associate with the exception.
+
+        """
+        if not message:
+            message =  'OAuth client cannot be initialized'
+        super(OAuthAppRequired, self).__init__(message)
+        
 
 class HTTPException(PRAWException):
 
     """Base class for HTTP related exceptions."""
 
-    def __init__(self, _raw):
-        """Construct a ClientException.
+    def __init__(self, _raw, message=None):
+        """Construct a HTTPException.
 
-        :params _raw: The internal request library response object. This object
+        :param _raw: The internal request library response object. This object
             is mapped to attribute `_raw` whose format may change at any time.
+        :param message: A custom message to associate with the exception.
 
         """
-        super(HTTPException, self).__init__()
+        if not message:
+            message = 'HTTP Exception'
+        super(HTTPException, self).__init__(message)
         self._raw = _raw
-
 
 class Forbidden(HTTPException):
 
     """Raised when the user does not have permission to the entity."""
 
+    def __init__(self, message=None):
+        """Construct a Forbidden HTTPException.
+
+        :param message: A custom message to associate with the exception.
+
+        """
+        if not message:
+            message = 'Permission Denied'
+        super(Forbidden, self).__init__(message)
 
 class NotFound(HTTPException):
 
     """Raised when the requested entity is not found."""
 
+    def __init__(self, message=None):
+        """Construct a NotFound HTTPException.
+
+        :param message: A custom message to associate with the exception.
+
+        """
+        if not message:
+            message = 'The requested entity was not found'
+        super(NotFound, self).__init__(message)
 
 class InvalidComment(PRAWException):
 
@@ -203,6 +246,15 @@ class InvalidComment(PRAWException):
 
     ERROR_TYPE = 'DELETED_COMMENT'
 
+    def __init__(self, message=None):
+        """Construct a Invalid Comment.
+
+        :param message: A custom message to associate with the exception.
+
+        """
+        if not message:
+            message = 'The requested comment is no longer available'
+        super(InvalidComment, self).__init__(message)
 
 class InvalidSubmission(PRAWException):
 
@@ -210,6 +262,15 @@ class InvalidSubmission(PRAWException):
 
     ERROR_TYPE = 'DELETED_LINK'
 
+    def __init__(self, message=None):
+        """Construct a InvalidSubmission.
+
+        :param message: A custom message to associate with the exception.
+
+        """
+        if not message:
+            message = 'The requested submission is no longer available'
+        super(InvalidSubmission, self).__init__(message)
 
 class InvalidSubreddit(PRAWException):
 
@@ -217,21 +278,34 @@ class InvalidSubreddit(PRAWException):
 
     ERROR_TYPE = 'SUBREDDIT_NOEXIST'
 
+    def __init__(self, message=None):
+        """Construct a InvalidSubreddit.
+
+        :param message: A custom message to associate with the exception.
+
+        """
+        if not message:
+            message = 'The requested subreddit is invalid'
+        super(InvalidSubreddit, self).__init__(message)
+
 
 class RedirectException(PRAWException):
 
     """Raised when a redirect response occurs that is not expected."""
 
-    def __init__(self, request_url, response_url):
+    def __init__(self, request_url, response_url, message=None):
         """Construct a RedirectException.
 
         :param request_url: The url requested.
         :param response_url: The url being redirected to.
+        :param message: A custom message to associate with the exception.
 
         """
+        if not message:
+            message = 'Redirect was not expected'
         super(RedirectException, self).__init__(
             'Unexpected redirect from {0} to {1}'
-            .format(request_url, response_url))
+            .format(request_url, response_url), message)
         self.request_url = request_url
         self.response_url = response_url
 
@@ -245,21 +319,18 @@ class OAuthException(PRAWException):
 
     """
 
-    def __init__(self, message, url):
+    def __init__(self, message=None, url):
         """Construct a OAuthException.
 
         :param message: The message associated with the exception.
         :param url: The url that resulted in error.
 
         """
-        super(OAuthException, self).__init__()
-        self.message = message
+        if not message:
+            message = 'Error'
+        message = message + " on url {0}".format(url)
+        super(OAuthException, self).__init__(message)
         self.url = url
-
-    def __str__(self):
-        """Return the message along with the url."""
-        return self.message + " on url {0}".format(self.url)
-
 
 class OAuthInsufficientScope(OAuthException):
 
