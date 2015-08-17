@@ -3,9 +3,9 @@
 from __future__ import print_function, unicode_literals
 import pickle
 import mock
-from praw import helpers
+from praw import errors, helpers
 from praw.objects import Comment, MoreComments
-from .helper import PRAWTest, betamax
+from .helper import OAuthPRAWTest, PRAWTest, betamax
 
 
 class CommentTest(PRAWTest):
@@ -152,3 +152,13 @@ class MoreCommentsTest(PRAWTest):
         item = self.first(self.submission.comments,
                           lambda item: isinstance(item, MoreComments))
         self.assertTrue(item.comments())
+
+
+class OAuthCommentTest(OAuthPRAWTest):
+    @betamax()
+    def test_raise_invalidcomment_oauth(self):
+        fullname = '{0}_{1}'.format(self.r.config.by_object[Comment],
+                                    self.comment_deleted_id)
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        comment = self.r.get_info(thing_id=fullname)
+        self.assertRaises(errors.InvalidComment, comment.reply, 'test')

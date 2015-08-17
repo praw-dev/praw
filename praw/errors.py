@@ -201,10 +201,21 @@ class InvalidComment(PRAWException):
 
     """Indicate that the comment is no longer available on reddit."""
 
+    ERROR_TYPE = 'DELETED_COMMENT'
+
+
+class InvalidSubmission(PRAWException):
+
+    """Indicates that the submission is no longer available on reddit."""
+
+    ERROR_TYPE = 'DELETED_LINK'
+
 
 class InvalidSubreddit(PRAWException):
 
     """Indicates that an invalid subreddit name was supplied."""
+
+    ERROR_TYPE = 'SUBREDDIT_NOEXIST'
 
 
 class RedirectException(PRAWException):

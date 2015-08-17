@@ -50,7 +50,7 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '3.1.0'
+__version__ = '3.2.0'
 
 if os.environ.get('SERVER_SOFTWARE') is not None:
     # Google App Engine information
@@ -2504,17 +2504,24 @@ class SubmitMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope='submit')
     def _add_comment(self, thing_id, text):
         """Comment on the given thing with the given text.
 
         :returns: A Comment object for the newly created comment.
 
         """
-        data = {'thing_id': thing_id,
-                'text': text}
-        retval = self.request_json(self.config['comment'], data=data,
-                                   retry_on_error=False)
+        def add_comment_helper(self, thing_id, text):
+            data = {'thing_id': thing_id,
+                    'text': text}
+            retval = self.request_json(self.config['comment'], data=data,
+                                       retry_on_error=False)
+            return retval
+
+        if thing_id.startswith(self.config.by_object[objects.Message]):
+            decorator = decorators.restrict_access(scope='privatemessages')
+        else:
+            decorator = decorators.restrict_access(scope='submit')
+        retval = decorator(add_comment_helper)(self, thing_id, text)
         # REDDIT: reddit's end should only ever return a single comment
         return retval['data']['things'][0]
 

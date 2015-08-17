@@ -22,11 +22,12 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-Unreleased
+PRAW 3.2.0
 ----------
  * **[BUGFIX]** Fixed methods which require more than one OAuth scope.
  * **[BUGFIX]** Fixed :meth:`praw.objects.WikiPage.remove_editor` raising
    AssertionError when used through OAuth.
+ * **[BUGFIX]** Fixed :meth:`get_wiki_page` not sending the OAuth headers.
  * **[CHANGE]** :meth:`praw.objects.Refreshable.refresh` will now always return
    a fresh object. Previously, Subreddits and Redditors would use cache content
    when available.
@@ -42,6 +43,9 @@ Unreleased
  * **[FEATURE]** If an OAuth2 refresh token is available, and PRAW encounters
    an "Invalid Token" error, it will attempt to refresh the token for you
    automatically.
+ * **[REDDIT]** Fixed case where the user could not reply to private messages
+   with the `privatemessages` scope because the endpoint required the `submit`
+   scope. reddit has fixed this quirk, and PRAW now chooses the proper scope.
 
 PRAW 3.1.0
 ----------
