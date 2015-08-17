@@ -1985,8 +1985,8 @@ class ModOnlyMixin(AuthenticatedReddit):
         """Return a get_content generator of spam-filtered items.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the spam-filtered items for. Defaults to `mod` which
-            includes items for all the subreddits you moderate.
+            subreddit to return the spam-filtered items for. Defaults to `mod`
+            which includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
@@ -2007,8 +2007,8 @@ class ModOnlyMixin(AuthenticatedReddit):
         """Return a get_content generator of unmoderated submissions.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the unmoderated submissions for. Defaults to `mod` which
-            includes items for all the subreddits you moderate.
+            subreddit to return the unmoderated submissions for. Defaults to
+            `mod` which includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
