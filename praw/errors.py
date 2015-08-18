@@ -209,6 +209,8 @@ class InvalidComment(PRAWException):
 
     """Indicate that the comment is no longer available on reddit."""
 
+    ERROR_TYPE = 'DELETED_COMMENT'
+
     def __init__(self, message=None):
         """Construct a InvalidComment.
 
@@ -223,12 +225,12 @@ class InvalidComment(PRAWException):
     def __str__(self):
         return self.message
 
-    ERROR_TYPE = 'DELETED_COMMENT'
-
 
 class InvalidSubmission(PRAWException):
 
     """Indicates that the submission is no longer available on reddit."""
+
+    ERROR_TYPE = 'DELETED_LINK'
 
     def __init__(self, message=None):
         """Construct a InvalidSubmission.
@@ -244,12 +246,12 @@ class InvalidSubmission(PRAWException):
     def __str__(self):
         return self.message
 
-    ERROR_TYPE = 'DELETED_LINK'
-
 
 class InvalidSubreddit(PRAWException):
 
     """Indicates that an invalid subreddit name was supplied."""
+
+    ERROR_TYPE = 'SUBREDDIT_NOEXIST'
 
     def __init__(self, message=None):
         """Construct a InvalidSubreddit.
@@ -264,8 +266,6 @@ class InvalidSubreddit(PRAWException):
 
     def __str__(self):
         return self.message
-
-    ERROR_TYPE = 'SUBREDDIT_NOEXIST'
 
 
 class RedirectException(PRAWException):
