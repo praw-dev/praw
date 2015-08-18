@@ -137,7 +137,8 @@ class ModeratorRequired(LoginRequired):
         :param function: The function that requires moderator access.
 
         """
-        message = '`{0}` requires a moderator of the subreddit'.format(function)
+        message = ('`{0}` requires a moderator '
+                  'of the subreddit').format(function)
         super(ModeratorRequired, self).__init__(message)
 
 
@@ -189,6 +190,7 @@ class HTTPException(PRAWException):
         super(HTTPException, self).__init__()
         self._raw = _raw
         self.message = message
+
     def __str__(self):
         return self.message
 
@@ -217,6 +219,7 @@ class InvalidComment(PRAWException):
             message = 'Comment is not available'
         super(InvalidComment, self).__init__()
         self.message = message
+
     def __str__(self):
         return self.message
 
@@ -237,6 +240,7 @@ class InvalidSubmission(PRAWException):
             message = 'Submission is not available'
         super(InvalidSubmission, self).__init__()
         self.message = message
+
     def __str__(self):
         return self.message
 
@@ -257,6 +261,7 @@ class InvalidSubreddit(PRAWException):
             message = 'Subreddit is invalid'
         super(InvalidSubreddit, self).__init__()
         self.message = message
+
     def __str__(self):
         return self.message
 
@@ -276,12 +281,13 @@ class RedirectException(PRAWException):
 
         """
         if not message:
-            message = 'Unexpected redirect from {0} to {1}'.format(request_url,
-                                                                  response_url)
+            message = ('Unexpected redirect '
+                      'from {0} to {1}').format(request_url, response_url)
         super(RedirectException, self).__init__()
         self.request_url = request_url
         self.response_url = response_url
         self.message = message
+
     def __str__(self):
         return self.message
 
