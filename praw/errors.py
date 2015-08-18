@@ -41,12 +41,14 @@ class ClientException(PRAWException):
 
     """Base exception class for errors that don't involve the remote API."""
 
-    def __init__(self, message):
+    def __init__(self, message=None):
         """Construct a ClientException.
 
-        :params message: The error message to display.
+        :param message: The error message to display.
 
         """
+        if not message:
+            message = 'Clientside error'
         super(ClientException, self).__init__()
         self.message = message
 
@@ -68,7 +70,6 @@ class OAuthScopeRequired(ClientException):
 
         :param function: The function that requires a scope.
         :param scope: The scope required for the function.
-
         :param message: A custom message to associate with the
             exception. Default: `function` requires the OAuth2 scope `scope`
 
@@ -136,8 +137,9 @@ class ModeratorRequired(LoginRequired):
         :param function: The function that requires moderator access.
 
         """
-        msg = '`{0}` requires a moderator of the subreddit'.format(function)
-        super(ModeratorRequired, self).__init__(msg)
+        if not message:
+            message = '`{0}` requires a moderator of the subreddit'.format(function)
+        super(ModeratorRequired, self).__init__(message)
 
 
 class ModeratorOrScopeRequired(LoginOrScopeRequired, ModeratorRequired):
@@ -176,15 +178,20 @@ class HTTPException(PRAWException):
 
     """Base class for HTTP related exceptions."""
 
-    def __init__(self, _raw):
-        """Construct a ClientException.
+    def __init__(self, _raw, message=None):
+        """Construct a HTTPException.
 
         :params _raw: The internal request library response object. This object
             is mapped to attribute `_raw` whose format may change at any time.
 
         """
+        if not message:
+            message = 'HTTP error'
         super(HTTPException, self).__init__()
         self._raw = _raw
+        self.message = message
+    def __str__(self):
+        return self.message
 
 
 class Forbidden(HTTPException):
@@ -201,12 +208,38 @@ class InvalidComment(PRAWException):
 
     """Indicate that the comment is no longer available on reddit."""
 
+    def __init__(self, message=None):
+        """Construct a InvalidComment.
+
+        :param message: A custom message to associate with the exception.
+
+        """
+        if not message:
+            message = 'Comment is not available'
+        super(InvalidComment, self).__init__()
+        self.message = message
+    def __str__(self):
+        return self.message
+
     ERROR_TYPE = 'DELETED_COMMENT'
 
 
 class InvalidSubmission(PRAWException):
 
     """Indicates that the submission is no longer available on reddit."""
+
+    def __init__(self, message=None):
+        """Construct a InvalidSubmission.
+
+        :param message: A custom message to associate with the exception.
+
+        """
+        if not message:
+            message = 'Submission is not available'
+        super(InvalidSubmission, self).__init__()
+        self.message = message
+    def __str__(self):
+        return self.message
 
     ERROR_TYPE = 'DELETED_LINK'
 
@@ -215,6 +248,19 @@ class InvalidSubreddit(PRAWException):
 
     """Indicates that an invalid subreddit name was supplied."""
 
+    def __init__(self, message=None):
+        """Construct a InvalidSubreddit.
+
+        :param message: A custom message to associate with the exception.
+
+        """
+        if not message:
+            message = 'Subreddit is invalid'
+        super(InvalidSubreddit, self).__init__()
+        self.message = message
+    def __str__(self):
+        return self.message
+
     ERROR_TYPE = 'SUBREDDIT_NOEXIST'
 
 
@@ -222,18 +268,23 @@ class RedirectException(PRAWException):
 
     """Raised when a redirect response occurs that is not expected."""
 
-    def __init__(self, request_url, response_url):
+    def __init__(self, request_url, response_url, message=None):
         """Construct a RedirectException.
 
         :param request_url: The url requested.
         :param response_url: The url being redirected to.
+        :param message: A custom message to associate with the exception.
 
         """
-        super(RedirectException, self).__init__(
-            'Unexpected redirect from {0} to {1}'
-            .format(request_url, response_url))
+        if not message:
+            message = 'Unexpected redirect from {0} to {1}'.format(request_url,
+                                                                  response_url)
+        super(RedirectException, self).__init__()
         self.request_url = request_url
         self.response_url = response_url
+        self.message = message
+    def __str__(self):
+        return self.message
 
 
 class OAuthException(PRAWException):
