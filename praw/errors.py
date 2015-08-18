@@ -138,7 +138,7 @@ class ModeratorRequired(LoginRequired):
 
         """
         message = ('`{0}` requires a moderator '
-                  'of the subreddit').format(function)
+                   'of the subreddit').format(function)
         super(ModeratorRequired, self).__init__(message)
 
 
@@ -282,7 +282,7 @@ class RedirectException(PRAWException):
         """
         if not message:
             message = ('Unexpected redirect '
-                      'from {0} to {1}').format(request_url, response_url)
+                       'from {0} to {1}').format(request_url, response_url)
         super(RedirectException, self).__init__()
         self.request_url = request_url
         self.response_url = response_url
