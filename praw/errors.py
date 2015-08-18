@@ -137,8 +137,7 @@ class ModeratorRequired(LoginRequired):
         :param function: The function that requires moderator access.
 
         """
-        if not message:
-            message = '`{0}` requires a moderator of the subreddit'.format(function)
+        message = '`{0}` requires a moderator of the subreddit'.format(function)
         super(ModeratorRequired, self).__init__(message)
 
 
