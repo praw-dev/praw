@@ -101,6 +101,57 @@ class OAuth2RedditTest(PRAWTest):
         self.assertRaises(errors.OAuthScopeRequired, self.r.get_me)
 
     @betamax()
+    def test_raise_clientexception(self):
+        def ManualRaiseCENoMessage():
+            raise errors.ClientException
+
+        def ManualRaiseCE():
+            raise errors.ClientException('Test')
+
+        self.assertRaises(errors.ClientException, ManualRaiseCENoMessage)
+        self.assertRaises(errors.ClientException, ManualRaiseCE)
+        CEMessage = errors.ClientException('Test')
+        CENoMessage = errors.ClientException()
+        self.assertEqual(str(CEMessage), CEMessage.message)
+        self.assertEqual(str(CENoMessage), CENoMessage.message)
+
+    @betamax()
+    def test_raise_httpexception(self):
+        def ManualRaiseHE():
+            raise errors.HTTPException('fakeraw')
+
+        self.assertRaises(errors.HTTPException, ManualRaiseHE)
+        HTTPE = errors.HTTPException('fakeraw')
+        self.assertEqual(str(HTTPE), HTTPE.message)
+
+    @betamax()
+    def test_raise_oauthexception(self):
+        def ManualRaiseOE():
+            oerrormessage = "fakemessage"
+            oerrorurl = "http://oauth.reddit.com/"
+            raise errors.OAuthException(oerrormessage, oerrorurl)
+
+        oerrormessage = "fakemessage"
+        oerrorurl = "http://oauth.reddit.com/"
+        self.assertRaises(errors.OAuthException, ManualRaiseOE)
+        OAuthE = errors.OAuthException(oerrormessage, oerrorurl)
+        self.assertEqual(str(OAuthE),
+                         OAuthE.message + " on url {0}".format(OAuthE.url))
+
+    @betamax()
+    def test_raise_redirectexception(self):
+        def ManualRaiseRE():
+            apiurl = "http://api.reddit.com/"
+            oauthurl = "http://oauth.reddit.com/"
+            raise errors.RedirectException(apiurl, oauthurl)
+
+        apiurl = "http://api.reddit.com/"
+        oauthurl = "http://oauth.reddit.com/"
+        self.assertRaises(errors.RedirectException, ManualRaiseRE)
+        RedirectE = errors.RedirectException(apiurl, oauthurl)
+        self.assertEqual(str(RedirectE), RedirectE.message)
+
+    @betamax()
     def test_scope_history(self):
         self.r.refresh_access_information(self.refresh_token['history'])
         self.assertTrue(list(self.r.get_redditor(self.un).get_upvoted()))
