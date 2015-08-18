@@ -211,20 +211,6 @@ class InvalidComment(PRAWException):
 
     ERROR_TYPE = 'DELETED_COMMENT'
 
-    def __init__(self, message=None):
-        """Construct a InvalidComment.
-
-        :param message: A custom message to associate with the exception.
-
-        """
-        if not message:
-            message = 'Comment is not available'
-        super(InvalidComment, self).__init__()
-        self.message = message
-
-    def __str__(self):
-        return self.message
-
 
 class InvalidSubmission(PRAWException):
 
@@ -232,40 +218,12 @@ class InvalidSubmission(PRAWException):
 
     ERROR_TYPE = 'DELETED_LINK'
 
-    def __init__(self, message=None):
-        """Construct a InvalidSubmission.
-
-        :param message: A custom message to associate with the exception.
-
-        """
-        if not message:
-            message = 'Submission is not available'
-        super(InvalidSubmission, self).__init__()
-        self.message = message
-
-    def __str__(self):
-        return self.message
-
 
 class InvalidSubreddit(PRAWException):
 
     """Indicates that an invalid subreddit name was supplied."""
 
     ERROR_TYPE = 'SUBREDDIT_NOEXIST'
-
-    def __init__(self, message=None):
-        """Construct a InvalidSubreddit.
-
-        :param message: A custom message to associate with the exception.
-
-        """
-        if not message:
-            message = 'Subreddit is invalid'
-        super(InvalidSubreddit, self).__init__()
-        self.message = message
-
-    def __str__(self):
-        return self.message
 
 
 class RedirectException(PRAWException):
