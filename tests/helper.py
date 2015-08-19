@@ -80,7 +80,8 @@ class PRAWTest(unittest.TestCase):
 
         self.other_refresh_token = {
             'read':             '10640071-wxnYQyK9knNV1PCt9a7CxvJH8TI',
-            'modself':          '10640071-v2ZWipt20gPZvfBnvILkBUDq0P4'}
+            'modself':          '10640071-v2ZWipt20gPZvfBnvILkBUDq0P4',
+            'submit':           '10640071-oWSCa5YMSWGQrRCa4fMSO_C1bZg'}
 
         self.comment_deleted_id = 'ctkznxq'
         self.submission_deleted_id = '3f8q10'

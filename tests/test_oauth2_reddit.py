@@ -2,10 +2,24 @@
 
 from __future__ import print_function, unicode_literals
 
+import sys
 from praw import Reddit, errors
 from praw.objects import Submission
 from six import text_type
 from .helper import PRAWTest, USER_AGENT, betamax
+
+
+class FakeStdin:
+    """ A class for filling stdin prompts with a predetermined value. """
+    def __init__(self, value):
+        self.value = value
+        self.closed = False
+
+    def close(self):
+        self.closed = True
+
+    def readline(self):
+        return self.value
 
 
 class OAuth2RedditTest(PRAWTest):
@@ -151,6 +165,16 @@ class OAuth2RedditTest(PRAWTest):
         self.assertTrue(self.r.user is None)
         self.r.set_access_credentials(**result)
         self.assertFalse(self.r.user is None)
+
+    @betamax()
+    def test_solve_captcha(self):
+        # Use the alternate account because it has low karma,
+        # so we can test the captcha.
+        self.r.refresh_access_information(self.other_refresh_token['submit'])
+        original_stdin = sys.stdin
+        sys.stdin = FakeStdin('ljgtoo')  # Comment this line when rebuilding
+        self.r.submit(self.sr, 'captcha test', 'body')
+        sys.stdin = original_stdin
 
     @betamax()
     def test_oauth_without_identy_doesnt_set_user(self):
