@@ -50,7 +50,7 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '3.2.0'
+__version__ = '3.2.1'
 
 if os.environ.get('SERVER_SOFTWARE') is not None:
     # Google App Engine information
