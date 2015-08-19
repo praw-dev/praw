@@ -192,6 +192,7 @@ class HTTPException(PRAWException):
         self.message = message
 
     def __str__(self):
+        """Return the message of the error"""
         return self.message
 
 
@@ -221,6 +222,7 @@ class InvalidComment(PRAWException):
         self.message = message
 
     def __str__(self):
+        """Return the message of the error."""
         return self.message
 
     ERROR_TYPE = 'DELETED_COMMENT'
@@ -242,6 +244,7 @@ class InvalidSubmission(PRAWException):
         self.message = message
 
     def __str__(self):
+        """Return the message of the error."""
         return self.message
 
     ERROR_TYPE = 'DELETED_LINK'
@@ -263,6 +266,7 @@ class InvalidSubreddit(PRAWException):
         self.message = message
 
     def __str__(self):
+        """Return the message of the error."""
         return self.message
 
     ERROR_TYPE = 'SUBREDDIT_NOEXIST'
@@ -289,6 +293,7 @@ class RedirectException(PRAWException):
         self.message = message
 
     def __str__(self):
+        """Return the message of the error."""
         return self.message
 
 
@@ -550,4 +555,3 @@ def _build_error_mapping():
         tmp[obj.ERROR_TYPE] = obj
     return tmp
 ERROR_MAPPING = _build_error_mapping()
-
