@@ -1379,6 +1379,7 @@ class Subreddit(Messageable, Refreshable):
                 ('get_banned', MOMix),
                 ('get_comments', UR),
                 ('get_contributors', MOMix),
+                ('get_edited', MOMix),
                 ('get_flair', UR),
                 ('get_flair_choices', AR),
                 ('get_flair_list', MFMix),
