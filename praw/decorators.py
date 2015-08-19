@@ -157,7 +157,20 @@ def require_captcha(function, *args, **kwargs):
     while True:
         try:
             if captcha_id:
-                kwargs['captcha'] = _get_captcha(reddit_session, captcha_id)
+                captcha_answer = _get_captcha(reddit_session, captcha_id)
+
+                # When the method is being decorated, all of its default
+                # parameters become part of this *args tuple. This means that
+                # *args currently contains a None where the captcha answer
+                # needs to go. If we put the captcha in the **kwargs,
+                # we get a TypeError for having two values of the same param.
+                func_args = inspect.getargspec(function)
+                if 'captcha' in func_args.args:
+                    captcha_index = func_args.args.index('captcha')
+                    args = list(args)
+                    args[captcha_index] = captcha_answer
+                else:
+                    kwargs['captcha'] = captcha_answer
             return function(*args, **kwargs)
         except errors.InvalidCaptcha as exception:
             if raise_captcha_exception or \

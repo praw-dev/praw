@@ -50,7 +50,7 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '3.2.0'
+__version__ = '3.2.1'
 
 if os.environ.get('SERVER_SOFTWARE') is not None:
     # Google App Engine information
@@ -106,6 +106,7 @@ class Config(object):  # pylint: disable=R0903
                  'domain':              'domain/%s/',
                  'duplicates':          'duplicates/%s/',
                  'edit':                'api/editusertext/',
+                 'edited':              'r/%s/about/edited/',
                  'flair':               'api/flair/',
                  'flairconfig':         'api/flairconfig/',
                  'flaircsv':            'api/flaircsv/',
@@ -1841,7 +1842,7 @@ class ModLogMixin(AuthenticatedReddit):
         """Return a get_content generator for moderation log items.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for.
+            subreddit to return the modlog for.
         :param mod: If given, only return the actions made by this moderator.
             Both a moderator name or Redditor object can be used here.
         :param action: If given, only return entries for the specified action.
@@ -1897,7 +1898,7 @@ class ModOnlyMixin(AuthenticatedReddit):
         """
         Return a get_content generator of contributors for the given subreddit.
 
-        If it's a public subreddit, then user/pswd authentication as a
+        If it's a public subreddit, then authentication as a
         moderator of the subreddit is required. For protected/private
         subreddits only access is required. See issue #246.
 
@@ -1919,6 +1920,21 @@ class ModOnlyMixin(AuthenticatedReddit):
                 return decorator(get_contributors_helper)(self, subreddit)
         return get_contributors_helper(self, subreddit)
 
+    @decorators.restrict_access(scope='read', mod=True)
+    def get_edited(self, subreddit='mod', *args, **kwargs):
+        """Return a get_content generator of edited items.
+
+        :param subreddit: Either a Subreddit object or the name of the
+            subreddit to return the edited items for. Defaults to `mod` which
+            includes items for all the subreddits you moderate.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self.get_content(self.config['edited'] %
+                                six.text_type(subreddit), *args, **kwargs)
+
     @decorators.restrict_access(scope='privatemessages', mod=True)
     def get_mod_mail(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator for moderator messages.
@@ -1936,10 +1952,10 @@ class ModOnlyMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_mod_queue(self, subreddit='mod', *args, **kwargs):
-        """Return a get_content_generator for the moderator queue.
+        """Return a get_content generator for the moderator queue.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
+            subreddit to return the modqueue for. Defaults to `mod` which
             includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
@@ -1951,10 +1967,10 @@ class ModOnlyMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_reports(self, subreddit='mod', *args, **kwargs):
-        """Return a get_content generator of reported submissions.
+        """Return a get_content generator of reported items.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
+            subreddit to return the reported items. Defaults to `mod` which
             includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
@@ -1969,8 +1985,8 @@ class ModOnlyMixin(AuthenticatedReddit):
         """Return a get_content generator of spam-filtered items.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
-            includes items for all the subreddits you moderate.
+            subreddit to return the spam-filtered items for. Defaults to `mod`
+            which includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
@@ -1988,11 +2004,11 @@ class ModOnlyMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_unmoderated(self, subreddit='mod', *args, **kwargs):
-        """Return a get_content generator of unmoderated items.
+        """Return a get_content generator of unmoderated submissions.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
-            includes items for all the subreddits you moderate.
+            subreddit to return the unmoderated submissions for. Defaults to
+            `mod` which includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
