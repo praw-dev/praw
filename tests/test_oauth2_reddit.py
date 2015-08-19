@@ -12,8 +12,8 @@ from .helper import PRAWTest, USER_AGENT, betamax
 class FakeStdin:
     """ A class for filling stdin prompts with a predetermined value. """
     def __init__(self, value):
-        self.value = value
         self.closed = False
+        self.value = value
 
     def close(self):
         self.closed = True
