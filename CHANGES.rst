@@ -22,6 +22,11 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[BUGFIX]** Fixed "multiple values for argument" error when solving
+   captchas.
+
 PRAW 3.2.0
 ----------
  * **[BUGFIX]** Fixed methods which require more than one OAuth scope.
