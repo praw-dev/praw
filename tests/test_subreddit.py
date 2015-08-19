@@ -3,7 +3,7 @@
 from __future__ import print_function, unicode_literals
 import warnings
 from praw import errors
-from praw.objects import Subreddit
+from praw.objects import Subreddit, Comment, Submission
 from six import text_type
 from .helper import OAuthPRAWTest, PRAWTest, betamax
 
@@ -289,6 +289,7 @@ class OAuthSubredditTest(OAuthPRAWTest):
     @betamax()
     def test_get_edited_oauth(self):
         self.r.refresh_access_information(self.refresh_token['read'])
+
         edits = self.r.get_subreddit(self.sr).get_edited()
         self.assertTrue(list(edits))
         self.assertTrue(all(hasattr(x, 'edited') for x in edits))
