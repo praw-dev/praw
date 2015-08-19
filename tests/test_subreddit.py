@@ -3,7 +3,7 @@
 from __future__ import print_function, unicode_literals
 import warnings
 from praw import errors
-from praw.objects import Subreddit, Comment, Submission
+from praw.objects import Subreddit
 from six import text_type
 from .helper import OAuthPRAWTest, PRAWTest, betamax
 
