@@ -235,10 +235,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'PythonRedditAPIWrapper',
+    ('index', 'praw',
      u'Python Reddit API Wrapper Documentation',
-     u'Bryce Boe', 'PythonRedditAPIWrapper',
-     'One line description of project.', 'Miscellaneous'),
+     u'Bryce Boe', 'praw',
+     'Python Reddit API Wrapper', 'Python'),
 ]
 
 # Documents to append as an appendix to all manuals.
