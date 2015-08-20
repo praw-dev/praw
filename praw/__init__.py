@@ -60,7 +60,7 @@ else:
     # Standard platform information
     PLATFORM_INFO = platform.platform(True)
 
-PLATFORM_INFO = ''.join(i for i in PLATFORM_INFO if ord(i)<128)
+PLATFORM_INFO = ''.join(i for i in PLATFORM_INFO if ord(i) < 128)
 
 UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
                                           sys.version.split()[0],
