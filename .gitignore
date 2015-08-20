@@ -9,3 +9,4 @@ build/
 dist/
 .DS_Store
 .tox/
+.idea/
