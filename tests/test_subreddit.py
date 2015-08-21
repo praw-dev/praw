@@ -1,4 +1,4 @@
-"""Tests for Subreddit class."""
+﻿"""Tests for Subreddit class."""
 
 from __future__ import print_function, unicode_literals
 import warnings
