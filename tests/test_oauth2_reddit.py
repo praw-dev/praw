@@ -114,7 +114,7 @@ class OAuth2RedditTest(PRAWTest):
         CENoMessage = errors.ClientException()
         self.assertEqual(str(CEMessage), CEMessage.message)
         self.assertEqual(str(CENoMessage), CENoMessage.message)
-        
+
     @betamax()
     def test_scope_history(self):
         self.r.refresh_access_information(self.refresh_token['history'])
