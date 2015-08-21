@@ -127,10 +127,14 @@ class OAuth2RedditTest(PRAWTest):
     @betamax()
     def test_raise_redirectexception(self):
         def ManualRaiseRE():
-            raise errors.RedirectException('fakerequest', 'fakeresponse')
+            apiurl = "http://api.reddit.com/"
+            oauthurl = "http://oauth.reddit.com/"
+            raise errors.RedirectException(apiurl, oauthurl)
 
+        apiurl = "http://api.reddit.com/"
+        oauthurl = "http://oauth.reddit.com/"
         self.assertRaises(errors.RedirectException, ManualRaiseRE)
-        RedirectE = errors.HTTPException('fakerequest', 'fakeresponse')
+        RedirectE = errors.HTTPException(apiurl, oauthurl)
         self.assertEqual(str(RedirectE), RedirectE.message)
 
     @betamax()
