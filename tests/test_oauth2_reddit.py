@@ -125,6 +125,15 @@ class OAuth2RedditTest(PRAWTest):
         self.assertEqual(str(HTTPE), HTTPE.message)
 
     @betamax()
+    def test_raise_redirectexception(self):
+        def ManualRaiseRE():
+            raise errors.RedirectException('fakerequest', 'fakeresponse')
+
+        self.assertRaises(errors.RedirectException, ManualRaiseRE)
+        RedirectE = errors.HTTPException('fakerequest', 'fakeresponse')
+        self.assertEqual(str(RedirectE), RedirectE.message)
+
+    @betamax()
     def test_scope_history(self):
         self.r.refresh_access_information(self.refresh_token['history'])
         self.assertTrue(list(self.r.get_redditor(self.un).get_upvoted()))
