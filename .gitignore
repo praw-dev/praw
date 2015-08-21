@@ -9,6 +9,3 @@ build/
 dist/
 .DS_Store
 .tox/
-*.sln
-*.vs/
-*.pyproj

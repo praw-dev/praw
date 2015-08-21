@@ -1,4 +1,4 @@
-﻿"""Tests for OAuth2Reddit class."""
+"""Tests for OAuth2Reddit class."""
 
 from __future__ import print_function, unicode_literals
 
@@ -94,22 +94,6 @@ class OAuth2RedditTest(PRAWTest):
         self.assertRaises(errors.OAuthInvalidToken,
                           self.r.set_access_credentials,
                           set(('identity',)), 'dummy_access_token')
-
-    @betamax()
-    def test_raise_clientexception(self):
-        def ManuallyRaiseCENoMessage():
-            """Function to manually raise a Client Exception with default message."""
-            raise errors.ClientException
-        def ManuallyRaiseCE():
-            """Function to manually raise a Client Exception with a test message."""
-            raise errors.ClientException("Test Message")
-        self.assertRaises(errors.ClientException, ManuallyRaiseCENoMessage)
-        self.assertRaises(errors.ClientException, ManuallyRaiseCE)
-        CE = errors.ClientException("Test Message")
-        CENoMessage = errors.ClientException()
-        self.assertEqual(str(CE), CE.message)
-        self.assertEqual(str(CENoMessage), CENoMessage.message)
-
 
     def test_oauth_scope_required(self):
         self.r.set_oauth_app_info('dummy_client', 'dummy_secret', 'dummy_url')
