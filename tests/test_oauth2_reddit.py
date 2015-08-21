@@ -98,10 +98,9 @@ class OAuth2RedditTest(PRAWTest):
     @betamax()
     def test_raise_clientexception(self):
         def ManuallyRaiseCENoMessage():
-            """Function to manually raise a Client Exception with default message."""
             raise errors.ClientException
+
         def ManuallyRaiseCE():
-            """Function to manually raise a Client Exception with a test message."""
             raise errors.ClientException("Test Message")
         self.assertRaises(errors.ClientException, ManuallyRaiseCENoMessage)
         self.assertRaises(errors.ClientException, ManuallyRaiseCE)
@@ -109,7 +108,6 @@ class OAuth2RedditTest(PRAWTest):
         CENoMessage = errors.ClientException()
         self.assertEqual(str(CE), CE.message)
         self.assertEqual(str(CENoMessage), CENoMessage.message)
-
 
     def test_oauth_scope_required(self):
         self.r.set_oauth_app_info('dummy_client', 'dummy_secret', 'dummy_url')
