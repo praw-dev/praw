@@ -125,6 +125,20 @@ class OAuth2RedditTest(PRAWTest):
         self.assertEqual(str(HTTPE), HTTPE.message)
 
     @betamax()
+    def test_raise_oauthexception(self):
+        def ManualRaiseOE():
+            oerrormessage = "fakemessage"
+            oerrorurl = "http://oauth.reddit.com/"
+            raise errors.OAuthException(oerrormessage, oerrorurl)
+
+        oerrormessage = "fakemessage"
+        oerrorurl = "http://oauth.reddit.com/"
+        self.assertRaises(errors.OAuthException, ManualRaiseOE)
+        OAuthE = errors.OAuthException(oerrormessage, oerrorurl)
+        self.assertEqual(str(OAuthE),
+                         OAuthE.message + " on url {0}".format(OAuthE.url))
+
+    @betamax()
     def test_raise_redirectexception(self):
         def ManualRaiseRE():
             apiurl = "http://api.reddit.com/"
