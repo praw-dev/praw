@@ -1,4 +1,4 @@
-# This file is part of PRAW.
+﻿# This file is part of PRAW.
 #
 # PRAW is free software: you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software
@@ -192,6 +192,7 @@ class HTTPException(PRAWException):
         self.message = message
 
     def __str__(self):
+        """Return the message of the error."""
         return self.message
 
 
@@ -209,63 +210,33 @@ class InvalidComment(PRAWException):
 
     """Indicate that the comment is no longer available on reddit."""
 
-    def __init__(self, message=None):
-        """Construct a InvalidComment.
-
-        :param message: A custom message to associate with the exception.
-
-        """
-        if not message:
-            message = 'Comment is not available'
-        super(InvalidComment, self).__init__()
-        self.message = message
+    ERROR_TYPE = 'DELETED_COMMENT'
 
     def __str__(self):
-        return self.message
-
-    ERROR_TYPE = 'DELETED_COMMENT'
+        """Return the message of the error."""
+        return self.ERROR_TYPE
 
 
 class InvalidSubmission(PRAWException):
 
     """Indicates that the submission is no longer available on reddit."""
 
-    def __init__(self, message=None):
-        """Construct a InvalidSubmission.
-
-        :param message: A custom message to associate with the exception.
-
-        """
-        if not message:
-            message = 'Submission is not available'
-        super(InvalidSubmission, self).__init__()
-        self.message = message
+    ERROR_TYPE = 'DELETED_LINK'
 
     def __str__(self):
-        return self.message
-
-    ERROR_TYPE = 'DELETED_LINK'
+        """Return the message of the error."""
+        return self.ERROR_TYPE
 
 
 class InvalidSubreddit(PRAWException):
 
     """Indicates that an invalid subreddit name was supplied."""
 
-    def __init__(self, message=None):
-        """Construct a InvalidSubreddit.
-
-        :param message: A custom message to associate with the exception.
-
-        """
-        if not message:
-            message = 'Subreddit is invalid'
-        super(InvalidSubreddit, self).__init__()
-        self.message = message
+    ERROR_TYPE = 'SUBREDDIT_NOEXIST'
 
     def __str__(self):
-        return self.message
-
-    ERROR_TYPE = 'SUBREDDIT_NOEXIST'
+        """Return the message of the error."""
+        return self.ERROR_TYPE
 
 
 class RedirectException(PRAWException):
@@ -289,6 +260,7 @@ class RedirectException(PRAWException):
         self.message = message
 
     def __str__(self):
+        """Return the message of the error."""
         return self.message
 
 
@@ -550,4 +522,3 @@ def _build_error_mapping():
         tmp[obj.ERROR_TYPE] = obj
     return tmp
 ERROR_MAPPING = _build_error_mapping()
-
