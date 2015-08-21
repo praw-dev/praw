@@ -213,7 +213,9 @@ class InvalidComment(PRAWException):
     ERROR_TYPE = 'DELETED_COMMENT'
 
     def __str__(self):
+        """Return the message of the error."""
         return self.ERROR_TYPE
+
 
 class InvalidSubmission(PRAWException):
 
@@ -222,6 +224,7 @@ class InvalidSubmission(PRAWException):
     ERROR_TYPE = 'DELETED_LINK'
 
     def __str__(self):
+        """Return the message of the error."""
         return self.ERROR_TYPE
 
 
@@ -232,6 +235,7 @@ class InvalidSubreddit(PRAWException):
     ERROR_TYPE = 'SUBREDDIT_NOEXIST'
 
     def __str__(self):
+        """Return the message of the error."""
         return self.ERROR_TYPE
 
 
