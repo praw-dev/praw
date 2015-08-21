@@ -116,6 +116,15 @@ class OAuth2RedditTest(PRAWTest):
         self.assertEqual(str(CENoMessage), CENoMessage.message)
 
     @betamax()
+    def test_raise_httpexception(self):
+        def ManualRaiseHE():
+            raise errors.HTTPException('fakeraw')
+
+        self.assertRaises(errors.HTTPException, ManualRaiseHE)
+        HTTPE = errors.HTTPException('fakeraw')
+        self.assertEqual(str(HTTPE), HTTPE.message)
+
+    @betamax()
     def test_scope_history(self):
         self.r.refresh_access_information(self.refresh_token['history'])
         self.assertTrue(list(self.r.get_redditor(self.un).get_upvoted()))
