@@ -134,14 +134,8 @@ class OAuth2RedditTest(PRAWTest):
         apiurl = "http://api.reddit.com/"
         oauthurl = "http://oauth.reddit.com/"
         self.assertRaises(errors.RedirectException, ManualRaiseRE)
-        RedirectE = errors.HTTPException(apiurl, oauthurl)
-        URL1 = RedirectE.request_url
-        URL2 = RedirectE.response_url
-        REFormedMessage = ('Unexpected redirect '
-                           'from {0} to {1}').format(URL1, URL2)
-        self.assertEqual(RedirectE.message, REFormedMessage)
+        RedirectE = errors.RedirectException(apiurl, oauthurl)
         self.assertEqual(str(RedirectE), RedirectE.message)
-        self.assertEqual(str(RedirectE), REFormedMessage)
 
     @betamax()
     def test_scope_history(self):
