@@ -101,6 +101,21 @@ class OAuth2RedditTest(PRAWTest):
         self.assertRaises(errors.OAuthScopeRequired, self.r.get_me)
 
     @betamax()
+    def test_raise_clientexception(self):
+        def ManualRaiseCENoMessage():
+            raise errors.ClientException
+
+        def ManualRaiseCE():
+            raise errors.ClientException('Test')
+
+        self.assertRaises(errors.ClientException, ManualRaiseCENoMessage)
+        self.assertRaises(errors.ClientException, ManualRaiseCE)
+        CEMessage = errors.ClientException('Test')
+        CENoMessage = errors.ClientException()
+        self.assertEqual(str(CEMessage), CEMessage.message)
+        self.assertEqual(str(CENoMessage), CENoMessage.message)
+        
+    @betamax()
     def test_scope_history(self):
         self.r.refresh_access_information(self.refresh_token['history'])
         self.assertTrue(list(self.r.get_redditor(self.un).get_upvoted()))
