@@ -138,7 +138,7 @@ class OAuth2RedditTest(PRAWTest):
         URL1 = RedirectE.request_url
         URL2 = RedirectE.response_url
         REFormedMessage = ('Unexpected redirect '
-                           'from {0} to {1}).format(URL1, URL2)
+                           'from {0} to {1}').format(URL1, URL2)
         self.assertEqual(RedirectE.message, REFormedmessage)
         self.assertEqual(str(RedirectE), RedirectE.message)
         self.assertEqual(str(RedirectE), REFormedMessage)
