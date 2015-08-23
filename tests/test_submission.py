@@ -256,8 +256,8 @@ class OAuthSubmissionTest(OAuthPRAWTest):
             submission_id=self.submission_deleted_id)
         self.assertRaises(errors.InvalidSubmission, submission.add_comment,
                           'test')
-        InPost = errors.InvalidSubmission()
-        self.assertEqual(str(InPost), InPost.ERROR_TYPE)
+        invalid_post = errors.InvalidSubmission()
+        self.assertEqual(invalid_post.ERROR_TYPE, str(invalid_post))
 
     @betamax()
     def test_remove_oauth(self):

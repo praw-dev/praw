@@ -100,56 +100,50 @@ class OAuth2RedditTest(PRAWTest):
         self.r.set_access_credentials(set('dummy_scope',), 'dummy_token')
         self.assertRaises(errors.OAuthScopeRequired, self.r.get_me)
 
-    @betamax()
-    def test_raise_clientexception(self):
-        def ManualRaiseCENoMessage():
-            raise errors.ClientException
+    def test_raise_client_exception(self):
+        def raise_client_exception(*args):
+            raise errors.ClientException(*args)
 
-        def ManualRaiseCE():
-            raise errors.ClientException('Test')
+        self.assertRaises(errors.ClientException, raise_client_exception)
+        self.assertRaises(errors.ClientException, raise_client_exception,
+                          'test')
 
-        self.assertRaises(errors.ClientException, ManualRaiseCENoMessage)
-        self.assertRaises(errors.ClientException, ManualRaiseCE)
-        CEMessage = errors.ClientException('Test')
-        CENoMessage = errors.ClientException()
-        self.assertEqual(str(CEMessage), CEMessage.message)
-        self.assertEqual(str(CENoMessage), CENoMessage.message)
+        ce_message = errors.ClientException('Test')
+        ce_no_message = errors.ClientException()
+        self.assertEqual(ce_message.message, str(ce_message))
+        self.assertEqual(ce_no_message.message, str(ce_no_message))
 
-    @betamax()
-    def test_raise_httpexception(self):
-        def ManualRaiseHE():
+    def test_raise_http_exception(self):
+        def raise_http_exception():
             raise errors.HTTPException('fakeraw')
 
-        self.assertRaises(errors.HTTPException, ManualRaiseHE)
-        HTTPE = errors.HTTPException('fakeraw')
-        self.assertEqual(str(HTTPE), HTTPE.message)
+        self.assertRaises(errors.HTTPException, raise_http_exception)
+        http_exception = errors.HTTPException('fakeraw')
+        self.assertEqual(http_exception.message, str(http_exception))
 
-    @betamax()
-    def test_raise_oauthexception(self):
-        def ManualRaiseOE():
-            oerrormessage = "fakemessage"
-            oerrorurl = "http://oauth.reddit.com/"
-            raise errors.OAuthException(oerrormessage, oerrorurl)
-
+    def test_raise_oauth_exception(self):
         oerrormessage = "fakemessage"
         oerrorurl = "http://oauth.reddit.com/"
-        self.assertRaises(errors.OAuthException, ManualRaiseOE)
-        OAuthE = errors.OAuthException(oerrormessage, oerrorurl)
-        self.assertEqual(str(OAuthE),
-                         OAuthE.message + " on url {0}".format(OAuthE.url))
 
-    @betamax()
-    def test_raise_redirectexception(self):
-        def ManualRaiseRE():
-            apiurl = "http://api.reddit.com/"
-            oauthurl = "http://oauth.reddit.com/"
-            raise errors.RedirectException(apiurl, oauthurl)
+        def raise_oauth_exception():
+            raise errors.OAuthException(oerrormessage, oerrorurl)
 
+        self.assertRaises(errors.OAuthException, raise_oauth_exception)
+        oauth_exception = errors.OAuthException(oerrormessage, oerrorurl)
+        self.assertEqual(oauth_exception.message +
+                         " on url {0}".format(oauth_exception.url),
+                         str(oauth_exception))
+
+    def test_raise_redirect_exception(self):
         apiurl = "http://api.reddit.com/"
         oauthurl = "http://oauth.reddit.com/"
-        self.assertRaises(errors.RedirectException, ManualRaiseRE)
-        RedirectE = errors.RedirectException(apiurl, oauthurl)
-        self.assertEqual(str(RedirectE), RedirectE.message)
+
+        def raise_redirect_exception():
+            raise errors.RedirectException(apiurl, oauthurl)
+
+        self.assertRaises(errors.RedirectException, raise_redirect_exception)
+        redirect_exception = errors.RedirectException(apiurl, oauthurl)
+        self.assertEqual(redirect_exception.message, str(redirect_exception))
 
     @betamax()
     def test_scope_history(self):

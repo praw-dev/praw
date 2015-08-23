@@ -162,5 +162,5 @@ class OAuthCommentTest(OAuthPRAWTest):
         self.r.refresh_access_information(self.refresh_token['submit'])
         comment = self.r.get_info(thing_id=fullname)
         self.assertRaises(errors.InvalidComment, comment.reply, 'test')
-        InComment = errors.InvalidComment()
-        self.assertEqual(str(InComment), InComment.ERROR_TYPE)
+        invalid_comment = errors.InvalidComment()
+        self.assertEqual(invalid_comment.ERROR_TYPE, str(invalid_comment))

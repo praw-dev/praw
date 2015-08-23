@@ -350,8 +350,8 @@ class OAuthSubredditTest(OAuthPRAWTest):
         self.r.refresh_access_information(self.refresh_token['submit'])
         self.assertRaises(errors.InvalidSubreddit, self.r.submit, '?', 'title',
                           'body')
-        InSub = errors.InvalidSubreddit()
-        self.assertEqual(str(InSub), InSub.ERROR_TYPE)
+        invalid_sub = errors.InvalidSubreddit()
+        self.assertEqual(invalid_sub.ERROR_TYPE, str(invalid_sub))
 
     @betamax()
     def test_set_stylesheet_oauth(self):
