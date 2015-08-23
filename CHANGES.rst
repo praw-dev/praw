@@ -26,6 +26,8 @@ UNRELEASED
 ----------
  * **[BUGFIX]** Fixed login password prompt issue on windows (#485).
  * **[BUGFIX]** Fixed unicode user-agent issue (#483).
+ * **[BUGFIX]** Fix duplicate request issue with comment and submission streams
+   (#501).
  * **[CHANGE]** Added messages to all PRAW exceptions (#491).
 
 PRAW 3.2.1
