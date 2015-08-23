@@ -22,6 +22,17 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+UNRELEASED
+----------
+ * **[BUGFIX]** Fixed login password prompt issue on windows (#485).
+ * **[BUGFIX]** Fixed unicode user-agent issue (#483).
+ * **[CHANGE]** Added messages to all PRAW exceptions (#491).
+
+PRAW 3.2.1
+----------
+ * **[BUGFIX]** Fixed "multiple values for argument" error when solving
+   captchas.
+
 PRAW 3.2.0
 ----------
  * **[BUGFIX]** Fixed methods which require more than one OAuth scope.

@@ -9,3 +9,7 @@ build/
 dist/
 .DS_Store
 .tox/
+.idea/
+*.sln
+*.vs/
+*.pyproj

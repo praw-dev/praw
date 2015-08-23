@@ -50,19 +50,7 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '3.2.0'
-
-if os.environ.get('SERVER_SOFTWARE') is not None:
-    # Google App Engine information
-    # https://developers.google.com/appengine/docs/python/
-    PLATFORM_INFO = os.environ.get('SERVER_SOFTWARE')
-else:
-    # Standard platform information
-    PLATFORM_INFO = platform.platform(True)
-
-UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
-                                          sys.version.split()[0],
-                                          PLATFORM_INFO)
+__version__ = '3.2.1'
 
 MIN_IMAGE_SIZE = 128
 MAX_IMAGE_SIZE = 512000
@@ -203,6 +191,24 @@ class Config(object):  # pylint: disable=R0903
                  'wiki_contributors':   'r/%s/about/wikicontributors/'}
     WWW_PATHS = set(['authorize'])
 
+    @staticmethod
+    def ua_string(praw_info):
+        """Return the user-agent string.
+
+        The user-agent string contains PRAW version and platform version info.
+
+        """
+        if os.environ.get('SERVER_SOFTWARE') is not None:
+            # Google App Engine information
+            # https://developers.google.com/appengine/docs/python/
+            info = os.environ.get('SERVER_SOFTWARE')
+        else:
+            # Standard platform information
+            info = platform.platform(True).encode('ascii', 'ignore')
+
+        return '{0} PRAW/{1} Python/{2} {3}'.format(
+            praw_info, __version__, sys.version.split()[0], info)
+
     def __init__(self, site_name, **kwargs):
         """Initialize PRAW's configuration."""
         def config_boolean(item):
@@ -252,7 +258,7 @@ class Config(object):  # pylint: disable=R0903
         self.refresh_token = obj.get('oauth_refresh_token') or None
         self.store_json_result = config_boolean(obj.get('store_json_result'))
 
-        if 'short_domain' in obj:
+        if 'short_domain' in obj and obj['short_domain']:
             self._short_domain = 'http://' + obj['short_domain']
         else:
             self._short_domain = None
@@ -333,7 +339,7 @@ class BaseReddit(object):
                              **kwargs)
         self.handler = handler or DefaultHandler()
         self.http = Session()
-        self.http.headers['User-Agent'] = UA_STRING % user_agent
+        self.http.headers['User-Agent'] = self.config.ua_string(user_agent)
         self.http.validate_certs = self.config.validate_certs
 
         # This `Session` object is only used to store request information that
@@ -1388,7 +1394,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             pswd = password or self.config.pswd
         if not pswd:
             import getpass
-            pswd = getpass.getpass('Password for %s: ' % user)
+            pswd = getpass.getpass('Password for {0}: '.format(user)
+                                   .encode('ascii', 'ignore'))
 
         data = {'passwd': pswd,
                 'user': user}
