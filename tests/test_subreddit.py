@@ -1,4 +1,4 @@
-"""Tests for Subreddit class."""
+﻿"""Tests for Subreddit class."""
 
 from __future__ import print_function, unicode_literals
 import warnings
@@ -350,6 +350,8 @@ class OAuthSubredditTest(OAuthPRAWTest):
         self.r.refresh_access_information(self.refresh_token['submit'])
         self.assertRaises(errors.InvalidSubreddit, self.r.submit, '?', 'title',
                           'body')
+        InSub = errors.InvalidSubreddit()
+        self.assertEqual(str(InSub), InSub.ERROR_TYPE)
 
     @betamax()
     def test_set_stylesheet_oauth(self):
