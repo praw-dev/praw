@@ -1394,7 +1394,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             pswd = password or self.config.pswd
         if not pswd:
             import getpass
-            pswd = getpass.getpass('Password for %s: ' % user)
+            pswd = getpass.getpass('Password for {0}: '.format(user)
+                                   .encode('ascii', 'ignore'))
 
         data = {'passwd': pswd,
                 'user': user}
