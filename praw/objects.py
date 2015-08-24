@@ -1,4 +1,4 @@
-# This file is part of PRAW.
+﻿# This file is part of PRAW.
 #
 # PRAW is free software: you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software
@@ -644,6 +644,17 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         """Return True when the comment is a top level comment."""
         sub_prefix = self.reddit_session.config.by_object[Submission]
         return self.parent_id.startswith(sub_prefix)
+
+    @property
+    def parent(self):
+        """Return the object of the comment's parent. This
+        can be either a Submission or Comment object."""
+        if self.parent_id.startswith("t3_"):
+            return self.submission
+        elif self.parent_id.startwith("t1_"):
+            pid = self.parent_id.replace("t1_", "")
+            parent_url = urljoin(self.submission.permalink, pid)
+            return ""
 
     @property
     def permalink(self):
