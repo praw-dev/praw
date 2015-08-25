@@ -841,14 +841,37 @@ class Redditor(Gildable, Messageable, Refreshable):
             self._case_name = self.name
             self.name = tmp
 
-    def friend(self):
+    @restrict_access(scope='subscribe')
+    def friend(self, note='', _unfriend=False):
         """Friend the user.
+
+        :param note: A personal note about the user. Requires reddit Gold.
+        :param _unfriend: Unfriend the user. Please use :meth:`unfriend`
+            instead of settings this parameter manually.
 
         :returns: The json response from the server.
 
         """
         self.reddit_session.evict(self.reddit_session.config['friends'])
-        return _modify_relationship('friend')(self.reddit_session.user, self)
+
+        # Requests through password auth use /api/friend
+        # Requests through oauth use /api/v1/me/friends/%username%
+        if not self.reddit_session.is_oauth_session():
+            modifier = _modify_relationship('friend', unlink=_unfriend)
+            return modifier(self.reddit_session.user, self)
+
+        url = self.reddit_session.config['friend_v1'] % self.name
+        # This endpoint wants the data to be a string instead of an actual
+        # dictionary, although it is not required to have any content for adds.
+        # Unfriending does require the 'id' key.
+        if _unfriend:
+            data = dumps({'id': self.name})
+        else:
+            # Sending an empty note string raises http 400, although the reddit
+            # source code would suggest otherwise.
+            data = dumps({'note': note} if note else {})
+        method = 'DELETE' if _unfriend else 'PUT'
+        return self.reddit_session.request_json(url, data=data, method=method)
 
     def get_disliked(self, *args, **kwargs):
         """Return a listing of the Submissions the user has downvoted.
@@ -878,6 +901,20 @@ class Redditor(Gildable, Messageable, Refreshable):
         # successful.
         kwargs['_use_oauth'] = self.reddit_session.is_oauth_session()
         return _get_redditor_listing('downvoted')(self, *args, **kwargs)
+
+    @restrict_access(scope='mysubreddits')
+    def get_friend_info(self):
+        """Return information about this friend, including personal notes.
+
+        The personal note can be added or overwritten with :meth:friend, but
+            only if the user has reddit Gold.
+
+        :returns: The json response from the server.
+
+        """
+        url = self.reddit_session.config['friend_v1'] % self.name
+        data = {'id': self.name}
+        return self.reddit_session.request_json(url, data=data, method='GET')
 
     def get_liked(self, *args, **kwargs):
         """Return a listing of the Submissions the user has upvoted.
@@ -933,9 +970,7 @@ class Redditor(Gildable, Messageable, Refreshable):
         :returns: The json response from the server.
 
         """
-        self.reddit_session.evict(self.reddit_session.config['friends'])
-        return _modify_relationship('friend', unlink=True)(
-            self.reddit_session.user, self)
+        return self.friend(_unfriend=True)
 
 
 class LoggedInRedditor(Redditor):
@@ -963,10 +998,14 @@ class LoggedInRedditor(Redditor):
                 self._mod_subs[six.text_type(sub).lower()] = sub
         return self._mod_subs
 
+    @deprecated('``get_friends`` has been moved to the reddit session object')
     def get_friends(self, **params):
-        """Return a UserList of Redditors with whom the user has friended."""
-        url = self.reddit_session.config['friends']
-        return self.reddit_session.request_json(url, params=params)[0]
+        """Return a UserList of Redditors with whom the user is friends.
+
+        This method has been moved to :class:`praw.AuthenticatedReddit.
+
+        """
+        return self.reddit_session.get_friends(**params)
 
 
 class ModAction(RedditContentObject):

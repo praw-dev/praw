@@ -7,6 +7,7 @@ import time
 import unittest
 from betamax import Betamax, BaseMatcher
 from betamax_matchers.form_urlencoded import URLEncodedBodyMatcher
+from betamax_matchers.json_body import JSONBodyMatcher
 from functools import wraps
 from praw import Reddit
 from requests.compat import urljoin
@@ -30,7 +31,8 @@ class BodyMatcher(BaseMatcher):
         to_compare = request.copy()
         to_compare.body = text_type(to_compare.body)
 
-        return URLEncodedBodyMatcher().match(to_compare, recorded_request)
+        return URLEncodedBodyMatcher().match(to_compare, recorded_request) or \
+            JSONBodyMatcher().match(to_compare, recorded_request)
 
 
 class PRAWTest(unittest.TestCase):

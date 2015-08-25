@@ -102,6 +102,7 @@ class Config(object):  # pylint: disable=R0903
                  'flairselector':       'api/flairselector/',
                  'flairtemplate':       'api/flairtemplate/',
                  'friend':              'api/friend/',
+                 'friend_v1':           'api/v1/me/friends/%s',
                  'friends':             'prefs/friends/',
                  'gild_thing':          'api/v1/gold/gild/{fullname}/',
                  'gild_user':           'api/v1/gold/give/{username}/',
@@ -612,6 +613,12 @@ class BaseReddit(object):
         hook = self._json_reddit_objecter if as_objects else None
         # Request url just needs to be available for the objecter to use
         self._request_url = url  # pylint: disable=W0201
+
+        if response == '':
+            # Some of the v1 urls don't return anything, even when they're
+            # successful.
+            return response
+
         data = json.loads(response, object_hook=hook)
         delattr(self, '_request_url')
         # Update the modhash
@@ -1320,6 +1327,12 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """
         data = {'r':  six.text_type(subreddit), 'link': link}
         return self.request_json(self.config['flairselector'], data=data)
+
+    @decorators.restrict_access(scope='read', login=True)
+    def get_friends(self, **params):
+        """Return a UserList of Redditors with whom the user is friends."""
+        url = self.config['friends']
+        return self.request_json(url, params=params)[0]
 
     @decorators.restrict_access(scope='identity', oauth_only=True)
     def get_me(self):

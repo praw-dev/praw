@@ -22,6 +22,36 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[BUGFIX]** Fixed login password prompt issue on windows (#485).
+ * **[BUGFIX]** Fixed unicode user-agent issue (#483).
+ * **[BUGFIX]** Fix duplicate request issue with comment and submission streams
+   (#501).
+ * **[BUGFIX]** Stopped :meth:`praw.objects.Redditor.friend` from raising
+   LoginRequired when using OAuth.
+ * **[BUGFIX]** Stopped a json-parsing error from occuring in cases where
+   reddit's response to a request was an empty string. :meth:`request_json`
+   will now simply return that empty string.
+ * **[CHANGE]** Added messages to all PRAW exceptions (#491).
+ * **[CHANGE]** Made it easier to send JSON dumps instead of form-encoded data
+   for http requests. Some reddit api-v1 paths are starting to require this.
+ * **[CHANGE]** Moved and deprecated
+   :meth:`praw.objects.LoggedInRedditor.get_friends` to
+   :class:`praw.AuthenticatedReddit`, leaving a pointer in its place.
+   This allows the user to get their friends list without having the
+   identity scope, or forcing LoggedInRedditor upon a separate Redditor
+   instance by setting the \_\_class\_\_, or using `get_friends` as a static
+   method.
+ * **[FEATURE]** Added \_\_str\_\_ methods to all errors, and improved message
+   for others.
+ * **[FEATURE]** Added support for adding "notes" to your friends. Users with
+   reddit Gold can set the ``note`` parameter of 
+   :meth:`praw.objects.Redditor.friend`. 300 character max enforced by reddit.
+ * **[FEATURE]** New :meth:`praw.objects.Redditor.get_friend_info` to see info
+   about one of your friends. Includes their name, ID, when you added them, and
+   if you have reddit Gold, your note about them.
+
 PRAW 3.2.1
 ----------
  * **[BUGFIX]** Fixed "multiple values for argument" error when solving
