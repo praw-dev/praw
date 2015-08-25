@@ -129,7 +129,7 @@ def _stream_generator(get_function, limit=None, verbosity=1):
         start = timer()
         try:
             i = None
-            params = {'count': count}
+            params = {'uniq': count}
             count = (count + 1) % 100
             if before:
                 params['before'] = before

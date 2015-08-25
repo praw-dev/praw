@@ -100,6 +100,51 @@ class OAuth2RedditTest(PRAWTest):
         self.r.set_access_credentials(set('dummy_scope',), 'dummy_token')
         self.assertRaises(errors.OAuthScopeRequired, self.r.get_me)
 
+    def test_raise_client_exception(self):
+        def raise_client_exception(*args):
+            raise errors.ClientException(*args)
+
+        self.assertRaises(errors.ClientException, raise_client_exception)
+        self.assertRaises(errors.ClientException, raise_client_exception,
+                          'test')
+
+        ce_message = errors.ClientException('Test')
+        ce_no_message = errors.ClientException()
+        self.assertEqual(ce_message.message, str(ce_message))
+        self.assertEqual(ce_no_message.message, str(ce_no_message))
+
+    def test_raise_http_exception(self):
+        def raise_http_exception():
+            raise errors.HTTPException('fakeraw')
+
+        self.assertRaises(errors.HTTPException, raise_http_exception)
+        http_exception = errors.HTTPException('fakeraw')
+        self.assertEqual(http_exception.message, str(http_exception))
+
+    def test_raise_oauth_exception(self):
+        oerrormessage = "fakemessage"
+        oerrorurl = "http://oauth.reddit.com/"
+
+        def raise_oauth_exception():
+            raise errors.OAuthException(oerrormessage, oerrorurl)
+
+        self.assertRaises(errors.OAuthException, raise_oauth_exception)
+        oauth_exception = errors.OAuthException(oerrormessage, oerrorurl)
+        self.assertEqual(oauth_exception.message +
+                         " on url {0}".format(oauth_exception.url),
+                         str(oauth_exception))
+
+    def test_raise_redirect_exception(self):
+        apiurl = "http://api.reddit.com/"
+        oauthurl = "http://oauth.reddit.com/"
+
+        def raise_redirect_exception():
+            raise errors.RedirectException(apiurl, oauthurl)
+
+        self.assertRaises(errors.RedirectException, raise_redirect_exception)
+        redirect_exception = errors.RedirectException(apiurl, oauthurl)
+        self.assertEqual(redirect_exception.message, str(redirect_exception))
+
     @betamax()
     def test_scope_history(self):
         self.r.refresh_access_information(self.refresh_token['history'])

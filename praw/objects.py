@@ -137,11 +137,13 @@ class RedditContentObject(object):
         # b) The object is not a WikiPage and the reddit_session has the
         #    `read` scope.
         prev_use_oauth = self.reddit_session._use_oauth
-        self.reddit_session._use_oauth = (
-            isinstance(self, WikiPage) and
-            self.reddit_session.has_scope('wikiread')) or \
-            (not isinstance(self, WikiPage) and
-                self.reddit_session.has_scope('read'))
+
+        wiki_page = isinstance(self, WikiPage)
+        scope = self.reddit_session.has_scope
+
+        self.reddit_session._use_oauth = wiki_page and scope('wikiread') or \
+            not wiki_page and scope('read')
+
         try:
             params = {'uniq': self._uniq} if self._uniq else {}
             response = self.reddit_session.request_json(

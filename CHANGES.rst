@@ -43,8 +43,6 @@ Unreleased
    identity scope, or forcing LoggedInRedditor upon a separate Redditor
    instance by setting the \_\_class\_\_, or using `get_friends` as a static
    method.
- * **[FEATURE]** Added \_\_str\_\_ methods to all errors, and improved message
-   for others.
  * **[FEATURE]** Added support for adding "notes" to your friends. Users with
    reddit Gold can set the ``note`` parameter of 
    :meth:`praw.objects.Redditor.friend`. 300 character max enforced by reddit.
