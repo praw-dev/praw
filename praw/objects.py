@@ -644,43 +644,64 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
                 reply._update_submission(submission)  # pylint: disable=W0212
 
     @property
-    def context(self, context_number=3):
+    def default_contextlink(self):
+        """Return the default link to the comment's context."""
+        context_suffix = self.id + "?context=3"
+        return urljoin(self.get_post().permalink, context_suffix)
+
+    def contextlink(self, context_number=3):
+        """Return a link to the comment's context.
+        
+        :param context_number: The context of the tree.
+        Defaults to 3 as on reddit.
+        
+        """
+        context_suffix = self.id + "?context=" + str(context_number)
+        return urljoin(self.get_post().permalink, context_suffix)
+
+    def get_context(self, context_number=3, *args, **kwargs):
         """Return the Submission object the comment belongs to with
         only one comment tree starting at the comment's given context.
 
-        :param context_number: The context of the tree. Defaults to 3.
+        :param context_number: The amount of context in the tree. Must be
+        an integer. Defaults to 3 as on reddit.
+        
+        The additional parameters are passed directly into
+        :meth:`get_submission`. Note: the `url` parameter cannot be altered.
 
         """
         if self._context_number != context_number:
             self._context_number = context_number
             params = { 'context' : context_number }
+            if 'params' in kwargs:
+                params.update(kwargs['params'])
+                kwargs.pop('params')
             self._context = self.reddit_session.get_submission(
-                url=self.permalink, params=params)
+                url=self.permalink, params=params, *args, **kwargs)
         return self._context
-
-    @property
-    def contextlink(self, context_number=3):
-        """Return a a link to the comment's context.
+    
+    def get_post(self, *args, **kwargs):
+        """Return the Submission object this comment belongs to.
         
-        :param context_number: The context of the tree. Defaults to 3
+        The additional parameters are passed directly into
+        :meth:`get_submission`. Note: the `url` parameter cannot be altered.
         
         """
-        context_suffix = self.id + "?context=" + str(context_number)
-        return urljoin(self.submission.permalink, context_suffix)
+        if not self._submission:  # Comment not from submission
+            self._submission = self.reddit_session.get_submission(
+                url=self._fast_permalink, *args, **kwargs)
+        return self._submission
 
-    @property
-    def is_root(self):
-        """Return True when the comment is a top level comment."""
-        sub_prefix = self.reddit_session.config.by_object[Submission]
-        return self.parent_id.startswith(sub_prefix)
-
-    @property
-    def parent(self):
+    def get_parent(self, *args, **kwargs):
         """Return the Submission object this comment belongs to, with
-        the only tree starting at the parent comment if it exists.
-        
-        Otherwise, return the Submisison object this comment belongs to.
-        
+        the only tree starting at the parent comment if one exists.
+
+        Otherwise, the current Comment object is a root comment, and
+        the full Submission object is the parent that will be returned.
+
+        The additional parameters are passed directly into
+        :meth:`get_submission`. Note: the `url` parameter cannot be altered.
+
         """
         sub_prefix = self.reddit_session.config.by_object[Submission]
         comment_prefix = self.reddit_session.config.by_object[Comment]
@@ -692,6 +713,25 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
                     url=self.parentlink)
         return self._parent
 
+    def get_tree(self, *args, **kwargs):
+        """Return the Submission object this comment belongs to
+        with only the only tree starting at the Comment object.
+
+        The additional parameters are passed directly into
+        :meth:`get_submission`. Note: the `url` parameter cannot be altered.
+
+        """
+        if not self._tree:
+            self._tree = self.reddit_session.get_submission(
+                url=self.permalink, *args, **kwargs)
+        return self._tree
+
+    @property
+    def is_root(self):
+        """Return True when the comment is a top level comment."""
+        sub_prefix = self.reddit_session.config.by_object[Submission]
+        return self.parent_id.startswith(sub_prefix)
+
     @property
     def parentlink(self):
         """Return a a link to the comment's parent."""
@@ -701,12 +741,12 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
                 return self.submission.permalink
         elif self.parent_id.startswith(comment_prefix):
                 parentid = self.parent_id.replace(comment_prefix + "_", "")
-        return urljoin(self.submission.permalink, parentid)
+        return urljoin(self.get_post().permalink, parentid)
 
     @property
     def permalink(self):
         """Return a permalink to the comment."""
-        return urljoin(self.submission.permalink, self.id)
+        return urljoin(self.get_post().permalink, self.id)
 
     @property
     def replies(self):
@@ -725,6 +765,9 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
                 self._submission = response[0]['data']['children'][0]
         return self._replies
 
+    @deprecated('Property :meth:`submission` has been changed to method '
+                ':meth:`get_post` for added functionality and will be '
+                'removed from :class:`objects.Comment` in PRAW v4.0.0')
     @property
     def submission(self):
         """Return the Submission object this comment belongs to."""
@@ -733,16 +776,6 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
                 url=self._fast_permalink)
         return self._submission
 
-    @property
-    def tree(self):
-        """Return the Submission object this comment belongs to
-        with only one comment tree, starting at the comment object.
-        
-        """
-        if not self._tree:
-            self._tree = self.reddit_session.get_submission(
-                url=self.permalink)
-        return self._tree
 
 class Message(Inboxable):
 
