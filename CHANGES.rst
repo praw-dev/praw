@@ -35,14 +35,16 @@ Unreleased
    will now simply return that empty string.
  * **[CHANGE]** Added messages to all PRAW exceptions (#491).
  * **[CHANGE]** Made it easier to send JSON dumps instead of form-encoded data
-   for http requests. Some reddit api-v1 paths are starting to require this.
+   for http requests. Some api-v1 endpoints require the request body to be in
+   the json format.
  * **[CHANGE]** Moved and deprecated
    :meth:`praw.objects.LoggedInRedditor.get_friends` to
    :class:`praw.AuthenticatedReddit`, leaving a pointer in its place.
-   This allows the user to get their friends list without having the
-   identity scope, or forcing LoggedInRedditor upon a separate Redditor
-   instance by setting the \_\_class\_\_, or using `get_friends` as a static
-   method.
+   Previously, `get_friends` was difficult to access because the only instance
+   of `LoggedInRedditor` was the reddit session's `user` attribute, which is
+   only instantiated if the user has the "identity" scope. By moving
+   `get_friends` to the reddit session, it can be used without having to
+   manipulate a :class:`praw.objects.Redditor` intsance's class.
  * **[FEATURE]** Added support for adding "notes" to your friends. Users with
    reddit Gold can set the ``note`` parameter of 
    :meth:`praw.objects.Redditor.friend`. 300 character max enforced by reddit.

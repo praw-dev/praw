@@ -844,12 +844,12 @@ class Redditor(Gildable, Messageable, Refreshable):
             self.name = tmp
 
     @restrict_access(scope='subscribe')
-    def friend(self, note='', _unfriend=False):
+    def friend(self, note=None, _unfriend=False):
         """Friend the user.
 
         :param note: A personal note about the user. Requires reddit Gold.
         :param _unfriend: Unfriend the user. Please use :meth:`unfriend`
-            instead of settings this parameter manually.
+            instead of setting this parameter manually.
 
         :returns: The json response from the server.
 
@@ -860,18 +860,19 @@ class Redditor(Gildable, Messageable, Refreshable):
         # Requests through oauth use /api/v1/me/friends/%username%
         if not self.reddit_session.is_oauth_session():
             modifier = _modify_relationship('friend', unlink=_unfriend)
-            return modifier(self.reddit_session.user, self)
+            data = {'note': note} if note else {}
+            return modifier(self.reddit_session.user, self, **data)
 
-        url = self.reddit_session.config['friend_v1'] % self.name
+        url = self.reddit_session.config['friend_v1'].format(user=self.name)
         # This endpoint wants the data to be a string instead of an actual
         # dictionary, although it is not required to have any content for adds.
         # Unfriending does require the 'id' key.
         if _unfriend:
-            data = dumps({'id': self.name})
+            data = {'id': self.name}
         else:
-            # Sending an empty note string raises http 400, although the reddit
-            # source code would suggest otherwise.
-            data = dumps({'note': note} if note else {})
+            # We cannot send a null or empty note string.
+            data = {'note': note} if note else {}
+        data = dumps(data)
         method = 'DELETE' if _unfriend else 'PUT'
         return self.reddit_session.request_json(url, data=data, method=method)
 
@@ -914,7 +915,7 @@ class Redditor(Gildable, Messageable, Refreshable):
         :returns: The json response from the server.
 
         """
-        url = self.reddit_session.config['friend_v1'] % self.name
+        url = self.reddit_session.config['friend_v1'].format(user=self.name)
         data = {'id': self.name}
         return self.reddit_session.request_json(url, data=data, method='GET')
 
@@ -1000,7 +1001,9 @@ class LoggedInRedditor(Redditor):
                 self._mod_subs[six.text_type(sub).lower()] = sub
         return self._mod_subs
 
-    @deprecated('``get_friends`` has been moved to the reddit session object')
+    @deprecated(':meth:`get_friends` has been moved to '
+                ':class:`praw.AuthenticatedReddit` and will be removed from '
+                ':class:`objects.LoggedInRedditor` in PRAW v4.0.0')
     def get_friends(self, **params):
         """Return a UserList of Redditors with whom the user is friends.
 
