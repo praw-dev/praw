@@ -618,7 +618,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         self._tree = None
         self._parent = None
         self._context = None
-        self._cached_context_number = None
+        self._context_number = None
 
     @limit_chars
     def __unicode__(self):
@@ -644,19 +644,29 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
                 reply._update_submission(submission)  # pylint: disable=W0212
 
     @property
-    def context(self, contextnumber=3):
-        if self._cached_context_number != contextnumber:
-            self._cached_context_number = contextnumber
-            params = { 'context' : contextnumber }
+    def context(self, context_number=3):
+        """Return the Submission object the comment belongs to with
+        only one comment tree starting at the comment's given context.
+
+        :param context_number: The context of the tree. Defaults to 3.
+
+        """
+        if self._context_number != context_number:
+            self._context_number = context_number
+            params = { 'context' : context_number }
             self._context = self.reddit_session.get_submission(
                 url=self.permalink, params=params)
         return self._context
 
     @property
-    def contextlink(self, contextnumber=3):
-        """Return a a link to the comment's context."""
-        context = self.id + "?context=" + contextnumber
-        return urljoin(self.submission.permalink, context)
+    def contextlink(self, context_number=3):
+        """Return a a link to the comment's context.
+        
+        :param context_number: The context of the tree. Defaults to 3
+        
+        """
+        context_suffix = self.id + "?context=" + str(context_number)
+        return urljoin(self.submission.permalink, context_suffix)
 
     @property
     def is_root(self):
@@ -668,24 +678,30 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
     def parent(self):
         """Return the Submission object this comment belongs to, with
         the only tree starting at the parent comment if it exists.
-        Otherwise, return the Submisison object this comment belongs to."""
+        
+        Otherwise, return the Submisison object this comment belongs to.
+        
+        """
         sub_prefix = self.reddit_session.config.by_object[Submission]
         comment_prefix = self.reddit_session.config.by_object[Comment]
         if not self._parent:
             if self.parent_id.startswith(sub_prefix):
-                self._parent =  self.submission
+                self._parent = self.submission
             elif self.parent_id.startswith(comment_prefix):
                 self._parent = self.reddit_session.get_submission(
                     url=self.parentlink)
+        return self._parent
 
     @property
     def parentlink(self):
         """Return a a link to the comment's parent."""
+        sub_prefix = self.reddit_session.config.by_object[Submission]
+        comment_prefix = self.reddit_session.config.by_object[Comment]
         if self.parent_id.startswith(sub_prefix):
                 return self.submission.permalink
         elif self.parent_id.startswith(comment_prefix):
-                parentid = self.parent_id.replace(commentprefix, "")
-        return urljoin(self.submission.permalink, self.parent_id)
+                parentid = self.parent_id.replace(comment_prefix + "_", "")
+        return urljoin(self.submission.permalink, parentid)
 
     @property
     def permalink(self):
@@ -719,7 +735,10 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
     @property
     def tree(self):
-        """Return the Submission object this comment belongs to,"""
+        """Return the Submission object this comment belongs to
+        with only one comment tree, starting at the comment object.
+        
+        """
         if not self._tree:
             self._tree = self.reddit_session.get_submission(
                 url=self.permalink)
