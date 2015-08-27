@@ -1,4 +1,4 @@
-# This file is part of PRAW.
+﻿# This file is part of PRAW.
 #
 # PRAW is free software: you can redistribute it and/or modify it under the
 # terms of the GNU General Public License as published by the Free Software
@@ -1019,10 +1019,22 @@ class UnauthenticatedReddit(BaseReddit):
         return objects.Submission.from_json(self.request_json(url,
                                                               params=param))
 
-    def get_submission(self, url=None, submission_id=None, comment_limit=0,
-                       comment_sort=None, params=None):
+    def get_submission(self, url=None, submission_id=None, comment_root=None,
+                       comment_limit=0, comment_sort=None, params=None):
         """Return a Submission object for the given url or submission_id.
 
+        :param url: The url to build the Submission object from. If a
+            permalink to a comment, the comment forest will have it's root
+            at that comment. Incompatable with `submission_id`.
+        :param submission_id: The id of a submission to build the Submission
+            object from. Incompatable with `url`.
+        :param comment_root: The root of the comment forest. Only applicable
+            if `url` is in smalllink format, or you are using `submission_id`
+            This parameter will raise an error otherwise. This parameter causes
+            one more api request to be made. As such, it is recommended to
+            instead pass `url` as a comment permalink if you are worried about
+            request limits. An example of smalllink format:
+            https://www.reddit.com/comments/39zje0/
         :param comment_limit: The desired number of comments to fetch. If <= 0
             fetch the default number for the session's user. If None, fetch the
             maximum possible.
@@ -1032,10 +1044,13 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         if bool(url) == bool(submission_id):
-            raise TypeError('One (and only one) of id or url is required!')
+            raise TypeError('One (and only one) of submision_id or url is required!')
+        if bool(comment_root) and not (bool(submission_id) or bool(url)):
+            raise TypeError('comment_root can only be used if submission_id or url is!')
         if submission_id:
             url = urljoin(self.config['comments'], submission_id)
         return objects.Submission.from_url(self, url,
+                                           comment_root=comment_root,
                                            comment_limit=comment_limit,
                                            comment_sort=comment_sort,
                                            params=params)
