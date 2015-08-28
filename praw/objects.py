@@ -644,7 +644,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         elif self.parent_id.startswith(comment_prefix):
                 parentid = self.parent_id.split("_", 1)[-1]
                 return urljoin(self.reddit_session.config['comments'],
-                               '{0}/_/{1}'.format(sid, parent_id))
+                               '{0}/_/{1}'.format(sid, parentid))
 
     @property
     def _fast_permalink(self):
@@ -658,16 +658,15 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
     @property
     def _fast_submission_permalink(self):
-        """Return the short permalink to the submission that this
+        """Return the fast permalink to the submission that this
         comment belongs to.
-        
+
         """
         if hasattr(self, 'link_id'):  # from /r or /u comments page
             sid = self.link_id.split('_')[1]
         else:  # from user's /message page
             sid = self.context.split('/')[4]
         return urljoin(self.reddit_session.config['comments'], sid)
-
 
     def _update_submission(self, submission):
         """Submission isn't set on __init__ thus we need to update it."""
@@ -685,10 +684,10 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
     def contextlink(self, context_number=3):
         """Return a link to the comment's context.
-        
+
         :param context_number: The amount of context in the tree. Must be
-        ab integer. Defaults to 3 as on reddit.
-        
+        a integer. Defaults to 3 as on reddit.
+
         """
         if not isinstance(context_number, int):
             raise TypeError('context_number must be an integer')
@@ -712,7 +711,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
             raise TypeError('context_number must be an integer')
         if self._context_number != context_number:
             self._context_number = context_number
-            params = { 'context' : context_number }
+            params = {'context': context_number}
             if 'params' in kwargs:
                 params.update(kwargs['params'])
                 kwargs.pop('params')
@@ -745,12 +744,12 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
     def get_submission(self, *args, **kwargs):
         """Return the Submission object this comment belongs to.
-        
+
         The additional parameters are passed directly into
         :meth:`praw.UnauthenticatedReddit.get_submission`.
         Note: the `url`, `submission_id`, and `comment_root`
         parameters cannot be altered.
-        
+
         """
         if not self._submission:  # Comment not from submission
             self._submission = self.reddit_session.get_submission(
@@ -826,7 +825,6 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
     @property
     def submission_permalink(self):
         return self.get_submission().permalink
-
 
 
 class Message(Inboxable):
