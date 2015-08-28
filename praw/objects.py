@@ -619,7 +619,8 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
             self._replies = None
         self._submission = None
         self._tree = None
-        #info used by various methods
+
+        # info used by various methods
         self.parentid = self.parent_id.split("_", 1)[-1]
         if hasattr(self, 'link_id'):  # from /r or /u comments page
             self.sid = self.link_id.split('_')[1]

@@ -47,16 +47,16 @@ EOL Issues
 
 Depending on the OS you are editing the source on, you may run into one of two
 strange errors. Firstly, PRAW was written on a Unix-based OS. This means, that
-the source's `EOLs` (End Of Lines) are the Unix `LF` character, a.k.a "\\n"
-a.k.a hex `0x0A`.
+the source's ``EOLs`` (End Of Lines) are the Unix ``LF`` character, a.k.a "\\n"
+a.k.a hex ``0x0A``.
 
-On Windows, `EOLs` are `CRLF`, which is `0x0D0A` ("\\r\\n") or if you are on a
-Mac with OS-9 and earlier `EOLs` are `0x0D` ("\\r"). More info on `EOLs` can be
-found [here] (http://bit.ly/1Ug8Xyo).
+On Windows, ``EOLs`` are ``CRLF``, which is ``0x0D0A`` ("\\r\\n") or if you are
+on a Mac with OS-9 and earlier ``EOLs`` are ``0x0D`` ("\\r"). More info on
+``EOLs`` can be found `here <http://bit.ly/1Ug8Xyo>`_.
 
 This can potentially pose one of two problems.
 
-1. Your `EOLs` may not be automatically converted and your code will break PRAW.
+1. Your ``EOLs`` may not be automatically converted and your code will break PRAW.
 
 2. Your editor automatically converts `EOLs`, at the cost that three invisible
    hexadecimal values are added at the beginning of a line, which also breaks
@@ -65,8 +65,8 @@ This can potentially pose one of two problems.
 
 The solutions to each are as follows:
 
-1. You will have to find a editor that does converts `EOLs`, edit online, convert 
+1. You will have to find a editor that does converts ``EOLs``, edit online, convert 
    them manually with a hex editor.
-2. Open the file in a hex editor such as [HxD] (http://mh-nexus.de/en/hxd/), and 
+2. Open the file in a hex editor such as `HxD <http://mh-nexus.de/en/hxd/>`_, and 
    you will see some characters at the beginning of the "corrupt" line that you would
    not see otherwise. Delete them, and re-commit to Github.
