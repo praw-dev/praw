@@ -626,14 +626,48 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         return getattr(self, 'body', '[Unloaded Comment]')
 
     @property
+    def _fast_default_contextlink(self):
+        """Rerturn the default fast link to the comment's context."""
+        return urljoin(self._fast_permalink, "?context=3")
+
+    @property
+    def _fast_parentlink(self):
+        """Return the fast parentlink to the parent."""
+        if hasattr(self, 'link_id'):  # from /r or /u comments page
+            sid = self.link_id.split('_')[1]
+        else:  # from user's /message page
+            sid = self.context.split('/')[4]
+        sub_prefix = self.reddit_session.config.by_object[Submission]
+        comment_prefix = self.reddit_session.config.by_object[Comment]
+        if self.parent_id.startswith(sub_prefix):
+                return urljoin(self.reddit_session.config['comments'], sid)
+        elif self.parent_id.startswith(comment_prefix):
+                parentid = self.parent_id.split("_", 1)[-1]
+                return urljoin(self.reddit_session.config['comments'],
+                               '{0}/_/{1}'.format(sid, parent_id))
+
+    @property
     def _fast_permalink(self):
-        """Return the short permalink to the comment."""
+        """Return the fast permalink to the comment."""
         if hasattr(self, 'link_id'):  # from /r or /u comments page
             sid = self.link_id.split('_')[1]
         else:  # from user's /message page
             sid = self.context.split('/')[4]
         return urljoin(self.reddit_session.config['comments'], '{0}/_/{1}'
                        .format(sid, self.id))
+
+    @property
+    def _fast_submission_permalink(self):
+        """Return the short permalink to the submission that this
+        comment belongs to.
+        
+        """
+        if hasattr(self, 'link_id'):  # from /r or /u comments page
+            sid = self.link_id.split('_')[1]
+        else:  # from user's /message page
+            sid = self.context.split('/')[4]
+        return urljoin(self.reddit_session.config['comments'], sid)
+
 
     def _update_submission(self, submission):
         """Submission isn't set on __init__ thus we need to update it."""
@@ -683,22 +717,8 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
                 params.update(kwargs['params'])
                 kwargs.pop('params')
             self._context = self.reddit_session.get_submission(
-                url=self.permalink, params=params, *args, **kwargs)
+                url=self._fast_permalink, params=params, *args, **kwargs)
         return self._context
-    
-    def get_submission(self, *args, **kwargs):
-        """Return the Submission object this comment belongs to.
-        
-        The additional parameters are passed directly into
-        :meth:`praw.UnauthenticatedReddit.get_submission`.
-        Note: the `url`, `submission_id`, and `comment_root`
-        parameters cannot be altered.
-        
-        """
-        if not self._submission:  # Comment not from submission
-            self._submission = self.reddit_session.get_submission(
-                url=self._fast_permalink, *args, **kwargs)
-        return self._submission
 
     def get_parent(self, *args, **kwargs):
         """Return the Submission object this comment belongs to, with
@@ -717,11 +737,25 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         comment_prefix = self.reddit_session.config.by_object[Comment]
         if not self._parent:
             if self.parent_id.startswith(sub_prefix):
-                self._parent = self.submission
+                self._parent = self.get_submission()
             elif self.parent_id.startswith(comment_prefix):
                 self._parent = self.reddit_session.get_submission(
-                    url=self.parentlink)
+                    url=self._fast_parentlink)
         return self._parent
+
+    def get_submission(self, *args, **kwargs):
+        """Return the Submission object this comment belongs to.
+        
+        The additional parameters are passed directly into
+        :meth:`praw.UnauthenticatedReddit.get_submission`.
+        Note: the `url`, `submission_id`, and `comment_root`
+        parameters cannot be altered.
+        
+        """
+        if not self._submission:  # Comment not from submission
+            self._submission = self.reddit_session.get_submission(
+                url=self._fast_submission_permalink, *args, **kwargs)
+        return self._submission
 
     def get_tree(self, *args, **kwargs):
         """Return the Submission object this comment belongs to
@@ -735,7 +769,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         """
         if not self._tree:
             self._tree = self.reddit_session.get_submission(
-                url=self.permalink, *args, **kwargs)
+                url=self._fast_permalink, *args, **kwargs)
         return self._tree
 
     @property
@@ -772,21 +806,27 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
             self._replies = response[1]['data']['children'][0]._replies
             # pylint: enable=W0212
             self._has_fetched_replies = True
-            # Set the submission object if it is not set.
-            if not self._submission:
-                self._submission = response[0]['data']['children'][0]
+            # Set the tree object if it is not set.
+            if not self._tree:
+                self._tree = response[0]['data']['children'][0]
         return self._replies
 
     @property
     @deprecated('Property :meth:`submission` has been changed to method '
-                ':meth:`get_submission` for added functionality and will '
-                'be removed from :class:`objects.Comment` in PRAW v4.0.0')
+                ':meth:`get_tree` for added functionality and will be '
+                'removed from :class:`objects.Comment` in PRAW v4.0.0. '
+                'See #500, #511, and #512 for more information.')
     def submission(self):
         """Return the Submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
             self._submission = self.reddit_session.get_submission(
                 url=self._fast_permalink)
         return self._submission
+
+    @property
+    def submission_permalink(self):
+        return self.get_submission().permalink
+
 
 
 class Message(Inboxable):
@@ -1180,7 +1220,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
     @staticmethod
     @restrict_access(scope='read')
-    def from_url(reddit_session, url, comment_root=None, comment_limit=0,
+    def from_url(reddit_session, url, comment_limit=0,
                  comment_sort=None, comments_only=False, params=None):
         """Request the url and return a Submission object.
 
@@ -1188,13 +1228,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         :param url: The url to build the Submission object from. If a
             permalink to a comment, the comment forest will have it's root
             at that comment.
-        :param comment_root: The root of the comment forest. Only applicable
-            if `url` is in smalllink format. This parameter will raise an
-            error otherwise. This parameter causes one more api request to
-            be made. As such, it is recommended to instead pass `url` as 
-            a comment permalink if you are worried about request limits.
-            An example of smalllink format:
-            https://www.reddit.com/comments/39zje0/
         :param comment_limit: The desired number of comments to fetch. If <= 0
             fetch the default number for the session's user. If None, fetch the
             maximum possible.
@@ -1204,13 +1237,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         :param params: dictionary containing extra GET data to put in the url.
 
         """
-        comment_root_test = url.split('/')[2] + "/"
-        smalllink_test = reddit_session.config['comments']
-
-        if (comment_root_test != smalllink_test) and bool(comment_root):
-            raise TypeError('comment_root can only be used if url is in '
-                            'smalllink format!')
-
         if params is None:
             params = {}
 
@@ -1228,10 +1254,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
         response = reddit_session.request_json(url, params=params)
         submission = Submission.from_json(response)
-        if bool(comment_root):
-            url = urljoin(submission.permalink, comment_root)
-            response = reddit_session.request_json(url, params=params)
-            submission = Submission.from_json(response)
         if comments_only:
             return response[1]['data']['children']
         submission._comment_sort = comment_sort  # pylint: disable=W0212
