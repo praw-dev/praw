@@ -658,10 +658,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
     @property
     def _fast_submission_permalink(self):
-        """Return the fast permalink to the submission that this 
-        comment belongs to.
-
-        """
+        """Return the fast permalink to the submission."""
         if hasattr(self, 'link_id'):  # from /r or /u comments page
             sid = self.link_id.split('_')[1]
         else:  # from user's /message page
@@ -695,8 +692,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         return urljoin(self.get_submission().permalink, context_suffix)
 
     def get_context(self, context_number=3, *args, **kwargs):
-        """Return the Submission object the comment belongs to with 
-        only one comment tree starting at the comment's given context.
+        """Return the tree the comment belongs to with the given context.
 
         :param context_number: The amount of context in the tree. Must be
         an integer. Defaults to 3 as on reddit.
@@ -720,9 +716,9 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         return self._context
 
     def get_parent(self, *args, **kwargs):
-        """Return the Submission object this comment belongs to, with 
-        the only tree starting at the parent comment if one exists.
+        """Return the object that is this comment's parent.
 
+        This is the tree object if the parent is a comment.
         Otherwise, the current Comment object is a root comment, and
         the full Submission object is the parent that will be returned.
 
@@ -757,8 +753,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         return self._submission
 
     def get_tree(self, *args, **kwargs):
-        """Return the Submission object this comment belongs to 
-        with the only tree starting at the Comment object.
+        """Return the Submission object with only the Comment object's tree.
 
         The additional parameters are passed directly into
         :meth:`praw.UnauthenticatedReddit.get_submission`.
