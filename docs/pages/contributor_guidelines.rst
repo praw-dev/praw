@@ -12,22 +12,6 @@ PRAW follows :PEP:`8` and :PEP:`257`. You can use ``lint.sh`` to test for
 compliance with these PEP's. The following are PRAW-specific guidelines in to
 those PEP's.
 
-Depending on the OS you are editing the source on, you may run into one of two
-strange errors. Firstly, PRAW was written on a Unix-based OS. This means, that
-the source's `EOLs` (End Of Lines) are the Unix `LF` character, or hex `0x0A`.
-On Windows, `EOLs` are `CRLF`, which is `0x0D0A` or if you are on a Mac with
-OS-9 and earlier `EOLs` are `0x0D`. More info on `EOLs` can be found [here]
-(http://bit.ly/1Ug8Xyo). This can pose one of two problems. One, your `EOLs`
-may not be automatically converted, and you will have to find a editor that
-does so or do so manually, or else your code will break PRAW. Two, your editor
-automatically converts `EOLs`, at the cost that three hexadecimal values are
-added at the beginning of the file, which also breaks PRAW. This can be
-determined to be the case if in the commit history on Github, the first line
-of a file is removed and re-added with no visible change. To fix this, open
-the file in a hex editor such as [HxD](http://mh-nexus.de/en/hxd/), and you
-will see some characters at the beginning of the first line that you wouldn't
-see otherwise. Delete them, and re-commit to Github, and your issue is solved!
-
 Code
 ----
 
@@ -57,3 +41,33 @@ Documentation
   'reddit.com'. This helps prevent any confusion between what is universally
   true between all reddits and what specifically applies to the most known
   instance.
+
+EOL Issues
+----------
+
+Depending on the OS you are editing the source on, you may run into one of two
+strange errors. Firstly, PRAW was written on a Unix-based OS. This means, that
+the source's `EOLs` (End Of Lines) are the Unix `LF` character, a.k.a "\n"
+a.k.a hex `0x0A`.
+
+On Windows, `EOLs` are `CRLF`, which is `0x0D0A` ("\r\n") or if you are on a
+Mac with OS-9 and earlier `EOLs` are `0x0D` ("\r"). More info on `EOLs` can be
+found [here](http://bit.ly/1Ug8Xyo).
+
+This can potentially pose one of two problems.
+
+1. Your `EOLs` may not be automatically converted and your code will break PRAW.
+
+2. Your editor automatically converts `EOLs`, at the cost that three invisible
+hexadecimal values are added at the beginning of a line, which also breaks
+PRAW. This can be determined to be the case if in the commit history on Github,
+the a line of a file is removed and re-added with no visible change.
+
+The solutions to each are as follows:
+
+1. You will have to find a editor that does converts `EOLs`, edit online, convert
+    them manually with a hex editor.
+
+2. Open the file in a hex editor such as [HxD](http://mh-nexus.de/en/hxd/), and
+you will see some characters at the beginning of the "corrupt" line that you would
+not see otherwise. Delete them, and re-commit to Github.
