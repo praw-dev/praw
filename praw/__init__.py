@@ -1028,7 +1028,7 @@ class UnauthenticatedReddit(BaseReddit):
             at that comment. Incompatable with `submission_id`.
         :param submission_id: The id of a submission to build the Submission
             object from. Incompatable with `url`.
-        :param comment_root: The root of the comment forest as the comment's 
+        :param comment_root: The root of the comment forest as the comment's
             id. Only applicable if you are using `submission_id`. This
             parameter will raise an error otherwise.
         :param comment_limit: The desired number of comments to fetch. If <= 0
@@ -1040,9 +1040,11 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         if bool(url) == bool(submission_id):
-            raise TypeError('One (and only one) of submision_id or url is required!')
-        if bool(comment_root) == True and bool(submission_id) == False:
-            raise TypeError('comment_root can only be used if submission_id is!')
+            raise TypeError('One (and only one) of submision_id or '
+                            'url is required!')
+        if bool(comment_root) and bool(submission_id) == False:
+            raise TypeError('comment_root can only be used if '
+                            'submission_id is!')
         if submission_id:
             url = urljoin(self.config['comments'], submission_id)
             if comment_root:
