@@ -1042,7 +1042,7 @@ class UnauthenticatedReddit(BaseReddit):
         if bool(url) == bool(submission_id):
             raise TypeError('One (and only one) of submision_id or '
                             'url is required!')
-        if bool(comment_root) and bool(submission_id) == False:
+        if bool(comment_root) and bool(submission_id) is False:
             raise TypeError('comment_root can only be used if '
                             'submission_id is!')
         if submission_id:
