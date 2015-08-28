@@ -1220,8 +1220,8 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
     @staticmethod
     @restrict_access(scope='read')
-    def from_url(reddit_session, url, comment_limit=0,
-                 comment_sort=None, comments_only=False, params=None):
+    def from_url(reddit_session, url, comment_limit=0, comment_sort=None,
+                 comments_only=False, params=None):
         """Request the url and return a Submission object.
 
         :param reddit_session: The session to make the request with.
@@ -1253,9 +1253,9 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
             params['sort'] = comment_sort
 
         response = reddit_session.request_json(url, params=params)
-        submission = Submission.from_json(response)
         if comments_only:
             return response[1]['data']['children']
+        submission = Submission.from_json(response)
         submission._comment_sort = comment_sort  # pylint: disable=W0212
         submission._params = params  # pylint: disable=W0212
         return submission
