@@ -59,14 +59,14 @@ This can potentially pose one of two problems.
 1. Your `EOLs` may not be automatically converted and your code will break PRAW.
 
 2. Your editor automatically converts `EOLs`, at the cost that three invisible
- hexadecimal values are added at the beginning of a line, which also breaks
- PRAW. This can be determined to be the case if in the commit history on Github,
- the a line of a file is removed and re-added with no visible change.
+  hexadecimal values are added at the beginning of a line, which also breaks
+  PRAW. This can be determined to be the case if in the commit history on Github,
+  the a line of a file is removed and re-added with no visible change.
 
 The solutions to each are as follows:
 
-1. You will have to find a editor that does converts `EOLs`, edit online, convert
- them manually with a hex editor.
-2. Open the file in a hex editor such as [HxD](http://mh-nexus.de/en/hxd/), and
- you will see some characters at the beginning of the "corrupt" line that you would
- not see otherwise. Delete them, and re-commit to Github.
+1. You will have to find a editor that does converts `EOLs`, edit online, convert 
+  them manually with a hex editor.
+2. Open the file in a hex editor such as [HxD](http://mh-nexus.de/en/hxd/), and 
+  you will see some characters at the beginning of the "corrupt" line that you would
+  not see otherwise. Delete them, and re-commit to Github.
