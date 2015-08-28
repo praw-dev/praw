@@ -658,7 +658,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
     @property
     def _fast_submission_permalink(self):
-        """Return the fast permalink to the submission that this
+        """Return the fast permalink to the submission that this 
         comment belongs to.
 
         """
@@ -695,12 +695,12 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         return urljoin(self.get_submission().permalink, context_suffix)
 
     def get_context(self, context_number=3, *args, **kwargs):
-        """Return the Submission object the comment belongs to with
+        """Return the Submission object the comment belongs to with 
         only one comment tree starting at the comment's given context.
 
         :param context_number: The amount of context in the tree. Must be
         an integer. Defaults to 3 as on reddit.
-        
+
         The additional parameters are passed directly into
         :meth:`praw.UnauthenticatedReddit.get_submission`.
         Note: the `url`, `submission_id`, and `comment_root`
@@ -720,7 +720,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         return self._context
 
     def get_parent(self, *args, **kwargs):
-        """Return the Submission object this comment belongs to, with
+        """Return the Submission object this comment belongs to, with 
         the only tree starting at the parent comment if one exists.
 
         Otherwise, the current Comment object is a root comment, and
@@ -757,7 +757,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         return self._submission
 
     def get_tree(self, *args, **kwargs):
-        """Return the Submission object this comment belongs to
+        """Return the Submission object this comment belongs to 
         with the only tree starting at the Comment object.
 
         The additional parameters are passed directly into
@@ -824,6 +824,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
     @property
     def submission_permalink(self):
+        """Return the permalink to the submission."""
         return self.get_submission().permalink
 
 
