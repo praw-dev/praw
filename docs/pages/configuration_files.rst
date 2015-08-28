@@ -71,9 +71,9 @@ config file. Each site can overwrite any of these variables.
   will pick up the environment variable for https_proxy, if it has been set.
 * *log_requests:* An **integer** that determines the level of API call logging.
 
- * **0:** no logging
- * **1:** log only the request URIs
- * **2:** log the request URIs as well as any POST data
+  * **0:** no logging
+  * **1:** log only the request URIs
+  * **2:** log the request URIs as well as any POST data
 
 * *oauth_domain:* A **string** that defines the *domain* where OAuth
   authenticated requests are sent.
