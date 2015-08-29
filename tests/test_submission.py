@@ -5,6 +5,7 @@ from praw import errors
 from praw.objects import Submission
 from six import text_type
 from .helper import OAuthPRAWTest, PRAWTest, betamax
+import sys
 
 
 class SubmissionTest(PRAWTest):
@@ -271,9 +272,14 @@ class OAuthSubmissionTest(OAuthPRAWTest):
                "google/")
         id = "16kbb7"
         comment = "c89lnp2"
-        with self.assertRaises(TypeError):
-            self.r.get_submission(url=url, submission_id=id)
-            self.r.get_submission(url=url, comment_root=comment)
+        if sys.version_info >= (2, 7):
+            with self.assertRaises(TypeError):
+                # Python 2.6 has issues with unittest.testcase
+                # so it's skipped for Python 2.6
+                self.r.get_submission(url=url, submission_id=id)
+                self.r.get_submission(url=url, comment_root=comment)
+        else:
+            pass
 
     @betamax()
     def test_submit_oauth(self):
