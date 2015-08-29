@@ -38,7 +38,6 @@ class CommentTest(PRAWTest):
         self.assertEqual(reply.body, text)
         self.assertEqual(reply.get_parent(), submission)
 
-
     @betamax()
     def test_edit(self):
         comment = next(self.r.user.get_comments())
