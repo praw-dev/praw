@@ -52,6 +52,12 @@ class CommentTest(PRAWTest):
         self.assertTrue(item.id in item._fast_default_contextlink)
 
     @betamax()
+    def test_get_comments_parentlink(self):
+        item = next(self.subreddit.get_comments())
+        self.assertTrue(item.sid in item.parentlink)
+        self.assertTrue(item.sid in item._fast_parentlink)
+
+    @betamax()
     def test_get_comments_permalink(self):
         item = next(self.subreddit.get_comments())
         self.assertTrue(item.id in item.permalink)
@@ -64,6 +70,13 @@ class CommentTest(PRAWTest):
         self.assertTrue(item.id in item.default_contextlink)
         self.assertTrue(item.id in item.contextlink(5))
         self.assertTrue(item.id in item._fast_default_contextlink)
+
+    @betamax()
+    def test_inbox_comment_parentlink(self):
+        item = self.first(self.r.get_inbox(),
+                          lambda item: isinstance(item, Comment))
+        self.assertTrue(item.sid in item.parentlink)
+        self.assertTrue(item.sid in item._fast_parentlink)
 
     @betamax()
     def test_inbox_comment_permalink(self):
@@ -112,6 +125,12 @@ class CommentTest(PRAWTest):
         self.assertTrue(item.id in item.default_contextlink)
         self.assertTrue(item.id in item.contextlink(5))
         self.assertTrue(item.id in item._fast_default_contextlink)
+
+    @betamax()
+    def test_user_comment_parentlink(self):
+        item = next(self.r.user.get_comments())
+        self.assertTrue(item.sid in item.parentlink)
+        self.assertTrue(item.sid in item._fast_parentlink)
 
     @betamax()
     def test_user_comment_permalink(self):
