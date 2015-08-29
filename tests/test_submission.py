@@ -5,7 +5,6 @@ from praw import errors
 from praw.objects import Submission
 from six import text_type
 from .helper import OAuthPRAWTest, PRAWTest, betamax
-import sys
 
 
 class SubmissionTest(PRAWTest):
@@ -282,8 +281,10 @@ class OAuthSubmissionTest(OAuthPRAWTest):
                "google/")
         id = "16kbb7"
         comment = "c89lnp2"
-        self.assertRaises(TypeError, self.r.get_submission, url=url, submission_id=id)
-        self.assertRaises(TypeError, self.r.get_submission, url=url, comment_root=comment)
+        self.assertRaises(TypeError, self.r.get_submission,
+                          url=url, submission_id=id)
+        self.assertRaises(TypeError, self.r.get_submission,
+                          url=url, comment_root=comment)
 
     @betamax()
     def test_submit_oauth(self):
