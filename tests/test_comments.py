@@ -22,6 +22,7 @@ class CommentTest(PRAWTest):
         self.assertEqual(comment.get_submission(), submission)
         self.assertEqual(comment.get_parent(), submission)
         self.assertEqual(comment.get_context(), submission)
+        self.assertRaises(TypeError, comment.get_context, context_number="5")
         self.assertEqual(comment.body, text)
         # Remove next line after PRAW 4
         self.assertEqual(comment.submission, submission)
@@ -35,6 +36,8 @@ class CommentTest(PRAWTest):
         reply = comment.reply(text)
         self.assertEqual(reply.parent_id, comment.fullname)
         self.assertEqual(reply.body, text)
+        self.assertEqual(reply.get_parent(), submission)
+
 
     @betamax()
     def test_edit(self):
