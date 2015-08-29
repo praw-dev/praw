@@ -265,6 +265,20 @@ class OAuthSubmissionTest(OAuthPRAWTest):
         Submission.from_id(self.r, self.submission_edit_id).remove()
 
     @betamax()
+    def test_raise_type_error_on_submission_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+        url = ("https://www.reddit.com/r/reddit_api_test_priv/comments/16kbb7/"
+               "google/")
+        id = "16kbb7"
+        comment = "c89lnp2"
+        self.assertRaises(TypeError,
+                          self.r.get_submission(url=url,
+                                                submission_id=id))
+        self.assertRaises(TypeError,
+                          self.r.get_submission(url=url,
+                                                comment_root=comment))
+        
+    @betamax()
     def test_submit_oauth(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
         result = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
