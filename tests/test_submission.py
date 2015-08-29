@@ -251,6 +251,16 @@ class OAuthSubmissionTest(OAuthPRAWTest):
         self.assertTrue(submission.num_comments != 0)
 
     @betamax()
+    def test_get_submission_url_with_comment_root(self):
+        id = "16kbb7"
+        comment = "c89lnp2"
+        url = "https://www.reddit.com/comments/16kbb7/_/c89lnp2"
+        self.r.refresh_access_information(self.refresh_token['read'])
+        self.assertEqual(self.r.get_submission(submission_id=id,
+                                               comment_root=comment),
+                         Submission.from_url(self.r, url))
+
+    @betamax()
     def test_raise_invalidsubmission_oauth(self):
         self.r.refresh_access_information(self.refresh_token['submit'])
         submission = self.r.get_submission(

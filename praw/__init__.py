@@ -1048,7 +1048,7 @@ class UnauthenticatedReddit(BaseReddit):
         if submission_id:
             url = urljoin(self.config['comments'], submission_id)
             if comment_root:
-                url = urljoin(url, "/_/{0}".format(comment_root))
+                url += "/_/{0}".format(comment_root)
         return objects.Submission.from_url(self, url,
                                            comment_limit=comment_limit,
                                            comment_sort=comment_sort,
