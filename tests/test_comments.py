@@ -55,6 +55,8 @@ class CommentTest(PRAWTest):
         self.assertTrue(item.id in item.contextlink(5))
         self.assertTrue(item.id in item._fast_default_contextlink)
 
+        self.assertRaises(TypeError, item.contextlink, context_number="5")
+
     @betamax()
     def test_get_comments_parentlink(self):
         item = next(self.subreddit.get_comments())
@@ -74,6 +76,8 @@ class CommentTest(PRAWTest):
         self.assertTrue(item.id in item.default_contextlink)
         self.assertTrue(item.id in item.contextlink(5))
         self.assertTrue(item.id in item._fast_default_contextlink)
+
+        self.assertRaises(TypeError, item.contextlink, context_number="5")
 
     @betamax()
     def test_inbox_comment_parentlink(self):
