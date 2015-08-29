@@ -160,7 +160,7 @@ is done by adding ``[YOUR_SITE]`` to the ``praw.ini`` file and then calling it
 in :class:`praw.Reddit`. For example, you could add the following to your
 ``praw.ini`` file:
 
-.. code_block:: text
+.. code-block:: text
 
     [YOUR_SITE]
 	domain: www.myredditsite.com
@@ -172,7 +172,7 @@ in :class:`praw.Reddit`. For example, you could add the following to your
 From there, to specify the reddit instance of "YOUR_SITE", you would do something
 like this:
 
-.. code_block:: python
+.. code-block:: python
 
     import praw
 
