@@ -18,9 +18,13 @@ class CommentTest(PRAWTest):
         text = 'Unique comment: {0}'.format(self.r.modhash)
         submission = next(self.subreddit.get_new())
         comment = submission.add_comment(text)
-        self.assertEqual(comment.submission, submission)
         self.assertEqual(comment.get_tree(), submission)
+        self.assertEqual(comment.get_submission(), submission)
+        self.assertEqual(comment.get_parent(), submission)
+        self.assertEqual(comment.get_context(), submission)
         self.assertEqual(comment.body, text)
+        # Remove next line after PRAW 4
+        self.assertEqual(comment.submission, submission)
 
     @betamax()
     def test_add_reply(self):

@@ -170,7 +170,6 @@ class OAuth2RedditTest(PRAWTest):
 
         # Test error conditions
         self.assertRaises(TypeError, sub.gild, months=1)
-        self.assertRaises(TypeError, sub.gild, months=37)
         for value in (False, 0, -1, '0', '-1'):
             self.assertRaises(TypeError, redditor.gild, value)
 
