@@ -24,6 +24,7 @@ from __future__ import unicode_literals
 import six
 import sys
 import time
+from collections import deque
 from functools import partial
 from timeit import default_timer as timer
 from praw.errors import HTTPException
@@ -235,15 +236,15 @@ def flatten_tree(tree, nested_attr='replies', depth_first=False):
         rather than the default breadth-first manner.
 
     """
-    stack = tree[:]
+    stack = deque(tree)
     retval = []
     while stack:
-        item = stack.pop(0)
+        item = stack.popleft()
         nested = getattr(item, nested_attr, None)
         if nested and depth_first:
             stack.extend(nested)
         elif nested:
-            stack[0:0] = nested
+            stack.extendleft(nested)
         retval.append(item)
     return retval
 
