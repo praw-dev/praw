@@ -237,14 +237,13 @@ def flatten_tree(tree, nested_attr='replies', depth_first=False):
 
     """
     stack = deque(tree)
+    extend = stack.extend if depth_first else stack.extendleft
     retval = []
     while stack:
         item = stack.popleft()
         nested = getattr(item, nested_attr, None)
-        if nested and depth_first:
-            stack.extend(nested)
-        elif nested:
-            stack.extendleft(nested)
+        if nested:
+            extend(nested)
         retval.append(item)
     return retval
 
