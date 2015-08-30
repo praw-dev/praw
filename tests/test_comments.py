@@ -18,8 +18,14 @@ class CommentTest(PRAWTest):
         text = 'Unique comment: {0}'.format(self.r.modhash)
         submission = next(self.subreddit.get_new())
         comment = submission.add_comment(text)
-        self.assertEqual(comment.submission, submission)
+        self.assertEqual(comment.get_tree(), submission)
+        self.assertEqual(comment.get_submission(), submission)
+        self.assertEqual(comment.get_parent(), submission)
+        self.assertEqual(comment.get_context(), submission)
+        self.assertRaises(TypeError, comment.get_context, context_number="5")
         self.assertEqual(comment.body, text)
+        # Remove next line after PRAW 4
+        self.assertEqual(comment.submission, submission)
 
     @betamax()
     def test_add_reply(self):
@@ -30,6 +36,7 @@ class CommentTest(PRAWTest):
         reply = comment.reply(text)
         self.assertEqual(reply.parent_id, comment.fullname)
         self.assertEqual(reply.body, text)
+        self.assertEqual(reply.get_parent(), submission)
 
     @betamax()
     def test_edit(self):
@@ -44,15 +51,49 @@ class CommentTest(PRAWTest):
         self.assertEqual(item._replies, None)
 
     @betamax()
+    def test_get_comments_context_link(self):
+        item = next(self.subreddit.get_comments())
+        self.assertTrue(item.id in item.default_contextlink)
+        self.assertTrue(item.id in item.contextlink(5))
+        self.assertTrue(item.id in item._fast_default_contextlink)
+
+        self.assertRaises(TypeError, item.contextlink, context_number="5")
+
+    @betamax()
+    def test_get_comments_parentlink(self):
+        item = next(self.subreddit.get_comments())
+        self.assertTrue(item.sid in item.parentlink)
+        self.assertTrue(item.sid in item._fast_parentlink)
+
+    @betamax()
     def test_get_comments_permalink(self):
         item = next(self.subreddit.get_comments())
         self.assertTrue(item.id in item.permalink)
+        self.assertTrue(item.id in item._fast_permalink)
+
+    @betamax()
+    def test_inbox_comment_context_link(self):
+        item = self.first(self.r.get_inbox(),
+                          lambda item: isinstance(item, Comment))
+        self.assertTrue(item.id in item.default_contextlink)
+        self.assertTrue(item.id in item.contextlink(5))
+        self.assertTrue(item.id in item._fast_default_contextlink)
+
+        self.assertRaises(TypeError, item.contextlink, context_number="5")
+
+    @betamax()
+    def test_inbox_comment_parentlink(self):
+        item = self.first(self.r.get_inbox(),
+                          lambda item: isinstance(item, Comment))
+        self.assertTrue(item.sid in item.parentlink)
+        self.assertTrue(item.sid in item._fast_parentlink)
 
     @betamax()
     def test_inbox_comment_permalink(self):
         item = self.first(self.r.get_inbox(),
                           lambda item: isinstance(item, Comment))
         self.assertTrue(item.id in item.permalink)
+        self.assertTrue(item.id in item._fast_permalink)
 
     @betamax()
     def test_inbox_comment_replies_are_none(self):
@@ -89,9 +130,23 @@ class CommentTest(PRAWTest):
         self.assertEqual(text, comment.body)
 
     @betamax()
+    def test_user_comment_contextlink(self):
+        item = next(self.r.user.get_comments())
+        self.assertTrue(item.id in item.default_contextlink)
+        self.assertTrue(item.id in item.contextlink(5))
+        self.assertTrue(item.id in item._fast_default_contextlink)
+
+    @betamax()
+    def test_user_comment_parentlink(self):
+        item = next(self.r.user.get_comments())
+        self.assertTrue(item.sid in item.parentlink)
+        self.assertTrue(item.sid in item._fast_parentlink)
+
+    @betamax()
     def test_user_comment_permalink(self):
         item = next(self.r.user.get_comments())
         self.assertTrue(item.id in item.permalink)
+        self.assertTrue(item.id in item._fast_permalink)
 
     @betamax()
     def test_user_comment_replies_are_none(self):

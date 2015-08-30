@@ -6,10 +6,9 @@ Getting Started
 In this tutorial we'll go over everything needed to create a bot or program
 using reddit's API through the Python Reddit API Wrapper (PRAW). We're going to
 write a program that breaks down a redditor's karma by subreddit, just like the
-`reddit gold <https://www.reddit.com/gold/about>`_ feature. Unlike that, our
-program can break it down for any redditor, not just us. However, it will be
-less precise due to limitations in the reddit API, but we're getting ahead of
-ourselves.
+reddit feature. Unlike that, our program can break it down for any redditor,
+not just us. However, it will be less precise due to limitations in the reddit
+API, but we're getting ahead of ourselves.
 
 This is a beginners tutorial to PRAW. We'll go over the hows and whys of
 everything from getting started to writing your first program accessing reddit.

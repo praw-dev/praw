@@ -9,14 +9,17 @@ behavior in PRAW and reddit.
 FAQ
 ---
 
-How do I get a comment by ID?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+How do I get a submission with a predefined comment tree?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you have a permalink to a comment you can use get_submission on the
-permalink, and then the first comment should be the desired one.
+permalink, and then the first comment should be the desired one. You can
+also do this by choosing a ``comment_root`` with ``submission_id``.
 
->>> s = r.get_submission('http://www.reddit.com/r/redditdev/comments/s3vcj/_/c4axeer')
->>> your_comment = s.comments[0]
+>>> s1 = r.get_submission('http://www.reddit.com/r/redditdev/comments/s3vcj/_/c4axeer')
+>>> your_tree_1 = s1.comments
+>>> s2 = r.get_submission(submission_id="s3vcj", comment_root="c4axeer")
+>>> your_tree_2 = s2.comments
 
 
 .. _handling-captchas:
@@ -71,7 +74,10 @@ Some commands take a while. Why?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 PRAW follows the `api guidelines <https://github.com/reddit/reddit/wiki/API>`_
-which require a 2 second delay between each API call.
+which requires a 2 second delay between each API call via CookieAuth. If you 
+are using OAuth2, you are allowed to change this delay in your ``praw.ini``
+file to be a 1 second delay. This will be the default once CookieAuth is 
+deprecated.
 
 When I print a Comment only part of it is printed. How can I get the rest?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -114,7 +120,8 @@ Non-obvious behavior and other need to know
 * All of the listings (list of stories on subreddit, etc.) are generators,
   *not* lists. If you need them to be lists, an easy way is to call ``list()``
   with your variable as the argument.
-* The default limit for fetching Things is 25. You can change this with the
+* The default limit for fetching Things is your `reddit preferences default
+  <https://www.reddit.com/prefs>`_, usually 25. You can change this with the
   ``limit`` param. If want as many Things as you can then set ``limit=None``.
 * We can at most get 1000 results from every listing, this is an upstream
   limitation by reddit. There is nothing we can do to go past this

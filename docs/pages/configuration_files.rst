@@ -71,9 +71,9 @@ config file. Each site can overwrite any of these variables.
   will pick up the environment variable for https_proxy, if it has been set.
 * *log_requests:* An **integer** that determines the level of API call logging.
 
- * **0:** no logging
- * **1:** log only the request URIs
- * **2:** log the request URIs as well as any POST data
+  * **0:** no logging
+  * **1:** log only the request URIs
+  * **2:** log the request URIs as well as any POST data
 
 * *oauth_domain:* A **string** that defines the *domain* where OAuth
   authenticated requests are sent.
@@ -155,7 +155,31 @@ The default provided sites are:
   'local' site in your *user*-level or *local*-level ``praw.ini`` file.
 
 Additional sites can be added to represent other instances of reddit or simply
-provide an additional set of credentials for easy access to that account.
+provide an additional set of credentials for easy access to that account. This
+is done by adding ``[YOUR_SITE]`` to the ``praw.ini`` file and then calling it
+in :class:`praw.Reddit`. For example, you could add the following to your
+``praw.ini`` file:
+
+.. code-block:: text
+
+    [YOUR_SITE]
+	domain: www.myredditsite.com
+	ssl_domain: ssl.myredditsite.com
+	user: bboe
+	pswd: this_isn't_my_password
+	api_request_delay: 7.0
+
+From there, to specify the reddit instance of "YOUR_SITE", you would do something
+like this:
+
+.. code-block:: python
+
+    import praw
+
+	r = praw.Reddit(user_agent='Custom Site Example for PRAW',
+	                site_name='YOUR_SITE')
+
+Of course, you can use any of the above Configuration Variables as well.
 
 Example praw.ini file
 ^^^^^^^^^^^^^^^^^^^^^

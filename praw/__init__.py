@@ -1019,10 +1019,18 @@ class UnauthenticatedReddit(BaseReddit):
         return objects.Submission.from_json(self.request_json(url,
                                                               params=param))
 
-    def get_submission(self, url=None, submission_id=None, comment_limit=0,
-                       comment_sort=None, params=None):
+    def get_submission(self, url=None, submission_id=None, comment_root=None,
+                       comment_limit=0, comment_sort=None, params=None):
         """Return a Submission object for the given url or submission_id.
 
+        :param url: The url to build the Submission object from. If a
+            permalink to a comment, the comment forest will have it's root
+            at that comment. Incompatable with `submission_id`.
+        :param submission_id: The id of a submission to build the Submission
+            object from. Incompatable with `url`.
+        :param comment_root: The root of the comment forest as the comment's
+            id. Only applicable if you are using `submission_id`. This
+            parameter will raise an error otherwise.
         :param comment_limit: The desired number of comments to fetch. If <= 0
             fetch the default number for the session's user. If None, fetch the
             maximum possible.
@@ -1032,9 +1040,15 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         if bool(url) == bool(submission_id):
-            raise TypeError('One (and only one) of id or url is required!')
+            raise TypeError('One (and only one) of submision_id or '
+                            'url is required!')
+        if bool(comment_root) and bool(submission_id) is False:
+            raise TypeError('comment_root can only be used if '
+                            'submission_id is!')
         if submission_id:
             url = urljoin(self.config['comments'], submission_id)
+            if comment_root:
+                url += "/_/{0}".format(comment_root)
         return objects.Submission.from_url(self, url,
                                            comment_limit=comment_limit,
                                            comment_sort=comment_sort,
