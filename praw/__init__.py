@@ -1220,7 +1220,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         elif self._authentication:
             return 'LoggedIn reddit session (user: {0})'.format(self.user)
         else:
-            return 'Unauthenticated reddit sesssion'
+            return 'Unauthenticated reddit session'
 
     def _url_update(self, url):
         # When getting posts from a multireddit owned by the authenticated
