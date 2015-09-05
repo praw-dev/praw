@@ -71,7 +71,10 @@ Some commands take a while. Why?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 PRAW follows the `api guidelines <https://github.com/reddit/reddit/wiki/API>`_
-which require a 2 second delay between each API call.
+which require a 2 second delay between each API call via CookieAuth. If you
+are exclusively using OAuth2, you are allowed to change this delay in your
+``praw.ini`` file to be a 1 second delay. This will be the default once
+CookieAuth is deprecated.
 
 When I print a Comment only part of it is printed. How can I get the rest?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -114,7 +117,8 @@ Non-obvious behavior and other need to know
 * All of the listings (list of stories on subreddit, etc.) are generators,
   *not* lists. If you need them to be lists, an easy way is to call ``list()``
   with your variable as the argument.
-* The default limit for fetching Things is 25. You can change this with the
+* The default limit for fetching Things is your `reddit preferences default
+  <https://www.reddit.com/prefs>`_, usually 25. You can change this with the
   ``limit`` param. If want as many Things as you can then set ``limit=None``.
 * We can at most get 1000 results from every listing, this is an upstream
   limitation by reddit. There is nothing we can do to go past this

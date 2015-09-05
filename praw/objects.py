@@ -652,7 +652,14 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
     @property
     def replies(self):
-        """Return a list of the comment replies to this comment."""
+        """Return a list of the comment replies to this comment.
+
+        If the comment is not from a submission, :meth:`replies` will
+        always be an empty list unless you call :meth:`refresh()
+        before calling :meth:`replies` due to a limitation in
+        reddit's API.
+
+        """
         if self._replies is None or not self._has_fetched_replies:
             response = self.reddit_session.request_json(self._fast_permalink)
             if not response[1]['data']['children']:
