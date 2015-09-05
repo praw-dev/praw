@@ -126,3 +126,17 @@ The full program
         if comment.body == "Hello" and comment.id not in already_done:
             comment.reply(' world!')
             already_done.add(comment.id)
+
+[deleted] comments
+------------------
+
+When a comment is deleted, in most cases, that comment will not be viewable with a
+browser nor the API. However, if a comment is made, and then a reply to that comment
+is made, and *then* the original comment is deleted, that comment will have its
+``body`` and ``author`` attributes be ``NoneType`` via the API. The same goes with
+removed comments, unless the authenticated account is a mod of the subreddit whose
+comments you are getting. If you are a mod, and said comments are removed comments,
+they are left intact.
+
+If a comment is made and then the account that left that comment is deleted, the
+comment body is left intact, while the ``author`` attribute becomes ``NoneType``.
