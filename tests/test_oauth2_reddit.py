@@ -161,10 +161,10 @@ class OAuth2RedditTest(PRAWTest):
         self.assertTrue(list(self.r.get_my_moderation()))
 
     @betamax()
-    def test_scope_creddits(self):
-        # Assume there are insufficient creddits.
+    def test_scope_credits(self):
+        # Assume there are insufficient credits.
         self.r.refresh_access_information(
-            self.refresh_token['creddits'])
+            self.refresh_token['credits'])
         redditor = self.r.get_redditor('bboe')
         sub = self.r.get_submission(url=self.comment_url)
 
@@ -174,9 +174,9 @@ class OAuth2RedditTest(PRAWTest):
             self.assertRaises(TypeError, redditor.gild, value)
 
         # Test object gilding
-        self.assertRaises(errors.InsufficientCreddits, redditor.gild)
-        self.assertRaises(errors.InsufficientCreddits, sub.gild)
-        self.assertRaises(errors.InsufficientCreddits, sub.comments[0].gild)
+        self.assertRaises(errors.InsufficientCredits, redditor.gild)
+        self.assertRaises(errors.InsufficientCredits, sub.gild)
+        self.assertRaises(errors.InsufficientCredits, sub.comments[0].gild)
 
     @betamax()
     def test_scope_privatemessages(self):
