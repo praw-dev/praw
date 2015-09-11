@@ -324,7 +324,7 @@ class Gildable(RedditContentObject):
 
     """Interface for RedditContentObjects that can be gilded."""
 
-    @restrict_access(scope='creddits', oauth_only=True)
+    @restrict_access(scope='credits', oauth_only=True)
     def gild(self, months=None):
         """Gild the Redditor or author of the content.
 
