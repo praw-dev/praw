@@ -438,11 +438,11 @@ class InvalidUserPass(APIException):
     ERROR_TYPE = 'WRONG_PASSWORD'
 
 
-class InsufficientCreddits(APIException):
+class InsufficientCredits(APIException):
 
-    """Raised when there are not enough creddits to complete the action."""
+    """Raised when there are not enough credits to complete the action."""
 
-    ERROR_TYPE = 'INSUFFICIENT_CREDDITS'
+    ERROR_TYPE = 'INSUFFICIENT_CREDITS'
 
 
 class NotLoggedIn(APIException):
