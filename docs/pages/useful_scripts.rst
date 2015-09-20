@@ -109,7 +109,7 @@ this page to add in more.
 `RedditRover`_ by `DarkMio <https://github.com/DarkMio>`
     A plugin based Reddit Multi Bot Framework intended for new and advanced 
     programmers to host a wide variety of Reddit bots without mangling with
-    all ins and outs of Reddit, PRAW and API limitations. 
+    all the ins and outs of Reddit, PRAW and API limitations. 
 
 `Reddit Keyword Tracking Bot`_ by Jermell Beane
     <requires Kivy> A bot that will watch any subreddits and email you with
