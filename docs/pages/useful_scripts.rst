@@ -106,10 +106,10 @@ this page to add in more.
     The bot will then send them a private message with the date they specified.
     `u/RemindMeBot <http://www.reddit.com/user/RemindMeBot>`_.
 
-`Massdrop Multi Bot <https://github.com/darkmio/Massdrop-Reddit-Bot>`_
-    A bot which made Massdrop available for everyone and then grew into an
-    assortment of different fixes for links that regularly get mistakenly used,
-    like Gfycat, Massdrop and Subreddit-Names in titles.
+`RedditRover`_ by `DarkMio <https://github.com/DarkMio>`
+    A plugin based Reddit Multi Bot Framework intended for new and advanced 
+    programmers to host a wide variety of Reddit bots without mangling with
+    all ins and outs of Reddit, PRAW and API limitations. 
 
 `Reddit Keyword Tracking Bot`_ by Jermell Beane
     <requires Kivy> A bot that will watch any subreddits and email you with
@@ -152,6 +152,7 @@ this page to add in more.
 .. _`Reddit Keyword Tracking Bot`:
      https://github.com/SwedishBotMafia/RScanBot.Gen
 .. _`Reddit-Paper` : https://github.com/cameron-gagnon/reddit-paper
+.. _`RedditRover` : https://github.com/DarkMio/RedditRover
 .. _`Reddit-to-Diigo-Copier`:
      https://github.com/OdinsHat/Reddit-to-Diigo-Copier
 .. _`RedditAgain`: https://github.com/karan/RedditAgain
