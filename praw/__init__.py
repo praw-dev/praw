@@ -704,7 +704,9 @@ class OAuth2Reddit(BaseReddit):
         ``redirect_uri``.
 
         """
-        return all((self.client_id, self.client_secret, self.redirect_uri))
+        return all((self.client_id is not None,
+                    self.client_secret is not None,
+                    self.redirect_uri is not None))
 
     @decorators.require_oauth
     def refresh_access_information(self, refresh_token):
