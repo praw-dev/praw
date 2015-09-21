@@ -11,6 +11,10 @@ this page to add in more.
     a program useful to subreddit moderators, and ``subreddit_stats``, a tool
     to compute submission / comment statistics for a subreddit.
 
+`prawoauth2`_ by `Avinash Sajjanshetty <https://github.com/avinassh>`_
+    ``prawoauth2`` is a helper library for PRAW which makes writing Reddit bots/apps using 
+    OAuth2 super easy, simple and fun.
+
 `AutoModerator`_ by `Deimos <https://github.com/deimos>`_
     A bot for automating straightforward reddit moderation tasks and improving
     upon the existing spam-filter.
@@ -134,6 +138,9 @@ this page to add in more.
 `ButtsBot`_ by `Judson Dunaway-Barlow <https://github.com/jadunawa>`_
     A silly bot that posts a picture of a (clothed) butt from the Astros team whenever somebody in the /r/Astros subreddit       uses any of a few certain keywords in a comment.
 
+`GoodReads Bot`_ by `Avinash Sajjanshetty <https://github.com/avinassh>`_
+    A bot which powers `/u/goodreadsbot <https://www.reddit.com/u/goodreadsbot>`_ on Reddit, posts information of a book whenever someone posts a link to Goodreads.
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -146,8 +153,10 @@ this page to add in more.
 .. _`Butcher bot`: https://github.com/xiphirx/Butcher-Bot
 .. _`ButtsBot`: https://github.com/jadunawa/ButtsBot
 .. _`EVE Killmail Reddit Bot`: https://github.com/ArnoldM904/EK_Reddit_Bot
+.. _`GoodReads Bot`: https://github.com/avinassh/Reddit-GoodReads-Bot
 .. _`Groompbot`: https://github.com/AndrewNeo/groompbot
 .. _`NetflixBot`: https://github.com/alanwright/netflixbot
+.. _`prawoauth2`: https://github.com/avinassh/prawoauth2
 .. _`PRAWtools`: https://github.com/praw-dev/prawtools
 .. _`Reddit Keyword Tracking Bot`:
      https://github.com/SwedishBotMafia/RScanBot.Gen
