@@ -1,8 +1,6 @@
 language: python
 python:
-  - 2.6
   - 2.7
-  - 3.2
   - 3.3
   - 3.4
   - 3.5
@@ -12,7 +10,6 @@ python:
 matrix:
   allow_failures:
     - python: nightly
-    - python: 3.2
 sudo: false
 install: pip install coveralls flake8 pep257 betamax_matchers
 script:
