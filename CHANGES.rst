@@ -51,6 +51,7 @@ Unreleased
  * **[FEATURE]** New :meth:`praw.objects.Redditor.get_friend_info` to see info
    about one of your friends. Includes their name, ID, when you added them, and
    if you have reddit Gold, your note about them.
+ * **[CHANGE]** Removed support for Python 2.6 and Python 3.2 (#532).
 
 PRAW 3.2.1
 ----------
