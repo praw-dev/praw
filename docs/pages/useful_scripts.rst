@@ -110,7 +110,7 @@ this page to add in more.
     The bot will then send them a private message with the date they specified.
     `u/RemindMeBot <http://www.reddit.com/user/RemindMeBot>`_.
 
-`RedditRover`_ by `DarkMio <https://github.com/DarkMio>`
+`RedditRover`_ by `DarkMio <https://github.com/DarkMio>`_
     A plugin based Reddit Multi Bot Framework intended for new and advanced 
     programmers to host a wide variety of Reddit bots without mangling with
     all the ins and outs of Reddit, PRAW and API limitations. 
@@ -161,10 +161,10 @@ this page to add in more.
 .. _`Reddit Keyword Tracking Bot`:
      https://github.com/SwedishBotMafia/RScanBot.Gen
 .. _`Reddit-Paper` : https://github.com/cameron-gagnon/reddit-paper
-.. _`RedditRover` : https://github.com/DarkMio/RedditRover
 .. _`Reddit-to-Diigo-Copier`:
      https://github.com/OdinsHat/Reddit-to-Diigo-Copier
 .. _`RedditAgain`: https://github.com/karan/RedditAgain
+.. _`RedditRover` : https://github.com/DarkMio/RedditRover
 .. _`RemindMeBot`: https://github.com/SIlver--/remindmebot-reddit
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot
 .. _`newsfrbot`: https://github.com/gardaud/newsfrbot
