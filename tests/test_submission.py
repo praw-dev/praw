@@ -236,6 +236,19 @@ class OAuthSubmissionTest(OAuthPRAWTest):
         self.assertEqual(submission, submission.edit('Edited text'))
 
     @betamax()
+    def test_hide_oauth(self):
+        # Without the "read" scope, submission.hidden is always False.
+        self.r.refresh_access_information(self.refresh_token['read+report'])
+        submission = self.r.get_submission(
+            submission_id=self.submission_hide_id)
+
+        self.assertFalse(submission.hidden)
+        submission.hide()
+        self.assertTrue(submission.refresh().hidden)
+        submission.unhide()
+        self.assertFalse(submission.refresh().hidden)
+
+    @betamax()
     def test_get_priv_submission_comments_oauth(self):
         self.r.refresh_access_information(self.refresh_token['read'])
         submission = Submission.from_id(self.r, self.priv_submission_id)

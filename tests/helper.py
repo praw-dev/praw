@@ -75,6 +75,8 @@ class PRAWTest(unittest.TestCase):
             'mysubreddits':     'O7tfWhqem6fQZqxhoTiLca1s7VA',
             'privatemessages':  'kr_pHPO3sqTn_m5f_FX9TW4joEU',
             'read':             '_mmtb8YjDym0eC26G-rTxXUMea0',
+            'read+report':      '7302867-nOgTLv05rK1kO9YInHWOPua9sK4',
+            'report':           '7302867-MKjaXZ-w6S8-tC-JPs0NogkIHGQ',
             'submit':           'k69WTwa2bEQOQY9t61nItd4twhw',
             'subscribe':        'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
             'vote':             '5RPnDwg56vAbf7F9yO81cXZAPSQ',
@@ -91,6 +93,7 @@ class PRAWTest(unittest.TestCase):
         self.submission_edit_id = '16i92b'
         self.submission_sticky_id = '32eucy'
         self.submission_sticky_id2 = '32exei'
+        self.submission_hide_id = '3lchjv'
 
     def delay_for_listing_update(self, duration=0.1):
         if not os.getenv('TRAVIS') and self.r.config.api_request_delay == 0:
