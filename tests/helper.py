@@ -88,12 +88,12 @@ class PRAWTest(unittest.TestCase):
             'submit':           '10640071-oWSCa5YMSWGQrRCa4fMSO_C1bZg'}
 
         self.comment_deleted_id = 'ctkznxq'
-        self.submission_deleted_id = '3f8q10'
 
+        self.submission_deleted_id = '3f8q10'
         self.submission_edit_id = '16i92b'
+        self.submission_hide_id = '3lchjv'
         self.submission_sticky_id = '32eucy'
         self.submission_sticky_id2 = '32exei'
-        self.submission_hide_id = '3lchjv'
 
     def delay_for_listing_update(self, duration=0.1):
         if not os.getenv('TRAVIS') and self.r.config.api_request_delay == 0:
