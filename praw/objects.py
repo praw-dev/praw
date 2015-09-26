@@ -435,10 +435,10 @@ class Refreshable(RedditContentObject):
         automatically be refreshed serverside. Refreshing a submission will
         also refresh all its comments.
         
-        In the rare case of a submissions's comment[0] being deleted or 
-        removed in between its original retrieval and refresh, or inconsistencies 
-        between different endpoints resulting in this, an IndexError will 
-        be thrown.
+        In the rare case of a submissions's comment[0] being deleted or
+        removed in between its original retrieval and refresh, or
+        inconsistencies between different endpoints resulting in this,
+        an IndexError will be thrown.
 
         """
         unique = self.reddit_session._unique_count  # pylint: disable=W0212
