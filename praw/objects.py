@@ -434,7 +434,7 @@ class Refreshable(RedditContentObject):
         Any listing, such as the submissions on a subreddits top page, will
         automatically be refreshed serverside. Refreshing a submission will
         also refresh all its comments.
-        
+
         In the rare case of a submissions's comment[0] being deleted or
         removed in between its original retrieval and refresh, or
         inconsistencies between different endpoints resulting in this,
