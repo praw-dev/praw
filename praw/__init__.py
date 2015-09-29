@@ -1490,6 +1490,10 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             identity scopes
 
         """
+        if isinstance(scope, (list, tuple)):
+            scope = set(scope)
+        elif isinstance(scope, six.string_types):
+            scope = set(scope.split())
         if not isinstance(scope, set):
             raise TypeError('`scope` parameter must be a set')
         self.clear_authentication()
