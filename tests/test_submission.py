@@ -30,6 +30,12 @@ class SubmissionTest(PRAWTest):
         self.assertFalse(submission.refresh().over_18)
 
     @betamax()
+    def test_report(self):
+        submission = next(self.subreddit.get_new())
+        submission.report()
+        self.assertEqual(submission, next(self.subreddit.get_reports()))
+
+    @betamax()
     def test_save_submission(self):
         submission = next(self.r.user.get_submitted())
 
@@ -44,20 +50,16 @@ class SubmissionTest(PRAWTest):
         self.assertFalse(submission in self.r.user.get_saved(params={'u': 1}))
 
     @betamax()
-    def test_submit__duplicate_url(self):
-        url = 'https://praw.readthedocs.org/'
-        self.assertRaises(errors.AlreadySubmitted, self.subreddit.submit,
-                          'PRAW Documentation', url=url)
-        submission = self.subreddit.submit(
-            'PRAW Documentation try 2', url=url, resubmit=True)
-        self.assertEqual('PRAW Documentation try 2', submission.title)
-        self.assertEqual(url, submission.url)
+    def test_short_link(self):
+        submission = next(self.r.get_new())
+        self.assertTrue(submission.id in submission.short_link)
 
     @betamax()
-    def test_submit__invalid_arguments(self):
-        for text, url in [(None, None), ('text', 'url'), ('', 'url')]:
-            self.assertRaises(TypeError, self.subreddit.submit, 'Title',
-                              text=text, url=url)
+    def test_submission_delete(self):
+        submission = next(self.r.user.get_submitted())
+        self.assertEqual(self.r.user, submission.author)
+        submission.delete()
+        self.assertEqual(None, submission.refresh().author)
 
     @betamax()
     def test_submission_edit__link_failure(self):
@@ -71,13 +73,6 @@ class SubmissionTest(PRAWTest):
                            lambda item: item.is_self)
         content = '' if len(found.selftext) > 100 else found.selftext + 'a'
         self.assertEqual(content, found.edit(content).selftext)
-
-    @betamax()
-    def test_submission_delete(self):
-        submission = next(self.r.user.get_submitted())
-        self.assertEqual(self.r.user, submission.author)
-        submission.delete()
-        self.assertEqual(None, submission.refresh().author)
 
     @betamax()
     def test_submission_hide_and_unhide(self):
@@ -98,6 +93,22 @@ class SubmissionTest(PRAWTest):
         self.assertNotEqual(submission.likes, same_submission.likes)
 
     @betamax()
+    def test_submit__duplicate_url(self):
+        url = 'https://praw.readthedocs.org/'
+        self.assertRaises(errors.AlreadySubmitted, self.subreddit.submit,
+                          'PRAW Documentation', url=url)
+        submission = self.subreddit.submit(
+            'PRAW Documentation try 2', url=url, resubmit=True)
+        self.assertEqual('PRAW Documentation try 2', submission.title)
+        self.assertEqual(url, submission.url)
+
+    @betamax()
+    def test_submit__invalid_arguments(self):
+        for text, url in [(None, None), ('text', 'url'), ('', 'url')]:
+            self.assertRaises(TypeError, self.subreddit.submit, 'Title',
+                              text=text, url=url)
+
+    @betamax()
     def test_submit__self(self):
         submission = self.r.submit(self.sr, 'Title', text='BODY')
         self.assertEqual('Title', submission.title)
@@ -108,17 +119,6 @@ class SubmissionTest(PRAWTest):
         submission = self.r.submit(self.sr, 'Title', text='')
         self.assertEqual('Title', submission.title)
         self.assertEqual('', submission.selftext)
-
-    @betamax()
-    def test_report(self):
-        submission = next(self.subreddit.get_new())
-        submission.report()
-        self.assertEqual(submission, next(self.subreddit.get_reports()))
-
-    @betamax()
-    def test_short_link(self):
-        submission = next(self.r.get_new())
-        self.assertTrue(submission.id in submission.short_link)
 
     @betamax()
     def test_unicode_submission(self):
@@ -185,15 +185,6 @@ class SubmissionModeratorTest(PRAWTest):
         self.assertEqual(submission.fullname, log.target_fullname)
 
     @betamax()
-    def test_set_suggested_sort(self):
-        submission_id = self.submission_edit_id
-        submission = self.r.get_submission(submission_id=submission_id)
-        submission.set_suggested_sort('new')
-        self.assertEqual(submission.refresh().suggested_sort, 'new')
-        submission.set_suggested_sort('blank')
-        self.assertEqual(submission.refresh().suggested_sort, None)
-
-    @betamax()
     def test_mark_as_nsfw_and_umark_as_nsfw__as_moderator(self):
         submission = self.r.get_submission(submission_id="1nt8co")
         self.assertNotEqual(self.r.user, submission.author)
@@ -202,6 +193,15 @@ class SubmissionModeratorTest(PRAWTest):
         self.assertTrue(submission.refresh().over_18)
         submission.unmark_as_nsfw()
         self.assertFalse(submission.refresh().over_18)
+
+    @betamax()
+    def test_set_suggested_sort(self):
+        submission_id = self.submission_edit_id
+        submission = self.r.get_submission(submission_id=submission_id)
+        submission.set_suggested_sort('new')
+        self.assertEqual(submission.refresh().suggested_sort, 'new')
+        submission.set_suggested_sort('blank')
+        self.assertEqual(submission.refresh().suggested_sort, None)
 
     @betamax()
     def test_sticky_unsticky(self):
@@ -248,6 +248,19 @@ class OAuthSubmissionTest(OAuthPRAWTest):
         self.r.refresh_access_information(self.refresh_token['read'])
         submission = Submission.from_url(self.r, url)
         self.assertTrue(submission.num_comments != 0)
+
+    @betamax()
+    def test_hide_oauth(self):
+        # Without the "read" scope, submission.hidden is always False.
+        self.r.refresh_access_information(self.refresh_token['read+report'])
+        submission = self.r.get_submission(
+            submission_id=self.submission_hide_id)
+
+        self.assertFalse(submission.hidden)
+        submission.hide()
+        self.assertTrue(submission.refresh().hidden)
+        submission.unhide()
+        self.assertFalse(submission.refresh().hidden)
 
     @betamax()
     def test_raise_invalidsubmission_oauth(self):

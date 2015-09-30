@@ -2518,7 +2518,10 @@ class ReportMixin(AuthenticatedReddit):
         data = {'id': thing_id,
                 'executed': method}
         response = self.request_json(self.config[method], data=data)
-        self.evict(urljoin(self.user._url, 'hidden'))  # pylint: disable=W0212
+
+        if self.user is not None:
+            self.evict(urljoin(self.user._url,  # pylint: disable=W0212
+                               'hidden'))
         return response
 
     def unhide(self, thing_id):

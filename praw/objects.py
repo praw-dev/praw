@@ -357,7 +357,6 @@ class Hideable(RedditContentObject):
 
     """Interface for objects that can be hidden."""
 
-    @restrict_access(scope='report')
     def hide(self, _unhide=False):
         """Hide object in the context of the logged in user.
 

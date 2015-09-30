@@ -33,6 +33,11 @@ Unreleased
  * **[BUGFIX]** Stopped a json-parsing error from occuring in cases where
    reddit's response to a request was an empty string. :meth:`request_json`
    will now simply return that empty string.
+ * **[BUGFIX]** Fix AssertionError when hiding and unhiding under OAuth, raised
+   by stacked scope decorators.
+ * **[BUGFIX]** Fix AttributeError when hiding and unhiding under OAuth without
+   the "identity" scope, raised when PRAW tried to evict the user's /hidden
+   page from the cache.
  * **[CHANGE]** Added messages to all PRAW exceptions (#491).
  * **[CHANGE]** Made it easier to send JSON dumps instead of form-encoded data
    for http requests. Some api-v1 endpoints require the request body to be in

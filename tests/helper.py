@@ -75,6 +75,8 @@ class PRAWTest(unittest.TestCase):
             'mysubreddits':     'O7tfWhqem6fQZqxhoTiLca1s7VA',
             'privatemessages':  'kr_pHPO3sqTn_m5f_FX9TW4joEU',
             'read':             '_mmtb8YjDym0eC26G-rTxXUMea0',
+            'read+report':      '7302867-nOgTLv05rK1kO9YInHWOPua9sK4',
+            'report':           '7302867-MKjaXZ-w6S8-tC-JPs0NogkIHGQ',
             'submit':           'k69WTwa2bEQOQY9t61nItd4twhw',
             'subscribe':        'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
             'vote':             '5RPnDwg56vAbf7F9yO81cXZAPSQ',
@@ -86,9 +88,10 @@ class PRAWTest(unittest.TestCase):
             'submit':           '10640071-oWSCa5YMSWGQrRCa4fMSO_C1bZg'}
 
         self.comment_deleted_id = 'ctkznxq'
-        self.submission_deleted_id = '3f8q10'
 
+        self.submission_deleted_id = '3f8q10'
         self.submission_edit_id = '16i92b'
+        self.submission_hide_id = '3lchjv'
         self.submission_sticky_id = '32eucy'
         self.submission_sticky_id2 = '32exei'
 
