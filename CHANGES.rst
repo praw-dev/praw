@@ -50,13 +50,13 @@ Unreleased
    only instantiated if the user has the "identity" scope. By moving
    `get_friends` to the reddit session, it can be used without having to
    manipulate a :class:`praw.objects.Redditor` intsance's class.
+ * **[CHANGE]** Removed support for Python 2.6 and Python 3.2 (#532).
  * **[FEATURE]** Added support for adding "notes" to your friends. Users with
    reddit Gold can set the ``note`` parameter of 
    :meth:`praw.objects.Redditor.friend`. 300 character max enforced by reddit.
  * **[FEATURE]** New :meth:`praw.objects.Redditor.get_friend_info` to see info
    about one of your friends. Includes their name, ID, when you added them, and
    if you have reddit Gold, your note about them.
- * **[CHANGE]** Removed support for Python 2.6 and Python 3.2 (#532).
 
 PRAW 3.2.1
 ----------
