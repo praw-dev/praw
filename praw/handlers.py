@@ -1,108 +1,119 @@
+# coding=ascii
 """Provides classes that handle request dispatching."""
-
-from __future__ import print_function, unicode_literals
-
-import socket
 import sys
+import socket
 import time
-from functools import wraps
-from praw.errors import ClientException
-from praw.helpers import normalize_url
+from logging import getLogger
 from requests import Session
-from six import text_type
-from six.moves import cPickle  # pylint: disable=F0401
 from threading import Lock
-from timeit import default_timer as timer
+from praw.helpers import normalize_url
+from praw.errors import ClientException
+from functools import wraps
+from six.moves import cPickle
 
 
 class RateLimitHandler(object):
-
     """The base handler that provides thread-safe rate limiting enforcement.
-
     While this handler is threadsafe, PRAW is not thread safe when the same
     `Reddit` instance is being utilized from multiple threads.
-
     """
 
-    last_call = {}  # Stores a two-item list: [lock, previous_call_time]
-    rl_lock = Lock()  # lock used for adding items to last_call
+    def __init__(self):
+        self.logger = getLogger('hndl')
+        self.no_auth = time.time() - 1                              # simply the time since the last no_auth was sent
+        self.oauth = {}                                             # {'unique request token': [last_sent, lifetime]}
+        self.http = Session()
+        self.rl_lock = Lock()
 
-    @staticmethod
-    def rate_limit(function):
-        """Return a decorator that enforces API request limit guidelines.
-
-        We are allowed to make a API request every api_request_delay seconds as
-        specified in praw.ini. This value may differ from reddit to reddit. For
-        reddit.com it is 2. Any function decorated with this will be forced to
-        delay _rate_delay seconds from the calling of the last function
-        decorated with this before executing.
-
-        This decorator must be applied to a RateLimitHandler class method or
-        instance method as it assumes `rl_lock` and `last_call` are available.
-
-        """
-        @wraps(function)
-        def wrapped(cls, _rate_domain, _rate_delay, **kwargs):
-            cls.rl_lock.acquire()
-            lock_last = cls.last_call.setdefault(_rate_domain, [Lock(), 0])
-            with lock_last[0]:  # Obtain the domain specific lock
-                cls.rl_lock.release()
-                # Sleep if necessary, then perform the request
-                now = timer()
-                delay = lock_last[1] + _rate_delay - now
-                if delay > 0:
-                    now += delay
-                    time.sleep(delay)
-                lock_last[1] = now
-                return function(cls, **kwargs)
-        return wrapped
-
-    @classmethod
-    def evict(cls, urls):  # pylint: disable=W0613
-        """Method utilized to evict entries for the given urls.
-
-        :param urls: An iterable containing normalized urls.
-        :returns: The number of items removed from the cache.
-
-        By default this method returns False as a cache need not be present.
-
-        """
-        return 0
-
+    # noinspection PyBroadException
     def __del__(self):
-        """Cleanup the HTTP session."""
+        """
+        Cleans up the http session on object deletion
+        """
         if self.http:
             try:
                 self.http.close()
-            except:  # Never fail  pylint: disable=W0702
+            except Exception:
                 pass
 
-    def __init__(self):
-        """Establish the HTTP session."""
-        self.http = Session()  # Each instance should have its own session
+    # noinspection PyUnusedLocal
+    @classmethod
+    def evict(cls, urls):
+        """Method utilized to evict entries for the given urls.
+        :param urls: An iterable containing normalized urls.
+        :returns: Whether or not an item was removed from the cache.
+        By default this method returns False as a cache need not be present.
+        """
+        return False
 
     def request(self, request, proxies, timeout, verify, **_):
-        """Responsible for dispatching the request and returning the result.
-
-        Network level exceptions should be raised and only
-        ``requests.Response`` should be returned.
-
-        :param request: A ``requests.PreparedRequest`` object containing all
-            the data necessary to perform the request.
-        :param proxies: A dictionary of proxy settings to be utilized for the
-            request.
-        :param timeout: Specifies the maximum time that the actual HTTP request
-            can take.
-        :param verify: Specifies if SSL certificates should be validated.
-
-        ``**_`` should be added to the method call to ignore the extra
-        arguments intended for the cache handler.
-
         """
-        return self.http.send(request, proxies=proxies, timeout=timeout,
-                              allow_redirects=False, verify=verify)
-RateLimitHandler.request = RateLimitHandler.rate_limit(
-    RateLimitHandler.request)
+        Cleans up the ``oauth`` attribute, then looks up if its an OAuth requests and dispatched the request in the
+        appropriate time. Sleeps the thread for exactly the time until the next request can be sent.
+
+        :param request: A ``requests.PreparedRequest`` object containing all the data necessary to perform the request.
+        :param proxies: A dictionary of proxy settings to be utilized for the request.
+        :param timeout: Specifies the maximum time that the actual HTTP request can take.
+        :param verify: Specifies if SSL certificates should be validated.
+        """
+        # cleans up the dictionary with access keys every time someone tries a request.
+        self.oauth = {key: value for key, value in self.oauth.items() if value[1] > time.time()}
+        bearer = ''
+        if '_cache_key' in _:
+            cache_key = _.get('_cache_key')
+            token_group = cache_key[1]
+            if len(token_group) >= 5:
+                bearer = token_group[4]
+
+        if bearer and bearer in self.oauth:
+            if bearer in self.oauth:
+                # lock the thread to update values
+                self.rl_lock.acquire()
+                last_dispatched = self.oauth[bearer][0]
+                left_until_dispatch = self.dispatch_timer(last_dispatched + 1)
+                self.oauth[bearer][0] = time.time() + left_until_dispatch
+                self.rl_lock.release()
+                # and now we can sleep the single thread in here - the timer should've updated, so the next
+                # thread cannot possibly dispatch at the same time, instead gets slept later in.
+                time.sleep(left_until_dispatch)
+        elif bearer:
+            self.oauth[bearer] = [time.time(), time.time() + 70 * 60]  # lifetime: 70 minutes
+        else:
+            self.rl_lock.acquire()
+            last_dispatched = self.no_auth
+            left_until_dispatch = self.dispatch_timer(last_dispatched + 2)
+            self.no_auth = time.time() + left_until_dispatch
+            self.rl_lock.release()
+            time.sleep(left_until_dispatch)
+        return self.send_request(request, proxies, timeout, verify)
+
+    def send_request(self, request, proxies, timeout, verify):
+        """
+        Responsible for dispatching the request and returning the result.
+        Network level exceptions should be raised and only ``requests.Response`` should be returned.
+
+        ``**_`` should be added to the method call to ignore the extra arguments intended for the cache handler.
+
+        :param request: A ``requests.PreparedRequest`` object containing all the data necessary to perform the request.
+        :param proxies: A dictionary of proxy settings to be utilized for the request.
+        :param timeout: Specifies the maximum time that the actual HTTP request can take.
+        :param verify: Specifies if SSL certificates should be validated.
+        """
+        self.logger.debug('{:4} {}'.format(request.method, request.url))
+        return self.http.send(request, proxies=proxies, timeout=timeout, allow_redirects=False, verify=verify)
+
+    @staticmethod
+    def dispatch_timer(next_possible_dispatch):
+        """
+        Method to determine when the next request can be dispatched.
+        :param next_possible_dispatch: Timestamp of the next possible dispatch.
+        :type next_possible_dispatch: int | float
+        :return: int | float
+        """
+        time_until_dispatch = next_possible_dispatch - time.time()
+        if time_until_dispatch > 0:  # Make sure that we have given it enough time.
+            return time_until_dispatch
+        return 0
 
 
 class DefaultHandler(RateLimitHandler):
@@ -117,18 +128,16 @@ class DefaultHandler(RateLimitHandler):
     @staticmethod
     def with_cache(function):
         """Return a decorator that interacts with a handler's cache.
-
         This decorator must be applied to a DefaultHandler class method or
         instance method as it assumes `cache`, `ca_lock` and `timeouts` are
         available.
-
         """
         @wraps(function)
         def wrapped(cls, _cache_key, _cache_ignore, _cache_timeout, **kwargs):
             def clear_timeouts():
                 """Clear the cache of timed out results."""
                 for key in list(cls.timeouts):
-                    if timer() - cls.timeouts[key] > _cache_timeout:
+                    if time.time() - cls.timeouts[key] > _cache_timeout:
                         del cls.timeouts[key]
                         del cls.cache[key]
 
@@ -152,33 +161,22 @@ class DefaultHandler(RateLimitHandler):
             if result.status_code not in (200, 302):
                 return result
             with cls.ca_lock:
-                cls.timeouts[_cache_key] = timer()
+                cls.timeouts[_cache_key] = time.time()
                 cls.cache[_cache_key] = result
                 return result
         return wrapped
 
     @classmethod
-    def clear_cache(cls):
-        """Remove all items from the cache."""
-        with cls.ca_lock:
-            cls.cache = {}
-            cls.timeouts = {}
-
-    @classmethod
     def evict(cls, urls):
-        """Remove items from cache matching URLs.
-
-        Return the number of items removed.
-
+        """Remove items from cache matching URL.
+        Return whether or not any items were removed.
         """
-        if isinstance(urls, text_type):
-            urls = [urls]
         urls = set(normalize_url(url) for url in urls)
-        retval = 0
+        retval = False
         with cls.ca_lock:
             for key in list(cls.cache):
                 if key[0] in urls:
-                    retval += 1
+                    retval = True
                     del cls.cache[key]
                     del cls.timeouts[key]
         return retval
@@ -190,12 +188,11 @@ class MultiprocessHandler(object):
     """A PRAW handler to interact with the PRAW multi-process server."""
 
     def __init__(self, host='localhost', port=10101):
-        """Construct an instance of the MultiprocessHandler."""
         self.host = host
         self.port = port
 
     def _relay(self, **kwargs):
-        """Send the request through the server and return the HTTP response."""
+        """Send the request through the Server and return the http response."""
         retval = None
         delay_time = 2  # For connection retries
         read_attempts = 0  # For reading from socket
@@ -207,7 +204,7 @@ class MultiprocessHandler(object):
                 cPickle.dump(kwargs, sock_fp, cPickle.HIGHEST_PROTOCOL)
                 sock_fp.flush()
                 retval = cPickle.load(sock_fp)
-            except:  # pylint: disable=W0702
+            except:  # pylint: disable-msg=W0702
                 exc_type, exc, _ = sys.exc_info()
                 socket_error = exc_type is socket.error
                 if socket_error and exc.errno == 111:  # Connection refused
@@ -230,7 +227,7 @@ class MultiprocessHandler(object):
                 sock_fp.close()
                 sock.close()
         if isinstance(retval, Exception):
-            raise retval  # pylint: disable=E0702
+            raise retval  # pylint: disable-msg=E0702
         return retval
 
     def evict(self, urls):
@@ -238,5 +235,5 @@ class MultiprocessHandler(object):
         return self._relay(method='evict', urls=urls)
 
     def request(self, **kwargs):
-        """Forward the request to the server and return its HTTP response."""
+        """Forward the request to the server and return its http response."""
         return self._relay(method='request', **kwargs)
