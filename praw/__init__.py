@@ -50,7 +50,7 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '3.2.1'
+__version__ = '3.3.0'
 
 MIN_IMAGE_SIZE = 128
 MAX_IMAGE_SIZE = 512000

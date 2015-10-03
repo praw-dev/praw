@@ -22,7 +22,7 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
-Unreleased
+PRAW 3.3.0
 ----------
  * **[BUGFIX]** Fixed login password prompt issue on windows (#485).
  * **[BUGFIX]** Fixed unicode user-agent issue (#483).
