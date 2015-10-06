@@ -901,26 +901,20 @@ class UnauthenticatedReddit(BaseReddit):
         return self.get_content(self.config['reddit_url'], *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
-    def get_info(self, url=None, thing_id=None, limit=None):
-        """Look up existing items by thing_id (fullname) or url.
+    def get_info(self, url=None, thing_id=None, *args, **kwargs):
+        """Return a get_content generator for things to look up.
 
-        :param url: The url to lookup.
+        :param url: A url to lookup.
         :param thing_id: A single thing_id, or a list of thing_ids. A thing_id
             can be any one of Comment (``t1_``), Link (``t3_``), or Subreddit
             (``t5_``) to lookup by fullname.
-        :param limit: The maximum number of Submissions to return when looking
-            up by url. When None, uses account default settings.
-        :returns: When a single ``thing_id`` is provided, return the
-            corresponding thing object, or ``None`` if not found. When a list
-            of ``thing_id``s or a ``url`` is provided return a list of thing
-            objects (up to ``limit``). ``None`` is returned if any one of the
-            thing_ids or the URL is invalid.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
         if bool(url) == bool(thing_id):
             raise TypeError('Only one of url or thing_id is required!')
-        elif thing_id and limit:
-            raise TypeError('Limit keyword is not applicable with thing_id.')
 
         # In these cases, we will have a list of things to return.
         # Otherwise, it will just be one item.
@@ -929,8 +923,6 @@ class UnauthenticatedReddit(BaseReddit):
         param_groups = []
         if url:
             params = {'url': url}
-            if limit:
-                params['limit'] = limit
             param_groups.append(params)
         else:
             if isinstance(thing_id, six.string_types):
@@ -943,8 +935,11 @@ class UnauthenticatedReddit(BaseReddit):
 
         items = []
         for param_group in param_groups:
-            chunk = self.request_json(self.config['info'], params=param_group)
-            items.extend(chunk['data']['children'])
+            if 'params' in kwargs:
+                param_group.update(kwargs['params'])
+            kwargs['params'] = param_group
+            chunk = self.get_content(self.config['info'], *args, **kwargs)
+            items.extend(list(chunk))
 
         if return_list:
             return items if items else None

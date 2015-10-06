@@ -29,7 +29,7 @@ from six.moves.urllib.parse import (  # pylint: disable=F0401
 from heapq import heappop, heappush
 from json import dumps
 from requests.compat import urljoin
-from warnings import warn_explicit
+from warnings import warn, warn_explicit
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
                   ModOnlyMixin as MOMix, ModSelfMixin as MSMix,
@@ -37,7 +37,7 @@ from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
 from praw.decorators import (alias_function, limit_chars, restrict_access,
                              deprecated)
-from praw.errors import ClientException, InvalidComment
+from praw.errors import ClientException
 from praw.internal import (_get_redditor_listing, _get_sorter,
                            _modify_relationship)
 
@@ -439,10 +439,10 @@ class Refreshable(RedditContentObject):
         automatically be refreshed serverside. Refreshing a submission will
         also refresh all its comments.
 
-        In the rare case of a submissions's comment[0] being deleted or
-        removed in between its original retrieval and refresh, or
-        inconsistencies between different endpoints resulting in this,
-        an IndexError will be thrown.
+        In the rare case of a comment being deleted or removed when it had
+        no replies, a second request will be made, not all information will
+        be updated and a warning will list the attributes that could not be
+        retrieved if there were any.
 
         """
         unique = self.reddit_session._unique_count  # pylint: disable=W0212
@@ -454,7 +454,31 @@ class Refreshable(RedditContentObject):
         elif isinstance(self, Comment):
             sub = Submission.from_url(self.reddit_session, self.permalink,
                                       params={'uniq': unique})
-            other = sub.comments[0]
+            try:
+                other = sub.comments[0]
+            except IndexError:
+                # comment is "specially deleted", a reddit inconsistency;
+                # see #519, #524, #535, #537, and #552 it needs to be
+                # retreived via /api/info, but that's okay since these
+                # specially deleted comments always have the same json
+                # structure. The unique count needs to be updated
+                # in case the comment originally came from /api/info
+                msg = ("Comment {0} was deleted or removed, and had "
+                       "no replies when such happened, so a second "
+                       "request was made to /api/info.".format(self.name))
+                unique = self.reddit_session._unique_count
+                self.reddit_session._unique_count += 1
+                info = self.reddit_session.get_info(thing_id=self.name,
+                                                    params={'uniq': unique})
+                other = next(info)
+                oldkeys = set(self.__dict__.keys())
+                newkeys = set(other.__dict__.keys())
+                keydiff = ", ".join(oldkeys - newkeys)
+                if keydiff:
+                    msg += "\n" + "Could not retrieve:\n" + keydiff
+                self.__dict__.update(other.__dict__)  # pylint: disable=W0201
+                warn(msg, RuntimeWarning)
+                return self
         elif isinstance(self, Multireddit):
             other = Multireddit(self.reddit_session, author=self._author,
                                 name=self.name, uniq=unique, fetch=True)
@@ -667,11 +691,21 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         """
         if self._replies is None or not self._has_fetched_replies:
             response = self.reddit_session.request_json(self._fast_permalink)
-            if not response[1]['data']['children']:
-                raise InvalidComment('Comment is no longer accessible: {0}'
-                                     .format(self._fast_permalink))
-            # pylint: disable=W0212
-            self._replies = response[1]['data']['children'][0]._replies
+            if response[1]['data']['children']:
+                # pylint: disable=W0212
+                self._replies = response[1]['data']['children'][0]._replies
+            else:
+                # comment is "specially deleted", a reddit inconsistency;
+                # see #519, #524, #535, #537, and #552 it needs to be
+                # retreived via /api/info, but that's okay since these
+                # specially deleted comments always have the same json
+                # structure. The unique count needs to be updated
+                # in case the comment originally came from /api/info
+                msg = ("Comment {0} was deleted or removed, and had "
+                       "no replies when such happened, so it still "
+                       "has no replies".format(self.name))
+                warn(msg, RuntimeWarning)
+                self._replies = []
             # pylint: enable=W0212
             self._has_fetched_replies = True
             # Set the submission object if it is not set.
