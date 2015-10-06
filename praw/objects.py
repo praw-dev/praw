@@ -738,11 +738,28 @@ class Message(Inboxable):
         url = self.reddit_session.config['collapse_message']
         self.reddit_session.request_json(url, data={'id': self.name})
 
+    @restrict_access(scope='modcontributors')
+    def mute_modmail_author(self, _unmute=False):
+        """Mute the sender of this modmail message.
+
+        :param _unmute: Unmute the user instead. Please use
+            :meth:`unmute_modmail_author` instead of setting this directly.
+
+        """
+
+        path = 'unmute_sender' if _unmute else 'mute_sender'
+        return self.reddit_session.request_json(
+            self.reddit_session.config[path], data={'id': self.fullname})
+
     @restrict_access(scope='privatemessages')
     def uncollapse(self):
         """Uncollapse a private message or modmail."""
         url = self.reddit_session.config['uncollapse_message']
         self.reddit_session.request_json(url, data={'id': self.name})
+
+    def unmute_modmail_author(self):
+        """Unmute the sender of this modmail message."""
+        return self.mute_modmail_author(_unmute=True)
 
 
 class MoreComments(RedditContentObject):
@@ -1442,6 +1459,7 @@ class Subreddit(Messageable, Refreshable):
                 ('get_mod_log', MLMix),
                 ('get_mod_queue', MOMix),
                 ('get_mod_mail', MOMix),
+                ('get_muted', MOMix),
                 ('get_random_submission', UR),
                 ('get_reports', MOMix),
                 ('get_settings', MCMix),
@@ -1470,6 +1488,7 @@ class Subreddit(Messageable, Refreshable):
     # Subreddit banned
     add_ban = _modify_relationship('banned', is_sub=True)
     remove_ban = _modify_relationship('banned', unlink=True, is_sub=True)
+
     # Subreddit contributors
     add_contributor = _modify_relationship('contributor', is_sub=True)
     remove_contributor = _modify_relationship('contributor', unlink=True,
@@ -1478,6 +1497,10 @@ class Subreddit(Messageable, Refreshable):
     add_moderator = _modify_relationship('moderator', is_sub=True)
     remove_moderator = _modify_relationship('moderator', unlink=True,
                                             is_sub=True)
+    # Subreddit muted
+    add_mute = _modify_relationship('muted', is_sub=True)
+    remove_mute = _modify_relationship('muted', is_sub=True, unlink=True)
+
     # Subreddit wiki banned
     add_wiki_ban = _modify_relationship('wikibanned', is_sub=True)
     remove_wiki_ban = _modify_relationship('wikibanned', unlink=True,

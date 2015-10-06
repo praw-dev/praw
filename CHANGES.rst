@@ -22,6 +22,13 @@ formatted links that link to the relevant place in the code overview.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+ * **[FEATURE]** Added support for modmail muting. See
+   :meth:`praw.objects.Subreddit.add_mute`,
+   :meth:`praw.objects.Message.mute_message_author`, and
+   :meth:`praw.__init__.ModOnlyMixin.get_muted`.
+
 PRAW 3.3.0
 ----------
  * **[BUGFIX]** Fixed login password prompt issue on windows (#485).
