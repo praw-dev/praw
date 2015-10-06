@@ -1995,7 +1995,7 @@ class ModOnlyMixin(AuthenticatedReddit):
                                 six.text_type(subreddit), *args, **kwargs)
 
     @decorators.restrict_access(scope='read', mod=True)
-    def get_muted(self, subreddit, *args, **kwargs):
+    def get_muted(self, subreddit, user_only=True, *args, **kwargs):
         """Return a get_content generator for modmail-muted users.
 
         :param subreddit: Either a Subreddit object or the name of a subreddit
@@ -2005,9 +2005,9 @@ class ModOnlyMixin(AuthenticatedReddit):
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-        return self.get_content(
+        return self._get_userlist(
             self.config['muted'].format(subreddit=six.text_type(subreddit)),
-            *args, **kwargs)
+            user_only, *args, **kwargs)
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_reports(self, subreddit='mod', *args, **kwargs):

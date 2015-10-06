@@ -356,7 +356,7 @@ class OAuthSubredditTest(OAuthPRAWTest):
             mutes = list(subreddit.get_muted(params={'uniq': cachebuster}))
             self.r.refresh_access_information(
                 self.refresh_token['modcontributors'])
-            return any(mute['name'] == username for mute in mutes)
+            return any(mute.name == username for mute in mutes)
 
         user = self.r.get_redditor(self.other_user_name)
         subreddit.add_mute(user)  # by Redditor obj
