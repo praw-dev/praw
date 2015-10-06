@@ -746,7 +746,6 @@ class Message(Inboxable):
             :meth:`unmute_modmail_author` instead of setting this directly.
 
         """
-
         path = 'unmute_sender' if _unmute else 'mute_sender'
         return self.reddit_session.request_json(
             self.reddit_session.config[path], data={'id': self.fullname})
