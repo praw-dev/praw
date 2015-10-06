@@ -137,6 +137,8 @@ class Config(object):  # pylint: disable=R0903
                  'multireddit_mine':    'me/m/%s/',
                  'multireddit_rename':  'api/multi/rename/',
                  'multireddit_user':    'api/multi/user/%s/',
+                 'mute_sender':         'api/mute_message_author/',
+                 'muted':               'r/{subreddit}/about/muted/',
                  'popular_subreddits':  'subreddits/popular/',
                  'post_replies':        'message/selfreply/',
                  'read_message':        'api/read_message/',
@@ -174,6 +176,7 @@ class Config(object):  # pylint: disable=R0903
                  'unhide':              'api/unhide/',
                  'unmarknsfw':          'api/unmarknsfw/',
                  'unmoderated':         'r/%s/about/unmoderated/',
+                 'unmute_sender':       'api/unmute_message_author/',
                  'unignore_reports':    'api/unignore_reports/',
                  'unread':              'message/unread/',
                  'unread_message':      'api/unread_message/',
@@ -1990,6 +1993,21 @@ class ModOnlyMixin(AuthenticatedReddit):
         """
         return self.get_content(self.config['modqueue'] %
                                 six.text_type(subreddit), *args, **kwargs)
+
+    @decorators.restrict_access(scope='read', mod=True)
+    def get_muted(self, subreddit, user_only=True, *args, **kwargs):
+        """Return a get_content generator for modmail-muted users.
+
+        :param subreddit: Either a Subreddit object or the name of a subreddit
+            to get the list of muted users from.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        return self._get_userlist(
+            self.config['muted'].format(subreddit=six.text_type(subreddit)),
+            user_only, *args, **kwargs)
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_reports(self, subreddit='mod', *args, **kwargs):
