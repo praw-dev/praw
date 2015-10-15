@@ -36,8 +36,8 @@ class WikiPageTests(PRAWTest):
         page.remove_editor(self.un)
         page.add_editor(self.un)
 
-        self.r.evict(self.r.config['wiki_page_settings'] % (
-                     self.subreddit.display_name, 'index'))
+        self.r.evict(self.r.config['wiki_page_settings'].format(
+                     subreddit=self.subreddit.display_name, page='index'))
 
         editors = page.get_settings()['editors']
         self.assertTrue(any(

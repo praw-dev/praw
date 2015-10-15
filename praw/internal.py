@@ -108,7 +108,8 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 
         session = thing.reddit_session
         if relationship == 'moderator':
-            session.evict(session.config['moderators'] % six.text_type(thing))
+            session.evict(session.config['moderators'].format(
+                subreddit=six.text_type(thing)))
         url = session.config[url_key]
         return session.request_json(url, data=data)
     return do_relationship
@@ -120,13 +121,15 @@ def _prepare_request(reddit_session, url, params, data, auth, files,
     # Requests using OAuth for authorization must switch to using the oauth
     # domain.
     if getattr(reddit_session, '_use_oauth', False):
-        headers = {'Authorization': 'bearer %s' % reddit_session.access_token}
+        bearer = 'bearer {0}'.format(reddit_session.access_token)
+        headers = {'Authorization': bearer}
         config = reddit_session.config
         for prefix in (config.api_url, config.permalink_url):
             if url.startswith(prefix):
                 if config.log_requests >= 1:
-                    sys.stderr.write('substituting {} for {} in url\n'
-                                     .format(config.oauth_url, prefix))
+                    msg = 'substituting {0} for {1} in url\n'.format(
+                        config.oauth_url, prefix)
+                    sys.stderr.write(msg)
                 url = config.oauth_url + url[len(prefix):]
                 break
     else:
