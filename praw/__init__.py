@@ -1353,10 +1353,13 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
     def has_scope(self, scope):
         """Return True if OAuth2 authorized for the passed in scope(s)."""
+        if not self.is_oauth_session():
+            return False
+        if '*' in self._authentication:
+            return True
         if isinstance(scope, six.string_types):
             scope = [scope]
-        return self.is_oauth_session() and all(s in self._authentication
-                                               for s in scope)
+        return all(s in self._authentication for s in scope)
 
     def is_logged_in(self):
         """Return True when the session is authenticated via username/password.
