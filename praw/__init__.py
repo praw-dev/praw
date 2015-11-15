@@ -65,7 +65,6 @@ else:
 
 
 class Config(object):  # pylint: disable=R0903
-
     """A class containing the configuration for a reddit site."""
 
     API_PATHS = {'accept_mod_invite':   'api/accept_moderator_invite',
@@ -293,7 +292,6 @@ class Config(object):  # pylint: disable=R0903
 
 
 class BaseReddit(object):
-
     """A base class that allows access to reddit's API.
 
     You should **not** directly instantiate instances of this class. Use
@@ -632,7 +630,6 @@ class BaseReddit(object):
 
 
 class OAuth2Reddit(BaseReddit):
-
     """Provides functionality for obtaining reddit OAuth2 access tokens.
 
     You should **not** directly instantiate instances of this class. Use
@@ -751,7 +748,6 @@ class OAuth2Reddit(BaseReddit):
 
 
 class UnauthenticatedReddit(BaseReddit):
-
     """This mixin provides bindings for basic functions of reddit's API.
 
     None of these functions require authenticated access to reddit's API.
@@ -1193,7 +1189,6 @@ class UnauthenticatedReddit(BaseReddit):
 
 
 class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
-
     """This class adds the methods necessary for authenticating with reddit.
 
     Authentication can either be login based
@@ -1512,7 +1507,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
 
 class ModConfigMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'modconfig' scope (or mod access).
 
     You should **not** directly instantiate instances of this class. Use
@@ -1711,7 +1705,6 @@ class ModConfigMixin(AuthenticatedReddit):
 
 
 class ModFlairMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'modflair' scope (or mod access).
 
     You should **not** directly instantiate instances of this class. Use
@@ -1858,7 +1851,6 @@ class ModFlairMixin(AuthenticatedReddit):
 
 
 class ModLogMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'modlog' scope (or mod access).
 
     You should **not** directly instantiate instances of this class. Use
@@ -1890,7 +1882,6 @@ class ModLogMixin(AuthenticatedReddit):
 
 
 class ModOnlyMixin(AuthenticatedReddit):
-
     """Adds methods requiring the logged in moderator access.
 
     You should **not** directly instantiate instances of this class. Use
@@ -2084,7 +2075,6 @@ class ModOnlyMixin(AuthenticatedReddit):
 
 
 class ModSelfMixin(AuthenticatedReddit):
-
     """Adds methods pertaining to the 'modself' OAuth scope (or login).
 
     You should **not** directly instantiate instances of this class. Use
@@ -2130,7 +2120,6 @@ class ModSelfMixin(AuthenticatedReddit):
 
 
 class MultiredditMixin(AuthenticatedReddit):
-
     """Adds methods pertaining to multireddits.
 
     You should **not** directly instantiate instances of this class. Use
@@ -2295,7 +2284,6 @@ class MultiredditMixin(AuthenticatedReddit):
 
 
 class MySubredditsMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'mysubreddits' scope (or login).
 
     You should **not** directly instantiate instances of this class. Use
@@ -2353,7 +2341,6 @@ class MySubredditsMixin(AuthenticatedReddit):
 
 
 class PrivateMessagesMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'privatemessages' scope (or login).
 
     You should **not** directly instantiate instances of this class. Use
@@ -2513,7 +2500,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
 
 class ReportMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'report' scope (or login).
 
     You should **not** directly instantiate instances of this class. Use
@@ -2559,7 +2545,6 @@ class ReportMixin(AuthenticatedReddit):
 
 
 class SubmitMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'submit' scope (or login).
 
     You should **not** directly instantiate instances of this class. Use
@@ -2647,7 +2632,6 @@ class SubmitMixin(AuthenticatedReddit):
 
 
 class SubscribeMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'subscribe' scope (or login).
 
     You should **not** directly instantiate instances of this class. Use
@@ -2683,7 +2667,6 @@ class SubscribeMixin(AuthenticatedReddit):
 class Reddit(ModConfigMixin, ModFlairMixin, ModLogMixin, ModOnlyMixin,
              ModSelfMixin, MultiredditMixin, MySubredditsMixin,
              PrivateMessagesMixin, ReportMixin, SubmitMixin, SubscribeMixin):
-
     """Provides access to reddit's API.
 
     See :class:`.BaseReddit`'s documentation for descriptions of the

@@ -47,7 +47,6 @@ REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor',
 
 
 class RedditContentObject(object):
-
     """Base class that represents actual reddit objects."""
 
     @classmethod
@@ -195,7 +194,6 @@ class RedditContentObject(object):
 
 
 class Moderatable(RedditContentObject):
-
     """Interface for Reddit content objects that have can be moderated."""
 
     @restrict_access(scope='modposts')
@@ -289,7 +287,6 @@ class Moderatable(RedditContentObject):
 
 
 class Editable(RedditContentObject):
-
     """Interface for Reddit content objects that can be edited and deleted."""
 
     @restrict_access(scope='edit')
@@ -321,7 +318,6 @@ class Editable(RedditContentObject):
 
 
 class Gildable(RedditContentObject):
-
     """Interface for RedditContentObjects that can be gilded."""
 
     @restrict_access(scope='creddits', oauth_only=True)
@@ -354,7 +350,6 @@ class Gildable(RedditContentObject):
 
 
 class Hideable(RedditContentObject):
-
     """Interface for objects that can be hidden."""
 
     def hide(self, _unhide=False):
@@ -379,7 +374,6 @@ class Hideable(RedditContentObject):
 
 
 class Inboxable(RedditContentObject):
-
     """Interface for objects that appear in the inbox (orangereds)."""
 
     def mark_as_read(self):
@@ -417,14 +411,12 @@ class Inboxable(RedditContentObject):
 
 
 class Messageable(RedditContentObject):
-
     """Interface for RedditContentObjects that can be messaged."""
 
     _methods = (('send_message', PMMix),)
 
 
 class Refreshable(RedditContentObject):
-
     """Interface for objects that can be refreshed."""
 
     def refresh(self):
@@ -472,7 +464,6 @@ class Refreshable(RedditContentObject):
 
 
 class Reportable(RedditContentObject):
-
     """Interface for RedditContentObjects that can be reported."""
 
     @restrict_access(scope='report')
@@ -499,7 +490,6 @@ class Reportable(RedditContentObject):
 
 
 class Saveable(RedditContentObject):
-
     """Interface for RedditContentObjects that can be saved."""
 
     @restrict_access(scope='save')
@@ -526,7 +516,6 @@ class Saveable(RedditContentObject):
 
 
 class Voteable(RedditContentObject):
-
     """Interface for RedditContentObjects that can be voted on."""
 
     def clear_vote(self):
@@ -604,7 +593,6 @@ class Voteable(RedditContentObject):
 
 class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
               Reportable, Saveable, Voteable):
-
     """A class that represents a reddit comments."""
 
     def __init__(self, reddit_session, json_dict):
@@ -688,7 +676,6 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
 
 class Message(Inboxable):
-
     """A class for private messages."""
 
     @staticmethod
@@ -762,7 +749,6 @@ class Message(Inboxable):
 
 
 class MoreComments(RedditContentObject):
-
     """A class indicating there are more comments."""
 
     def __init__(self, reddit_session, json_dict):
@@ -830,7 +816,6 @@ class MoreComments(RedditContentObject):
 
 
 class Redditor(Gildable, Messageable, Refreshable):
-
     """A class representing the users of reddit."""
 
     _methods = (('get_multireddit', MultiMix), ('get_multireddits', MultiMix))
@@ -1004,7 +989,6 @@ class Redditor(Gildable, Messageable, Refreshable):
 
 
 class LoggedInRedditor(Redditor):
-
     """A class representing a currently logged in Redditor."""
 
     get_hidden = restrict_access('history')(_get_redditor_listing('hidden'))
@@ -1041,7 +1025,6 @@ class LoggedInRedditor(Redditor):
 
 
 class ModAction(RedditContentObject):
-
     """A moderator action."""
 
     def __init__(self, reddit_session, json_dict=None, fetch=False):
@@ -1055,7 +1038,6 @@ class ModAction(RedditContentObject):
 
 class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
                  Reportable, Saveable, Voteable):
-
     """A class for submissions to reddit."""
 
     _methods = (('select_flair', AR),)
@@ -1437,7 +1419,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
 
 class Subreddit(Messageable, Refreshable):
-
     """A class for Subreddits."""
 
     _methods = (('accept_moderator_invite', AR),
@@ -1586,7 +1567,6 @@ class Subreddit(Messageable, Refreshable):
 
 
 class Multireddit(Refreshable):
-
     """A class for users' Multireddits."""
 
     # Generic listing selectors
@@ -1733,7 +1713,6 @@ class Multireddit(Refreshable):
 
 
 class PRAWListing(RedditContentObject):
-
     """An abstract class to coerce a listing into RedditContentObjects."""
 
     CHILD_ATTRIBUTE = None
@@ -1779,7 +1758,6 @@ class PRAWListing(RedditContentObject):
 
 
 class UserList(PRAWListing):
-
     """A list of Redditors. Works just like a regular list."""
 
     CHILD_ATTRIBUTE = 'children'
@@ -1793,7 +1771,6 @@ class UserList(PRAWListing):
 
 
 class WikiPage(Refreshable):
-
     """An individual WikiPage object."""
 
     @classmethod
@@ -1910,7 +1887,6 @@ class WikiPage(Refreshable):
 
 
 class WikiPageListing(PRAWListing):
-
     """A list of WikiPages. Works just like a regular list."""
 
     CHILD_ATTRIBUTE = '_tmp'
