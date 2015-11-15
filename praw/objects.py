@@ -441,7 +441,9 @@ class Refreshable(RedditContentObject):
         elif isinstance(self, Comment):
             sub = Submission.from_url(self.reddit_session, self.permalink,
                                       params={'uniq': unique})
-            other = sub.comments[0]
+            if len(sub.comments) > 0:
+                other = sub.comments[0]
+            
         elif isinstance(self, Multireddit):
             other = Multireddit(self.reddit_session, author=self._author,
                                 name=self.name, uniq=unique, fetch=True)
