@@ -258,7 +258,6 @@ def normalize_url(url):
 
 
 class BoundedSet(object):
-
     """A set with a maximum size that evicts the oldest items when necessary.
 
     This class does not implement the complete set interface.

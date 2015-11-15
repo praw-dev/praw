@@ -14,7 +14,6 @@ from threading import Lock
 
 class ThreadingTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     # pylint: disable=R0903,W0232
-
     """A TCP server that creates new threads per connection."""
 
     allow_reuse_address = True
@@ -34,7 +33,6 @@ class ThreadingTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
 class RequestHandler(socketserver.StreamRequestHandler):
     # pylint: disable=W0232
-
     """A class that handles incoming requests.
 
     Requests to the same domain are cached and rate-limited.
