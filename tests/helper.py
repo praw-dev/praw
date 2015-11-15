@@ -8,6 +8,7 @@ import unittest
 from betamax import Betamax, BaseMatcher
 from betamax_matchers.form_urlencoded import URLEncodedBodyMatcher
 from betamax_matchers.json_body import JSONBodyMatcher
+from betamax_serializers import pretty_json
 from functools import wraps
 from praw import Reddit
 from requests.compat import urljoin
@@ -128,11 +129,14 @@ class OAuthPRAWTest(PRAWTest):
 
 
 Betamax.register_request_matcher(BodyMatcher)
+Betamax.register_serializer(pretty_json.PrettyJSONSerializer)
+
 with Betamax.configure() as config:
     if os.getenv('TRAVIS'):
         config.default_cassette_options['record_mode'] = 'none'
     config.cassette_library_dir = 'tests/cassettes'
     config.default_cassette_options['match_requests_on'].append('PRAWBody')
+    config.default_cassette_options['serialize_with'] = 'prettyjson'
 
 
 def betamax(cassette_name=None, **cassette_options):

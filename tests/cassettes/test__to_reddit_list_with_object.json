@@ -1,1 +1,116 @@
-{"http_interactions": [{"request": {"body": {"string": "", "encoding": "utf-8"}, "headers": {"Connection": ["keep-alive"], "Accept-Encoding": ["gzip, deflate"], "Accept": ["*/*"], "User-Agent": ["PRAW_test_suite PRAW/3.0a1 Python/2.7.5 Darwin-13.4.0-x86_64-i386-64bit"]}, "method": "GET", "uri": "https://api.reddit.com/r/reddit_api_test/about/.json"}, "response": {"body": {"base64_string": "H4sIAOfBLFUC/3VSTU/cMBD9KyjnslmCAltuwGHbQ6UiTlVVWRN7sjH4I7XH210Q/7121iEhVS+RMvP83puZ91o8SyOKm7OC6uLTWSGAIP69Fg0Yg45JvUvN1PKh0ZIY4YFYR1rFuglKxU7wCenZ8CaR5bociCuq7dWCYOQU0vcKjsyAxlRzKESEQC8jzFOCdAhiMtIR9Tdl2ayoC7rxq9MDjULCiltdiqf9D3u7edgdbml79/3+y+Pm/s/x7rc9/7wVD4/7w8u3bts6CldfV73ZDR7Qcyd7ktYs5iJJarDVWtuAS2BulYLeIxOokFCwKKrRkI+wFpTHiLF7dBebWaEPjZKc/V9I8ljy8iWJzUuz7ec1jJYyaka5OJOS5pkpaHAmA5zbEL0y4CT3iWY9uSMHbSv5zHaWzL5+Xq4jOn5+nUSScIMuDV5Vk+4Qj4XumA9tIx+QdVNrPDzV7D0n3CHQkKOLy6qq6/X1db1KToNLpEXpykVOymFDUiADMb9EZmKB0lwLtpzwj2sfrcbtU5wvfDD77x3HpecUMM+tQzY40dIkK0kpriYbpmM/jHtiej+X9ykTYxPMMXVGK9Ous5O3t79bkggQtgMAAA==", "encoding": "UTF-8"}, "headers": {"content-length": ["460"], "x-xss-protection": ["1; mode=block"], "x-reddit-tracking": ["https://pixel.redditmedia.com/pixel/of_destiny.png?v=fO2DGk6RbUssLLcqGTI1tIZJ4u0oy2cAJHjPsA%2Bg0uwIOzk1YpN3ulA8Ye8IwRkOkxdxQQGVqAGWlPD9EVhHH4kGedGGNJ10"], "x-content-type-options": ["nosniff"], "access-control-expose-headers": ["X-Reddit-Tracking, X-Moose"], "set-cookie": ["__cfduid=d811eb9605e199284f0e3a7fd8ca2a2af1428996582; expires=Wed, 13-Apr-16 07:29:42 GMT; path=/; domain=.reddit.com; HttpOnly"], "content-encoding": ["gzip"], "vary": ["accept-encoding"], "server": ["cloudflare-nginx"], "cf-ray": ["1d6db381d4c5012c-SJC"], "connection": ["keep-alive"], "x-ua-compatible": ["IE=edge"], "cache-control": ["no-cache"], "date": ["Tue, 14 Apr 2015 07:29:43 GMT"], "x-frame-options": ["SAMEORIGIN"], "x-moose": ["majestic"], "content-type": ["application/json; charset=UTF-8"], "access-control-allow-origin": ["*"]}, "cookies": [{"comment": null, "domain": ".reddit.com", "name": "__cfduid", "expires": 1460532582, "value": "d811eb9605e199284f0e3a7fd8ca2a2af1428996582", "version": 0, "rfc2109": false, "discard": false, "path": "/", "rest": {"HttpOnly": null}, "port": null, "comment_url": null, "secure": false}], "status": {"message": "OK", "code": 200}, "url": "https://api.reddit.com/r/reddit_api_test/about/.json"}, "recorded_at": "2015-04-14T07:29:43"}], "recorded_with": "betamax/0.4.1"}
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2015-04-14T07:29:43",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "gzip, deflate"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "User-Agent": [
+            "PRAW_test_suite PRAW/3.0a1 Python/2.7.5 Darwin-13.4.0-x86_64-i386-64bit"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://api.reddit.com/r/reddit_api_test/about/.json"
+      },
+      "response": {
+        "body": {
+          "base64_string": "H4sIAOfBLFUC/3VSTU/cMBD9KyjnslmCAltuwGHbQ6UiTlVVWRN7sjH4I7XH210Q/7121iEhVS+RMvP83puZ91o8SyOKm7OC6uLTWSGAIP69Fg0Yg45JvUvN1PKh0ZIY4YFYR1rFuglKxU7wCenZ8CaR5bociCuq7dWCYOQU0vcKjsyAxlRzKESEQC8jzFOCdAhiMtIR9Tdl2ayoC7rxq9MDjULCiltdiqf9D3u7edgdbml79/3+y+Pm/s/x7rc9/7wVD4/7w8u3bts6CldfV73ZDR7Qcyd7ktYs5iJJarDVWtuAS2BulYLeIxOokFCwKKrRkI+wFpTHiLF7dBebWaEPjZKc/V9I8ljy8iWJzUuz7ec1jJYyaka5OJOS5pkpaHAmA5zbEL0y4CT3iWY9uSMHbSv5zHaWzL5+Xq4jOn5+nUSScIMuDV5Vk+4Qj4XumA9tIx+QdVNrPDzV7D0n3CHQkKOLy6qq6/X1db1KToNLpEXpykVOymFDUiADMb9EZmKB0lwLtpzwj2sfrcbtU5wvfDD77x3HpecUMM+tQzY40dIkK0kpriYbpmM/jHtiej+X9ykTYxPMMXVGK9Ous5O3t79bkggQtgMAAA==",
+          "encoding": "UTF-8"
+        },
+        "cookies": [
+          {
+            "comment": null,
+            "comment_url": null,
+            "discard": false,
+            "domain": ".reddit.com",
+            "expires": 1460532582,
+            "name": "__cfduid",
+            "path": "/",
+            "port": null,
+            "rest": {
+              "HttpOnly": null
+            },
+            "rfc2109": false,
+            "secure": false,
+            "value": "d811eb9605e199284f0e3a7fd8ca2a2af1428996582",
+            "version": 0
+          }
+        ],
+        "headers": {
+          "access-control-allow-origin": [
+            "*"
+          ],
+          "access-control-expose-headers": [
+            "X-Reddit-Tracking, X-Moose"
+          ],
+          "cache-control": [
+            "no-cache"
+          ],
+          "cf-ray": [
+            "1d6db381d4c5012c-SJC"
+          ],
+          "connection": [
+            "keep-alive"
+          ],
+          "content-encoding": [
+            "gzip"
+          ],
+          "content-length": [
+            "460"
+          ],
+          "content-type": [
+            "application/json; charset=UTF-8"
+          ],
+          "date": [
+            "Tue, 14 Apr 2015 07:29:43 GMT"
+          ],
+          "server": [
+            "cloudflare-nginx"
+          ],
+          "set-cookie": [
+            "__cfduid=d811eb9605e199284f0e3a7fd8ca2a2af1428996582; expires=Wed, 13-Apr-16 07:29:42 GMT; path=/; domain=.reddit.com; HttpOnly"
+          ],
+          "vary": [
+            "accept-encoding"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-moose": [
+            "majestic"
+          ],
+          "x-reddit-tracking": [
+            "https://pixel.redditmedia.com/pixel/of_destiny.png?v=fO2DGk6RbUssLLcqGTI1tIZJ4u0oy2cAJHjPsA%2Bg0uwIOzk1YpN3ulA8Ye8IwRkOkxdxQQGVqAGWlPD9EVhHH4kGedGGNJ10"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://api.reddit.com/r/reddit_api_test/about/.json"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.4.1"
+}

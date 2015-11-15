@@ -44,7 +44,8 @@ setup(
     package_data={'': ['COPYING'], PACKAGE_NAME: ['*.ini']},
     install_requires=['decorator>=3.4.2', 'requests>=2.3.0', 'six>=1.4',
                       'update_checker>=0.11'],
-    tests_require=['betamax>=0.4.2', 'betamax-matchers>=0.2.0', 'mock>=1.0.0'],
+    tests_require=['betamax>=0.4.2', 'betamax-matchers>=0.2.0',
+                   'betamax_serializers>=0.1.1', 'mock>=1.0.0'],
     entry_points={'console_scripts': [
             'praw-multiprocess = praw.multiprocess:run']},
     test_suite='tests')
