@@ -139,6 +139,7 @@ class Config(object):  # pylint: disable=R0903
                  'mute_sender':         'api/mute_message_author/',
                  'muted':               'r/{subreddit}/about/muted/',
                  'popular_subreddits':  'subreddits/popular/',
+                 'default_subreddits':  'subreddits/default/',
                  'post_replies':        'message/selfreply/',
                  'read_message':        'api/read_message/',
                  'reddit_url':          '/',
@@ -947,6 +948,19 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         url = self.config['popular_subreddits']
+        return self.get_content(url, *args, **kwargs)
+
+    def get_default_subreddits(self, *args, **kwargs):
+        """Return a get_content generator for the default subreddits.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        url = self.config['default_subreddits']
+        if (len(args) < self.get_content.__code__.co_varnames.index('limit') and
+                'limit' not in kwargs):
+            kwargs['limit'] = 100
         return self.get_content(url, *args, **kwargs)
 
     def get_random_subreddit(self, nsfw=False):
