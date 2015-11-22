@@ -24,11 +24,14 @@ response for certain errors.
 from __future__ import print_function, unicode_literals
 
 import decorator
-import inspect
 import six
 import sys
 from functools import wraps
-from praw.decorator_helpers import _get_captcha, _is_mod_of_all
+from praw.decorator_helpers import (
+    _get_captcha,
+    _is_mod_of_all,
+    _make_func_args
+)
 from praw import errors
 from warnings import simplefilter, warn
 
@@ -48,7 +51,7 @@ def alias_function(function, class_name):
     """
     @wraps(function)
     def wrapped(self, *args, **kwargs):
-        func_args = inspect.getargspec(function).args
+        func_args = _make_func_args(function)
         if 'subreddit' in func_args and func_args.index('subreddit') != 1:
             # Only happens for search
             kwargs['subreddit'] = self
@@ -164,9 +167,9 @@ def require_captcha(function, *args, **kwargs):
                 # *args currently contains a None where the captcha answer
                 # needs to go. If we put the captcha in the **kwargs,
                 # we get a TypeError for having two values of the same param.
-                func_args = inspect.getargspec(function)
-                if 'captcha' in func_args.args:
-                    captcha_index = func_args.args.index('captcha')
+                func_args = _make_func_args(function)
+                if 'captcha' in func_args:
+                    captcha_index = func_args.index('captcha')
                     args = list(args)
                     args[captcha_index] = captcha_answer
                 else:
