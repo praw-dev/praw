@@ -84,6 +84,7 @@ class Config(object):  # pylint: disable=R0903
                  'contest_mode':        'api/set_contest_mode/',
                  'contributors':        'r/{subreddit}/about/contributors/',
                  'controversial':       'controversial/',
+                 'default_subreddits':  'subreddits/default/',
                  'del':                 'api/del/',
                  'deleteflair':         'api/deleteflair',
                  'delete_redditor':     'api/delete_user',
@@ -778,6 +779,16 @@ class UnauthenticatedReddit(BaseReddit):
                 'passwd2': password,
                 'user': user_name}
         return self.request_json(self.config['register'], data=data)
+
+    def default_subreddits(self, *args, **kwargs):
+        """Return a get_content generator for the default subreddits.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        url = self.config['default_subreddits']
+        return self.get_content(url, *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
     def get_comments(self, subreddit, gilded_only=False, *args, **kwargs):
