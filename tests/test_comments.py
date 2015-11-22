@@ -185,3 +185,18 @@ class OAuthCommentTest(OAuthPRAWTest):
         self.assertRaises(errors.InvalidComment, comment.reply, 'test')
         invalid_comment = errors.InvalidComment()
         self.assertEqual(invalid_comment.ERROR_TYPE, str(invalid_comment))
+
+    @betamax()
+    def test_refresh_deleted_comment(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        submission = next(subreddit.get_new())
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        comment = submission.add_comment("Delete this")
+        self.r.refresh_access_information(self.refresh_token['edit'])
+        comment.delete()
+        self.r.refresh_access_information(self.refresh_token['read'])
+        self.assertWarnings(RuntimeWarning, comment.refresh)
+        comment.refresh()
+        self.assertEqual(comment.submission, submission)
+        self.assertEqual(comment.author, None)
+        self.assertEqual(comment.body, '[deleted]')
