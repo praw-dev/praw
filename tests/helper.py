@@ -3,8 +3,10 @@
 from __future__ import print_function, unicode_literals
 
 import os
+import re
 import time
 import unittest
+import warnings
 from betamax import Betamax, BaseMatcher
 from betamax_matchers.form_urlencoded import URLEncodedBodyMatcher
 from betamax_matchers.json_body import JSONBodyMatcher
@@ -115,6 +117,96 @@ class PRAWTest(unittest.TestCase):
 
     def url(self, path):
         return urljoin(self.r.config.permalink_url, path)
+
+    def assertWarnings(self, warning, callable, *args, **kwds):
+        """Fail unless a warning of class warning is triggered
+           by callable when invoked with arguments args and keyword
+           arguments kwds. If a different type of warning is
+           triggered, it will not be caught, and the test case will
+           fail unless the given warning is also coincidentally
+           triggered.
+
+           http://stackoverflow.com/a/12935176/5155994
+        """
+        if not isinstance(warning, tuple):
+            warning = (warning,)
+
+        badwarnings = any(Warning not in x.__mro__ for x in warning)
+
+        if badwarnings:
+            raise TypeError('warning must be a warning class or '
+                            'tuple of warning classes')
+        with warnings.catch_warnings(record=True) as warning_list:
+            warnings.simplefilter('always')
+
+            callable(*args, **kwds)
+
+            caught = any(item.category in warning for item in warning_list)
+
+            try:
+                self.assertTrue(caught)
+            except AssertionError:
+                wname = ", ".join(w.__name__ for w in warning)
+                fname = callable.__name__
+                if len(warning) == 1:
+                    raise AssertionError('{0} not triggered '
+                                         'by {1}'.format(wname, fname))
+                else:
+                    raise AssertionError('None of the following '
+                                         'warnings were '
+                                         'triggered by {0}: '
+                                         '{1}'.format(fname, wname))
+
+    def assertWarningsRegexp(self, regexp, warning, callable, *args, **kwds):
+        """Fail unless a warning of class warning is triggered
+           by callable when invoked with arguments args and keyword
+           arguments kwds. If a different type of warning is
+           triggered, it will not be caught, and the test case will
+           fail unless the given warning is also coincidentally
+           triggered. This will also fail if the regexp (a valid
+           regex string) is not found within the warning
+        """
+        expected_regex = re.compile(regexp)
+
+        if not isinstance(warning, tuple):
+            warning = (warning,)
+
+        badwarnings = any(Warning not in x.__mro__ for x in warning)
+
+        if badwarnings:
+            raise TypeError('warning must be a warning class or '
+                            'tuple of warning classes')
+        with warnings.catch_warnings(record=True) as warning_list:
+            warnings.simplefilter('always')
+
+            callable(*args, **kwds)
+
+            caught = any(item.category in warning for item in warning_list)
+
+            try:
+                self.assertTrue(caught)
+            except AssertionError:
+                wname = ", ".join(w.__name__ for w in warning)
+                fname = callable.__name__
+                if len(warning) == 1:
+                    raise AssertionError('{0} not triggered '
+                                         'by {1}'.format(wname, fname))
+                else:
+                    raise AssertionError('None of the following '
+                                         'warnings were '
+                                         'triggered by {0}: '
+                                         '{1}'.format(fname, wname))
+            try:
+                caughtwarnmessages = [item.message.args[0] for item
+                                      in warning_list if
+                                      item.category in warning]
+
+                matches = any(re.search(expected_regex, w) for w
+                              in caughtwarnmessages)
+                self.assertTrue(matches)
+            except AssertionError:
+                raise AssertionError('Pattern "{0}" not found in'
+                                     'any caught warnings'.format(regexp))
 
 
 class OAuthPRAWTest(PRAWTest):
