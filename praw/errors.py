@@ -314,10 +314,11 @@ class APIException(PRAWException):
     def __str__(self):
         """Return a string containing the error message and field."""
         if hasattr(self, 'ERROR_TYPE'):
-            return '`%s` on field `%s`' % (self.message, self.field)
+            return '`{0}` on field `{1}`'.format(self.message, self.field)
         else:
-            return '(%s) `%s` on field `%s`' % (self.error_type, self.message,
-                                                self.field)
+            return '({0}) `{1}` on field `{2}`'.format(self.error_type,
+                                                       self.message,
+                                                       self.field)
 
 
 class ExceptionList(APIException):
@@ -336,7 +337,7 @@ class ExceptionList(APIException):
         """Return a string representation for all the errors."""
         ret = '\n'
         for i, error in enumerate(self.errors):
-            ret += '\tError %d) %s\n' % (i, six.text_type(error))
+            ret += '\tError {0}) {1}\n'.format(i, six.text_type(error))
         return ret
 
 

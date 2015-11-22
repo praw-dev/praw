@@ -79,8 +79,8 @@ class RedditContentObject(object):
         if attr != '__setstate__' and not self._has_fetched:
             self._has_fetched = self._populate(None, True)
             return getattr(self, attr)
-        raise AttributeError('\'%s\' has no attribute \'%s\'' % (type(self),
-                                                                 attr))
+        msg = '\'{0}\' has no attribute \'{1}\''.format(type(self), attr)
+        raise AttributeError(msg)
 
     def __getstate__(self):
         """Needed for `pickle`.
@@ -184,7 +184,7 @@ class RedditContentObject(object):
 
         """
         by_object = self.reddit_session.config.by_object
-        return '%s_%s' % (by_object[self.__class__], self.id)
+        return '{0}_{1}'.format(by_object[self.__class__], self.id)
 
     @property
     @deprecated('``has_fetched`` will not be a public attribute in PRAW4.')
@@ -692,7 +692,7 @@ class Message(Inboxable):
         """
         # Reduce fullname to ID if necessary
         message_id = message_id.split('_', 1)[-1]
-        url = reddit_session.config['message'] % message_id
+        url = reddit_session.config['message'].format(messageid=message_id)
         message_info = reddit_session.request_json(url, *args, **kwargs)
         message = message_info['data']['children'][0]
 
@@ -716,8 +716,8 @@ class Message(Inboxable):
     @limit_chars
     def __unicode__(self):
         """Return a string representation of the Message."""
-        return 'From: %s\nSubject: %s\n\n%s' % (self.author, self.subject,
-                                                self.body)
+        return 'From: {0}\nSubject: {1}\n\n{2}'.format(self.author,
+                                                       self.subject, self.body)
 
     @restrict_access(scope='privatemessages')
     def collapse(self):
@@ -767,7 +767,7 @@ class MoreComments(RedditContentObject):
 
     def __unicode__(self):
         """Return a string representation of the MoreComments object."""
-        return '[More Comments: %d]' % self.count
+        return '[More Comments: {0}]'.format(self.count)
 
     def _continue_comments(self, update):
         assert len(self.children) > 0
@@ -791,7 +791,7 @@ class MoreComments(RedditContentObject):
             if self.count == 0:  # Handle 'continue this thread' type
                 return self._continue_comments(update)
             # pylint: disable=W0212
-            children = [x for x in self.children if 't1_%s' % x
+            children = [x for x in self.children if 't1_{0}'.format(x)
                         not in self.submission._comments_by_id]
             # pylint: enable=W0212
             if not children:
@@ -829,14 +829,14 @@ class Redditor(Gildable, Messageable, Refreshable):
         """Construct an instance of the Redditor object."""
         if not user_name:
             user_name = json_dict['name']
-        info_url = reddit_session.config['user_about'] % user_name
+        info_url = reddit_session.config['user_about'].format(user=user_name)
         # name is set before calling the parent constructor so that the
         # json_dict 'name' attribute (if available) has precedence
         self._case_name = user_name
         super(Redditor, self).__init__(reddit_session, json_dict,
                                        fetch, info_url, **kwargs)
         self.name = self._case_name
-        self._url = reddit_session.config['user'] % self.name
+        self._url = reddit_session.config['user'].format(user=self.name)
         self._mod_subs = None
 
     def __repr__(self):
@@ -869,7 +869,7 @@ class Redditor(Gildable, Messageable, Refreshable):
         self.reddit_session.evict(self.reddit_session.config['friends'])
 
         # Requests through password auth use /api/friend
-        # Requests through oauth use /api/v1/me/friends/%username%
+        # Requests through oauth use /api/v1/me/friends/{username}
         if not self.reddit_session.is_oauth_session():
             modifier = _modify_relationship('friend', unlink=_unfriend)
             data = {'note': note} if note else {}
@@ -969,11 +969,12 @@ class Redditor(Gildable, Messageable, Refreshable):
         elif hasattr(messages, '__iter__'):
             for msg in messages:
                 if not isinstance(msg, Inboxable):
-                    raise ClientException('Invalid message type: %s'
-                                          % type(msg))
+                    msg = 'Invalid message type: {0}'.format(type(msg))
+                    raise ClientException(msg)
                 ids.append(msg.fullname)
         else:
-            raise ClientException('Invalid message type: %s' % type(messages))
+            msg = 'Invalid message type: {0}'.format(type(messages))
+            raise ClientException(msg)
         # pylint: disable=W0212
         retval = self.reddit_session._mark_as_read(ids, unread=unread)
         # pylint: enable=W0212
@@ -1207,7 +1208,8 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         cannot be altered.
 
         """
-        url = self.reddit_session.config['duplicates'] % self.id
+        url = self.reddit_session.config['duplicates'].format(
+            submissionid=self.id)
         return self.reddit_session.get_content(url, *args, object_filter=1,
                                                **kwargs)
 
@@ -1525,15 +1527,18 @@ class Subreddit(Messageable, Refreshable):
             warn_explicit('fetch=True has no effect on multireddits',
                           UserWarning, '', 0)
 
-        info_url = reddit_session.config['subreddit_about'] % subreddit_name
+        info_url = reddit_session.config['subreddit_about'].format(
+            subreddit=subreddit_name)
         self._case_name = subreddit_name
         super(Subreddit, self).__init__(reddit_session, json_dict, fetch,
                                         info_url, **kwargs)
         self.display_name = self._case_name
-        self._url = reddit_session.config['subreddit'] % self.display_name
+        self._url = reddit_session.config['subreddit'].format(
+            subreddit=self.display_name)
         # '' is the hot listing
         listings = ['new/', '', 'top/', 'controversial/', 'rising/']
-        base = (reddit_session.config['subreddit'] % self.display_name)
+        base = reddit_session.config['subreddit'].format(
+            subreddit=self.display_name)
         self._listing_urls = [base + x + '.json' for x in listings]
 
     def __repr__(self):
@@ -1608,12 +1613,14 @@ class Multireddit(Refreshable):
         if not name:
             name = json_dict['path'].split('/')[-1]
 
-        info_url = reddit_session.config['multireddit_about'] % (author, name)
+        info_url = reddit_session.config['multireddit_about'].format(
+            user=author, multi=name)
         self.name = name
         self._author = author
         super(Multireddit, self).__init__(reddit_session, json_dict, fetch,
                                           info_url, **kwargs)
-        self._url = reddit_session.config['multireddit'] % (author, name)
+        self._url = reddit_session.config['multireddit'].format(
+            user=author, multi=name)
 
     def __repr__(self):
         """Return a code representation of the Multireddit."""
@@ -1646,8 +1653,8 @@ class Multireddit(Refreshable):
 
         """
         subreddit = six.text_type(subreddit)
-        url = self.reddit_session.config['multireddit_add'] % (
-            self._author, self.name, subreddit)
+        url = self.reddit_session.config['multireddit_add'].format(
+            user=self._author, multi=self.name, subreddit=subreddit)
         method = 'DELETE' if _delete else 'PUT'
         self.reddit_session.http.headers['x-modhash'] = \
             self.reddit_session.modhash
@@ -1793,8 +1800,8 @@ class WikiPage(Refreshable):
         if not subreddit and not page:
             subreddit = json_dict['sr']
             page = json_dict['page']
-        info_url = reddit_session.config['wiki_page'] % (
-            six.text_type(subreddit), page)
+        info_url = reddit_session.config['wiki_page'].format(
+            subreddit=six.text_type(subreddit), page=page)
         super(WikiPage, self).__init__(reddit_session, json_dict, fetch,
                                        info_url, **kwargs)
         self.page = page
@@ -1816,8 +1823,8 @@ class WikiPage(Refreshable):
         :meth:`~praw.__init__.BaseReddit.request_json`.
         """
         url = self.reddit_session.config['wiki_page_editor']
-        url = url % (six.text_type(self.subreddit),
-                     'del' if _delete else 'add')
+        url = url.format(subreddit=six.text_type(self.subreddit),
+                         method='del' if _delete else 'add')
 
         data = {'page': self.page,
                 'username': six.text_type(username)}
@@ -1835,7 +1842,8 @@ class WikiPage(Refreshable):
         :meth:`~praw.__init__.BaseReddit.request_json`
         """
         url = self.reddit_session.config['wiki_page_settings']
-        url = url % (six.text_type(self.subreddit), self.page)
+        url = url.format(subreddit=six.text_type(self.subreddit),
+                         page=self.page)
         return self.reddit_session.request_json(url, *args, **kwargs)['data']
 
     def edit(self, *args, **kwargs):
@@ -1865,7 +1873,8 @@ class WikiPage(Refreshable):
 
         """
         url = self.reddit_session.config['wiki_page_settings']
-        url = url % (six.text_type(self.subreddit), self.page)
+        url = url.format(subreddit=six.text_type(self.subreddit),
+                         page=self.page)
         data = {'permlevel': permlevel,
                 'listed': 'on' if listed else 'off'}
 

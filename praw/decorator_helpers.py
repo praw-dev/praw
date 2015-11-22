@@ -8,7 +8,7 @@ def _get_captcha(reddit_session, captcha_id):
     """Prompt user for captcha solution and return a prepared result."""
     url = urljoin(reddit_session.config['captcha'],
                   captcha_id + '.png')
-    sys.stdout.write('Captcha URL: %s\nCaptcha: ' % url)
+    sys.stdout.write('Captcha URL: {0}\nCaptcha: '.format(url))
     sys.stdout.flush()
     raw = sys.stdin.readline()
     if not raw:  # stdin has reached the end of file
