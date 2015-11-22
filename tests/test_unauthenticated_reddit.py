@@ -119,6 +119,12 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertRaises(errors.LoginRequired, self.r.get_banned, self.sr)
 
     @betamax()
+    def test_default_subreddits(self):
+        num = 50
+        self.assertEqual(num,
+                         len(list(self.r.default_subreddits(limit=num))))
+
+    @betamax()
     def test_get_new(self):
         num = 50
         result = self.r.get_new(limit=num)
