@@ -15,7 +15,8 @@ class MessageTest(PRAWTest):
     @betamax()
     def test_get_comment_replies(self):
         comment_reply = next(self.r.get_comment_replies(limit=1))
-        comment_parent = self.r.get_info(thing_id=comment_reply.parent_id)
+        info_id = comment_reply.parent_id
+        comment_parent = next(self.r.get_info(thing_id=info_id))
         self.assertEqual(comment_parent.author.name, self.r.user.name)
 
     @betamax()
@@ -30,7 +31,8 @@ class MessageTest(PRAWTest):
     def test_get_post_replies(self):
         comment_reply = next(self.r.get_post_replies(limit=1))
         self.assertTrue(comment_reply.is_root)
-        comment_parent = self.r.get_info(thing_id=comment_reply.parent_id)
+        info_id = comment_reply.parent_id
+        comment_parent = next(self.r.get_info(thing_id=info_id))
         self.assertEqual(comment_parent.author.name, self.r.user.name)
 
     @betamax()

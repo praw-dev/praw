@@ -180,8 +180,8 @@ class OAuthCommentTest(OAuthPRAWTest):
     def test_raise_invalidcomment_oauth(self):
         fullname = '{0}_{1}'.format(self.r.config.by_object[Comment],
                                     self.comment_deleted_id)
+        comment = next(self.r.get_info(thing_id=fullname))
         self.r.refresh_access_information(self.refresh_token['submit'])
-        comment = self.r.get_info(thing_id=fullname)
         self.assertRaises(errors.InvalidComment, comment.reply, 'test')
         invalid_comment = errors.InvalidComment()
         self.assertEqual(invalid_comment.ERROR_TYPE, str(invalid_comment))

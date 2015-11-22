@@ -190,7 +190,7 @@ class OAuth2RedditTest(PRAWTest):
         self.assertTrue(self.r.get_subreddit(self.priv_sr).subscribers > 0)
         fullname = '{0}_{1}'.format(self.r.config.by_object[Submission],
                                     self.priv_submission_id)
-        method1 = self.r.get_info(thing_id=fullname)
+        method1 = next(self.r.get_info(thing_id=fullname))
         method2 = self.r.get_submission(submission_id=self.priv_submission_id)
         self.assertEqual(method1, method2)
 

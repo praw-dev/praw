@@ -232,7 +232,7 @@ class UnauthenticatedRedditTest(PRAWTest):
 
     @betamax()
     def test_info_by_invalid_id(self):
-        self.assertEqual(None, self.r.get_info(thing_id='INVALID'))
+        self.assertEqual([], list(self.r.get_info(thing_id='INVALID')))
 
     @betamax()
     def test_info_by_known_url_returns_known_id_link_post(self):
@@ -242,14 +242,14 @@ class UnauthenticatedRedditTest(PRAWTest):
 
     @betamax()
     def test_info_by_url_also_found_by_id(self):
-        found_by_url = self.r.get_info(self.link_url_link)[0]
-        found_by_id = self.r.get_info(thing_id=found_by_url.fullname)
+        found_by_url = next(self.r.get_info(self.link_url_link))
+        found_by_id = next(self.r.get_info(thing_id=found_by_url.fullname))
         self.assertEqual(found_by_id, found_by_url)
 
     @betamax()
     def test_info_by_url_maximum_listing(self):
-        self.assertEqual(100, len(self.r.get_info('http://www.reddit.com',
-                                                  limit=101)))
+        self.assertEqual(100, len(list(self.r.get_info('http://www.reddit.com',
+                                                       limit=101))))
 
     @betamax()
     def test_is_username_available(self):
@@ -264,6 +264,12 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertRaises(TypeError, Reddit, user_agent=None)
         self.assertRaises(TypeError, Reddit, user_agent='')
         self.assertRaises(TypeError, Reddit, user_agent=1)
+
+    def test_require_single_arg_get_info(self):
+        # ensure that only thing_id or
+        # url can be used separately
+        self.assertRaises(TypeError, self.r.get_info,
+                          'fakeurl', 'fakeid')
 
     @betamax()
     def test_search(self):
