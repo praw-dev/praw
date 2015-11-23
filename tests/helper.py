@@ -56,6 +56,8 @@ class PRAWTest(unittest.TestCase):
         self.redirect_uri = 'https://127.0.0.1:65010/authorize_callback'
 
         self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
+        self.reply_warnings_url = self.url(('/r/reddit_api_test/'
+                                            'comments/3tvngf/_/cx9lw9x'))
         self.link_id = 't3_dtg4j'
         self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
         self.link_url_link = 'http://imgur.com/Vr8ZZ'
@@ -88,6 +90,7 @@ class PRAWTest(unittest.TestCase):
         self.other_refresh_token = {
             'read':             '10640071-wxnYQyK9knNV1PCt9a7CxvJH8TI',
             'modself':          '10640071-v2ZWipt20gPZvfBnvILkBUDq0P4',
+            'privatemessages':  '10640071-mrScbAkbXyjgvwsAE8zz7vMHO_8',
             'submit':           '10640071-oWSCa5YMSWGQrRCa4fMSO_C1bZg'}
 
         self.comment_deleted_id = 'ctkznxq'
