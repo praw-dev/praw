@@ -26,6 +26,7 @@ import sys
 import time
 from collections import deque
 from functools import partial
+from operator import attrgetter
 from timeit import default_timer as timer
 from praw.errors import HTTPException
 
@@ -109,6 +110,88 @@ def valid_redditors(redditors, sub):
             for (i, resp) in enumerate(sub.set_flair_csv(
                 ({'user': x, 'flair_text': x} for x in simplified)))
             if resp['ok']]
+
+
+def all_submissions(reddit_session, subreddit, highest_timestamp=None, lowest_timestamp=0, verbosity=1):
+    """Yield submissions between ``highest_timestamp`` and ``lowest_timestamp``
+
+    If both ``highest_timestamp`` and ``lowest_timestamp`` are unspecified,
+    yields all submissions in the ``subreddit``.
+
+    Submissions are yielded from newest to oldest(like in the "new" queue).
+
+    :param reddit_session: The reddit_session to make requests from. In all the
+        examples this is assigned to the variable ``r``.
+    :param subreddit: Either a subreddit object, or the name of a
+        subreddit. Use `all` to get the submissions stream for all submissions
+        made to reddit.
+    :param highest_timestamp: The upper bound for ``created_utc`` attribute
+        of submissions. (Default: current unix time)
+    :param lowest_timestamp: The lower bound for ``created_utc`` atributed of
+        submissions. (Default: 0).
+        NOTE: both highest_timestamp and lowest_timestamp are proper
+        unix timestamps(just like ``created_utc`` attributes)
+    :param verbosity: A number that controls the amount of output produced to
+        stderr. <= 0: no output; >= 1: output the total number of submissions
+        processed; >= 2: output debugging information regarding
+        the search queries. (Default: 1)
+
+    """
+    def debug(msg, level):
+        if verbosity >= level:
+            sys.stderr.write(msg + '\n')
+
+    if highest_timestamp is None:
+        # convert normal unix timestamps into broken reddit timestamps
+        highest_timestamp = int(time.time()) + 28800
+
+    # Those parameters work ok, but there may be a better set of parameters
+    window_size = 60 * 60
+    search_limit = 100
+    min_search_results_in_window = 30
+    backoff = BACKOFF_START
+
+    processed_submissions = 0
+    while highest_timestamp - window_size > 0:
+        try:
+            search_query = 'timestamp:{}..{}'.format(
+                highest_timestamp - window_size,
+                highest_timestamp)
+            debug(search_query, 3)
+            search_results = list(reddit_session.search(search_query,
+                                                        subreddit=subreddit,
+                                                        limit=search_limit,
+                                                        syntax='cloudsearch'))
+
+            debug("Received {0} search results for query {1}"
+                  .format(len(search_results), search_query), 2)
+
+            backoff = BACKOFF_START
+        except HTTPException as exc:
+            debug("{0}. Sleeping for {1} seconds".format(exc, backoff), 2)
+            time.sleep(backoff)
+            backoff *= 2
+            continue
+
+        if len(search_results) >= search_limit:
+            window_size /= 2
+            debug("Reducing window size to {0} seconds".format(window_size), 2)
+            continue
+
+        for submission in sorted(search_results,
+                                 key=attrgetter('created_utc'),
+                                 reverse=True):
+            yield submission
+
+        highest_timestamp -= (window_size + 1)
+        processed_submissions += len(search_results)
+        debug('Total processed submissions: {}'
+              .format(processed_submissions), 1)
+
+        if len(search_results) < min_search_results_in_window:
+            debug("Increasing window size to {0} seconds"
+                  .format(window_size), 2)
+            window_size *= 2
 
 
 def _stream_generator(get_function, limit=None, verbosity=1):
