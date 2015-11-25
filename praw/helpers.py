@@ -153,8 +153,6 @@ def all_submissions(reddit_session,
     if lowest_timestamp is not None:
         lowest_timestamp + reddit_timestamp_offset
     elif not isinstance(subreddit, six.string_types):
-        print six.string_types
-        print type(subreddit)
         lowest_timestamp = subreddit.created
     elif subreddit != "all":
         lowest_timestamp = reddit_session.get_subreddit(subreddit).created
