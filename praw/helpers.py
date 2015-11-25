@@ -111,7 +111,11 @@ def valid_redditors(redditors, sub):
             if resp['ok']]
 
 
-def all_submissions(reddit_session, subreddit, highest_timestamp=None, lowest_timestamp=None, verbosity=1):
+def all_submissions(reddit_session,
+                    subreddit,
+                    highest_timestamp=None,
+                    lowest_timestamp=None,
+                    verbosity=1):
     """Yield submissions between two timestamps.
 
     If both ``highest_timestamp`` and ``lowest_timestamp`` are unspecified,
@@ -127,7 +131,8 @@ def all_submissions(reddit_session, subreddit, highest_timestamp=None, lowest_ti
     :param highest_timestamp: The upper bound for ``created_utc`` attribute
         of submissions. (Default: current unix time)
     :param lowest_timestamp: The lower bound for ``created_utc`` atributed of
-        submissions. (Default: subreddit's created_utc or 0 when subreddit == "all").
+        submissions.
+        (Default: subreddit's created_utc or 0 when subreddit == "all").
         NOTE: both highest_timestamp and lowest_timestamp are proper
         unix timestamps(just like ``created_utc`` attributes)
     :param verbosity: A number that controls the amount of output produced to
