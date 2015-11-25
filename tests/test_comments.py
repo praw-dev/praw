@@ -218,6 +218,38 @@ class OAuthCommentTest(OAuthPRAWTest):
         self.assertEqual(comment.replies, [])
 
     @betamax()
+    def test_deleted_comment_refresh_from_inbox(self):
+        root_url = self.reply_warnings_url
+        root_comment = self.r.get_submission(root_url).comments[0]
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        delete_needed = root_comment.reply('To be deleted then refreshed')
+        other_token = self.other_refresh_token['privatemessages']
+        self.r.refresh_access_information(other_token)
+        test_refresh = next(self.r.get_unread(limit=1))
+        self.r.refresh_access_information(self.refresh_token['edit'])
+        delete_needed.delete()
+        self.r.refresh_access_information(self.other_refresh_token['read'])
+        self.assertWarningsRegexp('was_comment', RuntimeWarning,
+                                  test_refresh.refresh)
+        self.assertTrue(hasattr(test_refresh, 'was_comment'))
+
+    @betamax()
+    def test_removed_comment_refresh_from_inbox(self):
+        root_url = self.reply_warnings_url
+        root_comment = self.r.get_submission(root_url).comments[0]
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        remove_needed = root_comment.reply('To be removed then refreshed')
+        other_token = self.other_refresh_token['privatemessages']
+        self.r.refresh_access_information(other_token)
+        test_refresh = next(self.r.get_unread(limit=1))
+        self.r.refresh_access_information(self.refresh_token['modposts'])
+        remove_needed.remove()
+        self.r.refresh_access_information(self.other_refresh_token['read'])
+        self.assertWarningsRegexp('was_comment', RuntimeWarning,
+                                  test_refresh.refresh)
+        self.assertTrue(hasattr(test_refresh, 'was_comment'))
+
+    @betamax()
     def test_deleted_comment_replies_in_inbox(self):
         root_url = self.reply_warnings_url
         root_comment = self.r.get_submission(root_url).comments[0]
