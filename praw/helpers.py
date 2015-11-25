@@ -26,7 +26,6 @@ import sys
 import time
 from collections import deque
 from functools import partial
-from operator import attrgetter
 from timeit import default_timer as timer
 from praw.errors import HTTPException
 
@@ -112,8 +111,8 @@ def valid_redditors(redditors, sub):
             if resp['ok']]
 
 
-def all_submissions(reddit_session, subreddit, highest_timestamp=None, lowest_timestamp=0, verbosity=1):
-    """Yield submissions between ``highest_timestamp`` and ``lowest_timestamp``
+def all_submissions(reddit_session, subreddit, highest_timestamp=None, lowest_timestamp=None, verbosity=1):
+    """Yield submissions between two timestamps.
 
     If both ``highest_timestamp`` and ``lowest_timestamp`` are unspecified,
     yields all submissions in the ``subreddit``.
@@ -128,7 +127,7 @@ def all_submissions(reddit_session, subreddit, highest_timestamp=None, lowest_ti
     :param highest_timestamp: The upper bound for ``created_utc`` attribute
         of submissions. (Default: current unix time)
     :param lowest_timestamp: The lower bound for ``created_utc`` atributed of
-        submissions. (Default: 0).
+        submissions. (Default: subreddit's created_utc or 0 when subreddit == "all").
         NOTE: both highest_timestamp and lowest_timestamp are proper
         unix timestamps(just like ``created_utc`` attributes)
     :param verbosity: A number that controls the amount of output produced to
@@ -141,9 +140,21 @@ def all_submissions(reddit_session, subreddit, highest_timestamp=None, lowest_ti
         if verbosity >= level:
             sys.stderr.write(msg + '\n')
 
+    reddit_timestamp_offset = 28800
     if highest_timestamp is None:
         # convert normal unix timestamps into broken reddit timestamps
-        highest_timestamp = int(time.time()) + 28800
+        highest_timestamp = int(time.time()) + reddit_timestamp_offset
+
+    if lowest_timestamp is not None:
+        lowest_timestamp + reddit_timestamp_offset
+    elif not isinstance(subreddit, six.string_types):
+        print six.string_types
+        print type(subreddit)
+        lowest_timestamp = subreddit.created
+    elif subreddit != "all":
+        lowest_timestamp = reddit_session.get_subreddit(subreddit).created
+    else:
+        lowest_timestamp = 0
 
     # Those parameters work ok, but there may be a better set of parameters
     window_size = 60 * 60
@@ -152,16 +163,17 @@ def all_submissions(reddit_session, subreddit, highest_timestamp=None, lowest_ti
     backoff = BACKOFF_START
 
     processed_submissions = 0
-    while highest_timestamp - window_size > 0:
+    while highest_timestamp >= lowest_timestamp:
         try:
             search_query = 'timestamp:{}..{}'.format(
-                highest_timestamp - window_size,
+                max(highest_timestamp - window_size, lowest_timestamp),
                 highest_timestamp)
             debug(search_query, 3)
             search_results = list(reddit_session.search(search_query,
                                                         subreddit=subreddit,
                                                         limit=search_limit,
-                                                        syntax='cloudsearch'))
+                                                        syntax='cloudsearch',
+                                                        sort='new'))
 
             debug("Received {0} search results for query {1}"
                   .format(len(search_results), search_query), 2)
@@ -178,9 +190,7 @@ def all_submissions(reddit_session, subreddit, highest_timestamp=None, lowest_ti
             debug("Reducing window size to {0} seconds".format(window_size), 2)
             continue
 
-        for submission in sorted(search_results,
-                                 key=attrgetter('created_utc'),
-                                 reverse=True):
+        for submission in search_results:
             yield submission
 
         highest_timestamp -= (window_size + 1)
