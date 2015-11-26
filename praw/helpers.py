@@ -149,9 +149,11 @@ def all_submissions(reddit_session,
     if highest_timestamp is None:
         # convert normal unix timestamps into broken reddit timestamps
         highest_timestamp = int(time.time()) + reddit_timestamp_offset
+    else:
+        highest_timestamp += reddit_timestamp_offset
 
     if lowest_timestamp is not None:
-        lowest_timestamp + reddit_timestamp_offset
+        lowest_timestamp += reddit_timestamp_offset
     elif not isinstance(subreddit, six.string_types):
         lowest_timestamp = subreddit.created
     elif subreddit not in ("all", "contrib", "mod", "friend"):
