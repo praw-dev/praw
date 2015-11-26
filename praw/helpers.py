@@ -154,7 +154,7 @@ def all_submissions(reddit_session,
         lowest_timestamp + reddit_timestamp_offset
     elif not isinstance(subreddit, six.string_types):
         lowest_timestamp = subreddit.created
-    elif subreddit != "all":
+    elif subreddit not in ("all", "contrib", "mod", "friend"):
         lowest_timestamp = reddit_session.get_subreddit(subreddit).created
     else:
         lowest_timestamp = 0
