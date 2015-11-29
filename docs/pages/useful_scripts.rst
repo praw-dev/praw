@@ -141,6 +141,9 @@ this page to add in more.
 `GoodReads Bot`_ by `Avinash Sajjanshetty <https://github.com/avinassh>`_
     A bot which powers `/u/goodreadsbot <https://www.reddit.com/u/goodreadsbot>`_ on Reddit, posts information of a book whenever someone posts a link to Goodreads.
 
+`Self-Destruct Bot`_ by `diceroll123 <https://github.com/diceroll123>`_
+    Removes posts after a specified amount of time. (For time-sensitive posts.)
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -166,6 +169,7 @@ this page to add in more.
 .. _`RedditAgain`: https://github.com/karan/RedditAgain
 .. _`RedditRover` : https://github.com/DarkMio/RedditRover
 .. _`RemindMeBot`: https://github.com/SIlver--/remindmebot-reddit
+.. _`SelfDestructBot`: https://github.com/diceroll123/SelfDestructBot
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot
 .. _`newsfrbot`: https://github.com/gardaud/newsfrbot
 .. _`r/diablo flair infographic generator`:
