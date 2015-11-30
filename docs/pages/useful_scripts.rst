@@ -169,7 +169,7 @@ this page to add in more.
 .. _`RedditAgain`: https://github.com/karan/RedditAgain
 .. _`RedditRover` : https://github.com/DarkMio/RedditRover
 .. _`RemindMeBot`: https://github.com/SIlver--/remindmebot-reddit
-.. _`SelfDestructBot`: https://github.com/diceroll123/SelfDestructBot
+.. _`Self-Destruct Bot`: https://github.com/diceroll123/SelfDestructBot
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot
 .. _`newsfrbot`: https://github.com/gardaud/newsfrbot
 .. _`r/diablo flair infographic generator`:
