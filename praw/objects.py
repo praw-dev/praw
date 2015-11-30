@@ -1013,13 +1013,13 @@ class LoggedInRedditor(Redditor):
                 self._mod_subs[six.text_type(sub).lower()] = sub
         return self._mod_subs
 
-    @deprecated(':meth:`get_friends` has been moved to '
+    @deprecated('``get_friends`` has been moved to '
                 ':class:`praw.AuthenticatedReddit` and will be removed from '
                 ':class:`objects.LoggedInRedditor` in PRAW v4.0.0')
     def get_friends(self, **params):
         """Return a UserList of Redditors with whom the user is friends.
 
-        This method has been moved to :class:`praw.AuthenticatedReddit.
+        This method has been moved to :class:`praw.AuthenticatedReddit`.
 
         """
         return self.reddit_session.get_friends(**params)
