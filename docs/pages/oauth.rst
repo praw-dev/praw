@@ -159,7 +159,8 @@ Neither ``scope`` nor ``refresh_token`` will have changed.
 Note: In version 3.2.0 and higher, PRAW will automatically attempt to refresh
 the access token if a refresh token is available when it expires. For most
 personal-use scripts, this eliminates the need to use
-:meth:`.refresh_access_information` except when signing in.
+:meth:`~praw.__init__.AuthenticatedReddit.refresh_access_information` except
+when signing in.
 
 
 .. _oauth_webserver:

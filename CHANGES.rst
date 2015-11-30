@@ -25,9 +25,14 @@ formatted links that link to the relevant place in the code overview.
 Unreleased
 ----------
  * **[FEATURE]** Added support for modmail muting. See
-   :meth:`praw.objects.Subreddit.add_mute`,
-   :meth:`praw.objects.Message.mute_message_author`, and
-   :meth:`praw.__init__.ModOnlyMixin.get_muted`.
+   :meth:`~praw.objects.Subreddit.add_mute`,
+   :meth:`~praw.__init__.ModOnlyMixin.get_muted`,
+   :meth:`~praw.objects.Subreddit.remove_mute`,
+   :meth:`~praw.objects.Message.mute_modmail_author`, and
+   :meth:`~praw.objects.Message.unmute_modmail_author`.
+ * **[FEATURE]** Added
+   :meth:`~praw.__init__.UnauthenticatedReddit.default_subreddits`.
+ * **[FEATURE]** Added support for ``*`` OAuth scopes.
 
 PRAW 3.3.0
 ----------
@@ -52,14 +57,14 @@ PRAW 3.3.0
  * **[CHANGE]** Moved and deprecated
    :meth:`praw.objects.LoggedInRedditor.get_friends` to
    :class:`praw.AuthenticatedReddit`, leaving a pointer in its place.
-   Previously, `get_friends` was difficult to access because the only instance
-   of `LoggedInRedditor` was the reddit session's `user` attribute, which is
-   only instantiated if the user has the "identity" scope. By moving
-   `get_friends` to the reddit session, it can be used without having to
+   Previously, ``get_friends`` was difficult to access because the only
+   instance of `LoggedInRedditor` was the reddit session's `user` attribute,
+   which is only instantiated if the user has the "identity" scope. By moving
+   ``get_friends`` to the reddit session, it can be used without having to
    manipulate a :class:`praw.objects.Redditor` intsance's class.
  * **[CHANGE]** Removed support for Python 2.6 and Python 3.2 (#532).
  * **[FEATURE]** Added support for adding "notes" to your friends. Users with
-   reddit Gold can set the ``note`` parameter of 
+   reddit Gold can set the ``note`` parameter of
    :meth:`praw.objects.Redditor.friend`. 300 character max enforced by reddit.
  * **[FEATURE]** New :meth:`praw.objects.Redditor.get_friend_info` to see info
    about one of your friends. Includes their name, ID, when you added them, and
@@ -206,8 +211,8 @@ PRAW 2.1.19
  * **[BUGFIX]** Fix :meth:`.get_subreddit_recommendations` to work with the
    updated API route.
  * **[BUGFIX]** Track time between requests using ``timeit.default_timer``.
- * **[CHANGE]** :meth:`.get_friends` and :meth:`~.Subreddit.get_banned` once
-   again work.
+ * **[CHANGE]** :meth:`~praw.objects.LoggedInRedditor.get_friends` and
+   :meth:`~.Subreddit.get_banned` once again work.
  * **[CHANGE]** :meth:`.is_root` no longer requires fetching submission
    objects.
  * **[REDDIT]** Support ``thing_id`` lists in :meth:`.get_info`.
@@ -572,17 +577,17 @@ PRAW 2.0.9
    :meth:`.get_unread` if it and ``unset_has_mail`` are both True, then the
    ``user`` object in the :class:`.Reddit` object will have its ``has_mail``
    attribute set to ``False``.
- * **[FEATURE]** Add :meth:`.get_friends` and :meth:`.get_blocked` to
-   :class:`.LoggedInRedditor`.
+ * **[FEATURE]** Add :meth:`praw.objects.LoggedInRedditor.get_friends` and
+   :meth:`praw.objects.LoggedInRedditor.get_blocked`.
  * **[FEATURE]** Add the *read* scope to :meth:`.get_all_comments` in the
    :class:`.Reddit` object.
  * **[FEATURE]** Add the *read* scope to :meth:`~.Subreddit.get_comments` and
    the subreddit listings such as :meth:`~.Subreddit.get_new` in the
    :meth:`.Reddit` and :meth:`.Subreddit` object.
  * **[BUGFIX]** Fix bug in :meth:`.MoreComments.comments`.
- * **[CHANGE]** Break :meth:`.get_friends` and :meth:`~.Subreddit.get_banned`
-   until there is an upstream fix to mean that does not require ssl for those
-   endpoints.
+ * **[CHANGE]** Break :meth:`~praw.objects.LoggedInRedditor.get_friends` and
+   :meth:`~.Subreddit.get_banned` until there is an upstream fix to mean that
+   does not require ssl for those endpoints.
 
 PRAW 2.0.8
 ----------
