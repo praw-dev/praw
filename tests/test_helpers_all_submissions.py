@@ -7,7 +7,7 @@ from .helper import PRAWTest, betamax
 
 
 class TestHelperAllSubmissions(PRAWTest):
-    @betamax(record='new_episodes')
+    @betamax()
     def test_all_submissions(self):
         test_now = 1448923624
 
