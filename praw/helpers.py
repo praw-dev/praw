@@ -28,9 +28,13 @@ from collections import deque
 from functools import partial
 from timeit import default_timer as timer
 from praw.errors import HTTPException
+from operator import attrgetter
 
 BACKOFF_START = 4  # Minimum number of seconds to sleep during errors
 KEEP_ITEMS = 128  # On each iteration only remember the first # items
+
+# for conversion between broken reddit timestamps and unix timestamps
+REDDIT_TIMESTAMP_OFFSET = 28800
 
 
 def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
@@ -113,8 +117,9 @@ def valid_redditors(redditors, sub):
 
 def all_submissions(reddit_session,
                     subreddit,
-                    highest_timestamp=None,
                     lowest_timestamp=None,
+                    highest_timestamp=None,
+                    newest_first=True,
                     verbosity=1):
     """Yield submissions between two timestamps.
 
@@ -128,36 +133,36 @@ def all_submissions(reddit_session,
     :param subreddit: Either a subreddit object, or the name of a
         subreddit. Use `all` to get the submissions stream for all submissions
         made to reddit.
-    :param highest_timestamp: The upper bound for ``created_utc`` attribute
-        of submissions. (Default: current unix time)
     :param lowest_timestamp: The lower bound for ``created_utc`` atributed of
         submissions.
         (Default: subreddit's created_utc or 0 when subreddit == "all").
+    :param highest_timestamp: The upper bound for ``created_utc`` attribute
+        of submissions. (Default: current unix time)
         NOTE: both highest_timestamp and lowest_timestamp are proper
         unix timestamps(just like ``created_utc`` attributes)
+    :param newest_first: If set to true, yields submissions
+        from newest to oldest. Otherwise yields submissions
+        from oldest to newest
     :param verbosity: A number that controls the amount of output produced to
         stderr. <= 0: no output; >= 1: output the total number of submissions
         processed; >= 2: output debugging information regarding
         the search queries. (Default: 1)
-
     """
     def debug(msg, level):
         if verbosity >= level:
             sys.stderr.write(msg + '\n')
 
-    reddit_timestamp_offset = 28800
     if highest_timestamp is None:
-        # convert normal unix timestamps into broken reddit timestamps
-        highest_timestamp = int(time.time()) + reddit_timestamp_offset
+        highest_timestamp = int(time.time()) + REDDIT_TIMESTAMP_OFFSET
     else:
-        highest_timestamp += reddit_timestamp_offset
+        highest_timestamp += REDDIT_TIMESTAMP_OFFSET
 
     if lowest_timestamp is not None:
-        lowest_timestamp += reddit_timestamp_offset
+        lowest_timestamp += REDDIT_TIMESTAMP_OFFSET
     elif not isinstance(subreddit, six.string_types):
-        lowest_timestamp = subreddit.created
+        lowest_timestamp = int(subreddit.created)
     elif subreddit not in ("all", "contrib", "mod", "friend"):
-        lowest_timestamp = reddit_session.get_subreddit(subreddit).created
+        lowest_timestamp = int(reddit_session.get_subreddit(subreddit).created)
     else:
         lowest_timestamp = 0
 
@@ -170,9 +175,11 @@ def all_submissions(reddit_session,
     processed_submissions = 0
     while highest_timestamp >= lowest_timestamp:
         try:
-            search_query = 'timestamp:{}..{}'.format(
-                max(highest_timestamp - window_size, lowest_timestamp),
-                highest_timestamp)
+            if newest_first:
+                t1, t2 = max(highest_timestamp - window_size, lowest_timestamp), highest_timestamp
+            else:
+                t1, t2 = lowest_timestamp, min(lowest_timestamp + window_size, highest_timestamp)
+            search_query = 'timestamp:{}..{}'.format(t1, t2)
             debug(search_query, 3)
             search_results = list(reddit_session.search(search_query,
                                                         subreddit=subreddit,
@@ -181,7 +188,8 @@ def all_submissions(reddit_session,
                                                         sort='new'))
 
             debug("Received {0} search results for query {1}"
-                  .format(len(search_results), search_query), 2)
+                  .format(len(search_results), search_query),
+                  2)
 
             backoff = BACKOFF_START
         except HTTPException as exc:
@@ -193,20 +201,27 @@ def all_submissions(reddit_session,
         if len(search_results) >= search_limit:
             window_size /= 2
             debug("Reducing window size to {0} seconds".format(window_size), 2)
+            # Since it is possible that there are more submissions
+            # in the current window, we have to re-do the request
+            # with reduced window
             continue
 
-        for submission in search_results:
+        for submission in sorted(search_results, key=attrgetter('created_utc'), reverse=newest_first):
             yield submission
 
-        highest_timestamp -= (window_size + 1)
         processed_submissions += len(search_results)
         debug('Total processed submissions: {}'
               .format(processed_submissions), 1)
 
+        if newest_first:
+            highest_timestamp -= (window_size + 1)
+        else:
+            lowest_timestamp += (window_size + 1)
+
         if len(search_results) < min_search_results_in_window:
+            window_size *= 2
             debug("Increasing window size to {0} seconds"
                   .format(window_size), 2)
-            window_size *= 2
 
 
 def _stream_generator(get_function, limit=None, verbosity=1):
