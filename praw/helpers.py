@@ -201,7 +201,7 @@ def all_submissions(reddit_session,
             continue
 
         if len(search_results) >= search_limit:
-            window_size /= 2
+            window_size //= 2
             debug("Reducing window size to {0} seconds".format(window_size), 2)
             # Since it is possible that there are more submissions
             # in the current window, we have to re-do the request
@@ -209,7 +209,7 @@ def all_submissions(reddit_session,
             continue
 
         for submission in sorted(search_results,
-                                 key=attrgetter('created_utc'),
+                                 key=attrgetter('created_utc', 'id'),
                                  reverse=newest_first):
             yield submission
 
