@@ -155,10 +155,10 @@ def all_submissions(reddit_session,
     if highest_timestamp is None:
         highest_timestamp = int(time.time()) + REDDIT_TIMESTAMP_OFFSET
     else:
-        highest_timestamp += REDDIT_TIMESTAMP_OFFSET
+        highest_timestamp = int(highest_timestamp) + REDDIT_TIMESTAMP_OFFSET
 
     if lowest_timestamp is not None:
-        lowest_timestamp += REDDIT_TIMESTAMP_OFFSET
+        lowest_timestamp = int(lowest_timestamp) + REDDIT_TIMESTAMP_OFFSET
     elif not isinstance(subreddit, six.string_types):
         lowest_timestamp = int(subreddit.created)
     elif subreddit not in ("all", "contrib", "mod", "friend"):
