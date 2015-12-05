@@ -17,7 +17,8 @@ class TestHelperAllSubmissions(PRAWTest):
                                         verbosity=3))
 
         for i in xrange(len(all_subs) - 1):
-            self.assertGreaterEqual(all_subs[i].created_utc, all_subs[i + 1].created_utc)
+            self.assertGreaterEqual(all_subs[i].created_utc,
+                                    all_subs[i + 1].created_utc)
 
         sr_obj = self.r.get_subreddit(self.sr)
         all_subs_sr_object = list(all_submissions(self.r,
@@ -37,11 +38,6 @@ class TestHelperAllSubmissions(PRAWTest):
                                                  newest_first=False,
                                                  verbosity=3))
 
-        print(len(all_subs))
-        print(len(all_subs_reversed))
-        print(len(set(get_submissions_data(all_subs))))
-        print(len(set(get_submissions_data(all_subs_reversed))))
-        print(set(get_submissions_data(all_subs_reversed)) - set(get_submissions_data(all_subs)))
         self.assertItemsEqual(get_submissions_data(all_subs),
                               get_submissions_data(reversed(all_subs_reversed)))
 
