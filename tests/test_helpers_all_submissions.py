@@ -39,7 +39,8 @@ class TestHelperAllSubmissions(PRAWTest):
                                                  verbosity=3))
 
         self.assertItemsEqual(get_submissions_data(all_subs),
-                              get_submissions_data(reversed(all_subs_reversed)))
+                              get_submissions_data(
+                                  reversed(all_subs_reversed)))
 
         t1 = 1440000000
         t2 = 1441111111

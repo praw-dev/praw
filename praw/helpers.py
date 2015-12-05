@@ -176,9 +176,11 @@ def all_submissions(reddit_session,
     while highest_timestamp >= lowest_timestamp:
         try:
             if newest_first:
-                t1, t2 = max(highest_timestamp - window_size, lowest_timestamp), highest_timestamp
+                t1 = max(highest_timestamp - window_size, lowest_timestamp)
+                t2 = highest_timestamp
             else:
-                t1, t2 = lowest_timestamp, min(lowest_timestamp + window_size, highest_timestamp)
+                t1 = lowest_timestamp
+                t2 = min(lowest_timestamp + window_size, highest_timestamp)
             search_query = 'timestamp:{}..{}'.format(t1, t2)
             debug(search_query, 3)
             search_results = list(reddit_session.search(search_query,
@@ -206,7 +208,9 @@ def all_submissions(reddit_session,
             # with reduced window
             continue
 
-        for submission in sorted(search_results, key=attrgetter('created_utc'), reverse=newest_first):
+        for submission in sorted(search_results,
+                                 key=attrgetter('created_utc'),
+                                 reverse=newest_first):
             yield submission
 
         processed_submissions += len(search_results)
