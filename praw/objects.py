@@ -75,6 +75,7 @@ class RedditContentObject(object):
                 self.fullname == other.fullname)
 
     def __hash__(self):
+        """Return the hash of the current instance."""
         return hash(self.fullname)
 
     def __getattr__(self, attr):
