@@ -227,6 +227,16 @@ class SubmissionModeratorTest(PRAWTest):
         self.assertFalse(submission_a.refresh().stickied)
         self.assertFalse(submission_b.refresh().stickied)
 
+    @betamax()
+    def test_equality_and_hash(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        submission = list(subreddit.get_hot())[0]
+        same_submission = self.r.get_submission(submission_id=submission.id)
+
+        self.assertNotEqual(id(submission), id(same_submission))
+        self.assertEqual(hash(submission), hash(same_submission))
+        self.assertEqual(submission, same_submission)
+
 
 class OAuthSubmissionTest(OAuthPRAWTest):
     @betamax()

@@ -74,6 +74,9 @@ class RedditContentObject(object):
         return (isinstance(other, RedditContentObject) and
                 self.fullname == other.fullname)
 
+    def __hash__(self):
+        return hash(self.fullname)
+
     def __getattr__(self, attr):
         """Return the value of the `attr` attribute."""
         if attr != '__setstate__' and not self._has_fetched:
