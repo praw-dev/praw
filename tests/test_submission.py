@@ -230,12 +230,20 @@ class SubmissionModeratorTest(PRAWTest):
     @betamax()
     def test_equality_and_hash(self):
         subreddit = self.r.get_subreddit(self.sr)
-        submission = list(subreddit.get_hot())[0]
+        hot = list(subreddit.get_hot())
+
+        submission = hot[0]
         same_submission = self.r.get_submission(submission_id=submission.id)
+        another_submission = hot[1]
 
         self.assertNotEqual(id(submission), id(same_submission))
+        self.assertEqual(submission.id, same_submission.id)
         self.assertEqual(hash(submission), hash(same_submission))
         self.assertEqual(submission, same_submission)
+
+        self.assertNotEqual(submission.id, another_submission.id)
+        self.assertNotEqual(hash(submission), hash(another_submission))
+        self.assertNotEqual(submission, another_submission)
 
 
 class OAuthSubmissionTest(OAuthPRAWTest):
