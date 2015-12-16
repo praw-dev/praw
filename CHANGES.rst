@@ -24,8 +24,8 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
-* **[CHANGE]** Image uploads support PNG images as small as 67 bytes.
-* **[FEATURE]** Added support for modmail muting. See
+ * **[CHANGE]** Image uploads support PNG images as small as 67 bytes.
+ * **[FEATURE]** Added support for modmail muting. See
    :meth:`~praw.objects.Subreddit.add_mute`,
    :meth:`~praw.__init__.ModOnlyMixin.get_muted`,
    :meth:`~praw.objects.Subreddit.remove_mute`,
