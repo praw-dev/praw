@@ -52,7 +52,8 @@ from warnings import warn_explicit
 
 __version__ = '3.3.0'
 
-MIN_IMAGE_SIZE = 128
+MIN_PNG_SIZE = 67
+MIN_JPEG_SIZE = 128
 MAX_IMAGE_SIZE = 512000
 JPEG_HEADER = b'\xff\xd8\xff'
 PNG_HEADER = b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
@@ -1687,17 +1688,19 @@ class ModConfigMixin(AuthenticatedReddit):
         # Verify image is a jpeg or png and meets size requirements
         with open(image_path, 'rb') as image:
             size = os.path.getsize(image.name)
-            if size < MIN_IMAGE_SIZE:
-                raise errors.ClientException('`image` is not a valid image')
-            elif size > MAX_IMAGE_SIZE:
+            if size < MIN_PNG_SIZE:
+                raise errors.ClientException('png image is too small.')
+            if size > MAX_IMAGE_SIZE:
                 raise errors.ClientException('`image` is too big. Max: {0} '
                                              'bytes'.format(MAX_IMAGE_SIZE))
-            first_bytes = image.read(MIN_IMAGE_SIZE)
+            first_bytes = image.read(MIN_PNG_SIZE)
             image.seek(0)
-            if first_bytes.startswith(JPEG_HEADER):
-                image_type = 'jpg'
-            elif first_bytes.startswith(PNG_HEADER):
+            if first_bytes.startswith(PNG_HEADER):
                 image_type = 'png'
+            elif first_bytes.startswith(JPEG_HEADER):
+                if size < MIN_JPEG_SIZE:
+                    raise errors.ClientException('jpeg image is too small.')
+                image_type = 'jpg'
             else:
                 raise errors.ClientException('`image` must be either jpg or '
                                              'png.')
