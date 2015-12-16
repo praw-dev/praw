@@ -1689,7 +1689,7 @@ class ModConfigMixin(AuthenticatedReddit):
         with open(image_path, 'rb') as image:
             size = os.path.getsize(image.name)
             if size < MIN_PNG_SIZE:
-                raise errors.ClientException('`image` is not a valid image')
+                raise errors.ClientException('png image is too small.')
             if size > MAX_IMAGE_SIZE:
                 raise errors.ClientException('`image` is too big. Max: {0} '
                                              'bytes'.format(MAX_IMAGE_SIZE))
@@ -1699,7 +1699,7 @@ class ModConfigMixin(AuthenticatedReddit):
                 image_type = 'png'
             elif first_bytes.startswith(JPEG_HEADER):
                 if size < MIN_JPEG_SIZE:
-                    raise errors.ClientException('`image` is not a valid image')
+                    raise errors.ClientException('jpeg image is too small.')
                 image_type = 'jpg'
             else:
                 raise errors.ClientException('`image` must be either jpg or '
