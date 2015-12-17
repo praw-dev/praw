@@ -27,7 +27,7 @@ import time
 from collections import deque
 from functools import partial
 from timeit import default_timer as timer
-from praw.errors import HTTPException
+from praw.errors import HTTPException, PRAWException
 from operator import attrgetter
 
 BACKOFF_START = 4  # Minimum number of seconds to sleep during errors
@@ -115,12 +115,13 @@ def valid_redditors(redditors, sub):
             if resp['ok']]
 
 
-def all_submissions(reddit_session,
-                    subreddit,
-                    lowest_timestamp=None,
-                    highest_timestamp=None,
-                    newest_first=True,
-                    verbosity=1):
+def submissions_between(reddit_session,
+                        subreddit,
+                        lowest_timestamp=None,
+                        highest_timestamp=None,
+                        newest_first=True,
+                        extra_cloudsearch_fields={},
+                        verbosity=1):
     """Yield submissions between two timestamps.
 
     If both ``highest_timestamp`` and ``lowest_timestamp`` are unspecified,
@@ -143,6 +144,9 @@ def all_submissions(reddit_session,
     :param newest_first: If set to true, yields submissions
         from newest to oldest. Otherwise yields submissions
         from oldest to newest
+    :param extra_cloudsearch_fields: Allows extra filtering of results by
+        parameters like author, self. Full list is available here:
+        https://www.reddit.com/wiki/search
     :param verbosity: A number that controls the amount of output produced to
         stderr. <= 0: no output; >= 1: output the total number of submissions
         processed; >= 2: output debugging information regarding
@@ -151,6 +155,22 @@ def all_submissions(reddit_session,
     def debug(msg, level):
         if verbosity >= level:
             sys.stderr.write(msg + '\n')
+
+    def format_query_field(k, v):
+        if k in ["nsfw", "self"]:
+            # even though documentation lists "no" and "yes"
+            # as possible values, in reality they don't work
+            if v not in [0, 1, "0", "1"]:
+                raise PRAWException("Invalid value for the extra"
+                                    "field {}. Only '0' and '1' are"
+                                    "valid values.".format(k))
+            return "{}:{}".format(k, v)
+        return "{}:'{}'".format(k, v)
+
+    extra_query_part = " ".join(
+        [format_query_field(k, v) for (k, v)
+         in extra_cloudsearch_fields.iteritems()]
+    )
 
     if highest_timestamp is None:
         highest_timestamp = int(time.time()) + REDDIT_TIMESTAMP_OFFSET
@@ -169,10 +189,14 @@ def all_submissions(reddit_session,
     # Those parameters work ok, but there may be a better set of parameters
     window_size = 60 * 60
     search_limit = 100
-    min_search_results_in_window = 30
+    min_search_results_in_window = 50
+    window_adjustment_ratio = 1.25
     backoff = BACKOFF_START
 
     processed_submissions = 0
+    prev_win_increased = False
+    prev_win_decreased = False
+
     while highest_timestamp >= lowest_timestamp:
         try:
             if newest_first:
@@ -181,7 +205,12 @@ def all_submissions(reddit_session,
             else:
                 t1 = lowest_timestamp
                 t2 = min(lowest_timestamp + window_size, highest_timestamp)
+
             search_query = 'timestamp:{}..{}'.format(t1, t2)
+            if extra_query_part:
+                search_query = "(and {} {})".format(search_query,
+                                                    extra_query_part)
+
             debug(search_query, 3)
             search_results = list(reddit_session.search(search_query,
                                                         subreddit=subreddit,
@@ -201,12 +230,17 @@ def all_submissions(reddit_session,
             continue
 
         if len(search_results) >= search_limit:
-            window_size //= 2
-            debug("Reducing window size to {0} seconds".format(window_size), 2)
+            power = 2 if prev_win_decreased else 1
+            window_size = int(window_size / window_adjustment_ratio**power)
+            prev_win_decreased = True
+            debug("Decreasing window size to {0} seconds".format(window_size),
+                  2)
             # Since it is possible that there are more submissions
             # in the current window, we have to re-do the request
             # with reduced window
             continue
+        else:
+            prev_win_decreased = False
 
         for submission in sorted(search_results,
                                  key=attrgetter('created_utc', 'id'),
@@ -223,9 +257,13 @@ def all_submissions(reddit_session,
             lowest_timestamp += (window_size + 1)
 
         if len(search_results) < min_search_results_in_window:
-            window_size *= 2
+            power = 2 if prev_win_increased else 1
+            window_size = int(window_size * window_adjustment_ratio**power)
+            prev_win_increased = True
             debug("Increasing window size to {0} seconds"
                   .format(window_size), 2)
+        else:
+            prev_win_increased = False
 
 
 def _stream_generator(get_function, limit=None, verbosity=1):
