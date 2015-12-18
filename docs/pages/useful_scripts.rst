@@ -144,6 +144,9 @@ this page to add in more.
 `Self-Destruct Bot`_ by `diceroll123 <https://github.com/diceroll123>`_
     Removes posts after a specified amount of time. (For time-sensitive posts.)
 
+`Subtitle Bot`_ by `arrayofchar <https://github.com/arrayofchar/reddit_subtitle_bot>`_
+    Finds youtube links and see if closed captioning (aka subtitle) is available. Formats subtitle into paragraphs based on  standard deviation of timestamp gaps. If subtitle is longer than Reddit comment limit, puts it in Pastebin.
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -170,6 +173,7 @@ this page to add in more.
 .. _`RedditRover` : https://github.com/DarkMio/RedditRover
 .. _`RemindMeBot`: https://github.com/SIlver--/remindmebot-reddit
 .. _`Self-Destruct Bot`: https://github.com/diceroll123/SelfDestructBot
+.. _`Subtitle Bot`: https://github.com/arrayofchar/reddit_subtitle_bot
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot
 .. _`newsfrbot`: https://github.com/gardaud/newsfrbot
 .. _`r/diablo flair infographic generator`:
