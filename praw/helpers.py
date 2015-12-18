@@ -120,7 +120,7 @@ def submissions_between(reddit_session,
                         lowest_timestamp=None,
                         highest_timestamp=None,
                         newest_first=True,
-                        extra_cloudsearch_fields={},
+                        extra_cloudsearch_fields=None,
                         verbosity=1):
     """Yield submissions between two timestamps.
 
@@ -166,6 +166,9 @@ def submissions_between(reddit_session,
                                     "valid values.".format(k))
             return "{}:{}".format(k, v)
         return "{}:'{}'".format(k, v)
+
+    if extra_cloudsearch_fields is None:
+        extra_cloudsearch_fields = {}
 
     extra_query_part = " ".join(
         [format_query_field(k, v) for (k, v)

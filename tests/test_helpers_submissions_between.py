@@ -7,7 +7,7 @@ from six.moves.urllib.parse import urlparse
 
 from praw.helpers import submissions_between
 from praw.errors import PRAWException
-from .helper import PRAWTest, betamax
+from .helper import PRAWTest, betamax, teardown_on_keyboard_interrupt
 
 
 def mock_time():
@@ -27,6 +27,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
         time.time = real_time
 
     @betamax()
+    @teardown_on_keyboard_interrupt
     def test_submissions_between_raises_correctly(self):
         with self.assertRaises(PRAWException):
             list(submissions_between(self.r,
@@ -35,100 +36,103 @@ class TestHelperSubmissionsBetween(PRAWTest):
                                      verbosity=3))
 
     @betamax()
-    def test_submissions_between(self):
-        try:
-            all_subs = list(submissions_between(self.r,
-                                                self.sr,
-                                                highest_timestamp=time.time(),
-                                                verbosity=3))
+    @teardown_on_keyboard_interrupt
+    def test_submissions_between_order(self):
+        all_subs = list(submissions_between(self.r,
+                                            self.sr,
+                                            highest_timestamp=time.time(),
+                                            verbosity=3))
 
-            for i in range(len(all_subs) - 1):
-                self.assertGreaterEqual(all_subs[i].created_utc,
-                                        all_subs[i + 1].created_utc)
+        for i in range(len(all_subs) - 1):
+            self.assertGreaterEqual(all_subs[i].created_utc,
+                                    all_subs[i + 1].created_utc)
 
-            sr_obj = self.r.get_subreddit(self.sr)
-            all_subs_sr_object = list(submissions_between(self.r,
-                                                          sr_obj,
-                                                          verbosity=3))
+        sr_obj = self.r.get_subreddit(self.sr)
+        all_subs_sr_object = list(submissions_between(self.r,
+                                                      sr_obj,
+                                                      verbosity=3))
 
-            self.assertEqual(all_subs, all_subs_sr_object)
+        self.assertEqual(all_subs, all_subs_sr_object)
 
-            all_subs_reversed = list(submissions_between(self.r,
-                                                         sr_obj,
-                                                         newest_first=False,
-                                                         verbosity=3))
+        all_subs_reversed = list(submissions_between(self.r,
+                                                     sr_obj,
+                                                     newest_first=False,
+                                                     verbosity=3))
 
-            self.assertEqual(all_subs, list(reversed(all_subs_reversed)))
+        self.assertEqual(all_subs, list(reversed(all_subs_reversed)))
 
-            t1 = 1420000000
-            t2 = 1441111111
+    @betamax()
+    @teardown_on_keyboard_interrupt
+    def test_submissions_between_with_filters(self):
+        all_subs = list(submissions_between(self.r,
+                                            self.sr,
+                                            verbosity=3))
+        t1 = 1420000000
+        t2 = 1441111111
 
-            t1_t2_subs = list(submissions_between(self.r,
-                                                  self.sr,
-                                                  lowest_timestamp=t1,
-                                                  highest_timestamp=t2,
-                                                  verbosity=3))
+        t1_t2_subs = list(submissions_between(self.r,
+                                              self.sr,
+                                              lowest_timestamp=t1,
+                                              highest_timestamp=t2,
+                                              verbosity=3))
 
-            def filter_subs(subs,
-                            lowest_timestamp=0,
-                            highest_timestamp=10**10,
-                            criterion=None):
-                filtered = [s for s in subs
-                            if s.created_utc <= highest_timestamp
-                            and s.created_utc >= lowest_timestamp
-                            and (criterion is None or criterion(s))]
-                # make sure we never accidentally craft a bad test case
-                self.assertGreater(len(filtered), 0)
-                return filtered
+        def filter_subs(subs,
+                        lowest_timestamp=0,
+                        highest_timestamp=10**10,
+                        criterion=None):
+            filtered = [s for s in subs
+                        if s.created_utc <= highest_timestamp
+                        and s.created_utc >= lowest_timestamp
+                        and (criterion is None or criterion(s))]
+            # make sure we never accidentally craft a bad test case
+            self.assertGreater(len(filtered), 0)
+            return filtered
 
-            t1_t2_subs_canon = filter_subs(all_subs, t1, t2)
-            self.assertEqual(t1_t2_subs, t1_t2_subs_canon)
+        t1_t2_subs_canon = filter_subs(all_subs, t1, t2)
+        self.assertEqual(t1_t2_subs, t1_t2_subs_canon)
 
-            self_subs = list(
-                submissions_between(self.r,
-                                    self.sr,
-                                    extra_cloudsearch_fields={"self": "1"},
-                                    verbosity=3)
-            )
-            self_subs_canon = filter_subs(all_subs,
-                                          criterion=lambda s: s.is_self)
-            self.assertEqual(self_subs, self_subs_canon)
+        self_subs = list(
+            submissions_between(self.r,
+                                self.sr,
+                                extra_cloudsearch_fields={"self": "1"},
+                                verbosity=3)
+        )
+        self_subs_canon = filter_subs(all_subs,
+                                      criterion=lambda s: s.is_self)
+        self.assertEqual(self_subs, self_subs_canon)
 
-            def wa_criterion(s):
-                return not s.is_self and \
-                    urlparse(s.url).netloc == "web.archive.org"
+        def wa_criterion(s):
+            return not s.is_self and \
+                urlparse(s.url).netloc == "web.archive.org"
 
-            wa_cs_fields = {"self": "0",
-                            "site": "web.archive.org"}
+        wa_cs_fields = {"self": "0",
+                        "site": "web.archive.org"}
 
-            subs_wa = list(
-                submissions_between(self.r,
-                                    self.sr,
-                                    extra_cloudsearch_fields=wa_cs_fields,
-                                    verbosity=3)
-            )
+        subs_wa = list(
+            submissions_between(self.r,
+                                self.sr,
+                                extra_cloudsearch_fields=wa_cs_fields,
+                                verbosity=3)
+        )
 
-            subs_wa_canon = filter_subs(all_subs, criterion=wa_criterion)
-            self.assertEqual(subs_wa, subs_wa_canon)
+        subs_wa_canon = filter_subs(all_subs, criterion=wa_criterion)
+        self.assertEqual(subs_wa, subs_wa_canon)
 
-            patu_cs_fields = {"self": "1",
-                              "author": "PyAPITestUser2",
-                              "title": "test"}
+        patu_cs_fields = {"self": "1",
+                          "author": "PyAPITestUser2",
+                          "title": "test"}
 
-            def patu_criterion(s):
-                return s.is_self and \
-                    s.author.name == "PyAPITestUser2" and\
-                    "test" in s.title.lower()
+        def patu_criterion(s):
+            return s.is_self and \
+                s.author.name == "PyAPITestUser2" and\
+                "test" in s.title.lower()
 
-            subs_patu = list(
-                submissions_between(self.r,
-                                    self.sr,
-                                    extra_cloudsearch_fields=patu_cs_fields,
-                                    verbosity=3)
-            )
+        subs_patu = list(
+            submissions_between(self.r,
+                                self.sr,
+                                extra_cloudsearch_fields=patu_cs_fields,
+                                verbosity=3)
+        )
 
-            subs_patu_canon = filter_subs(all_subs, criterion=patu_criterion)
-            self.assertEqual(subs_patu, subs_patu_canon)
-        except KeyboardInterrupt:
-            self.tearDown()
-            raise
+        subs_patu_canon = filter_subs(all_subs, criterion=patu_criterion)
+        self.assertEqual(subs_patu, subs_patu_canon)
