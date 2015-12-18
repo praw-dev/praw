@@ -144,7 +144,7 @@ this page to add in more.
 `Self-Destruct Bot`_ by `diceroll123 <https://github.com/diceroll123>`_
     Removes posts after a specified amount of time. (For time-sensitive posts.)
 
-`Subtitle Bot`_ by `arrayofchar <https://github.com/arrayofchar/reddit_subtitle_bot>`_
+`Subtitle Bot`_ by `arrayofchar <https://github.com/arrayofchar>`_
     Finds youtube links and see if closed captioning (aka subtitle) is available. Formats subtitle into paragraphs based on  standard deviation of timestamp gaps. If subtitle is longer than Reddit comment limit, puts it in Pastebin.
 
 **\<Your Script Here\>**
