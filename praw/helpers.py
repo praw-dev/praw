@@ -169,7 +169,7 @@ def submissions_between(reddit_session,
 
     extra_query_part = " ".join(
         [format_query_field(k, v) for (k, v)
-         in extra_cloudsearch_fields.iteritems()]
+         in sorted(extra_cloudsearch_fields.items())]
     )
 
     if highest_timestamp is None:
