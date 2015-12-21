@@ -116,7 +116,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
             submissions_between(self.r,
                                 self.sr,
                                 extra_cloudsearch_fields=wa_cs_fields,
-                                verbosity=self.self.verbosity)
+                                verbosity=self.verbosity)
         )
 
         subs_wa_canon = filter_subs(all_subs, criterion=wa_criterion)
