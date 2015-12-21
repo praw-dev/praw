@@ -52,9 +52,11 @@ class TestHelperSubmissionsBetween(PRAWTest):
                                     all_subs[i + 1].created_utc)
 
         sr_obj = self.r.get_subreddit(self.sr)
-        all_subs_sr_object = list(submissions_between(self.r,
-                                                      sr_obj,
-                                                      verbosity=self.verbosity))
+        all_subs_sr_object = list(
+            submissions_between(self.r,
+                                sr_obj,
+                                verbosity=self.verbosity)
+        )
 
         self.assertEqual(all_subs, all_subs_sr_object)
 
