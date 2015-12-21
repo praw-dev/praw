@@ -3,6 +3,7 @@
 from __future__ import print_function, unicode_literals
 
 import os
+import sys
 import time
 from six.moves.urllib.parse import urlparse
 
@@ -22,7 +23,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
         PRAWTest.setUp(self)
         time.time = mock_time
         self.verbosity = 3
-        if os.getenv('TRAVIS'):
+        if os.getenv('TRAVIS') and not hasattr(sys, 'pypy_version_info'):
             self.verbosity = 0
 
     def tearDown(self):
