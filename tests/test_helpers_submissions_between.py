@@ -2,6 +2,7 @@
 
 from __future__ import print_function, unicode_literals
 
+import os
 import time
 from six.moves.urllib.parse import urlparse
 
@@ -20,6 +21,9 @@ class TestHelperSubmissionsBetween(PRAWTest):
     def setUp(self):
         PRAWTest.setUp(self)
         time.time = mock_time
+        self.verbosity = 3
+        if os.getenv('TRAVIS'):
+            self.verbosity = 0
 
     def tearDown(self):
         PRAWTest.tearDown(self)
@@ -33,7 +37,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
             list(submissions_between(self.r,
                                      self.sr,
                                      extra_cloudsearch_fields={'self': 'yes'},
-                                     verbosity=3))
+                                     verbosity=self.verbosity))
 
     @betamax()
     @teardown_on_keyboard_interrupt
@@ -41,7 +45,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
         all_subs = list(submissions_between(self.r,
                                             self.sr,
                                             highest_timestamp=time.time(),
-                                            verbosity=3))
+                                            verbosity=self.verbosity))
 
         for i in range(len(all_subs) - 1):
             self.assertGreaterEqual(all_subs[i].created_utc,
@@ -50,14 +54,14 @@ class TestHelperSubmissionsBetween(PRAWTest):
         sr_obj = self.r.get_subreddit(self.sr)
         all_subs_sr_object = list(submissions_between(self.r,
                                                       sr_obj,
-                                                      verbosity=3))
+                                                      verbosity=self.verbosity))
 
         self.assertEqual(all_subs, all_subs_sr_object)
 
         all_subs_reversed = list(submissions_between(self.r,
                                                      sr_obj,
                                                      newest_first=False,
-                                                     verbosity=3))
+                                                     verbosity=self.verbosity))
 
         self.assertEqual(all_subs, list(reversed(all_subs_reversed)))
 
@@ -66,7 +70,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
     def test_submissions_between_with_filters(self):
         all_subs = list(submissions_between(self.r,
                                             self.sr,
-                                            verbosity=3))
+                                            verbosity=self.verbosity))
         t1 = 1420000000
         t2 = 1441111111
 
@@ -74,7 +78,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
                                               self.sr,
                                               lowest_timestamp=t1,
                                               highest_timestamp=t2,
-                                              verbosity=3))
+                                              verbosity=self.verbosity))
 
         def filter_subs(subs,
                         lowest_timestamp=0,
@@ -95,7 +99,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
             submissions_between(self.r,
                                 self.sr,
                                 extra_cloudsearch_fields={"self": "1"},
-                                verbosity=3)
+                                verbosity=self.verbosity)
         )
         self_subs_canon = filter_subs(all_subs,
                                       criterion=lambda s: s.is_self)
@@ -112,7 +116,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
             submissions_between(self.r,
                                 self.sr,
                                 extra_cloudsearch_fields=wa_cs_fields,
-                                verbosity=3)
+                                verbosity=self.self.verbosity)
         )
 
         subs_wa_canon = filter_subs(all_subs, criterion=wa_criterion)
@@ -131,7 +135,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
             submissions_between(self.r,
                                 self.sr,
                                 extra_cloudsearch_fields=patu_cs_fields,
-                                verbosity=3)
+                                verbosity=self.verbosity)
         )
 
         subs_patu_canon = filter_subs(all_subs, criterion=patu_criterion)
