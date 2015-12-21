@@ -1611,7 +1611,7 @@ class ModConfigMixin(AuthenticatedReddit):
                      exclude_banned_modqueue=False, comment_score_hide_mins=0,
                      public_traffic=False, collapse_deleted_comments=False,
                      spam_comments='low', spam_links='high', spam_selfposts='high',
-                     submit_text='', hide_ads=False, suggested_comment_sort, **kwargs):
+                     submit_text='', hide_ads=False, suggested_comment_sort='', **kwargs):
         """Set the settings for the given subreddit.
 
         :param subreddit: Must be a subreddit object.
