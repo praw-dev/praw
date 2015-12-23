@@ -15,6 +15,7 @@ Content Pages
 
     pages/getting_started
     pages/writing_a_bot
+    pages/call_and_response_bot
     pages/comment_parsing
     pages/oauth
     pages/lazy-loading
