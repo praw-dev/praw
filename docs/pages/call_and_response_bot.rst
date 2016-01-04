@@ -1,6 +1,6 @@
 .. _call_and_response_bot:
 
-A simple "call and response" bot
+A Simple "Call and Response" Bot
 ================================
 
 A common use case for the PRAW library is writing bots that monitor the
@@ -36,8 +36,8 @@ following:
         if check_condition(c):
             bot_action(c)
 
-Now all we need to do is provide functions that check if a comment matches our
-response criteria and performs the appropriate action if so.
+Now all we need to do to transform this into a working bot is to provide a 
+`check_condition` function and a `bot_action` function.
 
 Working demo: ListFixerBot
 --------------------------
@@ -45,8 +45,31 @@ Working demo: ListFixerBot
 Let's say we wanted a bot to correct bad list formatting with lazily-generated
 but hopefully improved reddit markdown (snudown). Reddit markdown recognizes
 lists when a numbered item is numbered like '1.', '2.' etc. Let's try to fix
-lists where the comment author replaced dots with parens. (NB: This bot doesn't
-do its job particularly well, but that's OK: It's just a demo
+lists where the comment author replaced dots with parens. Our goal is to find
+comments containing lists that look like:
+
+    1) Item one
+    
+    2) Item two
+    
+    3) Item three
+    
+or even 
+    
+
+    1) Item one 2) Item two 3) Item three
+    
+and modify them so they will appear as:
+
+   1. Item one
+   
+   2. Item two
+   
+   3. Item three
+   
+First, let's write a function to determine if a comment matches what we're 
+looking for. Following the template presented earlier, let's just call this
+function `check_condition` so we can drop it directly into our existing code.
 
 .. code-block:: python
 
@@ -63,8 +86,18 @@ preceding line breaks.
 
     fixed = re.sub(r'([0-9]+)(\))', r'\n\n\1.', c.body)
 
-If we include a "verbose" parameter, we can easily choose whether or not the
-function will output relevant text to the console by default.
+This expression add two newline characters before each list item to break up 
+list items that aren't separated by newlines (which they need to be). Reddit 
+markdown will treat this as a single line between items. Also, markdown doesn't
+care what number we use when enumerating a list, so we can just use "1." for 
+each list item and let the markdown interpreter figure out what the correct 
+number should be.
+    
+We'll wrap this regular expression with our `bot_action` function to have the 
+bot perform this operation only on the comments that passed the 
+`check_condition` filter. If we include a "verbose" parameter, we can easily 
+choose whether or not the function will output relevant text to the console by 
+default. Keep in mind: reddit supports unicode text in comments.
 
 .. code-block:: python
 
@@ -76,9 +109,30 @@ function will output relevant text to the console by default.
             print "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
             print fixed.encode("UTF-8")
 
-We can similarly provide an optional input parameter to choose whether or not
-the bot will actually respond to people with corrected text. NB: If we want our
-bot to respond, we'll need to be logged in.
+We can similarly define an optional input parameter to choose whether or not
+the bot will actually respond to people with the corrected markdown. NB: If we 
+want our bot to respond, it will need to be logged in. You can create a new
+account specific to the bot (recommended) or just use an existing login if you
+have one.
+
+.. code-block:: python
+
+    def bot_action(c, verbose=True, respond=False):
+        fixed = re.sub(r'(\n?)([0-9]+)(\))', r'\n\n\2.', c.body)
+
+        if verbose:
+            print c.body.encode("UTF-8")
+            print "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
+            print fixed.encode("UTF-8")
+
+        if respond:
+            head = "Hi! Let me try to beautify the list in your comment:\n\n"
+            c.reply(head + fixed)
+
+It's generally considered good practice to create a subreddit whose name
+matches the name of your bot to centralize discussion, questions, and feature
+requests relating to your bot. Referencing this subreddit in your bot's
+comments is a good way to inform people how best to provide feedback.
 
 Our final ``bot_action`` function looks like this:
 
@@ -93,14 +147,9 @@ Our final ``bot_action`` function looks like this:
             print fixed.encode("UTF-8")
 
         if respond:
-            head = "Hi! Let me try to beautify your comment:\n\n"
+            head = "Hi! Let me try to beautify the list in  your comment:\n\n"
             tail = "\n\nI am a bot. You can provide feedback in my subreddit: /r/ListFormatFixer"
-            c.reply( header + fixed + tail )
-
-It's generally considered good practice to create a subreddit whose name
-matches the name of your bot to centralize discussion, questions, and feature
-requests relating to your bot. Referencing this subreddit in your bot's
-comments is a good way to inform people how best to provide feedback.
+            c.reply(head + fixed + tail)
 
 Here's our completed bot!
 
@@ -114,14 +163,6 @@ Here's our completed bot!
         if "1)" in tokens and "2)" in tokens:
             return True
 
-    def bot_action(c, verbose=True, respond=False, session=None):
-        fixed = re.sub(r'(\n?)([0-9]+)(\))', r'\n\n\2.', c.body)
-
-        if verbose:
-            print c.body.encode("UTF-8")
-            print "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
-            print fixed.encode("UTF-8")
-
     def bot_action(c, verbose=True, respond=False):
         fixed = re.sub(r'(\n?)([0-9]+)(\))', r'\n\n\2.', c.body)
 
@@ -131,9 +172,9 @@ Here's our completed bot!
             print fixed.encode("UTF-8")
 
         if respond:
-            head = "Hi! Let me try to beautify your comment:\n\n"
+            head = "Hi! Let me try to beautify the list in  your comment:\n\n"
             tail = "\n\nI am a bot. You can provide feedback in my subreddit: /r/ListFormatFixer"
-            c.reply( header + fixed + tail )
+            c.reply(head + fixed + tail)
 
     if __name__ is '__main__':
         import praw
@@ -148,14 +189,13 @@ Here's our completed bot!
         # It is strongly recommended you login with oAuth
         # http://praw.readthedocs.org/en/stable/pages/oauth.html
 
-        # The following login method is being deprecated soon, but is used in this 
-        # demo for the sake of brevity.
+        # NB: This login method is being deprecated soon
         r.login()
 
         for c in praw.helpers.comment_stream(r, 'all'):
             if check_condition(c):
-                #bot_action(c, respond=True)
-                bot_action(c)
+                # set 'respond=True' to activate bot responses. Must be logged in.
+                bot_action(c, respond=False) 
 
 Keep in mind: bots of this kind are often perceived as annoying and quickly get
 banned from many subreddits. If/when your bot gets banned, don't take it
