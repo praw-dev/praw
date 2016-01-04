@@ -54,7 +54,12 @@ comments containing lists that look like:
     
     3) Item three
     
-and convert them to:
+or even 
+    
+
+    1) Item one 2) Item two 3) Item three
+    
+and modify them so they will appear as:
 
    1. Item one
    
@@ -81,6 +86,13 @@ preceding line breaks.
 
     fixed = re.sub(r'([0-9]+)(\))', r'\n\n\1.', c.body)
 
+This expression add two newline characters before each list item to break up 
+list items that aren't separated by newlines (which they need to be). Reddit 
+markdown will treat this as a single line between items. Also, markdown doesn't
+care what number we when enumerating a list, so we can just use "1." for each 
+list item and let the markdown interpreter figure out what the correct number
+should be.
+    
 We'll wrap this regular expression with our `bot_action` function to have the 
 bot perform this operation only on the comments that passed the 
 `check_condition` filter. If we include a "verbose" parameter, we can easily 
