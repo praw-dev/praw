@@ -89,9 +89,9 @@ preceding line breaks.
 This expression add two newline characters before each list item to break up 
 list items that aren't separated by newlines (which they need to be). Reddit 
 markdown will treat this as a single line between items. Also, markdown doesn't
-care what number we when enumerating a list, so we can just use "1." for each 
-list item and let the markdown interpreter figure out what the correct number
-should be.
+care what number we use when enumerating a list, so we can just use "1." for 
+each list item and let the markdown interpreter figure out what the correct 
+number should be.
     
 We'll wrap this regular expression with our `bot_action` function to have the 
 bot perform this operation only on the comments that passed the 
@@ -149,7 +149,7 @@ Our final ``bot_action`` function looks like this:
         if respond:
             head = "Hi! Let me try to beautify the list in  your comment:\n\n"
             tail = "\n\nI am a bot. You can provide feedback in my subreddit: /r/ListFormatFixer"
-            c.reply( head + fixed + tail )
+            c.reply(head + fixed + tail)
 
 Here's our completed bot!
 
@@ -174,7 +174,7 @@ Here's our completed bot!
         if respond:
             head = "Hi! Let me try to beautify the list in  your comment:\n\n"
             tail = "\n\nI am a bot. You can provide feedback in my subreddit: /r/ListFormatFixer"
-            c.reply( head + fixed + tail )
+            c.reply(head + fixed + tail)
 
     if __name__ is '__main__':
         import praw
@@ -194,8 +194,7 @@ Here's our completed bot!
 
         for c in praw.helpers.comment_stream(r, 'all'):
             if check_condition(c):
-                # set 'respond=True' to activate bot responses. 
-                # Must be logged in.
+                # set 'respond=True' to activate bot responses. Must be logged in.
                 bot_action(c, respond=False) 
 
 Keep in mind: bots of this kind are often perceived as annoying and quickly get
