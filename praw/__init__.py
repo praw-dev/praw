@@ -170,6 +170,7 @@ class Config(object):  # pylint: disable=R0903
                  'subreddit_css':       'api/subreddit_stylesheet/',
                  'subreddit_random':    'r/{subreddit}/random/',
                  'subreddit_settings':  'r/{subreddit}/about/edit/',
+                 'subreddit_traffic':   'r/{subreddit}/about/traffic/',
                  'subscribe':           'api/subscribe/',
                  'suggested_sort':      'api/set_suggested_sort/',
                  'top':                 'top/',
@@ -1124,6 +1125,18 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         return self.get_content(self.config['top'], *args, **kwargs)
+
+    @decorators.restrict_access(scope='read')
+    def get_traffic(self, subreddit):
+        """Return the traffic stats for a subreddit.
+
+        :param subreddit: The subreddit whose /about/traffic page we will
+            collect.
+
+        """
+        url = self.config['subreddit_traffic'].format(
+            subreddit=six.text_type(subreddit))
+        return self.request_json(url)
 
     @decorators.restrict_access(scope='wikiread', login=False)
     def get_wiki_page(self, subreddit, page):

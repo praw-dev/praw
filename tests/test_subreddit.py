@@ -326,6 +326,14 @@ class OAuthSubredditTest(OAuthPRAWTest):
         self.assertTrue(list(subreddit.get_top()))
 
     @betamax()
+    def test_get_traffic_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+        subreddit = self.r.get_subreddit(self.sr)
+        traffic = subreddit.get_traffic()
+        keys = ('hour', 'day', 'month')
+        self.assertTrue(all(key in traffic for key in keys))
+
+    @betamax()
     def test_join_leave_moderator_oauth(self):
         subreddit = self.r.get_subreddit(self.sr)
         self.r.refresh_access_information(self.refresh_token['modothers'])
