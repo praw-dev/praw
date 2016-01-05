@@ -1126,7 +1126,6 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_content(self.config['top'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='read')
     def get_traffic(self, subreddit):
         """Return the traffic stats for a subreddit.
 
