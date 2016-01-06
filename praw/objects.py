@@ -1452,6 +1452,7 @@ class Subreddit(Messageable, Refreshable):
                 ('get_spam', MOMix),
                 ('get_sticky', UR),
                 ('get_stylesheet', MOMix),
+                ('get_traffic', UR),
                 ('get_unmoderated', MOMix),
                 ('get_wiki_banned', MOMix),
                 ('get_wiki_contributors', MOMix),

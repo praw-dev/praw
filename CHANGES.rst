@@ -34,6 +34,8 @@ Unreleased
  * **[FEATURE]** Added
    :meth:`~praw.__init__.UnauthenticatedReddit.default_subreddits`.
  * **[FEATURE]** Added support for ``*`` OAuth scopes.
+ * **[FEATURE]** Added
+   :meth:`~praw.__init__.UnauthenticatedReddit.get_traffic`
 
 PRAW 3.3.0
 ----------
