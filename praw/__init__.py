@@ -1127,7 +1127,7 @@ class UnauthenticatedReddit(BaseReddit):
         return self.get_content(self.config['top'], *args, **kwargs)
 
     def get_traffic(self, subreddit):
-        """Return the traffic stats for a subreddit.
+        """Return the json dictionary containing traffic stats for a subreddit.
 
         :param subreddit: The subreddit whose /about/traffic page we will
             collect.
