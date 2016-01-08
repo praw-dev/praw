@@ -1126,6 +1126,8 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_content(self.config['top'], *args, **kwargs)
 
+    # There exists a `modtraffic` scope, but it is unused.
+    @decorators.restrict_access(scope='modconfig')
     def get_traffic(self, subreddit):
         """Return the json dictionary containing traffic stats for a subreddit.
 
