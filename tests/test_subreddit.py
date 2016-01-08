@@ -327,8 +327,8 @@ class OAuthSubredditTest(OAuthPRAWTest):
 
     @betamax()
     def test_get_traffic_oauth(self):
-        self.r.refresh_access_information(self.refresh_token['read'])
-        subreddit = self.r.get_subreddit(self.sr)
+        self.r.refresh_access_information(self.refresh_token['modconfig'])
+        subreddit = self.r.get_subreddit(self.priv_sr)
         traffic = subreddit.get_traffic()
         keys = ('hour', 'day', 'month')
         self.assertTrue(all(key in traffic for key in keys))
