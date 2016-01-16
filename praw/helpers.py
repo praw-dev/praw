@@ -258,8 +258,8 @@ def submissions_between(reddit_session,
             prev_win_decreased = False
 
         search_results = [s for s in search_results
-                          if original_lowest_timestamp <= s.created
-                          and s.created <= original_highest_timestamp]
+                          if original_lowest_timestamp <= s.created and
+                          s.created <= original_highest_timestamp]
 
         for submission in sorted(search_results,
                                  key=attrgetter('created_utc', 'id'),
