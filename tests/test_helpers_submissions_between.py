@@ -88,9 +88,9 @@ class TestHelperSubmissionsBetween(PRAWTest):
                         highest_timestamp=10**10,
                         criterion=None):
             filtered = [s for s in subs
-                        if s.created_utc <= highest_timestamp
-                        and s.created_utc >= lowest_timestamp
-                        and (criterion is None or criterion(s))]
+                        if s.created_utc <= highest_timestamp and
+                        s.created_utc >= lowest_timestamp and
+                        (criterion is None or criterion(s))]
             # make sure we never accidentally craft a bad test case
             self.assertGreater(len(filtered), 0)
             return filtered

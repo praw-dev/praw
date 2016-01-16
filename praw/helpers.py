@@ -189,6 +189,18 @@ def submissions_between(reddit_session,
     else:
         lowest_timestamp = 0
 
+    original_highest_timestamp = highest_timestamp
+    original_lowest_timestamp = lowest_timestamp
+
+    # When making timestamp:X..Y queries, reddit misses submissions
+    # inside X..Y range, but they can be found inside Y..Z range
+    # It is not clear what is the value of Z should be, but it seems
+    # like the difference is usually about ~1 hour or less
+    # To be sure, let's set the workaround offset to 2 hours
+    out_of_order_submissions_workaround_offset = 7200
+    highest_timestamp += out_of_order_submissions_workaround_offset
+    lowest_timestamp -= out_of_order_submissions_workaround_offset
+
     # Those parameters work ok, but there may be a better set of parameters
     window_size = 60 * 60
     search_limit = 100
@@ -244,6 +256,10 @@ def submissions_between(reddit_session,
             continue
         else:
             prev_win_decreased = False
+
+        search_results = [s for s in search_results
+                          if original_lowest_timestamp <= s.created and
+                          s.created <= original_highest_timestamp]
 
         for submission in sorted(search_results,
                                  key=attrgetter('created_utc', 'id'),
