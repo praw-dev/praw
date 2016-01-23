@@ -14,9 +14,6 @@
 import sys
 sys.path.insert(0, "..")
 
-import os
-os.environ['SPHINX_BUILD'] = '1'
-
 from praw import __version__
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -98,7 +95,7 @@ pygments_style = 'sphinx'
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes. Currently Setting it to default to allow RTD 
+# a list of builtin themes. Currently Setting it to default to allow RTD
 # builds to pickup the new default theme.
 html_theme = 'default'
 
@@ -238,10 +235,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'PythonRedditAPIWrapper',
+    ('index', 'praw',
      u'Python Reddit API Wrapper Documentation',
-     u'Bryce Boe', 'PythonRedditAPIWrapper',
-     'One line description of project.', 'Miscellaneous'),
+     u'Bryce Boe', 'praw',
+     'Python Reddit API Wrapper', 'Python'),
 ]
 
 # Documents to append as an appendix to all manuals.

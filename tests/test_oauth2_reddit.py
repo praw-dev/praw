@@ -2,10 +2,24 @@
 
 from __future__ import print_function, unicode_literals
 
+import sys
 from praw import Reddit, errors
 from praw.objects import Submission
 from six import text_type
 from .helper import PRAWTest, USER_AGENT, betamax
+
+
+class FakeStdin:
+    """ A class for filling stdin prompts with a predetermined value. """
+    def __init__(self, value):
+        self.closed = False
+        self.value = value
+
+    def close(self):
+        self.closed = True
+
+    def readline(self):
+        return self.value
 
 
 class OAuth2RedditTest(PRAWTest):
@@ -31,6 +45,20 @@ class OAuth2RedditTest(PRAWTest):
                     'response_type': 'code', 'scope': 'identity',
                     'state': '...'}
         self.assertEqual(expected, params)
+
+    # @betamax() is currently broken for this test because the cassettes
+    # are caching too aggressively and not performing a token refresh.
+    def test_auto_refresh_token(self):
+        self.r.refresh_access_information(self.refresh_token['identity'])
+        old_token = self.r.access_token
+
+        self.r.access_token += 'x'  # break the token
+        self.r.user.refresh()
+        current_token = self.r.access_token
+        self.assertNotEqual(old_token, current_token)
+
+        self.r.user.refresh()
+        self.assertEqual(current_token, self.r.access_token)
 
     @betamax()
     def test_get_access_information(self):
@@ -72,11 +100,50 @@ class OAuth2RedditTest(PRAWTest):
         self.r.set_access_credentials(set('dummy_scope',), 'dummy_token')
         self.assertRaises(errors.OAuthScopeRequired, self.r.get_me)
 
-    @betamax()
-    def test_scope_edit(self):
-        self.r.refresh_access_information(self.refresh_token['edit'])
-        submission = Submission.from_id(self.r, self.submission_edit_id)
-        self.assertEqual(submission, submission.edit('Edited text'))
+    def test_raise_client_exception(self):
+        def raise_client_exception(*args):
+            raise errors.ClientException(*args)
+
+        self.assertRaises(errors.ClientException, raise_client_exception)
+        self.assertRaises(errors.ClientException, raise_client_exception,
+                          'test')
+
+        ce_message = errors.ClientException('Test')
+        ce_no_message = errors.ClientException()
+        self.assertEqual(ce_message.message, str(ce_message))
+        self.assertEqual(ce_no_message.message, str(ce_no_message))
+
+    def test_raise_http_exception(self):
+        def raise_http_exception():
+            raise errors.HTTPException('fakeraw')
+
+        self.assertRaises(errors.HTTPException, raise_http_exception)
+        http_exception = errors.HTTPException('fakeraw')
+        self.assertEqual(http_exception.message, str(http_exception))
+
+    def test_raise_oauth_exception(self):
+        oerrormessage = "fakemessage"
+        oerrorurl = "http://oauth.reddit.com/"
+
+        def raise_oauth_exception():
+            raise errors.OAuthException(oerrormessage, oerrorurl)
+
+        self.assertRaises(errors.OAuthException, raise_oauth_exception)
+        oauth_exception = errors.OAuthException(oerrormessage, oerrorurl)
+        self.assertEqual(oauth_exception.message +
+                         " on url {0}".format(oauth_exception.url),
+                         str(oauth_exception))
+
+    def test_raise_redirect_exception(self):
+        apiurl = "http://api.reddit.com/"
+        oauthurl = "http://oauth.reddit.com/"
+
+        def raise_redirect_exception():
+            raise errors.RedirectException(apiurl, oauthurl)
+
+        self.assertRaises(errors.RedirectException, raise_redirect_exception)
+        redirect_exception = errors.RedirectException(apiurl, oauthurl)
+        self.assertEqual(redirect_exception.message, str(redirect_exception))
 
     @betamax()
     def test_scope_history(self):
@@ -87,30 +154,6 @@ class OAuth2RedditTest(PRAWTest):
     def test_scope_identity(self):
         self.r.refresh_access_information(self.refresh_token['identity'])
         self.assertEqual(self.un, self.r.get_me().name)
-
-    @betamax()
-    def test_scope_modconfig(self):
-        self.r.refresh_access_information(self.refresh_token['modconfig'])
-        self.r.get_subreddit(self.sr).set_settings('foobar')
-        retval = self.r.get_subreddit(self.sr).get_stylesheet()
-        self.assertTrue('images' in retval)
-
-    @betamax()
-    def test_scope_modflair(self):
-        self.r.refresh_access_information(self.refresh_token['modflair'])
-        self.r.get_subreddit(self.sr).set_flair(self.un, 'foobar')
-
-    @betamax()
-    def test_scope_modlog(self):
-        num = 50
-        self.r.refresh_access_information(self.refresh_token['modlog'])
-        result = self.r.get_subreddit(self.sr).get_mod_log(limit=num)
-        self.assertEqual(num, len(list(result)))
-
-    @betamax()
-    def test_scope_modposts(self):
-        self.r.refresh_access_information(self.refresh_token['modposts'])
-        Submission.from_id(self.r, self.submission_edit_id).remove()
 
     @betamax()
     def test_scope_mysubreddits(self):
@@ -160,53 +203,6 @@ class OAuth2RedditTest(PRAWTest):
             self.assertTrue(post.subreddit in subscribed)
 
     @betamax()
-    def test_scope_read_get_sub_listingr(self):
-        self.r.refresh_access_information(self.refresh_token['read'])
-        subreddit = self.r.get_subreddit(self.priv_sr)
-        self.assertTrue(list(subreddit.get_top()))
-
-    @betamax()
-    def test_scope_read_get_submission_by_url(self):
-        url = ("https://www.reddit.com/r/reddit_api_test_priv/comments/16kbb7/"
-               "google/")
-        self.r.refresh_access_information(self.refresh_token['read'])
-        submission = Submission.from_url(self.r, url)
-        self.assertTrue(submission.num_comments != 0)
-
-    @betamax()
-    def test_scope_read_priv_sr_comments(self):
-        self.r.refresh_access_information(self.refresh_token['read'])
-        self.assertTrue(list(self.r.get_comments(self.priv_sr)))
-
-    @betamax()
-    def test_scope_wikiread_wiki_page(self):
-        self.r.refresh_access_information(self.refresh_token['wikiread'])
-        self.assertTrue(self.r.get_wiki_page(self.sr, 'index'))
-
-    @betamax()
-    def test_scope_read_priv_sub_comments(self):
-        self.r.refresh_access_information(self.refresh_token['read'])
-        submission = Submission.from_id(self.r, self.priv_submission_id)
-        self.assertTrue(submission.comments)
-
-    @betamax()
-    def test_scope_submit(self):
-        self.r.refresh_access_information(self.refresh_token['submit'])
-        result = self.r.submit(self.sr, 'OAuth Submit', text='Foo')
-        self.assertTrue(isinstance(result, Submission))
-
-    @betamax()
-    def test_scope_subscribe(self):
-        self.r.refresh_access_information(self.refresh_token['subscribe'])
-        self.r.get_subreddit(self.sr).subscribe()
-
-    @betamax()
-    def test_scope_vote(self):
-        self.r.refresh_access_information(self.refresh_token['vote'])
-        submission = Submission.from_id(self.r, self.submission_edit_id)
-        submission.clear_vote()
-
-    @betamax()
     def test_set_access_credentials(self):
         self.assertTrue(self.r.user is None)
         result = self.r.refresh_access_information(
@@ -214,6 +210,36 @@ class OAuth2RedditTest(PRAWTest):
         self.assertTrue(self.r.user is None)
         self.r.set_access_credentials(**result)
         self.assertFalse(self.r.user is None)
+
+    @betamax()
+    def test_set_access_credentials_with_list(self):
+        self.assertTrue(self.r.user is None)
+        result = self.r.refresh_access_information(
+            self.refresh_token['identity'], update_session=False)
+        self.assertTrue(self.r.user is None)
+        result['scope'] = list(result['scope'])
+        self.r.set_access_credentials(**result)
+        self.assertFalse(self.r.user is None)
+
+    @betamax()
+    def test_set_access_credentials_with_string(self):
+        self.assertTrue(self.r.user is None)
+        result = self.r.refresh_access_information(
+            self.refresh_token['identity'], update_session=False)
+        self.assertTrue(self.r.user is None)
+        result['scope'] = ' '.join(result['scope'])
+        self.r.set_access_credentials(**result)
+        self.assertFalse(self.r.user is None)
+
+    @betamax()
+    def test_solve_captcha(self):
+        # Use the alternate account because it has low karma,
+        # so we can test the captcha.
+        self.r.refresh_access_information(self.other_refresh_token['submit'])
+        original_stdin = sys.stdin
+        sys.stdin = FakeStdin('ljgtoo')  # Comment this line when rebuilding
+        self.r.submit(self.sr, 'captcha test', 'body')
+        sys.stdin = original_stdin
 
     @betamax()
     def test_oauth_without_identy_doesnt_set_user(self):

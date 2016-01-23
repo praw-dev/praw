@@ -1,10 +1,11 @@
-"""Tests for Subreddit class."""
+﻿"""Tests for Subreddit class."""
 
 from __future__ import print_function, unicode_literals
+import warnings
 from praw import errors
 from praw.objects import Subreddit
 from six import text_type
-from .helper import PRAWTest, betamax
+from .helper import OAuthPRAWTest, PRAWTest, betamax
 
 
 class SubredditTest(PRAWTest):
@@ -21,9 +22,10 @@ class SubredditTest(PRAWTest):
         augmented_name = self.sr.upper()
         subreddit = self.r.get_subreddit(augmented_name)
         self.assertEqual(augmented_name, text_type(subreddit))
-        self.assertNotEqual(augmented_name, subreddit.display_name)
+        subreddit.created_utc  # induce a lazy load
+        self.assertEqual(augmented_name, subreddit.display_name)
+        subreddit.refresh()
         self.assertEqual(self.sr, subreddit.display_name)
-        self.assertEqual(subreddit.display_name, text_type(subreddit))
 
     @betamax()
     def test_display_name_refresh(self):
@@ -76,22 +78,17 @@ class SubredditTest(PRAWTest):
         self.assertTrue(all(isinstance(x, Subreddit) for x in result))
 
     @betamax()
+    def test_multiple_subreddit__fetch(self):
+        with warnings.catch_warnings(record=True) as w:
+            self.r.get_subreddit('python+redditdev', fetch=True)
+            assert len(w) == 1
+            assert isinstance(w[0].message, UserWarning)
+
+    @betamax()
     def test_subreddit_refresh(self):
         new_description = 'Description {0}'.format(self.r.modhash)
+        self.assertNotEqual(new_description, self.subreddit.public_description)
         self.subreddit.update_settings(public_description=new_description)
-        # Headers are not included in the cached key so this will have no
-        # affect when the request is cached
-        self.r.http.headers['SKIP_BETAMAX'] = 1
-        # No refresh, settings not updated
-        self.assertNotEqual(new_description, self.subreddit.public_description)
-        # Refresh made within cache expiration, settings not updated
-        self.subreddit.refresh()
-        self.assertNotEqual(new_description, self.subreddit.public_description)
-        # Evict subreddit page
-        url = 'https://api.reddit.com/r/reddit_api_test/about'
-        self.assertEqual(1, self.r.evict(url))
-        self.assertEqual(0, self.r.evict(url))
-        # Actually perform a refresh
         self.subreddit.refresh()
         self.assertEqual(new_description, self.subreddit.public_description)
 
@@ -269,3 +266,164 @@ class ModeratorSubredditTest(PRAWTest):
         self.add_remove(self.subreddit.add_wiki_contributor,
                         self.subreddit.remove_wiki_contributor,
                         self.subreddit.get_wiki_contributors)
+
+
+class OAuthSubredditTest(OAuthPRAWTest):
+    @betamax()
+    def test_add_remove_moderator_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['modothers'])
+        subreddit = self.r.get_subreddit(self.sr)
+        subreddit.add_moderator(self.other_user_name)
+
+        # log in as other user
+        self.r.refresh_access_information(self.other_refresh_token['modself'])
+        self.r.accept_moderator_invite(self.sr)
+
+        # now return to original user.
+        self.r.refresh_access_information(self.refresh_token['modothers'])
+        subreddit.remove_moderator(self.other_user_name)
+
+        self.assertFalse(self.other_user_name.lower() in [user.name.lower()
+                         for user in subreddit.get_moderators()])
+
+    @betamax()
+    def test_get_edited_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+
+        edits = self.r.get_subreddit(self.sr).get_edited()
+        self.assertTrue(list(edits))
+        self.assertTrue(all(hasattr(x, 'edited') for x in edits))
+        self.assertTrue(all(isinstance(x.edited, (float, int)) for x in edits))
+
+    @betamax()
+    def test_get_moderators_contributors_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+
+        subreddit = self.r.get_subreddit(self.sr)
+        self.assertTrue(list(subreddit.get_moderators()))
+        self.assertTrue(list(subreddit.get_contributors()))
+
+        subreddit = self.r.get_subreddit('redditdev')
+        self.assertTrue(list(subreddit.get_moderators()))
+        self.assertRaises(errors.Forbidden, list, subreddit.get_contributors())
+
+    @betamax()
+    def test_get_modlog_oauth(self):
+        num = 50
+        self.r.refresh_access_information(self.refresh_token['modlog'])
+        result = self.r.get_subreddit(self.sr).get_mod_log(limit=num)
+        self.assertEqual(num, len(list(result)))
+
+    @betamax()
+    def test_get_priv_sr_comments_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+        self.assertTrue(list(self.r.get_comments(self.priv_sr)))
+
+    @betamax()
+    def test_get_priv_sr_listing_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['read'])
+        subreddit = self.r.get_subreddit(self.priv_sr)
+        self.assertTrue(list(subreddit.get_top()))
+
+    @betamax()
+    def test_get_traffic_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['modconfig'])
+        subreddit = self.r.get_subreddit(self.priv_sr)
+        traffic = subreddit.get_traffic()
+        keys = ('hour', 'day', 'month')
+        self.assertTrue(all(key in traffic for key in keys))
+
+    @betamax()
+    def test_join_leave_moderator_oauth(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        self.r.refresh_access_information(self.refresh_token['modothers'])
+        subreddit.add_moderator(self.other_user_name)
+        self.r.refresh_access_information(
+            self.refresh_token['modcontributors'])
+        subreddit.add_contributor(self.other_user_name)
+
+        # log in as other user
+        self.r.refresh_access_information(self.other_refresh_token['modself'])
+        self.r.accept_moderator_invite(self.sr)
+
+        self.r.leave_moderator(subreddit)
+        subreddit.leave_contributor()
+
+        subreddit.refresh()
+        self.assertFalse(subreddit.user_is_moderator)
+        self.assertFalse(subreddit.user_is_contributor)
+
+    @betamax()
+    def test_mute_unmute_oauth(self):
+        self.r.refresh_access_information(
+            self.refresh_token['modcontributors'])
+        subreddit = self.r.get_subreddit(self.sr)
+
+        def user_is_muted(username, cachebuster):
+            self.r.refresh_access_information(self.refresh_token['read'])
+            mutes = list(subreddit.get_muted(params={'uniq': cachebuster}))
+            self.r.refresh_access_information(
+                self.refresh_token['modcontributors'])
+            return any(mute.name == username for mute in mutes)
+
+        user = self.r.get_redditor(self.other_user_name)
+        subreddit.add_mute(user)  # by Redditor obj
+        self.assertTrue(user_is_muted(self.other_user_name, 1))
+        subreddit.remove_mute(user.name)  # by string
+        self.assertFalse(user_is_muted(self.other_user_name, 2))
+
+        self.r.refresh_access_information(
+            self.refresh_token['privatemessages'])
+        modmail = next(subreddit.get_mod_mail())
+        self.r.refresh_access_information(
+            self.refresh_token['modcontributors'])
+
+        sender = modmail.author.name
+        modmail.mute_modmail_author()
+        self.assertTrue(user_is_muted(sender, 3))
+        modmail.unmute_modmail_author()
+        self.assertFalse(user_is_muted(sender, 4))
+
+    @betamax()
+    def test_raise_invalidsubreddit_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        self.assertRaises(errors.InvalidSubreddit, self.r.submit, '?', 'title',
+                          'body')
+        invalid_sub = errors.InvalidSubreddit()
+        self.assertEqual(invalid_sub.ERROR_TYPE, str(invalid_sub))
+
+    @betamax()
+    def test_set_stylesheet_oauth(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        self.r.refresh_access_information(self.refresh_token['modconfig'])
+        subreddit.set_stylesheet('*{}')
+        self.assertEqual(subreddit.get_stylesheet()['stylesheet'], '*{}')
+        subreddit.set_stylesheet('')
+
+    @betamax()
+    def test_set_settings_oauth(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        self.r.refresh_access_information(self.refresh_token['modconfig'])
+        new_title = subreddit.title + 'x' if len(subreddit.title) < 99 else 'x'
+        subreddit.set_settings(title=new_title)
+        subreddit.refresh()
+        self.assertEqual(subreddit.title, new_title)
+
+    @betamax()
+    def test_subscribe_oauth(self):
+        subreddit = self.r.get_subreddit(self.sr)
+
+        # Subreddit.user_is_subscriber returns NoneType without `read`.
+        # Refreshing back and forth is inconvenient, but less hackish
+        # than storing / reassigning access tokens manually, so it's okay.
+        self.r.refresh_access_information(self.refresh_token['subscribe'])
+        subreddit.subscribe()
+        self.r.refresh_access_information(self.refresh_token['read'])
+        subreddit.refresh()
+        self.assertTrue(subreddit.user_is_subscriber)
+
+        self.r.refresh_access_information(self.refresh_token['subscribe'])
+        subreddit.unsubscribe()
+        self.r.refresh_access_information(self.refresh_token['read'])
+        subreddit.refresh()
+        self.assertFalse(subreddit.user_is_subscriber)

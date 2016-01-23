@@ -50,21 +50,10 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '3.0.0'
+__version__ = '3.3.0'
 
-if os.environ.get('SERVER_SOFTWARE') is not None:
-    # Google App Engine information
-    # https://developers.google.com/appengine/docs/python/
-    PLATFORM_INFO = os.environ.get('SERVER_SOFTWARE')
-else:
-    # Standard platform information
-    PLATFORM_INFO = platform.platform(True)
-
-UA_STRING = '%%s PRAW/%s Python/%s %s' % (__version__,
-                                          sys.version.split()[0],
-                                          PLATFORM_INFO)
-
-MIN_IMAGE_SIZE = 128
+MIN_PNG_SIZE = 67
+MIN_JPEG_SIZE = 128
 MAX_IMAGE_SIZE = 512000
 JPEG_HEADER = b'\xff\xd8\xff'
 PNG_HEADER = b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
@@ -77,41 +66,44 @@ else:
 
 
 class Config(object):  # pylint: disable=R0903
-
     """A class containing the configuration for a reddit site."""
 
     API_PATHS = {'accept_mod_invite':   'api/accept_moderator_invite',
                  'access_token_url':    'api/v1/access_token/',
                  'approve':             'api/approve/',
                  'authorize':           'api/v1/authorize/',
-                 'banned':              'r/%s/about/banned/',
+                 'banned':              'r/{subreddit}/about/banned/',
                  'blocked':             'prefs/blocked/',
                  'by_id':               'by_id/',
                  'captcha':             'captcha/',
                  'clearflairtemplates': 'api/clearflairtemplates/',
+                 'collapse_message':    'api/collapse_message/',
                  'comment':             'api/comment/',
                  'comment_replies':     'message/comments/',
                  'comments':            'comments/',
                  'compose':             'api/compose/',
                  'contest_mode':        'api/set_contest_mode/',
-                 'contributors':        'r/%s/about/contributors/',
+                 'contributors':        'r/{subreddit}/about/contributors/',
                  'controversial':       'controversial/',
+                 'default_subreddits':  'subreddits/default/',
                  'del':                 'api/del/',
                  'deleteflair':         'api/deleteflair',
                  'delete_redditor':     'api/delete_user',
-                 'delete_sr_header':    'r/%s/api/delete_sr_header',
-                 'delete_sr_image':     'r/%s/api/delete_sr_img',
+                 'delete_sr_header':    'r/{subreddit}/api/delete_sr_header',
+                 'delete_sr_image':     'r/{subreddit}/api/delete_sr_img',
                  'distinguish':         'api/distinguish/',
-                 'domain':              'domain/%s/',
-                 'duplicates':          'duplicates/%s/',
+                 'domain':              'domain/{domain}/',
+                 'duplicates':          'duplicates/{submissionid}/',
                  'edit':                'api/editusertext/',
+                 'edited':              'r/{subreddit}/about/edited/',
                  'flair':               'api/flair/',
                  'flairconfig':         'api/flairconfig/',
                  'flaircsv':            'api/flaircsv/',
-                 'flairlist':           'r/%s/api/flairlist/',
+                 'flairlist':           'r/{subreddit}/api/flairlist/',
                  'flairselector':       'api/flairselector/',
                  'flairtemplate':       'api/flairtemplate/',
                  'friend':              'api/friend/',
+                 'friend_v1':           'api/v1/me/friends/{user}',
                  'friends':             'prefs/friends/',
                  'gild_thing':          'api/v1/gold/gild/{fullname}/',
                  'gild_user':           'api/v1/gold/give/{username}/',
@@ -120,15 +112,17 @@ class Config(object):  # pylint: disable=R0903
                  'ignore_reports':      'api/ignore_reports/',
                  'inbox':               'message/inbox/',
                  'info':                'api/info/',
+                 'leavecontributor':    'api/leavecontributor',
+                 'leavemoderator':      'api/leavemoderator',
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
                  'mentions':            'message/mentions',
-                 'message':             'message/messages/%s/',
+                 'message':             'message/messages/{messageid}/',
                  'messages':            'message/messages/',
-                 'moderators':          'r/%s/about/moderators/',
-                 'modlog':              'r/%s/about/log/',
-                 'modqueue':            'r/%s/about/modqueue/',
-                 'mod_mail':            'r/%s/message/moderator/',
+                 'moderators':          'r/{subreddit}/about/moderators/',
+                 'modlog':              'r/{subreddit}/about/log/',
+                 'modqueue':            'r/{subreddit}/about/modqueue/',
+                 'mod_mail':            'r/{subreddit}/message/moderator/',
                  'morechildren':        'api/morechildren/',
                  'my_con_subreddits':   'subreddits/mine/contributor/',
                  'my_mod_subreddits':   'subreddits/mine/moderator/',
@@ -137,13 +131,16 @@ class Config(object):  # pylint: disable=R0903
                  'new':                 'new/',
                  'new_subreddits':      'subreddits/new/',
                  'marknsfw':            'api/marknsfw/',
-                 'multireddit':         'user/%s/m/%s/',
-                 'multireddit_add':     'api/multi/user/%s/m/%s/r/%s',
-                 'multireddit_about':   'api/multi/user/%s/m/%s/',
+                 'multireddit':         'user/{user}/m/{multi}/',
+                 'multireddit_add':     ('api/multi/user/{user}/m/{multi}/r/'
+                                         '{subreddit}'),
+                 'multireddit_about':   'api/multi/user/{user}/m/{multi}/',
                  'multireddit_copy':    'api/multi/copy/',
-                 'multireddit_mine':    'me/m/%s/',
+                 'multireddit_mine':    'me/m/{multi}/',
                  'multireddit_rename':  'api/multi/rename/',
-                 'multireddit_user':    'api/multi/user/%s/',
+                 'multireddit_user':    'api/multi/user/{user}/',
+                 'mute_sender':         'api/mute_message_author/',
+                 'muted':               'r/{subreddit}/about/muted/',
                  'popular_subreddits':  'subreddits/popular/',
                  'post_replies':        'message/selfreply/',
                  'read_message':        'api/read_message/',
@@ -151,52 +148,75 @@ class Config(object):  # pylint: disable=R0903
                  'register':            'api/register/',
                  'remove':              'api/remove/',
                  'report':              'api/report/',
-                 'reports':             'r/%s/about/reports/',
+                 'reports':             'r/{subreddit}/about/reports/',
                  'rising':              'rising/',
                  'save':                'api/save/',
                  'saved':               'saved/',
-                 'search':              'r/%s/search/',
+                 'search':              'r/{subreddit}/search/',
                  'search_reddit_names': 'api/search_reddit_names/',
                  'select_flair':        'api/selectflair/',
                  'sent':                'message/sent/',
-                 'sticky':              'r/%s/about/sticky/',
+                 'sticky':              'r/{subreddit}/about/sticky/',
                  'sticky_submission':   'api/set_subreddit_sticky/',
                  'site_admin':          'api/site_admin/',
-                 'spam':                'r/%s/about/spam/',
-                 'stylesheet':          'r/%s/about/stylesheet/',
+                 'spam':                'r/{subreddit}/about/spam/',
+                 'stylesheet':          'r/{subreddit}/about/stylesheet/',
                  'submit':              'api/submit/',
-                 'sub_comments_gilded': 'r/%s/comments/gilded/',
-                 'sub_recommendations': 'api/recommend/sr/{0}',
-                 'subreddit':           'r/%s/',
-                 'subreddit_about':     'r/%s/about/',
-                 'subreddit_comments':  'r/%s/comments/',
+                 'sub_comments_gilded': 'r/{subreddit}/comments/gilded/',
+                 'sub_recommendations': 'api/recommend/sr/{subreddits}',
+                 'subreddit':           'r/{subreddit}/',
+                 'subreddit_about':     'r/{subreddit}/about/',
+                 'subreddit_comments':  'r/{subreddit}/comments/',
                  'subreddit_css':       'api/subreddit_stylesheet/',
-                 'subreddit_random':    'r/%s/random/',
-                 'subreddit_settings':  'r/%s/about/edit/',
+                 'subreddit_random':    'r/{subreddit}/random/',
+                 'subreddit_settings':  'r/{subreddit}/about/edit/',
+                 'subreddit_traffic':   'r/{subreddit}/about/traffic/',
                  'subscribe':           'api/subscribe/',
                  'suggested_sort':      'api/set_suggested_sort/',
                  'top':                 'top/',
+                 'uncollapse_message':  'api/uncollapse_message/',
                  'unfriend':            'api/unfriend/',
                  'unhide':              'api/unhide/',
                  'unmarknsfw':          'api/unmarknsfw/',
-                 'unmoderated':         'r/%s/about/unmoderated/',
+                 'unmoderated':         'r/{subreddit}/about/unmoderated/',
+                 'unmute_sender':       'api/unmute_message_author/',
                  'unignore_reports':    'api/unignore_reports/',
                  'unread':              'message/unread/',
                  'unread_message':      'api/unread_message/',
                  'unsave':              'api/unsave/',
                  'upload_image':        'api/upload_sr_img',
-                 'user':                'user/%s/',
-                 'user_about':          'user/%s/about/',
+                 'user':                'user/{user}/',
+                 'user_about':          'user/{user}/about/',
                  'username_available':  'api/username_available/',
                  'vote':                'api/vote/',
                  'wiki_edit':           'api/wiki/edit/',
-                 'wiki_page':           'r/%s/wiki/%s',  # No trailing /
-                 'wiki_page_editor':    'r/%s/api/wiki/alloweditor/%s',
-                 'wiki_page_settings':  'r/%s/wiki/settings/%s',
-                 'wiki_pages':          'r/%s/wiki/pages/',
-                 'wiki_banned':         'r/%s/about/wikibanned/',
-                 'wiki_contributors':   'r/%s/about/wikicontributors/'}
+                 'wiki_page':           'r/{subreddit}/wiki/{page}',  # No /
+                 'wiki_page_editor':    ('r/{subreddit}/api/wiki/alloweditor/'
+                                         '{method}'),
+                 'wiki_page_settings':  'r/{subreddit}/wiki/settings/{page}',
+                 'wiki_pages':          'r/{subreddit}/wiki/pages/',
+                 'wiki_banned':         'r/{subreddit}/about/wikibanned/',
+                 'wiki_contributors':   'r/{subreddit}/about/wikicontributors/'
+                 }
     WWW_PATHS = set(['authorize'])
+
+    @staticmethod
+    def ua_string(praw_info):
+        """Return the user-agent string.
+
+        The user-agent string contains PRAW version and platform version info.
+
+        """
+        if os.environ.get('SERVER_SOFTWARE') is not None:
+            # Google App Engine information
+            # https://developers.google.com/appengine/docs/python/
+            info = os.environ.get('SERVER_SOFTWARE')
+        else:
+            # Standard platform information
+            info = platform.platform(True).encode('ascii', 'ignore')
+
+        return '{0} PRAW/{1} Python/{2} {3}'.format(
+            praw_info, __version__, sys.version.split()[0], info)
 
     def __init__(self, site_name, **kwargs):
         """Initialize PRAW's configuration."""
@@ -247,7 +267,7 @@ class Config(object):  # pylint: disable=R0903
         self.refresh_token = obj.get('oauth_refresh_token') or None
         self.store_json_result = config_boolean(obj.get('store_json_result'))
 
-        if 'short_domain' in obj:
+        if 'short_domain' in obj and obj['short_domain']:
             self._short_domain = 'http://' + obj['short_domain']
         else:
             self._short_domain = None
@@ -278,7 +298,6 @@ class Config(object):  # pylint: disable=R0903
 
 
 class BaseReddit(object):
-
     """A base class that allows access to reddit's API.
 
     You should **not** directly instantiate instances of this class. Use
@@ -328,7 +347,7 @@ class BaseReddit(object):
                              **kwargs)
         self.handler = handler or DefaultHandler()
         self.http = Session()
-        self.http.headers['User-Agent'] = UA_STRING % user_agent
+        self.http.headers['User-Agent'] = self.config.ua_string(user_agent)
         self.http.validate_certs = self.config.validate_certs
 
         # This `Session` object is only used to store request information that
@@ -375,6 +394,27 @@ class BaseReddit(object):
         :returns: either the response body or the response object
 
         """
+        def build_key_items(url, params, data, auth, files, method):
+            request = _prepare_request(self, url, params, data, auth, files,
+                                       method)
+
+            # Prepare extra arguments
+            key_items = []
+            oauth = request.headers.get('Authorization', None)
+            for key_value in (params, data, request.cookies, auth, oauth):
+                if isinstance(key_value, dict):
+                    key_items.append(tuple(key_value.items()))
+                elif isinstance(key_value, http_cookiejar.CookieJar):
+                    key_items.append(tuple(key_value.get_dict().items()))
+                else:
+                    key_items.append(key_value)
+            kwargs = {'_rate_domain': self.config.domain,
+                      '_rate_delay': int(self.config.api_request_delay),
+                      '_cache_ignore': bool(files) or raw_response,
+                      '_cache_timeout': int(self.config.cache_timeout)}
+
+            return (request, key_items, kwargs)
+
         def decode(match):
             return CHR(html_entities.name2codepoint[match.group(1)])
 
@@ -392,41 +432,40 @@ class BaseReddit(object):
                     verify=self.http.validate_certs, **kwargs)
 
                 if self.config.log_requests >= 2:
-                    sys.stderr.write('status: {0}\n'
-                                     .format(response.status_code))
+                    msg = 'status: {0}\n'.format(response.status_code)
+                    sys.stderr.write(msg)
                 url = _raise_redirect_exceptions(response)
                 assert url != request.url
             return response
 
-        request = _prepare_request(self, url, params, data, auth, files,
-                                   method)
         timeout = self.config.timeout if timeout is None else timeout
+        request, key_items, kwargs = build_key_items(url, params, data,
+                                                     auth, files, method)
 
-        # Prepare extra arguments
-        key_items = []
-        oauth = request.headers.get('Authorization', None)
-        for key_value in (params, data, request.cookies, auth, oauth):
-            if isinstance(key_value, dict):
-                key_items.append(tuple(key_value.items()))
-            elif isinstance(key_value, http_cookiejar.CookieJar):
-                key_items.append(tuple(key_value.get_dict().items()))
-            else:
-                key_items.append(key_value)
-        kwargs = {'_rate_domain': self.config.domain,
-                  '_rate_delay': int(self.config.api_request_delay),
-                  '_cache_ignore': bool(files) or raw_response,
-                  '_cache_timeout': int(self.config.cache_timeout)}
-
+        tempauth = self._use_oauth
         remaining_attempts = 3 if retry_on_error else 1
+        attempt_oauth_refresh = bool(self.refresh_token)
         while True:
             try:
+                self._use_oauth = self.is_oauth_session()
                 response = handle_redirect()
                 _raise_response_exceptions(response)
                 self.http.cookies.update(response.cookies)
+                self._use_oauth = tempauth
                 if raw_response:
                     return response
                 else:
                     return re.sub('&([^;]+);', decode, response.text)
+            except errors.OAuthInvalidToken as error:
+                if not attempt_oauth_refresh:
+                    raise
+                attempt_oauth_refresh = False
+                self._use_oauth = False
+                self.refresh_access_information()
+                self._use_oauth = tempauth
+                request, key_items, kwargs = build_key_items(url, params,
+                                                             data, auth, files,
+                                                             method)
             except errors.HTTPException as error:
                 remaining_attempts -= 1
                 # pylint: disable=W0212
@@ -441,8 +480,8 @@ class BaseReddit(object):
         except KeyError:
             if 'json' in json_data:
                 if len(json_data) != 1:
-                    warn_explicit('Unknown object type: %s' %
-                                  json_data, UserWarning, '', 0)
+                    msg = 'Unknown object type: {0}'.format(json_data)
+                    warn_explicit(msg, UserWarning, '', 0)
                 return json_data['json']
         else:
             return object_class.from_api_response(self, json_data['data'])
@@ -462,8 +501,7 @@ class BaseReddit(object):
     @decorators.oauth_generator
     def get_content(self, url, params=None, limit=0, place_holder=None,
                     root_field='data', thing_field='children',
-                    after_field='after', _use_oauth=False,
-                    object_filter=None):
+                    after_field='after', object_filter=None, **kwargs):
         """A generator method to return reddit content from a URL.
 
         Starts at the initial url, and fetches content using the `after`
@@ -501,6 +539,8 @@ class BaseReddit(object):
             Submission or user flair.
 
         """
+        _use_oauth = kwargs.get('_use_oauth', self.is_oauth_session())
+
         objects_found = 0
         params = params or {}
         fetch_all = fetch_once = False
@@ -580,6 +620,12 @@ class BaseReddit(object):
         hook = self._json_reddit_objecter if as_objects else None
         # Request url just needs to be available for the objecter to use
         self._request_url = url  # pylint: disable=W0201
+
+        if response == '':
+            # Some of the v1 urls don't return anything, even when they're
+            # successful.
+            return response
+
         data = json.loads(response, object_hook=hook)
         delattr(self, '_request_url')
         # Update the modhash
@@ -590,7 +636,6 @@ class BaseReddit(object):
 
 
 class OAuth2Reddit(BaseReddit):
-
     """Provides functionality for obtaining reddit OAuth2 access tokens.
 
     You should **not** directly instantiate instances of this class. Use
@@ -610,8 +655,8 @@ class OAuth2Reddit(BaseReddit):
         url = self.config['access_token_url']
         response = self._request(url, auth=auth, data=data, raw_response=True)
         if not response.ok:
-            raise errors.OAuthException('Unexpected OAuthReturn: %d' %
-                                        response.status_code, url)
+            msg = 'Unexpected OAuthReturn: {0}'.format(response.status_code)
+            raise errors.OAuthException(msg, url)
         retval = response.json()
         if 'error' in retval:
             error = retval['error']
@@ -625,10 +670,10 @@ class OAuth2Reddit(BaseReddit):
         """Return the access information for an OAuth2 authorization grant.
 
         :param code: the code received in the request from the OAuth2 server
-        :returns: A dictionary with the key/value pairs for access_token,
-            refresh_token and scope. The refresh_token value will be done when
-            the OAuth2 grant is not refreshable. The scope value will be a set
-            containing the scopes the tokens are valid for.
+        :returns: A dictionary with the key/value pairs for ``access_token``,
+            ``refresh_token`` and ``scope``. The ``refresh_token`` value will
+            be None when the OAuth2 grant is not refreshable. The ``scope``
+            value will be a set containing the scopes the tokens are valid for.
 
         """
         data = {'code': code, 'grant_type': 'authorization_code',
@@ -642,7 +687,8 @@ class OAuth2Reddit(BaseReddit):
     def get_authorize_url(self, state, scope='identity', refreshable=False):
         """Return the URL to send the user to for OAuth2 authorization.
 
-        :param state: a unique key that represents this individual client
+        :param state: a unique string of your choice that represents this
+            individual client
         :param scope: the reddit scope to ask permissions for. Multiple scopes
             can be enabled by passing in a container of strings.
         :param refreshable: when True, a permanent "refreshable" token is
@@ -658,8 +704,15 @@ class OAuth2Reddit(BaseReddit):
 
     @property
     def has_oauth_app_info(self):
-        """Return True if all the necessary OAuth settings are set."""
-        return all((self.client_id, self.client_secret, self.redirect_uri))
+        """Return True when OAuth credentials are associated with the instance.
+
+        The necessary credentials are: ``client_id``, ``client_secret`` and
+        ``redirect_uri``.
+
+        """
+        return all((self.client_id is not None,
+                    self.client_secret is not None,
+                    self.redirect_uri is not None))
 
     @decorators.require_oauth
     def refresh_access_information(self, refresh_token):
@@ -682,7 +735,7 @@ class OAuth2Reddit(BaseReddit):
                 'scope': set(retval['scope'].split(' '))}
 
     def set_oauth_app_info(self, client_id, client_secret, redirect_uri):
-        """Set the App information to use with OAuth2.
+        """Set the app information to use with OAuth2.
 
         This function need only be called if your praw.ini site configuration
         does not already contain the necessary information.
@@ -701,7 +754,6 @@ class OAuth2Reddit(BaseReddit):
 
 
 class UnauthenticatedReddit(BaseReddit):
-
     """This mixin provides bindings for basic functions of reddit's API.
 
     None of these functions require authenticated access to reddit's API.
@@ -712,9 +764,11 @@ class UnauthenticatedReddit(BaseReddit):
     """
 
     def __init__(self, *args, **kwargs):
-        """Initialze an UnauthenticatedReddit instance."""
+        """Initialize an UnauthenticatedReddit instance."""
         super(UnauthenticatedReddit, self).__init__(*args, **kwargs)
-        self._unique_count = 0
+        # initialize to 1 instead of 0, because 0 does not reliably make
+        # new requests.
+        self._unique_count = 1
 
     def create_redditor(self, user_name, password, email=''):
         """Register a new user.
@@ -728,6 +782,16 @@ class UnauthenticatedReddit(BaseReddit):
                 'user': user_name}
         return self.request_json(self.config['register'], data=data)
 
+    def default_subreddits(self, *args, **kwargs):
+        """Return a get_content generator for the default subreddits.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        url = self.config['default_subreddits']
+        return self.get_content(url, *args, **kwargs)
+
     @decorators.restrict_access(scope='read')
     def get_comments(self, subreddit, gilded_only=False, *args, **kwargs):
         """Return a get_content generator for comments in the given subreddit.
@@ -739,7 +803,7 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         key = 'sub_comments_gilded' if gilded_only else 'subreddit_comments'
-        url = self.config[key] % six.text_type(subreddit)
+        url = self.config[key].format(subreddit=six.text_type(subreddit))
         return self.get_content(url, *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
@@ -781,8 +845,8 @@ class UnauthenticatedReddit(BaseReddit):
             raise TypeError('Invalid period parameter.')
         if sort not in ('controversial', 'top') and period:
             raise TypeError('Period cannot be set for that sort argument.')
-        # Build url
-        url = self.config['domain'] % domain
+
+        url = self.config['domain'].format(domain=domain)
         if sort != 'hot':
             url += sort
         if period:  # Set or overwrite params 't' parameter
@@ -803,8 +867,9 @@ class UnauthenticatedReddit(BaseReddit):
         """
         name = six.text_type(redditor)
         params.update(name=name)
-        data = self.request_json(self.config['flairlist'] %
-                                 six.text_type(subreddit), params=params)
+        url = self.config['flairlist'].format(
+            subreddit=six.text_type(subreddit))
+        data = self.request_json(url, params=params)
         if not data['users'] or \
                 data['users'][0]['user'].lower() != name.lower():
             return None
@@ -833,10 +898,11 @@ class UnauthenticatedReddit(BaseReddit):
             (``t5_``) to lookup by fullname.
         :param limit: The maximum number of Submissions to return when looking
             up by url. When None, uses account default settings.
-        :returns: When a single thing_id is provided, return the corresponding
-            thing object, or None if not found. When a list of thing_ids or a
-            url is provided return a list of thing objects (up to limit). None
-            is returned if any one of the thing_ids or the URL is invalid.
+        :returns: When a single ``thing_id`` is provided, return the
+            corresponding thing object, or ``None`` if not found. When a list
+            of ``thing_id``s or a ``url`` is provided return a list of thing
+            objects (up to ``limit``). ``None`` is returned if any one of the
+            thing_ids or the URL is invalid.
 
         """
         if bool(url) == bool(thing_id):
@@ -861,10 +927,12 @@ class UnauthenticatedReddit(BaseReddit):
         else:
             return None
 
+    @decorators.restrict_access(scope='read')
     def get_moderators(self, subreddit, **kwargs):
         """Return the list of moderators for the given subreddit."""
-        return self.request_json(self.config['moderators'] %
-                                 six.text_type(subreddit), **kwargs)
+        url = self.config['moderators'].format(
+            subreddit=six.text_type(subreddit))
+        return self.request_json(url, **kwargs)
 
     @decorators.restrict_access(scope='read')
     def get_new(self, *args, **kwargs):
@@ -911,8 +979,8 @@ class UnauthenticatedReddit(BaseReddit):
         if nsfw:
             self.http.cookies.set('over18', '1')
             path = 'randnsfw'
-        response = self._request(self.config['subreddit'] % path,
-                                 params={'unique': self._unique_count},
+        url = self.config['subreddit'].format(subreddit=path)
+        response = self._request(url, params={'unique': self._unique_count},
                                  raw_response=True)
         self._unique_count += 1
         return self.get_subreddit(response.url.rsplit('/', 2)[-2])
@@ -924,12 +992,15 @@ class UnauthenticatedReddit(BaseReddit):
             subreddit(s). Default: all
 
         """
-        url = self.config['subreddit_random'] % six.text_type(subreddit)
+        url = self.config['subreddit_random'].format(
+            subreddit=six.text_type(subreddit))
         try:
-            self._request(url, params={'unique': self._unique_count},
-                          raw_response=True)
-        except errors.RedirectException as exc:  # This _should_ occur
+            item = self.request_json(url,
+                                     params={'unique': self._unique_count})
             self._unique_count += 1  # Avoid network-level caching
+            return objects.Submission.from_json(item)
+        except errors.RedirectException as exc:
+            self._unique_count += 1
             return self.get_submission(exc.response_url)
         raise errors.ClientException('Expected exception not raised.')
 
@@ -956,10 +1027,17 @@ class UnauthenticatedReddit(BaseReddit):
         return self.get_content(self.config['rising'], *args, **kwargs)
 
     @decorators.restrict_access(scope='read')
-    def get_sticky(self, subreddit=None):
-        """Return a Submission object for the sticky of the subreddit."""
-        return objects.Submission.from_json(self.request_json(
-            self.config['sticky'] % six.text_type(subreddit)))
+    def get_sticky(self, subreddit, bottom=False):
+        """Return a Submission object for the sticky of the subreddit.
+
+        :param bottom: Get the top or bottom sticky. If the subreddit has only
+            a single sticky, it is considered the top one.
+
+        """
+        url = self.config['sticky'].format(subreddit=six.text_type(subreddit))
+        param = {'num': 2} if bottom else None
+        return objects.Submission.from_json(self.request_json(url,
+                                                              params=param))
 
     def get_submission(self, url=None, submission_id=None, comment_limit=0,
                        comment_sort=None, params=None):
@@ -1030,9 +1108,9 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         params = {'omit': _to_reddit_list(omit or [])}
-        result = self.request_json(self.config['sub_recommendations']
-                                   .format(_to_reddit_list(subreddits)),
-                                   params=params)
+        url = self.config['sub_recommendations'].format(
+            subreddits=_to_reddit_list(subreddits))
+        result = self.request_json(url, params=params)
         return [objects.Subreddit(self, sub['sr_name']) for sub in result]
 
     @decorators.restrict_access(scope='read')
@@ -1048,18 +1126,30 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_content(self.config['top'], *args, **kwargs)
 
+    # There exists a `modtraffic` scope, but it is unused.
+    @decorators.restrict_access(scope='modconfig')
+    def get_traffic(self, subreddit):
+        """Return the json dictionary containing traffic stats for a subreddit.
+
+        :param subreddit: The subreddit whose /about/traffic page we will
+            collect.
+
+        """
+        url = self.config['subreddit_traffic'].format(
+            subreddit=six.text_type(subreddit))
+        return self.request_json(url)
+
     @decorators.restrict_access(scope='wikiread', login=False)
-    def get_wiki_page(self, subreddit, page, **params):
+    def get_wiki_page(self, subreddit, page):
         """Return a WikiPage object for the subreddit and page provided."""
-        return self.request_json(self.config['wiki_page'] %
-                                 (six.text_type(subreddit), page.lower()),
-                                 params=params)
+        return objects.WikiPage(self, six.text_type(subreddit), page.lower())
 
     @decorators.restrict_access(scope='wikiread', login=False)
     def get_wiki_pages(self, subreddit):
         """Return a list of WikiPage objects for the subreddit."""
-        return self.request_json(self.config['wiki_pages'] %
-                                 six.text_type(subreddit))
+        url = self.config['wiki_pages'].format(
+            subreddit=six.text_type(subreddit))
+        return self.request_json(url)
 
     def is_username_available(self, username):
         """Return True if username is valid and available, otherwise False."""
@@ -1083,14 +1173,16 @@ class UnauthenticatedReddit(BaseReddit):
         :param period: The time period of the results.
 
         The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` and `param` parameters cannot be
-        altered.
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         See https://www.reddit.com/wiki/search for more information on how to
         build a search query.
 
         """
         params = {'q': query}
+        if 'params' in kwargs:
+            params.update(kwargs['params'])
+            kwargs.pop('params')
         if sort:
             params['sort'] = sort
         if syntax:
@@ -1099,9 +1191,10 @@ class UnauthenticatedReddit(BaseReddit):
             params['t'] = period
         if subreddit:
             params['restrict_sr'] = 'on'
-            url = self.config['search'] % subreddit
+            subreddit = six.text_type(subreddit)
         else:
-            url = self.config['search'] % 'all'
+            subreddit = 'all'
+        url = self.config['search'].format(subreddit=subreddit)
 
         depth = 2
         while depth > 0:
@@ -1130,11 +1223,11 @@ class UnauthenticatedReddit(BaseReddit):
 
 
 class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
-
     """This class adds the methods necessary for authenticating with reddit.
 
-    Authentication can either be login based (through login), or OAuth2 based
-    (via set_access_credentials).
+    Authentication can either be login based
+    (through :meth:`~praw.__init__.AuthenticatedReddit.login`), or OAuth2 based
+    (via :meth:`~praw.__init__.AuthenticatedReddit.set_access_credentials`).
 
     You should **not** directly instantiate instances of this class. Use
     :class:`.Reddit` instead.
@@ -1161,7 +1254,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         elif self._authentication:
             return 'LoggedIn reddit session (user: {0})'.format(self.user)
         else:
-            return 'Unauthenticated reddit sesssion'
+            return 'Unauthenticated reddit session'
 
     def _url_update(self, url):
         # When getting posts from a multireddit owned by the authenticated
@@ -1173,7 +1266,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 url = url.replace("user/"+redditor, 'me')
         return url
 
-    @decorators.restrict_access(scope='modself', login=True, mod=False)
+    @decorators.restrict_access(scope='modself', mod=False)
     def accept_moderator_invite(self, subreddit):
         """Accept a moderator invite to the given subreddit.
 
@@ -1220,6 +1313,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 'confirm': True}
         return self.request_json(self.config['delete_redditor'], data=data)
 
+    @decorators.restrict_access(scope='wikiedit')
     def edit_wiki_page(self, subreddit, page, content, reason=''):
         """Create or edit a wiki page with title `page` for `subreddit`.
 
@@ -1230,8 +1324,9 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 'page': page,
                 'r': six.text_type(subreddit),
                 'reason': reason}
-        self.evict(self.config['wiki_page'] % (six.text_type(subreddit),
-                                               page.lower()))
+        evict = self.config['wiki_page'].format(
+            subreddit=six.text_type(subreddit), page=page.lower())
+        self.evict(evict)
         return self.request_json(self.config['wiki_edit'], data=data)
 
     def get_access_information(self, code,  # pylint: disable=W0221
@@ -1258,7 +1353,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         :param link: If link is given, return the flair options for this
             submission. Not normally given directly, but instead set by calling
             the flair_choices method for Submission objects.
-            use the default for the session's user.
+            Use the default for the session's user.
 
         :returns: A dictionary with 2 keys. 'current' containing current flair
             settings for the authenticated user and 'choices' containing a list
@@ -1268,11 +1363,17 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         data = {'r':  six.text_type(subreddit), 'link': link}
         return self.request_json(self.config['flairselector'], data=data)
 
+    @decorators.restrict_access(scope='read', login=True)
+    def get_friends(self, **params):
+        """Return a UserList of Redditors with whom the user is friends."""
+        url = self.config['friends']
+        return self.request_json(url, params=params)[0]
+
     @decorators.restrict_access(scope='identity', oauth_only=True)
     def get_me(self):
         """Return a LoggedInRedditor object.
 
-        Note: This function is only intended to be used with a 'identity'
+        Note: This function is only intended to be used with an 'identity'
         providing OAuth2 grant.
         """
         response = self.request_json(self.config['me'])
@@ -1281,31 +1382,52 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         return user
 
     def has_scope(self, scope):
-        """Return True if OAuth2 authorized for the passed in scope."""
-        return self.is_oauth_session() and scope in self._authentication
+        """Return True if OAuth2 authorized for the passed in scope(s)."""
+        if not self.is_oauth_session():
+            return False
+        if '*' in self._authentication:
+            return True
+        if isinstance(scope, six.string_types):
+            scope = [scope]
+        return all(s in self._authentication for s in scope)
 
     def is_logged_in(self):
-        """Return True when session is authenticated via login."""
+        """Return True when the session is authenticated via username/password.
+
+        Username and passwords are provided via
+        :meth:`~praw.__init__.AuthenticatedReddit.login`.
+
+        """
         return self._authentication is True
 
     def is_oauth_session(self):
         """Return True when the current session is an OAuth2 session."""
         return isinstance(self._authentication, set)
 
-    @decorators.deprecated('Password-based authentication will stop working '
-                           'on 2015/08/03 and as a result will be removed '
-                           'in PRAW4.\nFor more information please see: '
-                           'https://www.reddit.com/comments/2ujhkr/\nPass '
-                           '`disable_warning=True` to `login` to disable this '
-                           'warning.')
-    def login(self, username=None, password=None):
+    @decorators.deprecated('reddit intends to disable password-based '
+                           'authentication of API clients sometime in the '
+                           'near future. As a result this method will be '
+                           'removed in a future major version of PRAW.\n\n'
+                           'For more information please see:\n\n'
+                           '* Original reddit deprecation notice: '
+                           'https://www.reddit.com/comments/2ujhkr/\n\n'
+                           '* Updated delayed deprecation notice: '
+                           'https://www.reddit.com/comments/37e2mv/\n\n'
+                           'Pass ``disable_warning=True`` to ``login`` to '
+                           'disable this warning.')
+    def login(self, username=None, password=None, **kwargs):
         """Login to a reddit site.
+
+        **DEPRECATED**. Will be removed in a future version of PRAW.
+
+        https://www.reddit.com/comments/2ujhkr/
+        https://www.reddit.com/comments/37e2mv/
 
         Look for username first in parameter, then praw.ini and finally if both
         were empty get it from stdin. Look for password in parameter, then
         praw.ini (but only if username matches that in praw.ini) and finally
-        if they both are empty get it with getpass. Add the variables user
-        (username) and pswd (password) to your praw.ini file to allow for
+        if they both are empty get it with getpass. Add the variables ``user``
+        (username) and ``pswd`` (password) to your praw.ini file to allow for
         auto-login.
 
         A successful login will overwrite any existing authentication.
@@ -1323,7 +1445,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             pswd = password or self.config.pswd
         if not pswd:
             import getpass
-            pswd = getpass.getpass('Password for %s: ' % user)
+            pswd = getpass.getpass('Password for {0}: '.format(user)
+                                   .encode('ascii', 'ignore'))
 
         data = {'passwd': pswd,
                 'user': user}
@@ -1342,10 +1465,10 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         :param refresh_token: The refresh token used to obtain the updated
             information. When not provided, use the stored refresh_token.
         :param update_session: Update the session with the returned data.
-        :returns: A dictionary with the key/value pairs for access_token,
-            refresh_token and scope. The refresh_token value will be done when
-            the OAuth2 grant is not refreshable. The scope value will be a set
-            containing the scopes the tokens are valid for.
+        :returns: A dictionary with the key/value pairs for ``access_token``,
+            ``refresh_token`` and ``scope``. The ``refresh_token`` value will
+            be None when the OAuth2 grant is not refreshable. The ``scope``
+            value will be a set containing the scopes the tokens are valid for.
 
         """
         response = super(AuthenticatedReddit, self).refresh_access_information(
@@ -1354,7 +1477,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             self.set_access_credentials(**response)
         return response
 
-    @decorators.restrict_access(scope='flair', login=True)
+    @decorators.restrict_access(scope='flair')
     def select_flair(self, item, flair_template_id='', flair_text=''):
         """Select user flair or link flair on subreddits.
 
@@ -1363,13 +1486,13 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         access, see :meth:`~praw.__init__.ModFlairMixin.set_flair`.
 
         :param item: A string, Subreddit object (for user flair), or
-            Submission object (for link flair). If item is a string it will be
-            treated as the name of a Subreddit.
+            Submission object (for link flair). If ``item`` is a string it
+            will be treated as the name of a Subreddit.
         :param flair_template_id: The id for the desired flair template. Use
             the :meth:`~praw.objects.Subreddit.get_flair_choices` and
             :meth:`~praw.objects.Submission.get_flair_choices` methods to find
             the ids for the available user and link flair choices.
-        :param flair_text: A String containing the custom flair text.
+        :param flair_text: A string containing the custom flair text.
             Used on subreddits that allow it.
 
         :returns: The json response from the server.
@@ -1385,7 +1508,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             # User flair
             data['name'] = self.user.name
             data['r'] = six.text_type(item)
-            evict = self.config['flairlist'] % six.text_type(item)
+            evict = self.config['flairlist'].format(
+                subreddit=six.text_type(item))
         response = self.request_json(self.config['select_flair'], data=data)
         self.evict(evict)
         return response
@@ -1399,12 +1523,16 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         credentials.
 
         :param scope: A set of reddit scopes the tokens provide access to
-        :param access_token: the access_token of the authentication
+        :param access_token: the access token of the authentication
         :param refresh_token: the refresh token of the authentication
         :param update_user: Whether or not to set the user attribute for
             identity scopes
 
         """
+        if isinstance(scope, (list, tuple)):
+            scope = set(scope)
+        elif isinstance(scope, six.string_types):
+            scope = set(scope.split())
         if not isinstance(scope, set):
             raise TypeError('`scope` parameter must be a set')
         self.clear_authentication()
@@ -1418,7 +1546,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
 
 class ModConfigMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'modconfig' scope (or mod access).
 
     You should **not** directly instantiate instances of this class. Use
@@ -1426,15 +1553,20 @@ class ModConfigMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope='modconfig', mod=False, login=True)
+    @decorators.restrict_access(scope='modconfig', mod=False)
     @decorators.require_captcha
     def create_subreddit(self, name, title, description='', language='en',
                          subreddit_type='public', content_options='any',
                          over_18=False, default_set=True, show_media=False,
-                         domain='', wikimode='disabled', captcha=None):
+                         domain='', wikimode='disabled', captcha=None,
+                         **kwargs):
         """Create a new subreddit.
 
         :returns: The json response from the server.
+
+        This function may result in a captcha challenge. PRAW will
+        automatically prompt you for a response. See :ref:`handling-captchas`
+        if you want to manually handle captchas.
 
         """
         data = {'name': name,
@@ -1461,23 +1593,25 @@ class ModConfigMixin(AuthenticatedReddit):
         :returns: The json response from the server.
 
         """
+        subreddit = six.text_type(subreddit)
         if name and header:
             raise TypeError('Both name and header cannot be set.')
         elif name:
             data = {'img_name': name}
             url = self.config['delete_sr_image']
-            self.evict(self.config['stylesheet'] % six.text_type(subreddit))
+            self.evict(self.config['stylesheet'].format(subreddit=subreddit))
         else:
             data = True
             url = self.config['delete_sr_header']
-        return self.request_json(url % six.text_type(subreddit), data=data)
+        url = url.format(subreddit=subreddit)
+        return self.request_json(url, data=data)
 
     @decorators.restrict_access(scope='modconfig')
     def get_settings(self, subreddit, **params):
         """Return the settings for the given subreddit."""
-        return self.request_json(self.config['subreddit_settings'] %
-                                 six.text_type(subreddit),
-                                 params=params)['data']
+        url = self.config['subreddit_settings'].format(
+            subreddit=six.text_type(subreddit))
+        return self.request_json(url, params=params)['data']
 
     @decorators.restrict_access(scope='modconfig')
     def set_settings(self, subreddit, title, public_description='',
@@ -1492,7 +1626,8 @@ class ModConfigMixin(AuthenticatedReddit):
                      public_traffic=False, collapse_deleted_comments=False,
                      spam_comments='low', spam_links='high',
                      spam_selfposts='high', submit_text='',
-                     hide_ads=False, **kwargs):
+                     hide_ads=False, suggested_comment_sort='',
+                     **kwargs):
         """Set the settings for the given subreddit.
 
         :param subreddit: Must be a subreddit object.
@@ -1519,6 +1654,7 @@ class ModConfigMixin(AuthenticatedReddit):
                 'submit_link_label': submit_link_label or '',
                 'submit_text': submit_text,
                 'submit_text_label': submit_text_label or '',
+                'suggested_comment_sort': suggested_comment_sort or '',
                 'spam_comments': spam_comments,
                 'spam_links': spam_links,
                 'spam_selfposts': spam_selfposts,
@@ -1532,8 +1668,9 @@ class ModConfigMixin(AuthenticatedReddit):
             msg = 'Extra settings fields: {0}'.format(kwargs.keys())
             warn_explicit(msg, UserWarning, '', 0)
             data.update(kwargs)
-        self.evict(self.config['subreddit_settings'] %
-                   six.text_type(subreddit))
+        evict = self.config['subreddit_settings'].format(
+            subreddit=six.text_type(subreddit))
+        self.evict(evict)
         return self.request_json(self.config['site_admin'], data=data)
 
     @decorators.restrict_access(scope='modconfig')
@@ -1543,10 +1680,11 @@ class ModConfigMixin(AuthenticatedReddit):
         :returns: The json response from the server.
 
         """
-        data = {'r': six.text_type(subreddit),
+        subreddit = six.text_type(subreddit)
+        data = {'r': subreddit,
                 'stylesheet_contents': stylesheet,
                 'op': 'save'}  # Options: save / preview
-        self.evict(self.config['stylesheet'] % six.text_type(subreddit))
+        self.evict(self.config['stylesheet'].format(subreddit=subreddit))
         return self.request_json(self.config['subreddit_css'], data=data)
 
     @decorators.restrict_access(scope='modconfig')
@@ -1566,17 +1704,19 @@ class ModConfigMixin(AuthenticatedReddit):
         # Verify image is a jpeg or png and meets size requirements
         with open(image_path, 'rb') as image:
             size = os.path.getsize(image.name)
-            if size < MIN_IMAGE_SIZE:
-                raise errors.ClientException('`image` is not a valid image')
-            elif size > MAX_IMAGE_SIZE:
+            if size < MIN_PNG_SIZE:
+                raise errors.ClientException('png image is too small.')
+            if size > MAX_IMAGE_SIZE:
                 raise errors.ClientException('`image` is too big. Max: {0} '
                                              'bytes'.format(MAX_IMAGE_SIZE))
-            first_bytes = image.read(MIN_IMAGE_SIZE)
+            first_bytes = image.read(MIN_PNG_SIZE)
             image.seek(0)
-            if first_bytes.startswith(JPEG_HEADER):
-                image_type = 'jpg'
-            elif first_bytes.startswith(PNG_HEADER):
+            if first_bytes.startswith(PNG_HEADER):
                 image_type = 'png'
+            elif first_bytes.startswith(JPEG_HEADER):
+                if size < MIN_JPEG_SIZE:
+                    raise errors.ClientException('jpeg image is too small.')
+                image_type = 'jpg'
             else:
                 raise errors.ClientException('`image` must be either jpg or '
                                              'png.')
@@ -1612,7 +1752,6 @@ class ModConfigMixin(AuthenticatedReddit):
 
 
 class ModFlairMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'modflair' scope (or mod access).
 
     You should **not** directly instantiate instances of this class. Use
@@ -1694,20 +1833,21 @@ class ModFlairMixin(AuthenticatedReddit):
         `after_field` parameters cannot be altered.
 
         """
-        return self.get_content(self.config['flairlist'] %
-                                six.text_type(subreddit), *args,
-                                root_field=None, thing_field='users',
-                                after_field='next', **kwargs)
+        url = self.config['flairlist'].format(
+            subreddit=six.text_type(subreddit))
+        return self.get_content(url, *args, root_field=None,
+                                thing_field='users', after_field='next',
+                                **kwargs)
 
     @decorators.restrict_access(scope='modflair')
     def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
         """Set flair for the user in the given subreddit.
 
-        Item can be a string, Redditor object, or Submission object. If item is
-        a string it will be treated as the name of a Redditor.
+        `item` can be a string, Redditor object, or Submission object.
+        If `item` is a string it will be treated as the name of a Redditor.
 
-        This method can only be called by the subreddit moderator. To set flair
-        on yourself or your own links use
+        This method can only be called by a subreddit moderator with flair
+        permissions. To set flair on yourself or your own links use
         :meth:`~praw.__init__.AuthenticatedReddit.select_flair`.
 
         :returns: The json response from the server.
@@ -1721,7 +1861,8 @@ class ModFlairMixin(AuthenticatedReddit):
             evict = item.permalink
         else:
             data['name'] = six.text_type(item)
-            evict = self.config['flairlist'] % six.text_type(subreddit)
+            evict = self.config['flairlist'].format(
+                subreddit=six.text_type(subreddit))
         response = self.request_json(self.config['flair'], data=data)
         self.evict(evict)
         return response
@@ -1731,9 +1872,9 @@ class ModFlairMixin(AuthenticatedReddit):
         """Set flair for a group of users in the given subreddit.
 
         flair_mapping should be a list of dictionaries with the following keys:
-          user: the user name
-          flair_text: the flair text for the user (optional)
-          flair_css_class: the flair css class for the user (optional)
+          `user`: the user name,
+          `flair_text`: the flair text for the user (optional),
+          `flair_css_class`: the flair css class for the user (optional)
 
         :returns: The json response from the server.
 
@@ -1754,12 +1895,13 @@ class ModFlairMixin(AuthenticatedReddit):
             response.extend(self.request_json(self.config['flaircsv'],
                                               data=data))
             lines = lines[100:]
-        self.evict(self.config['flairlist'] % six.text_type(subreddit))
+        evict = self.config['flairlist'].format(
+            subreddit=six.text_type(subreddit))
+        self.evict(evict)
         return response
 
 
 class ModLogMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'modlog' scope (or mod access).
 
     You should **not** directly instantiate instances of this class. Use
@@ -1772,7 +1914,7 @@ class ModLogMixin(AuthenticatedReddit):
         """Return a get_content generator for moderation log items.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for.
+            subreddit to return the modlog for.
         :param mod: If given, only return the actions made by this moderator.
             Both a moderator name or Redditor object can be used here.
         :param action: If given, only return entries for the specified action.
@@ -1786,12 +1928,11 @@ class ModLogMixin(AuthenticatedReddit):
             params['mod'] = six.text_type(mod)
         if action is not None:
             params['type'] = six.text_type(action)
-        return self.get_content(self.config['modlog'] %
-                                six.text_type(subreddit), *args, **kwargs)
+        url = self.config['modlog'].format(subreddit=six.text_type(subreddit))
+        return self.get_content(url, *args, **kwargs)
 
 
 class ModOnlyMixin(AuthenticatedReddit):
-
     """Adds methods requiring the logged in moderator access.
 
     You should **not** directly instantiate instances of this class. Use
@@ -1820,15 +1961,14 @@ class ModOnlyMixin(AuthenticatedReddit):
             the Redditor will be in key 'name' (default: True).
 
         """
-        return self._get_userlist(
-            self.config['banned'] % six.text_type(subreddit), user_only, *args,
-            **kwargs)
+        url = self.config['banned'].format(subreddit=six.text_type(subreddit))
+        return self._get_userlist(url, user_only, *args, **kwargs)
 
     def get_contributors(self, subreddit, *args, **kwargs):
         """
         Return a get_content generator of contributors for the given subreddit.
 
-        If it's a public subreddit, then user/pswd authentication as a
+        If it's a public subreddit, then authentication as a
         moderator of the subreddit is required. For protected/private
         subreddits only access is required. See issue #246.
 
@@ -1838,17 +1978,32 @@ class ModOnlyMixin(AuthenticatedReddit):
             # It is necessary to have the 'self' argument as it's needed in
             # restrict_access to determine what class the decorator is
             # operating on.
-            return self._get_userlist(
-                self.config['contributors'] % six.text_type(subreddit),
-                user_only=True, *args, **kwargs)
+            url = self.config['contributors'].format(
+                subreddit=six.text_type(subreddit))
+            return self._get_userlist(url, user_only=True, *args, **kwargs)
 
         if self.is_logged_in():
             if not isinstance(subreddit, objects.Subreddit):
                 subreddit = self.get_subreddit(subreddit)
             if subreddit.subreddit_type == "public":
-                decorator = decorators.restrict_access(scope=None, mod=True)
+                decorator = decorators.restrict_access(scope='read', mod=True)
                 return decorator(get_contributors_helper)(self, subreddit)
         return get_contributors_helper(self, subreddit)
+
+    @decorators.restrict_access(scope='read', mod=True)
+    def get_edited(self, subreddit='mod', *args, **kwargs):
+        """Return a get_content generator of edited items.
+
+        :param subreddit: Either a Subreddit object or the name of the
+            subreddit to return the edited items for. Defaults to `mod` which
+            includes items for all the subreddits you moderate.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        url = self.config['edited'].format(subreddit=six.text_type(subreddit))
+        return self.get_content(url, *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages', mod=True)
     def get_mod_mail(self, subreddit='mod', *args, **kwargs):
@@ -1862,82 +2017,99 @@ class ModOnlyMixin(AuthenticatedReddit):
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-        return self.get_content(self.config['mod_mail'] %
-                                six.text_type(subreddit), *args, **kwargs)
+        url = self.config['mod_mail'].format(
+            subreddit=six.text_type(subreddit))
+        return self.get_content(url, *args, **kwargs)
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_mod_queue(self, subreddit='mod', *args, **kwargs):
-        """Return a get_content_generator for the moderator queue.
+        """Return a get_content generator for the moderator queue.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
+            subreddit to return the modqueue for. Defaults to `mod` which
             includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-        return self.get_content(self.config['modqueue'] %
-                                six.text_type(subreddit), *args, **kwargs)
+        url = self.config['modqueue'].format(
+            subreddit=six.text_type(subreddit))
+        return self.get_content(url, *args, **kwargs)
+
+    @decorators.restrict_access(scope='read', mod=True)
+    def get_muted(self, subreddit, user_only=True, *args, **kwargs):
+        """Return a get_content generator for modmail-muted users.
+
+        :param subreddit: Either a Subreddit object or the name of a subreddit
+            to get the list of muted users from.
+
+        The additional parameters are passed directly into
+        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
+
+        """
+        url = self.config['muted'].format(subreddit=six.text_type(subreddit))
+        return self._get_userlist(url, user_only, *args, **kwargs)
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_reports(self, subreddit='mod', *args, **kwargs):
-        """Return a get_content generator of reported submissions.
+        """Return a get_content generator of reported items.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
+            subreddit to return the reported items. Defaults to `mod` which
             includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-        return self.get_content(self.config['reports'] %
-                                six.text_type(subreddit), *args, **kwargs)
+        url = self.config['reports'].format(subreddit=six.text_type(subreddit))
+        return self.get_content(url, *args, **kwargs)
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_spam(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator of spam-filtered items.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
-            includes items for all the subreddits you moderate.
+            subreddit to return the spam-filtered items for. Defaults to `mod`
+            which includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-        return self.get_content(self.config['spam'] % six.text_type(subreddit),
-                                *args, **kwargs)
+        url = self.config['spam'].format(subreddit=six.text_type(subreddit))
+        return self.get_content(url, *args, **kwargs)
 
     @decorators.restrict_access('modconfig', mod=False, login=False)
     def get_stylesheet(self, subreddit, **params):
         """Return the stylesheet and images for the given subreddit."""
-        return self.request_json(self.config['stylesheet'] %
-                                 six.text_type(subreddit),
-                                 params=params)['data']
+        url = self.config['stylesheet'].format(
+            subreddit=six.text_type(subreddit))
+        return self.request_json(url, params=params)['data']
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_unmoderated(self, subreddit='mod', *args, **kwargs):
-        """Return a get_content generator of unmoderated items.
+        """Return a get_content generator of unmoderated submissions.
 
         :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for. Defaults to `mod` which
-            includes items for all the subreddits you moderate.
+            subreddit to return the unmoderated submissions for. Defaults to
+            `mod` which includes items for all the subreddits you moderate.
 
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
         """
-        return self.get_content(self.config['unmoderated'] %
-                                six.text_type(subreddit), *args, **kwargs)
+        url = self.config['unmoderated'].format(
+            subreddit=six.text_type(subreddit))
+        return self.get_content(url, *args, **kwargs)
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_wiki_banned(self, subreddit, *args, **kwargs):
         """Return a get_content generator of users banned from the wiki."""
-        return self._get_userlist(
-            self.config['wiki_banned'] % six.text_type(subreddit),
-            user_only=True, *args, **kwargs)
+        url = self.config['wiki_banned'].format(
+            subreddit=six.text_type(subreddit))
+        return self._get_userlist(url, user_only=True, *args, **kwargs)
 
     @decorators.restrict_access(scope='read', mod=True)
     def get_wiki_contributors(self, subreddit, *args, **kwargs):
@@ -1949,13 +2121,57 @@ class ModOnlyMixin(AuthenticatedReddit):
         contributors is all that matters.
 
         """
-        return self._get_userlist(
-            self.config['wiki_contributors'] % six.text_type(subreddit),
-            user_only=True, *args, **kwargs)
+        url = self.config['wiki_contributors'].format(
+            subreddit=six.text_type(subreddit))
+        return self._get_userlist(url, user_only=True, *args, **kwargs)
+
+
+class ModSelfMixin(AuthenticatedReddit):
+    """Adds methods pertaining to the 'modself' OAuth scope (or login).
+
+    You should **not** directly instantiate instances of this class. Use
+    :class:`.Reddit` instead.
+
+    """
+
+    def leave_contributor(self, subreddit):
+        """Abdicate approved submitter status in a subreddit. Use with care.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+
+        :returns: the json response from the server.
+        """
+        return self._leave_status(subreddit, self.config['leavecontributor'])
+
+    def leave_moderator(self, subreddit):
+        """Abdicate moderator status in a subreddit. Use with care.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+
+        :returns: the json response from the server.
+        """
+        self.evict(self.config['my_mod_subreddits'])
+        return self._leave_status(subreddit, self.config['leavemoderator'])
+
+    @decorators.restrict_access(scope='modself', mod=False)
+    def _leave_status(self, subreddit, statusurl):
+        """Abdicate status in a subreddit.
+
+        :param subreddit: The name of the subreddit to leave `status` from.
+        :param statusurl: The API URL which will be used in the leave request.
+            Please use :meth:`leave_contributor` or :meth:`leave_moderator`
+            rather than setting this directly.
+
+        :returns: the json response from the server.
+        """
+        if isinstance(subreddit, six.string_types):
+            subreddit = self.get_subreddit(subreddit)
+
+        data = {'id': subreddit.fullname}
+        return self.request_json(statusurl, data=data)
 
 
 class MultiredditMixin(AuthenticatedReddit):
-
     """Adds methods pertaining to multireddits.
 
     You should **not** directly instantiate instances of this class. Use
@@ -1978,7 +2194,7 @@ class MultiredditMixin(AuthenticatedReddit):
             the name of the original
 
         The additional parameters are passed directly into
-        :meth:`request_json`
+        :meth:`~praw.__init__.BaseReddit.request_json`
 
         """
         if to_name is None:
@@ -2013,7 +2229,8 @@ class MultiredditMixin(AuthenticatedReddit):
         :param key_color: Optional rgb hex color code of the form `#xxxxxx`.
         :param subreddits: Optional list of subreddit names or Subreddit
             objects to initialize the Multireddit with. You can always
-            add more later with :meth:`Multireddit.add_subreddit`.
+            add more later with
+            :meth:`~praw.objects.Multireddit.add_subreddit`.
         :param visibility: Choose a privacy setting from this list:
             ``public``, ``private``, ``hidden``. Defaults to private if blank.
         :param weighting_scheme: Choose a weighting scheme from this list:
@@ -2027,10 +2244,11 @@ class MultiredditMixin(AuthenticatedReddit):
         :returns: The newly created Multireddit object.
 
         The additional parameters are passed directly into
-        :meth:`request_json`
+        :meth:`~praw.__init__.BaseReddit.request_json`
 
         """
-        url = self.config['multireddit_about'] % (self.user.name, name)
+        url = self.config['multireddit_about'].format(user=self.user.name,
+                                                      multi=name)
         if subreddits:
             subreddits = [{'name': six.text_type(sr)} for sr in subreddits]
         model = {}
@@ -2049,10 +2267,11 @@ class MultiredditMixin(AuthenticatedReddit):
         """Delete a Multireddit.
 
         Any additional parameters are passed directly into
-        :meth:`request`
+        :meth:`~praw.__init__.BaseReddit.request`
 
         """
-        url = self.config['multireddit_about'] % (self.user.name, name)
+        url = self.config['multireddit_about'].format(user=self.user.name,
+                                                      multi=name)
         self.http.headers['x-modhash'] = self.modhash
         try:
             self.request(url, data={}, method='DELETE', *args, **kwargs)
@@ -2090,13 +2309,14 @@ class MultiredditMixin(AuthenticatedReddit):
         :returns: The json response from the server
 
         The additional parameters are passed directly into
-        :meth:`request_json`
+        :meth:`~praw.__init__.BaseReddit.request_json`
 
         If the requested redditor is the current user, all multireddits
         are visible. Otherwise, only public multireddits are returned.
 
         """
-        url = self.config['multireddit_user'] % six.text_type(redditor)
+        redditor = six.text_type(redditor)
+        url = self.config['multireddit_user'].format(user=redditor)
         return self.request_json(url, *args, **kwargs)
 
     @decorators.restrict_access(scope='subscribe')
@@ -2107,7 +2327,7 @@ class MultiredditMixin(AuthenticatedReddit):
         :param new_name: The new name to assign to this multireddit
 
         The additional parameters are passed directly into
-        :meth:`request_json`
+        :meth:`~praw.__init__.BaseReddit.request_json`
 
         """
         current_path = self.MULTI_PATH.format(self.user.name, current_name)
@@ -2119,7 +2339,6 @@ class MultiredditMixin(AuthenticatedReddit):
 
 
 class MySubredditsMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'mysubreddits' scope (or login).
 
     You should **not** directly instantiate instances of this class. Use
@@ -2131,7 +2350,7 @@ class MySubredditsMixin(AuthenticatedReddit):
     def get_my_contributions(self, *args, **kwargs):
         """Return a get_content generator of subreddits.
 
-        The subreddits generated are those where the session's user is a
+        The Subreddits generated are those where the session's user is a
         contributor.
 
         The additional parameters are passed directly into
@@ -2145,7 +2364,7 @@ class MySubredditsMixin(AuthenticatedReddit):
     def get_my_moderation(self, *args, **kwargs):
         """Return a get_content generator of subreddits.
 
-        The subreddits generated are those where the session's user is a
+        The Subreddits generated are those where the session's user is a
         moderator.
 
         The additional parameters are passed directly into
@@ -2166,7 +2385,7 @@ class MySubredditsMixin(AuthenticatedReddit):
     def get_my_subreddits(self, *args, **kwargs):
         """Return a get_content generator of subreddits.
 
-        The subreddits generated are those that the session's user is
+        The subreddits generated are those that hat the session's user is
         subscribed to.
 
         The additional parameters are passed directly into
@@ -2177,7 +2396,6 @@ class MySubredditsMixin(AuthenticatedReddit):
 
 
 class PrivateMessagesMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'privatemessages' scope (or login).
 
     You should **not** directly instantiate instances of this class. Use
@@ -2220,7 +2438,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         """
         return self.get_content(self.config['inbox'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='privatemessages')
     def get_message(self, message_id, *args, **kwargs):
         """Return a Message object corresponding to the given ID.
 
@@ -2289,8 +2506,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
     def get_mentions(self, *args, **kwargs):
         """Return a get_content generator for username mentions.
 
-        This will only work for users with reddit gold.
-
         The additional parameters are passed directly into
         :meth:`.get_content`. Note: the `url` parameter cannot be altered.
 
@@ -2300,7 +2515,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
     @decorators.restrict_access(scope='privatemessages')
     @decorators.require_captcha
     def send_message(self, recipient, subject, message, from_sr=None,
-                     captcha=None):
+                     captcha=None, **kwargs):
         """Send a message to a redditor or a subreddit's moderators (mod mail).
 
         :param recipient: A Redditor or Subreddit instance to send a message
@@ -2312,13 +2527,17 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         :param from_sr: A Subreddit instance or string to send the message
             from. When provided, messages are sent from the subreddit rather
             than from the authenticated user. Note that the authenticated user
-            must be a moderator of the subreddit.
+            must be a moderator of the subreddit and have mail permissions.
 
         :returns: The json response from the server.
 
+        This function may result in a captcha challenge. PRAW will
+        automatically prompt you for a response. See :ref:`handling-captchas`
+        if you want to manually handle captchas.
+
         """
         if isinstance(recipient, objects.Subreddit):
-            recipient = '/r/%s' % six.text_type(recipient)
+            recipient = '/r/{0}'.format(six.text_type(recipient))
         else:
             recipient = six.text_type(recipient)
 
@@ -2336,7 +2555,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
 
 class ReportMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'report' scope (or login).
 
     You should **not** directly instantiate instances of this class. Use
@@ -2363,7 +2581,10 @@ class ReportMixin(AuthenticatedReddit):
         data = {'id': thing_id,
                 'executed': method}
         response = self.request_json(self.config[method], data=data)
-        self.evict(urljoin(self.user._url, 'hidden'))  # pylint: disable=W0212
+
+        if self.user is not None:
+            self.evict(urljoin(self.user._url,  # pylint: disable=W0212
+                               'hidden'))
         return response
 
     def unhide(self, thing_id):
@@ -2379,7 +2600,6 @@ class ReportMixin(AuthenticatedReddit):
 
 
 class SubmitMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'submit' scope (or login).
 
     You should **not** directly instantiate instances of this class. Use
@@ -2387,24 +2607,31 @@ class SubmitMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope='submit')
     def _add_comment(self, thing_id, text):
         """Comment on the given thing with the given text.
 
         :returns: A Comment object for the newly created comment.
 
         """
-        data = {'thing_id': thing_id,
-                'text': text}
-        retval = self.request_json(self.config['comment'], data=data,
-                                   retry_on_error=False)
+        def add_comment_helper(self, thing_id, text):
+            data = {'thing_id': thing_id,
+                    'text': text}
+            retval = self.request_json(self.config['comment'], data=data,
+                                       retry_on_error=False)
+            return retval
+
+        if thing_id.startswith(self.config.by_object[objects.Message]):
+            decorator = decorators.restrict_access(scope='privatemessages')
+        else:
+            decorator = decorators.restrict_access(scope='submit')
+        retval = decorator(add_comment_helper)(self, thing_id, text)
         # REDDIT: reddit's end should only ever return a single comment
         return retval['data']['things'][0]
 
     @decorators.restrict_access(scope='submit')
     @decorators.require_captcha
     def submit(self, subreddit, title, text=None, url=None, captcha=None,
-               save=None, send_replies=None, resubmit=None):
+               save=None, send_replies=None, resubmit=None, **kwargs):
         """Submit a new link to the given subreddit.
 
         Accepts either a Subreddit object or a str containing the subreddit's
@@ -2413,14 +2640,16 @@ class SubmitMixin(AuthenticatedReddit):
         :param resubmit: If True, submit the link even if it has already been
             submitted.
         :param save: If True the new Submission will be saved after creation.
-        :param send_replies: Gold Only Feature. If True, inbox replies will be
-            received when people comment on the Submission. If set to None or
-            the currently authenticated user doesn't have gold, then the
-            default of True for text posts and False for link posts will be
-            used.
+        :param send_replies: If True, inbox replies will be received when
+            people comment on the submission. If set to None, the default of
+            True for text posts and False for link posts will be used.
 
         :returns: The newly created Submission object if the reddit instance
             can access it. Otherwise, return the url to the submission.
+
+        This function may result in a captcha challenge. PRAW will
+        automatically prompt you for a response. See :ref:`handling-captchas`
+        if you want to manually handle captchas.
 
         """
         if isinstance(text, six.string_types) == bool(url):
@@ -2458,7 +2687,6 @@ class SubmitMixin(AuthenticatedReddit):
 
 
 class SubscribeMixin(AuthenticatedReddit):
-
     """Adds methods requiring the 'subscribe' scope (or login).
 
     You should **not** directly instantiate instances of this class. Use
@@ -2492,9 +2720,8 @@ class SubscribeMixin(AuthenticatedReddit):
 
 
 class Reddit(ModConfigMixin, ModFlairMixin, ModLogMixin, ModOnlyMixin,
-             MultiredditMixin, MySubredditsMixin, PrivateMessagesMixin,
-             ReportMixin, SubmitMixin, SubscribeMixin):
-
+             ModSelfMixin, MultiredditMixin, MySubredditsMixin,
+             PrivateMessagesMixin, ReportMixin, SubmitMixin, SubscribeMixin):
     """Provides access to reddit's API.
 
     See :class:`.BaseReddit`'s documentation for descriptions of the

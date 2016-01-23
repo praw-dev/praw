@@ -7,6 +7,8 @@ import time
 import unittest
 from betamax import Betamax, BaseMatcher
 from betamax_matchers.form_urlencoded import URLEncodedBodyMatcher
+from betamax_matchers.json_body import JSONBodyMatcher
+from betamax_serializers import pretty_json
 from functools import wraps
 from praw import Reddit
 from requests.compat import urljoin
@@ -30,7 +32,8 @@ class BodyMatcher(BaseMatcher):
         to_compare = request.copy()
         to_compare.body = text_type(to_compare.body)
 
-        return URLEncodedBodyMatcher().match(to_compare, recorded_request)
+        return URLEncodedBodyMatcher().match(to_compare, recorded_request) or \
+            JSONBodyMatcher().match(to_compare, recorded_request)
 
 
 class PRAWTest(unittest.TestCase):
@@ -46,6 +49,10 @@ class PRAWTest(unittest.TestCase):
         self.other_user_pswd = '1111'
         self.other_non_mod_pswd = '1111'
 
+        self.client_id = 'stJlUSUbPQe5lQ'
+        self.client_secret = 'iU-LsOzyJH7BDVoq-qOWNEq2zuI'
+        self.redirect_uri = 'https://127.0.0.1:65010/authorize_callback'
+
         self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
         self.link_id = 't3_dtg4j'
         self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
@@ -54,22 +61,40 @@ class PRAWTest(unittest.TestCase):
         self.other_user_id = '6c1xj'
         self.priv_submission_id = '16kbb7'
         self.refresh_token = {
-            'creddits':        'jLC5Yw9LgoNr4Ldd9j1ESuqJ5DE',
-            'edit':            'FFx_0G7Zumyh4AWzIo39bG9KdIM',
-            'history':         'j_RKymm8srC3j6cxysYFQZbB4vc',
-            'identity':        'E4BgmO7iho0KOB1XlT8WEtyySf8',
-            'modconfig':       'bBGRgMY9Ai9_SZLZsaFvS647Mgk',
-            'modflair':        'UrMbtk4bOa040XAVz0uQn2gTE3s',
-            'modlog':          'ADW_EDS9-bh7Zicc7ARx7w8ZLMA',
-            'modposts':        'Ffnae7s4K-uXYZB5ZaYJgh0d8DI',
-            'mysubreddits':    'O7tfWhqem6fQZqxhoTiLca1s7VA',
-            'privatemessages': 'kr_pHPO3sqTn_m5f_FX9TW4joEU',
-            'read':            '_mmtb8YjDym0eC26G-rTxXUMea0',
-            'wikiread':        '7302867-PMZfquNPUVYHcrbJkTYpFe9UdAY',
-            'submit':          'k69WTwa2bEQOQY9t61nItd4twhw',
-            'subscribe':       'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
-            'vote':            '5RPnDwg56vAbf7F9yO81cXZAPSQ'}
+            'creddits':         'jLC5Yw9LgoNr4Ldd9j1ESuqJ5DE',
+            'edit':             'FFx_0G7Zumyh4AWzIo39bG9KdIM',
+            'history':          'j_RKymm8srC3j6cxysYFQZbB4vc',
+            'identity':         'E4BgmO7iho0KOB1XlT8WEtyySf8',
+            'modconfig':        'bBGRgMY9Ai9_SZLZsaFvS647Mgk',
+            'modcontributors':  '7302867-nk3NcmGLLHnaDmFdX26tTjYQcSg',
+            'modflair':         'UrMbtk4bOa040XAVz0uQn2gTE3s',
+            'modlog':           'ADW_EDS9-bh7Zicc7ARx7w8ZLMA',
+            'modothers':        '7302867-uHta-txRBG7sBUx1I3pSNq5UCic',
+            'modposts':         'Ffnae7s4K-uXYZB5ZaYJgh0d8DI',
+            'modwiki':          '7302867-i8p-LbgK_BvMrMUC7LQjed8r4lM',
+            'modwiki+contr':    '7302867-4SqdVJq06cEhNEXMEZZCVZ0qZEg',
+            'mysubreddits':     'O7tfWhqem6fQZqxhoTiLca1s7VA',
+            'privatemessages':  'kr_pHPO3sqTn_m5f_FX9TW4joEU',
+            'read':             '_mmtb8YjDym0eC26G-rTxXUMea0',
+            'read+report':      '7302867-nOgTLv05rK1kO9YInHWOPua9sK4',
+            'report':           '7302867-MKjaXZ-w6S8-tC-JPs0NogkIHGQ',
+            'submit':           'k69WTwa2bEQOQY9t61nItd4twhw',
+            'subscribe':        'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
+            'vote':             '5RPnDwg56vAbf7F9yO81cXZAPSQ',
+            'wikiread':         '7302867-PMZfquNPUVYHcrbJkTYpFe9UdAY'}
+
+        self.other_refresh_token = {
+            'read':             '10640071-wxnYQyK9knNV1PCt9a7CxvJH8TI',
+            'modself':          '10640071-v2ZWipt20gPZvfBnvILkBUDq0P4',
+            'submit':           '10640071-oWSCa5YMSWGQrRCa4fMSO_C1bZg'}
+
+        self.comment_deleted_id = 'ctkznxq'
+
+        self.submission_deleted_id = '3f8q10'
         self.submission_edit_id = '16i92b'
+        self.submission_hide_id = '3lchjv'
+        self.submission_sticky_id = '32eucy'
+        self.submission_sticky_id2 = '32exei'
 
     def delay_for_listing_update(self, duration=0.1):
         if not os.getenv('TRAVIS') and self.r.config.api_request_delay == 0:
@@ -91,12 +116,27 @@ class PRAWTest(unittest.TestCase):
         return urljoin(self.r.config.permalink_url, path)
 
 
+class OAuthPRAWTest(PRAWTest):
+    def betamax_init(self):
+        self.r.set_oauth_app_info(self.client_id,
+                                  self.client_secret,
+                                  self.redirect_uri)
+
+    def setUp(self):
+        self.configure()
+        self.r = Reddit(USER_AGENT, site_name='reddit_oauth_test',
+                        disable_update_check=True)
+
+
 Betamax.register_request_matcher(BodyMatcher)
+Betamax.register_serializer(pretty_json.PrettyJSONSerializer)
+
 with Betamax.configure() as config:
     if os.getenv('TRAVIS'):
         config.default_cassette_options['record_mode'] = 'none'
     config.cassette_library_dir = 'tests/cassettes'
     config.default_cassette_options['match_requests_on'].append('PRAWBody')
+    config.default_cassette_options['serialize_with'] = 'prettyjson'
 
 
 def betamax(cassette_name=None, **cassette_options):
@@ -132,3 +172,15 @@ def flair_diff(root, other):
     other_items = set(tuple(item[key].lower() if key in item and item[key] else
                             '' for key in keys) for item in other)
     return list(root_items - other_items)
+
+
+def teardown_on_keyboard_interrupt(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except KeyboardInterrupt:
+            kwargs.get('self', args[0]).tearDown()
+            raise
+
+    return wrapper

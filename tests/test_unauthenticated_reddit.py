@@ -119,6 +119,12 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertRaises(errors.LoginRequired, self.r.get_banned, self.sr)
 
     @betamax()
+    def test_default_subreddits(self):
+        num = 50
+        self.assertEqual(num,
+                         len(list(self.r.default_subreddits(limit=num))))
+
+    @betamax()
     def test_get_new(self):
         num = 50
         result = self.r.get_new(limit=num)
@@ -149,6 +155,20 @@ class UnauthenticatedRedditTest(PRAWTest):
         for _ in range(3):
             subs.add(text_type(self.r.get_subreddit('RANDOM')))
         self.assertTrue(len(subs) > 1)
+
+    @betamax()
+    def test_get_random_submission(self):
+        submissions = set()
+        for _ in range(3):
+            submissions.add(text_type(self.r.get_random_submission()))
+        self.assertTrue(len(submissions) > 1)
+
+        submissions = set()
+        for _ in range(3):
+            item = self.r.get_random_submission('redditdev')
+            self.assertEqual(item.subreddit.display_name, 'redditdev')
+            submissions.add(text_type(item))
+        self.assertTrue(len(submissions) > 1)
 
     @betamax()
     def test_get_rising(self):
@@ -276,7 +296,7 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.r.config.store_json_result = True
         subreddit = self.r.get_subreddit(self.sr)
         self.assertFalse(subreddit.json_dict)
-        subreddit.display_name  # Force object to load
+        subreddit.refresh()  # Force object to load
         self.assertTrue(subreddit.json_dict)
 
     def test_user_agent(self):

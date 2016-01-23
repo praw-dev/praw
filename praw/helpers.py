@@ -24,12 +24,17 @@ from __future__ import unicode_literals
 import six
 import sys
 import time
+from collections import deque
 from functools import partial
 from timeit import default_timer as timer
-from praw.errors import HTTPException
+from praw.errors import HTTPException, PRAWException
+from operator import attrgetter
 
 BACKOFF_START = 4  # Minimum number of seconds to sleep during errors
 KEEP_ITEMS = 128  # On each iteration only remember the first # items
+
+# for conversion between broken reddit timestamps and unix timestamps
+REDDIT_TIMESTAMP_OFFSET = 28800
 
 
 def comment_stream(reddit_session, subreddit, limit=None, verbosity=1):
@@ -110,6 +115,176 @@ def valid_redditors(redditors, sub):
             if resp['ok']]
 
 
+def submissions_between(reddit_session,
+                        subreddit,
+                        lowest_timestamp=None,
+                        highest_timestamp=None,
+                        newest_first=True,
+                        extra_cloudsearch_fields=None,
+                        verbosity=1):
+    """Yield submissions between two timestamps.
+
+    If both ``highest_timestamp`` and ``lowest_timestamp`` are unspecified,
+    yields all submissions in the ``subreddit``.
+
+    Submissions are yielded from newest to oldest(like in the "new" queue).
+
+    :param reddit_session: The reddit_session to make requests from. In all the
+        examples this is assigned to the variable ``r``.
+    :param subreddit: Either a subreddit object, or the name of a
+        subreddit. Use `all` to get the submissions stream for all submissions
+        made to reddit.
+    :param lowest_timestamp: The lower bound for ``created_utc`` atributed of
+        submissions.
+        (Default: subreddit's created_utc or 0 when subreddit == "all").
+    :param highest_timestamp: The upper bound for ``created_utc`` attribute
+        of submissions. (Default: current unix time)
+        NOTE: both highest_timestamp and lowest_timestamp are proper
+        unix timestamps(just like ``created_utc`` attributes)
+    :param newest_first: If set to true, yields submissions
+        from newest to oldest. Otherwise yields submissions
+        from oldest to newest
+    :param extra_cloudsearch_fields: Allows extra filtering of results by
+        parameters like author, self. Full list is available here:
+        https://www.reddit.com/wiki/search
+    :param verbosity: A number that controls the amount of output produced to
+        stderr. <= 0: no output; >= 1: output the total number of submissions
+        processed; >= 2: output debugging information regarding
+        the search queries. (Default: 1)
+    """
+    def debug(msg, level):
+        if verbosity >= level:
+            sys.stderr.write(msg + '\n')
+
+    def format_query_field(k, v):
+        if k in ["nsfw", "self"]:
+            # even though documentation lists "no" and "yes"
+            # as possible values, in reality they don't work
+            if v not in [0, 1, "0", "1"]:
+                raise PRAWException("Invalid value for the extra"
+                                    "field {}. Only '0' and '1' are"
+                                    "valid values.".format(k))
+            return "{}:{}".format(k, v)
+        return "{}:'{}'".format(k, v)
+
+    if extra_cloudsearch_fields is None:
+        extra_cloudsearch_fields = {}
+
+    extra_query_part = " ".join(
+        [format_query_field(k, v) for (k, v)
+         in sorted(extra_cloudsearch_fields.items())]
+    )
+
+    if highest_timestamp is None:
+        highest_timestamp = int(time.time()) + REDDIT_TIMESTAMP_OFFSET
+    else:
+        highest_timestamp = int(highest_timestamp) + REDDIT_TIMESTAMP_OFFSET
+
+    if lowest_timestamp is not None:
+        lowest_timestamp = int(lowest_timestamp) + REDDIT_TIMESTAMP_OFFSET
+    elif not isinstance(subreddit, six.string_types):
+        lowest_timestamp = int(subreddit.created)
+    elif subreddit not in ("all", "contrib", "mod", "friend"):
+        lowest_timestamp = int(reddit_session.get_subreddit(subreddit).created)
+    else:
+        lowest_timestamp = 0
+
+    original_highest_timestamp = highest_timestamp
+    original_lowest_timestamp = lowest_timestamp
+
+    # When making timestamp:X..Y queries, reddit misses submissions
+    # inside X..Y range, but they can be found inside Y..Z range
+    # It is not clear what is the value of Z should be, but it seems
+    # like the difference is usually about ~1 hour or less
+    # To be sure, let's set the workaround offset to 2 hours
+    out_of_order_submissions_workaround_offset = 7200
+    highest_timestamp += out_of_order_submissions_workaround_offset
+    lowest_timestamp -= out_of_order_submissions_workaround_offset
+
+    # Those parameters work ok, but there may be a better set of parameters
+    window_size = 60 * 60
+    search_limit = 100
+    min_search_results_in_window = 50
+    window_adjustment_ratio = 1.25
+    backoff = BACKOFF_START
+
+    processed_submissions = 0
+    prev_win_increased = False
+    prev_win_decreased = False
+
+    while highest_timestamp >= lowest_timestamp:
+        try:
+            if newest_first:
+                t1 = max(highest_timestamp - window_size, lowest_timestamp)
+                t2 = highest_timestamp
+            else:
+                t1 = lowest_timestamp
+                t2 = min(lowest_timestamp + window_size, highest_timestamp)
+
+            search_query = 'timestamp:{}..{}'.format(t1, t2)
+            if extra_query_part:
+                search_query = "(and {} {})".format(search_query,
+                                                    extra_query_part)
+
+            debug(search_query, 3)
+            search_results = list(reddit_session.search(search_query,
+                                                        subreddit=subreddit,
+                                                        limit=search_limit,
+                                                        syntax='cloudsearch',
+                                                        sort='new'))
+
+            debug("Received {0} search results for query {1}"
+                  .format(len(search_results), search_query),
+                  2)
+
+            backoff = BACKOFF_START
+        except HTTPException as exc:
+            debug("{0}. Sleeping for {1} seconds".format(exc, backoff), 2)
+            time.sleep(backoff)
+            backoff *= 2
+            continue
+
+        if len(search_results) >= search_limit:
+            power = 2 if prev_win_decreased else 1
+            window_size = int(window_size / window_adjustment_ratio**power)
+            prev_win_decreased = True
+            debug("Decreasing window size to {0} seconds".format(window_size),
+                  2)
+            # Since it is possible that there are more submissions
+            # in the current window, we have to re-do the request
+            # with reduced window
+            continue
+        else:
+            prev_win_decreased = False
+
+        search_results = [s for s in search_results
+                          if original_lowest_timestamp <= s.created and
+                          s.created <= original_highest_timestamp]
+
+        for submission in sorted(search_results,
+                                 key=attrgetter('created_utc', 'id'),
+                                 reverse=newest_first):
+            yield submission
+
+        processed_submissions += len(search_results)
+        debug('Total processed submissions: {}'
+              .format(processed_submissions), 1)
+
+        if newest_first:
+            highest_timestamp -= (window_size + 1)
+        else:
+            lowest_timestamp += (window_size + 1)
+
+        if len(search_results) < min_search_results_in_window:
+            power = 2 if prev_win_increased else 1
+            window_size = int(window_size * window_adjustment_ratio**power)
+            prev_win_increased = True
+            debug("Increasing window size to {0} seconds"
+                  .format(window_size), 2)
+        else:
+            prev_win_increased = False
+
+
 def _stream_generator(get_function, limit=None, verbosity=1):
     def debug(msg, level):
         if verbosity >= level:
@@ -129,7 +304,7 @@ def _stream_generator(get_function, limit=None, verbosity=1):
         start = timer()
         try:
             i = None
-            params = {'count': count}
+            params = {'uniq': count}
             count = (count + 1) % 100
             if before:
                 params['before'] = before
@@ -192,12 +367,14 @@ def convert_id36_to_numeric_id(id36):
 def convert_numeric_id_to_id36(numeric_id):
     """Convert an integer into its base36 string representation.
 
-    This method has been cleaned up slightlyto improve readability. For more
+    This method has been cleaned up slightly to improve readability. For more
     info see:
 
     https://github.com/reddit/reddit/blob/master/r2/r2/lib/utils/_utils.pyx
-    http://www.reddit.com/r/redditdev/comments/n624n/submission_ids_question/
-    http://en.wikipedia.org/wiki/Base36
+
+    https://www.reddit.com/r/redditdev/comments/n624n/submission_ids_question/
+
+    https://en.wikipedia.org/wiki/Base36
     """
     # base36 allows negative numbers, but reddit does not
     if not isinstance(numeric_id, six.integer_types) or numeric_id < 0:
@@ -233,15 +410,14 @@ def flatten_tree(tree, nested_attr='replies', depth_first=False):
         rather than the default breadth-first manner.
 
     """
-    stack = tree[:]
+    stack = deque(tree)
+    extend = stack.extend if depth_first else stack.extendleft
     retval = []
     while stack:
-        item = stack.pop(0)
+        item = stack.popleft()
         nested = getattr(item, nested_attr, None)
-        if nested and depth_first:
-            stack.extend(nested)
-        elif nested:
-            stack[0:0] = nested
+        if nested:
+            extend(nested)
         retval.append(item)
     return retval
 
@@ -256,8 +432,7 @@ def normalize_url(url):
 
 
 class BoundedSet(object):
-
-    """A set with a maxmimum size that evicts the oldest items when necessary.
+    """A set with a maximum size that evicts the oldest items when necessary.
 
     This class does not implement the complete set interface.
 

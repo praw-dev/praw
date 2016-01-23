@@ -3,7 +3,8 @@
 Changelog
 =========
 
-The changes listed below are divided into four categories.
+The changes listed below are divided into four categories:
+
  * **[BUGFIX]** Something was broken before, but is now fixed.
  * **[CHANGE]** Other changes affecting user programs, such as the renaming of
    a function.
@@ -23,13 +24,101 @@ formatted links that link to the relevant place in the code overview.
 
 Unreleased
 ----------
+ * **[CHANGE]** Image uploads support PNG images as small as 67 bytes.
+ * **[FEATURE]** Added support for modmail muting. See
+   :meth:`~praw.objects.Subreddit.add_mute`,
+   :meth:`~praw.__init__.ModOnlyMixin.get_muted`,
+   :meth:`~praw.objects.Subreddit.remove_mute`,
+   :meth:`~praw.objects.Message.mute_modmail_author`, and
+   :meth:`~praw.objects.Message.unmute_modmail_author`.
+ * **[FEATURE]** Added
+   :meth:`~praw.__init__.UnauthenticatedReddit.default_subreddits`.
+ * **[FEATURE]** Added support for ``*`` OAuth scopes.
+ * **[FEATURE]** Added
+   :meth:`~praw.__init__.UnauthenticatedReddit.get_traffic`
+
+PRAW 3.3.0
+----------
+ * **[BUGFIX]** Fixed login password prompt issue on windows (#485).
+ * **[BUGFIX]** Fixed unicode user-agent issue (#483).
+ * **[BUGFIX]** Fix duplicate request issue with comment and submission streams
+   (#501).
+ * **[BUGFIX]** Stopped :meth:`praw.objects.Redditor.friend` from raising
+   LoginRequired when using OAuth.
+ * **[BUGFIX]** Stopped a json-parsing error from occuring in cases where
+   reddit's response to a request was an empty string. :meth:`request_json`
+   will now simply return that empty string.
+ * **[BUGFIX]** Fix AssertionError when hiding and unhiding under OAuth, raised
+   by stacked scope decorators.
+ * **[BUGFIX]** Fix AttributeError when hiding and unhiding under OAuth without
+   the "identity" scope, raised when PRAW tried to evict the user's /hidden
+   page from the cache.
+ * **[CHANGE]** Added messages to all PRAW exceptions (#491).
+ * **[CHANGE]** Made it easier to send JSON dumps instead of form-encoded data
+   for http requests. Some api-v1 endpoints require the request body to be in
+   the json format.
+ * **[CHANGE]** Moved and deprecated
+   :meth:`praw.objects.LoggedInRedditor.get_friends` to
+   :class:`praw.AuthenticatedReddit`, leaving a pointer in its place.
+   Previously, ``get_friends`` was difficult to access because the only
+   instance of `LoggedInRedditor` was the reddit session's `user` attribute,
+   which is only instantiated if the user has the "identity" scope. By moving
+   ``get_friends`` to the reddit session, it can be used without having to
+   manipulate a :class:`praw.objects.Redditor` intsance's class.
+ * **[CHANGE]** Removed support for Python 2.6 and Python 3.2 (#532).
+ * **[FEATURE]** Added support for adding "notes" to your friends. Users with
+   reddit Gold can set the ``note`` parameter of
+   :meth:`praw.objects.Redditor.friend`. 300 character max enforced by reddit.
+ * **[FEATURE]** New :meth:`praw.objects.Redditor.get_friend_info` to see info
+   about one of your friends. Includes their name, ID, when you added them, and
+   if you have reddit Gold, your note about them.
+
+PRAW 3.2.1
+----------
+ * **[BUGFIX]** Fixed "multiple values for argument" error when solving
+   captchas.
+
+PRAW 3.2.0
+----------
+ * **[BUGFIX]** Fixed methods which require more than one OAuth scope.
+ * **[BUGFIX]** Fixed :meth:`praw.objects.WikiPage.remove_editor` raising
+   AssertionError when used through OAuth.
+ * **[BUGFIX]** Fixed :meth:`get_wiki_page` not sending the OAuth headers.
+ * **[CHANGE]** :meth:`praw.objects.Refreshable.refresh` will now always return
+   a fresh object. Previously, Subreddits and Redditors would use cache content
+   when available.
+ * **[CHANGE]** :class:`praw.objects.WikiPage` is now refreshable, and will
+   lazy-load.
+ * **[FEATURE]** Added methods :meth:`leave_moderator` and
+   :meth:`leave_contributor` to :class:`praw.__init__.AuthenticatedReddit`
+   and :class:`praw.objects.Subreddit`.
+ * **[FEATURE]** Added support for double stickies. Use boolean parameter
+   `bottom` to choose which sticky to set or get.
+ * **[FEATURE]** Added methods :meth:`praw.objects.Message.collapse` and
+   :meth:`praw.objects.Message.uncollapse`.
+ * **[FEATURE]** If an OAuth2 refresh token is available, and PRAW encounters
+   an "Invalid Token" error, it will attempt to refresh the token for you
+   automatically.
+ * **[REDDIT]** Fixed case where the user could not reply to private messages
+   with the `privatemessages` scope because the endpoint required the `submit`
+   scope. reddit has fixed this quirk, and PRAW now chooses the proper scope.
+
+PRAW 3.1.0
+----------
+ * **[BUGFIX]** Fixed method `get_random_submission` which failed to raise
+   the expected redirect exception.
  * **[CHANGE]** Replaced instances of "liked" and "disliked" with "upvoted"
    and "downvoted". The get_liked and get_disliked methods in
    :class:`objects.Redditor` still exist, but point to the new methods.
  * **[CHANGE]** Fixed the `subreddits` attribute of
    :class:`praw.objects.Multireddit` being returned as a list of dicts.
    It is now a list of Subreddit objects.
- * **[FEATURE]** Addded :meth:`get_comment_replies` and
+ * **[CHANGE]** The `display_name` attr of :class:`objects.Subreddit`
+   and the `name` attr of :class:`objects.Redditor` are now set when
+   instantiated, and do not lazyload. To guarantee that these strings are
+   properly cased, the user must instantiate the object with `fetch=True`, or
+   call `object.refresh()`.
+ * **[FEATURE]** Added :meth:`get_comment_replies` and
    :meth:`get_post_replies` to the :class:`praw.__init__.PrivateMessagesMixin`
 
 PRAW 3.0.0
@@ -125,8 +214,8 @@ PRAW 2.1.19
  * **[BUGFIX]** Fix :meth:`.get_subreddit_recommendations` to work with the
    updated API route.
  * **[BUGFIX]** Track time between requests using ``timeit.default_timer``.
- * **[CHANGE]** :meth:`.get_friends` and :meth:`~.Subreddit.get_banned` once
-   again work.
+ * **[CHANGE]** :meth:`~praw.objects.LoggedInRedditor.get_friends` and
+   :meth:`~.Subreddit.get_banned` once again work.
  * **[CHANGE]** :meth:`.is_root` no longer requires fetching submission
    objects.
  * **[REDDIT]** Support ``thing_id`` lists in :meth:`.get_info`.
@@ -491,17 +580,17 @@ PRAW 2.0.9
    :meth:`.get_unread` if it and ``unset_has_mail`` are both True, then the
    ``user`` object in the :class:`.Reddit` object will have its ``has_mail``
    attribute set to ``False``.
- * **[FEATURE]** Add :meth:`.get_friends` and :meth:`.get_blocked` to
-   :class:`.LoggedInRedditor`.
+ * **[FEATURE]** Add :meth:`praw.objects.LoggedInRedditor.get_friends` and
+   :meth:`praw.objects.LoggedInRedditor.get_blocked`.
  * **[FEATURE]** Add the *read* scope to :meth:`.get_all_comments` in the
    :class:`.Reddit` object.
  * **[FEATURE]** Add the *read* scope to :meth:`~.Subreddit.get_comments` and
    the subreddit listings such as :meth:`~.Subreddit.get_new` in the
    :meth:`.Reddit` and :meth:`.Subreddit` object.
  * **[BUGFIX]** Fix bug in :meth:`.MoreComments.comments`.
- * **[CHANGE]** Break :meth:`.get_friends` and :meth:`~.Subreddit.get_banned`
-   until there is an upstream fix to mean that does not require ssl for those
-   endpoints.
+ * **[CHANGE]** Break :meth:`~praw.objects.LoggedInRedditor.get_friends` and
+   :meth:`~.Subreddit.get_banned` until there is an upstream fix to mean that
+   does not require ssl for those endpoints.
 
 PRAW 2.0.8
 ----------

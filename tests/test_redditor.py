@@ -1,9 +1,10 @@
 """Tests for Redditor class."""
 
 from __future__ import print_function, unicode_literals
+from praw import errors
 from praw.objects import LoggedInRedditor
 from six import text_type
-from .helper import PRAWTest, betamax
+from .helper import OAuthPRAWTest, PRAWTest, betamax
 
 
 class RedditorTest(PRAWTest):
@@ -13,16 +14,16 @@ class RedditorTest(PRAWTest):
 
     @betamax()
     def test_add_remove_friends(self):
-        friends = self.r.user.get_friends()
+        friends = self.r.get_friends()
         redditor = friends[0] if friends else self.other_user
         redditor.unfriend()
 
         self.delay_for_listing_update()
-        self.assertTrue(redditor not in self.r.user.get_friends(u=1))
+        self.assertTrue(redditor not in self.r.get_friends(u=1))
         redditor.friend()
 
         self.delay_for_listing_update()
-        self.assertTrue(redditor in self.r.user.get_friends(u=2))
+        self.assertTrue(redditor in self.r.get_friends(u=2))
 
     @betamax()
     def test_duplicate_login(self):
@@ -73,6 +74,16 @@ class RedditorTest(PRAWTest):
         self.assertNotEqual(sub, next(user.get_downvoted(params={'u': 2})))
 
     @betamax()
+    def test_name_lazy_update(self):
+        augmented_name = self.other_non_mod_name.upper()
+        redditor = self.r.get_redditor(augmented_name)
+        self.assertEqual(augmented_name, text_type(redditor))
+        redditor.created_utc  # induce a lazy load
+        self.assertEqual(augmented_name, redditor.name)
+        redditor.refresh()
+        self.assertEqual(self.other_non_mod_name, redditor.name)
+
+    @betamax()
     def test_redditor_comparison(self):
         a1 = next(self.r.get_new()).author
         a2 = self.r.get_redditor(text_type(a1))
@@ -84,3 +95,28 @@ class RedditorTest(PRAWTest):
     @betamax()
     def test_user_set_on_login(self):
         self.assertTrue(isinstance(self.r.user, LoggedInRedditor))
+
+
+class OAuthRedditorTest(OAuthPRAWTest):
+    @betamax()
+    def test_friends_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['subscribe'])
+        user = self.r.get_redditor(self.other_user_name)
+
+        # Only Gold users can include personal notes
+        self.assertRaises(errors.HTTPException, user.friend, 'note')
+
+        friendship = user.friend()
+        self.assertEqual(friendship['id'], user.fullname)
+
+        self.r.refresh_access_information(self.refresh_token['mysubreddits'])
+        friendship2 = user.get_friend_info()
+        self.assertEqual(friendship, friendship2)
+
+        self.r.refresh_access_information(self.refresh_token['read'])
+        friends = list(self.r.get_friends())
+        self.assertTrue(user in friends)
+
+        self.r.refresh_access_information(self.refresh_token['subscribe'])
+        user.unfriend()
+        self.assertFalse(user.refresh().is_friend)

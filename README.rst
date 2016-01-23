@@ -47,12 +47,19 @@ This will display something similar to the following:
 Installation
 ------------
 
-PRAW works with python 2.6, 2.7, 3.1, 3.2, 3.3, and 3.4. The recommended way to
+PRAW is supported on python 2.7, 3.3, 3.4 and 3.5. The recommended way to
 install is via `pip <https://pypi.python.org/pypi/pip>`_
 
 .. code-block:: bash
 
-   $ pip install praw
+    $ pip install praw
+
+
+If you want to run the development version of PRAW try:
+
+.. code-block:: bash
+
+    $ pip install --upgrade https://github.com/praw-dev/praw/archive/master.zip
 
 If you don't have ``pip`` installed, then the Hitchhiker's Guide to Python has
 a section for setting it up on `Windows
@@ -85,6 +92,10 @@ likely to get more, faster and more in-depth answers in `r/learnpython
 
 If you've uncovered a bug or have a feature request, then `make an issue on our
 project page at github <https://github.com/praw-dev/praw/issues>`_.
+
+Please note that this project is released with a `Contributor Code of Conduct
+<https://github.com/praw-dev/praw/blob/master/CODE_OF_CONDUCT.md>`_. By
+participating in this project you agree to abide by its terms.
 
 .. end_support
 

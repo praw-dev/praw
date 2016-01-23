@@ -2,7 +2,7 @@
 
 from __future__ import print_function, unicode_literals
 from praw import errors
-from .helper import PRAWTest, betamax, flair_diff
+from .helper import OAuthPRAWTest, PRAWTest, betamax, flair_diff
 
 
 class FlairTest(PRAWTest):
@@ -202,3 +202,10 @@ class FlairSelectorTest(PRAWTest):
         flair = self.subreddit.get_flair(self.r.user, uniq=1)
         self.assertEqual(None, flair['flair_text'])
         self.assertEqual(None, flair['flair_css_class'])
+
+
+class OAuthFlairTest(OAuthPRAWTest):
+    @betamax()
+    def test_set_individuals_flair_oauth(self):
+        self.r.refresh_access_information(self.refresh_token['modflair'])
+        self.r.get_subreddit(self.sr).set_flair(self.un, 'foobar')

@@ -14,7 +14,6 @@ from threading import Lock
 
 class ThreadingTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     # pylint: disable=R0903,W0232
-
     """A TCP server that creates new threads per connection."""
 
     allow_reuse_address = True
@@ -34,7 +33,6 @@ class ThreadingTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
 class RequestHandler(socketserver.StreamRequestHandler):
     # pylint: disable=W0232
-
     """A class that handles incoming requests.
 
     Requests to the same domain are cached and rate-limited.
@@ -71,9 +69,9 @@ class RequestHandler(socketserver.StreamRequestHandler):
         method = data.pop('method')
         try:
             retval = getattr(self, 'do_{0}'.format(method))(**data)
-        except Exception as retval:  # pylint: disable=W0703
+        except Exception as e:
             # All exceptions should be passed to the client
-            pass
+            retval = e
         cPickle.dump(retval, self.wfile,  # pylint: disable=E1101
                      cPickle.HIGHEST_PROTOCOL)
 

@@ -2,9 +2,10 @@
 
 from __future__ import print_function, unicode_literals
 import pickle
-from praw import helpers
+import mock
+from praw import errors, helpers
 from praw.objects import Comment, MoreComments
-from .helper import PRAWTest, betamax
+from .helper import OAuthPRAWTest, PRAWTest, betamax
 
 
 class CommentTest(PRAWTest):
@@ -98,10 +99,24 @@ class CommentTest(PRAWTest):
                              lambda item: isinstance(item, Comment))
         self.assertEqual(comment._replies, None)
 
+    def _test_pickling(self, protocol):
+        comment = next(self.r.user.get_comments())
+        with mock.patch('praw.BaseReddit.request_json') as request_json_func:
+            unpickled_comment = pickle.loads(pickle.dumps(comment, protocol))
+            self.assertEqual(comment, unpickled_comment)
+            self.assertEqual(request_json_func.called, 0)
+
     @betamax()
-    def test_unpickle_comment(self):
-        item = next(self.r.user.get_comments())
-        self.assertEqual(item, pickle.loads(pickle.dumps(item)))
+    def test_pickling_v0(self):
+        self._test_pickling(0)
+
+    @betamax()
+    def test_pickling_v1(self):
+        self._test_pickling(1)
+
+    @betamax()
+    def test_pickling_v2(self):
+        self._test_pickling(2)
 
 
 class MoreCommentsTest(PRAWTest):
@@ -137,3 +152,15 @@ class MoreCommentsTest(PRAWTest):
         item = self.first(self.submission.comments,
                           lambda item: isinstance(item, MoreComments))
         self.assertTrue(item.comments())
+
+
+class OAuthCommentTest(OAuthPRAWTest):
+    @betamax()
+    def test_raise_invalidcomment_oauth(self):
+        fullname = '{0}_{1}'.format(self.r.config.by_object[Comment],
+                                    self.comment_deleted_id)
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        comment = self.r.get_info(thing_id=fullname)
+        self.assertRaises(errors.InvalidComment, comment.reply, 'test')
+        invalid_comment = errors.InvalidComment()
+        self.assertEqual(invalid_comment.ERROR_TYPE, str(invalid_comment))

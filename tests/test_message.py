@@ -4,7 +4,7 @@ from __future__ import print_function, unicode_literals
 from praw import errors
 from praw.objects import Message
 from six import text_type
-from .helper import PRAWTest, betamax
+from .helper import OAuthPRAWTest, PRAWTest, betamax
 
 
 class MessageTest(PRAWTest):
@@ -117,3 +117,24 @@ class MessageTest(PRAWTest):
     def test_send_invalid(self):
         self.assertRaises(errors.InvalidUser, self.r.send_message,
                           self.invalid_user_name, 'Subject', 'Content')
+
+
+class OAuthMessageTest(OAuthPRAWTest):
+    @betamax()
+    def test_read_inbox_oauth(self):
+        self.r.refresh_access_information(
+            self.refresh_token['privatemessages'])
+        self.assertTrue(list(self.r.get_inbox(limit=25)))
+
+    @betamax()
+    def test_send_privatemessage_oauth(self):
+        self.r.refresh_access_information(
+            self.refresh_token['privatemessages'])
+
+        self.r.send_message(self.other_user_name, 'subject', 'body')
+        message = next(self.r.get_sent(limit=1))
+
+        reply = message.reply('body2')
+        # Must use assertTrue because Python 2.6 doesn't have assertIsInstance
+        self.assertTrue(isinstance(reply, Message))
+        self.assertEqual(reply.parent_id, message.fullname)
