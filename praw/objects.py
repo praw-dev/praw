@@ -1902,7 +1902,7 @@ class WikiPage(Refreshable):
         return self.add_editor(username=username, _delete=True, *args,
                                **kwargs)
 
-    def revisions(self, *args, **kwargs):
+    def revisions(self, **kwargs):
         url = self.reddit_session.config['wiki_page_revisions'].format(
                 subreddit=six.text_type(self.subreddit),
                 page=self.page.lower())
