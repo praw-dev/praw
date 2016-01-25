@@ -148,7 +148,9 @@ class RedditContentObject(object):
             not wiki_page and scope('read')
 
         try:
-            params = {'uniq': self._uniq} if self._uniq else {}
+            params = self._params
+            if self._uniq:
+                params['uniq'] = self._uniq
             response = self.reddit_session.request_json(
                 self._info_url, params=params, as_objects=False)
         finally:
