@@ -1902,6 +1902,17 @@ class WikiPage(Refreshable):
         return self.add_editor(username=username, _delete=True, *args,
                                **kwargs)
 
+    def revisions(self, *args, **kwargs):
+        url = self.reddit_session.config['wiki_page_revisions'].format(
+                subreddit=six.text_type(self.subreddit), page=self.page.lower())
+
+        prev_use_oauth = self.reddit_session._use_oauth
+        self.reddit_session._use_oauth = True
+        response = self.reddit_session.request_json(url, params=kwargs)
+        self.reddit_session._use_oauth = prev_use_oauth
+
+        return response['data']
+
     def revision(self, version):
         result = WikiPage(self.reddit_session, self.subreddit, self.page,
                  self.json_dict, False, v=version)
