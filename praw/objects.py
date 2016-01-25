@@ -1904,7 +1904,8 @@ class WikiPage(Refreshable):
 
     def revisions(self, *args, **kwargs):
         url = self.reddit_session.config['wiki_page_revisions'].format(
-                subreddit=six.text_type(self.subreddit), page=self.page.lower())
+                subreddit=six.text_type(self.subreddit),
+                page=self.page.lower())
 
         prev_use_oauth = self.reddit_session._use_oauth
         self.reddit_session._use_oauth = True
@@ -1915,7 +1916,7 @@ class WikiPage(Refreshable):
 
     def revision(self, version):
         result = WikiPage(self.reddit_session, self.subreddit, self.page,
-                 self.json_dict, False, v=version)
+                          self.json_dict, False, v=version)
         return result
 
 

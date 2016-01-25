@@ -191,7 +191,7 @@ class Config(object):  # pylint: disable=R0903
                  'vote':                'api/vote/',
                  'wiki_edit':           'api/wiki/edit/',
                  'wiki_page':           'r/{subreddit}/wiki/{page}',  # No /
-                 'wiki_page_revisions': 'r/{subreddit}/wiki/revisions/{page}',  # No /
+                 'wiki_page_revisions': 'r/{subreddit}/wiki/revisions/{page}',
                  'wiki_page_editor':    ('r/{subreddit}/api/wiki/alloweditor/'
                                          '{method}'),
                  'wiki_page_settings':  'r/{subreddit}/wiki/settings/{page}',
