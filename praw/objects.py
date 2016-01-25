@@ -1809,8 +1809,9 @@ class WikiPage(Refreshable):
             page = json_dict['page']
         info_url = reddit_session.config['wiki_page'].format(
             subreddit=six.text_type(subreddit), page=page)
+        self._params = kwargs
         super(WikiPage, self).__init__(reddit_session, json_dict, fetch,
-                                       info_url, **kwargs)
+                                       info_url)
         self.page = page
         self.subreddit = subreddit
 
