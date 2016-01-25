@@ -1902,6 +1902,11 @@ class WikiPage(Refreshable):
         return self.add_editor(username=username, _delete=True, *args,
                                **kwargs)
 
+    def revision(self, version):
+        result = WikiPage(self.reddit_session, self.subreddit, self.page,
+                 self.json_dict, False, v=version)
+        return result
+
 
 class WikiPageListing(PRAWListing):
     """A list of WikiPages. Works just like a regular list."""
