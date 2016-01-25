@@ -1627,6 +1627,8 @@ class ModConfigMixin(AuthenticatedReddit):
                      spam_comments='low', spam_links='high',
                      spam_selfposts='high', submit_text='',
                      hide_ads=False, suggested_comment_sort='',
+                     key_color='',
+                     modmail_email_address='', modmail_email_enabled=False,
                      **kwargs):
         """Set the settings for the given subreddit.
 
@@ -1645,8 +1647,11 @@ class ModConfigMixin(AuthenticatedReddit):
                 'exclude_banned_modqueue': exclude_banned_modqueue,
                 'header-title': header_hover_text or '',
                 'hide_ads': hide_ads,
+                'key_color': key_color,
                 'lang': language,
                 'link_type': content_options,
+                'modmail_email_address': modmail_email_address or '',
+                'modmail_email_enabled': modmail_email_enabled,
                 'over_18': over_18,
                 'public_description': public_description,
                 'public_traffic': public_traffic,
