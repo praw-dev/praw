@@ -1903,11 +1903,12 @@ class WikiPage(Refreshable):
                                **kwargs)
 
     def revisions(self, **kwargs):
-        """Returns a dictionary of all page revisions
+        """Return a dictionary of all page revisions.
 
         Additional parameters are passed to
         :meth:`~praw.__init__.BaseReddit.request_json` to be used as
-        URL parameters."""
+        URL parameters.
+        """
         url = self.reddit_session.config['wiki_page_revisions'].format(
                 subreddit=six.text_type(self.subreddit),
                 page=self.page.lower())
@@ -1920,10 +1921,11 @@ class WikiPage(Refreshable):
         return response['data']
 
     def revision(self, version):
-        """Returns a specific version of the WikiPage.
+        """Return a specific version of the WikiPage.
 
         :param version: The version GUID of the page (returned by
-        :meth:`revisions`)"""
+        :meth:`revisions`)
+        """
         result = WikiPage(self.reddit_session, self.subreddit, self.page,
                           self.json_dict, False, v=version)
         return result
