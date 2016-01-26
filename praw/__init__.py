@@ -1627,6 +1627,7 @@ class ModConfigMixin(AuthenticatedReddit):
                      spam_comments='low', spam_links='high',
                      spam_selfposts='high', submit_text='',
                      hide_ads=False, suggested_comment_sort='',
+                     key_color='',
                      **kwargs):
         """Set the settings for the given subreddit.
 
@@ -1645,6 +1646,7 @@ class ModConfigMixin(AuthenticatedReddit):
                 'exclude_banned_modqueue': exclude_banned_modqueue,
                 'header-title': header_hover_text or '',
                 'hide_ads': hide_ads,
+                'key_color': key_color,
                 'lang': language,
                 'link_type': content_options,
                 'over_18': over_18,
