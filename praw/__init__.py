@@ -451,7 +451,6 @@ class BaseReddit(object):
                 response = handle_redirect()
                 _raise_response_exceptions(response)
                 self.http.cookies.update(response.cookies)
-                self._use_oauth = tempauth
                 if raw_response:
                     return response
                 else:
@@ -472,6 +471,8 @@ class BaseReddit(object):
                 if error._raw.status_code not in self.RETRY_CODES or \
                         remaining_attempts == 0:
                     raise
+            finally:
+                self._use_oauth = tempauth
 
     def _json_reddit_objecter(self, json_data):
         """Return an appropriate RedditObject from json_data when possible."""
