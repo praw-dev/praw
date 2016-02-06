@@ -451,14 +451,12 @@ class BaseReddit(object):
                 response = handle_redirect()
                 _raise_response_exceptions(response)
                 self.http.cookies.update(response.cookies)
-                self._use_oauth = tempauth
                 if raw_response:
                     return response
                 else:
                     return re.sub('&([^;]+);', decode, response.text)
             except errors.OAuthInvalidToken as error:
                 if not attempt_oauth_refresh:
-                    self._use_oauth = tempauth
                     raise
                 attempt_oauth_refresh = False
                 self._use_oauth = False
@@ -472,8 +470,9 @@ class BaseReddit(object):
                 # pylint: disable=W0212
                 if error._raw.status_code not in self.RETRY_CODES or \
                         remaining_attempts == 0:
-                    self._use_oauth = tempauth
                     raise
+            finally:
+                self._use_oauth = tempauth
 
     def _json_reddit_objecter(self, json_data):
         """Return an appropriate RedditObject from json_data when possible."""
