@@ -221,18 +221,22 @@ class Moderatable(RedditContentObject):
         return response
 
     @restrict_access(scope='modposts')
-    def distinguish(self, as_made_by='mod'):
+    def distinguish(self, as_made_by='mod', **kwargs):
         """Distinguish object as made by mod, admin or special.
 
         Distinguished objects have a different author color. With Reddit
         Enhancement Suite it is the background color that changes.
 
+        Key-word arguments are prepended to request data.
+        `id` and `how` entries will be overwritten.
+
         :returns: The json response from the server.
 
         """
         url = self.reddit_session.config['distinguish']
-        data = {'id': self.fullname,
-                'how': 'yes' if as_made_by == 'mod' else as_made_by}
+        data = kwargs
+        data.update({'id': self.fullname,
+                     'how': 'yes' if as_made_by == 'mod' else as_made_by})
         return self.reddit_session.request_json(url, data=data)
 
     @restrict_access(scope='modposts')
@@ -677,6 +681,10 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
             self._submission = self.reddit_session.get_submission(
                 url=self._fast_permalink)
         return self._submission
+
+    def sticky(self):
+        """sticky a top-level Comment made by authenticated moderator."""
+        return self.distinguish(sticky=True)
 
 
 class Message(Inboxable):
@@ -1239,6 +1247,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         :returns: The json response from the server.
 
         """
+
         def mark_as_nsfw_helper(self):  # pylint: disable=W0613
             # It is necessary to have the 'self' argument as it's needed in
             # restrict_access to determine what class the decorator is
