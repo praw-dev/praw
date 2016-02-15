@@ -221,22 +221,22 @@ class Moderatable(RedditContentObject):
         return response
 
     @restrict_access(scope='modposts')
-    def distinguish(self, as_made_by='mod', **kwargs):
+    def distinguish(self, as_made_by='mod', sticky=False):
         """Distinguish object as made by mod, admin or special.
 
         Distinguished objects have a different author color. With Reddit
         Enhancement Suite it is the background color that changes.
 
-        Key-word arguments are prepended to request data.
-        `id` and `how` entries will be overwritten.
+        `sticky` argument only used for Comments.
 
         :returns: The json response from the server.
 
         """
         url = self.reddit_session.config['distinguish']
-        data = kwargs
-        data.update({'id': self.fullname,
-                     'how': 'yes' if as_made_by == 'mod' else as_made_by})
+        data = {'id': self.fullname,
+                'how': 'yes' if as_made_by == 'mod' else as_made_by}
+        if isinstance(self, Comment):
+            data['sticky'] = sticky
         return self.reddit_session.request_json(url, data=data)
 
     @restrict_access(scope='modposts')
