@@ -682,10 +682,6 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
                 url=self._fast_permalink)
         return self._submission
 
-    def sticky(self):
-        """sticky a top-level Comment made by authenticated moderator."""
-        return self.distinguish(sticky=True)
-
 
 class Message(Inboxable):
     """A class for private messages."""
@@ -1247,7 +1243,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         :returns: The json response from the server.
 
         """
-
         def mark_as_nsfw_helper(self):  # pylint: disable=W0613
             # It is necessary to have the 'self' argument as it's needed in
             # restrict_access to determine what class the decorator is
