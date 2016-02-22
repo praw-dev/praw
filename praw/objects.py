@@ -22,7 +22,6 @@ extends over multiple Things. An object that extends from Saveable indicates
 that it can be saved and unsaved in the context of a logged in user.
 """
 
-from __future__ import print_function, unicode_literals
 import six
 from six.moves.urllib.parse import (  # pylint: disable=F0401
     parse_qs, urlparse, urlunparse)

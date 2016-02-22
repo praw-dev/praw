@@ -19,8 +19,6 @@ The functions here provide functionality that is often needed by programs using
 PRAW, but which isn't part of reddit's API.
 """
 
-from __future__ import unicode_literals
-
 import six
 import sys
 import time

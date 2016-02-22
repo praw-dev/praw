@@ -21,8 +21,6 @@ first. Also, they can limit the length of output strings and parse json
 response for certain errors.
 """
 
-from __future__ import print_function, unicode_literals
-
 import decorator
 import six
 import sys

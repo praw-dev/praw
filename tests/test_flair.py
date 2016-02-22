@@ -1,6 +1,5 @@
 """Tests for Subreddit flair."""
 
-from __future__ import print_function, unicode_literals
 from praw import errors
 from .helper import OAuthPRAWTest, PRAWTest, betamax, flair_diff
 

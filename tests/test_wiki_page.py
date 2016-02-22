@@ -1,6 +1,5 @@
 """Tests for WikiPage class."""
 
-from __future__ import print_function, unicode_literals
 from six import text_type
 from .helper import OAuthPRAWTest, PRAWTest, betamax
 

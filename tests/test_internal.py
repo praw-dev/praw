@@ -1,4 +1,3 @@
-from __future__ import print_function, unicode_literals
 from praw.internal import _to_reddit_list
 from .helper import PRAWTest, betamax
 

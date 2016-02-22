@@ -1,6 +1,5 @@
 """Tests for Redditor class."""
 
-from __future__ import print_function, unicode_literals
 from praw import errors
 from praw.objects import LoggedInRedditor
 from six import text_type

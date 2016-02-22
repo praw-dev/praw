@@ -13,6 +13,12 @@ upstream changes.
 4.0.0a1
 -------
 
+**Changed**
+
+* Removed instances of ``from __future__ import print_function`` as PRAW should
+  not use ``print`` at all.
+* Removed instances of ``from __future__ import unicode_literals``.
+
 **Removed**
 
 * Removed `praw-multiprocess` and its associated ``MultiprocessHandler``. This

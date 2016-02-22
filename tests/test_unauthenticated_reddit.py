@@ -1,7 +1,5 @@
 """Tests for UnauthenticatedReddit class."""
 
-from __future__ import print_function, unicode_literals
-
 import mock
 import warnings
 from six import text_type

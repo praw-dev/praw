@@ -1,7 +1,5 @@
 """Tests for OAuth2Reddit class."""
 
-from __future__ import print_function, unicode_literals
-
 import sys
 from praw import Reddit, errors
 from praw.objects import Submission

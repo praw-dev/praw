@@ -1,6 +1,5 @@
 """Tests for Comment class."""
 
-from __future__ import print_function, unicode_literals
 import pickle
 import mock
 from praw import errors, helpers

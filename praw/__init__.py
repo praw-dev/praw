@@ -24,8 +24,6 @@ violating them.
 More information about PRAW can be found at https://github.com/praw-dev/praw
 """
 
-from __future__ import print_function, unicode_literals
-
 import json
 import os
 import platform

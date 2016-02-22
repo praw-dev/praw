@@ -1,10 +1,7 @@
 """Tests for UnauthenticatedReddit class."""
 
-from __future__ import print_function, unicode_literals
-
 import time
 from six.moves.urllib.parse import urlparse
-
 from praw.helpers import submissions_between
 from praw.errors import PRAWException
 from .helper import PRAWTest, betamax, teardown_on_keyboard_interrupt

@@ -1,7 +1,5 @@
 """Tests for Config class."""
 
-from __future__ import print_function, unicode_literals
-
 import unittest
 from praw import Config
 from praw.errors import ClientException

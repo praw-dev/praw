@@ -1,6 +1,5 @@
 """Tests for Multireddit class."""
 
-from __future__ import print_function, unicode_literals
 from praw import errors, objects
 from .helper import PRAWTest, betamax
 

@@ -21,8 +21,6 @@ server side. A number of classes extend these two main exceptions for more
 specific exceptions.
 """
 
-from __future__ import print_function, unicode_literals
-
 import inspect
 import six
 import sys

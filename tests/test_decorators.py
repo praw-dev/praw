@@ -1,5 +1,3 @@
-from __future__ import print_function, unicode_literals
-
 import unittest
 from praw.decorator_helpers import _make_func_args
 from praw.decorators import restrict_access

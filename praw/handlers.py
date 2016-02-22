@@ -1,6 +1,5 @@
 """Provides classes that handle request dispatching."""
 
-from __future__ import print_function, unicode_literals
 import time
 from functools import wraps
 from praw.helpers import normalize_url

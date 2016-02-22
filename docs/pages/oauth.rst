@@ -139,7 +139,7 @@ Now that we've gained access, it's time to use it.
 .. code-block:: pycon
 
     >>> authenticated_user = r.get_me()
-    >>> print authenticated_user.name, authenticated_user.link_karma
+    >>> print(authenticated_user.name, authenticated_user.link_karma)
 
 Step 6: Refreshing the access_token.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

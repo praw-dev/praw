@@ -1,6 +1,5 @@
 ﻿"""Tests for Subreddit class."""
 
-from __future__ import print_function, unicode_literals
 import warnings
 from praw import errors
 from praw.objects import Subreddit

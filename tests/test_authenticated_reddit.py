@@ -1,6 +1,5 @@
 """Tests for AuthenticatedReddit class and its mixins."""
 
-from __future__ import print_function, unicode_literals
 import warnings
 from praw import errors
 from .helper import PRAWTest, betamax

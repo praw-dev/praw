@@ -18,7 +18,6 @@ The functions in this module are not to be relied upon by third-parties.
 
 """
 
-from __future__ import print_function, unicode_literals
 import re
 import six
 import sys

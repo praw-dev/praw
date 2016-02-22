@@ -86,17 +86,17 @@ preceding line breaks.
 
     fixed = re.sub(r'([0-9]+)(\))', r'\n\n\1.', c.body)
 
-This expression add two newline characters before each list item to break up 
-list items that aren't separated by newlines (which they need to be). Reddit 
+This expression add two newline characters before each list item to break up
+list items that aren't separated by newlines (which they need to be). Reddit
 markdown will treat this as a single line between items. Also, markdown doesn't
-care what number we use when enumerating a list, so we can just use "1." for 
-each list item and let the markdown interpreter figure out what the correct 
+care what number we use when enumerating a list, so we can just use "1." for
+each list item and let the markdown interpreter figure out what the correct
 number should be.
-    
-We'll wrap this regular expression with our `bot_action` function to have the 
-bot perform this operation only on the comments that passed the 
-`check_condition` filter. If we include a "verbose" parameter, we can easily 
-choose whether or not the function will output relevant text to the console by 
+
+We'll wrap this regular expression with our `bot_action` function to have the
+bot perform this operation only on the comments that passed the
+`check_condition` filter. If we include a "verbose" parameter, we can easily
+choose whether or not the function will output relevant text to the console by
 default. Keep in mind: reddit supports unicode text in comments.
 
 .. code-block:: python
@@ -105,12 +105,12 @@ default. Keep in mind: reddit supports unicode text in comments.
         fixed = re.sub(r'(\n?)([0-9]+)(\))', r'\n\n\2.', c.body)
 
         if verbose:
-            print c.body.encode("UTF-8")
-            print "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
-            print fixed.encode("UTF-8")
+            print(c.body.encode("UTF-8"))
+            print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n")
+            print(fixed.encode("UTF-8"))
 
 We can similarly define an optional input parameter to choose whether or not
-the bot will actually respond to people with the corrected markdown. NB: If we 
+the bot will actually respond to people with the corrected markdown. NB: If we
 want our bot to respond, it will need to be logged in. You can create a new
 account specific to the bot (recommended) or just use an existing login if you
 have one.
@@ -121,9 +121,9 @@ have one.
         fixed = re.sub(r'(\n?)([0-9]+)(\))', r'\n\n\2.', c.body)
 
         if verbose:
-            print c.body.encode("UTF-8")
-            print "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
-            print fixed.encode("UTF-8")
+            print(c.body.encode("UTF-8"))
+            print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n")
+            print(fixed.encode("UTF-8"))
 
         if respond:
             head = "Hi! Let me try to beautify the list in your comment:\n\n"
@@ -142,9 +142,9 @@ Our final ``bot_action`` function looks like this:
         fixed = re.sub(r'(\n?)([0-9]+)(\))', r'\n\n\2.', c.body)
 
         if verbose:
-            print c.body.encode("UTF-8")
-            print "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
-            print fixed.encode("UTF-8")
+            print(c.body.encode("UTF-8"))
+            print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n")
+            print(fixed.encode("UTF-8"))
 
         if respond:
             head = "Hi! Let me try to beautify the list in  your comment:\n\n"
@@ -167,9 +167,9 @@ Here's our completed bot!
         fixed = re.sub(r'(\n?)([0-9]+)(\))', r'\n\n\2.', c.body)
 
         if verbose:
-            print c.body.encode("UTF-8")
-            print "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
-            print fixed.encode("UTF-8")
+            print(c.body.encode("UTF-8"))
+            print("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n")
+            print(fixed.encode("UTF-8"))
 
         if respond:
             head = "Hi! Let me try to beautify the list in  your comment:\n\n"

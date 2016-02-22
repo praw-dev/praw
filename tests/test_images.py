@@ -1,7 +1,5 @@
 """Tests Subreddit image upload and delete utilities."""
 
-from __future__ import print_function, unicode_literals
-
 import os
 import sys
 from praw import errors
