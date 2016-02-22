@@ -595,7 +595,6 @@ class OAuth2Reddit(BaseReddit):
             raise errors.OAuthException(retval['error'], url)
         return retval
 
-    @decorators.require_oauth
     def get_access_information(self, code):
         """Return the access information for an OAuth2 authorization grant.
 
@@ -613,7 +612,6 @@ class OAuth2Reddit(BaseReddit):
                 'refresh_token': retval.get('refresh_token'),
                 'scope': set(retval['scope'].split(' '))}
 
-    @decorators.require_oauth
     def get_authorize_url(self, state, scope='identity', refreshable=False):
         """Return the URL to send the user to for OAuth2 authorization.
 
@@ -644,7 +642,6 @@ class OAuth2Reddit(BaseReddit):
                     self.client_secret is not None,
                     self.redirect_uri is not None))
 
-    @decorators.require_oauth
     def refresh_access_information(self, refresh_token):
         """Return updated access information for an OAuth2 authorization grant.
 
@@ -1355,7 +1352,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         response = self.request_json(self.config['select_flair'], data=data)
         return response
 
-    @decorators.require_oauth
     def set_access_credentials(self, scope, access_token, refresh_token=None,
                                update_user=True):
         """Set the credentials used for OAuth2 authentication.

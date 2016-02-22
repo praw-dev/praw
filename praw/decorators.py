@@ -158,17 +158,3 @@ def require_captcha(function, *args, **kwargs):
                     not hasattr(sys.stdin, 'closed') or sys.stdin.closed:
                 raise
             captcha_id = exception.response['captcha']
-
-
-@decorator.decorator
-def require_oauth(function, *args, **kwargs):
-    """Verify that the OAuth functions can be used prior to use.
-
-    Returned data is not modified.
-
-    """
-    if not args[0].has_oauth_app_info:
-        err_msg = ("The OAuth app config parameters client_id, client_secret "
-                   "and redirect_url must be specified to use this function.")
-        raise errors.OAuthAppRequired(err_msg)
-    return function(*args, **kwargs)
