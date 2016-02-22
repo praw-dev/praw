@@ -22,9 +22,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
     def setUp(self):
         PRAWTest.setUp(self)
         time.time = mock_time
-        self.verbosity = 3
-        if os.getenv('TRAVIS') and not hasattr(sys, 'pypy_version_info'):
-            self.verbosity = 0
+        self.verbosity = 0
 
     def tearDown(self):
         PRAWTest.tearDown(self)
