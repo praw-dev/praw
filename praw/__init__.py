@@ -1342,8 +1342,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
     def has_scope(self, scope):
         """Return True if OAuth2 authorized for the passed in scope(s)."""
-        if not self.is_oauth_session():
-            return False
         if '*' in self._authentication:
             return True
         if isinstance(scope, six.string_types):
@@ -1358,10 +1356,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
 
         """
         return self._authentication is True
-
-    def is_oauth_session(self):
-        """Return True when the current session is an OAuth2 session."""
-        return isinstance(self._authentication, set)
 
     def refresh_access_information(self,  # pylint: disable=W0221
                                    refresh_token=None,

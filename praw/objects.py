@@ -832,14 +832,6 @@ class Redditor(Gildable, Messageable, Refreshable):
 
         """
         self.reddit_session.evict(self.reddit_session.config['friends'])
-
-        # Requests through password auth use /api/friend
-        # Requests through oauth use /api/v1/me/friends/{username}
-        if not self.reddit_session.is_oauth_session():
-            modifier = _modify_relationship('friend', unlink=_unfriend)
-            data = {'note': note} if note else {}
-            return modifier(self.reddit_session.user, self, **data)
-
         url = self.reddit_session.config['friend_v1'].format(user=self.name)
         # This endpoint wants the data to be a string instead of an actual
         # dictionary, although it is not required to have any content for adds.
