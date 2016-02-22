@@ -95,7 +95,7 @@ class PRAWTest(unittest.TestCase):
         self.submission_sticky_id2 = '32exei'
 
     def delay_for_listing_update(self, duration=0.1):
-        if not os.getenv('TRAVIS') and self.r.config.api_request_delay == 0:
+        if not os.getenv('TRAVIS'):
             time.sleep(duration)
 
     def first(self, sequence, predicate):
@@ -148,11 +148,6 @@ def betamax(cassette_name=None, **cassette_options):
         def betamax_function(obj):
             with Betamax(obj.r.http).use_cassette(
                     cassette_name or function.__name__, **cassette_options):
-                # We need to set the delay to zero for betamaxed requests.
-                # Unfortunately, we don't know if the request actually happened
-                # so tests should only be updated one at a time rather than in
-                # bulk to prevent exceeding reddit's rate limit.
-                obj.r.config.api_request_delay = 0
                 if hasattr(obj, 'betamax_init'):
                     obj.betamax_init()
                 return function(obj)

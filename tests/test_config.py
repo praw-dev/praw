@@ -14,14 +14,12 @@ class ConfigTest(unittest.TestCase):
     def test_default_site(self):
         config = Config('reddit')
         self.assertEqual(0, config.log_requests)
-        self.assertEqual(2, config.api_request_delay)
         self.assertEqual(None, config.user)
         self.assertEqual(None, config.pswd)
 
     def test_default_site__with_overrides(self):
-        config = Config('reddit', log_requests=15, api_request_delay=21)
+        config = Config('reddit', log_requests=15)
         self.assertEqual(15, config.log_requests)
-        self.assertEqual(21, config.api_request_delay)
 
     def test_default_site__with_username_and_password(self):
         config = Config('reddit', user='foo', pswd='bar')

@@ -51,14 +51,10 @@ Configuration Variables
 The following variables are provided in the [DEFAULT] section of the *global*
 config file. Each site can overwrite any of these variables.
 
-* *api_request_delay:* A **float** that defines the number of seconds required
-  between calls to the same domain.
 * *api_domain:* A **string** that defines the *domain* to use for all
   standard API requests.
 * *check_for_updates:* A **boolean** to indicate whether or not to check for
   package updates.
-* *cache_timeout:* An **integer** that defines the number of seconds to
-  internally cache GET/POST requests based on URL.
 * *http_proxy:* A **string** that declares a http proxy to be used. It follows
   the `requests proxy conventions
   <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_, e.g.,
@@ -136,12 +132,6 @@ variables are:
   :meth:`.get_authorize_url` and
   :meth:`~praw.__init__.AuthenticatedReddit.get_access_information`.
 
-Note: The tracking for *api_request_delay* and *cache_timeout* is on a
-per-domain, not per-site, basis. Essentially, this means that the time since
-the last request is the time since the last request from any site to the domain
-in question. Thus, unexpected event timings may occur if these values differ
-between sites to the same domain.
-
 The Sites
 ^^^^^^^^^
 
@@ -167,7 +157,6 @@ in :class:`praw.Reddit`. For example, you could add the following to your
     ssl_domain: ssl.myredditsite.com
     user: bboe
     pswd: this_isn't_my_password
-    api_request_delay: 7.0
 
 From there, to specify the reddit instance of "YOUR_SITE", you would do something
 like this:
@@ -210,5 +199,4 @@ a reddit proper accounts and 2 for local reddit testing.
     domain: reddit.local:8000
     user: someuser
     pswd: somepass
-    api_request_delay: 5.0
     default_content_limit: 2

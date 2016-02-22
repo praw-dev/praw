@@ -31,7 +31,6 @@ import re
 import six
 import sys
 from praw import decorators, errors
-from praw.helpers import normalize_url
 from praw.internal import (_prepare_request, _raise_redirect_exceptions,
                            _raise_response_exceptions, _to_reddit_list)
 from praw.settings import CONFIG
@@ -40,7 +39,7 @@ from requests.compat import urljoin
 from requests.utils import to_native_string
 from requests import Request
 # pylint: disable=F0401
-from six.moves import html_entities, http_cookiejar
+from six.moves import html_entities
 from six.moves.urllib.parse import parse_qs, urlparse, urlunparse
 # pylint: enable=F0401
 from update_checker import update_check
@@ -186,14 +185,14 @@ class Config(object):  # pylint: disable=R0903
                  'username_available':  'api/username_available/',
                  'vote':                'api/vote/',
                  'wiki_edit':           'api/wiki/edit/',
-                 'wiki_page':           'r/{subreddit}/wiki/{page}',  # No /
+                 'wiki_page':           'r/{subreddit}/wiki/{page}',
                  'wiki_page_editor':    ('r/{subreddit}/api/wiki/alloweditor/'
                                          '{method}'),
                  'wiki_page_settings':  'r/{subreddit}/wiki/settings/{page}',
                  'wiki_pages':          'r/{subreddit}/wiki/pages/',
                  'wiki_banned':         'r/{subreddit}/about/wikibanned/',
-                 'wiki_contributors':   'r/{subreddit}/about/wikicontributors/'
-                 }
+                 'wiki_contributors':   ('r/{subreddit}/about/'
+                                         'wikicontributors/')}
     WWW_PATHS = set(['authorize'])
 
     @staticmethod
@@ -229,7 +228,6 @@ class Config(object):  # pylint: disable=R0903
         self.permalink_url = 'https://' + obj['permalink_domain']
         self.oauth_url = ('https://' if config_boolean(obj['oauth_https'])
                           else 'http://') + obj['oauth_domain']
-        self.api_request_delay = float(obj['api_request_delay'])
         self.by_kind = {obj['comment_kind']:    objects.Comment,
                         obj['message_kind']:    objects.Message,
                         obj['redditor_kind']:   objects.Redditor,
@@ -244,7 +242,6 @@ class Config(object):  # pylint: disable=R0903
         self.by_object = dict((value, key) for (key, value) in
                               six.iteritems(self.by_kind))
         self.by_object[objects.LoggedInRedditor] = obj['redditor_kind']
-        self.cache_timeout = float(obj['cache_timeout'])
         self.check_for_updates = config_boolean(obj['check_for_updates'])
         self.domain = obj['permalink_domain']
         self.output_chars_limit = int(obj['output_chars_limit'])
@@ -378,27 +375,6 @@ class BaseReddit(object):
         :returns: either the response body or the response object
 
         """
-        def build_key_items(url, params, data, auth, files, method):
-            request = _prepare_request(self, url, params, data, auth, files,
-                                       method)
-
-            # Prepare extra arguments
-            key_items = []
-            oauth = request.headers.get('Authorization', None)
-            for key_value in (params, data, request.cookies, auth, oauth):
-                if isinstance(key_value, dict):
-                    key_items.append(tuple(key_value.items()))
-                elif isinstance(key_value, http_cookiejar.CookieJar):
-                    key_items.append(tuple(key_value.get_dict().items()))
-                else:
-                    key_items.append(key_value)
-            kwargs = {'_rate_domain': self.config.domain,
-                      '_rate_delay': int(self.config.api_request_delay),
-                      '_cache_ignore': bool(files) or raw_response,
-                      '_cache_timeout': int(self.config.cache_timeout)}
-
-            return (request, key_items, kwargs)
-
         def decode(match):
             return CHR(html_entities.name2codepoint[match.group(1)])
 
@@ -407,14 +383,11 @@ class BaseReddit(object):
             url = request.url
             while url:  # Manually handle 302 redirects
                 request.url = url
-                kwargs['_cache_key'] = (normalize_url(request.url),
-                                        tuple(key_items))
-                response = self.http.request(
-                    request=request.prepare(),
-                    proxies=self.http.proxies,
-                    timeout=timeout,
-                    verify=self.http.validate_certs, **kwargs)
-
+                response = self.http.send(request.prepare(),
+                                          proxies=self.http.proxies,
+                                          timeout=timeout,
+                                          allow_redirects=False,
+                                          verify=self.http.validate_certs)
                 if self.config.log_requests >= 2:
                     msg = 'status: {0}\n'.format(response.status_code)
                     sys.stderr.write(msg)
@@ -423,8 +396,8 @@ class BaseReddit(object):
             return response
 
         timeout = self.config.timeout if timeout is None else timeout
-        request, key_items, kwargs = build_key_items(url, params, data,
-                                                     auth, files, method)
+        request = _prepare_request(self, url, params, data, auth, files,
+                                   method)
 
         remaining_attempts = 3 if retry_on_error else 1
         attempt_oauth_refresh = bool(self.refresh_token)
@@ -442,9 +415,8 @@ class BaseReddit(object):
                     raise
                 attempt_oauth_refresh = False
                 self.refresh_access_information()
-                request, key_items, kwargs = build_key_items(url, params,
-                                                             data, auth, files,
-                                                             method)
+                request = _prepare_request(self, url, params, data, auth,
+                                           files, method)
             except errors.HTTPException as error:
                 remaining_attempts -= 1
                 # pylint: disable=W0212
