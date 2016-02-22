@@ -1,8 +1,9 @@
 """Internal helper functions used by praw.decorators."""
 import inspect
-from requests.compat import urljoin
-import six
 import sys
+
+import six
+from six.moves.urllib.parse import urljoin
 
 
 def _get_captcha(reddit_session, captcha_id):

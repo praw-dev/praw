@@ -9,8 +9,8 @@ from betamax_matchers.json_body import JSONBodyMatcher
 from betamax_serializers import pretty_json
 from functools import wraps
 from praw import Reddit
-from requests.compat import urljoin
 from six import text_type
+from six.moves.urllib.parse import urljoin
 
 
 USER_AGENT = 'PRAW_test_suite'

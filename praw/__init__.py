@@ -9,27 +9,24 @@ violating them.
 
 More information about PRAW can be found at https://github.com/praw-dev/praw
 """
-
 import json
 import os
 import platform
 import re
-import six
 import sys
-from praw import decorators, errors
-from praw.internal import (_prepare_request, _raise_redirect_exceptions,
-                           _raise_response_exceptions, _to_reddit_list)
-from praw.settings import CONFIG
-from requests import Session
-from requests.compat import urljoin
+
+import six
+from requests import Request, Session
 from requests.utils import to_native_string
-from requests import Request
-# pylint: disable=F0401
 from six.moves import html_entities
-from six.moves.urllib.parse import parse_qs, urlparse, urlunparse
-# pylint: enable=F0401
+from six.moves.urllib.parse import parse_qs, urljoin, urlparse, urlunparse
 from update_checker import update_check
 from warnings import warn_explicit
+
+from . import decorators, errors
+from .internal import (_prepare_request, _raise_redirect_exceptions,
+                       _raise_response_exceptions, _to_reddit_list)
+from .settings import CONFIG
 
 
 __version__ = '3.4.0'

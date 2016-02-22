@@ -4,15 +4,17 @@ Helper functions.
 The functions here provide functionality that is often needed by programs using
 PRAW, but which isn't part of reddit's API.
 """
-
-import six
 import sys
 import time
 from collections import deque
 from functools import partial
-from timeit import default_timer as timer
-from praw.errors import HTTPException, PRAWException
 from operator import attrgetter
+from timeit import default_timer as timer
+
+import six
+
+from .errors import HTTPException, PRAWException
+
 
 BACKOFF_START = 4  # Minimum number of seconds to sleep during errors
 KEEP_ITEMS = 128  # On each iteration only remember the first # items

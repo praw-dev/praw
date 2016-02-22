@@ -7,15 +7,14 @@ first. Also, they can limit the length of output strings and parse json
 response for certain errors.
 """
 
-import decorator
 import sys
 from functools import wraps
-from praw.decorator_helpers import (
-    _get_captcha,
-    _make_func_args
-)
-from praw import errors
 from warnings import simplefilter, warn
+
+import decorator
+
+from . import errors
+from .decorator_helpers import _get_captcha, _make_func_args
 
 
 # Enable deprecation warnings

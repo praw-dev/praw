@@ -8,8 +8,9 @@ specific exceptions.
 """
 
 import inspect
-import six
 import sys
+
+import six
 
 
 class PRAWException(Exception):

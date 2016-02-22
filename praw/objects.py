@@ -7,23 +7,21 @@ https://github.com/reddit/reddit/wiki/API. The second gives functionality that
 extends over multiple Things. An object that extends from Saveable indicates
 that it can be saved and unsaved in the context of a logged in user.
 """
-
-import six
-from six.moves.urllib.parse import (  # pylint: disable=F0401
-    parse_qs, urlparse, urlunparse)
 from heapq import heappop, heappush
 from json import dumps
-from requests.compat import urljoin
 from warnings import warn_explicit
-from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
-                  ModFlairMixin as MFMix, ModLogMixin as MLMix,
-                  ModOnlyMixin as MOMix, ModSelfMixin as MSMix,
-                  MultiredditMixin as MultiMix, PrivateMessagesMixin as PMMix,
-                  SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
-from praw.decorators import alias_function
-from praw.errors import ClientException, InvalidComment
-from praw.internal import (_get_redditor_listing, _get_sorter,
-                           _modify_relationship)
+
+import six
+from six.moves.urllib.parse import parse_qs, urljoin, urlparse, urlunparse
+
+from . import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
+               ModFlairMixin as MFMix, ModLogMixin as MLMix,
+               ModOnlyMixin as MOMix, ModSelfMixin as MSMix,
+               MultiredditMixin as MultiMix, PrivateMessagesMixin as PMMix,
+               SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
+from .decorators import alias_function
+from .errors import ClientException, InvalidComment
+from .internal import _get_redditor_listing, _get_sorter, _modify_relationship
 
 
 REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor',
@@ -1589,8 +1587,8 @@ class PRAWListing(RedditContentObject):
             raise NotImplementedError('PRAWListing must be extended.')
 
         child_list = getattr(self, self.CHILD_ATTRIBUTE)
-        for i in range(len(child_list)):
-            child_list[i] = self._convert(reddit_session, child_list[i])
+        for index, item in enumerate(child_list):
+            child_list[index] = self._convert(reddit_session, item)
 
     def __contains__(self, item):
         """Test if item exists in the listing."""

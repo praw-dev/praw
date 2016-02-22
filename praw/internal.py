@@ -3,15 +3,16 @@
 The functions in this module are not to be relied upon by third-parties.
 
 """
-
 import re
-import six
 import sys
+
+import six
 from requests import Request, codes, exceptions
-from requests.compat import urljoin
-from praw.errors import (HTTPException, Forbidden, NotFound, InvalidSubreddit,
-                         OAuthException, OAuthInsufficientScope,
-                         OAuthInvalidToken, RedirectException)
+from six.moves.urllib.parse import urljoin
+
+from .errors import (HTTPException, Forbidden, NotFound, InvalidSubreddit,
+                     OAuthException, OAuthInsufficientScope,
+                     OAuthInvalidToken, RedirectException)
 
 
 RE_REDIRECT = re.compile('(rand(om|nsfw))|about/sticky')
