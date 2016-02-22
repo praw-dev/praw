@@ -179,7 +179,6 @@ class Config(object):  # pylint: disable=R0903
                  'wiki_banned':         'r/{subreddit}/about/wikibanned/',
                  'wiki_contributors':   ('r/{subreddit}/about/'
                                          'wikicontributors/')}
-    WWW_PATHS = set(['authorize'])
 
     @staticmethod
     def ua_string(praw_info):
@@ -210,10 +209,6 @@ class Config(object):  # pylint: disable=R0903
         for key, value in kwargs.items():
             obj[key] = value
 
-        self.api_url = 'https://' + obj['api_domain']
-        self.permalink_url = 'https://' + obj['permalink_domain']
-        self.oauth_url = ('https://' if config_boolean(obj['oauth_https'])
-                          else 'http://') + obj['oauth_domain']
         self.by_kind = {obj['comment_kind']:    objects.Comment,
                         obj['message_kind']:    objects.Message,
                         obj['redditor_kind']:   objects.Redditor,
@@ -229,48 +224,33 @@ class Config(object):  # pylint: disable=R0903
                               six.iteritems(self.by_kind))
         self.by_object[objects.LoggedInRedditor] = obj['redditor_kind']
         self.check_for_updates = config_boolean(obj['check_for_updates'])
-        self.domain = obj['permalink_domain']
         self.log_requests = int(obj['log_requests'])
         # `get(...) or None` is used because `get` may return an empty string
-        self.http_proxy = (obj.get('http_proxy') or os.getenv('http_proxy') or
+        self.http_proxy = (os.getenv('http_proxy') or obj.get('http_proxy') or
                            None)
-        self.https_proxy = (obj.get('https_proxy') or
-                            os.getenv('https_proxy') or None)
-        self.validate_certs = config_boolean(obj.get('validate_certs'))
+        self.https_proxy = (os.getenv('https_proxy') or
+                            obj.get('https_proxy') or None)
         self.client_id = obj.get('oauth_client_id') or None
         self.client_secret = obj.get('oauth_client_secret') or None
         self.redirect_uri = obj.get('oauth_redirect_uri') or None
         self.refresh_token = obj.get('oauth_refresh_token') or None
+        self.oauth_url = obj['oauth_url']
+        self.reddit_url = obj['reddit_url']
+        self._short_url = obj.get('short_url') or None
         self.store_json_result = config_boolean(obj.get('store_json_result'))
-
-        if 'short_domain' in obj and obj['short_domain']:
-            self._short_domain = 'http://' + obj['short_domain']
-        else:
-            self._short_domain = None
         self.timeout = float(obj['timeout'])
-        try:
-            self.user = obj['user'] if obj['user'] else None
-            self.pswd = obj['pswd']
-        except KeyError:
-            self.user = self.pswd = None
+        self.validate_certs = config_boolean(obj.get('validate_certs'))
 
     def __getitem__(self, key):
         """Return the URL for key."""
-        prefix = self.permalink_url if key in self.WWW_PATHS else self.api_url
-        return urljoin(prefix, self.API_PATHS[key])
+        return urljoin(self.oauth_url, self.API_PATHS[key])
 
     @property
-    def short_domain(self):
-        """Return the short domain of the reddit server.
-
-        Used to generate the shortlink. For reddit.com the short_domain is
-        redd.it.
-
-        """
-        if self._short_domain:
-            return self._short_domain
-        else:
+    def short_url(self):
+        """Return the short url or raise a ClientException when not set."""
+        if self._short_url is None:
             raise errors.ClientException('No short domain specified.')
+        return self._short_url
 
 
 class BaseReddit(object):
@@ -1139,7 +1119,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self._authentication = None
         self.access_token = None
         self.refresh_token = self.config.refresh_token or None
-        self.user = None
 
     def __str__(self):
         """Return a string representation of the AuthenticatedReddit."""
@@ -1185,7 +1164,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.access_token = None
         self.refresh_token = None
         self.http.cookies.clear()
-        self.user = None
 
     def delete(self, password, message=""):
         """Delete the currently authenticated redditor.

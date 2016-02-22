@@ -51,8 +51,6 @@ Configuration Variables
 The following variables are provided in the [DEFAULT] section of the *global*
 config file. Each site can overwrite any of these variables.
 
-* *api_domain:* A **string** that defines the *domain* to use for all
-  standard API requests.
 * *check_for_updates:* A **boolean** to indicate whether or not to check for
   package updates.
 * *http_proxy:* A **string** that declares a http proxy to be used. It follows
@@ -60,8 +58,8 @@ config file. Each site can overwrite any of these variables.
   <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_, e.g.,
   ``http_proxy: http://user:pass@addr:port``. If no proxy is specified, PRAW
   will pick up the environment variable for http_proxy, if it has been set.
-* *https_proxy:* A **string** that declares a https proxy to be used. It follows
-  the `requests proxy conventions
+* *https_proxy:* A **string** that declares a https proxy to be used. It
+  follows the `requests proxy conventions
   <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_, e.g.,
   ``https_proxy: http://user:pass@addr:port``. If no proxy is specified, PRAW
   will pick up the environment variable for https_proxy, if it has been set.
@@ -71,20 +69,18 @@ config file. Each site can overwrite any of these variables.
   * **1:** log only the request URIs
   * **2:** log the request URIs as well as any POST data
 
-* *oauth_domain:* A **string** that defines the *domain* where OAuth
+* *oauth_url:* A **string** that defines the *scheme* and *domain* where OAuth
   authenticated requests are sent.
-* *oauth_https:* A **boolean** that determines whether or not to use HTTPS for
-  oauth connections. This should only be changed for development environments.
-* *permalink_domain:* A **string** that defines the *domain* that is used for
-   the display *permalink* for Submissions and Comments.
-* *short_domain:* A **string** that defines the *domain* that is used for
-   short urls.
+* *reddit_url:* A **string** that defines the *scheme* and *domain* that is
+   used to regularly access the site.
+* *short_url:* A **string** that defines the *scheme* and *domain* that is used
+   for short urls to the site.
 * *store_json_result:* A **boolean** to indicate if json_dict, which contains
   the original API response, should be stored on every object in the json_dict
   attribute. Default is ``False`` as memory usage will double if enabled. For
   lazy objects, json_dict will be ``None`` until the data has been fetched.
-* *timeout:* Maximum time, a **float**, in seconds, before a single HTTP request
-  times out. urllib2.URLError is raised upon timeout.
+* *timeout:* Maximum time, a **float**, in seconds, before a single HTTP
+  request times out. urllib2.URLError is raised upon timeout.
 * *validate_certs:* A **boolean** to indicate if SSL certificates should be
   validated or not.  If not specified, will default to ``True``.  This is
   mainly for testing local reddit installations with self-signed certificates.
@@ -99,18 +95,6 @@ config file. Each site can overwrite any of these variables.
 The are additional variables that each site can define. These additional
 variables are:
 
-* *domain:* (**REQUIRED**) A **string** that provides the domain name, and
-  optionally port, used to connect to the desired reddit site. For reddit
-  proper, this is: `www.reddit.com`. Note that if you are running a custom
-  reddit install, this name needs to match the domain name listed in the
-  reddit configuration ini.
-* *user:* A **string** that defines the default username to use when *login*
-  is called without a *user* parameter.
-* *pswd:* A **string** that defines the password to use in conjunction with
-  the provided *user*.
-* *ssl_domain:* A **string** that defines the *domain*  where encrypted
-  requests are sent. This is used for logging in, both OAuth and user/password.
-  When not provided, these requests are sent in plaintext (unencrypted).
 * *oauth_client_id:* A **string** that, if given, defines the ``client_id`` a
   reddit object is initialized with.
 * *oauth_client_secret:* A **string** that, if given, defines the
@@ -149,50 +133,17 @@ in :class:`praw.Reddit`. For example, you could add the following to your
 .. code-block:: text
 
     [YOUR_SITE]
-    domain: www.myredditsite.com
-    ssl_domain: ssl.myredditsite.com
-    user: bboe
-    pswd: this_isn't_my_password
+    oauth_url: http://reddit.local
+    reddit_url: http://reddit.local
 
-From there, to specify the reddit instance of "YOUR_SITE", you would do something
-like this:
+From there, to specify the reddit instance of "YOUR_SITE", you would do
+something like this:
 
 .. code-block:: python
 
     import praw
 
     r = praw.Reddit(user_agent='Custom Site Example for PRAW',
-	                site_name='YOUR_SITE')
+                    site_name='YOUR_SITE')
 
 Of course, you can use any of the above Configuration Variables as well.
-
-Example praw.ini file
-^^^^^^^^^^^^^^^^^^^^^
-
-The following is an example ``praw.ini`` file which has 4 sites defined: 2 for
-a reddit proper accounts and 2 for local reddit testing.
-
-.. code-block:: text
-
-    [bboe]
-    domain: www.reddit.com
-    ssl_domain: ssl.reddit.com
-    user: bboe
-    pswd: this_isn't_my_password
-
-    [reddit_dev]
-    domain: www.reddit.com
-    ssl_domain: ssl.reddit.com
-    user: someuser
-    pswd: somepass
-
-    [local_dev1]
-    domain: reddit.local:8000
-    user: someuser
-    pswd: somepass
-
-    [local_wacky_dev]
-    domain: reddit.local:8000
-    user: someuser
-    pswd: somepass
-    default_content_limit: 2

@@ -111,7 +111,7 @@ class PRAWTest(unittest.TestCase):
         self.configure()
 
     def url(self, path):
-        return urljoin(self.r.config.permalink_url, path)
+        return urljoin(self.r.config.reddit_url, path)
 
 
 class OAuthPRAWTest(PRAWTest):

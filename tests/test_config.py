@@ -27,8 +27,4 @@ class ConfigTest(unittest.TestCase):
 
     def test_local_site(self):
         config = Config('local_example')
-        try:
-            config.short_domain
-            self.fail('Did not raise ClientException')
-        except ClientException:
-            pass
+        self.assertRaises(ClientException, getattr, config, 'short_url')

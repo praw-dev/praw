@@ -1000,10 +1000,9 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
     def __init__(self, reddit_session, json_dict):
         """Construct an instance of the Subreddit object."""
         super(Submission, self).__init__(reddit_session, json_dict)
-        # pylint: disable=E0203
-        self._api_link = urljoin(reddit_session.config.api_url, self.permalink)
-        # pylint: enable=E0203
-        self.permalink = urljoin(reddit_session.config.permalink_url,
+        self._api_link = urljoin(reddit_session.config.oauth_url,
+                                 self.permalink)
+        self.permalink = urljoin(reddit_session.config.reddit_url,
                                  self.permalink)
         self._comment_sort = None
         self._comments_by_id = {}
@@ -1068,12 +1067,12 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
         """
         if self._comments is None:
-            self.comments = Submission.from_url(  # pylint: disable=W0212
+            self.comments = Submission.from_url(
                 self.reddit_session, self._api_link, comments_only=True)
         return self._comments
 
-    @comments.setter  # NOQA
-    def comments(self, new_comments):  # pylint: disable=E0202
+    @comments.setter
+    def comments(self, new_comments):
         """Update the list of comments with the provided nested list."""
         self._update_comments(new_comments)
         self._orphaned = {}
@@ -1222,12 +1221,11 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
     def short_link(self):
         """Return a short link to the submission.
 
-        The short link points to a page on the short_domain that redirects to
-        the main. For example http://redd.it/eorhm is a short link for
+        For example http://redd.it/eorhm is a short link for
         https://www.reddit.com/r/announcements/comments/eorhm/reddit_30_less_typing/.
 
         """
-        return urljoin(self.reddit_session.config.short_domain, self.id)
+        return urljoin(self.reddit_session.config.short_url, self.id)
 
     def sticky(self, bottom=True):
         """Sticky a post in its subreddit.

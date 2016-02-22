@@ -13,6 +13,10 @@ upstream changes.
 4.0.0a1
 -------
 
+**Added**
+
+* Added ``reddit_url`` setting to ``praw.ini``.
+
 **Changed**
 
 * :class:`Redditor` no longer takes a ``handler`` argument.
@@ -20,9 +24,12 @@ upstream changes.
 * Removed instances of ``from __future__ import print_function`` as PRAW should
   not use ``print`` at all.
 * Removed instances of ``from __future__ import unicode_literals``.
+* ``praw.ini`` settings ``oauth_domain`` and ``oauth_https`` have been combined
+  into ``oauth_url``.
 
 **Removed**
 
+* Removed ``api_domain`` setting from ``praw.ini``.
 * Removed ``api_request_delay`` setting from ``praw.ini``.
 * Removed ``cache_timeout`` setting from ``praw.ini``.
 * Removed ``output_chars_limit`` setting from ``praw.ini``.
