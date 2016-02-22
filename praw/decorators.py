@@ -22,12 +22,10 @@ response for certain errors.
 """
 
 import decorator
-import six
 import sys
 from functools import wraps
 from praw.decorator_helpers import (
     _get_captcha,
-    _is_mod_of_all,
     _make_func_args
 )
 from praw import errors
@@ -178,98 +176,6 @@ def require_captcha(function, *args, **kwargs):
                     not hasattr(sys.stdin, 'closed') or sys.stdin.closed:
                 raise
             captcha_id = exception.response['captcha']
-
-
-def restrict_access(scope, mod=None, login=None, oauth_only=False):
-    """Restrict function access unless the user has the necessary permissions.
-
-    Raises one of the following exceptions when appropriate:
-      * LoginRequired
-      * LoginOrOAuthRequired
-        * the scope attribute will provide the necessary scope name
-      * ModeratorRequired
-      * ModeratorOrOAuthRequired
-        * the scope attribute will provide the necessary scope name
-
-    :param scope: Indicate the scope that is required for the API call. None or
-        False must be passed to indicate that no scope handles the API call.
-        All scopes save for `read` imply login=True. Scopes with 'mod' in their
-        name imply mod=True.
-    :param mod: Indicate that a moderator is required. Implies login=True.
-    :param login: Indicate that a login is required.
-    :param oauth_only: Indicate that only OAuth is supported for the function.
-
-    Returned data is not modified.
-
-    This decorator assumes that all mod required functions fit one of these
-    categories:
-
-      * have the subreddit as the first argument (Reddit instance functions) or
-        have a subreddit keyword argument
-      * are called upon a subreddit object (Subreddit RedditContentObject)
-      * are called upon a RedditContent object with attribute subreddit
-
-    """
-    if not scope and oauth_only:
-        raise TypeError('`scope` must be set when `oauth_only` is set')
-
-    mod = mod is not False and (mod or scope and 'mod' in scope)
-    login = login is not False and (login or mod or scope and scope != 'read')
-
-    @decorator.decorator
-    def wrap(function, *args, **kwargs):
-        if args[0] is None:  # Occurs with (un)friend
-            assert login
-            raise errors.LoginRequired(function.__name__)
-        # This segment of code uses hasattr to determine what instance type
-        # the function was called on. We could use isinstance if we wanted
-        # to import the types at runtime (decorators is used by all the
-        # types).
-        if mod:
-            if hasattr(args[0], 'reddit_session'):
-                # Defer access until necessary for RedditContentObject.
-                # This is because scoped sessions may not require this
-                # attribute to exist, thus it might not be set.
-                from praw.objects import Subreddit
-                subreddit = args[0] if isinstance(args[0], Subreddit) \
-                    else False
-            else:
-                subreddit = kwargs.get(
-                    'subreddit', args[1] if len(args) > 1 else None)
-                if subreddit is None:  # Try the default value
-                    defaults = six.get_function_defaults(function)
-                    subreddit = defaults[0] if defaults else None
-        else:
-            subreddit = None
-
-        obj = getattr(args[0], 'reddit_session', args[0])
-        # This function sets _use_oauth for one time use only.
-        # Verify that statement is actually true.
-        assert not obj._use_oauth  # pylint: disable=W0212
-
-        if scope and obj.has_scope(scope):
-            obj._use_oauth = True  # pylint: disable=W0212
-        elif oauth_only:
-            raise errors.OAuthScopeRequired(function.__name__, scope)
-        elif login and obj.is_logged_in():
-            if subreddit is False:
-                # Now fetch the subreddit attribute. There is no good
-                # reason for it to not be set during a logged in session.
-                subreddit = args[0].subreddit
-            if mod and not _is_mod_of_all(obj.user, subreddit):
-                if scope:
-                    raise errors.ModeratorOrScopeRequired(
-                        function.__name__, scope)
-                raise errors.ModeratorRequired(function.__name__)
-        elif login:
-            if scope:
-                raise errors.LoginOrScopeRequired(function.__name__, scope)
-            raise errors.LoginRequired(function.__name__)
-        try:
-            return function(*args, **kwargs)
-        finally:
-            obj._use_oauth = False  # pylint: disable=W0212
-    return wrap
 
 
 @decorator.decorator

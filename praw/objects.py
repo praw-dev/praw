@@ -34,8 +34,7 @@ from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModOnlyMixin as MOMix, ModSelfMixin as MSMix,
                   MultiredditMixin as MultiMix, PrivateMessagesMixin as PMMix,
                   SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
-from praw.decorators import (alias_function, limit_chars, restrict_access,
-                             deprecated)
+from praw.decorators import alias_function, deprecated, limit_chars
 from praw.errors import ClientException, InvalidComment
 from praw.internal import (_get_redditor_listing, _get_sorter,
                            _modify_relationship)
@@ -199,7 +198,6 @@ class RedditContentObject(object):
 class Moderatable(RedditContentObject):
     """Interface for Reddit content objects that have can be moderated."""
 
-    @restrict_access(scope='modposts')
     def approve(self):
         """Approve object.
 
@@ -219,7 +217,6 @@ class Moderatable(RedditContentObject):
         self.reddit_session.evict(urls)
         return response
 
-    @restrict_access(scope='modposts')
     def distinguish(self, as_made_by='mod'):
         """Distinguish object as made by mod, admin or special.
 
@@ -234,7 +231,6 @@ class Moderatable(RedditContentObject):
                 'how': 'yes' if as_made_by == 'mod' else as_made_by}
         return self.reddit_session.request_json(url, data=data)
 
-    @restrict_access(scope='modposts')
     def ignore_reports(self):
         """Ignore future reports on this object.
 
@@ -247,7 +243,6 @@ class Moderatable(RedditContentObject):
         data = {'id': self.fullname}
         return self.reddit_session.request_json(url, data=data)
 
-    @restrict_access(scope='modposts')
     def remove(self, spam=False):
         """Remove object. This is the moderator version of delete.
 
@@ -276,7 +271,6 @@ class Moderatable(RedditContentObject):
         """
         return self.distinguish(as_made_by='no')
 
-    @restrict_access(scope='modposts')
     def unignore_reports(self):
         """Remove ignoring of future reports on this object.
 
@@ -292,7 +286,6 @@ class Moderatable(RedditContentObject):
 class Editable(RedditContentObject):
     """Interface for Reddit content objects that can be edited and deleted."""
 
-    @restrict_access(scope='edit')
     def delete(self):
         """Delete this object.
 
@@ -305,7 +298,6 @@ class Editable(RedditContentObject):
         self.reddit_session.evict(self.reddit_session.config['user'])
         return response
 
-    @restrict_access(scope='edit')
     def edit(self, text):
         """Replace the body of the object with `text`.
 
@@ -323,7 +315,6 @@ class Editable(RedditContentObject):
 class Gildable(RedditContentObject):
     """Interface for RedditContentObjects that can be gilded."""
 
-    @restrict_access(scope='creddits', oauth_only=True)
     def gild(self, months=None):
         """Gild the Redditor or author of the content.
 
@@ -469,7 +460,6 @@ class Refreshable(RedditContentObject):
 class Reportable(RedditContentObject):
     """Interface for RedditContentObjects that can be reported."""
 
-    @restrict_access(scope='report')
     def report(self, reason=None):
         """Report this object to the moderators.
 
@@ -495,7 +485,6 @@ class Reportable(RedditContentObject):
 class Saveable(RedditContentObject):
     """Interface for RedditContentObjects that can be saved."""
 
-    @restrict_access(scope='save')
     def save(self, unsave=False):
         """Save the object.
 
@@ -568,7 +557,6 @@ class Voteable(RedditContentObject):
         """
         return self.vote(direction=1)
 
-    @restrict_access(scope='vote')
     def vote(self, direction=0):
         """Vote for the given item in the direction specified.
 
@@ -682,7 +670,6 @@ class Message(Inboxable):
     """A class for private messages."""
 
     @staticmethod
-    @restrict_access(scope='privatemessages')
     def from_id(reddit_session, message_id, *args, **kwargs):
         """Request the url for a Message and return a Message object.
 
@@ -722,13 +709,11 @@ class Message(Inboxable):
         return 'From: {0}\nSubject: {1}\n\n{2}'.format(self.author,
                                                        self.subject, self.body)
 
-    @restrict_access(scope='privatemessages')
     def collapse(self):
         """Collapse a private message or modmail."""
         url = self.reddit_session.config['collapse_message']
         self.reddit_session.request_json(url, data={'id': self.name})
 
-    @restrict_access(scope='modcontributors')
     def mute_modmail_author(self, _unmute=False):
         """Mute the sender of this modmail message.
 
@@ -740,7 +725,6 @@ class Message(Inboxable):
         return self.reddit_session.request_json(
             self.reddit_session.config[path], data={'id': self.fullname})
 
-    @restrict_access(scope='privatemessages')
     def uncollapse(self):
         """Uncollapse a private message or modmail."""
         url = self.reddit_session.config['uncollapse_message']
@@ -858,7 +842,6 @@ class Redditor(Gildable, Messageable, Refreshable):
             self._case_name = self.name
             self.name = tmp
 
-    @restrict_access(scope='subscribe')
     def friend(self, note=None, _unfriend=False):
         """Friend the user.
 
@@ -920,7 +903,6 @@ class Redditor(Gildable, Messageable, Refreshable):
         kwargs['_use_oauth'] = self.reddit_session.is_oauth_session()
         return _get_redditor_listing('downvoted')(self, *args, **kwargs)
 
-    @restrict_access(scope='mysubreddits')
     def get_friend_info(self):
         """Return information about this friend, including personal notes.
 
@@ -995,8 +977,8 @@ class Redditor(Gildable, Messageable, Refreshable):
 class LoggedInRedditor(Redditor):
     """A class representing a currently logged in Redditor."""
 
-    get_hidden = restrict_access('history')(_get_redditor_listing('hidden'))
-    get_saved = restrict_access('history')(_get_redditor_listing('saved'))
+    get_hidden = _get_redditor_listing('hidden')
+    get_saved = _get_redditor_listing('saved')
 
     def get_blocked(self):
         """Return a UserList of Redditors with whom the user has blocked."""
@@ -1079,7 +1061,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         return submission
 
     @staticmethod
-    @restrict_access(scope='read')
     def from_url(reddit_session, url, comment_limit=0, comment_sort=None,
                  comments_only=False, params=None):
         """Request the url and return a Submission object.
@@ -1238,21 +1219,10 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         :returns: The json response from the server.
 
         """
-        def mark_as_nsfw_helper(self):  # pylint: disable=W0613
-            # It is necessary to have the 'self' argument as it's needed in
-            # restrict_access to determine what class the decorator is
-            # operating on.
-            url = self.reddit_session.config['unmarknsfw' if unmark_nsfw else
-                                             'marknsfw']
-            data = {'id': self.fullname}
-            return self.reddit_session.request_json(url, data=data)
-
-        is_author = (self.reddit_session.is_logged_in() and self.author ==
-                     self.reddit_session.user)
-        if is_author:
-            return mark_as_nsfw_helper(self)
-        else:
-            return restrict_access('modposts')(mark_as_nsfw_helper)(self)
+        url = self.reddit_session.config['unmarknsfw' if unmark_nsfw else
+                                         'marknsfw']
+        data = {'id': self.fullname}
+        return self.reddit_session.request_json(url, data=data)
 
     def replace_more_comments(self, limit=32, threshold=1):
         """Update the comment tree by replacing instances of MoreComments.
@@ -1316,7 +1286,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         """
         return self.subreddit.set_flair(self, *args, **kwargs)
 
-    @restrict_access(scope='modposts')
     def set_contest_mode(self, state=True):
         """Set 'Contest Mode' for the comments of this submission.
 
@@ -1340,7 +1309,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         data = {'id': self.fullname, 'state': state}
         return self.reddit_session.request_json(url, data=data)
 
-    @restrict_access(scope='modposts')
     def set_suggested_sort(self, sort='blank'):
         """Set 'Suggested Sort' for the comments of the submission.
 
@@ -1365,7 +1333,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         """
         return urljoin(self.reddit_session.config.short_domain, self.id)
 
-    @restrict_access(scope='modposts')
     def sticky(self, bottom=True):
         """Sticky a post in its subreddit.
 
@@ -1392,7 +1359,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         """
         return self.mark_as_nsfw(unmark_nsfw=True)
 
-    @restrict_access(scope='modposts')
     def unset_contest_mode(self):
         """Unset 'Contest Mode' for the comments of this submission.
 
@@ -1411,7 +1377,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         """
         return self.set_contest_mode(False)
 
-    @restrict_access(scope='modposts')
     def unsticky(self):
         """Unsticky this post.
 
@@ -1646,7 +1611,6 @@ class Multireddit(Refreshable):
             author = self.path.split('/')[2]
             self.author = Redditor(self.reddit_session, author)
 
-    @restrict_access(scope='subscribe')
     def add_subreddit(self, subreddit, _delete=False, *args, **kwargs):
         """Add a subreddit to the multireddit.
 
@@ -1669,7 +1633,6 @@ class Multireddit(Refreshable):
         finally:
             del self.reddit_session.http.headers['x-modhash']
 
-    @restrict_access(scope='subscribe')
     def copy(self, to_name):
         """Copy this multireddit.
 
@@ -1681,7 +1644,6 @@ class Multireddit(Refreshable):
         return self.reddit_session.copy_multireddit(self._author, self.name,
                                                     to_name)
 
-    @restrict_access(scope='subscribe')
     def delete(self):
         """Delete this multireddit.
 
@@ -1692,7 +1654,6 @@ class Multireddit(Refreshable):
         """
         return self.reddit_session.delete_multireddit(self.name)
 
-    @restrict_access(scope='subscribe')
     def edit(self, *args, **kwargs):
         """Edit this multireddit.
 
@@ -1704,12 +1665,10 @@ class Multireddit(Refreshable):
         return self.reddit_session.edit_multireddit(name=self.name, *args,
                                                     **kwargs)
 
-    @restrict_access(scope='subscribe')
     def remove_subreddit(self, subreddit, *args, **kwargs):
         """Remove a subreddit from the user's multireddit."""
         return self.add_subreddit(subreddit, True, *args, **kwargs)
 
-    @restrict_access(scope='subscribe')
     def rename(self, new_name, *args, **kwargs):
         """Rename this multireddit.
 
@@ -1815,7 +1774,6 @@ class WikiPage(Refreshable):
         """Return a string representation of the page."""
         return six.text_type('{0}:{1}').format(self.subreddit, self.page)
 
-    @restrict_access(scope='modwiki')
     def add_editor(self, username, _delete=False, *args, **kwargs):
         """Add an editor to this wiki page.
 
@@ -1835,7 +1793,6 @@ class WikiPage(Refreshable):
         return self.reddit_session.request_json(url, data=data, *args,
                                                 **kwargs)
 
-    @restrict_access(scope='modwiki')
     def get_settings(self, *args, **kwargs):
         """Return the settings for this wiki page.
 
@@ -1859,7 +1816,6 @@ class WikiPage(Refreshable):
         """
         return self.subreddit.edit_wiki_page(self.page, *args, **kwargs)
 
-    @restrict_access(scope='modwiki')
     def edit_settings(self, permlevel, listed, *args, **kwargs):
         """Edit the settings for this individual wiki page.
 

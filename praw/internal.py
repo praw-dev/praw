@@ -23,7 +23,6 @@ import six
 import sys
 from requests import Request, codes, exceptions
 from requests.compat import urljoin
-from praw.decorators import restrict_access
 from praw.errors import (HTTPException, Forbidden, NotFound, InvalidSubreddit,
                          OAuthException, OAuthInsufficientScope,
                          OAuthInvalidToken, RedirectException)
@@ -57,7 +56,6 @@ def _get_redditor_listing(subpath=''):
 
 def _get_sorter(subpath='', **defaults):
     """Return function to generate specific subreddit Submission listings."""
-    @restrict_access(scope='read')
     def _sorted(self, *args, **kwargs):
         """Return a get_content generator for some RedditContentObject type.
 
@@ -84,18 +82,6 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
     # The API uses friend and unfriend to manage all of these relationships.
     url_key = 'unfriend' if unlink else 'friend'
 
-    if relationship == 'friend':
-        access = {'scope': None, 'login': True}
-    elif relationship == 'moderator':
-        access = {'scope': 'modothers'}
-    elif relationship in ['banned', 'contributor', 'muted']:
-        access = {'scope': 'modcontributors'}
-    elif relationship in ['wikibanned', 'wikicontributor']:
-        access = {'scope': ['modcontributors', 'modwiki']}
-    else:
-        access = {'scope': None, 'mod': True}
-
-    @restrict_access(**access)
     def do_relationship(thing, user, **kwargs):
         data = {'name': six.text_type(user),
                 'type': relationship}

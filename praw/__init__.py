@@ -790,7 +790,6 @@ class UnauthenticatedReddit(BaseReddit):
         url = self.config['default_subreddits']
         return self.get_content(url, *args, **kwargs)
 
-    @decorators.restrict_access(scope='read')
     def get_comments(self, subreddit, gilded_only=False, *args, **kwargs):
         """Return a get_content generator for comments in the given subreddit.
 
@@ -804,7 +803,6 @@ class UnauthenticatedReddit(BaseReddit):
         url = self.config[key].format(subreddit=six.text_type(subreddit))
         return self.get_content(url, *args, **kwargs)
 
-    @decorators.restrict_access(scope='read')
     def get_controversial(self, *args, **kwargs):
         """Return a get_content generator for controversial submissions.
 
@@ -817,7 +815,6 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_content(self.config['controversial'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='read')
     def get_domain_listing(self, domain, sort='hot', period=None, *args,
                            **kwargs):
         """Return a get_content generator for submissions by domain.
@@ -851,7 +848,6 @@ class UnauthenticatedReddit(BaseReddit):
             kwargs.setdefault('params', {})['t'] = period
         return self.get_content(url, *args, **kwargs)
 
-    @decorators.restrict_access(scope='modflair')
     def get_flair(self, subreddit, redditor, **params):
         """Return the flair for a user on the given subreddit.
 
@@ -873,7 +869,6 @@ class UnauthenticatedReddit(BaseReddit):
             return None
         return data['users'][0]
 
-    @decorators.restrict_access(scope='read')
     def get_front_page(self, *args, **kwargs):
         """Return a get_content generator for the front page submissions.
 
@@ -886,7 +881,6 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_content(self.config['reddit_url'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='read')
     def get_info(self, url=None, thing_id=None, limit=None):
         """Look up existing items by thing_id (fullname) or url.
 
@@ -925,14 +919,12 @@ class UnauthenticatedReddit(BaseReddit):
         else:
             return None
 
-    @decorators.restrict_access(scope='read')
     def get_moderators(self, subreddit, **kwargs):
         """Return the list of moderators for the given subreddit."""
         url = self.config['moderators'].format(
             subreddit=six.text_type(subreddit))
         return self.request_json(url, **kwargs)
 
-    @decorators.restrict_access(scope='read')
     def get_new(self, *args, **kwargs):
         """Return a get_content generator for new submissions.
 
@@ -1011,7 +1003,6 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return objects.Redditor(self, user_name, *args, **kwargs)
 
-    @decorators.restrict_access(scope='read')
     def get_rising(self, *args, **kwargs):
         """Return a get_content generator for rising submissions.
 
@@ -1024,7 +1015,6 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_content(self.config['rising'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='read')
     def get_sticky(self, subreddit, bottom=False):
         """Return a Submission object for the sticky of the subreddit.
 
@@ -1111,7 +1101,6 @@ class UnauthenticatedReddit(BaseReddit):
         result = self.request_json(url, params=params)
         return [objects.Subreddit(self, sub['sr_name']) for sub in result]
 
-    @decorators.restrict_access(scope='read')
     def get_top(self, *args, **kwargs):
         """Return a get_content generator for top submissions.
 
@@ -1124,8 +1113,6 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_content(self.config['top'], *args, **kwargs)
 
-    # There exists a `modtraffic` scope, but it is unused.
-    @decorators.restrict_access(scope='modconfig')
     def get_traffic(self, subreddit):
         """Return the json dictionary containing traffic stats for a subreddit.
 
@@ -1137,12 +1124,10 @@ class UnauthenticatedReddit(BaseReddit):
             subreddit=six.text_type(subreddit))
         return self.request_json(url)
 
-    @decorators.restrict_access(scope='wikiread', login=False)
     def get_wiki_page(self, subreddit, page):
         """Return a WikiPage object for the subreddit and page provided."""
         return objects.WikiPage(self, six.text_type(subreddit), page.lower())
 
-    @decorators.restrict_access(scope='wikiread', login=False)
     def get_wiki_pages(self, subreddit):
         """Return a list of WikiPage objects for the subreddit."""
         url = self.config['wiki_pages'].format(
@@ -1264,7 +1249,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 url = url.replace("user/"+redditor, 'me')
         return url
 
-    @decorators.restrict_access(scope='modself', mod=False)
     def accept_moderator_invite(self, subreddit):
         """Accept a moderator invite to the given subreddit.
 
@@ -1311,7 +1295,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 'confirm': True}
         return self.request_json(self.config['delete_redditor'], data=data)
 
-    @decorators.restrict_access(scope='wikiedit')
     def edit_wiki_page(self, subreddit, page, content, reason=''):
         """Create or edit a wiki page with title `page` for `subreddit`.
 
@@ -1344,7 +1327,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             self.set_access_credentials(**retval)
         return retval
 
-    @decorators.restrict_access(scope='flair')
     def get_flair_choices(self, subreddit, link=None):
         """Return available flair choices and current flair.
 
@@ -1361,13 +1343,11 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         data = {'r':  six.text_type(subreddit), 'link': link}
         return self.request_json(self.config['flairselector'], data=data)
 
-    @decorators.restrict_access(scope='read', login=True)
     def get_friends(self, **params):
         """Return a UserList of Redditors with whom the user is friends."""
         url = self.config['friends']
         return self.request_json(url, params=params)[0]
 
-    @decorators.restrict_access(scope='identity', oauth_only=True)
     def get_me(self):
         """Return a LoggedInRedditor object.
 
@@ -1422,7 +1402,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             self.set_access_credentials(**response)
         return response
 
-    @decorators.restrict_access(scope='flair')
     def select_flair(self, item, flair_template_id='', flair_text=''):
         """Select user flair or link flair on subreddits.
 
@@ -1498,7 +1477,6 @@ class ModConfigMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope='modconfig', mod=False)
     @decorators.require_captcha
     def create_subreddit(self, name, title, description='', language='en',
                          subreddit_type='public', content_options='any',
@@ -1529,7 +1507,6 @@ class ModConfigMixin(AuthenticatedReddit):
             data.update(captcha)
         return self.request_json(self.config['site_admin'], data=data)
 
-    @decorators.restrict_access(scope='modconfig')
     def delete_image(self, subreddit, name=None, header=False):
         """Delete an image from the subreddit.
 
@@ -1551,14 +1528,12 @@ class ModConfigMixin(AuthenticatedReddit):
         url = url.format(subreddit=subreddit)
         return self.request_json(url, data=data)
 
-    @decorators.restrict_access(scope='modconfig')
     def get_settings(self, subreddit, **params):
         """Return the settings for the given subreddit."""
         url = self.config['subreddit_settings'].format(
             subreddit=six.text_type(subreddit))
         return self.request_json(url, params=params)['data']
 
-    @decorators.restrict_access(scope='modconfig')
     def set_settings(self, subreddit, title, public_description='',
                      description='', language='en', subreddit_type='public',
                      content_options='any', over_18=False, default_set=True,
@@ -1620,7 +1595,6 @@ class ModConfigMixin(AuthenticatedReddit):
         self.evict(evict)
         return self.request_json(self.config['site_admin'], data=data)
 
-    @decorators.restrict_access(scope='modconfig')
     def set_stylesheet(self, subreddit, stylesheet):
         """Set stylesheet for the given subreddit.
 
@@ -1634,7 +1608,6 @@ class ModConfigMixin(AuthenticatedReddit):
         self.evict(self.config['stylesheet'].format(subreddit=subreddit))
         return self.request_json(self.config['subreddit_css'], data=data)
 
-    @decorators.restrict_access(scope='modconfig')
     def upload_image(self, subreddit, image_path, name=None, header=False):
         """Upload an image to the subreddit.
 
@@ -1706,7 +1679,6 @@ class ModFlairMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope='modflair')
     def add_flair_template(self, subreddit, text='', css_class='',
                            text_editable=False, is_link=False):
         """Add a flair template to the given subreddit.
@@ -1721,7 +1693,6 @@ class ModFlairMixin(AuthenticatedReddit):
                 'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
         return self.request_json(self.config['flairtemplate'], data=data)
 
-    @decorators.restrict_access(scope='modflair')
     def clear_flair_templates(self, subreddit, is_link=False):
         """Clear flair templates for the given subreddit.
 
@@ -1732,7 +1703,6 @@ class ModFlairMixin(AuthenticatedReddit):
                 'flair_type': 'LINK_FLAIR' if is_link else 'USER_FLAIR'}
         return self.request_json(self.config['clearflairtemplates'], data=data)
 
-    @decorators.restrict_access(scope='modflair')
     def configure_flair(self, subreddit, flair_enabled=False,
                         flair_position='right',
                         flair_self_assign=False,
@@ -1757,7 +1727,6 @@ class ModFlairMixin(AuthenticatedReddit):
                 'link_flair_self_assign_enabled': link_flair_self_assign}
         return self.request_json(self.config['flairconfig'], data=data)
 
-    @decorators.restrict_access(scope='modflair')
     def delete_flair(self, subreddit, user):
         """Delete the flair for the given user on the given subreddit.
 
@@ -1768,7 +1737,6 @@ class ModFlairMixin(AuthenticatedReddit):
                 'name': six.text_type(user)}
         return self.request_json(self.config['deleteflair'], data=data)
 
-    @decorators.restrict_access(scope='modflair')
     def get_flair_list(self, subreddit, *args, **kwargs):
         """Return a get_content generator of flair mappings.
 
@@ -1786,7 +1754,6 @@ class ModFlairMixin(AuthenticatedReddit):
                                 thing_field='users', after_field='next',
                                 **kwargs)
 
-    @decorators.restrict_access(scope='modflair')
     def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
         """Set flair for the user in the given subreddit.
 
@@ -1814,7 +1781,6 @@ class ModFlairMixin(AuthenticatedReddit):
         self.evict(evict)
         return response
 
-    @decorators.restrict_access(scope='modflair')
     def set_flair_csv(self, subreddit, flair_mapping):
         """Set flair for a group of users in the given subreddit.
 
@@ -1856,7 +1822,6 @@ class ModLogMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope='modlog')
     def get_mod_log(self, subreddit, mod=None, action=None, *args, **kwargs):
         """Return a get_content generator for moderation log items.
 
@@ -1898,7 +1863,6 @@ class ModOnlyMixin(AuthenticatedReddit):
                 data['name'] = user
                 yield data
 
-    @decorators.restrict_access(scope='read', mod=True)
     def get_banned(self, subreddit, user_only=True, *args, **kwargs):
         """Return a get_content generator of banned users for the subreddit.
 
@@ -1921,10 +1885,7 @@ class ModOnlyMixin(AuthenticatedReddit):
 
         """
         # pylint: disable=W0613
-        def get_contributors_helper(self, subreddit):
-            # It is necessary to have the 'self' argument as it's needed in
-            # restrict_access to determine what class the decorator is
-            # operating on.
+        def get_contributors_helper(subreddit):
             url = self.config['contributors'].format(
                 subreddit=six.text_type(subreddit))
             return self._get_userlist(url, user_only=True, *args, **kwargs)
@@ -1933,11 +1894,9 @@ class ModOnlyMixin(AuthenticatedReddit):
             if not isinstance(subreddit, objects.Subreddit):
                 subreddit = self.get_subreddit(subreddit)
             if subreddit.subreddit_type == "public":
-                decorator = decorators.restrict_access(scope='read', mod=True)
-                return decorator(get_contributors_helper)(self, subreddit)
-        return get_contributors_helper(self, subreddit)
+                return get_contributors_helper(subreddit)
+        return get_contributors_helper(subreddit)
 
-    @decorators.restrict_access(scope='read', mod=True)
     def get_edited(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator of edited items.
 
@@ -1952,7 +1911,6 @@ class ModOnlyMixin(AuthenticatedReddit):
         url = self.config['edited'].format(subreddit=six.text_type(subreddit))
         return self.get_content(url, *args, **kwargs)
 
-    @decorators.restrict_access(scope='privatemessages', mod=True)
     def get_mod_mail(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator for moderator messages.
 
@@ -1968,7 +1926,6 @@ class ModOnlyMixin(AuthenticatedReddit):
             subreddit=six.text_type(subreddit))
         return self.get_content(url, *args, **kwargs)
 
-    @decorators.restrict_access(scope='read', mod=True)
     def get_mod_queue(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator for the moderator queue.
 
@@ -1984,7 +1941,6 @@ class ModOnlyMixin(AuthenticatedReddit):
             subreddit=six.text_type(subreddit))
         return self.get_content(url, *args, **kwargs)
 
-    @decorators.restrict_access(scope='read', mod=True)
     def get_muted(self, subreddit, user_only=True, *args, **kwargs):
         """Return a get_content generator for modmail-muted users.
 
@@ -1998,7 +1954,6 @@ class ModOnlyMixin(AuthenticatedReddit):
         url = self.config['muted'].format(subreddit=six.text_type(subreddit))
         return self._get_userlist(url, user_only, *args, **kwargs)
 
-    @decorators.restrict_access(scope='read', mod=True)
     def get_reports(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator of reported items.
 
@@ -2013,7 +1968,6 @@ class ModOnlyMixin(AuthenticatedReddit):
         url = self.config['reports'].format(subreddit=six.text_type(subreddit))
         return self.get_content(url, *args, **kwargs)
 
-    @decorators.restrict_access(scope='read', mod=True)
     def get_spam(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator of spam-filtered items.
 
@@ -2028,14 +1982,12 @@ class ModOnlyMixin(AuthenticatedReddit):
         url = self.config['spam'].format(subreddit=six.text_type(subreddit))
         return self.get_content(url, *args, **kwargs)
 
-    @decorators.restrict_access('modconfig', mod=False, login=False)
     def get_stylesheet(self, subreddit, **params):
         """Return the stylesheet and images for the given subreddit."""
         url = self.config['stylesheet'].format(
             subreddit=six.text_type(subreddit))
         return self.request_json(url, params=params)['data']
 
-    @decorators.restrict_access(scope='read', mod=True)
     def get_unmoderated(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator of unmoderated submissions.
 
@@ -2051,14 +2003,12 @@ class ModOnlyMixin(AuthenticatedReddit):
             subreddit=six.text_type(subreddit))
         return self.get_content(url, *args, **kwargs)
 
-    @decorators.restrict_access(scope='read', mod=True)
     def get_wiki_banned(self, subreddit, *args, **kwargs):
         """Return a get_content generator of users banned from the wiki."""
         url = self.config['wiki_banned'].format(
             subreddit=six.text_type(subreddit))
         return self._get_userlist(url, user_only=True, *args, **kwargs)
 
-    @decorators.restrict_access(scope='read', mod=True)
     def get_wiki_contributors(self, subreddit, *args, **kwargs):
         """Return a get_content generator of wiki contributors.
 
@@ -2100,7 +2050,6 @@ class ModSelfMixin(AuthenticatedReddit):
         self.evict(self.config['my_mod_subreddits'])
         return self._leave_status(subreddit, self.config['leavemoderator'])
 
-    @decorators.restrict_access(scope='modself', mod=False)
     def _leave_status(self, subreddit, statusurl):
         """Abdicate status in a subreddit.
 
@@ -2128,7 +2077,6 @@ class MultiredditMixin(AuthenticatedReddit):
 
     MULTI_PATH = '/user/{0}/m/{1}'
 
-    @decorators.restrict_access(scope='subscribe')
     def copy_multireddit(self, from_redditor, from_name, to_name=None,
                          *args, **kwargs):
         """Copy a multireddit.
@@ -2155,7 +2103,6 @@ class MultiredditMixin(AuthenticatedReddit):
         return self.request_json(self.config['multireddit_copy'], data=data,
                                  *args, **kwargs)
 
-    @decorators.restrict_access(scope='subscribe')
     def create_multireddit(self, name, description_md=None, icon_name=None,
                            key_color=None, subreddits=None, visibility=None,
                            weighting_scheme=None, overwrite=False,
@@ -2209,7 +2156,6 @@ class MultiredditMixin(AuthenticatedReddit):
         return self.request_json(url, data={'model': json.dumps(model)},
                                  method=method, *args, **kwargs)
 
-    @decorators.restrict_access(scope='subscribe')
     def delete_multireddit(self, name, *args, **kwargs):
         """Delete a Multireddit.
 
@@ -2225,7 +2171,6 @@ class MultiredditMixin(AuthenticatedReddit):
         finally:
             del self.http.headers['x-modhash']
 
-    @decorators.restrict_access(scope='subscribe')
     def edit_multireddit(self, *args, **kwargs):
         """Edit a multireddit, or create one if it doesn't already exist.
 
@@ -2266,7 +2211,6 @@ class MultiredditMixin(AuthenticatedReddit):
         url = self.config['multireddit_user'].format(user=redditor)
         return self.request_json(url, *args, **kwargs)
 
-    @decorators.restrict_access(scope='subscribe')
     def rename_multireddit(self, current_name, new_name, *args, **kwargs):
         """Rename a Multireddit.
 
@@ -2293,7 +2237,6 @@ class MySubredditsMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope='mysubreddits')
     def get_my_contributions(self, *args, **kwargs):
         """Return a get_content generator of subreddits.
 
@@ -2307,7 +2250,6 @@ class MySubredditsMixin(AuthenticatedReddit):
         return self.get_content(self.config['my_con_subreddits'], *args,
                                 **kwargs)
 
-    @decorators.restrict_access(scope='mysubreddits')
     def get_my_moderation(self, *args, **kwargs):
         """Return a get_content generator of subreddits.
 
@@ -2321,14 +2263,12 @@ class MySubredditsMixin(AuthenticatedReddit):
         return self.get_content(self.config['my_mod_subreddits'], *args,
                                 **kwargs)
 
-    @decorators.restrict_access(scope='mysubreddits')
     def get_my_multireddits(self):
         """Return a list of the authenticated Redditor's Multireddits."""
         # The JSON data for multireddits is returned from Reddit as a list
         # Therefore, we cannot use :meth:`get_content` to retrieve the objects
         return self.request_json(self.config['my_multis'])
 
-    @decorators.restrict_access(scope='mysubreddits')
     def get_my_subreddits(self, *args, **kwargs):
         """Return a get_content generator of subreddits.
 
@@ -2350,7 +2290,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope='privatemessages')
     def _mark_as_read(self, thing_ids, unread=False):
         """Mark each of the supplied thing_ids as (un)read.
 
@@ -2364,7 +2303,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
                                              'mod_mail', 'unread']])
         return response
 
-    @decorators.restrict_access(scope='privatemessages')
     def get_comment_replies(self, *args, **kwargs):
         """Return a get_content generator for inboxed comment replies.
 
@@ -2375,7 +2313,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         return self.get_content(self.config['comment_replies'],
                                 *args, **kwargs)
 
-    @decorators.restrict_access(scope='privatemessages')
     def get_inbox(self, *args, **kwargs):
         """Return a get_content generator for inbox (messages and comments).
 
@@ -2397,7 +2334,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         """
         return objects.Message.from_id(self, message_id, *args, **kwargs)
 
-    @decorators.restrict_access(scope='privatemessages')
     def get_messages(self, *args, **kwargs):
         """Return a get_content generator for inbox (messages only).
 
@@ -2407,7 +2343,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         """
         return self.get_content(self.config['messages'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='privatemessages')
     def get_post_replies(self, *args, **kwargs):
         """Return a get_content generator for inboxed submission replies.
 
@@ -2417,7 +2352,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         """
         return self.get_content(self.config['post_replies'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='privatemessages')
     def get_sent(self, *args, **kwargs):
         """Return a get_content generator for sent messages.
 
@@ -2427,7 +2361,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         """
         return self.get_content(self.config['sent'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='privatemessages')
     def get_unread(self, unset_has_mail=False, update_user=False, *args,
                    **kwargs):
         """Return a get_content generator for unread messages.
@@ -2449,7 +2382,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
                 setattr(self.user, 'has_mail', False)
         return self.get_content(self.config['unread'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='privatemessages')
     def get_mentions(self, *args, **kwargs):
         """Return a get_content generator for username mentions.
 
@@ -2459,7 +2391,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         """
         return self.get_content(self.config['mentions'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='privatemessages')
     @decorators.require_captcha
     def send_message(self, recipient, subject, message, from_sr=None,
                      captcha=None, **kwargs):
@@ -2509,7 +2440,6 @@ class ReportMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope='report')
     def hide(self, thing_id, _unhide=False):
         """Hide up to 50 objects in the context of the logged in user.
 
@@ -2560,22 +2490,11 @@ class SubmitMixin(AuthenticatedReddit):
         :returns: A Comment object for the newly created comment.
 
         """
-        def add_comment_helper(self, thing_id, text):
-            data = {'thing_id': thing_id,
-                    'text': text}
-            retval = self.request_json(self.config['comment'], data=data,
-                                       retry_on_error=False)
-            return retval
-
-        if thing_id.startswith(self.config.by_object[objects.Message]):
-            decorator = decorators.restrict_access(scope='privatemessages')
-        else:
-            decorator = decorators.restrict_access(scope='submit')
-        retval = decorator(add_comment_helper)(self, thing_id, text)
-        # REDDIT: reddit's end should only ever return a single comment
+        data = {'thing_id': thing_id, 'text': text}
+        retval = self.request_json(self.config['comment'], data=data,
+                                   retry_on_error=False)
         return retval['data']['things'][0]
 
-    @decorators.restrict_access(scope='submit')
     @decorators.require_captcha
     def submit(self, subreddit, title, text=None, url=None, captcha=None,
                save=None, send_replies=None, resubmit=None, **kwargs):
@@ -2641,7 +2560,6 @@ class SubscribeMixin(AuthenticatedReddit):
 
     """
 
-    @decorators.restrict_access(scope='subscribe')
     def subscribe(self, subreddit, unsubscribe=False):
         """Subscribe to the given subreddit.
 
