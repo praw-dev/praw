@@ -1,41 +1,33 @@
 .. begin_changelog_intro
 
-Changelog
-=========
-
-The changes listed below are divided into four categories:
-
- * **[BUGFIX]** Something was broken before, but is now fixed.
- * **[CHANGE]** Other changes affecting user programs, such as the renaming of
-   a function.
- * **[FEATURE]** Something new has been added.
- * **[REDDIT]** A change caused by an upstream change from reddit.
+Change Log
+==========
 
 Read `/r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
 .. end_changelog_intro
 
-Visit `the changelog on ReadTheDocs
-<http://praw.readthedocs.org/en/latest/pages/changelog.html>`_ for properly
-formatted links that link to the relevant place in the code overview.
-
 .. begin_changelog_body
 
-Unreleased
-----------
- * **[CHANGE]** Image uploads support PNG images as small as 67 bytes.
- * **[FEATURE]** Added support for modmail muting. See
+3.4.0 (2016-02-21)
+------------------
+
+**Added**
+
+* Added support for modmail muting. See
    :meth:`~praw.objects.Subreddit.add_mute`,
    :meth:`~praw.__init__.ModOnlyMixin.get_muted`,
    :meth:`~praw.objects.Subreddit.remove_mute`,
    :meth:`~praw.objects.Message.mute_modmail_author`, and
    :meth:`~praw.objects.Message.unmute_modmail_author`.
- * **[FEATURE]** Added
-   :meth:`~praw.__init__.UnauthenticatedReddit.default_subreddits`.
- * **[FEATURE]** Added support for ``*`` OAuth scopes.
- * **[FEATURE]** Added
-   :meth:`~praw.__init__.UnauthenticatedReddit.get_traffic`
+* :meth:`~praw.__init__.UnauthenticatedReddit.default_subreddits`.
+* Support for ``*`` OAuth scopes.
+* :meth:`~praw.__init__.UnauthenticatedReddit.get_traffic`
+
+**Changed**
+
+* Image uploads support PNG images as small as 67 bytes.
 
 PRAW 3.3.0
 ----------
