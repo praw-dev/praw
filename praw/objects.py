@@ -34,7 +34,7 @@ from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModOnlyMixin as MOMix, ModSelfMixin as MSMix,
                   MultiredditMixin as MultiMix, PrivateMessagesMixin as PMMix,
                   SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
-from praw.decorators import alias_function, deprecated, limit_chars
+from praw.decorators import alias_function, limit_chars
 from praw.errors import ClientException, InvalidComment
 from praw.internal import (_get_redditor_listing, _get_sorter,
                            _modify_relationship)
@@ -166,12 +166,6 @@ class RedditContentObject(object):
         """
         by_object = self.reddit_session.config.by_object
         return '{0}_{1}'.format(by_object[self.__class__], self.id)
-
-    @property
-    @deprecated('``has_fetched`` will not be a public attribute in PRAW4.')
-    def has_fetched(self):
-        """Return whether the object has been fully fetched from reddit."""
-        return self._has_fetched
 
 
 class Moderatable(RedditContentObject):
@@ -928,17 +922,6 @@ class LoggedInRedditor(Redditor):
             for sub in self.reddit_session.get_my_moderation(limit=None):
                 self._mod_subs[six.text_type(sub).lower()] = sub
         return self._mod_subs
-
-    @deprecated('``get_friends`` has been moved to '
-                ':class:`praw.AuthenticatedReddit` and will be removed from '
-                ':class:`objects.LoggedInRedditor` in PRAW v4.0.0')
-    def get_friends(self, **params):
-        """Return a UserList of Redditors with whom the user is friends.
-
-        This method has been moved to :class:`praw.AuthenticatedReddit`.
-
-        """
-        return self.reddit_session.get_friends(**params)
 
 
 class ModAction(RedditContentObject):
