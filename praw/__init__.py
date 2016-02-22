@@ -112,7 +112,6 @@ class Config(object):  # pylint: disable=R0903
                  'info':                'api/info/',
                  'leavecontributor':    'api/leavecontributor',
                  'leavemoderator':      'api/leavemoderator',
-                 'login':               'api/login/',
                  'me':                  'api/v1/me',
                  'mentions':            'message/mentions',
                  'message':             'message/messages/{messageid}/',
@@ -1402,59 +1401,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
     def is_oauth_session(self):
         """Return True when the current session is an OAuth2 session."""
         return isinstance(self._authentication, set)
-
-    @decorators.deprecated('reddit intends to disable password-based '
-                           'authentication of API clients sometime in the '
-                           'near future. As a result this method will be '
-                           'removed in a future major version of PRAW.\n\n'
-                           'For more information please see:\n\n'
-                           '* Original reddit deprecation notice: '
-                           'https://www.reddit.com/comments/2ujhkr/\n\n'
-                           '* Updated delayed deprecation notice: '
-                           'https://www.reddit.com/comments/37e2mv/\n\n'
-                           'Pass ``disable_warning=True`` to ``login`` to '
-                           'disable this warning.')
-    def login(self, username=None, password=None, **kwargs):
-        """Login to a reddit site.
-
-        **DEPRECATED**. Will be removed in a future version of PRAW.
-
-        https://www.reddit.com/comments/2ujhkr/
-        https://www.reddit.com/comments/37e2mv/
-
-        Look for username first in parameter, then praw.ini and finally if both
-        were empty get it from stdin. Look for password in parameter, then
-        praw.ini (but only if username matches that in praw.ini) and finally
-        if they both are empty get it with getpass. Add the variables ``user``
-        (username) and ``pswd`` (password) to your praw.ini file to allow for
-        auto-login.
-
-        A successful login will overwrite any existing authentication.
-
-        """
-        if password and not username:
-            raise Exception('Username must be provided when password is.')
-        user = username or self.config.user
-        if not user:
-            sys.stdout.write('Username: ')
-            sys.stdout.flush()
-            user = sys.stdin.readline().strip()
-            pswd = None
-        else:
-            pswd = password or self.config.pswd
-        if not pswd:
-            import getpass
-            pswd = getpass.getpass('Password for {0}: '.format(user)
-                                   .encode('ascii', 'ignore'))
-
-        data = {'passwd': pswd,
-                'user': user}
-        self.clear_authentication()
-        self.request_json(self.config['login'], data=data)
-        # Update authentication settings
-        self._authentication = True
-        self.user = self.get_redditor(user)
-        self.user.__class__ = objects.LoggedInRedditor
 
     def refresh_access_information(self,  # pylint: disable=W0221
                                    refresh_token=None,
