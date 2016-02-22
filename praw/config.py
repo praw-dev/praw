@@ -1,9 +1,91 @@
 """Provides the code to load PRAW's configuration file `praw.ini`."""
-
 import os
+import platform
 import sys
 
+from six import iteritems
 from six.moves import configparser
+from six.moves.urllib.parse import urljoin
+
+from . import objects
+from .const import __version__, API_PATHS
+from .errors import ClientException
+
+
+class Config(object):
+    """A class containing the configuration for a reddit site."""
+
+    @staticmethod
+    def ua_string(praw_info):
+        """Return the user-agent string.
+
+        The user-agent string contains PRAW version and platform version info.
+
+        """
+        if os.environ.get('SERVER_SOFTWARE') is not None:
+            # Google App Engine information
+            # https://developers.google.com/appengine/docs/python/
+            info = os.environ.get('SERVER_SOFTWARE')
+        else:
+            # Standard platform information
+            info = platform.platform(True).encode('ascii', 'ignore')
+
+        return '{0} PRAW/{1} Python/{2} {3}'.format(
+            praw_info, __version__, sys.version.split()[0], info)
+
+    def __init__(self, site_name, **kwargs):
+        """Initialize PRAW's configuration."""
+        def config_boolean(item):
+            return item and item.lower() in ('1', 'yes', 'true', 'on')
+
+        obj = dict(CONFIG.items(site_name))
+        # Overwrite configuration file settings with those given during
+        # instantiation of the Reddit instance.
+        for key, value in kwargs.items():
+            obj[key] = value
+
+        self.by_kind = {obj['comment_kind']:    objects.Comment,
+                        obj['message_kind']:    objects.Message,
+                        obj['redditor_kind']:   objects.Redditor,
+                        obj['submission_kind']: objects.Submission,
+                        obj['subreddit_kind']:  objects.Subreddit,
+                        'LabeledMulti':         objects.Multireddit,
+                        'modaction':            objects.ModAction,
+                        'more':                 objects.MoreComments,
+                        'wikipage':             objects.WikiPage,
+                        'wikipagelisting':      objects.WikiPageListing,
+                        'UserList':             objects.UserList}
+        self.by_object = dict((value, key) for (key, value) in
+                              iteritems(self.by_kind))
+        self.by_object[objects.LoggedInRedditor] = obj['redditor_kind']
+        self.check_for_updates = config_boolean(obj['check_for_updates'])
+        self.log_requests = int(obj['log_requests'])
+        # `get(...) or None` is used because `get` may return an empty string
+        self.http_proxy = (os.getenv('http_proxy') or obj.get('http_proxy') or
+                           None)
+        self.https_proxy = (os.getenv('https_proxy') or
+                            obj.get('https_proxy') or None)
+        self.client_id = obj.get('oauth_client_id') or None
+        self.client_secret = obj.get('oauth_client_secret') or None
+        self.redirect_uri = obj.get('oauth_redirect_uri') or None
+        self.refresh_token = obj.get('oauth_refresh_token') or None
+        self.oauth_url = obj['oauth_url']
+        self.reddit_url = obj['reddit_url']
+        self._short_url = obj.get('short_url') or None
+        self.store_json_result = config_boolean(obj.get('store_json_result'))
+        self.timeout = float(obj['timeout'])
+        self.validate_certs = config_boolean(obj.get('validate_certs'))
+
+    def __getitem__(self, key):
+        """Return the URL for key."""
+        return urljoin(self.oauth_url, API_PATHS[key])
+
+    @property
+    def short_url(self):
+        """Return the short url or raise a ClientException when not set."""
+        if self._short_url is None:
+            raise ClientException('No short domain specified.')
+        return self._short_url
 
 
 def _load_configuration():

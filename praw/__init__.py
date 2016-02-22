@@ -11,7 +11,6 @@ More information about PRAW can be found at https://github.com/praw-dev/praw
 """
 import json
 import os
-import platform
 import re
 import sys
 
@@ -24,230 +23,17 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 from . import decorators, errors
+from .config import Config
+from .const import __version__
 from .internal import (_prepare_request, _raise_redirect_exceptions,
                        _raise_response_exceptions, _to_reddit_list)
-from .settings import CONFIG
 
-
-__version__ = '3.4.0'
-
-MIN_PNG_SIZE = 67
-MIN_JPEG_SIZE = 128
-MAX_IMAGE_SIZE = 512000
-JPEG_HEADER = b'\xff\xd8\xff'
-PNG_HEADER = b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
 
 # Compatibility
 if six.PY3:
     CHR = chr
 else:
     CHR = unichr  # NOQA
-
-
-class Config(object):  # pylint: disable=R0903
-    """A class containing the configuration for a reddit site."""
-
-    API_PATHS = {'accept_mod_invite':   'api/accept_moderator_invite',
-                 'access_token_url':    'api/v1/access_token/',
-                 'approve':             'api/approve/',
-                 'authorize':           'api/v1/authorize/',
-                 'banned':              'r/{subreddit}/about/banned/',
-                 'blocked':             'prefs/blocked/',
-                 'by_id':               'by_id/',
-                 'captcha':             'captcha/',
-                 'clearflairtemplates': 'api/clearflairtemplates/',
-                 'collapse_message':    'api/collapse_message/',
-                 'comment':             'api/comment/',
-                 'comment_replies':     'message/comments/',
-                 'comments':            'comments/',
-                 'compose':             'api/compose/',
-                 'contest_mode':        'api/set_contest_mode/',
-                 'contributors':        'r/{subreddit}/about/contributors/',
-                 'controversial':       'controversial/',
-                 'default_subreddits':  'subreddits/default/',
-                 'del':                 'api/del/',
-                 'deleteflair':         'api/deleteflair',
-                 'delete_redditor':     'api/delete_user',
-                 'delete_sr_header':    'r/{subreddit}/api/delete_sr_header',
-                 'delete_sr_image':     'r/{subreddit}/api/delete_sr_img',
-                 'distinguish':         'api/distinguish/',
-                 'domain':              'domain/{domain}/',
-                 'duplicates':          'duplicates/{submissionid}/',
-                 'edit':                'api/editusertext/',
-                 'edited':              'r/{subreddit}/about/edited/',
-                 'flair':               'api/flair/',
-                 'flairconfig':         'api/flairconfig/',
-                 'flaircsv':            'api/flaircsv/',
-                 'flairlist':           'r/{subreddit}/api/flairlist/',
-                 'flairselector':       'api/flairselector/',
-                 'flairtemplate':       'api/flairtemplate/',
-                 'friend':              'api/friend/',
-                 'friend_v1':           'api/v1/me/friends/{user}',
-                 'friends':             'prefs/friends/',
-                 'gild_thing':          'api/v1/gold/gild/{fullname}/',
-                 'gild_user':           'api/v1/gold/give/{username}/',
-                 'help':                'help/',
-                 'hide':                'api/hide/',
-                 'ignore_reports':      'api/ignore_reports/',
-                 'inbox':               'message/inbox/',
-                 'info':                'api/info/',
-                 'leavecontributor':    'api/leavecontributor',
-                 'leavemoderator':      'api/leavemoderator',
-                 'me':                  'api/v1/me',
-                 'mentions':            'message/mentions',
-                 'message':             'message/messages/{messageid}/',
-                 'messages':            'message/messages/',
-                 'moderators':          'r/{subreddit}/about/moderators/',
-                 'modlog':              'r/{subreddit}/about/log/',
-                 'modqueue':            'r/{subreddit}/about/modqueue/',
-                 'mod_mail':            'r/{subreddit}/message/moderator/',
-                 'morechildren':        'api/morechildren/',
-                 'my_con_subreddits':   'subreddits/mine/contributor/',
-                 'my_mod_subreddits':   'subreddits/mine/moderator/',
-                 'my_multis':           'api/multi/mine/',
-                 'my_subreddits':       'subreddits/mine/subscriber/',
-                 'new':                 'new/',
-                 'new_subreddits':      'subreddits/new/',
-                 'marknsfw':            'api/marknsfw/',
-                 'multireddit':         'user/{user}/m/{multi}/',
-                 'multireddit_add':     ('api/multi/user/{user}/m/{multi}/r/'
-                                         '{subreddit}'),
-                 'multireddit_about':   'api/multi/user/{user}/m/{multi}/',
-                 'multireddit_copy':    'api/multi/copy/',
-                 'multireddit_mine':    'me/m/{multi}/',
-                 'multireddit_rename':  'api/multi/rename/',
-                 'multireddit_user':    'api/multi/user/{user}/',
-                 'mute_sender':         'api/mute_message_author/',
-                 'muted':               'r/{subreddit}/about/muted/',
-                 'popular_subreddits':  'subreddits/popular/',
-                 'post_replies':        'message/selfreply/',
-                 'read_message':        'api/read_message/',
-                 'reddit_url':          '/',
-                 'register':            'api/register/',
-                 'remove':              'api/remove/',
-                 'report':              'api/report/',
-                 'reports':             'r/{subreddit}/about/reports/',
-                 'rising':              'rising/',
-                 'save':                'api/save/',
-                 'saved':               'saved/',
-                 'search':              'r/{subreddit}/search/',
-                 'search_reddit_names': 'api/search_reddit_names/',
-                 'select_flair':        'api/selectflair/',
-                 'sent':                'message/sent/',
-                 'sticky':              'r/{subreddit}/about/sticky/',
-                 'sticky_submission':   'api/set_subreddit_sticky/',
-                 'site_admin':          'api/site_admin/',
-                 'spam':                'r/{subreddit}/about/spam/',
-                 'stylesheet':          'r/{subreddit}/about/stylesheet/',
-                 'submit':              'api/submit/',
-                 'sub_comments_gilded': 'r/{subreddit}/comments/gilded/',
-                 'sub_recommendations': 'api/recommend/sr/{subreddits}',
-                 'subreddit':           'r/{subreddit}/',
-                 'subreddit_about':     'r/{subreddit}/about/',
-                 'subreddit_comments':  'r/{subreddit}/comments/',
-                 'subreddit_css':       'api/subreddit_stylesheet/',
-                 'subreddit_random':    'r/{subreddit}/random/',
-                 'subreddit_settings':  'r/{subreddit}/about/edit/',
-                 'subreddit_traffic':   'r/{subreddit}/about/traffic/',
-                 'subscribe':           'api/subscribe/',
-                 'suggested_sort':      'api/set_suggested_sort/',
-                 'top':                 'top/',
-                 'uncollapse_message':  'api/uncollapse_message/',
-                 'unfriend':            'api/unfriend/',
-                 'unhide':              'api/unhide/',
-                 'unmarknsfw':          'api/unmarknsfw/',
-                 'unmoderated':         'r/{subreddit}/about/unmoderated/',
-                 'unmute_sender':       'api/unmute_message_author/',
-                 'unignore_reports':    'api/unignore_reports/',
-                 'unread':              'message/unread/',
-                 'unread_message':      'api/unread_message/',
-                 'unsave':              'api/unsave/',
-                 'upload_image':        'api/upload_sr_img',
-                 'user':                'user/{user}/',
-                 'user_about':          'user/{user}/about/',
-                 'username_available':  'api/username_available/',
-                 'vote':                'api/vote/',
-                 'wiki_edit':           'api/wiki/edit/',
-                 'wiki_page':           'r/{subreddit}/wiki/{page}',
-                 'wiki_page_editor':    ('r/{subreddit}/api/wiki/alloweditor/'
-                                         '{method}'),
-                 'wiki_page_settings':  'r/{subreddit}/wiki/settings/{page}',
-                 'wiki_pages':          'r/{subreddit}/wiki/pages/',
-                 'wiki_banned':         'r/{subreddit}/about/wikibanned/',
-                 'wiki_contributors':   ('r/{subreddit}/about/'
-                                         'wikicontributors/')}
-
-    @staticmethod
-    def ua_string(praw_info):
-        """Return the user-agent string.
-
-        The user-agent string contains PRAW version and platform version info.
-
-        """
-        if os.environ.get('SERVER_SOFTWARE') is not None:
-            # Google App Engine information
-            # https://developers.google.com/appengine/docs/python/
-            info = os.environ.get('SERVER_SOFTWARE')
-        else:
-            # Standard platform information
-            info = platform.platform(True).encode('ascii', 'ignore')
-
-        return '{0} PRAW/{1} Python/{2} {3}'.format(
-            praw_info, __version__, sys.version.split()[0], info)
-
-    def __init__(self, site_name, **kwargs):
-        """Initialize PRAW's configuration."""
-        def config_boolean(item):
-            return item and item.lower() in ('1', 'yes', 'true', 'on')
-
-        obj = dict(CONFIG.items(site_name))
-        # Overwrite configuration file settings with those given during
-        # instantiation of the Reddit instance.
-        for key, value in kwargs.items():
-            obj[key] = value
-
-        self.by_kind = {obj['comment_kind']:    objects.Comment,
-                        obj['message_kind']:    objects.Message,
-                        obj['redditor_kind']:   objects.Redditor,
-                        obj['submission_kind']: objects.Submission,
-                        obj['subreddit_kind']:  objects.Subreddit,
-                        'LabeledMulti':         objects.Multireddit,
-                        'modaction':            objects.ModAction,
-                        'more':                 objects.MoreComments,
-                        'wikipage':             objects.WikiPage,
-                        'wikipagelisting':      objects.WikiPageListing,
-                        'UserList':             objects.UserList}
-        self.by_object = dict((value, key) for (key, value) in
-                              six.iteritems(self.by_kind))
-        self.by_object[objects.LoggedInRedditor] = obj['redditor_kind']
-        self.check_for_updates = config_boolean(obj['check_for_updates'])
-        self.log_requests = int(obj['log_requests'])
-        # `get(...) or None` is used because `get` may return an empty string
-        self.http_proxy = (os.getenv('http_proxy') or obj.get('http_proxy') or
-                           None)
-        self.https_proxy = (os.getenv('https_proxy') or
-                            obj.get('https_proxy') or None)
-        self.client_id = obj.get('oauth_client_id') or None
-        self.client_secret = obj.get('oauth_client_secret') or None
-        self.redirect_uri = obj.get('oauth_redirect_uri') or None
-        self.refresh_token = obj.get('oauth_refresh_token') or None
-        self.oauth_url = obj['oauth_url']
-        self.reddit_url = obj['reddit_url']
-        self._short_url = obj.get('short_url') or None
-        self.store_json_result = config_boolean(obj.get('store_json_result'))
-        self.timeout = float(obj['timeout'])
-        self.validate_certs = config_boolean(obj.get('validate_certs'))
-
-    def __getitem__(self, key):
-        """Return the URL for key."""
-        return urljoin(self.oauth_url, self.API_PATHS[key])
-
-    @property
-    def short_url(self):
-        """Return the short url or raise a ClientException when not set."""
-        if self._short_url is None:
-            raise errors.ClientException('No short domain specified.')
-        return self._short_url
 
 
 class BaseReddit(object):
