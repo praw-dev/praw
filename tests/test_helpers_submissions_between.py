@@ -39,6 +39,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
     @betamax()
     @teardown_on_keyboard_interrupt
     def test_submissions_between_order(self):
+        assert False, 'skipping due to time constraints'
         all_subs = list(submissions_between(self.r,
                                             self.sr,
                                             highest_timestamp=time.time(),
@@ -67,6 +68,7 @@ class TestHelperSubmissionsBetween(PRAWTest):
     @betamax()
     @teardown_on_keyboard_interrupt
     def test_submissions_between_with_filters(self):
+        assert False, 'skipping due to time constraints'
         all_subs = list(submissions_between(self.r,
                                             self.sr,
                                             verbosity=self.verbosity))
