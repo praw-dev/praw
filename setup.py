@@ -1,3 +1,5 @@
+"""praw setup.py."""
+
 import os
 import re
 try:
