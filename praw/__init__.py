@@ -31,7 +31,6 @@ import re
 import six
 import sys
 from praw import decorators, errors
-from praw.handlers import DefaultHandler
 from praw.helpers import normalize_url
 from praw.internal import (_prepare_request, _raise_redirect_exceptions,
                            _raise_response_exceptions, _to_reddit_list)
@@ -305,8 +304,8 @@ class BaseReddit(object):
     RETRY_CODES = [502, 503, 504]
     update_checked = False
 
-    def __init__(self, user_agent, site_name=None, handler=None,
-                 disable_update_check=False, **kwargs):
+    def __init__(self, user_agent, site_name=None, disable_update_check=False,
+                 **kwargs):
         """Initialize our connection with a reddit server.
 
         The user_agent is how your application identifies itself. Read the
@@ -342,18 +341,9 @@ class BaseReddit(object):
 
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit',
                              **kwargs)
-        self.handler = handler or DefaultHandler()
         self.http = Session()
         self.http.headers['User-Agent'] = self.config.ua_string(user_agent)
         self.http.validate_certs = self.config.validate_certs
-
-        # This `Session` object is only used to store request information that
-        # is used to make prepared requests. It _should_ never be used to make
-        # a direct request, thus we raise an exception when it is used.
-
-        def _req_error(*_, **__):
-            raise errors.ClientException('Do not make direct requests.')
-        self.http.request = _req_error
 
         if self.config.http_proxy or self.config.https_proxy:
             self.http.proxies = {}
@@ -419,7 +409,7 @@ class BaseReddit(object):
                 request.url = url
                 kwargs['_cache_key'] = (normalize_url(request.url),
                                         tuple(key_items))
-                response = self.handler.request(
+                response = self.http.request(
                     request=request.prepare(),
                     proxies=self.http.proxies,
                     timeout=timeout,

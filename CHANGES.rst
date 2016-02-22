@@ -22,8 +22,9 @@ upstream changes.
 **Removed**
 
 * Removed ``login`` method. Authentication must be done through OAuth.
-* Removed `praw-multiprocess` and its associated ``MultiprocessHandler``. This
-  functionality is no longer needed with PRAW4.
+* Removed all handlers in ``praw.handlers``.
+* Removed `praw-multiprocess` as this functionality is no longer needed with
+  PRAW4.
 * Removed ``restrict_access`` decorator. While attempting to fail early is
   nice, it's not worth the additional code.
 

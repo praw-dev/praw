@@ -41,15 +41,6 @@ conjunction with this nice visual overview.
     :undoc-members:
     :show-inheritance:
 
-:mod:`handlers` Module
-----------------------
-
-.. automodule:: praw.handlers
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
 :mod:`decorators` Module
 ------------------------
 
