@@ -50,7 +50,7 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '3.3.0'
+__version__ = '3.4.0'
 
 MIN_PNG_SIZE = 67
 MIN_JPEG_SIZE = 128

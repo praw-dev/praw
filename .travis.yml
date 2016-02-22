@@ -1,20 +1,19 @@
+after_success: coveralls
+cache: pip
+install: pip install coveralls flake8 pydocstyle
 language: python
+matrix:
+  allow_failures:
+    - python: nightly
+  fast_finish: true
 python:
   - 2.7
   - 3.3
   - 3.4
   - 3.5
   - nightly
-  - pypy
-  - pypy3
-matrix:
-  allow_failures:
-    - python: nightly
 sudo: false
-install: pip install coveralls flake8 pep257 betamax_matchers
 script:
-  - flake8 praw
-  - flake8 tests
-  - pep257 praw
+  - flake8 --exclude=docs
+  - pydocstyle praw
   - coverage run --source=praw setup.py test
-after_success: coveralls
