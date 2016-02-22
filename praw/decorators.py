@@ -86,22 +86,6 @@ def limit_chars(function, *args, **kwargs):
 
 
 @decorator.decorator
-def oauth_generator(function, *args, **kwargs):
-    """Set the _use_oauth keyword argument to True when appropriate.
-
-    This is needed because generator functions may be called at anytime, and
-    PRAW relies on the Reddit._use_oauth value at original call time to know
-    when to make OAuth requests.
-
-    Returned data is not modified.
-
-    """
-    if getattr(args[0], '_use_oauth', False):
-        kwargs['_use_oauth'] = True
-    return function(*args, **kwargs)
-
-
-@decorator.decorator
 def raise_api_exceptions(function, *args, **kwargs):
     """Raise client side exception(s) when present in the API response.
 

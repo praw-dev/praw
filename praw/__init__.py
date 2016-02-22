@@ -496,7 +496,6 @@ class BaseReddit(object):
             urls = (urls,)
         return self.handler.evict(urls)
 
-    @decorators.oauth_generator
     def get_content(self, url, params=None, limit=0, place_holder=None,
                     root_field='data', thing_field='children',
                     after_field='after', object_filter=None, **kwargs):
