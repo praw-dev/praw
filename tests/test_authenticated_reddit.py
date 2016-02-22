@@ -28,10 +28,6 @@ class AuthenticatedRedditTest(PRAWTest):
         cached_listing = list(subreddit.get_new(limit=5))
         self.assertEqual(original_listing, cached_listing)
 
-        url = 'https://api.reddit.com/r/reddit_api_test/new'
-        self.assertEqual(1, self.r.evict(url))
-        self.assertEqual(0, self.r.evict(url))
-
         no_cache_listing = list(subreddit.get_new(limit=5))
         self.assertNotEqual(original_listing, no_cache_listing)
 

@@ -111,8 +111,6 @@ def raise_api_exceptions(function, *args, **kwargs):
             error_list = []
             for error_type, msg, value in return_value['errors']:
                 if error_type in errors.ERROR_MAPPING:
-                    if error_type == 'RATELIMIT':
-                        args[0].evict(args[1])
                     error_class = errors.ERROR_MAPPING[error_type]
                 else:
                     error_class = errors.APIException

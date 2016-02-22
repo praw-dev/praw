@@ -466,17 +466,6 @@ class BaseReddit(object):
             return object_class.from_api_response(self, json_data['data'])
         return json_data
 
-    def evict(self, urls):
-        """Evict url(s) from the cache.
-
-        :param urls: An iterable containing normalized urls.
-        :returns: The number of items removed from the cache.
-
-        """
-        if isinstance(urls, six.string_types):
-            urls = (urls,)
-        return self.handler.evict(urls)
-
     def get_content(self, url, params=None, limit=0, place_holder=None,
                     root_field='data', thing_field='children',
                     after_field='after', object_filter=None, **kwargs):
@@ -1231,7 +1220,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         data = {'r': six.text_type(subreddit)}
         # Clear moderated subreddits and cache
         self.user._mod_subs = None  # pylint: disable=W0212
-        self.evict(self.config['my_mod_subreddits'])
         return self.request_json(self.config['accept_mod_invite'], data=data)
 
     def clear_authentication(self):
@@ -1276,9 +1264,6 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 'page': page,
                 'r': six.text_type(subreddit),
                 'reason': reason}
-        evict = self.config['wiki_page'].format(
-            subreddit=six.text_type(subreddit), page=page.lower())
-        self.evict(evict)
         return self.request_json(self.config['wiki_edit'], data=data)
 
     def get_access_information(self, code,  # pylint: disable=W0221
@@ -1389,18 +1374,13 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """
         data = {'flair_template_id': flair_template_id or '',
                 'text':              flair_text or ''}
-        if isinstance(item, objects.Submission):
-            # Link flair
+        if isinstance(item, objects.Submission):  # Link flair
             data['link'] = item.fullname
-            evict = item.permalink
-        else:
-            # User flair
+        else:  # User flair
+
             data['name'] = self.user.name
             data['r'] = six.text_type(item)
-            evict = self.config['flairlist'].format(
-                subreddit=six.text_type(item))
         response = self.request_json(self.config['select_flair'], data=data)
-        self.evict(evict)
         return response
 
     @decorators.require_oauth
@@ -1486,7 +1466,6 @@ class ModConfigMixin(AuthenticatedReddit):
         elif name:
             data = {'img_name': name}
             url = self.config['delete_sr_image']
-            self.evict(self.config['stylesheet'].format(subreddit=subreddit))
         else:
             data = True
             url = self.config['delete_sr_header']
@@ -1555,9 +1534,6 @@ class ModConfigMixin(AuthenticatedReddit):
             msg = 'Extra settings fields: {0}'.format(kwargs.keys())
             warn_explicit(msg, UserWarning, '', 0)
             data.update(kwargs)
-        evict = self.config['subreddit_settings'].format(
-            subreddit=six.text_type(subreddit))
-        self.evict(evict)
         return self.request_json(self.config['site_admin'], data=data)
 
     def set_stylesheet(self, subreddit, stylesheet):
@@ -1570,7 +1546,6 @@ class ModConfigMixin(AuthenticatedReddit):
         data = {'r': subreddit,
                 'stylesheet_contents': stylesheet,
                 'op': 'save'}  # Options: save / preview
-        self.evict(self.config['stylesheet'].format(subreddit=subreddit))
         return self.request_json(self.config['subreddit_css'], data=data)
 
     def upload_image(self, subreddit, image_path, name=None, header=False):
@@ -1737,13 +1712,9 @@ class ModFlairMixin(AuthenticatedReddit):
                 'css_class': flair_css_class or ''}
         if isinstance(item, objects.Submission):
             data['link'] = item.fullname
-            evict = item.permalink
         else:
             data['name'] = six.text_type(item)
-            evict = self.config['flairlist'].format(
-                subreddit=six.text_type(subreddit))
         response = self.request_json(self.config['flair'], data=data)
-        self.evict(evict)
         return response
 
     def set_flair_csv(self, subreddit, flair_mapping):
@@ -1773,9 +1744,6 @@ class ModFlairMixin(AuthenticatedReddit):
             response.extend(self.request_json(self.config['flaircsv'],
                                               data=data))
             lines = lines[100:]
-        evict = self.config['flairlist'].format(
-            subreddit=six.text_type(subreddit))
-        self.evict(evict)
         return response
 
 
@@ -2012,7 +1980,6 @@ class ModSelfMixin(AuthenticatedReddit):
 
         :returns: the json response from the server.
         """
-        self.evict(self.config['my_mod_subreddits'])
         return self._leave_status(subreddit, self.config['leavemoderator'])
 
     def _leave_status(self, subreddit, statusurl):
@@ -2264,8 +2231,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         data = {'id': ','.join(thing_ids)}
         key = 'unread_message' if unread else 'read_message'
         response = self.request_json(self.config[key], data=data)
-        self.evict([self.config[x] for x in ['inbox', 'messages',
-                                             'mod_mail', 'unread']])
         return response
 
     def get_comment_replies(self, *args, **kwargs):
@@ -2393,7 +2358,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
             data.update(captcha)
         response = self.request_json(self.config['compose'], data=data,
                                      retry_on_error=False)
-        self.evict(self.config['sent'])
         return response
 
 
@@ -2422,12 +2386,7 @@ class ReportMixin(AuthenticatedReddit):
         method = 'unhide' if _unhide else 'hide'
         data = {'id': thing_id,
                 'executed': method}
-        response = self.request_json(self.config[method], data=data)
-
-        if self.user is not None:
-            self.evict(urljoin(self.user._url,  # pylint: disable=W0212
-                               'hidden'))
-        return response
+        return self.request_json(self.config[method], data=data)
 
     def unhide(self, thing_id):
         """Unhide up to 50 objects in the context of the logged in user.
@@ -2530,9 +2489,7 @@ class SubscribeMixin(AuthenticatedReddit):
         """
         data = {'action': 'unsub' if unsubscribe else 'sub',
                 'sr_name': six.text_type(subreddit)}
-        response = self.request_json(self.config['subscribe'], data=data)
-        self.evict(self.config['my_subreddits'])
-        return response
+        return self.request_json(self.config['subscribe'], data=data)
 
     def unsubscribe(self, subreddit):
         """Unsubscribe from the given subreddit.

@@ -189,12 +189,7 @@ class Moderatable(RedditContentObject):
         """
         url = self.reddit_session.config['approve']
         data = {'id': self.fullname}
-        response = self.reddit_session.request_json(url, data=data)
-        urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
-        if isinstance(self, Submission):
-            urls += self.subreddit._listing_urls  # pylint: disable=W0212
-        self.reddit_session.evict(urls)
-        return response
+        return self.reddit_session.request_json(url, data=data)
 
     def distinguish(self, as_made_by='mod'):
         """Distinguish object as made by mod, admin or special.
@@ -235,12 +230,7 @@ class Moderatable(RedditContentObject):
         url = self.reddit_session.config['remove']
         data = {'id': self.fullname,
                 'spam': 'True' if spam else 'False'}
-        response = self.reddit_session.request_json(url, data=data)
-        urls = [self.reddit_session.config[x] for x in ['modqueue', 'spam']]
-        if isinstance(self, Submission) and hasattr(self, 'subreddit'):
-            urls += self.subreddit._listing_urls  # pylint: disable=W0212
-        self.reddit_session.evict(urls)
-        return response
+        return self.reddit_session.request_json(url, data=data)
 
     def undistinguish(self):
         """Remove mod, admin or special distinguishing on object.
@@ -273,9 +263,7 @@ class Editable(RedditContentObject):
         """
         url = self.reddit_session.config['del']
         data = {'id': self.fullname}
-        response = self.reddit_session.request_json(url, data=data)
-        self.reddit_session.evict(self.reddit_session.config['user'])
-        return response
+        return self.reddit_session.request_json(url, data=data)
 
     def edit(self, text):
         """Replace the body of the object with `text`.
@@ -287,7 +275,6 @@ class Editable(RedditContentObject):
         data = {'thing_id': self.fullname,
                 'text': text}
         response = self.reddit_session.request_json(url, data=data)
-        self.reddit_session.evict(self.reddit_session.config['user'])
         return response['data']['things'][0]
 
 
@@ -374,12 +361,6 @@ class Inboxable(RedditContentObject):
         # pylint: disable=W0212
         response = self.reddit_session._add_comment(self.fullname, text)
         # pylint: enable=W0212
-        urls = [self.reddit_session.config['inbox']]
-        if isinstance(self, Comment):
-            urls.append(self.submission._api_link)  # pylint: disable=W0212
-        elif isinstance(self, Message):
-            urls.append(self.reddit_session.config['sent'])
-        self.reddit_session.evict(urls)
         return response
 
 
@@ -451,14 +432,7 @@ class Reportable(RedditContentObject):
         data = {'id': self.fullname}
         if reason:
             data['reason'] = reason
-        response = self.reddit_session.request_json(url, data=data)
-        # Reported objects are automatically hidden as well
-        # pylint: disable=W0212
-        self.reddit_session.evict(
-            [self.reddit_session.config['user'],
-             urljoin(self.reddit_session.user._url, 'hidden')])
-        # pylint: enable=W0212
-        return response
+        return self.reddit_session.request_json(url, data=data)
 
 
 class Saveable(RedditContentObject):
@@ -473,9 +447,7 @@ class Saveable(RedditContentObject):
         url = self.reddit_session.config['unsave' if unsave else 'save']
         data = {'id': self.fullname,
                 'executed': 'unsaved' if unsave else 'saved'}
-        response = self.reddit_session.request_json(url, data=data)
-        self.reddit_session.evict(self.reddit_session.config['saved'])
-        return response
+        return self.reddit_session.request_json(url, data=data)
 
     def unsave(self):
         """Unsave the object.
@@ -552,12 +524,6 @@ class Voteable(RedditContentObject):
         url = self.reddit_session.config['vote']
         data = {'id': self.fullname,
                 'dir': six.text_type(direction)}
-        if self.reddit_session.user:
-            # pylint: disable=W0212
-            urls = [urljoin(self.reddit_session.user._url, 'disliked'),
-                    urljoin(self.reddit_session.user._url, 'liked')]
-            # pylint: enable=W0212
-            self.reddit_session.evict(urls)
         return self.reddit_session.request_json(url, data=data)
 
 
@@ -831,7 +797,6 @@ class Redditor(Gildable, Messageable, Refreshable):
         :returns: The json response from the server.
 
         """
-        self.reddit_session.evict(self.reddit_session.config['friends'])
         url = self.reddit_session.config['friend_v1'].format(user=self.name)
         # This endpoint wants the data to be a string instead of an actual
         # dictionary, although it is not required to have any content for adds.
@@ -1123,7 +1088,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         # pylint: disable=W0212
         response = self.reddit_session._add_comment(self.fullname, text)
         # pylint: enable=W0212
-        self.reddit_session.evict(self._api_link)  # pylint: disable=W0212
         return response
 
     @property

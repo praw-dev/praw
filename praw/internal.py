@@ -92,9 +92,6 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
             data['container'] = thing.fullname
 
         session = thing.reddit_session
-        if relationship == 'moderator':
-            session.evict(session.config['moderators'].format(
-                subreddit=six.text_type(thing)))
         url = session.config[url_key]
         return session.request_json(url, data=data)
     return do_relationship

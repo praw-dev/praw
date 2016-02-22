@@ -15,6 +15,8 @@ upstream changes.
 
 **Changed**
 
+* :class:`Redditor` no longer takes a ``handler`` argument.
+* :class:`Redditor` no longer has a ``evict`` method.
 * Removed instances of ``from __future__ import print_function`` as PRAW should
   not use ``print`` at all.
 * Removed instances of ``from __future__ import unicode_literals``.
