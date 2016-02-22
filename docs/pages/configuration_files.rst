@@ -75,10 +75,6 @@ config file. Each site can overwrite any of these variables.
   authenticated requests are sent.
 * *oauth_https:* A **boolean** that determines whether or not to use HTTPS for
   oauth connections. This should only be changed for development environments.
-* *output_chars_limit:* An **integer** that defines the maximum length of
-  unicode representations of :class:`.Comment`, :class:`.Message` and
-  :class:`.Submission` objects. This is mainly used to fit them within a
-  terminal window line. A negative value means no limit.
 * *permalink_domain:* A **string** that defines the *domain* that is used for
    the display *permalink* for Submissions and Comments.
 * *short_domain:* A **string** that defines the *domain* that is used for

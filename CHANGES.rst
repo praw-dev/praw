@@ -25,6 +25,7 @@ upstream changes.
 
 * Removed ``api_request_delay`` setting from ``praw.ini``.
 * Removed ``cache_timeout`` setting from ``praw.ini``.
+* Removed ``output_chars_limit`` setting from ``praw.ini``.
 * Removed :class:`Redditor` ``login`` method. Authentication must be done
   through OAuth.
 * Removed all handlers in ``praw.handlers``.
