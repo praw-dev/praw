@@ -36,8 +36,6 @@ setup(name=PACKAGE_NAME,
       description=('PRAW, an acronym for `Python Reddit API Wrapper`, is a '
                    'python package that allows for simple access to '
                    'reddit\'s API.'),
-      entry_points={'console_scripts': [
-          'praw-multiprocess = praw.multiprocess:run']},
       install_requires=['decorator >=4.0.9, <4.1',
                         'requests >=2.3.0',
                         'six ==1.10',

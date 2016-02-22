@@ -1,16 +1,11 @@
 """Provides classes that handle request dispatching."""
 
 from __future__ import print_function, unicode_literals
-
-import socket
-import sys
 import time
 from functools import wraps
-from praw.errors import ClientException
 from praw.helpers import normalize_url
 from requests import Session
 from six import text_type
-from six.moves import cPickle  # pylint: disable=F0401
 from threading import Lock
 from timeit import default_timer as timer
 
@@ -181,59 +176,3 @@ class DefaultHandler(RateLimitHandler):
                     del cls.timeouts[key]
         return retval
 DefaultHandler.request = DefaultHandler.with_cache(RateLimitHandler.request)
-
-
-class MultiprocessHandler(object):
-    """A PRAW handler to interact with the PRAW multi-process server."""
-
-    def __init__(self, host='localhost', port=10101):
-        """Construct an instance of the MultiprocessHandler."""
-        self.host = host
-        self.port = port
-
-    def _relay(self, **kwargs):
-        """Send the request through the server and return the HTTP response."""
-        retval = None
-        delay_time = 2  # For connection retries
-        read_attempts = 0  # For reading from socket
-        while retval is None:  # Evict can return False
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock_fp = sock.makefile('rwb')  # Used for pickle
-            try:
-                sock.connect((self.host, self.port))
-                cPickle.dump(kwargs, sock_fp, cPickle.HIGHEST_PROTOCOL)
-                sock_fp.flush()
-                retval = cPickle.load(sock_fp)
-            except:  # pylint: disable=W0702
-                exc_type, exc, _ = sys.exc_info()
-                socket_error = exc_type is socket.error
-                if socket_error and exc.errno == 111:  # Connection refused
-                    sys.stderr.write('Cannot connect to multiprocess server. I'
-                                     's it running? Retrying in {0} seconds.\n'
-                                     .format(delay_time))
-                    time.sleep(delay_time)
-                    delay_time = min(64, delay_time * 2)
-                elif exc_type is EOFError or socket_error and exc.errno == 104:
-                    # Failure during socket READ
-                    if read_attempts >= 3:
-                        raise ClientException('Successive failures reading '
-                                              'from the multiprocess server.')
-                    sys.stderr.write('Lost connection with multiprocess server'
-                                     ' during read. Trying again.\n')
-                    read_attempts += 1
-                else:
-                    raise
-            finally:
-                sock_fp.close()
-                sock.close()
-        if isinstance(retval, Exception):
-            raise retval  # pylint: disable=E0702
-        return retval
-
-    def evict(self, urls):
-        """Forward the eviction to the server and return its response."""
-        return self._relay(method='evict', urls=urls)
-
-    def request(self, **kwargs):
-        """Forward the request to the server and return its HTTP response."""
-        return self._relay(method='request', **kwargs)

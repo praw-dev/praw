@@ -19,7 +19,6 @@ Content Pages
     pages/comment_parsing
     pages/oauth
     pages/lazy-loading
-    pages/multiprocess
     pages/contributor_guidelines
     pages/configuration_files
     pages/faq

@@ -10,6 +10,14 @@ upstream changes.
 
 .. begin_changelog_body
 
+4.0.0a1
+-------
+
+**Removed**
+
+* Removed `praw-multiprocess` and its associated ``MultiprocessHandler``. This
+  functionality is no longer needed with PRAW4.
+
 3.4.0 (2016-02-21)
 ------------------
 
