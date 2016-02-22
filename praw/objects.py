@@ -14,12 +14,6 @@ from warnings import warn_explicit
 import six
 from six.moves.urllib.parse import parse_qs, urljoin, urlparse, urlunparse
 
-from . import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
-               ModFlairMixin as MFMix, ModLogMixin as MLMix,
-               ModOnlyMixin as MOMix, ModSelfMixin as MSMix,
-               MultiredditMixin as MultiMix, PrivateMessagesMixin as PMMix,
-               SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
-from .decorators import alias_function
 from .errors import ClientException, InvalidComment
 from .internal import _get_redditor_listing, _get_sorter, _modify_relationship
 
@@ -345,7 +339,7 @@ class Inboxable(RedditContentObject):
 class Messageable(RedditContentObject):
     """Interface for RedditContentObjects that can be messaged."""
 
-    _methods = (('send_message', PMMix),)
+    _methods = (('send_message', 'PMMix'),)
 
 
 class Refreshable(RedditContentObject):
@@ -726,7 +720,8 @@ class MoreComments(RedditContentObject):
 class Redditor(Gildable, Messageable, Refreshable):
     """A class representing the users of reddit."""
 
-    _methods = (('get_multireddit', MultiMix), ('get_multireddits', MultiMix))
+    _methods = (('get_multireddit', 'MultiMix'),
+                ('get_multireddits', 'MultiMix'))
 
     get_comments = _get_redditor_listing('comments')
     get_overview = _get_redditor_listing('')
@@ -922,7 +917,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
                  Reportable, Saveable, Voteable):
     """A class for submissions to reddit."""
 
-    _methods = (('select_flair', AR),)
+    _methods = (('select_flair', 'AR'),)
 
     @staticmethod
     def _extract_more_comments(tree):
@@ -1283,50 +1278,50 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 class Subreddit(Messageable, Refreshable):
     """A class for Subreddits."""
 
-    _methods = (('accept_moderator_invite', AR),
-                ('add_flair_template', MFMix),
-                ('clear_flair_templates', MFMix),
-                ('configure_flair', MFMix),
-                ('delete_flair', MFMix),
-                ('delete_image', MCMix),
-                ('edit_wiki_page', AR),
-                ('get_banned', MOMix),
-                ('get_comments', UR),
-                ('get_contributors', MOMix),
-                ('get_edited', MOMix),
-                ('get_flair', UR),
-                ('get_flair_choices', AR),
-                ('get_flair_list', MFMix),
-                ('get_moderators', UR),
-                ('get_mod_log', MLMix),
-                ('get_mod_queue', MOMix),
-                ('get_mod_mail', MOMix),
-                ('get_muted', MOMix),
-                ('get_random_submission', UR),
-                ('get_reports', MOMix),
-                ('get_settings', MCMix),
-                ('get_spam', MOMix),
-                ('get_sticky', UR),
-                ('get_stylesheet', MOMix),
-                ('get_traffic', UR),
-                ('get_unmoderated', MOMix),
-                ('get_wiki_banned', MOMix),
-                ('get_wiki_contributors', MOMix),
-                ('get_wiki_page', UR),
-                ('get_wiki_pages', UR),
-                ('leave_contributor', MSMix),
-                ('leave_moderator', MSMix),
-                ('search', UR),
-                ('select_flair', AR),
-                ('set_flair', MFMix),
-                ('set_flair_csv', MFMix),
-                ('set_settings', MCMix),
-                ('set_stylesheet', MCMix),
-                ('submit', SubmitMixin),
-                ('subscribe', SubscribeMixin),
-                ('unsubscribe', SubscribeMixin),
-                ('update_settings', MCMix),
-                ('upload_image', MCMix))
+    _methods = (('accept_moderator_invite', 'AR'),
+                ('add_flair_template', 'MFMix'),
+                ('clear_flair_templates', 'MFMix'),
+                ('configure_flair', 'MFMix'),
+                ('delete_flair', 'MFMix'),
+                ('delete_image', 'MCMix'),
+                ('edit_wiki_page', 'AR'),
+                ('get_banned', 'MOMix'),
+                ('get_comments', 'UR'),
+                ('get_contributors', 'MOMix'),
+                ('get_edited', 'MOMix'),
+                ('get_flair', 'UR'),
+                ('get_flair_choices', 'AR'),
+                ('get_flair_list', 'MFMix'),
+                ('get_moderators', 'UR'),
+                ('get_mod_log', 'MLMix'),
+                ('get_mod_queue', 'MOMix'),
+                ('get_mod_mail', 'MOMix'),
+                ('get_muted', 'MOMix'),
+                ('get_random_submission', 'UR'),
+                ('get_reports', 'MOMix'),
+                ('get_settings', 'MCMix'),
+                ('get_spam', 'MOMix'),
+                ('get_sticky', 'UR'),
+                ('get_stylesheet', 'MOMix'),
+                ('get_traffic', 'UR'),
+                ('get_unmoderated', 'MOMix'),
+                ('get_wiki_banned', 'MOMix'),
+                ('get_wiki_contributors', 'MOMix'),
+                ('get_wiki_page', 'UR'),
+                ('get_wiki_pages', 'UR'),
+                ('leave_contributor', 'MSMix'),
+                ('leave_moderator', 'MSMix'),
+                ('search', 'UR'),
+                ('select_flair', 'AR'),
+                ('set_flair', 'MFMix'),
+                ('set_flair_csv', 'MFMix'),
+                ('set_settings', 'MCMix'),
+                ('set_stylesheet', 'MCMix'),
+                ('submit', 'SubmitMixin'),
+                ('subscribe', 'SubscribeMixin'),
+                ('unsubscribe', 'SubscribeMixin'),
+                ('update_settings', 'MCMix'),
+                ('upload_image', 'MCMix'))
 
     # Subreddit banned
     add_ban = _modify_relationship('banned', is_sub=True)
@@ -1760,17 +1755,3 @@ class WikiPageListing(PRAWListing):
         subreddit = reddit_session._request_url.rsplit('/', 4)[1]
         # pylint: enable=W0212
         return WikiPage(reddit_session, subreddit, data, fetch=False)
-
-
-def _add_aliases():
-    def predicate(obj):
-        return inspect.isclass(obj) and hasattr(obj, '_methods')
-
-    import inspect
-    import sys
-
-    for _, cls in inspect.getmembers(sys.modules[__name__], predicate):
-        for name, mixin in cls._methods:  # pylint: disable=W0212
-            setattr(cls, name, alias_function(getattr(mixin, name),
-                                              mixin.__name__))
-_add_aliases()

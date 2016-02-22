@@ -8,46 +8,12 @@ response for certain errors.
 """
 
 import sys
-from functools import wraps
-from warnings import simplefilter, warn
+from warnings import warn
 
 import decorator
 
 from . import errors
 from .decorator_helpers import _get_captcha, _make_func_args
-
-
-# Enable deprecation warnings
-simplefilter('default')
-
-
-def alias_function(function, class_name):
-    """Create a RedditContentObject function mapped to a BaseReddit function.
-
-    The BaseReddit classes define the majority of the API's functions. The
-    first argument for many of these functions is the RedditContentObject that
-    they operate on. This factory returns functions appropriate to be called on
-    a RedditContent object that maps to the corresponding BaseReddit function.
-
-    """
-    @wraps(function)
-    def wrapped(self, *args, **kwargs):
-        func_args = _make_func_args(function)
-        if 'subreddit' in func_args and func_args.index('subreddit') != 1:
-            # Only happens for search
-            kwargs['subreddit'] = self
-            return function(self.reddit_session, *args, **kwargs)
-        else:
-            return function(self.reddit_session, self, *args, **kwargs)
-    # Only grab the short-line doc and add a link to the complete doc
-    if wrapped.__doc__ is not None:
-        wrapped.__doc__ = wrapped.__doc__.split('\n', 1)[0]
-        wrapped.__doc__ += ('\n\nSee :meth:`.{0}.{1}` for complete usage. '
-                            'Note that you should exclude the subreddit '
-                            'parameter when calling this convenience method.'
-                            .format(class_name, function.__name__))
-    # Don't hide from sphinx as this is a parameter modifying decorator
-    return wrapped
 
 
 def deprecated(msg=''):
