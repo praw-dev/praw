@@ -369,9 +369,6 @@ class BaseReddit(object):
             update_check(__name__, __version__)
             self.update_checked = True
 
-        # Initial values
-        self._use_oauth = False
-
     def _request(self, url, params=None, data=None, files=None, auth=None,
                  timeout=None, raw_response=False, retry_on_error=True,
                  method=None):
@@ -439,12 +436,10 @@ class BaseReddit(object):
         request, key_items, kwargs = build_key_items(url, params, data,
                                                      auth, files, method)
 
-        tempauth = self._use_oauth
         remaining_attempts = 3 if retry_on_error else 1
         attempt_oauth_refresh = bool(self.refresh_token)
         while True:
             try:
-                self._use_oauth = self.is_oauth_session()
                 response = handle_redirect()
                 _raise_response_exceptions(response)
                 self.http.cookies.update(response.cookies)
@@ -456,9 +451,7 @@ class BaseReddit(object):
                 if not attempt_oauth_refresh:
                     raise
                 attempt_oauth_refresh = False
-                self._use_oauth = False
                 self.refresh_access_information()
-                self._use_oauth = tempauth
                 request, key_items, kwargs = build_key_items(url, params,
                                                              data, auth, files,
                                                              method)
@@ -468,8 +461,6 @@ class BaseReddit(object):
                 if error._raw.status_code not in self.RETRY_CODES or \
                         remaining_attempts == 0:
                     raise
-            finally:
-                self._use_oauth = tempauth
 
     def _json_reddit_objecter(self, json_data):
         """Return an appropriate RedditObject from json_data when possible."""
@@ -536,8 +527,6 @@ class BaseReddit(object):
             Submission or user flair.
 
         """
-        _use_oauth = kwargs.get('_use_oauth', self.is_oauth_session())
-
         objects_found = 0
         params = params or {}
         fetch_all = fetch_once = False
@@ -554,16 +543,9 @@ class BaseReddit(object):
 
         # While we still need to fetch more content to reach our limit, do so.
         while fetch_once or fetch_all or objects_found < limit:
-            if _use_oauth:  # Set the necessary _use_oauth value
-                assert self._use_oauth is False
-                self._use_oauth = _use_oauth
-            try:
-                page_data = self.request_json(url, params=params)
-                if object_filter:
-                    page_data = page_data[object_filter]
-            finally:  # Restore _use_oauth value
-                if _use_oauth:
-                    self._use_oauth = False
+            page_data = self.request_json(url, params=params)
+            if object_filter:
+                page_data = page_data[object_filter]
             fetch_once = False
             root = page_data.get(root_field, page_data)
             for thing in root[thing_field]:
@@ -2538,11 +2520,6 @@ class SubmitMixin(AuthenticatedReddit):
         result = self.request_json(self.config['submit'], data=data,
                                    retry_on_error=False)
         url = result['data']['url']
-        # Clear the OAuth setting when attempting to fetch the submission
-        if self._use_oauth:
-            self._use_oauth = False
-            if url.startswith(self.config.oauth_url):
-                url = self.config.api_url + url[len(self.config.oauth_url):]
         try:
             return self.get_submission(url)
         except errors.Forbidden:

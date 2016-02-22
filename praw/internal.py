@@ -103,24 +103,6 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 def _prepare_request(reddit_session, url, params, data, auth, files,
                      method=None):
     """Return a requests Request object that can be "prepared"."""
-    # Requests using OAuth for authorization must switch to using the oauth
-    # domain.
-    if getattr(reddit_session, '_use_oauth', False):
-        bearer = 'bearer {0}'.format(reddit_session.access_token)
-        headers = {'Authorization': bearer}
-        config = reddit_session.config
-        for prefix in (config.api_url, config.permalink_url):
-            if url.startswith(prefix):
-                if config.log_requests >= 1:
-                    msg = 'substituting {0} for {1} in url\n'.format(
-                        config.oauth_url, prefix)
-                    sys.stderr.write(msg)
-                url = config.oauth_url + url[len(prefix):]
-                break
-    else:
-        headers = {}
-    headers.update(reddit_session.http.headers)
-
     if method:
         pass
     elif data or files:
@@ -139,7 +121,8 @@ def _prepare_request(reddit_session, url, params, data, auth, files,
         if auth:
             sys.stderr.write('auth: {0}\n'.format(auth))
     # Prepare request
-    request = Request(method=method, url=url, headers=headers, params=params,
+    request = Request(method=method, url=url,
+                      headers=reddit_session.http.headers, params=params,
                       auth=auth, cookies=reddit_session.http.cookies)
     if method == 'GET':
         return request

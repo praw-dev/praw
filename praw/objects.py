@@ -127,30 +127,9 @@ class RedditContentObject(object):
         return retval
 
     def _get_json_dict(self):
-        # (disabled for entire function) pylint: disable=W0212
-
-        # OAuth handling needs to be special cased here. For instance, the user
-        # might be calling a method on a Subreddit object that requires first
-        # loading the information about the subreddit. This method should try
-        # to obtain the information in a scope-less manner unless either:
-        # a) The object is a WikiPage and the reddit_session has the `wikiread`
-        #    scope.
-        # b) The object is not a WikiPage and the reddit_session has the
-        #    `read` scope.
-        prev_use_oauth = self.reddit_session._use_oauth
-
-        wiki_page = isinstance(self, WikiPage)
-        scope = self.reddit_session.has_scope
-
-        self.reddit_session._use_oauth = wiki_page and scope('wikiread') or \
-            not wiki_page and scope('read')
-
-        try:
-            params = {'uniq': self._uniq} if self._uniq else {}
-            response = self.reddit_session.request_json(
-                self._info_url, params=params, as_objects=False)
-        finally:
-            self.reddit_session._use_oauth = prev_use_oauth
+        params = {'uniq': self._uniq} if self._uniq else {}
+        response = self.reddit_session.request_json(
+            self._info_url, params=params, as_objects=False)
         return response['data']
 
     def _populate(self, json_dict, fetch):
@@ -897,10 +876,6 @@ class Redditor(Gildable, Messageable, Refreshable):
         will be needed to access this listing.
 
         """
-        # Sending an OAuth authenticated request for a redditor, who isn't the
-        # authenticated user. But who has a public voting record will be
-        # successful.
-        kwargs['_use_oauth'] = self.reddit_session.is_oauth_session()
         return _get_redditor_listing('downvoted')(self, *args, **kwargs)
 
     def get_friend_info(self):
@@ -939,7 +914,6 @@ class Redditor(Gildable, Messageable, Refreshable):
         will be needed to access this listing.
 
         """
-        kwargs['_use_oauth'] = self.reddit_session.is_oauth_session()
         return _get_redditor_listing('upvoted')(self, *args, **kwargs)
 
     def mark_as_read(self, messages, unread=False):
