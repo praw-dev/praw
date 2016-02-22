@@ -34,7 +34,7 @@ from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModOnlyMixin as MOMix, ModSelfMixin as MSMix,
                   MultiredditMixin as MultiMix, PrivateMessagesMixin as PMMix,
                   SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
-from praw.decorators import alias_function, limit_chars
+from praw.decorators import alias_function
 from praw.errors import ClientException, InvalidComment
 from praw.internal import (_get_redditor_listing, _get_sorter,
                            _modify_relationship)
@@ -538,7 +538,6 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
             self._replies = None
         self._submission = None
 
-    @limit_chars
     def __unicode__(self):
         """Return a string representation of the comment."""
         return getattr(self, 'body', '[Unloaded Comment]')
@@ -642,7 +641,6 @@ class Message(Inboxable):
         else:
             self.replies = []
 
-    @limit_chars
     def __unicode__(self):
         """Return a string representation of the Message."""
         return 'From: {0}\nSubject: {1}\n\n{2}'.format(self.author,
@@ -1028,7 +1026,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         self._replaced_more = False
         self._params = {}
 
-    @limit_chars
     def __unicode__(self):
         """Return a string representation of the Subreddit.
 

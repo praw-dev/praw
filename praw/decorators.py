@@ -76,16 +76,6 @@ def deprecated(msg=''):
 
 
 @decorator.decorator
-def limit_chars(function, *args, **kwargs):
-    """Truncate the string returned from a function and return the result."""
-    output_chars_limit = args[0].reddit_session.config.output_chars_limit
-    output_string = function(*args, **kwargs)
-    if -1 < output_chars_limit < len(output_string):
-        output_string = output_string[:output_chars_limit - 3] + '...'
-    return output_string
-
-
-@decorator.decorator
 def raise_api_exceptions(function, *args, **kwargs):
     """Raise client side exception(s) when present in the API response.
 
