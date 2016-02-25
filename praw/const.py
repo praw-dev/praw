@@ -1,6 +1,6 @@
 """praw constants."""
 
-__version__ = '3.4.0'
+__version__ = '4.0.0a1'
 
 API_PATHS = {
     'accept_mod_invite':   'api/accept_moderator_invite',

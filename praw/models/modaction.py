@@ -1,6 +1,6 @@
 """Provide the ModAction class."""
 
-from .models.redditcontentobject import RedditContentObject
+from .redditcontentobject import RedditContentObject
 
 
 class ModAction(RedditContentObject):

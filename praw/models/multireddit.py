@@ -4,7 +4,7 @@ from json import dumps
 
 from six import text_type
 
-from .internal import _get_sorter
+from ..internal import _get_sorter
 from .redditcontentobject import RedditContentObject
 
 

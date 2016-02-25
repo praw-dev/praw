@@ -11,4 +11,4 @@ More information about PRAW can be found at https://github.com/praw-dev/praw
 """
 
 from .const import __version__  # NOQA
-from .reddit_mixins import Reddit  # NOQA
+from .reddit import Reddit  # NOQA

@@ -1,7 +1,6 @@
 """Provide Reddit classes."""
 
 import json
-import os
 import re
 import sys
 from warnings import warn_explicit
@@ -15,7 +14,6 @@ from update_checker import update_check
 
 
 from . import decorators, errors, models
-from .config import Config
 from .const import __version__, USER_AGENT_FORMAT
 from .internal import (_prepare_request, _raise_redirect_exceptions,
                        _raise_response_exceptions, _to_reddit_list)
@@ -30,45 +28,9 @@ class BaseReddit(object):
     """
 
     RETRY_CODES = [502, 503, 504]
-    update_checked = False
 
     def __init__(self, user_agent, site_name=None, disable_update_check=False,
                  **kwargs):
-        """Initialize our connection with a reddit server.
-
-        The user_agent is how your application identifies itself. Read the
-        official API guidelines for user_agents
-        https://github.com/reddit/reddit/wiki/API. Applications using default
-        user_agents such as "Python/urllib" are drastically limited.
-
-        site_name allows you to specify which reddit you want to connect to.
-        The installation defaults are reddit.com, if you only need to connect
-        to reddit.com then you can safely ignore this. If you want to connect
-        to another reddit, set site_name to the name of that reddit. This must
-        match with an entry in praw.ini. If site_name is None, then the site
-        name will be looked for in the environment variable REDDIT_SITE. If it
-        is not found there, the default site name reddit matching reddit.com
-        will be used.
-
-        disable_update_check allows you to prevent an update check from
-        occurring in spite of the check_for_updates setting in praw.ini.
-
-        All additional parameters specified via kwargs will be used to
-        initialize the Config object. This can be used to specify configuration
-        settings during instantiation of the Reddit instance. See
-        https://praw.readthedocs.org/en/latest/pages/configuration_files.html
-        for more details.
-
-        """
-        if not user_agent or not isinstance(user_agent, six.string_types):
-            raise TypeError('user_agent must be a non-empty string.')
-        if 'bot' in user_agent.lower():
-            warn_explicit(
-                'The keyword `bot` in your user_agent may be problematic.',
-                UserWarning, '', 0)
-
-        self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit',
-                             **kwargs)
         self.http = Session()
         self.http.headers['User-Agent'] = USER_AGENT_FORMAT.format(user_agent)
         self.http.validate_certs = self.config.validate_certs
@@ -81,11 +43,6 @@ class BaseReddit(object):
                 self.http.proxies['https'] = self.config.https_proxy
         self.modhash = None
 
-        # Check for updates if permitted and this is the first Reddit instance
-        if not disable_update_check and not self.update_checked \
-                and self.config.check_for_updates:
-            update_check(__name__, __version__)
-            self.update_checked = True
 
     def _request(self, url, params=None, data=None, files=None, auth=None,
                  timeout=None, raw_response=False, retry_on_error=True,

@@ -1095,14 +1095,3 @@ class SubscribeMixin(AuthenticatedReddit):
 
         """
         return self.subscribe(subreddit, unsubscribe=True)
-
-
-class Reddit(ModConfigMixin, ModFlairMixin, ModLogMixin, ModOnlyMixin,
-             ModSelfMixin, MultiredditMixin, MySubredditsMixin,
-             PrivateMessagesMixin, ReportMixin, SubmitMixin, SubscribeMixin):
-    """Provides access to reddit's API.
-
-    See :class:`.BaseReddit`'s documentation for descriptions of the
-    initialization parameters.
-
-    """

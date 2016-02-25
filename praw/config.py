@@ -14,16 +14,12 @@ from .errors import ClientException
 class Config(object):
     """A class containing the configuration for a reddit site."""
 
-    def __init__(self, site_name, **kwargs):
+    def __init__(self, site_name, **settings):
         """Initialize PRAW's configuration."""
         def config_boolean(item):
-            return item and item.lower() in ('1', 'yes', 'true', 'on')
+            return item and item.lower() in {'1', 'yes', 'true', 'on'}
 
-        obj = dict(CONFIG.items(site_name))
-        # Overwrite configuration file settings with those given during
-        # instantiation of the Reddit instance.
-        for key, value in kwargs.items():
-            obj[key] = value
+        obj = dict(CONFIG.items(site_name), **settings)
 
         self.by_kind = {obj['comment_kind']:    models.Comment,
                         obj['message_kind']:    models.Message,
@@ -38,24 +34,25 @@ class Config(object):
                         'UserList':             models.UserList}
         self.by_object = dict((value, key) for (key, value) in
                               iteritems(self.by_kind))
-        self.by_object[models.Redditor] = obj['redditor_kind']
-        self.check_for_updates = config_boolean(obj['check_for_updates'])
-        self.log_requests = int(obj['log_requests'])
+
         # `get(...) or None` is used because `get` may return an empty string
-        self.http_proxy = (os.getenv('http_proxy') or obj.get('http_proxy') or
-                           None)
+        self._short_url = obj.get('short_url') or None
+        self.check_for_updates = config_boolean(obj['check_for_updates'])
+        self.client_id = os.getenv('client_id') or obj['client_id']
+        self.client_secret = os.getenv('client_secret') or obj['client_secret']
+        self.http_proxy = (os.getenv('http_proxy') or
+                           obj.get('http_proxy') or None)
         self.https_proxy = (os.getenv('https_proxy') or
                             obj.get('https_proxy') or None)
-        self.client_id = obj.get('oauth_client_id') or None
-        self.client_secret = obj.get('oauth_client_secret') or None
-        self.redirect_uri = obj.get('oauth_redirect_uri') or None
-        self.refresh_token = obj.get('oauth_refresh_token') or None
+        self.log_requests = int(obj['log_requests'])
         self.oauth_url = obj['oauth_url']
         self.reddit_url = obj['reddit_url']
-        self._short_url = obj.get('short_url') or None
-        self.store_json_result = config_boolean(obj.get('store_json_result'))
+        self.redirect_uri = obj.get('oauth_redirect_uri') or None
+        self.refresh_token = obj.get('oauth_refresh_token') or None
+        self.store_json_result = config_boolean(obj['store_json_result'])
         self.timeout = float(obj['timeout'])
-        self.validate_certs = config_boolean(obj.get('validate_certs'))
+        self.user_agent = obj['user_agent']
+        self.validate_certs = config_boolean(obj['validate_certificates'])
 
     def __getitem__(self, key):
         """Return the URL for key."""
