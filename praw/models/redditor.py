@@ -3,12 +3,12 @@ from json import dumps
 
 from six import text_type
 
-from .mixins import Gildable, Inboxable, Messageable, Refreshable
+from .mixins import Gildable, Inboxable, Messageable
 from ..errors import ClientException
 from ..internal import _get_redditor_listing
 
 
-class Redditor(Gildable, Messageable, Refreshable):
+class Redditor(Gildable, Messageable):
     """A class representing the users of reddit."""
 
     _methods = (('get_multireddit', 'MultiMix'),
@@ -45,8 +45,6 @@ class Redditor(Gildable, Messageable, Refreshable):
 
     def _post_populate(self, fetch):
         if fetch:
-            # Maintain a consistent `name` until the user
-            # explicitly calls `redditor.refresh()`
             tmp = self._case_name
             self._case_name = self.name
             self.name = tmp
@@ -173,9 +171,7 @@ class Redditor(Gildable, Messageable, Refreshable):
         else:
             msg = 'Invalid message type: {0}'.format(type(messages))
             raise ClientException(msg)
-        # pylint: disable=W0212
         retval = self.reddit_session._mark_as_read(ids, unread=unread)
-        # pylint: enable=W0212
         return retval
 
     def unfriend(self):

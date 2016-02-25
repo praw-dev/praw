@@ -415,7 +415,6 @@ class ModOnlyMixin(AuthenticatedReddit):
         subreddits only access is required. See issue #246.
 
         """
-        # pylint: disable=W0613
         def get_contributors_helper(subreddit):
             url = self.config['contributors'].format(
                 subreddit=six.text_type(subreddit))
@@ -636,7 +635,7 @@ class MultiredditMixin(AuthenticatedReddit):
     def create_multireddit(self, name, description_md=None, icon_name=None,
                            key_color=None, subreddits=None, visibility=None,
                            weighting_scheme=None, overwrite=False,
-                           *args, **kwargs):  # pylint: disable=W0613
+                           *args, **kwargs):
         """Create a new multireddit.
 
         :param name: The name of the new multireddit.
@@ -906,7 +905,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         if unset_has_mail:
             params['mark'] = 'true'
             if update_user:  # Update the user object
-                # Use setattr to avoid pylint error
                 setattr(self.user, 'has_mail', False)
         return self.get_content(self.config['unread'], *args, **kwargs)
 

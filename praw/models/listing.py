@@ -61,7 +61,7 @@ class UserList(PRAWListing):
     def _convert(reddit_session, data):
         """Return a Redditor object from the data."""
         retval = Redditor(reddit_session, data['name'], fetch=False)
-        retval.id = data['id'].split('_')[1]  # pylint: disable=C0103,W0201
+        retval.id = data['id'].split('_')[1]
         return retval
 
 
@@ -74,7 +74,5 @@ class WikiPageListing(PRAWListing):
     def _convert(reddit_session, data):
         """Return a WikiPage object from the data."""
         # TODO: The _request_url hack shouldn't be necessary
-        # pylint: disable=W0212
         subreddit = reddit_session._request_url.rsplit('/', 4)[1]
-        # pylint: enable=W0212
         return WikiPage(reddit_session, subreddit, data, fetch=False)

@@ -36,7 +36,7 @@ def _get_redditor_listing(subpath=''):
         kwargs.setdefault('params', {})
         kwargs['params'].setdefault('sort', sort)
         kwargs['params'].setdefault('t', time)
-        url = urljoin(self._url, subpath)  # pylint: disable=W0212
+        url = urljoin(self._url, subpath)
         return self.reddit_session.get_content(url, *args, **kwargs)
     return _listing
 
@@ -54,7 +54,7 @@ def _get_sorter(subpath='', **defaults):
             kwargs['params'] = {}
         for key, value in six.iteritems(defaults):
             kwargs['params'].setdefault(key, value)
-        url = urljoin(self._url, subpath)  # pylint: disable=W0212
+        url = urljoin(self._url, subpath)
         return self.reddit_session.get_content(url, *args, **kwargs)
     return _sorted
 
@@ -156,9 +156,9 @@ def _raise_response_exceptions(response):
         else:
             raise OAuthException(msg, response.url)
 
-    if response.status_code == codes.forbidden:  # pylint: disable=E1101
+    if response.status_code == codes.forbidden:
         raise Forbidden(_raw=response)
-    elif response.status_code == codes.not_found:  # pylint: disable=E1101
+    elif response.status_code == codes.not_found:
         raise NotFound(_raw=response)
     else:
         try:

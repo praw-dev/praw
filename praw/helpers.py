@@ -337,7 +337,7 @@ def _stream_generator(get_function, limit=None, verbosity=1):
             yield item
         # Sleep if necessary
         if sleep:
-            sleep_time, msg, msg_level = sleep  # pylint: disable=W0633
+            sleep_time, msg, msg_level = sleep
             debug(msg.format(sleep_time), msg_level)
             time.sleep(sleep_time)
 

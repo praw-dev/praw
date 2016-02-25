@@ -33,9 +33,7 @@ class MoreComments(RedditContentObject):
         self._comments = tmp.comments[0].replies
         if update:
             for comment in self._comments:
-                # pylint: disable=W0212
                 comment._update_submission(self.submission)
-                # pylint: enable=W0212
         return self._comments
 
     def _update_submission(self, submission):
@@ -46,26 +44,20 @@ class MoreComments(RedditContentObject):
         if not self._comments:
             if self.count == 0:  # Handle 'continue this thread' type
                 return self._continue_comments(update)
-            # pylint: disable=W0212
             children = [x for x in self.children if 't1_{0}'.format(x)
                         not in self.submission._comments_by_id]
-            # pylint: enable=W0212
             if not children:
                 return None
             data = {'children': ','.join(children),
                     'link_id': self.submission.fullname,
                     'r': str(self.submission.subreddit)}
 
-            # pylint: disable=W0212
             if self.submission._comment_sort:
                 data['where'] = self.submission._comment_sort
-            # pylint: enable=W0212
             url = self.reddit_session.config['morechildren']
             response = self.reddit_session.request_json(url, data=data)
             self._comments = response['data']['things']
             if update:
                 for comment in self._comments:
-                    # pylint: disable=W0212
                     comment._update_submission(self.submission)
-                    # pylint: enable=W0212
         return self._comments

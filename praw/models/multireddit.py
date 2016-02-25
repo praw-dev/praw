@@ -5,12 +5,10 @@ from json import dumps
 from six import text_type
 
 from .internal import _get_sorter
-from .models.mixins import Refreshable
-from .models.redditor import Redditor
-from .models.subreddit import Subreddit
+from .redditcontentobject import RedditContentObject
 
 
-class Multireddit(Refreshable):
+class Multireddit(RedditContentObject):
     """A class for users' Multireddits."""
 
     # Generic listing selectors
@@ -37,6 +35,7 @@ class Multireddit(Refreshable):
     @classmethod
     def from_api_response(cls, reddit_session, json_dict):
         """Return an instance of the appropriate class from the json dict."""
+        from .models.subreddit import Subreddit
         # The Multireddit response contains the Subreddits attribute as a list
         # of dicts of the form {'name': 'subredditname'}.
         # We must convert each of these into a Subreddit object.
@@ -71,6 +70,8 @@ class Multireddit(Refreshable):
         return self.name
 
     def _post_populate(self, fetch):
+        from .models.redditor import Redditor
+        from .models.subreddit import Subreddit
         if fetch:
             # Subreddits are returned as dictionaries in the form
             # {'name': 'subredditname'}. Convert them to Subreddit objects.
@@ -148,5 +149,5 @@ class Multireddit(Refreshable):
         """
         new = self.reddit_session.rename_multireddit(self.name, new_name,
                                                      *args, **kwargs)
-        self.__dict__ = new.__dict__  # pylint: disable=W0201
+        self.__dict__ = new.__dict__
         return self

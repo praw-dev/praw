@@ -6,12 +6,12 @@ from six import text_type
 from six.moves.urllib.parse import parse_qs, urljoin, urlparse, urlunparse
 
 from .morecomments import MoreComments
-from .mixins import (Editable, Gildable, Hideable, Moderatable, Refreshable,
-                     Reportable, Saveable, Voteable)
+from .mixins import (Editable, Gildable, Hideable, Moderatable, Reportable,
+                     Saveable, Voteable)
 
 
-class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
-                 Reportable, Saveable, Voteable):
+class Submission(Editable, Gildable, Hideable, Moderatable, Reportable,
+                 Saveable, Voteable):
     """A class for submissions to reddit."""
 
     _methods = (('select_flair', 'AR'),)
@@ -83,8 +83,8 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         if comments_only:
             return response[1]['data']['children']
         submission = Submission.from_json(response)
-        submission._comment_sort = comment_sort  # pylint: disable=W0212
-        submission._params = params  # pylint: disable=W0212
+        submission._comment_sort = comment_sort
+        submission._params = params
         return submission
 
     def __init__(self, reddit_session, json_dict):
@@ -113,8 +113,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         if comment.name in self._comments_by_id:  # Skip existing comments
             return
 
-        comment._update_submission(self)  # pylint: disable=W0212
-
+        comment._update_submission(self)
         if comment.name in self._orphaned:  # Reunite children with parent
             comment.replies.extend(self._orphaned[comment.name])
             del self._orphaned[comment.name]
@@ -132,7 +131,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
     def _update_comments(self, comments):
         self._comments = comments
         for comment in self._comments:
-            comment._update_submission(self)  # pylint: disable=W0212
+            comment._update_submission(self)
 
     def add_comment(self, text):
         """Comment on the submission using the specified text.
@@ -140,13 +139,11 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         :returns: A Comment object for the newly created comment.
 
         """
-        # pylint: disable=W0212
         response = self.reddit_session._add_comment(self.fullname, text)
-        # pylint: enable=W0212
         return response
 
     @property
-    def comments(self):  # pylint: disable=E0202
+    def comments(self):
         """Return forest of comments, with top-level comments as tree roots.
 
         May contain instances of MoreComment objects. To easily replace these
@@ -251,7 +248,7 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
 
             # Re-add new MoreComment objects to the heap of more_comments
             for more in self._extract_more_comments(new_comments):
-                more._update_submission(self)  # pylint: disable=W0212
+                more._update_submission(self)
                 heappush(more_comments, more)
             # Insert the new comments into the tree
             for comment in new_comments:

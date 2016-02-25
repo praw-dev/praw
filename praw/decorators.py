@@ -36,10 +36,10 @@ def raise_api_exceptions(function, *args, **kwargs):
     try:
         return_value = function(*args, **kwargs)
     except errors.HTTPException as exc:
-        if exc._raw.status_code != 400:  # pylint: disable=W0212
+        if exc._raw.status_code != 400:
             raise  # Unhandled HTTPErrors
         try:  # Attempt to convert v1 errors into older format (for now)
-            data = exc._raw.json()  # pylint: disable=W0212
+            data = exc._raw.json()
             assert len(data) == 2
             return_value = {'errors': [(data['reason'],
                                         data['explanation'], '')]}

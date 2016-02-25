@@ -2,14 +2,14 @@
 
 from six.moves.urllib.parse import urljoin
 
-from .mixins import (Editable, Gildable, Inboxable, Moderatable, Refreshable,
-                     Reportable, Saveable, Voteable)
+from .mixins import (Editable, Gildable, Inboxable, Moderatable, Reportable,
+                     Saveable, Voteable)
 from .submission import Submission
 from ..errors import InvalidComment
 
 
-class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
-              Reportable, Saveable, Voteable):
+class Comment(Editable, Gildable, Inboxable, Moderatable, Reportable, Saveable,
+              Voteable):
     """A class that represents a reddit comments."""
 
     def __init__(self, reddit_session, json_dict):
@@ -41,11 +41,11 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
     def _update_submission(self, submission):
         """Submission isn't set on __init__ thus we need to update it."""
-        submission._comments_by_id[self.name] = self  # pylint: disable=W0212
+        submission._comments_by_id[self.name] = self
         self._submission = submission
         if self._replies:
             for reply in self._replies:
-                reply._update_submission(submission)  # pylint: disable=W0212
+                reply._update_submission(submission)
 
     @property
     def is_root(self):
@@ -60,22 +60,13 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
 
     @property
     def replies(self):
-        """Return a list of the comment replies to this comment.
-
-        If the comment is not from a submission, :meth:`replies` will
-        always be an empty list unless you call :meth:`refresh()
-        before calling :meth:`replies` due to a limitation in
-        reddit's API.
-
-        """
+        """Return a list of the comment replies to this comment."""
         if self._replies is None or not self._has_fetched_replies:
             response = self.reddit_session.request_json(self._fast_permalink)
             if not response[1]['data']['children']:
                 raise InvalidComment('Comment is no longer accessible: {0}'
                                      .format(self._fast_permalink))
-            # pylint: disable=W0212
             self._replies = response[1]['data']['children'][0]._replies
-            # pylint: enable=W0212
             self._has_fetched_replies = True
             # Set the submission object if it is not set.
             if not self._submission:

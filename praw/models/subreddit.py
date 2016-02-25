@@ -2,14 +2,14 @@
 
 import logging
 
-from .mixins import Messageable, Refreshable
+from .mixins import Messageable
 from ..internal import _get_sorter, _modify_relationship
 
 
 log = logging.getLogger(__name__)
 
 
-class Subreddit(Messageable, Refreshable):
+class Subreddit(Messageable):
     """A class for Subreddits."""
 
     _methods = (('accept_moderator_invite', 'AR'),
@@ -140,8 +140,6 @@ class Subreddit(Messageable, Refreshable):
 
     def _post_populate(self, fetch):
         if fetch:
-            # Maintain a consistent `display_name` until the user
-            # explicitly calls `subreddit.refresh()`
             tmp = self._case_name
             self._case_name = self.display_name
             self.display_name = tmp

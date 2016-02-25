@@ -2,10 +2,10 @@
 
 from six import text_type
 
-from .mixins import Refreshable
+from .redditcontentobject import RedditContentObject
 
 
-class WikiPage(Refreshable):
+class WikiPage(RedditContentObject):
     """An individual WikiPage object."""
 
     @classmethod
@@ -15,9 +15,7 @@ class WikiPage(Refreshable):
         # in the JSON response to determine the name of the page nor the
         # subreddit it belongs to. Thus we must extract this information
         # from the request URL.
-        # pylint: disable=W0212
         parts = reddit_session._request_url.split('/', 6)
-        # pylint: enable=W0212
         subreddit = parts[4]
         page = parts[6].split('.', 1)[0]
         return cls(reddit_session, subreddit, page, json_dict=json_dict)

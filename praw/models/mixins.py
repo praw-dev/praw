@@ -191,70 +191,13 @@ class Inboxable(RedditContentObject):
         :returns: A Comment object for the newly created comment (reply).
 
         """
-        # pylint: disable=W0212
-        response = self.reddit_session._add_comment(self.fullname, text)
-        # pylint: enable=W0212
-        return response
+        return self.reddit_session._add_comment(self.fullname, text)
 
 
 class Messageable(RedditContentObject):
     """Interface for RedditContentObjects that can be messaged."""
 
     _methods = (('send_message', 'PMMix'),)
-
-
-class Refreshable(RedditContentObject):
-    """Interface for objects that can be refreshed."""
-
-    def refresh(self):
-        """Re-query to update object with latest values. Return the object.
-
-        Any listing, such as the submissions on a subreddits top page, will
-        automatically be refreshed serverside. Refreshing a submission will
-        also refresh all its comments.
-
-        In the rare case of a submissions's comment[0] being deleted or
-        removed in between its original retrieval and refresh, or
-        inconsistencies between different endpoints resulting in this,
-        an IndexError will be thrown.
-
-        """
-        from .comment import Comment
-        from .multireddit import Multireddit
-        from .redditor import Redditor
-        from .submission import Submission
-        from .subreddit import Subreddit
-        from .wikipage import WikiPage
-
-        unique = self.reddit_session._unique_count  # pylint: disable=W0212
-        self.reddit_session._unique_count += 1  # pylint: disable=W0212
-
-        if isinstance(self, Redditor):
-            other = Redditor(self.reddit_session, self._case_name, fetch=True,
-                             uniq=unique)
-        elif isinstance(self, Comment):
-            sub = Submission.from_url(self.reddit_session, self.permalink,
-                                      params={'uniq': unique})
-            other = sub.comments[0]
-        elif isinstance(self, Multireddit):
-            other = Multireddit(self.reddit_session, author=self._author,
-                                name=self.name, uniq=unique, fetch=True)
-        elif isinstance(self, Submission):
-            params = self._params.copy()
-            params['uniq'] = unique
-            other = Submission.from_url(self.reddit_session, self.permalink,
-                                        comment_sort=self._comment_sort,
-                                        params=params)
-        elif isinstance(self, Subreddit):
-            other = Subreddit(self.reddit_session, self._case_name, fetch=True,
-                              uniq=unique)
-        elif isinstance(self, WikiPage):
-            other = WikiPage(self.reddit_session,
-                             text_type(self.subreddit), self.page,
-                             fetch=True, uniq=unique)
-
-        self.__dict__ = other.__dict__  # pylint: disable=W0201
-        return self
 
 
 class Reportable(RedditContentObject):

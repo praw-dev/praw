@@ -35,7 +35,7 @@ class Message(Inboxable):
     def __init__(self, reddit_session, json_dict):
         """Construct an instance of the Message object."""
         super(Message, self).__init__(reddit_session, json_dict)
-        if self.replies:  # pylint: disable=E0203
+        if self.replies:
             self.replies = self.replies['data']['children']
         else:
             self.replies = []

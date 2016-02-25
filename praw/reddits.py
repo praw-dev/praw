@@ -150,7 +150,6 @@ class BaseReddit(object):
                                            files, method)
             except errors.HTTPException as error:
                 remaining_attempts -= 1
-                # pylint: disable=W0212
                 if error._raw.status_code not in self.RETRY_CODES or \
                         remaining_attempts == 0:
                     raise
@@ -221,7 +220,7 @@ class BaseReddit(object):
             fetch_once = True
 
         if hasattr(self, '_url_update'):
-            url = self._url_update(url)  # pylint: disable=E1101
+            url = self._url_update(url)
 
         # While we still need to fetch more content to reach our limit, do so.
         while fetch_once or fetch_all or objects_found < limit:
@@ -280,7 +279,7 @@ class BaseReddit(object):
                                  retry_on_error=retry_on_error)
         hook = self._json_reddit_objecter if as_objects else None
         # Request url just needs to be available for the objecter to use
-        self._request_url = url  # pylint: disable=W0201
+        self._request_url = url
 
         if response == '':
             # Some of the v1 urls don't return anything, even when they're
@@ -917,7 +916,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """
         data = {'r': six.text_type(subreddit)}
         # Clear moderated subreddits and cache
-        self.user._mod_subs = None  # pylint: disable=W0212
+        self.user._mod_subs = None
         return self.request_json(self.config['accept_mod_invite'], data=data)
 
     def clear_authentication(self):
@@ -963,8 +962,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
                 'reason': reason}
         return self.request_json(self.config['wiki_edit'], data=data)
 
-    def get_access_information(self, code,  # pylint: disable=W0221
-                               update_session=True):
+    def get_access_information(self, code, update_session=True):
         """Return the access information for an OAuth2 authorization grant.
 
         :param code: the code received in the request from the OAuth2 server
@@ -1029,8 +1027,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """
         return self._authentication is True
 
-    def refresh_access_information(self,  # pylint: disable=W0221
-                                   refresh_token=None,
+    def refresh_access_information(self, refresh_token=None,
                                    update_session=True):
         """Return updated access information for an OAuth2 authorization grant.
 
