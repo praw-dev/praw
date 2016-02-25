@@ -7,7 +7,7 @@ from six import iteritems
 from six.moves import configparser
 from six.moves.urllib.parse import urljoin
 
-from . import objects
+from . import models
 from .const import __version__, API_PATHS
 from .errors import ClientException
 
@@ -44,20 +44,20 @@ class Config(object):
         for key, value in kwargs.items():
             obj[key] = value
 
-        self.by_kind = {obj['comment_kind']:    objects.Comment,
-                        obj['message_kind']:    objects.Message,
-                        obj['redditor_kind']:   objects.Redditor,
-                        obj['submission_kind']: objects.Submission,
-                        obj['subreddit_kind']:  objects.Subreddit,
-                        'LabeledMulti':         objects.Multireddit,
-                        'modaction':            objects.ModAction,
-                        'more':                 objects.MoreComments,
-                        'wikipage':             objects.WikiPage,
-                        'wikipagelisting':      objects.WikiPageListing,
-                        'UserList':             objects.UserList}
+        self.by_kind = {obj['comment_kind']:    models.Comment,
+                        obj['message_kind']:    models.Message,
+                        obj['redditor_kind']:   models.Redditor,
+                        obj['submission_kind']: models.Submission,
+                        obj['subreddit_kind']:  models.Subreddit,
+                        'LabeledMulti':         models.Multireddit,
+                        'modaction':            models.ModAction,
+                        'more':                 models.MoreComments,
+                        'wikipage':             models.WikiPage,
+                        'wikipagelisting':      models.WikiPageListing,
+                        'UserList':             models.UserList}
         self.by_object = dict((value, key) for (key, value) in
                               iteritems(self.by_kind))
-        self.by_object[objects.LoggedInRedditor] = obj['redditor_kind']
+        self.by_object[models.Redditor] = obj['redditor_kind']
         self.check_for_updates = config_boolean(obj['check_for_updates'])
         self.log_requests = int(obj['log_requests'])
         # `get(...) or None` is used because `get` may return an empty string

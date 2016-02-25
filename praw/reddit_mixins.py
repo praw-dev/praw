@@ -6,7 +6,7 @@ from warnings import warn_explicit
 import six
 from requests.utils import to_native_string
 
-from . import decorators, errors, objects
+from . import decorators, errors, models
 from .const import (JPEG_HEADER, MAX_IMAGE_SIZE, MIN_JPEG_SIZE, MIN_PNG_SIZE,
                     PNG_HEADER)
 from .reddits import AuthenticatedReddit
@@ -308,7 +308,7 @@ class ModFlairMixin(AuthenticatedReddit):
         data = {'r': six.text_type(subreddit),
                 'text': flair_text or '',
                 'css_class': flair_css_class or ''}
-        if isinstance(item, objects.Submission):
+        if isinstance(item, models.Submission):
             data['link'] = item.fullname
         else:
             data['name'] = six.text_type(item)
@@ -386,7 +386,7 @@ class ModOnlyMixin(AuthenticatedReddit):
     def _get_userlist(self, url, user_only, *args, **kwargs):
         content = self.get_content(url, *args, **kwargs)
         for data in content:
-            user = objects.Redditor(self, data['name'], fetch=False)
+            user = models.Redditor(self, data['name'], fetch=False)
             user.id = data['id'].split('_')[1]
             if user_only:
                 yield user
@@ -422,7 +422,7 @@ class ModOnlyMixin(AuthenticatedReddit):
             return self._get_userlist(url, user_only=True, *args, **kwargs)
 
         if self.is_logged_in():
-            if not isinstance(subreddit, objects.Subreddit):
+            if not isinstance(subreddit, models.Subreddit):
                 subreddit = self.get_subreddit(subreddit)
             if subreddit.subreddit_type == "public":
                 return get_contributors_helper(subreddit)
@@ -654,7 +654,7 @@ class MultiredditMixin(AuthenticatedReddit):
         :param subreddits: Optional list of subreddit names or Subreddit
             objects to initialize the Multireddit with. You can always
             add more later with
-            :meth:`~praw.objects.Multireddit.add_subreddit`.
+            :meth:`~praw.models.Multireddit.add_subreddit`.
         :param visibility: Choose a privacy setting from this list:
             ``public``, ``private``, ``hidden``. Defaults to private if blank.
         :param weighting_scheme: Choose a weighting scheme from this list:
@@ -720,8 +720,8 @@ class MultiredditMixin(AuthenticatedReddit):
         :class:`.Multireddit` constructor.
 
         """
-        return objects.Multireddit(self, six.text_type(redditor), multi,
-                                   *args, **kwargs)
+        return models.Multireddit(self, six.text_type(redditor), multi,
+                                  *args, **kwargs)
 
     def get_multireddits(self, redditor, *args, **kwargs):
         """Return a list of multireddits belonging to a redditor.
@@ -856,11 +856,11 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         :param message_id: The ID or Fullname for a Message
 
         The additional parameters are passed directly into
-        :meth:`~praw.objects.Message.from_id` of Message, and subsequently into
+        :meth:`~praw.models.Message.from_id` of Message, and subsequently into
         :meth:`.request_json`.
 
         """
-        return objects.Message.from_id(self, message_id, *args, **kwargs)
+        return models.Message.from_id(self, message_id, *args, **kwargs)
 
     def get_messages(self, *args, **kwargs):
         """Return a get_content generator for inbox (messages only).
@@ -942,7 +942,7 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         if you want to manually handle captchas.
 
         """
-        if isinstance(recipient, objects.Subreddit):
+        if isinstance(recipient, models.Subreddit):
             recipient = '/r/{0}'.format(six.text_type(recipient))
         else:
             recipient = six.text_type(recipient)

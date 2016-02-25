@@ -14,7 +14,7 @@ from six.moves.urllib.parse import parse_qs, urljoin, urlparse, urlunparse
 from update_checker import update_check
 
 
-from . import decorators, errors, objects
+from . import decorators, errors, models
 from .config import Config
 from .const import __version__
 from .internal import (_prepare_request, _raise_redirect_exceptions,
@@ -648,7 +648,7 @@ class UnauthenticatedReddit(BaseReddit):
             item = self.request_json(url,
                                      params={'unique': self._unique_count})
             self._unique_count += 1  # Avoid network-level caching
-            return objects.Submission.from_json(item)
+            return models.Submission.from_json(item)
         except errors.RedirectException as exc:
             self._unique_count += 1
             return self.get_submission(exc.response_url)
@@ -661,7 +661,7 @@ class UnauthenticatedReddit(BaseReddit):
         :class:`.Redditor` constructor.
 
         """
-        return objects.Redditor(self, user_name, *args, **kwargs)
+        return models.Redditor(self, user_name, *args, **kwargs)
 
     def get_rising(self, *args, **kwargs):
         """Return a get_content generator for rising submissions.
@@ -684,8 +684,8 @@ class UnauthenticatedReddit(BaseReddit):
         """
         url = self.config['sticky'].format(subreddit=six.text_type(subreddit))
         param = {'num': 2} if bottom else None
-        return objects.Submission.from_json(self.request_json(url,
-                                                              params=param))
+        return models.Submission.from_json(self.request_json(
+            url, params=param))
 
     def get_submission(self, url=None, submission_id=None, comment_limit=0,
                        comment_sort=None, params=None):
@@ -703,10 +703,9 @@ class UnauthenticatedReddit(BaseReddit):
             raise TypeError('One (and only one) of id or url is required!')
         if submission_id:
             url = urljoin(self.config['comments'], submission_id)
-        return objects.Submission.from_url(self, url,
-                                           comment_limit=comment_limit,
-                                           comment_sort=comment_sort,
-                                           params=params)
+        return models.Submission.from_url(
+            self, url, comment_limit=comment_limit, comment_sort=comment_sort,
+            params=params)
 
     def get_submissions(self, fullnames, *args, **kwargs):
         """Generate Submission objects for each item provided in `fullnames`.
@@ -741,7 +740,7 @@ class UnauthenticatedReddit(BaseReddit):
             return self.get_random_subreddit()
         elif sr_name_lower == 'randnsfw':
             return self.get_random_subreddit(nsfw=True)
-        return objects.Subreddit(self, subreddit_name, *args, **kwargs)
+        return models.Subreddit(self, subreddit_name, *args, **kwargs)
 
     def get_subreddit_recommendations(self, subreddits, omit=None):
         """Return a list of recommended subreddits as Subreddit objects.
@@ -759,7 +758,7 @@ class UnauthenticatedReddit(BaseReddit):
         url = self.config['sub_recommendations'].format(
             subreddits=_to_reddit_list(subreddits))
         result = self.request_json(url, params=params)
-        return [objects.Subreddit(self, sub['sr_name']) for sub in result]
+        return [models.Subreddit(self, sub['sr_name']) for sub in result]
 
     def get_top(self, *args, **kwargs):
         """Return a get_content generator for top submissions.
@@ -786,7 +785,7 @@ class UnauthenticatedReddit(BaseReddit):
 
     def get_wiki_page(self, subreddit, page):
         """Return a WikiPage object for the subreddit and page provided."""
-        return objects.WikiPage(self, six.text_type(subreddit), page.lower())
+        return models.WikiPage(self, six.text_type(subreddit), page.lower())
 
     def get_wiki_pages(self, subreddit):
         """Return a list of WikiPage objects for the subreddit."""
@@ -1009,8 +1008,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         providing OAuth2 grant.
         """
         response = self.request_json(self.config['me'])
-        user = objects.Redditor(self, response['name'], response)
-        user.__class__ = objects.LoggedInRedditor
+        user = models.Redditor(self, response['name'], response)
+        user.__class__ = models.LoggedInRedditor
         return user
 
     def has_scope(self, scope):
@@ -1061,8 +1060,8 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
             Submission object (for link flair). If ``item`` is a string it
             will be treated as the name of a Subreddit.
         :param flair_template_id: The id for the desired flair template. Use
-            the :meth:`~praw.objects.Subreddit.get_flair_choices` and
-            :meth:`~praw.objects.Submission.get_flair_choices` methods to find
+            the :meth:`~praw.models.Subreddit.get_flair_choices` and
+            :meth:`~praw.models.Submission.get_flair_choices` methods to find
             the ids for the available user and link flair choices.
         :param flair_text: A string containing the custom flair text.
             Used on subreddits that allow it.
@@ -1072,7 +1071,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         """
         data = {'flair_template_id': flair_template_id or '',
                 'text':              flair_text or ''}
-        if isinstance(item, objects.Submission):  # Link flair
+        if isinstance(item, models.Submission):  # Link flair
             data['link'] = item.fullname
         else:  # User flair
 

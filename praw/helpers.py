@@ -142,16 +142,16 @@ def submissions_between(reddit_session,
         if verbosity >= level:
             sys.stderr.write(msg + '\n')
 
-    def format_query_field(k, v):
-        if k in ["nsfw", "self"]:
+    def format_query_field(key, value):
+        if key in ["nsfw", "self"]:
             # even though documentation lists "no" and "yes"
             # as possible values, in reality they don't work
-            if v not in [0, 1, "0", "1"]:
+            if value not in [0, 1, "0", "1"]:
                 raise PRAWException("Invalid value for the extra"
                                     "field {}. Only '0' and '1' are"
-                                    "valid values.".format(k))
-            return "{}:{}".format(k, v)
-        return "{}:'{}'".format(k, v)
+                                    "valid values.".format(key))
+            return "{}:{}".format(key, value)
+        return "{}:'{}'".format(key, value)
 
     if extra_cloudsearch_fields is None:
         extra_cloudsearch_fields = {}
@@ -183,9 +183,9 @@ def submissions_between(reddit_session,
     # It is not clear what is the value of Z should be, but it seems
     # like the difference is usually about ~1 hour or less
     # To be sure, let's set the workaround offset to 2 hours
-    out_of_order_submissions_workaround_offset = 7200
-    highest_timestamp += out_of_order_submissions_workaround_offset
-    lowest_timestamp -= out_of_order_submissions_workaround_offset
+    out_of_order_offset = 7200
+    highest_timestamp += out_of_order_offset
+    lowest_timestamp -= out_of_order_offset
 
     # Those parameters work ok, but there may be a better set of parameters
     window_size = 60 * 60
@@ -201,13 +201,13 @@ def submissions_between(reddit_session,
     while highest_timestamp >= lowest_timestamp:
         try:
             if newest_first:
-                t1 = max(highest_timestamp - window_size, lowest_timestamp)
-                t2 = highest_timestamp
+                start = max(highest_timestamp - window_size, lowest_timestamp)
+                stop = highest_timestamp
             else:
-                t1 = lowest_timestamp
-                t2 = min(lowest_timestamp + window_size, highest_timestamp)
+                start = lowest_timestamp
+                stop = min(lowest_timestamp + window_size, highest_timestamp)
 
-            search_query = 'timestamp:{}..{}'.format(t1, t2)
+            search_query = 'timestamp:{}..{}'.format(start, stop)
             if extra_query_part:
                 search_query = "(and {} {})".format(search_query,
                                                     extra_query_part)

@@ -9,6 +9,13 @@ if [ $? -ne 0 ]; then
     exit $?
 fi
 
+# pydocstyle
+pydocstyle praw
+if [ $? -ne 0 ]; then
+    echo "Exiting due to pydocstyle errors. Fix and re-run to finish tests."
+    exit $?
+fi
+
 # pylint
 output=$(pylint --rcfile=$dir/.pylintrc $dir/praw 2> /dev/null)
 if [ -n "$output" ]; then
@@ -16,7 +23,5 @@ if [ -n "$output" ]; then
     echo -e "$output"
 fi
 
-# pydocstyle
-pydocstyle praw
 
 exit 0
