@@ -16,7 +16,7 @@ from update_checker import update_check
 
 from . import decorators, errors, models
 from .config import Config
-from .const import __version__
+from .const import __version__, USER_AGENT_FORMAT
 from .internal import (_prepare_request, _raise_redirect_exceptions,
                        _raise_response_exceptions, _to_reddit_list)
 
@@ -70,7 +70,7 @@ class BaseReddit(object):
         self.config = Config(site_name or os.getenv('REDDIT_SITE') or 'reddit',
                              **kwargs)
         self.http = Session()
-        self.http.headers['User-Agent'] = self.config.ua_string(user_agent)
+        self.http.headers['User-Agent'] = USER_AGENT_FORMAT.format(user_agent)
         self.http.validate_certs = self.config.validate_certs
 
         if self.config.http_proxy or self.config.https_proxy:

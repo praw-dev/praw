@@ -1,6 +1,5 @@
 """Provides the code to load PRAW's configuration file `praw.ini`."""
 import os
-import platform
 import sys
 
 from six import iteritems
@@ -8,30 +7,12 @@ from six.moves import configparser
 from six.moves.urllib.parse import urljoin
 
 from . import models
-from .const import __version__, API_PATHS
+from .const import API_PATHS
 from .errors import ClientException
 
 
 class Config(object):
     """A class containing the configuration for a reddit site."""
-
-    @staticmethod
-    def ua_string(praw_info):
-        """Return the user-agent string.
-
-        The user-agent string contains PRAW version and platform version info.
-
-        """
-        if os.environ.get('SERVER_SOFTWARE') is not None:
-            # Google App Engine information
-            # https://developers.google.com/appengine/docs/python/
-            info = os.environ.get('SERVER_SOFTWARE')
-        else:
-            # Standard platform information
-            info = platform.platform(True).encode('ascii', 'ignore')
-
-        return '{0} PRAW/{1} Python/{2} {3}'.format(
-            praw_info, __version__, sys.version.split()[0], info)
 
     def __init__(self, site_name, **kwargs):
         """Initialize PRAW's configuration."""
