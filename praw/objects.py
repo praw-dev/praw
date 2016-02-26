@@ -1229,6 +1229,21 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         """
         return self.subreddit.get_flair_choices(self.fullname, *args, **kwargs)
 
+    @restrict_access(scope='modposts')
+    def lock(self):
+        """Lock thread.
+
+        Requires that the currently authenticated user has the modposts oauth
+        scope or has user/password authentication as a mod of the subreddit.
+
+        :returns: The json response from the server.
+
+        """
+        url = self.reddit_session.config['lock']
+        data = {'id': self.fullname}
+        return self.reddit_session.request_json(url, data=data)
+
+
     def mark_as_nsfw(self, unmark_nsfw=False):
         """Mark as Not Safe For Work.
 
@@ -1383,6 +1398,20 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         data = {'id': self.fullname, 'state': True}
         if not bottom:
             data['num'] = 1
+        return self.reddit_session.request_json(url, data=data)
+
+    @restrict_access(scope='modposts')
+    def unlock(self):
+        """Lock thread.
+
+        Requires that the currently authenticated user has the modposts oauth
+        scope or has user/password authentication as a mod of the subreddit.
+
+        :returns: The json response from the server.
+
+        """
+        url = self.reddit_session.config['unlock']
+        data = {'id': self.fullname}
         return self.reddit_session.request_json(url, data=data)
 
     def unmark_as_nsfw(self):
