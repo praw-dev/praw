@@ -1243,7 +1243,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         data = {'id': self.fullname}
         return self.reddit_session.request_json(url, data=data)
 
-
     def mark_as_nsfw(self, unmark_nsfw=False):
         """Mark as Not Safe For Work.
 
