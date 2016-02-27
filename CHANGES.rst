@@ -10,6 +10,13 @@ upstream changes.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+
+* **[FEATURE]** Added support for thread locking. See
+  :meth:`~praw.objects.Submission.lock` and
+  :meth:`~praw.objects.Submission.unlock`.
+
 3.4.0 (2016-02-21)
 ------------------
 
