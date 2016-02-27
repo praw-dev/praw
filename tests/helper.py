@@ -93,6 +93,7 @@ class PRAWTest(unittest.TestCase):
         self.submission_deleted_id = '3f8q10'
         self.submission_edit_id = '16i92b'
         self.submission_hide_id = '3lchjv'
+        self.submission_lock_id = '47rnwf'
         self.submission_sticky_id = '32eucy'
         self.submission_sticky_id2 = '32exei'
 

@@ -185,6 +185,16 @@ class SubmissionModeratorTest(PRAWTest):
         self.assertEqual(submission.fullname, log.target_fullname)
 
     @betamax()
+    def test_lock_and_unlock(self):
+        submission_id = self.submission_lock_id
+        submission = self.r.get_submission(submission_id=submission_id)
+
+        submission.lock()
+        self.assertTrue(submission.refresh().locked)
+        submission.unlock()
+        self.assertFalse(submission.refresh().locked)
+
+    @betamax()
     def test_mark_as_nsfw_and_umark_as_nsfw__as_moderator(self):
         submission = self.r.get_submission(submission_id="1nt8co")
         self.assertNotEqual(self.r.user, submission.author)
