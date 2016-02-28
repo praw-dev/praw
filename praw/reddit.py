@@ -60,9 +60,9 @@ class Reddit(object):
         self.front = Front(self)
 
     def _check_for_update(self):
-        if not self.update_checked and self.config.check_for_updates:
+        if not Reddit.update_checked and self.config.check_for_updates:
             update_check(__package__, __version__)
-            self.update_checked = True
+            Reddit.update_checked = True
 
     def _prepare_prawcore(self):
         requestor = Requestor(self.config.user_agent, self.config.oauth_url,
