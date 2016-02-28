@@ -41,24 +41,6 @@ def _get_redditor_listing(subpath=''):
     return _listing
 
 
-def _get_sorter(subpath='', **defaults):
-    """Return function to generate specific subreddit Submission listings."""
-    def _sorted(self, *args, **kwargs):
-        """Return a get_content generator for some RedditContentObject type.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        if not kwargs.get('params'):
-            kwargs['params'] = {}
-        for key, value in six.iteritems(defaults):
-            kwargs['params'].setdefault(key, value)
-        url = urljoin(self._url, subpath)
-        return self.reddit_session.get_content(url, *args, **kwargs)
-    return _sorted
-
-
 def _modify_relationship(relationship, unlink=False, is_sub=False):
     """Return a function for relationship modification.
 

@@ -4,34 +4,11 @@ from json import dumps
 
 from six import text_type
 
-from ..internal import _get_sorter
-from .redditcontentobject import RedditContentObject
+from .mixins.listing import Listing
 
 
-class Multireddit(RedditContentObject):
+class Multireddit(Listing):
     """A class for users' Multireddits."""
-
-    # Generic listing selectors
-    get_controversial = _get_sorter('controversial')
-    get_hot = _get_sorter('')
-    get_new = _get_sorter('new')
-    get_top = _get_sorter('top')
-
-    # Explicit listing selectors
-    get_controversial_from_all = _get_sorter('controversial', t='all')
-    get_controversial_from_day = _get_sorter('controversial', t='day')
-    get_controversial_from_hour = _get_sorter('controversial', t='hour')
-    get_controversial_from_month = _get_sorter('controversial', t='month')
-    get_controversial_from_week = _get_sorter('controversial', t='week')
-    get_controversial_from_year = _get_sorter('controversial', t='year')
-    get_rising = _get_sorter('rising')
-    get_top_from_all = _get_sorter('top', t='all')
-    get_top_from_day = _get_sorter('top', t='day')
-    get_top_from_hour = _get_sorter('top', t='hour')
-    get_top_from_month = _get_sorter('top', t='month')
-    get_top_from_week = _get_sorter('top', t='week')
-    get_top_from_year = _get_sorter('top', t='year')
-
     @classmethod
     def from_api_response(cls, reddit_session, json_dict):
         """Return an instance of the appropriate class from the json dict."""

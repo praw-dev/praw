@@ -10,11 +10,10 @@ import six
 from requests import Request, Session
 from six.moves import html_entities
 from six.moves.urllib.parse import parse_qs, urljoin, urlparse, urlunparse
-from update_checker import update_check
 
 
 from . import decorators, errors, models
-from .const import __version__, USER_AGENT_FORMAT
+from .const import USER_AGENT_FORMAT
 from .internal import (_prepare_request, _raise_redirect_exceptions,
                        _raise_response_exceptions, _to_reddit_list)
 
@@ -29,8 +28,7 @@ class BaseReddit(object):
 
     RETRY_CODES = [502, 503, 504]
 
-    def __init__(self, user_agent, site_name=None, disable_update_check=False,
-                 **kwargs):
+    def __init__(self, user_agent, site_name=None, **kwargs):
         self.http = Session()
         self.http.headers['User-Agent'] = USER_AGENT_FORMAT.format(user_agent)
         self.http.validate_certs = self.config.validate_certs
@@ -42,7 +40,6 @@ class BaseReddit(object):
             if self.config.https_proxy:
                 self.http.proxies['https'] = self.config.https_proxy
         self.modhash = None
-
 
     def _request(self, url, params=None, data=None, files=None, auth=None,
                  timeout=None, raw_response=False, retry_on_error=True,
@@ -124,81 +121,6 @@ class BaseReddit(object):
         else:
             return object_class.from_api_response(self, json_data['data'])
         return json_data
-
-    def get_content(self, url, params=None, limit=0, place_holder=None,
-                    root_field='data', thing_field='children',
-                    after_field='after', object_filter=None, **kwargs):
-        """A generator method to return reddit content from a URL.
-
-        Starts at the initial url, and fetches content using the `after`
-        JSON data until `limit` entries have been fetched, or the
-        `place_holder` has been reached.
-
-        :param url: the url to start fetching content from
-        :param params: dictionary containing extra GET data to put in the url
-        :param limit: the number of content entries to fetch. If limit <= 0,
-            fetch the default for your account (25 for unauthenticated
-            users). If limit is None, then fetch as many entries as possible
-            (reddit returns at most 100 per request, however, PRAW will
-            automatically make additional requests as necessary).
-        :param place_holder: if not None, the method will fetch `limit`
-            content, stopping if it finds content with `id` equal to
-            `place_holder`. The place_holder item is the last item to be
-            yielded from this generator. Note that the use of `place_holder` is
-            not 100% reliable as the place holder item may no longer exist due
-            to being removed or deleted.
-        :param root_field: indicates the field in the json response that holds
-            the data. Most objects use 'data', however some (flairlist) don't
-            have the 'data' object. Use None for the root object.
-        :param thing_field: indicates the field under the root_field which
-            contains the list of things. Most objects use 'children'.
-        :param after_field: indicates the field which holds the after item
-            element
-        :param object_filter: if set to an integer value, fetch content from
-            the corresponding list index in the JSON response. For example
-            the JSON response for submission duplicates is a list of objects,
-            and the object we want to fetch from is at index 1. So we set
-            object_filter=1 to filter out the other useless list elements.
-        :type place_holder: a string corresponding to a reddit base36 id
-            without prefix, e.g. 'asdfasdf'
-        :returns: a list of reddit content, of type Subreddit, Comment,
-            Submission or user flair.
-
-        """
-        objects_found = 0
-        params = params or {}
-        fetch_all = fetch_once = False
-        if limit is None:
-            fetch_all = True
-            params['limit'] = 1024  # Just use a big number
-        elif limit > 0:
-            params['limit'] = limit
-        else:
-            fetch_once = True
-
-        if hasattr(self, '_url_update'):
-            url = self._url_update(url)
-
-        # While we still need to fetch more content to reach our limit, do so.
-        while fetch_once or fetch_all or objects_found < limit:
-            page_data = self.request_json(url, params=params)
-            if object_filter:
-                page_data = page_data[object_filter]
-            fetch_once = False
-            root = page_data.get(root_field, page_data)
-            for thing in root[thing_field]:
-                yield thing
-                objects_found += 1
-                # Terminate when we've reached the limit, or place holder
-                if objects_found == limit or (place_holder and
-                                              thing.id == place_holder):
-                    return
-            # Set/update the 'after' parameter for the next iteration
-            if root.get(after_field):
-                # We use `root.get` to also test if the value evaluates to True
-                params['after'] = root[after_field]
-            else:
-                return
 
     @decorators.raise_api_exceptions
     def request(self, url, params=None, data=None, retry_on_error=True,

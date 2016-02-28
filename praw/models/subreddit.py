@@ -2,14 +2,15 @@
 
 import logging
 
+from .mixins import Listing
 from .mixins import Messageable
-from ..internal import _get_sorter, _modify_relationship
+from ..internal import _modify_relationship
 
 
 log = logging.getLogger(__name__)
 
 
-class Subreddit(Messageable):
+class Subreddit(Listing, Messageable):
     """A class for Subreddits."""
 
     _methods = (('accept_moderator_invite', 'AR'),
@@ -81,27 +82,6 @@ class Subreddit(Messageable):
     add_wiki_contributor = _modify_relationship('wikicontributor', is_sub=True)
     remove_wiki_contributor = _modify_relationship('wikicontributor',
                                                    unlink=True, is_sub=True)
-
-    # Generic listing selectors
-    get_controversial = _get_sorter('controversial')
-    get_hot = _get_sorter('')
-    get_new = _get_sorter('new')
-    get_top = _get_sorter('top')
-
-    # Explicit listing selectors
-    get_controversial_from_all = _get_sorter('controversial', t='all')
-    get_controversial_from_day = _get_sorter('controversial', t='day')
-    get_controversial_from_hour = _get_sorter('controversial', t='hour')
-    get_controversial_from_month = _get_sorter('controversial', t='month')
-    get_controversial_from_week = _get_sorter('controversial', t='week')
-    get_controversial_from_year = _get_sorter('controversial', t='year')
-    get_rising = _get_sorter('rising')
-    get_top_from_all = _get_sorter('top', t='all')
-    get_top_from_day = _get_sorter('top', t='day')
-    get_top_from_hour = _get_sorter('top', t='hour')
-    get_top_from_month = _get_sorter('top', t='month')
-    get_top_from_week = _get_sorter('top', t='week')
-    get_top_from_year = _get_sorter('top', t='year')
 
     def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
                  fetch=False, **kwargs):
