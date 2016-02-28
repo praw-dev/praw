@@ -40,115 +40,23 @@ class ClientException(PRAWException):
         return self.message
 
 
-class OAuthScopeRequired(ClientException):
-    """Indicates that an OAuth2 scope is required to make the function call.
+class RequiredConfig(PRAWException):
+    """Indicates that a required configuration setting is missing."""
 
-    The attribute `scope` will contain the name of the necessary scope.
+    def __init__(self, setting):
+        """Initialize an instance of the RequiredConfig class.
 
-    """
-
-    def __init__(self, function, scope, message=None):
-        """Contruct an OAuthScopeRequiredClientException.
-
-        :param function: The function that requires a scope.
-        :param scope: The scope required for the function.
-        :param message: A custom message to associate with the
-            exception. Default: `function` requires the OAuth2 scope `scope`
+        :param field: The setting that is required.
 
         """
-        if not message:
-            message = '`{0}` requires the OAuth2 scope `{1}`'.format(function,
-                                                                     scope)
-        super(OAuthScopeRequired, self).__init__(message)
-        self.scope = scope
+        super(RequiredConfig, self).__init__()
+        self.setting = setting
 
-
-class LoginRequired(ClientException):
-    """Indicates that a logged in session is required.
-
-    This exception is raised on a preemptive basis, whereas NotLoggedIn occurs
-    in response to a lack of credentials on a privileged API call.
-
-    """
-
-    def __init__(self, function, message=None):
-        """Construct a LoginRequired exception.
-
-        :param function: The function that requires login-based authentication.
-        :param message: A custom message to associate with the exception.
-            Default: `function` requires a logged in session
-
-        """
-        if not message:
-            message = '`{0}` requires a logged in session'.format(function)
-        super(LoginRequired, self).__init__(message)
-
-
-class LoginOrScopeRequired(OAuthScopeRequired, LoginRequired):
-    """Indicates that either a logged in session or OAuth2 scope is required.
-
-    The attribute `scope` will contain the name of the necessary scope.
-
-    """
-
-    def __init__(self, function, scope, message=None):
-        """Construct a LoginOrScopeRequired exception.
-
-        :param function: The function that requires authentication.
-        :param scope: The scope that is required if not logged in.
-        :param message: A custom message to associate with the exception.
-            Default: `function` requires a logged in session or the OAuth2
-            scope `scope`
-
-        """
-        if not message:
-            message = ('`{0}` requires a logged in session or the '
-                       'OAuth2 scope `{1}`').format(function, scope)
-        super(LoginOrScopeRequired, self).__init__(function, scope, message)
-
-
-class ModeratorRequired(LoginRequired):
-    """Indicates that a moderator of the subreddit is required."""
-
-    def __init__(self, function):
-        """Construct a ModeratorRequired exception.
-
-        :param function: The function that requires moderator access.
-
-        """
-        message = ('`{0}` requires a moderator '
-                   'of the subreddit').format(function)
-        super(ModeratorRequired, self).__init__(message)
-
-
-class ModeratorOrScopeRequired(LoginOrScopeRequired, ModeratorRequired):
-    """Indicates that a moderator of the sub or OAuth2 scope is required.
-
-    The attribute `scope` will contain the name of the necessary scope.
-
-    """
-
-    def __init__(self, function, scope):
-        """Construct a ModeratorOrScopeRequired exception.
-
-        :param function: The function that requires moderator authentication or
-            a moderator scope..
-        :param scope: The scope that is required if not logged in with
-            moderator access..
-
-        """
-        message = ('`{0}` requires a moderator of the subreddit or the '
-                   'OAuth2 scope `{1}`').format(function, scope)
-        super(ModeratorOrScopeRequired, self).__init__(function, scope,
-                                                       message)
-
-
-class OAuthAppRequired(ClientException):
-    """Raised when an OAuth client cannot be initialized.
-
-    This occurs when any one of the OAuth config values are not set.
-
-    """
+    def __str__(self):
+        return ('Required configuration setting \'{}\' missing. \n'
+                'This setting can be provided in a praw.ini file, '
+                'as a keyword argument to the `Reddit` class constructor, '
+                'or as an environment variable.').format(self.setting)
 
 
 class HTTPException(PRAWException):
@@ -386,22 +294,10 @@ class InvalidUser(APIException):
     ERROR_TYPE = 'USER_DOESNT_EXIST'
 
 
-class InvalidUserPass(APIException):
-    """An exception for failed logins."""
-
-    ERROR_TYPE = 'WRONG_PASSWORD'
-
-
 class InsufficientCreddits(APIException):
     """Raised when there are not enough creddits to complete the action."""
 
     ERROR_TYPE = 'INSUFFICIENT_CREDDITS'
-
-
-class NotLoggedIn(APIException):
-    """An exception for when a Reddit user isn't logged in."""
-
-    ERROR_TYPE = 'USER_REQUIRED'
 
 
 class NotModified(APIException):
