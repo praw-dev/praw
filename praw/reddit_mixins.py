@@ -694,11 +694,7 @@ class MultiredditMixin(AuthenticatedReddit):
         """
         url = self.config['multireddit_about'].format(user=self.user.name,
                                                       multi=name)
-        self.http.headers['x-modhash'] = self.modhash
-        try:
-            self.request(url, data={}, method='DELETE', *args, **kwargs)
-        finally:
-            del self.http.headers['x-modhash']
+        self.request(url, data={}, method='DELETE', *args, **kwargs)
 
     def edit_multireddit(self, *args, **kwargs):
         """Edit a multireddit, or create one if it doesn't already exist.

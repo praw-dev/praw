@@ -96,14 +96,6 @@ def _prepare_request(reddit_session, url, params, data, auth, files,
     if data is True:
         data = {}
 
-    if isinstance(data, dict):
-        if not auth:
-            data.setdefault('api_type', 'json')
-            if reddit_session.modhash:
-                data.setdefault('uh', reddit_session.modhash)
-    else:
-        request.headers.setdefault('Content-Type', 'application/json')
-
     request.data = data
     request.files = files
     return request

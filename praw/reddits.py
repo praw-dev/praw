@@ -33,7 +33,6 @@ class BaseReddit(object):
                 self.http.proxies['http'] = self.config.http_proxy
             if self.config.https_proxy:
                 self.http.proxies['https'] = self.config.https_proxy
-        self.modhash = None
 
     def _request(self, url, params=None, data=None, files=None, auth=None,
                  timeout=None, raw_response=False, retry_on_error=True,
@@ -152,10 +151,6 @@ class BaseReddit(object):
 
         data = json.loads(response, object_hook=hook)
         delattr(self, '_request_url')
-        # Update the modhash
-        if isinstance(data, dict) and 'data' in data \
-                and 'modhash' in data['data']:
-            self.modhash = data['data']['modhash']
         return data
 
 
