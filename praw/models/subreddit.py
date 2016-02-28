@@ -92,7 +92,6 @@ class Subreddit(Messageable, Listing):
         :param name: The name of the Subreddit.
 
         """
-
         # Special case for when my_subreddits is called as no name is returned
         # so we have to extract the name from the URL. The URLs are returned
         # as: /r/reddit_name/

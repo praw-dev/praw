@@ -1,8 +1,10 @@
+"""Provide the ListingGenerator class."""
+
 from .prawmodel import PRAWModel
 
 
 class ListingGenerator(PRAWModel):
-    """Instances of this class generate ``RedditModels``"""
+    """Instances of this class generate ``RedditModels``."""
 
     def __init__(self, reddit, url, limit=100, params=None):
         """Initialize a ListingGenerator instance.
@@ -34,9 +36,11 @@ class ListingGenerator(PRAWModel):
         self.params['limit'] = self.limit or 1024
 
     def __iter__(self):
+        """Permit ListingGenerator to operate as an iterator."""
         return self
 
     def __next__(self):
+        """Permit ListingGenerator to operate as a generator."""
         if self.limit is not None and self.yielded >= self.limit:
             raise StopIteration()
 

@@ -9,9 +9,10 @@ from .mixins.listing import Listing
 
 class Multireddit(Listing):
     """A class for users' Multireddits."""
+
+    """
     @classmethod
     def from_api_response(cls, reddit_session, json_dict):
-        """Return an instance of the appropriate class from the json dict."""
         from .models.subreddit import Subreddit
         # The Multireddit response contains the Subreddits attribute as a list
         # of dicts of the form {'name': 'subredditname'}.
@@ -19,6 +20,7 @@ class Multireddit(Listing):
         json_dict['subreddits'] = [Subreddit(reddit_session, item['name'])
                                    for item in json_dict['subreddits']]
         return cls(reddit_session, None, None, json_dict)
+    """
 
     def __init__(self, reddit_session, author=None, name=None,
                  json_dict=None, fetch=False, **kwargs):

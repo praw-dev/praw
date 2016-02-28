@@ -53,6 +53,7 @@ class RequiredConfig(PRAWException):
         self.setting = setting
 
     def __str__(self):
+        """Return a string with information on how to set the setting."""
         return ('Required configuration setting \'{}\' missing. \n'
                 'This setting can be provided in a praw.ini file, '
                 'as a keyword argument to the `Reddit` class constructor, '
