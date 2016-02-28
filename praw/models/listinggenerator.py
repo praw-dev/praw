@@ -37,7 +37,7 @@ class ListingGenerator(PRAWModel):
         return self
 
     def __next__(self):
-        if self.yielded >= self.limit:
+        if self.limit is not None and self.yielded >= self.limit:
             raise StopIteration()
 
         if self._list is None or self._list_index >= len(self._list):
