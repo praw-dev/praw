@@ -1,6 +1,7 @@
 """Provide the PRAW models."""
 
 from .comment import Comment  # NOQA
+from .front import Front  # NOQA
 from .listing import UserList, WikiPageListing  # NOQA
 from .message import Message  # NOQA
 from .modaction import ModAction  # NOQA
