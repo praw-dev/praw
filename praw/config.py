@@ -14,10 +14,17 @@ from .errors import ClientException
 class Config(object):
     """A class containing the configuration for a reddit site."""
 
+    def __getitem__(self, key):
+        """Return the URL for key."""
+        return urljoin(self.oauth_url, API_PATHS[key])
+
     def __init__(self, site_name, **settings):
         """Initialize PRAW's configuration."""
         def config_boolean(item):
             return item and item.lower() in {'1', 'yes', 'true', 'on'}
+
+        def fetch_or_none(key):
+            return os.getenv(key) or obj.get(key) or None
 
         obj = dict(CONFIG.items(site_name), **settings)
 
@@ -35,28 +42,21 @@ class Config(object):
         self.by_object = dict((value, key) for (key, value) in
                               iteritems(self.by_kind))
 
-        # `get(...) or None` is used because `get` may return an empty string
         self._short_url = obj.get('short_url') or None
         self.check_for_updates = config_boolean(obj['check_for_updates'])
-        self.client_id = os.getenv('client_id') or obj['client_id']
-        self.client_secret = os.getenv('client_secret') or obj['client_secret']
-        self.http_proxy = (os.getenv('http_proxy') or
-                           obj.get('http_proxy') or None)
-        self.https_proxy = (os.getenv('https_proxy') or
-                            obj.get('https_proxy') or None)
+        self.client_id = fetch_or_none('client_id')
+        self.client_secret = fetch_or_none('client_secret')
+        self.http_proxy = fetch_or_none('http_proxy')
+        self.https_proxy = fetch_or_none('https_proxy')
         self.log_requests = int(obj['log_requests'])
         self.oauth_url = obj['oauth_url']
         self.reddit_url = obj['reddit_url']
-        self.redirect_uri = obj.get('oauth_redirect_uri') or None
-        self.refresh_token = obj.get('oauth_refresh_token') or None
+        self.redirect_uri = fetch_or_none('redirect_uri')
+        self.refresh_token = fetch_or_none('refresh_token')
         self.store_json_result = config_boolean(obj['store_json_result'])
         self.timeout = float(obj['timeout'])
         self.user_agent = obj['user_agent']
         self.validate_certs = config_boolean(obj['validate_certificates'])
-
-    def __getitem__(self, key):
-        """Return the URL for key."""
-        return urljoin(self.oauth_url, API_PATHS[key])
 
     @property
     def short_url(self):

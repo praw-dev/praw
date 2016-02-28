@@ -95,18 +95,17 @@ config file. Each site can overwrite any of these variables.
 The are additional variables that each site can define. These additional
 variables are:
 
-* *oauth_client_id:* A **string** that, if given, defines the ``client_id`` a
+* *client_id:* A **string** that, if given, defines the ``client_id`` a
   reddit object is initialized with.
-* *oauth_client_secret:* A **string** that, if given, defines the
+* *client_secret:* A **string** that, if given, defines the
   ``client_secret`` a reddit object is initialized with.
-* *oauth_redirect_uri:* A **string** that, if given, defines the
-  ``redirect_uri`` a reddit object is initialized with. If *oauth_client_id*
-  and *oauth_client_secret* is also given, then :meth:`.get_authorize_url` can
-  be run without first setting the oauth settings with running
-  :meth:`.set_oauth_app_info`.
-* *oauth_refresh_token:* A **string** that, if given, defines the
-  ``refresh_token`` a reddit object is initialized with. If *oauth_client_id*,
-  *oauth_client_secret*, and *oauth_redirect_uri* are also given, then
+* *redirect_uri:* A **string** that, if given, defines the ``redirect_uri`` a
+  reddit object is initialized with. If *client_id* and *client_secret* is also
+  given, then :meth:`.get_authorize_url` can be run without first setting the
+  oauth settings with running :meth:`.set_oauth_app_info`.
+* *refresh_token:* A **string** that, if given, defines the ``refresh_token`` a
+  reddit object is initialized with. If *client_id*,
+  *client_secret*, and *redirect_uri* are also given, then
   :meth:`~praw.__init__.AuthenticatedReddit.refresh_access_information` can be
   run with no arguments to acquire new access information without first running
   :meth:`.get_authorize_url` and
