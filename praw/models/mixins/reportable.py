@@ -1,8 +1,9 @@
+"""Provide the ReportableMixin class."""
 from ..redditmodel import RedditModel
 
 
-class Reportable(RedditModel):
-    """Interface for RedditContentObjects that can be reported."""
+class ReportableMixin(RedditModel):
+    """Interface for RedditModel classes that can be reported."""
 
     def report(self, reason=None):
         """Report this object to the moderators.

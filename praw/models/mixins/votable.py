@@ -1,10 +1,11 @@
+"""Provide the VotableMixin class."""
 from six import text_type
 
 from ..redditmodel import RedditModel
 
 
-class Votable(RedditModel):
-    """Interface for RedditContentObjects that can be voted on."""
+class VotableMixin(RedditModel):
+    """Interface for RedditModel classes that can be voted on."""
 
     def clear_vote(self):
         """Remove the logged in user's vote on the object.

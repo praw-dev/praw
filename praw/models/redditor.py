@@ -3,12 +3,12 @@ from json import dumps
 
 from six import text_type
 
-from .mixins import Gildable, Inboxable, Messageable
+from .mixins import GildableMixin, InboxableMixin, MessageableMixin
 from ..errors import ClientException
 from ..internal import _get_redditor_listing
 
 
-class Redditor(Gildable, Messageable):
+class Redditor(GildableMixin, MessageableMixin):
     """A class representing the users of reddit."""
 
     _methods = (('get_multireddit', 'MultiMix'),
@@ -160,17 +160,17 @@ class Redditor(Gildable, Messageable):
 
         """
         ids = []
-        if isinstance(messages, Inboxable):
+        if isinstance(messages, InboxableMixin):
             ids.append(messages.fullname)
         elif hasattr(messages, '__iter__'):
-            for msg in messages:
-                if not isinstance(msg, Inboxable):
-                    msg = 'Invalid message type: {0}'.format(type(msg))
-                    raise ClientException(msg)
-                ids.append(msg.fullname)
+            for message in messages:
+                if not isinstance(message, InboxableMixin):
+                    raise ClientException('Invalid message type: {0}'
+                                          .format(type(message)))
+                ids.append(message.fullname)
         else:
-            msg = 'Invalid message type: {0}'.format(type(messages))
-            raise ClientException(msg)
+            raise ClientException('Invalid message type: {0}'
+                                  .format(type(messages)))
         retval = self.reddit_session._mark_as_read(ids, unread=unread)
         return retval
 

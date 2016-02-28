@@ -2,16 +2,16 @@
 
 import logging
 
-from .mixins import Listing
-from .mixins import Messageable
+from .mixins import ListingMixin
+from .mixins import MessageableMixin
 from ..const import API_PATHS
 from ..internal import _modify_relationship
 
 
-log = logging.getLogger(__name__)
+LOG = logging.getLogger(__name__)
 
 
-class Subreddit(Messageable, Listing):
+class Subreddit(MessageableMixin, ListingMixin):
     """A class for Subreddits."""
 
     _methods = (('accept_moderator_invite', 'AR'),
@@ -100,7 +100,7 @@ class Subreddit(Messageable, Listing):
 
         if fetch and ('+' in name or '-' in name):
             fetch = False
-            log.warn('fetch=True has no effect on multireddits')
+            LOG.warning('fetch=True has no effect on multireddits')
 
         info_path = API_PATHS['subreddit_about'].format(subreddit=name)
         super(Subreddit, self).__init__(reddit, json_dict, fetch, info_path,

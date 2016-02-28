@@ -1,10 +1,12 @@
-from .editable import Editable  # NOQA
-from .hidable import Hidable  # NOQA
-from .listing import Listing  # NOQA
-from .moderatable import Moderatable  # NOQA
-from .savable import Savable  # NOQA
-from .gildable import Gildable  # NOQA
-from .inboxable import Inboxable  # NOQA
-from .messageable import Messageable  # NOQA
-from .reportable import Reportable  # NOQA
-from .votable import Votable  # NOQA
+"""Provide the praw.models.mixins package."""
+
+from .editable import EditableMixin  # NOQA
+from .hidable import HidableMixin  # NOQA
+from .listing import ListingMixin  # NOQA
+from .moderatable import ModeratableMixin  # NOQA
+from .savable import SavableMixin  # NOQA
+from .gildable import GildableMixin  # NOQA
+from .inboxable import InboxableMixin  # NOQA
+from .messageable import MessageableMixin  # NOQA
+from .reportable import ReportableMixin  # NOQA
+from .votable import VotableMixin  # NOQA

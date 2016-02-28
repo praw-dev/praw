@@ -1,7 +1,8 @@
+"""Provide the MessageableMixin class."""
 from ..redditmodel import RedditModel
 
 
-class Messageable(RedditModel):
-    """Interface for RedditContentObjects that can be messaged."""
+class MessageableMixin(RedditModel):
+    """Interface for RedditModel classes that can be messaged."""
 
     _methods = (('send_message', 'PMMix'),)

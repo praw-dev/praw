@@ -3,15 +3,17 @@
 from heapq import heappop, heappush
 
 from six import text_type
-from six.moves.urllib.parse import parse_qs, urljoin, urlparse, urlunparse
+from six.moves.urllib.parse import (parse_qs,  # pylint: disable=import-error
+                                    urljoin, urlparse, urlunparse)
 
 from .morecomments import MoreComments
-from .mixins import (Editable, Gildable, Hidable, Moderatable, Reportable,
-                     Savable, Votable)
+from .mixins import (EditableMixin, GildableMixin, HidableMixin,
+                     ModeratableMixin, ReportableMixin, SavableMixin,
+                     VotableMixin)
 
 
-class Submission(Editable, Gildable, Hidable, Moderatable, Reportable,
-                 Savable, Votable):
+class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
+                 ReportableMixin, SavableMixin, VotableMixin):
     """A class for submissions to reddit."""
 
     _methods = (('select_flair', 'AR'),)
@@ -283,9 +285,6 @@ class Submission(Editable, Gildable, Hidable, Moderatable, Reportable,
         :returns: The json response from the server.
 
         """
-        # TODO: Whether a submission is in contest mode is not exposed via the
-        # API. Adding a test of this method is thus currently impossible.
-        # Add a test when it becomes possible.
         url = self.reddit_session.config['contest_mode']
         data = {'id': self.fullname, 'state': state}
         return self.reddit_session.request_json(url, data=data)

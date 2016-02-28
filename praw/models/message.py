@@ -1,9 +1,9 @@
 """Provide the Message class."""
 
-from .mixins import Inboxable
+from .mixins import InboxableMixin
 
 
-class Message(Inboxable):
+class Message(InboxableMixin):
     """A class for private messages."""
 
     @staticmethod

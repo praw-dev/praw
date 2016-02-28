@@ -1,10 +1,11 @@
+"""Provide the GildableMixin class."""
 from six import text_type
 
 from ..redditmodel import RedditModel
 
 
-class Gildable(RedditModel):
-    """Interface for RedditContentObjects that can be gilded."""
+class GildableMixin(RedditModel):
+    """Interface for RedditModel classes that can be gilded."""
 
     def gild(self, months=None):
         """Gild the Redditor or author of the content.
@@ -15,8 +16,7 @@ class Gildable(RedditModel):
         :returns: True on success, otherwise raises an exception.
 
         """
-        from .redditor import Redditor
-
+        from ..redditor import Redditor
         if isinstance(self, Redditor):
             months = int(months) if months is not None else 1
             if months < 1:

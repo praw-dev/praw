@@ -73,7 +73,9 @@ class RedditModel(object):
         from .subreddit import Subreddit
 
         if value and name == 'subreddit':
-            value = Subreddit(self._reddit, value, fetch=False)
+            subreddit = Subreddit(self._reddit, value, fetch=False)
+            object.__setattr__(self, name, subreddit)
+            return
         elif value and name in self.REDDITOR_KEYS:
             if isinstance(value, bool):
                 pass
@@ -106,7 +108,7 @@ class RedditModel(object):
         else:
             self.json_dict = None
 
-        # TODO: Remove this wikipagelisting hack
+        # Wikipagelisting hack. Is this still needed?
         if isinstance(json_dict, list):
             json_dict = {'_tmp': json_dict}
 
@@ -129,5 +131,6 @@ class RedditModel(object):
         underscore and the object's base36 id, e.g., `t1_c5s96e0`.
 
         """
+        object_id = self.id  # pylint: disable=invalid-name
         by_object = self._reddit.config.by_object
-        return '{0}_{1}'.format(by_object[self.__class__], self.id)
+        return '{0}_{1}'.format(by_object[self.__class__], object_id)

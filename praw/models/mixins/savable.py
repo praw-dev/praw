@@ -1,8 +1,9 @@
+"""Provide the SavableMixin class."""
 from ..redditmodel import RedditModel
 
 
-class Savable(RedditModel):
-    """Interface for RedditContentObjects that can be saved."""
+class SavableMixin(RedditModel):
+    """Interface for RedditModel classes that can be saved."""
 
     def save(self, unsave=False):
         """Save the object.

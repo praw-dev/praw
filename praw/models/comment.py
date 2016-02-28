@@ -2,14 +2,15 @@
 
 from six.moves.urllib.parse import urljoin
 
-from .mixins import (Editable, Gildable, Inboxable, Moderatable, Reportable,
-                     Savable, Votable)
+from .mixins import (EditableMixin, GildableMixin, InboxableMixin,
+                     ModeratableMixin, ReportableMixin, SavableMixin,
+                     VotableMixin)
 from .submission import Submission
 from ..errors import InvalidComment
 
 
-class Comment(Editable, Gildable, Inboxable, Moderatable, Reportable, Savable,
-              Votable):
+class Comment(EditableMixin, GildableMixin, InboxableMixin, ModeratableMixin,
+              ReportableMixin, SavableMixin, VotableMixin):
     """A class that represents a reddit comments."""
 
     def __init__(self, reddit_session, json_dict):

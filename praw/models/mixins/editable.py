@@ -1,8 +1,9 @@
+"""Provide the EditableMixin class."""
 from ..redditmodel import RedditModel
 
 
-class Editable(RedditModel):
-    """Interface for Reddit content objects that can be edited and deleted."""
+class EditableMixin(RedditModel):
+    """Interface for RedditModel classes that can be edited and deleted."""
 
     def delete(self):
         """Delete this object.

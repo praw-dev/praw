@@ -1,19 +1,21 @@
-from six.moves.urllib.parse import urljoin
+"""Provide the ListingMixin class."""
+from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from ..listinggenerator import ListingGenerator
 from ..prawmodel import PRAWModel
 
 
-class Listing(PRAWModel):
+class ListingMixin(PRAWModel):
     """Adds methods that apply to listing objects."""
 
     VALID_TIME_FILTERS = {'all', 'day', 'hour', 'month', 'week', 'year'}
 
     @staticmethod
     def validate_time_filter(time_filter):
-        if time_filter not in Listing.VALID_TIME_FILTERS:
+        """Raise ValueError if time_filter is not valid."""
+        if time_filter not in ListingMixin.VALID_TIME_FILTERS:
             raise ValueError('time_filter must be one of: {}'.format(', '.join(
-                Listing.VALID_TIME_FILTERS)))
+                ListingMixin.VALID_TIME_FILTERS)))
 
     def controversial(self, time_filter='all', **generator_kwargs):
         """Return a ListingGenerator for controversial submissions.

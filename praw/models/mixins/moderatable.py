@@ -1,8 +1,9 @@
+"""Provide the ModeratableMixin class."""
 from ..redditmodel import RedditModel
 
 
-class Moderatable(RedditModel):
-    """Interface for Reddit content objects that have can be moderated."""
+class ModeratableMixin(RedditModel):
+    """Interface for RedditModel classes that can be moderated."""
 
     def approve(self):
         """Approve object.
