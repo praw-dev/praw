@@ -2,12 +2,12 @@
 
 from six import text_type
 
-from .redditcontentobject import RedditContentObject
+from .redditmodel import RedditModel
 from .redditor import Redditor
 from .wikipage import WikiPage
 
 
-class PRAWListing(RedditContentObject):
+class PRAWListing(RedditModel):
     """An abstract class to coerce a listing into RedditContentObjects."""
 
     CHILD_ATTRIBUTE = None

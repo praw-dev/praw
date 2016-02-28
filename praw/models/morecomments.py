@@ -1,10 +1,10 @@
 """Provide the MoreComments class."""
 from six.moves.urllib.parse import urljoin
 
-from .redditcontentobject import RedditContentObject
+from .redditmodel import RedditModel
 
 
-class MoreComments(RedditContentObject):
+class MoreComments(RedditModel):
     """A class indicating there are more comments."""
 
     def __init__(self, reddit_session, json_dict):

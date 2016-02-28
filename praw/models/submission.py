@@ -6,12 +6,12 @@ from six import text_type
 from six.moves.urllib.parse import parse_qs, urljoin, urlparse, urlunparse
 
 from .morecomments import MoreComments
-from .mixins import (Editable, Gildable, Hideable, Moderatable, Reportable,
-                     Saveable, Voteable)
+from .mixins import (Editable, Gildable, Hidable, Moderatable, Reportable,
+                     Savable, Votable)
 
 
-class Submission(Editable, Gildable, Hideable, Moderatable, Reportable,
-                 Saveable, Voteable):
+class Submission(Editable, Gildable, Hidable, Moderatable, Reportable,
+                 Savable, Votable):
     """A class for submissions to reddit."""
 
     _methods = (('select_flair', 'AR'),)

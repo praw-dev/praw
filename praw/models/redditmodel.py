@@ -1,10 +1,10 @@
-"""Provide the RedditContentObject class."""
+"""Provide the RedditModel class."""
 
 from six import PY3, iteritems
 
 
-class RedditContentObject(object):
-    """Base class that represents actual reddit objects."""
+class RedditModel(object):
+    """Base class that represents actual Reddit objects."""
 
     REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor',
                      'revision_by')
@@ -31,7 +31,7 @@ class RedditContentObject(object):
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
-        return (isinstance(other, RedditContentObject) and
+        return (isinstance(other, RedditModel) and
                 self.fullname == other.fullname)
 
     def __hash__(self):
@@ -85,7 +85,7 @@ class RedditContentObject(object):
         object.__setattr__(self, name, value)
 
     def __str__(self):
-        """Return a string representation of the RedditContentObject."""
+        """Return a string representation of the instance."""
         retval = self.__unicode__()
         if not PY3:
             retval = retval.encode('utf-8')

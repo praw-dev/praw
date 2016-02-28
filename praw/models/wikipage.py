@@ -2,10 +2,10 @@
 
 from six import text_type
 
-from .redditcontentobject import RedditContentObject
+from .redditmodel import RedditModel
 
 
-class WikiPage(RedditContentObject):
+class WikiPage(RedditModel):
     """An individual WikiPage object."""
 
     @classmethod
