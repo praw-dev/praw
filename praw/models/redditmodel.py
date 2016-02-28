@@ -1,6 +1,7 @@
 """Provide the RedditModel class."""
-
 from six import PY3, iteritems
+
+from ..const import API_PATHS
 
 
 class RedditModel(object):
@@ -10,12 +11,12 @@ class RedditModel(object):
                      'revision_by')
 
     @classmethod
-    def from_api_response(cls, reddit_session, json_dict):
+    def from_api_response(cls, reddit, json_dict):
         """Return an instance of the appropriate class from the json_dict."""
-        return cls(reddit_session, json_dict=json_dict)
+        return cls(reddit, json_dict=json_dict)
 
-    def __init__(self, reddit_session, json_dict=None, fetch=True,
-                 info_url=None, underscore_names=None, uniq=None):
+    def __init__(self, reddit, json_dict=None, fetch=True, info_path=None,
+                 underscore_names=None, uniq=None):
         """Create a new object from the dict of attributes returned by the API.
 
         The fetch parameter specifies whether to retrieve the object's
@@ -23,8 +24,8 @@ class RedditModel(object):
         json_dict).
 
         """
-        self._info_url = info_url or reddit_session.config['info']
-        self.reddit_session = reddit_session
+        self._info_path = info_path or API_PATHS['info']
+        self._reddit = reddit
         self._underscore_names = underscore_names
         self._uniq = uniq
         self._has_fetched = self._populate(json_dict, fetch)
@@ -72,16 +73,16 @@ class RedditModel(object):
         from .subreddit import Subreddit
 
         if value and name == 'subreddit':
-            value = Subreddit(self.reddit_session, value, fetch=False)
+            value = Subreddit(self._reddit, value, fetch=False)
         elif value and name in self.REDDITOR_KEYS:
             if isinstance(value, bool):
                 pass
             elif isinstance(value, dict):
-                value = Redditor(self.reddit_session, json_dict=value['data'])
+                value = Redditor(self._reddit, json_dict=value['data'])
             elif not value or value == '[deleted]':
                 value = None
             else:
-                value = Redditor(self.reddit_session, value, fetch=False)
+                value = Redditor(self._reddit, value, fetch=False)
         object.__setattr__(self, name, value)
 
     def __str__(self):
@@ -93,15 +94,14 @@ class RedditModel(object):
 
     def _get_json_dict(self):
         params = {'uniq': self._uniq} if self._uniq else {}
-        response = self.reddit_session.request_json(
-            self._info_url, params=params, as_objects=False)
+        response = self._reddit.request(self._info_path, params=params)
         return response['data']
 
     def _populate(self, json_dict, fetch):
         if json_dict is None:
             json_dict = self._get_json_dict() if fetch else {}
 
-        if self.reddit_session.config.store_json_result is True:
+        if self._reddit.config.store_json_result is True:
             self.json_dict = json_dict
         else:
             self.json_dict = None
@@ -129,5 +129,5 @@ class RedditModel(object):
         underscore and the object's base36 id, e.g., `t1_c5s96e0`.
 
         """
-        by_object = self.reddit_session.config.by_object
+        by_object = self._reddit.config.by_object
         return '{0}_{1}'.format(by_object[self.__class__], self.id)

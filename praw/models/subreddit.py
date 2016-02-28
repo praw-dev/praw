@@ -4,13 +4,14 @@ import logging
 
 from .mixins import Listing
 from .mixins import Messageable
+from ..const import API_PATHS
 from ..internal import _modify_relationship
 
 
 log = logging.getLogger(__name__)
 
 
-class Subreddit(Listing, Messageable):
+class Subreddit(Messageable, Listing):
     """A class for Subreddits."""
 
     _methods = (('accept_moderator_invite', 'AR'),
@@ -83,46 +84,39 @@ class Subreddit(Listing, Messageable):
     remove_wiki_contributor = _modify_relationship('wikicontributor',
                                                    unlink=True, is_sub=True)
 
-    def __init__(self, reddit_session, subreddit_name=None, json_dict=None,
-                 fetch=False, **kwargs):
-        """Construct an instance of the Subreddit object."""
+    def __init__(self, reddit, name=None, json_dict=None, fetch=False,
+                 **kwargs):
+        """Construct an instance of the Subreddit object.
+
+        :param reddit: An instance of :class:`~.Reddit`.
+        :param name: The name of the Subreddit.
+
+        """
+
         # Special case for when my_subreddits is called as no name is returned
         # so we have to extract the name from the URL. The URLs are returned
         # as: /r/reddit_name/
-        if not subreddit_name:
-            subreddit_name = json_dict['url'].split('/')[2]
+        if not name:
+            name = json_dict['url'].split('/')[2]
 
-        if fetch and ('+' in subreddit_name or '-' in subreddit_name):
+        if fetch and ('+' in name or '-' in name):
             fetch = False
             log.warn('fetch=True has no effect on multireddits')
 
-        info_url = reddit_session.config['subreddit_about'].format(
-            subreddit=subreddit_name)
-        self._case_name = subreddit_name
-        super(Subreddit, self).__init__(reddit_session, json_dict, fetch,
-                                        info_url, **kwargs)
-        self.display_name = self._case_name
-        self._url = reddit_session.config['subreddit'].format(
-            subreddit=self.display_name)
-        # '' is the hot listing
-        listings = ['new/', '', 'top/', 'controversial/', 'rising/']
-        base = reddit_session.config['subreddit'].format(
-            subreddit=self.display_name)
-        self._listing_urls = [base + x + '.json' for x in listings]
+        info_path = API_PATHS['subreddit_about'].format(subreddit=name)
+        super(Subreddit, self).__init__(reddit, json_dict, fetch, info_path,
+                                        **kwargs)
+        if 'display_name' not in self.__dict__:
+            self.display_name = name
+        self._path = API_PATHS['subreddit'].format(subreddit=self.display_name)
 
     def __repr__(self):
         """Return a code representation of the Subreddit."""
-        return 'Subreddit(subreddit_name=\'{0}\')'.format(self.display_name)
+        return 'Subreddit(name={!r})'.format(self.display_name)
 
     def __unicode__(self):
         """Return a string representation of the Subreddit."""
         return self.display_name
-
-    def _post_populate(self, fetch):
-        if fetch:
-            tmp = self._case_name
-            self._case_name = self.display_name
-            self.display_name = tmp
 
     def clear_all_flair(self):
         """Remove all user flair on this subreddit.
