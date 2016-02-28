@@ -90,8 +90,7 @@ class Submission(Editable, Gildable, Hidable, Moderatable, Reportable,
     def __init__(self, reddit_session, json_dict):
         """Construct an instance of the Subreddit object."""
         super(Submission, self).__init__(reddit_session, json_dict)
-        self._api_link = urljoin(reddit_session.config.oauth_url,
-                                 self.permalink)
+        self._api_path = self.permalink
         self.permalink = urljoin(reddit_session.config.reddit_url,
                                  self.permalink)
         self._comment_sort = None
@@ -155,7 +154,7 @@ class Submission(Editable, Gildable, Hidable, Moderatable, Reportable,
         """
         if self._comments is None:
             self.comments = Submission.from_url(
-                self.reddit_session, self._api_link, comments_only=True)
+                self.reddit_session, self._api_path, comments_only=True)
         return self._comments
 
     @comments.setter

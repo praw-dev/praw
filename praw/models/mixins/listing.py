@@ -28,7 +28,7 @@ class Listing(PRAWModel):
         self.validate_time_filter(time_filter)
         generator_kwargs.setdefault('params', {})['t'] = time_filter
         return ListingGenerator(self._reddit,
-                                urljoin(self._url, 'controversial'),
+                                urljoin(self._path, 'controversial'),
                                 **generator_kwargs)
 
     def gilded(self, **generator_kwargs):
@@ -38,7 +38,7 @@ class Listing(PRAWModel):
         constructor.
 
         """
-        return ListingGenerator(self._reddit, urljoin(self._url, 'gilded'),
+        return ListingGenerator(self._reddit, urljoin(self._path, 'gilded'),
                                 **generator_kwargs)
 
     def hot(self, **generator_kwargs):
@@ -48,7 +48,7 @@ class Listing(PRAWModel):
         constructor.
 
         """
-        return ListingGenerator(self._reddit, urljoin(self._url, 'hot'),
+        return ListingGenerator(self._reddit, urljoin(self._path, 'hot'),
                                 **generator_kwargs)
 
     def new(self, **generator_kwargs):
@@ -58,7 +58,7 @@ class Listing(PRAWModel):
         constructor.
 
         """
-        return ListingGenerator(self._reddit, urljoin(self._url, 'new'),
+        return ListingGenerator(self._reddit, urljoin(self._path, 'new'),
                                 **generator_kwargs)
 
     def rising(self, **generator_kwargs):
@@ -68,7 +68,7 @@ class Listing(PRAWModel):
         constructor.
 
         """
-        return ListingGenerator(self._reddit, urljoin(self._url, 'rising'),
+        return ListingGenerator(self._reddit, urljoin(self._path, 'rising'),
                                 **generator_kwargs)
 
     def top(self, time_filter='all', **generator_kwargs):
@@ -84,5 +84,5 @@ class Listing(PRAWModel):
         self.validate_time_filter(time_filter)
         generator_kwargs.setdefault('params', {})['t'] = time_filter
         return ListingGenerator(self._reddit,
-                                urljoin(self._url, 'controversial'),
+                                urljoin(self._path, 'controversial'),
                                 **generator_kwargs)

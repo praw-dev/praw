@@ -4,19 +4,13 @@ import sys
 
 from six import iteritems
 from six.moves import configparser
-from six.moves.urllib.parse import urljoin
 
 from . import models
-from .const import API_PATHS
 from .errors import ClientException
 
 
 class Config(object):
     """A class containing the configuration for a reddit site."""
-
-    def __getitem__(self, key):
-        """Return the URL for key."""
-        return urljoin(self.oauth_url, API_PATHS[key])
 
     def __init__(self, site_name, **settings):
         """Initialize PRAW's configuration."""
@@ -55,7 +49,7 @@ class Config(object):
         self.refresh_token = fetch_or_none('refresh_token')
         self.store_json_result = config_boolean(obj['store_json_result'])
         self.timeout = float(obj['timeout'])
-        self.user_agent = obj['user_agent']
+        self.user_agent = fetch_or_none('user_agent')
         self.validate_certs = config_boolean(obj['validate_certificates'])
 
     @property
