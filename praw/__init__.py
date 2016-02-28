@@ -369,10 +369,10 @@ class BaseReddit(object):
         self.modhash = None
 
         # Check for updates if permitted and this is the first Reddit instance
-        if not disable_update_check and not self.update_checked \
+        if not disable_update_check and not BaseReddit.update_checked \
                 and self.config.check_for_updates:
             update_check(__name__, __version__)
-            self.update_checked = True
+            BaseReddit.update_checked = True
 
         # Initial values
         self._use_oauth = False
