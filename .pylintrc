@@ -232,16 +232,16 @@ max-branches=32
 # max-statements=0
 
 # Maximum number of parents for a class (see R0901).
-max-parents=16
+max-parents=10
 
 # Maximum number of attributes for a class (see R0902).
 max-attributes=32
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods=1
+min-public-methods=0
 
 # Maximum number of public methods for a class (see R0904).
-max-public-methods=96
+# max-public-methods=18
 
 
 [EXCEPTIONS]
