@@ -1,13 +1,13 @@
 """Provide the Reddit class."""
 import os
 
-from prawcore import Authenticator, ReadOnlyAuthorizer, Requestor, session
 from update_checker import update_check
+from prawcore import Authenticator, ReadOnlyAuthorizer, Requestor, session
 
 from .errors import RequiredConfig
 from .config import Config
 from .const import __version__
-from .models import Front, Subreddit
+from .models import Front, Redditor, Subreddit
 
 
 class Reddit(object):
@@ -74,6 +74,14 @@ class Reddit(object):
 
         self._core = session(authorizer)
 
+    def redditor(self, name):
+        """Lazily return an instance of :class:`~.Redditor` for ``name``.
+
+        :param name: The name of the redditor.
+
+        """
+        return Redditor(self, name)
+
     def request(self, path, params):
         """Return the parsed JSON data returned from a GET request to URL.
 
@@ -89,9 +97,9 @@ class Reddit(object):
         :param name: The name of the subreddit.
 
         """
-        name = name.lower()
-        if name == 'random':
+        lower_name = name.lower()
+        if lower_name == 'random':
             return self.random_subreddit()
-        elif name == 'randnsfw':
+        elif lower_name == 'randnsfw':
             return self.random_subreddit(nsfw=True)
         return Subreddit(self, name)

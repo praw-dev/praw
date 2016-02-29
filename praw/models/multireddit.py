@@ -4,12 +4,13 @@ from json import dumps
 
 from six import text_type
 
-from .mixins.listing import ListingMixin
+from .mixins.listing import SubredditListingMixin
+from .redditmodel import RedditModel
 from .redditor import Redditor
 from .subreddit import Subreddit
 
 
-class Multireddit(ListingMixin):
+class Multireddit(RedditModel, SubredditListingMixin):
     """A class for users' Multireddits."""
 
     """

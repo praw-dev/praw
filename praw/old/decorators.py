@@ -11,9 +11,24 @@ import sys
 from warnings import warn
 
 import decorator
+from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from . import errors
-from .decorator_helpers import _get_captcha, _make_func_args
+
+
+def _get_captcha(reddit_session, captcha_id):
+    """Prompt user for captcha solution and return a prepared result."""
+    url = urljoin(reddit_session.config['captcha'],
+                  captcha_id + '.png')
+    sys.stdout.write('Captcha URL: {0}\nCaptcha: '.format(url))
+    sys.stdout.flush()
+    raw = sys.stdin.readline()
+    if not raw:  # stdin has reached the end of file
+        # Trigger exception raising next time through. The request is
+        # cached so this will not require and extra request and delay.
+        sys.stdin.close()
+        return None
+    return {'iden': captcha_id, 'captcha': raw.strip()}
 
 
 def deprecated(msg=''):
@@ -81,12 +96,7 @@ def require_captcha(function, *args, **kwargs):
             if captcha_id:
                 captcha_answer = _get_captcha(reddit_session, captcha_id)
 
-                # When the method is being decorated, all of its default
-                # parameters become part of this *args tuple. This means that
-                # *args currently contains a None where the captcha answer
-                # needs to go. If we put the captcha in the **kwargs,
-                # we get a TypeError for having two values of the same param.
-                func_args = _make_func_args(function)
+                func_args = []
                 if 'captcha' in func_args:
                     captcha_index = func_args.index('captcha')
                     args = list(args)

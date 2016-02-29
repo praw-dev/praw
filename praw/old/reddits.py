@@ -321,13 +321,6 @@ class BaseReddit(object):
             return self.get_submission(exc.response_url)
         raise errors.ClientException('Expected exception not raised.')
 
-    def get_redditor(self, user_name, *args, **kwargs):
-        Return a Redditor instance for the user_name specified.
-
-        The additional parameters are passed directly into the
-        :class:`.Redditor` constructor.
-        return models.Redditor(self, user_name, *args, **kwargs)
-
     def get_sticky(self, subreddit, bottom=False):
         Return a Submission object for the sticky of the subreddit.
 
@@ -496,7 +489,6 @@ class BaseReddit(object):
         :returns: The json response from the server.
         data = {'r': six.text_type(subreddit)}
         # Clear moderated subreddits and cache
-        self.user._mod_subs = None
         return self.request_json(self.config['accept_mod_invite'], data=data)
 
     def delete(self, password, message=""):

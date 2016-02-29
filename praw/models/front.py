@@ -1,8 +1,8 @@
 """Provide the Front class."""
-from .mixins import ListingMixin
+from .mixins import SubredditListingMixin
 
 
-class Front(ListingMixin):
+class Front(SubredditListingMixin):
     """Front is a Listing class that represents the front page."""
 
     def __init__(self, reddit):

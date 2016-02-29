@@ -2,8 +2,7 @@
 
 import logging
 
-from .mixins import ListingMixin
-from .mixins import MessageableMixin
+from .mixins import MessageableMixin, SubredditListingMixin
 from ..const import API_PATHS
 from ..internal import _modify_relationship
 
@@ -11,7 +10,7 @@ from ..internal import _modify_relationship
 LOG = logging.getLogger(__name__)
 
 
-class Subreddit(MessageableMixin, ListingMixin):
+class Subreddit(MessageableMixin, SubredditListingMixin):
     """A class for Subreddits."""
 
     _methods = (('accept_moderator_invite', 'AR'),

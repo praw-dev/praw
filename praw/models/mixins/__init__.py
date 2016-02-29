@@ -2,7 +2,7 @@
 
 from .editable import EditableMixin  # NOQA
 from .hidable import HidableMixin  # NOQA
-from .listing import ListingMixin  # NOQA
+from .listing import RedditorListingMixin, SubredditListingMixin  # NOQA
 from .moderatable import ModeratableMixin  # NOQA
 from .savable import SavableMixin  # NOQA
 from .gildable import GildableMixin  # NOQA
