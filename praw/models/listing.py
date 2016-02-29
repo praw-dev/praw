@@ -73,6 +73,5 @@ class WikiPageListing(PRAWListing):
     @staticmethod
     def _convert(reddit_session, data):
         """Return a WikiPage object from the data."""
-        # TODO: The _request_url hack shouldn't be necessary
         subreddit = reddit_session._request_url.rsplit('/', 4)[1]
         return WikiPage(reddit_session, subreddit, data, fetch=False)

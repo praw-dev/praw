@@ -20,6 +20,7 @@ class ListingGenerator(PRAWModel):
             parameters to send with the request.
 
         """
+        super(ListingGenerator, self).__init__(reddit)
         self._exhausted = False
         self._list = None
         self._list_index = None

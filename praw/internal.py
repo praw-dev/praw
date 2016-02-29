@@ -8,7 +8,7 @@ import sys
 
 import six
 from requests import Request, codes, exceptions
-from six.moves.urllib.parse import urljoin
+from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from .errors import (HTTPException, Forbidden, NotFound, InvalidSubreddit,
                      OAuthException, OAuthInsufficientScope,
@@ -16,29 +16,6 @@ from .errors import (HTTPException, Forbidden, NotFound, InvalidSubreddit,
 
 
 RE_REDIRECT = re.compile('(rand(om|nsfw))|about/sticky')
-
-
-def _get_redditor_listing(subpath=''):
-    """Return function to generate Redditor listings."""
-    def _listing(self, sort='new', time='all', *args, **kwargs):
-        """Return a get_content generator for some RedditContentObject type.
-
-        :param sort: Specify the sort order of the results if applicable
-            (one of ``'hot'``, ``'new'``, ``'top'``, ``'controversial'``).
-        :param time: Specify the time-period to return submissions if
-            applicable (one of ``'hour'``, ``'day'``, ``'week'``,
-            ``'month'``, ``'year'``, ``'all'``).
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        kwargs.setdefault('params', {})
-        kwargs['params'].setdefault('sort', sort)
-        kwargs['params'].setdefault('t', time)
-        url = urljoin(self._url, subpath)
-        return self.reddit_session.get_content(url, *args, **kwargs)
-    return _listing
 
 
 def _modify_relationship(relationship, unlink=False, is_sub=False):
@@ -130,9 +107,9 @@ def _raise_response_exceptions(response):
         else:
             raise OAuthException(msg, response.url)
 
-    if response.status_code == codes.forbidden:
+    if response.status_code == codes['forbidden']:
         raise Forbidden(_raw=response)
-    elif response.status_code == codes.not_found:
+    elif response.status_code == codes['not_found']:
         raise NotFound(_raw=response)
     else:
         try:

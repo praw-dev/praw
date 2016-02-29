@@ -1,5 +1,5 @@
 """Provide the MoreComments class."""
-from six.moves.urllib.parse import urljoin
+from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from .redditmodel import RedditModel
 

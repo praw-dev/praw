@@ -1,6 +1,6 @@
 """Provide the Comment class."""
 
-from six.moves.urllib.parse import urljoin
+from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from .mixins import (EditableMixin, GildableMixin, InboxableMixin,
                      ModeratableMixin, ReportableMixin, SavableMixin,
