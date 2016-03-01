@@ -41,7 +41,7 @@ class ListingGenerator(PRAWModel):
         return self
 
     def __next__(self):
-        """Permit ListingGenerator to operate as a generator."""
+        """Permit ListingGenerator to operate as a generator in py3."""
         if self.limit is not None and self.yielded >= self.limit:
             raise StopIteration()
 
@@ -73,4 +73,5 @@ class ListingGenerator(PRAWModel):
             self._exhausted = True
 
     def next(self):
+        """Permit ListingGenerator to operate as a generator in py2."""
         return self.__next__()
