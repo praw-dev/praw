@@ -1,0 +1,30 @@
+"""Prepare py.test."""
+import os
+from base64 import b64encode
+
+import betamax
+from betamax_serializers import pretty_json
+
+betamax.Betamax.register_serializer(pretty_json.PrettyJSONSerializer)
+
+
+def b64_string(input_string):
+    """Return a base64 encoded string (not bytes) from input_string."""
+    return b64encode(input_string.encode('utf-8')).decode('utf-8')
+
+
+def env_default(key):
+    """Return environment variable or placeholder string."""
+    return os.environ.get(key, 'placeholder:{}'.format(key))
+
+
+placeholders = {x: env_default(x) for x in
+                'client_id client_secret user_agent'.split()}
+placeholders['basic_auth'] = b64_string(
+    '{}:{}'.format(placeholders['client_id'], placeholders['client_secret']))
+
+with betamax.Betamax.configure() as config:
+    config.cassette_library_dir = 'tests/integration/cassettes'
+    config.default_cassette_options['serialize_with'] = 'prettyjson'
+    for key, value in placeholders.items():
+        config.define_cassette_placeholder('<{}>'.format(key.upper()), value)
