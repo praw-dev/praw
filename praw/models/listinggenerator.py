@@ -71,3 +71,6 @@ class ListingGenerator(PRAWModel):
             self.params['after'] = root[self.after_field]
         else:
             self._exhausted = True
+
+    def next(self):
+        return self.__next__()
