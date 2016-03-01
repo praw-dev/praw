@@ -6,7 +6,7 @@ from prawcore import Authenticator, ReadOnlyAuthorizer, Requestor, session
 
 from .errors import RequiredConfig
 from .config import Config
-from .const import __version__
+from .const import __version__, USER_AGENT_FORMAT
 from .models import Front, Redditor, Subreddit
 
 
@@ -54,9 +54,9 @@ class Reddit(object):
             if not getattr(self.config, attr):
                 raise RequiredConfig(attr)
 
-        self._prepare_prawcore()
         self._check_for_update()
 
+        self._prepare_prawcore()
         self.front = Front(self)
 
     def _check_for_update(self):
@@ -65,13 +65,11 @@ class Reddit(object):
             Reddit.update_checked = True
 
     def _prepare_prawcore(self):
-        requestor = Requestor(self.config.user_agent, self.config.oauth_url,
-                              self.config.reddit_url)
+        requestor = Requestor(USER_AGENT_FORMAT.format(self.config.user_agent),
+                              self.config.oauth_url, self.config.reddit_url)
         authenticator = Authenticator(requestor, self.config.client_id,
                                       self.config.client_secret)
         authorizer = ReadOnlyAuthorizer(authenticator)
-        authorizer.refresh()
-
         self._core = session(authorizer)
 
     def redditor(self, name):
@@ -89,6 +87,8 @@ class Reddit(object):
         :param params: The query parameters to add to the request.
 
         """
+        if not self._core._authorizer.is_valid():
+            self._core._authorizer.refresh()
         return self._core.request('GET', path, params=params)
 
     def subreddit(self, name):
