@@ -28,3 +28,8 @@ with betamax.Betamax.configure() as config:
     config.default_cassette_options['serialize_with'] = 'prettyjson'
     for key, value in placeholders.items():
         config.define_cassette_placeholder('<{}>'.format(key.upper()), value)
+
+
+def pytest_namespace():
+    """Add attributes to pytest in all tests."""
+    return {'placeholders': placeholders}
