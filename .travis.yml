@@ -1,6 +1,6 @@
 after_success: coveralls
 cache: pip
-install: pip install coveralls flake8 pydocstyle
+install: pip install coveralls flake8 pydocstyle pytest==2.8.7
 language: python
 matrix:
   allow_failures:
