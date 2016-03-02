@@ -1,16 +1,8 @@
 """Test praw.models.front."""
-import pytest
-from betamax import Betamax
-from praw import Reddit
+from . import IntegrationTest
 
 
-class TestSubredditListings(object):
-    def setup(self):
-        self.reddit = Reddit(client_id=pytest.placeholders.client_id,
-                             client_secret=pytest.placeholders.client_secret,
-                             user_agent=pytest.placeholders.user_agent)
-        self.recorder = Betamax(self.reddit._core._requestor._http)
-
+class TestSubredditListings(IntegrationTest):
     def test_controversial(self):
         with self.recorder.use_cassette(
                 'TestSubredditListings.test_controversial'):

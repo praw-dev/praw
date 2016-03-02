@@ -1,16 +1,8 @@
 """Test praw.models.front."""
-import pytest
-from betamax import Betamax
-from praw import Reddit
+from . import IntegrationTest
 
 
-class TestListingGenerator(object):
-    def setup(self):
-        self.reddit = Reddit(client_id=pytest.placeholders.client_id,
-                             client_secret=pytest.placeholders.client_secret,
-                             user_agent=pytest.placeholders.user_agent)
-        self.recorder = Betamax(self.reddit._core._requestor._http)
-
+class TestListingGenerator(IntegrationTest):
     def test_exhaust_items(self):
         with self.recorder.use_cassette(
                 'TestListingGenerator.test_exhaust_items'):
