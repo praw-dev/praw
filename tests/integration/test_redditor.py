@@ -22,8 +22,8 @@ class TestRedditorListings(object):
         with self.recorder.use_cassette(
                 'TestRedditorListings.test_gilded'):
             redditor = self.reddit.redditor('spez')
-            submissions = list(redditor.gilded())
-        assert len(submissions) >= 50
+            submissions = list(redditor.gilded(limit=50))
+        assert len(submissions) == 50
 
     """
     def test_gildings(self):
