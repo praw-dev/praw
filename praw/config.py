@@ -15,7 +15,7 @@ class Config(object):
     def __init__(self, site_name, **settings):
         """Initialize PRAW's configuration."""
         def config_boolean(item):
-            return item and item.lower() in {'1', 'yes', 'true', 'on'}
+            return item.lower() in {'1', 'yes', 'true', 'on'}
 
         def fetch_or_none(key):
             return os.getenv(key) or obj.get(key) or None
@@ -37,7 +37,8 @@ class Config(object):
                               iteritems(self.by_kind))
 
         self._short_url = obj.get('short_url') or None
-        self.check_for_updates = config_boolean(obj['check_for_updates'])
+        self.check_for_updates = config_boolean(
+            fetch_or_none('check_for_updates'))
         self.client_id = fetch_or_none('client_id')
         self.client_secret = fetch_or_none('client_secret')
         self.http_proxy = fetch_or_none('http_proxy')
