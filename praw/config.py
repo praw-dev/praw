@@ -39,6 +39,8 @@ class Config(object):
             return item.lower() in {'1', 'yes', 'true', 'on'}
 
         def fetch_or_none(key):
+            if key in settings:  # Passed in values have the highest priority
+                return obj[key]
             return os.getenv(key) or obj.get(key) or None
 
         if Config.CONFIG is None:

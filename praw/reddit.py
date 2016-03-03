@@ -72,6 +72,14 @@ class Reddit(object):
         authorizer = ReadOnlyAuthorizer(authenticator)
         self._core = session(authorizer)
 
+    def random_subreddit(self):
+        """Return an instance of :class:`~.Subreddit` for a random subreddit.
+
+        To verify: will NSFW subreddit's be returned via Oauth?
+
+        """
+        return Subreddit(self, 'redditdev')  # Stub for now
+
     def redditor(self, name):
         """Lazily return an instance of :class:`~.Redditor` for ``name``.
 
@@ -100,6 +108,4 @@ class Reddit(object):
         lower_name = name.lower()
         if lower_name == 'random':
             return self.random_subreddit()
-        elif lower_name == 'randnsfw':
-            return self.random_subreddit(nsfw=True)
         return Subreddit(self, name)
