@@ -147,6 +147,9 @@ this page to add in more.
 `Subtitle Bot`_ by `arrayofchar <https://github.com/arrayofchar>`_
     Finds youtube links and see if closed captioning (aka subtitle) is available. Formats subtitle into paragraphs based on  standard deviation of timestamp gaps. If subtitle is longer than Reddit comment limit, puts it in Pastebin.
 
+`Reddit Countdown`_ by `matchu <https://github.com/matchu/>`_
+    Implements a countdown in a subreddit's sidebar to help Reddit communities count down to important events.
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -180,4 +183,5 @@ this page to add in more.
      https://github.com/xiphirx/rdiablo-flair-infographic-generator
 .. _`reddit-analysis`: https://github.com/rhiever/reddit-analysis
 .. _`reddit-cloud`: https://github.com/paul-nechifor/reddit-cloud
+.. _`Reddit Countdown`: https://github.com/matchu/reddit-countdown
 .. _`u/xiphirx`: http://www.reddit.com/user/xiphirx
