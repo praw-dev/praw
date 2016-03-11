@@ -80,7 +80,12 @@ class RedditContentObject(object):
 
     def __getattr__(self, attr):
         """Return the value of the `attr` attribute."""
-        if attr != '__setstate__' and not self._has_fetched:
+        # Because this method may perform web requests, there are certain
+        # attributes we must blacklist to prevent accidental requests:
+        # __members__, __methods__: Caused by `dir(obj)` in Python 2.
+        # __setstate__: Caused by Pickle deserialization.
+        blacklist = ('__members__', '__methods__', '__setstate__')
+        if attr not in blacklist and not self._has_fetched:
             self._has_fetched = self._populate(None, True)
             return getattr(self, attr)
         msg = '\'{0}\' has no attribute \'{1}\''.format(type(self), attr)
