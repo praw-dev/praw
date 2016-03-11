@@ -12,7 +12,8 @@ upstream changes.
 
 Unreleased
 ----------
-
+* **[BUGFIX]** Prevent built-in method `dir` from causing RedditContentObjects
+  to perform web requests in Python 2.
 * **[FEATURE]** Added support for thread locking. See
   :meth:`~praw.objects.Submission.lock` and
   :meth:`~praw.objects.Submission.unlock`.
