@@ -31,6 +31,13 @@ class TestSubredditListings(IntegrationTest):
             submissions = list(subreddit.new())
         assert len(submissions) == 100
 
+    def test_rising(self):
+        with self.recorder.use_cassette(
+                'TestSubredditListings.test_rising'):
+            subreddit = self.reddit.subreddit('askreddit')
+            submissions = list(subreddit.rising())
+        assert len(submissions) == 100
+
     def test_top(self):
         with self.recorder.use_cassette(
                 'TestSubredditListings.test_top'):
