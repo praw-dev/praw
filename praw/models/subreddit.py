@@ -5,7 +5,7 @@ import logging
 import six
 
 from .mixins import MessageableMixin, SubredditListingMixin
-from ..const import API_PATHS
+from ..const import API_PATH
 
 
 LOG = logging.getLogger(__name__)
@@ -127,12 +127,12 @@ class Subreddit(MessageableMixin, SubredditListingMixin):
             fetch = False
             LOG.warning('fetch=True has no effect on multireddits')
 
-        info_path = API_PATHS['subreddit_about'].format(subreddit=name)
+        info_path = API_PATH['subreddit_about'].format(subreddit=name)
         super(Subreddit, self).__init__(reddit, json_dict, fetch, info_path,
                                         **kwargs)
         if 'display_name' not in self.__dict__:
             self.display_name = name
-        self._path = API_PATHS['subreddit'].format(subreddit=self.display_name)
+        self._path = API_PATH['subreddit'].format(subreddit=self.display_name)
 
     def __repr__(self):
         """Return a code representation of the Subreddit."""

@@ -1,7 +1,7 @@
 """Provide the RedditModel class."""
 from six import PY3, iteritems
 
-from ..const import API_PATHS
+from ..const import API_PATH
 
 
 class RedditModel(object):
@@ -24,7 +24,7 @@ class RedditModel(object):
         json_dict).
 
         """
-        self._info_path = info_path or API_PATHS['info']
+        self._info_path = info_path or API_PATH['info']
         self._reddit = reddit
         self._underscore_names = underscore_names
         self._uniq = uniq

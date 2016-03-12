@@ -2,7 +2,7 @@
 
 __version__ = '4.0.0a1'
 
-API_PATHS = {
+API_PATH = {
     'accept_mod_invite':   'api/accept_moderator_invite',
     'access_token_url':    'api/v1/access_token/',
     'approve':             'api/approve/',

@@ -3,7 +3,7 @@ from json import dumps
 
 from .mixins import (GildableMixin, InboxableMixin, MessageableMixin,
                      RedditorListingMixin)
-from ..const import API_PATHS
+from ..const import API_PATH
 from ..errors import ClientException
 
 
@@ -19,12 +19,12 @@ class Redditor(GildableMixin, MessageableMixin, RedditorListingMixin):
         if not name:
             name = json_dict['name']
 
-        info_path = API_PATHS['user_about'].format(user=name)
+        info_path = API_PATH['user_about'].format(user=name)
         super(Redditor, self).__init__(reddit, json_dict, fetch, info_path,
                                        **kwargs)
         if 'name' not in self.__dict__:
             self.name = name
-        self._path = API_PATHS['user'].format(user=self.name)
+        self._path = API_PATH['user'].format(user=self.name)
         self._listing_use_sort = True
 
     def __repr__(self):
