@@ -31,6 +31,8 @@ class BaseListingMixin(PRAWModel):
         :param time_filter: Can be one of: all, day, hour, month, week, year.
             (Default: all)
 
+        Raise ``ValueError`` if ``time_filter`` is invalid.
+
         Additional keyword arguments are passed to the ``ListingGenerator``
         constructor.
 
@@ -65,6 +67,8 @@ class BaseListingMixin(PRAWModel):
 
         :param time_filter: Can be one of: all, day, hour, month, week, year.
             (Default: all)
+
+        Raise ``ValueError`` if ``time_filter`` is invalid.
 
         Additional keyword arguments are passed to the ``ListingGenerator``
         constructor.

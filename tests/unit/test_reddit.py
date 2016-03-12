@@ -3,17 +3,12 @@ import pytest
 from praw import __version__, Reddit
 from praw.errors import RequiredConfig
 
+from . import UnitTest
 
-class TestReddit(object):
+
+class TestReddit(UnitTest):
     DUMMY_SETTINGS = {x: 'dummy' for x in
                       ['client_id', 'client_secret', 'user_agent']}
-
-    def setup(self):
-        """Setup runs before all test cases."""
-        self.reddit = Reddit(client_id='dummy', client_secret='dummy',
-                             user_agent='dummy')
-        # Unit tests should never issue requests
-        self.reddit._core._requestor._http = None
 
     def test_reddit_missing_required_settings(self):
         for setting in self.DUMMY_SETTINGS:

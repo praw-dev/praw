@@ -1,4 +1,4 @@
-"""Test praw.models.front."""
+"""Test praw.models.subreddit."""
 from . import IntegrationTest
 
 
