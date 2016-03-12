@@ -177,9 +177,9 @@ for any ``NameErrors`` you might encounter.
 
 #. Bulk set user flair (requires mod privileges):
 
-    >>> flair_mapping = [{'user':'user', 'flair_text':'dev'},
-    ...                  {'user':'pyapitestuser3', 'flair_css_class':'css2'},
-    ...                  {'user':'pyapitestuser2', 'flair_text':'AWESOME',
+    >>> flair_mapping = [{'user':'spez', 'flair_text':'dev'},
+    ...                  {'user':'spladug', 'flair_css_class':'css2'},
+    ...                  {'user':'kn0thing', 'flair_text':'AWESOME',
     ...                  'flair_css_class':'css'}]
     >>> r.get_subreddit('python').set_flair_csv(flair_mapping)
 

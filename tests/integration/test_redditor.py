@@ -1,4 +1,7 @@
 """Test praw.models.redditor."""
+import pytest
+from prawcore import Forbidden
+
 from . import IntegrationTest
 
 
@@ -45,21 +48,28 @@ class TestRedditorListings(IntegrationTest):
             submissions = list(redditor.gilded(limit=50))
         assert len(submissions) == 50
 
-    """
     def test_gildings(self):
+        self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestRedditorListings.test_gildings'):
-            redditor = self.reddit.redditor('pyapitestuser2')
+            redditor = self.reddit.redditor(self.reddit.config.username)
             submissions = list(redditor.gildings())
-        assert len(submissions) >= 50
+        assert isinstance(submissions, list)
 
-    def test_gildings_fails_on_other(self):
+    def test_gildings__other_user(self):
+        self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestRedditorListings.test_gildings_fails_on_other'):
+                'TestRedditorListings.test_gildings__other_user'):
             redditor = self.reddit.redditor('spez')
-            submissions = list(redditor.gildings())
-        assert len(submissions) >= 50
-    """
+            with pytest.raises(Forbidden):
+                list(redditor.gildings())
+
+    def test_gildings__in_read_only_mode(self):
+        with self.recorder.use_cassette(
+                'TestRedditorListings.test_gildings__in_read_only_mode'):
+            redditor = self.reddit.redditor(self.reddit.config.username)
+            with pytest.raises(Forbidden):
+                list(redditor.gildings())
 
     def test_hot(self):
         with self.recorder.use_cassette(

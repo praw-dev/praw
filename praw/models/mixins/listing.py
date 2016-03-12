@@ -142,6 +142,11 @@ class RedditorListingMixin(ListingMixin):
     def gildings(self, **generator_kwargs):
         """Return a ListingGenerator for items the user has gilded.
 
+        May raise ``prawcore.Forbidden`` after issuing the request if the user
+        is not authorized to access the list. Note that because this function
+        returns a ``ListingGenerator`` the exception may not occur until
+        sometime after this function has returned.
+
         Additional keyword arguments are passed to the ``ListingGenerator``
         constructor.
 

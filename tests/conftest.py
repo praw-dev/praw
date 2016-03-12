@@ -20,7 +20,7 @@ os.environ['check_for_updates'] = 'False'
 
 
 placeholders = {x: env_default(x) for x in
-                'client_id client_secret user_agent'.split()}
+                'client_id client_secret password user_agent username'.split()}
 placeholders['basic_auth'] = b64_string(
     '{}:{}'.format(placeholders['client_id'], placeholders['client_secret']))
 
