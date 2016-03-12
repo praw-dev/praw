@@ -132,6 +132,11 @@ class RedditorListingMixin(ListingMixin):
     def downvoted(self, **generator_kwargs):
         """Return a ListingGenerator for items the user has downvoted.
 
+        May raise ``prawcore.Forbidden`` after issuing the request if the user
+        is not authorized to access the list. Note that because this function
+        returns a ``ListingGenerator`` the exception may not occur until
+        sometime after this function has returned.
+
         Additional keyword arguments are passed to the ``ListingGenerator``
         constructor.
 
@@ -158,6 +163,11 @@ class RedditorListingMixin(ListingMixin):
     def hidden(self, **generator_kwargs):
         """Return a ListingGenerator for items the user has hidden.
 
+        May raise ``prawcore.Forbidden`` after issuing the request if the user
+        is not authorized to access the list. Note that because this function
+        returns a ``ListingGenerator`` the exception may not occur until
+        sometime after this function has returned.
+
         Additional keyword arguments are passed to the ``ListingGenerator``
         constructor.
 
@@ -168,6 +178,11 @@ class RedditorListingMixin(ListingMixin):
     def saved(self, **generator_kwargs):
         """Return a ListingGenerator for items the user has saved.
 
+        May raise ``prawcore.Forbidden`` after issuing the request if the user
+        is not authorized to access the list. Note that because this function
+        returns a ``ListingGenerator`` the exception may not occur until
+        sometime after this function has returned.
+
         Additional keyword arguments are passed to the ``ListingGenerator``
         constructor.
 
@@ -177,6 +192,11 @@ class RedditorListingMixin(ListingMixin):
 
     def upvoted(self, **generator_kwargs):
         """Return a ListingGenerator for items the user has upvoted.
+
+        May raise ``prawcore.Forbidden`` after issuing the request if the user
+        is not authorized to access the list. Note that because this function
+        returns a ``ListingGenerator`` the exception may not occur until
+        sometime after this function has returned.
 
         Additional keyword arguments are passed to the ``ListingGenerator``
         constructor.
