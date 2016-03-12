@@ -15,8 +15,18 @@ from six.moves.urllib.parse import parse_qs, urljoin, urlparse, urlunparse
 
 from . import decorators, errors, models
 from .const import USER_AGENT_FORMAT
-from .internal import (_prepare_request, _raise_redirect_exceptions,
-                       _raise_response_exceptions, _to_reddit_list)
+
+def _to_reddit_list(arg):
+    Return an argument converted to a reddit-formatted list.
+
+    The returned format is a comma deliminated list. Each element is a string
+    representation of an object. Either given as a string or as an object that
+    is then converted to its string representation.
+    if (isinstance(arg, six.string_types) or not (
+            hasattr(arg, "__getitem__") or hasattr(arg, "__iter__"))):
+        return six.text_type(arg)
+    else:
+        return ','.join(six.text_type(a) for a in arg)
 
 
 class BaseReddit(object):
@@ -33,71 +43,6 @@ class BaseReddit(object):
                 self.http.proxies['http'] = self.config.http_proxy
             if self.config.https_proxy:
                 self.http.proxies['https'] = self.config.https_proxy
-
-    def _request(self, url, params=None, data=None, files=None, auth=None,
-                 timeout=None, raw_response=False, retry_on_error=True,
-                 method=None):
-
-        :param url: the url to grab content from.
-        :param params: a dictionary containing the GET data to put in the url
-        :param data: a dictionary containing the extra data to submit
-        :param files: a dictionary specifying the files to upload
-        :param auth: Add the HTTP authentication headers (see requests)
-        :param timeout: Specifies the maximum time that the actual HTTP request
-            can take.
-        :param raw_response: return the response object rather than the
-            response body
-        :param retry_on_error: if True retry the request, if it fails, for up
-            to 3 attempts
-        :returns: either the response body or the response object
-
-        def decode(match):
-            return six.unichr(html_entities.name2codepoint[match.group(1)])
-
-        def handle_redirect():
-            response = None
-            url = request.url
-            while url:  # Manually handle 302 redirects
-                request.url = url
-                response = self.http.send(request.prepare(),
-                                          proxies=self.http.proxies,
-                                          timeout=timeout,
-                                          allow_redirects=False,
-                                          verify=self.http.validate_certs)
-                if self.config.log_requests >= 2:
-                    msg = 'status: {0}\n'.format(response.status_code)
-                    sys.stderr.write(msg)
-                url = _raise_redirect_exceptions(response)
-                assert url != request.url
-            return response
-
-        timeout = self.config.timeout if timeout is None else timeout
-        request = _prepare_request(self, url, params, data, auth, files,
-                                   method)
-
-        remaining_attempts = 3 if retry_on_error else 1
-        attempt_oauth_refresh = bool(self.refresh_token)
-        while True:
-            try:
-                response = handle_redirect()
-                _raise_response_exceptions(response)
-                self.http.cookies.update(response.cookies)
-                if raw_response:
-                    return response
-                else:
-                    return re.sub('&([^;]+);', decode, response.text)
-            except errors.OAuthInvalidToken as error:
-                if not attempt_oauth_refresh:
-                    raise
-                attempt_oauth_refresh = False
-                self.refresh_access_information()
-                request = _prepare_request(self, url, params, data, auth,
-                                           files, method)
-            except errors.HTTPException as error:
-                remaining_attempts -= 1
-                if error._raw.status_code not in self.RETRY_CODES or \
-                        remaining_attempts == 0:
-                    raise
 
     def _json_reddit_objecter(self, json_data):
         try:

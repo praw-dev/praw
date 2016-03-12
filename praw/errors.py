@@ -81,10 +81,6 @@ class HTTPException(PRAWException):
         return self.message
 
 
-class Forbidden(HTTPException):
-    """Raised when the user does not have permission to the entity."""
-
-
 class NotFound(HTTPException):
     """Raised when the requested entity is not found."""
 

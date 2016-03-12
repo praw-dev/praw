@@ -66,13 +66,4 @@ Lazy objects and errors
 -----------------------
 
 The downside of using lazy objects is that any error will not happen when the
-lazy object is created, but instead when the API call is actually made::
-
-    >> private_subreddit = r.get_subreddit('lounge')
-    >> private_subreddit.has_fetched
-    False
-    >> private_subreddit.subscribers
-
-    Traceback (most recent call last):
-    ...
-    praw.errors.Forbidden: <Response [403]>
+lazy object is created, but instead when the API call is actually made.

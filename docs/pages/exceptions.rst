@@ -45,18 +45,6 @@ code. The meanings of some of these status codes are:
 Redirects. Are automatically handled in PRAW, but may result in a
 ``RedirectException`` if an unexpected redirect is encountered.
 
-403 (:class:`.Forbidden`)
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-This will occur if you try to access a restricted resource. For instance a
-private subreddit that the currently logged-in user doesn't have access to.
-
-.. code-block:: pycon
-
-    >>> import praw
-    >>> r = praw.Reddit('404 test by u/_Daimon_')
-    >>> r.get_subreddit('lounge', fetch=True)
-
 404 (:class:`.NotFound`)
 ^^^^^^^^^^^^^^^^^^^^^^^^
 

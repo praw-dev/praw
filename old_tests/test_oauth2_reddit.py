@@ -133,17 +133,6 @@ class OAuth2RedditTest(PRAWTest):
                          " on url {0}".format(oauth_exception.url),
                          str(oauth_exception))
 
-    def test_raise_redirect_exception(self):
-        apiurl = "http://api.reddit.com/"
-        oauthurl = "http://oauth.reddit.com/"
-
-        def raise_redirect_exception():
-            raise errors.RedirectException(apiurl, oauthurl)
-
-        self.assertRaises(errors.RedirectException, raise_redirect_exception)
-        redirect_exception = errors.RedirectException(apiurl, oauthurl)
-        self.assertEqual(redirect_exception.message, str(redirect_exception))
-
     @betamax()
     def test_scope_history(self):
         self.r.refresh_access_information(self.refresh_token['history'])

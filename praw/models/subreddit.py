@@ -2,12 +2,38 @@
 
 import logging
 
+import six
+
 from .mixins import MessageableMixin, SubredditListingMixin
 from ..const import API_PATHS
-from ..internal import _modify_relationship
 
 
 LOG = logging.getLogger(__name__)
+
+
+def _modify_relationship(relationship, unlink=False, is_sub=False):
+    """Return a function for relationship modification.
+
+    Used to support friending (user-to-user), as well as moderating,
+    contributor creating, and banning (user-to-subreddit).
+
+    """
+    # The API uses friend and unfriend to manage all of these relationships.
+    url_key = 'unfriend' if unlink else 'friend'
+
+    def do_relationship(thing, user, **kwargs):
+        data = {'name': six.text_type(user),
+                'type': relationship}
+        data.update(kwargs)
+        if is_sub:
+            data['r'] = six.text_type(thing)
+        else:
+            data['container'] = thing.fullname
+
+        session = thing.reddit_session
+        url = session.config[url_key]
+        return session.request_json(url, data=data)
+    return do_relationship
 
 
 class Subreddit(MessageableMixin, SubredditListingMixin):
