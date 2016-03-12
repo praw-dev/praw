@@ -73,9 +73,11 @@ class Config(object):
         self.reddit_url = obj['reddit_url']
         self.redirect_uri = fetch_or_none('redirect_uri')
         self.refresh_token = fetch_or_none('refresh_token')
+        self.password = fetch_or_none('password')
         self.store_json_result = config_boolean(obj['store_json_result'])
         self.timeout = float(obj['timeout'])
         self.user_agent = fetch_or_none('user_agent')
+        self.username = fetch_or_none('username')
         self.validate_certs = config_boolean(obj['validate_certificates'])
 
     @property

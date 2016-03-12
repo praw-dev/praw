@@ -2,7 +2,8 @@
 import os
 
 from update_checker import update_check
-from prawcore import Authenticator, ReadOnlyAuthorizer, Requestor, session
+from prawcore import (Authenticator, ReadOnlyAuthorizer, Requestor,
+                      ScriptAuthorizer, session)
 
 from .errors import RequiredConfig
 from .config import Config
@@ -14,6 +15,27 @@ class Reddit(object):
     """Provide convenient access to reddit's API."""
 
     update_checked = False
+
+    @property
+    def read_only(self):
+        """Return True when using the ReadOnlyAuthorizer."""
+        return self._core == self._read_only_core
+
+    @read_only.setter
+    def read_only(self, value):
+        """Set or unset the use of the ReadOnlyAuthorizer.
+
+        Raise ``AttributeError`` when attempting to unset ``read_only`` and
+        only the ReadOnlyAuthorizer is available.
+
+        """
+        if value:
+            self._core = self._read_only_core
+        elif self._authorized_core is None:
+            raise AttributeError('read_only cannot be set as only the '
+                                 'ReadOnlyAuthorizer is available.')
+        else:
+            self._core = self._authorized_core
 
     def __enter__(self):
         """Handle the context manager open."""
@@ -47,6 +69,7 @@ class Reddit(object):
         * user_agent
 
         """
+        self._core = self._authorized_core = self._read_only_core = None
         self.config = Config(site_name or os.getenv('PRAW_SITE') or 'reddit',
                              **config_settings)
 
@@ -69,8 +92,15 @@ class Reddit(object):
                               self.config.oauth_url, self.config.reddit_url)
         authenticator = Authenticator(requestor, self.config.client_id,
                                       self.config.client_secret)
-        authorizer = ReadOnlyAuthorizer(authenticator)
-        self._core = session(authorizer)
+        read_only_authorizer = ReadOnlyAuthorizer(authenticator)
+        self._read_only_core = session(read_only_authorizer)
+
+        if self.config.username and self.config.password:
+            script_authorizer = ScriptAuthorizer(
+                authenticator, self.config.username, self.config.password)
+            self._core = self._authorized_core = session(script_authorizer)
+        else:
+            self._core = self._read_only_core
 
     def random_subreddit(self):
         """Return an instance of :class:`~.Subreddit` for a random subreddit.
