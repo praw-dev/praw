@@ -122,11 +122,12 @@ class RedditorListingMixin(ListingMixin):
         return self._comments
 
     @property
-    def submitted(self):
+    def submissions(self):
         """An attribute representing the submissions made by the Redditor."""
-        if self.__dict__.get('_submitted') is None:
-            self._submitted = SubListing(self._reddit, self._path, 'submitted')
-        return self._submitted
+        if self.__dict__.get('_submissions') is None:
+            self._submissions = SubListing(self._reddit, self._path,
+                                           'submitted')
+        return self._submissions
 
     def downvoted(self, **generator_kwargs):
         """Return a ListingGenerator for items the user has downvoted.
