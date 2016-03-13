@@ -76,26 +76,6 @@ class RedditModel(object):
         """
         return self.__reduce__()
 
-    def __setattr__(self, name, value):
-        """Set the `name` attribute to `value."""
-        from .redditor import Redditor
-        from .subreddit import Subreddit
-
-        if value and name == 'subreddit':
-            subreddit = Subreddit(self._reddit, value)
-            object.__setattr__(self, name, subreddit)
-            return
-        elif value and name in self.REDDITOR_KEYS:
-            if isinstance(value, bool):
-                pass
-            elif isinstance(value, dict):
-                value = Redditor(self._reddit, 'TODO').update(value['data'])
-            elif not value or value == '[deleted]':
-                value = None
-            else:
-                value = Redditor(self._reddit, value)
-        object.__setattr__(self, name, value)
-
     def __str__(self):
         """Return a string representation of the instance."""
         retval = self.__unicode__()
@@ -105,12 +85,13 @@ class RedditModel(object):
 
     def _fetch(self):
         data = self._reddit.request(self._info_path)
+        self._populate(data)
+
+    def _populate(self, data):
         if self._reddit.config.store_response_data:
             self._response_data = data
-
         for name, value in iteritems(self._transform_data(data)):
             setattr(self, name, value)
-
         self._fetched = True
 
     def _transform_data(self, data):  # pylint: disable=no-self-use

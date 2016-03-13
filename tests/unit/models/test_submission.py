@@ -21,4 +21,4 @@ class TestSubmission(UnitTest):
                 'http://reddit.com/comments/_/2gmzqe']
         for url in urls:
             with pytest.raises(AttributeError):
-                print(Submission.id_from_url(url))
+                Submission.id_from_url(url)

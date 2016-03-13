@@ -40,18 +40,18 @@ class Config(object):
 
         def fetch_or_none(key):
             if key in settings:  # Passed in values have the highest priority
-                return obj[key]
-            return os.getenv(key) or obj.get(key) or None
+                return raw[key]
+            return os.getenv(key) or raw.get(key) or None
 
         if Config.CONFIG is None:
             self._load_config()
 
-        obj = dict(Config.CONFIG.items(site_name), **settings)
-        self.by_kind = {obj['comment_kind']:    models.Comment,
-                        obj['message_kind']:    models.Message,
-                        obj['redditor_kind']:   models.Redditor,
-                        obj['submission_kind']: models.Submission,
-                        obj['subreddit_kind']:  models.Subreddit,
+        raw = dict(Config.CONFIG.items(site_name), **settings)
+        self.by_kind = {raw['comment_kind']:    models.Comment,
+                        raw['message_kind']:    models.Message,
+                        raw['redditor_kind']:   models.Redditor,
+                        raw['submission_kind']: models.Submission,
+                        raw['subreddit_kind']:  models.Subreddit,
                         'LabeledMulti':         models.Multireddit,
                         'modaction':            models.ModAction,
                         'more':                 models.MoreComments,
@@ -61,24 +61,25 @@ class Config(object):
         self.by_object = dict((value, key) for (key, value) in
                               iteritems(self.by_kind))
 
-        self._short_url = obj.get('short_url') or None
+        self._raw = raw
+        self._short_url = raw.get('short_url') or None
         self.check_for_updates = config_boolean(
             fetch_or_none('check_for_updates'))
         self.client_id = fetch_or_none('client_id')
         self.client_secret = fetch_or_none('client_secret')
         self.http_proxy = fetch_or_none('http_proxy')
         self.https_proxy = fetch_or_none('https_proxy')
-        self.log_requests = int(obj['log_requests'])
-        self.oauth_url = obj['oauth_url']
-        self.reddit_url = obj['reddit_url']
+        self.log_requests = int(raw['log_requests'])
+        self.oauth_url = raw['oauth_url']
+        self.reddit_url = raw['reddit_url']
         self.redirect_uri = fetch_or_none('redirect_uri')
         self.refresh_token = fetch_or_none('refresh_token')
         self.password = fetch_or_none('password')
-        self.store_response_data = config_boolean(obj['store_response_data'])
-        self.timeout = float(obj['timeout'])
+        self.store_response_data = config_boolean(raw['store_response_data'])
+        self.timeout = float(raw['timeout'])
         self.user_agent = fetch_or_none('user_agent')
         self.username = fetch_or_none('username')
-        self.validate_certs = config_boolean(obj['validate_certificates'])
+        self.validate_certs = config_boolean(raw['validate_certificates'])
 
     @property
     def short_url(self):

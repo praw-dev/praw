@@ -1,6 +1,7 @@
 """Provide the PRAW models."""
 
 from .comment import Comment  # NOQA
+from .comment_forest import CommentForest  # NOQA
 from .front import Front  # NOQA
 from .praw_list import UserList, WikiPageList  # NOQA
 from .message import Message  # NOQA

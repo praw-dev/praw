@@ -13,6 +13,16 @@ class Redditor(GildableMixin, MessageableMixin, RedditorListingMixin):
     _methods = (('get_multireddit', 'MultiMix'),
                 ('get_multireddits', 'MultiMix'))
 
+    @classmethod
+    def from_data(cls, reddit, data):
+        """Return an instance of Redditor, bool, or None from ``data``."""
+        if isinstance(data, bool):
+            return data
+        elif data in [None, '', '[deleted]']:
+            return None
+        else:
+            return cls(reddit, data)
+
     def __init__(self, reddit, name):
         """Initialize a Redditor instance.
 

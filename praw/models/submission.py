@@ -1,16 +1,15 @@
 """Provide the Submission class."""
-
-from heapq import heappop, heappush
-
 from six import text_type
 from six.moves.urllib.parse import (urljoin,  # pylint: disable=import-error
                                     urlparse)
 
 from ..const import API_PATH
-from .morecomments import MoreComments
+from .comment_forest import CommentForest
 from .mixins import (EditableMixin, GildableMixin, HidableMixin,
                      ModeratableMixin, ReportableMixin, SavableMixin,
                      VotableMixin)
+from .redditor import Redditor
+from .subreddit import Subreddit
 
 
 class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
@@ -18,24 +17,6 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
     """A class for submissions to reddit."""
 
     _methods = (('select_flair', 'AR'),)
-
-    @staticmethod
-    def _extract_more_comments(tree):
-        """Return a list of MoreComments objects removed from tree."""
-        more_comments = []
-        queue = [(None, x) for x in tree]
-        while len(queue) > 0:
-            parent, comm = queue.pop(0)
-            if isinstance(comm, MoreComments):
-                heappush(more_comments, comm)
-                if parent:
-                    parent.replies.remove(comm)
-                else:
-                    tree.remove(comm)
-            else:
-                for item in comm.replies:
-                    queue.append((comm, item))
-        return more_comments
 
     @staticmethod
     def id_from_url(url):
@@ -81,10 +62,6 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
                                          .format(id=submission_id))
         if 'id' not in self.__dict__:
             self.id = submission_id  # pylint: disable=invalid-name
-        self._comments_by_id = {}
-        self._comments = None
-        self._orphaned = {}
-        self._replaced_more = False
 
     def __unicode__(self):
         """Return a string representation of the Subreddit.
@@ -94,57 +71,25 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
         title = self.title.replace('\r\n', ' ')
         return text_type('{0} :: {1}').format(self.score, title)
 
-    def _insert_comment(self, comment):
-        if comment.name in self._comments_by_id:  # Skip existing comments
-            return
+    def _transform_data(self, original_data):
+        assert len(original_data) == 2
+        assert len(original_data[0]['data']['children']) == 1
+        data = original_data[0]['data']['children'][0]['data']
 
-        comment._update_submission(self)
-        if comment.name in self._orphaned:  # Reunite children with parent
-            comment.replies.extend(self._orphaned[comment.name])
-            del self._orphaned[comment.name]
+        data['author'] = Redditor.from_data(self._reddit, data['author'])
+        data['comments'] = CommentForest(
+            self, original_data[1]['data']['children'])
+        data['subreddit'] = Subreddit(self._reddit, data['subreddit'])
 
-        if comment.is_root:
-            self._comments.append(comment)
-        elif comment.parent_id in self._comments_by_id:
-            self._comments_by_id[comment.parent_id].replies.append(comment)
-        else:  # Orphan
-            if comment.parent_id in self._orphaned:
-                self._orphaned[comment.parent_id].append(comment)
-            else:
-                self._orphaned[comment.parent_id] = [comment]
+        return data
 
-    def _update_comments(self, comments):
-        self._comments = comments
-        for comment in self._comments:
-            comment._update_submission(self)
-
-    def add_comment(self, text):
+    def comment(self, text):
         """Comment on the submission using the specified text.
 
         :returns: A Comment object for the newly created comment.
 
         """
-        response = self.reddit_session._add_comment(self.fullname, text)
-        return response
-
-    @property
-    def comments(self):
-        """Return a CommentForest, with top-level comments as tree roots.
-
-        May contain instances of MoreComment objects. To easily replace these
-        objects with Comment objects, use the replace_more_comments method then
-        fetch this attribute. Use comment replies to walk down the tree. To get
-        an unnested, flat list of comments from this attribute use
-        helpers.flatten_tree.
-
-        """
-        return self._comments
-
-    @comments.setter
-    def comments(self, new_comments):
-        """Update the list of comments with the provided nested list."""
-        self._update_comments(new_comments)
-        self._orphaned = {}
+        return self._reddit._add_comment(self.fullname, text)
 
     def get_duplicates(self, *args, **kwargs):
         """Return a get_content generator for the submission's duplicates.
@@ -156,10 +101,9 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
         cannot be altered.
 
         """
-        url = self.reddit_session.config['duplicates'].format(
+        url = self._reddit.config['duplicates'].format(
             submissionid=self.id)
-        return self.reddit_session.get_content(url, *args, object_filter=1,
-                                               **kwargs)
+        return self._reddit.get_content(url, *args, object_filter=1, **kwargs)
 
     def get_flair_choices(self, *args, **kwargs):
         """Return available link flair choices and current flair.
@@ -183,61 +127,9 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
         :returns: The json response from the server.
 
         """
-        url = self.reddit_session.config['unmarknsfw' if unmark_nsfw else
-                                         'marknsfw']
+        url = self._reddit.config['unmarknsfw' if unmark_nsfw else 'marknsfw']
         data = {'id': self.fullname}
-        return self.reddit_session.request_json(url, data=data)
-
-    def replace_more_comments(self, limit=32, threshold=1):
-        """Update the comment tree by replacing instances of MoreComments.
-
-        :param limit: The maximum number of MoreComments objects to
-            replace. Each replacement requires 1 API request. Set to None to
-            have no limit, or to 0 to make no extra requests. Default: 32
-        :param threshold: The minimum number of children comments a
-            MoreComments object must have in order to be replaced. Default: 1
-        :returns: A list of MoreComments objects that were not replaced.
-
-        Note that after making this call, the `comments` attribute of the
-        submission will no longer contain any MoreComments objects. Items that
-        weren't replaced are still removed from the tree, and will be included
-        in the returned list.
-
-        """
-        if self._replaced_more:
-            return []
-
-        remaining = limit
-        more_comments = self._extract_more_comments(self.comments)
-        skipped = []
-
-        # Fetch largest more_comments until reaching the limit or the threshold
-        while more_comments:
-            item = heappop(more_comments)
-            if remaining == 0:  # We're not going to replace any more
-                heappush(more_comments, item)  # It wasn't replaced
-                break
-            elif len(item.children) == 0 or 0 < item.count < threshold:
-                heappush(skipped, item)  # It wasn't replaced
-                continue
-
-            # Fetch new comments and decrease remaining if a request was made
-            new_comments = item.comments(update=False)
-            if new_comments is not None and remaining is not None:
-                remaining -= 1
-            elif new_comments is None:
-                continue
-
-            # Re-add new MoreComment objects to the heap of more_comments
-            for more in self._extract_more_comments(new_comments):
-                more._update_submission(self)
-                heappush(more_comments, more)
-            # Insert the new comments into the tree
-            for comment in new_comments:
-                self._insert_comment(comment)
-
-        self._replaced_more = True
-        return more_comments + skipped
+        return self._reddit.request_json(url, data=data)
 
     def set_flair(self, *args, **kwargs):
         """Set flair for this submission.
@@ -266,9 +158,9 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
         :returns: The json response from the server.
 
         """
-        url = self.reddit_session.config['contest_mode']
+        url = self._reddit.config['contest_mode']
         data = {'id': self.fullname, 'state': state}
-        return self.reddit_session.request_json(url, data=data)
+        return self._reddit.request_json(url, data=data)
 
     def set_suggested_sort(self, sort='blank'):
         """Set 'Suggested Sort' for the comments of the submission.
@@ -279,9 +171,9 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
         :returns: The json response from the server.
 
         """
-        url = self.reddit_session.config['suggested_sort']
+        url = self._reddit.config['suggested_sort']
         data = {'id': self.fullname, 'sort': sort}
-        return self.reddit_session.request_json(url, data=data)
+        return self._reddit.request_json(url, data=data)
 
     @property
     def short_link(self):
@@ -291,7 +183,7 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
         https://www.reddit.com/r/announcements/comments/eorhm/reddit_30_less_typing/.
 
         """
-        return urljoin(self.reddit_session.config.short_url, self.id)
+        return urljoin(self._reddit.config.short_url, self.id)
 
     def sticky(self, bottom=True):
         """Sticky a post in its subreddit.
@@ -305,11 +197,11 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
         :returns: The json response from the server
 
         """
-        url = self.reddit_session.config['sticky_submission']
+        url = self._reddit.config['sticky_submission']
         data = {'id': self.fullname, 'state': True}
         if not bottom:
             data['num'] = 1
-        return self.reddit_session.request_json(url, data=data)
+        return self._reddit.request_json(url, data=data)
 
     def unmark_as_nsfw(self):
         """Mark as Safe For Work.
@@ -343,6 +235,6 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
         :returns: The json response from the server
 
         """
-        url = self.reddit_session.config['sticky_submission']
+        url = self._reddit.config['sticky_submission']
         data = {'id': self.fullname, 'state': False}
-        return self.reddit_session.request_json(url, data=data)
+        return self._reddit.request_json(url, data=data)

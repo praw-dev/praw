@@ -2,15 +2,19 @@
 
 from six import text_type
 
-from .redditmodel import RedditModel
+from .prawmodel import PRAWModel
 from .redditor import Redditor
 from .wikipage import WikiPage
 
 
-class PRAWList(RedditModel):
-    """An abstract class to coerce a list into RedditContentObjects."""
+class PRAWList(PRAWModel):
+    """An abstract class to coerce a list into a PRAWModel."""
 
     CHILD_ATTRIBUTE = None
+
+    @staticmethod
+    def _convert(reddit, item):
+        raise NotImplementedError('PRAWList must be extended.')
 
     def __init__(self, reddit):
         """Initialize a PRAWList instance.
