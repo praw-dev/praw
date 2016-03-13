@@ -7,13 +7,14 @@ from ..const import API_PATH
 from .comment_forest import CommentForest
 from .mixins import (EditableMixin, GildableMixin, HidableMixin,
                      ModeratableMixin, ReportableMixin, SavableMixin,
-                     VotableMixin)
+                     SubmissionListingMixin, VotableMixin)
 from .redditor import Redditor
 from .subreddit import Subreddit
 
 
 class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
-                 ReportableMixin, SavableMixin, VotableMixin):
+                 ReportableMixin, SavableMixin, VotableMixin,
+                 SubmissionListingMixin,):
     """A class for submissions to reddit."""
 
     _methods = (('select_flair', 'AR'),)
@@ -90,20 +91,6 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
 
         """
         return self._reddit._add_comment(self.fullname, text)
-
-    def get_duplicates(self, *args, **kwargs):
-        """Return a get_content generator for the submission's duplicates.
-
-        :returns: get_content generator iterating over Submission objects.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` and `object_filter` parameters
-        cannot be altered.
-
-        """
-        url = self._reddit.config['duplicates'].format(
-            submissionid=self.id)
-        return self._reddit.get_content(url, *args, object_filter=1, **kwargs)
 
     def get_flair_choices(self, *args, **kwargs):
         """Return available link flair choices and current flair.

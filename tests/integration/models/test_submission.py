@@ -11,3 +11,9 @@ class TestSubmission(IntegrationTest):
             assert len(submission.comments) == 1
             assert isinstance(submission.comments[0], Comment)
             assert isinstance(submission.comments[0].replies[0], Comment)
+
+    def test_duplicates(self):
+        with self.recorder.use_cassette(
+                'TestSubmission.test_duplicates'):
+            submission = Submission(self.reddit, 'avj2v')
+            assert len(list(submission.duplicates())) > 0

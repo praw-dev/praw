@@ -3,6 +3,7 @@ from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from ..listinggenerator import ListingGenerator
 from ..prawmodel import PRAWModel
+from ...const import API_PATH
 
 
 def _prepare(praw_object, params, target):
@@ -204,6 +205,22 @@ class RedditorListingMixin(ListingMixin):
         """
         return ListingGenerator(self._reddit, urljoin(self._path, 'upvoted'),
                                 **generator_kwargs)
+
+
+class SubmissionListingMixin(ListingMixin):
+    """Adds additional methods pertaining to Submission instances."""
+
+    def duplicates(self, **generator_kwargs):
+        """Return a ListingGenerator for the submission's duplicates.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        url = API_PATH['duplicates'].format(submission_id=self.id)
+        generator = ListingGenerator(self._reddit, url, **generator_kwargs)
+        generator.extract_list_index = 1
+        return generator
 
 
 class SubredditListingMixin(ListingMixin):
