@@ -34,7 +34,7 @@ class Config(object):
         cls.CONFIG = config
 
     def __init__(self, site_name, **settings):
-        """Initialize PRAW's configuration."""
+        """Initialize a Config instance."""
         def config_boolean(item):
             return item.lower() in {'1', 'yes', 'true', 'on'}
 
@@ -74,7 +74,7 @@ class Config(object):
         self.redirect_uri = fetch_or_none('redirect_uri')
         self.refresh_token = fetch_or_none('refresh_token')
         self.password = fetch_or_none('password')
-        self.store_json_result = config_boolean(obj['store_json_result'])
+        self.store_response_data = config_boolean(obj['store_response_data'])
         self.timeout = float(obj['timeout'])
         self.user_agent = fetch_or_none('user_agent')
         self.username = fetch_or_none('username')

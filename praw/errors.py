@@ -44,7 +44,7 @@ class RequiredConfig(PRAWException):
     """Indicates that a required configuration setting is missing."""
 
     def __init__(self, setting):
-        """Initialize an instance of the RequiredConfig class.
+        """Initialize a RequiredConfig instance.
 
         :param field: The setting that is required.
 

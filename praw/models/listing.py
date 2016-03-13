@@ -12,16 +12,20 @@ class PRAWListing(RedditModel):
 
     CHILD_ATTRIBUTE = None
 
-    def __init__(self, reddit_session, json_dict=None, fetch=False):
-        """Construct an instance of the PRAWListing object."""
-        super(PRAWListing, self).__init__(reddit_session, json_dict, fetch)
+    def __init__(self, reddit):
+        """Initialize a PRAWListing instance.
 
-        if not self.CHILD_ATTRIBUTE:
+        :param reddit: An instance of :class:`~.Reddit`.
+
+        """
+        super(PRAWListing, self).__init__(reddit)
+
+        if self.CHILD_ATTRIBUTE is None:
             raise NotImplementedError('PRAWListing must be extended.')
 
         child_list = getattr(self, self.CHILD_ATTRIBUTE)
         for index, item in enumerate(child_list):
-            child_list[index] = self._convert(reddit_session, item)
+            child_list[index] = self._convert(reddit, item)
 
     def __contains__(self, item):
         """Test if item exists in the listing."""
@@ -58,11 +62,9 @@ class UserList(PRAWListing):
     CHILD_ATTRIBUTE = 'children'
 
     @staticmethod
-    def _convert(reddit_session, data):
+    def _convert(reddit, data):
         """Return a Redditor object from the data."""
-        retval = Redditor(reddit_session, data['name'], fetch=False)
-        retval.id = data['id'].split('_')[1]
-        return retval
+        return Redditor(reddit, data['name'])
 
 
 class WikiPageListing(PRAWListing):
@@ -71,7 +73,7 @@ class WikiPageListing(PRAWListing):
     CHILD_ATTRIBUTE = '_tmp'
 
     @staticmethod
-    def _convert(reddit_session, data):
+    def _convert(reddit, data):
         """Return a WikiPage object from the data."""
-        subreddit = reddit_session._request_url.rsplit('/', 4)[1]
-        return WikiPage(reddit_session, subreddit, data, fetch=False)
+        subreddit = reddit._request_url.rsplit('/', 4)[1]
+        return WikiPage(reddit, subreddit, data, fetch=False)

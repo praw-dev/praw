@@ -64,8 +64,8 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
             raise AttributeError('Invalid URL: {}'.format(url))
         return submission_id
 
-    def __init__(self, reddit, id_or_url=None, json_dict=None, fetch=False):
-        """Construct an instance of the Subreddit object.
+    def __init__(self, reddit, id_or_url=None):
+        """Initialize a Submission instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param id_or_url: Either a reddit base64 submission ID, e.g.,
@@ -77,16 +77,14 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
         else:
             submission_id = self.id_from_url(id_or_url)
 
-        info_path = API_PATH['submission'].format(id=submission_id)
-        super(Submission, self).__init__(reddit, json_dict, fetch, info_path)
+        super(Submission, self).__init__(reddit, API_PATH['submission']
+                                         .format(id=submission_id))
         if 'id' not in self.__dict__:
-            self.id = submission_id
-        """
+            self.id = submission_id  # pylint: disable=invalid-name
         self._comments_by_id = {}
         self._comments = None
         self._orphaned = {}
         self._replaced_more = False
-        """
 
     def __unicode__(self):
         """Return a string representation of the Subreddit.
@@ -131,7 +129,7 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
 
     @property
     def comments(self):
-        """Return forest of comments, with top-level comments as tree roots.
+        """Return a CommentForest, with top-level comments as tree roots.
 
         May contain instances of MoreComment objects. To easily replace these
         objects with Comment objects, use the replace_more_comments method then
@@ -140,9 +138,6 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
         helpers.flatten_tree.
 
         """
-        if self._comments is None:
-            other = Submission.from_url(self.reddit_session, self._api_path)
-            self.comments = other.comments
         return self._comments
 
     @comments.setter

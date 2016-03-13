@@ -51,16 +51,15 @@ class Multireddit(RedditModel, SubredditListingMixin):
         """Return a string representation of the Multireddit."""
         return self.name
 
-    def _post_populate(self, fetch):
-        if fetch:
-            # Subreddits are returned as dictionaries in the form
-            # {'name': 'subredditname'}. Convert them to Subreddit objects.
-            self.subreddits = [Subreddit(self._reddit, item['name'])
-                               for item in self.subreddits]
+    def _transform_data(self):
+        # Subreddits are returned as dictionaries in the form
+        # {'name': 'subredditname'}. Convert them to Subreddit objects.
+        self.subreddits = [Subreddit(self._reddit, item['name'])
+                           for item in self.subreddits]
 
-            # paths are of the form "/user/{USERNAME}/m/{MULTINAME}"
-            author = self.path.split('/')[2]
-            self.author = Redditor(self._reddit, author)
+        # paths are of the form "/user/{USERNAME}/m/{MULTINAME}"
+        author = self.path.split('/')[2]
+        self.author = Redditor(self._reddit, author)
 
     def add_subreddit(self, subreddit, _delete=False, *args, **kwargs):
         """Add a subreddit to the multireddit.

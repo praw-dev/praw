@@ -10,25 +10,34 @@ class RedditModel(object):
     REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor',
                      'revision_by')
 
-    @classmethod
-    def from_api_response(cls, reddit, json_dict):
-        """Return an instance of the appropriate class from the json_dict."""
-        return cls(reddit, json_dict=json_dict)
+    @property
+    def fullname(self):
+        """Return the object's fullname.
 
-    def __init__(self, reddit, json_dict=None, fetch=True, info_path=None,
-                 underscore_names=None, uniq=None):
-        """Create a new object from the dict of attributes returned by the API.
+        A fullname is an object's kind mapping like `t3` followed by an
+        underscore and the object's base36 ID, e.g., `t1_c5s96e0`.
+
+        """
+        return '{}_{}'.format(self._reddit.config.by_object[self.__class__],
+                              self.id)  # pylint: disable=invalid-name
+
+    def __init__(self, reddit, info_path=None):
+        """Initialize a RedditModel instance.
+
+        :param reddit: An instance of :class:`~.Reddit`.
+        :param info_path: The path used to fetch the object. This path is
+            accessed the first time an previously unknown attribute is
+            accessed.
 
         The fetch parameter specifies whether to retrieve the object's
         information from the API (only matters when it isn't provided using
-        json_dict).
+        json_data).
 
         """
+        self._fetched = False
         self._info_path = info_path or API_PATH['info']
         self._reddit = reddit
-        self._underscore_names = underscore_names
-        self._uniq = uniq
-        self._has_fetched = self._populate(json_dict, fetch)
+        self._response_data = None
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
@@ -41,8 +50,8 @@ class RedditModel(object):
 
     def __getattr__(self, attr):
         """Return the value of the `attr` attribute."""
-        if attr != '__setstate__' and not self._has_fetched:
-            self._has_fetched = self._populate(None, True)
+        if attr != '__setstate__' and not self._fetched:
+            self._fetch()
             return getattr(self, attr)
         msg = '\'{0}\' has no attribute \'{1}\''.format(type(self), attr)
         raise AttributeError(msg)
@@ -73,18 +82,18 @@ class RedditModel(object):
         from .subreddit import Subreddit
 
         if value and name == 'subreddit':
-            subreddit = Subreddit(self._reddit, value, fetch=False)
+            subreddit = Subreddit(self._reddit, value)
             object.__setattr__(self, name, subreddit)
             return
         elif value and name in self.REDDITOR_KEYS:
             if isinstance(value, bool):
                 pass
             elif isinstance(value, dict):
-                value = Redditor(self._reddit, json_dict=value['data'])
+                value = Redditor(self._reddit, 'TODO').update(value['data'])
             elif not value or value == '[deleted]':
                 value = None
             else:
-                value = Redditor(self._reddit, value, fetch=False)
+                value = Redditor(self._reddit, value)
         object.__setattr__(self, name, value)
 
     def __str__(self):
@@ -94,43 +103,15 @@ class RedditModel(object):
             retval = retval.encode('utf-8')
         return retval
 
-    def _get_json_dict(self):
-        params = {'uniq': self._uniq} if self._uniq else {}
-        response = self._reddit.request(self._info_path, params=params)
-        return response['data']
+    def _fetch(self):
+        data = self._reddit.request(self._info_path)
+        if self._reddit.config.store_response_data:
+            self._response_data = data
 
-    def _populate(self, json_dict, fetch):
-        if json_dict is None:
-            json_dict = self._get_json_dict() if fetch else {}
-
-        if self._reddit.config.store_json_result is True:
-            self.json_dict = json_dict
-        else:
-            self.json_dict = None
-
-        # Wikipagelisting hack. Is this still needed?
-        if isinstance(json_dict, list):
-            json_dict = {'_tmp': json_dict}
-
-        for name, value in iteritems(json_dict):
-            if self._underscore_names and name in self._underscore_names:
-                name = '_' + name
+        for name, value in iteritems(self._transform_data(data)):
             setattr(self, name, value)
 
-        self._post_populate(fetch)
-        return bool(json_dict) or fetch
+        self._fetched = True
 
-    def _post_populate(self, fetch):
-        """Called after populating the attributes of the instance."""
-
-    @property
-    def fullname(self):
-        """Return the object's fullname.
-
-        A fullname is an object's kind mapping like `t3` followed by an
-        underscore and the object's base36 id, e.g., `t1_c5s96e0`.
-
-        """
-        object_id = self.id  # pylint: disable=invalid-name
-        by_object = self._reddit.config.by_object
-        return '{0}_{1}'.format(by_object[self.__class__], object_id)
+    def _transform_data(self, data):  # pylint: disable=no-self-use
+        return data['data']

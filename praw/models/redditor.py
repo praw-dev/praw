@@ -13,19 +13,18 @@ class Redditor(GildableMixin, MessageableMixin, RedditorListingMixin):
     _methods = (('get_multireddit', 'MultiMix'),
                 ('get_multireddits', 'MultiMix'))
 
-    def __init__(self, reddit, name=None, json_dict=None, fetch=False,
-                 **kwargs):
-        """Construct an instance of the Redditor object."""
-        if not name:
-            name = json_dict['name']
+    def __init__(self, reddit, name):
+        """Initialize a Redditor instance.
 
-        info_path = API_PATH['user_about'].format(user=name)
-        super(Redditor, self).__init__(reddit, json_dict, fetch, info_path,
-                                       **kwargs)
-        if 'name' not in self.__dict__:
-            self.name = name
-        self._path = API_PATH['user'].format(user=self.name)
+        :param reddit: An instance of :class:`~.Reddit`.
+        :param name: The name of the redditor.
+
+        """
+        super(Redditor, self).__init__(reddit, API_PATH['user_about']
+                                       .format(user=name))
         self._listing_use_sort = True
+        self._path = API_PATH['user'].format(user=name)
+        self.name = name
 
     def __repr__(self):
         """Return a code representation of the Redditor."""

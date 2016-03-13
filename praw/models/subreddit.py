@@ -11,7 +11,7 @@ from ..const import API_PATH
 LOG = logging.getLogger(__name__)
 
 
-def _modify_relationship(relationship, unlink=False, is_sub=False):
+def _modify_relationship(relationship, unlink=False):
     """Return a function for relationship modification.
 
     Used to support friending (user-to-user), as well as moderating,
@@ -23,13 +23,9 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
 
     def do_relationship(thing, user, **kwargs):
         data = {'name': six.text_type(user),
+                'r': six.text_type(thing),
                 'type': relationship}
         data.update(kwargs)
-        if is_sub:
-            data['r'] = six.text_type(thing)
-        else:
-            data['container'] = thing.fullname
-
         session = thing.reddit_session
         url = session.config[url_key]
         return session.request_json(url, data=data)
@@ -85,54 +81,38 @@ class Subreddit(MessageableMixin, SubredditListingMixin):
                 ('upload_image', 'MCMix'))
 
     # Subreddit banned
-    add_ban = _modify_relationship('banned', is_sub=True)
-    remove_ban = _modify_relationship('banned', unlink=True, is_sub=True)
+    add_ban = _modify_relationship('banned')
+    remove_ban = _modify_relationship('banned', unlink=True)
 
     # Subreddit contributors
-    add_contributor = _modify_relationship('contributor', is_sub=True)
-    remove_contributor = _modify_relationship('contributor', unlink=True,
-                                              is_sub=True)
+    add_contributor = _modify_relationship('contributor')
+    remove_contributor = _modify_relationship('contributor', unlink=True)
     # Subreddit moderators
-    add_moderator = _modify_relationship('moderator', is_sub=True)
-    remove_moderator = _modify_relationship('moderator', unlink=True,
-                                            is_sub=True)
+    add_moderator = _modify_relationship('moderator')
+    remove_moderator = _modify_relationship('moderator', unlink=True)
     # Subreddit muted
-    add_mute = _modify_relationship('muted', is_sub=True)
-    remove_mute = _modify_relationship('muted', is_sub=True, unlink=True)
+    add_mute = _modify_relationship('muted')
+    remove_mute = _modify_relationship('muted', unlink=True)
 
     # Subreddit wiki banned
-    add_wiki_ban = _modify_relationship('wikibanned', is_sub=True)
-    remove_wiki_ban = _modify_relationship('wikibanned', unlink=True,
-                                           is_sub=True)
+    add_wiki_ban = _modify_relationship('wikibanned')
+    remove_wiki_ban = _modify_relationship('wikibanned', unlink=True)
     # Subreddit wiki contributors
-    add_wiki_contributor = _modify_relationship('wikicontributor', is_sub=True)
+    add_wiki_contributor = _modify_relationship('wikicontributor')
     remove_wiki_contributor = _modify_relationship('wikicontributor',
-                                                   unlink=True, is_sub=True)
+                                                   unlink=True)
 
-    def __init__(self, reddit, name=None, json_dict=None, fetch=False,
-                 **kwargs):
-        """Construct an instance of the Subreddit object.
+    def __init__(self, reddit, name):
+        """Initialize a Subreddit instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
-        :param name: The name of the Subreddit.
+        :param name: The name of the subreddit.
 
         """
-        # Special case for when my_subreddits is called as no name is returned
-        # so we have to extract the name from the URL. The URLs are returned
-        # as: /r/reddit_name/
-        if not name:
-            name = json_dict['url'].split('/')[2]
-
-        if fetch and ('+' in name or '-' in name):
-            fetch = False
-            LOG.warning('fetch=True has no effect on multireddits')
-
-        info_path = API_PATH['subreddit_about'].format(subreddit=name)
-        super(Subreddit, self).__init__(reddit, json_dict, fetch, info_path,
-                                        **kwargs)
-        if 'display_name' not in self.__dict__:
-            self.display_name = name
-        self._path = API_PATH['subreddit'].format(subreddit=self.display_name)
+        super(Subreddit, self).__init__(reddit, API_PATH['subreddit_about']
+                                        .format(subreddit=name))
+        self._path = API_PATH['subreddit'].format(subreddit=name)
+        self.display_name = name
 
     def __repr__(self):
         """Return a code representation of the Subreddit."""

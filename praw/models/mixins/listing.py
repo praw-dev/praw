@@ -98,7 +98,7 @@ class SubListing(BaseListingMixin):
     """Helper class for generating SubListing objects."""
 
     def __init__(self, reddit, base_path, subpath):
-        """Initialize an instance of the SubListing class.
+        """Initialize a SubListing instance.
 
         :param reddit: An instance of :class:`.Reddit'.
         :param base_path: The path to the object up to this point.
