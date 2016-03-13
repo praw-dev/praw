@@ -56,7 +56,7 @@ class Config(object):
                         'modaction':            models.ModAction,
                         'more':                 models.MoreComments,
                         'wikipage':             models.WikiPage,
-                        'wikipagelisting':      models.WikiPageListing,
+                        'wikipagelisting':      models.WikiPageList,
                         'UserList':             models.UserList}
         self.by_object = dict((value, key) for (key, value) in
                               iteritems(self.by_kind))

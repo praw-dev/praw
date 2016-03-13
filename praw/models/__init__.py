@@ -2,7 +2,7 @@
 
 from .comment import Comment  # NOQA
 from .front import Front  # NOQA
-from .listing import UserList, WikiPageListing  # NOQA
+from .praw_list import UserList, WikiPageList  # NOQA
 from .message import Message  # NOQA
 from .modaction import ModAction  # NOQA
 from .morecomments import MoreComments  # NOQA
