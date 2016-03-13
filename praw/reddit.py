@@ -2,12 +2,12 @@
 import os
 
 from update_checker import update_check
-from prawcore import (Authenticator, ReadOnlyAuthorizer, Requestor,
+from prawcore import (Authenticator, ReadOnlyAuthorizer, Redirect, Requestor,
                       ScriptAuthorizer, session)
 
 from .errors import RequiredConfig
 from .config import Config
-from .const import __version__, USER_AGENT_FORMAT
+from .const import __version__, API_PATH, USER_AGENT_FORMAT
 from .models import Front, Redditor, Subreddit
 
 
@@ -15,6 +15,12 @@ class Reddit(object):
     """Provide convenient access to reddit's API."""
 
     update_checked = False
+
+    @property
+    def _next_unique(self):
+        value = self._unique_counter
+        self._unique_counter += 1
+        return value
 
     @property
     def read_only(self):
@@ -70,6 +76,7 @@ class Reddit(object):
 
         """
         self._core = self._authorized_core = self._read_only_core = None
+        self._unique_counter = 0
         self.config = Config(site_name or os.getenv('PRAW_SITE') or 'reddit',
                              **config_settings)
 
@@ -102,13 +109,21 @@ class Reddit(object):
         else:
             self._core = self._read_only_core
 
-    def random_subreddit(self):
-        """Return an instance of :class:`~.Subreddit` for a random subreddit.
+    def random_subreddit(self, nsfw=False):
+        """Return a random lazy instance of :class:`~.Subreddit`.
 
-        To verify: will NSFW subreddit's be returned via Oauth?
+        :param nsfw: Return a random NSFW (not safe for work) subreddit
+            (Default: False).
 
         """
-        return Subreddit(self, 'redditdev')  # Stub for now
+        url = API_PATH['subreddit'].format(subreddit='randnsfw' if nsfw
+                                           else 'random')
+        path = None
+        try:
+            self.request(url, params={'unique': self._next_unique})
+        except Redirect as redirect:
+            path = redirect.path
+        return Subreddit(self, path.split('/')[2])
 
     def redditor(self, name):
         """Lazily return an instance of :class:`~.Redditor` for ``name``.
@@ -118,11 +133,12 @@ class Reddit(object):
         """
         return Redditor(self, name)
 
-    def request(self, path, params):
+    def request(self, path, params=None):
         """Return the parsed JSON data returned from a GET request to URL.
 
         :param path: The path to fetch.
-        :param params: The query parameters to add to the request.
+        :param params: The query parameters to add to the request (Default:
+            None).
 
         """
         if not self._core._authorizer.is_valid():
@@ -138,4 +154,6 @@ class Reddit(object):
         lower_name = name.lower()
         if lower_name == 'random':
             return self.random_subreddit()
+        elif lower_name == 'randnsfw':
+            return self.random_subreddit(nsfw=True)
         return Subreddit(self, name)

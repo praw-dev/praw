@@ -28,9 +28,6 @@ class TestReddit(UnitTest):
         with Reddit(**self.REQUIRED_DUMMY_SETTINGS) as reddit:
             assert not reddit.config.check_for_updates
 
-    def test_random_subreddit(self):
-        assert self.reddit.random_subreddit().display_name == 'redditdev'
-
     def test_read_only__with_script_authenticated_core(self):
         with Reddit(password='dummy', username='dummy',
                     **self.REQUIRED_DUMMY_SETTINGS) as reddit:
@@ -52,6 +49,3 @@ class TestReddit(UnitTest):
 
     def test_subreddit(self):
         assert self.reddit.subreddit('redditdev').display_name == 'redditdev'
-
-    def test_subreddit_with_random(self):
-        assert self.reddit.subreddit('random').display_name != 'random'

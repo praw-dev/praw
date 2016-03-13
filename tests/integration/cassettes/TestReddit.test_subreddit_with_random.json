@@ -1,0 +1,97 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-03-13T01:22:25",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.5"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "base64_string": "H4sIAAAAAAAAA6tWSkxOTi0uji/Jz07NU7JSUNJ1y883NslwDs0pcDXK8tV11TVIMgp1zS5xcjNQ0lFQAiuML6ksSAWpTkpNLEotAomnVhRkFqUWx2eCTDE2MzDQUVAqTs6HKNNSqgUAlue6TGoAAAA=",
+          "encoding": "UTF-8",
+          "string": ""
+        },
+        "headers": {
+          "CF-RAY": "282bacbb95f339d0-PHX",
+          "Connection": "keep-alive",
+          "Content-Encoding": "gzip",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 13 Mar 2016 01:22:25 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=d7977ab629f3b5b59d5d504a765439a311457832145; expires=Mon, 13-Mar-17 01:22:25 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Transfer-Encoding": "chunked",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-03-13T01:22:25",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate",
+          "Authorization": "bearer -Foo34hCUlpE2jM-E-0b2UEktBF0",
+          "Connection": "keep-alive",
+          "Cookie": "loidcreated=2016-03-13T01%3A22%3A25.247Z; loid=idagBJuPvzHf8zNrwA; __cfduid=d7977ab629f3b5b59d5d504a765439a311457832145",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.5"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/random/?unique=0&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "<html>\n <head>\n  <title>302 Found</title>\n </head>\n <body>\n  <h1>302 Found</h1>\n  The resource was found at <a href=\"https://oauth.reddit.com/r/fuckwaffle/.json?unique=0&amp;raw_json=1\">https://oauth.reddit.com/r/fuckwaffle/.json?unique=0&amp;raw_json=1</a>;\nyou should be redirected automatically.\n\n\n </body>\n</html>"
+        },
+        "headers": {
+          "CF-RAY": "282bacbd0af639c4-PHX",
+          "Connection": "keep-alive",
+          "Content-Length": "317",
+          "Content-Type": "text/html; charset=UTF-8",
+          "Date": "Sun, 13 Mar 2016 01:22:25 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Content-Type-Options": "nosniff",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "location": "https://oauth.reddit.com/r/fuckwaffle/.json?unique=0&raw_json=1",
+          "x-ua-compatible": "IE=edge"
+        },
+        "status": {
+          "code": 302,
+          "message": "Found"
+        },
+        "url": "https://oauth.reddit.com/r/random/?unique=0&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.5.1"
+}
