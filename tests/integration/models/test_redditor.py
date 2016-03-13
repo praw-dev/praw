@@ -2,7 +2,7 @@
 import pytest
 from prawcore import Forbidden
 
-from . import IntegrationTest
+from .. import IntegrationTest
 
 
 class TestRedditorListings(IntegrationTest):

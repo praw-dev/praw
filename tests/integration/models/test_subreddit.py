@@ -1,5 +1,5 @@
 """Test praw.models.subreddit."""
-from . import IntegrationTest
+from .. import IntegrationTest
 
 
 class TestSubredditListings(IntegrationTest):
