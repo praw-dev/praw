@@ -3,9 +3,10 @@
 from heapq import heappop, heappush
 
 from six import text_type
-from six.moves.urllib.parse import (parse_qs,  # pylint: disable=import-error
-                                    urljoin, urlparse, urlunparse)
+from six.moves.urllib.parse import (urljoin,  # pylint: disable=import-error
+                                    urlparse)
 
+from ..const import API_PATH
 from .morecomments import MoreComments
 from .mixins import (EditableMixin, GildableMixin, HidableMixin,
                      ModeratableMixin, ReportableMixin, SavableMixin,
@@ -37,70 +38,55 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
         return more_comments
 
     @staticmethod
-    def from_id(reddit_session, subreddit_id):
-        """Return an edit-only submission object based on the id."""
-        pseudo_data = {'id': subreddit_id,
-                       'permalink': '/comments/{0}'.format(subreddit_id)}
-        return Submission(reddit_session, pseudo_data)
+    def id_from_url(url):
+        """Return the ID contained within a submission URL.
 
-    @staticmethod
-    def from_json(json_response):
-        """Return a submission object from the json response."""
-        submission = json_response[0]['data']['children'][0]
-        submission.comments = json_response[1]['data']['children']
-        return submission
+        :param url: A url to a submission in one of the following formats (http
+            urls will also work):
+            * https://redd.it/2gmzqe
+            * https://reddit.com/comments/2gmzqe/
+            * https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/
 
-    @staticmethod
-    def from_url(reddit_session, url, comment_limit=0, comment_sort=None,
-                 comments_only=False, params=None):
-        """Request the url and return a Submission object.
-
-        :param reddit_session: The session to make the request with.
-        :param url: The url to build the Submission object from.
-        :param comment_limit: The desired number of comments to fetch. If <= 0
-            fetch the default number for the session's user. If None, fetch the
-            maximum possible.
-        :param comment_sort: The sort order for retrieved comments. When None
-            use the default for the session's user.
-        :param comments_only: Return only the list of comments.
-        :param params: dictionary containing extra GET data to put in the url.
+        Raise ``AttributeError`` if URL is not a valid submission URL.
 
         """
-        if params is None:
-            params = {}
-
         parsed = urlparse(url)
-        query_pairs = parse_qs(parsed.query)
-        get_params = dict((k, ",".join(v)) for k, v in query_pairs.items())
-        params.update(get_params)
-        url = urlunparse(parsed[:3] + ("", "", ""))
-        if comment_limit is None:  # Fetch MAX
-            params['limit'] = 2048  # Just use a big number
-        elif comment_limit > 0:  # Use value
-            params['limit'] = comment_limit
-        if comment_sort:
-            params['sort'] = comment_sort
+        if not parsed.netloc:
+            raise AttributeError('Invalid URL: {}'.format(url))
 
-        response = reddit_session.request_json(url, params=params)
-        if comments_only:
-            return response[1]['data']['children']
-        submission = Submission.from_json(response)
-        submission._comment_sort = comment_sort
-        submission._params = params
-        return submission
+        parts = parsed.path.split('/')
+        if 'comments' not in parts:
+            submission_id = parts[-1]
+        else:
+            submission_id = parts[parts.index('comments') + 1]
 
-    def __init__(self, reddit_session, json_dict):
-        """Construct an instance of the Subreddit object."""
-        super(Submission, self).__init__(reddit_session, json_dict)
-        self._api_path = self.permalink
-        self.permalink = urljoin(reddit_session.config.reddit_url,
-                                 self.permalink)
-        self._comment_sort = None
+        if not submission_id.isalnum():
+            raise AttributeError('Invalid URL: {}'.format(url))
+        return submission_id
+
+    def __init__(self, reddit, id_or_url=None, json_dict=None, fetch=False):
+        """Construct an instance of the Subreddit object.
+
+        :param reddit: An instance of :class:`~.Reddit`.
+        :param id_or_url: Either a reddit base64 submission ID, e.g.,
+            ``2gmzqe``, or a URL supported by :meth:`~.id_from_url`.
+
+        """
+        if id_or_url.isalnum():
+            submission_id = id_or_url
+        else:
+            submission_id = self.id_from_url(id_or_url)
+
+        info_path = API_PATH['submission'].format(id=submission_id)
+        super(Submission, self).__init__(reddit, json_dict, fetch, info_path)
+        if 'id' not in self.__dict__:
+            self.id = submission_id
+        """
         self._comments_by_id = {}
         self._comments = None
         self._orphaned = {}
         self._replaced_more = False
-        self._params = {}
+        """
 
     def __unicode__(self):
         """Return a string representation of the Subreddit.
@@ -155,8 +141,8 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
 
         """
         if self._comments is None:
-            self.comments = Submission.from_url(
-                self.reddit_session, self._api_path, comments_only=True)
+            other = Submission.from_url(self.reddit_session, self._api_path)
+            self.comments = other.comments
         return self._comments
 
     @comments.setter

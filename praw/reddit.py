@@ -8,7 +8,7 @@ from prawcore import (Authenticator, ReadOnlyAuthorizer, Redirect, Requestor,
 from .errors import RequiredConfig
 from .config import Config
 from .const import __version__, API_PATH, USER_AGENT_FORMAT
-from .models import Front, Redditor, Subreddit
+from .models import Front, Redditor, Submission, Subreddit
 
 
 class Reddit(object):
@@ -126,7 +126,7 @@ class Reddit(object):
         return Subreddit(self, path.split('/')[2])
 
     def redditor(self, name):
-        """Lazily return an instance of :class:`~.Redditor` for ``name``.
+        """Return a lazy instance of :class:`~.Redditor` for ``name``.
 
         :param name: The name of the redditor.
 
@@ -145,8 +145,17 @@ class Reddit(object):
             self._core._authorizer.refresh()
         return self._core.request('GET', path, params=params)
 
+    def submission(self, id_or_url):
+        """Return a lazy instance of :class:`~.Submission` for ``id_or_url``.
+
+        :param id_or_url: Either a reddit base64 submission ID, e.g.,
+            ``2gmzqe``, or a URL supported by :meth:`~.id_from_url`.
+
+        """
+        return Submission(self, id_or_url)
+
     def subreddit(self, name):
-        """Lazily return an instance of :class:`~.Subreddit` for ``name``.
+        """Return a lazy instance of :class:`~.Subreddit` for ``name``.
 
         :param name: The name of the subreddit.
 

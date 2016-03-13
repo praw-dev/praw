@@ -47,5 +47,8 @@ class TestReddit(UnitTest):
             reddit.read_only = True
             assert reddit.read_only
 
+    def test_submission(self):
+        assert self.reddit.submission('2gmzqe').id == '2gmzqe'
+
     def test_subreddit(self):
         assert self.reddit.subreddit('redditdev').display_name == 'redditdev'
