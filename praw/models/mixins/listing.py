@@ -106,7 +106,7 @@ class SubListing(BaseListingMixin):
         :param subpath: The additional path to this sublisting.
 
         """
-        super(SubListing, self).__init__(reddit)
+        super(SubListing, self).__init__(reddit, None)
         self._listing_use_sort = True
         self._reddit = reddit
         self._path = urljoin(base_path, subpath)
@@ -218,9 +218,7 @@ class SubmissionListingMixin(ListingMixin):
 
         """
         url = API_PATH['duplicates'].format(submission_id=self.id)
-        generator = ListingGenerator(self._reddit, url, **generator_kwargs)
-        generator.extract_list_index = 1
-        return generator
+        return ListingGenerator(self._reddit, url, **generator_kwargs)
 
 
 class SubredditListingMixin(ListingMixin):

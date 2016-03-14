@@ -23,18 +23,20 @@ class Redditor(GildableMixin, MessageableMixin, RedditorListingMixin):
         else:
             return cls(reddit, data)
 
-    def __init__(self, reddit, name):
+    def __init__(self, reddit, name=None, _data=None):
         """Initialize a Redditor instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param name: The name of the redditor.
 
         """
-        super(Redditor, self).__init__(reddit, API_PATH['user_about']
-                                       .format(user=name))
+        if bool(name) == bool(_data):
+            raise TypeError('Either `name` or `_data` can be provided.')
+        super(Redditor, self).__init__(reddit, _data)
         self._listing_use_sort = True
-        self._path = API_PATH['user'].format(user=name)
-        self.name = name
+        if name:
+            self.name = name
+        self._path = API_PATH['user'].format(user=self.name)
 
     def __repr__(self):
         """Return a code representation of the Redditor."""
@@ -43,6 +45,9 @@ class Redditor(GildableMixin, MessageableMixin, RedditorListingMixin):
     def __unicode__(self):
         """Return a string representation of the Redditor."""
         return self.name
+
+    def _info_url(self):
+        return API_PATH['user_about'].format(user=self.name)
 
     def friend(self, note=None, _unfriend=False):
         """Friend the user.

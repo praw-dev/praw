@@ -7,5 +7,5 @@ class Front(SubredditListingMixin):
 
     def __init__(self, reddit):
         """Initialize a Front instance."""
-        super(Front, self).__init__(reddit)
+        super(Front, self).__init__(reddit, None)
         self._path = '/'

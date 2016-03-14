@@ -44,19 +44,6 @@ class BaseReddit(object):
             if self.config.https_proxy:
                 self.http.proxies['https'] = self.config.https_proxy
 
-    def _json_reddit_objecter(self, json_data):
-        try:
-            object_class = self.config.by_kind[json_data['kind']]
-        except KeyError:
-            if 'json' in json_data:
-                if len(json_data) != 1:
-                    msg = 'Unknown object type: {0}'.format(json_data)
-                    warn_explicit(msg, UserWarning, '', 0)
-                return json_data['json']
-        else:
-            return object_class.from_api_response(self, json_data['data'])
-        return json_data
-
     @decorators.raise_api_exceptions
     def request(self, url, params=None, data=None, retry_on_error=True,
                 method=None):

@@ -1,6 +1,23 @@
 """Provide the ListingGenerator class."""
-
 from .prawmodel import PRAWModel
+
+
+class Listing(PRAWModel):
+    """A listing is a collection of RedditModel instances."""
+
+    def __len__(self):
+        """Return the number of items in the Listing."""
+        return len(self.children)
+
+    def __getitem__(self, index):
+        """Return the item at position index in the list."""
+        return self.children[index]
+
+    def __setattr__(self, attribute, value):
+        """Objectify the `children` attribute."""
+        if attribute == 'children':
+            value = self._reddit._objector.objectify(value)
+        super(Listing, self).__setattr__(attribute, value)
 
 
 class ListingGenerator(PRAWModel):
@@ -20,21 +37,15 @@ class ListingGenerator(PRAWModel):
             parameters to send with the request.
 
         """
-        super(ListingGenerator, self).__init__(reddit)
+        super(ListingGenerator, self).__init__(reddit, None)
         self._exhausted = False
-        self._list = None
+        self._listing = None
         self._list_index = None
-        self._reddit = reddit
-        self.after_field = 'after'
-        self.extract_list_index = None
         self.limit = limit
         self.params = params or {}
-        self.root_field = 'data'
-        self.thing_list_field = 'children'
+        self.params['limit'] = limit or 1024
         self.url = url
         self.yielded = 0
-
-        self.params['limit'] = self.limit or 1024
 
     def __iter__(self):
         """Permit ListingGenerator to operate as an iterator."""
@@ -45,30 +56,27 @@ class ListingGenerator(PRAWModel):
         if self.limit is not None and self.yielded >= self.limit:
             raise StopIteration()
 
-        if self._list is None or self._list_index >= len(self._list):
+        if self._listing is None or self._list_index >= len(self._listing):
             self._next_batch()
 
         self._list_index += 1
         self.yielded += 1
-        return self._list[self._list_index - 1]
+        return self._listing[self._list_index - 1]
 
     def _next_batch(self):
         if self._exhausted:
             raise StopIteration()
 
-        page_data = self._reddit.request(self.url, params=self.params)
-        if self.extract_list_index is not None:
-            page_data = page_data[self.extract_list_index]
-
-        root = page_data[self.root_field]
-        self._list = root[self.thing_list_field]
+        self._listing = self._reddit.request(self.url, params=self.params)
+        if isinstance(self._listing, list):
+            self._listing = self._listing[1]  # for submission duplicates
         self._list_index = 0
 
-        if len(self._list) == 0:
+        if len(self._listing) == 0:
             raise StopIteration()
 
-        if root.get(self.after_field):
-            self.params['after'] = root[self.after_field]
+        if self._listing.after:
+            self.params['after'] = self._listing.after
         else:
             self._exhausted = True
 

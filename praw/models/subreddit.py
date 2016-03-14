@@ -102,17 +102,19 @@ class Subreddit(MessageableMixin, SubredditListingMixin):
     remove_wiki_contributor = _modify_relationship('wikicontributor',
                                                    unlink=True)
 
-    def __init__(self, reddit, name):
+    def __init__(self, reddit, name=None, _data=None):
         """Initialize a Subreddit instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param name: The name of the subreddit.
 
         """
-        super(Subreddit, self).__init__(reddit, API_PATH['subreddit_about']
-                                        .format(subreddit=name))
-        self._path = API_PATH['subreddit'].format(subreddit=name)
-        self.display_name = name
+        if bool(name) == bool(_data):
+            raise TypeError('Either `name` or `_data` can be provided.')
+        super(Subreddit, self).__init__(reddit, _data)
+        if name:
+            self.display_name = name
+        self._path = API_PATH['subreddit'].format(subreddit=self.display_name)
 
     def __repr__(self):
         """Return a code representation of the Subreddit."""
@@ -121,6 +123,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin):
     def __unicode__(self):
         """Return a string representation of the Subreddit."""
         return self.display_name
+
+    def _info_path(self):
+        return API_PATH['subreddit_about'].format(subreddit=self.display_name)
 
     def clear_all_flair(self):
         """Remove all user flair on this subreddit.

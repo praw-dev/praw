@@ -2,10 +2,8 @@
 import os
 import sys
 
-from six import iteritems
 from six.moves import configparser
 
-from . import models
 from .errors import ClientException
 
 
@@ -47,21 +45,7 @@ class Config(object):
             self._load_config()
 
         raw = dict(Config.CONFIG.items(site_name), **settings)
-        self.by_kind = {raw['comment_kind']:    models.Comment,
-                        raw['message_kind']:    models.Message,
-                        raw['redditor_kind']:   models.Redditor,
-                        raw['submission_kind']: models.Submission,
-                        raw['subreddit_kind']:  models.Subreddit,
-                        'LabeledMulti':         models.Multireddit,
-                        'modaction':            models.ModAction,
-                        'more':                 models.MoreComments,
-                        'wikipage':             models.WikiPage,
-                        'wikipagelisting':      models.WikiPageList,
-                        'UserList':             models.UserList}
-        self.by_object = dict((value, key) for (key, value) in
-                              iteritems(self.by_kind))
 
-        self._raw = raw
         self._short_url = raw.get('short_url') or None
         self.check_for_updates = config_boolean(
             fetch_or_none('check_for_updates'))
@@ -69,6 +53,9 @@ class Config(object):
         self.client_secret = fetch_or_none('client_secret')
         self.http_proxy = fetch_or_none('http_proxy')
         self.https_proxy = fetch_or_none('https_proxy')
+        self.kinds = {x: raw['{}_kind'.format(x)] for x in
+                      ['comment', 'message', 'redditor', 'submission',
+                       'subreddit']}
         self.log_requests = int(raw['log_requests'])
         self.oauth_url = raw['oauth_url']
         self.reddit_url = raw['reddit_url']

@@ -1,10 +1,10 @@
 """Provide the RedditModel class."""
-from six import PY3, iteritems
+from six import PY3
 
-from ..const import API_PATH
+from .prawmodel import PRAWModel
 
 
-class RedditModel(object):
+class RedditModel(PRAWModel):
     """Base class that represents actual Reddit objects."""
 
     REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor',
@@ -21,23 +21,14 @@ class RedditModel(object):
         return '{}_{}'.format(self._reddit.config.by_object[self.__class__],
                               self.id)  # pylint: disable=invalid-name
 
-    def __init__(self, reddit, info_path=None):
+    def __init__(self, reddit, _data):
         """Initialize a RedditModel instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
-        :param info_path: The path used to fetch the object. This path is
-            accessed the first time an previously unknown attribute is
-            accessed.
-
-        The fetch parameter specifies whether to retrieve the object's
-        information from the API (only matters when it isn't provided using
-        json_data).
 
         """
+        super(RedditModel, self).__init__(reddit, _data)
         self._fetched = False
-        self._info_path = info_path or API_PATH['info']
-        self._reddit = reddit
-        self._response_data = None
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
@@ -84,15 +75,6 @@ class RedditModel(object):
         return retval
 
     def _fetch(self):
-        data = self._reddit.request(self._info_path)
-        self._populate(data)
-
-    def _populate(self, data):
-        if self._reddit.config.store_response_data:
-            self._response_data = data
-        for name, value in iteritems(self._transform_data(data)):
-            setattr(self, name, value)
+        other = self._reddit.request(self._info_path())
+        self.__dict__.update(other.__dict__)
         self._fetched = True
-
-    def _transform_data(self, data):  # pylint: disable=no-self-use
-        return data['data']

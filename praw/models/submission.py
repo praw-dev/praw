@@ -46,7 +46,7 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
             raise AttributeError('Invalid URL: {}'.format(url))
         return submission_id
 
-    def __init__(self, reddit, id_or_url=None):
+    def __init__(self, reddit, id_or_url=None, _data=None):
         """Initialize a Submission instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
@@ -54,35 +54,40 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
             ``2gmzqe``, or a URL supported by :meth:`~.id_from_url`.
 
         """
-        if id_or_url.isalnum():
-            submission_id = id_or_url
-        else:
-            submission_id = self.id_from_url(id_or_url)
-
-        super(Submission, self).__init__(reddit, API_PATH['submission']
-                                         .format(id=submission_id))
-        if 'id' not in self.__dict__:
+        if bool(id_or_url) == bool(_data):
+            raise TypeError('Either `id_or_url` or `_data` can be provided.')
+        super(Submission, self).__init__(reddit, _data)
+        if id_or_url:
+            if id_or_url.isalnum():
+                submission_id = id_or_url
+            else:
+                submission_id = self.id_from_url(id_or_url)
             self.id = submission_id  # pylint: disable=invalid-name
 
+    def __setattr__(self, attribute, value):
+        """Objectify author, comments, and subreddit attributes."""
+        # pylint: disable=redefined-variable-type
+        if attribute == 'author':
+            value = Redditor(self._reddit, value)
+        elif attribute == 'comments':
+            value = CommentForest(self, value)
+        elif attribute == 'subreddit':
+            value = Subreddit(self._reddit, value)
+        super(Submission, self).__setattr__(attribute, value)
+
     def __unicode__(self):
-        """Return a string representation of the Subreddit.
-
-        Note: The representation is truncated to a fix number of characters.
-        """
+        """Return a string representation of the Subreddit."""
         title = self.title.replace('\r\n', ' ')
-        return text_type('{0} :: {1}').format(self.score, title)
+        return text_type('{} :: {}').format(self.score, title)
 
-    def _transform_data(self, original_data):
-        assert len(original_data) == 2
-        assert len(original_data[0]['data']['children']) == 1
-        data = original_data[0]['data']['children'][0]['data']
+    def _fetch(self):
+        other, comments = self._reddit.request(self._info_path())
+        other.comments = CommentForest(self, comments.children)
+        self.__dict__.update(other.__dict__)
+        self._fetched = True
 
-        data['author'] = Redditor.from_data(self._reddit, data['author'])
-        data['comments'] = CommentForest(
-            self, original_data[1]['data']['children'])
-        data['subreddit'] = Subreddit(self._reddit, data['subreddit'])
-
-        return data
+    def _info_path(self):
+        return API_PATH['submission'].format(id=self.id)
 
     def comment(self, text):
         """Comment on the submission using the specified text.

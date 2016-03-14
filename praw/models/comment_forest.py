@@ -1,19 +1,15 @@
 """Provide CommentForest for Submission comments."""
 from heapq import heappop, heappush
 
-from .comment import Comment
 from .morecomments import MoreComments
-from .praw_list import PRAWList
 
 
-class CommentForest(PRAWList):
+class CommentForest(object):
     """A forest of comments starts with  multiple top-level comments.
 
     Each of these comments can be a tree of replies.
 
     """
-
-    CHILD_ATTRIBUTE = '_comments'
 
     @staticmethod
     def _extract_more_comments(tree):
@@ -33,6 +29,10 @@ class CommentForest(PRAWList):
                     queue.append((comm, item))
         return more_comments
 
+    def __getitem__(self, index):
+        """Return the comment at position ``index`` in the list."""
+        return self._comments[index]
+
     def __init__(self, submission, comments):
         """Initialize a CommentForest instance.
 
@@ -46,10 +46,10 @@ class CommentForest(PRAWList):
         self._orphaned = {}
         self._replaced_more = False
         self._submission = submission
-        super(CommentForest, self).__init__(submission._reddit)
 
-    def _convert(self, reddit, data):
-        return Comment(reddit, self._submission, data)
+    def __len__(self):
+        """Return the number of top-level comments in the forest."""
+        return len(self._comments)
 
     def _insert_comment(self, comment):
         if comment.name in self._comments_by_id:  # Skip existing comments

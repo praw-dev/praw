@@ -1,6 +1,7 @@
 """Provide the Reddit class."""
 import os
 
+from six import iteritems
 from update_checker import update_check
 from prawcore import (Authenticator, ReadOnlyAuthorizer, Redirect, Requestor,
                       ScriptAuthorizer, session)
@@ -8,7 +9,8 @@ from prawcore import (Authenticator, ReadOnlyAuthorizer, Redirect, Requestor,
 from .errors import RequiredConfig
 from .config import Config
 from .const import __version__, API_PATH, USER_AGENT_FORMAT
-from .models import Front, Redditor, Submission, Subreddit
+from .objector import Objector
+from . import models
 
 
 class Reddit(object):
@@ -76,6 +78,7 @@ class Reddit(object):
 
         """
         self._core = self._authorized_core = self._read_only_core = None
+        self._objector = None
         self._unique_counter = 0
         self.config = Config(site_name or os.getenv('PRAW_SITE') or 'reddit',
                              **config_settings)
@@ -85,14 +88,31 @@ class Reddit(object):
                 raise RequiredConfig(attr)
 
         self._check_for_update()
-
+        self._prepare_objector()
         self._prepare_prawcore()
-        self.front = Front(self)
+        self.front = models.Front(self)
 
     def _check_for_update(self):
         if not Reddit.update_checked and self.config.check_for_updates:
             update_check(__package__, __version__)
             Reddit.update_checked = True
+
+    def _prepare_objector(self):
+        self._objector = Objector(self)
+        mappings = {self.config.kinds['comment']: models.Comment,
+                    self.config.kinds['message']: models.Message,
+                    self.config.kinds['redditor']: models.Redditor,
+                    self.config.kinds['submission']: models.Submission,
+                    self.config.kinds['subreddit']: models.Subreddit,
+                    'LabeledMulti': models.Multireddit,
+                    'Listing': models.Listing,
+                    'UserList': models.UserList,
+                    'modaction': models.ModAction,
+                    'more': models.MoreComments,
+                    'wikipage': models.WikiPage,
+                    'wikipagelisting': models.WikiPageList}
+        for kind, klass in iteritems(mappings):
+            self._objector.register(kind, klass)
 
     def _prepare_prawcore(self):
         requestor = Requestor(USER_AGENT_FORMAT.format(self.config.user_agent),
@@ -123,7 +143,7 @@ class Reddit(object):
             self.request(url, params={'unique': self._next_unique})
         except Redirect as redirect:
             path = redirect.path
-        return Subreddit(self, path.split('/')[2])
+        return models.Subreddit(self, path.split('/')[2])
 
     def redditor(self, name):
         """Return a lazy instance of :class:`~.Redditor` for ``name``.
@@ -131,7 +151,7 @@ class Reddit(object):
         :param name: The name of the redditor.
 
         """
-        return Redditor(self, name)
+        return models.Redditor(self, name)
 
     def request(self, path, params=None):
         """Return the parsed JSON data returned from a GET request to URL.
@@ -143,7 +163,8 @@ class Reddit(object):
         """
         if not self._core._authorizer.is_valid():
             self._core._authorizer.refresh()
-        return self._core.request('GET', path, params=params)
+        data = self._core.request('GET', path, params=params)
+        return self._objector.objectify(data)
 
     def submission(self, id_or_url):
         """Return a lazy instance of :class:`~.Submission` for ``id_or_url``.
@@ -152,7 +173,7 @@ class Reddit(object):
             ``2gmzqe``, or a URL supported by :meth:`~.id_from_url`.
 
         """
-        return Submission(self, id_or_url)
+        return models.Submission(self, id_or_url)
 
     def subreddit(self, name):
         """Return a lazy instance of :class:`~.Subreddit` for ``name``.
@@ -165,4 +186,4 @@ class Reddit(object):
             return self.random_subreddit()
         elif lower_name == 'randnsfw':
             return self.random_subreddit(nsfw=True)
-        return Subreddit(self, name)
+        return models.Subreddit(self, name)

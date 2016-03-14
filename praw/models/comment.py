@@ -13,11 +13,24 @@ class Comment(EditableMixin, GildableMixin, InboxableMixin, ModeratableMixin,
               ReportableMixin, SavableMixin, VotableMixin):
     """A class that represents a reddit comments."""
 
-    def __init__(self, reddit, submission, data):
+    def __init__(self, reddit, _data):
         """Construct an instance of the Comment object."""
-        super(Comment, self).__init__(reddit)
-        self._submission = submission
-        self._populate(data)
+        super(Comment, self).__init__(reddit, _data)
+        self._submission = None
+
+    def __setattr__(self, attribute, value):
+        """Objectify author, replies, and subreddit."""
+        # pylint: disable=redefined-variable-type
+        if attribute == 'author':
+            value = Redditor.from_data(self._reddit, value)
+        elif attribute == 'replies':
+            if value == '':
+                value = []
+            else:
+                value = self._reddit._objector.objectify(value).children
+        elif attribute == 'subreddit':
+            value = Subreddit(self._reddit, value)
+        super(Comment, self).__setattr__(attribute, value)
 
     @property
     def _fast_permalink(self):
@@ -28,17 +41,6 @@ class Comment(EditableMixin, GildableMixin, InboxableMixin, ModeratableMixin,
             sid = self.context.split('/')[4]
         return urljoin(self._reddit.config['comments'], '{}/_/{}'
                        .format(sid, self.id))
-
-    def _transform_data(self, original_data):
-        data = original_data['data']
-        data['author'] = Redditor.from_data(self._reddit, data['author'])
-        data['subreddit'] = Subreddit(self._reddit, data['subreddit'])
-        replies = []
-        if data['replies'] != '':
-            for reply in data['replies']['data']['children']:
-                replies.append(Comment(self._reddit, self._submission, reply))
-        data['replies'] = replies
-        return data
 
     @property
     def is_root(self):
