@@ -1,5 +1,5 @@
 """Provide the Front class."""
-from .mixins import SubredditListingMixin
+from .listing.mixins import SubredditListingMixin
 
 
 class Front(SubredditListingMixin):

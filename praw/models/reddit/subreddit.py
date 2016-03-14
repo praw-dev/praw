@@ -4,8 +4,10 @@ import logging
 
 import six
 
-from .mixins import MessageableMixin, SubredditListingMixin
-from ..const import API_PATH
+from ...const import API_PATH
+from ..listing.mixins import SubredditListingMixin
+from .base import RedditBase
+from .mixins import MessageableMixin
 
 
 LOG = logging.getLogger(__name__)
@@ -32,7 +34,7 @@ def _modify_relationship(relationship, unlink=False):
     return do_relationship
 
 
-class Subreddit(MessageableMixin, SubredditListingMixin):
+class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     """A class for Subreddits."""
 
     _methods = (('accept_moderator_invite', 'AR'),

@@ -1,5 +1,9 @@
 """Provide the ListingMixin class."""
+from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
+
 from .base import BaseListingMixin
+from ..generator import ListingGenerator
+
 
 class ListingMixin(BaseListingMixin):
     """Adds additional methods that apply to most Listing objects."""

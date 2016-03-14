@@ -1,9 +1,8 @@
 """Provide the HidableMixin class."""
-from ..redditmodel import RedditModel
 
 
-class HidableMixin(RedditModel):
-    """Interface for objects that can be hidden."""
+class HidableMixin(object):
+    """Interface for classes that can be hidden."""
 
     def hide(self, _unhide=False):
         """Hide object in the context of the logged in user.
@@ -15,7 +14,7 @@ class HidableMixin(RedditModel):
         :returns: The json response from the server.
 
         """
-        return self.reddit_session.hide(self.fullname, _unhide=_unhide)
+        return self._reddit.hide(self.fullname, _unhide=_unhide)
 
     def unhide(self):
         """Unhide object in the context of the logged in user.

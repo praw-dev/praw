@@ -1,8 +1,7 @@
 """Provide the SavableMixin class."""
-from ..redditmodel import RedditModel
 
 
-class SavableMixin(RedditModel):
+class SavableMixin(object):
     """Interface for RedditModel classes that can be saved."""
 
     def save(self, unsave=False):
@@ -11,10 +10,10 @@ class SavableMixin(RedditModel):
         :returns: The json response from the server.
 
         """
-        url = self.reddit_session.config['unsave' if unsave else 'save']
+        url = self._reddit.config['unsave' if unsave else 'save']
         data = {'id': self.fullname,
                 'executed': 'unsaved' if unsave else 'saved'}
-        return self.reddit_session.request_json(url, data=data)
+        return self._reddit.request(url, data=data)
 
     def unsave(self):
         """Unsave the object.

@@ -1,9 +1,9 @@
 """Provide the WikiPageList class."""
 from ..reddit.wikipage import WikiPage
-from .base import PRAWList
+from .base import BaseList
 
 
-class WikiPageList(PRAWList):
+class WikiPageList(BaseList):
     """A list of WikiPages. Works just like a regular list."""
 
     CHILD_ATTRIBUTE = '_tmp'

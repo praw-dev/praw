@@ -1,9 +1,9 @@
 """Provide the ModAction class."""
 
-from .redditmodel import RedditModel
+from .base import RedditBase
 
 
-class ModAction(RedditModel):
+class ModAction(RedditBase):
     """A moderator action."""
 
     def __init__(self, reddit_session, json_dict=None, fetch=False):

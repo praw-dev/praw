@@ -2,6 +2,7 @@
 
 from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
+from .base import RedditBase
 from .mixins import (EditableMixin, GildableMixin, InboxableMixin,
                      ModeratableMixin, ReportableMixin, SavableMixin,
                      VotableMixin)
@@ -9,8 +10,8 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 
-class Comment(EditableMixin, GildableMixin, InboxableMixin, ModeratableMixin,
-              ReportableMixin, SavableMixin, VotableMixin):
+class Comment(RedditBase, EditableMixin, GildableMixin, InboxableMixin,
+              ModeratableMixin, ReportableMixin, SavableMixin, VotableMixin):
     """A class that represents a reddit comments."""
 
     def __init__(self, reddit, _data):

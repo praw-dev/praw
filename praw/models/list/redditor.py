@@ -1,9 +1,9 @@
 """Provide the RedditorList class."""
 from ..reddit.redditor import Redditor
-from .base import PRAWList
+from .base import BaseList
 
 
-class RedditorList(PRAWList):
+class RedditorList(BaseList):
     """A list of Redditors. Works just like a regular list."""
 
     CHILD_ATTRIBUTE = 'children'

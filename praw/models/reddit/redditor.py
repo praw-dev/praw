@@ -1,13 +1,15 @@
 """Provide the Redditor class."""
 from json import dumps
 
-from .mixins import (GildableMixin, InboxableMixin, MessageableMixin,
-                     RedditorListingMixin)
-from ..const import API_PATH
-from ..exceptions import ClientException
+from ...const import API_PATH
+from ...exceptions import ClientException
+from ..listing.mixins import RedditorListingMixin
+from .base import RedditBase
+from .mixins import GildableMixin, InboxableMixin, MessageableMixin
 
 
-class Redditor(GildableMixin, MessageableMixin, RedditorListingMixin):
+class Redditor(RedditBase, GildableMixin, MessageableMixin,
+               RedditorListingMixin):
     """A class representing the users of reddit."""
 
     _methods = (('get_multireddit', 'MultiMix'),

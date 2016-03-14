@@ -1,7 +1,7 @@
 """Provide CommentForest for Submission comments."""
 from heapq import heappop, heappush
 
-from .morecomments import MoreComments
+from .reddit.more import MoreComments
 
 
 class CommentForest(object):

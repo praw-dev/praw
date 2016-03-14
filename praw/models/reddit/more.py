@@ -1,10 +1,10 @@
 """Provide the MoreComments class."""
 from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
-from .redditmodel import RedditModel
+from .base import RedditBase
 
 
-class MoreComments(RedditModel):
+class MoreComments(RedditBase):
     """A class indicating there are more comments."""
 
     def __init__(self, reddit_session, json_dict):

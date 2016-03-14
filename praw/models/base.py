@@ -1,7 +1,7 @@
-"""Provide the PRAWModel superclass."""
+"""Provide the PRAWBase superclass."""
 
 
-class PRAWModel(object):
+class PRAWBase(object):
     """Superclass for all models in PRAW."""
 
     @classmethod

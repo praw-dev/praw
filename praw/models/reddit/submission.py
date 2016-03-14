@@ -5,16 +5,18 @@ from six.moves.urllib.parse import (urljoin,  # pylint: disable=import-error
 
 from ...const import API_PATH
 from ..comment_forest import CommentForest
+from ..listing.mixins import SubmissionListingMixin
+from .base import RedditBase
 from .mixins import (EditableMixin, GildableMixin, HidableMixin,
                      ModeratableMixin, ReportableMixin, SavableMixin,
-                     SubmissionListingMixin, VotableMixin)
+                     VotableMixin)
 from .redditor import Redditor
 from .subreddit import Subreddit
 
 
-class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
-                 ReportableMixin, SavableMixin, VotableMixin,
-                 SubmissionListingMixin,):
+class Submission(RedditBase, EditableMixin, GildableMixin, HidableMixin,
+                 ModeratableMixin, ReportableMixin, SavableMixin, VotableMixin,
+                 SubmissionListingMixin):
     """A class for submissions to reddit."""
 
     _methods = (('select_flair', 'AR'),)

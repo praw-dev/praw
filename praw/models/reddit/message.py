@@ -1,9 +1,10 @@
 """Provide the Message class."""
 
+from .base import RedditBase
 from .mixins import InboxableMixin
 
 
-class Message(InboxableMixin):
+class Message(RedditBase, InboxableMixin):
     """A class for private messages."""
 
     @staticmethod
@@ -35,7 +36,7 @@ class Message(InboxableMixin):
     def __init__(self, reddit_session, json_dict):
         """Construct an instance of the Message object."""
         super(Message, self).__init__(reddit_session, json_dict)
-        if self.replies:
+        if 'replies' in self.__dict__:
             self.replies = self.replies['data']['children']
         else:
             self.replies = []

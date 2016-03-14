@@ -1,8 +1,7 @@
 """Provide the InboxableMixin class."""
-from ..redditmodel import RedditModel
 
 
-class InboxableMixin(RedditModel):
+class InboxableMixin(object):
     """Interface for RedditModel classes that originate in the inbox."""
 
     def mark_as_read(self):

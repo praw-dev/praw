@@ -4,14 +4,13 @@ from json import dumps
 
 from six import text_type
 
-from .mixins.listing import SubredditListingMixin
+from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 
 
 class Multireddit(RedditBase, SubredditListingMixin):
-    """A class for users' Multireddits."""
+    """A class for users' Multireddits.
 
-    """
     @Classmethod
     def from_api_response(cls, reddit, json_dict):
         from .models.subreddit import Subreddit
@@ -21,6 +20,17 @@ class Multireddit(RedditBase, SubredditListingMixin):
         json_dict['subreddits'] = [Subreddit(reddit, item['name'])
                                    for item in json_dict['subreddits']]
         return cls(reddit, None, None, json_dict)
+
+    def _transform_data(self):
+        # Subreddits are returned as dictionaries in the form
+        # {'name': 'subredditname'}. Convert them to Subreddit objects.
+        self.subreddits = [Subreddit(self._reddit, item['name'])
+                           for item in self.subreddits]
+
+        # paths are of the form "/user/{USERNAME}/m/{MULTINAME}"
+        author = self.path.split('/')[2]
+        self.author = Redditor(self._reddit, author)
+
     """
 
     def __init__(self, reddit, author=None, name=None, json_dict=None,
@@ -48,18 +58,6 @@ class Multireddit(RedditBase, SubredditListingMixin):
     def __unicode__(self):
         """Return a string representation of the Multireddit."""
         return self.name
-
-    """
-    def _transform_data(self):
-        # Subreddits are returned as dictionaries in the form
-        # {'name': 'subredditname'}. Convert them to Subreddit objects.
-        self.subreddits = [Subreddit(self._reddit, item['name'])
-                           for item in self.subreddits]
-
-        # paths are of the form "/user/{USERNAME}/m/{MULTINAME}"
-        author = self.path.split('/')[2]
-        self.author = Redditor(self._reddit, author)
-    """
 
     def add_subreddit(self, subreddit, _delete=False, *args, **kwargs):
         """Add a subreddit to the multireddit.
@@ -120,5 +118,5 @@ class Multireddit(RedditBase, SubredditListingMixin):
         """
         new = self._reddit.rename_multireddit(self.name, new_name, *args,
                                               **kwargs)
-        self.__dict__ = new.__dict__
+        self.__dict__.update(new.__dict__)
         return self

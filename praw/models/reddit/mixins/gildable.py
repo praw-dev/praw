@@ -1,11 +1,9 @@
 """Provide the GildableMixin class."""
 from six import text_type
 
-from ..redditmodel import RedditModel
 
-
-class GildableMixin(RedditModel):
-    """Interface for RedditModel classes that can be gilded."""
+class GildableMixin(object):
+    """Interface for classes that can be gilded."""
 
     def gild(self, months=None):
         """Gild the Redditor or author of the content.
