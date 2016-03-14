@@ -4,7 +4,7 @@ from json import dumps
 from .mixins import (GildableMixin, InboxableMixin, MessageableMixin,
                      RedditorListingMixin)
 from ..const import API_PATH
-from ..errors import ClientException
+from ..exceptions import ClientException
 
 
 class Redditor(GildableMixin, MessageableMixin, RedditorListingMixin):
@@ -40,7 +40,7 @@ class Redditor(GildableMixin, MessageableMixin, RedditorListingMixin):
 
     def __repr__(self):
         """Return a code representation of the Redditor."""
-        return 'Redditor(user_name=\'{0}\')'.format(self.name)
+        return 'Redditor({!r})'.format(self.name)
 
     def __unicode__(self):
         """Return a string representation of the Redditor."""

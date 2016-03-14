@@ -68,7 +68,7 @@ class Submission(EditableMixin, GildableMixin, HidableMixin, ModeratableMixin,
         """Objectify author, comments, and subreddit attributes."""
         # pylint: disable=redefined-variable-type
         if attribute == 'author':
-            value = Redditor(self._reddit, value)
+            value = Redditor.from_data(self._reddit, value)
         elif attribute == 'comments':
             value = CommentForest(self, value)
         elif attribute == 'subreddit':

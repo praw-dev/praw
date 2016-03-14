@@ -4,7 +4,7 @@ import sys
 import mock
 import pytest
 from praw.config import Config
-from praw.errors import ClientException
+from praw.exceptions import ClientException
 
 
 class TestConfig(object):

@@ -4,7 +4,7 @@ import sys
 
 from six.moves import configparser
 
-from .errors import ClientException
+from .exceptions import ClientException
 
 
 class Config(object):

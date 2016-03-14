@@ -1,7 +1,7 @@
 import mock
 import pytest
 from praw import __version__, Reddit
-from praw.errors import RequiredConfig
+from praw.exceptions import RequiredConfig
 
 from . import UnitTest
 

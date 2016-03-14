@@ -6,7 +6,7 @@ from update_checker import update_check
 from prawcore import (Authenticator, ReadOnlyAuthorizer, Redirect, Requestor,
                       ScriptAuthorizer, session)
 
-from .errors import RequiredConfig
+from .exceptions import RequiredConfig
 from .config import Config
 from .const import __version__, API_PATH, USER_AGENT_FORMAT
 from .objector import Objector
