@@ -2,7 +2,7 @@
 
 
 class Objector(object):
-    """The objector builds RedditModel objects."""
+    """The objector builds RedditBase objects."""
 
     def __init__(self, reddit):
         """Initialize an Objector instance.
@@ -12,6 +12,16 @@ class Objector(object):
         """
         self.parsers = {}
         self.reddit = reddit
+
+    def kind(self, instance):
+        """Return the kind from the instance class.
+
+        :param instance: An instance of a subclass of RedditBase.
+
+        """
+        for key in self.parsers:
+            if isinstance(instance, self.parsers[key]):
+                return key
 
     def objectify(self, data):
         """Create RedditModel objects from data.
@@ -26,11 +36,11 @@ class Objector(object):
             return parser.parse(data['data'], self.reddit)
         return data
 
-    def register(self, key, klass):
-        """Register a class for a given key.
+    def register(self, kind, klass):
+        """Register a class for a given kind.
 
-        :param key: The key in the parsed data to map to ``klass``.
+        :param kind: The kind in the parsed data to map to ``klass``.
         :param klass: A RedditModel class.
 
         """
-        self.parsers[key] = klass
+        self.parsers[kind] = klass

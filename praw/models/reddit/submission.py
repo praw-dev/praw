@@ -19,6 +19,8 @@ class Submission(RedditBase, EditableMixin, GildableMixin, HidableMixin,
                  SubmissionListingMixin):
     """A class for submissions to reddit."""
 
+    EQ_FIELD = 'id'
+
     _methods = (('select_flair', 'AR'),)
 
     @staticmethod
