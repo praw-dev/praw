@@ -1,31 +1,28 @@
-"""Provide classes that act as lists."""
-
+"""Provide the BaseList class."""
 from six import text_type
 
-from .prawmodel import PRAWModel
-from .redditor import Redditor
-from .wikipage import WikiPage
+from ..base import PRAWBase
 
 
-class PRAWList(PRAWModel):
-    """An abstract class to coerce a list into a PRAWModel."""
+class BaseList(PRAWBase):
+    """An abstract class to coerce a list into a PRAWBase."""
 
     CHILD_ATTRIBUTE = None
 
     @staticmethod
     def _convert(reddit, item):
-        raise NotImplementedError('PRAWList must be extended.')
+        raise NotImplementedError('BaseList must be extended.')
 
     def __init__(self, reddit):
-        """Initialize a PRAWList instance.
+        """Initialize a BaseList instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
 
         """
-        super(PRAWList, self).__init__(reddit)
+        super(BaseList, self).__init__(reddit)
 
         if self.CHILD_ATTRIBUTE is None:
-            raise NotImplementedError('PRAWList must be extended.')
+            raise NotImplementedError('BaseList must be extended.')
 
         child_list = getattr(self, self.CHILD_ATTRIBUTE)
         for index, item in enumerate(child_list):
@@ -58,26 +55,3 @@ class PRAWList(PRAWModel):
     def __unicode__(self):
         """Return a string representation of the list."""
         return text_type(getattr(self, self.CHILD_ATTRIBUTE))
-
-
-class UserList(PRAWList):
-    """A list of Redditors. Works just like a regular list."""
-
-    CHILD_ATTRIBUTE = 'children'
-
-    @staticmethod
-    def _convert(reddit, data):
-        """Return a Redditor object from the data."""
-        return Redditor(reddit, data['name'])
-
-
-class WikiPageList(PRAWList):
-    """A list of WikiPages. Works just like a regular list."""
-
-    CHILD_ATTRIBUTE = '_tmp'
-
-    @staticmethod
-    def _convert(reddit, data):
-        """Return a WikiPage object from the data."""
-        subreddit = reddit._request_url.rsplit('/', 4)[1]
-        return WikiPage(reddit, subreddit, data, fetch=False)
