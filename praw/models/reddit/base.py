@@ -1,10 +1,10 @@
 """Provide the RedditModel class."""
 from six import PY3
 
-from .prawmodel import PRAWModel
+from ..base import PRAWBase
 
 
-class RedditModel(PRAWModel):
+class RedditBase(PRAWBase):
     """Base class that represents actual Reddit objects."""
 
     REDDITOR_KEYS = ('approved_by', 'author', 'banned_by', 'redditor',
@@ -22,17 +22,17 @@ class RedditModel(PRAWModel):
                               self.id)  # pylint: disable=invalid-name
 
     def __init__(self, reddit, _data):
-        """Initialize a RedditModel instance.
+        """Initialize a RedditBase instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
 
         """
-        super(RedditModel, self).__init__(reddit, _data)
+        super(RedditBase, self).__init__(reddit, _data)
         self._fetched = False
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
-        return (isinstance(other, RedditModel) and
+        return (isinstance(other, RedditBase) and
                 self.fullname == other.fullname)
 
     def __hash__(self):

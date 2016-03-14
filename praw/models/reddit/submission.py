@@ -3,8 +3,8 @@ from six import text_type
 from six.moves.urllib.parse import (urljoin,  # pylint: disable=import-error
                                     urlparse)
 
-from ..const import API_PATH
-from .comment_forest import CommentForest
+from ...const import API_PATH
+from ..comment_forest import CommentForest
 from .mixins import (EditableMixin, GildableMixin, HidableMixin,
                      ModeratableMixin, ReportableMixin, SavableMixin,
                      SubmissionListingMixin, VotableMixin)

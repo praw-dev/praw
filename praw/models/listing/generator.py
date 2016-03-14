@@ -1,27 +1,9 @@
 """Provide the ListingGenerator class."""
-from .prawmodel import PRAWModel
+from ..base import PRAWBase
 
 
-class Listing(PRAWModel):
-    """A listing is a collection of RedditModel instances."""
-
-    def __len__(self):
-        """Return the number of items in the Listing."""
-        return len(self.children)
-
-    def __getitem__(self, index):
-        """Return the item at position index in the list."""
-        return self.children[index]
-
-    def __setattr__(self, attribute, value):
-        """Objectify the `children` attribute."""
-        if attribute == 'children':
-            value = self._reddit._objector.objectify(value)
-        super(Listing, self).__setattr__(attribute, value)
-
-
-class ListingGenerator(PRAWModel):
-    """Instances of this class generate ``RedditModels``."""
+class ListingGenerator(PRAWBase):
+    """Instances of this class generate ``RedditBase`` instances."""
 
     def __init__(self, reddit, url, limit=100, params=None):
         """Initialize a ListingGenerator instance.
