@@ -13,3 +13,4 @@ from .reddit.redditor import Redditor  # NOQA
 from .reddit.submission import Submission  # NOQA
 from .reddit.subreddit import Subreddit  # NOQA
 from .reddit.wikipage import WikiPage  # NOQA
+from .user import User  # NOQA

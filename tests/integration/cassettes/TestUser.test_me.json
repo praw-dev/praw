@@ -1,0 +1,103 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-03-14T06:28:58",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "password=<PASSWORD>&grant_type=password&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.5"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "base64_string": "H4sIAAAAAAAAA6tWSkxOTi0uji/Jz07NU7JSUDI3NjCyMDPXrUou0M31dDIo8wp38vLKdCmuirIsCUrK8SzwVNJRUAKrjy+pLEgFaUpKTSxKLQKJp1YUZBalFsdnggwzNjMw0FFQKk7OhyjTUqoFAE2Ypj5xAAAA",
+          "encoding": "UTF-8",
+          "string": ""
+        },
+        "headers": {
+          "CF-RAY": "2835ab25293039ee-PHX",
+          "Connection": "keep-alive",
+          "Content-Encoding": "gzip",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Mon, 14 Mar 2016 06:28:58 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=d3d701ae0544178ffb9bd8ad2b5b8a8e11457936937; expires=Tue, 14-Mar-17 06:28:57 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Transfer-Encoding": "chunked",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-03-14T06:28:58",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate",
+          "Authorization": "bearer 7302867-zcp-mIB0vJWBJJiDszZ9tRblIpI",
+          "Connection": "keep-alive",
+          "Cookie": "loidcreated=2016-03-14T06%3A28%3A57.829Z; __cfduid=d3d701ae0544178ffb9bd8ad2b5b8a8e11457936937; loid=j1uTsanJotQ7X02NJq",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.5"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/v1/me?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "base64_string": "H4sIAAAAAAAAA12QsU7EMAyGXyXyXKFrVVDpxsh2wzFbaeOCdUlcJempJ8S7o4QWFTbL+v35sz+BI5KbrdyJoFeTtpEqBR86otNsDy2vXU7A+f5yfr1QTG+RQgOVgjGQTmSgV3XTtU/tqekeH06ZwoZwCuIwyCApHmgcMS5xJm/K4N7eULikccfVdbvjspSY/2KW/RWvOjhdRjLc40BJH7niHPn0G3uuFMiNAtYd9CqFZXN6F2v+Wjoxh0SuoR15nfLhOY20zhx0YvHQK79YWwQGWXGUxSfo1e5+o8ATk0HaLtioBTMGMobLj3L+5zmRxR8WbG/JS76+AaPKnUi6AQAA",
+          "encoding": "UTF-8",
+          "string": ""
+        },
+        "headers": {
+          "CF-RAY": "2835ab29029e39a6-PHX",
+          "Connection": "keep-alive",
+          "Content-Encoding": "gzip",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Mon, 14 Mar 2016 06:28:58 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Transfer-Encoding": "chunked",
+          "X-Moose": "majestic",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "597.0",
+          "x-ratelimit-reset": "62",
+          "x-ratelimit-used": "3",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/v1/me?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.5.1"
+}

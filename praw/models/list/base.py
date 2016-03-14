@@ -13,13 +13,13 @@ class BaseList(PRAWBase):
     def _convert(reddit, item):
         raise NotImplementedError('BaseList must be extended.')
 
-    def __init__(self, reddit):
+    def __init__(self, reddit, _data):
         """Initialize a BaseList instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
 
         """
-        super(BaseList, self).__init__(reddit)
+        super(BaseList, self).__init__(reddit, _data)
 
         if self.CHILD_ATTRIBUTE is None:
             raise NotImplementedError('BaseList must be extended.')

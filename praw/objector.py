@@ -21,8 +21,10 @@ class Objector(object):
         """
         if isinstance(data, list):
             return [self.objectify(item) for item in data]
-        parser = self.parsers[data['kind']]
-        return parser.parse(data['data'], self.reddit)
+        if 'kind' in data:
+            parser = self.parsers[data['kind']]
+            return parser.parse(data['data'], self.reddit)
+        return data
 
     def register(self, key, klass):
         """Register a class for a given key.

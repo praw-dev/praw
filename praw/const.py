@@ -39,7 +39,7 @@ API_PATH = {
     'flairtemplate':       'api/flairtemplate/',
     'friend':              'api/friend/',
     'friend_v1':           'api/v1/me/friends/{user}',
-    'friends':             'prefs/friends/',
+    'friends':             'api/v1/me/friends/',
     'gild_thing':          'api/v1/gold/gild/{fullname}/',
     'gild_user':           'api/v1/gold/give/{username}/',
     'help':                'help/',

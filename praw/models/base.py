@@ -6,7 +6,7 @@ class PRAWBase(object):
 
     @classmethod
     def parse(cls, data, reddit):
-        """Return an instance of klass from data.
+        """Return an instance of ``cls`` from ``data``.
 
         :param data: The structured data.
         :param reddit: An instance of :class:`.Reddit`.

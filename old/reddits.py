@@ -464,21 +464,6 @@ class BaseReddit(object):
         data = {'r':  six.text_type(subreddit), 'link': link}
         return self.request_json(self.config['flairselector'], data=data)
 
-    def get_friends(self, **params):
-        Return a UserList of Redditors with whom the user is friends.
-        url = self.config['friends']
-        return self.request_json(url, params=params)[0]
-
-    def get_me(self):
-        Return a LoggedInRedditor object.
-
-        Note: This function is only intended to be used with an 'identity'
-        providing OAuth2 grant.
-        response = self.request_json(self.config['me'])
-        user = models.Redditor(self, response['name'], response)
-        user.__class__ = models.LoggedInRedditor
-        return user
-
     def has_scope(self, scope):
         Return True if OAuth2 authorized for the passed in scope(s).
         if '*' in self._authentication:
