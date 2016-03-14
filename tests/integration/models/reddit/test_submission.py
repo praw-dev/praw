@@ -1,6 +1,6 @@
 from praw.models import Comment, Submission
 
-from .. import IntegrationTest
+from ... import IntegrationTest
 
 
 class TestSubmission(IntegrationTest):

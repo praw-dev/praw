@@ -1,7 +1,7 @@
 """Test praw.models.user."""
 from praw.models import Redditor
 
-from . import IntegrationTest
+from .. import IntegrationTest
 
 
 class TestUser(IntegrationTest):

@@ -1,7 +1,7 @@
 import pytest
 from praw.models import Submission
 
-from .. import UnitTest
+from ... import UnitTest
 
 
 class TestSubmission(UnitTest):
