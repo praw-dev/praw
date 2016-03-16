@@ -1,5 +1,4 @@
 """Provide the Submission class."""
-from six import text_type
 from six.moves.urllib.parse import (urljoin,  # pylint: disable=import-error
                                     urlparse)
 
@@ -78,11 +77,6 @@ class Submission(RedditBase, EditableMixin, GildableMixin, HidableMixin,
         elif attribute == 'subreddit':
             value = Subreddit(self._reddit, value)
         super(Submission, self).__setattr__(attribute, value)
-
-    def __unicode__(self):
-        """Return a string representation of the Subreddit."""
-        title = self.title.replace('\r\n', ' ')
-        return text_type('{} :: {}').format(self.score, title)
 
     def _fetch(self):
         other, comments = self._reddit.request(self._info_path())

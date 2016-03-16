@@ -21,10 +21,6 @@ class MoreComments(RedditBase):
         # implementation for Submission.replace_more_comments()
         return self.count > other.count
 
-    def __unicode__(self):
-        """Return a string representation of the MoreComments object."""
-        return '[More Comments: {0}]'.format(self.count)
-
     def _continue_comments(self, update):
         assert len(self.children) > 0
         tmp = self.reddit_session.get_submission(urljoin(

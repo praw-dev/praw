@@ -1,6 +1,4 @@
 """Provide the BaseList class."""
-from six import text_type
-
 from ..base import PRAWBase
 
 
@@ -51,7 +49,3 @@ class BaseList(PRAWBase):
     def __setitem__(self, index, item):
         """Set item at position `index` in the list."""
         getattr(self, self.CHILD_ATTRIBUTE)[index] = item
-
-    def __unicode__(self):
-        """Return a string representation of the list."""
-        return text_type(getattr(self, self.CHILD_ATTRIBUTE))

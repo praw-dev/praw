@@ -40,14 +40,6 @@ class Redditor(RedditBase, GildableMixin, MessageableMixin,
             self.name = name
         self._path = API_PATH['user'].format(user=self.name)
 
-    def __repr__(self):
-        """Return a code representation of the Redditor."""
-        return 'Redditor({!r})'.format(self.name)
-
-    def __unicode__(self):
-        """Return a string representation of the Redditor."""
-        return self.name
-
     def _info_url(self):
         return API_PATH['user_about'].format(user=self.name)
 

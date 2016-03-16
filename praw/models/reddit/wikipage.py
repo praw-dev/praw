@@ -33,10 +33,6 @@ class WikiPage(RedditBase):
         self.page = page
         self.subreddit = subreddit
 
-    def __unicode__(self):
-        """Return a string representation of the page."""
-        return text_type('{0}:{1}').format(self.subreddit, self.page)
-
     def add_editor(self, username, _delete=False, *args, **kwargs):
         """Add an editor to this wiki page.
 

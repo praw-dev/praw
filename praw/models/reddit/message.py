@@ -41,11 +41,6 @@ class Message(RedditBase, InboxableMixin):
         else:
             self.replies = []
 
-    def __unicode__(self):
-        """Return a string representation of the Message."""
-        return 'From: {0}\nSubject: {1}\n\n{2}'.format(self.author,
-                                                       self.subject, self.body)
-
     def collapse(self):
         """Collapse a private message or modmail."""
         url = self.reddit_session.config['collapse_message']

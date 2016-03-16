@@ -50,15 +50,6 @@ class Multireddit(RedditBase, SubredditListingMixin):
         self._url = reddit.config['multireddit'].format(
             user=author, multi=name)
 
-    def __repr__(self):
-        """Return a code representation of the Multireddit."""
-        return 'Multireddit(author=\'{0}\', name=\'{1}\')'.format(
-            self._author, self.name)
-
-    def __unicode__(self):
-        """Return a string representation of the Multireddit."""
-        return self.name
-
     def add_subreddit(self, subreddit, _delete=False, *args, **kwargs):
         """Add a subreddit to the multireddit.
 

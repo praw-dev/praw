@@ -1,6 +1,4 @@
 """Provide the RedditModel class."""
-from six import PY3
-
 from ..base import PRAWBase
 
 
@@ -48,13 +46,6 @@ class RedditBase(PRAWBase):
     def __ne__(self, other):
         """Return whether the other instance differs from the current."""
         return not self == other
-
-    def __str__(self):
-        """Return a string representation of the instance."""
-        retval = self.__unicode__()
-        if not PY3:
-            retval = retval.encode('utf-8')
-        return retval
 
     def _fetch(self):
         other = self._reddit.request(self._info_path())

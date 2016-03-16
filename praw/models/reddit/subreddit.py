@@ -118,14 +118,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             self.display_name = name
         self._path = API_PATH['subreddit'].format(subreddit=self.display_name)
 
-    def __repr__(self):
-        """Return a code representation of the Subreddit."""
-        return 'Subreddit(name={!r})'.format(self.display_name)
-
-    def __unicode__(self):
-        """Return a string representation of the Subreddit."""
-        return self.display_name
-
     def _info_path(self):
         return API_PATH['subreddit_about'].format(subreddit=self.display_name)
 
