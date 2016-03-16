@@ -43,6 +43,10 @@ class RedditBase(PRAWBase):
         super(RedditBase, self).__init__(reddit, _data)
         self._fetched = False
 
+    def __str__(self):
+        """Return a string representation of the class."""
+        return getattr(self, self.EQ_FIELD)
+
     def __ne__(self, other):
         """Return whether the other instance differs from the current."""
         return not self == other

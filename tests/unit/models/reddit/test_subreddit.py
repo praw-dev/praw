@@ -56,3 +56,8 @@ class TestSubredit(UnitTest):
         for level in range(pickle.HIGHEST_PROTOCOL + 1):
             other = pickle.loads(pickle.dumps(subreddit, protocol=level))
             assert subreddit == other
+
+    def test_str(self):
+        subreddit = Subreddit(self.reddit, _data={'display_name': 'name',
+                                                  'id': 'dummy'})
+        assert str(subreddit) == 'name'

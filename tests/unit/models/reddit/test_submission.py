@@ -67,3 +67,7 @@ class TestSubmission(UnitTest):
         for level in range(pickle.HIGHEST_PROTOCOL + 1):
             other = pickle.loads(pickle.dumps(submission, protocol=level))
             assert submission == other
+
+    def test_str(self):
+        submission = Submission(self.reddit, _data={'id': 'dummy'})
+        assert str(submission) == 'dummy'
