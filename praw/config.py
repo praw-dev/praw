@@ -39,7 +39,7 @@ class Config(object):
         def fetch_or_none(key):
             if key in settings:  # Passed in values have the highest priority
                 return raw[key]
-            return os.getenv(key) or raw.get(key) or None
+            return os.getenv('praw_{}'.format(key)) or raw.get(key) or None
 
         if Config.CONFIG is None:
             self._load_config()

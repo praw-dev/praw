@@ -62,7 +62,7 @@ class Reddit(object):
             easily save credentials for different applications, or communicate
             with other servers running reddit. If ``site_name`` is ``None``,
             then the site name will be looked for in the environment variable
-            PRAW_SITE. If it is not found there, the default site name
+            praw_site. If it is not found there, the default site name
             ``reddit`` will be used.
 
         Additional keyword arguments will be used to initialize the ``Config``
@@ -80,7 +80,7 @@ class Reddit(object):
         self._core = self._authorized_core = self._read_only_core = None
         self._objector = None
         self._unique_counter = 0
-        self.config = Config(site_name or os.getenv('PRAW_SITE') or 'reddit',
+        self.config = Config(site_name or os.getenv('praw_site') or 'reddit',
                              **config_settings)
 
         for attribute in ['client_id', 'client_secret', 'user_agent']:
