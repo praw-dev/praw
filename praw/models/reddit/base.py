@@ -16,6 +16,24 @@ class RedditBase(PRAWBase):
         return '{}_{}'.format(self._reddit._objector.kind(self),
                               self.id)  # pylint: disable=invalid-name
 
+    def __eq__(self, other):
+        """Return whether the other instance equals the current."""
+        return (isinstance(other, self.__class__) and
+                getattr(self, self.EQ_FIELD) == getattr(other, other.EQ_FIELD))
+
+    def __getattr__(self, attribute):
+        """Return the value of `attrribute`."""
+        if not attribute.startswith('__') and not self._fetched:
+            self._fetch()
+            return getattr(self, attribute)
+        raise AttributeError('{!r} object has no attribute {!r}'
+                             .format(self.__class__.__name__, attribute))
+
+    def __hash__(self):
+        """Return the hash of the current instance."""
+        return hash(self.__class__.__name__) ^ hash(getattr(self,
+                                                            self.EQ_FIELD))
+
     def __init__(self, reddit, _data):
         """Initialize a RedditBase instance.
 
@@ -24,24 +42,6 @@ class RedditBase(PRAWBase):
         """
         super(RedditBase, self).__init__(reddit, _data)
         self._fetched = False
-
-    def __eq__(self, other):
-        """Return whether the other instance equals the current."""
-        return (isinstance(other, self.__class__) and
-                getattr(self, self.EQ_FIELD) == getattr(other, other.EQ_FIELD))
-
-    def __hash__(self):
-        """Return the hash of the current instance."""
-        return hash(self.__class__.__name__) ^ hash(getattr(self,
-                                                            self.EQ_FIELD))
-
-    def __getattr__(self, attribute):
-        """Return the value of `attrribute`."""
-        if attribute != '__setstate__' and not self._fetched:
-            self._fetch()
-            return getattr(self, attribute)
-        raise AttributeError('{!r} object has no attribute {!r}'
-                             .format(self.__class__.__name__, attribute))
 
     def __ne__(self, other):
         """Return whether the other instance differs from the current."""

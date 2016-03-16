@@ -33,15 +33,15 @@ class Reddit(object):
     def read_only(self, value):
         """Set or unset the use of the ReadOnlyAuthorizer.
 
-        Raise ``AttributeError`` when attempting to unset ``read_only`` and
+        Raise ``ClientException`` when attempting to unset ``read_only`` and
         only the ReadOnlyAuthorizer is available.
 
         """
         if value:
             self._core = self._read_only_core
         elif self._authorized_core is None:
-            raise AttributeError('read_only cannot be set as only the '
-                                 'ReadOnlyAuthorizer is available.')
+            raise ClientException('read_only cannot be set as only the '
+                                  'ReadOnlyAuthorizer is available.')
         else:
             self._core = self._authorized_core
 

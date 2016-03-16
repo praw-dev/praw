@@ -37,6 +37,8 @@ def _modify_relationship(relationship, unlink=False):
 class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     """A class for Subreddits."""
 
+    EQ_FIELD = 'display_name'
+
     _methods = (('accept_moderator_invite', 'AR'),
                 ('add_flair_template', 'MFMix'),
                 ('clear_flair_templates', 'MFMix'),
@@ -112,7 +114,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         """
         if bool(name) == bool(_data):
-            raise TypeError('Either `name` or `_data` can be provided.')
+            raise TypeError('Either `name` or `_data` must be provided.')
         super(Subreddit, self).__init__(reddit, _data)
         if name:
             self.display_name = name

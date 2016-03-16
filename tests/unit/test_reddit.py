@@ -33,7 +33,7 @@ class TestReddit(UnitTest):
         with Reddit(password=None, username=None,
                     **self.REQUIRED_DUMMY_SETTINGS) as reddit:
             assert reddit.read_only
-            with pytest.raises(AttributeError):
+            with pytest.raises(ClientException):
                 reddit.read_only = False
             assert reddit.read_only
             reddit.read_only = True

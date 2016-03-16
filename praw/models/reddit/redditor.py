@@ -12,6 +12,8 @@ class Redditor(RedditBase, GildableMixin, MessageableMixin,
                RedditorListingMixin):
     """A class representing the users of reddit."""
 
+    EQ_FIELD = 'name'
+
     _methods = (('get_multireddit', 'MultiMix'),
                 ('get_multireddits', 'MultiMix'))
 
@@ -33,7 +35,7 @@ class Redditor(RedditBase, GildableMixin, MessageableMixin,
 
         """
         if bool(name) == bool(_data):
-            raise TypeError('Either `name` or `_data` can be provided.')
+            raise TypeError('Either `name` or `_data` must be provided.')
         super(Redditor, self).__init__(reddit, _data)
         self._listing_use_sort = True
         if name:

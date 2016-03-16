@@ -1,6 +1,7 @@
 import pickle
 
 import pytest
+from praw.exceptions import ClientException
 from praw.models import Submission
 
 from ... import UnitTest
@@ -17,6 +18,16 @@ class TestSubmission(UnitTest):
         assert submission1 == submission2
         assert submission2 != submission3
         assert submission1 != submission3
+
+    def test_construct_failure(self):
+        message = 'Either `id_or_url` or `_data` must be provided.'
+        with pytest.raises(TypeError) as excinfo:
+            Submission(self.reddit)
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            Submission(self.reddit, 'dummy', {'id': 'dummy'})
+        assert str(excinfo.value) == message
 
     def test_fullname(self):
         submission = Submission(self.reddit, _data={'id': 'dummy'})
@@ -48,7 +59,7 @@ class TestSubmission(UnitTest):
                 'https://redd.it/_/',
                 'http://reddit.com/comments/_/2gmzqe']
         for url in urls:
-            with pytest.raises(AttributeError):
+            with pytest.raises(ClientException):
                 Submission.id_from_url(url)
 
     def test_pickle(self):

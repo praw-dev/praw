@@ -1,0 +1,58 @@
+import pickle
+
+import pytest
+from praw.models import Subreddit
+
+from ... import UnitTest
+
+
+class TestSubredit(UnitTest):
+    def test_equality(self):
+        subreddit1 = Subreddit(self.reddit,
+                               _data={'display_name': 'dummy1', 'n': 1})
+        subreddit2 = Subreddit(self.reddit,
+                               _data={'display_name': 'dummy1', 'n': 2})
+        subreddit3 = Subreddit(self.reddit,
+                               _data={'display_name': 'dummy3', 'n': 2})
+        assert subreddit1 == subreddit1
+        assert subreddit2 == subreddit2
+        assert subreddit3 == subreddit3
+        assert subreddit1 == subreddit2
+        assert subreddit2 != subreddit3
+        assert subreddit1 != subreddit3
+
+    def test_construct_failure(self):
+        message = 'Either `name` or `_data` must be provided.'
+        with pytest.raises(TypeError) as excinfo:
+            Subreddit(self.reddit)
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            Subreddit(self.reddit, 'dummy', {'id': 'dummy'})
+        assert str(excinfo.value) == message
+
+    def test_fullname(self):
+        subreddit = Subreddit(self.reddit, _data={'display_name': 'name',
+                                                  'id': 'dummy'})
+        assert subreddit.fullname == 't5_dummy'
+
+    def test_hash(self):
+        subreddit1 = Subreddit(self.reddit,
+                               _data={'display_name': 'dummy1', 'n': 1})
+        subreddit2 = Subreddit(self.reddit,
+                               _data={'display_name': 'dummy1', 'n': 2})
+        subreddit3 = Subreddit(self.reddit,
+                               _data={'display_name': 'dummy3', 'n': 2})
+        assert hash(subreddit1) == hash(subreddit1)
+        assert hash(subreddit2) == hash(subreddit2)
+        assert hash(subreddit3) == hash(subreddit3)
+        assert hash(subreddit1) == hash(subreddit2)
+        assert hash(subreddit2) != hash(subreddit3)
+        assert hash(subreddit1) != hash(subreddit3)
+
+    def test_pickle(self):
+        subreddit = Subreddit(self.reddit, _data={'display_name': 'name',
+                                                  'id': 'dummy'})
+        for level in range(pickle.HIGHEST_PROTOCOL + 1):
+            other = pickle.loads(pickle.dumps(subreddit, protocol=level))
+            assert subreddit == other

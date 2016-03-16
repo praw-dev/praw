@@ -3,6 +3,7 @@ from six.moves.urllib.parse import (urljoin,  # pylint: disable=import-error
                                     urlparse)
 
 from ...const import API_PATH
+from ...exceptions import ClientException
 from ..comment_forest import CommentForest
 from ..listing.mixins import SubmissionListingMixin
 from .base import RedditBase
@@ -32,12 +33,12 @@ class Submission(RedditBase, EditableMixin, GildableMixin, HidableMixin,
             * https://reddit.com/comments/2gmzqe/
             * https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/
 
-        Raise ``AttributeError`` if URL is not a valid submission URL.
+        Raise ``ClientException`` if URL is not a valid submission URL.
 
         """
         parsed = urlparse(url)
         if not parsed.netloc:
-            raise AttributeError('Invalid URL: {}'.format(url))
+            raise ClientException('Invalid URL: {}'.format(url))
 
         parts = parsed.path.split('/')
         if 'comments' not in parts:
@@ -46,7 +47,7 @@ class Submission(RedditBase, EditableMixin, GildableMixin, HidableMixin,
             submission_id = parts[parts.index('comments') + 1]
 
         if not submission_id.isalnum():
-            raise AttributeError('Invalid URL: {}'.format(url))
+            raise ClientException('Invalid URL: {}'.format(url))
         return submission_id
 
     def __init__(self, reddit, id_or_url=None, _data=None):
@@ -58,7 +59,7 @@ class Submission(RedditBase, EditableMixin, GildableMixin, HidableMixin,
 
         """
         if bool(id_or_url) == bool(_data):
-            raise TypeError('Either `id_or_url` or `_data` can be provided.')
+            raise TypeError('Either `id_or_url` or `_data` must be provided.')
         super(Submission, self).__init__(reddit, _data)
         if id_or_url:
             if id_or_url.isalnum():
