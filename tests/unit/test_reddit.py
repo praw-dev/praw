@@ -1,7 +1,7 @@
 import mock
 import pytest
 from praw import __version__, Reddit
-from praw.exceptions import RequiredConfig
+from praw.exceptions import ClientException
 
 from . import UnitTest
 
@@ -9,14 +9,6 @@ from . import UnitTest
 class TestReddit(UnitTest):
     REQUIRED_DUMMY_SETTINGS = {x: 'dummy' for x in
                                ['client_id', 'client_secret', 'user_agent']}
-
-    def test_reddit_missing_required_settings(self):
-        for setting in self.REQUIRED_DUMMY_SETTINGS:
-            with pytest.raises(RequiredConfig) as excinfo:
-                settings = self.REQUIRED_DUMMY_SETTINGS.copy()
-                settings[setting] = None
-                Reddit(**settings)
-            assert excinfo.value.setting == setting
 
     @mock.patch('praw.reddit.update_check')
     def test_check_for_updates(self, mock_update_check):
@@ -46,6 +38,16 @@ class TestReddit(UnitTest):
             assert reddit.read_only
             reddit.read_only = True
             assert reddit.read_only
+
+    def test_reddit_missing_required_settings(self):
+        for setting in self.REQUIRED_DUMMY_SETTINGS:
+            with pytest.raises(ClientException) as excinfo:
+                settings = self.REQUIRED_DUMMY_SETTINGS.copy()
+                settings[setting] = None
+                Reddit(**settings)
+            assert str(excinfo.value).startswith('Required configuration '
+                                                 'setting \'{}\' missing.'
+                                                 .format(setting))
 
     def test_submission(self):
         assert self.reddit.submission('2gmzqe').id == '2gmzqe'

@@ -6,7 +6,7 @@ from update_checker import update_check
 from prawcore import (Authenticator, ReadOnlyAuthorizer, Redirect, Requestor,
                       ScriptAuthorizer, session)
 
-from .exceptions import RequiredConfig
+from .exceptions import ClientException
 from .config import Config
 from .const import __version__, API_PATH, USER_AGENT_FORMAT
 from .objector import Objector
@@ -83,9 +83,13 @@ class Reddit(object):
         self.config = Config(site_name or os.getenv('PRAW_SITE') or 'reddit',
                              **config_settings)
 
-        for attr in ['client_id', 'client_secret', 'user_agent']:
-            if not getattr(self.config, attr):
-                raise RequiredConfig(attr)
+        for attribute in ['client_id', 'client_secret', 'user_agent']:
+            if not getattr(self.config, attribute):
+                message = ('Required configuration setting {!r} missing. \n'
+                           'This setting can be provided in a praw.ini file, '
+                           'as a keyword argument to the `Reddit` class '
+                           'constructor, or as an environment variable.')
+                raise ClientException(message.format(attribute))
 
         self._check_for_update()
         self._prepare_objector()

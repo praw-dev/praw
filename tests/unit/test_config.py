@@ -73,4 +73,4 @@ class TestConfig(object):
         config = Config('reddit', short_url=None)
         with pytest.raises(ClientException) as excinfo:
             config.short_url
-        assert excinfo.value.message == 'No short domain specified.'
+        assert str(excinfo.value) == 'No short domain specified.'
