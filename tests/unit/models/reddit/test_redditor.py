@@ -9,7 +9,7 @@ from ... import UnitTest
 class TestSubredit(UnitTest):
     def test_equality(self):
         redditor1 = Redditor(self.reddit, _data={'name': 'dummy1', 'n': 1})
-        redditor2 = Redditor(self.reddit, _data={'name': 'dummy1', 'n': 2})
+        redditor2 = Redditor(self.reddit, _data={'name': 'Dummy1', 'n': 2})
         redditor3 = Redditor(self.reddit, _data={'name': 'dummy3', 'n': 2})
         assert redditor1 == redditor1
         assert redditor2 == redditor2
@@ -17,6 +17,8 @@ class TestSubredit(UnitTest):
         assert redditor1 == redditor2
         assert redditor2 != redditor3
         assert redditor1 != redditor3
+        assert 'dummy1' == redditor1
+        assert redditor2 == 'dummy1'
 
     def test_construct_failure(self):
         message = 'Either `name` or `_data` must be provided.'
@@ -34,7 +36,7 @@ class TestSubredit(UnitTest):
 
     def test_hash(self):
         redditor1 = Redditor(self.reddit, _data={'name': 'dummy1', 'n': 1})
-        redditor2 = Redditor(self.reddit, _data={'name': 'dummy1', 'n': 2})
+        redditor2 = Redditor(self.reddit, _data={'name': 'Dummy1', 'n': 2})
         redditor3 = Redditor(self.reddit, _data={'name': 'dummy3', 'n': 2})
         assert hash(redditor1) == hash(redditor1)
         assert hash(redditor2) == hash(redditor2)

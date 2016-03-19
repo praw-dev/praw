@@ -18,8 +18,11 @@ class RedditBase(PRAWBase):
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
+        if isinstance(other, str):
+            return other.lower() == getattr(self, self.EQ_FIELD).lower()
         return (isinstance(other, self.__class__) and
-                getattr(self, self.EQ_FIELD) == getattr(other, other.EQ_FIELD))
+                getattr(self, self.EQ_FIELD).lower() ==
+                getattr(other, other.EQ_FIELD).lower())
 
     def __getattr__(self, attribute):
         """Return the value of `attrribute`."""
@@ -31,8 +34,8 @@ class RedditBase(PRAWBase):
 
     def __hash__(self):
         """Return the hash of the current instance."""
-        return hash(self.__class__.__name__) ^ hash(getattr(self,
-                                                            self.EQ_FIELD))
+        return hash(self.__class__.__name__) ^ hash(
+            getattr(self, self.EQ_FIELD).lower())
 
     def __init__(self, reddit, _data):
         """Initialize a RedditBase instance.

@@ -10,7 +10,7 @@ from ... import UnitTest
 class TestSubmission(UnitTest):
     def test_equality(self):
         submission1 = Submission(self.reddit, _data={'id': 'dummy1', 'n': 1})
-        submission2 = Submission(self.reddit, _data={'id': 'dummy1', 'n': 2})
+        submission2 = Submission(self.reddit, _data={'id': 'Dummy1', 'n': 2})
         submission3 = Submission(self.reddit, _data={'id': 'dummy3', 'n': 2})
         assert submission1 == submission1
         assert submission2 == submission2
@@ -18,6 +18,8 @@ class TestSubmission(UnitTest):
         assert submission1 == submission2
         assert submission2 != submission3
         assert submission1 != submission3
+        assert 'dummy1' == submission1
+        assert submission2 == 'dummy1'
 
     def test_construct_failure(self):
         message = 'Either `id_or_url` or `_data` must be provided.'
@@ -35,7 +37,7 @@ class TestSubmission(UnitTest):
 
     def test_hash(self):
         submission1 = Submission(self.reddit, _data={'id': 'dummy1', 'n': 1})
-        submission2 = Submission(self.reddit, _data={'id': 'dummy1', 'n': 2})
+        submission2 = Submission(self.reddit, _data={'id': 'Dummy1', 'n': 2})
         submission3 = Submission(self.reddit, _data={'id': 'dummy3', 'n': 2})
         assert hash(submission1) == hash(submission1)
         assert hash(submission2) == hash(submission2)

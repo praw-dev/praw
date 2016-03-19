@@ -11,7 +11,7 @@ class TestSubredit(UnitTest):
         subreddit1 = Subreddit(self.reddit,
                                _data={'display_name': 'dummy1', 'n': 1})
         subreddit2 = Subreddit(self.reddit,
-                               _data={'display_name': 'dummy1', 'n': 2})
+                               _data={'display_name': 'Dummy1', 'n': 2})
         subreddit3 = Subreddit(self.reddit,
                                _data={'display_name': 'dummy3', 'n': 2})
         assert subreddit1 == subreddit1
@@ -20,6 +20,8 @@ class TestSubredit(UnitTest):
         assert subreddit1 == subreddit2
         assert subreddit2 != subreddit3
         assert subreddit1 != subreddit3
+        assert 'dummy1' == subreddit1
+        assert subreddit2 == 'dummy1'
 
     def test_construct_failure(self):
         message = 'Either `name` or `_data` must be provided.'
@@ -40,7 +42,7 @@ class TestSubredit(UnitTest):
         subreddit1 = Subreddit(self.reddit,
                                _data={'display_name': 'dummy1', 'n': 1})
         subreddit2 = Subreddit(self.reddit,
-                               _data={'display_name': 'dummy1', 'n': 2})
+                               _data={'display_name': 'Dummy1', 'n': 2})
         subreddit3 = Subreddit(self.reddit,
                                _data={'display_name': 'dummy3', 'n': 2})
         assert hash(subreddit1) == hash(subreddit1)
