@@ -14,7 +14,10 @@ class Comment(RedditBase, EditableMixin, GildableMixin, InboxableMixin,
               ModeratableMixin, ReportableMixin, SavableMixin, VotableMixin):
     """A class that represents a reddit comments."""
 
-    def __init__(self, reddit, _data):
+    EQ_FIELD = 'id'
+
+    def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
+                 _data=None):
         """Construct an instance of the Comment object."""
         super(Comment, self).__init__(reddit, _data)
         self._submission = None

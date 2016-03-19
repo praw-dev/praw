@@ -90,13 +90,14 @@ class Submission(RedditBase, EditableMixin, GildableMixin, HidableMixin,
     def _info_path(self):
         return API_PATH['submission'].format(id=self.id)
 
-    def comment(self, text):
-        """Comment on the submission using the specified text.
+    def reply(self, text):
+        """Reply to the submission with a top-level comment.
 
-        :returns: A Comment object for the newly created comment.
+        :returns: A :class:`~.Comment` object for the newly created comment.
 
         """
-        return self._reddit._add_comment(self.fullname, text)
+        data = {'thing_id': self.fullname, 'text': text}
+        return self._reddit.post(API_PATH['comment'], data=data)[0]
 
     def get_flair_choices(self, *args, **kwargs):
         """Return available link flair choices and current flair.

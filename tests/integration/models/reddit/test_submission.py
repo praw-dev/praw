@@ -27,3 +27,13 @@ class TestSubmission(IntegrationTest):
                 submission.invalid_attribute
         assert excinfo.value.args[0] == ("'Submission' object has no attribute"
                                          " 'invalid_attribute'")
+
+    def test_reply(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_reply'):
+            submission = Submission(self.reddit, '4b1tfm')
+            comment = submission.reply('Test reply')
+            assert comment.author == pytest.placeholders.username
+            assert comment.body == 'Test reply'
+            assert comment.parent_id == submission.fullname

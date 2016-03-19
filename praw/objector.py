@@ -34,6 +34,8 @@ class Objector(object):
         if 'kind' in data:
             parser = self.parsers[data['kind']]
             return parser.parse(data['data'], self._reddit)
+        elif 'json' in data and 'data' in data['json']:
+            return self.objectify(data['json']['data']['things'])
         elif isinstance(data, dict) and {'date', 'id', 'name'}.issubset(
                 set(data.keys())):
             parser = self.parsers[self._reddit.config.kinds['redditor']]

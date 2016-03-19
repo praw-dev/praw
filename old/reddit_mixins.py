@@ -929,17 +929,6 @@ class SubmitMixin(AuthenticatedReddit):
 
     """
 
-    def _add_comment(self, thing_id, text):
-        """Comment on the given thing with the given text.
-
-        :returns: A Comment object for the newly created comment.
-
-        """
-        data = {'thing_id': thing_id, 'text': text}
-        retval = self.request_json(self.config['comment'], data=data,
-                                   retry_on_error=False)
-        return retval['data']['things'][0]
-
     @decorators.require_captcha
     def submit(self, subreddit, title, text=None, url=None, captcha=None,
                save=None, send_replies=None, resubmit=None, **kwargs):

@@ -13,14 +13,6 @@ class CommentTest(PRAWTest):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     @betamax()
-    def test_add_comment(self):
-        text = 'Unique comment: {0}'.format(self.r.modhash)
-        submission = next(self.subreddit.get_new())
-        comment = submission.add_comment(text)
-        self.assertEqual(comment.submission, submission)
-        self.assertEqual(comment.body, text)
-
-    @betamax()
     def test_add_reply(self):
         text = 'Unique reply: {0}'.format(self.r.modhash)
         submission = self.first(self.subreddit.get_new(),

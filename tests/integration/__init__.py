@@ -14,6 +14,13 @@ class IntegrationTest(object):
                              password=pytest.placeholders.password,
                              user_agent=pytest.placeholders.user_agent,
                              username=pytest.placeholders.username)
-        self.recorder = Betamax(self.reddit._core._requestor._http)
+
+        http = self.reddit._core._requestor._http
+        self.recorder = Betamax(http)
+
+        # Disable response compression in order to see the response bodies in
+        # the betamax cassettes.
+        http.headers['Accept-Encoding'] = 'identity'
+
         # Require tests to explicitly disable read_only mode.
         self.reddit.read_only = True

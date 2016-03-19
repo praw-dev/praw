@@ -26,4 +26,4 @@ class InboxableMixin(object):
         :returns: A Comment object for the newly created comment (reply).
 
         """
-        return self.reddit_session._add_comment(self.fullname, text)
+        pass
