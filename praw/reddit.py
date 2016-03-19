@@ -134,6 +134,30 @@ class Reddit(object):
         else:
             self._core = self._read_only_core
 
+    def get(self, path, params=None):
+        """Return parsed objects returned from a GET request to ``path``.
+
+        :param path: The path to fetch.
+        :param params: The query parameters to add to the request (Default:
+            None).
+
+        """
+        data = self.request('GET', path, params=params)
+        return self._objector.objectify(data)
+
+    def post(self, path, data=None, params=None):
+        """Return parsed objects returned from a POST request to ``path``.
+
+        :param path: The path to fetch.
+        :param data: Dictionary, bytes, or file-like object to send in the body
+        of the request.
+        :param params: The query parameters to add to the request (Default:
+            None).
+
+        """
+        data = self.request('POST', path, data=data, params=params)
+        return self._objector.objectify(data)
+
     def random_subreddit(self, nsfw=False):
         """Return a random lazy instance of :class:`~.Subreddit`.
 
@@ -145,7 +169,7 @@ class Reddit(object):
                                            else 'random')
         path = None
         try:
-            self.request(url, params={'unique': self._next_unique})
+            self.get(url, params={'unique': self._next_unique})
         except Redirect as redirect:
             path = redirect.path
         return models.Subreddit(self, path.split('/')[2])
@@ -158,18 +182,20 @@ class Reddit(object):
         """
         return models.Redditor(self, name)
 
-    def request(self, path, params=None):
-        """Return the parsed JSON data returned from a GET request to URL.
+    def request(self, method, path, params=None, data=None):
+        """Return the parsed JSON data returned from a request to URL.
 
+        :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
         :param path: The path to fetch.
         :param params: The query parameters to add to the request (Default:
             None).
+        :param data: Dictionary, bytes, or file-like object to send in the body
+        of the request.
 
         """
         if not self._core._authorizer.is_valid():
             self._core._authorizer.refresh()
-        data = self._core.request('GET', path, params=params)
-        return self._objector.objectify(data)
+        return self._core.request(method, path, params=params, data=data)
 
     def submission(self, id_or_url):
         """Return a lazy instance of :class:`~.Submission` for ``id_or_url``.

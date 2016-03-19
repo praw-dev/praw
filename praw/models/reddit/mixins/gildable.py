@@ -21,14 +21,14 @@ class GildableMixin(object):
                 raise TypeError('months must be at least 1')
             if months > 36:
                 raise TypeError('months must be no more than 36')
-            response = self.reddit_session.request(
+            response = self.reddit_session.post(
                 self.reddit_session.config['gild_user'].format(
                     username=text_type(self)), data={'months': months})
         elif months is not None:
             raise TypeError('months is not a valid parameter for {0}'
                             .format(type(self)))
         else:
-            response = self.reddit_session.request(
+            response = self.reddit_session.post(
                 self.reddit_session.config['gild_thing']
-                .format(fullname=self.fullname), data=True)
+                .format(fullname=self.fullname))
         return response.status_code == 200

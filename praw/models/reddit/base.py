@@ -55,6 +55,6 @@ class RedditBase(PRAWBase):
         return not self == other
 
     def _fetch(self):
-        other = self._reddit.request(self._info_path())
+        other = self._reddit.get(self._info_path())
         self.__dict__.update(other.__dict__)
         self._fetched = True

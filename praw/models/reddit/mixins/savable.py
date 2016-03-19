@@ -13,7 +13,7 @@ class SavableMixin(object):
         url = self._reddit.config['unsave' if unsave else 'save']
         data = {'id': self.fullname,
                 'executed': 'unsaved' if unsave else 'saved'}
-        return self._reddit.request(url, data=data)
+        return self._reddit.post(url, data=data)
 
     def unsave(self):
         """Unsave the object.

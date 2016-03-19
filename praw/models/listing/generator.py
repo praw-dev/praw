@@ -49,7 +49,7 @@ class ListingGenerator(PRAWBase):
         if self._exhausted:
             raise StopIteration()
 
-        self._listing = self._reddit.request(self.url, params=self.params)
+        self._listing = self._reddit.get(self.url, params=self.params)
         if isinstance(self._listing, list):
             self._listing = self._listing[1]  # for submission duplicates
         self._list_index = 0

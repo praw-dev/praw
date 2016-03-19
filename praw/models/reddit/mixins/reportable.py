@@ -16,4 +16,4 @@ class ReportableMixin(object):
         data = {'id': self.fullname}
         if reason:
             data['reason'] = reason
-        return self._reddit.request(url, data=data)
+        return self._reddit.post(url, data=data)

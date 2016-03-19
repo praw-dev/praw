@@ -64,7 +64,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
             user=self._author, multi=self.name, subreddit=subreddit)
         method = 'DELETE' if _delete else 'PUT'
         data = {'model': dumps({'name': subreddit})}
-        self._reddit.request(url, data=data, method=method, *args, **kwargs)
+        self._reddit.request(method, url, data=data, *args, **kwargs)
 
     def copy(self, to_name):
         """Copy this multireddit.
