@@ -22,14 +22,29 @@ class TestSubmission(UnitTest):
         assert submission2 == 'dummy1'
 
     def test_construct_failure(self):
-        message = 'Either `id_or_url` or `_data` must be provided.'
+        message = 'Exactly one of `id`, `url`, or `_data` must be provided.'
         with pytest.raises(TypeError) as excinfo:
             Submission(self.reddit)
         assert str(excinfo.value) == message
 
         with pytest.raises(TypeError) as excinfo:
-            Submission(self.reddit, 'dummy', {'id': 'dummy'})
+            Submission(self.reddit, id='dummy', url='dummy')
         assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            Submission(self.reddit, 'dummy', _data={'id': 'dummy'})
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            Submission(self.reddit, url='dummy', _data={'id': 'dummy'})
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            Submission(self.reddit, 'dummy', 'dummy', {'id': 'dummy'})
+        assert str(excinfo.value) == message
+
+    def test_construct_from_url(self):
+        assert Submission(self.reddit, url='http://my.it/2gmzqe') == '2gmzqe'
 
     def test_fullname(self):
         submission = Submission(self.reddit, _data={'id': 'dummy'})

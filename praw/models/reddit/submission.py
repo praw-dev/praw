@@ -50,23 +50,25 @@ class Submission(RedditBase, EditableMixin, GildableMixin, HidableMixin,
             raise ClientException('Invalid URL: {}'.format(url))
         return submission_id
 
-    def __init__(self, reddit, id_or_url=None, _data=None):
+    def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
+                 url=None, _data=None):
         """Initialize a Submission instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
-        :param id_or_url: Either a reddit base64 submission ID, e.g.,
-            ``2gmzqe``, or a URL supported by :meth:`~.id_from_url`.
+        :param id: A reddit base64 submission ID, e.g., ``2gmzqe``.
+        :param url: A URL supported by :meth:`~.id_from_url`.
+
+        Either ``id`` or ``url`` can be provided, but not both.
 
         """
-        if bool(id_or_url) == bool(_data):
-            raise TypeError('Either `id_or_url` or `_data` must be provided.')
+        if [id, url, _data].count(None) != 2:
+            raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
+                            'provided.')
         super(Submission, self).__init__(reddit, _data)
-        if id_or_url:
-            if id_or_url.isalnum():
-                submission_id = id_or_url
-            else:
-                submission_id = self.id_from_url(id_or_url)
-            self.id = submission_id  # pylint: disable=invalid-name
+        if id is not None:
+            self.id = id  # pylint: disable=invalid-name
+        elif url is not None:
+            self.id = self.id_from_url(url)
 
     def __setattr__(self, attribute, value):
         """Objectify author, comments, and subreddit attributes."""
