@@ -83,6 +83,7 @@ class Submission(RedditBase, EditableMixin, GildableMixin, HidableMixin,
 
     def _fetch(self):
         other, comments = self._reddit.get(self._info_path())
+        other = other.children[0]
         other.comments = CommentForest(self, comments.children)
         self.__dict__.update(other.__dict__)
         self._fetched = True

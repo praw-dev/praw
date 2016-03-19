@@ -35,7 +35,13 @@ class Objector(object):
             parser = self.parsers[data['kind']]
             return parser.parse(data['data'], self._reddit)
         elif 'json' in data and 'data' in data['json']:
-            return self.objectify(data['json']['data']['things'])
+            if 'things' in data['json']['data']:  # For Submission.reply
+                return self.objectify(data['json']['data']['things'])
+            # For Subreddit.submit
+            # The URL is the URL to the submission, so it's removed.
+            del data['json']['data']['url']
+            parser = self.parsers[self._reddit.config.kinds['submission']]
+            return parser.parse(data['json']['data'], self._reddit)
         elif isinstance(data, dict) and {'date', 'id', 'name'}.issubset(
                 set(data.keys())):
             parser = self.parsers[self._reddit.config.kinds['redditor']]

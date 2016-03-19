@@ -67,3 +67,15 @@ class TestSubredit(UnitTest):
         subreddit = Subreddit(self.reddit, _data={'display_name': 'name',
                                                   'id': 'dummy'})
         assert str(subreddit) == 'name'
+
+    def test_submit_failure(self):
+        message = 'Either `selftext` or `url` must be provided.'
+        subreddit = Subreddit(self.reddit, display_name='name')
+
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.submit('Cool title')
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.submit('Cool title', selftext='a', url='b')
+        assert str(excinfo.value) == message

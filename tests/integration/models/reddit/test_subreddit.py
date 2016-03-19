@@ -5,6 +5,33 @@ import pytest
 from ... import IntegrationTest
 
 
+class TestSubreddit(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_submit__selftext(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubreddit.test_submit__selftext'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            submission = subreddit.submit('Test Title', selftext='Test text.')
+            assert submission.author == pytest.placeholders.username
+            assert submission.selftext == 'Test text.'
+            assert submission.title == 'Test Title'
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_submit__url(self, _):
+        url = 'https://praw.readthedocs.org/en/stable/'
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubreddit.test_submit__url'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            submission = subreddit.submit('Test Title', url=url)
+            assert submission.author == pytest.placeholders.username
+            assert submission.url == url
+            assert submission.title == 'Test Title'
+
+
 class TestSubredditListings(IntegrationTest):
     def test_controversial(self):
         with self.recorder.use_cassette(

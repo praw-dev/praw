@@ -92,6 +92,35 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         else:
             return
 
+    def submit(self, title, selftext=None, url=None, resubmit=True,
+               send_replies=True):
+        """Add a submission to the subreddit.
+
+        :param title: The title of the submission.
+        :param selftext: The markdown formatted content for a ``text``
+            submission.
+        :param url: The URL for a ``link`` submission.
+        :param resubmit: When False, an error will occur if the URL has already
+            been submitted (Default: True).
+        :param send_replies: When True, messages will be sent to the submission
+            author when comments are made to the submission (Default: True).
+        :returns: A :class:`~.Submission` object for the newly created
+            submission.
+
+        Either ``selftext`` or ``url`` can be provided, but not both.
+
+        """
+        if bool(selftext) == bool(url):
+            raise TypeError('Either `selftext` or `url` must be provided.')
+
+        data = {'sr': str(self), 'resubmit': bool(resubmit),
+                'sendreplies': bool(send_replies), 'title': title}
+        if selftext is not None:
+            data.update(kind='self', text=selftext)
+        else:
+            data.update(kind='link', url=url)
+        return self._reddit.post(API_PATH['submit'], data=data)
+
 
 class SubredditRelationship(object):
     """Represents a relationship between a redditor and subreddit."""

@@ -921,66 +921,6 @@ class ReportMixin(AuthenticatedReddit):
         return self.hide(thing_id, _unhide=True)
 
 
-class SubmitMixin(AuthenticatedReddit):
-    """Adds methods requiring the 'submit' scope (or login).
-
-    You should **not** directly instantiate instances of this class. Use
-    :class:`.Reddit` instead.
-
-    """
-
-    @decorators.require_captcha
-    def submit(self, subreddit, title, text=None, url=None, captcha=None,
-               save=None, send_replies=None, resubmit=None, **kwargs):
-        """Submit a new link to the given subreddit.
-
-        Accepts either a Subreddit object or a str containing the subreddit's
-        display name.
-
-        :param resubmit: If True, submit the link even if it has already been
-            submitted.
-        :param save: If True the new Submission will be saved after creation.
-        :param send_replies: If True, inbox replies will be received when
-            people comment on the submission. If set to None, the default of
-            True for text posts and False for link posts will be used.
-
-        :returns: The newly created Submission object if the reddit instance
-            can access it. Otherwise, return the url to the submission.
-
-        This function may result in a captcha challenge. PRAW will
-        automatically prompt you for a response. See :ref:`handling-captchas`
-        if you want to manually handle captchas.
-
-        """
-        if isinstance(text, six.string_types) == bool(url):
-            raise TypeError('One (and only one) of text or url is required!')
-        data = {'sr': six.text_type(subreddit),
-                'title': title}
-        if text or text == '':
-            data['kind'] = 'self'
-            data['text'] = text
-        else:
-            data['kind'] = 'link'
-            data['url'] = url
-        if captcha:
-            data.update(captcha)
-        if resubmit is not None:
-            data['resubmit'] = resubmit
-        if save is not None:
-            data['save'] = save
-        if send_replies is not None:
-            data['sendreplies'] = send_replies
-        result = self.request_json(self.config['submit'], data=data,
-                                   retry_on_error=False)
-        url = result['data']['url']
-        try:
-            return self.get_submission(url)
-        except errors.Forbidden:
-            # While the user may be able to submit to a subreddit,
-            # that does not guarantee they have read access.
-            return url
-
-
 class SubscribeMixin(AuthenticatedReddit):
     """Adds methods requiring the 'subscribe' scope (or login).
 
