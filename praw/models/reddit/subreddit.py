@@ -54,18 +54,19 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                 ('update_settings', 'MCMix'),
                 ('upload_image', 'MCMix'))
 
-    def __init__(self, reddit, name=None, _data=None):
+    def __init__(self, reddit, display_name=None, _data=None):
         """Initialize a Subreddit instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
-        :param name: The name of the subreddit.
+        :param display_name: The name of the subreddit.
 
         """
-        if bool(name) == bool(_data):
-            raise TypeError('Either `name` or `_data` must be provided.')
+        if bool(display_name) == bool(_data):
+            raise TypeError(
+                'Either `display_name` or `_data` must be provided.')
         super(Subreddit, self).__init__(reddit, _data)
-        if name:
-            self.display_name = name
+        if display_name:
+            self.display_name = display_name
         self._path = API_PATH['subreddit'].format(subreddit=self.display_name)
         self._prepare_relationships()
 

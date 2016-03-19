@@ -24,7 +24,7 @@ class TestSubredit(UnitTest):
         assert subreddit2 == 'dummy1'
 
     def test_construct_failure(self):
-        message = 'Either `name` or `_data` must be provided.'
+        message = 'Either `display_name` or `_data` must be provided.'
         with pytest.raises(TypeError) as excinfo:
             Subreddit(self.reddit)
         assert str(excinfo.value) == message
