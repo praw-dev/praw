@@ -85,6 +85,10 @@ class TestSubmission(UnitTest):
             other = pickle.loads(pickle.dumps(submission, protocol=level))
             assert submission == other
 
+    def test_repr(self):
+        submission = Submission(self.reddit, id='2gmzqe')
+        assert repr(submission) == 'Submission(id=\'2gmzqe\')'
+
     def test_str(self):
         submission = Submission(self.reddit, _data={'id': 'dummy'})
         assert str(submission) == 'dummy'

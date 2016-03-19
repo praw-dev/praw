@@ -59,6 +59,10 @@ class TestSubredit(UnitTest):
             other = pickle.loads(pickle.dumps(subreddit, protocol=level))
             assert subreddit == other
 
+    def test_repr(self):
+        subreddit = Subreddit(self.reddit, display_name='name')
+        assert repr(subreddit) == 'Subreddit(display_name=\'name\')'
+
     def test_str(self):
         subreddit = Subreddit(self.reddit, _data={'display_name': 'name',
                                                   'id': 'dummy'})

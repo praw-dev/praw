@@ -46,8 +46,13 @@ class RedditBase(PRAWBase):
         super(RedditBase, self).__init__(reddit, _data)
         self._fetched = False
 
+    def __repr__(self):
+        """Return an object initialization representation of the instance."""
+        return '{}({}={!r})'.format(self.__class__.__name__, self.EQ_FIELD,
+                                    getattr(self, self.EQ_FIELD))
+
     def __str__(self):
-        """Return a string representation of the class."""
+        """Return a string representation of the instance."""
         return getattr(self, self.EQ_FIELD)
 
     def __ne__(self, other):
