@@ -1,37 +1,8 @@
 """Provide the Subreddit class."""
-
-import logging
-
-import six
-
 from ...const import API_PATH
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .mixins import MessageableMixin
-
-
-LOG = logging.getLogger(__name__)
-
-
-def _modify_relationship(relationship, unlink=False):
-    """Return a function for relationship modification.
-
-    Used to support friending (user-to-user), as well as moderating,
-    contributor creating, and banning (user-to-subreddit).
-
-    """
-    # The API uses friend and unfriend to manage all of these relationships.
-    url_key = 'unfriend' if unlink else 'friend'
-
-    def do_relationship(thing, user, **kwargs):
-        data = {'name': six.text_type(user),
-                'r': six.text_type(thing),
-                'type': relationship}
-        data.update(kwargs)
-        session = thing.reddit_session
-        url = session.config[url_key]
-        return session.request_json(url, data=data)
-    return do_relationship
 
 
 class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
@@ -48,7 +19,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                 ('edit_wiki_page', 'AR'),
                 ('get_banned', 'MOMix'),
                 ('get_comments', 'UR'),
-                ('get_contributors', 'MOMix'),
                 ('get_edited', 'MOMix'),
                 ('get_flair', 'UR'),
                 ('get_flair_choices', 'AR'),
@@ -84,28 +54,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                 ('update_settings', 'MCMix'),
                 ('upload_image', 'MCMix'))
 
-    # Subreddit banned
-    add_ban = _modify_relationship('banned')
-    remove_ban = _modify_relationship('banned', unlink=True)
-
-    # Subreddit contributors
-    add_contributor = _modify_relationship('contributor')
-    remove_contributor = _modify_relationship('contributor', unlink=True)
-    # Subreddit moderators
-    add_moderator = _modify_relationship('moderator')
-    remove_moderator = _modify_relationship('moderator', unlink=True)
-    # Subreddit muted
-    add_mute = _modify_relationship('muted')
-    remove_mute = _modify_relationship('muted', unlink=True)
-
-    # Subreddit wiki banned
-    add_wiki_ban = _modify_relationship('wikibanned')
-    remove_wiki_ban = _modify_relationship('wikibanned', unlink=True)
-    # Subreddit wiki contributors
-    add_wiki_contributor = _modify_relationship('wikicontributor')
-    remove_wiki_contributor = _modify_relationship('wikicontributor',
-                                                   unlink=True)
-
     def __init__(self, reddit, name=None, _data=None):
         """Initialize a Subreddit instance.
 
@@ -119,9 +67,16 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if name:
             self.display_name = name
         self._path = API_PATH['subreddit'].format(subreddit=self.display_name)
+        self._prepare_relationships()
 
     def _info_path(self):
         return API_PATH['subreddit_about'].format(subreddit=self.display_name)
+
+    def _prepare_relationships(self):
+        for relationship in ['banned', 'contributor', 'moderator', 'muted',
+                             'wikibanned', 'wikicontributor']:
+            setattr(self, relationship,
+                    SubredditRelationship(self, relationship))
 
     def clear_all_flair(self):
         """Remove all user flair on this subreddit.
@@ -135,3 +90,46 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             return self.set_flair_csv(csv)
         else:
             return
+
+
+class SubredditRelationship(object):
+    """Represents a relationship between a redditor and subreddit."""
+
+    def __init__(self, subreddit, relationship):
+        """Create an SubredditRelationship instance.
+
+        :param subreddit: The subreddit for the relationship.
+        :param relationship: The name of the relationship.
+
+        """
+        self.relationship = relationship
+        self.subreddit = subreddit
+        self._unique_counter = 0
+
+    def __iter__(self):
+        """Iterate through the Redditors belonging to this relationship."""
+        url = API_PATH[self.relationship].format(subreddit=str(self.subreddit))
+        params = {'unique': self._unique_counter}
+        self._unique_counter += 1
+        for item in self.subreddit._reddit.get(url, params=params):
+            yield item
+
+    def add(self, redditor):
+        """Add ``redditor`` to this relationship.
+
+        :param redditor: A string or :class:`~.Redditor` instance.
+
+        """
+        data = {'name': str(redditor), 'r': str(self.subreddit),
+                'type': self.relationship}
+        return self.subreddit._reddit.post(API_PATH['friend'], data=data)
+
+    def remove(self, redditor):
+        """Remove ``redditor`` from this relationship.
+
+        :param redditor: A string or :class:`~.Redditor` instance.
+
+        """
+        data = {'name': str(redditor), 'r': str(self.subreddit),
+                'type': self.relationship}
+        return self.subreddit._reddit.post(API_PATH['unfriend'], data=data)

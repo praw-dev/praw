@@ -11,7 +11,7 @@ class Objector(object):
 
         """
         self.parsers = {}
-        self.reddit = reddit
+        self._reddit = reddit
 
     def kind(self, instance):
         """Return the kind from the instance class.
@@ -33,7 +33,11 @@ class Objector(object):
             return [self.objectify(item) for item in data]
         if 'kind' in data:
             parser = self.parsers[data['kind']]
-            return parser.parse(data['data'], self.reddit)
+            return parser.parse(data['data'], self._reddit)
+        elif isinstance(data, dict) and {'date', 'id', 'name'}.issubset(
+                set(data.keys())):
+            parser = self.parsers[self._reddit.config.kinds['redditor']]
+            return parser.parse(data, self._reddit)
         return data
 
     def register(self, kind, klass):

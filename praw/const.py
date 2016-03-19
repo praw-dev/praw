@@ -18,7 +18,7 @@ API_PATH = {
     'comments':            'comments/',
     'compose':             'api/compose/',
     'contest_mode':        'api/set_contest_mode/',
-    'contributors':        'r/{subreddit}/about/contributors/',
+    'contributor':         'r/{subreddit}/about/contributors/',
     'controversial':       'controversial/',
     'default_subreddits':  'subreddits/default/',
     'del':                 'api/del/',
@@ -53,7 +53,7 @@ API_PATH = {
     'mentions':            'message/mentions',
     'message':             'message/messages/{messageid}/',
     'messages':            'message/messages/',
-    'moderators':          'r/{subreddit}/about/moderators/',
+    'moderator':           'r/{subreddit}/about/moderators/',
     'modlog':              'r/{subreddit}/about/log/',
     'modqueue':            'r/{subreddit}/about/modqueue/',
     'mod_mail':            'r/{subreddit}/message/moderator/',
@@ -128,8 +128,8 @@ API_PATH = {
     'wiki_page_editor':    'r/{subreddit}/api/wiki/alloweditor/{method}',
     'wiki_page_settings':  'r/{subreddit}/wiki/settings/{page}',
     'wiki_pages':          'r/{subreddit}/wiki/pages/',
-    'wiki_banned':         'r/{subreddit}/about/wikibanned/',
-    'wiki_contributors':   'r/{subreddit}/about/wikicontributors/'}
+    'wikibanned':          'r/{subreddit}/about/wikibanned/',
+    'wikicontributor':     'r/{subreddit}/about/wikicontributors/'}
 
 JPEG_HEADER = b'\xff\xd8\xff'
 MAX_IMAGE_SIZE = 512000

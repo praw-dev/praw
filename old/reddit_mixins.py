@@ -383,17 +383,6 @@ class ModOnlyMixin(AuthenticatedReddit):
 
     """
 
-    def _get_userlist(self, url, user_only, *args, **kwargs):
-        content = self.get_content(url, *args, **kwargs)
-        for data in content:
-            user = models.Redditor(self, data['name'], fetch=False)
-            user.id = data['id'].split('_')[1]
-            if user_only:
-                yield user
-            else:
-                data['name'] = user
-                yield data
-
     def get_banned(self, subreddit, user_only=True, *args, **kwargs):
         """Return a get_content generator of banned users for the subreddit.
 
@@ -405,27 +394,6 @@ class ModOnlyMixin(AuthenticatedReddit):
         """
         url = self.config['banned'].format(subreddit=six.text_type(subreddit))
         return self._get_userlist(url, user_only, *args, **kwargs)
-
-    def get_contributors(self, subreddit, *args, **kwargs):
-        """
-        Return a get_content generator of contributors for the given subreddit.
-
-        If it's a public subreddit, then authentication as a
-        moderator of the subreddit is required. For protected/private
-        subreddits only access is required. See issue #246.
-
-        """
-        def get_contributors_helper(subreddit):
-            url = self.config['contributors'].format(
-                subreddit=six.text_type(subreddit))
-            return self._get_userlist(url, user_only=True, *args, **kwargs)
-
-        if self.is_logged_in():
-            if not isinstance(subreddit, models.Subreddit):
-                subreddit = self.get_subreddit(subreddit)
-            if subreddit.subreddit_type == "public":
-                return get_contributors_helper(subreddit)
-        return get_contributors_helper(subreddit)
 
     def get_edited(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator of edited items.
