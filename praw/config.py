@@ -62,7 +62,6 @@ class Config(object):
         self.redirect_uri = fetch_or_none('redirect_uri')
         self.refresh_token = fetch_or_none('refresh_token')
         self.password = fetch_or_none('password')
-        self.store_response_data = config_boolean(raw['store_response_data'])
         self.timeout = float(raw['timeout'])
         self.user_agent = fetch_or_none('user_agent')
         self.username = fetch_or_none('username')
