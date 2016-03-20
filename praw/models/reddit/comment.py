@@ -19,8 +19,12 @@ class Comment(RedditBase, EditableMixin, GildableMixin, InboxableMixin,
     def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
                  _data=None):
         """Construct an instance of the Comment object."""
+        if bool(id) == bool(_data):
+            raise TypeError('Either `id` or `_data` must be provided.')
         super(Comment, self).__init__(reddit, _data)
         self._submission = None
+        if id:
+            self.id = id
 
     def __setattr__(self, attribute, value):
         """Objectify author, replies, and subreddit."""
