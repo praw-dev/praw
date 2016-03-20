@@ -1,4 +1,5 @@
 """Provides the Objector class."""
+from .exceptions import APIException
 
 
 class Objector(object):
@@ -42,6 +43,11 @@ class Objector(object):
             del data['json']['data']['url']
             parser = self.parsers[self._reddit.config.kinds['submission']]
             return parser.parse(data['json']['data'], self._reddit)
+        elif 'json' in data and 'errors' in data['json']:
+            errors = data['json']['errors']
+            if len(errors) == 1:
+                raise APIException(*errors[0])
+            assert len(errors) == 0
         elif isinstance(data, dict) and {'date', 'id', 'name'}.issubset(
                 set(data.keys())):
             parser = self.parsers[self._reddit.config.kinds['redditor']]

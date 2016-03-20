@@ -14,21 +14,21 @@ class PRAWException(Exception):
 class APIException(PRAWException):
     """Indicate exception that involve responses from reddit's API."""
 
-    def __init__(self, error_type, message, field, http_response=None):
+    def __init__(self, error_type, message, field):
         """Construct an APIException.
 
         :param error_type: The error type set on reddit's end.
         :param message: The associated message for the error.
-        :param field: The input field associated with the error, or ''.
-        :param http_response: The HTTP response that resulted in the exception.
+        :param field: The input field associated with the error if available.
 
         """
-        super(APIException, self).__init__('{}: {!r} on field {!r}'
-                                           .format(error_type, message, field))
+        error_str = '{}: \'{}\''.format(error_type, message)
+        if field:
+            error_str += ' on field \'{}\''.format(field)
+        super(APIException, self).__init__(error_str)
         self.error_type = error_type
         self.message = message
         self.field = field
-        self.http_response = http_response
 
 
 class ClientException(PRAWException):
