@@ -19,11 +19,3 @@ class InboxableMixin(object):
 
         """
         return self.reddit_session._mark_as_read([self.fullname], unread=True)
-
-    def reply(self, text):
-        """Reply to object with the specified text.
-
-        :returns: A Comment object for the newly created comment (reply).
-
-        """
-        pass
