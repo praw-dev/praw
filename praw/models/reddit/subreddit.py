@@ -1,5 +1,6 @@
 """Provide the Subreddit class."""
 from ...const import API_PATH
+from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .mixins import MessageableMixin
@@ -25,6 +26,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             self.display_name = display_name
         self._path = API_PATH['subreddit'].format(subreddit=self.display_name)
         self._prepare_relationships()
+        self.flair = SubredditFlair(self)
         self.mod = SubredditModeration(self)
 
     def _info_path(self):
@@ -35,19 +37,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                              'wikibanned', 'wikicontributor']:
             setattr(self, relationship,
                     SubredditRelationship(self, relationship))
-
-    def clear_all_flair(self):
-        """Remove all user flair on this subreddit.
-
-        :returns: The json response from the server when there is flair to
-            clear, otherwise returns None.
-
-        """
-        csv = [{'user': x['user']} for x in self.get_flair_list(limit=None)]
-        if csv:
-            return self.set_flair_csv(csv)
-        else:
-            return
 
     def submit(self, title, selftext=None, url=None, resubmit=True,
                send_replies=True):
@@ -79,8 +68,63 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._reddit.post(API_PATH['submit'], data=data)
 
 
+class SubredditFlair(object):
+    """Provides a set of functions to interact with a Subreddit's flair."""
+
+    def __init__(self, subreddit):
+        """Create a SubredditFlair instance.
+
+        :param subreddit: The subreddit whose flair to work with.
+
+        """
+        self._unique_counter = 0
+        self.subreddit = subreddit
+
+    def __iter__(self):
+        """Iterate through the Redditors and their associated flair."""
+        url = API_PATH['flairlist'].format(subreddit=str(self.subreddit))
+        params = {'unique': self._unique_counter}
+        self._unique_counter += 1
+        for item in ListingGenerator(self.subreddit._reddit, url, None,
+                                     params=params):
+            yield item
+
+    """
+    def clear_all(self, subreddit):
+        emove all user flair on ``subreddit``.
+
+        :param subreddit: The Subreddit to remove all flair from..
+
+        csv = [{'user': x['user']} for x in self]
+        print(csv)
+        self.csv(csv)
+    """
+
+    def set(self, thing, text='', css_class=''):
+        """Set flair for a Redditor or Submission.
+
+        :param thing: An instance of Redditor or Submission, or a string. When
+            a string is provided it will be treated as the name of a Redditor.
+        :param text: The flair text to associate with the Redditor or
+            Submission (Default: '').
+        :param css_class: The css class to associate with the flair html
+            (Default: '').
+
+        This method can only be used by an authenticated user who is a
+        moderator of the associated Subreddit.
+
+        """
+        data = {'css_class': css_class, 'text': text}
+        if thing.__class__.__name__ == 'Submission':
+            data['link'] = thing.fullname
+        else:
+            data['name'] = str(thing)
+        url = API_PATH['flair'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url, data=data)
+
+
 class SubredditModeration(object):
-    """Provides a set of moderation functions to a subreddit."""
+    """Provides a set of moderation functions to a Subreddit."""
 
     def __init__(self, subreddit):
         """Create a SubredditModeration instance.

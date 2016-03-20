@@ -1,4 +1,5 @@
 """Test praw.models.subreddit."""
+from praw.models import Redditor
 import mock
 import pytest
 
@@ -30,6 +31,42 @@ class TestSubreddit(IntegrationTest):
             assert submission.author == pytest.placeholders.username
             assert submission.url == url
             assert submission.title == 'Test Title'
+
+
+class TestSubredditFlair(IntegrationTest):
+    @property
+    def subreddit(self):
+        return self.reddit.subreddit(pytest.placeholders.test_subreddit)
+
+    def test__iter(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlair.test__iter'):
+            mapping = list(self.subreddit.flair)
+            assert len(mapping) > 0
+            assert all(isinstance(x['user'], Redditor) for x in mapping)
+
+    def test_set__redditor(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlair.test_set__redditor'):
+            redditor = self.subreddit._reddit.redditor(
+                pytest.placeholders.username)
+            self.subreddit.flair.set(redditor, 'redditor flair')
+
+    def test_set__redditor_string(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlair.test_set__redditor_string'):
+            self.subreddit.flair.set(pytest.placeholders.username, 'new flair',
+                                     'some class')
+
+    def test_set__submission(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlair.test_set__submission'):
+            submission = self.subreddit._reddit.submission('4b536p')
+            self.subreddit.flair.set(submission, 'submission flair')
 
 
 class TestSubredditListings(IntegrationTest):

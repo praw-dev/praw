@@ -275,46 +275,6 @@ class ModFlairMixin(AuthenticatedReddit):
                 'name': six.text_type(user)}
         return self.request_json(self.config['deleteflair'], data=data)
 
-    def get_flair_list(self, subreddit, *args, **kwargs):
-        """Return a get_content generator of flair mappings.
-
-        :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the flair list for.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url`, `root_field`, `thing_field`, and
-        `after_field` parameters cannot be altered.
-
-        """
-        url = self.config['flairlist'].format(
-            subreddit=six.text_type(subreddit))
-        return self.get_content(url, *args, root_field=None,
-                                thing_field='users', after_field='next',
-                                **kwargs)
-
-    def set_flair(self, subreddit, item, flair_text='', flair_css_class=''):
-        """Set flair for the user in the given subreddit.
-
-        `item` can be a string, Redditor object, or Submission object.
-        If `item` is a string it will be treated as the name of a Redditor.
-
-        This method can only be called by a subreddit moderator with flair
-        permissions. To set flair on yourself or your own links use
-        :meth:`~praw.__init__.AuthenticatedReddit.select_flair`.
-
-        :returns: The json response from the server.
-
-        """
-        data = {'r': six.text_type(subreddit),
-                'text': flair_text or '',
-                'css_class': flair_css_class or ''}
-        if isinstance(item, models.Submission):
-            data['link'] = item.fullname
-        else:
-            data['name'] = six.text_type(item)
-        response = self.request_json(self.config['flair'], data=data)
-        return response
-
     def set_flair_csv(self, subreddit, flair_mapping):
         """Set flair for a group of users in the given subreddit.
 

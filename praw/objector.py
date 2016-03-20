@@ -52,6 +52,9 @@ class Objector(object):
                 set(data.keys())):
             parser = self.parsers[self._reddit.config.kinds['redditor']]
             return parser.parse(data, self._reddit)
+        elif isinstance(data, dict) and 'user' in data:
+            parser = self.parsers[self._reddit.config.kinds['redditor']]
+            data['user'] = parser.parse({'name': data['user']}, self._reddit)
         return data
 
     def register(self, kind, cls):
