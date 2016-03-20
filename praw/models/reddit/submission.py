@@ -87,15 +87,6 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     def _info_path(self):
         return API_PATH['submission'].format(id=self.id)
 
-    def reply(self, text):
-        """Reply to the submission with a top-level comment.
-
-        :returns: A :class:`~.Comment` object for the newly created comment.
-
-        """
-        data = {'thing_id': self.fullname, 'text': text}
-        return self._reddit.post(API_PATH['comment'], data=data)[0]
-
     def get_flair_choices(self, *args, **kwargs):
         """Return available link flair choices and current flair.
 

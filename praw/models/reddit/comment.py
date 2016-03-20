@@ -1,8 +1,6 @@
 """Provide the Comment class."""
-
 from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
-from ...const import API_PATH
 from .base import RedditBase
 from .mixins import InboxableMixin, UserContentMixin
 from .redditor import Redditor
@@ -70,12 +68,3 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         if not fast or 'permalink' in self.submission.__dict__:
             return urljoin(self.submission.permalink, self.id)
         return '/comments/{}//{}'.format(self.submission.id, self.id)
-
-    def reply(self, text):
-        """Reply to the comment.
-
-        :returns: A :class:`~.Comment` object for the newly created comment.
-
-        """
-        data = {'thing_id': self.fullname, 'text': text}
-        return self._reddit.post(API_PATH['comment'], data=data)[0]
