@@ -69,6 +69,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             self.display_name = display_name
         self._path = API_PATH['subreddit'].format(subreddit=self.display_name)
         self._prepare_relationships()
+        self.mod = SubredditModeration(self)
 
     def _info_path(self):
         return API_PATH['subreddit_about'].format(subreddit=self.display_name)
@@ -122,11 +123,93 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._reddit.post(API_PATH['submit'], data=data)
 
 
+class SubredditModeration(object):
+    """Provides a set of moderation functions to a subreddit."""
+
+    def __init__(self, subreddit):
+        """Create a SubredditModeration instance.
+
+        :param subreddit: The subreddit to moderate.
+
+        """
+        self.subreddit = subreddit
+
+    def approve(self, thing):
+        """Approve a Comment or Submission.
+
+        :param thing: An instance of Comment or Submission.
+
+        Approving a comment or submission reverts a removal, resets the report
+        counter, adds a green check mark indicator (only visible to other
+        moderators) on the website view, and sets the ``approved_by`` attribute
+        to the authenticated user.
+
+        """
+        self.subreddit._reddit.post(API_PATH['approve'],
+                                    data={'id': thing.fullname})
+
+    def distinguish(self, as_made_by='mod'):
+        """Distinguish object as made by mod, admin or special.
+
+        Distinguished objects have a different author color. With Reddit
+        Enhancement Suite it is the background color that changes.
+
+        :returns: The json response from the server.
+
+        """
+        url = self.reddit_session.config['distinguish']
+        data = {'id': self.fullname,
+                'how': 'yes' if as_made_by == 'mod' else as_made_by}
+        return self.reddit_session.request_json(url, data=data)
+
+    def ignore_reports(self):
+        """Ignore future reports on this object.
+
+        This prevents future reports from causing notifications or appearing
+        in the various moderation listing. The report count will still
+        increment.
+
+        """
+        url = self.reddit_session.config['ignore_reports']
+        data = {'id': self.fullname}
+        return self.reddit_session.request_json(url, data=data)
+
+    def remove(self, thing, spam=False):
+        """Remove a Comment or Submission.
+
+        :param thing: An instance of Comment or Submission.
+        :param spam: When True, use the removal to help train the Subreddit's
+            spam filter (Default: False)
+
+        """
+        data = {'id': thing.fullname, 'spam': bool(spam)}
+        self.subreddit._reddit.post(API_PATH['remove'], data=data)
+
+    def undistinguish(self):
+        """Remove mod, admin or special distinguishing on object.
+
+        :returns: The json response from the server.
+
+        """
+        return self.distinguish(as_made_by='no')
+
+    def unignore_reports(self):
+        """Remove ignoring of future reports on this object.
+
+        Undoes 'ignore_reports'. Future reports will now cause notifications
+        and appear in the various moderation listings.
+
+        """
+        url = self.reddit_session.config['unignore_reports']
+        data = {'id': self.fullname}
+        return self.reddit_session.request_json(url, data=data)
+
+
 class SubredditRelationship(object):
     """Represents a relationship between a redditor and subreddit."""
 
     def __init__(self, subreddit, relationship):
-        """Create an SubredditRelationship instance.
+        """Create a SubredditRelationship instance.
 
         :param subreddit: The subreddit for the relationship.
         :param relationship: The name of the relationship.

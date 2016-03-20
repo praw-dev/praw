@@ -76,6 +76,26 @@ class TestSubredditListings(IntegrationTest):
         assert len(submissions) == 100
 
 
+class TestSubredditModeration(IntegrationTest):
+    @property
+    def subreddit(self):
+        return self.reddit.subreddit(pytest.placeholders.test_subreddit)
+
+    def test_approve(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_approve'):
+            submission = self.reddit.submission('4b536h')
+            self.subreddit.mod.approve(submission)
+
+    def test_remove(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_remove'):
+            submission = self.reddit.submission('4b536h')
+            self.subreddit.mod.remove(submission, spam=True)
+
+
 class TestSubredditRelationships(IntegrationTest):
     REDDITOR = 'pyapitestuser3'
 
