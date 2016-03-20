@@ -7,16 +7,12 @@ from ...exceptions import ClientException
 from ..comment_forest import CommentForest
 from ..listing.mixins import SubmissionListingMixin
 from .base import RedditBase
-from .mixins import (EditableMixin, GildableMixin, HidableMixin,
-                     ModeratableMixin, ReportableMixin, SavableMixin,
-                     VotableMixin)
+from .mixins import UserContentMixin
 from .redditor import Redditor
 from .subreddit import Subreddit
 
 
-class Submission(RedditBase, EditableMixin, GildableMixin, HidableMixin,
-                 ModeratableMixin, ReportableMixin, SavableMixin, VotableMixin,
-                 SubmissionListingMixin):
+class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     """A class for submissions to reddit."""
 
     EQ_FIELD = 'id'
@@ -112,6 +108,18 @@ class Submission(RedditBase, EditableMixin, GildableMixin, HidableMixin,
         """
         return self.subreddit.get_flair_choices(self.fullname, *args, **kwargs)
 
+    def hide(self, _unhide=False):
+        """Hide object in the context of the logged in user.
+
+        :param _unhide: If True, unhide the item instead.  Use
+            :meth:`~.unhide` instead of setting this
+            manually.
+
+        :returns: The json response from the server.
+
+        """
+        return self._reddit.hide(self.fullname, _unhide=_unhide)
+
     def mark_as_nsfw(self, unmark_nsfw=False):
         """Mark as Not Safe For Work.
 
@@ -197,6 +205,14 @@ class Submission(RedditBase, EditableMixin, GildableMixin, HidableMixin,
         if not bottom:
             data['num'] = 1
         return self._reddit.request_json(url, data=data)
+
+    def unhide(self):
+        """Unhide object in the context of the logged in user.
+
+        :returns: The json response from the server.
+
+        """
+        return self.hide(_unhide=True)
 
     def unmark_as_nsfw(self):
         """Mark as Safe For Work.

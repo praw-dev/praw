@@ -4,14 +4,11 @@ from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from ...const import API_PATH
 from .base import RedditBase
-from .mixins import (EditableMixin, GildableMixin, InboxableMixin,
-                     ModeratableMixin, ReportableMixin, SavableMixin,
-                     VotableMixin)
+from .mixins import InboxableMixin, UserContentMixin
 from .redditor import Redditor
 
 
-class Comment(RedditBase, EditableMixin, GildableMixin, InboxableMixin,
-              ModeratableMixin, ReportableMixin, SavableMixin, VotableMixin):
+class Comment(RedditBase, InboxableMixin, UserContentMixin):
     """A class that represents a reddit comments."""
 
     EQ_FIELD = 'id'
