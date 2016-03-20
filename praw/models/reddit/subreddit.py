@@ -148,19 +148,18 @@ class SubredditModeration(object):
         self.subreddit._reddit.post(API_PATH['approve'],
                                     data={'id': thing.fullname})
 
-    def distinguish(self, as_made_by='mod'):
-        """Distinguish object as made by mod, admin or special.
+    def distinguish(self, thing, how='yes'):
+        """Distinguish a Comment or Submission.
 
-        Distinguished objects have a different author color. With Reddit
-        Enhancement Suite it is the background color that changes.
+        :param thing: An instance of Comment or Submission.
 
-        :returns: The json response from the server.
+        :param how: One of 'yes', 'no', 'admin', 'special'. 'yes' adds a
+            moderator level distinguish. 'no' removes any distinction. 'admin'
+            and 'special' require special user priviliges to use.
 
         """
-        url = self.reddit_session.config['distinguish']
-        data = {'id': self.fullname,
-                'how': 'yes' if as_made_by == 'mod' else as_made_by}
-        return self.reddit_session.request_json(url, data=data)
+        return self.subreddit._reddit.post(
+            API_PATH['distinguish'], data={'how': how, 'id': thing.fullname})
 
     def ignore_reports(self):
         """Ignore future reports on this object.
@@ -185,13 +184,13 @@ class SubredditModeration(object):
         data = {'id': thing.fullname, 'spam': bool(spam)}
         self.subreddit._reddit.post(API_PATH['remove'], data=data)
 
-    def undistinguish(self):
+    def undistinguish(self, thing):
         """Remove mod, admin or special distinguishing on object.
 
         :returns: The json response from the server.
 
         """
-        return self.distinguish(as_made_by='no')
+        return self.distinguish(thing, how='no')
 
     def unignore_reports(self):
         """Remove ignoring of future reports on this object.

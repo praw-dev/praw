@@ -88,12 +88,26 @@ class TestSubredditModeration(IntegrationTest):
             submission = self.reddit.submission('4b536h')
             self.subreddit.mod.approve(submission)
 
+    def test_distinguish(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_distinguish'):
+            submission = self.reddit.submission('4b536h')
+            self.subreddit.mod.distinguish(submission)
+
     def test_remove(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestSubredditModeration.test_remove'):
             submission = self.reddit.submission('4b536h')
             self.subreddit.mod.remove(submission, spam=True)
+
+    def test_undistinguish(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_undistinguish'):
+            submission = self.reddit.submission('4b536h')
+            self.subreddit.mod.undistinguish(submission)
 
 
 class TestSubredditRelationships(IntegrationTest):
