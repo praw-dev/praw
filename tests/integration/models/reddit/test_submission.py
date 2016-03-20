@@ -70,6 +70,18 @@ class TestSubmission(IntegrationTest):
             assert comment.body == 'Test reply'
             assert comment.parent_id == submission.fullname
 
+    def test_save(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_save'):
+            Submission(self.reddit, '4b536p').save()
+
+    def test_unsave(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_unsave'):
+            Submission(self.reddit, '4b536p').unsave()
+
     def test_upvote(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(

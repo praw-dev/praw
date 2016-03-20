@@ -1,24 +1,19 @@
 """Provide the SavableMixin class."""
+from ....const import API_PATH
 
 
 class SavableMixin(object):
     """Interface for RedditBase classes that can be saved."""
 
-    def save(self, unsave=False):
+    def save(self, category=None):
         """Save the object.
 
-        :returns: The json response from the server.
+        :param category: The category to save to (Default: None).
 
         """
-        url = self._reddit.config['unsave' if unsave else 'save']
-        data = {'id': self.fullname,
-                'executed': 'unsaved' if unsave else 'saved'}
-        return self._reddit.post(url, data=data)
+        self._reddit.post(API_PATH['save'], data={'category': category,
+                                                  'id': self.fullname})
 
     def unsave(self):
-        """Unsave the object.
-
-        :returns: The json response from the server.
-
-        """
-        return self.save(unsave=True)
+        """Unsave the object."""
+        self._reddit.post(API_PATH['unsave'], data={'id': self.fullname})
