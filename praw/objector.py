@@ -24,7 +24,7 @@ class Objector(object):
                 return key
 
     def objectify(self, data):
-        """Create RedditModel objects from data.
+        """Create RedditBase objects from data.
 
         :param data: The structured data.
 
@@ -48,11 +48,11 @@ class Objector(object):
             return parser.parse(data, self._reddit)
         return data
 
-    def register(self, kind, klass):
+    def register(self, kind, cls):
         """Register a class for a given kind.
 
-        :param kind: The kind in the parsed data to map to ``klass``.
-        :param klass: A RedditModel class.
+        :param kind: The kind in the parsed data to map to ``cls``.
+        :param cls: A RedditBase class.
 
         """
-        self.parsers[kind] = klass
+        self.parsers[kind] = cls

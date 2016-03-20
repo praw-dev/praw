@@ -2,7 +2,7 @@
 
 
 class SavableMixin(object):
-    """Interface for RedditModel classes that can be saved."""
+    """Interface for RedditBase classes that can be saved."""
 
     def save(self, unsave=False):
         """Save the object.

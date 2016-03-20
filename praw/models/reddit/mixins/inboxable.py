@@ -2,7 +2,7 @@
 
 
 class InboxableMixin(object):
-    """Interface for RedditModel classes that originate in the inbox."""
+    """Interface for RedditBase classes that originate from the inbox."""
 
     def mark_as_read(self):
         """Mark object as read.

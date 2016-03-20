@@ -3,7 +3,7 @@ from ..base import PRAWBase
 
 
 class Listing(PRAWBase):
-    """A listing is a collection of RedditModel instances."""
+    """A listing is a collection of RedditBase instances."""
 
     def __len__(self):
         """Return the number of items in the Listing."""

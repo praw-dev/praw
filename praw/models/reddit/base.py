@@ -1,4 +1,4 @@
-"""Provide the RedditModel class."""
+"""Provide the RedditBase class."""
 from ...const import API_PATH
 from ..base import PRAWBase
 
