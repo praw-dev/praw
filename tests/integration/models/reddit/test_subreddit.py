@@ -95,6 +95,13 @@ class TestSubredditModeration(IntegrationTest):
             submission = self.reddit.submission('4b536h')
             self.subreddit.mod.distinguish(submission)
 
+    def test_ignore_reports(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_ignore_reports'):
+            submission = self.reddit.submission('31ybt2')
+            self.subreddit.mod.ignore_reports(submission)
+
     def test_remove(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -108,6 +115,13 @@ class TestSubredditModeration(IntegrationTest):
                 'TestSubredditModeration.test_undistinguish'):
             submission = self.reddit.submission('4b536h')
             self.subreddit.mod.undistinguish(submission)
+
+    def test_unignore_reports(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_unignore_reports'):
+            submission = self.reddit.submission('31ybt2')
+            self.subreddit.mod.unignore_reports(submission)
 
 
 class TestSubredditRelationships(IntegrationTest):

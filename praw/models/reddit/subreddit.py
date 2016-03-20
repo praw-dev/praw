@@ -117,17 +117,19 @@ class SubredditModeration(object):
         return self.subreddit._reddit.post(
             API_PATH['distinguish'], data={'how': how, 'id': thing.fullname})
 
-    def ignore_reports(self):
-        """Ignore future reports on this object.
+    def ignore_reports(self, thing):
+        """Ignore future reports on a Comment or Submission.
 
-        This prevents future reports from causing notifications or appearing
-        in the various moderation listing. The report count will still
-        increment.
+        :param thing: An instance of Comment or Submission.
+
+        Calling this method will prevent future reports on this Comment or
+        Submission from both triggering notifications and appearing in the
+        various moderation listings. The report count will still increment on
+        the Comment or Submission.
 
         """
-        url = self.subreddit._reddit.config['ignore_reports']
-        data = {'id': self.fullname}
-        return self.subreddit._reddit.request_json(url, data=data)
+        self.subreddit._reddit.post(API_PATH['ignore_reports'],
+                                    data={'id': thing.fullname})
 
     def remove(self, thing, spam=False):
         """Remove a Comment or Submission.
@@ -148,16 +150,17 @@ class SubredditModeration(object):
         """
         return self.distinguish(thing, how='no')
 
-    def unignore_reports(self):
-        """Remove ignoring of future reports on this object.
+    def unignore_reports(self, thing):
+        """Resume receiving future reports on a Comment or Submission.
 
-        Undoes 'ignore_reports'. Future reports will now cause notifications
+        :param thing: An instance of Comment or Submission.
+
+        Future reports on this Comment or Submission will cause notifications,
         and appear in the various moderation listings.
 
         """
-        url = self.subreddit._reddit.config['unignore_reports']
-        data = {'id': self.fullname}
-        return self.subreddit._reddit.request_json(url, data=data)
+        self.subreddit._reddit.post(API_PATH['unignore_reports'],
+                                    data={'id': thing.fullname})
 
 
 class SubredditRelationship(object):
