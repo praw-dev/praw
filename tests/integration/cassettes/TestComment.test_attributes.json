@@ -1,0 +1,100 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-03-19T23:47:01",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.7"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"-UWf4D534znyTWZju-jIlY1z51GM\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "CF-RAY": "2864ce9eaa8539c4-PHX",
+          "Connection": "keep-alive",
+          "Content-Length": "106",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sat, 19 Mar 2016 23:47:01 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=d6df2251c4d7e92f8ad5011747b2d00541458431221; expires=Sun, 19-Mar-17 23:47:01 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-03-19T23:47:02",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer -UWf4D534znyTWZju-jIlY1z51GM",
+          "Connection": "keep-alive",
+          "Cookie": "__cfduid=d6df2251c4d7e92f8ad5011747b2d00541458431221; loidcreated=2016-03-19T23%3A47%3A01.576Z; loid=CzF6Odv0kUYYARn2pA",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.7"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/info/?raw_json=1&id=t1_cklhv0f"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"children\": [{\"kind\": \"t1\", \"data\": {\"subreddit_id\": \"t5_2qizd\", \"banned_by\": null, \"removal_reason\": null, \"link_id\": \"t3_2gmzqe\", \"likes\": null, \"replies\": \"\", \"user_reports\": [], \"saved\": false, \"id\": \"cklhv0f\", \"gilded\": 0, \"archived\": true, \"report_reasons\": null, \"author\": \"bboe\", \"parent_id\": \"t1_cklfmye\", \"score\": 1, \"approved_by\": null, \"controversiality\": 0, \"body\": \"Yes it does. That fix is also in the master branch, we just haven't made a release for it (and we probably won't until 3.0).\", \"edited\": false, \"author_flair_css_class\": null, \"downs\": 0, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EYes it does. That fix is also in the master branch, we just haven\\u0026#39;t made a release for it (and we probably won\\u0026#39;t until 3.0).\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"stickied\": false, \"subreddit\": \"redditdev\", \"score_hidden\": false, \"name\": \"t1_cklhv0f\", \"created\": 1411038834.0, \"author_flair_text\": null, \"created_utc\": 1411010034.0, \"ups\": 1, \"mod_reports\": [], \"num_reports\": null, \"distinguished\": null}}], \"after\": null, \"before\": null}}"
+        },
+        "headers": {
+          "CF-RAY": "2864cea0c03539d0-PHX",
+          "Connection": "keep-alive",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sat, 19 Mar 2016 23:47:01 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Transfer-Encoding": "chunked",
+          "Vary": "accept-encoding",
+          "X-Moose": "majestic",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=u36phW0GNzn2m1Ll5riRr1SFVj0fKySbTgyha5E2GHvPQ%2BW%2F3qO00YUuCtf1b5LfyODG%2FSRuVWU%3D",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/info/?raw_json=1&id=t1_cklhv0f"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.5.1"
+}

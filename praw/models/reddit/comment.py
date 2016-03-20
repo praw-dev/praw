@@ -7,7 +7,6 @@ from .mixins import (EditableMixin, GildableMixin, InboxableMixin,
                      ModeratableMixin, ReportableMixin, SavableMixin,
                      VotableMixin)
 from .redditor import Redditor
-from .subreddit import Subreddit
 
 
 class Comment(RedditBase, EditableMixin, GildableMixin, InboxableMixin,
@@ -15,6 +14,20 @@ class Comment(RedditBase, EditableMixin, GildableMixin, InboxableMixin,
     """A class that represents a reddit comments."""
 
     EQ_FIELD = 'id'
+
+    @property
+    def is_root(self):
+        """Return True when the comment is a top level comment."""
+        parent_type = self.parent_id.split('_', 1)[0]
+        return parent_type == self._reddit.config.kinds['subreddit']
+
+    @property
+    def submission(self):
+        """Return the Submission object this comment belongs to."""
+        if not self._submission:  # Comment not from submission
+            self._submission = self._reddit.submission(
+                self.link_id.split('_', 1)[1])
+        return self._submission
 
     def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
                  _data=None):
@@ -24,7 +37,7 @@ class Comment(RedditBase, EditableMixin, GildableMixin, InboxableMixin,
         super(Comment, self).__init__(reddit, _data)
         self._submission = None
         if id:
-            self.id = id
+            self.id = id  # pylint: disable=invalid-name
 
     def __setattr__(self, attribute, value):
         """Objectify author, replies, and subreddit."""
@@ -37,34 +50,25 @@ class Comment(RedditBase, EditableMixin, GildableMixin, InboxableMixin,
             else:
                 value = self._reddit._objector.objectify(value).children
         elif attribute == 'subreddit':
-            value = Subreddit(self._reddit, value)
+            value = self._reddit.subreddit(value)
         super(Comment, self).__setattr__(attribute, value)
 
-    @property
-    def _fast_permalink(self):
-        """Return the short permalink to the comment."""
-        if hasattr(self, 'link_id'):  # from /r or /u comments page
-            sid = self.link_id.split('_')[1]
-        else:  # from user's /message page
-            sid = self.context.split('/')[4]
-        return urljoin(self._reddit.config['comments'], '{}/_/{}'
-                       .format(sid, self.id))
+    def permalink(self, fast=False):
+        """Return a permalink to the comment.
 
-    @property
-    def is_root(self):
-        """Return True when the comment is a top level comment."""
-        submission_prefix = self._reddit.config._obj['subreddit_kind']
-        return self.parent_id.startswith(submission_prefix)
+        :param fast: Return the result as quickly as possible (Default: false).
 
-    @property
-    def permalink(self):
-        """Return a permalink to the comment."""
-        return urljoin(self.submission.permalink, self.id)
+        In order to determine the full permalink for a comment, the Submission
+        may need to be fetched if it hasn't been already. Set ``fast=True`` if
+        you want to bypass that possible load.
 
-    @property
-    def submission(self):
-        """Return the Submission object this comment belongs to."""
-        if not self._submission:  # Comment not from submission
-            self._submission = self._reddit.get_submission(
-                url=self._fast_permalink)
-        return self._submission
+        A full permalink looks like:
+        /r/redditdev/comments/2gmzqe/praw_https_enabled/cklhv0f
+
+        A fast-loaded permalink for the same comment will look like:
+        /comments/2gmzqe//cklhv0f
+
+        """
+        if not fast or 'permalink' in self.submission.__dict__:
+            return urljoin(self.submission.permalink, self.id)
+        return '/comments/{}//{}'.format(self.submission.id, self.id)

@@ -1,4 +1,5 @@
 """Provide the RedditModel class."""
+from ...const import API_PATH
 from ..base import PRAWBase
 
 
@@ -60,6 +61,10 @@ class RedditBase(PRAWBase):
         return not self == other
 
     def _fetch(self):
-        other = self._reddit.get(self._info_path())
+        if '_info_path' in dir(self):
+            other = self._reddit.get(self._info_path())
+        else:
+            other = self._reddit.get(API_PATH['info'],
+                                     params={'id': self.fullname}).children[0]
         self.__dict__.update(other.__dict__)
         self._fetched = True
