@@ -1,4 +1,5 @@
 from praw.models import Comment, Submission
+import mock
 import pytest
 
 from ... import IntegrationTest
@@ -12,6 +13,25 @@ class TestSubmission(IntegrationTest):
             assert len(submission.comments) == 1
             assert isinstance(submission.comments[0], Comment)
             assert isinstance(submission.comments[0].replies[0], Comment)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_delete(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_delete'):
+            submission = Submission(self.reddit, '4b1tfm')
+            submission.delete()
+            assert submission.author is None
+            assert submission.selftext == '[deleted]'
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_edit(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_edit'):
+            submission = Submission(self.reddit, '4b1tfm')
+            submission.edit('New text')
+            assert submission.selftext == 'New text'
 
     def test_duplicates(self):
         with self.recorder.use_cassette(

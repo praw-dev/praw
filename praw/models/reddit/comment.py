@@ -41,6 +41,8 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         if attribute == 'author':
             value = Redditor.from_data(self._reddit, value)
         elif attribute == 'replies':
+            # TODO: From info URL replies = "", even if there are replies.
+            # From a comment tree replies = "" when it has no replies.
             if value == '':
                 value = []
             else:
