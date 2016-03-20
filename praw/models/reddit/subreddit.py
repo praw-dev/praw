@@ -10,50 +10,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     EQ_FIELD = 'display_name'
 
-    _methods = (('accept_moderator_invite', 'AR'),
-                ('add_flair_template', 'MFMix'),
-                ('clear_flair_templates', 'MFMix'),
-                ('configure_flair', 'MFMix'),
-                ('delete_flair', 'MFMix'),
-                ('delete_image', 'MCMix'),
-                ('edit_wiki_page', 'AR'),
-                ('get_banned', 'MOMix'),
-                ('get_comments', 'UR'),
-                ('get_edited', 'MOMix'),
-                ('get_flair', 'UR'),
-                ('get_flair_choices', 'AR'),
-                ('get_flair_list', 'MFMix'),
-                ('get_moderators', 'UR'),
-                ('get_mod_log', 'MLMix'),
-                ('get_mod_queue', 'MOMix'),
-                ('get_mod_mail', 'MOMix'),
-                ('get_muted', 'MOMix'),
-                ('get_random_submission', 'UR'),
-                ('get_reports', 'MOMix'),
-                ('get_settings', 'MCMix'),
-                ('get_spam', 'MOMix'),
-                ('get_sticky', 'UR'),
-                ('get_stylesheet', 'MOMix'),
-                ('get_traffic', 'UR'),
-                ('get_unmoderated', 'MOMix'),
-                ('get_wiki_banned', 'MOMix'),
-                ('get_wiki_contributors', 'MOMix'),
-                ('get_wiki_page', 'UR'),
-                ('get_wiki_pages', 'UR'),
-                ('leave_contributor', 'MSMix'),
-                ('leave_moderator', 'MSMix'),
-                ('search', 'UR'),
-                ('select_flair', 'AR'),
-                ('set_flair', 'MFMix'),
-                ('set_flair_csv', 'MFMix'),
-                ('set_settings', 'MCMix'),
-                ('set_stylesheet', 'MCMix'),
-                ('submit', 'SubmitMixin'),
-                ('subscribe', 'SubscribeMixin'),
-                ('unsubscribe', 'SubscribeMixin'),
-                ('update_settings', 'MCMix'),
-                ('upload_image', 'MCMix'))
-
     def __init__(self, reddit, display_name=None, _data=None):
         """Initialize a Subreddit instance.
 
@@ -169,9 +125,9 @@ class SubredditModeration(object):
         increment.
 
         """
-        url = self.reddit_session.config['ignore_reports']
+        url = self.subreddit._reddit.config['ignore_reports']
         data = {'id': self.fullname}
-        return self.reddit_session.request_json(url, data=data)
+        return self.subreddit._reddit.request_json(url, data=data)
 
     def remove(self, thing, spam=False):
         """Remove a Comment or Submission.
@@ -199,9 +155,9 @@ class SubredditModeration(object):
         and appear in the various moderation listings.
 
         """
-        url = self.reddit_session.config['unignore_reports']
+        url = self.subreddit._reddit.config['unignore_reports']
         data = {'id': self.fullname}
-        return self.reddit_session.request_json(url, data=data)
+        return self.subreddit._reddit.request_json(url, data=data)
 
 
 class SubredditRelationship(object):

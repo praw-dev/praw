@@ -17,8 +17,6 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
     EQ_FIELD = 'id'
 
-    _methods = (('select_flair', 'AR'),)
-
     @staticmethod
     def id_from_url(url):
         """Return the ID contained within a submission URL.

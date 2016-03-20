@@ -14,9 +14,6 @@ class Redditor(RedditBase, GildableMixin, MessageableMixin,
 
     EQ_FIELD = 'name'
 
-    _methods = (('get_multireddit', 'MultiMix'),
-                ('get_multireddits', 'MultiMix'))
-
     @classmethod
     def from_data(cls, reddit, data):
         """Return an instance of Redditor, bool, or None from ``data``."""
