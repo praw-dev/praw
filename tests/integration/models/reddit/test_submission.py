@@ -70,6 +70,12 @@ class TestSubmission(IntegrationTest):
             assert comment.body == 'Test reply'
             assert comment.parent_id == submission.fullname
 
+    def test_report(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_report'):
+            Submission(self.reddit, '4b536h').report('praw')
+
     def test_save(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(

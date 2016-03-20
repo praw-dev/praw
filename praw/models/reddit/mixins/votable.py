@@ -3,7 +3,7 @@ from ....const import API_PATH
 
 
 class VotableMixin(object):
-    """Interface for classes that can be voted on."""
+    """Interface for RedditBase classes that can be voted on."""
 
     def clear_vote(self):
         """Clear the authenticated user's vote on the object.

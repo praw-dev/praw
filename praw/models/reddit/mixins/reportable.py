@@ -1,19 +1,15 @@
 """Provide the ReportableMixin class."""
+from ....const import API_PATH
 
 
 class ReportableMixin(object):
-    """Interface for classes that can be reported."""
+    """Interface for RedditBase classes that can be reported."""
 
-    def report(self, reason=None):
-        """Report this object to the moderators.
+    def report(self, reason):
+        """Report this object to the moderators of its subreddit.
 
-        :param reason: The user-supplied reason for reporting a comment
-            or submission. Default: None (blank reason)
-        :returns: The json response from the server.
+        :param reason: The reason for reporting.
 
         """
-        url = self._reddit.config['report']
-        data = {'id': self.fullname}
-        if reason:
-            data['reason'] = reason
-        return self._reddit.post(url, data=data)
+        self._reddit.post(API_PATH['report'],
+                          data={'id': self.fullname, 'reason': reason})

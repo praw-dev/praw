@@ -66,6 +66,12 @@ class TestComment(IntegrationTest):
             assert not comment.is_root
             assert comment.parent_id == parent_comment.fullname
 
+    def test_report(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestComment.test_report'):
+            Comment(self.reddit, 'd0335z3').report('custom')
+
     def test_save(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
