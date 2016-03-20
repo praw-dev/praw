@@ -14,6 +14,12 @@ class TestSubmission(IntegrationTest):
             assert isinstance(submission.comments[0], Comment)
             assert isinstance(submission.comments[0].replies[0], Comment)
 
+    def test_clear_vote(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_clear_vote'):
+            Submission(self.reddit, '4b536p').clear_vote()
+
     @mock.patch('time.sleep', return_value=None)
     def test_delete(self, _):
         self.reddit.read_only = False
@@ -23,6 +29,12 @@ class TestSubmission(IntegrationTest):
             submission.delete()
             assert submission.author is None
             assert submission.selftext == '[deleted]'
+
+    def test_downvote(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_downvote'):
+            Submission(self.reddit, '4b536p').downvote()
 
     @mock.patch('time.sleep', return_value=None)
     def test_edit(self, _):
@@ -57,3 +69,9 @@ class TestSubmission(IntegrationTest):
             assert comment.author == pytest.placeholders.username
             assert comment.body == 'Test reply'
             assert comment.parent_id == submission.fullname
+
+    def test_upvote(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_upvote'):
+            Submission(self.reddit, '4b536p').upvote()

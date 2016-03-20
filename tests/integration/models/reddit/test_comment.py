@@ -16,6 +16,12 @@ class TestComment(IntegrationTest):
             assert comment.permalink(fast=True) == '/comments/2gmzqe//cklhv0f'
             assert comment.submission == '2gmzqe'
 
+    def test_clear_vote(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestComment.test_clear_vote'):
+            Comment(self.reddit, 'd1680wu').clear_vote()
+
     @mock.patch('time.sleep', return_value=None)
     def test_delete(self, _):
         self.reddit.read_only = False
@@ -25,6 +31,12 @@ class TestComment(IntegrationTest):
             comment.delete()
             assert comment.author is None
             assert comment.body == '[deleted]'
+
+    def test_downvote(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestComment.test_downvote'):
+            Comment(self.reddit, 'd1680wu').downvote()
 
     @mock.patch('time.sleep', return_value=None)
     def test_edit(self, _):
@@ -53,3 +65,9 @@ class TestComment(IntegrationTest):
             assert comment.body == 'Comment reply'
             assert not comment.is_root
             assert comment.parent_id == parent_comment.fullname
+
+    def test_upvote(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestComment.test_upvote'):
+            Comment(self.reddit, 'd1680wu').upvote()
