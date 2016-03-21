@@ -68,6 +68,27 @@ class TestSubredditFlair(IntegrationTest):
             submission = self.subreddit._reddit.submission('4b536p')
             self.subreddit.flair.set(submission, 'submission flair')
 
+    def test_update(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlair.test_update'):
+            redditor = self.subreddit._reddit.redditor(
+                pytest.placeholders.username)
+
+            flair_list = [redditor, 'spez', {'user': 'bsimpson'},
+                          {'user': 'spladug', 'flair_text': '',
+                           'flair_css_class': ''}]
+            response = self.subreddit.flair.update(flair_list,
+                                                   css_class='default')
+            assert all(x['ok'] for x in response)
+            assert not any(x['errors'] for x in response)
+            assert not any(x['warnings'] for x in response)
+            assert len([x for x in response if 'added' in x['status']]) == 3
+            assert len([x for x in response if 'removed' in x['status']]) == 1
+            for i, name in enumerate([str(redditor), 'spez', 'bsimpson',
+                                      'spladug']):
+                assert name in response[i]['status']
+
 
 class TestSubredditListings(IntegrationTest):
     def test_controversial(self):

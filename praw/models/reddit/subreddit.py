@@ -89,16 +89,9 @@ class SubredditFlair(object):
                                      params=params):
             yield item
 
-    """
-    def clear_all(self, subreddit):
-        emove all user flair on ``subreddit``.
-
-        :param subreddit: The Subreddit to remove all flair from..
-
-        csv = [{'user': x['user']} for x in self]
-        print(csv)
-        self.csv(csv)
-    """
+    def clear_all(self):
+        """Remove all user flair on ``subreddit``."""
+        self.update(x['user'] for x in self)
 
     def set(self, thing, text='', css_class=''):
         """Set flair for a Redditor or Submission.
@@ -121,6 +114,41 @@ class SubredditFlair(object):
             data['name'] = str(thing)
         url = API_PATH['flair'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
+
+    def update(self, flair_list, text='', css_class=''):
+        """Set or clear the flair for many Redditors at once.
+
+        :param redditor_flair_list: Each item in this list should be either: a
+            Redditor name string, a Redditor, or a dictionary containing the
+            keys ``user``, ``flair_text``, and ``flair_css_class``. The
+            ``user`` key should map to a Redditor name string, or a
+            Redditor. When a dictionary isn't provided, or the dictionary is
+            missing one of ``flair_text``, or ``flair_css_class`` attributes
+            the default values will come from the the following arguments.
+        :param text: The flair text to use when not explicitly provided in
+            ``flair_list`` (Default: '').
+        :param css_class: The css class to use when not explicitly provided in
+            ``flair_list`` (Default: '').
+        :returns: List of dictionaries indicating the success or failure of
+            each update.
+
+        """
+        lines = []
+        for item in flair_list:
+            if isinstance(item, dict):
+                data = (str(item['user']), item.get('flair_text', text),
+                        item.get('flair_css_class', css_class))
+            else:
+                data = (str(item), text, css_class)
+            lines.append('"{}","{}","{}"'.format(*data))
+
+        response = []
+        url = API_PATH['flaircsv'].format(subreddit=str(self.subreddit))
+        while len(lines):
+            data = {'flair_csv': '\n'.join(lines[:100])}
+            response.extend(self.subreddit._reddit.post(url, data=data))
+            lines = lines[100:]
+        return response
 
 
 class SubredditModeration(object):

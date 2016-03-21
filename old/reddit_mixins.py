@@ -275,35 +275,6 @@ class ModFlairMixin(AuthenticatedReddit):
                 'name': six.text_type(user)}
         return self.request_json(self.config['deleteflair'], data=data)
 
-    def set_flair_csv(self, subreddit, flair_mapping):
-        """Set flair for a group of users in the given subreddit.
-
-        flair_mapping should be a list of dictionaries with the following keys:
-          `user`: the user name,
-          `flair_text`: the flair text for the user (optional),
-          `flair_css_class`: the flair css class for the user (optional)
-
-        :returns: The json response from the server.
-
-        """
-        if not flair_mapping:
-            raise errors.ClientException('flair_mapping must be set')
-        item_order = ['user', 'flair_text', 'flair_css_class']
-        lines = []
-        for mapping in flair_mapping:
-            if 'user' not in mapping:
-                raise errors.ClientException('flair_mapping must '
-                                             'contain `user` key')
-            lines.append(','.join([mapping.get(x, '') for x in item_order]))
-        response = []
-        while len(lines):
-            data = {'r': six.text_type(subreddit),
-                    'flair_csv': '\n'.join(lines[:100])}
-            response.extend(self.request_json(self.config['flaircsv'],
-                                              data=data))
-            lines = lines[100:]
-        return response
-
 
 class ModLogMixin(AuthenticatedReddit):
     """Adds methods requiring the 'modlog' scope (or mod access).

@@ -33,7 +33,7 @@ API_PATH = {
     'edited':              'r/{subreddit}/about/edited/',
     'flair':               'r/{subreddit}/api/flair/',
     'flairconfig':         'api/flairconfig/',
-    'flaircsv':            'api/flaircsv/',
+    'flaircsv':            'r/{subreddit}/api/flaircsv/',
     'flairlist':           'r/{subreddit}/api/flairlist/',
     'flairselector':       'api/flairselector/',
     'flairtemplate':       'api/flairtemplate/',
