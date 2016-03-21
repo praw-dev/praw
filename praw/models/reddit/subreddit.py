@@ -89,9 +89,14 @@ class SubredditFlair(object):
                                      params=params):
             yield item
 
-    def clear_all(self):
-        """Remove all user flair on ``subreddit``."""
-        self.update(x['user'] for x in self)
+    def delete_all(self):
+        """Delete all Redditor flair in the Subreddit.
+
+        :returns: List of dictionaries indicating the success or failure of
+            each delete.
+
+        """
+        return self.update(x['user'] for x in self)
 
     def set(self, thing, text='', css_class=''):
         """Set flair for a Redditor or Submission.
@@ -136,11 +141,11 @@ class SubredditFlair(object):
         lines = []
         for item in flair_list:
             if isinstance(item, dict):
-                data = (str(item['user']), item.get('flair_text', text),
-                        item.get('flair_css_class', css_class))
+                fmt_data = (str(item['user']), item.get('flair_text', text),
+                            item.get('flair_css_class', css_class))
             else:
-                data = (str(item), text, css_class)
-            lines.append('"{}","{}","{}"'.format(*data))
+                fmt_data = (str(item), text, css_class)
+            lines.append('"{}","{}","{}"'.format(*fmt_data))
 
         response = []
         url = API_PATH['flaircsv'].format(subreddit=str(self.subreddit))
