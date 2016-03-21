@@ -1,59 +1,69 @@
 """Provide the MoreComments class."""
-from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
+from ...const import API_PATH
+from ..base import PRAWBase
 
-from .base import RedditBase
 
-
-class MoreComments(RedditBase):
+class MoreComments(PRAWBase):
     """A class indicating there are more comments."""
 
-    def __init__(self, reddit_session, json_dict):
-        """Construct an instance of the MoreComment object."""
-        super(MoreComments, self).__init__(reddit_session, json_dict)
-        self.submission = None
+    def __init__(self, reddit, _data):
+        """Construct an instance of the MoreComments object."""
+        self.count = self.parent_id = None
+        self.children = []
+        super(MoreComments, self).__init__(reddit, _data)
         self._comments = None
+        self.submission = None
+
+    def __eq__(self, other):
+        """Return True if these MoreComments instances are the same."""
+        return isinstance(other, self.__class__) and \
+            self.count == other.count and self.children == other.children
 
     def __lt__(self, other):
         """Proide a sort order on the MoreComments object."""
         # To work with heapq a "smaller" item is the one with the most comments
         # We are intentionally making the biggest element the smallest element
-        # to turn the min-heap implementation in heapq into a max-heap
-        # implementation for Submission.replace_more_comments()
+        # to turn the min-heap implementation in heapq into a max-heap.
         return self.count > other.count
 
+    def __repr__(self):
+        """Return a string representation of the MoreComments instance."""
+        children = self.children[:4]
+        if len(self.children) > 4:
+            children[-1] = '...'
+        return '<{} count={}, children={!r}>'.format(
+            self.__class__.__name__, self.count, children)
+
     def _continue_comments(self, update):
-        assert len(self.children) > 0
-        tmp = self.reddit_session.get_submission(urljoin(
-            self.submission.permalink, self.parent_id.split('_', 1)[1]))
-        assert len(tmp.comments) == 1
-        self._comments = tmp.comments[0].replies
+        assert len(self.children) == 0
+        parent = self._load_comment(self.parent_id.split('_', 1)[1])
+        self._comments = parent.replies
         if update:
             for comment in self._comments:
-                comment._update_submission(self.submission)
+                comment.submission = self.submission
         return self._comments
 
-    def _update_submission(self, submission):
-        self.submission = submission
+    def _load_comment(self, comment_id):
+        path = '{}_/{}'.format(
+            API_PATH['submission'].format(id=self.submission.id), comment_id)
+        _, comments = self._reddit.get(path, params={
+            'limit': self.submission.comment_limit,
+            'sort': self.submission.comment_sort})
+        assert len(comments.children) == 1
+        return comments.children[0]
 
     def comments(self, update=True):
         """Fetch and return the comments for a single MoreComments object."""
-        if not self._comments:
-            if self.count == 0:  # Handle 'continue this thread' type
+        if self._comments is None:
+            if self.count == 0:  # Handle 'continue this thread'
                 return self._continue_comments(update)
-            children = [x for x in self.children if 't1_{0}'.format(x)
-                        not in self.submission._comments_by_id]
-            if not children:
-                return None
-            data = {'children': ','.join(children),
+            assert self.children
+            data = {'children': ','.join(self.children),
                     'link_id': self.submission.fullname,
-                    'r': str(self.submission.subreddit)}
-
-            if self.submission._comment_sort:
-                data['where'] = self.submission._comment_sort
-            url = self.reddit_session.config['morechildren']
-            response = self.reddit_session.request_json(url, data=data)
-            self._comments = response['data']['things']
+                    'sort': self.submission.comment_sort}
+            self._comments = self._reddit.post(API_PATH['morechildren'],
+                                               data=data)
             if update:
                 for comment in self._comments:
-                    comment._update_submission(self.submission)
+                    comment.submission = self.submission
         return self._comments

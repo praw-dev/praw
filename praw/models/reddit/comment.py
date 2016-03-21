@@ -15,7 +15,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     def is_root(self):
         """Return True when the comment is a top level comment."""
         parent_type = self.parent_id.split('_', 1)[0]
-        return parent_type == self._reddit.config.kinds['subreddit']
+        return parent_type == self._reddit.config.kinds['submission']
 
     @property
     def submission(self):
@@ -24,6 +24,15 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             self._submission = self._reddit.submission(
                 self.link_id.split('_', 1)[1])
         return self._submission
+
+    @submission.setter
+    def submission(self, submission):
+        """Update the Submission associated with the Comment."""
+        assert self.name not in submission.comments._comments_by_id
+        submission.comments._comments_by_id[self.name] = self
+        self._submission = submission
+        for reply in getattr(self, 'replies', []):
+            reply.submission = submission
 
     def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
                  _data=None):

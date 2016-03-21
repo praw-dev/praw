@@ -71,8 +71,6 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         # pylint: disable=redefined-variable-type
         if attribute == 'author':
             value = Redditor.from_data(self._reddit, value)
-        elif attribute == 'comments':
-            value = CommentForest(self, value)
         elif attribute == 'subreddit':
             value = Subreddit(self._reddit, value)
         super(Submission, self).__setattr__(attribute, value)
@@ -82,8 +80,9 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
                                            params={'limit': self.comment_limit,
                                                    'sort': self.comment_sort})
         other = other.children[0]
-        other.comments = CommentForest(self, comments.children)
+        other.comments = CommentForest(self)
         self.__dict__.update(other.__dict__)
+        self.comments._update(comments.children)
         self._fetched = True
 
     def _info_path(self):

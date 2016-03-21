@@ -197,14 +197,17 @@ class Reddit(object):
             self._core._authorizer.refresh()
         return self._core.request(method, path, params=params, data=data)
 
-    def submission(self, id_or_url):
-        """Return a lazy instance of :class:`~.Submission` for ``id_or_url``.
+    def submission(  # pylint: disable=invalid-name,redefined-builtin
+            self, id=None, url=None):
+        """Return a lazy instance of :class:`~.Submission`.
 
-        :param id_or_url: Either a reddit base64 submission ID, e.g.,
-            ``2gmzqe``, or a URL supported by :meth:`~.id_from_url`.
+        :param id: A reddit base64 submission ID, e.g., ``2gmzqe``.
+        :param url: A URL supported by :meth:`Submission.id_from_url`.
+
+        Either ``id`` or ``url`` can be provided, but not both.
 
         """
-        return models.Submission(self, id_or_url)
+        return models.Submission(self, id=id, url=url)
 
     def subreddit(self, name):
         """Return a lazy instance of :class:`~.Subreddit` for ``name``.
