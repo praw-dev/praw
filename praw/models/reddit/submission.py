@@ -59,6 +59,8 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
                             'provided.')
         super(Submission, self).__init__(reddit, _data)
+        self.comment_limit = 2048
+        self.comment_sort = 'best'
         if id is not None:
             self.id = id  # pylint: disable=invalid-name
         elif url is not None:
@@ -76,7 +78,9 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         super(Submission, self).__setattr__(attribute, value)
 
     def _fetch(self):
-        other, comments = self._reddit.get(self._info_path())
+        other, comments = self._reddit.get(self._info_path(),
+                                           params={'limit': self.comment_limit,
+                                                   'sort': self.comment_sort})
         other = other.children[0]
         other.comments = CommentForest(self, comments.children)
         self.__dict__.update(other.__dict__)
