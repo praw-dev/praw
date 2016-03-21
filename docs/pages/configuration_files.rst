@@ -22,7 +22,7 @@ this way will take precedence over those previously defined.
 
     user_agent = ("Configuration setting example by /u/_Daimon_. See "
                   "https://praw.readthedocs.org/en/latest/pages/configuration_files.html")
-    r = praw.Reddit(user_agent=user_agent, log_requests=1)
+    r = praw.Reddit(user_agent=user_agent)
 
 Config File Locations
 ---------------------
@@ -63,12 +63,6 @@ config file. Each site can overwrite any of these variables.
   <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_, e.g.,
   ``https_proxy: http://user:pass@addr:port``. If no proxy is specified, PRAW
   will pick up the environment variable for https_proxy, if it has been set.
-* *log_requests:* An **integer** that determines the level of API call logging.
-
-  * **0:** no logging
-  * **1:** log only the request URIs
-  * **2:** log the request URIs as well as any POST data
-
 * *oauth_url:* A **string** that defines the *scheme* and *domain* where OAuth
   authenticated requests are sent.
 * *reddit_url:* A **string** that defines the *scheme* and *domain* that is
@@ -79,11 +73,6 @@ config file. Each site can overwrite any of these variables.
   the original API response, should be stored on every object in the json_dict
   attribute. Default is ``False`` as memory usage will double if enabled. For
   lazy objects, json_dict will be ``None`` until the data has been fetched.
-* *timeout:* Maximum time, a **float**, in seconds, before a single HTTP
-  request times out. urllib2.URLError is raised upon timeout.
-* *validate_certs:* A **boolean** to indicate if SSL certificates should be
-  validated or not.  If not specified, will default to ``True``.  This is
-  mainly for testing local reddit installations with self-signed certificates.
 * *xxx_kind:* A **string** that maps the *type* returned by json results to a
   local object. **xxx** is one of: *comment*, *message*, *more*, *redditor*,
   *submission*, *subreddit*, *userlist*. This variable is needed as the

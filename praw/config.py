@@ -56,16 +56,13 @@ class Config(object):
         self.kinds = {x: raw['{}_kind'.format(x)] for x in
                       ['comment', 'message', 'redditor', 'submission',
                        'subreddit']}
-        self.log_requests = int(raw['log_requests'])
         self.oauth_url = raw['oauth_url']
         self.reddit_url = raw['reddit_url']
         self.redirect_uri = fetch_or_none('redirect_uri')
         self.refresh_token = fetch_or_none('refresh_token')
         self.password = fetch_or_none('password')
-        self.timeout = float(raw['timeout'])
         self.user_agent = fetch_or_none('user_agent')
         self.username = fetch_or_none('username')
-        self.validate_certs = config_boolean(raw['validate_certificates'])
 
     @property
     def short_url(self):

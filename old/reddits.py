@@ -35,7 +35,6 @@ class BaseReddit(object):
     def __init__(self, user_agent, site_name=None, **kwargs):
         self.http = Session()
         self.http.headers['User-Agent'] = USER_AGENT_FORMAT.format(user_agent)
-        self.http.validate_certs = self.config.validate_certs
 
         if self.config.http_proxy or self.config.https_proxy:
             self.http.proxies = {}
