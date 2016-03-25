@@ -714,36 +714,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
     """
 
-    def _mark_as_read(self, thing_ids, unread=False):
-        """Mark each of the supplied thing_ids as (un)read.
-
-        :returns: The json response from the server.
-
-        """
-        data = {'id': ','.join(thing_ids)}
-        key = 'unread_message' if unread else 'read_message'
-        response = self.request_json(self.config[key], data=data)
-        return response
-
-    def get_comment_replies(self, *args, **kwargs):
-        """Return a get_content generator for inboxed comment replies.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        return self.get_content(self.config['comment_replies'],
-                                *args, **kwargs)
-
-    def get_inbox(self, *args, **kwargs):
-        """Return a get_content generator for inbox (messages and comments).
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        return self.get_content(self.config['inbox'], *args, **kwargs)
-
     def get_message(self, message_id, *args, **kwargs):
         """Return a Message object corresponding to the given ID.
 
@@ -755,53 +725,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
 
         """
         return models.Message.from_id(self, message_id, *args, **kwargs)
-
-    def get_messages(self, *args, **kwargs):
-        """Return a get_content generator for inbox (messages only).
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        return self.get_content(self.config['messages'], *args, **kwargs)
-
-    def get_post_replies(self, *args, **kwargs):
-        """Return a get_content generator for inboxed submission replies.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        return self.get_content(self.config['post_replies'], *args, **kwargs)
-
-    def get_sent(self, *args, **kwargs):
-        """Return a get_content generator for sent messages.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        return self.get_content(self.config['sent'], *args, **kwargs)
-
-    def get_unread(self, unset_has_mail=False, update_user=False, *args,
-                   **kwargs):
-        """Return a get_content generator for unread messages.
-
-        :param unset_has_mail: When True, clear the has_mail flag (orangered)
-            for the user.
-        :param update_user: If both `unset_has_mail` and `update user` is True,
-            set the `has_mail` attribute of the logged-in user to False.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        params = kwargs.setdefault('params', {})
-        if unset_has_mail:
-            params['mark'] = 'true'
-            if update_user:  # Update the user object
-                setattr(self.user, 'has_mail', False)
-        return self.get_content(self.config['unread'], *args, **kwargs)
 
     def get_mentions(self, *args, **kwargs):
         """Return a get_content generator for username mentions.

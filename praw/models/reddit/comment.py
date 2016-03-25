@@ -63,7 +63,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     def permalink(self, fast=False):
         """Return a permalink to the comment.
 
-        :param fast: Return the result as quickly as possible (Default: false).
+        :param fast: Return the result as quickly as possible (Default: False).
 
         In order to determine the full permalink for a comment, the Submission
         may need to be fetched if it hasn't been already. Set ``fast=True`` if

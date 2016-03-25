@@ -43,44 +43,6 @@ class MessageTest(PRAWTest):
         self.assertFalse(self.r.user.has_mail)
 
     @betamax()
-    def test_mark_as_read(self):
-        self.r.login(self.other_user_name, self.other_user_pswd,
-                     disable_warning=True)
-        msg = next(self.r.get_unread(limit=1))
-        msg.mark_as_read()
-
-        self.delay_for_listing_update()
-        self.assertFalse(msg in self.r.get_unread(limit=5))
-
-    @betamax()
-    def test_mark_as_unread(self):
-        self.r.login(self.other_user_name, self.other_user_pswd,
-                     disable_warning=True)
-        msg = self.first(self.r.get_inbox(), lambda msg: not msg.new)
-        self.assertFalse(msg in self.r.get_unread())
-        msg.mark_as_unread()
-
-        self.delay_for_listing_update()
-        self.assertTrue(msg in self.r.get_unread(limit=24))
-
-    @betamax()
-    def test_mark_multiple_as_read(self):
-        self.r.login(self.other_user_name, self.other_user_pswd,
-                     disable_warning=True)
-        message_generator = self.r.get_unread(limit=None)
-        messages = []
-        while len(messages) < 2:
-            message = next(message_generator)
-            if message.author != self.r.user.name:
-                messages.append(message)
-        self.assertEqual(2, len(messages))
-        self.r.user.mark_as_read(messages)
-
-        self.delay_for_listing_update()
-        unread = list(self.r.get_unread(limit=25))
-        self.assertFalse(any(msg in unread for msg in messages))
-
-    @betamax()
     def test_reply_to_message_and_verify(self):
         def predicate(msg):
             return isinstance(msg, Message) and msg.author == self.r.user

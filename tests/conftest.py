@@ -13,7 +13,7 @@ def b64_string(input_string):
 
 def env_default(key):
     """Return environment variable or placeholder string."""
-    return os.environ.get('praw_{}'.format(key), 'placeholder:{}'.format(key))
+    return os.environ.get('praw_{}'.format(key), 'placeholder_{}'.format(key))
 
 
 os.environ['praw_check_for_updates'] = 'False'

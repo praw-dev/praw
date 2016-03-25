@@ -2,10 +2,9 @@
 from json import dumps
 
 from ...const import API_PATH
-from ...exceptions import ClientException
 from ..listing.mixins import RedditorListingMixin
 from .base import RedditBase
-from .mixins import GildableMixin, InboxableMixin, MessageableMixin
+from .mixins import GildableMixin, MessageableMixin
 
 
 class Redditor(RedditBase, GildableMixin, MessageableMixin,
@@ -82,27 +81,6 @@ class Redditor(RedditBase, GildableMixin, MessageableMixin,
         url = self.reddit_session.config['friend_v1'].format(user=self.name)
         data = {'id': self.name}
         return self.reddit_session.request_json(url, data=data, method='GET')
-
-    def mark_as_read(self, messages, unread=False):
-        """Mark message(s) as read or unread.
-
-        :returns: The json response from the server.
-
-        """
-        ids = []
-        if isinstance(messages, InboxableMixin):
-            ids.append(messages.fullname)
-        elif hasattr(messages, '__iter__'):
-            for message in messages:
-                if not isinstance(message, InboxableMixin):
-                    raise ClientException('Invalid message type: {0}'
-                                          .format(type(message)))
-                ids.append(message.fullname)
-        else:
-            raise ClientException('Invalid message type: {0}'
-                                  .format(type(messages)))
-        retval = self.reddit_session._mark_as_read(ids, unread=unread)
-        return retval
 
     def unfriend(self):
         """Unfriend the user.

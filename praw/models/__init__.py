@@ -1,8 +1,10 @@
 """Provide the PRAW models."""
 
 from .front import Front  # NOQA
+from .inbox import Inbox  # NOQA
 from .list.redditor import RedditorList  # NOQA
 from .list.wiki import WikiPageList  # NOQA
+from .listing.generator import ListingGenerator  # NOQA
 from .listing.listing import Listing  # NOQA
 from .reddit.comment import Comment  # NOQA
 from .reddit.message import Message  # NOQA
