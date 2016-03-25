@@ -1,6 +1,5 @@
 from praw.models import Comment
 import mock
-import pytest
 
 from ... import IntegrationTest
 
@@ -61,7 +60,7 @@ class TestComment(IntegrationTest):
                 'TestComment.test_reply'):
             parent_comment = Comment(self.reddit, 'd1616q2')
             comment = parent_comment.reply('Comment reply')
-            assert comment.author == pytest.placeholders.username
+            assert comment.author == self.reddit.config.username
             assert comment.body == 'Comment reply'
             assert not comment.is_root
             assert comment.parent_id == parent_comment.fullname

@@ -14,7 +14,7 @@ class TestSubreddit(IntegrationTest):
             subreddit = self.reddit.subreddit(
                 pytest.placeholders.test_subreddit)
             submission = subreddit.submit('Test Title', selftext='Test text.')
-            assert submission.author == pytest.placeholders.username
+            assert submission.author == self.reddit.config.username
             assert submission.selftext == 'Test text.'
             assert submission.title == 'Test Title'
 
@@ -26,7 +26,7 @@ class TestSubreddit(IntegrationTest):
             subreddit = self.reddit.subreddit(
                 pytest.placeholders.test_subreddit)
             submission = subreddit.submit('Test Title', url=url)
-            assert submission.author == pytest.placeholders.username
+            assert submission.author == self.reddit.config.username
             assert submission.url == url
             assert submission.title == 'Test Title'
 
@@ -60,14 +60,14 @@ class TestSubredditFlair(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubredditFlair.test_set__redditor'):
             redditor = self.subreddit._reddit.redditor(
-                pytest.placeholders.username)
+                self.reddit.config.username)
             self.subreddit.flair.set(redditor, 'redditor flair')
 
     def test_set__redditor_string(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestSubredditFlair.test_set__redditor_string'):
-            self.subreddit.flair.set(pytest.placeholders.username, 'new flair',
+            self.subreddit.flair.set(self.reddit.config.username, 'new flair',
                                      'some class')
 
     def test_set__submission(self):
@@ -81,7 +81,7 @@ class TestSubredditFlair(IntegrationTest):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditFlair.test_update'):
             redditor = self.subreddit._reddit.redditor(
-                pytest.placeholders.username)
+                self.reddit.config.username)
 
             flair_list = [redditor, 'spez', {'user': 'bsimpson'},
                           {'user': 'spladug', 'flair_text': '',
