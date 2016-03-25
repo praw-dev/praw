@@ -38,7 +38,7 @@ class Redditor(RedditBase, GildableMixin, MessageableMixin,
             self.name = name
         self._path = API_PATH['user'].format(user=self.name)
 
-    def _info_url(self):
+    def _info_path(self):
         return API_PATH['user_about'].format(user=self.name)
 
     def friend(self, note=None, _unfriend=False):
