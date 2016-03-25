@@ -46,6 +46,23 @@ class TestComment(IntegrationTest):
             comment.edit('New text')
             assert comment.body == 'New text'
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_mark_read(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestComment.test_mark_read'):
+            comment = next(self.reddit.inbox.unread())
+            assert isinstance(comment, Comment)
+            comment.mark_read()
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_mark_unread(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestComment.test_mark_unread'):
+            comment = next(self.reddit.inbox.comment_replies())
+            comment.mark_unread()
+
     def test_permalink(self):
         with self.recorder.use_cassette(
                 'TestComment.test_permalink'):
