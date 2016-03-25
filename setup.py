@@ -3,7 +3,7 @@
 import re
 from codecs import open
 from os import path
-from setuptools import setup
+from setuptools import find_packages, setup
 
 
 PACKAGE_NAME = 'praw'
@@ -47,7 +47,7 @@ setup(name=PACKAGE_NAME,
       maintainer='Bryce Boe',
       maintainer_email='bbzbryce@gmail.com',
       package_data={'': ['COPYING'], PACKAGE_NAME: ['*.ini']},
-      packages=[PACKAGE_NAME],
+      packages=find_packages(exclude=['tests', 'tests.*']),
       setup_requires=['pytest-runner ==2.7'],
       tests_require=['betamax >=0.5.1, <0.6',
                      'betamax-matchers >=0.2.0, <0.3',
