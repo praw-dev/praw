@@ -10,7 +10,7 @@ from .exceptions import ClientException
 from .config import Config
 from .const import __version__, API_PATH, USER_AGENT_FORMAT
 from .objector import Objector
-from . import models
+from praw import models
 
 
 class Reddit(object):
