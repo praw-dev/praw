@@ -222,3 +222,11 @@ class Reddit(object):
         elif lower_name == 'randnsfw':
             return self.random_subreddit(nsfw=True)
         return models.Subreddit(self, name)
+
+    def comment(self, id):
+        """Return a lazy instance of :class:`~.Comment` for ``ìd``.
+
+        :param id: The id of the comment.
+
+        """
+        return models.Comment(self, id=id)
