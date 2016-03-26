@@ -54,3 +54,6 @@ class TestReddit(UnitTest):
 
     def test_subreddit(self):
         assert self.reddit.subreddit('redditdev').display_name == 'redditdev'
+
+    def test_comment(self):
+        assert self.reddit.comment('cklfmye').id == 'cklfmye'
