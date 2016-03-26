@@ -135,6 +135,14 @@ class Reddit(object):
         else:
             self._core = self._read_only_core
 
+    def comment(self, id):
+        """Return a lazy instance of :class:`~.Comment` for ``ìd``.
+
+        :param id: The ID of the comment.
+
+        """
+        return models.Comment(self, id=id)
+
     def get(self, path, params=None):
         """Return parsed objects returned from a GET request to ``path``.
 

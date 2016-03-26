@@ -16,6 +16,9 @@ class TestReddit(UnitTest):
         assert Reddit.update_checked
         mock_update_check.assert_called_with('praw', __version__)
 
+    def test_comment(self):
+        assert self.reddit.comment('cklfmye').id == 'cklfmye'
+
     def test_context_manager(self):
         with Reddit(**self.REQUIRED_DUMMY_SETTINGS) as reddit:
             assert not reddit.config.check_for_updates
