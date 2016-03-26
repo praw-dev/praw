@@ -298,17 +298,17 @@ request more often than every 2 seconds and it caches every page for 30
 seconds. This can be modified in :ref:`configuration_files`.
 
 The problem comes when we run multiple bots / scripts at the same time. PRAW
-cannot share these settings between programs. So there will be at least 2
+cannot share these settings between programs, so there will be at least 2
 seconds between program A's requests and at least 2 seconds between program B's
 requests, but combined their requests may come more often than every 2 seconds.
-If you wish to run multiple program at the same time. Either combine them into
+If you wish to run multiple program at the same time, either combine them into
 one, ensure from within the programs (such as with message passing) that they
 don't combined exceed the API guidelines, or :ref:`edit the configuration files
 <configuration_files>` to affect how often a program can send a request.
 
 All 3 bot problems will be covered more in-depth in a future tutorial.
 
-For now, you can continue to the next part of our tutorial series.
+For now, you can continue to the next part of our tutorial series:
 :ref:`comment_parsing`.
 
 The full Question-Discover program
