@@ -127,17 +127,17 @@ class CommentTest(PRAWTest):
         comment.distinguish()
         comment.refresh()
         self.assertEqual(comment.distinguished, 'moderator')
-        self.assertEqual(comment.stickied, False)
+        self.assertFalse(comment.stickied)
 
         comment.distinguish(sticky=True)
         comment.refresh()
         self.assertEqual(comment.distinguished, 'moderator')
-        self.assertEqual(comment.stickied, True)
+        self.assertTrue(comment.stickied)
 
         comment.undistinguish()
         comment.refresh()
-        self.assertEqual(comment.distinguished, None)
-        self.assertEqual(comment.stickied, False)
+        self.assertIsNone(comment.distinguished)
+        self.assertFalse(comment.stickied)
 
 
 class MoreCommentsTest(PRAWTest):
