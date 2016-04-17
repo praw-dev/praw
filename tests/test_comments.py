@@ -118,6 +118,27 @@ class CommentTest(PRAWTest):
     def test_pickling_v2(self):
         self._test_pickling(2)
 
+    @betamax()
+    def test_distinguish_and_sticky(self):
+        submission = next(self.subreddit.get_new())
+        text = 'Distinguished and/or stickied comment'
+        comment = submission.add_comment(text)
+
+        comment.distinguish()
+        comment.refresh()
+        self.assertEqual(comment.distinguished, 'moderator')
+        self.assertFalse(comment.stickied)
+
+        comment.distinguish(sticky=True)
+        comment.refresh()
+        self.assertEqual(comment.distinguished, 'moderator')
+        self.assertTrue(comment.stickied)
+
+        comment.undistinguish()
+        comment.refresh()
+        self.assertIsNone(comment.distinguished)
+        self.assertFalse(comment.stickied)
+
 
 class MoreCommentsTest(PRAWTest):
     def betamax_init(self):
