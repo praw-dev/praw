@@ -96,6 +96,13 @@ class AuthenticatedRedditTest(PRAWTest):
         new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 3}))
         self.assertTrue(not any(item.hidden for item in new))
 
+        submissions = list(self.r.get_subreddit('all').get_new(limit=300))
+        fullnames = [submission.fullname for submission in submissions]
+        self.r.hide(fullnames)
+
+        submissions = self.r.get_info(thing_id=fullnames)
+        self.assertTrue(all(item.hidden for item in submissions))
+
 
 class ModFlairMixinTest(PRAWTest):
     def betamax_init(self):

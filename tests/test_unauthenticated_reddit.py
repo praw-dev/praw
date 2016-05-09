@@ -211,8 +211,18 @@ class UnauthenticatedRedditTest(PRAWTest):
 
     @betamax()
     def test_info_by_id(self):
-        self.assertEqual(self.link_id,
-                         self.r.get_info(thing_id=self.link_id).fullname)
+        # individual
+        submission = self.r.get_info(thing_id=self.link_id)
+        self.assertEqual(self.link_id, submission.fullname)
+
+        # groups
+        listing = list(self.r.get_subreddit(self.sr).get_new(limit=200))
+        listing = [submission.fullname for submission in listing]
+        submissions = self.r.get_info(thing_id=listing)
+
+        listing = set(listing)
+        submissions = set(submission.fullname for submission in submissions)
+        self.assertEqual(listing, submissions)
 
     @betamax()
     def test_info_by_invalid_id(self):
