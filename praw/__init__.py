@@ -2596,6 +2596,18 @@ class ReportMixin(AuthenticatedReddit):
         """
         if isinstance(thing_id, six.string_types):
             thing_id = [thing_id]
+        else:
+            # Guarantee a subscriptable type.
+            thing_id = list(thing_id)
+
+        if len(thing_id) == 0:
+            raise ValueError('No fullnames provided')
+
+        # Will we return a list of server responses, or just one?
+        # TODO: In future versions, change the threshold to 1 to get
+        # list-in-list-out, single-in-single-out behavior. Threshold of 50
+        # is to avoid a breaking change at this time.
+        return_list = len(thing_id) > 50
 
         id_chunks = chunk_sequence(thing_id, 50)
         responses = []
@@ -2612,7 +2624,10 @@ class ReportMixin(AuthenticatedReddit):
             if self.user is not None:
                 self.evict(urljoin(self.user._url,  # pylint: disable=W0212
                                    'hidden'))
-        return responses
+        if return_list:
+            return responses
+        else:
+            return responses[0]
 
     def unhide(self, thing_id):
         """Unhide up to 50 objects in the context of the logged in user.

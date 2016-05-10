@@ -77,10 +77,35 @@ class SubmissionTest(PRAWTest):
     @betamax()
     def test_submission_hide_and_unhide(self):
         submission = next(self.r.user.get_submitted())
-        submission.hide()
+        response = submission.hide()
+        self.assertEqual(response, {})
         self.assertTrue(submission.refresh().hidden)
         submission.unhide()
         self.assertFalse(submission.refresh().hidden)
+
+    @betamax()
+    def test_submission_hide_and_unhide_batch(self):
+        sub = self.r.get_subreddit(self.sr)
+        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 1}))
+
+        response = self.r.hide([item.fullname for item in new])
+        self.assertEqual(response, {})
+        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 2}))
+        self.assertTrue(all(item.hidden for item in new))
+
+        self.r.unhide([item.fullname for item in new])
+        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 3}))
+        self.assertTrue(not any(item.hidden for item in new))
+
+    @betamax()
+    def test_submission_hide_and_unhide_many(self):
+        submissions = list(self.r.get_subreddit('all').get_new(limit=300))
+        fullnames = [submission.fullname for submission in submissions]
+        response = self.r.hide(fullnames)
+        self.assertEqual(response, [{}, {}, {}, {}, {}, {}])
+
+        submissions = self.r.get_info(thing_id=fullnames)
+        self.assertTrue(all(item.hidden for item in submissions))
 
     @betamax()
     def test_submission_refresh(self):

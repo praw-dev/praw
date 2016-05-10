@@ -83,26 +83,6 @@ class AuthenticatedRedditTest(PRAWTest):
         sub = self.r.get_subreddit('{0}+{1}'.format(self.sr, 'test'))
         self.assertRaises(errors.ModeratorRequired, sub.get_mod_queue)
 
-    @betamax()
-    def test_submission_hide_and_unhide_batch(self):
-        sub = self.r.get_subreddit(self.sr)
-        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 1}))
-
-        self.r.hide([item.fullname for item in new])
-        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 2}))
-        self.assertTrue(all(item.hidden for item in new))
-
-        self.r.unhide([item.fullname for item in new])
-        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 3}))
-        self.assertTrue(not any(item.hidden for item in new))
-
-        submissions = list(self.r.get_subreddit('all').get_new(limit=300))
-        fullnames = [submission.fullname for submission in submissions]
-        self.r.hide(fullnames)
-
-        submissions = self.r.get_info(thing_id=fullnames)
-        self.assertTrue(all(item.hidden for item in submissions))
-
 
 class ModFlairMixinTest(PRAWTest):
     def betamax_init(self):
