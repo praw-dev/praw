@@ -34,7 +34,7 @@ import six
 import sys
 from praw import decorators, errors
 from praw.handlers import DefaultHandler
-from praw.helpers import normalize_url
+from praw.helpers import chunk_sequence, normalize_url
 from praw.internal import (_prepare_request, _raise_redirect_exceptions,
                            _raise_response_exceptions, _to_reddit_list)
 from praw.settings import CONFIG
@@ -912,18 +912,32 @@ class UnauthenticatedReddit(BaseReddit):
             raise TypeError('Only one of url or thing_id is required!')
         elif thing_id and limit:
             raise TypeError('Limit keyword is not applicable with thing_id.')
+
+        # In these cases, we will have a list of things to return.
+        # Otherwise, it will just be one item.
+        return_list = bool(url) or not isinstance(thing_id, six.string_types)
+
+        param_groups = []
         if url:
             params = {'url': url}
             if limit:
                 params['limit'] = limit
+            param_groups.append(params)
         else:
-            if not isinstance(thing_id, six.string_types):
-                thing_id = ','.join(thing_id)
-                url = True  # Enable returning a list
-            params = {'id': thing_id}
-        items = self.request_json(self.config['info'],
-                                  params=params)['data']['children']
-        if url:
+            if isinstance(thing_id, six.string_types):
+                thing_id = [thing_id]
+
+            id_chunks = chunk_sequence(thing_id, 100)
+            for id_chunk in id_chunks:
+                params = {'id': ','.join(id_chunk)}
+                param_groups.append(params)
+
+        items = []
+        for param_group in param_groups:
+            chunk = self.request_json(self.config['info'], params=param_group)
+            items.extend(chunk['data']['children'])
+
+        if return_list:
             return items if items else None
         elif items:
             return items[0]
@@ -2569,28 +2583,51 @@ class ReportMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='report')
     def hide(self, thing_id, _unhide=False):
-        """Hide up to 50 objects in the context of the logged in user.
+        """Hide one or multiple objects in the context of the logged in user.
 
         :param thing_id: A single fullname or list of fullnames,
             representing objects which will be hidden.
-        :param _unhide: If True, unhide the object(s) instead.  Use
+        :param _unhide: If True, unhide the object(s) instead. Use
             :meth:`~praw.__init__.ReportMixin.unhide` rather than setting this
             manually.
 
         :returns: The json response from the server.
 
         """
-        if not isinstance(thing_id, six.string_types):
-            thing_id = ','.join(thing_id)
-        method = 'unhide' if _unhide else 'hide'
-        data = {'id': thing_id,
-                'executed': method}
-        response = self.request_json(self.config[method], data=data)
+        if isinstance(thing_id, six.string_types):
+            thing_id = [thing_id]
+        else:
+            # Guarantee a subscriptable type.
+            thing_id = list(thing_id)
 
-        if self.user is not None:
-            self.evict(urljoin(self.user._url,  # pylint: disable=W0212
-                               'hidden'))
-        return response
+        if len(thing_id) == 0:
+            raise ValueError('No fullnames provided')
+
+        # Will we return a list of server responses, or just one?
+        # TODO: In future versions, change the threshold to 1 to get
+        # list-in-list-out, single-in-single-out behavior. Threshold of 50
+        # is to avoid a breaking change at this time.
+        return_list = len(thing_id) > 50
+
+        id_chunks = chunk_sequence(thing_id, 50)
+        responses = []
+        for id_chunk in id_chunks:
+            id_chunk = ','.join(id_chunk)
+
+            method = 'unhide' if _unhide else 'hide'
+            data = {'id': id_chunk,
+                    'executed': method}
+
+            response = self.request_json(self.config[method], data=data)
+            responses.append(response)
+
+            if self.user is not None:
+                self.evict(urljoin(self.user._url,  # pylint: disable=W0212
+                                   'hidden'))
+        if return_list:
+            return responses
+        else:
+            return responses[0]
 
     def unhide(self, thing_id):
         """Unhide up to 50 objects in the context of the logged in user.

@@ -356,6 +356,28 @@ def _stream_generator(get_function, limit=None, verbosity=1):
             time.sleep(sleep_time)
 
 
+def chunk_sequence(sequence, chunk_length, allow_incomplete=True):
+    """Given a sequence, divide it into sequences of length `chunk_length`.
+
+    :param allow_incomplete: If True, allow final chunk to be shorter if the
+        given sequence is not an exact multiple of `chunk_length`.
+        If False, the incomplete chunk will be discarded.
+    """
+    (complete, leftover) = divmod(len(sequence), chunk_length)
+    if not allow_incomplete:
+        leftover = 0
+
+    chunk_count = complete + min(leftover, 1)
+
+    chunks = []
+    for x in range(chunk_count):
+        left = chunk_length * x
+        right = left + chunk_length
+        chunks.append(sequence[left:right])
+
+    return chunks
+
+
 def convert_id36_to_numeric_id(id36):
     """Convert strings representing base36 numbers into an integer."""
     if not isinstance(id36, six.string_types) or id36.count("_") > 0:
