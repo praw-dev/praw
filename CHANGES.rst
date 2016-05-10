@@ -12,36 +12,31 @@ upstream changes.
 
 3.5.0 (2016-05-10)
 ------------------
-* **[BUGFIX]** Prevent built-in method `dir` from causing RedditContentObjects
-  to perform web requests in Python 2.
-* **[FEATURE]** Added support for thread locking. See
-  :meth:`~praw.objects.Submission.lock` and
-  :meth:`~praw.objects.Submission.unlock`.
-* **[FEATURE]** Added support for comment stickying. Try
-  :meth:`~praw.objects.Comment.distinguish` with new parameter `sticky`.
-* **[FEATURE]** Methods :meth:`~praw.__init__.ReportMixin.hide` and
+ * **[BUGFIX]** Prevent built-in method `dir` from causing RedditContentObjects
+   to perform web requests in Python 2.
+ * **[FEATURE]** Added support for thread locking. See
+   :meth:`~praw.objects.Submission.lock` and
+   :meth:`~praw.objects.Submission.unlock`.
+ * **[FEATURE]** Added support for comment stickying. Try
+   :meth:`~praw.objects.Comment.distinguish` with new parameter `sticky`.
+ * **[FEATURE]** Methods :meth:`~praw.__init__.ReportMixin.hide` and
    :meth:`~praw.__init__.UnauthenticatedReddit.get_info` now support long lists
    of fullnames. They will divide the list up into small, requestable chunks
    automatically.
 
 3.4.0 (2016-02-21)
 ------------------
-
-**Added**
-
-* Added support for modmail muting. See
+ * **[CHANGE]** Image uploads support PNG images as small as 67 bytes.
+ * **[FEATURE]** Added support for modmail muting. See
    :meth:`~praw.objects.Subreddit.add_mute`,
    :meth:`~praw.__init__.ModOnlyMixin.get_muted`,
    :meth:`~praw.objects.Subreddit.remove_mute`,
    :meth:`~praw.objects.Message.mute_modmail_author`, and
    :meth:`~praw.objects.Message.unmute_modmail_author`.
-* :meth:`~praw.__init__.UnauthenticatedReddit.default_subreddits`.
-* Support for ``*`` OAuth scopes.
-* :meth:`~praw.__init__.UnauthenticatedReddit.get_traffic`
-
-**Changed**
-
-* Image uploads support PNG images as small as 67 bytes.
+ * **[FEATURE]** Added
+   :meth:`~praw.__init__.UnauthenticatedReddit.default_subreddits`.
+ * **[FEATURE]** Added support for ``*`` OAuth scopes.
+ * **[FEATURE]** Added :meth:`~praw.__init__.UnauthenticatedReddit.get_traffic`
 
 PRAW 3.3.0
 ----------
