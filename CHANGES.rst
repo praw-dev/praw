@@ -10,8 +10,8 @@ upstream changes.
 
 .. begin_changelog_body
 
-Unreleased
-----------
+3.5.0 (2016-05-10)
+------------------
 * **[BUGFIX]** Prevent built-in method `dir` from causing RedditContentObjects
   to perform web requests in Python 2.
 * **[FEATURE]** Added support for thread locking. See
