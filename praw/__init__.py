@@ -726,8 +726,6 @@ class OAuth2Reddit(BaseReddit):
     @decorators.require_oauth
     def refresh_access_information(self, refresh_token):
         """Return updated access information for an OAuth2 authorization grant.
-        Password grants aren't refreshable, so use `get_access_information()`
-        again, instead.
 
         :param refresh_token: the refresh token used to obtain the updated
             information
@@ -736,10 +734,17 @@ class OAuth2Reddit(BaseReddit):
             the OAuth2 grant is not refreshable. The scope value will be a set
             containing the scopes the tokens are valid for.
 
+        Password grants aren't refreshable, so use `get_access_information()`
+        again, instead.
         """
-        data = {'grant_type': 'refresh_token',
-                'redirect_uri': self.redirect_uri,
-                'refresh_token': refresh_token}
+        if self.config.grant_type == 'password':
+            data = {'grant_type': 'password',
+                    'username': self.config.user,
+                    'password': self.config.pswd}
+        else:
+            data = {'grant_type': 'refresh_token',
+                    'redirect_uri': self.redirect_uri,
+                    'refresh_token': refresh_token}
         retval = self._handle_oauth_request(data)
         return {'access_token': retval['access_token'],
                 'refresh_token': refresh_token,
