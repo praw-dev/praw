@@ -266,6 +266,7 @@ class Config(object):  # pylint: disable=R0903
         self.client_id = obj.get('oauth_client_id') or None
         self.client_secret = obj.get('oauth_client_secret') or None
         self.redirect_uri = obj.get('oauth_redirect_uri') or None
+        self.grant_type = obj.get('oauth_grant_type') or None
         self.refresh_token = obj.get('oauth_refresh_token') or None
         self.store_json_result = config_boolean(obj.get('store_json_result'))
 
@@ -679,8 +680,13 @@ class OAuth2Reddit(BaseReddit):
             value will be a set containing the scopes the tokens are valid for.
 
         """
-        data = {'code': code, 'grant_type': 'authorization_code',
-                'redirect_uri': self.redirect_uri}
+        if self.config.grant_type == 'password':
+            data = {'grant_type': 'password',
+                    'username': self.config.user,
+                    'password': self.config.pswd}
+        else:
+            data = {'code': code, 'grant_type': 'authorization_code',
+                    'redirect_uri': self.redirect_uri}
         retval = self._handle_oauth_request(data)
         return {'access_token': retval['access_token'],
                 'refresh_token': retval.get('refresh_token'),
@@ -728,10 +734,17 @@ class OAuth2Reddit(BaseReddit):
             the OAuth2 grant is not refreshable. The scope value will be a set
             containing the scopes the tokens are valid for.
 
+        Password grants aren't refreshable, so use `get_access_information()`
+        again, instead.
         """
-        data = {'grant_type': 'refresh_token',
-                'redirect_uri': self.redirect_uri,
-                'refresh_token': refresh_token}
+        if self.config.grant_type == 'password':
+            data = {'grant_type': 'password',
+                    'username': self.config.user,
+                    'password': self.config.pswd}
+        else:
+            data = {'grant_type': 'refresh_token',
+                    'redirect_uri': self.redirect_uri,
+                    'refresh_token': refresh_token}
         retval = self._handle_oauth_request(data)
         return {'access_token': retval['access_token'],
                 'refresh_token': refresh_token,
