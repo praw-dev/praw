@@ -21,7 +21,7 @@ this way will take precedence over those previously defined.
     import praw
 
     user_agent = ("Configuration setting example by /u/_Daimon_. See "
-                  "https://praw.readthedocs.org/en/latest/pages/configuration_files.html")
+                  "https://praw.readthedocs.io/en/latest/pages/configuration_files.html")
     r = praw.Reddit(user_agent=user_agent, log_requests=1)
 
 Config File Locations

@@ -54,5 +54,5 @@ setup(name=PACKAGE_NAME,
                      'betamax-serializers >=0.1.1, <0.2',
                      'mock ==1.0.1'],
       test_suite='tests',
-      url='https://praw.readthedocs.org/',
+      url='https://praw.readthedocs.io/',
       version=VERSION)

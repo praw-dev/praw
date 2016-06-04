@@ -335,7 +335,7 @@ class BaseReddit(object):
         All additional parameters specified via kwargs will be used to
         initialize the Config object. This can be used to specify configuration
         settings during instantiation of the Reddit instance. See
-        https://praw.readthedocs.org/en/latest/pages/configuration_files.html
+        https://praw.readthedocs.io/en/latest/pages/configuration_files.html
         for more details.
 
         """

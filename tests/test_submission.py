@@ -119,7 +119,7 @@ class SubmissionTest(PRAWTest):
 
     @betamax()
     def test_submit__duplicate_url(self):
-        url = 'https://praw.readthedocs.org/'
+        url = 'https://praw.readthedocs.io/'
         self.assertRaises(errors.AlreadySubmitted, self.subreddit.submit,
                           'PRAW Documentation', url=url)
         submission = self.subreddit.submit(

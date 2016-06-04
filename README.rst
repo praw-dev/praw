@@ -104,7 +104,7 @@ Documentation
 
 PRAW's documentation, which includes tutorials, information on configuring PRAW
 and other good stuff can be found at `readthedocs
-<https://praw.readthedocs.org>`_.
+<https://praw.readthedocs.io>`_.
 
 .. begin_license
 
