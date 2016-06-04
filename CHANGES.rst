@@ -307,7 +307,7 @@ PRAW 2.1.12
  * **[FEATURE]** Add :attr:`.json_dict` to :class:`.RedditContentObject`.
  * **[FEATURE]** You can now give configuration settings directly when
    instantiating a :class:`.BaseReddit` object. See `the configuration files
-   <https://praw.readthedocs.org/en/latest/pages/configuration_files.html>`_
+   <https://praw.readthedocs.io/en/latest/pages/configuration_files.html>`_
  * **[BUGFIX]** Fixed a bug that caused an ``AttributeError`` to be raised when
    using a deprecated method.
 
@@ -375,7 +375,7 @@ PRAW 2.1.7
    on :class:`.Redditor` allows PRAW to access this info.
  * **[FEATURE]** The ``has_fetched`` attribute has been added to all objects
    save :class:`.Reddit`, see the `lazy loading
-   <http://praw.readthedocs.org/en/latest/pages/lazy-loading.html>`_ page in
+   <http://praw.readthedocs.io/en/latest/pages/lazy-loading.html>`_ page in
    PRAW's documentation for more details.
  * **[BUGFIX]** Fixed a bug that caused the ``timeout`` configuration setting
    to always be the default 45 irrespective of what it was set to in
@@ -701,7 +701,7 @@ PRAW 2.0.0
    instead.
  * **[CHANGE]** Remove depreciated method ``compose_message``.
  * **[CHANGE]** Refactored and add a number of exception classes (`docs
-   <https://praw.readthedocs.org/en/latest/pages/code_overview.html#module-praw.errors>`_,
+   <https://praw.readthedocs.io/en/latest/pages/code_overview.html#module-praw.errors>`_,
    `source <https://github.com/praw-dev/praw/blob/master/praw/errors.py>`_)
    This includes the renaming of:
 

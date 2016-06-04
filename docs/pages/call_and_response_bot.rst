@@ -187,7 +187,7 @@ Here's our completed bot!
 
         # If you want the bot to be able to respond to people, you will need to login.
         # It is strongly recommended you login with oAuth
-        # http://praw.readthedocs.org/en/stable/pages/oauth.html
+        # http://praw.readthedocs.io/en/stable/pages/oauth.html
 
         # NB: This login method is being deprecated soon
         r.login()
@@ -195,7 +195,7 @@ Here's our completed bot!
         for c in praw.helpers.comment_stream(r, 'all'):
             if check_condition(c):
                 # set 'respond=True' to activate bot responses. Must be logged in.
-                bot_action(c, respond=False) 
+                bot_action(c, respond=False)
 
 Keep in mind: bots of this kind are often perceived as annoying and quickly get
 banned from many subreddits. If/when your bot gets banned, don't take it
