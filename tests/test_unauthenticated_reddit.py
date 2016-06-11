@@ -178,9 +178,9 @@ class UnauthenticatedRedditTest(PRAWTest):
 
     @betamax()
     def test_get_rules(self):
-        self.assertEqual('Sample rule', self.r.get_rules('reddit_api_test')
-                                                         ['rules'][0]
-                                                         ['short_name'])
+        self.assertEqual('Sample rule',
+                         self.r.get_rules('reddit_api_test')['rules'][0]
+                         ['short_name'])
 
     @betamax()
     def test_get_sticky(self):

@@ -1061,8 +1061,7 @@ class UnauthenticatedReddit(BaseReddit):
     def get_rules(self, subreddit, bottom=False):
         """Return the json dictionary containing rules for a subreddit.
 
-        :param subreddit: The subreddit whose /about/traffic page we will
-            collect.
+        :param subreddit: The subreddit whose rules we will return.
 
         """
         url = self.config['rules'].format(subreddit=six.text_type(subreddit))
