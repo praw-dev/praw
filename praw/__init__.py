@@ -151,6 +151,7 @@ class Config(object):  # pylint: disable=R0903
                  'report':              'api/report/',
                  'reports':             'r/{subreddit}/about/reports/',
                  'rising':              'rising/',
+                 'rules':               'r/{subreddit}/about/rules/',
                  'save':                'api/save/',
                  'saved':               'saved/',
                  'search':              'r/{subreddit}/search/',
@@ -1055,6 +1056,14 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         return self.get_content(self.config['rising'], *args, **kwargs)
+
+    @decorators.restrict_access(scope='read')
+    def get_rules(self, subreddit, bottom=False):
+        """Return the json dictionary containing rules for a subreddit.
+
+        """
+        url = self.config['rules'].format(subreddit=six.text_type(subreddit))
+        return self.request_json(url)
 
     @decorators.restrict_access(scope='read')
     def get_sticky(self, subreddit, bottom=False):
