@@ -1536,7 +1536,7 @@ class Subreddit(Messageable, Refreshable):
     def __repr__(self):
         """Return a code representation of the Subreddit."""
         return 'Subreddit(subreddit_name=\'{0}\')'.format(self.display_name)
-        
+
     def __unicode__(self):
         """Return a string representation of the Subreddit."""
         return self.display_name
