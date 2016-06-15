@@ -1510,8 +1510,12 @@ class Subreddit(Messageable, Refreshable):
         # Special case for when my_subreddits is called as no name is returned
         # so we have to extract the name from the URL. The URLs are returned
         # as: /r/reddit_name/
-        if not subreddit_name:
+        if subreddit_name is None:
             subreddit_name = json_dict['url'].split('/')[2]
+
+        if not isinstance(subreddit_name, six.string_types) \
+                or not subreddit_name:
+            raise TypeError('subreddit_name must be a non-empty string.')
 
         if fetch and ('+' in subreddit_name or '-' in subreddit_name):
             fetch = False
@@ -1532,7 +1536,7 @@ class Subreddit(Messageable, Refreshable):
     def __repr__(self):
         """Return a code representation of the Subreddit."""
         return 'Subreddit(subreddit_name=\'{0}\')'.format(self.display_name)
-
+        
     def __unicode__(self):
         """Return a string representation of the Subreddit."""
         return self.display_name

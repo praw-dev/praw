@@ -13,6 +13,9 @@ class SubredditTest(PRAWTest):
         self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.subreddit = self.r.get_subreddit(self.sr)
 
+    def test_invalid_subreddit_name(self):
+        self.assertRaises(TypeError, Subreddit, self.r, '')
+
     @betamax()
     def test_attribute_error(self):
         self.assertRaises(AttributeError, getattr, self.subreddit, 'foo')
