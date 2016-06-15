@@ -10,6 +10,11 @@ upstream changes.
 
 .. begin_changelog_body
 
+Unreleased
+----------
+
+* **[FEATURE]** Added support for getting subreddit rules. See :meth:`~praw.__init__.UnauthenticatedReddit.get_rules`.
+
 3.5.0 (2016-05-10)
 ------------------
  * **[BUGFIX]** Prevent built-in method `dir` from causing RedditContentObjects
