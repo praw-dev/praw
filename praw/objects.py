@@ -1485,6 +1485,7 @@ class Subreddit(Messageable, Refreshable):
                 ('get_muted', MOMix),
                 ('get_random_submission', UR),
                 ('get_reports', MOMix),
+                ('get_rules', UR),
                 ('get_settings', MCMix),
                 ('get_spam', MOMix),
                 ('get_sticky', UR),
