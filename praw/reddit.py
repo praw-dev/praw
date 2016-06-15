@@ -136,7 +136,7 @@ class Reddit(object):
             self._core = self._read_only_core
 
     def comment(self, id):
-        """Return a lazy instance of :class:`~.Comment` for ``ìd``.
+        """Return a lazy instance of :class:`~.Comment` for ``id``.
 
         :param id: The ID of the comment.
 
