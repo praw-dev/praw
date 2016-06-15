@@ -29,7 +29,6 @@ import sys
 
 
 class PRAWException(Exception):
-
     """The base PRAW Exception class.
 
     Ideally, this can be caught to handle any exception from PRAW.
@@ -38,7 +37,6 @@ class PRAWException(Exception):
 
 
 class ClientException(PRAWException):
-
     """Base exception class for errors that don't involve the remote API."""
 
     def __init__(self, message=None):
@@ -58,7 +56,6 @@ class ClientException(PRAWException):
 
 
 class OAuthScopeRequired(ClientException):
-
     """Indicates that an OAuth2 scope is required to make the function call.
 
     The attribute `scope` will contain the name of the necessary scope.
@@ -82,7 +79,6 @@ class OAuthScopeRequired(ClientException):
 
 
 class LoginRequired(ClientException):
-
     """Indicates that a logged in session is required.
 
     This exception is raised on a preemptive basis, whereas NotLoggedIn occurs
@@ -104,7 +100,6 @@ class LoginRequired(ClientException):
 
 
 class LoginOrScopeRequired(OAuthScopeRequired, LoginRequired):
-
     """Indicates that either a logged in session or OAuth2 scope is required.
 
     The attribute `scope` will contain the name of the necessary scope.
@@ -128,7 +123,6 @@ class LoginOrScopeRequired(OAuthScopeRequired, LoginRequired):
 
 
 class ModeratorRequired(LoginRequired):
-
     """Indicates that a moderator of the subreddit is required."""
 
     def __init__(self, function):
@@ -143,7 +137,6 @@ class ModeratorRequired(LoginRequired):
 
 
 class ModeratorOrScopeRequired(LoginOrScopeRequired, ModeratorRequired):
-
     """Indicates that a moderator of the sub or OAuth2 scope is required.
 
     The attribute `scope` will contain the name of the necessary scope.
@@ -166,7 +159,6 @@ class ModeratorOrScopeRequired(LoginOrScopeRequired, ModeratorRequired):
 
 
 class OAuthAppRequired(ClientException):
-
     """Raised when an OAuth client cannot be initialized.
 
     This occurs when any one of the OAuth config values are not set.
@@ -175,7 +167,6 @@ class OAuthAppRequired(ClientException):
 
 
 class HTTPException(PRAWException):
-
     """Base class for HTTP related exceptions."""
 
     def __init__(self, _raw, message=None):
@@ -197,17 +188,14 @@ class HTTPException(PRAWException):
 
 
 class Forbidden(HTTPException):
-
     """Raised when the user does not have permission to the entity."""
 
 
 class NotFound(HTTPException):
-
     """Raised when the requested entity is not found."""
 
 
 class InvalidComment(PRAWException):
-
     """Indicate that the comment is no longer available on reddit."""
 
     ERROR_TYPE = 'DELETED_COMMENT'
@@ -218,7 +206,6 @@ class InvalidComment(PRAWException):
 
 
 class InvalidSubmission(PRAWException):
-
     """Indicates that the submission is no longer available on reddit."""
 
     ERROR_TYPE = 'DELETED_LINK'
@@ -229,7 +216,6 @@ class InvalidSubmission(PRAWException):
 
 
 class InvalidSubreddit(PRAWException):
-
     """Indicates that an invalid subreddit name was supplied."""
 
     ERROR_TYPE = 'SUBREDDIT_NOEXIST'
@@ -240,7 +226,6 @@ class InvalidSubreddit(PRAWException):
 
 
 class RedirectException(PRAWException):
-
     """Raised when a redirect response occurs that is not expected."""
 
     def __init__(self, request_url, response_url, message=None):
@@ -265,7 +250,6 @@ class RedirectException(PRAWException):
 
 
 class OAuthException(PRAWException):
-
     """Base exception class for OAuth API calls.
 
     Attribute `message` contains the error message.
@@ -290,7 +274,6 @@ class OAuthException(PRAWException):
 
 
 class OAuthInsufficientScope(OAuthException):
-
     """Raised when the current OAuth scope is not sufficient for the action.
 
     This indicates the access token is valid, but not for the desired action.
@@ -299,17 +282,14 @@ class OAuthInsufficientScope(OAuthException):
 
 
 class OAuthInvalidGrant(OAuthException):
-
     """Raised when the code to retrieve access information is not valid."""
 
 
 class OAuthInvalidToken(OAuthException):
-
     """Raised when the current OAuth access token is not valid."""
 
 
 class APIException(PRAWException):
-
     """Base exception class for the reddit API error message exceptions.
 
     All exceptions of this type should have their own subclass.
@@ -334,14 +314,14 @@ class APIException(PRAWException):
     def __str__(self):
         """Return a string containing the error message and field."""
         if hasattr(self, 'ERROR_TYPE'):
-            return '`%s` on field `%s`' % (self.message, self.field)
+            return '`{0}` on field `{1}`'.format(self.message, self.field)
         else:
-            return '(%s) `%s` on field `%s`' % (self.error_type, self.message,
-                                                self.field)
+            return '({0}) `{1}` on field `{2}`'.format(self.error_type,
+                                                       self.message,
+                                                       self.field)
 
 
 class ExceptionList(APIException):
-
     """Raised when more than one exception occurred."""
 
     def __init__(self, errors):
@@ -357,103 +337,89 @@ class ExceptionList(APIException):
         """Return a string representation for all the errors."""
         ret = '\n'
         for i, error in enumerate(self.errors):
-            ret += '\tError %d) %s\n' % (i, six.text_type(error))
+            ret += '\tError {0}) {1}\n'.format(i, six.text_type(error))
         return ret
 
 
 class AlreadySubmitted(APIException):
-
     """An exception to indicate that a URL was previously submitted."""
 
     ERROR_TYPE = 'ALREADY_SUB'
 
 
 class AlreadyModerator(APIException):
-
     """Used to indicate that a user is already a moderator of a subreddit."""
 
     ERROR_TYPE = 'ALREADY_MODERATOR'
 
 
 class BadCSS(APIException):
-
     """An exception to indicate bad CSS (such as invalid) was used."""
 
     ERROR_TYPE = 'BAD_CSS'
 
 
 class BadCSSName(APIException):
-
     """An exception to indicate a bad CSS name (such as invalid) was used."""
 
     ERROR_TYPE = 'BAD_CSS_NAME'
 
 
 class BadUsername(APIException):
-
     """An exception to indicate an invalid username was used."""
 
     ERROR_TYPE = 'BAD_USERNAME'
 
 
 class InvalidCaptcha(APIException):
-
     """An exception for when an incorrect captcha error is returned."""
 
     ERROR_TYPE = 'BAD_CAPTCHA'
 
 
 class InvalidEmails(APIException):
-
     """An exception for when invalid emails are provided."""
 
     ERROR_TYPE = 'BAD_EMAILS'
 
 
 class InvalidFlairTarget(APIException):
-
     """An exception raised when an invalid user is passed as a flair target."""
 
     ERROR_TYPE = 'BAD_FLAIR_TARGET'
 
 
 class InvalidInvite(APIException):
-
     """Raised when attempting to accept a nonexistent moderator invite."""
 
     ERROR_TYPE = 'NO_INVITE_FOUND'
 
 
 class InvalidUser(APIException):
-
     """An exception for when a user doesn't exist."""
 
     ERROR_TYPE = 'USER_DOESNT_EXIST'
 
 
 class InvalidUserPass(APIException):
-
     """An exception for failed logins."""
 
     ERROR_TYPE = 'WRONG_PASSWORD'
 
 
 class InsufficientCreddits(APIException):
-
     """Raised when there are not enough creddits to complete the action."""
 
     ERROR_TYPE = 'INSUFFICIENT_CREDDITS'
 
 
 class NotLoggedIn(APIException):
-
     """An exception for when a Reddit user isn't logged in."""
 
     ERROR_TYPE = 'USER_REQUIRED'
 
 
 class NotModified(APIException):
-
     """An exception raised when reddit returns {'error': 304}.
 
     This error indicates that the requested content was not modified and is
@@ -476,7 +442,6 @@ class NotModified(APIException):
 
 
 class RateLimitExceeded(APIException):
-
     """An exception for when something has happened too frequently.
 
     Contains a `sleep_time` attribute for the number of seconds that must
@@ -500,14 +465,12 @@ class RateLimitExceeded(APIException):
 
 
 class SubredditExists(APIException):
-
     """An exception to indicate that a subreddit name is not available."""
 
     ERROR_TYPE = 'SUBREDDIT_EXISTS'
 
 
 class UsernameExists(APIException):
-
     """An exception to indicate that a username is not available."""
 
     ERROR_TYPE = 'USERNAME_TAKEN'

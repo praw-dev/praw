@@ -8,6 +8,7 @@ import unittest
 from betamax import Betamax, BaseMatcher
 from betamax_matchers.form_urlencoded import URLEncodedBodyMatcher
 from betamax_matchers.json_body import JSONBodyMatcher
+from betamax_serializers import pretty_json
 from functools import wraps
 from praw import Reddit
 from requests.compat import urljoin
@@ -75,6 +76,8 @@ class PRAWTest(unittest.TestCase):
             'mysubreddits':     'O7tfWhqem6fQZqxhoTiLca1s7VA',
             'privatemessages':  'kr_pHPO3sqTn_m5f_FX9TW4joEU',
             'read':             '_mmtb8YjDym0eC26G-rTxXUMea0',
+            'read+report':      '7302867-nOgTLv05rK1kO9YInHWOPua9sK4',
+            'report':           '7302867-MKjaXZ-w6S8-tC-JPs0NogkIHGQ',
             'submit':           'k69WTwa2bEQOQY9t61nItd4twhw',
             'subscribe':        'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
             'vote':             '5RPnDwg56vAbf7F9yO81cXZAPSQ',
@@ -86,9 +89,11 @@ class PRAWTest(unittest.TestCase):
             'submit':           '10640071-oWSCa5YMSWGQrRCa4fMSO_C1bZg'}
 
         self.comment_deleted_id = 'ctkznxq'
-        self.submission_deleted_id = '3f8q10'
 
+        self.submission_deleted_id = '3f8q10'
         self.submission_edit_id = '16i92b'
+        self.submission_hide_id = '3lchjv'
+        self.submission_lock_id = '47rnwf'
         self.submission_sticky_id = '32eucy'
         self.submission_sticky_id2 = '32exei'
 
@@ -125,11 +130,14 @@ class OAuthPRAWTest(PRAWTest):
 
 
 Betamax.register_request_matcher(BodyMatcher)
+Betamax.register_serializer(pretty_json.PrettyJSONSerializer)
+
 with Betamax.configure() as config:
     if os.getenv('TRAVIS'):
         config.default_cassette_options['record_mode'] = 'none'
     config.cassette_library_dir = 'tests/cassettes'
     config.default_cassette_options['match_requests_on'].append('PRAWBody')
+    config.default_cassette_options['serialize_with'] = 'prettyjson'
 
 
 def betamax(cassette_name=None, **cassette_options):
@@ -165,3 +173,15 @@ def flair_diff(root, other):
     other_items = set(tuple(item[key].lower() if key in item and item[key] else
                             '' for key in keys) for item in other)
     return list(root_items - other_items)
+
+
+def teardown_on_keyboard_interrupt(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except KeyboardInterrupt:
+            kwargs.get('self', args[0]).tearDown()
+            raise
+
+    return wrapper

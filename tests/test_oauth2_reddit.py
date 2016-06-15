@@ -212,6 +212,26 @@ class OAuth2RedditTest(PRAWTest):
         self.assertFalse(self.r.user is None)
 
     @betamax()
+    def test_set_access_credentials_with_list(self):
+        self.assertTrue(self.r.user is None)
+        result = self.r.refresh_access_information(
+            self.refresh_token['identity'], update_session=False)
+        self.assertTrue(self.r.user is None)
+        result['scope'] = list(result['scope'])
+        self.r.set_access_credentials(**result)
+        self.assertFalse(self.r.user is None)
+
+    @betamax()
+    def test_set_access_credentials_with_string(self):
+        self.assertTrue(self.r.user is None)
+        result = self.r.refresh_access_information(
+            self.refresh_token['identity'], update_session=False)
+        self.assertTrue(self.r.user is None)
+        result['scope'] = ' '.join(result['scope'])
+        self.r.set_access_credentials(**result)
+        self.assertFalse(self.r.user is None)
+
+    @betamax()
     def test_solve_captcha(self):
         # Use the alternate account because it has low karma,
         # so we can test the captcha.

@@ -7,7 +7,7 @@ This page documents the exceptions that can occur while running PRAW and what
 they mean. The exceptions can be divided into three rough categories and a full
 list of the ``ClientException`` s and ``APIException`` s that can occur can be
 found in the `errors module
-<https://praw.readthedocs.org/en/latest/pages/code_overview.html
+<https://praw.readthedocs.io/en/latest/pages/code_overview.html
 #module-praw.errors>`_.
 
 ClientException

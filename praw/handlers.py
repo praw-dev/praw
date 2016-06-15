@@ -16,7 +16,6 @@ from timeit import default_timer as timer
 
 
 class RateLimitHandler(object):
-
     """The base handler that provides thread-safe rate limiting enforcement.
 
     While this handler is threadsafe, PRAW is not thread safe when the same
@@ -106,7 +105,6 @@ RateLimitHandler.request = RateLimitHandler.rate_limit(
 
 
 class DefaultHandler(RateLimitHandler):
-
     """Extends the RateLimitHandler to add thread-safe caching support."""
 
     ca_lock = Lock()
@@ -186,7 +184,6 @@ DefaultHandler.request = DefaultHandler.with_cache(RateLimitHandler.request)
 
 
 class MultiprocessHandler(object):
-
     """A PRAW handler to interact with the PRAW multi-process server."""
 
     def __init__(self, host='localhost', port=10101):

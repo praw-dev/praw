@@ -1,28 +1,49 @@
 .. begin_changelog_intro
 
-Changelog
-=========
-
-The changes listed below are divided into four categories:
-
- * **[BUGFIX]** Something was broken before, but is now fixed.
- * **[CHANGE]** Other changes affecting user programs, such as the renaming of
-   a function.
- * **[FEATURE]** Something new has been added.
- * **[REDDIT]** A change caused by an upstream change from reddit.
+Change Log
+==========
 
 Read `/r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
 upstream changes.
 
 .. end_changelog_intro
 
-Visit `the changelog on ReadTheDocs
-<http://praw.readthedocs.org/en/latest/pages/changelog.html>`_ for properly
-formatted links that link to the relevant place in the code overview.
-
 .. begin_changelog_body
 
 Unreleased
+----------
+
+* **[FEATURE]** Added support for getting subreddit rules. See :meth:`~praw.__init__.UnauthenticatedReddit.get_rules`.
+
+3.5.0 (2016-05-10)
+------------------
+ * **[BUGFIX]** Prevent built-in method `dir` from causing RedditContentObjects
+   to perform web requests in Python 2.
+ * **[FEATURE]** Added support for thread locking. See
+   :meth:`~praw.objects.Submission.lock` and
+   :meth:`~praw.objects.Submission.unlock`.
+ * **[FEATURE]** Added support for comment stickying. Try
+   :meth:`~praw.objects.Comment.distinguish` with new parameter `sticky`.
+ * **[FEATURE]** Methods :meth:`~praw.__init__.ReportMixin.hide` and
+   :meth:`~praw.__init__.UnauthenticatedReddit.get_info` now support long lists
+   of fullnames. They will divide the list up into small, requestable chunks
+   automatically.
+
+3.4.0 (2016-02-21)
+------------------
+ * **[CHANGE]** Image uploads support PNG images as small as 67 bytes.
+ * **[FEATURE]** Added support for modmail muting. See
+   :meth:`~praw.objects.Subreddit.add_mute`,
+   :meth:`~praw.__init__.ModOnlyMixin.get_muted`,
+   :meth:`~praw.objects.Subreddit.remove_mute`,
+   :meth:`~praw.objects.Message.mute_modmail_author`, and
+   :meth:`~praw.objects.Message.unmute_modmail_author`.
+ * **[FEATURE]** Added
+   :meth:`~praw.__init__.UnauthenticatedReddit.default_subreddits`.
+ * **[FEATURE]** Added support for ``*`` OAuth scopes.
+ * **[FEATURE]** Added :meth:`~praw.__init__.UnauthenticatedReddit.get_traffic`
+
+PRAW 3.3.0
 ----------
  * **[BUGFIX]** Fixed login password prompt issue on windows (#485).
  * **[BUGFIX]** Fixed unicode user-agent issue (#483).
@@ -33,6 +54,11 @@ Unreleased
  * **[BUGFIX]** Stopped a json-parsing error from occuring in cases where
    reddit's response to a request was an empty string. :meth:`request_json`
    will now simply return that empty string.
+ * **[BUGFIX]** Fix AssertionError when hiding and unhiding under OAuth, raised
+   by stacked scope decorators.
+ * **[BUGFIX]** Fix AttributeError when hiding and unhiding under OAuth without
+   the "identity" scope, raised when PRAW tried to evict the user's /hidden
+   page from the cache.
  * **[CHANGE]** Added messages to all PRAW exceptions (#491).
  * **[CHANGE]** Made it easier to send JSON dumps instead of form-encoded data
    for http requests. Some api-v1 endpoints require the request body to be in
@@ -40,18 +66,18 @@ Unreleased
  * **[CHANGE]** Moved and deprecated
    :meth:`praw.objects.LoggedInRedditor.get_friends` to
    :class:`praw.AuthenticatedReddit`, leaving a pointer in its place.
-   Previously, `get_friends` was difficult to access because the only instance
-   of `LoggedInRedditor` was the reddit session's `user` attribute, which is
-   only instantiated if the user has the "identity" scope. By moving
-   `get_friends` to the reddit session, it can be used without having to
+   Previously, ``get_friends`` was difficult to access because the only
+   instance of `LoggedInRedditor` was the reddit session's `user` attribute,
+   which is only instantiated if the user has the "identity" scope. By moving
+   ``get_friends`` to the reddit session, it can be used without having to
    manipulate a :class:`praw.objects.Redditor` intsance's class.
+ * **[CHANGE]** Removed support for Python 2.6 and Python 3.2 (#532).
  * **[FEATURE]** Added support for adding "notes" to your friends. Users with
-   reddit Gold can set the ``note`` parameter of 
+   reddit Gold can set the ``note`` parameter of
    :meth:`praw.objects.Redditor.friend`. 300 character max enforced by reddit.
  * **[FEATURE]** New :meth:`praw.objects.Redditor.get_friend_info` to see info
    about one of your friends. Includes their name, ID, when you added them, and
    if you have reddit Gold, your note about them.
- * **[CHANGE]** Removed support for Python 2.6 and Python 3.2 (#532).
 
 PRAW 3.2.1
 ----------
@@ -194,8 +220,8 @@ PRAW 2.1.19
  * **[BUGFIX]** Fix :meth:`.get_subreddit_recommendations` to work with the
    updated API route.
  * **[BUGFIX]** Track time between requests using ``timeit.default_timer``.
- * **[CHANGE]** :meth:`.get_friends` and :meth:`~.Subreddit.get_banned` once
-   again work.
+ * **[CHANGE]** :meth:`~praw.objects.LoggedInRedditor.get_friends` and
+   :meth:`~.Subreddit.get_banned` once again work.
  * **[CHANGE]** :meth:`.is_root` no longer requires fetching submission
    objects.
  * **[REDDIT]** Support ``thing_id`` lists in :meth:`.get_info`.
@@ -286,7 +312,7 @@ PRAW 2.1.12
  * **[FEATURE]** Add :attr:`.json_dict` to :class:`.RedditContentObject`.
  * **[FEATURE]** You can now give configuration settings directly when
    instantiating a :class:`.BaseReddit` object. See `the configuration files
-   <https://praw.readthedocs.org/en/latest/pages/configuration_files.html>`_
+   <https://praw.readthedocs.io/en/latest/pages/configuration_files.html>`_
  * **[BUGFIX]** Fixed a bug that caused an ``AttributeError`` to be raised when
    using a deprecated method.
 
@@ -354,7 +380,7 @@ PRAW 2.1.7
    on :class:`.Redditor` allows PRAW to access this info.
  * **[FEATURE]** The ``has_fetched`` attribute has been added to all objects
    save :class:`.Reddit`, see the `lazy loading
-   <http://praw.readthedocs.org/en/latest/pages/lazy-loading.html>`_ page in
+   <http://praw.readthedocs.io/en/latest/pages/lazy-loading.html>`_ page in
    PRAW's documentation for more details.
  * **[BUGFIX]** Fixed a bug that caused the ``timeout`` configuration setting
    to always be the default 45 irrespective of what it was set to in
@@ -560,17 +586,17 @@ PRAW 2.0.9
    :meth:`.get_unread` if it and ``unset_has_mail`` are both True, then the
    ``user`` object in the :class:`.Reddit` object will have its ``has_mail``
    attribute set to ``False``.
- * **[FEATURE]** Add :meth:`.get_friends` and :meth:`.get_blocked` to
-   :class:`.LoggedInRedditor`.
+ * **[FEATURE]** Add :meth:`praw.objects.LoggedInRedditor.get_friends` and
+   :meth:`praw.objects.LoggedInRedditor.get_blocked`.
  * **[FEATURE]** Add the *read* scope to :meth:`.get_all_comments` in the
    :class:`.Reddit` object.
  * **[FEATURE]** Add the *read* scope to :meth:`~.Subreddit.get_comments` and
    the subreddit listings such as :meth:`~.Subreddit.get_new` in the
    :meth:`.Reddit` and :meth:`.Subreddit` object.
  * **[BUGFIX]** Fix bug in :meth:`.MoreComments.comments`.
- * **[CHANGE]** Break :meth:`.get_friends` and :meth:`~.Subreddit.get_banned`
-   until there is an upstream fix to mean that does not require ssl for those
-   endpoints.
+ * **[CHANGE]** Break :meth:`~praw.objects.LoggedInRedditor.get_friends` and
+   :meth:`~.Subreddit.get_banned` until there is an upstream fix to mean that
+   does not require ssl for those endpoints.
 
 PRAW 2.0.8
 ----------
@@ -680,7 +706,7 @@ PRAW 2.0.0
    instead.
  * **[CHANGE]** Remove depreciated method ``compose_message``.
  * **[CHANGE]** Refactored and add a number of exception classes (`docs
-   <https://praw.readthedocs.org/en/latest/pages/code_overview.html#module-praw.errors>`_,
+   <https://praw.readthedocs.io/en/latest/pages/code_overview.html#module-praw.errors>`_,
    `source <https://github.com/praw-dev/praw/blob/master/praw/errors.py>`_)
    This includes the renaming of:
 

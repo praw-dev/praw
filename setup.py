@@ -1,50 +1,58 @@
-import os
+"""praw setup.py"""
+
 import re
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from codecs import open
+from os import path
+from setuptools import setup
+
 
 PACKAGE_NAME = 'praw'
-
-
-HERE = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(HERE, 'README.rst')) as fp:
+HERE = path.abspath(path.dirname(__file__))
+with open(path.join(HERE, 'README.rst'), encoding='utf-8') as fp:
     README = fp.read()
-with open(os.path.join(HERE, PACKAGE_NAME, '__init__.py')) as fp:
+with open(path.join(HERE, PACKAGE_NAME, '__init__.py'),
+          encoding='utf-8') as fp:
     VERSION = re.search("__version__ = '([^']+)'", fp.read()).group(1)
 
 
-setup(
-    name=PACKAGE_NAME,
-    version=VERSION,
-    author='Timothy Mellor',
-    author_email='timothy.mellor+pip@gmail.com',
-    maintainer='Bryce Boe',
-    maintainer_email='bbzbryce@gmail.com',
-    url='https://praw.readthedocs.org/',
-    description=('PRAW, an acronym for `Python Reddit API Wrapper`, is a '
-                 'python package that allows for simple access to '
-                 'reddit\'s API.'),
-    long_description=README,
-    classifiers=['Development Status :: 5 - Production/Stable',
-                 'Environment :: Console',
-                 'Intended Audience :: Developers',
-                 'License :: OSI Approved :: GNU General Public License (GPL)',
-                 'Natural Language :: English',
-                 'Operating System :: OS Independent',
-                 'Programming Language :: Python :: 2.7',
-                 'Programming Language :: Python :: 3.3',
-                 'Programming Language :: Python :: 3.4',
-                 'Programming Language :: Python :: 3.5',
-                 'Topic :: Utilities'],
-    license='GPLv3',
-    keywords='reddit api wrapper',
-    packages=[PACKAGE_NAME],
-    package_data={'': ['COPYING'], PACKAGE_NAME: ['*.ini']},
-    install_requires=['decorator>=3.4.2', 'requests>=2.3.0', 'six>=1.4',
-                      'update_checker>=0.11'],
-    tests_require=['betamax>=0.4.2', 'betamax-matchers>=0.2.0', 'mock>=1.0.0'],
-    entry_points={'console_scripts': [
-            'praw-multiprocess = praw.multiprocess:run']},
-    test_suite='tests')
+setup(name=PACKAGE_NAME,
+      author='Timothy Mellor',
+      author_email='timothy.mellor+pip@gmail.com',
+      classifiers=[
+          'Development Status :: 5 - Production/Stable',
+          'Environment :: Console',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: GNU General Public License (GPL)',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Programming Language :: Python',
+          'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.3',
+          'Programming Language :: Python :: 3.4',
+          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: Implementation :: CPython',
+          'Topic :: Utilities'],
+      description=('PRAW, an acronym for `Python Reddit API Wrapper`, is a '
+                   'python package that allows for simple access to '
+                   'reddit\'s API.'),
+      entry_points={'console_scripts': [
+          'praw-multiprocess = praw.multiprocess:run']},
+      install_requires=['decorator >=4.0.9, <4.1',
+                        'requests >=2.3.0',
+                        'six ==1.10',
+                        'update_checker ==0.11'],
+      keywords='reddit api wrapper',
+      license='GPLv3',
+      long_description=README,
+      maintainer='Bryce Boe',
+      maintainer_email='bbzbryce@gmail.com',
+      package_data={'': ['COPYING'], PACKAGE_NAME: ['*.ini']},
+      packages=[PACKAGE_NAME],
+      tests_require=['betamax >=0.5.1, <0.6',
+                     'betamax-matchers >=0.2.0, <0.3',
+                     'betamax-serializers >=0.1.1, <0.2',
+                     'mock ==1.0.1'],
+      test_suite='tests',
+      url='https://praw.readthedocs.io/',
+      version=VERSION)

@@ -119,6 +119,12 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertRaises(errors.LoginRequired, self.r.get_banned, self.sr)
 
     @betamax()
+    def test_default_subreddits(self):
+        num = 50
+        self.assertEqual(num,
+                         len(list(self.r.default_subreddits(limit=num))))
+
+    @betamax()
     def test_get_new(self):
         num = 50
         result = self.r.get_new(limit=num)
@@ -171,6 +177,12 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertEqual(num, len(list(result)))
 
     @betamax()
+    def test_get_rules(self):
+        self.assertEqual('Sample rule',
+                         self.r.get_rules('reddit_api_test')['rules'][0]
+                         ['short_name'])
+
+    @betamax()
     def test_get_sticky(self):
         self.assertEqual('2ujhkr', self.r.get_sticky('redditdev').id)
 
@@ -205,8 +217,18 @@ class UnauthenticatedRedditTest(PRAWTest):
 
     @betamax()
     def test_info_by_id(self):
-        self.assertEqual(self.link_id,
-                         self.r.get_info(thing_id=self.link_id).fullname)
+        submission = self.r.get_info(thing_id=self.link_id)
+        self.assertEqual(self.link_id, submission.fullname)
+
+    @betamax()
+    def test_info_by_id_many(self):
+        listing = list(self.r.get_subreddit(self.sr).get_new(limit=200))
+        listing = [submission.fullname for submission in listing]
+        submissions = self.r.get_info(thing_id=listing)
+
+        listing = set(listing)
+        submissions = set(submission.fullname for submission in submissions)
+        self.assertEqual(listing, submissions)
 
     @betamax()
     def test_info_by_invalid_id(self):

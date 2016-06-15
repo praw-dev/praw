@@ -47,7 +47,7 @@ This will display something similar to the following:
 Installation
 ------------
 
-PRAW works with python 2.6, 2.7, 3.1, 3.2, 3.3, and 3.4. The recommended way to
+PRAW is supported on python 2.7, 3.3, 3.4 and 3.5. The recommended way to
 install is via `pip <https://pypi.python.org/pypi/pip>`_
 
 .. code-block:: bash
@@ -69,13 +69,6 @@ a section for setting it up on `Windows
 There is also a `Stack overflow question on installing pip on Windows
 <http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows>`_
 that might prove helpful.
-
-Alternatively you can do it via
-`easy_install <https://pypi.python.org/pypi/setuptools>`_
-
-.. code-block:: bash
-
-    $ easy_install praw
 
 .. end_installation
 
@@ -104,7 +97,7 @@ Documentation
 
 PRAW's documentation, which includes tutorials, information on configuring PRAW
 and other good stuff can be found at `readthedocs
-<https://praw.readthedocs.org>`_.
+<https://praw.readthedocs.io>`_.
 
 .. begin_license
 

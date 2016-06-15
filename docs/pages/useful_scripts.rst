@@ -110,10 +110,10 @@ this page to add in more.
     The bot will then send them a private message with the date they specified.
     `u/RemindMeBot <http://www.reddit.com/user/RemindMeBot>`_.
 
-`Massdrop Multi Bot <https://github.com/darkmio/Massdrop-Reddit-Bot>`_
-    A bot which made Massdrop available for everyone and then grew into an
-    assortment of different fixes for links that regularly get mistakenly used,
-    like Gfycat, Massdrop and Subreddit-Names in titles.
+`RedditRover`_ by `DarkMio <https://github.com/DarkMio>`_
+    A plugin based Reddit Multi Bot Framework intended for new and advanced 
+    programmers to host a wide variety of Reddit bots without mangling with
+    all the ins and outs of Reddit, PRAW and API limitations. 
 
 `Reddit Keyword Tracking Bot`_ by Jermell Beane
     <requires Kivy> A bot that will watch any subreddits and email you with
@@ -141,6 +141,15 @@ this page to add in more.
 `GoodReads Bot`_ by `Avinash Sajjanshetty <https://github.com/avinassh>`_
     A bot which powers `/u/goodreadsbot <https://www.reddit.com/u/goodreadsbot>`_ on Reddit, posts information of a book whenever someone posts a link to Goodreads.
 
+`Self-Destruct Bot`_ by `diceroll123 <https://github.com/diceroll123>`_
+    Removes posts after a specified amount of time. (For time-sensitive posts.)
+
+`Subtitle Bot`_ by `arrayofchar <https://github.com/arrayofchar>`_
+    Finds youtube links and see if closed captioning (aka subtitle) is available. Formats subtitle into paragraphs based on  standard deviation of timestamp gaps. If subtitle is longer than Reddit comment limit, puts it in Pastebin.
+
+`Reddit Countdown`_ by `matchu <https://github.com/matchu/>`_
+    Implements a countdown in a subreddit's sidebar to help Reddit communities count down to important events.
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -164,11 +173,15 @@ this page to add in more.
 .. _`Reddit-to-Diigo-Copier`:
      https://github.com/OdinsHat/Reddit-to-Diigo-Copier
 .. _`RedditAgain`: https://github.com/karan/RedditAgain
+.. _`RedditRover` : https://github.com/DarkMio/RedditRover
 .. _`RemindMeBot`: https://github.com/SIlver--/remindmebot-reddit
+.. _`Self-Destruct Bot`: https://github.com/diceroll123/SelfDestructBot
+.. _`Subtitle Bot`: https://github.com/arrayofchar/reddit_subtitle_bot
 .. _`VideoLinkBot`: https://github.com/dmarx/VideoLinkBot
 .. _`newsfrbot`: https://github.com/gardaud/newsfrbot
 .. _`r/diablo flair infographic generator`:
      https://github.com/xiphirx/rdiablo-flair-infographic-generator
 .. _`reddit-analysis`: https://github.com/rhiever/reddit-analysis
 .. _`reddit-cloud`: https://github.com/paul-nechifor/reddit-cloud
+.. _`Reddit Countdown`: https://github.com/matchu/reddit-countdown
 .. _`u/xiphirx`: http://www.reddit.com/user/xiphirx
