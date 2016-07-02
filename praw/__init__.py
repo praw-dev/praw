@@ -1582,7 +1582,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.access_token = access_token
         self.refresh_token = refresh_token
         # Update the user object
-        if update_user and 'identity' in scope:
+        if update_user and ('identity' in scope or '*' in scope):
             self.user = self.get_me()
 
 
