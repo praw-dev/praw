@@ -1,5 +1,5 @@
 """Test praw.models.subreddit."""
-from praw.models import Redditor
+from praw.models import Comment, Redditor
 import mock
 import pytest
 
@@ -256,4 +256,4 @@ class TestSubredditStreams(IntegrationTest):
                 'TestSubredditStreams__comments'):
             generator = self.subreddit.stream.comments()
             for i in range(101):
-                print(next(generator))
+                assert isinstance(next(generator), Comment)
