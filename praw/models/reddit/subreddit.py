@@ -1,5 +1,6 @@
 """Provide the Subreddit class."""
 from ...const import API_PATH
+from ..util import BoundedSet
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
@@ -28,6 +29,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         self._prepare_relationships()
         self.flair = SubredditFlair(self)
         self.mod = SubredditModeration(self)
+        self.stream = SubredditStream(self)
 
     def _info_path(self):
         return API_PATH['subreddit_about'].format(subreddit=self.display_name)
@@ -281,3 +283,40 @@ class SubredditRelationship(object):
         data = {'name': str(redditor), 'r': str(self.subreddit),
                 'type': self.relationship}
         return self.subreddit._reddit.post(API_PATH['unfriend'], data=data)
+
+
+class SubredditStream(object):
+    """Provides submission and comment streams."""
+
+    def __init__(self, subreddit):
+        """Create a SubredditStream instance.
+
+        :param subreddit: The subreddit associated with the streams.
+
+        """
+        self.subreddit = subreddit
+
+    def comments(self):
+        """Yield new comments as they become available.
+
+        Comments are yielded oldest first. Up to 100 historial comments will
+        initially be returned.
+
+        """
+        before_fullname = None
+        seen_fullnames = BoundedSet(100)
+        without_before_counter = 0
+        while True:
+            newest_fullname = None
+            limit = 100
+            if before_fullname is None:
+                limit -= without_before_counter
+                without_before_counter = (without_before_counter + 1) % 30
+            for comment in reversed(list(self.subreddit.comments(
+                    limit=limit, params={'before': before_fullname}))):
+                if comment.fullname in seen_fullnames:
+                    continue
+                seen_fullnames.add(comment.fullname)
+                newest_fullname = comment.fullname
+                yield comment
+            before_fullname = newest_fullname

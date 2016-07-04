@@ -244,3 +244,16 @@ class TestSubredditRelationships(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubredditRelationships__wikicontributor'):
             self.add_remove(self.subreddit, self.REDDITOR, 'wikicontributor')
+
+
+class TestSubredditStreams(IntegrationTest):
+    @property
+    def subreddit(self):
+        return self.reddit.subreddit(pytest.placeholders.test_subreddit)
+
+    def test_comments(self):
+        with self.recorder.use_cassette(
+                'TestSubredditStreams__comments'):
+            generator = self.subreddit.stream.comments()
+            for i in range(101):
+                print(next(generator))
