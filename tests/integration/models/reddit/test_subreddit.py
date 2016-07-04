@@ -1,5 +1,5 @@
 """Test praw.models.subreddit."""
-from praw.models import Comment, Redditor
+from praw.models import Comment, Redditor, Submission
 import mock
 import pytest
 
@@ -255,13 +255,18 @@ class TestSubredditRelationships(IntegrationTest):
 
 
 class TestSubredditStreams(IntegrationTest):
-    @property
-    def subreddit(self):
-        return self.reddit.subreddit(pytest.placeholders.test_subreddit)
-
     def test_comments(self):
         with self.recorder.use_cassette(
                 'TestSubredditStreams__comments'):
-            generator = self.subreddit.stream.comments()
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            generator = subreddit.stream.comments()
             for i in range(101):
                 assert isinstance(next(generator), Comment)
+
+    def test_submissions(self):
+        with self.recorder.use_cassette(
+                'TestSubredditStreams__submissions'):
+            generator = self.reddit.subreddit('all').stream.submissions()
+            for i in range(300):
+                assert isinstance(next(generator), Submission)

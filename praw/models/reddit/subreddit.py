@@ -297,13 +297,7 @@ class SubredditStream(object):
         """
         self.subreddit = subreddit
 
-    def comments(self):
-        """Yield new comments as they become available.
-
-        Comments are yielded oldest first. Up to 100 historial comments will
-        initially be returned.
-
-        """
+    def _stream_generator(self, function):
         before_fullname = None
         seen_fullnames = BoundedSet(100)
         without_before_counter = 0
@@ -313,11 +307,29 @@ class SubredditStream(object):
             if before_fullname is None:
                 limit -= without_before_counter
                 without_before_counter = (without_before_counter + 1) % 30
-            for comment in reversed(list(self.subreddit.comments(
+            for item in reversed(list(function(
                     limit=limit, params={'before': before_fullname}))):
-                if comment.fullname in seen_fullnames:
+                if item.fullname in seen_fullnames:
                     continue
-                seen_fullnames.add(comment.fullname)
-                newest_fullname = comment.fullname
-                yield comment
+                seen_fullnames.add(item.fullname)
+                newest_fullname = item.fullname
+                yield item
             before_fullname = newest_fullname
+
+    def comments(self):
+        """Yield new comments as they become available.
+
+        Comments are yielded oldest first. Up to 100 historial comments will
+        initially be returned.
+
+        """
+        return self._stream_generator(self.subreddit.comments)
+
+    def submissions(self):
+        """Yield new submissions as they become available.
+
+        Submissions are yielded oldest first. Up to 100 historial submissions
+        will initially be returned.
+
+        """
+        return self._stream_generator(self.subreddit.new)
