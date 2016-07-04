@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -e
 
 python -m cProfile -o profile $(which py.test)
 

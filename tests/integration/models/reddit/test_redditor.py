@@ -1,8 +1,27 @@
 """Test praw.models.redditor."""
+import mock
 import pytest
 from prawcore import Forbidden
 
 from ... import IntegrationTest
+
+
+class TestRedditor(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_message(self, _mock_sleep):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestRedditor.test_message'):
+            redditor = self.reddit.redditor('subreddit_stats')
+            redditor.message('PRAW test', 'This is a test from PRAW')
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_message_from_subreddit(self, _mock_sleep):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestRedditor.test_message_from_subreddit'):
+            redditor = self.reddit.redditor('subreddit_stats')
+            redditor.message('PRAW test', 'This is a test from PRAW',
+                             from_subreddit=pytest.placeholders.test_subreddit)
 
 
 class TestRedditorListings(IntegrationTest):

@@ -8,6 +8,14 @@ from ... import IntegrationTest
 
 class TestSubreddit(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
+    def test_message(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubreddit.test_message'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            subreddit.message('Test from PRAW', message='Test content')
+
+    @mock.patch('time.sleep', return_value=None)
     def test_submit__selftext(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubreddit.test_submit__selftext'):
