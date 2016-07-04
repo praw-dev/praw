@@ -7,7 +7,7 @@ from .listing import ListingMixin
 
 
 class RedditorListingMixin(ListingMixin):
-    """Adds additional methods pertaing to Redditor instances."""
+    """Adds additional methods pertaining to Redditor instances."""
 
     @property
     def comments(self):

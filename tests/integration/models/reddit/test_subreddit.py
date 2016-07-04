@@ -99,6 +99,13 @@ class TestSubredditFlair(IntegrationTest):
 
 
 class TestSubredditListings(IntegrationTest):
+    def test_comments(self):
+        with self.recorder.use_cassette(
+                'TestSubredditListings.test_comments'):
+            subreddit = self.reddit.subreddit('askreddit')
+            comments = list(subreddit.comments())
+        assert len(comments) == 100
+
     def test_controversial(self):
         with self.recorder.use_cassette(
                 'TestSubredditListings.test_controversial'):

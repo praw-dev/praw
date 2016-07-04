@@ -8,6 +8,11 @@ from .listing import ListingMixin
 class SubredditListingMixin(ListingMixin):
     """Adds additional methods pertianing to Subreddit-like instances."""
 
+    def comments(self, **generator_kwargs):
+        """Return a ListingGenerator for the Subreddit's comments."""
+        return ListingGenerator(self._reddit, urljoin(self._path, 'comments'),
+                                **generator_kwargs)
+
     def rising(self, **generator_kwargs):
         """Return a ListingGenerator for rising submissions.
 
