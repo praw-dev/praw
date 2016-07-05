@@ -1749,10 +1749,8 @@ class ModConfigMixin(AuthenticatedReddit):
         """
         if name and header:
             raise TypeError('Both name and header cannot be set.')
-        if upload_as not in (None, 'png', 'jpg', 'jpeg'):
+        if upload_as not in (None, 'png', 'jpg'):
             raise TypeError("upload_as must be 'jpg', 'png', or None.")
-        elif upload_as == "jpeg":
-            upload_as = "jpg"
         image_type = None
         # Verify image is a jpeg or png and meets size requirements
         with open(image_path, 'rb') as image:
