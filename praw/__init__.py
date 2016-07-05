@@ -1731,18 +1731,28 @@ class ModConfigMixin(AuthenticatedReddit):
         return self.request_json(self.config['subreddit_css'], data=data)
 
     @decorators.restrict_access(scope='modconfig')
-    def upload_image(self, subreddit, image_path, name=None, header=False):
+    def upload_image(self, subreddit, image_path, name=None,
+                     header=False, upload_as=None):
         """Upload an image to the subreddit.
 
         :param image_path: A path to the jpg or png image you want to upload.
         :param name: The name to provide the image. When None the name will be
             filename less any extension.
         :param header: When True, upload the image as the subreddit header.
+        :param upload_as: Must be `'jpg'`, `'png'` or `None`. When None, this
+            will match the format of the image itself. In all cases where both
+            this value and the image format is not png, reddit will also
+            convert  the image mode to RGBA. reddit optimizes the image
+            according to this value.
         :returns: A link to the uploaded image. Raises an exception otherwise.
 
         """
         if name and header:
             raise TypeError('Both name and header cannot be set.')
+        if upload_as not in (None, 'png', 'jpg', 'jpeg'):
+            raise TypeError("upload_as must be 'jpg', 'png', or None.")
+        elif upload_as == "jpeg":
+            upload_as = "jpg"
         image_type = None
         # Verify image is a jpeg or png and meets size requirements
         with open(image_path, 'rb') as image:
@@ -1764,6 +1774,8 @@ class ModConfigMixin(AuthenticatedReddit):
                 raise errors.ClientException('`image` must be either jpg or '
                                              'png.')
             data = {'r': six.text_type(subreddit), 'img_type': image_type}
+            if upload_as:
+                data['img_type'] = upload_as
             if header:
                 data['header'] = 1
             else:
