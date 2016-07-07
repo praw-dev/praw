@@ -35,7 +35,8 @@ import sys
 from praw import decorators, errors
 from praw.handlers import DefaultHandler
 from praw.helpers import chunk_sequence, normalize_url
-from praw.internal import (_prepare_request, _raise_redirect_exceptions,
+from praw.internal import (_image_type, _prepare_request,
+                           _raise_redirect_exceptions,
                            _raise_response_exceptions, _to_reddit_list)
 from praw.settings import CONFIG
 from requests import Session
@@ -51,12 +52,6 @@ from warnings import warn_explicit
 
 
 __version__ = '3.5.0'
-
-MIN_PNG_SIZE = 67
-MIN_JPEG_SIZE = 128
-MAX_IMAGE_SIZE = 512000
-JPEG_HEADER = b'\xff\xd8\xff'
-PNG_HEADER = b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
 
 # Compatibility
 if six.PY3:
@@ -1751,29 +1746,9 @@ class ModConfigMixin(AuthenticatedReddit):
             raise TypeError('Both name and header cannot be set.')
         if upload_as not in (None, 'png', 'jpg'):
             raise TypeError("upload_as must be 'jpg', 'png', or None.")
-        image_type = None
-        # Verify image is a jpeg or png and meets size requirements
         with open(image_path, 'rb') as image:
-            size = os.path.getsize(image.name)
-            if size < MIN_PNG_SIZE:
-                raise errors.ClientException('png image is too small.')
-            if size > MAX_IMAGE_SIZE:
-                raise errors.ClientException('`image` is too big. Max: {0} '
-                                             'bytes'.format(MAX_IMAGE_SIZE))
-            first_bytes = image.read(MIN_PNG_SIZE)
-            image.seek(0)
-            if first_bytes.startswith(PNG_HEADER):
-                image_type = 'png'
-            elif first_bytes.startswith(JPEG_HEADER):
-                if size < MIN_JPEG_SIZE:
-                    raise errors.ClientException('jpeg image is too small.')
-                image_type = 'jpg'
-            else:
-                raise errors.ClientException('`image` must be either jpg or '
-                                             'png.')
+            image_type = upload_as or _image_type(image)
             data = {'r': six.text_type(subreddit), 'img_type': image_type}
-            if upload_as:
-                data['img_type'] = upload_as
             if header:
                 data['header'] = 1
             else:
@@ -1781,9 +1756,9 @@ class ModConfigMixin(AuthenticatedReddit):
                     name = os.path.splitext(os.path.basename(image.name))[0]
                 data['name'] = name
 
-            response = json.loads(self._request(
-                self.config['upload_image'], data=data, files={'file': image},
-                method=to_native_string('POST'), retry_on_error=False))
+        response = json.loads(self._request(
+            self.config['upload_image'], data=data, files={'file': image},
+            method=to_native_string('POST'), retry_on_error=False))
 
         if response['errors']:
             raise errors.APIException(response['errors'], None)
