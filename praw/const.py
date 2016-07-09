@@ -8,6 +8,7 @@ API_PATH = {
     'approve':             'api/approve/',
     'authorize':           'api/v1/authorize/',
     'banned':              'r/{subreddit}/about/banned/',
+    'block':               'api/block',
     'blocked':             'prefs/blocked/',
     'by_id':               'by_id/',
     'captcha':             'captcha/',

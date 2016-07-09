@@ -1,8 +1,21 @@
 """Provide the InboxableMixin class."""
 
+from ....const import API_PATH
+
 
 class InboxableMixin(object):
     """Interface for RedditBase classes that originate from the inbox."""
+
+    def block(self):
+        """Block the user who sent the message.
+
+        :returns: The json response from the server.
+
+        Note: reddit does not permit blocking users unless they you have an
+        Inboxable item from them.
+
+        """
+        return self._reddit.post(API_PATH['block'], data={'id': self.fullname})
 
     def mark_read(self):
         """Mark item as read."""

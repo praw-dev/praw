@@ -1,10 +1,24 @@
 from praw.models import Message
 import mock
+import pytest
 
 from ... import IntegrationTest
 
 
 class TestMessage(IntegrationTest):
+    def test_block(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestMessage.test_block'):
+            message = None
+            for item in self.reddit.inbox.messages():
+                if item.author and item.author != pytest.placeholders.username:
+                    message = item
+                    break
+            else:
+                assert False, 'no message found'
+            message.block()
+
     @mock.patch('time.sleep', return_value=None)
     def test_mark_read(self, _):
         self.reddit.read_only = False

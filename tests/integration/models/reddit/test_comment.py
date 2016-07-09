@@ -1,5 +1,6 @@
 from praw.models import Comment
 import mock
+import pytest
 
 from ... import IntegrationTest
 
@@ -14,6 +15,19 @@ class TestComment(IntegrationTest):
             assert not comment.is_root
             assert comment.permalink(fast=True) == '/comments/2gmzqe//cklhv0f'
             assert comment.submission == '2gmzqe'
+
+    def test_block(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestComment.test_block'):
+            comment = None
+            for item in self.reddit.inbox.submission_replies():
+                if item.author and item.author != pytest.placeholders.username:
+                    comment = item
+                    break
+            else:
+                assert False, 'no comment found'
+            comment.block()
 
     def test_clear_vote(self):
         self.reddit.read_only = False
