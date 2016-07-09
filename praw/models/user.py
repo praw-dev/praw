@@ -18,4 +18,4 @@ class User(PRAWBase):
     def me(self):  # pylint: disable=invalid-name
         """Return a Redditor instance for the authenticated user."""
         user_data = self._reddit.get(API_PATH['me'])
-        return Redditor(self, _data=user_data)
+        return Redditor(self._reddit, _data=user_data)

@@ -23,6 +23,12 @@ class TestRedditor(IntegrationTest):
             redditor.message('PRAW test', 'This is a test from PRAW',
                              from_subreddit=pytest.placeholders.test_subreddit)
 
+    def test_unblock(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestRedditor.test_unblock'):
+            redditor = self.reddit.user.blocked()[0]
+            redditor.unblock()
+
 
 class TestRedditorListings(IntegrationTest):
     def test_comments__controversial(self):

@@ -77,6 +77,19 @@ class Redditor(RedditBase, GildableMixin, MessageableMixin,
         data = {'id': self.name}
         return self.reddit_session.request_json(url, data=data, method='GET')
 
+    def unblock(self):
+        """Unblock the Redditor.
+
+        :returns: The json response from the server.
+
+        Blocking must be done from a Message, Comment Reply or Submission
+        Reply.
+
+        """
+        data = {'container': self._reddit.user.me().fullname,
+                'name': self.name, 'type': 'enemy'}
+        return self._reddit.post(API_PATH['unfriend'], data=data)
+
     def unfriend(self):
         """Unfriend the user.
 
