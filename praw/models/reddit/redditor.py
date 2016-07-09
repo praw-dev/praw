@@ -64,11 +64,6 @@ class Redditor(RedditBase, GildableMixin, MessageableMixin,
         return self.reddit_session.request_json(url, data=dumps(data),
                                                 method=method)
 
-    def get_blocked(self):
-        """Return a UserList of Redditors with whom the user has blocked."""
-        url = self.reddit_session.config['blocked']
-        return self.reddit_session.request_json(url)
-
     def get_friend_info(self):
         """Return information about this friend, including personal notes.
 

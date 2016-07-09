@@ -26,13 +26,13 @@ class BaseList(PRAWBase):
         for index, item in enumerate(child_list):
             child_list[index] = self._convert(reddit, item)
 
+    def __str__(self):
+        """Return a string representation of the list."""
+        return str(getattr(self, self.CHILD_ATTRIBUTE))
+
     def __contains__(self, item):
         """Test if item exists in the list."""
         return item in getattr(self, self.CHILD_ATTRIBUTE)
-
-    def __delitem__(self, index):
-        """Remove the item at position index from the list."""
-        del getattr(self, self.CHILD_ATTRIBUTE)[index]
 
     def __getitem__(self, index):
         """Return the item at position index in the list."""
@@ -45,7 +45,3 @@ class BaseList(PRAWBase):
     def __len__(self):
         """Return the number of items in the list."""
         return len(getattr(self, self.CHILD_ATTRIBUTE))
-
-    def __setitem__(self, index, item):
-        """Set item at position `index` in the list."""
-        getattr(self, self.CHILD_ATTRIBUTE)[index] = item

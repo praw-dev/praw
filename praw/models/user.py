@@ -7,8 +7,12 @@ from .reddit.redditor import Redditor
 class User(PRAWBase):
     """The user class provides methods for the currently authenticated user."""
 
+    def blocked(self):
+        """Return a RedditorList of blocked Redditors."""
+        return self._reddit.get(API_PATH['blocked'])
+
     def friends(self):
-        """Return a RedditList of friends."""
+        """Return a RedditorList of friends."""
         return self._reddit.get(API_PATH['friends'])
 
     def me(self):  # pylint: disable=invalid-name
