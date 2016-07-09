@@ -56,11 +56,7 @@ class TestSubredditFlair(IntegrationTest):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditFlair.test_delete_all'):
             response = self.subreddit.flair.delete_all()
-            # Betamax only saves one of the POST requests to flaircsv because
-            # the default matcher only matches on URI and method. Matching with
-            # the body included records all the requests, but then does not
-            # match when replaying requests.
-            assert len(response) > 0
+            assert len(response) > 100
             assert all('removed' in x['status'] for x in response)
 
     def test_set__redditor(self):
