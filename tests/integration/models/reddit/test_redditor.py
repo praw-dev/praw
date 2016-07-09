@@ -1,12 +1,25 @@
 """Test praw.models.redditor."""
 import mock
 import pytest
-from prawcore import Forbidden
+from prawcore import BadRequest, Forbidden
 
 from ... import IntegrationTest
 
 
 class TestRedditor(IntegrationTest):
+    def test_friend(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestRedditor.test_friend'):
+            self.reddit.redditor('pyapitestuser3').friend()
+
+    def test_friend__with_note__no_gold(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestRedditor.test_friend__with_note__no_gold'):
+            with pytest.raises(BadRequest) as excinfo:
+                self.reddit.redditor('pyapitestuser3').friend(note='praw')
+            assert 'GOLD_REQUIRED' == excinfo.value.response.json()['reason']
+
     @mock.patch('time.sleep', return_value=None)
     def test_message(self, _mock_sleep):
         self.reddit.read_only = False
@@ -22,6 +35,12 @@ class TestRedditor(IntegrationTest):
             redditor = self.reddit.redditor('subreddit_stats')
             redditor.message('PRAW test', 'This is a test from PRAW',
                              from_subreddit=pytest.placeholders.test_subreddit)
+
+    def test_unfriend(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestRedditor.test_unfriend'):
+            redditor = self.reddit.user.friends()[0]
+            assert redditor.unfriend() is None
 
     def test_unblock(self):
         self.reddit.read_only = False

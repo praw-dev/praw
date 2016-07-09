@@ -41,28 +41,21 @@ class Redditor(RedditBase, GildableMixin, MessageableMixin,
     def _info_path(self):
         return API_PATH['user_about'].format(user=self.name)
 
-    def friend(self, note=None, _unfriend=False):
-        """Friend the user.
+    def _friend(self, method, data):
+        url = API_PATH['friend_v1'].format(user=self.name)
+        return self._reddit.request(method, url, data=dumps(data))
 
-        :param note: A personal note about the user. Requires reddit Gold.
-        :param _unfriend: Unfriend the user. Please use :meth:`unfriend`
-            instead of setting this parameter manually.
+    def friend(self, note=None):
+        """Friend the Redditor.
 
+        :param note: A personal note about the user. Requires reddit
+            Gold. (Default: None)
         :returns: The json response from the server.
 
+        Calling this method subsequent times will update the note.
+
         """
-        url = self.reddit_session.config['friend_v1'].format(user=self.name)
-        # This endpoint wants the data to be a string instead of an actual
-        # dictionary, although it is not required to have any content for adds.
-        # Unfriending does require the 'id' key.
-        if _unfriend:
-            data = {'id': self.name}
-        else:
-            # We cannot send a null or empty note string.
-            data = {'note': note} if note else {}
-        method = 'DELETE' if _unfriend else 'PUT'
-        return self.reddit_session.request_json(url, data=dumps(data),
-                                                method=method)
+        return self._friend('PUT', data={'note': note} if note else {})
 
     def get_friend_info(self):
         """Return information about this friend, including personal notes.
@@ -91,9 +84,5 @@ class Redditor(RedditBase, GildableMixin, MessageableMixin,
         return self._reddit.post(API_PATH['unfriend'], data=data)
 
     def unfriend(self):
-        """Unfriend the user.
-
-        :returns: The json response from the server.
-
-        """
-        return self.friend(_unfriend=True)
+        """Unfriend the Redditor."""
+        self._friend(method='delete', data={'id': self.name})
