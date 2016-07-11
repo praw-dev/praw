@@ -12,13 +12,6 @@ class TestUser(IntegrationTest):
         assert len(blocked) > 0
         assert all(isinstance(user, Redditor) for user in blocked)
 
-        # Additional assertions for BaseList class
-        # These should be moved into a unit test.
-        assert str(blocked).startswith('[')
-        assert str(blocked).endswith(']')
-        assert 'PyAPITestUser3' in blocked
-        assert 'PyAPITestUser3' == blocked[1]
-
     def test_friends(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestUser.test_friends'):

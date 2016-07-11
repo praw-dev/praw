@@ -26,10 +26,6 @@ class BaseList(PRAWBase):
         for index, item in enumerate(child_list):
             child_list[index] = self._convert(reddit, item)
 
-    def __str__(self):
-        """Return a string representation of the list."""
-        return str(getattr(self, self.CHILD_ATTRIBUTE))
-
     def __contains__(self, item):
         """Test if item exists in the list."""
         return item in getattr(self, self.CHILD_ATTRIBUTE)
@@ -45,3 +41,7 @@ class BaseList(PRAWBase):
     def __len__(self):
         """Return the number of items in the list."""
         return len(getattr(self, self.CHILD_ATTRIBUTE))
+
+    def __str__(self):
+        """Return a string representation of the list."""
+        return str(getattr(self, self.CHILD_ATTRIBUTE))
