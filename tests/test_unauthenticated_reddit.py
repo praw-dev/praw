@@ -231,8 +231,18 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertEqual(listing, submissions)
 
     @betamax()
+    def test_info_by_id_many_comma_delimited(self):
+        listing = list(self.r.get_subreddit(self.sr).get_new(limit=200))
+        listing = [submission.fullname for submission in listing]
+        submissions = self.r.get_info(thing_id=','.join(listing))
+
+        listing = set(listing)
+        submissions = set(submission.fullname for submission in submissions)
+        self.assertEqual(listing, submissions)
+
+    @betamax()
     def test_info_by_invalid_id(self):
-        self.assertEqual([], list(self.r.get_info(thing_id='INVALID')))
+        self.assertEqual(None, self.r.get_info(thing_id='INVALID'))
 
     @betamax()
     def test_info_by_known_url_returns_known_id_link_post(self):
@@ -242,14 +252,14 @@ class UnauthenticatedRedditTest(PRAWTest):
 
     @betamax()
     def test_info_by_url_also_found_by_id(self):
-        found_by_url = next(self.r.get_info(self.link_url_link))
-        found_by_id = next(self.r.get_info(thing_id=found_by_url.fullname))
+        found_by_url = self.r.get_info(self.link_url_link)[0]
+        found_by_id = self.r.get_info(thing_id=found_by_url.fullname)
         self.assertEqual(found_by_id, found_by_url)
 
     @betamax()
     def test_info_by_url_maximum_listing(self):
-        self.assertEqual(100, len(list(self.r.get_info('http://www.reddit.com',
-                                                       limit=101))))
+        self.assertEqual(100, len(self.r.get_info('http://www.reddit.com',
+                                                  limit=101)))
 
     @betamax()
     def test_is_username_available(self):

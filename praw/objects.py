@@ -454,9 +454,9 @@ class Refreshable(RedditContentObject):
         elif isinstance(self, Comment):
             sub = Submission.from_url(self.reddit_session, self.permalink,
                                       params={'uniq': unique})
-            try:
+            if sub.comments:
                 other = sub.comments[0]
-            except IndexError:
+            else:
                 # comment is "specially deleted", a reddit inconsistency;
                 # see #519, #524, #535, #537, and #552 it needs to be
                 # retreived via /api/info, but that's okay since these
@@ -468,14 +468,13 @@ class Refreshable(RedditContentObject):
                        "request was made to /api/info.".format(self.name))
                 unique = self.reddit_session._unique_count
                 self.reddit_session._unique_count += 1
-                info = self.reddit_session.get_info(thing_id=self.name,
-                                                    params={'uniq': unique})
-                other = next(info)
+                other = self.reddit_session.get_info(thing_id=self.name,
+                                                     params={'uniq': unique})
                 oldkeys = set(self.__dict__.keys())
                 newkeys = set(other.__dict__.keys())
                 keydiff = ", ".join(oldkeys - newkeys)
                 if keydiff:
-                    msg += "\n" + "Could not retrieve:\n" + keydiff
+                    msg += "\nCould not retrieve:\n{0}".format(keydiff)
                 self.__dict__.update(other.__dict__)  # pylint: disable=W0201
                 warn(msg, RuntimeWarning)
                 return self
@@ -699,8 +698,7 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
                 # see #519, #524, #535, #537, and #552 it needs to be
                 # retreived via /api/info, but that's okay since these
                 # specially deleted comments always have the same json
-                # structure. The unique count needs to be updated
-                # in case the comment originally came from /api/info
+                # structure.
                 msg = ("Comment {0} was deleted or removed, and had "
                        "no replies when such happened, so it still "
                        "has no replies".format(self.name))

@@ -183,7 +183,8 @@ def require_captcha(function, *args, **kwargs):
             captcha_id = exception.response['captcha']
 
 
-def restrict_access(scope, mod=None, login=None, oauth_only=False):
+def restrict_access(scope, mod=None, login=None, oauth_only=False,
+                    generator_called=False):
     """Restrict function access unless the user has the necessary permissions.
 
     Raises one of the following exceptions when appropriate:
@@ -201,6 +202,10 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False):
     :param mod: Indicate that a moderator is required. Implies login=True.
     :param login: Indicate that a login is required.
     :param oauth_only: Indicate that only OAuth is supported for the function.
+    :param generator_called: Indicate that the function consists solely of
+        exhausting one or more oauth_generator wrapped generators. This is
+        because the oauth_generator itself will determine whether or not to
+        use the oauth domain.
 
     Returned data is not modified.
 
@@ -251,7 +256,7 @@ def restrict_access(scope, mod=None, login=None, oauth_only=False):
         assert not obj._use_oauth  # pylint: disable=W0212
 
         if scope and obj.has_scope(scope):
-            obj._use_oauth = True  # pylint: disable=W0212
+            obj._use_oauth = not generator_called  # pylint: disable=W0212
         elif oauth_only:
             raise errors.OAuthScopeRequired(function.__name__, scope)
         elif login and obj.is_logged_in():
