@@ -57,18 +57,14 @@ class Redditor(RedditBase, GildableMixin, MessageableMixin,
         """
         return self._friend('PUT', data={'note': note} if note else {})
 
-    def get_friend_info(self):
-        """Return information about this friend, including personal notes.
+    def friend_info(self):
+        """Return a Redditor instance with specific friend-related attributes.
 
-        The personal note can be added or overwritten with :meth:friend, but
-            only if the user has reddit Gold.
-
-        :returns: The json response from the server.
+        :returns: A Redditor instance with fields ``date``, ``id``, and
+            possibly ``note`` if the authenticated user has reddit Gold.
 
         """
-        url = self.reddit_session.config['friend_v1'].format(user=self.name)
-        data = {'id': self.name}
-        return self.reddit_session.request_json(url, data=data, method='GET')
+        return self._reddit.get(API_PATH['friend_v1'].format(user=self.name))
 
     def unblock(self):
         """Unblock the Redditor.

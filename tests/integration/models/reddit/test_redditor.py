@@ -7,18 +7,30 @@ from ... import IntegrationTest
 
 
 class TestRedditor(IntegrationTest):
+    FRIEND = 'PyAPITestUser3'
+
     def test_friend(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestRedditor.test_friend'):
-            self.reddit.redditor('pyapitestuser3').friend()
+            self.reddit.redditor(self.FRIEND.lower()).friend()
 
     def test_friend__with_note__no_gold(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestRedditor.test_friend__with_note__no_gold'):
             with pytest.raises(BadRequest) as excinfo:
-                self.reddit.redditor('pyapitestuser3').friend(note='praw')
+                self.reddit.redditor(self.FRIEND.lower()).friend(note='praw')
             assert 'GOLD_REQUIRED' == excinfo.value.response.json()['reason']
+
+    def test_friend_info(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestRedditor.test_friend_info'):
+            redditor = self.reddit.redditor(self.FRIEND).friend_info()
+            assert self.FRIEND == redditor
+            assert 'date' in redditor.__dict__
+            assert 'created_utc' not in redditor.__dict__
+            assert hasattr(redditor, 'created_utc')
 
     @mock.patch('time.sleep', return_value=None)
     def test_message(self, _mock_sleep):
