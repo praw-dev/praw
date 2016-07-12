@@ -1,125 +1,6 @@
 """Contains old code for reference."""
 
 r"""
-import json
-import re
-import sys
-from warnings import warn_explicit
-
-
-import six
-from requests import Request, Session
-from six.moves import html_entities
-from six.moves.urllib.parse import parse_qs, urljoin, urlparse, urlunparse
-
-
-from . import decorators, errors, models
-from .const import USER_AGENT_FORMAT
-
-def _to_reddit_list(arg):
-    Return an argument converted to a reddit-formatted list.
-
-    The returned format is a comma deliminated list. Each element is a string
-    representation of an object. Either given as a string or as an object that
-    is then converted to its string representation.
-    if (isinstance(arg, six.string_types) or not (
-            hasattr(arg, "__getitem__") or hasattr(arg, "__iter__"))):
-        return six.text_type(arg)
-    else:
-        return ','.join(six.text_type(a) for a in arg)
-
-
-class BaseReddit(object):
-    RETRY_CODES = [502, 503, 504]
-
-    def __init__(self, user_agent, site_name=None, **kwargs):
-        self.http = Session()
-        self.http.headers['User-Agent'] = USER_AGENT_FORMAT.format(user_agent)
-
-        if self.config.http_proxy or self.config.https_proxy:
-            self.http.proxies = {}
-            if self.config.http_proxy:
-                self.http.proxies['http'] = self.config.http_proxy
-            if self.config.https_proxy:
-                self.http.proxies['https'] = self.config.https_proxy
-
-    @decorators.raise_api_exceptions
-    def request(self, url, params=None, data=None, retry_on_error=True,
-                method=None):
-        :param url: the url to grab content from.
-        :param params: a dictionary containing the GET data to put in the url
-        :param data: a dictionary containing the extra data to submit
-        :param retry_on_error: if True retry the request, if it fails, for up
-            to 3 attempts
-        :param method: The HTTP method to use in the request.
-        :returns: The HTTP response.
-        return self._request(url, params, data, raw_response=True,
-                             retry_on_error=retry_on_error, method=method)
-
-    @decorators.raise_api_exceptions
-    def request_json(self, url, params=None, data=None, as_objects=True,
-                     retry_on_error=True, method=None):
-        :param url: the url to grab content from.
-        :param params: a dictionary containing the GET data to put in the url
-        :param data: a dictionary containing the extra data to submit
-        :param as_objects: if True return reddit objects else raw json dict.
-        :param retry_on_error: if True retry the request, if it fails, for up
-            to 3 attempts
-        :returns: JSON processed page
-
-        if not url.endswith('.json'):
-            url += '.json'
-        response = self._request(url, params, data, method=method,
-                                 retry_on_error=retry_on_error)
-        hook = self._json_reddit_objecter if as_objects else None
-        # Request url just needs to be available for the objecter to use
-        self._request_url = url
-
-        if response == '':
-            # Some of the v1 urls don't return anything, even when they're
-            # successful.
-            return response
-
-        data = json.loads(response, object_hook=hook)
-        delattr(self, '_request_url')
-        return data
-
-
-    def _handle_oauth_request(self, data):
-        auth = (self.client_id, self.client_secret)
-        url = self.config['access_token_url']
-        response = self._request(url, auth=auth, data=data, raw_response=True)
-        if not response.ok:
-            msg = 'Unexpected OAuthReturn: {0}'.format(response.status_code)
-            raise errors.OAuthException(msg, url)
-        retval = response.json()
-        if 'error' in retval:
-            error = retval['error']
-            if error == 'invalid_grant':
-                raise errors.OAuthInvalidGrant(error, url)
-            raise errors.OAuthException(retval['error'], url)
-        return retval
-
-    def create_redditor(self, user_name, password, email=''):
-        data = {'email': email,
-                'passwd': password,
-                'passwd2': password,
-                'user': user_name}
-        return self.request_json(self.config['register'], data=data)
-
-    def default_subreddits(self, *args, **kwargs):
-        url = self.config['default_subreddits']
-        return self.get_content(url, *args, **kwargs)
-
-    def get_comments(self, subreddit, gilded_only=False, *args, **kwargs):
-        :param gilded_only: If True only return gilded comments.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-        key = 'sub_comments_gilded' if gilded_only else 'subreddit_comments'
-        url = self.config[key].format(subreddit=six.text_type(subreddit))
-        return self.get_content(url, *args, **kwargs)
-
     def get_domain_listing(self, domain, sort='hot', period=None, *args,
                            **kwargs):
 
@@ -207,78 +88,6 @@ class BaseReddit(object):
         url = self.config['moderators'].format(
             subreddit=six.text_type(subreddit))
         return self.request_json(url, **kwargs)
-
-    def get_new_subreddits(self, *args, **kwargs):
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-        url = self.config['new_subreddits']
-        return self.get_content(url, *args, **kwargs)
-
-    def get_popular_subreddits(self, *args, **kwargs):
-        Return a get_content generator for the most active subreddits.
-        url = self.config['popular_subreddits']
-        return self.get_content(url, *args, **kwargs)
-
-    def get_random_subreddit(self, nsfw=False):
-        Return a random Subreddit object.
-
-        :param nsfw: When true, return a random NSFW Subreddit object. Calling
-            in this manner will set the 'over18' cookie for the duration of the
-            PRAW session.
-        path = 'random'
-        if nsfw:
-            self.http.cookies.set('over18', '1')
-            path = 'randnsfw'
-        url = self.config['subreddit'].format(subreddit=path)
-        response = self._request(url, params={'unique': self._unique_count},
-                                 raw_response=True)
-        self._unique_count += 1
-        return self.get_subreddit(response.url.rsplit('/', 2)[-2])
-
-    def get_random_submission(self, subreddit='all'):
-        Return a random Submission object.
-
-        :param subreddit: Limit the submission to the specified
-            subreddit(s). Default: all
-        url = self.config['subreddit_random'].format(
-            subreddit=six.text_type(subreddit))
-        try:
-            item = self.request_json(url,
-                                     params={'unique': self._unique_count})
-            self._unique_count += 1  # Avoid network-level caching
-            return models.Submission.from_json(item)
-        except errors.RedirectException as exc:
-            self._unique_count += 1
-            return self.get_submission(exc.response_url)
-        raise errors.ClientException('Expected exception not raised.')
-
-    def get_sticky(self, subreddit, bottom=False):
-        Return a Submission object for the sticky of the subreddit.
-
-        :param bottom: Get the top or bottom sticky. If the subreddit has only
-            a single sticky, it is considered the top one.
-        url = self.config['sticky'].format(subreddit=six.text_type(subreddit))
-        param = {'num': 2} if bottom else None
-        return models.Submission.from_json(self.request_json(
-            url, params=param))
-
-    def get_submission(self, url=None, submission_id=None, comment_limit=0,
-                       comment_sort=None, params=None):
-        Return a Submission object for the given url or submission_id.
-
-        :param comment_limit: The desired number of comments to fetch. If <= 0
-            fetch the default number for the session's user. If None, fetch the
-            maximum possible.
-        :param comment_sort: The sort order for retrieved comments. When None
-            use the default for the session's user.
-        :param params: Dictionary containing extra GET data to put in the url.
-        if bool(url) == bool(submission_id):
-            raise TypeError('One (and only one) of id or url is required!')
-        if submission_id:
-            url = urljoin(self.config['comments'], submission_id)
-        return models.Submission.from_url(
-            self, url, comment_limit=comment_limit, comment_sort=comment_sort,
-            params=params)
 
     def get_submissions(self, fullnames, *args, **kwargs):
         Generate Submission objects for each item provided in `fullnames`.
@@ -402,16 +211,6 @@ class BaseReddit(object):
                                     data=data)
         return [self.get_subreddit(name) for name in results['names']]
 
-    def _url_update(self, url):
-        # When getting posts from a multireddit owned by the authenticated
-        # Redditor, we are redirected to me/m/multi/. Handle that now
-        # instead of catching later.
-        if re.search('user/.*/m/.*', url):
-            redditor = url.split('/')[-4]
-            if self.user and self.user.name.lower() == redditor.lower():
-                url = url.replace("user/"+redditor, 'me')
-        return url
-
     def accept_moderator_invite(self, subreddit):
         Accept a moderator invite to the given subreddit.
 
@@ -462,14 +261,6 @@ class BaseReddit(object):
             of possible flair choices.
         data = {'r':  six.text_type(subreddit), 'link': link}
         return self.request_json(self.config['flairselector'], data=data)
-
-    def has_scope(self, scope):
-        Return True if OAuth2 authorized for the passed in scope(s).
-        if '*' in self._authentication:
-            return True
-        if isinstance(scope, six.string_types):
-            scope = [scope]
-        return all(s in self._authentication for s in scope)
 
     def select_flair(self, item, flair_template_id='', flair_text=''):
         Select user flair or link flair on subreddits.
