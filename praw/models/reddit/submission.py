@@ -100,17 +100,9 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         """
         return self.subreddit.get_flair_choices(self.fullname, *args, **kwargs)
 
-    def hide(self, _unhide=False):
-        """Hide object in the context of the logged in user.
-
-        :param _unhide: If True, unhide the item instead.  Use
-            :meth:`~.unhide` instead of setting this
-            manually.
-
-        :returns: The json response from the server.
-
-        """
-        return self._reddit.hide(self.fullname, _unhide=_unhide)
+    def hide(self):
+        """Hide Submission."""
+        self._reddit.post(API_PATH['hide'], data={'id': self.fullname})
 
     def mark_as_nsfw(self, unmark_nsfw=False):
         """Mark as Not Safe For Work.
@@ -199,12 +191,8 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         return self._reddit.request_json(url, data=data)
 
     def unhide(self):
-        """Unhide object in the context of the logged in user.
-
-        :returns: The json response from the server.
-
-        """
-        return self.hide(_unhide=True)
+        """Unhide Submission."""
+        self._reddit.post(API_PATH['unhide'], data={'id': self.fullname})
 
     def unmark_as_nsfw(self):
         """Mark as Safe For Work.

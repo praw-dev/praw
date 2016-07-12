@@ -51,6 +51,12 @@ class TestSubmission(IntegrationTest):
             submission = Submission(self.reddit, 'avj2v')
             assert len(list(submission.duplicates())) > 0
 
+    def test_hide(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_hide'):
+            Submission(self.reddit, '4b1tfm').hide()
+
     def test_invalid_attribute(self):
         with self.recorder.use_cassette(
                 'TestSubmission.test_invalid_attribute'):
@@ -81,6 +87,12 @@ class TestSubmission(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubmission.test_save'):
             Submission(self.reddit, '4b536p').save()
+
+    def test_unhide(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_unhide'):
+            Submission(self.reddit, '4b1tfm').unhide()
 
     def test_unsave(self):
         self.reddit.read_only = False
