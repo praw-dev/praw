@@ -55,6 +55,29 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return Submission(self._reddit, url=urljoin(
             self._reddit.config.reddit_url, path))
 
+    def search(self, query, sort='relevance', syntax='cloudsearch',
+               time_filter='all', **generator_kwargs):
+        """Return a ListingGenerator for items that match ``query``.
+
+        :param query: The query string to search for.
+        :param sort: Can be one of: relevance, hot, top, new,
+            comments. (default: relevance).
+        :param syntax: Can be one of: cloudsearch, lucene, plain
+            (default: cloudsearch).
+        :param time_filter: Can be one of: all, day, hour, month, week, year
+            (default: all).
+
+        For more information on building a search query see:
+            https://www.reddit.com/wiki/search
+
+        """
+        self.validate_time_filter(time_filter)
+        params = generator_kwargs.setdefault('params', {})
+        params.update({'q': query, 'restrict_sr': True, 'sort': sort,
+                       'syntax': syntax, 't': time_filter})
+        url = API_PATH['search'].format(subreddit=self.display_name)
+        return ListingGenerator(self._reddit, url, **generator_kwargs)
+
     def submit(self, title, selftext=None, url=None, resubmit=True,
                send_replies=True):
         """Add a submission to the subreddit.

@@ -153,57 +153,6 @@ r"""
             return False
         return result
 
-    def search(self, query, subreddit=None, sort=None, syntax=None,
-               period=None, *args, **kwargs):
-        Return a generator for submissions that match the search query.
-
-        :param query: The query string to search for. If query is a URL only
-            submissions which link to that URL will be returned.
-        :param subreddit: Limit search results to the subreddit if provided.
-        :param sort: The sort order of the results.
-        :param syntax: The syntax of the search query.
-        :param period: The time period of the results.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        See https://www.reddit.com/wiki/search for more information on how to
-        build a search query.
-        params = {'q': query}
-        if 'params' in kwargs:
-            params.update(kwargs['params'])
-            kwargs.pop('params')
-        if sort:
-            params['sort'] = sort
-        if syntax:
-            params['syntax'] = syntax
-        if period:
-            params['t'] = period
-        if subreddit:
-            params['restrict_sr'] = 'on'
-            subreddit = six.text_type(subreddit)
-        else:
-            subreddit = 'all'
-        url = self.config['search'].format(subreddit=subreddit)
-
-        depth = 2
-        while depth > 0:
-            depth -= 1
-            try:
-                for item in self.get_content(url, params=params, *args,
-                                             **kwargs):
-                    yield item
-                break
-            except errors.RedirectException as exc:
-                parsed = urlparse(exc.response_url)
-                params = dict((k, ",".join(v)) for k, v in
-                              parse_qs(parsed.query).items())
-                url = urlunparse(parsed[:3] + ("", "", ""))
-                # Handle redirects from URL searches
-                if 'already_submitted' in params:
-                    yield self.get_submission(url)
-                    break
-
     def accept_moderator_invite(self, subreddit):
         Accept a moderator invite to the given subreddit.
 

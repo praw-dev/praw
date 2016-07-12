@@ -23,6 +23,12 @@ class TestSubreddit(IntegrationTest):
                            subreddit.random(), subreddit.random()]
             assert len(submissions) == len(set(submissions))
 
+    def test_search(self):
+        with self.recorder.use_cassette('TestSubreddit.test_search'):
+            subreddit = self.reddit.subreddit('all')
+            for item in subreddit.search('praw oauth search', limit=None):
+                assert isinstance(item, Submission)
+
     @mock.patch('time.sleep', return_value=None)
     def test_submit__selftext(self, _):
         self.reddit.read_only = False
