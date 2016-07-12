@@ -42,7 +42,6 @@ class Subreddits(PRAWBase):
                                 **generator_kwargs)
 
     def search_by_name(self, query, include_nsfw=True, exact=False):
-
         """Return list of Subreddits whose names begin with ``query``.
 
         :param query: Search for subreddits beginning with this string.
