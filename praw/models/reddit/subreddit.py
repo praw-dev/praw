@@ -3,7 +3,7 @@ from prawcore import Redirect
 from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from ...const import API_PATH
-from ..util import BoundedSet
+from ..util import stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
@@ -307,25 +307,6 @@ class SubredditStream(object):
         """
         self.subreddit = subreddit
 
-    def _stream_generator(self, function):
-        before_fullname = None
-        seen_fullnames = BoundedSet(100)
-        without_before_counter = 0
-        while True:
-            newest_fullname = None
-            limit = 100
-            if before_fullname is None:
-                limit -= without_before_counter
-                without_before_counter = (without_before_counter + 1) % 30
-            for item in reversed(list(function(
-                    limit=limit, params={'before': before_fullname}))):
-                if item.fullname in seen_fullnames:
-                    continue
-                seen_fullnames.add(item.fullname)
-                newest_fullname = item.fullname
-                yield item
-            before_fullname = newest_fullname
-
     def comments(self):
         """Yield new comments as they become available.
 
@@ -333,7 +314,7 @@ class SubredditStream(object):
         initially be returned.
 
         """
-        return self._stream_generator(self.subreddit.comments)
+        return stream_generator(self.subreddit.comments)
 
     def submissions(self):
         """Yield new submissions as they become available.
@@ -342,4 +323,4 @@ class SubredditStream(object):
         will initially be returned.
 
         """
-        return self._stream_generator(self.subreddit.new)
+        return stream_generator(self.subreddit.new)

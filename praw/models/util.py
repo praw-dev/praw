@@ -23,3 +23,24 @@ class BoundedSet(object):
             self._set.remove(self._fifo.pop(0))
         self._fifo.append(item)
         self._set.add(item)
+
+
+def stream_generator(function):
+    """Forever yield new items from ListingGenerators."""
+    before_fullname = None
+    seen_fullnames = BoundedSet(100)
+    without_before_counter = 0
+    while True:
+        newest_fullname = None
+        limit = 100
+        if before_fullname is None:
+            limit -= without_before_counter
+            without_before_counter = (without_before_counter + 1) % 30
+        for item in reversed(list(function(
+                limit=limit, params={'before': before_fullname}))):
+            if item.fullname in seen_fullnames:
+                continue
+            seen_fullnames.add(item.fullname)
+            newest_fullname = item.fullname
+            yield item
+        before_fullname = newest_fullname

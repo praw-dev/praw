@@ -1,4 +1,6 @@
 """Test praw.models.subreddits."""
+from praw.models import Subreddit
+
 from .. import IntegrationTest
 
 
@@ -23,3 +25,10 @@ class TestSubreddits(IntegrationTest):
         with self.recorder.use_cassette('TestSubreddits.test_popular'):
             subreddits = list(self.reddit.subreddits.popular())
         assert len(subreddits) == 100
+
+    def test_stream(self):
+        with self.recorder.use_cassette(
+                'TestSubreddits__test_streams'):
+            generator = self.reddit.subreddits.stream()
+            for i in range(101):
+                assert isinstance(next(generator), Subreddit)
