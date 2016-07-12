@@ -28,7 +28,21 @@ class Subreddits(PRAWBase):
         return ListingGenerator(self._reddit, API_PATH['subreddits_popular'],
                                 **generator_kwargs)
 
+    def search(self, query, **generator_kwargs):
+        """Return a ListingGenerator of subreddits matching ``query``.
+
+        Subreddits are searched by both their title and description. To search
+        names only see ``search_by_name``.
+
+        :param query: The query string to filter subreddits by.
+
+        """
+        generator_kwargs.setdefault('params', {})['q'] = query
+        return ListingGenerator(self._reddit, API_PATH['subreddits_search'],
+                                **generator_kwargs)
+
     def search_by_name(self, query, include_nsfw=True, exact=False):
+
         """Return list of Subreddits whose names begin with ``query``.
 
         :param query: Search for subreddits beginning with this string.

@@ -26,13 +26,20 @@ class TestSubreddits(IntegrationTest):
             subreddits = list(self.reddit.subreddits.popular())
         assert len(subreddits) == 100
 
-    def test_search_by_name(self):
-        with self.recorder.use_cassette('TestSubreddits.test_search_by_name'):
+    def test_search(self):
+        with self.recorder.use_cassette('TestSubreddits.test_search'):
             found = False
-            for subreddit in self.reddit.subreddits.search_by_name('reddit'):
+            for subreddit in self.reddit.subreddits.search('praw'):
                 assert isinstance(subreddit, Subreddit)
                 found = True
             assert found
+
+    def test_search_by_name(self):
+        with self.recorder.use_cassette('TestSubreddits.test_search_by_name'):
+            subreddits = self.reddit.subreddits.search_by_name('reddit')
+            assert isinstance(subreddits, list)
+            assert len(subreddits) > 1
+            assert all(isinstance(x, Subreddit) for x in subreddits)
 
     def test_stream(self):
         with self.recorder.use_cassette(

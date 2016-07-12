@@ -107,6 +107,7 @@ API_PATH = {
     'subreddits_new':         'subreddits/new/',
     'subreddits_popular':     'subreddits/popular/',
     'subreddits_name_search': 'api/search_reddit_names/',
+    'subreddits_search':      'subreddits/search/',
     'subscribe':              'api/subscribe/',
     'suggested_sort':         'api/set_suggested_sort/',
     'top':                    'top/',
