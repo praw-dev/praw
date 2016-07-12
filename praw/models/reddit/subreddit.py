@@ -94,14 +94,12 @@ class SubredditFlair(object):
         :param subreddit: The subreddit whose flair to work with.
 
         """
-        self._unique_counter = 0
         self.subreddit = subreddit
 
     def __iter__(self):
         """Iterate through the Redditors and their associated flair."""
         url = API_PATH['flairlist'].format(subreddit=str(self.subreddit))
-        params = {'unique': self._unique_counter}
-        self._unique_counter += 1
+        params = {'unique': self.subreddit._reddit._next_unique}
         for item in ListingGenerator(self.subreddit._reddit, url, None,
                                      params=params):
             yield item
@@ -269,13 +267,11 @@ class SubredditRelationship(object):
         """
         self.relationship = relationship
         self.subreddit = subreddit
-        self._unique_counter = 0
 
     def __iter__(self):
         """Iterate through the Redditors belonging to this relationship."""
         url = API_PATH[self.relationship].format(subreddit=str(self.subreddit))
-        params = {'unique': self._unique_counter}
-        self._unique_counter += 1
+        params = {'unique': self.subreddit._reddit._next_unique}
         for item in self.subreddit._reddit.get(url, params=params):
             yield item
 
