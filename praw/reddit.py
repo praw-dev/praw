@@ -96,6 +96,7 @@ class Reddit(object):
         self._prepare_prawcore()
         self.front = models.Front(self)
         self.inbox = models.Inbox(self, None)
+        self.subreddits = models.Subreddits(self, None)
         self.user = models.User(self, None)
 
     def _check_for_update(self):
