@@ -16,7 +16,8 @@ class TestComment(IntegrationTest):
             assert comment.permalink(fast=True) == '/comments/2gmzqe//cklhv0f'
             assert comment.submission == '2gmzqe'
 
-    def test_block(self):
+    @mock.patch('time.sleep', return_value=None)
+    def test_block(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestComment.test_block'):

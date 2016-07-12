@@ -6,7 +6,8 @@ from ... import IntegrationTest
 
 
 class TestMessage(IntegrationTest):
-    def test_block(self):
+    @mock.patch('time.sleep', return_value=None)
+    def test_block(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestMessage.test_block'):

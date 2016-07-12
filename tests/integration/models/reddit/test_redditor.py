@@ -22,7 +22,8 @@ class TestRedditor(IntegrationTest):
                 self.reddit.redditor(self.FRIEND.lower()).friend(note='praw')
             assert 'GOLD_REQUIRED' == excinfo.value.response.json()['reason']
 
-    def test_friend_info(self):
+    @mock.patch('time.sleep', return_value=None)
+    def test_friend_info(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestRedditor.test_friend_info'):
@@ -33,14 +34,14 @@ class TestRedditor(IntegrationTest):
             assert hasattr(redditor, 'created_utc')
 
     @mock.patch('time.sleep', return_value=None)
-    def test_message(self, _mock_sleep):
+    def test_message(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestRedditor.test_message'):
             redditor = self.reddit.redditor('subreddit_stats')
             redditor.message('PRAW test', 'This is a test from PRAW')
 
     @mock.patch('time.sleep', return_value=None)
-    def test_message_from_subreddit(self, _mock_sleep):
+    def test_message_from_subreddit(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestRedditor.test_message_from_subreddit'):
@@ -48,13 +49,15 @@ class TestRedditor(IntegrationTest):
             redditor.message('PRAW test', 'This is a test from PRAW',
                              from_subreddit=pytest.placeholders.test_subreddit)
 
-    def test_unfriend(self):
+    @mock.patch('time.sleep', return_value=None)
+    def test_unfriend(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestRedditor.test_unfriend'):
             redditor = self.reddit.user.friends()[0]
             assert redditor.unfriend() is None
 
-    def test_unblock(self):
+    @mock.patch('time.sleep', return_value=None)
+    def test_unblock(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestRedditor.test_unblock'):
             redditor = self.reddit.user.blocked()[0]

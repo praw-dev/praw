@@ -1,9 +1,16 @@
 """Prepare py.test."""
 import os
+import time
 from base64 import b64encode
 
 import betamax
 from betamax_serializers import pretty_json
+
+
+# Prevent calls to sleep
+def _sleep(*args):
+    raise Exception('Call to sleep')
+time.sleep = _sleep
 
 
 def b64_string(input_string):
