@@ -1,4 +1,7 @@
 """Provide the Subreddit class."""
+from prawcore import Redirect
+from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
+
 from ...const import API_PATH
 from ..util import BoundedSet
 from ..listing.generator import ListingGenerator
@@ -40,6 +43,17 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                              'wikibanned', 'wikicontributor']:
             setattr(self, relationship,
                     SubredditRelationship(self, relationship))
+
+    def random(self):
+        """Return a random Submission."""
+        from .submission import Submission
+        url = API_PATH['subreddit_random'].format(subreddit=self.display_name)
+        try:
+            self._reddit.get(url, params={'unique': self._reddit._next_unique})
+        except Redirect as redirect:
+            path = redirect.path
+        return Submission(self._reddit, url=urljoin(
+            self._reddit.config.reddit_url, path))
 
     def submit(self, title, selftext=None, url=None, resubmit=True,
                send_replies=True):

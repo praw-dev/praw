@@ -15,6 +15,14 @@ class TestSubreddit(IntegrationTest):
                 pytest.placeholders.test_subreddit)
             subreddit.message('Test from PRAW', message='Test content')
 
+    def test_random(self):
+        with self.recorder.use_cassette('TestSubreddit.test_random'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            submissions = [subreddit.random(), subreddit.random(),
+                           subreddit.random(), subreddit.random()]
+            assert len(submissions) == len(set(submissions))
+
     @mock.patch('time.sleep', return_value=None)
     def test_submit__selftext(self, _):
         self.reddit.read_only = False
