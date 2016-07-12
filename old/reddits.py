@@ -204,13 +204,6 @@ r"""
                     yield self.get_submission(url)
                     break
 
-    def search_reddit_names(self, query):
-        Return subreddits whose display name contains the query.
-        data = {'query': query}
-        results = self.request_json(self.config['search_reddit_names'],
-                                    data=data)
-        return [self.get_subreddit(name) for name in results['names']]
-
     def accept_moderator_invite(self, subreddit):
         Accept a moderator invite to the given subreddit.
 

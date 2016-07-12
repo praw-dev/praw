@@ -59,10 +59,6 @@ class UnauthenticatedRedditTest(PRAWTest):
             len(list(self.r.search('http://www.livememe.com/'))) > 2)
 
     @betamax()
-    def test_search_reddit_names(self):
-        self.assertTrue(self.r.search_reddit_names('reddit'))
-
-    @betamax()
     def test_search_single_submitted_url(self):
         self.assertEqual(
             1, len(list(self.r.search('http://www.livememe.com/vg972qp'))))

@@ -28,6 +28,19 @@ class Subreddits(PRAWBase):
         return ListingGenerator(self._reddit, API_PATH['subreddits_popular'],
                                 **generator_kwargs)
 
+    def search_by_name(self, query, include_nsfw=True, exact=False):
+        """Return list of Subreddits whose names begin with ``query``.
+
+        :param query: Search for subreddits beginning with this string.
+        :param include_nsfw: Include subreddits labeled NSFW (default: True).
+        :param exact: Return only exact matches to ``query`` (default: False).
+
+        """
+        result = self._reddit.post(API_PATH['subreddits_name_search'],
+                                   data={'include_over_18': include_nsfw,
+                                         'exact': exact, 'query': query})
+        return [self._reddit.subreddit(x) for x in result['names']]
+
     def stream(self):
         """Yield new subreddits as they are created.
 
