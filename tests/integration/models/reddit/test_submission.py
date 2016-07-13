@@ -105,3 +105,19 @@ class TestSubmission(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubmission.test_upvote'):
             Submission(self.reddit, '4b536p').upvote()
+
+
+class TestSubmissionModeration(IntegrationTest):
+    def test_contest_mode(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_contest_mode'):
+            submission = Submission(self.reddit, '4s2idz')
+            submission.mod.contest_mode()
+
+    def test_contest_mode__disable(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_contest_mode__disable'):
+            submission = Submission(self.reddit, '4s2idz')
+            submission.mod.contest_mode(state=False)

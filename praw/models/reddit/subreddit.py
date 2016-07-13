@@ -109,7 +109,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
 
 class SubredditFlair(object):
-    """Provides a set of functions to interact with a Subreddit's flair."""
+    """Provide a set of functions to interact with a Subreddit's flair."""
 
     def __init__(self, subreddit):
         """Create a SubredditFlair instance.

@@ -65,6 +65,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             self.id = id  # pylint: disable=invalid-name
         elif url is not None:
             self.id = self.id_from_url(url)
+        self.mod = SubmissionModeration(self)
 
     def __setattr__(self, attribute, value):
         """Objectify author, comments, and subreddit attributes."""
@@ -104,20 +105,6 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         """Hide Submission."""
         self._reddit.post(API_PATH['hide'], data={'id': self.fullname})
 
-    def mark_as_nsfw(self, unmark_nsfw=False):
-        """Mark as Not Safe For Work.
-
-        Requires that the currently authenticated user is the author of the
-        submission, has the modposts oauth scope or has user/password
-        authentication as a mod of the subreddit.
-
-        :returns: The json response from the server.
-
-        """
-        url = self._reddit.config['unmarknsfw' if unmark_nsfw else 'marknsfw']
-        data = {'id': self.fullname}
-        return self._reddit.request_json(url, data=data)
-
     def set_flair(self, *args, **kwargs):
         """Set flair for this submission.
 
@@ -129,39 +116,6 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         """
         return self.subreddit.set_flair(self, *args, **kwargs)
 
-    def set_contest_mode(self, state=True):
-        """Set 'Contest Mode' for the comments of this submission.
-
-        Contest mode have the following effects:
-          * The comment thread will default to being sorted randomly.
-          * Replies to top-level comments will be hidden behind
-            "[show replies]" buttons.
-          * Scores will be hidden from non-moderators.
-          * Scores accessed through the API (mobile apps, bots) will be
-            obscured to "1" for non-moderators.
-
-        Source for effects: https://www.reddit.com/159bww/
-
-        :returns: The json response from the server.
-
-        """
-        url = self._reddit.config['contest_mode']
-        data = {'id': self.fullname, 'state': state}
-        return self._reddit.request_json(url, data=data)
-
-    def set_suggested_sort(self, sort='blank'):
-        """Set 'Suggested Sort' for the comments of the submission.
-
-        Comments can be sorted in one of (confidence, top, new, hot,
-        controversial, old, random, qa, blank).
-
-        :returns: The json response from the server.
-
-        """
-        url = self._reddit.config['suggested_sort']
-        data = {'id': self.fullname, 'sort': sort}
-        return self._reddit.request_json(url, data=data)
-
     @property
     def short_link(self):
         """Return a short link to the submission.
@@ -172,38 +126,26 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         """
         return urljoin(self._reddit.config.short_url, self.id)
 
-    def sticky(self, bottom=True):
-        """Sticky a post in its subreddit.
-
-        If there is already a stickied post in the designated slot it will be
-        unstickied.
-
-        :param bottom: Set this as the top or bottom sticky. If no top sticky
-            exists, this submission will become the top sticky regardless.
-
-        :returns: The json response from the server
-
-        """
-        url = self._reddit.config['sticky_submission']
-        data = {'id': self.fullname, 'state': True}
-        if not bottom:
-            data['num'] = 1
-        return self._reddit.request_json(url, data=data)
-
     def unhide(self):
         """Unhide Submission."""
         self._reddit.post(API_PATH['unhide'], data={'id': self.fullname})
 
-    def unmark_as_nsfw(self):
-        """Mark as Safe For Work.
 
-        :returns: The json response from the server.
+class SubmissionModeration(object):
+    """Provide a set of function pertaining to Submission moderation."""
+
+    def __init__(self, submission):
+        """Create a SubmissionModeration instance.
+
+        :param submission: The submission to moderate.
 
         """
-        return self.mark_as_nsfw(unmark_nsfw=True)
+        self.submission = submission
 
-    def unset_contest_mode(self):
-        """Unset 'Contest Mode' for the comments of this submission.
+    def contest_mode(self, state=True):
+        """Set contest mode for the comments of this submission.
+
+        :param state: (boolean) True enables contest mode, False, disables.
 
         Contest mode have the following effects:
           * The comment thread will default to being sorted randomly.
@@ -213,19 +155,45 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
           * Scores accessed through the API (mobile apps, bots) will be
             obscured to "1" for non-moderators.
 
-        Source for effects: http://www.reddit.com/159bww/
+        """
+        self.submission._reddit.post(API_PATH['contest_mode'], data={
+            'id': self.submission.fullname, 'state': state})
 
-        :returns: The json response from the server.
+    def nsfw(self):
+        """Mark as not safe for work."""
+        self.submission._reddit.post(API_PATH['marknsfw'],
+                                     data={'id': self.submission.fullname})
+
+    def sfw(self):
+        """Mark as safe for work."""
+        self.submission._reddit.post(API_PATH['unmarknsfw'],
+                                     data={'id': self.submission.fullname})
+
+    def sticky(self, state=True, bottom=True):
+        """Set the submission's sticky state in its subreddit.
+
+        :param state: (boolean) True sets the sticky for the submission, false
+            unsets (default: True).
+        :param bottom: (boolean) When true, set the submission as the bottom
+            sticky. If no top sticky exists, this submission will become the
+            top sticky regardless (default: True).
+
+        This submission will replace an existing stickied submission if one
+        exists.
 
         """
-        return self.set_contest_mode(False)
+        data = {'id': self.submission.fullname, 'state': state}
+        if not bottom:
+            data['num'] = 1
+        return self.submission._reddit.post(API_PATH['sticky_submission'],
+                                            data=data)
 
-    def unsticky(self):
-        """Unsticky this post.
+    def suggested_sort(self, sort='blank'):
+        """Set the suggested sort for the comments of the submission.
 
-        :returns: The json response from the server
+        :param sort: Can be one of: confidence, top, new, controversial, old,
+            random, qa, blank (default: blank).
 
         """
-        url = self._reddit.config['sticky_submission']
-        data = {'id': self.fullname, 'state': False}
-        return self._reddit.request_json(url, data=data)
+        self.submission._reddit.post(API_PATH['suggested_sort'], data={
+            'id': self.submission.fullname, 'sort': sort})
