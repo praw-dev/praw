@@ -176,30 +176,6 @@ class SubmissionModeratorTest(PRAWTest):
         self.assertEqual(submission.refresh().suggested_sort, None)
 
     @betamax()
-    def test_sticky_unsticky(self):
-        subreddit = self.r.get_subreddit(self.sr)
-        submission_a = self.r.get_submission(
-            submission_id=self.submission_sticky_id)
-        submission_b = self.r.get_submission(
-            submission_id=self.submission_sticky_id2)
-
-        # Set the bottom one first on purpose, to make sure
-        # using num=1 sets B on top properly.
-        submission_a.sticky()  # default to True
-        submission_b.sticky(bottom=False)
-
-        submission_sa = subreddit.get_sticky(bottom=True)
-        submission_sb = self.r.get_sticky(subreddit)  # default to False
-
-        self.assertEqual(submission_sa.id, submission_a.id)
-        self.assertEqual(submission_sb.id, submission_b.id)
-
-        submission_a.unsticky()
-        submission_b.unsticky()
-        self.assertFalse(submission_a.refresh().stickied)
-        self.assertFalse(submission_b.refresh().stickied)
-
-    @betamax()
     def test_equality_and_hash(self):
         subreddit = self.r.get_subreddit(self.sr)
         hot = list(subreddit.get_hot())

@@ -133,3 +133,21 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubmissionModeration.test_sfw'):
             Submission(self.reddit, '4s2idz').mod.sfw()
+
+    def test_sticky(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_sticky'):
+            Submission(self.reddit, '4s2idz').mod.sticky()
+
+    def test_sticky__remove(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_sticky__remove'):
+            Submission(self.reddit, '4s2idz').mod.sticky(state=False)
+
+    def test_sticky__top(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_sticky__top'):
+            Submission(self.reddit, '4s2idz').mod.sticky(bottom=False)
