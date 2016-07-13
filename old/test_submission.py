@@ -167,15 +167,6 @@ class SubmissionModeratorTest(PRAWTest):
         self.assertEqual(submission.fullname, log.target_fullname)
 
     @betamax()
-    def test_set_suggested_sort(self):
-        submission_id = self.submission_edit_id
-        submission = self.r.get_submission(submission_id=submission_id)
-        submission.set_suggested_sort('new')
-        self.assertEqual(submission.refresh().suggested_sort, 'new')
-        submission.set_suggested_sort('blank')
-        self.assertEqual(submission.refresh().suggested_sort, None)
-
-    @betamax()
     def test_equality_and_hash(self):
         subreddit = self.r.get_subreddit(self.sr)
         hot = list(subreddit.get_hot())

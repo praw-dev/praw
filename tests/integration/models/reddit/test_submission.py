@@ -151,3 +151,15 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubmissionModeration.test_sticky__top'):
             Submission(self.reddit, '4s2idz').mod.sticky(bottom=False)
+
+    def test_suggested_sort(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_suggested_sort'):
+            Submission(self.reddit, '4s2idz').mod.suggested_sort(sort='random')
+
+    def test_suggested_sort__clear(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_suggested_sort__clear'):
+            Submission(self.reddit, '4s2idz').mod.suggested_sort(sort='blank')
