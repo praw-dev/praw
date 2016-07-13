@@ -121,3 +121,15 @@ class TestSubmissionModeration(IntegrationTest):
                 'TestSubmissionModeration.test_contest_mode__disable'):
             submission = Submission(self.reddit, '4s2idz')
             submission.mod.contest_mode(state=False)
+
+    def test_nsfw(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_nsfw'):
+            Submission(self.reddit, '4s2idz').mod.nsfw()
+
+    def test_sfw(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_sfw'):
+            Submission(self.reddit, '4s2idz').mod.sfw()

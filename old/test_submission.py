@@ -12,23 +12,6 @@ class SubmissionTest(PRAWTest):
         self.subreddit = self.r.get_subreddit(self.sr)
 
     @betamax()
-    def test_mark_as_nsfw__exception(self):
-        found = next(self.r.get_subreddit('all').get_top())
-        self.assertRaises(errors.ModeratorOrScopeRequired, found.mark_as_nsfw)
-
-    @betamax()
-    def test_mark_as_nsfw_and_umark_as_nsfw__as_author(self):
-        self.r.login(self.other_non_mod_name, self.other_non_mod_pswd,
-                     disable_warning=True)
-        submission = self.r.get_submission(submission_id="1nt8co")
-        self.assertEqual(self.r.user, submission.author)
-
-        submission.mark_as_nsfw()
-        self.assertTrue(submission.refresh().over_18)
-        submission.unmark_as_nsfw()
-        self.assertFalse(submission.refresh().over_18)
-
-    @betamax()
     def test_report(self):
         submission = next(self.subreddit.get_new())
         submission.report()
@@ -182,16 +165,6 @@ class SubmissionModeratorTest(PRAWTest):
         log = next(self.subreddit.get_mod_log(params={'uniq': 2}))
         self.assertEqual('unignorereports', log.action)
         self.assertEqual(submission.fullname, log.target_fullname)
-
-    @betamax()
-    def test_mark_as_nsfw_and_umark_as_nsfw__as_moderator(self):
-        submission = self.r.get_submission(submission_id="1nt8co")
-        self.assertNotEqual(self.r.user, submission.author)
-
-        submission.mark_as_nsfw()
-        self.assertTrue(submission.refresh().over_18)
-        submission.unmark_as_nsfw()
-        self.assertFalse(submission.refresh().over_18)
 
     @betamax()
     def test_set_suggested_sort(self):
