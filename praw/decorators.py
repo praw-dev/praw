@@ -33,11 +33,12 @@ from praw.decorator_helpers import (
     _make_func_args
 )
 from praw import errors
-from warnings import simplefilter, warn
+from warnings import filterwarnings, warn
 
 
-# Enable deprecation warnings
-simplefilter('default')
+# Enable deprecation warnings from this module
+filterwarnings('default', category=DeprecationWarning,
+               module='^praw\.decorators$')
 
 
 def alias_function(function, class_name):
