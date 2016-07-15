@@ -37,7 +37,8 @@ from praw.handlers import DefaultHandler
 from praw.helpers import chunk_sequence, normalize_url
 from praw.internal import (_image_type, _prepare_request,
                            _raise_redirect_exceptions,
-                           _raise_response_exceptions, _to_reddit_list)
+                           _raise_response_exceptions,
+                           _to_reddit_list, _warn_pyopenssl)
 from praw.settings import CONFIG
 from requests import Session
 from requests.compat import urljoin
@@ -306,6 +307,7 @@ class BaseReddit(object):
 
     RETRY_CODES = [502, 503, 504]
     update_checked = False
+    openssl_warned = False
 
     def __init__(self, user_agent, site_name=None, handler=None,
                  disable_update_check=False, **kwargs):
@@ -370,6 +372,11 @@ class BaseReddit(object):
                 and self.config.check_for_updates:
             update_check(__name__, __version__)
             BaseReddit.update_checked = True
+
+        # Warn against a potentially incompatible version of pyOpenSSL
+        if not BaseReddit.openssl_warned and self.config.validate_certs:
+            _warn_pyopenssl()
+            BaseReddit.openssl_warned = True
 
         # Initial values
         self._use_oauth = False

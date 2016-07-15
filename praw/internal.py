@@ -30,6 +30,13 @@ from praw.errors import (ClientException, HTTPException, Forbidden, NotFound,
                          InvalidSubreddit, OAuthException,
                          OAuthInsufficientScope, OAuthInvalidToken,
                          RedirectException)
+from warnings import warn
+try:
+    from OpenSSL import __version__ as _opensslversion
+    _opensslversionlist = [int(minor) if minor.isdigit() else minor
+                           for minor in _opensslversion.split('.')]
+except ImportError:
+    _opensslversionlist = [0, 15]
 
 MIN_PNG_SIZE = 67
 MIN_JPEG_SIZE = 128
@@ -251,3 +258,14 @@ def _to_reddit_list(arg):
         return six.text_type(arg)
     else:
         return ','.join(six.text_type(a) for a in arg)
+
+
+def _warn_pyopenssl():
+    """Warn the user against faulty versions of pyOpenSSL."""
+    if _opensslversionlist < [0, 15]:  # versions >= 0.15 are fine
+        warn(RuntimeWarning(
+            "pyOpenSSL {0} may be incompatible with praw if validating"
+            "ssl certificates, which is on by default.\nSee https://"
+            "github.com/praw/pull/625 for more information".format(
+                _opensslversion)
+        ))
