@@ -1,4 +1,5 @@
 from praw.models import Comment, Submission
+from prawcore import BadRequest
 import mock
 import pytest
 
@@ -36,6 +37,12 @@ class TestSubmission(IntegrationTest):
                 'TestSubmission.test_downvote'):
             Submission(self.reddit, '4b536p').downvote()
 
+    def test_duplicates(self):
+        with self.recorder.use_cassette(
+                'TestSubmission.test_duplicates'):
+            submission = Submission(self.reddit, 'avj2v')
+            assert len(list(submission.duplicates())) > 0
+
     @mock.patch('time.sleep', return_value=None)
     def test_edit(self, _):
         self.reddit.read_only = False
@@ -45,11 +52,14 @@ class TestSubmission(IntegrationTest):
             submission.edit('New text')
             assert submission.selftext == 'New text'
 
-    def test_duplicates(self):
+    def test_gild__no_creddits(self):
+        self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubmission.test_duplicates'):
-            submission = Submission(self.reddit, 'avj2v')
-            assert len(list(submission.duplicates())) > 0
+                'TestSubmission.test_gild__no_creddits'):
+            with pytest.raises(BadRequest) as excinfo:
+                Submission(self.reddit, '4b1tfm').gild()
+            reason = excinfo.value.response.json()['reason']
+            assert 'INSUFFICIENT_CREDDITS' == reason
 
     def test_hide(self):
         self.reddit.read_only = False
