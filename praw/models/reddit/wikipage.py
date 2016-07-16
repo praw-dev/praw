@@ -30,8 +30,14 @@ class WikiPage(RedditBase):
         """Return a string representation of the instance."""
         return '{}/{}'.format(self.subreddit, self.name)
 
+    def _fetch(self):
+        data = self._reddit.get(self._info_path())['data']
+        self.__dict__.update(data)
+        self._fetched = True
+
     def _info_path(self):
-        API_PATH['wiki_page'].format(subreddit=self.subreddit, page=self.name)
+        return API_PATH['wiki_page'].format(subreddit=self.subreddit,
+                                            page=self.name)
 
     def add_editor(self, username, _delete=False, *args, **kwargs):
         """Add an editor to this wiki page.
