@@ -10,7 +10,7 @@ from .mixins import MessageableMixin
 class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
     """A class representing the users of reddit."""
 
-    EQ_FIELD = 'name'
+    STR_FIELD = 'name'
 
     @classmethod
     def from_data(cls, reddit, data):

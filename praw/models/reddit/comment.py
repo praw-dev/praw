@@ -9,7 +9,7 @@ from .redditor import Redditor
 class Comment(RedditBase, InboxableMixin, UserContentMixin):
     """A class that represents a reddit comments."""
 
-    EQ_FIELD = 'id'
+    STR_FIELD = 'id'
 
     @property
     def is_root(self):

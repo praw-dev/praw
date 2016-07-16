@@ -8,12 +8,13 @@ from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .mixins import MessageableMixin
+from .wikipage import WikiPage
 
 
 class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     """A class for Subreddits."""
 
-    EQ_FIELD = 'display_name'
+    STR_FIELD = 'display_name'
     MESSAGE_PREFIX = '#'
 
     def __init__(self, reddit, display_name=None, _data=None):

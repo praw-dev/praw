@@ -15,7 +15,7 @@ from .subreddit import Subreddit
 class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     """A class for submissions to reddit."""
 
-    EQ_FIELD = 'id'
+    STR_FIELD = 'id'
 
     @staticmethod
     def id_from_url(url):
