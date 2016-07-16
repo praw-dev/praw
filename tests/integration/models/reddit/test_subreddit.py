@@ -271,17 +271,17 @@ class TestSubredditRelationships(IntegrationTest):
         with self.recorder.use_cassette('TestSubredditRelationships__muted'):
             self.add_remove(self.subreddit, self.REDDITOR, 'muted')
 
-    def test_wikibanned(self):
+    def test_wiki_banned(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships__wikibanned'):
-            self.add_remove(self.subreddit, self.REDDITOR, 'wikibanned')
+                'TestSubredditRelationships__wiki_banned'):
+            self.add_remove(self.subreddit.wiki, self.REDDITOR, 'banned')
 
-    def test_wikicontributor(self):
+    def test_wiki_contributors(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships__wikicontributor'):
-            self.add_remove(self.subreddit, self.REDDITOR, 'wikicontributor')
+                'TestSubredditRelationships__wiki_contributors'):
+            self.add_remove(self.subreddit.wiki, self.REDDITOR, 'contributors')
 
 
 class TestSubredditStreams(IntegrationTest):

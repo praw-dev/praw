@@ -34,13 +34,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         self.flair = SubredditFlair(self)
         self.mod = SubredditModeration(self)
         self.stream = SubredditStream(self)
+        self.wiki = SubredditWiki(self)
 
     def _info_path(self):
         return API_PATH['subreddit_about'].format(subreddit=self.display_name)
 
     def _prepare_relationships(self):
-        for relationship in ['banned', 'contributor', 'moderator', 'muted',
-                             'wikibanned', 'wikicontributor']:
+        for relationship in ['banned', 'contributor', 'moderator', 'muted']:
             setattr(self, relationship,
                     SubredditRelationship(self, relationship))
 
@@ -373,3 +373,17 @@ class SubredditStream(object):
 
         """
         return stream_generator(self.subreddit.new)
+
+
+class SubredditWiki(object):
+    """Provides a set of moderation functions to a Subreddit."""
+
+    def __init__(self, subreddit):
+        """Create a SubredditModeration instance.
+
+        :param subreddit: The subreddit to moderate.
+
+        """
+        self.banned = SubredditRelationship(subreddit, 'wikibanned')
+        self.contributors = SubredditRelationship(subreddit, 'wikicontributor')
+        self.subreddit = subreddit
