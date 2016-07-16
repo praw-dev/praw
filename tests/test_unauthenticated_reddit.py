@@ -231,6 +231,16 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertEqual(listing, submissions)
 
     @betamax()
+    def test_info_by_id_many_comma_delimited(self):
+        listing = list(self.r.get_subreddit(self.sr).get_new(limit=200))
+        listing = [submission.fullname for submission in listing]
+        submissions = self.r.get_info(thing_id=','.join(listing))
+
+        listing = set(listing)
+        submissions = set(submission.fullname for submission in submissions)
+        self.assertEqual(listing, submissions)
+
+    @betamax()
     def test_info_by_invalid_id(self):
         self.assertEqual(None, self.r.get_info(thing_id='INVALID'))
 
@@ -264,6 +274,12 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertRaises(TypeError, Reddit, user_agent=None)
         self.assertRaises(TypeError, Reddit, user_agent='')
         self.assertRaises(TypeError, Reddit, user_agent=1)
+
+    def test_require_single_arg_get_info(self):
+        # ensure that only thing_id or
+        # url can be used separately
+        self.assertRaises(TypeError, self.r.get_info,
+                          'fakeurl', 'fakeid')
 
     @betamax()
     def test_search(self):

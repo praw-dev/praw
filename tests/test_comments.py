@@ -180,8 +180,103 @@ class OAuthCommentTest(OAuthPRAWTest):
     def test_raise_invalidcomment_oauth(self):
         fullname = '{0}_{1}'.format(self.r.config.by_object[Comment],
                                     self.comment_deleted_id)
-        self.r.refresh_access_information(self.refresh_token['submit'])
         comment = self.r.get_info(thing_id=fullname)
+        self.r.refresh_access_information(self.refresh_token['submit'])
         self.assertRaises(errors.InvalidComment, comment.reply, 'test')
         invalid_comment = errors.InvalidComment()
         self.assertEqual(invalid_comment.ERROR_TYPE, str(invalid_comment))
+
+    @betamax()
+    def test_refresh_deleted_comment(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        submission = next(subreddit.get_new())
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        comment = submission.add_comment("Delete this")
+        self.r.refresh_access_information(self.refresh_token['edit'])
+        comment.delete()
+        self.r.refresh_access_information(self.refresh_token['read'])
+        self.assertWarnings(RuntimeWarning, comment.refresh)
+        comment.refresh()
+        self.assertEqual(comment.submission, submission)
+        self.assertEqual(comment.author, None)
+        self.assertEqual(comment.body, '[deleted]')
+
+    @betamax()
+    def test_refresh_removed_comment(self):
+        subreddit = self.r.get_subreddit(self.sr)
+        submission = next(subreddit.get_new())
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        comment = submission.add_comment("Remove this")
+        self.r.refresh_access_information(self.refresh_token['modposts'])
+        comment.remove()
+        self.r.refresh_access_information(self.other_refresh_token['read'])
+        self.assertWarnings(RuntimeWarning, comment.refresh)
+        comment.refresh()
+        self.assertEqual(comment.submission, submission)
+        self.assertEqual(comment.author, None)
+        self.assertEqual(comment.body, '[removed]')
+        self.assertEqual(comment.replies, [])
+
+    @betamax()
+    def test_deleted_comment_refresh_from_inbox(self):
+        root_url = self.reply_warnings_url
+        root_comment = self.r.get_submission(root_url).comments[0]
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        delete_needed = root_comment.reply('To be deleted then refreshed')
+        other_token = self.other_refresh_token['privatemessages']
+        self.r.refresh_access_information(other_token)
+        test_refresh = next(self.r.get_unread(limit=1))
+        self.r.refresh_access_information(self.refresh_token['edit'])
+        delete_needed.delete()
+        self.r.refresh_access_information(self.other_refresh_token['read'])
+        self.assertWarningsRegexp('was_comment', RuntimeWarning,
+                                  test_refresh.refresh)
+        self.assertTrue(hasattr(test_refresh, 'was_comment'))
+
+    @betamax()
+    def test_removed_comment_refresh_from_inbox(self):
+        root_url = self.reply_warnings_url
+        root_comment = self.r.get_submission(root_url).comments[0]
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        remove_needed = root_comment.reply('To be removed then refreshed')
+        other_token = self.other_refresh_token['privatemessages']
+        self.r.refresh_access_information(other_token)
+        test_refresh = next(self.r.get_unread(limit=1))
+        self.r.refresh_access_information(self.refresh_token['modposts'])
+        remove_needed.remove()
+        self.r.refresh_access_information(self.other_refresh_token['read'])
+        self.assertWarningsRegexp('was_comment', RuntimeWarning,
+                                  test_refresh.refresh)
+        self.assertTrue(hasattr(test_refresh, 'was_comment'))
+
+    @betamax()
+    def test_deleted_comment_replies_in_inbox(self):
+        root_url = self.reply_warnings_url
+        root_comment = self.r.get_submission(root_url).comments[0]
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        delete_needed = root_comment.reply('To be deleted')
+        other_token = self.other_refresh_token['privatemessages']
+        self.r.refresh_access_information(other_token)
+        test_replies = next(self.r.get_unread(limit=1))
+        self.r.refresh_access_information(self.refresh_token['edit'])
+        delete_needed.delete()
+        self.r.refresh_access_information(self.other_refresh_token['read'])
+        self.assertWarnings(RuntimeWarning, lambda x: x.replies,
+                            test_replies)
+        self.assertEqual(test_replies.replies, [])
+
+    @betamax()
+    def test_removed_comment_replies_in_inbox(self):
+        root_url = self.reply_warnings_url
+        root_comment = self.r.get_submission(root_url).comments[0]
+        self.r.refresh_access_information(self.refresh_token['submit'])
+        remove_needed = root_comment.reply('To be removed')
+        other_token = self.other_refresh_token['privatemessages']
+        self.r.refresh_access_information(other_token)
+        test_replies = next(self.r.get_unread(limit=1))
+        self.r.refresh_access_information(self.refresh_token['modposts'])
+        remove_needed.remove()
+        self.r.refresh_access_information(self.other_refresh_token['read'])
+        self.assertWarnings(RuntimeWarning, lambda x: x.replies,
+                            test_replies)
+        self.assertEqual(test_replies.replies, [])

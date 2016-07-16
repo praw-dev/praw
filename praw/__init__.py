@@ -900,51 +900,61 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_content(self.config['reddit_url'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='read')
-    def get_info(self, url=None, thing_id=None, limit=None):
+    @decorators.restrict_access(scope='read', generator_called=True)
+    def get_info(self, url=None, thing_id=None, *args, **kwargs):
         """Look up existing items by thing_id (fullname) or url.
 
-        :param url: The url to lookup.
+        :param url: A url to lookup.
         :param thing_id: A single thing_id, or a list of thing_ids. A thing_id
             can be any one of Comment (``t1_``), Link (``t3_``), or Subreddit
             (``t5_``) to lookup by fullname.
-        :param limit: The maximum number of Submissions to return when looking
-            up by url. When None, uses account default settings.
         :returns: When a single ``thing_id`` is provided, return the
             corresponding thing object, or ``None`` if not found. When a list
             of ``thing_id``s or a ``url`` is provided return a list of thing
-            objects (up to ``limit``). ``None`` is returned if any one of the
+            objects (up to ``limit``). ``None`` is returned if all of the
             thing_ids or the URL is invalid.
+
+        The additional parameters are passed into :meth:`.get_content` after
+        the `params` parameter is exctracted and used to update the dictionary
+        of url parameters this function sends. Note: the `url` parameter
+        cannot be altered.
+
+        Also, if using thing_id and the `limit` parameter passed to
+        :meth:`.get_content` is used to slice the list of retreived things
+        before returning it to the user, for when `limit > 100` and
+        `(limit % 100) > 0`, to ensure a maximum of `limit` thigns are
+        returned.
 
         """
         if bool(url) == bool(thing_id):
             raise TypeError('Only one of url or thing_id is required!')
-        elif thing_id and limit:
-            raise TypeError('Limit keyword is not applicable with thing_id.')
 
         # In these cases, we will have a list of things to return.
         # Otherwise, it will just be one item.
+        if isinstance(thing_id, six.string_types) and ',' in thing_id:
+            thing_id = thing_id.split(',')
         return_list = bool(url) or not isinstance(thing_id, six.string_types)
 
-        param_groups = []
         if url:
-            params = {'url': url}
-            if limit:
-                params['limit'] = limit
-            param_groups.append(params)
+            param_groups = [{'url': url}]
         else:
             if isinstance(thing_id, six.string_types):
                 thing_id = [thing_id]
-
             id_chunks = chunk_sequence(thing_id, 100)
-            for id_chunk in id_chunks:
-                params = {'id': ','.join(id_chunk)}
-                param_groups.append(params)
+            param_groups = [{'id': ','.join(id_chunk)} for
+                            id_chunk in id_chunks]
 
         items = []
+        update_with = kwargs.pop('params', {})
         for param_group in param_groups:
-            chunk = self.request_json(self.config['info'], params=param_group)
-            items.extend(chunk['data']['children'])
+            param_group.update(update_with)
+            kwargs['params'] = param_group
+            chunk = self.get_content(self.config['info'], *args, **kwargs)
+            items.extend(list(chunk))
+
+        # if using ids, manually set the limit
+        if kwargs.get('limit'):
+            items = items[:kwargs['limit']]
 
         if return_list:
             return items if items else None
