@@ -32,7 +32,7 @@ class Objector(object):
         """
         if isinstance(data, list):
             return [self.objectify(item) for item in data]
-        if 'kind' in data:
+        if 'kind' in data and data['kind'] in self.parsers:
             parser = self.parsers[data['kind']]
             return parser.parse(data['data'], self._reddit)
         elif 'json' in data and 'data' in data['json']:

@@ -388,3 +388,11 @@ class SubredditWiki(object):
         self.banned = SubredditRelationship(subreddit, 'wikibanned')
         self.contributors = SubredditRelationship(subreddit, 'wikicontributor')
         self.subreddit = subreddit
+
+    def __iter__(self):
+        """Iterate through the pages of the wiki."""
+        response = self.subreddit._reddit.get(
+            API_PATH['wiki_pages'].format(subreddit=str(self.subreddit)),
+            params={'unique': self.subreddit._reddit._next_unique})
+        for page_name in response['data']:
+            yield WikiPage(self.subreddit._reddit, self.subreddit, page_name)

@@ -116,8 +116,7 @@ class Reddit(object):
                     'UserList': models.RedditorList,
                     'modaction': models.ModAction,
                     'more': models.MoreComments,
-                    'wikipage': models.WikiPage,
-                    'wikipagelisting': models.WikiPageList}
+                    'wikipage': models.WikiPage}
         for kind, klass in iteritems(mappings):
             self._objector.register(kind, klass)
 

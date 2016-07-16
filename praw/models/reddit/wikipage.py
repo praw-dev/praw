@@ -1,37 +1,34 @@
 """Provide the WikiPage class."""
-
-from six import text_type
-
+from ...const import API_PATH
 from .base import RedditBase
 
 
 class WikiPage(RedditBase):
     """An individual WikiPage object."""
 
-    @classmethod
-    def from_api_response(cls, reddit_session, json_dict):
-        """Return an instance of the appropriate class from the json_dict."""
-        # The WikiPage response does not contain the necessary information
-        # in the JSON response to determine the name of the page nor the
-        # subreddit it belongs to. Thus we must extract this information
-        # from the request URL.
-        parts = reddit_session._request_url.split('/', 6)
-        subreddit = parts[4]
-        page = parts[6].split('.', 1)[0]
-        return cls(reddit_session, subreddit, page, json_dict=json_dict)
+    def __eq__(self, other):
+        """Return whether the other instance equals the current."""
+        return isinstance(other, self.__class__) and \
+            str(self).lower() == str(other).lower()
 
-    def __init__(self, reddit_session, subreddit=None, page=None,
-                 json_dict=None, fetch=False, **kwargs):
+    def __init__(self, reddit, subreddit, name, _data=None):
         """Construct an instance of the WikiPage object."""
-        if not subreddit and not page:
-            subreddit = json_dict['sr']
-            page = json_dict['page']
-        info_url = reddit_session.config['wiki_page'].format(
-            subreddit=text_type(subreddit), page=page)
-        super(WikiPage, self).__init__(reddit_session, json_dict, fetch,
-                                       info_url, **kwargs)
-        self.page = page
+        self.name = name
         self.subreddit = subreddit
+        super(WikiPage, self).__init__(reddit, _data)
+
+    def __repr__(self):
+        """Return an object initialization representation of the instance."""
+        return '{}(subreddit={!r}, name={!r})'.format(
+            self.__class__.__name__, str(self.subreddit), self.name)
+
+    def __str__(self):
+        """Return a string representation of the instance."""
+        return '{}/{}'.format(self.subreddit, self.page)
+
+    def _info_path(self):
+        API_PATH['wiki_page'].format(subreddit=str(self.subreddit),
+                                     page=self.name)
 
     def add_editor(self, username, _delete=False, *args, **kwargs):
         """Add an editor to this wiki page.
@@ -44,10 +41,10 @@ class WikiPage(RedditBase):
         :meth:`~praw.__init__.BaseReddit.request_json`.
         """
         url = self.reddit_session.config['wiki_page_editor']
-        url = url.format(subreddit=text_type(self.subreddit),
+        url = url.format(subreddit=str(self.subreddit),
                          method='del' if _delete else 'add')
 
-        data = {'page': self.page, 'username': text_type(username)}
+        data = {'page': self.name, 'username': str(username)}
         return self.reddit_session.request_json(url, data=data, *args,
                                                 **kwargs)
 
@@ -61,7 +58,7 @@ class WikiPage(RedditBase):
         :meth:`~praw.__init__.BaseReddit.request_json`
         """
         url = self.reddit_session.config['wiki_page_settings'].format(
-            subreddit=text_type(self.subreddit), page=self.page)
+            subreddit=str(self.subreddit), page=self.name)
         return self.reddit_session.request_json(url, *args, **kwargs)['data']
 
     def edit(self, *args, **kwargs):
@@ -71,7 +68,7 @@ class WikiPage(RedditBase):
         :meth:`.AuthenticatedReddit.edit_wiki_page` populating both the
         ``subreddit`` and ``page`` parameters.
         """
-        return self.subreddit.edit_wiki_page(self.page, *args, **kwargs)
+        return self.subreddit.edit_wiki_page(self.name, *args, **kwargs)
 
     def edit_settings(self, permlevel, listed, *args, **kwargs):
         """Edit the settings for this individual wiki page.
@@ -90,7 +87,7 @@ class WikiPage(RedditBase):
 
         """
         url = self.reddit_session.config['wiki_page_settings'].format(
-            subreddit=text_type(self.subreddit), page=self.page)
+            subreddit=self.subreddit, page=self.page)
         data = {'permlevel': permlevel,
                 'listed': 'on' if listed else 'off'}
 

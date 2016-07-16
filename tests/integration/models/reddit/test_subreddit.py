@@ -1,5 +1,6 @@
 """Test praw.models.subreddit."""
-from praw.models import Comment, Redditor, Submission, SubredditMessage
+from praw.models import (Comment, Redditor, Submission, SubredditMessage,
+                         WikiPage)
 import mock
 import pytest
 
@@ -286,8 +287,7 @@ class TestSubredditRelationships(IntegrationTest):
 
 class TestSubredditStreams(IntegrationTest):
     def test_comments(self):
-        with self.recorder.use_cassette(
-                'TestSubredditStreams__comments'):
+        with self.recorder.use_cassette('TestSubredditStreams__comments'):
             subreddit = self.reddit.subreddit(
                 pytest.placeholders.test_subreddit)
             generator = subreddit.stream.comments()
@@ -295,8 +295,21 @@ class TestSubredditStreams(IntegrationTest):
                 assert isinstance(next(generator), Comment)
 
     def test_submissions(self):
-        with self.recorder.use_cassette(
-                'TestSubredditStreams__submissions'):
+        with self.recorder.use_cassette('TestSubredditStreams__submissions'):
             generator = self.reddit.subreddit('all').stream.submissions()
             for i in range(300):
                 assert isinstance(next(generator), Submission)
+
+
+class TestSubredditWiki(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test__iter(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditWiki__iter'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            count = 0
+            for wikipage in subreddit.wiki:
+                assert isinstance(wikipage, WikiPage)
+                count += 1
+            assert count > 0
