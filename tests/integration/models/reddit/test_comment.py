@@ -1,4 +1,5 @@
 from praw.models import Comment
+from prawcore import BadRequest
 import mock
 import pytest
 
@@ -60,6 +61,15 @@ class TestComment(IntegrationTest):
             comment = Comment(self.reddit, 'd1616q2')
             comment.edit('New text')
             assert comment.body == 'New text'
+
+    def test_gild__no_creddits(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestComment.test_gild__no_creddits'):
+            with pytest.raises(BadRequest) as excinfo:
+                Comment(self.reddit, 'd1616q2').gild()
+            reason = excinfo.value.response.json()['reason']
+            assert 'INSUFFICIENT_CREDDITS' == reason
 
     @mock.patch('time.sleep', return_value=None)
     def test_mark_read(self, _):
