@@ -246,6 +246,19 @@ class SubredditModeration(object):
         self.subreddit._reddit.post(API_PATH['ignore_reports'],
                                     data={'id': thing.fullname})
 
+    def inbox(self, **generator_kwargs):
+        """Return a ListingGenerator for moderator messages.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        See ``unread`` for unread moderator messages.
+
+        """
+        return ListingGenerator(
+            self.subreddit._reddit, API_PATH['moderator_messages'].format(
+                subreddit=str(self.subreddit)), **generator_kwargs)
+
     def remove(self, thing, spam=False):
         """Remove a Comment or Submission.
 
@@ -276,6 +289,19 @@ class SubredditModeration(object):
         """
         self.subreddit._reddit.post(API_PATH['unignore_reports'],
                                     data={'id': thing.fullname})
+
+    def unread(self, **generator_kwargs):
+        """Return a ListingGenerator for unread moderator messages.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        See ``inbox`` for all messages.
+
+        """
+        return ListingGenerator(
+            self.subreddit._reddit, API_PATH['moderator_unread'].format(
+                subreddit=str(self.subreddit)), **generator_kwargs)
 
 
 class SubredditRelationship(object):

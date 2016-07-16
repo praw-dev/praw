@@ -198,12 +198,6 @@ class ModeratorSubredditTest(PRAWTest):
         self.assertTrue(list(self.subreddit.get_unmoderated()))
 
     @betamax()
-    def test_mod_mail_send(self):
-        subject = 'Unique message: AAAA'
-        self.r.get_subreddit(self.sr).send_message(subject, 'Content')
-        self.first(self.r.get_mod_mail(), lambda msg: msg.subject == subject)
-
-    @betamax()
     def test_moderator(self):
         def add_callback():
             self.r.login(self.other_user_name, self.other_user_pswd,
@@ -351,37 +345,6 @@ class OAuthSubredditTest(OAuthPRAWTest):
         subreddit.refresh()
         self.assertFalse(subreddit.user_is_moderator)
         self.assertFalse(subreddit.user_is_contributor)
-
-    @betamax()
-    def test_mute_unmute_oauth(self):
-        self.r.refresh_access_information(
-            self.refresh_token['modcontributors'])
-        subreddit = self.r.get_subreddit(self.sr)
-
-        def user_is_muted(username, cachebuster):
-            self.r.refresh_access_information(self.refresh_token['read'])
-            mutes = list(subreddit.get_muted(params={'uniq': cachebuster}))
-            self.r.refresh_access_information(
-                self.refresh_token['modcontributors'])
-            return any(mute.name == username for mute in mutes)
-
-        user = self.r.get_redditor(self.other_user_name)
-        subreddit.add_mute(user)  # by Redditor obj
-        self.assertTrue(user_is_muted(self.other_user_name, 1))
-        subreddit.remove_mute(user.name)  # by string
-        self.assertFalse(user_is_muted(self.other_user_name, 2))
-
-        self.r.refresh_access_information(
-            self.refresh_token['privatemessages'])
-        modmail = next(subreddit.get_mod_mail())
-        self.r.refresh_access_information(
-            self.refresh_token['modcontributors'])
-
-        sender = modmail.author.name
-        modmail.mute_modmail_author()
-        self.assertTrue(user_is_muted(sender, 3))
-        modmail.unmute_modmail_author()
-        self.assertFalse(user_is_muted(sender, 4))
 
     @betamax()
     def test_raise_invalidsubreddit_oauth(self):

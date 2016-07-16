@@ -340,21 +340,6 @@ class ModOnlyMixin(AuthenticatedReddit):
         url = self.config['edited'].format(subreddit=six.text_type(subreddit))
         return self.get_content(url, *args, **kwargs)
 
-    def get_mod_mail(self, subreddit='mod', *args, **kwargs):
-        """Return a get_content generator for moderator messages.
-
-        :param subreddit: Either a Subreddit object or the name of the
-            subreddit to return the moderator mail from. Defaults to `mod`
-            which includes items for all the subreddits you moderate.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        url = self.config['mod_mail'].format(
-            subreddit=six.text_type(subreddit))
-        return self.get_content(url, *args, **kwargs)
-
     def get_mod_queue(self, subreddit='mod', *args, **kwargs):
         """Return a get_content generator for the moderator queue.
 

@@ -1,5 +1,5 @@
 """Test praw.models.subreddit."""
-from praw.models import Comment, Redditor, Submission
+from praw.models import Comment, Redditor, Submission, SubredditMessage
 import mock
 import pytest
 
@@ -188,6 +188,16 @@ class TestSubredditModeration(IntegrationTest):
             submission = self.reddit.submission('31ybt2')
             self.subreddit.mod.ignore_reports(submission)
 
+    def test_inbox(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_inbox'):
+            count = 0
+            for item in self.reddit.subreddit('all').mod.inbox():
+                assert isinstance(item, SubredditMessage)
+                count += 1
+            assert count == 100
+
     def test_remove(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditModeration.test_remove'):
@@ -207,6 +217,16 @@ class TestSubredditModeration(IntegrationTest):
                 'TestSubredditModeration.test_unignore_reports'):
             submission = self.reddit.submission('31ybt2')
             self.subreddit.mod.unignore_reports(submission)
+
+    def test_unread(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_unread'):
+            count = 0
+            for item in self.reddit.subreddit('all').mod.unread():
+                assert isinstance(item, SubredditMessage)
+                count += 1
+            assert count > 0
 
 
 class TestSubredditRelationships(IntegrationTest):
