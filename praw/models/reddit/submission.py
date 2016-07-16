@@ -123,7 +123,7 @@ class SubmissionFlair(object):
     def choices(self):
         """Return list of available flair choices."""
         url = API_PATH['flairselector'].format(
-            subreddit=str(self.submission.subreddit))
+            subreddit=self.submission.subreddit)
         return self.submission._reddit.post(url, data={
             'link': self.submission.fullname})['choices']
 
@@ -140,7 +140,7 @@ class SubmissionFlair(object):
         data = {'flair_template_id': flair_template_id,
                 'link': self.submission.fullname, 'text': text}
         url = API_PATH['select_flair'].format(
-            subreddit=str(self.submission.subreddit))
+            subreddit=self.submission.subreddit)
         return self.submission._reddit.post(url, data=data)
 
 

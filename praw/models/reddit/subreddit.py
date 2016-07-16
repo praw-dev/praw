@@ -30,7 +30,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         super(Subreddit, self).__init__(reddit, _data)
         if display_name:
             self.display_name = display_name
-        self._path = API_PATH['subreddit'].format(subreddit=self.display_name)
+        self._path = API_PATH['subreddit'].format(subreddit=self)
         self._prepare_relationships()
         self.flair = SubredditFlair(self)
         self.mod = SubredditModeration(self)
@@ -38,7 +38,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         self.wiki = SubredditWiki(self)
 
     def _info_path(self):
-        return API_PATH['subreddit_about'].format(subreddit=self.display_name)
+        return API_PATH['subreddit_about'].format(subreddit=self)
 
     def _prepare_relationships(self):
         for relationship in ['banned', 'contributor', 'moderator', 'muted']:
@@ -48,7 +48,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     def random(self):
         """Return a random Submission."""
         from .submission import Submission
-        url = API_PATH['subreddit_random'].format(subreddit=self.display_name)
+        url = API_PATH['subreddit_random'].format(subreddit=self)
         try:
             self._reddit.get(url, params={'unique': self._reddit._next_unique})
         except Redirect as redirect:
@@ -76,7 +76,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         params = generator_kwargs.setdefault('params', {})
         params.update({'q': query, 'restrict_sr': True, 'sort': sort,
                        'syntax': syntax, 't': time_filter})
-        url = API_PATH['search'].format(subreddit=self.display_name)
+        url = API_PATH['search'].format(subreddit=self)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
     def submit(self, title, selftext=None, url=None, resubmit=True,
@@ -122,7 +122,7 @@ class SubredditFlair(object):
 
     def __iter__(self):
         """Iterate through the Redditors and their associated flair."""
-        url = API_PATH['flairlist'].format(subreddit=str(self.subreddit))
+        url = API_PATH['flairlist'].format(subreddit=self.subreddit)
         params = {'unique': self.subreddit._reddit._next_unique}
         for item in ListingGenerator(self.subreddit._reddit, url, None,
                                      params=params):
@@ -187,7 +187,7 @@ class SubredditFlair(object):
             lines.append('"{}","{}","{}"'.format(*fmt_data))
 
         response = []
-        url = API_PATH['flaircsv'].format(subreddit=str(self.subreddit))
+        url = API_PATH['flaircsv'].format(subreddit=self.subreddit)
         while len(lines):
             data = {'flair_csv': '\n'.join(lines[:100])}
             response.extend(self.subreddit._reddit.post(url, data=data))
@@ -258,7 +258,7 @@ class SubredditModeration(object):
         """
         return ListingGenerator(
             self.subreddit._reddit, API_PATH['moderator_messages'].format(
-                subreddit=str(self.subreddit)), **generator_kwargs)
+                subreddit=self.subreddit), **generator_kwargs)
 
     def remove(self, thing, spam=False):
         """Remove a Comment or Submission.
@@ -302,7 +302,7 @@ class SubredditModeration(object):
         """
         return ListingGenerator(
             self.subreddit._reddit, API_PATH['moderator_unread'].format(
-                subreddit=str(self.subreddit)), **generator_kwargs)
+                subreddit=self.subreddit), **generator_kwargs)
 
 
 class SubredditRelationship(object):
@@ -320,7 +320,7 @@ class SubredditRelationship(object):
 
     def __iter__(self):
         """Iterate through the Redditors belonging to this relationship."""
-        url = API_PATH[self.relationship].format(subreddit=str(self.subreddit))
+        url = API_PATH[self.relationship].format(subreddit=self.subreddit)
         params = {'unique': self.subreddit._reddit._next_unique}
         for item in self.subreddit._reddit.get(url, params=params):
             yield item
@@ -392,7 +392,7 @@ class SubredditWiki(object):
     def __iter__(self):
         """Iterate through the pages of the wiki."""
         response = self.subreddit._reddit.get(
-            API_PATH['wiki_pages'].format(subreddit=str(self.subreddit)),
+            API_PATH['wiki_pages'].format(subreddit=self.subreddit),
             params={'unique': self.subreddit._reddit._next_unique})
         for page_name in response['data']:
             yield WikiPage(self.subreddit._reddit, self.subreddit, page_name)

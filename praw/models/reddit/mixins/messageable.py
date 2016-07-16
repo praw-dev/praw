@@ -1,6 +1,4 @@
 """Provide the MessageableMixin class."""
-from six import text_type
-
 from ....const import API_PATH
 
 
@@ -22,8 +20,8 @@ class MessageableMixin(object):
 
         """
         data = {'subject': subject, 'text': message,
-                'to': '{}{}'.format(getattr(self.__class__, 'MESSAGE_PREFIX',
-                                            ''), text_type(self))}
+                'to': '{}{}'.format(getattr(
+                    self.__class__, 'MESSAGE_PREFIX', ''), self)}
         if from_subreddit:
-            data['from_sr'] = text_type(from_subreddit)
+            data['from_sr'] = str(from_subreddit)
         return self._reddit.post(API_PATH['compose'], data=data)

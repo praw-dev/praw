@@ -20,15 +20,14 @@ class WikiPage(RedditBase):
     def __repr__(self):
         """Return an object initialization representation of the instance."""
         return '{}(subreddit={!r}, name={!r})'.format(
-            self.__class__.__name__, str(self.subreddit), self.name)
+            self.__class__.__name__, self.subreddit, self.name)
 
     def __str__(self):
         """Return a string representation of the instance."""
         return '{}/{}'.format(self.subreddit, self.page)
 
     def _info_path(self):
-        API_PATH['wiki_page'].format(subreddit=str(self.subreddit),
-                                     page=self.name)
+        API_PATH['wiki_page'].format(subreddit=self.subreddit, page=self.name)
 
     def add_editor(self, username, _delete=False, *args, **kwargs):
         """Add an editor to this wiki page.
@@ -41,7 +40,7 @@ class WikiPage(RedditBase):
         :meth:`~praw.__init__.BaseReddit.request_json`.
         """
         url = self.reddit_session.config['wiki_page_editor']
-        url = url.format(subreddit=str(self.subreddit),
+        url = url.format(subreddit=self.subreddit,
                          method='del' if _delete else 'add')
 
         data = {'page': self.name, 'username': str(username)}
@@ -58,7 +57,7 @@ class WikiPage(RedditBase):
         :meth:`~praw.__init__.BaseReddit.request_json`
         """
         url = self.reddit_session.config['wiki_page_settings'].format(
-            subreddit=str(self.subreddit), page=self.name)
+            subreddit=self.subreddit, page=self.name)
         return self.reddit_session.request_json(url, *args, **kwargs)['data']
 
     def edit(self, *args, **kwargs):

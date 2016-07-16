@@ -1,8 +1,5 @@
 """Provide the Multireddit class."""
-
 from json import dumps
-
-from six import text_type
 
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
@@ -36,7 +33,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
     def __init__(self, reddit, author=None, name=None, json_dict=None,
                  fetch=False, **kwargs):
         """Construct an instance of the Multireddit object."""
-        author = text_type(author) if author \
+        author = str(author) if author \
             else json_dict['path'].split('/')[-3]
         if not name:
             name = json_dict['path'].split('/')[-1]
@@ -59,7 +56,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
         :meth:`~praw.__init__.BaseReddit.request_json`.
 
         """
-        subreddit = text_type(subreddit)
+        subreddit = str(subreddit)
         url = self._reddit.config['multireddit_add'].format(
             user=self._author, multi=self.name, subreddit=subreddit)
         method = 'DELETE' if _delete else 'PUT'
