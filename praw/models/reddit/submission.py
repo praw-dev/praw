@@ -94,17 +94,6 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         """Hide Submission."""
         self._reddit.post(API_PATH['hide'], data={'id': self.fullname})
 
-    def set_flair(self, *args, **kwargs):
-        """Set flair for this submission.
-
-        Convenience function that utilizes :meth:`.ModFlairMixin.set_flair`
-        populating both the `subreddit` and `item` parameters.
-
-        :returns: The json response from the server.
-
-        """
-        return self.subreddit.set_flair(self, *args, **kwargs)
-
     @property
     def shortlink(self):
         """Return a shortlink to the submission.
@@ -137,6 +126,22 @@ class SubmissionFlair(object):
             subreddit=str(self.submission.subreddit))
         return self.submission._reddit.post(url, data={
             'link': self.submission.fullname})['choices']
+
+    def select(self, flair_template_id, text=None):
+        """Select flair for submission.
+
+        :param flair_template_id: The flair template to select. The possible
+            ``flair_template_id`` values can be discovered through ``choices``.
+
+        :param text: If the template's ``flair_text_editable`` value is True,
+            this value will set a custom text (default: None).
+
+        """
+        data = {'flair_template_id': flair_template_id,
+                'link': self.submission.fullname, 'text': text}
+        url = API_PATH['select_flair'].format(
+            subreddit=str(self.submission.subreddit))
+        return self.submission._reddit.post(url, data=data)
 
 
 class SubmissionModeration(object):

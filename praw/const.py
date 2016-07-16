@@ -83,7 +83,7 @@ API_PATH = {
     'save':                   'api/save/',
     'saved':                  'saved/',
     'search':                 'r/{subreddit}/search/',
-    'select_flair':           'api/selectflair/',
+    'select_flair':           'r/{subreddit}/api/selectflair/',
     'sent':                   'message/sent/',
     'sticky':                 'r/{subreddit}/about/sticky/',
     'sticky_submission':      'api/set_subreddit_sticky/',

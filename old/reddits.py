@@ -189,33 +189,4 @@ r"""
                 'r': six.text_type(subreddit),
                 'reason': reason}
         return self.request_json(self.config['wiki_edit'], data=data)
-
-    def select_flair(self, item, flair_template_id='', flair_text=''):
-        Select user flair or link flair on subreddits.
-
-        This can only be used for assigning your own name flair or link flair
-        on your own submissions. For assigning other's flairs using moderator
-        access, see :meth:`~praw.__init__.ModFlairMixin.set_flair`.
-
-        :param item: A string, Subreddit object (for user flair), or
-            Submission object (for link flair). If ``item`` is a string it
-            will be treated as the name of a Subreddit.
-        :param flair_template_id: The id for the desired flair template. Use
-            the :meth:`~praw.models.Subreddit.get_flair_choices` and
-            :meth:`~praw.models.Submission.get_flair_choices` methods to find
-            the ids for the available user and link flair choices.
-        :param flair_text: A string containing the custom flair text.
-            Used on subreddits that allow it.
-
-        :returns: The json response from the server.
-        data = {'flair_template_id': flair_template_id or '',
-                'text':              flair_text or ''}
-        if isinstance(item, models.Submission):  # Link flair
-            data['link'] = item.fullname
-        else:  # User flair
-
-            data['name'] = self.user.name
-            data['r'] = six.text_type(item)
-        response = self.request_json(self.config['select_flair'], data=data)
-        return response
 """
