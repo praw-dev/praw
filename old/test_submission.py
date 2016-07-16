@@ -32,11 +32,6 @@ class SubmissionTest(PRAWTest):
         self.assertFalse(submission in self.r.user.get_saved(params={'u': 1}))
 
     @betamax()
-    def test_short_link(self):
-        submission = next(self.r.get_new())
-        self.assertTrue(submission.id in submission.short_link)
-
-    @betamax()
     def test_submission_delete(self):
         submission = next(self.r.user.get_submitted())
         self.assertEqual(self.r.user, submission.author)

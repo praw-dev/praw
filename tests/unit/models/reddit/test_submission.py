@@ -92,3 +92,7 @@ class TestSubmission(UnitTest):
     def test_str(self):
         submission = Submission(self.reddit, _data={'id': 'dummy'})
         assert str(submission) == 'dummy'
+
+    def test_shortlink(self):
+        submission = Submission(self.reddit, _data={'id': 'dummy'})
+        assert submission.shortlink == 'https://redd.it/dummy'

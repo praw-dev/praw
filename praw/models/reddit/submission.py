@@ -117,10 +117,10 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         return self.subreddit.set_flair(self, *args, **kwargs)
 
     @property
-    def short_link(self):
-        """Return a short link to the submission.
+    def shortlink(self):
+        """Return a shortlink to the submission.
 
-        For example http://redd.it/eorhm is a short link for
+        For example http://redd.it/eorhm is a shortlink for
         https://www.reddit.com/r/announcements/comments/eorhm/reddit_30_less_typing/.
 
         """
