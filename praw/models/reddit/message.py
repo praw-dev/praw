@@ -11,11 +11,6 @@ class Message(RedditBase, InboxableMixin):
         """Construct an instance of the Message object."""
         super(Message, self).__init__(reddit, _data)
 
-    def collapse(self):
-        """Collapse a private message or modmail."""
-        url = self.reddit_session.config['collapse_message']
-        self.reddit_session.request_json(url, data={'id': self.name})
-
     def mute_modmail_author(self, _unmute=False):
         """Mute the sender of this modmail message.
 
@@ -26,11 +21,6 @@ class Message(RedditBase, InboxableMixin):
         path = 'unmute_sender' if _unmute else 'mute_sender'
         return self.reddit_session.request_json(
             self.reddit_session.config[path], data={'id': self.fullname})
-
-    def uncollapse(self):
-        """Uncollapse a private message or modmail."""
-        url = self.reddit_session.config['uncollapse_message']
-        self.reddit_session.request_json(url, data={'id': self.name})
 
     def unmute_modmail_author(self):
         """Unmute the sender of this modmail message."""

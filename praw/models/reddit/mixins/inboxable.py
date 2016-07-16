@@ -7,7 +7,7 @@ class InboxableMixin(object):
     """Interface for RedditBase classes that originate from the inbox."""
 
     def block(self):
-        """Block the user who sent the message.
+        """Block the user who sent the item.
 
         :returns: The json response from the server.
 
@@ -18,9 +18,9 @@ class InboxableMixin(object):
         return self._reddit.post(API_PATH['block'], data={'id': self.fullname})
 
     def mark_read(self):
-        """Mark item as read."""
+        """Mark the item as read."""
         self._reddit.inbox.mark_read([self])
 
     def mark_unread(self):
-        """Mark item as unread."""
+        """Mark the item as unread."""
         self._reddit.inbox.mark_unread([self])
