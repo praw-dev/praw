@@ -4,11 +4,10 @@ from json import dumps
 from ...const import API_PATH
 from ..listing.mixins import RedditorListingMixin
 from .base import RedditBase
-from .mixins import GildableMixin, MessageableMixin
+from .mixins import MessageableMixin
 
 
-class Redditor(RedditBase, GildableMixin, MessageableMixin,
-               RedditorListingMixin):
+class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
     """A class representing the users of reddit."""
 
     EQ_FIELD = 'name'
@@ -65,6 +64,18 @@ class Redditor(RedditBase, GildableMixin, MessageableMixin,
 
         """
         return self._reddit.get(API_PATH['friend_v1'].format(user=self.name))
+
+    def gild(self, months=1):
+        """Gild the Redditor.
+
+        :param months: Specifies the number of months to gild up to 36
+            (default: 1).
+
+        """
+        if months < 1 or months > 36:
+            raise TypeError('months must be between 1 and 36')
+        self._reddit.post(API_PATH['gild_user'].format(username=str(self)),
+                          data={'months': months})
 
     def unblock(self):
         """Unblock the Redditor.
