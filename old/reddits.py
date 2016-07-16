@@ -190,20 +190,6 @@ r"""
                 'reason': reason}
         return self.request_json(self.config['wiki_edit'], data=data)
 
-    def get_flair_choices(self, subreddit, link=None):
-        Return available flair choices and current flair.
-
-        :param link: If link is given, return the flair options for this
-            submission. Not normally given directly, but instead set by calling
-            the flair_choices method for Submission objects.
-            Use the default for the session's user.
-
-        :returns: A dictionary with 2 keys. 'current' containing current flair
-            settings for the authenticated user and 'choices' containing a list
-            of possible flair choices.
-        data = {'r':  six.text_type(subreddit), 'link': link}
-        return self.request_json(self.config['flairselector'], data=data)
-
     def select_flair(self, item, flair_template_id='', flair_text=''):
         Select user flair or link flair on subreddits.
 

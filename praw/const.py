@@ -35,7 +35,7 @@ API_PATH = {
     'flairconfig':            'api/flairconfig/',
     'flaircsv':               'r/{subreddit}/api/flaircsv/',
     'flairlist':              'r/{subreddit}/api/flairlist/',
-    'flairselector':          'api/flairselector/',
+    'flairselector':          'r/{subreddit}/api/flairselector/',
     'flairtemplate':          'api/flairtemplate/',
     'friend':                 'api/friend/',
     'friend_v1':              'api/v1/me/friends/{user}',

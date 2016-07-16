@@ -107,6 +107,24 @@ class TestSubmission(IntegrationTest):
             Submission(self.reddit, '4b536p').upvote()
 
 
+class TestSubmissionFlair(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_choices(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubmissionFlair.test_choices'):
+            submission = Submission(self.reddit, '4t4t2h')
+            expected = [
+                {'flair_text': 'SATISFIED',
+                 'flair_template_id': '680f43b8-1fec-11e3-80d1-12313b0b80bc',
+                 'flair_text_editable': False, 'flair_position': 'left',
+                 'flair_css_class': ''},
+                {'flair_text': 'STATS',
+                 'flair_template_id': '16cabd0a-a68d-11e5-8349-0e8ff96e6679',
+                 'flair_text_editable': False, 'flair_position': 'left',
+                 'flair_css_class': ''}]
+            assert expected == submission.flair.choices()
+
+
 class TestSubmissionModeration(IntegrationTest):
     def test_contest_mode(self):
         self.reddit.read_only = False

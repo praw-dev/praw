@@ -65,6 +65,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             self.id = id  # pylint: disable=invalid-name
         elif url is not None:
             self.id = self.id_from_url(url)
+        self.flair = SubmissionFlair(self)
         self.mod = SubmissionModeration(self)
 
     def __setattr__(self, attribute, value):
@@ -88,18 +89,6 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
     def _info_path(self):
         return API_PATH['submission'].format(id=self.id)
-
-    def get_flair_choices(self, *args, **kwargs):
-        """Return available link flair choices and current flair.
-
-        Convenience function for
-        :meth:`~.AuthenticatedReddit.get_flair_choices` populating both the
-        `subreddit` and `link` parameters.
-
-        :returns: The json response from the server.
-
-        """
-        return self.subreddit.get_flair_choices(self.fullname, *args, **kwargs)
 
     def hide(self):
         """Hide Submission."""
@@ -131,8 +120,27 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         self._reddit.post(API_PATH['unhide'], data={'id': self.fullname})
 
 
+class SubmissionFlair(object):
+    """Provide a set of functions pertaining to Submission flair."""
+
+    def __init__(self, submission):
+        """Create a SubmissionFlair instance.
+
+        :param submission: The submission associated with the flair functions.
+
+        """
+        self.submission = submission
+
+    def choices(self):
+        """Return list of available flair choices."""
+        url = API_PATH['flairselector'].format(
+            subreddit=str(self.submission.subreddit))
+        return self.submission._reddit.post(url, data={
+            'link': self.submission.fullname})['choices']
+
+
 class SubmissionModeration(object):
-    """Provide a set of function pertaining to Submission moderation."""
+    """Provide a set of functions pertaining to Submission moderation."""
 
     def __init__(self, submission):
         """Create a SubmissionModeration instance.
