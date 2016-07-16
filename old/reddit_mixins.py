@@ -736,45 +736,6 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         return self.get_content(self.config['mentions'], *args, **kwargs)
 
 
-class ReportMixin(AuthenticatedReddit):
-    """Adds methods requiring the 'report' scope (or login).
-
-    You should **not** directly instantiate instances of this class. Use
-    :class:`.Reddit` instead.
-
-    """
-
-    def hide(self, thing_id, _unhide=False):
-        """Hide up to 50 objects in the context of the logged in user.
-
-        :param thing_id: A single fullname or list of fullnames,
-            representing objects which will be hidden.
-        :param _unhide: If True, unhide the object(s) instead.  Use
-            :meth:`~praw.__init__.ReportMixin.unhide` rather than setting this
-            manually.
-
-        :returns: The json response from the server.
-
-        """
-        if not isinstance(thing_id, six.string_types):
-            thing_id = ','.join(thing_id)
-        method = 'unhide' if _unhide else 'hide'
-        data = {'id': thing_id,
-                'executed': method}
-        return self.request_json(self.config[method], data=data)
-
-    def unhide(self, thing_id):
-        """Unhide up to 50 objects in the context of the logged in user.
-
-        :param thing_id: A single fullname or list of fullnames,
-            representing objects which will be unhidden.
-
-        :returns: The json response from the server.
-
-        """
-        return self.hide(thing_id, _unhide=True)
-
-
 class SubscribeMixin(AuthenticatedReddit):
     """Adds methods requiring the 'subscribe' scope (or login).
 

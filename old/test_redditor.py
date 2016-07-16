@@ -32,20 +32,6 @@ class RedditorTest(PRAWTest):
         self.assertEqual(self.other_user_name, self.r.user.name)
 
     @betamax()
-    def test_get_hidden(self):
-        submission = next(self.r.user.get_hidden())
-        submission.hide()
-
-        self.delay_for_listing_update()
-        self.assertEqual(submission,
-                         next(self.r.user.get_hidden(params={'u': 1})))
-        submission.unhide()
-
-        self.delay_for_listing_update()
-        self.assertNotEqual(submission,
-                            next(self.r.user.get_hidden(params={'u': 2})))
-
-    @betamax()
     def test_get_redditor(self):
         self.assertEqual(self.other_user_id, self.other_user.id)
 

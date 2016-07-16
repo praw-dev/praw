@@ -52,14 +52,6 @@ class SubmissionTest(PRAWTest):
         self.assertEqual(content, found.edit(content).selftext)
 
     @betamax()
-    def test_submission_hide_and_unhide(self):
-        submission = next(self.r.user.get_submitted())
-        submission.hide()
-        self.assertTrue(submission.refresh().hidden)
-        submission.unhide()
-        self.assertFalse(submission.refresh().hidden)
-
-    @betamax()
     def test_submission_refresh(self):
         subreddit = self.r.get_subreddit(self.sr)
         submission = next(subreddit.get_top())
@@ -200,19 +192,6 @@ class OAuthSubmissionTest(OAuthPRAWTest):
         self.r.refresh_access_information(self.refresh_token['read'])
         submission = Submission.from_url(self.r, url)
         self.assertTrue(submission.num_comments != 0)
-
-    @betamax()
-    def test_hide_oauth(self):
-        # Without the "read" scope, submission.hidden is always False.
-        self.r.refresh_access_information(self.refresh_token['read+report'])
-        submission = self.r.get_submission(
-            submission_id=self.submission_hide_id)
-
-        self.assertFalse(submission.hidden)
-        submission.hide()
-        self.assertTrue(submission.refresh().hidden)
-        submission.unhide()
-        self.assertFalse(submission.refresh().hidden)
 
     @betamax()
     def test_raise_invalidsubmission_oauth(self):
