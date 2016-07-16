@@ -11,6 +11,10 @@ class WikiPage(RedditBase):
         return isinstance(other, self.__class__) and \
             str(self).lower() == str(other).lower()
 
+    def __hash__(self):
+        """Return the hash of the current instance."""
+        return super(WikiPage, self).__hash__()
+
     def __init__(self, reddit, subreddit, name, _data=None):
         """Construct an instance of the WikiPage object."""
         self.name = name
@@ -24,7 +28,7 @@ class WikiPage(RedditBase):
 
     def __str__(self):
         """Return a string representation of the instance."""
-        return '{}/{}'.format(self.subreddit, self.page)
+        return '{}/{}'.format(self.subreddit, self.name)
 
     def _info_path(self):
         API_PATH['wiki_page'].format(subreddit=self.subreddit, page=self.name)
