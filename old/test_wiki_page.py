@@ -1,6 +1,4 @@
 """Tests for WikiPage class."""
-
-from six import text_type
 from .helper import OAuthPRAWTest, PRAWTest, betamax
 
 
@@ -38,19 +36,6 @@ class WikiPageTests(PRAWTest):
         editors = page.get_settings()['editors']
         self.assertTrue(any(
             user.name.lower() == self.un.lower() for user in editors))
-
-    @betamax()
-    def test_get_wiki_page(self):
-        self.assertEqual(
-            '{0}:index'.format(self.sr),
-            text_type(self.r.get_wiki_page(self.sr, 'index')))
-
-    @betamax()
-    def test_get_wiki_pages(self):
-        result = self.subreddit.get_wiki_pages()
-        self.assertTrue(result)
-        tmp = self.subreddit.get_wiki_page(result[0].page).content_md
-        self.assertEqual(result[0].content_md, tmp)
 
     @betamax()
     def test_revision_by(self):

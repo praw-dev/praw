@@ -379,6 +379,10 @@ class SubredditStream(object):
 class SubredditWiki(object):
     """Provides a set of moderation functions to a Subreddit."""
 
+    def __getitem__(self, page_name):
+        """Lazily return the WikiPage for the subreddit named ``page_name``."""
+        return WikiPage(self.subreddit._reddit, self.subreddit, page_name)
+
     def __init__(self, subreddit):
         """Create a SubredditModeration instance.
 

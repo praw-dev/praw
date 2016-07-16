@@ -1,7 +1,7 @@
 import pickle
 
 import pytest
-from praw.models import Subreddit
+from praw.models import Subreddit, WikiPage
 
 from ... import UnitTest
 
@@ -79,3 +79,11 @@ class TestSubredit(UnitTest):
         with pytest.raises(TypeError) as excinfo:
             subreddit.submit('Cool title', selftext='a', url='b')
         assert str(excinfo.value) == message
+
+
+class TestSubreditWiki(UnitTest):
+    def test__getitem(self):
+        subreddit = Subreddit(self.reddit, display_name='name')
+        wikipage = subreddit.wiki['foo']
+        assert isinstance(wikipage, WikiPage)
+        assert 'foo' == wikipage.name

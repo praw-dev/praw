@@ -133,16 +133,6 @@ r"""
             subreddit=six.text_type(subreddit))
         return self.request_json(url)
 
-    def get_wiki_page(self, subreddit, page):
-        Return a WikiPage object for the subreddit and page provided.
-        return models.WikiPage(self, six.text_type(subreddit), page.lower())
-
-    def get_wiki_pages(self, subreddit):
-        Return a list of WikiPage objects for the subreddit.
-        url = self.config['wiki_pages'].format(
-            subreddit=six.text_type(subreddit))
-        return self.request_json(url)
-
     def is_username_available(self, username):
         Return True if username is valid and available, otherwise False.
         params = {'user': username}
