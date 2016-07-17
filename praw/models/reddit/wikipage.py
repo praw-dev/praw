@@ -17,6 +17,7 @@ class WikiPage(RedditBase):
 
     def __init__(self, reddit, subreddit, name, _data=None):
         """Construct an instance of the WikiPage object."""
+        self.mod = WikiPageModeration(self)
         self.name = name
         self.subreddit = subreddit
         super(WikiPage, self).__init__(reddit, _data)
@@ -38,37 +39,6 @@ class WikiPage(RedditBase):
     def _info_path(self):
         return API_PATH['wiki_page'].format(subreddit=self.subreddit,
                                             page=self.name)
-
-    def add_editor(self, username, _delete=False, *args, **kwargs):
-        """Add an editor to this wiki page.
-
-        :param username: The name or Redditor object of the user to add.
-        :param _delete: If True, remove the user as an editor instead.
-            Please use :meth:`remove_editor` rather than setting it manually.
-
-        Additional parameters are passed into
-        :meth:`~praw.__init__.BaseReddit.request_json`.
-        """
-        url = self.reddit_session.config['wiki_page_editor']
-        url = url.format(subreddit=self.subreddit,
-                         method='del' if _delete else 'add')
-
-        data = {'page': self.name, 'username': str(username)}
-        return self.reddit_session.request_json(url, data=data, *args,
-                                                **kwargs)
-
-    def get_settings(self, *args, **kwargs):
-        """Return the settings for this wiki page.
-
-        Includes permission level, names of editors, and whether
-        the page is listed on /wiki/pages.
-
-        Additional parameters are passed into
-        :meth:`~praw.__init__.BaseReddit.request_json`
-        """
-        url = self.reddit_session.config['wiki_page_settings'].format(
-            subreddit=self.subreddit, page=self.name)
-        return self.reddit_session.request_json(url, *args, **kwargs)['data']
 
     def edit(self, *args, **kwargs):
         """Edit the wiki page.
@@ -103,15 +73,42 @@ class WikiPage(RedditBase):
         return self.reddit_session.request_json(url, data=data, *args,
                                                 **kwargs)['data']
 
-    def remove_editor(self, username, *args, **kwargs):
+
+class WikiPageModeration(object):
+    """Provides a set of moderation functions for a WikiPage."""
+
+    def __init__(self, wikipage):
+        """Create a WikiPageModeration instance.
+
+        :param wikipage: The wikipage to moderate.
+
+        """
+        self.wikipage = wikipage
+
+    def add(self, redditor):
+        """Add an editor to this wiki page.
+
+        :param redditor: A string or :class:`~.Redditor` instance.
+
+        """
+        data = {'page': self.wikipage.name, 'username': str(redditor)}
+        url = API_PATH['wiki_page_editor'].format(
+            subreddit=self.wikipage.subreddit, method='add')
+        self.wikipage._reddit.post(url, data=data)
+
+    def remove(self, redditor):
         """Remove an editor from this wiki page.
 
-        :param username: The name or Redditor object of the user to remove.
+        :param redditor: A string or :class:`~.Redditor` instance.
 
-        This method points to :meth:`add_editor` with _delete=True.
-
-        Additional parameters are are passed to :meth:`add_editor` and
-        subsequently into :meth:`~praw.__init__.BaseReddit.request_json`.
         """
-        return self.add_editor(username=username, _delete=True, *args,
-                               **kwargs)
+        data = {'page': self.wikipage.name, 'username': str(redditor)}
+        url = API_PATH['wiki_page_editor'].format(
+            subreddit=self.wikipage.subreddit, method='del')
+        self.wikipage._reddit.post(url, data=data)
+
+    def settings(self):
+        """Return the settings for this wiki page."""
+        url = API_PATH['wiki_page_settings'].format(
+            subreddit=self.wikipage.subreddit, page=self.wikipage.name)
+        return self.wikipage._reddit.get(url)['data']

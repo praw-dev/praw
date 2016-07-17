@@ -1,0 +1,101 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-07-17T00:10:27",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b8 prawcore/0.0.11"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"duLcwdsXn93PJU48CGFhNaSbuM4\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "CF-RAY": "2c39788ccd210d55-LAX",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 17 Jul 2016 00:10:27 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=ddba842e7094d4c345227488d70b0f26b1468714226; expires=Mon, 17-Jul-17 00:10:26 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-07-17T00:10:28",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer duLcwdsXn93PJU48CGFhNaSbuM4",
+          "Connection": "keep-alive",
+          "Cookie": "loid=CdLcPIYb6E2Wz6q8Cg; loidcreated=2016-07-17T00%3A10%3A26.920Z; __cfduid=ddba842e7094d4c345227488d70b0f26b1468714226",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b8 prawcore/0.0.11"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/wiki/settings/test?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"wikipagesettings\", \"data\": {\"permlevel\": 0, \"editors\": [], \"listed\": true}}"
+        },
+        "headers": {
+          "CF-RAY": "2c3978942fd022b8-LAX",
+          "Connection": "keep-alive",
+          "Content-Length": "85",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 17 Jul 2016 00:10:28 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "599.0",
+          "x-ratelimit-reset": "573",
+          "x-ratelimit-used": "1",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=qmos92f3s1aNBKMs1ooJZHcGQC%2BWz3WuWoQA4UYohigcwf4rFctnojx4mJM7blQHgOCFkp6AXSFjOBb0vT%2FSdhpGa9UXOz0WIIAOuRgzGf5x%2B9vpkS3leQ%3D%3D",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/wiki/settings/test?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.7.1"
+}
