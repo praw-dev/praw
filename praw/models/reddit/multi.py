@@ -47,14 +47,9 @@ class Multireddit(RedditBase, SubredditListingMixin):
         return self._reddit.copy_multireddit(self._author, self.name, to_name)
 
     def delete(self):
-        """Delete this multireddit.
-
-        Convenience function that utilizes
-        :meth:`.MultiredditMixin.delete_multireddit` populating the `name`
-        parameter.
-
-        """
-        return self._reddit.delete_multireddit(self.name)
+        """Delete this multireddit."""
+        self._reddit.request('delete', API_PATH['multireddit_about'].format(
+            multi=self.name, user=self._author))
 
     def edit(self, *args, **kwargs):
         """Edit this multireddit.

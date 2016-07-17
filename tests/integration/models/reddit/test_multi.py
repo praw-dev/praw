@@ -13,6 +13,13 @@ class TestMultireddit(IntegrationTest):
             multi.add('redditdev')
 
     @mock.patch('time.sleep', return_value=None)
+    def test_delete(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestMulireddit.test_delete'):
+            multi = self.reddit.user.multireddits()[0]
+            multi.delete()
+
+    @mock.patch('time.sleep', return_value=None)
     def test_remove(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestMulireddit.test_remove'):

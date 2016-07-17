@@ -569,17 +569,6 @@ class MultiredditMixin(AuthenticatedReddit):
         return self.request_json(url, data={'model': json.dumps(model)},
                                  method=method, *args, **kwargs)
 
-    def delete_multireddit(self, name, *args, **kwargs):
-        """Delete a Multireddit.
-
-        Any additional parameters are passed directly into
-        :meth:`~praw.__init__.BaseReddit.request`
-
-        """
-        url = self.config['multireddit_about'].format(user=self.user.name,
-                                                      multi=name)
-        self.request(url, data={}, method='DELETE', *args, **kwargs)
-
     def edit_multireddit(self, *args, **kwargs):
         """Edit a multireddit, or create one if it doesn't already exist.
 
@@ -587,38 +576,6 @@ class MultiredditMixin(AuthenticatedReddit):
 
         """
         return self.create_multireddit(*args, overwrite=True, **kwargs)
-
-    def get_multireddit(self, redditor, multi, *args, **kwargs):
-        """Return a Multireddit object for the author and name specified.
-
-        :param redditor: The username or Redditor object of the user
-            who owns the multireddit.
-        :param multi: The name of the multireddit to fetch.
-
-        The additional parameters are passed directly into the
-        :class:`.Multireddit` constructor.
-
-        """
-        return models.Multireddit(self, six.text_type(redditor), multi,
-                                  *args, **kwargs)
-
-    def get_multireddits(self, redditor, *args, **kwargs):
-        """Return a list of multireddits belonging to a redditor.
-
-        :param redditor: The username or Redditor object to find multireddits
-            from.
-        :returns: The json response from the server
-
-        The additional parameters are passed directly into
-        :meth:`~praw.__init__.BaseReddit.request_json`
-
-        If the requested redditor is the current user, all multireddits
-        are visible. Otherwise, only public multireddits are returned.
-
-        """
-        redditor = six.text_type(redditor)
-        url = self.config['multireddit_user'].format(user=redditor)
-        return self.request_json(url, *args, **kwargs)
 
     def rename_multireddit(self, current_name, new_name, *args, **kwargs):
         """Rename a Multireddit.
