@@ -305,11 +305,23 @@ class TestSubredditWiki(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
     def test__iter(self, _):
         self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
         with self.recorder.use_cassette('TestSubredditWiki__iter'):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit)
             count = 0
             for wikipage in subreddit.wiki:
                 assert isinstance(wikipage, WikiPage)
                 count += 1
             assert count > 0
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_create(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
+
+        with self.recorder.use_cassette('TestSubredditWiki_create'):
+            wikipage = subreddit.wiki.create('PRAW New Page',
+                                             'This is the new wiki page')
+            assert wikipage.name == 'praw_new_page'
+            assert wikipage.content_md == 'This is the new wiki page'

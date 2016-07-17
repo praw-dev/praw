@@ -41,10 +41,10 @@ class WikiPage(RedditBase):
                                             page=self.name)
 
     def edit(self, content, reason=None, **other_settings):
-        """Edit this wiki page's contents.
+        """Edit this WikiPage's contents.
 
         :param content: The updated markdown content of the page.
-        :param reason: The reason for the revision.
+        :param reason: (Optional) The reason for the revision.
         :param **other_settings: Additional keyword arguments to pass.
 
         """
@@ -66,7 +66,7 @@ class WikiPageModeration(object):
         self.wikipage = wikipage
 
     def add(self, redditor):
-        """Add an editor to this wiki page.
+        """Add an editor to this WikiPage.
 
         :param redditor: A string or :class:`~.Redditor` instance.
 
@@ -77,7 +77,7 @@ class WikiPageModeration(object):
         self.wikipage._reddit.post(url, data=data)
 
     def remove(self, redditor):
-        """Remove an editor from this wiki page.
+        """Remove an editor from this WikiPage.
 
         :param redditor: A string or :class:`~.Redditor` instance.
 
@@ -88,13 +88,13 @@ class WikiPageModeration(object):
         self.wikipage._reddit.post(url, data=data)
 
     def settings(self):
-        """Return the settings for this wiki page."""
+        """Return the settings for this WikiPage."""
         url = API_PATH['wiki_page_settings'].format(
             subreddit=self.wikipage.subreddit, page=self.wikipage.name)
         return self.wikipage._reddit.get(url)['data']
 
     def update(self, listed, permlevel, **other_settings):
-        """Update the settings for this wiki page.
+        """Update the settings for this WikiPage.
 
         :param listed: (boolean) Show this page on page list.
         :param permlevel: (int) Who can edit this page? (0) use subreddit wiki

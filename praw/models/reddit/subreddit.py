@@ -400,3 +400,17 @@ class SubredditWiki(object):
             params={'unique': self.subreddit._reddit._next_unique})
         for page_name in response['data']:
             yield WikiPage(self.subreddit._reddit, self.subreddit, page_name)
+
+    def create(self, name, content, reason=None, **other_settings):
+        """Create a new wiki page.
+
+        :param name: The name of the new WikiPage. This name will be normalied.
+        :param content: The content of the new WikiPage.
+        :param reason: (Optional) The reason for the creation.
+        :param **other_settings: Additional keyword arguments to pass.
+
+        """
+        name = name.replace(' ', '_').lower()
+        new = WikiPage(self.subreddit._reddit, self.subreddit, name)
+        new.edit(content=content, reason=reason, **other_settings)
+        return new
