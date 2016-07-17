@@ -17,6 +17,8 @@ class Multireddit(RedditBase, SubredditListingMixin):
         """Construct an instance of the Multireddit object."""
         super(Multireddit, self).__init__(reddit, _data)
         self._author = Redditor(reddit, self.path.split('/', 3)[2])
+        self._path = API_PATH['multireddit'].format(
+            multi=self.name, user=self._author)
         if 'subreddits' in self.__dict__:
             self.subreddits = [Subreddit(reddit, x['name'])
                                for x in self.subreddits]
