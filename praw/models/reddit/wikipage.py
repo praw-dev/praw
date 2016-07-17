@@ -49,30 +49,6 @@ class WikiPage(RedditBase):
         """
         return self.subreddit.edit_wiki_page(self.name, *args, **kwargs)
 
-    def edit_settings(self, permlevel, listed, *args, **kwargs):
-        """Edit the settings for this individual wiki page.
-
-        :param permlevel: Who can edit this page?
-            (0) use subreddit wiki permissions, (1) only approved wiki
-            contributors for this page may edit (see
-            :meth:`~praw.objects.WikiPage.add_editor`), (2) only mods may edit
-            and view
-        :param listed: Show this page on the listing?
-            True - Appear in /wiki/pages
-            False - Do not appear in /wiki/pages
-        :returns: The updated settings data.
-
-        Additional parameters are passed into :meth:`request_json`.
-
-        """
-        url = self.reddit_session.config['wiki_page_settings'].format(
-            subreddit=self.subreddit, page=self.page)
-        data = {'permlevel': permlevel,
-                'listed': 'on' if listed else 'off'}
-
-        return self.reddit_session.request_json(url, data=data, *args,
-                                                **kwargs)['data']
-
 
 class WikiPageModeration(object):
     """Provides a set of moderation functions for a WikiPage."""
@@ -112,3 +88,20 @@ class WikiPageModeration(object):
         url = API_PATH['wiki_page_settings'].format(
             subreddit=self.wikipage.subreddit, page=self.wikipage.name)
         return self.wikipage._reddit.get(url)['data']
+
+    def update(self, listed, permlevel, **other_settings):
+        """Update the settings for this wiki page.
+
+        :param listed: (boolean) Show this page on page list.
+        :param permlevel: (int) Who can edit this page? (0) use subreddit wiki
+            permissions, (1) only approved wiki contributors for this page may
+            edit (see `add`), (2) only mods may edit and view
+        :param **other_settings: Additional keyword arguments to pass in the
+            event reddit adds additional settings.
+        :returns: The updated WikiPage settings.
+
+        """
+        other_settings.update({'listed': listed, 'permlevel': permlevel})
+        url = API_PATH['wiki_page_settings'].format(
+            subreddit=self.wikipage.subreddit, page=self.wikipage.name)
+        return self.wikipage._reddit.post(url, data=other_settings)['data']

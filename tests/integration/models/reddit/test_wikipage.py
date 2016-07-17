@@ -53,3 +53,14 @@ class TestWikiPageModeration(IntegrationTest):
                 'TestWikiPageModeration.test_settings'):
             settings = page.mod.settings()
         assert {'editors': [], 'listed': True, 'permlevel': 0} == settings
+
+    def test_update(self):
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, 'test')
+
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestWikiPageModeration.test_update'):
+            updated = page.mod.update(listed=False, permlevel=1)
+        assert {'editors': [], 'listed': False, 'permlevel': 1} == updated
