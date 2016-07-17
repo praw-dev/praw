@@ -1,5 +1,5 @@
 """Test praw.models.user."""
-from praw.models import Redditor, Subreddit
+from praw.models import Multireddit, Redditor, Subreddit
 
 from .. import IntegrationTest
 
@@ -43,6 +43,14 @@ class TestUser(IntegrationTest):
                 assert isinstance(subreddit, Subreddit)
                 count += 1
             assert count > 0
+
+    def test_multireddits(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestUser.test_multireddits'):
+            multireddits = self.reddit.user.multireddits()
+            assert isinstance(multireddits, list)
+            assert multireddits
+            assert all(isinstance(x, Multireddit) for x in multireddits)
 
     def test_subreddits(self):
         self.reddit.read_only = False

@@ -61,7 +61,7 @@ API_PATH = {
     'morechildren':           'api/morechildren/',
     'my_contributor':         'subreddits/mine/contributor/',
     'my_moderator':           'subreddits/mine/moderator/',
-    'my_multis':              'api/multi/mine/',
+    'my_multireddits':        'api/multi/mine/',
     'my_subreddits':          'subreddits/mine/subscriber/',
     'new':                    'new/',
     'marknsfw':               'api/marknsfw/',

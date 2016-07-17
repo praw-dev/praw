@@ -41,6 +41,10 @@ class User(PRAWBase):
         return ListingGenerator(self._reddit, API_PATH['my_moderator'],
                                 **generator_kwargs)
 
+    def multireddits(self):
+        """Return a list of multireddits belonging to the user."""
+        return self._reddit.get(API_PATH['my_multireddits'])
+
     def subreddits(self, **generator_kwargs):
         """Return a ListingGenerator of subreddits the user is subscribed to.
 

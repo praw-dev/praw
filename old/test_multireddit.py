@@ -55,12 +55,6 @@ class MultiredditTest(PRAWTest):
         self.assertEqual(name, multi.refresh().description_md)
 
     @betamax()
-    def test_get_my_multis(self):
-        multi = self.r.get_my_multireddits()[0]
-        self.assertEqual('publicempty', multi.display_name)
-        self.assertEqual([], multi.subreddits)
-
-    @betamax()
     def test_get_multireddit(self):
         multi = self.r.user.get_multireddit('publicempty')
         self.assertEqual('/user/{0}/m/{1}'.format(self.un, 'publicempty'),

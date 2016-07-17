@@ -638,21 +638,6 @@ class MultiredditMixin(AuthenticatedReddit):
                                  *args, **kwargs)
 
 
-class MySubredditsMixin(AuthenticatedReddit):
-    """Adds methods requiring the 'mysubreddits' scope (or login).
-
-    You should **not** directly instantiate instances of this class. Use
-    :class:`.Reddit` instead.
-
-    """
-
-    def get_my_multireddits(self):
-        """Return a list of the authenticated Redditor's Multireddits."""
-        # The JSON data for multireddits is returned from Reddit as a list
-        # Therefore, we cannot use :meth:`get_content` to retrieve the objects
-        return self.request_json(self.config['my_multis'])
-
-
 class PrivateMessagesMixin(AuthenticatedReddit):
     """Adds methods requiring the 'privatemessages' scope (or login).
 
