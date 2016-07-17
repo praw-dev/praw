@@ -23,6 +23,9 @@ class TestReddit(UnitTest):
         with Reddit(**self.REQUIRED_DUMMY_SETTINGS) as reddit:
             assert not reddit.config.check_for_updates
 
+    def test_multireddit(self):
+        assert self.reddit.multireddit('bboe', 'aa').path == '/user/bboe/m/aa'
+
     def test_read_only__with_script_authenticated_core(self):
         with Reddit(password='dummy', username='dummy',
                     **self.REQUIRED_DUMMY_SETTINGS) as reddit:

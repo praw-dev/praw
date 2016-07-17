@@ -153,6 +153,17 @@ class Reddit(object):
         data = self.request('GET', path, params=params)
         return self._objector.objectify(data)
 
+    def multireddit(self, redditor, name):
+        """Return a lazy instance of :class:`~.Multireddit`.
+
+        :param redditor: A string or :class:`~.Redditor` instance who owns the
+            multireddit.
+        :param name: The name of the multireddit.
+
+        """
+        path = '/user/{}/m/{}'.format(redditor, name)
+        return models.Multireddit(self, _data={'name': name, 'path': path})
+
     def post(self, path, data=None, params=None):
         """Return parsed objects returned from a POST request to ``path``.
 
