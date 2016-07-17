@@ -646,49 +646,11 @@ class MySubredditsMixin(AuthenticatedReddit):
 
     """
 
-    def get_my_contributions(self, *args, **kwargs):
-        """Return a get_content generator of subreddits.
-
-        The Subreddits generated are those where the session's user is a
-        contributor.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        return self.get_content(self.config['my_con_subreddits'], *args,
-                                **kwargs)
-
-    def get_my_moderation(self, *args, **kwargs):
-        """Return a get_content generator of subreddits.
-
-        The Subreddits generated are those where the session's user is a
-        moderator.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        return self.get_content(self.config['my_mod_subreddits'], *args,
-                                **kwargs)
-
     def get_my_multireddits(self):
         """Return a list of the authenticated Redditor's Multireddits."""
         # The JSON data for multireddits is returned from Reddit as a list
         # Therefore, we cannot use :meth:`get_content` to retrieve the objects
         return self.request_json(self.config['my_multis'])
-
-    def get_my_subreddits(self, *args, **kwargs):
-        """Return a get_content generator of subreddits.
-
-        The subreddits generated are those that hat the session's user is
-        subscribed to.
-
-        The additional parameters are passed directly into
-        :meth:`.get_content`. Note: the `url` parameter cannot be altered.
-
-        """
-        return self.get_content(self.config['my_subreddits'], *args, **kwargs)
 
 
 class PrivateMessagesMixin(AuthenticatedReddit):

@@ -56,21 +56,6 @@ class SubredditTest(PRAWTest):
                           self.subreddit.get_contributors)
 
     @betamax()
-    def test_get_my_contributions(self):
-        self.first(self.r.get_my_contributions(),
-                   lambda subreddit: text_type(subreddit) == self.sr)
-
-    @betamax()
-    def test_get_my_moderation(self):
-        self.first(self.r.get_my_moderation(),
-                   lambda subreddit: text_type(subreddit) == self.sr)
-
-    @betamax()
-    def test_get_my_subreddits(self):
-        for subreddit in self.r.get_my_subreddits():
-            self.assertTrue(text_type(subreddit) in subreddit._info_url)
-
-    @betamax()
     def test_get_subreddit_recommendations(self):
         result = self.r.get_subreddit_recommendations(['python', 'redditdev'])
         self.assertTrue(result)

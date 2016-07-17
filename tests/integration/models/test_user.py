@@ -1,5 +1,5 @@
 """Test praw.models.user."""
-from praw.models import Redditor
+from praw.models import Redditor, Subreddit
 
 from .. import IntegrationTest
 
@@ -11,6 +11,16 @@ class TestUser(IntegrationTest):
             blocked = self.reddit.user.blocked()
         assert len(blocked) > 0
         assert all(isinstance(user, Redditor) for user in blocked)
+
+    def test_contributor_subreddits(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestUser.test_contributor_subreddits'):
+            count = 0
+            for subreddit in self.reddit.user.contributor_subreddits():
+                assert isinstance(subreddit, Subreddit)
+                count += 1
+            assert count > 0
 
     def test_friends(self):
         self.reddit.read_only = False
@@ -24,3 +34,21 @@ class TestUser(IntegrationTest):
         with self.recorder.use_cassette('TestUser.test_me'):
             me = self.reddit.user.me()
         assert isinstance(me, Redditor)
+
+    def test_moderator_subreddits(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestUser.test_moderator_subreddits'):
+            count = 0
+            for subreddit in self.reddit.user.moderator_subreddits():
+                assert isinstance(subreddit, Subreddit)
+                count += 1
+            assert count > 0
+
+    def test_subreddits(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestUser.test_subreddits'):
+            count = 0
+            for subreddit in self.reddit.user.subreddits():
+                assert isinstance(subreddit, Subreddit)
+                count += 1
+            assert count > 0

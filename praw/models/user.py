@@ -1,6 +1,7 @@
 """Provides the User class."""
 from ..const import API_PATH
 from .base import PRAWBase
+from .listing.generator import ListingGenerator
 from .reddit.redditor import Redditor
 
 
@@ -11,6 +12,16 @@ class User(PRAWBase):
         """Return a RedditorList of blocked Redditors."""
         return self._reddit.get(API_PATH['blocked'])
 
+    def contributor_subreddits(self, **generator_kwargs):
+        """Return a ListingGenerator of subreddits user is a contributor of.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        return ListingGenerator(self._reddit, API_PATH['my_contributor'],
+                                **generator_kwargs)
+
     def friends(self):
         """Return a RedditorList of friends."""
         return self._reddit.get(API_PATH['friends'])
@@ -19,3 +30,23 @@ class User(PRAWBase):
         """Return a Redditor instance for the authenticated user."""
         user_data = self._reddit.get(API_PATH['me'])
         return Redditor(self._reddit, _data=user_data)
+
+    def moderator_subreddits(self, **generator_kwargs):
+        """Return a ListingGenerator of subreddits the user is a moderator of.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        return ListingGenerator(self._reddit, API_PATH['my_moderator'],
+                                **generator_kwargs)
+
+    def subreddits(self, **generator_kwargs):
+        """Return a ListingGenerator of subreddits the user is subscribed to.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        return ListingGenerator(self._reddit, API_PATH['my_subreddits'],
+                                **generator_kwargs)
