@@ -66,3 +66,8 @@ class RedditBase(PRAWBase):
                                      params={'id': self.fullname}).children[0]
         self.__dict__.update(other.__dict__)
         self._fetched = True
+
+    def _reset_attributes(self, *attributes):
+        for attribute in attributes:
+            del self.__dict__[attribute]
+        self._fetched = False

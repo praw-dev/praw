@@ -11,6 +11,7 @@ class TestMultireddit(IntegrationTest):
         with self.recorder.use_cassette('TestMulireddit.test_add'):
             multi = self.reddit.user.multireddits()[0]
             multi.add('redditdev')
+            assert 'redditdev' in multi.subreddits
 
     @mock.patch('time.sleep', return_value=None)
     def test_delete(self, _):
@@ -25,6 +26,7 @@ class TestMultireddit(IntegrationTest):
         with self.recorder.use_cassette('TestMulireddit.test_remove'):
             multi = self.reddit.user.multireddits()[0]
             multi.remove('redditdev')
+            assert 'redditdev' not in multi.subreddits
 
     def test_subreddits(self):
         multi = self.reddit.multireddit('kjoneslol', 'sfwpornnetwork')

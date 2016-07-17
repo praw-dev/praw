@@ -35,6 +35,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
             multi=self.name, user=self._author, subreddit=subreddit)
         self._reddit.request(
             'put', url, data={'model': dumps({'name': str(subreddit)})})
+        self._reset_attributes('subreddits')
 
     def copy(self, to_name):
         """Copy this multireddit.
@@ -71,6 +72,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
             multi=self.name, user=self._author, subreddit=subreddit)
         self._reddit.request(
             'delete', url, data={'model': dumps({'name': str(subreddit)})})
+        self._reset_attributes('subreddits')
 
     def rename(self, new_name, *args, **kwargs):
         """Rename this multireddit.
