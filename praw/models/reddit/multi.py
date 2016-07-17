@@ -44,8 +44,8 @@ class Multireddit(RedditBase, SubredditListingMixin):
                                for x in self.subreddits]
 
     def _info_path(self):
-        return API_PATH['multireddit_about'].format(multi=self.name,
-                                                    user=self._author)
+        return API_PATH['multireddit_api'].format(
+            multi=self.name, user=self._author)
 
     def add(self, subreddit):
         """Add a subreddit to this multireddit.
@@ -80,18 +80,8 @@ class Multireddit(RedditBase, SubredditListingMixin):
 
     def delete(self):
         """Delete this multireddit."""
-        self._reddit.request('delete', API_PATH['multireddit_about'].format(
+        self._reddit.request('delete', API_PATH['multireddit_api'].format(
             multi=self.name, user=self._author))
-
-    def edit(self, *args, **kwargs):
-        """Edit this multireddit.
-
-        Convenience function that utilizes
-        :meth:`.MultiredditMixin.edit_multireddit` populating the `name`
-        parameter.
-
-        """
-        return self._reddit.edit_multireddit(name=self.name, *args, **kwargs)
 
     def remove(self, subreddit):
         """Remove a subreddit from this multireddit.
@@ -115,3 +105,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
         data = {'from': self.path, 'display_name': display_name}
         updated = self._reddit.post(API_PATH['multireddit_rename'], data=data)
         self.__dict__.update(updated.__dict__)
+
+    def update(self, *args, **kwargs):
+        """Update this multireddit."""
+        return self._reddit.edit_multireddit(name=self.name, *args, **kwargs)

@@ -1,8 +1,19 @@
 """Test praw.reddit."""
+import mock
+
 from . import IntegrationTest
 
 
 class TestReddit(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_multireddit_create(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestReddit.test_multireddit_create'):
+            multireddit = self.reddit.multireddit_create(
+                'PRAW create test', subreddits=['redditdev'])
+        assert multireddit.display_name == 'PRAW create test'
+        assert multireddit.name == 'praw_create_test'
+
     def test_random_subreddit(self):
         names = set()
         with self.recorder.use_cassette(
