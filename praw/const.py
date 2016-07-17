@@ -69,7 +69,6 @@ API_PATH = {
     'multireddit_api':        'api/multi/user/{user}/m/{multi}/',
     'multireddit_base':       'api/multi/',
     'multireddit_copy':       'api/multi/copy/',
-    'multireddit_mine':       'me/m/{multi}/',
     'multireddit_rename':     'api/multi/rename/',
     'multireddit_update':     'api/multi/user/{user}/m/{multi}/r/{subreddit}',
     'multireddit_user':       'api/multi/user/{user}/',

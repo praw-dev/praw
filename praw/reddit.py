@@ -172,7 +172,7 @@ class Reddit(object):
 
         :param display_name: The display name for the new multireddit.
         :param subreddits: Subreddits to add to the new multireddit.
-        :param description_md: (Optional) description for the new multireddit,
+        :param description_md: (Optional) Description for the new multireddit,
             formatted in markdown.
         :param icon_name: (Optional) Can be one of: ``art
             and design``, ``ask``, ``books``, ``business``, ``cars``,

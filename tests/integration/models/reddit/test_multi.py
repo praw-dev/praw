@@ -66,6 +66,19 @@ class TestMultireddit(IntegrationTest):
             assert multi.subreddits
         assert all(isinstance(x, Subreddit) for x in multi.subreddits)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_update(self, _):
+        self.reddit.read_only = False
+        subreddits = ['pokemongo', 'pokemongodev']
+        with self.recorder.use_cassette('TestMulireddit.test_update'):
+            multi = self.reddit.user.multireddits()[0]
+            prev_path = multi.path
+            multi.update(display_name='Updated display name',
+                         subreddits=subreddits)
+        assert multi.display_name == 'Updated display name'
+        assert multi.path == prev_path
+        assert multi.subreddits == subreddits
+
 
 class TestMultiredditListings(IntegrationTest):
     def test_comments(self):

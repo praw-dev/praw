@@ -80,8 +80,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
 
     def delete(self):
         """Delete this multireddit."""
-        self._reddit.request('delete', API_PATH['multireddit_api'].format(
-            multi=self.name, user=self._author))
+        self._reddit.request('delete', self._info_path())
 
     def remove(self, subreddit):
         """Remove a subreddit from this multireddit.
@@ -106,6 +105,32 @@ class Multireddit(RedditBase, SubredditListingMixin):
         updated = self._reddit.post(API_PATH['multireddit_rename'], data=data)
         self.__dict__.update(updated.__dict__)
 
-    def update(self, *args, **kwargs):
-        """Update this multireddit."""
-        return self._reddit.edit_multireddit(name=self.name, *args, **kwargs)
+    def update(self, **updated_settings):
+        """Update this multireddit.
+
+        Keyword arguments are passed for settings that should be updated. They
+        can any of:
+
+        :param display_name: The display name for this multireddit.
+        :param subreddits: Subreddits for this multireddit.
+        :param description_md: Description for this multireddit, formatted in
+            markdown.
+        :param icon_name: Can be one of: ``art and design``, ``ask``,
+            ``books``, ``business``, ``cars``, ``comics``, ``cute animals``,
+            ``diy``, ``entertainment``, ``food and drink``, ``funny``,
+            ``games``, ``grooming``, ``health``, ``life advice``, ``military``,
+            ``models pinup``, ``music``, ``news``, ``philosophy``, ``pictures
+            and gifs``, ``science``, ``shopping``, ``sports``, ``style``,
+            ``tech``, ``travel``, ``unusual stories``, ``video``, or ``None``.
+        :param key_color: RGB hex color code of the form `#FFFFFF`.
+        :param visibility: Can be one of: ``hidden``, ``private``, ``public``.
+        :param weighting_scheme: Can be one of: ``classic``, ``fresh``.
+
+        """
+        if 'subreddits' in updated_settings:
+            updated_settings['subreddits'] = [
+                {'name': str(sub)} for sub in updated_settings['subreddits']]
+        response = self._reddit.request(
+            'put', self._info_path(), data={'model': dumps(updated_settings)})
+        new = Multireddit(self._reddit, response['data'])
+        self.__dict__.update(new.__dict__)
