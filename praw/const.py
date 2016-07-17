@@ -127,7 +127,7 @@ API_PATH = {
     'user_about':             'user/{user}/about/',
     'username_available':     'api/username_available/',
     'vote':                   'api/vote/',
-    'wiki_edit':              'api/wiki/edit/',
+    'wiki_edit':              'r/{subreddit}/api/wiki/edit/',
     'wiki_page':              'r/{subreddit}/wiki/{page}',
     'wiki_page_editor':       'r/{subreddit}/api/wiki/alloweditor/{method}',
     'wiki_page_settings':     'r/{subreddit}/wiki/settings/{page}',

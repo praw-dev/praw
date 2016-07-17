@@ -14,6 +14,24 @@ class TestWikiPage(IntegrationTest):
         with self.recorder.use_cassette('TestWikiPage.test_attributes'):
             assert page.content_md
 
+    def test_edit(self):
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, 'test')
+
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestWikiPage.test_edit'):
+            page.edit('PRAW updated')
+
+    def test_edit__with_reason(self):
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, 'test')
+
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestWikiPage.test_edit__with_reason'):
+            page.edit('PRAW updated with reason', reason='PRAW testing')
+
     def test_invalid_page(self):
         subreddit = self.reddit.subreddit(
             pytest.placeholders.test_subreddit)

@@ -40,14 +40,18 @@ class WikiPage(RedditBase):
         return API_PATH['wiki_page'].format(subreddit=self.subreddit,
                                             page=self.name)
 
-    def edit(self, *args, **kwargs):
-        """Edit the wiki page.
+    def edit(self, content, reason=None, **other_settings):
+        """Edit this wiki page's contents.
 
-        Convenience function that utilizes
-        :meth:`.AuthenticatedReddit.edit_wiki_page` populating both the
-        ``subreddit`` and ``page`` parameters.
+        :param content: The updated markdown content of the page.
+        :param reason: The reason for the revision.
+        :param **other_settings: Additional keyword arguments to pass.
+
         """
-        return self.subreddit.edit_wiki_page(self.name, *args, **kwargs)
+        other_settings.update({'content': content, 'page': self.name,
+                               'reason': reason})
+        self._reddit.post(API_PATH['wiki_edit'].format(
+            subreddit=self.subreddit), data=other_settings)
 
 
 class WikiPageModeration(object):
@@ -96,8 +100,7 @@ class WikiPageModeration(object):
         :param permlevel: (int) Who can edit this page? (0) use subreddit wiki
             permissions, (1) only approved wiki contributors for this page may
             edit (see `add`), (2) only mods may edit and view
-        :param **other_settings: Additional keyword arguments to pass in the
-            event reddit adds additional settings.
+        :param **other_settings: Additional keyword arguments to pass.
         :returns: The updated WikiPage settings.
 
         """

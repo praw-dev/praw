@@ -169,14 +169,4 @@ r"""
                 'delete_message': message,
                 'confirm': True}
         return self.request_json(self.config['delete_redditor'], data=data)
-
-    def edit_wiki_page(self, subreddit, page, content, reason=''):
-        Create or edit a wiki page with title `page` for `subreddit`.
-
-        :returns: The json response from the server.
-        data = {'content': content,
-                'page': page,
-                'r': six.text_type(subreddit),
-                'reason': reason}
-        return self.request_json(self.config['wiki_edit'], data=data)
 """
