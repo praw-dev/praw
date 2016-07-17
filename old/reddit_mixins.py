@@ -488,34 +488,6 @@ class MultiredditMixin(AuthenticatedReddit):
 
     """
 
-    MULTI_PATH = '/user/{0}/m/{1}'
-
-    def copy_multireddit(self, from_redditor, from_name, to_name=None,
-                         *args, **kwargs):
-        """Copy a multireddit.
-
-        :param from_redditor: The username or Redditor object for the user
-            who owns the original multireddit
-        :param from_name: The name of the multireddit, belonging to
-            from_redditor
-        :param to_name: The name to copy the multireddit as. If None, uses
-            the name of the original
-
-        The additional parameters are passed directly into
-        :meth:`~praw.__init__.BaseReddit.request_json`
-
-        """
-        if to_name is None:
-            to_name = from_name
-
-        from_multipath = self.MULTI_PATH.format(from_redditor, from_name)
-        to_multipath = self.MULTI_PATH.format(self.user.name, to_name)
-        data = {'display_name': to_name,
-                'from': from_multipath,
-                'to': to_multipath}
-        return self.request_json(self.config['multireddit_copy'], data=data,
-                                 *args, **kwargs)
-
     def create_multireddit(self, name, description_md=None, icon_name=None,
                            key_color=None, subreddits=None, visibility=None,
                            weighting_scheme=None, overwrite=False,

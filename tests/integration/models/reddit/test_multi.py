@@ -1,5 +1,6 @@
 from praw.models import Subreddit
 import mock
+import pytest
 
 from ... import IntegrationTest
 
@@ -12,6 +13,28 @@ class TestMultireddit(IntegrationTest):
             multi = self.reddit.user.multireddits()[0]
             multi.add('redditdev')
             assert 'redditdev' in multi.subreddits
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_copy(self, _):
+        self.reddit.read_only = False
+        multi = self.reddit.multireddit('kjoneslol', 'sfwpornnetwork')
+        with self.recorder.use_cassette('TestMulireddit.test_copy'):
+            new = multi.copy()
+        assert new.name == multi.name
+        assert new.display_name == multi.display_name
+        assert pytest.placeholders.username in new.path
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_copy__with_display_name(self, _):
+        self.reddit.read_only = False
+        multi = self.reddit.multireddit('kjoneslol', 'sfwpornnetwork')
+        name = 'A--B\n' * 10
+        with self.recorder.use_cassette(
+                'TestMulireddit.test_copy__with_display_name'):
+            new = multi.copy(display_name=name)
+        assert new.name == 'a_b_a_b_a_b_a_b_a_b'
+        assert new.display_name == name
+        assert pytest.placeholders.username in new.path
 
     @mock.patch('time.sleep', return_value=None)
     def test_delete(self, _):

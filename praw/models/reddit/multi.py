@@ -1,5 +1,6 @@
 """Provide the Multireddit class."""
 from json import dumps
+import re
 
 from ...const import API_PATH
 from ..listing.mixins import SubredditListingMixin
@@ -12,6 +13,24 @@ class Multireddit(RedditBase, SubredditListingMixin):
     """A class for users' Multireddits."""
 
     STR_FIELD = 'path'
+    RE_INVALID = re.compile('(\s|\W|_)+', re.UNICODE)
+
+    @staticmethod
+    def sluggify(title):
+        """Return a slug version of the title.
+
+        :param title: The title to make a slug of.
+
+        Adapted from reddit's utils.py.
+
+        """
+        title = Multireddit.RE_INVALID.sub('_', title).strip('_').lower()
+        if len(title) > 21:  # truncate to nearest word
+            title = title[:21]
+            last_word = title.rfind('_')
+            if (last_word > 0):
+                title = title[:last_word]
+        return title or "_"
 
     def __init__(self, reddit, _data):
         """Construct an instance of the Multireddit object."""
@@ -19,6 +38,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
         self._author = Redditor(reddit, self.path.split('/', 3)[2])
         self._path = API_PATH['multireddit'].format(
             multi=self.name, user=self._author)
+        self.path = '/' + self._path[:-1]  # Prevent requests for path
         if 'subreddits' in self.__dict__:
             self.subreddits = [Subreddit(reddit, x['name'])
                                for x in self.subreddits]
@@ -39,15 +59,24 @@ class Multireddit(RedditBase, SubredditListingMixin):
             'put', url, data={'model': dumps({'name': str(subreddit)})})
         self._reset_attributes('subreddits')
 
-    def copy(self, to_name):
-        """Copy this multireddit.
+    def copy(self, display_name=None):
+        """Copy this multireddit and return the new multireddit.
 
-        Convenience function that utilizes
-        :meth:`.MultiredditMixin.copy_multireddit` populating both
-        the `from_redditor` and `from_name` parameters.
+        :param display_name: (optional) The display name for the copied
+            multireddit. Reddit will generate the ``name`` field from this
+            display name. When not provided the copy will use the same display
+            name and name as this multireddit.
 
         """
-        return self._reddit.copy_multireddit(self._author, self.name, to_name)
+        if display_name:
+            name = self.sluggify(display_name)
+        else:
+            display_name = self.display_name
+            name = self.name
+        data = {'display_name': display_name, 'from': self.path,
+                'to': API_PATH['multireddit'].format(
+                    multi=name, user=self._reddit.user.me())}
+        return self._reddit.post(API_PATH['multireddit_copy'], data=data)
 
     def delete(self):
         """Delete this multireddit."""
@@ -76,14 +105,13 @@ class Multireddit(RedditBase, SubredditListingMixin):
             'delete', url, data={'model': dumps({'name': str(subreddit)})})
         self._reset_attributes('subreddits')
 
-    def rename(self, new_display_name):
+    def rename(self, display_name):
         """Rename this multireddit.
 
-        :param new_display_name: The new display name for this
-            multireddit. Reddit will generate the ``name`` field from this
-            display name.
+        :param display_name: The new display name for this multireddit. Reddit
+            will generate the ``name`` field from this display name.
 
         """
-        data = {'from': self.path, 'display_name': new_display_name}
+        data = {'from': self.path, 'display_name': display_name}
         updated = self._reddit.post(API_PATH['multireddit_rename'], data=data)
         self.__dict__.update(updated.__dict__)
