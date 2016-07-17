@@ -14,10 +14,8 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
 
     @classmethod
     def from_data(cls, reddit, data):
-        """Return an instance of Redditor, bool, or None from ``data``."""
-        if isinstance(data, bool):
-            return data
-        elif data in [None, '', '[deleted]']:
+        """Return an instance of Redditor, or None from ``data``."""
+        if data == '[deleted]':
             return None
         else:
             return cls(reddit, data)
