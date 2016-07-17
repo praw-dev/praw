@@ -14,6 +14,19 @@ with open(path.join(HERE, PACKAGE_NAME, '__init__.py'),
           encoding='utf-8') as fp:
     VERSION = re.search("__version__ = '([^']+)'", fp.read()).group(1)
 
+dependencies = ['decorator >=4.0.9, <4.1',
+                'requests >=2.3.0',
+                'six ==1.10',
+                'update_checker >=0.12, <1.0']
+
+try:
+    from OpenSSL import __version__ as opensslversion
+    opensslversion = [int(minor) if minor.isdigit() else minor
+                      for minor in opensslversion.split('.')]
+    if opensslversion < [0, 15]:  # versions less than 0.15 have a regression
+        dependencies.append('pyopenssl >=0.15')
+except ImportError:
+    pass  # open ssl not installed
 
 setup(name=PACKAGE_NAME,
       author='Timothy Mellor',
@@ -38,10 +51,7 @@ setup(name=PACKAGE_NAME,
                    'reddit\'s API.'),
       entry_points={'console_scripts': [
           'praw-multiprocess = praw.multiprocess:run']},
-      install_requires=['decorator >=4.0.9, <4.1',
-                        'requests >=2.3.0',
-                        'six ==1.10',
-                        'update_checker >=0.12, <1.0'],
+      install_requires=dependencies,
       keywords='reddit api wrapper',
       license='GPLv3',
       long_description=README,

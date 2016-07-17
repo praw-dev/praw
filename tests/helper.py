@@ -211,6 +211,31 @@ class PRAWTest(unittest.TestCase):
                 raise AssertionError('Pattern "{0}" not found in'
                                      'any caught warnings'.format(regexp))
 
+    def assertNoWarnings(self, callable, *args, **kwds):
+        """Fail unless no warnings are triggered by callable with
+           arguments args and keyword arguments kwds.
+        """
+        with warnings.catch_warnings(record=True) as warning_list:
+            warnings.simplefilter('always')
+
+            callable(*args, **kwds)
+            if len(warning_list) == 1:
+                wname, warningmsg = (warning_list[0].category.__name__,
+                                     warning_list[0].message.args[0])
+                raise AssertionError("A warning with a category of {0} "
+                                     "and a message of {1} were triggered "
+                                     "by {2}".format(wname, repr(warningmsg),
+                                                     callable.__name__))
+            elif warning_list:
+                wnames = [(w.category.__name__, w.message.args[0])
+                          if w.message.args else (w.category.__name__, "")
+                          for w in warning_list]
+                wnames = ["{}: {}".format(k, repr(v)) for k, v in warnings]
+                raise AssertionError("The following warnings were triggered "
+                                     "by {0}:\n{1}".format(
+                                         callable.__name__,
+                                         "    \n".join(wnames)))
+
 
 class OAuthPRAWTest(PRAWTest):
     def betamax_init(self):
