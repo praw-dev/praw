@@ -64,11 +64,3 @@ class MultiredditTest(PRAWTest):
     def test_multireddit_get_new(self):
         multi = self.r.user.get_multireddit('publicempty')
         self.assertEqual([], list(multi.get_new()))
-
-    @betamax()
-    def test_rename_multireddit(self):
-        name = 'renamed_{0}'.format(self.r.modhash)[:15]
-        multi = self.r.user.get_multireddits()[0]
-        self.assertNotEqual(name, multi.name)
-        self.assertEqual(name, multi.rename(name).name)
-        self.assertEqual(name, multi.refresh().name)

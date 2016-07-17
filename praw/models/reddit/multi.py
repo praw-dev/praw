@@ -74,14 +74,14 @@ class Multireddit(RedditBase, SubredditListingMixin):
             'delete', url, data={'model': dumps({'name': str(subreddit)})})
         self._reset_attributes('subreddits')
 
-    def rename(self, new_name, *args, **kwargs):
+    def rename(self, new_display_name):
         """Rename this multireddit.
 
-        This function is a handy shortcut to
-        :meth:`rename_multireddit` of the _reddit.
+        :param new_display_name: The new display name for this
+            multireddit. Reddit will generate the ``name`` field from this
+            display name.
 
         """
-        new = self._reddit.rename_multireddit(self.name, new_name, *args,
-                                              **kwargs)
-        self.__dict__.update(new.__dict__)
-        return self
+        data = {'from': self.path, 'display_name': new_display_name}
+        updated = self._reddit.post(API_PATH['multireddit_rename'], data=data)
+        self.__dict__.update(updated.__dict__)

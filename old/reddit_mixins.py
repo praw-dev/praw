@@ -577,23 +577,6 @@ class MultiredditMixin(AuthenticatedReddit):
         """
         return self.create_multireddit(*args, overwrite=True, **kwargs)
 
-    def rename_multireddit(self, current_name, new_name, *args, **kwargs):
-        """Rename a Multireddit.
-
-        :param current_name: The name of the multireddit to rename
-        :param new_name: The new name to assign to this multireddit
-
-        The additional parameters are passed directly into
-        :meth:`~praw.__init__.BaseReddit.request_json`
-
-        """
-        current_path = self.MULTI_PATH.format(self.user.name, current_name)
-        new_path = self.MULTI_PATH.format(self.user.name, new_name)
-        data = {'from': current_path,
-                'to': new_path}
-        return self.request_json(self.config['multireddit_rename'], data=data,
-                                 *args, **kwargs)
-
 
 class PrivateMessagesMixin(AuthenticatedReddit):
     """Adds methods requiring the 'privatemessages' scope (or login).

@@ -28,6 +28,15 @@ class TestMultireddit(IntegrationTest):
             multi.remove('redditdev')
             assert 'redditdev' not in multi.subreddits
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_rename(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestMulireddit.test_rename'):
+            multi = self.reddit.user.multireddits()[0]
+            multi.rename('PRAW Renamed')
+            assert multi.display_name == 'PRAW Renamed'
+            assert multi.name == 'praw_renamed'
+
     def test_subreddits(self):
         multi = self.reddit.multireddit('kjoneslol', 'sfwpornnetwork')
         with self.recorder.use_cassette('TestMulireddit.test_subreddits'):
