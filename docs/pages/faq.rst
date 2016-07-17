@@ -94,6 +94,16 @@ of the upvotes and downvotes. The obfuscation is done to everything and
 everybody to thwart potential cheaters. There's nothing we can do to prevent
 this.
 
+Why am I getting a TypeError regarding strings, bytes, and "buf" / memoryviews?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+requests, an underlying dependency, injects SNI support for SSL certificates if
+pyOpenSSL exists on the system. However, some versions of pyOpenSSL below 0.15
+have a regression in which either data is only accepted as a buffer, or when
+passing data along it isn't converted properly and pyOpenSSL attempts to make a
+memoryview object of it, which can't be done. This is solved by upgrading
+pyOpenSSL to at least version 0.15.
+
 .. _report_an_issue:
 
 How do I report an issue with PRAW?
