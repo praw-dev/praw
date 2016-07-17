@@ -1,0 +1,100 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-07-17T22:04:08",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b9 prawcore/0.0.12"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"HAYbUTX8znKAfyskS0OpIya67Q0\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "CF-RAY": "2c40fce9296d2312-LAX",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 17 Jul 2016 22:04:08 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=dfef8689695700b24da5bf2f30a43bdab1468793048; expires=Mon, 17-Jul-17 22:04:08 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-07-17T22:04:09",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer HAYbUTX8znKAfyskS0OpIya67Q0",
+          "Connection": "keep-alive",
+          "Cookie": "loidcreated=2016-07-17T22%3A04%3A08.547Z; __cfduid=dfef8689695700b24da5bf2f30a43bdab1468793048; loid=k2UwgOGXbBhj5QOxtw",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b9 prawcore/0.0.12"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/multi/user/kjoneslol/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"adminpoop\", \"name\": \"adminpoop\", \"description_html\": \"\", \"created\": 1368759206.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"mogmonday\"}, {\"name\": \"krispykrackers\"}, {\"name\": \"announcements\"}, {\"name\": \"chromakode\"}, {\"name\": \"intortus\"}, {\"name\": \"cupcake1713\"}, {\"name\": \"alienth\"}, {\"name\": \"adminmythos\"}, {\"name\": \"changelog\"}, {\"name\": \"shittyideasforadmins\"}, {\"name\": \"cupcakecaturday\"}, {\"name\": \"sophiepotamus\"}, {\"name\": \"bizarrosnoo\"}, {\"name\": \"spladug\"}, {\"name\": \"reostra\"}, {\"name\": \"cupcake1713Jerk\"}, {\"name\": \"shittychangelog\"}, {\"name\": \"Admin\"}, {\"name\": \"kemitche\"}, {\"name\": \"AlienthOn\"}, {\"name\": \"rram\"}, {\"name\": \"redditOfficeDrama\"}, {\"name\": \"ShitChromakodeSays\"}], \"created_utc\": 1368730406.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/adminpoop\", \"description_md\": \"\"}}, {\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"kjoneslol\", \"name\": \"kjoneslol\", \"description_html\": \"\", \"created\": 1377764192.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"srskjoneslol\"}, {\"name\": \"kjonesloljerk\"}, {\"name\": \"Truekjoneslol\"}, {\"name\": \"FIESTADELAKJONESLOL\"}, {\"name\": \"fuck_kjoneslol\"}, {\"name\": \"DPRKPOP\"}, {\"name\": \"kjoneslolbroke\"}, {\"name\": \"kjoneslolrebooted\"}, {\"name\": \"kjoneslol\"}], \"created_utc\": 1377735392.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/kjoneslol\", \"description_md\": \"\"}}, {\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"kpop\", \"name\": \"kpop\", \"description_html\": \"\", \"created\": 1368594425.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"aiyu\"}, {\"name\": \"missA\"}, {\"name\": \"Sojin\"}, {\"name\": \"wondergirls\"}, {\"name\": \"Afterschool\"}, {\"name\": \"apink\"}, {\"name\": \"HelloVenus\"}, {\"name\": \"Rania\"}, {\"name\": \"girlsday\"}, {\"name\": \"ninemuses\"}, {\"name\": \"crayonpop\"}, {\"name\": \"AceOfAngels8\"}, {\"name\": \"tiffany\"}, {\"name\": \"2NE1\"}, {\"name\": \"Rainnous\"}, {\"name\": \"Sooyoung\"}, {\"name\": \"LeeHi\"}, {\"name\": \"superjunior\"}, {\"name\": \"kalbums\"}, {\"name\": \"fourminute\"}, {\"name\": \"DalShabet\"}, {\"name\": \"fxKorea\"}, {\"name\": \"redvelvetsm\"}, {\"name\": \"SunnyHill\"}, {\"name\": \"hyoyeon\"}, {\"name\": \"sistar\"}, {\"name\": \"jessica\"}, {\"name\": \"infinite7\"}, {\"name\": \"SnsdYoona\"}, {\"name\": \"soonkyu\"}, {\"name\": \"tiara\"}, {\"name\": \"LEDApple\"}, {\"name\": \"KDRAMA\"}, {\"name\": \"bigbang\"}, {\"name\": \"seojoohyun\"}, {\"name\": \"SHINee\"}, {\"name\": \"kpics\"}, {\"name\": \"kpop\"}, {\"name\": \"kpopchords\"}, {\"name\": \"SNSD\"}, {\"name\": \"Fiestar\"}, {\"name\": \"KwonYuri\"}, {\"name\": \"AoABlack\"}, {\"name\": \"Juniel\"}, {\"name\": \"younha\"}, {\"name\": \"browneyedgirls\"}, {\"name\": \"chocolat\"}, {\"name\": \"koreanvariety\"}, {\"name\": \"secrettime\"}, {\"name\": \"kimtaeyeon\"}, {\"name\": \"Ailee\"}, {\"name\": \"koreanmusic\"}, {\"name\": \"kara\"}], \"created_utc\": 1368565625.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/kpop\", \"description_md\": \"\"}}, {\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"metareddit\", \"name\": \"metareddit\", \"description_html\": \"\", \"created\": 1368595010.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"SubredditReviews\"}, {\"name\": \"metareddit\"}, {\"name\": \"modtools\"}, {\"name\": \"ideasfortheadmins\"}, {\"name\": \"MetaHub\"}, {\"name\": \"TheoryOfLinks\"}, {\"name\": \"redditlists\"}, {\"name\": \"obscuresubreddits\"}, {\"name\": \"reddittools\"}, {\"name\": \"newreddits\"}, {\"name\": \"findareddit\"}, {\"name\": \"AnalyzingReddit\"}, {\"name\": \"adoptareddit\"}, {\"name\": \"weeklyreddit\"}, {\"name\": \"TheoryOfReddit\"}, {\"name\": \"changelog\"}, {\"name\": \"subredditoftheday\"}, {\"name\": \"ModsOfTheRealms\"}, {\"name\": \"NOTSONEWREDDITS\"}, {\"name\": \"RedditInTheNews\"}, {\"name\": \"redditoroftheday\"}, {\"name\": \"stattit\"}, {\"name\": \"Admin\"}, {\"name\": \"aboutreddit\"}, {\"name\": \"TrafficStatistics\"}], \"created_utc\": 1368566210.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/metareddit\", \"description_md\": \"\"}}, {\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"music\", \"name\": \"music\", \"description_html\": \"\", \"created\": 1368594182.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"swinghouse\"}, {\"name\": \"headnodders\"}, {\"name\": \"Complextro\"}, {\"name\": \"listentous\"}, {\"name\": \"koreanmusic\"}, {\"name\": \"indomusic\"}, {\"name\": \"electrohiphop\"}, {\"name\": \"kpop\"}, {\"name\": \"electrohouse\"}, {\"name\": \"ElectronicJazz\"}, {\"name\": \"GuiltyPleasureMusic\"}, {\"name\": \"dubstep\"}, {\"name\": \"Exotica\"}, {\"name\": \"listentothis\"}, {\"name\": \"HiphopWorldwide\"}], \"created_utc\": 1368565382.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/music\", \"description_md\": \"\"}}, {\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"reddithelp\", \"name\": \"reddithelp\", \"description_html\": \"\", \"created\": 1368594397.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"modclub\"}, {\"name\": \"modnews\"}, {\"name\": \"csshelp\"}, {\"name\": \"changelog\"}, {\"name\": \"help\"}, {\"name\": \"bugs\"}, {\"name\": \"ideasfortheadmins\"}, {\"name\": \"ProjectCSS\"}, {\"name\": \"modhelp\"}, {\"name\": \"AskModerators\"}], \"created_utc\": 1368565597.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/reddithelp\", \"description_md\": \"\"}}, {\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"sfwpornaesthetic\", \"name\": \"sfwpornaesthetic\", \"description_html\": \"\", \"created\": 1374641393.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"SculpturePorn\"}, {\"name\": \"mtgporn\"}, {\"name\": \"GamerPorn\"}, {\"name\": \"ViewPorn\"}, {\"name\": \"MacroPorn\"}, {\"name\": \"powerwashingporn\"}, {\"name\": \"AdPorn\"}, {\"name\": \"GeekPorn\"}, {\"name\": \"HellscapePorn\"}, {\"name\": \"RetroGamePorn\"}, {\"name\": \"OrganizationPorn\"}, {\"name\": \"RoomPorn\"}, {\"name\": \"ArtPorn\"}, {\"name\": \"FractalPorn\"}, {\"name\": \"ApocalypsePorn\"}, {\"name\": \"DesignPorn\"}, {\"name\": \"avporn\"}, {\"name\": \"fashionporn\"}, {\"name\": \"uniformporn\"}, {\"name\": \"AerialPorn\"}, {\"name\": \"MetalPorn\"}, {\"name\": \"StreetArtPorn\"}, {\"name\": \"AlbumArtPorn\"}, {\"name\": \"ExposurePorn\"}, {\"name\": \"MoviePosterPorn\"}, {\"name\": \"InstrumentPorn\"}], \"created_utc\": 1374612593.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/sfwpornaesthetic\", \"description_md\": \"\"}}, {\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"sfwpornfeatured\", \"name\": \"sfwpornfeatured\", \"description_html\": \"\", \"created\": 1375956803.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"TrainPorn\"}, {\"name\": \"Beachporn\"}, {\"name\": \"EarthlingPorn\"}, {\"name\": \"cableporn\"}, {\"name\": \"Industrialporn\"}, {\"name\": \"TelevisionPosterPorn\"}], \"created_utc\": 1375928003.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/sfwpornfeatured\", \"description_md\": \"\"}}, {\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"sfwpornnature\", \"name\": \"sfwpornnature\", \"description_html\": \"\", \"created\": 1374641163.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"BotanicalPorn\"}, {\"name\": \"AutumnPorn\"}, {\"name\": \"Beachporn\"}, {\"name\": \"waterporn\"}, {\"name\": \"spaceporn\"}, {\"name\": \"MushroomPorn\"}, {\"name\": \"DestructionPorn\"}, {\"name\": \"SpringPorn\"}, {\"name\": \"lavaporn\"}, {\"name\": \"FirePorn\"}, {\"name\": \"geologyporn\"}, {\"name\": \"WeatherPorn\"}, {\"name\": \"winterporn\"}, {\"name\": \"seaporn\"}, {\"name\": \"SummerPorn\"}, {\"name\": \"desertporn\"}, {\"name\": \"SkyPorn\"}, {\"name\": \"EarthPorn\"}, {\"name\": \"lakeporn\"}], \"created_utc\": 1374612363.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/sfwpornnature\", \"description_md\": \"\"}}, {\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"sfwpornnetwork\", \"name\": \"sfwpornnetwork\", \"description_html\": \"\", \"created\": 1374639172.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"MicroPorn\"}, {\"name\": \"AbandonedPorn\"}, {\"name\": \"MilitaryPorn\"}, {\"name\": \"VillagePorn\"}, {\"name\": \"EarthlingPorn\"}, {\"name\": \"policeporn\"}, {\"name\": \"Houseporn\"}, {\"name\": \"SummerPorn\"}, {\"name\": \"DessertPorn\"}, {\"name\": \"BonsaiPorn\"}, {\"name\": \"AdrenalinePorn\"}, {\"name\": \"InfraredPorn\"}, {\"name\": \"MacroPorn\"}, {\"name\": \"WeatherPorn\"}, {\"name\": \"RoomPorn\"}, {\"name\": \"FractalPorn\"}, {\"name\": \"ApocalypsePorn\"}, {\"name\": \"FossilPorn\"}, {\"name\": \"SpringPorn\"}, {\"name\": \"bridgeporn\"}, {\"name\": \"RidesPorn\"}, {\"name\": \"EarthPorn\"}, {\"name\": \"lakeporn\"}, {\"name\": \"BotanicalPorn\"}, {\"name\": \"MapPorn\"}, {\"name\": \"StreetArtPorn\"}, {\"name\": \"SportsPorn\"}, {\"name\": \"drydockporn\"}, {\"name\": \"bookporn\"}, {\"name\": \"InstrumentPorn\"}, {\"name\": \"mtgporn\"}, {\"name\": \"waterporn\"}, {\"name\": \"CityPorn\"}, {\"name\": \"ArtefactPorn\"}, {\"name\": \"CabinPorn\"}, {\"name\": \"MachinePorn\"}, {\"name\": \"Beachporn\"}, {\"name\": \"GunPorn\"}, {\"name\": \"stadiumporn\"}, {\"name\": \"steamporn\"}, {\"name\": \"CemeteryPorn\"}, {\"name\": \"HellscapePorn\"}, {\"name\": \"InfrastructurePorn\"}, {\"name\": \"RetroGamePorn\"}, {\"name\": \"AutumnPorn\"}, {\"name\": \"NewsPorn\"}, {\"name\": \"MegalithPorn\"}, {\"name\": \"fashionporn\"}, {\"name\": \"winterporn\"}, {\"name\": \"ArchitecturePorn\"}, {\"name\": \"VideoPorn\"}, {\"name\": \"futureporn\"}, {\"name\": \"retailporn\"}, {\"name\": \"AnimalPorn\"}, {\"name\": \"GamerPorn\"}, {\"name\": \"ViewPorn\"}, {\"name\": \"desertporn\"}, {\"name\": \"HumanPorn\"}, {\"name\": \"powerwashingporn\"}, {\"name\": \"GeekPorn\"}, {\"name\": \"lavaporn\"}, {\"name\": \"seaporn\"}, {\"name\": \"ArtPorn\"}, {\"name\": \"TeaPorn\"}, {\"name\": \"QuotesPorn\"}, {\"name\": \"DesignPorn\"}, {\"name\": \"FirePorn\"}, {\"name\": \"TechnologyPorn\"}, {\"name\": \"boatporn\"}, {\"name\": \"ThingsCutInHalfPorn\"}, {\"name\": \"MushroomPorn\"}, {\"name\": \"ComicBookPorn\"}, {\"name\": \"TelevisionPosterPorn\"}, {\"name\": \"StarshipPorn\"}, {\"name\": \"toolporn\"}, {\"name\": \"DestructionPorn\"}, {\"name\": \"Knifeporn\"}, {\"name\": \"ruralporn\"}, {\"name\": \"churchporn\"}, {\"name\": \"CulinaryPorn\"}, {\"name\": \"spaceflightporn\"}, {\"name\": \"F1Porn\"}, {\"name\": \"AdPorn\"}, {\"name\": \"spaceporn\"}, {\"name\": \"geologyporn\"}, {\"name\": \"OrganizationPorn\"}, {\"name\": \"AgriculturePorn\"}, {\"name\": \"ClimbingPorn\"}, {\"name\": \"avporn\"}, {\"name\": \"SkyPorn\"}, {\"name\": \"uniformporn\"}, {\"name\": \"AerialPorn\"}, {\"name\": \"MetalPorn\"}, {\"name\": \"carporn\"}, {\"name\": \"FoodPorn\"}, {\"name\": \"AlbumArtPorn\"}, {\"name\": \"HistoryPorn\"}, {\"name\": \"MotorcyclePorn\"}, {\"name\": \"ExposurePorn\"}, {\"name\": \"MoviePosterPorn\"}], \"created_utc\": 1374610372.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/sfwpornnetwork\", \"description_md\": \"\"}}, {\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"sfwpornorganic\", \"name\": \"sfwpornorganic\", \"description_html\": \"\", \"created\": 1374641308.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"CulinaryPorn\"}, {\"name\": \"AdrenalinePorn\"}, {\"name\": \"HumanPorn\"}, {\"name\": \"AnimalPorn\"}, {\"name\": \"AgriculturePorn\"}, {\"name\": \"MegalithPorn\"}, {\"name\": \"ClimbingPorn\"}, {\"name\": \"FoodPorn\"}, {\"name\": \"DessertPorn\"}, {\"name\": \"TeaPorn\"}, {\"name\": \"SportsPorn\"}], \"created_utc\": 1374612508.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/sfwpornorganic\", \"description_md\": \"\"}}, {\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"sfwpornscholastic\", \"name\": \"sfwpornscholastic\", \"description_html\": \"\", \"created\": 1374641708.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"QuotesPorn\"}, {\"name\": \"MapPorn\"}, {\"name\": \"NewsPorn\"}, {\"name\": \"MegalithPorn\"}, {\"name\": \"bookporn\"}, {\"name\": \"FossilPorn\"}, {\"name\": \"ArtefactPorn\"}, {\"name\": \"HistoryPorn\"}, {\"name\": \"futureporn\"}], \"created_utc\": 1374612908.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/sfwpornscholastic\", \"description_md\": \"\"}}, {\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"sfwpornsynthetic\", \"name\": \"sfwpornsynthetic\", \"description_html\": \"\", \"created\": 1374641201.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"AbandonedPorn\"}, {\"name\": \"MilitaryPorn\"}, {\"name\": \"CityPorn\"}, {\"name\": \"policeporn\"}, {\"name\": \"toolporn\"}, {\"name\": \"Houseporn\"}, {\"name\": \"Knifeporn\"}, {\"name\": \"StarshipPorn\"}, {\"name\": \"ruralporn\"}, {\"name\": \"CabinPorn\"}, {\"name\": \"MachinePorn\"}, {\"name\": \"VillagePorn\"}, {\"name\": \"spaceflightporn\"}, {\"name\": \"F1Porn\"}, {\"name\": \"RoadPorn\"}, {\"name\": \"GunPorn\"}, {\"name\": \"steamporn\"}, {\"name\": \"CemeteryPorn\"}, {\"name\": \"InfrastructurePorn\"}, {\"name\": \"TechnologyPorn\"}, {\"name\": \"boatporn\"}, {\"name\": \"bridgeporn\"}, {\"name\": \"RidesPorn\"}, {\"name\": \"ArchitecturePorn\"}, {\"name\": \"AerialPorn\"}, {\"name\": \"ThingsCutInHalfPorn\"}, {\"name\": \"carporn\"}, {\"name\": \"drydockporn\"}, {\"name\": \"retailporn\"}], \"created_utc\": 1374612401.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/sfwpornsynthetic\", \"description_md\": \"\"}}]"
+        },
+        "headers": {
+          "CF-RAY": "2c40fced0d68226a-LAX",
+          "Connection": "keep-alive",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 17 Jul 2016 22:04:09 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Transfer-Encoding": "chunked",
+          "Vary": "accept-encoding",
+          "X-Moose": "majestic",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=gqxlntnla8tmjdK07ntIGLwiG6TKGXhGp1xPS79z6wt%2Bf20oi%2BberPIJXmrTKxq2QPhTu4XKNvdVXWbH76vVFQHVne1JaEKW",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/multi/user/kjoneslol/?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.7.1"
+}

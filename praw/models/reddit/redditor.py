@@ -35,13 +35,13 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         self._listing_use_sort = True
         if name:
             self.name = name
-        self._path = API_PATH['user'].format(user=self.name)
+        self._path = API_PATH['user'].format(user=self)
 
     def _info_path(self):
-        return API_PATH['user_about'].format(user=self.name)
+        return API_PATH['user_about'].format(user=self)
 
     def _friend(self, method, data):
-        url = API_PATH['friend_v1'].format(user=self.name)
+        url = API_PATH['friend_v1'].format(user=self)
         return self._reddit.request(method, url, data=dumps(data))
 
     def friend(self, note=None):
@@ -63,7 +63,7 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
             possibly ``note`` if the authenticated user has reddit Gold.
 
         """
-        return self._reddit.get(API_PATH['friend_v1'].format(user=self.name))
+        return self._reddit.get(API_PATH['friend_v1'].format(user=self))
 
     def gild(self, months=1):
         """Gild the Redditor.
@@ -77,6 +77,10 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         self._reddit.post(API_PATH['gild_user'].format(username=self),
                           data={'months': months})
 
+    def multireddits(self):
+        """Return a list of the redditor's public multireddits."""
+        return self._reddit.get(API_PATH['multireddit_user'].format(user=self))
+
     def unblock(self):
         """Unblock the Redditor.
 
@@ -87,9 +91,9 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
 
         """
         data = {'container': self._reddit.user.me().fullname,
-                'name': self.name, 'type': 'enemy'}
+                'name': str(self), 'type': 'enemy'}
         return self._reddit.post(API_PATH['unfriend'], data=data)
 
     def unfriend(self):
         """Unfriend the Redditor."""
-        self._friend(method='delete', data={'id': self.name})
+        self._friend(method='delete', data={'id': str(self)})

@@ -57,6 +57,15 @@ class TestRedditor(IntegrationTest):
             redditor.message('PRAW test', 'This is a test from PRAW',
                              from_subreddit=pytest.placeholders.test_subreddit)
 
+    def test_multireddits(self):
+        redditor = self.reddit.redditor('kjoneslol')
+        with self.recorder.use_cassette('TestRedditor.test_multireddits'):
+            for multireddit in redditor.multireddits():
+                if 'sfwpornnetwork' == multireddit.name:
+                    break
+            else:
+                assert False, 'sfwpornnetwork not found in multireddits'
+
     @mock.patch('time.sleep', return_value=None)
     def test_unfriend(self, _):
         self.reddit.read_only = False
