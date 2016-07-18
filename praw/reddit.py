@@ -115,6 +115,7 @@ class Reddit(object):
                     self.config.kinds['subreddit']: models.Subreddit,
                     'LabeledMulti': models.Multireddit,
                     'Listing': models.Listing,
+                    'LiveUpdateEvent': models.LiveThread,
                     'UserList': models.RedditorList,
                     'modaction': models.ModAction,
                     'more': models.MoreComments}

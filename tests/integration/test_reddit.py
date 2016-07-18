@@ -1,10 +1,20 @@
 """Test praw.reddit."""
 import mock
 
+from praw.models import LiveThread
+
 from . import IntegrationTest
 
 
 class TestReddit(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_live_create(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestReddit.test_live_create'):
+            live = self.reddit.live.create('PRAW Create Test')
+            assert isinstance(live, LiveThread)
+            assert live.title == 'PRAW Create Test'
+
     @mock.patch('time.sleep', return_value=None)
     def test_multireddit_create(self, _):
         self.reddit.read_only = False

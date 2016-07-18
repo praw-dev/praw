@@ -36,12 +36,14 @@ class Objector(object):
             parser = self.parsers[data['kind']]
             return parser.parse(data['data'], self._reddit)
         elif 'json' in data and 'data' in data['json']:
-            if 'things' in data['json']['data']:  # For Submission.reply
+            if 'things' in data['json']['data']:  # Submission.reply
                 return self.objectify(data['json']['data']['things'])
-            # For Subreddit.submit
-            # The URL is the URL to the submission, so it's removed.
-            del data['json']['data']['url']
-            parser = self.parsers[self._reddit.config.kinds['submission']]
+            if 'url' in data['json']['data']:  # Subreddit.submit
+                # The URL is the URL to the submission, so it's removed.
+                del data['json']['data']['url']
+                parser = self.parsers[self._reddit.config.kinds['submission']]
+            else:
+                parser = self.parsers['LiveUpdateEvent']
             return parser.parse(data['json']['data'], self._reddit)
         elif 'json' in data and 'errors' in data['json']:
             errors = data['json']['errors']

@@ -9,6 +9,22 @@ from .reddit.multi import Multireddit
 class LiveHelper(PRAWBase):
     """Provide a set of functions to interact with LiveThreads."""
 
+    def create(self, title, description=None, nsfw=False, resources=None):
+        """Create a new LiveThread.
+
+        :param title: The title of the new LiveThread.
+        :param description: (Optional) The new LiveThread's description.
+        :param nsfw: (boolean) Indicate whether this thread is not safe for
+            work (default: False).
+        :param resources: (Optional) Markdown formatted information that is
+            useful for the LiveThread.
+        :returns: The new LiveThread object.
+
+        """
+        return self._reddit.post(API_PATH['livecreate'], data={
+            'description': description, 'nsfw': nsfw, 'resources': resources,
+            'title': title})
+
 
 class MultiredditHelper(PRAWBase):
     """Provide a set of functions to interact with Multireddits."""

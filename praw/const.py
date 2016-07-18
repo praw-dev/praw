@@ -49,6 +49,8 @@ API_PATH = {
     'info':                   'api/info/',
     'leavecontributor':       'api/leavecontributor',
     'leavemoderator':         'api/leavemoderator',
+    'liveabout':              'api/live/{id}/about/',
+    'livecreate':             'api/live/create',
     'me':                     'api/v1/me',
     'mentions':               'message/mentions',
     'message':                'message/messages/{messageid}/',

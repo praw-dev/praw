@@ -6,6 +6,7 @@ from .list.redditor import RedditorList  # NOQA
 from .listing.generator import ListingGenerator  # NOQA
 from .listing.listing import Listing  # NOQA
 from .reddit.comment import Comment  # NOQA
+from .reddit.live import LiveThread  # NOQA
 from .reddit.message import Message, SubredditMessage  # NOQA
 from .reddit.modaction import ModAction  # NOQA
 from .reddit.more import MoreComments  # NOQA
