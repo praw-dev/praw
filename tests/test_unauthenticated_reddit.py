@@ -3,7 +3,6 @@
 from __future__ import print_function, unicode_literals
 
 import mock
-import warnings
 from six import text_type
 from praw import Reddit, errors, helpers
 from praw.objects import Comment, MoreComments, Submission
@@ -332,7 +331,4 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertTrue(subreddit.json_dict)
 
     def test_user_agent(self):
-        with warnings.catch_warnings(record=True) as w:
-            Reddit('robot agent')
-            assert len(w) == 1
-            assert isinstance(w[0].message, UserWarning)
+        self.assertWarnings(UserWarning, Reddit, 'robot agent')

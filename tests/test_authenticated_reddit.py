@@ -1,7 +1,6 @@
 """Tests for AuthenticatedReddit class and its mixins."""
 
 from __future__ import print_function, unicode_literals
-import warnings
 from praw import errors
 from .helper import PRAWTest, betamax
 
@@ -56,11 +55,8 @@ class AuthenticatedRedditTest(PRAWTest):
 
     @betamax()
     def test_login__deprecation_warning(self):
-        with warnings.catch_warnings(record=True) as warning_list:
-            self.r.login(self.un, self.un_pswd)
-            self.assertEqual(1, len(warning_list))
-            self.assertTrue(isinstance(warning_list[0].message,
-                                       DeprecationWarning))
+        self.assertWarnings(DeprecationWarning, self.r.login,
+                            self.un, self.un_pswd)
 
     @betamax()
     def test_moderator_or_oauth_required__logged_in_from_reddit_obj(self):
