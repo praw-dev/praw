@@ -3,6 +3,7 @@
 from __future__ import print_function, unicode_literals
 
 import mock
+import os
 from six import text_type
 from praw import Reddit, errors, helpers
 from praw.objects import Comment, MoreComments, Submission
@@ -269,6 +270,9 @@ class UnauthenticatedRedditTest(PRAWTest):
     def test_not_logged_in_when_initialized(self):
         self.assertEqual(self.r.user, None)
 
+    def test_raise_on_direct_request(self):
+        self.assertRaises(errors.ClientException, self.r.http.request)
+
     def test_require_user_agent(self):
         self.assertRaises(TypeError, Reddit, user_agent=None)
         self.assertRaises(TypeError, Reddit, user_agent='')
@@ -332,3 +336,13 @@ class UnauthenticatedRedditTest(PRAWTest):
 
     def test_user_agent(self):
         self.assertWarnings(UserWarning, Reddit, 'robot agent')
+        google_app_engine = "Google App Engine v2.6"
+        old_server_software, os.environ['SERVER_SOFTWARE'] = \
+            os.environ.get('SERVER_SOFTWARE'), google_app_engine
+        try:
+            self.assertIn(google_app_engine,
+                          Reddit('robot engine').http.headers['User-Agent'])
+        finally:
+            del os.environ['SERVER_SOFTWARE']
+            if old_server_software is not None:
+                os.environ['SERVER_SOFTWARE'] = old_server_software
