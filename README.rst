@@ -108,3 +108,8 @@ All of the code contained here is licensed by
 `the GNU GPLv3 <https://github.com/praw-dev/praw/blob/master/COPYING>`_.
 
 .. end_license
+
+
+.. image:: https://badges.gitter.im/praw-dev/praw.svg
+   :alt: Join the chat at https://gitter.im/praw-dev/praw
+   :target: https://gitter.im/praw-dev/praw?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
