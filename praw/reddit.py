@@ -1,6 +1,5 @@
 """Provide the Reddit class."""
 import os
-from json import dumps
 
 from six import iteritems
 from update_checker import update_check
@@ -97,7 +96,8 @@ class Reddit(object):
         self._prepare_prawcore()
         self.front = models.Front(self)
         self.inbox = models.Inbox(self, None)
-        self.multireddit = MultiredditHelper(self)
+        self.live = models.LiveHelper(self, None)
+        self.multireddit = models.MultiredditHelper(self, None)
         self.subreddits = models.Subreddits(self, None)
         self.user = models.User(self, None)
 
@@ -231,61 +231,3 @@ class Reddit(object):
         elif lower_name == 'randnsfw':
             return self.random_subreddit(nsfw=True)
         return models.Subreddit(self, name)
-
-
-class MultiredditHelper(object):
-    """Provide a set of functions to interact with Multireddits."""
-
-    def __init__(self, reddit):
-        """Create a MultiredditHelper instance.
-
-        :param reddit: The reddit instance.
-
-        """
-        self.reddit = reddit
-
-    def __call__(self, redditor, name):
-        """Return a lazy instance of :class:`~.Multireddit`.
-
-        :param redditor: A string or :class:`~.Redditor` instance who owns the
-            multireddit.
-        :param name: The name of the multireddit.
-
-        """
-        path = '/user/{}/m/{}'.format(redditor, name)
-        return models.Multireddit(
-            self.reddit, _data={'name': name, 'path': path})
-
-    def create(self, display_name, subreddits, description_md=None,
-               icon_name=None, key_color=None, visibility='private',
-               weighting_scheme='classic'):
-        """Create a new multireddit.
-
-        :param display_name: The display name for the new multireddit.
-        :param subreddits: Subreddits to add to the new multireddit.
-        :param description_md: (Optional) Description for the new multireddit,
-            formatted in markdown.
-        :param icon_name: (Optional) Can be one of: ``art
-            and design``, ``ask``, ``books``, ``business``, ``cars``,
-            ``comics``, ``cute animals``, ``diy``, ``entertainment``, ``food
-            and drink``, ``funny``, ``games``, ``grooming``, ``health``, ``life
-            advice``, ``military``, ``models pinup``, ``music``, ``news``,
-            ``philosophy``, ``pictures and gifs``, ``science``, ``shopping``,
-            ``sports``, ``style``, ``tech``, ``travel``, ``unusual stories``,
-            ``video``, or ``None``.
-        :param key_color: (Optional) RGB hex color code of the form `#FFFFFF`.
-        :param visibility: (Optional) Can be one of: ``hidden``, ``private``,
-            ``public`` (Default: private).
-        :param weighting_scheme: (Optional) Can be one of: ``classic``,
-            ``fresh`` (Default: classic)
-        :returns: The new Multireddit object.
-
-        """
-        model = {'description_md': description_md,
-                 'display_name': display_name, 'icon_name': icon_name,
-                 'key_color': key_color,
-                 'subreddits': [{'name': str(sub)} for sub in subreddits],
-                 'visibility': visibility,
-                 'weighting_scheme': weighting_scheme}
-        return self.reddit.post(API_PATH['multireddit_base'],
-                                data={'model': dumps(model)})
