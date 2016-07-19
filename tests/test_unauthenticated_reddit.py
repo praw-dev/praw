@@ -4,8 +4,11 @@ from __future__ import print_function, unicode_literals
 
 import mock
 import os
-from six import text_type
-from praw import Reddit, errors, helpers
+import re
+from six import text_type, assertRaisesRegex
+from six.moves import filter, reload_module
+import sys
+from praw import Reddit, errors, helpers, settings
 from praw.objects import Comment, MoreComments, Submission
 from .helper import PRAWTest, betamax
 
@@ -102,6 +105,47 @@ class UnauthenticatedRedditTest(PRAWTest):
     def test_get_front_page(self):
         num = 50
         self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
+
+    def test_load_config(self):
+        environkeys = ('APPDATA', 'XDG_CONFIG_HOME', 'HOME')
+        environkeys = {key: os.getenv(key) for key in environkeys}
+        knownkey = list(filter(None, environkeys.values()))
+        knownkey = knownkey[0] if knownkey else None
+        for environkey, oldkey in environkeys.items():
+            os.environ[environkey] = knownkey
+            try:
+                reload_module(settings)
+            except Exception:
+                raise AssertionError("Could not load config "
+                                     "for key {}".format(environkey))
+            finally:
+                del os.environ[environkey]
+                if oldkey is not None:
+                    os.environ[environkey] = oldkey
+        for environkey in filter(lambda key: key in os.environ, environkeys):
+            del os.environ[environkey]
+        configfiles = [os.path.join(
+                       os.path.dirname(
+                           sys.modules[settings.__name__].__file__),
+                       'praw.ini'), 'praw.ini']
+        configdata = {}
+        for cfile in configfiles:
+            try:
+                with open(cfile, 'r') as f:
+                    configdata[f] = f.read()
+                    os.remove(f.name)
+            except IOError:
+                pass
+        try:
+            assertRaisesRegex(self, Exception, re.escape(str(configfiles)),
+                              reload_module, settings)
+        finally:
+            for environkey, oldkey in environkeys.items():
+                if oldkey is not None:
+                    os.environ[environkey] = oldkey
+            for fileobj, filedata in configdata.items():
+                with open(fileobj.name, 'w') as f:
+                    f.write(filedata)
 
     def test_login_or_oauth_required__not_logged_in(self):
         self.assertRaises(errors.LoginOrScopeRequired,
@@ -338,7 +382,7 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertWarnings(UserWarning, Reddit, 'robot agent')
         google_app_engine = "Google App Engine v2.6"
         old_server_software, os.environ['SERVER_SOFTWARE'] = \
-            os.environ.get('SERVER_SOFTWARE'), google_app_engine
+            os.getenv('SERVER_SOFTWARE'), google_app_engine
         try:
             self.assertIn(google_app_engine,
                           Reddit('robot engine').http.headers['User-Agent'])
