@@ -4,8 +4,8 @@ PRAW: The Python Reddit API Wrapper
 ===================================
 
 .. include:: ../README.rst
-   :start-after: begin_description
-   :end-before: end_description
+   :start-after: description
+   :end-before: installation
 
 Content Pages
 -------------
@@ -44,13 +44,4 @@ References And Other Relevant Pages
   reddit's codebase, PRAW and other API clients here
 
 .. include:: ../README.rst
-   :start-after: begin_installation
-   :end-before: end_installation
-
-.. include:: ../README.rst
-   :start-after: begin_support
-   :end-before: end_support
-
-.. include:: ../README.rst
-   :start-after: begin_license
-   :end-before: end_license
+   :start-after: installation
