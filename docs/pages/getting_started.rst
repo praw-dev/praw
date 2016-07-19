@@ -17,8 +17,8 @@ What we won't go over in this tutorial is the Python code.
 Connecting to reddit
 --------------------
 
-Start by firing up Python and importing PRAW. You can find the installation
-instructions on the :ref:`main page <main_page>`.
+Start by firing up Python and importing PRAW. Revisit the :ref:`installation
+instructions <installation>` if necessary.
 
 .. code-block:: pycon
 
@@ -122,8 +122,6 @@ require 3 api calls and take at least 2x2=4 seconds due to API delay. PRAW does
 the API calls lazily, i.e. it will not send the next api call until you
 actually need the data. Meaning the runtime is max(api_delay, code execution
 time).
-
-Continue to the next tutorial. :ref:`writing_a_bot`.
 
 The full Karma Breakdown program.
 ---------------------------------
