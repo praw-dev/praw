@@ -36,7 +36,7 @@ following:
         if check_condition(c):
             bot_action(c)
 
-Now all we need to do to transform this into a working bot is to provide a 
+Now all we need to do to transform this into a working bot is to provide a
 `check_condition` function and a `bot_action` function.
 
 Working demo: ListFixerBot
@@ -49,25 +49,25 @@ lists where the comment author replaced dots with parens. Our goal is to find
 comments containing lists that look like:
 
     1) Item one
-    
+
     2) Item two
-    
+
     3) Item three
-    
-or even 
-    
+
+or even
+
 
     1) Item one 2) Item two 3) Item three
-    
+
 and modify them so they will appear as:
 
    1. Item one
-   
+
    2. Item two
-   
+
    3. Item three
-   
-First, let's write a function to determine if a comment matches what we're 
+
+First, let's write a function to determine if a comment matches what we're
 looking for. Following the template presented earlier, let's just call this
 function `check_condition` so we can drop it directly into our existing code.
 
@@ -187,7 +187,7 @@ Here's our completed bot!
 
         # If you want the bot to be able to respond to people, you will need to login.
         # It is strongly recommended you login with oAuth
-        # http://praw.readthedocs.org/en/stable/pages/oauth.html
+        # http://praw.readthedocs.io/en/stable/pages/oauth.html
 
         # NB: This login method is being deprecated soon
         r.login()
@@ -195,7 +195,7 @@ Here's our completed bot!
         for c in praw.helpers.comment_stream(r, 'all'):
             if check_condition(c):
                 # set 'respond=True' to activate bot responses. Must be logged in.
-                bot_action(c, respond=False) 
+                bot_action(c, respond=False)
 
 Keep in mind: bots of this kind are often perceived as annoying and quickly get
 banned from many subreddits. If/when your bot gets banned, don't take it

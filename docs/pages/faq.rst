@@ -83,7 +83,7 @@ A :class:`.Comment` is an object which contain a number of attributes with
 information about the object such as ``author``, ``body`` or ``created_utc``.
 When you use ``print`` the object string (well unicode) representation of the
 object is printed. Use ``vars`` to discover what attributes and their values an
-object has, see :ref:`writing_a_bot` for more details.
+object has.
 
 Why does the karma change from run to run?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

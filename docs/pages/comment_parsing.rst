@@ -18,7 +18,7 @@ do its work.
 
 >>> import praw
 >>> r = praw.Reddit('Comment Scraper 1.0 by u/_Daimon_ see '
-...                 'https://praw.readthedocs.org/en/latest/'
+...                 'https://praw.readthedocs.io/en/latest/'
 ...                 'pages/comment_parsing.html')
 >>> submission = r.get_submission(submission_id='11v36o')
 
@@ -53,8 +53,7 @@ test the bot in `r/test <http://www.reddit.com/r/test>`_ before we let it loose
 on a "real" subreddit. As it happens, our bot as described so far contains a
 bug. It doesn't test if we've already replied to a comment before replying. We
 fix this bug by storing the content_id of every comment we've replied to and
-test for membership of that list before replying. Just like in
-:ref:`writing_a_bot`.
+test for membership of that list before replying.
 
 The number of comments
 ----------------------
@@ -116,7 +115,7 @@ The full program
     import praw
 
     r = praw.Reddit('Comment Scraper 1.0 by u/_Daimon_ see '
-                    'https://praw.readthedocs.org/en/latest/'
+                    'https://praw.readthedocs.io/en/latest/'
                     'pages/comment_parsing.html')
     r.login('bot_username', 'bot_password')
     submission = r.get_submission(submission_id='11v36o')

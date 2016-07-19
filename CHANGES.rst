@@ -42,6 +42,6 @@ upstream changes.
   nice, it's not worth the additional code.
 
 For changes prior to version 4.0 please see: `3.4.0 changelog
-<http://praw.readthedocs.org/en/v3.4.0/pages/changelog.html>`_
+<http://praw.readthedocs.io/en/v3.4.0/pages/changelog.html>`_
 
 .. end_changelog_body

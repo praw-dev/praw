@@ -161,7 +161,7 @@ class Reddit(object):
 
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body
-        of the request.
+            of the request.
         :param params: The query parameters to add to the request (Default:
             None).
 
@@ -201,7 +201,7 @@ class Reddit(object):
         :param params: The query parameters to add to the request (Default:
             None).
         :param data: Dictionary, bytes, or file-like object to send in the body
-        of the request.
+            of the request.
 
         """
         if not self._core._authorizer.is_valid():

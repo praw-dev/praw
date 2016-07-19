@@ -1,31 +1,18 @@
-.. _main_page:
-
-PRAW: The Python Reddit API Wrapper
-===================================
-
 .. include:: ../README.rst
-   :start-after: begin_description
-   :end-before: end_description
 
-Content Pages
--------------
+Table of Contents
+-----------------
 
 .. toctree::
-    :maxdepth: 1
+   :maxdepth: 1
 
-    pages/getting_started
-    pages/call_and_response_bot
-    pages/comment_parsing
-    pages/lazy-loading
-    pages/contributor_guidelines
-    pages/configuration_files
-    pages/faq
-    pages/changelog
-    pages/code_overview
-    pages/useful_scripts
+   pages/changelog
+   pages/code_overview
+   pages/contributor_guidelines
 
-References And Other Relevant Pages
------------------------------------
+
+Other Relevant Pages
+--------------------
 
 * `PRAW's Source Code <https://github.com/praw-dev/praw>`_
 * `reddit's Source Code <https://github.com/reddit/reddit>`_
@@ -43,14 +30,3 @@ References And Other Relevant Pages
 * `r/redditdev <https://www.reddit.com/r/redditdev>`_. Ask questions about
   reddit's codebase, PRAW and other API clients here
 
-.. include:: ../README.rst
-   :start-after: begin_installation
-   :end-before: end_installation
-
-.. include:: ../README.rst
-   :start-after: begin_support
-   :end-before: end_support
-
-.. include:: ../README.rst
-   :start-after: begin_license
-   :end-before: end_license
