@@ -1,45 +1,52 @@
-A Simple Stream-Based Reply Bot
-===============================
+Submission Stream Reply Bot
+===========================
 
-Any Redditor has seen bots in action on the site. They can provide useful
-information (like an Imperial to Metric bot), convenience (link corrector
-bots), or analytical information (redditor analyzer bot for writing
-complexity), among other things.
+Most redditors have seen bots in action on the site. Reddit bots can perform a
+number of tasks including providing useful information, e.g., an Imperial to
+Metric units bot; convenience, e.g., a link corrector bot; or analytical
+information, e.g., redditor analyzer bot for writing complexity.
 
-PRAW is the simplest way to build your own bot using Python.
+PRAW provides a simple way to build your own bot using the python programming
+language. As a result, it is little surprise that a majority of bots on Reddit
+are powered by PRAW.
 
 This tutorial will show you how to build a bot that monitors a particular
-subreddit, /r/AskReddit, that replies to new submissions that contain simple
-questions with a link to "lmgtfy.com" (Let Me Google This For You).
+subreddit, `/r/AskReddit <https://www.reddit.com/r/AskReddit/>`_, for new
+submissions containing simple questions and replies with an appropriate link to
+`lmgtfy <http://lmgtfy.com/>`_ (Let Me Google This For You).
 
-To do this, there are 3 key components we'll have to address:
+There are three key components we will address to perform this task:
 
-1. A way to monitor new submissions.
+1. Monitor new submissions.
 
-2. A way to analyze the titles of those submissions and see if they contain a
-   simple question.
+2. Analyze the title of each submission to see if it contains a simple
+   question.
 
-3. A way make the desired reply.
+3. Reply with an appropriate lmgtfy link.
 
-Working demo: LMGTFY Bot
-------------------------
+LMGTFY Bot
+----------
 
 Our goal is to point users in the right direction when they ask a simple
 question that is unlikely to be upvoted or answered by other users.
 
-I'm referring to simple questions like:
+An example of such questions are:
 
 1. "What is the capital of Canada?"
 
 2. "How many feet are in a yard?"
 
-we identify these questions, our bot will send a link to lmgtfy.com with the
-query attached to it. For those above questions, the links would look like
-this:
+Once we identify these questions, our bot will reply to the submission with an
+appropriate `lmgtfy <http://lmgtfy.com/>`_ link. For the example questions
+those links are:
 
 1. http://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F
 
 2. http://lmgtfy.com/?q=How+many+feet+are+in+a+yard%3F
+
+
+Step 1: Getting Started
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Let's start by setting up a basic PRAW instance:
 
@@ -58,11 +65,11 @@ Additionally, you'll need to supply the credentials of your bot's account in
 the form of the "username" and "password" variables passed to the main Reddit
 instance.
 
-Step 1: Monitor New Submissions and Grab the titles
------------------------------------------------
+Step 2: Monitoring New Submissions and Obtaining their Titles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To get the submissions (submissions) to a subreddit, we simply need to call the
-subreddit method of our "r" object, like so:
+To get the submissions to a subreddit, we simply need to call the subreddit
+method of our "r" object, like so:
 
 .. code-block:: python
 
@@ -84,8 +91,8 @@ Here's how:
     for submission in subreddit:
         ids.append(submission.id)
 
-Once we have the ids, we can create a submission object for each submission, and
-extract/store the titles.
+Once we have the ids, we can create a submission object for each submission,
+and extract/store the titles.
 
 .. code-block:: python
 
@@ -93,8 +100,8 @@ extract/store the titles.
         submission = r.submission(id=id_number)
         title = submission.title.lower()
 
-Step 2: Analyze the Titles
---------------------------
+Step 3: Analyzing the Titles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now that we have the titles of the submissions in the "new" feed of /r/AskReddit,
 it's time to see if they contain a simple question in them.
@@ -126,8 +133,8 @@ contain any of these:
            if question_type in title:
                #make the reply
 
-Step 3: Make an Automated Reply
--------------------------------
+Step 4: Automatically Replying to the Submission
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We're almost there, the last part is to make a reply request to the Reddit
 API. Thankfully, it's really simple with PRAW.
@@ -169,10 +176,8 @@ bot account is brand new, you'll be limited in how many posts you can make
 until you build up some karma. You may also have to manually answer Captchas at
 the start.
 
-Loose ends for continuous running
----------------------------------
-
-Time to tie it altogther.
+Step 5: Tying it all together
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The main thing that we're missing is a way to run the bot continuously, and to
 not do the same work twice.
@@ -180,12 +185,12 @@ not do the same work twice.
 In order to do that, we'll place all the main code inside a 'while' loop.
 
 As for the second part, when your 'subreddit' object returns the information
-about the AskReddit submissions, they are returned in order, just like you would
-see if you visited /r/AskReddit/new yourself.
+about the AskReddit submissions, they are returned in order, just like you
+would see if you visited /r/AskReddit/new yourself.
 
-So in order to prevent our bot from checking the same submissions twice, we only
-need to record the most recent submission ID, and check it when the while loop is
-executed next.
+So in order to prevent our bot from checking the same submissions twice, we
+only need to record the most recent submission ID, and check it when the while
+loop is executed next.
 
 .. code-block:: python
 
@@ -210,11 +215,11 @@ duplicate work:
         position = ids.index(latest_id)
         ids=ids[0:position]
 
-This checks to see if we've already checked any submissions in our newly created
-list of ids before, and cleaves off those old submissions if we have.
+This checks to see if we've already checked any submissions in our newly
+created list of ids before, and cleaves off those old submissions if we have.
 
 Completed Code
---------------
+~~~~~~~~~~~~~~
 
 The final code will show you how all these pieces fit together.
 
