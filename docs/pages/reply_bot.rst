@@ -9,14 +9,14 @@ complexity), among other things.
 PRAW is the simplest way to build your own bot using Python.
 
 This tutorial will show you how to build a bot that monitors a particular
-subreddit (/r/AskReddit), and replies to new threads that contain simple
+subreddit, /r/AskReddit, that replies to new submissions that contain simple
 questions with a link to "lmgtfy.com" (Let Me Google This For You).
 
 To do this, there are 3 key components we'll have to address:
 
-1. A way to monitor new threads.
+1. A way to monitor new submissions.
 
-2. A way to analyze the titles of those threads and see if they contain a
+2. A way to analyze the titles of those submissions and see if they contain a
    simple question.
 
 3. A way make the desired reply.
@@ -58,10 +58,10 @@ Additionally, you'll need to supply the credentials of your bot's account in
 the form of the "username" and "password" variables passed to the main Reddit
 instance.
 
-Step 1: Monitor New Threads and Grab the titles
+Step 1: Monitor New Submissions and Grab the titles
 -----------------------------------------------
 
-To get the threads (submissions) to a subreddit, we simply need to call the
+To get the submissions (submissions) to a subreddit, we simply need to call the
 subreddit method of our "r" object, like so:
 
 .. code-block:: python
@@ -73,7 +73,7 @@ it if desired.
 
 This code creates a lazy-loaded subreddit object.
 
-Next, we'll need to extract the thread ids for each submission in the
+Next, we'll need to extract the submission ids for each submission in the
 subreddit.
 
 Here's how:
@@ -81,22 +81,22 @@ Here's how:
 .. code-block:: python
 
     ids=[]
-    for thread in subreddit:
-        ids.append(thread.id)
+    for submission in subreddit:
+        ids.append(submission.id)
 
-Once we have the ids, we can create a submission object for each thread, and
+Once we have the ids, we can create a submission object for each submission, and
 extract/store the titles.
 
 .. code-block:: python
 
     for id_number in ids:
-        thread = r.submission(id=id_number)
-        title = thread.title.lower()
+        submission = r.submission(id=id_number)
+        title = submission.title.lower()
 
 Step 2: Analyze the Titles
 --------------------------
 
-Now that we have the titles of the threads in the "new" feed of /r/AskReddit,
+Now that we have the titles of the submissions in the "new" feed of /r/AskReddit,
 it's time to see if they contain a simple question in them.
 
 This might mean that they contain strings like:
@@ -120,8 +120,8 @@ contain any of these:
 .. code-block:: python
 
    for id_number in ids:
-       thread = r.submission(id=id_number)
-       title = thread.title.lower()
+       submission = r.submission(id=id_number)
+       title = submission.title.lower()
        for question_type in questions:
            if question_type in title:
                #make the reply
@@ -154,15 +154,15 @@ Reddit formatting guidelines), and make the reply:
 .. code-block:: python
 
    for id_number in ids:
-       thread = r.submission(id=id_number)
-       title = thread.title.lower()
+       submission = r.submission(id=id_number)
+       title = submission.title.lower()
        for question_type in questions:
            if question_type in title:
                # make the reply
                correct_url = fixurl(title)
                reply_text="[Here's a link that might help](http://lmgtfy.com/?q=%s)" % (correct_url)
                # send the actual reply request
-               thread.reply(reply_text)
+               submission.reply(reply_text)
 
 If all went well, your post should have been made. Keep in mind that if your
 bot account is brand new, you'll be limited in how many posts you can make
@@ -180,11 +180,11 @@ not do the same work twice.
 In order to do that, we'll place all the main code inside a 'while' loop.
 
 As for the second part, when your 'subreddit' object returns the information
-about the AskReddit threads, they are returned in order, just like you would
+about the AskReddit submissions, they are returned in order, just like you would
 see if you visited /r/AskReddit/new yourself.
 
-So in order to prevent our bot from checking the same threads twice, we only
-need to record the most recent thread ID, and check it when the while loop is
+So in order to prevent our bot from checking the same submissions twice, we only
+need to record the most recent submission ID, and check it when the while loop is
 executed next.
 
 .. code-block:: python
@@ -197,7 +197,7 @@ executed next.
            latest_id=''
 
 This checks to make sure that the code has been run before ("if ids"), and then
-assigns the most recent thread ID (newest submitted) to the variable
+assigns the most recent submission ID (newest submitted) to the variable
 "latest_id".
 
 Finally, one more loop before the main code is executed will prevent any
@@ -205,13 +205,13 @@ duplicate work:
 
 .. code-block:: python
 
-    # remove any already examined threads
+    # remove any already examined submissions
     if latest_id in ids:
         position = ids.index(latest_id)
         ids=ids[0:position]
 
-This checks to see if we've already checked any threads in our newly created
-list of ids before, and cleaves off those old threads if we have.
+This checks to see if we've already checked any submissions in our newly created
+list of ids before, and cleaves off those old submissions if we have.
 
 Completed Code
 --------------
@@ -251,19 +251,19 @@ The final code will show you how all these pieces fit together.
        for x in subreddit:
            ids.append(x.id)
 
-       # Remove any already examined threads
+       # Remove any already examined submissions
        if latest_id in ids:
            position = ids.index(latest_id)
            ids = ids[0:position]
 
        # Identify title strings that match conditions
        for id_number in ids:
-           thread = r.submission(id=id_number)
-           title = thread.title.lower()
+           submission = r.submission(id=id_number)
+           title = submission.title.lower()
            for question_type in questions:
                if question_type in title:
                    # make the reply
                    correct_url = fixurl(title)
                    reply_text = "[Here's a link that might help]\(http://lmgtfy.com/?q=%s)" % (correct_url)
                    # send the actual reply request
-                   thread.reply(reply_text)
+                   submission.reply(reply_text)
