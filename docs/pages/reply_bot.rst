@@ -54,9 +54,9 @@ Let's start by setting up a basic PRAW instance:
 
    import praw
 
-   r = praw.Reddit(user_agent='Let me Google that for you Bot',
-                   client_id='CLIENT_ID', client_secret="CLIENT_SCRET",
-                   username='USERNAME', password='PASSWORD')
+   reddit = praw.Reddit(user_agent='Let me Google that for you Bot',
+                        client_id='CLIENT_ID', client_secret="CLIENT_SCRET",
+                        username='USERNAME', password='PASSWORD')
 
 As usual, you will need an Oauth client_id and client_secret key for your bot
 (See Oauth set-up instructions here).
@@ -73,7 +73,7 @@ method of our "r" object, like so:
 
 .. code-block:: python
 
-   subreddit= r.subreddit('askreddit').new(limit=100)
+   subreddit= reddit.subreddit('askreddit').new(limit=100)
 
 The limit here is 100 by default (so you could remove it), but you could change
 it if desired.
@@ -97,14 +97,14 @@ and extract/store the titles.
 .. code-block:: python
 
     for id_number in ids:
-        submission = r.submission(id=id_number)
+        submission = reddit.submission(id=id_number)
         title = submission.title.lower()
 
 Step 3: Analyzing the Titles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now that we have the titles of the submissions in the "new" feed of /r/AskReddit,
-it's time to see if they contain a simple question in them.
+Now that we have the titles of the submissions in the "new" feed of
+/r/AskReddit, it's time to see if they contain a simple question in them.
 
 This might mean that they contain strings like:
 
@@ -127,7 +127,7 @@ contain any of these:
 .. code-block:: python
 
    for id_number in ids:
-       submission = r.submission(id=id_number)
+       submission = reddit.submission(id=id_number)
        title = submission.title.lower()
        for question_type in questions:
            if question_type in title:
@@ -161,7 +161,7 @@ Reddit formatting guidelines), and make the reply:
 .. code-block:: python
 
    for id_number in ids:
-       submission = r.submission(id=id_number)
+       submission = reddit.submission(id=id_number)
        title = submission.title.lower()
        for question_type in questions:
            if question_type in title:
@@ -229,9 +229,9 @@ The final code will show you how all these pieces fit together.
 
    import praw
 
-   r = praw.Reddit(user_agent='Let me Google that for you Bot',
-                   client_id='CLIENT_ID', client_secret="CLIENT_SCRET",
-                   username='USERNAME', password='PASSWORD')
+   reddit = praw.Reddit(user_agent='Let me Google that for you Bot',
+                        client_id='CLIENT_ID', client_secret="CLIENT_SCRET",
+                        username='USERNAME', password='PASSWORD')
 
    questions = ['what is', 'who is', 'what are']
 
@@ -251,7 +251,7 @@ The final code will show you how all these pieces fit together.
        else:
            latest_id = ''
 
-       subreddit = r.subreddit('askreddit').new(limit=6)
+       subreddit = reddit.subreddit('askreddit').new(limit=6)
 
        for x in subreddit:
            ids.append(x.id)
@@ -263,7 +263,7 @@ The final code will show you how all these pieces fit together.
 
        # Identify title strings that match conditions
        for id_number in ids:
-           submission = r.submission(id=id_number)
+           submission = reddit.submission(id=id_number)
            title = submission.title.lower()
            for question_type in questions:
                if question_type in title:
