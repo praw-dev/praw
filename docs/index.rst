@@ -6,6 +6,7 @@ Table of Contents
 .. toctree::
    :maxdepth: 1
 
+   pages/reply_bot
    pages/changelog
    pages/code_overview
    pages/contributor_guidelines
