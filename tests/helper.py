@@ -4,6 +4,7 @@ from __future__ import print_function, unicode_literals
 
 import os
 import re
+import sys
 import time
 import unittest
 import warnings
@@ -15,6 +16,7 @@ from functools import wraps
 from praw import Reddit
 from requests.compat import urljoin
 from six import text_type
+from six.moves import cStringIO
 
 
 USER_AGENT = 'PRAW_test_suite'
@@ -293,6 +295,22 @@ def flair_diff(root, other):
     other_items = set(tuple(item[key].lower() if key in item and item[key] else
                             '' for key in keys) for item in other)
     return list(root_items - other_items)
+
+
+def mock_sys_stream(streamname, defaulttext=None):
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(obj):
+            stream = cStringIO()
+            setattr(sys, streamname, stream)
+            if defaulttext is not None:
+                stream.write(defaulttext)
+                stream.seek(0)
+            retval = f(obj)
+            setattr(sys, streamname, getattr(sys, "__{}__".format(streamname)))
+            return retval
+        return wrapped
+    return wrapper
 
 
 def teardown_on_keyboard_interrupt(f):

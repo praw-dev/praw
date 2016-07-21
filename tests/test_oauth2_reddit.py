@@ -2,11 +2,10 @@
 
 from __future__ import print_function, unicode_literals
 
-import sys
 from praw import Reddit, errors
 from praw.objects import Submission
 from six import text_type
-from .helper import PRAWTest, USER_AGENT, betamax
+from .helper import PRAWTest, USER_AGENT, betamax, mock_sys_stream
 
 
 class FakeStdin:
@@ -65,6 +64,15 @@ class OAuth2RedditTest(PRAWTest):
 
         self.r.user.refresh()
         self.assertEqual(current_token, self.r.access_token)
+
+    @betamax()
+    @mock_sys_stream("stdin")
+    def test_empty_captcha_file(self):
+        # Use the alternate account because it has low karma,
+        # so we can test the captcha.
+        self.r.refresh_access_information(self.other_refresh_token['submit'])
+        self.assertRaises(errors.InvalidCaptcha, self.r.submit,
+                          self.sr, 'captcha test will fail', 'body')
 
     @betamax()
     def test_get_access_information(self):
@@ -238,14 +246,12 @@ class OAuth2RedditTest(PRAWTest):
         self.assertFalse(self.r.user is None)
 
     @betamax()
+    @mock_sys_stream("stdin", "ljgtoo")
     def test_solve_captcha(self):
         # Use the alternate account because it has low karma,
         # so we can test the captcha.
         self.r.refresh_access_information(self.other_refresh_token['submit'])
-        original_stdin = sys.stdin
-        sys.stdin = FakeStdin('ljgtoo')  # Comment this line when rebuilding
         self.r.submit(self.sr, 'captcha test', 'body')
-        sys.stdin = original_stdin
 
     @betamax()
     def test_oauth_without_identy_doesnt_set_user(self):
