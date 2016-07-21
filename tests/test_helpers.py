@@ -10,6 +10,15 @@ class HelperTest(PRAWTest):
         super(HelperTest, self).setUp()
         self.verbosity = 0
 
+    def test_bounded_set_fifo_unique(self):
+        bounded_set = helpers.BoundedSet(20)
+        for i in range(10):
+            bounded_set.add(i)
+        old_fifo = bounded_set._fifo[:]
+        for n in range(10):
+            bounded_set.add(n)
+        self.assertEqual(old_fifo, bounded_set._fifo)
+
     def test_chunk_sequence(self):
         s = 'abcdefgh'
         self.assertEqual(helpers.chunk_sequence(s, 4, allow_incomplete=True),
@@ -30,6 +39,13 @@ class HelperTest(PRAWTest):
                          [['a', 'b'], ['c']])
         self.assertEqual(helpers.chunk_sequence(s, 2, allow_incomplete=False),
                          [['a', 'b']])
+
+    def test_id_to_id36(self):
+        alphabet = '0123456789abcdefghijklmnopqrstuvwxyz'
+        alphabet_len = len(alphabet)
+        for i in range(alphabet_len):
+            self.assertEqual(alphabet.index(
+                             helpers.convert_numeric_id_to_id36(i)), i)
 
     @betamax()
     def test_comment_stream(self):
