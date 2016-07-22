@@ -27,18 +27,19 @@ There are three key components we will address to perform this task:
 LMGTFY Bot
 ----------
 
-Our goal is to point users in the right direction when they ask a simple
-question that is unlikely to be upvoted or answered by other users.
+The goal of the LMGTFY Bot is to point users in the right direction when they
+ask a simple question that is unlikely to be upvoted or answered by other
+users.
 
-An example of such questions are:
+Two examples of such questions are:
 
 1. "What is the capital of Canada?"
 
 2. "How many feet are in a yard?"
 
-Once we identify these questions, our bot will reply to the submission with an
-appropriate `lmgtfy <http://lmgtfy.com/>`_ link. For the example questions
-those links are:
+Once we identify these questions, the LMGTFY Bot will reply to the submission
+with an appropriate `lmgtfy <http://lmgtfy.com/>`_ link. For the example
+questions those links are:
 
 1. http://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F
 
@@ -48,90 +49,90 @@ those links are:
 Step 1: Getting Started
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Let's start by setting up a basic PRAW instance:
+Access to Reddit's API requires a set of OAuth2 credentials. Those credentials
+are obtained by registering an application with Reddit. To register an
+application and receive a set of OAuth2 credentials lease follow only the
+"First Steps" section of Reddit's `OAuth2 Quick Start Example
+<https://github.com/reddit/reddit/wiki/OAuth2-Quick-Start-Example#first-steps>`_
+wiki page.
+
+Once the credentials are obtained we can begin writing the LMGTFY bot. Start by
+creating an instance of :class:`.Reddit`:
 
 .. code-block:: python
 
    import praw
 
-   reddit = praw.Reddit(user_agent='Let me Google that for you Bot',
-                        client_id='CLIENT_ID', client_secret="CLIENT_SCRET",
+   reddit = praw.Reddit(user_agent='LMGTFY (by /u/USERNAME)',
+                        client_id='CLIENT_ID', client_secret="CLIENT_SECRET",
                         username='USERNAME', password='PASSWORD')
 
-As usual, you will need an Oauth client_id and client_secret key for your bot
-(See Oauth set-up instructions here).
+In addition to the OAuth2 credentials, the username and password of the Reddit
+account that registered the application are required.
 
-Additionally, you'll need to supply the credentials of your bot's account in
-the form of the "username" and "password" variables passed to the main Reddit
-instance.
+.. note:: This example demonstrates use of a *script* type application. For
+   other application types please see Reddit's wiki page `OAuth2 App Types
+   <https://github.com/reddit/reddit/wiki/oauth2-app-types>`_.
 
-Step 2: Monitoring New Submissions and Obtaining their Titles
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To get the submissions to a subreddit, we simply need to call the subreddit
-method of our "r" object, like so:
+Step 2: Monitoring New Submissions to /r/AskReddit
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: python
-
-   subreddit= reddit.subreddit('askreddit').new(limit=100)
-
-The limit here is 100 by default (so you could remove it), but you could change
-it if desired.
-
-This code creates a lazy-loaded subreddit object.
-
-Next, we'll need to extract the submission ids for each submission in the
-subreddit.
-
-Here's how:
+PRAW provides a convenient way to obtain new submissions to a given
+subreddit. To indefinitely iterate over new submissions to a subreddit add:
 
 .. code-block:: python
 
-    ids=[]
-    for submission in subreddit:
-        ids.append(submission.id)
+   subreddit = reddit.subreddit('AskReddit')
+   for submission in subreddit.stream.submissions():
+       # do something with submission
 
-Once we have the ids, we can create a submission object for each submission,
-and extract/store the titles.
+Replace `AskReddit` with the name of another subreddit if you want to iterate
+through its new submissions. Additionally multiple subreddits can be specified
+by joining them with pluses, for example ``AskReddit+NoStupidQuestions`, and
+all subreddits can be specified using the special name ``all``.
 
-.. code-block:: python
+Step 3: Analyzing the Submission Titles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    for id_number in ids:
-        submission = reddit.submission(id=id_number)
-        title = submission.title.lower()
+Now that we have a stream of new submissions to /r/AskReddit, it is time to see
+if their title's contain a simple question. We naïvely definte a simple
+question as:
 
-Step 3: Analyzing the Titles
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. It must contain no more than ten words.
 
-Now that we have the titles of the submissions in the "new" feed of
-/r/AskReddit, it's time to see if they contain a simple question in them.
+2. It must contain one of the phrases "what is", "what are", or "who is".
 
-This might mean that they contain strings like:
+.. warning:: These naïve criteria result in many false positives. It is
+   strongly recommended that you develop more precise heuristics before
+   launching a bot on any popular subreddits.
 
-* "what is"
-* "who is"
-* "what are"
-
-And so on...You could get a lot for complicated, even considering title
-length. However, for the sake of this example, these 3 phrases will be enough.
-
-Create an array that contains these strings.
+First we filter out titles that contain more than ten words:
 
 .. code-block:: python
 
-   questions  = ['what is', 'who is', 'what are']
+   if len(submission.title.split()) > 10:
+           return
 
-Then, let's revisit our for-loop from above and check to see if the titles
-contain any of these:
+Then we check to see if the submission's title contains any of the desired
+phrases:
 
 .. code-block:: python
 
-   for id_number in ids:
-       submission = reddit.submission(id=id_number)
-       title = submission.title.lower()
-       for question_type in questions:
-           if question_type in title:
-               #make the reply
+   questions = ['what is', 'who is', 'what are']
+   normalized_title = submission.title.lower()
+   for question_phrase in questions:
+       if question_phrase in normalized_title:
+           # do something with a matched submission
+           break
+
+String comparision in python is case sensitive. As a result, we only compare a
+normalized version of the title to our lower-case question phrases. In this
+case, "noralized" means only lower-case.
+
+The ``break`` at the end prevents us from matching more than once on a single
+submission. For instance, what would happen without the ``break`` if a
+submission's title was "Who is or what are buffalo?"
 
 Step 4: Automatically Replying to the Submission
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -218,57 +219,8 @@ duplicate work:
 This checks to see if we've already checked any submissions in our newly
 created list of ids before, and cleaves off those old submissions if we have.
 
-Completed Code
-~~~~~~~~~~~~~~
+The Complete LMGTFY Bot
+~~~~~~~~~~~~~~~~~~~~~~~
 
-The final code will show you how all these pieces fit together.
-
-.. code-block:: python
-
-   import time
-
-   import praw
-
-   reddit = praw.Reddit(user_agent='Let me Google that for you Bot',
-                        client_id='CLIENT_ID', client_secret="CLIENT_SCRET",
-                        username='USERNAME', password='PASSWORD')
-
-   questions = ['what is', 'who is', 'what are']
-
-
-   def fixurl(phrase):
-       removespaces = phrase.replace(" ", "+")
-       removequestions = removespaces.replace("?", "%3F")
-       return removequestions
-
-
-   while True:
-       ids = []
-
-       # Check if we've already done some of the work
-       if ids:
-           latest_id = ids[0]
-       else:
-           latest_id = ''
-
-       subreddit = reddit.subreddit('askreddit').new(limit=6)
-
-       for x in subreddit:
-           ids.append(x.id)
-
-       # Remove any already examined submissions
-       if latest_id in ids:
-           position = ids.index(latest_id)
-           ids = ids[0:position]
-
-       # Identify title strings that match conditions
-       for id_number in ids:
-           submission = reddit.submission(id=id_number)
-           title = submission.title.lower()
-           for question_type in questions:
-               if question_type in title:
-                   # make the reply
-                   correct_url = fixurl(title)
-                   reply_text = "[Here's a link that might help]\(http://lmgtfy.com/?q=%s)" % (correct_url)
-                   # send the actual reply request
-                   submission.reply(reply_text)
+.. include:: ../examples/lmgtfy_bot.py
+   :code: python
