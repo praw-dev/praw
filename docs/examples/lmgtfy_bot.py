@@ -1,4 +1,4 @@
-from urllib.parse import quote
+from urllib.parse import quote_plus
 
 import praw
 
@@ -25,10 +25,10 @@ def process_submission(submission):
     normalized_title = submission.title.lower()
     for question_phrase in QUESTIONS:
         if question_phrase in normalized_title:
-            reply_text = REPLY_TEMPLATE.format(quote(submission.title))
+            url_title = quote_plus(submission.title)
+            reply_text = REPLY_TEMPLATE.format(url_title)
             print('Replying to: {}'.format(submission.title))
             submission.reply(reply_text)
-            raise Exception('foo')
             # A reply has been made so do not attempt to match other phrases.
             break
 
