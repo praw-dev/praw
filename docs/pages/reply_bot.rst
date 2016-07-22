@@ -13,7 +13,7 @@ are powered by PRAW.
 This tutorial will show you how to build a bot that monitors a particular
 subreddit, `/r/AskReddit <https://www.reddit.com/r/AskReddit/>`_, for new
 submissions containing simple questions and replies with an appropriate link to
-lmgtfy_ (Let Me Google This For You).
+lmgtfy_ (Let Me Google That For You).
 
 There are three key components we will address to perform this task:
 
