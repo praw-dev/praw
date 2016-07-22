@@ -2,23 +2,10 @@
 
 from __future__ import print_function, unicode_literals
 
-from praw import Reddit, errors
+from praw import Reddit, errors, decorators
 from praw.objects import Submission
 from six import text_type
 from .helper import PRAWTest, USER_AGENT, betamax, mock_sys_stream
-
-
-class FakeStdin:
-    """ A class for filling stdin prompts with a predetermined value. """
-    def __init__(self, value):
-        self.closed = False
-        self.value = value
-
-    def close(self):
-        self.closed = True
-
-    def readline(self):
-        return self.value
 
 
 class OAuth2RedditTest(PRAWTest):
@@ -90,6 +77,24 @@ class OAuth2RedditTest(PRAWTest):
     def test_get_access_information_with_invalid_code(self):
         self.assertRaises(errors.OAuthInvalidGrant,
                           self.r.get_access_information, 'invalid_code')
+
+    @betamax()
+    @mock_sys_stream("stdin")
+    def test_inject_captcha_into_kwargs_and_raise(self):
+        # Use the alternate account because it has low karma,
+        # so we can test the captcha.
+        self.r.refresh_access_information(self.other_refresh_token['submit'])
+
+        # praw doesn't currently add the captcha into kwargs so lets
+        # write a function in which it would and alias it to Reddit.submit
+        @decorators.restrict_access(scope='submit')
+        @decorators.require_captcha
+        def submit_alias(r, sr, title, text, **kw):
+            return self.r.submit.__wrapped__.__wrapped__(
+                r, sr, title, text, captcha=kw.get('captcha')
+            )
+        self.assertRaises(errors.InvalidCaptcha, submit_alias, self.r,
+                          self.sr, 'captcha test will fail', 'body')
 
     def test_invalid_app_access_token(self):
         self.r.clear_authentication()
@@ -252,6 +257,25 @@ class OAuth2RedditTest(PRAWTest):
         # so we can test the captcha.
         self.r.refresh_access_information(self.other_refresh_token['submit'])
         self.r.submit(self.sr, 'captcha test', 'body')
+
+    @betamax()
+    @mock_sys_stream("stdin", "DFIRSW")
+    def test_solve_captcha_on_bound_subreddit(self):
+        # Use the alternate account because it has low karma,
+        # so we can test the captcha.
+        self.r.refresh_access_information(self.other_refresh_token['submit'])
+        subreddit = self.r.get_subreddit(self.sr)
+
+        # praw doesn't currently have a function in which require_captcha
+        # gets a reddit instance from a subreddit and uses it, so lets
+        # write a function in which it would and alias it to Reddit.submit
+        @decorators.restrict_access(scope='submit')
+        @decorators.require_captcha
+        def submit_alias(sr, title, text, **kw):
+            return self.r.submit.__wrapped__.__wrapped__(
+                self.r, sr, title, text, captcha=kw.get('captcha')
+            )
+        submit_alias(subreddit, 'captcha test on bound subreddit', 'body')
 
     @betamax()
     def test_oauth_without_identy_doesnt_set_user(self):
