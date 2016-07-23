@@ -14,6 +14,7 @@ from betamax_matchers.json_body import JSONBodyMatcher
 from betamax_serializers import pretty_json
 from functools import wraps
 from praw import Reddit
+from praw.errors import ExceptionList
 from requests.compat import urljoin
 from six import text_type
 from six.moves import cStringIO
@@ -100,6 +101,7 @@ class PRAWTest(unittest.TestCase):
         self.submission_deleted_id = '3f8q10'
         self.submission_edit_id = '16i92b'
         self.submission_hide_id = '3lchjv'
+        self.submission_limit_chars_id = '4umin7'
         self.submission_lock_id = '47rnwf'
         self.submission_sticky_id = '32eucy'
         self.submission_sticky_id2 = '32exei'
@@ -122,6 +124,45 @@ class PRAWTest(unittest.TestCase):
 
     def url(self, path):
         return urljoin(self.r.config.permalink_url, path)
+
+    def assertExceptionList(self, excClasses, callableObj, *args, **kwargs):
+        """Fail unless a praw.errors.ExceptionList with errors of excClasses
+        are thrown by callableObj when invoked with arguments args and keyword
+        arguments kwargs. If a different type of exception is thrown, it will
+        not be caught, and the test case will be deemed to have suffered an
+        error, exactly as for an unexpected exception.
+        """
+        try:
+            callableObj(*args, **kwargs)
+        except ExceptionList as e:
+            errors = [type(error) for error in e.errors]
+            not_in = [cls for cls in excClasses
+                      if cls not in errors]
+            extra = [cls for cls in errors
+                     if cls not in excClasses]
+            not_in = [getattr(cls, '__name__', str(cls))
+                      for cls in not_in]
+            extra = [getattr(cls, '__name__', str(cls))
+                     for cls in extra]
+            if extra:
+                raise self.failureException("{0} were raised".format(
+                    ", ".join(extra)))
+            elif not_in:
+                raise self.failureException("{0} were not raised".format(
+                    ", ".join(not_in)))
+            return e
+        else:
+            raise self.failureException("ExceptionList not raised")
+
+    def assertRaisesAndReturn(self, excClass, callableObj, *args, **kwargs):
+        """Same as assertRaises, but returns the instantiated excClass."""
+        try:
+            callableObj(*args, **kwargs)
+        except excClass as e:
+            return e
+        else:
+            excName = getattr(excClass, '__name__', str(excClass))
+            raise self.failureException("{0} not raised".format(excName))
 
     def assertWarnings(self, warning, callable, *args, **kwds):
         """Fail unless a warning of class warning is triggered
@@ -262,7 +303,7 @@ with Betamax.configure() as config:
     config.default_cassette_options['serialize_with'] = 'prettyjson'
 
 
-def betamax(cassette_name=None, **cassette_options):
+def betamax(cassette_name=None, pass_recorder=False, **cassette_options):
     """Utilze betamax to record/replay any network activity of the test.
 
     The wrapped function's `betmax_init` method will be invoked if it exists.
@@ -272,7 +313,8 @@ def betamax(cassette_name=None, **cassette_options):
         @wraps(function)
         def betamax_function(obj):
             with Betamax(obj.r.handler.http).use_cassette(
-                    cassette_name or function.__name__, **cassette_options):
+                    cassette_name or function.__name__,
+                    **cassette_options) as cass:
                 # We need to set the delay to zero for betamaxed requests.
                 # Unfortunately, we don't know if the request actually happened
                 # so tests should only be updated one at a time rather than in
@@ -282,6 +324,8 @@ def betamax(cassette_name=None, **cassette_options):
                 obj.r.handler.clear_cache()
                 if hasattr(obj, 'betamax_init'):
                     obj.betamax_init()
+                if pass_recorder:
+                    return function(obj, cass)
                 return function(obj)
         return betamax_function
     return factory
