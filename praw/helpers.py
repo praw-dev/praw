@@ -105,7 +105,8 @@ def valid_redditors(redditors, sub):
         flair changing permission on.
 
     Note: Flair will be unset for all valid redditors in `redditors` on the
-    subreddit `mod_sub`.
+    subreddit `sub`. A valid redditor is defined as a redditor that is
+    registered on reddit.
 
     """
     simplified = list(set(six.text_type(x).lower() for x in redditors))
