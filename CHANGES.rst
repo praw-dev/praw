@@ -1,47 +1,21 @@
-.. begin_changelog_intro
-
 Change Log
 ==========
 
-Read `/r/changelog <http://www.reddit.com/r/changelog>`_ to be notified of
-upstream changes.
-
-.. end_changelog_intro
-
-.. begin_changelog_body
-
-4.0.0a1
+4.0.0aX
 -------
 
-**Added**
-
-* Added ``reddit_url`` setting to ``praw.ini``.
-
-**Changed**
-
-* :class:`Redditor` no longer takes a ``handler`` argument.
-* :class:`Redditor` no longer has a ``evict`` method.
-* Removed instances of ``from __future__ import print_function`` as PRAW should
-  not use ``print`` at all.
-* Removed instances of ``from __future__ import unicode_literals``.
-* ``praw.ini`` settings ``oauth_domain`` and ``oauth_https`` have been combined
-  into ``oauth_url``.
+PRAW 4 introduces significant breaking changes. The numerous changes are not
+listed here, only the feature removals. Please read through `Getting Started`_
+to help with updating your code to PRAW 4. If you require additional help
+please ask on `/r/redditdev <https://www.reddit.com/r/redditdev>`_ or in the
+`praw-dev/praw <https://gitter.im/praw-dev/praw>`_ channel on gitter.
 
 **Removed**
 
-* Removed ``api_domain`` setting from ``praw.ini``.
-* Removed ``api_request_delay`` setting from ``praw.ini``.
-* Removed ``cache_timeout`` setting from ``praw.ini``.
-* Removed ``output_chars_limit`` setting from ``praw.ini``.
-* Removed :class:`Redditor` ``login`` method. Authentication must be done
+* Removed :class:`Reddit`'s ``login`` method. Authentication must be done
   through OAuth.
-* Removed all handlers in ``praw.handlers``.
 * Removed `praw-multiprocess` as this functionality is no longer needed with
-  PRAW4.
-* Removed ``restrict_access`` decorator. While attempting to fail early is
-  nice, it's not worth the additional code.
+  PRAW 4.
 
 For changes prior to version 4.0 please see: `3.4.0 changelog
 <http://praw.readthedocs.io/en/v3.4.0/pages/changelog.html>`_
-
-.. end_changelog_body
