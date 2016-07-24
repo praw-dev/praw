@@ -204,8 +204,6 @@ class Reddit(object):
             of the request.
 
         """
-        if not self._core._authorizer.is_valid():
-            self._core._authorizer.refresh()
         return self._core.request(method, path, params=params, data=data)
 
     def submission(  # pylint: disable=invalid-name,redefined-builtin
