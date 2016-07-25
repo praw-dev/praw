@@ -37,7 +37,7 @@ setup(name=PACKAGE_NAME,
                    'python package that allows for simple access to '
                    'reddit\'s API.'),
       install_requires=['decorator >=4.0.9, <4.1',
-                        'prawcore ==0.0.13',
+                        'prawcore ==0.0.14',
                         'requests >=2.3.0',
                         'six ==1.10',
                         'update_checker ==0.11'],
