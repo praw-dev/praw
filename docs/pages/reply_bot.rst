@@ -51,7 +51,7 @@ Step 1: Getting Started
 
 Access to Reddit's API requires a set of OAuth2 credentials. Those credentials
 are obtained by registering an application with Reddit. To register an
-application and receive a set of OAuth2 credentials lease follow only the
+application and receive a set of OAuth2 credentials please follow only the
 "First Steps" section of Reddit's `OAuth2 Quick Start Example`_ wiki page.
 
 Once the credentials are obtained we can begin writing the LMGTFY Bot. Start by
@@ -94,7 +94,7 @@ Step 3: Analyzing the Submission Titles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now that we have a stream of new submissions to /r/AskReddit, it is time to see
-if their titles contain a simple question. We naïvely definte a simple question
+if their titles contain a simple question. We naïvely define a simple question
 as:
 
 1. It must contain no more than ten words.
@@ -124,9 +124,9 @@ phrases:
            # do something with a matched submission
            break
 
-String comparision in python is case sensitive. As a result, we only compare a
+String comparison in python is case sensitive. As a result, we only compare a
 normalized version of the title to our lower-case question phrases. In this
-case, "noralized" means only lower-case.
+case, "normalized" means only lower-case.
 
 The ``break`` at the end prevents us from matching more than once on a single
 submission. For instance, what would happen without the ``break`` if a
@@ -208,7 +208,7 @@ submission into its own function:
    :end-line: 33
 
 Observe that we added some comments and a ``print`` call. The ``print``
-addition informs us everytime we are about to reply to a submission, which is
+addition informs us every time we are about to reply to a submission, which is
 useful to ensure the script is running.
 
 Next, it is a good practice to not have any top-level executable code in
