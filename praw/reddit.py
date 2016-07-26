@@ -80,7 +80,7 @@ class Reddit(object):
         self._core = self._authorized_core = self._read_only_core = None
         self._objector = None
         self._unique_counter = 0
-        self.config = Config(site_name or os.getenv('praw_site') or 'reddit',
+        self.config = Config(site_name or os.getenv('praw_site') or 'DEFAULT',
                              **config_settings)
 
         for attribute in ['client_id', 'client_secret', 'user_agent']:

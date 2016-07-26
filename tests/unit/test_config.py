@@ -66,11 +66,11 @@ class TestConfig(object):
                 os.environ[key] = value
 
     def test_short_url(self):
-        config = Config('reddit')
+        config = Config('DEFAULT')
         assert config.short_url == 'https://redd.it'
 
     def test_short_url_not_defined(self):
-        config = Config('reddit', short_url=None)
+        config = Config('DEFAULT', short_url=None)
         with pytest.raises(ClientException) as excinfo:
             config.short_url
         assert str(excinfo.value) == 'No short domain specified.'
