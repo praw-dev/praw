@@ -57,13 +57,13 @@ class Reddit(object):
         """Initialize a Reddit instance.
 
         :param site_name: The name of a section in your ``praw.ini`` file from
-            which to load settings from. This parameter in tandem with an
-            appropriately configured ``praw.ini`` file is useful if you wish to
-            easily save credentials for different applications, or communicate
-            with other servers running reddit. If ``site_name`` is ``None``,
-            then the site name will be looked for in the environment variable
-            praw_site. If it is not found there, the default site name
-            ``reddit`` will be used.
+            which to load settings from. This parameter, in tandem with an
+            appropriately configured ``praw.ini``, file is useful if you wish
+            to easily save credentials for different applications, or
+            communicate with other servers running reddit. If ``site_name`` is
+            ``None``, then the site name will be looked for in the environment
+            variable praw_site. If it is not found there, the DEFAULT site will
+            be used.
 
         Additional keyword arguments will be used to initialize the ``Config``
         object. This can be used to specify configuration settings during
