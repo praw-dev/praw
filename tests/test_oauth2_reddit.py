@@ -5,7 +5,8 @@ from __future__ import print_function, unicode_literals
 from praw import Reddit, errors, decorators
 from praw.objects import Submission
 from six import text_type
-from .helper import PRAWTest, USER_AGENT, betamax, mock_sys_stream
+from .helper import (PRAWTest, NewOAuthPRAWTest, USER_AGENT, betamax,
+                     betamax_custom_header, mock_sys_stream)
 
 
 class OAuth2RedditTest(PRAWTest):
@@ -31,20 +32,6 @@ class OAuth2RedditTest(PRAWTest):
                     'response_type': 'code', 'scope': 'identity',
                     'state': '...'}
         self.assertEqual(expected, params)
-
-    # @betamax() is currently broken for this test because the cassettes
-    # are caching too aggressively and not performing a token refresh.
-    def test_auto_refresh_token(self):
-        self.r.refresh_access_information(self.refresh_token['identity'])
-        old_token = self.r.access_token
-
-        self.r.access_token += 'x'  # break the token
-        self.r.user.refresh()
-        current_token = self.r.access_token
-        self.assertNotEqual(old_token, current_token)
-
-        self.r.user.refresh()
-        self.assertEqual(current_token, self.r.access_token)
 
     @betamax()
     @mock_sys_stream("stdin")
@@ -276,3 +263,32 @@ class OAuth2RedditTest(PRAWTest):
         self.assertTrue(self.r.user is None)
         self.r.refresh_access_information(self.refresh_token['edit'])
         self.assertTrue(self.r.user is None)
+
+
+class AutoRefreshTest(NewOAuthPRAWTest):
+    @betamax_custom_header()
+    def test_auto_refresh_token(self):
+        # this test wasn't cached before the new test was made
+        # so the new app info needs to be set to avoid 401s
+        # also, the redirect uri doesn't need to be set on refreshes,
+        # but praw does this anyway. Changing this now would break
+        # all prior tests. The redirect uri should be removed and
+        # all tests rerecorded later.
+        with self.set_custom_header_match('test_auto_refresh_token__initial'):
+            self.r.refresh_access_information(
+                self.refresh_token['auto_refresh'])
+        old_token = self.r.access_token
+
+        self.r.access_token += 'x'  # break the token
+        with self.set_custom_header_match('test_auto_refresh_token__refresh'):
+            # TODO: refreshing r.user wasn't actually updating the token
+            # because of special oauth handling in _get_json_dict of
+            # reddit content objects. Leaving this as a note until I
+            # fix it in the future
+            list(self.r.get_new(limit=5))
+        current_token = self.r.access_token
+        self.assertNotEqual(old_token, current_token)
+
+        with self.set_custom_header_match('test_auto_refresh_token__after'):
+            list(self.r.get_new(limit=5))
+        self.assertEqual(current_token, self.r.access_token)

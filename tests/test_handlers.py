@@ -2,27 +2,11 @@
 
 from __future__ import print_function, unicode_literals
 
-from functools import wraps
 from mock import patch
 from praw import handlers
 from random import choice
 from six.moves import cStringIO
-from .helper import PRAWTest, betamax
-
-
-def replace_handler(new_handler):
-    def factory(func):
-        @wraps(func)
-        def wrapped(obj):
-            old_handler = obj.r.handler
-            obj.r.handler = new_handler
-            try:
-                retval = func(obj)
-            finally:
-                obj.r.handler = old_handler
-            return retval
-        return wrapped
-    return factory
+from .helper import PRAWTest, betamax, replace_handler
 
 
 class HandlerTest(PRAWTest):

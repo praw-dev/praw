@@ -12,7 +12,10 @@ from betamax import Betamax, BaseMatcher
 from betamax_matchers.form_urlencoded import URLEncodedBodyMatcher
 from betamax_matchers.json_body import JSONBodyMatcher
 from betamax_serializers import pretty_json
-from functools import wraps
+from contextlib import contextmanager
+from functools import partial, wraps
+from mock import patch
+from praw.internal import _prepare_request
 from praw import Reddit
 from praw.errors import ExceptionList
 from requests.compat import urljoin
@@ -41,6 +44,24 @@ class BodyMatcher(BaseMatcher):
             JSONBodyMatcher().match(to_compare, recorded_request)
 
 
+class CustomHeaderMatcher(BodyMatcher):
+    # Used for matching harshly cached requests in tandem with
+    # PRAWTest.set_custom_header_match and betamax_custom_header
+    # for forcibly recording requests that would otherwise
+    # match PRAWBody and not be written.
+    name = 'CustomHeader'
+
+    def match(self, request, recorded_request):
+        body_match = super(CustomHeaderMatcher, self).match(request,
+                                                            recorded_request)
+
+        recorded_header = recorded_request['headers'].get(
+            'custom_header', [None])[0]  # headers are recorded as arrays
+
+        match = (request.headers.get('custom_header') == recorded_header)
+        return match and body_match
+
+
 class PRAWTest(unittest.TestCase):
     def configure(self):
         self.r = Reddit(USER_AGENT, disable_update_check=True)
@@ -57,6 +78,9 @@ class PRAWTest(unittest.TestCase):
         self.client_id = 'stJlUSUbPQe5lQ'
         self.client_secret = 'iU-LsOzyJH7BDVoq-qOWNEq2zuI'
         self.redirect_uri = 'https://127.0.0.1:65010/authorize_callback'
+        self.new_client_id = 'IlQgN8A5fPCbpA'
+        self.new_client_secret = '7iYM6T1rh8REihHQEVNgQsE16OE'
+        self.new_redirect_uri = 'http://localhost:8080'
 
         self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
         self.reply_warnings_url = self.url('/r/reddit_api_test/'
@@ -88,7 +112,10 @@ class PRAWTest(unittest.TestCase):
             'submit':           'k69WTwa2bEQOQY9t61nItd4twhw',
             'subscribe':        'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
             'vote':             '5RPnDwg56vAbf7F9yO81cXZAPSQ',
-            'wikiread':         '7302867-PMZfquNPUVYHcrbJkTYpFe9UdAY'}
+            'wikiread':         '7302867-PMZfquNPUVYHcrbJkTYpFe9UdAY',
+            # new tokens
+            'auto_refresh':     '7302867-fd_RVSYjT644cKl4J2oRWeRV_mo',
+        }
 
         self.other_refresh_token = {
             'read':             '10640071-wxnYQyK9knNV1PCt9a7CxvJH8TI',
@@ -105,6 +132,8 @@ class PRAWTest(unittest.TestCase):
         self.submission_lock_id = '47rnwf'
         self.submission_sticky_id = '32eucy'
         self.submission_sticky_id2 = '32exei'
+
+        self.custom_header_index = 0
 
     def delay_for_listing_update(self, duration=0.1):
         if not os.getenv('TRAVIS') and self.r.config.api_request_delay == 0:
@@ -279,6 +308,42 @@ class PRAWTest(unittest.TestCase):
                                          callable.__name__,
                                          "    \n".join(wnames)))
 
+    @contextmanager
+    def set_custom_header_match(self, headerval):
+        """Using headerval as the request's custom_header header
+         for the CustomHeaderMatcher
+
+         It's best that this functionality is explained before usage,
+         since it can seem to not make any sense whatsoever.
+
+         Mock (and mock.patch) mock objects/callables within the
+         provided namespace. So even thought praw._prepare_request
+         is equivalent and has the same memory address as
+         praw.internal._prepare_request, since they have different
+         name spaces, mock will only patch the former (which is the
+         one that praw.Reddit._request uses). By exploiting the fact
+         that they are equal, we can replace praw._prepare_request
+         with a mock that wraps around a local function that calls
+         upon praw.internal._prepare_request with no issue. This allows
+         us to suffix headerval(s) with an integer, so that all requests
+         will be individually recorded and later, deserialized, in order.
+
+         Theoretically, headerval isn't actually needed, but it's used so
+         a human can quickly read through the cassette and see if an issue
+         occurred with their test. The index is reset per value, so don't
+         use the same headerval prefix more than once in the same test.
+         """
+        def make_prepare(*a, **kw):
+            self.r.http.headers['custom_header'] = \
+                "{0}__{1}".format(headerval, self.custom_header_index)
+            ret = _prepare_request(*a, **kw)
+            self.custom_header_index += 1
+            return ret
+        with patch('praw._prepare_request', wraps=make_prepare):
+            yield
+        del self.r.http.headers['custom_header']
+        self.custom_header_index = 0
+
 
 class OAuthPRAWTest(PRAWTest):
     def betamax_init(self):
@@ -292,7 +357,16 @@ class OAuthPRAWTest(PRAWTest):
                         disable_update_check=True)
 
 
+class NewOAuthPRAWTest(OAuthPRAWTest):
+    def betamax_init(self):
+        # All tokens were revoked before all tests were completed
+        self.r.set_oauth_app_info(self.new_client_id,
+                                  self.new_client_secret,
+                                  self.new_redirect_uri)
+
+
 Betamax.register_request_matcher(BodyMatcher)
+Betamax.register_request_matcher(CustomHeaderMatcher)
 Betamax.register_serializer(pretty_json.PrettyJSONSerializer)
 
 with Betamax.configure() as config:
@@ -329,6 +403,10 @@ def betamax(cassette_name=None, pass_recorder=False, **cassette_options):
                 return function(obj)
         return betamax_function
     return factory
+
+betamax_custom_header = partial(betamax,
+                                match_requests_on=['method', 'uri',
+                                                   'CustomHeader'])
 
 
 def flair_diff(root, other):
@@ -367,3 +445,18 @@ def teardown_on_keyboard_interrupt(f):
             raise
 
     return wrapper
+
+
+def replace_handler(new_handler):
+    def factory(func):
+        @wraps(func)
+        def wrapped(obj):
+            old_handler = obj.r.handler
+            obj.r.handler = new_handler
+            try:
+                retval = func(obj)
+            finally:
+                obj.r.handler = old_handler
+            return retval
+        return wrapped
+    return factory
