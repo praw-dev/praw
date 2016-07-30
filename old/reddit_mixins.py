@@ -1,7 +1,6 @@
 """Provide Reddit Mixin classes."""
 import json
 import os
-from warnings import warn_explicit
 
 import six
 from requests.utils import to_native_string
@@ -39,70 +38,6 @@ class ModConfigMixin(AuthenticatedReddit):
             url = self.config['delete_sr_header']
         url = url.format(subreddit=subreddit)
         return self.request_json(url, data=data)
-
-    def get_settings(self, subreddit, **params):
-        """Return the settings for the given subreddit."""
-        url = self.config['subreddit_settings'].format(
-            subreddit=six.text_type(subreddit))
-        return self.request_json(url, params=params)['data']
-
-    def set_settings(self, subreddit, title, public_description='',
-                     description='', language='en', subreddit_type='public',
-                     content_options='any', over_18=False, default_set=True,
-                     show_media=False, domain='', domain_css=False,
-                     domain_sidebar=False, header_hover_text='',
-                     wikimode='disabled', wiki_edit_age=30,
-                     wiki_edit_karma=100,
-                     submit_link_label='', submit_text_label='',
-                     exclude_banned_modqueue=False, comment_score_hide_mins=0,
-                     public_traffic=False, collapse_deleted_comments=False,
-                     spam_comments='low', spam_links='high',
-                     spam_selfposts='high', submit_text='',
-                     hide_ads=False, suggested_comment_sort='',
-                     key_color='',
-                     **kwargs):
-        """Set the settings for the given subreddit.
-
-        :param subreddit: Must be a subreddit object.
-        :returns: The json response from the server.
-
-        """
-        data = {'sr': subreddit.fullname,
-                'allow_top': default_set,
-                'comment_score_hide_mins': comment_score_hide_mins,
-                'collapse_deleted_comments': collapse_deleted_comments,
-                'description': description,
-                'domain': domain or '',
-                'domain_css': domain_css,
-                'domain_sidebar': domain_sidebar,
-                'exclude_banned_modqueue': exclude_banned_modqueue,
-                'header-title': header_hover_text or '',
-                'hide_ads': hide_ads,
-                'key_color': key_color,
-                'lang': language,
-                'link_type': content_options,
-                'over_18': over_18,
-                'public_description': public_description,
-                'public_traffic': public_traffic,
-                'show_media': show_media,
-                'submit_link_label': submit_link_label or '',
-                'submit_text': submit_text,
-                'submit_text_label': submit_text_label or '',
-                'suggested_comment_sort': suggested_comment_sort or '',
-                'spam_comments': spam_comments,
-                'spam_links': spam_links,
-                'spam_selfposts': spam_selfposts,
-                'title': title,
-                'type': subreddit_type,
-                'wiki_edit_age': six.text_type(wiki_edit_age),
-                'wiki_edit_karma': six.text_type(wiki_edit_karma),
-                'wikimode': wikimode}
-
-        if kwargs:
-            msg = 'Extra settings fields: {0}'.format(kwargs.keys())
-            warn_explicit(msg, UserWarning, '', 0)
-            data.update(kwargs)
-        return self.request_json(self.config['site_admin'], data=data)
 
     def set_stylesheet(self, subreddit, stylesheet):
         """Set stylesheet for the given subreddit.
@@ -163,20 +98,6 @@ class ModConfigMixin(AuthenticatedReddit):
         if response['errors']:
             raise errors.APIException(response['errors'], None)
         return response['img_src']
-
-    def update_settings(self, subreddit, **kwargs):
-        """Update only the given settings for the given subreddit.
-
-        The settings to update must be given by keyword and match one of the
-        parameter names in `set_settings`.
-
-        :returns: The json response from the server.
-
-        """
-        settings = self.get_settings(subreddit)
-        settings.update(kwargs)
-        del settings['subreddit_id']
-        return self.set_settings(subreddit, **settings)
 
 
 class ModFlairMixin(AuthenticatedReddit):
