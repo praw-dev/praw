@@ -107,8 +107,8 @@ class SubredditHelper(PRAWBase):
         :param title: The title of the subreddit.
         :param wikimode: One of  ``anyone``, ``disabled``, ``modonly``.
 
-        See :meth:`~.SubredditModeration.update` for documenation on other
-        settings.
+        See :meth:`~.SubredditModeration.update` for documentation of other
+        available settings.
 
         Any keyword parameters not provided, or set explicitly to None, will
         take on a default value assigned by the Reddit server.
