@@ -15,15 +15,6 @@ class TestReddit(IntegrationTest):
             assert isinstance(live, LiveThread)
             assert live.title == 'PRAW Create Test'
 
-    @mock.patch('time.sleep', return_value=None)
-    def test_multireddit_create(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette('TestReddit.test_multireddit_create'):
-            multireddit = self.reddit.multireddit.create(
-                'PRAW create test', subreddits=['redditdev'])
-        assert multireddit.display_name == 'PRAW create test'
-        assert multireddit.name == 'praw_create_test'
-
     def test_random_subreddit(self):
         names = set()
         with self.recorder.use_cassette(
