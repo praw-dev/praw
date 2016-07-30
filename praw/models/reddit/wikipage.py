@@ -6,6 +6,13 @@ from .base import RedditBase
 class WikiPage(RedditBase):
     """An individual WikiPage object."""
 
+    @property
+    def mod(self):
+        """An instance of :class:`.WikiPageModeration`."""
+        if self.__dict__.get('_mod') is None:
+            self._mod = WikiPageModeration(self)
+        return self._mod
+
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
         return isinstance(other, self.__class__) and \
@@ -17,7 +24,6 @@ class WikiPage(RedditBase):
 
     def __init__(self, reddit, subreddit, name, _data=None):
         """Construct an instance of the WikiPage object."""
-        self.mod = WikiPageModeration(self)
         self.name = name
         self.subreddit = subreddit
         super(WikiPage, self).__init__(reddit, _data)

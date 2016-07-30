@@ -50,6 +50,20 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         # This assumes _comments is set so that _fetch is called when it's not.
         return self._comments
 
+    @property
+    def flair(self):
+        """An instance of :class:`.SubmissionFlair`."""
+        if self.__dict__.get('_flair') is None:
+            self._flair = SubmissionFlair(self)
+        return self._flair
+
+    @property
+    def mod(self):
+        """An instance of :class:`.SubmissionModeration`."""
+        if self.__dict__.get('_mod') is None:
+            self._mod = SubmissionModeration(self)
+        return self._mod
+
     def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
                  url=None, _data=None):
         """Initialize a Submission instance.
@@ -71,8 +85,6 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             self.id = id  # pylint: disable=invalid-name
         elif url is not None:
             self.id = self.id_from_url(url)
-        self.flair = SubmissionFlair(self)
-        self.mod = SubmissionModeration(self)
 
     def __setattr__(self, attribute, value):
         """Objectify author, comments, and subreddit attributes."""
