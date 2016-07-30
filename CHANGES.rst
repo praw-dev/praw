@@ -5,10 +5,11 @@ Change Log
 -------
 
 PRAW 4 introduces significant breaking changes. The numerous changes are not
-listed here, only the feature removals. Please read through `Getting Started`_
-to help with updating your code to PRAW 4. If you require additional help
-please ask on `/r/redditdev <https://www.reddit.com/r/redditdev>`_ or in the
-`praw-dev/praw <https://gitter.im/praw-dev/praw>`_ channel on gitter.
+listed here, only the feature removals. Please read through
+:doc:`/pages/getting_started` to help with updating your code to PRAW 4. If you
+require additional help please ask on `/r/redditdev
+<https://www.reddit.com/r/redditdev>`_ or in the `praw-dev/praw
+<https://gitter.im/praw-dev/praw>`_ channel on gitter.
 
 **Removed**
 

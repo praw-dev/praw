@@ -6,7 +6,7 @@ Table of Contents
 .. toctree::
    :maxdepth: 1
 
-   pages/reply_bot
+   pages/getting_started
    pages/changelog
    pages/code_overview
    pages/comments
@@ -31,4 +31,3 @@ Other Relevant Pages
   reddit's codebase will be announced here in non-developer speak
 * `r/redditdev <https://www.reddit.com/r/redditdev>`_. Ask questions about
   reddit's codebase, PRAW and other API clients here
-
