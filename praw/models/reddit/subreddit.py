@@ -24,7 +24,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                           domain=None, exclude_modqueue_banned=None,
                           header_hover_text=None, hide_ads=None, lang=None,
                           key_color=None, link_type=None, name=None,
-                          nsfw=None, public_description=None,
+                          over_18=None, public_description=None,
                           public_traffic=None, show_media=None,
                           show_thumbnails=None, spam_comments=None,
                           spam_links=None, spam_selfposts=None, sr=None,
@@ -46,7 +46,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                  'lang': lang,
                  'link_type': link_type,
                  'name': name,
-                 'over_18': nsfw,
+                 'over_18': over_18,
                  'public_description': public_description,
                  'public_traffic': public_traffic,
                  'show_media': show_thumbnails,
@@ -385,7 +385,7 @@ class SubredditModeration(object):
         :param lang: A valid IETF language tag (underscore separated).
         :param link_type: The types of submissions users can make.
             One of ``any``, ``link``, ``self``.
-        :param nsfw: Viewers must be over 18 years old.
+        :param over_18: Viewers must be over 18 years old (i.e. NSFW).
         :param public_description: Public description blurb. Appears in search
             results and on the landing page for private subreddits.
         :param public_traffic: Make the traffic stats page public.
