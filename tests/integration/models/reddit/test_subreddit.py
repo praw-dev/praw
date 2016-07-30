@@ -1,4 +1,5 @@
 """Test praw.models.subreddit."""
+from praw.exceptions import APIException
 from praw.models import (Comment, Redditor, Submission, SubredditMessage,
                          WikiPage)
 import mock
@@ -8,6 +9,53 @@ from ... import IntegrationTest
 
 
 class TestSubreddit(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_create(self, _):
+        self.reddit.read_only = False
+        new_name = 'PRAW_rrldkyrfln'
+        with self.recorder.use_cassette('TestSubreddit.test_create'):
+            subreddit = self.reddit.subreddit.create(name=new_name,
+                                                     title='Sub',
+                                                     link_type='any',
+                                                     subreddit_type='public',
+                                                     wikimode='disabled')
+            assert subreddit.display_name == new_name
+            assert subreddit.submission_type == 'any'
+
+    def test_create__exists(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubreddit.test_create__exists'):
+            with pytest.raises(APIException) as excinfo:
+                self.reddit.subreddit.create('redditdev', title='redditdev',
+                                             link_type='any',
+                                             subreddit_type='public',
+                                             wikimode='disabled')
+            assert excinfo.value.error_type == 'SUBREDDIT_EXISTS'
+
+    def test_create__invalid_parameter(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubreddit.test_create__invalid_parameter'):
+            with pytest.raises(APIException) as excinfo:
+                # Supplying invalid setting for link_type
+                self.reddit.subreddit.create(name='PRAW_iavynavffv',
+                                             title='sub', link_type='abcd',
+                                             subreddit_type='public',
+                                             wikimode='disabled')
+            assert excinfo.value.error_type == 'INVALID_OPTION'
+
+    def test_create__missing_parameter(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubreddit.test_create__missing_parameter'):
+            with pytest.raises(APIException) as excinfo:
+                # Not supplying required field title.
+                self.reddit.subreddit.create(name='PRAW_iavynavffv',
+                                             title=None, link_type='any',
+                                             subreddit_type='public',
+                                             wikimode='disabled')
+            assert excinfo.value.error_type == 'NO_TEXT'
+
     @mock.patch('time.sleep', return_value=None)
     def test_message(self, _):
         self.reddit.read_only = False
@@ -229,13 +277,28 @@ class TestSubredditModeration(IntegrationTest):
 
     def test_unread(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditModeration.test_unread'):
+        with self.recorder.use_cassette('TestSubredditModeration.test_unread'):
             count = 0
             for item in self.reddit.subreddit('all').mod.unread():
                 assert isinstance(item, SubredditMessage)
                 count += 1
             assert count > 0
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_update(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditModeration.test_update'):
+            before_settings = self.subreddit.mod.settings()
+            new_title = before_settings['title'] + 'x'
+            if len(new_title) == 20:
+                new_title = 'x'
+            self.subreddit.mod.update(title=new_title)
+            assert self.subreddit.title == new_title
+            after_settings = self.subreddit.mod.settings()
+
+            # Ensure that nothing has changed besides what was specified.
+            before_settings['title'] = new_title
+            assert before_settings == after_settings
 
 
 class TestSubredditRelationships(IntegrationTest):

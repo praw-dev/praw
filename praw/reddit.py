@@ -98,6 +98,7 @@ class Reddit(object):
         self.inbox = models.Inbox(self, None)
         self.live = models.LiveHelper(self, None)
         self.multireddit = models.MultiredditHelper(self, None)
+        self.subreddit = models.SubredditHelper(self, None)
         self.subreddits = models.Subreddits(self, None)
         self.user = models.User(self, None)
 
@@ -217,16 +218,3 @@ class Reddit(object):
 
         """
         return models.Submission(self, id=id, url=url)
-
-    def subreddit(self, name):
-        """Return a lazy instance of :class:`~.Subreddit` for ``name``.
-
-        :param name: The name of the subreddit.
-
-        """
-        lower_name = name.lower()
-        if lower_name == 'random':
-            return self.random_subreddit()
-        elif lower_name == 'randnsfw':
-            return self.random_subreddit(nsfw=True)
-        return models.Subreddit(self, name)

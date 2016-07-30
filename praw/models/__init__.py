@@ -1,6 +1,6 @@
 """Provide the PRAW models."""
 from .front import Front  # NOQA
-from .helpers import LiveHelper, MultiredditHelper  # NOQA
+from .helpers import LiveHelper, MultiredditHelper, SubredditHelper  # NOQA
 from .inbox import Inbox  # NOQA
 from .list.redditor import RedditorList  # NOQA
 from .listing.generator import ListingGenerator  # NOQA
