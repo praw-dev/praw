@@ -3,7 +3,7 @@ from json import dumps
 
 from ..const import API_PATH
 from .base import PRAWBase
-from .reddit.multi import Multireddit
+from .reddit.multi import Multireddit, Subreddit
 
 
 class LiveHelper(PRAWBase):
@@ -66,10 +66,44 @@ class MultiredditHelper(PRAWBase):
 
         """
         model = {'description_md': description_md,
-                 'display_name': display_name, 'icon_name': icon_name,
+                 'display_name': display_name,
+                 'icon_name': icon_name,
                  'key_color': key_color,
                  'subreddits': [{'name': str(sub)} for sub in subreddits],
                  'visibility': visibility,
                  'weighting_scheme': weighting_scheme}
         return self._reddit.post(API_PATH['multireddit_base'],
                                  data={'model': dumps(model)})
+
+
+class SubredditHelper(PRAWBase):
+    """Provide a set of functions to interact with Subreddits."""
+
+    def __call__(self, display_name):
+        """Return a lazy instance of :class:`~.Subreddit`.
+
+        :param display_name: The name of the subreddit.
+        """
+        lower_name = display_name.lower()
+
+        if lower_name == 'random':
+            return self._reddit.random_subreddit()
+        elif lower_name == 'randnsfw':
+            return self._reddit.random_subreddit(nsfw=True)
+
+        return Subreddit(self._reddit, display_name=display_name)
+
+    def create(self, name, link_type, subreddit_type, title, wikimode,
+               **kwargs):
+        """
+        Create a new subreddit.
+
+        See :meth:`~Subreddit._create_or_update` for details on each parameter.
+
+        """
+        Subreddit._create_or_update(_reddit=self._reddit, name=name,
+                                    link_type=link_type,
+                                    subreddit_type=subreddit_type,
+                                    title=title, wikimode=wikimode,
+                                    **kwargs)
+        return self(name)

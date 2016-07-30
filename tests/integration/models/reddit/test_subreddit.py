@@ -1,6 +1,8 @@
 """Test praw.models.subreddit."""
+from praw.exceptions import APIException
 from praw.models import (Comment, Redditor, Submission, SubredditMessage,
                          WikiPage)
+from prawcore import Redirect
 import mock
 import pytest
 
@@ -8,6 +10,45 @@ from ... import IntegrationTest
 
 
 class TestSubreddit(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_create(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubreddit.test_create'):
+            # These values are hard-coded for the benefit of the cassettes.
+            new_name = 'PRAW_cvolgqjmge'
+            nonexistent_subreddit = 'PRAW_gbchyuppzp'
+
+            # Extra kwargs that are static throughout the test
+            kwargs = {'subreddit_type': 'public',
+                      'wikimode': 'disabled'}
+
+            with pytest.raises(Redirect) as excinfo:
+                # Redirects to /subreddits/search
+                next(self.reddit.subreddit(nonexistent_subreddit).new())
+
+            with pytest.raises(APIException) as excinfo:
+                self.reddit.subreddit.create('redditdev', title='x',
+                                             link_type='any', **kwargs)
+            assert excinfo.value.error_type == 'SUBREDDIT_EXISTS'
+
+            with pytest.raises(APIException) as excinfo:
+                # Not supplying required field title.
+                self.reddit.subreddit.create(new_name, title=None,
+                                             link_type='any', **kwargs)
+            assert excinfo.value.error_type == 'NO_TEXT'
+
+            with pytest.raises(APIException) as excinfo:
+                # Supplying invalid setting for link_type
+                self.reddit.subreddit.create(new_name, title=new_name,
+                                             link_type='abcdefg', **kwargs)
+            assert excinfo.value.error_type == 'INVALID_OPTION'
+
+            subreddit = self.reddit.subreddit.create(new_name,
+                                                     title=new_name,
+                                                     link_type='any', **kwargs)
+            assert subreddit.display_name == new_name
+            assert subreddit.submission_type == 'any'
+
     @mock.patch('time.sleep', return_value=None)
     def test_message(self, _):
         self.reddit.read_only = False
@@ -229,13 +270,29 @@ class TestSubredditModeration(IntegrationTest):
 
     def test_unread(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditModeration.test_unread'):
+        with self.recorder.use_cassette('TestSubredditModeration.test_unread'):
             count = 0
             for item in self.reddit.subreddit('all').mod.unread():
                 assert isinstance(item, SubredditMessage)
                 count += 1
             assert count > 0
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_update_settings(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_update_settings'):
+            before_settings = self.subreddit.mod.settings()
+            self.subreddit.mod.update_settings(title='A')
+            assert self.subreddit.title == 'A'
+            after_settings = self.subreddit.mod.settings()
+
+            # Ensure that nothing has changed besides what was specified.
+            del before_settings['title']
+            del after_settings['title']
+            assert before_settings == after_settings
+
+            self.subreddit.mod.update_settings(title='B')
 
 
 class TestSubredditRelationships(IntegrationTest):

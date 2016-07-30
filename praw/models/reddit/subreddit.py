@@ -17,6 +17,117 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     STR_FIELD = 'display_name'
     MESSAGE_PREFIX = '#'
 
+    @staticmethod
+    def _create_or_update(_reddit, allow_images=None, allow_top=None,
+                          collapse_deleted_comments=None,
+                          comment_score_hide_mins=None, description=None,
+                          domain=None, exclude_modqueue_banned=None,
+                          header_hover_text=None, hide_ads=None, lang=None,
+                          key_color=None, link_type=None, name=None,
+                          over_18=None, public_description=None,
+                          public_traffic=None, show_media=None,
+                          spam_comments=None, spam_links=None,
+                          spam_selfposts=None, sr=None, submit_link_label=None,
+                          submit_text=None, submit_text_label=None,
+                          subreddit_type=None, suggested_comment_sort=None,
+                          title=None, wiki_edit_age=None, wiki_edit_karma=None,
+                          wikimode=None):
+        """Create a new subreddit.
+
+        :param _reddit: The reddit session.
+
+        :param allow_images: Allow users to upload images using the native
+            image hosting. Only applies to link-only subreddits.
+        :param allow_top: Allow the subreddit to appear on /r/all as well as
+            the default and trending lists.
+        :param collapse_deleted_comments: Collapse deleted and removed comments
+            on comments pages by default.
+        :param comment_score_hide_mins: The number of minutes to hide comment
+            scores.
+        :param description: Shown in the sidebar of your subreddit.
+        :param domain: Undocumented.
+        :param exclude_modqueue_banned: Exclude posts by site-wide banned users
+            from modqueue/unmoderated.
+        :param header_hover_text: The text seen when hovering over the snoo.
+        :param hide_ads: Don't show ads within this subreddit. Only applies to
+            gold-user only subreddits.
+        :param key_color: A 6-digit rgb hex color (e.g. `#AABBCC`), used as a
+            thematic color for your subreddit on mobile.
+        :param lang: A valid IETF language tag (underscore separated).
+        :param link_type: The types of submissions users can make.
+            One of ``any``, ``link``, ``self``.
+        :param name: The name for the new subreddit. Required during creation.
+        :param over_18: Viewers must be over 18 years old.
+        :param public_description: Public description blurb. Appears in search
+            results and on the landing page for private subreddits.
+        :param public_traffic: Make the traffic stats page public.
+        :param show_media: Expand media previews on comments pages.
+        :param spam_comments: Spam filter strength for comments.
+            One of ``low``, ``high``, ``all``.
+        :param spam_links: Spam filter strength for links.
+            One of ``low``, ``high``, ``all``.
+        :param spam_selfposts: Spam filter strength for selfposts.
+            One of ``low``, ``high``, ``all``.
+        :param sr: The fullname of the subreddit whose settings will be
+            updated.
+        :param submit_link_label: Custom label for submit link button
+            (blank for default).
+        :param submit_text: Text to show on submission page.
+        :param submit_text_label: Custom label for submit text post button
+            (blank for default).
+        :param subreddit_type: One of ``gold_restricted``, ``archived``,
+            ``restricted``, ``gold_only``, ``employees_only``, ``private``,
+            ``public``.
+        :param suggested_comment_sort: All comment threads will use this
+            sorting method by default. Leave blank, or choose one of
+            ``confidence``, ``top``, ``new``, ``controversial``, ``old``,
+            ``random``, ``qa``.
+        :param title: The title for the new subreddit.
+        :param wiki_edit_age: Account age (days) required to edit and create
+            wiki pages.
+        :param wiki_edit_karma: Subreddit karma required to edit and create
+            wiki pages.
+        :param wikimode: One of ``disabled``, ``modonly``, ``anyone``.
+
+        Any parameters left `None` will take on a default value assigned by
+        the server.
+
+        :returns: The server response body.
+        """
+        model = {
+            'allow_images': allow_images,
+            'allow_top': allow_top,
+            'collapse_deleted_comments': collapse_deleted_comments,
+            'comment_score_hide_mins': comment_score_hide_mins,
+            'description': description,
+            'domain': domain,
+            'exclude_modqueue_banned': exclude_modqueue_banned,
+            'header_hover_text': header_hover_text,
+            'hide_ads': hide_ads,
+            'key_color': key_color,
+            'lang': lang,
+            'link_type': link_type,
+            'name': name,
+            'over_18': over_18,
+            'public_description': public_description,
+            'public_traffic': public_traffic,
+            'show_media': show_media,
+            'spam_comments': spam_comments,
+            'spam_links': spam_links,
+            'spam_selfposts': spam_selfposts,
+            'sr': sr,
+            'submit_link_label': submit_link_label,
+            'submit_text': submit_text,
+            'submit_text_label': submit_text_label,
+            'suggested_comment_sort': suggested_comment_sort,
+            'title': title,
+            'type': subreddit_type,
+            'wiki_edit_age': wiki_edit_age,
+            'wiki_edit_karma': wiki_edit_karma,
+            'wikimode': wikimode,
+        }
+        return _reddit.post(API_PATH['site_admin'], data=model)
+
     def __init__(self, reddit, display_name=None, _data=None):
         """Initialize a Subreddit instance.
 
@@ -271,6 +382,11 @@ class SubredditModeration(object):
         data = {'id': thing.fullname, 'spam': bool(spam)}
         self.subreddit._reddit.post(API_PATH['remove'], data=data)
 
+    def settings(self):
+        """Get the subreddit's current settings."""
+        url = API_PATH['subreddit_settings'].format(subreddit=self.subreddit)
+        return self.subreddit._reddit.get(url)['data']
+
     def undistinguish(self, thing):
         """Remove mod, admin or special distinguishing on object.
 
@@ -303,6 +419,29 @@ class SubredditModeration(object):
         return ListingGenerator(
             self.subreddit._reddit, API_PATH['moderator_unread'].format(
                 subreddit=self.subreddit), **generator_kwargs)
+
+    def update_settings(self, **kwargs):
+        """Update the subreddit's settings.
+
+        See :meth:`Subreddit._create_or_update` for details on each parameter.
+        Unspecified attributes will stay the same.
+
+        """
+        current_settings = self.settings()
+        fullname = current_settings.pop('subreddit_id')
+
+        # These attributes come out using different names than they go in.
+        remap = {'lang': 'language',
+                 'allow_top': 'default_set',
+                 'exclude_modqueue_banned': 'exclude_banned_modqueue',
+                 'link_type': 'content_options',
+                 'show_media': 'show_media_preview'}
+        for (new, old) in remap.items():
+            current_settings[new] = current_settings.pop(old)
+
+        current_settings.update(kwargs)
+        return Subreddit._create_or_update(_reddit=self.subreddit._reddit,
+                                           sr=fullname, **current_settings)
 
 
 class SubredditRelationship(object):
