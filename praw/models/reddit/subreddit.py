@@ -69,6 +69,34 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         _reddit.post(API_PATH['site_admin'], data=model)
 
+    @property
+    def flair(self):
+        """An instance of :class:`.SubredditFlair`."""
+        if self.__dict__.get('_flair') is None:
+            self._flair = SubredditFlair(self)
+        return self._flair
+
+    @property
+    def mod(self):
+        """An instance of :class:`.SubredditModeration`."""
+        if self.__dict__.get('_mod') is None:
+            self._mod = SubredditModeration(self)
+        return self._mod
+
+    @property
+    def stream(self):
+        """An instance of :class:`.SubredditStream`."""
+        if self.__dict__.get('_stream') is None:
+            self._stream = SubredditStream(self)
+        return self._stream
+
+    @property
+    def wiki(self):
+        """An instance of :class:`.SubredditWiki`."""
+        if self.__dict__.get('_wiki') is None:
+            self._wiki = SubredditWiki(self)
+        return self._wiki
+
     def __init__(self, reddit, display_name=None, _data=None):
         """Initialize a Subreddit instance.
 
@@ -84,10 +112,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             self.display_name = display_name
         self._path = API_PATH['subreddit'].format(subreddit=self)
         self._prepare_relationships()
-        self.flair = SubredditFlair(self)
-        self.mod = SubredditModeration(self)
-        self.stream = SubredditStream(self)
-        self.wiki = SubredditWiki(self)
 
     def _info_path(self):
         return API_PATH['subreddit_about'].format(subreddit=self)
@@ -542,7 +566,7 @@ class SubredditWiki(object):
         :param name: The name of the new WikiPage. This name will be normalied.
         :param content: The content of the new WikiPage.
         :param reason: (Optional) The reason for the creation.
-        :param **other_settings: Additional keyword arguments to pass.
+        :param other_settings: Additional keyword arguments to pass.
 
         """
         name = name.replace(' ', '_').lower()

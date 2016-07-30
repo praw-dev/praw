@@ -91,4 +91,4 @@ License
 Donations
 ---------
 
-Please consider donating to PRAW's mainatiner via https://cash.me/$praw.
+Please consider donating to PRAW's maintainer via https://cash.me/$praw.

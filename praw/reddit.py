@@ -94,12 +94,26 @@ class Reddit(object):
         self._check_for_update()
         self._prepare_objector()
         self._prepare_prawcore()
+
+        #: An instance of :class:`.Front`.
         self.front = models.Front(self)
+
+        #: An instance of :class:`.Inbox`.
         self.inbox = models.Inbox(self, None)
+
+        #: An instance of :class:`.LiveHelper`.
         self.live = models.LiveHelper(self, None)
+
+        #: An instance of :class:`.MultiredditHelper`.
         self.multireddit = models.MultiredditHelper(self, None)
+
+        #: An instance of :class:`.SubredditHelper`.
         self.subreddit = models.SubredditHelper(self, None)
+
+        #: An instance of :class:`.Subreddits`.
         self.subreddits = models.Subreddits(self, None)
+
+        #: An instance of :class:`.User`.
         self.user = models.User(self, None)
 
     def _check_for_update(self):
