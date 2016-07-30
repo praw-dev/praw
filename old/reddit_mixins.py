@@ -6,7 +6,7 @@ from warnings import warn_explicit
 import six
 from requests.utils import to_native_string
 
-from . import decorators, errors, models
+from . import errors, models
 from .const import (JPEG_HEADER, MAX_IMAGE_SIZE, MIN_JPEG_SIZE, MIN_PNG_SIZE,
                     PNG_HEADER)
 from .reddits import AuthenticatedReddit
@@ -19,36 +19,6 @@ class ModConfigMixin(AuthenticatedReddit):
     :class:`.Reddit` instead.
 
     """
-
-    @decorators.require_captcha
-    def create_subreddit(self, name, title, description='', language='en',
-                         subreddit_type='public', content_options='any',
-                         over_18=False, default_set=True, show_media=False,
-                         domain='', wikimode='disabled', captcha=None,
-                         **kwargs):
-        """Create a new subreddit.
-
-        :returns: The json response from the server.
-
-        This function may result in a captcha challenge. PRAW will
-        automatically prompt you for a response. See :ref:`handling-captchas`
-        if you want to manually handle captchas.
-
-        """
-        data = {'name': name,
-                'title': title,
-                'description': description,
-                'lang': language,
-                'type': subreddit_type,
-                'link_type': content_options,
-                'over_18': 'on' if over_18 else 'off',
-                'allow_top': 'on' if default_set else 'off',
-                'show_media': 'on' if show_media else 'off',
-                'wikimode': wikimode,
-                'domain': domain}
-        if captcha:
-            data.update(captcha)
-        return self.request_json(self.config['site_admin'], data=data)
 
     def delete_image(self, subreddit, name=None, header=False):
         """Delete an image from the subreddit.
