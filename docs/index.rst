@@ -9,6 +9,7 @@ Table of Contents
    pages/reply_bot
    pages/changelog
    pages/code_overview
+   pages/comments
    pages/contributor_guidelines
 
 
