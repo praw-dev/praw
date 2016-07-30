@@ -2,7 +2,6 @@
 from praw.exceptions import APIException
 from praw.models import (Comment, Redditor, Submission, SubredditMessage,
                          WikiPage)
-from prawcore import Redirect
 import mock
 import pytest
 
@@ -13,41 +12,49 @@ class TestSubreddit(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
     def test_create(self, _):
         self.reddit.read_only = False
+        new_name = 'PRAW_rrldkyrfln'
         with self.recorder.use_cassette('TestSubreddit.test_create'):
-            # These values are hard-coded for the benefit of the cassettes.
-            new_name = 'PRAW_cvolgqjmge'
-            nonexistent_subreddit = 'PRAW_gbchyuppzp'
-
-            # Extra kwargs that are static throughout the test
-            kwargs = {'subreddit_type': 'public',
-                      'wikimode': 'disabled'}
-
-            with pytest.raises(Redirect) as excinfo:
-                # Redirects to /subreddits/search
-                next(self.reddit.subreddit(nonexistent_subreddit).new())
-
-            with pytest.raises(APIException) as excinfo:
-                self.reddit.subreddit.create('redditdev', title='x',
-                                             link_type='any', **kwargs)
-            assert excinfo.value.error_type == 'SUBREDDIT_EXISTS'
-
-            with pytest.raises(APIException) as excinfo:
-                # Not supplying required field title.
-                self.reddit.subreddit.create(new_name, title=None,
-                                             link_type='any', **kwargs)
-            assert excinfo.value.error_type == 'NO_TEXT'
-
-            with pytest.raises(APIException) as excinfo:
-                # Supplying invalid setting for link_type
-                self.reddit.subreddit.create(new_name, title=new_name,
-                                             link_type='abcdefg', **kwargs)
-            assert excinfo.value.error_type == 'INVALID_OPTION'
-
-            subreddit = self.reddit.subreddit.create(new_name,
-                                                     title=new_name,
-                                                     link_type='any', **kwargs)
+            subreddit = self.reddit.subreddit.create(name=new_name,
+                                                     title='Sub',
+                                                     link_type='any',
+                                                     subreddit_type='public',
+                                                     wikimode='disabled')
             assert subreddit.display_name == new_name
             assert subreddit.submission_type == 'any'
+
+    def test_create__exists(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubreddit.test_create__exists'):
+            with pytest.raises(APIException) as excinfo:
+                self.reddit.subreddit.create('redditdev', title='redditdev',
+                                             link_type='any',
+                                             subreddit_type='public',
+                                             wikimode='disabled')
+            assert excinfo.value.error_type == 'SUBREDDIT_EXISTS'
+
+    def test_create__invalid_parameter(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubreddit.test_create__invalid_parameter'):
+            with pytest.raises(APIException) as excinfo:
+                # Supplying invalid setting for link_type
+                self.reddit.subreddit.create(name='PRAW_iavynavffv',
+                                             title='sub', link_type='abcd',
+                                             subreddit_type='public',
+                                             wikimode='disabled')
+            assert excinfo.value.error_type == 'INVALID_OPTION'
+
+    def test_create__missing_parameter(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubreddit.test_create__missing_parameter'):
+            with pytest.raises(APIException) as excinfo:
+                # Not supplying required field title.
+                self.reddit.subreddit.create(name='PRAW_iavynavffv',
+                                             title=None, link_type='any',
+                                             subreddit_type='public',
+                                             wikimode='disabled')
+            assert excinfo.value.error_type == 'NO_TEXT'
 
     @mock.patch('time.sleep', return_value=None)
     def test_message(self, _):
@@ -278,21 +285,20 @@ class TestSubredditModeration(IntegrationTest):
             assert count > 0
 
     @mock.patch('time.sleep', return_value=None)
-    def test_update_settings(self, _):
+    def test_update(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditModeration.test_update_settings'):
+        with self.recorder.use_cassette('TestSubredditModeration.test_update'):
             before_settings = self.subreddit.mod.settings()
-            self.subreddit.mod.update_settings(title='A')
-            assert self.subreddit.title == 'A'
+            new_title = before_settings['title'] + 'x'
+            if len(new_title) == 20:
+                new_title = 'x'
+            self.subreddit.mod.update(title=new_title)
+            assert self.subreddit.title == new_title
             after_settings = self.subreddit.mod.settings()
 
             # Ensure that nothing has changed besides what was specified.
-            del before_settings['title']
-            del after_settings['title']
+            before_settings['title'] = new_title
             assert before_settings == after_settings
-
-            self.subreddit.mod.update_settings(title='B')
 
 
 class TestSubredditRelationships(IntegrationTest):

@@ -94,16 +94,29 @@ class SubredditHelper(PRAWBase):
         return Subreddit(self._reddit, display_name=display_name)
 
     def create(self, name, link_type, subreddit_type, title, wikimode,
-               **kwargs):
+               **other_settings):
         """
         Create a new subreddit.
 
-        See :meth:`~Subreddit._create_or_update` for details on each parameter.
+        :param link_type: The types of submissions users can make.
+            One of ``any``, ``link``, ``self``.
+        :param name: The name for the new subreddit.
+        :param subreddit_type: One of ``archived``, ``employees_only``,
+            ``gold_only``, ``gold_restricted``, ``private``, ``public``,
+            ``restricted``.
+        :param title: The title of the subreddit.
+        :param wikimode: One of  ``anyone``, ``disabled``, ``modonly``.
+
+        See :meth:`~.SubredditModeration.update` for documenation on other
+        settings.
+
+        Any keyword parameters not provided, or set explicitly to None, will
+        take on a default value assigned by the Reddit server.
 
         """
         Subreddit._create_or_update(_reddit=self._reddit, name=name,
                                     link_type=link_type,
                                     subreddit_type=subreddit_type,
                                     title=title, wikimode=wikimode,
-                                    **kwargs)
+                                    **other_settings)
         return self(name)
