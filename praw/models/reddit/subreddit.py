@@ -542,7 +542,7 @@ class SubredditWiki(object):
         :param name: The name of the new WikiPage. This name will be normalied.
         :param content: The content of the new WikiPage.
         :param reason: (Optional) The reason for the creation.
-        :param **other_settings: Additional keyword arguments to pass.
+        :param other_settings: Additional keyword arguments to pass.
 
         """
         name = name.replace(' ', '_').lower()

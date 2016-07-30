@@ -46,7 +46,7 @@ class VotableMixin(object):
         """Vote on the object in the direction specified.
 
         :param direction: The direction to vote in with -1 being down; 0,
-        clear; and 1, up.
+            clear; and 1, up.
 
         Note: votes must be cast by humans. That is, API clients proxying a
         human's action one-for-one are OK, but bots deciding how to vote on

@@ -45,7 +45,7 @@ class WikiPage(RedditBase):
 
         :param content: The updated markdown content of the page.
         :param reason: (Optional) The reason for the revision.
-        :param **other_settings: Additional keyword arguments to pass.
+        :param other_settings: Additional keyword arguments to pass.
 
         """
         other_settings.update({'content': content, 'page': self.name,
