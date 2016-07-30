@@ -12,7 +12,11 @@ class TestConfig(object):
     def _assert_config_read(environment, mock_config):
         mock_instance = mock_config.return_value
         Config.CONFIG = None  # Force config file reload
-        prev_environment = os.environ.get(environment)
+        prev_environment = {environment: None}
+        for env_name in ['APPDATA', 'HOME', 'XDG_CONFIG_HOME']:
+            if env_name in os.environ:
+                prev_environment[env_name] = os.environ[env_name]
+                del os.environ[env_name]
         os.environ[environment] = '/MOCK'
 
         module_dir = os.path.dirname(sys.modules['praw'].__file__)
@@ -26,10 +30,11 @@ class TestConfig(object):
             mock_instance.read.assert_called_with(locations)
         finally:
             Config.CONFIG = None  # Force config file reload
-            if prev_environment:
-                os.environ[environment] = prev_environment
-            else:
-                del os.environ[environment]
+            for env_name in prev_environment:
+                if prev_environment[env_name] is None:
+                    del os.environ[env_name]
+                else:
+                    os.environ[env_name] = prev_environment[env_name]
 
     @mock.patch('six.moves.configparser.RawConfigParser')
     def test_load_ini_from_appdata(self, mock_config):
