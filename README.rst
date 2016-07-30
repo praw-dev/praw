@@ -87,3 +87,8 @@ License
 -------
 
 `GPLv3 <https://github.com/praw-dev/praw/blob/praw4/COPYING>`_
+
+Donations
+---------
+
+Please consider donating to PRAW's mainatiner via https://cash.me/$praw.
