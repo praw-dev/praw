@@ -87,8 +87,8 @@ subreddit. To indefinitely iterate over new submissions to a subreddit add:
 
 Replace `AskReddit` with the name of another subreddit if you want to iterate
 through its new submissions. Additionally multiple subreddits can be specified
-by joining them with pluses, for example ``AskReddit+NoStupidQuestions`, and
-all subreddits can be specified using the special name ``all``.
+by joining them with pluses, for example ``AskReddit+NoStupidQuestions``. All
+subreddits can be specified using the special name ``all``.
 
 Step 3: Analyzing the Submission Titles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
