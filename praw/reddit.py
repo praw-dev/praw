@@ -226,7 +226,7 @@ class Reddit(object):
         """Return a lazy instance of :class:`~.Submission`.
 
         :param id: A reddit base64 submission ID, e.g., ``2gmzqe``.
-        :param url: A URL supported by :meth:`Submission.id_from_url`.
+        :param url: A URL supported by :meth:`.id_from_url`.
 
         Either ``id`` or ``url`` can be provided, but not both.
 

@@ -22,5 +22,5 @@ from .user import User  # NOQA
 __all__ = ('Comment', 'Front', 'Inbox', 'Listing', 'ListingGenerator',
            'LiveHelper', 'LiveThread', 'Message', 'ModAction', 'MoreComments',
            'Multireddit', 'MultiredditHelper', 'Redditor', 'RedditorList',
-           'Submission', 'Subreddit', 'SubredditMessage', 'Subreddits', 'User',
-           'WikiPage')
+           'Submission', 'Subreddit', 'SubredditHelper', 'SubredditMessage',
+           'Subreddits', 'User', 'WikiPage')
