@@ -7,6 +7,7 @@ The following material will help you get started with PRAW:
    :maxdepth: 1
 
    reply_bot
+   comments
 
 
 .. _submission-iteration:

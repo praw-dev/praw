@@ -9,7 +9,6 @@ Table of Contents
    pages/getting_started
    pages/changelog
    pages/code_overview
-   pages/comments
    pages/contributor_guidelines
 
 

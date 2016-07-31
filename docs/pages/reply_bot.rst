@@ -142,7 +142,7 @@ those submissions with an appropriate lmgtfy_ link.
 First we will need to construct a working lmgtfy_ link. In essence we want to
 pass the entire submission title to lmgtfy_. However, there are certain
 characters that are not permitted in URLs or have other . For instance, the
-space character, `` ``, is not permitted, and the question mark, ``?``, has a
+space character, ' ', is not permitted, and the question mark, '?', has a
 special meaning. Thus we will transform those into their URL-safe
 representation so that a question like "What is the capital of Canada?" is
 transformed into the link
