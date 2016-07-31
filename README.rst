@@ -10,6 +10,9 @@ PRAW: The Python Reddit API Wrapper
 .. image:: https://badges.gitter.im/praw-dev/praw.svg
    :alt: Join the chat at https://gitter.im/praw-dev/praw
    :target: https://gitter.im/praw-dev/praw
+.. image:: https://img.shields.io/badge/donate-cash.me%2F%24praw-blue.svg
+   :alt: Donate via https://cash.me/$praw
+   :target: https://cash.me/$praw
 
 PRAW, an acronym for "Python Reddit API Wrapper", is a python package that
 allows for simple access to reddit's API. PRAW aims to be easy to use and
