@@ -42,7 +42,7 @@ Here's how that looks:
        #do something
        print(submission.body)
 
-The :attr:`.submission.body` is a string of each each comment. You can do whatever you'd like with it at this point - you're done!
+The ``body`` attribute of a :class:`.Submission` is a string of each each comment. You can do whatever you'd like with it at this point - you're done!
 
 If you went with option 1, we still have a bit more work to do, so read on.
 
@@ -51,7 +51,9 @@ Extracting comments with PRAW
 
 With a list of thread ids or urls at this point, you can now extract comments of specific threads.
 
-Start by creating a new submission object, passing in either the 'id' variable, or the 'url' variable. Then, call the :meth:`.comments` method. 
+Start by creating a new submission object, passing in either the ``id``
+variable, or the ``url`` variable. Then, call the access the
+:meth:`praw.models.reddit.subreddit.SubredditStream.comments` attribute.
 
 .. code-block:: python
 
@@ -92,7 +94,9 @@ Here's how you do it:
 	comments.replace_more()
 	comments_list=comments.list()
 
-Calling the :meth:`.replace_more` method will replace the :class:`.MoreComments` objects. Finally, you have the option to pass in 2 variables to the :meth:`.replace_more method.
+Calling the :meth:`.replace_more` method will replace the
+:class:`.MoreComments` objects. Finally, you have the option to pass in 2
+variables to the :meth:`.replace_more` method.
 
 1. 'limit' - The maximum number of MoreComments instances to
    replace. Default is 32.

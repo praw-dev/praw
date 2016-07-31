@@ -49,13 +49,16 @@ Subreddit Utility Classes
 .. autoclass:: praw.models.reddit.subreddit.SubredditWiki
    :inherited-members:
 
-Utilities
----------
+Other Classes
+-------------
 
 .. autoclass:: praw.config.Config
    :inherited-members:
 
 .. autoclass:: praw.objector.Objector
+   :inherited-members:
+
+.. autoclass:: praw.models.reddit.wikipage.WikiPageModeration
    :inherited-members:
 
 Exceptions

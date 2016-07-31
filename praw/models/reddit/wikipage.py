@@ -106,7 +106,7 @@ class WikiPageModeration(object):
         :param permlevel: (int) Who can edit this page? (0) use subreddit wiki
             permissions, (1) only approved wiki contributors for this page may
             edit (see `add`), (2) only mods may edit and view
-        :param **other_settings: Additional keyword arguments to pass.
+        :param other_settings: Additional keyword arguments to pass.
         :returns: The updated WikiPage settings.
 
         """

@@ -12,6 +12,7 @@ html_theme = 'default'
 html_use_smartypants = True
 htmlhelp_basename = 'PRAW'
 master_doc = 'index'
+nitpicky = True
 project = 'PRAW'
 pygments_style = 'sphinx'
 release = __version__

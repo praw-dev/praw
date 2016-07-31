@@ -13,7 +13,7 @@ require additional help please ask on `/r/redditdev
 
 **Removed**
 
-* Removed :class:`Reddit`'s ``login`` method. Authentication must be done
+* Removed :class:`.Reddit`'s ``login`` method. Authentication must be done
   through OAuth.
 * Removed `praw-multiprocess` as this functionality is no longer needed with
   PRAW 4.
