@@ -15,8 +15,8 @@ PRAW: The Python Reddit API Wrapper
    :target: https://cash.me/$praw
 
 PRAW, an acronym for "Python Reddit API Wrapper", is a python package that
-allows for simple access to reddit's API. PRAW aims to be easy to use and
-internally follows all of `reddit's API rules
+allows for simple access to Reddit's API. PRAW aims to be easy to use and
+internally follows all of `Reddit's API rules
 <https://github.com/reddit/reddit/wiki/API>`_. With PRAW there's no need to
 introduce ``sleep`` calls in your code. Give your client an appropriate user
 agent and you're set.
@@ -57,14 +57,14 @@ there who can help with general python and simple PRAW related questions.
 Otherwise, there are a few official places to ask questions about PRAW:
 
 `/r/redditdev <https://www.reddit.com/r/redditdev>`_ is the best place on
-reddit to ask PRAW related questions. This subreddit is for all reddit API
+Reddit to ask PRAW related questions. This subreddit is for all Reddit API
 related discussion so please tag submissions with *[PRAW4]*. Please perform a
 search on the subreddit first to see if anyone has similar questions.
 
 Real-time chat can be conducted via the `praw-dev/praw
 <https://gitter.im/praw-dev/praw>`_ channel on gitter.
 
-Please do not directly message any of the contributors via reddit, email, or
+Please do not directly message any of the contributors via Reddit, email, or
 gitter unless they have indicated otherwise. We strongly encourage everyone to
 help others with their questions.
 
