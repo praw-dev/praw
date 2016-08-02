@@ -1,30 +1,47 @@
-import shlex
-import subprocess
+#!/usr/bin/env python
+"""Run static analysis on the project."""
+from shutil import rmtree
+from subprocess import CalledProcessError, check_call
+from tempfile import mkdtemp
+import sys
 
 
-def _exit():
-    print('\nPlease fix and re-run to complete checks')
-    exit(1)
+def do_process(*args):
+    """Run program provided by args.
 
+    Return True on success.
 
-def do_process(command):
-    print(command)
-    command = shlex.split(command)
+    Output failed message on non-zero exit and return False.
+
+    Exit if command is not found.
+    """
+    print('Running: {}'.format(' '.join(args)))
     try:
-        process = subprocess.Popen(command, stderr=subprocess.PIPE)
-    except FileNotFoundError:
-        print('Command `%s` not found' % command[0])
-        return 1
-    error_level = process.wait()
-    if error_level == 0:
-        print('Good.\n')
-    return error_level
+        check_call(args)
+    except CalledProcessError:
+        print('\nFailed: {}'.format(' '.join(args)))
+        return False
+    except Exception as exc:
+        sys.stderr.write(str(exc) + '\n')
+        sys.exit(1)
+    return True
+
+
+def main():
+    """Entry point to pre_push.py."""
+    success = True
+    success &= do_process('flake8', '--exclude=docs')
+    success &= do_process('pydocstyle', 'praw')
+    success &= do_process('pylint', '--rcfile=.pylintrc', 'praw')
+
+    tmp_dir = mkdtemp()
+    try:
+        success &= do_process('sphinx-build', '-W', 'docs', tmp_dir)
+    finally:
+        rmtree(tmp_dir)
+
+    return 0 if success else 1
 
 
 if __name__ == '__main__':
-    if do_process('flake8 --exclude=docs'):
-        _exit()
-    elif do_process('pydocstyle praw'):
-        _exit()
-    else:
-        do_process('pylint --rcfile=./.pylintrc praw')
+    sys.exit(main())
