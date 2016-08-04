@@ -1,12 +1,12 @@
 """Provide the ListingMixin class."""
 from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
-from .base import BaseListingMixin
+from ...base import PRAWBase
 from ..generator import ListingGenerator
 
 
-class ListingMixin(BaseListingMixin):
-    """Adds additional methods that apply to most Listing objects."""
+class GildedListingMixin(PRAWBase):
+    """Mixes in the gilded method."""
 
     def gilded(self, **generator_kwargs):
         """Return a ListingGenerator for gilded items.

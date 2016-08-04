@@ -62,7 +62,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.0.0b9 prawcore/0.0.12"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/user/kjoneslol/m/sfwpornnetwork/comments?raw_json=1&limit=100"
+        "uri": "https://oauth.reddit.com/user/kjoneslol/m/sfwpornnetwork/comments/?raw_json=1&limit=100"
       },
       "response": {
         "body": {
@@ -92,7 +92,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/user/kjoneslol/m/sfwpornnetwork/comments?raw_json=1&limit=100"
+        "url": "https://oauth.reddit.com/user/kjoneslol/m/sfwpornnetwork/comments/?raw_json=1&limit=100"
       }
     }
   ],

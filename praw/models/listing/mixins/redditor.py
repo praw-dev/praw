@@ -3,10 +3,10 @@ from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from ..generator import ListingGenerator
 from .base import BaseListingMixin
-from .listing import ListingMixin
+from .gilded import GildedListingMixin
 
 
-class RedditorListingMixin(ListingMixin):
+class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
     """Adds additional methods pertaining to Redditor instances."""
 
     @property

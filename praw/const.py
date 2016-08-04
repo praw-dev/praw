@@ -93,7 +93,6 @@ API_PATH = {
     'site_admin':             'api/site_admin/',
     'spam':                   'r/{subreddit}/about/spam/',
     'stylesheet':             'r/{subreddit}/about/stylesheet/',
-    'sub_comments_gilded':    'r/{subreddit}/comments/gilded/',
     'sub_recommendations':    'api/recommend/sr/{subreddits}',
     'submission':             'comments/{id}/',
     'submission_replies':     'message/selfreply/',

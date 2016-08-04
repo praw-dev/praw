@@ -181,6 +181,13 @@ class TestSubredditListings(IntegrationTest):
             comments = list(subreddit.comments())
         assert len(comments) == 100
 
+    def test_comments_gilded(self):
+        with self.recorder.use_cassette(
+                'TestSubredditListings.test_comments_gilded'):
+            subreddit = self.reddit.subreddit('askreddit')
+            comments = list(subreddit.comments.gilded())
+        assert len(comments) == 100
+
     def test_controversial(self):
         with self.recorder.use_cassette(
                 'TestSubredditListings.test_controversial'):

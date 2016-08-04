@@ -1,10 +1,11 @@
 """Provide the SubmissionListingMixin class."""
 from ....const import API_PATH
 from ..generator import ListingGenerator
-from .listing import ListingMixin
+from .base import BaseListingMixin
+from .gilded import GildedListingMixin
 
 
-class SubmissionListingMixin(ListingMixin):
+class SubmissionListingMixin(BaseListingMixin, GildedListingMixin):
     """Adds additional methods pertaining to Submission instances."""
 
     def duplicates(self, **generator_kwargs):

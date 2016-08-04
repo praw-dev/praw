@@ -4,12 +4,6 @@ text_type = betamax = PRAWTest = None
 
 class UnauthenticatedRedditTest(PRAWTest):
     @betamax()
-    def test_get_comments_gilded(self):
-        gilded_comments = self.r.get_comments('all', gilded_only=True)
-        self.assertTrue(all(comment.gilded > 0 for comment in
-                            gilded_comments))
-
-    @betamax()
     def test_get_random_submission(self):
         submissions = set()
         for _ in range(3):
