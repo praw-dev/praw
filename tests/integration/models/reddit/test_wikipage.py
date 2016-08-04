@@ -1,4 +1,4 @@
-from praw.models import WikiPage
+from praw.models import Redditor, WikiPage
 from prawcore import NotFound
 import pytest
 
@@ -40,6 +40,14 @@ class TestWikiPage(IntegrationTest):
         with self.recorder.use_cassette('TestWikiPage.test_invalid_page'):
             with pytest.raises(NotFound):
                 page.content_md
+
+    def test_revision_by(self):
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, 'test')
+
+        with self.recorder.use_cassette('TestWikiPage.test_revision_by'):
+            assert isinstance(page.revision_by, Redditor)
 
 
 class TestWikiPageModeration(IntegrationTest):

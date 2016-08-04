@@ -1,6 +1,7 @@
 """Provide the WikiPage class."""
 from ...const import API_PATH
 from .base import RedditBase
+from .redditor import Redditor
 
 
 class WikiPage(RedditBase):
@@ -39,6 +40,8 @@ class WikiPage(RedditBase):
 
     def _fetch(self):
         data = self._reddit.get(self._info_path())['data']
+        data['revision_by'] = Redditor(self._reddit,
+                                       _data=data['revision_by']['data'])
         self.__dict__.update(data)
         self._fetched = True
 
