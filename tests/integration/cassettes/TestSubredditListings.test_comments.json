@@ -62,7 +62,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.0.0b4 prawcore/0.0.8"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/r/askreddit/comments?limit=100&raw_json=1"
+        "uri": "https://oauth.reddit.com/r/askreddit/comments/?limit=100&raw_json=1"
       },
       "response": {
         "body": {
@@ -92,7 +92,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/r/askreddit/comments?limit=100&raw_json=1"
+        "url": "https://oauth.reddit.com/r/askreddit/comments/?limit=100&raw_json=1"
       }
     }
   ],
