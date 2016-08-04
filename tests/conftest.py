@@ -1,7 +1,9 @@
 """Prepare py.test."""
 import os
+import socket
 import time
 from base64 import b64encode
+from sys import platform
 
 import betamax
 from betamax_serializers import pretty_json
@@ -45,3 +47,7 @@ with betamax.Betamax.configure() as config:
 def pytest_namespace():
     """Add attributes to pytest in all tests."""
     return {'placeholders': placeholders}
+
+
+if platform == 'darwin':  # Work around issue with betamax on OS X
+    socket.gethostbyname = lambda x: '127.0.0.1'
