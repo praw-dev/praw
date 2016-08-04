@@ -11,7 +11,7 @@ class TestWikiPage(IntegrationTest):
             pytest.placeholders.test_subreddit)
         page = WikiPage(self.reddit, subreddit, 'test')
 
-        with self.recorder.use_cassette('TestWikiPage.test_attributes'):
+        with self.recorder.use_cassette('TestWikiPage.test_content_md'):
             assert page.content_md
 
     def test_edit(self):
