@@ -2,10 +2,11 @@
 from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from ..generator import ListingGenerator
-from .listing import ListingMixin
+from .base import BaseListingMixin
+from .gilded import GildedListingMixin
 
 
-class SubredditListingMixin(ListingMixin):
+class SubredditListingMixin(BaseListingMixin, GildedListingMixin):
     """Adds additional methods pertianing to Subreddit-like instances."""
 
     def comments(self, **generator_kwargs):
