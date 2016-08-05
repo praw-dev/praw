@@ -49,7 +49,13 @@ class OAuth2RedditTest(PRAWTest):
     # @betamax() is currently broken for this test because the cassettes
     # are caching too aggressively and not performing a token refresh.
     def test_auto_refresh_token(self):
-        self.r.refresh_access_information(self.refresh_token['identity'])
+        self.r.set_oauth_app_info(
+            'IlQgN8A5fPCbpA',
+            '7iYM6T1rh8REihHQEVNgQsE16OE',
+            'http://localhost:8080'
+        )
+        self.r.refresh_access_information(
+            '7302867-l3Gl-kyNxcLJxbr2xn8Q3Ao42UA')
         old_token = self.r.access_token
 
         self.r.access_token += 'x'  # break the token
