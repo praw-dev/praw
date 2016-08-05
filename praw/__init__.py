@@ -54,12 +54,6 @@ from warnings import warn_explicit
 
 __version__ = '3.5.0'
 
-# Compatibility
-if six.PY3:
-    CHR = chr
-else:
-    CHR = unichr  # NOQA
-
 
 class Config(object):  # pylint: disable=R0903
     """A class containing the configuration for a reddit site."""
@@ -422,7 +416,7 @@ class BaseReddit(object):
             return (request, key_items, kwargs)
 
         def decode(match):
-            return CHR(html_entities.name2codepoint[match.group(1)])
+            return six.unichr(html_entities.name2codepoint[match.group(1)])
 
         def handle_redirect():
             response = None
