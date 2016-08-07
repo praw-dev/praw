@@ -73,7 +73,7 @@ class Reddit(object):
         Required settings are:
 
         * client_id
-        * client_secret
+        * client_secret (for installed applications set this value to ``None``)
         * user_agent
 
         """
@@ -83,13 +83,19 @@ class Reddit(object):
         self.config = Config(site_name or os.getenv('praw_site') or 'DEFAULT',
                              **config_settings)
 
-        for attribute in ['client_id', 'client_secret', 'user_agent']:
-            if not getattr(self.config, attribute):
-                message = ('Required configuration setting {!r} missing. \n'
-                           'This setting can be provided in a praw.ini file, '
-                           'as a keyword argument to the `Reddit` class '
-                           'constructor, or as an environment variable.')
-                raise ClientException(message.format(attribute))
+        required_message = ('Required configuration setting {!r} missing. \n'
+                            'This setting can be provided in a praw.ini file, '
+                            'as a keyword argument to the `Reddit` class '
+                            'constructor, or as an environment variable.')
+        for attribute in ('client_id', 'user_agent'):
+            if getattr(self.config, attribute) in (self.config.CONFIG_NOT_SET,
+                                                   None):
+                raise ClientException(required_message.format(attribute))
+        if self.config.client_secret is self.config.CONFIG_NOT_SET:
+            raise ClientException(required_message.format('client_secret') +
+                                  '\nFor installed applications this value '
+                                  'must be set to None via a keyword arugment '
+                                  'to the `Reddit` class constructor.')
 
         self._check_for_update()
         self._prepare_objector()

@@ -45,8 +45,22 @@ class TestReddit(UnitTest):
             reddit.read_only = True
             assert reddit.read_only
 
-    def test_reddit_missing_required_settings(self):
+    def test_reddit__missing_required_settings(self):
         for setting in self.REQUIRED_DUMMY_SETTINGS:
+            with pytest.raises(ClientException) as excinfo:
+                settings = self.REQUIRED_DUMMY_SETTINGS.copy()
+                del settings[setting]
+                Reddit(**settings)
+            assert str(excinfo.value).startswith('Required configuration '
+                                                 'setting \'{}\' missing.'
+                                                 .format(setting))
+            if setting == 'client_secret':
+                assert 'set to None' in str(excinfo.value)
+
+    def test_reddit__required_settings_set_to_none(self):
+        required_settings = self.REQUIRED_DUMMY_SETTINGS.copy()
+        del required_settings['client_secret']
+        for setting in required_settings:
             with pytest.raises(ClientException) as excinfo:
                 settings = self.REQUIRED_DUMMY_SETTINGS.copy()
                 settings[setting] = None

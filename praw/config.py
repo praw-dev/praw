@@ -11,6 +11,7 @@ class Config(object):
     """A class containing the configuration for a reddit site."""
 
     CONFIG = None
+    CONFIG_NOT_SET = object()  # Represents a config value that is not set.
 
     @classmethod
     def _load_config(cls):
@@ -36,37 +37,38 @@ class Config(object):
         def config_boolean(item):
             return item.lower() in {'1', 'yes', 'true', 'on'}
 
-        def fetch_or_none(key):
+        def fetch_or_not_set(key):
             if key in settings:  # Passed in values have the highest priority
                 return raw[key]
-            return os.getenv('praw_{}'.format(key)) or raw.get(key) or None
+            return os.getenv('praw_{}'.format(key)) or raw.get(key) \
+                or self.CONFIG_NOT_SET
 
         if Config.CONFIG is None:
             self._load_config()
 
         raw = dict(Config.CONFIG.items(site_name), **settings)
 
-        self._short_url = raw.get('short_url') or None
+        self._short_url = raw.get('short_url') or self.CONFIG_NOT_SET
         self.check_for_updates = config_boolean(
-            fetch_or_none('check_for_updates'))
-        self.client_id = fetch_or_none('client_id')
-        self.client_secret = fetch_or_none('client_secret')
-        self.http_proxy = fetch_or_none('http_proxy')
-        self.https_proxy = fetch_or_none('https_proxy')
+            fetch_or_not_set('check_for_updates'))
+        self.client_id = fetch_or_not_set('client_id')
+        self.client_secret = fetch_or_not_set('client_secret')
+        self.http_proxy = fetch_or_not_set('http_proxy')
+        self.https_proxy = fetch_or_not_set('https_proxy')
         self.kinds = {x: raw['{}_kind'.format(x)] for x in
                       ['comment', 'message', 'redditor', 'submission',
                        'subreddit']}
         self.oauth_url = raw['oauth_url']
         self.reddit_url = raw['reddit_url']
-        self.redirect_uri = fetch_or_none('redirect_uri')
-        self.refresh_token = fetch_or_none('refresh_token')
-        self.password = fetch_or_none('password')
-        self.user_agent = fetch_or_none('user_agent')
-        self.username = fetch_or_none('username')
+        self.redirect_uri = fetch_or_not_set('redirect_uri')
+        self.refresh_token = fetch_or_not_set('refresh_token')
+        self.password = fetch_or_not_set('password')
+        self.user_agent = fetch_or_not_set('user_agent')
+        self.username = fetch_or_not_set('username')
 
     @property
     def short_url(self):
         """Return the short url or raise a ClientException when not set."""
-        if self._short_url is None:
+        if self._short_url is self.CONFIG_NOT_SET:
             raise ClientException('No short domain specified.')
         return self._short_url
