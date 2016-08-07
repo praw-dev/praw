@@ -3,8 +3,8 @@ import os
 
 from six import iteritems
 from update_checker import update_check
-from prawcore import (Authenticator, ReadOnlyAuthorizer, Redirect, Requestor,
-                      ScriptAuthorizer, session)
+from prawcore import (ReadOnlyAuthorizer, Redirect, Requestor,
+                      ScriptAuthorizer, TrustedAuthenticator, session)
 
 from .exceptions import ClientException
 from .config import Config
@@ -140,8 +140,8 @@ class Reddit(object):
     def _prepare_prawcore(self):
         requestor = Requestor(USER_AGENT_FORMAT.format(self.config.user_agent),
                               self.config.oauth_url, self.config.reddit_url)
-        authenticator = Authenticator(requestor, self.config.client_id,
-                                      self.config.client_secret)
+        authenticator = TrustedAuthenticator(requestor, self.config.client_id,
+                                             self.config.client_secret)
         read_only_authorizer = ReadOnlyAuthorizer(authenticator)
         self._read_only_core = session(read_only_authorizer)
 
