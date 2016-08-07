@@ -35,9 +35,21 @@ class TestReddit(UnitTest):
             reddit.read_only = False
             assert not reddit.read_only
 
-    def test_read_only__without_authenticated_core(self):
+    def test_read_only__without_trusted_authenticated_core(self):
         with Reddit(password=None, username=None,
                     **self.REQUIRED_DUMMY_SETTINGS) as reddit:
+            assert reddit.read_only
+            with pytest.raises(ClientException):
+                reddit.read_only = False
+            assert reddit.read_only
+            reddit.read_only = True
+            assert reddit.read_only
+
+    def test_read_only__without_untrusted_authenticated_core(self):
+        required_settings = self.REQUIRED_DUMMY_SETTINGS.copy()
+        required_settings['client_secret'] = None
+        with Reddit(password=None, username=None,
+                    **required_settings) as reddit:
             assert reddit.read_only
             with pytest.raises(ClientException):
                 reddit.read_only = False

@@ -3,8 +3,9 @@ import os
 
 from six import iteritems
 from update_checker import update_check
-from prawcore import (ReadOnlyAuthorizer, Redirect, Requestor,
-                      ScriptAuthorizer, TrustedAuthenticator, session)
+from prawcore import (DeviceIDAuthorizer, ReadOnlyAuthorizer, Redirect,
+                      Requestor, ScriptAuthorizer, TrustedAuthenticator,
+                      UntrustedAuthenticator, session)
 
 from .exceptions import ClientException
 from .config import Config
@@ -146,6 +147,12 @@ class Reddit(object):
     def _prepare_prawcore(self):
         requestor = Requestor(USER_AGENT_FORMAT.format(self.config.user_agent),
                               self.config.oauth_url, self.config.reddit_url)
+        if self.config.client_secret:
+            self._prepare_trusted_prawcore(requestor)
+        else:
+            self._prepare_untrusted_prawcore(requestor)
+
+    def _prepare_trusted_prawcore(self, requestor):
         authenticator = TrustedAuthenticator(requestor, self.config.client_id,
                                              self.config.client_secret)
         read_only_authorizer = ReadOnlyAuthorizer(authenticator)
@@ -157,6 +164,12 @@ class Reddit(object):
             self._core = self._authorized_core = session(script_authorizer)
         else:
             self._core = self._read_only_core
+
+    def _prepare_untrusted_prawcore(self, requestor):
+        authenticator = UntrustedAuthenticator(requestor,
+                                               self.config.client_id)
+        read_only_authorizer = DeviceIDAuthorizer(authenticator)
+        self._core = self._read_only_core = session(read_only_authorizer)
 
     def comment(self, id):
         """Return a lazy instance of :class:`~.Comment` for ``id``.
