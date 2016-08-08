@@ -176,7 +176,7 @@ class Reddit(object):
         read_only_authorizer = DeviceIDAuthorizer(authenticator)
         self._core = self._read_only_core = session(read_only_authorizer)
 
-    def comment(self, id):
+    def comment(self, id):  # pylint: disable=invalid-name,redefined-builtin
         """Return a lazy instance of :class:`~.Comment` for ``id``.
 
         :param id: The ID of the comment.

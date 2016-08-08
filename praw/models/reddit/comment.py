@@ -76,6 +76,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         /comments/2gmzqe//cklhv0f
 
         """
+        # pylint: disable=no-member
         if not fast or 'permalink' in self.submission.__dict__:
             return urljoin(self.submission.permalink, self.id)
         return '/comments/{}//{}'.format(self.submission.id, self.id)

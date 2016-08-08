@@ -53,14 +53,14 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     @property
     def flair(self):
         """An instance of :class:`.SubmissionFlair`."""
-        if self.__dict__.get('_flair') is None:
+        if self._flair is None:
             self._flair = SubmissionFlair(self)
         return self._flair
 
     @property
     def mod(self):
         """An instance of :class:`.SubmissionModeration`."""
-        if self.__dict__.get('_mod') is None:
+        if self._mod is None:
             self._mod = SubmissionModeration(self)
         return self._mod
 
@@ -85,6 +85,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             self.id = id  # pylint: disable=invalid-name
         elif url is not None:
             self.id = self.id_from_url(url)
+        self._flair = self._mod = None
 
     def __setattr__(self, attribute, value):
         """Objectify author, comments, and subreddit attributes."""
@@ -228,3 +229,5 @@ class SubmissionModeration(object):
         """
         self.submission._reddit.post(API_PATH['suggested_sort'], data={
             'id': self.submission.fullname, 'sort': sort})
+
+Subreddit._submission_class = Submission
