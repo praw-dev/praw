@@ -89,6 +89,32 @@ PRAW's documentation is located at https://praw.readthedocs.io.
 .. note:: At this time the majority of the documentation has not yet been
    updated to PRAW4. Contributions are welcome.
 
+
+History
+-------
+
+`August 2010
+<https://github.com/praw-dev/praw/commit/efef08a4a713fcfd7dfddf992097cf89426586ae>`_:
+Timothy Mellor created a github project called ``reddit_api``.
+
+`March 2011
+<https://github.com/praw-dev/praw/commit/ebfc9caba5b58b9e68c77af9c8e53f5562a2ee64>`_:
+The python package ``reddit`` was registered and uploaded to pypi.
+
+`December 2011
+<https://github.com/praw-dev/praw/commit/74bb962b3eefe04ce6acad88e6f53f43d10c8803>`_:
+Bryce Boe took over as maintainer of the ``reddit`` package.
+
+`June 2012
+<https://github.com/praw-dev/praw/commit/adaf89fe8631f41ab9913b379de104c9ef6a1e73>`_:
+The project was renamed PRAW and moved to the newly created praw-dev
+organization on github.
+
+`February 2016
+<https://github.com/praw-dev/praw/commit/252083ef1dbfe6ea53c2dc99ac235b4ba330b658>`_:
+Bryce began work on PRAW4, a complete rewrite of PRAW.
+
+
 License
 -------
 
