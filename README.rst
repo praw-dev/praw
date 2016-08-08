@@ -107,8 +107,8 @@ Bryce Boe took over as maintainer of the ``reddit`` package.
 
 `June 2012
 <https://github.com/praw-dev/praw/commit/adaf89fe8631f41ab9913b379de104c9ef6a1e73>`_:
-The project was renamed PRAW and moved to the newly created praw-dev
-organization on github.
+Bryce renamed the project ``PRAW`` and the repository was relocated to the
+newly created praw-dev organization on GitHub.
 
 `February 2016
 <https://github.com/praw-dev/praw/commit/252083ef1dbfe6ea53c2dc99ac235b4ba330b658>`_:
