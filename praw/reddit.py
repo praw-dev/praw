@@ -102,6 +102,9 @@ class Reddit(object):
         self._prepare_objector()
         self._prepare_prawcore()
 
+        #: An instance of :class:`.Auth`.
+        self.auth = models.Auth(self, None)
+
         #: An instance of :class:`.Front`.
         self.front = models.Front(self)
 
