@@ -157,7 +157,8 @@ class Reddit(object):
 
     def _prepare_trusted_prawcore(self, requestor):
         authenticator = TrustedAuthenticator(requestor, self.config.client_id,
-                                             self.config.client_secret)
+                                             self.config.client_secret,
+                                             self.config.redirect_uri)
         read_only_authorizer = ReadOnlyAuthorizer(authenticator)
         self._read_only_core = session(read_only_authorizer)
 
@@ -170,7 +171,8 @@ class Reddit(object):
 
     def _prepare_untrusted_prawcore(self, requestor):
         authenticator = UntrustedAuthenticator(requestor,
-                                               self.config.client_id)
+                                               self.config.client_id,
+                                               self.config.redirect_uri)
         read_only_authorizer = DeviceIDAuthorizer(authenticator)
         self._core = self._read_only_core = session(read_only_authorizer)
 
