@@ -3,8 +3,9 @@ import os
 
 from six import iteritems
 from update_checker import update_check
-from prawcore import (Authenticator, ReadOnlyAuthorizer, Redirect, Requestor,
-                      ScriptAuthorizer, session)
+from prawcore import (DeviceIDAuthorizer, ReadOnlyAuthorizer, Redirect,
+                      Requestor, ScriptAuthorizer, TrustedAuthenticator,
+                      UntrustedAuthenticator, session)
 
 from .exceptions import ClientException
 from .config import Config
@@ -73,7 +74,7 @@ class Reddit(object):
         Required settings are:
 
         * client_id
-        * client_secret
+        * client_secret (for installed applications set this value to ``None``)
         * user_agent
 
         """
@@ -83,17 +84,26 @@ class Reddit(object):
         self.config = Config(site_name or os.getenv('praw_site') or 'DEFAULT',
                              **config_settings)
 
-        for attribute in ['client_id', 'client_secret', 'user_agent']:
-            if not getattr(self.config, attribute):
-                message = ('Required configuration setting {!r} missing. \n'
-                           'This setting can be provided in a praw.ini file, '
-                           'as a keyword argument to the `Reddit` class '
-                           'constructor, or as an environment variable.')
-                raise ClientException(message.format(attribute))
+        required_message = ('Required configuration setting {!r} missing. \n'
+                            'This setting can be provided in a praw.ini file, '
+                            'as a keyword argument to the `Reddit` class '
+                            'constructor, or as an environment variable.')
+        for attribute in ('client_id', 'user_agent'):
+            if getattr(self.config, attribute) in (self.config.CONFIG_NOT_SET,
+                                                   None):
+                raise ClientException(required_message.format(attribute))
+        if self.config.client_secret is self.config.CONFIG_NOT_SET:
+            raise ClientException(required_message.format('client_secret') +
+                                  '\nFor installed applications this value '
+                                  'must be set to None via a keyword arugment '
+                                  'to the `Reddit` class constructor.')
 
         self._check_for_update()
         self._prepare_objector()
         self._prepare_prawcore()
+
+        #: An instance of :class:`.Auth`.
+        self.auth = models.Auth(self, None)
 
         #: An instance of :class:`.Front`.
         self.front = models.Front(self)
@@ -140,8 +150,15 @@ class Reddit(object):
     def _prepare_prawcore(self):
         requestor = Requestor(USER_AGENT_FORMAT.format(self.config.user_agent),
                               self.config.oauth_url, self.config.reddit_url)
-        authenticator = Authenticator(requestor, self.config.client_id,
-                                      self.config.client_secret)
+        if self.config.client_secret:
+            self._prepare_trusted_prawcore(requestor)
+        else:
+            self._prepare_untrusted_prawcore(requestor)
+
+    def _prepare_trusted_prawcore(self, requestor):
+        authenticator = TrustedAuthenticator(requestor, self.config.client_id,
+                                             self.config.client_secret,
+                                             self.config.redirect_uri)
         read_only_authorizer = ReadOnlyAuthorizer(authenticator)
         self._read_only_core = session(read_only_authorizer)
 
@@ -151,6 +168,13 @@ class Reddit(object):
             self._core = self._authorized_core = session(script_authorizer)
         else:
             self._core = self._read_only_core
+
+    def _prepare_untrusted_prawcore(self, requestor):
+        authenticator = UntrustedAuthenticator(requestor,
+                                               self.config.client_id,
+                                               self.config.redirect_uri)
+        read_only_authorizer = DeviceIDAuthorizer(authenticator)
+        self._core = self._read_only_core = session(read_only_authorizer)
 
     def comment(self, id):
         """Return a lazy instance of :class:`~.Comment` for ``id``.

@@ -1,0 +1,54 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-08-08T04:32:00",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer invalid_token",
+          "Connection": "keep-alive",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b12 prawcore/0.2.1"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/v1/me?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"message\": \"Unauthorized\", \"error\": 401}"
+        },
+        "headers": {
+          "CF-RAY": "2cf03df52e3d5053-LAX",
+          "Connection": "keep-alive",
+          "Content-Length": "41",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Mon, 08 Aug 2016 04:32:00 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=d0a117f9b42c21cdf10b244b05a1385061470630720; expires=Tue, 08-Aug-17 04:32:00 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "www-authenticate": "Bearer realm=\"reddit\", error=\"invalid_token\"",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=gjTh%2FYRy3skqOlpZxS9g%2ByFyyV2NINwE1qtOJDQoFnUF5sJKAH74PiF6GzxMxLDz4pXe8xhjxqNi6YaA2cxZEE1m0okCNiD8",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 401,
+          "message": "Unauthorized"
+        },
+        "url": "https://oauth.reddit.com/api/v1/me?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.7.1"
+}

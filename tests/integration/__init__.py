@@ -9,12 +9,11 @@ class IntegrationTest(object):
 
     def setup(self):
         """Setup runs before all test cases."""
-        self.reddit = Reddit(client_id=pytest.placeholders.client_id,
-                             client_secret=pytest.placeholders.client_secret,
-                             password=pytest.placeholders.password,
-                             user_agent=pytest.placeholders.user_agent,
-                             username=pytest.placeholders.username)
+        self.setup_reddit()
+        self.setup_betamax()
 
+    def setup_betamax(self):
+        """Configure betamax instance based off of the reddit instance."""
         http = self.reddit._core._requestor._http
         self.recorder = Betamax(http)
 
@@ -24,3 +23,17 @@ class IntegrationTest(object):
 
         # Require tests to explicitly disable read_only mode.
         self.reddit.read_only = True
+
+    def setup_reddit(self):
+        self.reddit = Reddit(client_id=pytest.placeholders.client_id,
+                             client_secret=pytest.placeholders.client_secret,
+                             password=pytest.placeholders.password,
+                             user_agent=pytest.placeholders.user_agent,
+                             username=pytest.placeholders.username)
+
+
+class UntrustedIntegrationTest(IntegrationTest):
+    def setup_reddit(self):
+        self.reddit = Reddit(client_id=pytest.placeholders.client_id,
+                             client_secret=None,
+                             user_agent=pytest.placeholders.user_agent)
