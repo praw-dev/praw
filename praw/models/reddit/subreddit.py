@@ -27,6 +27,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                           over_18=None, public_description=None,
                           public_traffic=None, show_media=None,
                           show_thumbnails=None, spam_comments=None,
+                          # pylint: disable=invalid-name, too-many-locals
                           spam_links=None, spam_selfposts=None, sr=None,
                           submit_link_label=None, submit_text=None,
                           submit_text_label=None, subreddit_type=None,
@@ -72,28 +73,28 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     @property
     def flair(self):
         """An instance of :class:`.SubredditFlair`."""
-        if self.__dict__.get('_flair') is None:
+        if self._flair is None:
             self._flair = SubredditFlair(self)
         return self._flair
 
     @property
     def mod(self):
         """An instance of :class:`.SubredditModeration`."""
-        if self.__dict__.get('_mod') is None:
+        if self._mod is None:
             self._mod = SubredditModeration(self)
         return self._mod
 
     @property
     def stream(self):
         """An instance of :class:`.SubredditStream`."""
-        if self.__dict__.get('_stream') is None:
+        if self._stream is None:
             self._stream = SubredditStream(self)
         return self._stream
 
     @property
     def wiki(self):
         """An instance of :class:`.SubredditWiki`."""
-        if self.__dict__.get('_wiki') is None:
+        if self._wiki is None:
             self._wiki = SubredditWiki(self)
         return self._wiki
 
@@ -110,6 +111,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         super(Subreddit, self).__init__(reddit, _data)
         if display_name:
             self.display_name = display_name
+        self._flair = self._mod = self._stream = self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)
         self._prepare_relationships()
 
@@ -123,13 +125,12 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     def random(self):
         """Return a random Submission."""
-        from .submission import Submission
         url = API_PATH['subreddit_random'].format(subreddit=self)
         try:
             self._reddit.get(url, params={'unique': self._reddit._next_unique})
         except Redirect as redirect:
             path = redirect.path
-        return Submission(self._reddit, url=urljoin(
+        return self._submission_class(self._reddit, url=urljoin(
             self._reddit.config.reddit_url, path))
 
     def search(self, query, sort='relevance', syntax='cloudsearch',

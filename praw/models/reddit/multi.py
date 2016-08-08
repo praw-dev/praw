@@ -13,7 +13,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
     """A class for users' Multireddits."""
 
     STR_FIELD = 'path'
-    RE_INVALID = re.compile('(\s|\W|_)+', re.UNICODE)
+    RE_INVALID = re.compile(r'(\s|\W|_)+', re.UNICODE)
 
     @staticmethod
     def sluggify(title):
@@ -28,12 +28,13 @@ class Multireddit(RedditBase, SubredditListingMixin):
         if len(title) > 21:  # truncate to nearest word
             title = title[:21]
             last_word = title.rfind('_')
-            if (last_word > 0):
+            if last_word > 0:
                 title = title[:last_word]
         return title or "_"
 
     def __init__(self, reddit, _data):
         """Construct an instance of the Multireddit object."""
+        self.path = None
         super(Multireddit, self).__init__(reddit, _data)
         self._author = Redditor(reddit, self.path.split('/', 3)[2])
         self._path = API_PATH['multireddit'].format(

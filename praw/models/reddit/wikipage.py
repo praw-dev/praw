@@ -10,7 +10,7 @@ class WikiPage(RedditBase):
     @property
     def mod(self):
         """An instance of :class:`.WikiPageModeration`."""
-        if self.__dict__.get('_mod') is None:
+        if self._mod is None:
             self._mod = WikiPageModeration(self)
         return self._mod
 
@@ -28,6 +28,7 @@ class WikiPage(RedditBase):
         self.name = name
         self.subreddit = subreddit
         super(WikiPage, self).__init__(reddit, _data)
+        self._mod = None
 
     def __repr__(self):
         """Return an object initialization representation of the instance."""
