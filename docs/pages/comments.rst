@@ -61,7 +61,7 @@ objects. These objects represent the "load more comments", and "continue this
 thread" links encountered on the website. While we could ignore
 :class:`.MoreComments` in our code, like so:
 
-.. code-block python
+.. code-block:: python
 
    from praw.models import MoreComments
    for top_level_comment in submission.comments:
@@ -85,7 +85,7 @@ up to ``limit``.
 We can rewrite the snippet above as the following, which simply removes all
 :class:`.MoreComments` instances from the comment forest:
 
-.. code-block python
+.. code-block:: python
 
    submission.comments.replace_more(limit=0)
    for top_level_comment in submission.comments:
@@ -97,7 +97,7 @@ We can rewrite the snippet above as the following, which simply removes all
 Now we are able to successfully iterate over all the top-level comments. What
 about their replies? We could output all second-level comments like so:
 
-.. code-block python
+.. code-block:: python
 
    submission.comments.replace_more(limit=0)
    for top_level_comment in submission.comments:
@@ -108,7 +108,7 @@ However, the comment forest can be arbitrarily deep, so we'll want a more
 robust solution. One way to iterate over a tree, or forest, is via a
 breath-first traversal using a queue:
 
-.. code-block python
+.. code-block:: python
 
    submission.comments.replace_more(limit=0)
    comment_queue = submission.comments[:]  # Seed with top-level
@@ -123,7 +123,7 @@ breadth-first traversals, :class:`.CommentForest` provides a convenience
 method, :meth:`.list`, which returns a list of comments traversed in the same
 order as the code above. Thus the above can be rewritten as:
 
-.. code-block python
+.. code-block:: python
 
    submission.comments.replace_more(limit=0)
    for comment in submission.comments.list():
