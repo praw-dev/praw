@@ -36,6 +36,16 @@ class TestConfig(object):
                 else:
                     os.environ[env_name] = prev_environment[env_name]
 
+    def test_check_for_updates__false(self):
+        for value in [False, 'False', 'other']:
+            config = Config('DEFAULT', check_for_updates=value)
+            assert config.check_for_updates is False
+
+    def test_check_for_updates__true(self):
+        for value in [True, '1', 'true', 'YES', 'on']:
+            config = Config('DEFAULT', check_for_updates=value)
+            assert config.check_for_updates is True
+
     @mock.patch('six.moves.configparser.RawConfigParser')
     def test_load_ini_from_appdata(self, mock_config):
         self._assert_config_read('APPDATA', mock_config)

@@ -35,6 +35,8 @@ class Config(object):
     def __init__(self, site_name, **settings):
         """Initialize a Config instance."""
         def config_boolean(item):
+            if isinstance(item, bool):
+                return item
             return item.lower() in {'1', 'yes', 'true', 'on'}
 
         def fetch_or_not_set(key):
