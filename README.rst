@@ -118,7 +118,12 @@ Bryce began work on PRAW4, a complete rewrite of PRAW.
 License
 -------
 
-`GPLv3 <https://github.com/praw-dev/praw/blob/praw4/COPYING>`_
+PRAW4's source is provided under the Simplified BSD License.
+
+* Copyright (c), 2016, Bryce Boe
+
+Earlier versions of PRAW were released under `GPLv3
+<https://github.com/praw-dev/praw/blob/0c88697fdc26e75f87b68e2feb11e101e90ce215/COPYING>`_.
 
 Donations
 ---------
