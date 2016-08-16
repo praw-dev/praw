@@ -36,6 +36,8 @@ to you, it likely is not to the person asking the question.
    depends on the tools `flake8`, `pylint`, and `pydocstyle`. They can be
    installed via `pip install flake8 pydocstyle pylint`.
 
+0. Add yourself as a contributor to the ``AUTHORS.rst``.
+
 0. Once pushed, ensure that your TravisCI build succeeds. Travis will error
    before running any tests if there are _any_ `flake8` or `pydocstyle`
    issues. Resolve any issues by updating your pull request.
@@ -48,9 +50,8 @@ to you, it likely is not to the person asking the question.
 0. Feel free to check on the status of your pull request periodically by adding
    a comment.
 
-## Becoming a Maintainer
+## Becoming a Team Member
 
-PRAW's maintainers are always iterested in expanding PRAW's active maintainer
-base with proven contributors. If you are interested please let us know, In
-general, we would like to see you push forward a number of contributions before
-we add you on.
+The PRAW's team is always iterested in expanding PRAW's active team member base
+with proven contributors. If you are interested please let us know, In general,
+we would like to see you push a number of contributions before we add you on.
