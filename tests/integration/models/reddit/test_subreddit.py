@@ -173,6 +173,51 @@ class TestSubredditFlair(IntegrationTest):
         assert all(x['ok'] for x in response)
 
 
+class TestSubredditFlairTemplates(IntegrationTest):
+    @property
+    def subreddit(self):
+        return self.reddit.subreddit(pytest.placeholders.test_subreddit)
+
+    def test__iter(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlairTemplates.test__iter'):
+            templates = list(self.subreddit.flair.templates)
+        assert len(templates) > 100
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_add(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlairTemplates.test_add'):
+            for i in range(101):
+                self.subreddit.flair.templates.add('PRAW{}'.format(i))
+
+    def test_clear(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlairTemplates.test_clear'):
+            self.subreddit.flair.templates.clear()
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_delete(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlairTemplates.test_delete'):
+            template = list(self.subreddit.flair.templates)[0]
+            self.subreddit.flair.templates.delete(
+                template['flair_template_id'])
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_update(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlairTemplates.test_update'):
+            template = list(self.subreddit.flair.templates)[0]
+            self.subreddit.flair.templates.update(
+                template['flair_template_id'], 'PRAW updated')
+
+
 class TestSubredditListings(IntegrationTest):
     def test_comments(self):
         with self.recorder.use_cassette(

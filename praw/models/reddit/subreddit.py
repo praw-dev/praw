@@ -196,6 +196,7 @@ class SubredditFlair(object):
 
         """
         self.subreddit = subreddit
+        self.templates = SubredditFlairTemplates(subreddit)
 
     def __iter__(self):
         """Iterate through the Redditors and their associated flair."""
@@ -270,6 +271,78 @@ class SubredditFlair(object):
             response.extend(self.subreddit._reddit.post(url, data=data))
             lines = lines[100:]
         return response
+
+
+class SubredditFlairTemplates(object):
+    """Provide functions to interact with a Subreddit's flair templates."""
+
+    @staticmethod
+    def flair_type(is_link):
+        """Return LINK_FLAIR or USER_FLAIR depending on ``is_link`` value."""
+        return 'LINK_FLAIR' if is_link else 'USER_FLAIR'
+
+    def __init__(self, subreddit):
+        """Create a SubredditFlairTemplate instance.
+
+        :param subreddit: The subreddit whose flair templates to work with.
+
+        """
+        self.subreddit = subreddit
+
+    def __iter__(self):
+        """Iterate through the user flair templates."""
+        url = API_PATH['flairselector'].format(subreddit=self.subreddit)
+        data = {'unique': self.subreddit._reddit._next_unique}
+        for template in self.subreddit._reddit.post(url, data=data)['choices']:
+            yield template
+
+    def add(self, text, css_class='', text_editable=False, is_link=False):
+        """Add a flair template to the associated subreddit.
+
+        :param text: The flair template's text (required).
+        :param css_class: The flair template's css_class (default: '').
+        :param text_editable: (boolean) Indicate if the flair text can be
+            modified for each Redditor that sets it (default: False).
+        :param is_link: (boolean) When True, add a link flair template rather
+            than a Redditor flair template (default: False).
+
+        """
+        url = API_PATH['flairtemplate'].format(subreddit=self.subreddit)
+        data = {'css_class': css_class, 'flair_type': self.flair_type(is_link),
+                'text': text, 'text_editable': bool(text_editable)}
+        self.subreddit._reddit.post(url, data=data)
+
+    def clear(self, is_link=False):
+        """Remove all flair templates from the subreddit.
+
+        :param is_link: (boolean) When True, clear all link flair templates
+            rather than a Redditor flair templates (default: False).
+
+        """
+        url = API_PATH['flairtemplateclear'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(
+            url, data={'flair_type': self.flair_type(is_link)})
+
+    def delete(self, template_id):
+        """Remove a flair template provided by ``template_id``."""
+        url = API_PATH['flairtemplatedelete'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(
+            url, data={'flair_template_id': template_id})
+
+    def update(self, template_id, text, css_class='', text_editable=False):
+        """Update the flair templated provided by ``template_id``.
+
+        :param template_id: The flair template to update.
+        :param text: The flair template's new text (required).
+        :param css_class: The flair template's new css_class (default: '').
+        :param text_editable: (boolean) Indicate if the flair text can be
+            modified for each Redditor that sets it (default: False).
+
+        """
+        url = API_PATH['flairtemplate'].format(subreddit=self.subreddit)
+        data = {'css_class': css_class, 'flair_template_id': template_id,
+                'text': text, 'text_editable': bool(text_editable)}
+        self.subreddit._reddit.post(url, data=data)
 
 
 class SubredditModeration(object):
