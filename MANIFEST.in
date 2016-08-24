@@ -1,4 +1,4 @@
-include CHANGES.rst COPYING README.rst
+include CHANGES.rst LICENSE.txt README.rst
 include praw/praw.ini
 include docs/Makefile
 recursive-include docs *.png *.py *.rst
