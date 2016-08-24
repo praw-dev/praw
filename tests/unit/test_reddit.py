@@ -26,6 +26,15 @@ class TestReddit(UnitTest):
     def test_multireddit(self):
         assert self.reddit.multireddit('bboe', 'aa').path == '/user/bboe/m/aa'
 
+    def test_read_only__with_authenticated_core(self):
+        with Reddit(password=None, refresh_token='refresh', username=None,
+                    **self.REQUIRED_DUMMY_SETTINGS) as reddit:
+            assert not reddit.read_only
+            reddit.read_only = True
+            assert reddit.read_only
+            reddit.read_only = False
+            assert not reddit.read_only
+
     def test_read_only__with_script_authenticated_core(self):
         with Reddit(password='dummy', username='dummy',
                     **self.REQUIRED_DUMMY_SETTINGS) as reddit:

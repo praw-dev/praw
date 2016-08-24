@@ -3,9 +3,9 @@ import os
 
 from six import iteritems
 from update_checker import update_check
-from prawcore import (DeviceIDAuthorizer, ReadOnlyAuthorizer, Redirect,
-                      Requestor, ScriptAuthorizer, TrustedAuthenticator,
-                      UntrustedAuthenticator, session)
+from prawcore import (Authorizer, DeviceIDAuthorizer, ReadOnlyAuthorizer,
+                      Redirect, Requestor, ScriptAuthorizer,
+                      TrustedAuthenticator, UntrustedAuthenticator, session)
 
 from .exceptions import ClientException
 from .config import Config
@@ -166,6 +166,9 @@ class Reddit(object):
             script_authorizer = ScriptAuthorizer(
                 authenticator, self.config.username, self.config.password)
             self._core = self._authorized_core = session(script_authorizer)
+        elif self.config.refresh_token:
+            authorizer = Authorizer(authenticator, self.config.refresh_token)
+            self._core = self._authorized_core = session(authorizer)
         else:
             self._core = self._read_only_core
 
