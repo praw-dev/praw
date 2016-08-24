@@ -89,3 +89,7 @@ class TestConfig(object):
         with pytest.raises(ClientException) as excinfo:
             config.short_url
         assert str(excinfo.value) == 'No short domain specified.'
+
+    def test_unset_value_has_useful_string_representation(self):
+        config = Config('DEFAULT')
+        assert str(config.password) == 'NotSet'

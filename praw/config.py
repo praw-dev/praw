@@ -7,11 +7,21 @@ from six.moves import configparser
 from .exceptions import ClientException
 
 
+class _NotSet(object):
+    def __bool__(self):
+        return False
+
+    __nonzero__ = __bool__
+
+    def __str__(self):
+        return 'NotSet'
+
+
 class Config(object):
     """A class containing the configuration for a reddit site."""
 
     CONFIG = None
-    CONFIG_NOT_SET = object()  # Represents a config value that is not set.
+    CONFIG_NOT_SET = _NotSet()  # Represents a config value that is not set.
 
     @classmethod
     def _load_config(cls):
