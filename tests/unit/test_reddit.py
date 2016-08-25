@@ -10,11 +10,21 @@ class TestReddit(UnitTest):
     REQUIRED_DUMMY_SETTINGS = {x: 'dummy' for x in
                                ['client_id', 'client_secret', 'user_agent']}
 
-    @mock.patch('praw.reddit.update_check')
+    @mock.patch('praw.reddit.update_check', create=True)
+    @mock.patch('praw.reddit.UPDATE_CHECKER_MISSING', False)
+    @mock.patch('praw.reddit.Reddit.update_checked', False)
     def test_check_for_updates(self, mock_update_check):
         Reddit(check_for_updates='1', **self.REQUIRED_DUMMY_SETTINGS)
         assert Reddit.update_checked
         mock_update_check.assert_called_with('praw', __version__)
+
+    @mock.patch('praw.reddit.update_check', create=True)
+    @mock.patch('praw.reddit.UPDATE_CHECKER_MISSING', True)
+    @mock.patch('praw.reddit.Reddit.update_checked', False)
+    def test_check_for_updates_update_checker_missing(self, mock_update_check):
+        Reddit(check_for_updates='1', **self.REQUIRED_DUMMY_SETTINGS)
+        assert not Reddit.update_checked
+        assert not mock_update_check.called
 
     def test_comment(self):
         assert self.reddit.comment('cklfmye').id == 'cklfmye'

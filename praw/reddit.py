@@ -2,7 +2,14 @@
 import os
 
 from six import iteritems
-from update_checker import update_check
+
+try:
+    from update_checker import update_check
+    UPDATE_CHECKER_MISSING = False
+except ImportError:  # pragma: no cover
+    UPDATE_CHECKER_MISSING = True
+
+
 from prawcore import (Authorizer, DeviceIDAuthorizer, ReadOnlyAuthorizer,
                       Redirect, Requestor, ScriptAuthorizer,
                       TrustedAuthenticator, UntrustedAuthenticator, session)
@@ -127,6 +134,8 @@ class Reddit(object):
         self.user = models.User(self, None)
 
     def _check_for_update(self):
+        if UPDATE_CHECKER_MISSING:
+            return
         if not Reddit.update_checked and self.config.check_for_updates:
             update_check(__package__, __version__)
             Reddit.update_checked = True
