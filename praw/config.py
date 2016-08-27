@@ -23,6 +23,12 @@ class Config(object):
     CONFIG = None
     CONFIG_NOT_SET = _NotSet()  # Represents a config value that is not set.
 
+    @staticmethod
+    def _config_boolean(item):
+        if isinstance(item, bool):
+            return item
+        return item.lower() in {'1', 'yes', 'true', 'on'}
+
     @classmethod
     def _load_config(cls):
         """Attempt to load settings from various praw.ini files."""
@@ -42,45 +48,41 @@ class Config(object):
         config.read(locations)
         cls.CONFIG = config
 
-    def __init__(self, site_name, **settings):
-        """Initialize a Config instance."""
-        def config_boolean(item):
-            if isinstance(item, bool):
-                return item
-            return item.lower() in {'1', 'yes', 'true', 'on'}
-
-        def fetch_or_not_set(key):
-            if key in settings:  # Passed in values have the highest priority
-                return raw[key]
-            return os.getenv('praw_{}'.format(key)) or raw.get(key) \
-                or self.CONFIG_NOT_SET
-
-        if Config.CONFIG is None:
-            self._load_config()
-
-        raw = dict(Config.CONFIG.items(site_name), **settings)
-
-        self._short_url = raw.get('short_url') or self.CONFIG_NOT_SET
-        self.check_for_updates = config_boolean(
-            fetch_or_not_set('check_for_updates'))
-        self.client_id = fetch_or_not_set('client_id')
-        self.client_secret = fetch_or_not_set('client_secret')
-        self.http_proxy = fetch_or_not_set('http_proxy')
-        self.https_proxy = fetch_or_not_set('https_proxy')
-        self.kinds = {x: raw['{}_kind'.format(x)] for x in
-                      ['comment', 'message', 'redditor', 'submission',
-                       'subreddit']}
-        self.oauth_url = raw['oauth_url']
-        self.reddit_url = raw['reddit_url']
-        self.redirect_uri = fetch_or_not_set('redirect_uri')
-        self.refresh_token = fetch_or_not_set('refresh_token')
-        self.password = fetch_or_not_set('password')
-        self.user_agent = fetch_or_not_set('user_agent')
-        self.username = fetch_or_not_set('username')
-
     @property
     def short_url(self):
         """Return the short url or raise a ClientException when not set."""
         if self._short_url is self.CONFIG_NOT_SET:
             raise ClientException('No short domain specified.')
         return self._short_url
+
+    def __init__(self, site_name, **settings):
+        """Initialize a Config instance."""
+        if Config.CONFIG is None:
+            self._load_config()
+
+        self._settings = settings
+        self.custom = dict(Config.CONFIG.items(site_name), **settings)
+
+        self._initialize_attributes()
+
+    def _fetch_or_not_set(self, key):
+        if key in self._settings:  # Passed in values have the highest priority
+            return self.custom[key]
+        return os.getenv('praw_{}'.format(key)) or self.custom.get(key) \
+            or self.CONFIG_NOT_SET
+
+    def _initialize_attributes(self):
+        self._short_url = self.custom.get('short_url') or self.CONFIG_NOT_SET
+        self.check_for_updates = self._config_boolean(
+            self._fetch_or_not_set('check_for_updates'))
+        self.kinds = {x: self.custom['{}_kind'.format(x)] for x in
+                      ['comment', 'message', 'redditor', 'submission',
+                       'subreddit']}
+
+        for attribute in ('client_id', 'client_secret', 'http_proxy',
+                          'https_proxy', 'redirect_uri', 'refresh_token',
+                          'password', 'user_agent', 'username'):
+            setattr(self, attribute, self._fetch_or_not_set(attribute))
+
+        for required_attribute in ('oauth_url', 'reddit_url'):
+            setattr(self, required_attribute, self.custom[required_attribute])
