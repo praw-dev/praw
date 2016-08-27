@@ -65,17 +65,32 @@ class Config(object):
 
         self._initialize_attributes()
 
+    def _fetch(self, key):
+        value = self.custom[key]
+        del self.custom[key]
+        return value
+
+    def _fetch_default(self, key, default=None):
+        if key not in self.custom:
+            return default
+        return self._fetch(key)
+
     def _fetch_or_not_set(self, key):
         if key in self._settings:  # Passed in values have the highest priority
-            return self.custom[key]
-        return os.getenv('praw_{}'.format(key)) or self.custom.get(key) \
-            or self.CONFIG_NOT_SET
+            return self._fetch(key)
+
+        env_value = os.getenv('praw_{}'.format(key))
+        ini_value = self._fetch_default(key)  # Needed to remove from custom
+
+        # Environment variables have higher priority than praw.ini settings
+        return env_value or ini_value or self.CONFIG_NOT_SET
 
     def _initialize_attributes(self):
-        self._short_url = self.custom.get('short_url') or self.CONFIG_NOT_SET
+        self._short_url = self._fetch_default('short_url') \
+                          or self.CONFIG_NOT_SET
         self.check_for_updates = self._config_boolean(
             self._fetch_or_not_set('check_for_updates'))
-        self.kinds = {x: self.custom['{}_kind'.format(x)] for x in
+        self.kinds = {x: self._fetch('{}_kind'.format(x)) for x in
                       ['comment', 'message', 'redditor', 'submission',
                        'subreddit']}
 
@@ -85,4 +100,4 @@ class Config(object):
             setattr(self, attribute, self._fetch_or_not_set(attribute))
 
         for required_attribute in ('oauth_url', 'reddit_url'):
-            setattr(self, required_attribute, self.custom[required_attribute])
+            setattr(self, required_attribute, self._fetch(required_attribute))
