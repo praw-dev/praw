@@ -41,6 +41,14 @@ class TestConfig(object):
             config = Config('DEFAULT', check_for_updates=value)
             assert config.check_for_updates is False
 
+    def test_custom__extra_values_set(self):
+        config = Config('DEFAULT', user1='foo', user2='bar')
+        assert config.custom == {'user1': 'foo', 'user2': 'bar'}
+
+    def test_custom__no_extra_values_set(self):
+        config = Config('DEFAULT')
+        assert config.custom == {}
+
     def test_check_for_updates__true(self):
         for value in [True, '1', 'true', 'YES', 'on']:
             config = Config('DEFAULT', check_for_updates=value)
