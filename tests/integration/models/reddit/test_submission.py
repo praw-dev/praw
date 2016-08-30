@@ -163,6 +163,12 @@ class TestSubmissionModeration(IntegrationTest):
                 'TestSubmissionModeration.test_nsfw'):
             Submission(self.reddit, '4s2idz').mod.nsfw()
 
+    def test_lock(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_lock'):
+            Submission(self.reddit, '4s2idz').mod.lock()
+
     def test_sfw(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -198,3 +204,9 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubmissionModeration.test_suggested_sort__clear'):
             Submission(self.reddit, '4s2idz').mod.suggested_sort(sort='blank')
+
+    def test_unock(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_unlock'):
+            Submission(self.reddit, '4s2idz').mod.unlock()

@@ -191,6 +191,11 @@ class SubmissionModeration(object):
         self.submission._reddit.post(API_PATH['contest_mode'], data={
             'id': self.submission.fullname, 'state': state})
 
+    def lock(self):
+        """Lock the submission."""
+        self.submission._reddit.post(API_PATH['lock'],
+                                     data={'id': self.submission.fullname})
+
     def nsfw(self):
         """Mark as not safe for work."""
         self.submission._reddit.post(API_PATH['marknsfw'],
@@ -229,5 +234,10 @@ class SubmissionModeration(object):
         """
         self.submission._reddit.post(API_PATH['suggested_sort'], data={
             'id': self.submission.fullname, 'sort': sort})
+
+    def unlock(self):
+        """Lock the submission."""
+        self.submission._reddit.post(API_PATH['unlock'],
+                                     data={'id': self.submission.fullname})
 
 Subreddit._submission_class = Submission
