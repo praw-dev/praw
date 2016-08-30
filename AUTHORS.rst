@@ -13,7 +13,7 @@ Team Members
 Documentation Contributors
 ==========================
 
-- Add "Name <email (optional)> and github profile link" above this line.
+- Dale Cudmore <dalecudmore@gmail.com> `@DCuddies <https://github.com/DCuddies>`_
 
 
 Source Contributors
