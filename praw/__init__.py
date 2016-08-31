@@ -2542,6 +2542,15 @@ class PrivateMessagesMixin(AuthenticatedReddit):
         return self.get_content(self.config['unread'], *args, **kwargs)
 
     @decorators.restrict_access(scope='privatemessages')
+    def has_unread(self):
+        """Check if user has unread messages."""
+        try:
+            next(self.get_unread())
+            return True
+        except StopIteration:
+            return False
+
+    @decorators.restrict_access(scope='privatemessages')
     def get_mentions(self, *args, **kwargs):
         """Return a get_content generator for username mentions.
 
