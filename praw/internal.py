@@ -186,7 +186,8 @@ def _prepare_request(reddit_session, url, params, data, auth, files,
             sys.stderr.write('auth: {0}\n'.format(auth))
     # Prepare request
     request = Request(method=method, url=url, headers=headers, params=params,
-                      auth=auth, cookies=reddit_session.http.cookies)
+                      auth=auth, cookies=reddit_session.http.cookies,
+                      hooks=reddit_session.http.hooks)
     if method == 'GET':
         return request
     # Most POST requests require adding `api_type` and `uh` to the data.
