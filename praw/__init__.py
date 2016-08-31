@@ -168,6 +168,7 @@ class Config(object):  # pylint: disable=R0903
                  'top':                 'top/',
                  'uncollapse_message':  'api/uncollapse_message/',
                  'unfriend':            'api/unfriend/',
+                 'uncollapse_message':  'api/uncollapse_message/',
                  'unhide':              'api/unhide/',
                  'unlock':              'api/unlock/',
                  'unmarknsfw':          'api/unmarknsfw/',
