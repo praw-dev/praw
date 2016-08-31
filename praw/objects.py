@@ -1881,8 +1881,9 @@ class WikiPage(Refreshable):
             page = json_dict['page']
         info_url = reddit_session.config['wiki_page'].format(
             subreddit=six.text_type(subreddit), page=page)
+        self._params.update(kwargs)
         super(WikiPage, self).__init__(reddit_session, json_dict, fetch,
-                                       info_url, **kwargs)
+                                       info_url)
         self.page = page
         self.subreddit = subreddit
 
@@ -1972,6 +1973,34 @@ class WikiPage(Refreshable):
         """
         return self.add_editor(username=username, _delete=True, *args,
                                **kwargs)
+
+    def revisions(self, **kwargs):
+        """Return a dictionary of all page revisions.
+
+        Additional parameters are passed to
+        :meth:`~praw.__init__.BaseReddit.request_json` to be used as
+        URL parameters.
+        """
+        url = self.reddit_session.config['wiki_page_revisions'].format(
+                subreddit=six.text_type(self.subreddit),
+                page=self.page.lower())
+
+        prev_use_oauth = self.reddit_session._use_oauth
+        self.reddit_session._use_oauth = True
+        response = self.reddit_session.request_json(url, params=kwargs)
+        self.reddit_session._use_oauth = prev_use_oauth
+
+        return response['data']
+
+    def revision(self, version):
+        """Return a specific version of the WikiPage.
+
+        :param version: The version GUID of the page (returned by
+        :meth:`revisions`)
+        """
+        result = WikiPage(self.reddit_session, self.subreddit, self.page,
+                          self.json_dict, False, v=version)
+        return result
 
 
 class WikiPageListing(PRAWListing):
