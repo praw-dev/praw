@@ -461,7 +461,7 @@ class RateLimitExceeded(APIException):
         """
         super(RateLimitExceeded, self).__init__(error_type, message,
                                                 field, response)
-        self.sleep_time = self.response['ratelimit']
+        self.sleep_time = self.response['delay']
 
 
 class SubredditExists(APIException):
