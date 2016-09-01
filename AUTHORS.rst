@@ -14,6 +14,7 @@ Documentation Contributors
 ==========================
 
 - Dale Cudmore <dalecudmore@gmail.com> `@DCuddies <https://github.com/DCuddies>`_
+- Add "Name <email (optional)> and github profile link" above this line.
 
 
 Source Contributors
