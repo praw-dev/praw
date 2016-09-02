@@ -229,6 +229,8 @@ method for each of these sorting approaches, namely, these:
     ``rising``
     ``top``
 
+.. _submission-iteration:
+
 Each of these methods will return ``ListingGenerator``, something that you can
 iterate through. For example:
 
