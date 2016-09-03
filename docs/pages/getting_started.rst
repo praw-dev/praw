@@ -172,7 +172,7 @@ following order of priority:
 1) environment variables of the settings names prefixed with ``praw_``.
    Specifically, these:
 
-   - ``user_agent``
+   - ``praw_user_agent``
    - ``praw_client_id``
    - ``praw_client_secret``
    - ``praw_username`` 
@@ -240,9 +240,9 @@ iterate through. For example:
     for submission in subreddit.hot(limit=10):
         print(submission.title) # Output: the title of the submission
         print(submission.ups) # Output: upvote count
-        print(submission.downs) # Output: downvote count
         print(submission.id) # Output: the ID of the submission
-        print(submission.url) # Output: the URL of the submission
+        print(submission.url) # Output: the URL the submission points to
+                              # or the the submission URL if it's a self post
 
 
 You can create ``Submission`` instances in other ways too:
@@ -297,6 +297,28 @@ As you may be aware there will periodically be ``MoreComments`` instances
 scattered throughout the forest. Replace those at any time by calling the
 ``replace_more`` method on the ``CommentForest`` instances.
 
+Get available attributes of an object
+-------------------------------------
+
+If you have a PRAW object, be it ``Submission`` or ``Comment``, and you want
+to see what attributes are available and their values, use the built-in
+``vars`` function of python. For example:
+
+.. code-block:: python
+    
+    import pprint
+
+    # assuming you have a Reddit instance referenced by reddit
+    submission = reddit.submission(id="39zje0")
+    print(submission.title) # to make it non-lazy
+    pprint.pprint(vars(submission))
+
+Note the line where we print the title. PRAW uses lazy objects to only make
+API calls when/if the information is needed. Here, before the print line,
+``submission`` points to a lazy ``Submission`` object. When we try to print
+its title, information is needed, so it ceased to be lazy -- PRAW makes the
+actual API call at this point. Now it is a good time to print out all the
+available attributes and their values!
     
 Next Steps
 ----------
