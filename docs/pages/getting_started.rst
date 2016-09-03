@@ -5,7 +5,7 @@ building bots using Python Reddit API Wrapper (PRAW). It's fun and easy. Let's
 get started.
 
 Prerequisites
--------------
+*************
 
 - **Python**:
   Obviously, you need to know at least a little Python to use PRAW;
@@ -48,10 +48,10 @@ That's pretty much it! You are ready to learn how to do some of the most
 common tasks of reddit bot building!
 
 Common Tasks
-------------
+************
 
 Get a ``Reddit`` instance
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 You need an instance of the ``Reddit`` class to do *anything* with PRAW. And
 there are "two kinds" of ``Reddit`` instance you can create, the read-only
@@ -321,7 +321,7 @@ actual API call at this point. Now it is a good time to print out all the
 available attributes and their values!
     
 Next Steps
-----------
+**********
 
 Now you know the basics of PRAW, the next steps are of course creating bots!
 Follow these complete tutorials to kickstart your bot-building journey!
