@@ -23,7 +23,7 @@ class AuthenticatedRedditTest(PRAWTest):
 
         # Headers are not included in the cached key so this will have no
         # affect when the request is cached
-        self.r.http.headers['SKIP_BETAMAX'] = 1
+        self.r.http.headers['SKIP_BETAMAX'] = '1'
 
         cached_listing = list(subreddit.get_new(limit=5))
         self.assertEqual(original_listing, cached_listing)

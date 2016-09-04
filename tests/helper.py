@@ -30,8 +30,9 @@ class BodyMatcher(BaseMatcher):
     name = 'PRAWBody'
 
     def match(self, request, recorded_request):
-        if request.headers.get('SKIP_BETAMAX', 0) > 0:
-            request.headers['SKIP_BETAMAX'] -= 1
+        skip_betamax = int(request.headers.get('SKIP_BETAMAX', 0))
+        if skip_betamax > 0:
+            request.headers['SKIP_BETAMAX'] = str(skip_betamax - 1)
             return False
         if not recorded_request['body']['string'] and not request.body:
             return True
