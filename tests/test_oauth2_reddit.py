@@ -2,24 +2,11 @@
 
 from __future__ import print_function, unicode_literals
 
-import sys
-from praw import Reddit, errors
+from praw import Reddit, errors, decorators
 from praw.objects import Submission
 from six import text_type
-from .helper import PRAWTest, USER_AGENT, betamax
-
-
-class FakeStdin:
-    """ A class for filling stdin prompts with a predetermined value. """
-    def __init__(self, value):
-        self.closed = False
-        self.value = value
-
-    def close(self):
-        self.closed = True
-
-    def readline(self):
-        return self.value
+from .helper import (PRAWTest, NewOAuthPRAWTest, USER_AGENT, betamax,
+                     betamax_custom_header, mock_sys_stream)
 
 
 class OAuth2RedditTest(PRAWTest):
@@ -46,25 +33,14 @@ class OAuth2RedditTest(PRAWTest):
                     'state': '...'}
         self.assertEqual(expected, params)
 
-    # @betamax() is currently broken for this test because the cassettes
-    # are caching too aggressively and not performing a token refresh.
-    def test_auto_refresh_token(self):
-        self.r.set_oauth_app_info(
-            'IlQgN8A5fPCbpA',
-            '7iYM6T1rh8REihHQEVNgQsE16OE',
-            'http://localhost:8080'
-        )
-        self.r.refresh_access_information(
-            '7302867-l3Gl-kyNxcLJxbr2xn8Q3Ao42UA')
-        old_token = self.r.access_token
-
-        self.r.access_token += 'x'  # break the token
-        self.r.user.refresh()
-        current_token = self.r.access_token
-        self.assertNotEqual(old_token, current_token)
-
-        self.r.user.refresh()
-        self.assertEqual(current_token, self.r.access_token)
+    @betamax()
+    @mock_sys_stream("stdin")
+    def test_empty_captcha_file(self):
+        # Use the alternate account because it has low karma,
+        # so we can test the captcha.
+        self.r.refresh_access_information(self.other_refresh_token['submit'])
+        self.assertRaises(errors.InvalidCaptcha, self.r.submit,
+                          self.sr, 'captcha test will fail', 'body')
 
     @betamax()
     def test_get_access_information(self):
@@ -82,6 +58,24 @@ class OAuth2RedditTest(PRAWTest):
     def test_get_access_information_with_invalid_code(self):
         self.assertRaises(errors.OAuthInvalidGrant,
                           self.r.get_access_information, 'invalid_code')
+
+    @betamax()
+    @mock_sys_stream("stdin")
+    def test_inject_captcha_into_kwargs_and_raise(self):
+        # Use the alternate account because it has low karma,
+        # so we can test the captcha.
+        self.r.refresh_access_information(self.other_refresh_token['submit'])
+
+        # praw doesn't currently add the captcha into kwargs so lets
+        # write a function in which it would and alias it to Reddit.submit
+        @decorators.restrict_access(scope='submit')
+        @decorators.require_captcha
+        def submit_alias(r, sr, title, text, **kw):
+            return self.r.submit.__wrapped__.__wrapped__(
+                r, sr, title, text, captcha=kw.get('captcha')
+            )
+        self.assertRaises(errors.InvalidCaptcha, submit_alias, self.r,
+                          self.sr, 'captcha test will fail', 'body')
 
     def test_invalid_app_access_token(self):
         self.r.clear_authentication()
@@ -176,7 +170,7 @@ class OAuth2RedditTest(PRAWTest):
 
         # Test error conditions
         self.assertRaises(TypeError, sub.gild, months=1)
-        for value in (False, 0, -1, '0', '-1'):
+        for value in (False, 0, -1, '0', '-1', 37, '37'):
             self.assertRaises(TypeError, redditor.gild, value)
 
         # Test object gilding
@@ -238,17 +232,63 @@ class OAuth2RedditTest(PRAWTest):
         self.assertFalse(self.r.user is None)
 
     @betamax()
+    @mock_sys_stream("stdin", "ljgtoo")
     def test_solve_captcha(self):
         # Use the alternate account because it has low karma,
         # so we can test the captcha.
         self.r.refresh_access_information(self.other_refresh_token['submit'])
-        original_stdin = sys.stdin
-        sys.stdin = FakeStdin('ljgtoo')  # Comment this line when rebuilding
         self.r.submit(self.sr, 'captcha test', 'body')
-        sys.stdin = original_stdin
+
+    @betamax()
+    @mock_sys_stream("stdin", "DFIRSW")
+    def test_solve_captcha_on_bound_subreddit(self):
+        # Use the alternate account because it has low karma,
+        # so we can test the captcha.
+        self.r.refresh_access_information(self.other_refresh_token['submit'])
+        subreddit = self.r.get_subreddit(self.sr)
+
+        # praw doesn't currently have a function in which require_captcha
+        # gets a reddit instance from a subreddit and uses it, so lets
+        # write a function in which it would and alias it to Reddit.submit
+        @decorators.restrict_access(scope='submit')
+        @decorators.require_captcha
+        def submit_alias(sr, title, text, **kw):
+            return self.r.submit.__wrapped__.__wrapped__(
+                self.r, sr, title, text, captcha=kw.get('captcha')
+            )
+        submit_alias(subreddit, 'captcha test on bound subreddit', 'body')
 
     @betamax()
     def test_oauth_without_identy_doesnt_set_user(self):
         self.assertTrue(self.r.user is None)
         self.r.refresh_access_information(self.refresh_token['edit'])
         self.assertTrue(self.r.user is None)
+
+
+class AutoRefreshTest(NewOAuthPRAWTest):
+    @betamax_custom_header()
+    def test_auto_refresh_token(self):
+        # this test wasn't cached before the new test was made
+        # so the new app info needs to be set to avoid 401s
+        # also, the redirect uri doesn't need to be set on refreshes,
+        # but praw does this anyway. Changing this now would break
+        # all prior tests. The redirect uri should be removed and
+        # all tests rerecorded later.
+        with self.set_custom_header_match('test_auto_refresh_token__initial'):
+            self.r.refresh_access_information(
+                self.refresh_token['auto_refresh'])
+        old_token = self.r.access_token
+
+        self.r.access_token += 'x'  # break the token
+        with self.set_custom_header_match('test_auto_refresh_token__refresh'):
+            # TODO: refreshing r.user wasn't actually updating the token
+            # because of special oauth handling in _get_json_dict of
+            # reddit content objects. Leaving this as a note until I
+            # fix it in the future
+            list(self.r.get_new(limit=5))
+        current_token = self.r.access_token
+        self.assertNotEqual(old_token, current_token)
+
+        with self.set_custom_header_match('test_auto_refresh_token__after'):
+            list(self.r.get_new(limit=5))
+        self.assertEqual(current_token, self.r.access_token)

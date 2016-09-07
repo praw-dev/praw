@@ -4,6 +4,7 @@ from __future__ import print_function, unicode_literals
 
 import os
 import re
+import sys
 import time
 import unittest
 import warnings
@@ -11,10 +12,15 @@ from betamax import Betamax, BaseMatcher
 from betamax_matchers.form_urlencoded import URLEncodedBodyMatcher
 from betamax_matchers.json_body import JSONBodyMatcher
 from betamax_serializers import pretty_json
-from functools import wraps
+from contextlib import contextmanager
+from functools import partial, wraps
+from mock import patch
+from praw.internal import _prepare_request
 from praw import Reddit
+from praw.errors import ExceptionList
 from requests.compat import urljoin
 from six import text_type
+from six.moves import cStringIO
 
 
 USER_AGENT = 'PRAW_test_suite'
@@ -24,8 +30,9 @@ class BodyMatcher(BaseMatcher):
     name = 'PRAWBody'
 
     def match(self, request, recorded_request):
-        if request.headers.get('SKIP_BETAMAX', 0) > 0:
-            request.headers['SKIP_BETAMAX'] -= 1
+        skip_betamax = int(request.headers.get('SKIP_BETAMAX', 0))
+        if skip_betamax > 0:
+            request.headers['SKIP_BETAMAX'] = str(skip_betamax - 1)
             return False
         if not recorded_request['body']['string'] and not request.body:
             return True
@@ -36,6 +43,24 @@ class BodyMatcher(BaseMatcher):
 
         return URLEncodedBodyMatcher().match(to_compare, recorded_request) or \
             JSONBodyMatcher().match(to_compare, recorded_request)
+
+
+class CustomHeaderMatcher(BodyMatcher):
+    # Used for matching harshly cached requests in tandem with
+    # PRAWTest.set_custom_header_match and betamax_custom_header
+    # for forcibly recording requests that would otherwise
+    # match PRAWBody and not be written.
+    name = 'CustomHeader'
+
+    def match(self, request, recorded_request):
+        body_match = super(CustomHeaderMatcher, self).match(request,
+                                                            recorded_request)
+
+        recorded_header = recorded_request['headers'].get(
+            'custom_header', [None])[0]  # headers are recorded as arrays
+
+        match = (request.headers.get('custom_header') == recorded_header)
+        return match and body_match
 
 
 class PRAWTest(unittest.TestCase):
@@ -54,6 +79,9 @@ class PRAWTest(unittest.TestCase):
         self.client_id = 'stJlUSUbPQe5lQ'
         self.client_secret = 'iU-LsOzyJH7BDVoq-qOWNEq2zuI'
         self.redirect_uri = 'https://127.0.0.1:65010/authorize_callback'
+        self.new_client_id = 'IlQgN8A5fPCbpA'
+        self.new_client_secret = '7iYM6T1rh8REihHQEVNgQsE16OE'
+        self.new_redirect_uri = 'http://localhost:8080'
 
         self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
         self.reply_warnings_url = self.url('/r/reddit_api_test/'
@@ -85,7 +113,10 @@ class PRAWTest(unittest.TestCase):
             'submit':           'k69WTwa2bEQOQY9t61nItd4twhw',
             'subscribe':        'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
             'vote':             '5RPnDwg56vAbf7F9yO81cXZAPSQ',
-            'wikiread':         '7302867-PMZfquNPUVYHcrbJkTYpFe9UdAY'}
+            'wikiread':         '7302867-PMZfquNPUVYHcrbJkTYpFe9UdAY',
+            # new tokens
+            'auto_refresh':     '7302867-fd_RVSYjT644cKl4J2oRWeRV_mo',
+        }
 
         self.other_refresh_token = {
             'read':             '10640071-wxnYQyK9knNV1PCt9a7CxvJH8TI',
@@ -98,9 +129,12 @@ class PRAWTest(unittest.TestCase):
         self.submission_deleted_id = '3f8q10'
         self.submission_edit_id = '16i92b'
         self.submission_hide_id = '3lchjv'
+        self.submission_limit_chars_id = '4umin7'
         self.submission_lock_id = '47rnwf'
         self.submission_sticky_id = '32eucy'
         self.submission_sticky_id2 = '32exei'
+
+        self.custom_header_index = 0
 
     def delay_for_listing_update(self, duration=0.1):
         if not os.getenv('TRAVIS') and self.r.config.api_request_delay == 0:
@@ -120,6 +154,45 @@ class PRAWTest(unittest.TestCase):
 
     def url(self, path):
         return urljoin(self.r.config.permalink_url, path)
+
+    def assertExceptionList(self, excClasses, callableObj, *args, **kwargs):
+        """Fail unless a praw.errors.ExceptionList with errors of excClasses
+        are thrown by callableObj when invoked with arguments args and keyword
+        arguments kwargs. If a different type of exception is thrown, it will
+        not be caught, and the test case will be deemed to have suffered an
+        error, exactly as for an unexpected exception.
+        """
+        try:
+            callableObj(*args, **kwargs)
+        except ExceptionList as e:
+            errors = [type(error) for error in e.errors]
+            not_in = [cls for cls in excClasses
+                      if cls not in errors]
+            extra = [cls for cls in errors
+                     if cls not in excClasses]
+            not_in = [getattr(cls, '__name__', str(cls))
+                      for cls in not_in]
+            extra = [getattr(cls, '__name__', str(cls))
+                     for cls in extra]
+            if extra:
+                raise self.failureException("{0} were raised".format(
+                    ", ".join(extra)))
+            elif not_in:
+                raise self.failureException("{0} were not raised".format(
+                    ", ".join(not_in)))
+            return e
+        else:
+            raise self.failureException("ExceptionList not raised")
+
+    def assertRaisesAndReturn(self, excClass, callableObj, *args, **kwargs):
+        """Same as assertRaises, but returns the instantiated excClass."""
+        try:
+            callableObj(*args, **kwargs)
+        except excClass as e:
+            return e
+        else:
+            excName = getattr(excClass, '__name__', str(excClass))
+            raise self.failureException("{0} not raised".format(excName))
 
     def assertWarnings(self, warning, callable, *args, **kwds):
         """Fail unless a warning of class warning is triggered
@@ -236,6 +309,42 @@ class PRAWTest(unittest.TestCase):
                                          callable.__name__,
                                          "    \n".join(wnames)))
 
+    @contextmanager
+    def set_custom_header_match(self, headerval):
+        """Using headerval as the request's custom_header header
+         for the CustomHeaderMatcher
+
+         It's best that this functionality is explained before usage,
+         since it can seem to not make any sense whatsoever.
+
+         Mock (and mock.patch) mock objects/callables within the
+         provided namespace. So even thought praw._prepare_request
+         is equivalent and has the same memory address as
+         praw.internal._prepare_request, since they have different
+         name spaces, mock will only patch the former (which is the
+         one that praw.Reddit._request uses). By exploiting the fact
+         that they are equal, we can replace praw._prepare_request
+         with a mock that wraps around a local function that calls
+         upon praw.internal._prepare_request with no issue. This allows
+         us to suffix headerval(s) with an integer, so that all requests
+         will be individually recorded and later, deserialized, in order.
+
+         Theoretically, headerval isn't actually needed, but it's used so
+         a human can quickly read through the cassette and see if an issue
+         occurred with their test. The index is reset per value, so don't
+         use the same headerval prefix more than once in the same test.
+         """
+        def make_prepare(*a, **kw):
+            self.r.http.headers['custom_header'] = \
+                "{0}__{1}".format(headerval, self.custom_header_index)
+            ret = _prepare_request(*a, **kw)
+            self.custom_header_index += 1
+            return ret
+        with patch('praw._prepare_request', wraps=make_prepare):
+            yield
+        del self.r.http.headers['custom_header']
+        self.custom_header_index = 0
+
 
 class OAuthPRAWTest(PRAWTest):
     def betamax_init(self):
@@ -249,7 +358,16 @@ class OAuthPRAWTest(PRAWTest):
                         disable_update_check=True)
 
 
+class NewOAuthPRAWTest(OAuthPRAWTest):
+    def betamax_init(self):
+        # All tokens were revoked before all tests were completed
+        self.r.set_oauth_app_info(self.new_client_id,
+                                  self.new_client_secret,
+                                  self.new_redirect_uri)
+
+
 Betamax.register_request_matcher(BodyMatcher)
+Betamax.register_request_matcher(CustomHeaderMatcher)
 Betamax.register_serializer(pretty_json.PrettyJSONSerializer)
 
 with Betamax.configure() as config:
@@ -260,7 +378,7 @@ with Betamax.configure() as config:
     config.default_cassette_options['serialize_with'] = 'prettyjson'
 
 
-def betamax(cassette_name=None, **cassette_options):
+def betamax(cassette_name=None, pass_recorder=False, **cassette_options):
     """Utilze betamax to record/replay any network activity of the test.
 
     The wrapped function's `betmax_init` method will be invoked if it exists.
@@ -270,7 +388,8 @@ def betamax(cassette_name=None, **cassette_options):
         @wraps(function)
         def betamax_function(obj):
             with Betamax(obj.r.handler.http).use_cassette(
-                    cassette_name or function.__name__, **cassette_options):
+                    cassette_name or function.__name__,
+                    **cassette_options) as cass:
                 # We need to set the delay to zero for betamaxed requests.
                 # Unfortunately, we don't know if the request actually happened
                 # so tests should only be updated one at a time rather than in
@@ -280,9 +399,15 @@ def betamax(cassette_name=None, **cassette_options):
                 obj.r.handler.clear_cache()
                 if hasattr(obj, 'betamax_init'):
                     obj.betamax_init()
+                if pass_recorder:
+                    return function(obj, cass)
                 return function(obj)
         return betamax_function
     return factory
+
+betamax_custom_header = partial(betamax,
+                                match_requests_on=['method', 'uri',
+                                                   'CustomHeader'])
 
 
 def flair_diff(root, other):
@@ -295,6 +420,22 @@ def flair_diff(root, other):
     return list(root_items - other_items)
 
 
+def mock_sys_stream(streamname, defaulttext=None):
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(obj):
+            stream = cStringIO()
+            setattr(sys, streamname, stream)
+            if defaulttext is not None:
+                stream.write(defaulttext)
+                stream.seek(0)
+            retval = f(obj)
+            setattr(sys, streamname, getattr(sys, "__{}__".format(streamname)))
+            return retval
+        return wrapped
+    return wrapper
+
+
 def teardown_on_keyboard_interrupt(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -305,3 +446,18 @@ def teardown_on_keyboard_interrupt(f):
             raise
 
     return wrapper
+
+
+def replace_handler(new_handler):
+    def factory(func):
+        @wraps(func)
+        def wrapped(obj):
+            old_handler = obj.r.handler
+            obj.r.handler = new_handler
+            try:
+                retval = func(obj)
+            finally:
+                obj.r.handler = old_handler
+            return retval
+        return wrapped
+    return factory
