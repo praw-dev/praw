@@ -1,3 +1,4 @@
+from praw.exceptions import PRAWException
 from praw.models import Comment
 from prawcore import BadRequest
 import mock
@@ -70,6 +71,14 @@ class TestComment(IntegrationTest):
                 Comment(self.reddit, 'd1616q2').gild()
             reason = excinfo.value.response.json()['reason']
             assert 'INSUFFICIENT_CREDDITS' == reason
+
+    def test_invalid(self):
+        with self.recorder.use_cassette(
+                'TestComment.test_invalid'):
+            with pytest.raises(PRAWException) as excinfo:
+                Comment(self.reddit, '0').body
+            assert ("No 'Comment' data returned for thing t1_0",)\
+                == excinfo.value.args
 
     @mock.patch('time.sleep', return_value=None)
     def test_mark_read(self, _):

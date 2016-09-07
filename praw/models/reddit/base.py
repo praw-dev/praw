@@ -1,5 +1,6 @@
 """Provide the RedditBase class."""
 from ...const import API_PATH
+from ...exceptions import PRAWException
 from ..base import PRAWBase
 
 
@@ -62,8 +63,13 @@ class RedditBase(PRAWBase):
         if '_info_path' in dir(self):
             other = self._reddit.get(self._info_path())
         else:
-            other = self._reddit.get(API_PATH['info'],
-                                     params={'id': self.fullname}).children[0]
+            children = self._reddit.get(API_PATH['info'],
+                                        params={'id': self.fullname}).children
+            if not children:
+                raise PRAWException('No {!r} data returned for thing {}'
+                                    .format(self.__class__.__name__,
+                                            self.fullname))
+            other = children[0]
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
