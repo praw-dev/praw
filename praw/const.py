@@ -48,6 +48,7 @@ API_PATH = {
     'ignore_reports':         'api/ignore_reports/',
     'inbox':                  'message/inbox/',
     'info':                   'api/info/',
+    'karma':                  'api/v1/me/karma',
     'leavecontributor':       'api/leavecontributor',
     'leavemoderator':         'api/leavemoderator',
     'liveabout':              'api/live/{id}/about/',

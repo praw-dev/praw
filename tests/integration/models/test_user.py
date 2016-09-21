@@ -29,6 +29,16 @@ class TestUser(IntegrationTest):
         assert len(friends) > 0
         assert all(isinstance(friend, Redditor) for friend in friends)
 
+    def test_karma(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestUser.test_karma'):
+            karma = self.reddit.user.karma()
+        assert isinstance(karma, dict)
+        for subreddit in karma:
+            assert isinstance(subreddit, Subreddit)
+            keys = sorted(karma[subreddit].keys())
+            assert ['comment_karma', 'link_karma'] == keys
+
     def test_me(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestUser.test_me'):

@@ -3,6 +3,7 @@ from ..const import API_PATH
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .reddit.redditor import Redditor
+from .reddit.subreddit import Subreddit
 
 
 class User(PRAWBase):
@@ -25,6 +26,15 @@ class User(PRAWBase):
     def friends(self):
         """Return a RedditorList of friends."""
         return self._reddit.get(API_PATH['friends'])
+
+    def karma(self):
+        """Return a dictionary mapping subreddits to their karma."""
+        karma_map = {}
+        for row in self._reddit.get(API_PATH['karma'])['data']:
+            subreddit = Subreddit(self._reddit, row['sr'])
+            del row['sr']
+            karma_map[subreddit] = row
+        return karma_map
 
     def me(self):  # pylint: disable=invalid-name
         """Return a Redditor instance for the authenticated user."""
