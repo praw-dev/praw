@@ -150,9 +150,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         """
         self.validate_time_filter(time_filter)
-        params = generator_kwargs.setdefault('params', {})
-        params.update({'q': query, 'restrict_sr': True, 'sort': sort,
-                       'syntax': syntax, 't': time_filter})
+        self._safely_add_arguments(generator_kwargs, 'params', q=query,
+                                   restrict_sr=True, sort=sort, syntax=syntax,
+                                   t=time_filter)
         url = API_PATH['search'].format(subreddit=self)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 

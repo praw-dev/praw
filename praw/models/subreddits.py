@@ -37,7 +37,7 @@ class Subreddits(PRAWBase):
         :param query: The query string to filter subreddits by.
 
         """
-        generator_kwargs.setdefault('params', {})['q'] = query
+        self._safely_add_arguments(generator_kwargs, 'params', q=query)
         return ListingGenerator(self._reddit, API_PATH['subreddits_search'],
                                 **generator_kwargs)
 

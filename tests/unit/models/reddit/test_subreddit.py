@@ -63,6 +63,13 @@ class TestSubredit(UnitTest):
         subreddit = Subreddit(self.reddit, display_name='name')
         assert repr(subreddit) == 'Subreddit(display_name=\'name\')'
 
+    def test_search__params_not_modified(self):
+        params = {'dummy': 'value'}
+        subreddit = Subreddit(self.reddit, display_name='name')
+        generator = subreddit.search(None, params=params)
+        assert generator.params['dummy'] == 'value'
+        assert params == {'dummy': 'value'}
+
     def test_str(self):
         subreddit = Subreddit(self.reddit, _data={'display_name': 'name',
                                                   'id': 'dummy'})

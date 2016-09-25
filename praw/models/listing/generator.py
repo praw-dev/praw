@@ -1,4 +1,6 @@
 """Provide the ListingGenerator class."""
+from copy import deepcopy
+
 from .listing import FlairListing
 from ..base import PRAWBase
 
@@ -25,7 +27,7 @@ class ListingGenerator(PRAWBase):
         self._listing = None
         self._list_index = None
         self.limit = limit
-        self.params = params or {}
+        self.params = deepcopy(params) if params else {}
         self.params['limit'] = limit or 1024
         self.url = url
         self.yielded = 0

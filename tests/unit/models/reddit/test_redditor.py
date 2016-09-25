@@ -68,3 +68,14 @@ class TestSubredit(UnitTest):
     def test_str(self):
         redditor = Redditor(self.reddit, _data={'name': 'name', 'id': 'dummy'})
         assert str(redditor) == 'name'
+
+
+class TestRedditorListings(UnitTest):
+    def test__params_not_modified_in_mixed_listing(self):
+        params = {'dummy': 'value'}
+        redditor = Redditor(self.reddit, name='spez')
+        for listing in ['controversial', 'hot', 'new', 'top']:
+            generator = getattr(redditor, listing)(params=params)
+            assert params == {'dummy': 'value'}
+            assert listing == generator.params['sort']
+            assert 'value' == generator.params['dummy']

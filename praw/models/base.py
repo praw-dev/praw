@@ -1,8 +1,23 @@
 """Provide the PRAWBase superclass."""
+from copy import deepcopy
 
 
 class PRAWBase(object):
     """Superclass for all models in PRAW."""
+
+    @staticmethod
+    def _safely_add_arguments(argument_dict, key, **new_arguments):
+        """Replace arugment_dict[key] with a deepcopy and update.
+
+        This method is often called when new parameters need to be added to a
+        request. By calling this method and adding the new or updated
+        parameters we can insure we don't modify the dictionary passed in by
+        the caller.
+
+        """
+        value = deepcopy(argument_dict[key]) if key in argument_dict else {}
+        value.update(new_arguments)
+        argument_dict[key] = value
 
     @classmethod
     def parse(cls, data, reddit):

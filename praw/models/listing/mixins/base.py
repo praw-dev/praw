@@ -5,10 +5,10 @@ from ...base import PRAWBase
 from ..generator import ListingGenerator
 
 
-def _prepare(praw_object, params, target):
+def _prepare(praw_object, arguments_dict, target):
     """Fix for Redditor methods that use a query param rather than subpath."""
     if praw_object.__dict__.get('_listing_use_sort'):
-        params['sort'] = target
+        PRAWBase._safely_add_arguments(arguments_dict, 'params', sort=target)
         return praw_object._path
     return urljoin(praw_object._path, target)
 
@@ -38,8 +38,8 @@ class BaseListingMixin(PRAWBase):
 
         """
         self.validate_time_filter(time_filter)
-        generator_kwargs.setdefault('params', {})['t'] = time_filter
-        url = _prepare(self, generator_kwargs['params'], 'controversial')
+        self._safely_add_arguments(generator_kwargs, 'params', t=time_filter)
+        url = _prepare(self, generator_kwargs, 'controversial')
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
     def hot(self, **generator_kwargs):
@@ -49,7 +49,8 @@ class BaseListingMixin(PRAWBase):
         constructor.
 
         """
-        url = _prepare(self, generator_kwargs.setdefault('params', {}), 'hot')
+        generator_kwargs.setdefault('params', {})
+        url = _prepare(self, generator_kwargs, 'hot')
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
     def new(self, **generator_kwargs):
@@ -59,7 +60,8 @@ class BaseListingMixin(PRAWBase):
         constructor.
 
         """
-        url = _prepare(self, generator_kwargs.setdefault('params', {}), 'new')
+        generator_kwargs.setdefault('params', {})
+        url = _prepare(self, generator_kwargs, 'new')
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
     def top(self, time_filter='all', **generator_kwargs):
@@ -75,6 +77,6 @@ class BaseListingMixin(PRAWBase):
 
         """
         self.validate_time_filter(time_filter)
-        generator_kwargs.setdefault('params', {})['t'] = time_filter
-        url = _prepare(self, generator_kwargs['params'], 'top')
+        self._safely_add_arguments(generator_kwargs, 'params', t=time_filter)
+        url = _prepare(self, generator_kwargs, 'top')
         return ListingGenerator(self._reddit, url, **generator_kwargs)
