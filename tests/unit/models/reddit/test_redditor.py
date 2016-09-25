@@ -6,7 +6,7 @@ from praw.models import Redditor
 from ... import UnitTest
 
 
-class TestSubredit(UnitTest):
+class TestRedditor(UnitTest):
     def test_equality(self):
         redditor1 = Redditor(self.reddit, _data={'name': 'dummy1', 'n': 1})
         redditor2 = Redditor(self.reddit, _data={'name': 'Dummy1', 'n': 2})
