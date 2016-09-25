@@ -48,7 +48,7 @@ class Reddit(object):
         if value:
             self._core = self._read_only_core
         elif self._authorized_core is None:
-            raise ClientException('read_only cannot be set as only the '
+            raise ClientException('read_only cannot be unset as only the '
                                   'ReadOnlyAuthorizer is available.')
         else:
             self._core = self._authorized_core
