@@ -9,8 +9,7 @@ from ... import IntegrationTest
 
 class TestComment(IntegrationTest):
     def test_attributes(self):
-        with self.recorder.use_cassette(
-                'TestComment.test_attributes'):
+        with self.recorder.use_cassette('TestComment.test_attributes'):
             comment = Comment(self.reddit, 'cklhv0f')
             assert comment.author == 'bboe'
             assert comment.body.startswith('Yes it does.')
@@ -21,8 +20,7 @@ class TestComment(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
     def test_block(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestComment.test_block'):
+        with self.recorder.use_cassette('TestComment.test_block'):
             comment = None
             for item in self.reddit.inbox.submission_replies():
                 if item.author and item.author != pytest.placeholders.username:
@@ -34,15 +32,13 @@ class TestComment(IntegrationTest):
 
     def test_clear_vote(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestComment.test_clear_vote'):
+        with self.recorder.use_cassette('TestComment.test_clear_vote'):
             Comment(self.reddit, 'd1680wu').clear_vote()
 
     @mock.patch('time.sleep', return_value=None)
     def test_delete(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestComment.test_delete'):
+        with self.recorder.use_cassette('TestComment.test_delete'):
             comment = Comment(self.reddit, 'd1616q2')
             comment.delete()
             assert comment.author is None
@@ -50,8 +46,7 @@ class TestComment(IntegrationTest):
 
     def test_downvote(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestComment.test_downvote'):
+        with self.recorder.use_cassette('TestComment.test_downvote'):
             Comment(self.reddit, 'd1680wu').downvote()
 
     @mock.patch('time.sleep', return_value=None)
@@ -65,16 +60,14 @@ class TestComment(IntegrationTest):
 
     def test_gild__no_creddits(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestComment.test_gild__no_creddits'):
+        with self.recorder.use_cassette('TestComment.test_gild__no_creddits'):
             with pytest.raises(BadRequest) as excinfo:
                 Comment(self.reddit, 'd1616q2').gild()
             reason = excinfo.value.response.json()['reason']
             assert 'INSUFFICIENT_CREDDITS' == reason
 
     def test_invalid(self):
-        with self.recorder.use_cassette(
-                'TestComment.test_invalid'):
+        with self.recorder.use_cassette('TestComment.test_invalid'):
             with pytest.raises(PRAWException) as excinfo:
                 Comment(self.reddit, '0').body
             assert ("No 'Comment' data returned for thing t1_0",)\
@@ -83,8 +76,7 @@ class TestComment(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
     def test_mark_read(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestComment.test_mark_read'):
+        with self.recorder.use_cassette('TestComment.test_mark_read'):
             comment = next(self.reddit.inbox.unread())
             assert isinstance(comment, Comment)
             comment.mark_read()
@@ -92,14 +84,12 @@ class TestComment(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
     def test_mark_unread(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestComment.test_mark_unread'):
+        with self.recorder.use_cassette('TestComment.test_mark_unread'):
             comment = next(self.reddit.inbox.comment_replies())
             comment.mark_unread()
 
     def test_permalink(self):
-        with self.recorder.use_cassette(
-                'TestComment.test_permalink'):
+        with self.recorder.use_cassette('TestComment.test_permalink'):
             comment = Comment(self.reddit, 'cklhv0f')
             assert comment.permalink() == ('/r/redditdev/comments/2gmzqe/'
                                            'praw_https_enabled_praw_testing_'
@@ -107,8 +97,7 @@ class TestComment(IntegrationTest):
 
     def test_reply(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestComment.test_reply'):
+        with self.recorder.use_cassette('TestComment.test_reply'):
             parent_comment = Comment(self.reddit, 'd1616q2')
             comment = parent_comment.reply('Comment reply')
             assert comment.author == self.reddit.config.username
@@ -118,24 +107,20 @@ class TestComment(IntegrationTest):
 
     def test_report(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestComment.test_report'):
+        with self.recorder.use_cassette('TestComment.test_report'):
             Comment(self.reddit, 'd0335z3').report('custom')
 
     def test_save(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestComment.test_save'):
+        with self.recorder.use_cassette('TestComment.test_save'):
             Comment(self.reddit, 'd1680wu').save('foo')
 
     def test_unsave(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestComment.test_unsave'):
+        with self.recorder.use_cassette('TestComment.test_unsave'):
             Comment(self.reddit, 'd1680wu').unsave()
 
     def test_upvote(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestComment.test_upvote'):
+        with self.recorder.use_cassette('TestComment.test_upvote'):
             Comment(self.reddit, 'd1680wu').upvote()
