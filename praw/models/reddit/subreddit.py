@@ -1,4 +1,6 @@
 """Provide the Subreddit class."""
+import time
+
 from prawcore import Redirect
 from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
@@ -155,6 +157,47 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                                    t=time_filter)
         url = API_PATH['search'].format(subreddit=self)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
+
+    def submissions(self, start=None, end=None, extra_query=None):
+        """Yield submissions created between timestamps ``start`` and ``end``.
+
+        :param start: A UNIX timestamp indicating the earliest creation time of
+            submission yielded during the call. A value of ``None`` will
+            consider all submissions older than ``end`` (Default: None).
+        :param end: A UNIX timestamp indicating the latest creation time of a
+            submission yielded during the call. A value of ``None`` will
+            consider all submissions newer than ``start`` (Default: None).
+        :param extra_query: A cloudsearch query that will be combined via
+            ``(and timestamp:start..end EXTRA_QUERY)`` to futher filter
+            results (Default: None).
+
+        Submissions are yielded newest first.
+
+        """
+        utc_offset = 28800
+        now = int(time.time())
+        start = max(start + utc_offset if start else 0, 0)
+        end = min(end if end else now, now) + utc_offset
+
+        found_new_submission = True
+        last_ids = set()
+        params = {}
+        while found_new_submission:
+            query = 'timestamp:{}..{}'.format(start, end)
+            if extra_query:
+                query = '(and {} {})'.format(query, extra_query)
+
+            current_ids = set()
+            found_new_submission = False
+            for submission in self.search(query, limit=None, params=params,
+                                          sort='new'):
+                current_ids.add(submission.id)
+                end = min(end, int(submission.created))
+                if submission.id not in last_ids:
+                    found_new_submission = True
+                yield submission
+                params['after'] = submission.fullname
+            last_ids = current_ids
 
     def submit(self, title, selftext=None, url=None, resubmit=True,
                send_replies=True):

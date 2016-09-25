@@ -79,6 +79,32 @@ class TestSubreddit(IntegrationTest):
                 assert isinstance(item, Submission)
 
     @mock.patch('time.sleep', return_value=None)
+    @mock.patch('time.time', return_value=1474803456.4)
+    def test_submissions__with_default_arguments(self, _, __):
+        with self.recorder.use_cassette(
+                'TestSubreddit.test_submissions__with_default_arguments'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            count = 0
+            for submission in subreddit.submissions():
+                count += 1
+        assert count > 1000
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_submissions__with_provided_arguments(self, _):
+        with self.recorder.use_cassette(
+                'TestSubreddit.test_submissions__with_provided_arguments'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            count = 0
+            for submission in subreddit.submissions(
+                    1410000000, 1420000000,
+                    "(not author:'{}')".format(self.reddit.config.username)):
+                count += 1
+                assert submission.author != self.reddit.config.username
+        assert count > 0
+
+    @mock.patch('time.sleep', return_value=None)
     def test_submit__selftext(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubreddit.test_submit__selftext'):
