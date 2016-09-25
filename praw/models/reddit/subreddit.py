@@ -29,7 +29,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                           over_18=None, public_description=None,
                           public_traffic=None, show_media=None,
                           show_thumbnails=None, spam_comments=None,
-                          # pylint: disable=invalid-name, too-many-locals
                           spam_links=None, spam_selfposts=None, sr=None,
                           submit_link_label=None, submit_text=None,
                           submit_text_label=None, subreddit_type=None,
