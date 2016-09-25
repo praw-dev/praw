@@ -95,6 +95,11 @@ class TestComment(IntegrationTest):
                                            'praw_https_enabled_praw_testing_'
                                            'needed/cklhv0f')
 
+    def test_refresh(self):
+        with self.recorder.use_cassette('TestComment.test_refresh'):
+            comment = Comment(self.reddit, 'd81vwef').refresh()
+        assert len(comment.replies) > 0
+
     def test_reply(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestComment.test_reply'):

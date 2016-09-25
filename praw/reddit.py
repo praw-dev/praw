@@ -193,6 +193,9 @@ class Reddit(object):
 
         :param id: The ID of the comment.
 
+        Note: If you want to obtain the comment's replies, you will need to
+        call ``refresh`` on the returned comment.
+
         """
         return models.Comment(self, id=id)
 

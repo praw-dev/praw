@@ -80,3 +80,16 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         if not fast or 'permalink' in self.submission.__dict__:
             return urljoin(self.submission.permalink, self.id)
         return '/comments/{}//{}'.format(self.submission.id, self.id)
+
+    def refresh(self):
+        """Refresh the comment's attributes.
+
+        If using ``Reddit.comment`` this method must be called in order to
+        obtain the comment's replies.
+
+        """
+        comment_path = self.submission._info_path() + '_/{}'.format(self.id)
+        comment = self._reddit.get(comment_path)[1].children[0]
+        del comment.__dict__['_submission']  # Don't replace
+        self.__dict__.update(comment.__dict__)
+        return self
