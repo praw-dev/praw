@@ -69,7 +69,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         """Initialize a Submission instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
-        :param id: A reddit base64 submission ID, e.g., ``2gmzqe``.
+        :param id: A reddit base36 submission ID, e.g., ``2gmzqe``.
         :param url: A URL supported by :meth:`~.id_from_url`.
 
         Either ``id`` or ``url`` can be provided, but not both.
