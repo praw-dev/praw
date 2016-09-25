@@ -114,8 +114,8 @@ class TestRedditorListings(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestRedditorListings.test_controversial'):
             redditor = self.reddit.redditor('spez')
-            submissions = list(redditor.controversial())
-        assert len(submissions) == 100
+            items = list(redditor.controversial())
+        assert len(items) == 100
 
     def test_downvoted(self):
         self.reddit.read_only = False
@@ -144,16 +144,16 @@ class TestRedditorListings(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestRedditorListings.test_gilded'):
             redditor = self.reddit.redditor('spez')
-            submissions = list(redditor.gilded(limit=50))
-        assert len(submissions) == 50
+            items = list(redditor.gilded(limit=50))
+        assert len(items) == 50
 
     def test_gildings(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestRedditorListings.test_gildings'):
             redditor = self.reddit.redditor(self.reddit.config.username)
-            submissions = list(redditor.gildings())
-        assert isinstance(submissions, list)
+            items = list(redditor.gildings())
+        assert isinstance(items, list)
 
     def test_gildings__in_read_only_mode(self):
         with self.recorder.use_cassette(
@@ -197,23 +197,23 @@ class TestRedditorListings(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestRedditorListings.test_hot'):
             redditor = self.reddit.redditor('spez')
-            submissions = list(redditor.hot())
-        assert len(submissions) == 100
+            items = list(redditor.hot())
+        assert len(items) == 100
 
     def test_new(self):
         with self.recorder.use_cassette(
                 'TestRedditorListings.test_new'):
             redditor = self.reddit.redditor('spez')
-            submissions = list(redditor.new())
-        assert len(submissions) == 100
+            items = list(redditor.new())
+        assert len(items) == 100
 
     def test_saved(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestRedditorListings.test_saved'):
             redditor = self.reddit.redditor(self.reddit.config.username)
-            submissions = list(redditor.saved())
-        assert len(submissions) > 0
+            items = list(redditor.saved())
+        assert len(items) > 0
 
     def test_saved__in_read_only_mode(self):
         with self.recorder.use_cassette(
@@ -262,8 +262,8 @@ class TestRedditorListings(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestRedditorListings.test_top'):
             redditor = self.reddit.redditor('spez')
-            submissions = list(redditor.top())
-        assert len(submissions) == 100
+            items = list(redditor.top())
+        assert len(items) == 100
 
     def test_upvoted(self):
         self.reddit.read_only = False
