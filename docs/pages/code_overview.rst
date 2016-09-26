@@ -37,6 +37,9 @@ Subreddit Utility Classes
 .. autoclass:: praw.models.reddit.subreddit.SubredditFlair
    :inherited-members:
 
+.. autoclass:: praw.models.reddit.subreddit.SubredditFlairTemplates
+   :inherited-members:
+
 .. autoclass:: praw.models.reddit.subreddit.SubredditModeration
    :inherited-members:
 

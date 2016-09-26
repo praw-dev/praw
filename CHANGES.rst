@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-4.0.0aX
+4.0.0bX
 -------
 
 PRAW 4 introduces significant breaking changes. The numerous changes are not
@@ -11,12 +11,52 @@ require additional help please ask on `/r/redditdev
 <https://www.reddit.com/r/redditdev>`_ or in the `praw-dev/praw
 <https://gitter.im/praw-dev/praw>`_ channel on gitter.
 
+**Added**
+
+* :meth:`praw.models.Comment.block`, :meth:`praw.models.Message.block`, and
+  :meth:`praw.models.SubredditMessage.block` to permit blocking unwanted user
+  contact.
+* :meth:`praw.models.LiveHelper.create` to create new live threads.
+* :meth:`praw.models.Redditor.unblock` to undo a block.
+* :meth:`praw.models.Subreddits.gold` to iterate through gold subreddits.
+* :meth:`praw.models.Subreddits.search` to search for subreddits by name and
+  description.
+* :meth:`praw.models.Subreddits.stream` to obtain newly created subreddits in
+  near-realtime.
+* :meth:`praw.models.User.karma` to retrieve the current user's subreddit
+  karma.
+* :meth:`praw.models.reddit.submission.SubmissionModeration.lock` and
+  :meth:`praw.models.reddit.submission.SubmissionModeration.unlock` to change a
+  Submission's lock state.
+* :meth:`praw.models.reddit.subreddit.SubredditFlairTemplates.delete` to
+  delete a single flair template.
+* :meth:`praw.models.reddit.subreddit.SubredditModeration.unread` to iterate
+  over unread moderation messages.
+* Support installed-type OAuth apps.
+* Support read-only OAuth for all application types.
+* Support script-type OAuth apps.
+
+
+**Changed**
+
+.. note:: Only prominent changes are listed here.
+
+* ``helpers.comments_stream`` is now
+  :meth:`praw.models.reddit.subreddit.SubredditStream.comments`
+* ``helpers.submissions_between`` is now
+  :meth:`praw.models.Subreddit.submissions`. This new method now only iterates
+  through newest submissions first and as a result makes approximately 33%
+  fewer requests.
+* ``helpers.submission_stream`` is now
+  :meth:`praw.models.reddit.subreddit.SubredditStream.submissions`
+
 **Removed**
 
 * Removed :class:`.Reddit`'s ``login`` method. Authentication must be done
   through OAuth.
 * Removed `praw-multiprocess` as this functionality is no longer needed with
   PRAW 4.
+* Remove non-oauth functions ``Message.collapse`` and ``Message.uncollapse``.
 
 For changes prior to version 4.0 please see: `3.4.0 changelog
 <http://praw.readthedocs.io/en/v3.4.0/pages/changelog.html>`_
