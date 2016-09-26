@@ -30,10 +30,3 @@ class IntegrationTest(object):
                              password=pytest.placeholders.password,
                              user_agent=pytest.placeholders.user_agent,
                              username=pytest.placeholders.username)
-
-
-class UntrustedIntegrationTest(IntegrationTest):
-    def setup_reddit(self):
-        self.reddit = Reddit(client_id=pytest.placeholders.client_id,
-                             client_secret=None,
-                             user_agent=pytest.placeholders.user_agent)
