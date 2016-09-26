@@ -23,6 +23,14 @@ def web_app():
 
 
 class TestAuth(UnitTest):
+    def test_authorize__from_installed_app(self):
+        with pytest.raises(ClientException):
+            installed_app().auth.authorize('dummy code')
+
+    def test_authorize__from_script_app(self):
+        with pytest.raises(ClientException):
+            script_app().auth.authorize('dummy code')
+
     def test_implicit__from_script_app(self):
         with pytest.raises(ClientException):
             script_app().auth.implicit('dummy token', 10, '')

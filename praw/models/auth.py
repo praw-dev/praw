@@ -1,5 +1,6 @@
 """Provide the Auth class."""
-from prawcore import ImplicitAuthorizer, UntrustedAuthenticator, session
+from prawcore import (Authorizer, ImplicitAuthorizer, TrustedAuthenticator,
+                      UntrustedAuthenticator, session)
 
 from .base import PRAWBase
 from ..exceptions import ClientException
@@ -7,6 +8,24 @@ from ..exceptions import ClientException
 
 class Auth(PRAWBase):
     """Auth provides an interface to Reddit's authorization."""
+
+    def authorize(self, code):
+        """Complete the web authorization flow and return the refresh token.
+
+        :param code: The code obtained through the request to the redirect uri.
+        :returns: The obtained refresh token, if available, otherwise ``None``.
+
+        The session's active authorization will be updated upon success.
+
+        """
+        authenticator = self._reddit._read_only_core._authorizer._authenticator
+        if not isinstance(authenticator, TrustedAuthenticator) or \
+           self._reddit.config.username:
+            raise ClientException('authorize can only be used with web apps.')
+        authorizer = Authorizer(authenticator)
+        authorizer.authorize(code)
+        self._core = self._authorized_core = session(authorizer)
+        return authorizer.refresh_token
 
     def implicit(self, access_token, expires_in, scope):
         """Set the active authorization to be an implicit authorization.
