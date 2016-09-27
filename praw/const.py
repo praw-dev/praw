@@ -26,7 +26,6 @@ API_PATH = {
     'contributor':            'r/{subreddit}/about/contributors/',
     'del':                    'api/del/',
     'deleteflair':            'api/deleteflair',
-    'delete_redditor':        'api/delete_user',
     'delete_sr_header':       'r/{subreddit}/api/delete_sr_header',
     'delete_sr_image':        'r/{subreddit}/api/delete_sr_img',
     'distinguish':            'api/distinguish/',
