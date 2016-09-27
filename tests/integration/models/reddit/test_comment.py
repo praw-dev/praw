@@ -1,4 +1,4 @@
-from praw.exceptions import PRAWException
+from praw.exceptions import ClientException, PRAWException
 from praw.models import Comment
 from prawcore import BadRequest
 import mock
@@ -99,6 +99,13 @@ class TestComment(IntegrationTest):
         with self.recorder.use_cassette('TestComment.test_refresh'):
             comment = Comment(self.reddit, 'd81vwef').refresh()
         assert len(comment.replies) > 0
+
+    def test_refresh__deleted_comment(self):
+        with self.recorder.use_cassette(
+                'TestComment.test_refresh__deleted_comment'):
+            with pytest.raises(ClientException) as excinfo:
+                Comment(self.reddit, 'd7ltvl0').refresh()
+        assert ('Comment has been deleted',) == excinfo.value.args
 
     def test_reply(self):
         self.reddit.read_only = False

@@ -4,6 +4,7 @@ from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 from .base import RedditBase
 from .mixins import InboxableMixin, UserContentMixin
 from .redditor import Redditor
+from ...exceptions import ClientException
 
 
 class Comment(RedditBase, InboxableMixin, UserContentMixin):
@@ -89,7 +90,10 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
         """
         comment_path = self.submission._info_path() + '_/{}'.format(self.id)
-        comment = self._reddit.get(comment_path)[1].children[0]
+        comment_list = self._reddit.get(comment_path)[1].children
+        if not comment_list:
+            raise ClientException('Comment has been deleted')
+        comment = comment_list[0]
         del comment.__dict__['_submission']  # Don't replace
         self.__dict__.update(comment.__dict__)
         return self
