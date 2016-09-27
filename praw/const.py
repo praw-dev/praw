@@ -14,7 +14,6 @@ API_PATH = {
     'about_unmoderated':      'r/{subreddit}/about/unmoderated/',
     'accept_mod_invite':      'api/accept_moderator_invite',
     'approve':                'api/approve/',
-    'banned':                 'r/{subreddit}/about/banned/',
     'block':                  'api/block',
     'blocked':                'prefs/blocked/',
     'by_id':                  'by_id/',
@@ -23,7 +22,6 @@ API_PATH = {
     'comment_replies':        'message/comments/',
     'compose':                'api/compose/',
     'contest_mode':           'api/set_contest_mode/',
-    'contributor':            'r/{subreddit}/about/contributors/',
     'del':                    'api/del/',
     'deleteflair':            'api/deleteflair',
     'delete_sr_header':       'r/{subreddit}/api/delete_sr_header',
@@ -53,6 +51,12 @@ API_PATH = {
     'karma':                  'api/v1/me/karma',
     'leavecontributor':       'api/leavecontributor',
     'leavemoderator':         'api/leavemoderator',
+    'list_banned':            'r/{subreddit}/about/banned/',
+    'list_contributor':       'r/{subreddit}/about/contributors/',
+    'list_moderator':         'r/{subreddit}/about/moderators/',
+    'list_muted':             'r/{subreddit}/about/muted/',
+    'list_wikibanned':        'r/{subreddit}/about/wikibanned/',
+    'list_wikicontributor':   'r/{subreddit}/about/wikicontributors/',
     'liveabout':              'api/live/{id}/about/',
     'livecreate':             'api/live/create',
     'lock':                   'api/lock/',
@@ -60,7 +64,6 @@ API_PATH = {
     'mentions':               'message/mentions',
     'message':                'message/messages/{messageid}/',
     'messages':               'message/messages/',
-    'moderator':              'r/{subreddit}/about/moderators/',
     'moderator_messages':     'r/{subreddit}/message/moderator/',
     'moderator_unread':       'r/{subreddit}/message/moderator/unread/',
     'morechildren':           'api/morechildren/',
@@ -77,7 +80,6 @@ API_PATH = {
     'multireddit_update':     'api/multi/user/{user}/m/{multi}/r/{subreddit}',
     'multireddit_user':       'api/multi/user/{user}/',
     'mute_sender':            'api/mute_message_author/',
-    'muted':                  'r/{subreddit}/about/muted/',
     'read_message':           'api/read_message/',
     'register':               'api/register/',
     'remove':                 'api/remove/',
@@ -124,9 +126,7 @@ API_PATH = {
     'wiki_page':              'r/{subreddit}/wiki/{page}',
     'wiki_page_editor':       'r/{subreddit}/api/wiki/alloweditor/{method}',
     'wiki_page_settings':     'r/{subreddit}/wiki/settings/{page}',
-    'wiki_pages':             'r/{subreddit}/wiki/pages/',
-    'wikibanned':             'r/{subreddit}/about/wikibanned/',
-    'wikicontributor':        'r/{subreddit}/about/wikicontributors/'}
+    'wiki_pages':             'r/{subreddit}/wiki/pages/'}
 
 JPEG_HEADER = b'\xff\xd8\xff'
 MAX_IMAGE_SIZE = 512000

@@ -595,7 +595,8 @@ class SubredditRelationship(object):
 
     def __iter__(self):
         """Iterate through the Redditors belonging to this relationship."""
-        url = API_PATH[self.relationship].format(subreddit=self.subreddit)
+        url = API_PATH['list_{}'.format(self.relationship)].format(
+            subreddit=self.subreddit)
         params = {'unique': self.subreddit._reddit._next_unique}
         for item in self.subreddit._reddit.get(url, params=params):
             yield item
