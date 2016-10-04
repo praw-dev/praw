@@ -150,6 +150,9 @@ this page to add in more.
 `Reddit Countdown`_ by `matchu <https://github.com/matchu/>`_
     Implements a countdown in a subreddit's sidebar to help Reddit communities count down to important events.
 
+`chattR`_ by `DontKillTheMedic <https://github.com/patrickstocklin/>`_
+    Quantitatively analyzes the sophistication-level and polarity/subjectivity of conversation in a subreddit using the Flesch-Kincaid Reading Level Algorithm. 
+
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -161,6 +164,7 @@ this page to add in more.
 .. _`AutoModerator`: https://github.com/Deimos/AutoModerator
 .. _`Butcher bot`: https://github.com/xiphirx/Butcher-Bot
 .. _`ButtsBot`: https://github.com/jadunawa/ButtsBot
+.. _`chattR`: https://github.com/patrickstocklin/chattr
 .. _`EVE Killmail Reddit Bot`: https://github.com/ArnoldM904/EK_Reddit_Bot
 .. _`GoodReads Bot`: https://github.com/avinassh/Reddit-GoodReads-Bot
 .. _`Groompbot`: https://github.com/AndrewNeo/groompbot
