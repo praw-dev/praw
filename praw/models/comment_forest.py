@@ -5,7 +5,7 @@ from .reddit.more import MoreComments
 
 
 class CommentForest(object):
-    """A forest of comments starts with  multiple top-level comments.
+    """A forest of comments starts with multiple top-level comments.
 
     Each of these comments can be a tree of replies.
 
