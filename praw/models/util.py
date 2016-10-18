@@ -28,7 +28,7 @@ class BoundedSet(object):
 def stream_generator(function):
     """Forever yield new items from ListingGenerators."""
     before_fullname = None
-    seen_fullnames = BoundedSet(100)
+    seen_fullnames = BoundedSet(250)
     without_before_counter = 0
     while True:
         newest_fullname = None

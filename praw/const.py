@@ -81,7 +81,6 @@ API_PATH = {
     'multireddit_user':       'api/multi/user/{user}/',
     'mute_sender':            'api/mute_message_author/',
     'read_message':           'api/read_message/',
-    'register':               'api/register/',
     'remove':                 'api/remove/',
     'report':                 'api/report/',
     'save':                   'api/save/',
