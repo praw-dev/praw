@@ -109,6 +109,11 @@ this page to add in more.
     able to set a reminder for themselves about the current thread or comment.
     The bot will then send them a private message with the date they specified.
     `u/RemindMeBot <http://www.reddit.com/user/RemindMeBot>`_.
+    
+`Massdrop Multi Bot <http://github.com/darkmio/Massdrop-Reddit-Bot>`_
+   A bot which made Massdrop available for everyone and then grew into an
+   assortment of different fixes for links that regularly get mistakenly used,
+   like Gfycat, Massdrop and Subreddit-Names in titles.
 
 `RedditRover`_ by `DarkMio <https://github.com/DarkMio>`_
     A plugin based Reddit Multi Bot Framework intended for new and advanced 
