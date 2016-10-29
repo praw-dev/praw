@@ -84,11 +84,7 @@ information are certainly welcome.
 Documentation
 -------------
 
-PRAW's documentation is located at https://praw.readthedocs.io.
-
-.. note:: At this time the majority of the documentation has not yet been
-   updated to PRAW4. Contributions are welcome.
-
+PRAW's documentation is located at http://praw.readthedocs.io/en/praw4/.
 
 History
 -------
