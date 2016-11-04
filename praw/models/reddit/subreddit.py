@@ -175,8 +175,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         """
         utc_offset = 28800
         now = int(time.time())
-        start = max(start + utc_offset if start else 0, 0)
-        end = min(end if end else now, now) + utc_offset
+        start = max(int(start) + utc_offset if start else 0, 0)
+        end = min(int(end) if end else now, now) + utc_offset
 
         found_new_submission = True
         last_ids = set()

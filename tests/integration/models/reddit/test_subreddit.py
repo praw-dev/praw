@@ -98,7 +98,7 @@ class TestSubreddit(IntegrationTest):
                 pytest.placeholders.test_subreddit)
             count = 0
             for submission in subreddit.submissions(
-                    1410000000, 1420000000,
+                    1410000000.1, 1420000000.9,
                     "(not author:'{}')".format(self.reddit.config.username)):
                 count += 1
                 assert submission.author != self.reddit.config.username
