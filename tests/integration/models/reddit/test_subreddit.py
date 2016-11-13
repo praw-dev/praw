@@ -416,8 +416,8 @@ class TestSubredditRelationships(IntegrationTest):
     REDDITOR = 'pyapitestuser3'
 
     @mock.patch('time.sleep', return_value=None)
-    def add_remove(self, subreddit, user, relationship, _):
-        relationship = getattr(subreddit, relationship)
+    def add_remove(self, base, user, relationship, _):
+        relationship = getattr(base, relationship)
         relationship.add(user)
         assert user in relationship
         relationship.remove(user)
@@ -447,6 +447,38 @@ class TestSubredditRelationships(IntegrationTest):
             # As of 2016-03-18 there is no API endpoint to get the moderator
             # invite list.
             self.subreddit.moderator.add(self.REDDITOR)
+            assert self.REDDITOR not in self.subreddit.moderator
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_moderator__limited_permissions(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditRelationships__moderator__limited_permissions'):
+            # Moderators can only be invited.
+            # As of 2016-03-18 there is no API endpoint to get the moderator
+            # invite list.
+            self.subreddit.moderator.add(self.REDDITOR,
+                                         permissions=['access', 'wiki'])
+            assert self.REDDITOR not in self.subreddit.moderator
+
+    def test_moderator_invite__invalid_perm(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditRelationships__moderator_invite__invalid_perm'):
+            with pytest.raises(APIException) as excinfo:
+                self.subreddit.moderator.invite(
+                    self.REDDITOR, permissions=['a'])
+            assert excinfo.value.error_type == 'INVALID_PERMISSIONS'
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_moderator_invite__no_perms(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditRelationships__moderator_invite__no_perms'):
+            # Moderators can only be invited.
+            # As of 2016-03-18 there is no API endpoint to get the moderator
+            # invite list.
+            self.subreddit.moderator.invite(self.REDDITOR, permissions=[])
             assert self.REDDITOR not in self.subreddit.moderator
 
     def test_muted(self):

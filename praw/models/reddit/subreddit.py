@@ -1,4 +1,5 @@
 """Provide the Subreddit class."""
+from copy import deepcopy
 import time
 
 from prawcore import Redirect
@@ -120,9 +121,10 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return API_PATH['subreddit_about'].format(subreddit=self)
 
     def _prepare_relationships(self):
-        for relationship in ['banned', 'contributor', 'moderator', 'muted']:
+        for relationship in ['banned', 'contributor', 'muted']:
             setattr(self, relationship,
                     SubredditRelationship(self, relationship))
+        self.moderator = ModeratorRelationship(self)
 
     def random(self):
         """Return a random Submission."""
@@ -650,7 +652,7 @@ class SubredditRelationship(object):
         for item in self.subreddit._reddit.get(url, params=params):
             yield item
 
-    def add(self, redditor):
+    def add(self, redditor, **other_settings):
         """Add ``redditor`` to this relationship.
 
         :param redditor: A string or :class:`~.Redditor` instance.
@@ -658,7 +660,8 @@ class SubredditRelationship(object):
         """
         data = {'name': str(redditor), 'r': str(self.subreddit),
                 'type': self.relationship}
-        return self.subreddit._reddit.post(API_PATH['friend'], data=data)
+        data.update(other_settings)
+        self.subreddit._reddit.post(API_PATH['friend'], data=data)
 
     def remove(self, redditor):
         """Remove ``redditor`` from this relationship.
@@ -668,7 +671,61 @@ class SubredditRelationship(object):
         """
         data = {'name': str(redditor), 'r': str(self.subreddit),
                 'type': self.relationship}
-        return self.subreddit._reddit.post(API_PATH['unfriend'], data=data)
+        self.subreddit._reddit.post(API_PATH['unfriend'], data=data)
+
+
+class ModeratorRelationship(SubredditRelationship):
+    """Represents a moderator relationship between a redditor and subreddit."""
+
+    @staticmethod
+    def _handle_permissions(permissions, other_settings):
+        if isinstance(permissions, list):
+            other_settings = deepcopy(other_settings) if other_settings else {}
+            if permissions:
+                permissions = ['+{}'.format(x) for x in permissions]
+            else:
+                permissions = ['-access']
+            other_settings['permissions'] = ','.join(permissions)
+        return other_settings
+
+    def __init__(self, subreddit):
+        """Create a ModeratorRelationship instance.
+
+        :param subreddit: The subreddit for the moderator relationship.
+
+        """
+        super(ModeratorRelationship, self).__init__(subreddit, 'moderator')
+
+    def add(self, redditor, permissions=None, **other_settings):
+        """Add or invite ``redditor`` to be a moderator of the subreddit.
+
+        :param redditor: A string or :class:`~.Redditor` instance.
+        :param permissions: When provided (not `None`), permissions should be a
+            list of strings specifying which subset of permissions to grant. An
+            empty list `[]` indicates no permissions, and when not provided
+            `None`, indicates full permissions.
+
+        An invite will be sent unless the user making this call is an admin
+        user.
+
+        """
+        other_settings = self._handle_permissions(permissions, other_settings)
+        super(ModeratorRelationship, self).add(redditor, **other_settings)
+
+    def invite(self, redditor, permissions=None, **other_settings):
+        """Invite ``redditor`` to be a moderator of the subreddit.
+
+        :param redditor: A string or :class:`~.Redditor` instance.
+        :param permissions: When provided (not `None`), permissions should be a
+            list of strings specifying which subset of permissions to grant. An
+            empty list `[]` indicates no permissions, and when not provided
+            `None`, indicates full permissions.
+
+        """
+        data = self._handle_permissions(permissions, other_settings)
+        data.update({'name': str(redditor), 'r': str(self.subreddit),
+                     'type': 'moderator_invite'})
+        self.subreddit._reddit.post(API_PATH['friend'], data=data)
 
 
 class SubredditStream(object):
