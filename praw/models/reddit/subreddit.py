@@ -248,6 +248,33 @@ class SubredditFlair(object):
                                      params=params):
             yield item
 
+    def configure(self, position='right', self_assign=False,
+                  link_position='left', link_self_assign=False,
+                  **settings):
+        """Update the subreddit's flair configuration.
+
+        :param position: One of left, right, or False to disable (default:
+            right).
+        :param self_assign: (boolean) Permit self assignment of user flair
+            (default: False).
+        :param link_position: One of left, right, or False to disable
+            (default: left).
+        :param link_self_assign: (boolean) Permit self assignment
+               of link flair (default: False).
+
+        Additional keyword arguments can be provided to handle new settings as
+        Reddit introduces them.
+
+        """
+        data = {'flair_enabled': bool(position),
+                'flair_position': position or 'right',
+                'flair_self_assign_enabled': self_assign,
+                'link_flair_position': link_position or '',
+                'link_flair_self_assign_enabled': link_self_assign}
+        data.update(settings)
+        url = API_PATH['flairconfig'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url, data=data)
+
     def delete(self, redditor):
         """Delete flair for a Redditor.
 

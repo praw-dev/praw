@@ -30,7 +30,7 @@ API_PATH = {
     'duplicates':             'duplicates/{submission_id}/',
     'edit':                   'api/editusertext/',
     'flair':                  'r/{subreddit}/api/flair/',
-    'flairconfig':            'api/flairconfig/',
+    'flairconfig':            'r/{subreddit}/api/flairconfig/',
     'flaircsv':               'r/{subreddit}/api/flaircsv/',
     'flairlist':              'r/{subreddit}/api/flairlist/',
     'flairselector':          'r/{subreddit}/api/flairselector/',

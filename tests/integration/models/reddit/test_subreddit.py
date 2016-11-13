@@ -140,6 +140,20 @@ class TestSubredditFlair(IntegrationTest):
             assert len(mapping) > 0
             assert all(isinstance(x['user'], Redditor) for x in mapping)
 
+    def test_configure(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlair.test_configure'):
+            self.subreddit.flair.configure(position=None, self_assign=True,
+                                           link_position=None,
+                                           link_self_assign=True)
+
+    def test_configure__defaults(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlair.test_configure__defaults'):
+            self.subreddit.flair.configure()
+
     def test_delete(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditFlair.test_delete'):
