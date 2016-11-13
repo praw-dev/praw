@@ -17,7 +17,6 @@ API_PATH = {
     'block':                  'api/block',
     'blocked':                'prefs/blocked/',
     'by_id':                  'by_id/',
-    'captcha':                'captcha/',
     'comment':                'api/comment/',
     'comment_replies':        'message/comments/',
     'compose':                'api/compose/',
