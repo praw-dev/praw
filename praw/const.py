@@ -86,6 +86,7 @@ API_PATH = {
     'search':                 'r/{subreddit}/search/',
     'select_flair':           'r/{subreddit}/api/selectflair/',
     'sent':                   'message/sent/',
+    'setpermissions':         'r/{subreddit}/api/setpermissions/',
     'sticky_submission':      'api/set_subreddit_sticky/',
     'site_admin':             'api/site_admin/',
     'sub_recommendations':    'api/recommend/sr/{subreddits}',

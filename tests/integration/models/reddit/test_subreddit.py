@@ -481,6 +481,20 @@ class TestSubredditRelationships(IntegrationTest):
             self.subreddit.moderator.invite(self.REDDITOR, permissions=[])
             assert self.REDDITOR not in self.subreddit.moderator
 
+    def test_moderator_update(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditRelationships__moderator_update'):
+            self.subreddit.moderator.update(
+                self.REDDITOR, permissions=['config'])
+
+    def test_moderator_update_invite(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditRelationships__moderator_update_invite'):
+            self.subreddit.moderator.update_invite(
+                self.REDDITOR, permissions=['mail'])
+
     def test_muted(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditRelationships__muted'):

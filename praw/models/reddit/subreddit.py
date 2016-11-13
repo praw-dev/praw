@@ -731,6 +731,36 @@ class ModeratorRelationship(SubredditRelationship):
                      'type': 'moderator_invite'})
         self.subreddit._reddit.post(API_PATH['friend'], data=data)
 
+    def update(self, redditor, permissions=None):
+        """Update the moderator permissions for ``redditor``.
+
+        :param redditor: A string or :class:`~.Redditor` instance.
+        :param permissions: When provided (not `None`), permissions should be a
+            list of strings specifying which subset of permissions to grant. An
+            empty list `[]` indicates no permissions, and when not provided
+            `None`, indicates full permissions.
+
+        """
+        url = API_PATH['setpermissions'].format(subreddit=self.subreddit)
+        data = self._handle_permissions(
+            permissions, {'name': str(redditor), 'type': 'moderator'})
+        self.subreddit._reddit.post(url, data=data)
+
+    def update_invite(self, redditor, permissions=None):
+        """Update the moderator invite permissions for ``redditor``.
+
+        :param redditor: A string or :class:`~.Redditor` instance.
+        :param permissions: When provided (not `None`), permissions should be a
+            list of strings specifying which subset of permissions to grant. An
+            empty list `[]` indicates no permissions, and when not provided
+            `None`, indicates full permissions.
+
+        """
+        url = API_PATH['setpermissions'].format(subreddit=self.subreddit)
+        data = self._handle_permissions(
+            permissions, {'name': str(redditor), 'type': 'moderator_invite'})
+        self.subreddit._reddit.post(url, data=data)
+
 
 class SubredditStream(object):
     """Provides submission and comment streams."""
