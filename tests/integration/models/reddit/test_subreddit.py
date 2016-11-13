@@ -423,13 +423,13 @@ class TestSubredditRelationships(IntegrationTest):
 
     def test_banned(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette('TestSubredditRelationships__banned'):
+        with self.recorder.use_cassette('TestSubredditRelationships.banned'):
             self.add_remove(self.subreddit, self.REDDITOR, 'banned')
 
     def test_contributor(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships__contributor'):
+                'TestSubredditRelationships.contributor'):
             self.add_remove(self.subreddit, self.REDDITOR, 'contributor')
 
     @mock.patch('time.sleep', return_value=None)
@@ -443,7 +443,7 @@ class TestSubredditRelationships(IntegrationTest):
     def test_moderator(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships__moderator'):
+                'TestSubredditRelationships.moderator'):
             # Moderators can only be invited.
             # As of 2016-03-18 there is no API endpoint to get the moderator
             # invite list.
@@ -454,7 +454,7 @@ class TestSubredditRelationships(IntegrationTest):
     def test_moderator__limited_permissions(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships__moderator__limited_permissions'):
+                'TestSubredditRelationships.moderator__limited_permissions'):
             # Moderators can only be invited.
             # As of 2016-03-18 there is no API endpoint to get the moderator
             # invite list.
@@ -465,7 +465,7 @@ class TestSubredditRelationships(IntegrationTest):
     def test_moderator_invite__invalid_perm(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships__moderator_invite__invalid_perm'):
+                'TestSubredditRelationships.moderator_invite__invalid_perm'):
             with pytest.raises(APIException) as excinfo:
                 self.subreddit.moderator.invite(
                     self.REDDITOR, permissions=['a'])
@@ -475,7 +475,7 @@ class TestSubredditRelationships(IntegrationTest):
     def test_moderator_invite__no_perms(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships__moderator_invite__no_perms'):
+                'TestSubredditRelationships.moderator_invite__no_perms'):
             # Moderators can only be invited.
             # As of 2016-03-18 there is no API endpoint to get the moderator
             # invite list.
@@ -486,44 +486,44 @@ class TestSubredditRelationships(IntegrationTest):
     def test_modeator_leave(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships.test_moderator_leave'):
+                'TestSubredditRelationships.moderator_leave'):
             self.subreddit.moderator.leave()
 
     def test_moderator_update(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships__moderator_update'):
+                'TestSubredditRelationships.moderator_update'):
             self.subreddit.moderator.update(
                 self.REDDITOR, permissions=['config'])
 
     def test_moderator_update_invite(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships__moderator_update_invite'):
+                'TestSubredditRelationships.moderator_update_invite'):
             self.subreddit.moderator.update_invite(
                 self.REDDITOR, permissions=['mail'])
 
     def test_muted(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette('TestSubredditRelationships__muted'):
+        with self.recorder.use_cassette('TestSubredditRelationships.muted'):
             self.add_remove(self.subreddit, self.REDDITOR, 'muted')
 
     def test_wiki_banned(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships__wiki_banned'):
+                'TestSubredditRelationships.wiki_banned'):
             self.add_remove(self.subreddit.wiki, self.REDDITOR, 'banned')
 
     def test_wiki_contributors(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships__wiki_contributors'):
+                'TestSubredditRelationships.wiki_contributors'):
             self.add_remove(self.subreddit.wiki, self.REDDITOR, 'contributors')
 
 
 class TestSubredditStreams(IntegrationTest):
     def test_comments(self):
-        with self.recorder.use_cassette('TestSubredditStreams__comments'):
+        with self.recorder.use_cassette('TestSubredditStreams.comments'):
             subreddit = self.reddit.subreddit(
                 pytest.placeholders.test_subreddit)
             generator = subreddit.stream.comments()
@@ -531,7 +531,7 @@ class TestSubredditStreams(IntegrationTest):
                 assert isinstance(next(generator), Comment)
 
     def test_submissions(self):
-        with self.recorder.use_cassette('TestSubredditStreams__submissions'):
+        with self.recorder.use_cassette('TestSubredditStreams.submissions'):
             generator = self.reddit.subreddit('all').stream.submissions()
             for i in range(300):
                 assert isinstance(next(generator), Submission)
@@ -543,7 +543,7 @@ class TestSubredditWiki(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(
             pytest.placeholders.test_subreddit)
-        with self.recorder.use_cassette('TestSubredditWiki__iter'):
+        with self.recorder.use_cassette('TestSubredditWiki.iter'):
             count = 0
             for wikipage in subreddit.wiki:
                 assert isinstance(wikipage, WikiPage)
@@ -556,7 +556,7 @@ class TestSubredditWiki(IntegrationTest):
         subreddit = self.reddit.subreddit(
             pytest.placeholders.test_subreddit)
 
-        with self.recorder.use_cassette('TestSubredditWiki_create'):
+        with self.recorder.use_cassette('TestSubredditWiki.create'):
             wikipage = subreddit.wiki.create('PRAW New Page',
                                              'This is the new wiki page')
             assert wikipage.name == 'praw_new_page'
