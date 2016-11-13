@@ -360,6 +360,12 @@ class TestSubredditModeration(IntegrationTest):
                 count += 1
             assert count == 100
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_leave(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditModeration.test_leave'):
+            self.subreddit.mod.leave()
+
     def test_remove(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditModeration.test_remove'):

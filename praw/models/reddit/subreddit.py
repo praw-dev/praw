@@ -496,6 +496,11 @@ class SubredditModeration(object):
             self.subreddit._reddit, API_PATH['moderator_messages'].format(
                 subreddit=self.subreddit), **generator_kwargs)
 
+    def leave(self):
+        """Abdicate the moderator position (use with care)."""
+        self.subreddit._reddit.post(API_PATH['leavemoderator'],
+                                    data={'id': self.subreddit.fullname})
+
     def remove(self, thing, spam=False):
         """Remove a Comment or Submission.
 
