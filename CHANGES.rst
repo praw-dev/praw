@@ -32,6 +32,12 @@ require additional help please ask on `/r/redditdev
   delete a single flair template.
 * :meth:`praw.models.reddit.subreddit.SubredditModeration.unread` to iterate
   over unread moderation messages.
+* :meth:`praw.models.reddit.subreddit.ModeratorRelationship.invite` to invite a
+  moderator to a subreddit.
+* :meth:`praw.models.reddit.subreddit.ModeratorRelationship.update` to update a
+  moderator's permissions.
+* :meth:`praw.models.reddit.subreddit.ModeratorRelationship.update_invite` to
+  update an invited moderator's permissions.
 * Support installed-type OAuth apps.
 * Support read-only OAuth for all application types.
 * Support script-type OAuth apps.
