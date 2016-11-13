@@ -90,7 +90,8 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         """
         data = {'container': self._reddit.user.me().fullname,
                 'name': str(self), 'type': 'enemy'}
-        return self._reddit.post(API_PATH['unfriend'], data=data)
+        url = API_PATH['unfriend'].format(subreddit='all')
+        return self._reddit.post(url, data=data)
 
     def unfriend(self):
         """Unfriend the Redditor."""

@@ -653,10 +653,10 @@ class SubredditRelationship(object):
         :param redditor: A string or :class:`~.Redditor` instance.
 
         """
-        data = {'name': str(redditor), 'r': str(self.subreddit),
-                'type': self.relationship}
+        data = {'name': str(redditor), 'type': self.relationship}
         data.update(other_settings)
-        self.subreddit._reddit.post(API_PATH['friend'], data=data)
+        url = API_PATH['friend'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url, data=data)
 
     def remove(self, redditor):
         """Remove ``redditor`` from this relationship.
@@ -664,9 +664,9 @@ class SubredditRelationship(object):
         :param redditor: A string or :class:`~.Redditor` instance.
 
         """
-        data = {'name': str(redditor), 'r': str(self.subreddit),
-                'type': self.relationship}
-        self.subreddit._reddit.post(API_PATH['unfriend'], data=data)
+        data = {'name': str(redditor), 'type': self.relationship}
+        url = API_PATH['unfriend'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url, data=data)
 
 
 class ContributorRelationship(SubredditRelationship):
@@ -723,9 +723,9 @@ class ModeratorRelationship(SubredditRelationship):
 
         """
         data = self._handle_permissions(permissions, other_settings)
-        data.update({'name': str(redditor), 'r': str(self.subreddit),
-                     'type': 'moderator_invite'})
-        self.subreddit._reddit.post(API_PATH['friend'], data=data)
+        data.update({'name': str(redditor), 'type': 'moderator_invite'})
+        url = API_PATH['friend'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url, data=data)
 
     def leave(self):
         """Abdicate the moderator position (use with care)."""
