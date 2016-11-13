@@ -684,6 +684,10 @@ class ModeratorRelationship(SubredditRelationship):
             if permissions:
                 permissions = ['+{}'.format(x) for x in permissions]
             else:
+                # A single permission prefixed with `-` must be provided in
+                # order to have no permissions set. `-all` unfortunately is
+                # treated as if no permissions are passed thus resulting in
+                # full permissions.
                 permissions = ['-access']
             other_settings['permissions'] = ','.join(permissions)
         return other_settings
