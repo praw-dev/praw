@@ -302,6 +302,14 @@ class TestSubredditModeration(IntegrationTest):
     def subreddit(self):
         return self.reddit.subreddit(pytest.placeholders.test_subreddit)
 
+    def test_accept_invite__no_invite(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_accept_invite__no_invite'):
+            with pytest.raises(APIException) as excinfo:
+                self.subreddit.mod.accept_invite()
+            assert excinfo.value.error_type == 'NO_INVITE_FOUND'
+
     def test_approve(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(

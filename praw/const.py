@@ -12,7 +12,7 @@ API_PATH = {
     'about_stylesheet':       'r/{subreddit}/about/stylesheet/',
     'about_traffic':          'r/{subreddit}/about/traffic/',
     'about_unmoderated':      'r/{subreddit}/about/unmoderated/',
-    'accept_mod_invite':      'api/accept_moderator_invite',
+    'accept_mod_invite':      'r/{subreddit}/api/accept_moderator_invite',
     'approve':                'api/approve/',
     'block':                  'api/block',
     'blocked':                'prefs/blocked/',

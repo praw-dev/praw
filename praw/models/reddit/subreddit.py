@@ -398,6 +398,11 @@ class SubredditModeration(object):
         """
         self.subreddit = subreddit
 
+    def accept_invite(self):
+        """Accept an invitation as a moderator of the community."""
+        url = API_PATH['accept_mod_invite'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url, data={})
+
     def approve(self, thing):
         """Approve a Comment or Submission.
 
