@@ -121,10 +121,10 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return API_PATH['subreddit_about'].format(subreddit=self)
 
     def _prepare_relationships(self):
-        for relationship in ['banned', 'contributor', 'muted']:
-            setattr(self, relationship,
-                    SubredditRelationship(self, relationship))
+        self.banned = SubredditRelationship(self, 'banned')
+        self.contributor = ContributorRelationship(self, 'contributor')
         self.moderator = ModeratorRelationship(self)
+        self.muted = SubredditRelationship(self, 'muted')
 
     def random(self):
         """Return a random Submission."""
@@ -672,6 +672,15 @@ class SubredditRelationship(object):
         data = {'name': str(redditor), 'r': str(self.subreddit),
                 'type': self.relationship}
         self.subreddit._reddit.post(API_PATH['unfriend'], data=data)
+
+
+class ContributorRelationship(SubredditRelationship):
+    """Represents methods to interact with a Subreddit's contributors."""
+
+    def leave(self):
+        """Abdicate the contributor position."""
+        self.subreddit._reddit.post(API_PATH['leavecontributor'],
+                                    data={'id': self.subreddit.fullname})
 
 
 class ModeratorRelationship(SubredditRelationship):

@@ -439,6 +439,13 @@ class TestSubredditRelationships(IntegrationTest):
             self.add_remove(self.subreddit, self.REDDITOR, 'contributor')
 
     @mock.patch('time.sleep', return_value=None)
+    def test_contributor_leave(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_contributor_leave'):
+            self.subreddit.contributor.leave()
+
+    @mock.patch('time.sleep', return_value=None)
     def test_moderator(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
