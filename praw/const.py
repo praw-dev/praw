@@ -22,7 +22,7 @@ API_PATH = {
     'compose':                'api/compose/',
     'contest_mode':           'api/set_contest_mode/',
     'del':                    'api/del/',
-    'deleteflair':            'api/deleteflair',
+    'deleteflair':            'r/{subreddit}/api/deleteflair',
     'delete_sr_header':       'r/{subreddit}/api/delete_sr_header',
     'delete_sr_image':        'r/{subreddit}/api/delete_sr_img',
     'distinguish':            'api/distinguish/',

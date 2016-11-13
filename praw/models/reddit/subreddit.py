@@ -248,6 +248,18 @@ class SubredditFlair(object):
                                      params=params):
             yield item
 
+    def delete(self, redditor):
+        """Delete flair for a Redditor.
+
+        :param redditor: An instance of Redditor, or the name of a Redditor.
+
+        Note: To delete the flair of many Redditors at once, please see
+        :meth:`~praw.models.reddit.subreddit.SubredditFlair.update`.
+
+        """
+        url = API_PATH['deleteflair'].format(subreddit=self.subreddit)
+        return self.subreddit._reddit.post(url, data={'name': str(redditor)})
+
     def delete_all(self):
         """Delete all Redditor flair in the Subreddit.
 

@@ -140,6 +140,11 @@ class TestSubredditFlair(IntegrationTest):
             assert len(mapping) > 0
             assert all(isinstance(x['user'], Redditor) for x in mapping)
 
+    def test_delete(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditFlair.test_delete'):
+            self.subreddit.flair.delete(self.reddit.config.username)
+
     @mock.patch('time.sleep', return_value=None)
     def test_delete_all(self, _):
         self.reddit.read_only = False
