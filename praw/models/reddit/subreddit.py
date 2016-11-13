@@ -498,11 +498,6 @@ class SubredditModeration(object):
             self.subreddit._reddit, API_PATH['moderator_messages'].format(
                 subreddit=self.subreddit), **generator_kwargs)
 
-    def leave(self):
-        """Abdicate the moderator position (use with care)."""
-        self.subreddit._reddit.post(API_PATH['leavemoderator'],
-                                    data={'id': self.subreddit.fullname})
-
     def remove(self, thing, spam=False):
         """Remove a Comment or Submission.
 
@@ -739,6 +734,11 @@ class ModeratorRelationship(SubredditRelationship):
         data.update({'name': str(redditor), 'r': str(self.subreddit),
                      'type': 'moderator_invite'})
         self.subreddit._reddit.post(API_PATH['friend'], data=data)
+
+    def leave(self):
+        """Abdicate the moderator position (use with care)."""
+        self.subreddit._reddit.post(API_PATH['leavemoderator'],
+                                    data={'id': self.subreddit.fullname})
 
     def update(self, redditor, permissions=None):
         """Update the moderator permissions for ``redditor``.

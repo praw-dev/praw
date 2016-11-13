@@ -360,12 +360,6 @@ class TestSubredditModeration(IntegrationTest):
                 count += 1
             assert count == 100
 
-    @mock.patch('time.sleep', return_value=None)
-    def test_leave(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette('TestSubredditModeration.test_leave'):
-            self.subreddit.mod.leave()
-
     def test_remove(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditModeration.test_remove'):
@@ -487,6 +481,13 @@ class TestSubredditRelationships(IntegrationTest):
             # invite list.
             self.subreddit.moderator.invite(self.REDDITOR, permissions=[])
             assert self.REDDITOR not in self.subreddit.moderator
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_modeator_leave(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditRelationships.test_moderator_leave'):
+            self.subreddit.moderator.leave()
 
     def test_moderator_update(self):
         self.reddit.read_only = False
