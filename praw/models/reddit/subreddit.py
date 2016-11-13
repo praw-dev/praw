@@ -123,7 +123,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     def _prepare_relationships(self):
         self.banned = SubredditRelationship(self, 'banned')
         self.contributor = ContributorRelationship(self, 'contributor')
-        self.moderator = ModeratorRelationship(self)
+        self.moderator = ModeratorRelationship(self, 'moderator')
         self.muted = SubredditRelationship(self, 'muted')
 
     def random(self):
@@ -695,14 +695,6 @@ class ModeratorRelationship(SubredditRelationship):
                 permissions = ['-access']
             other_settings['permissions'] = ','.join(permissions)
         return other_settings
-
-    def __init__(self, subreddit):
-        """Create a ModeratorRelationship instance.
-
-        :param subreddit: The subreddit for the moderator relationship.
-
-        """
-        super(ModeratorRelationship, self).__init__(subreddit, 'moderator')
 
     def add(self, redditor, permissions=None, **other_settings):
         """Add or invite ``redditor`` to be a moderator of the subreddit.
