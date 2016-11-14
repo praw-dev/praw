@@ -240,4 +240,5 @@ class SubmissionModeration(object):
         self.submission._reddit.post(API_PATH['unlock'],
                                      data={'id': self.submission.fullname})
 
+
 Subreddit._submission_class = Submission

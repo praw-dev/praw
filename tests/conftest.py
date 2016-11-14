@@ -12,6 +12,8 @@ from betamax_serializers import pretty_json
 # Prevent calls to sleep
 def _sleep(*args):
     raise Exception('Call to sleep')
+
+
 time.sleep = _sleep
 
 
