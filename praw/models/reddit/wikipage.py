@@ -1,11 +1,23 @@
 """Provide the WikiPage class."""
 from ...const import API_PATH
+from ..listing.generator import ListingGenerator
 from .base import RedditBase
 from .redditor import Redditor
 
 
 class WikiPage(RedditBase):
     """An individual WikiPage object."""
+
+    @staticmethod
+    def _revision_generator(subreddit, url, generator_kwargs):
+        for revision in ListingGenerator(subreddit._reddit, url,
+                                         **generator_kwargs):
+            revision['author'] = Redditor(subreddit._reddit,
+                                          _data=revision['author']['data'])
+            revision['page'] = WikiPage(subreddit._reddit, subreddit,
+                                        revision['page'], revision['id'])
+            yield revision
+
 
     @property
     def mod(self):
@@ -69,6 +81,17 @@ class WikiPage(RedditBase):
                                'reason': reason})
         self._reddit.post(API_PATH['wiki_edit'].format(
             subreddit=self.subreddit), data=other_settings)
+
+    def revisions(self, **generator_kwargs):
+        """Return a generator for page revisions.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        url = API_PATH['wiki_page_revisions'].format(subreddit=self.subreddit,
+                                                     page=self.name)
+        return self._revision_generator(self.subreddit, url, generator_kwargs)
 
 
 class WikiPageModeration(object):

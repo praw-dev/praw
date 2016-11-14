@@ -1,5 +1,6 @@
 from praw.models import Redditor, WikiPage
 from prawcore import NotFound
+import mock
 import pytest
 
 from ... import IntegrationTest
@@ -57,6 +58,19 @@ class TestWikiPage(IntegrationTest):
 
         with self.recorder.use_cassette('TestWikiPage.test_revision_by'):
             assert isinstance(page.revision_by, Redditor)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_revisions(self, _):
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
+
+        with self.recorder.use_cassette('TestWikiPage.test_revisions'):
+            count = 0
+            for revision in subreddit.wiki['index'].revisions(limit=None):
+                count += 1
+                assert isinstance(revision['author'], Redditor)
+                assert isinstance(revision['page'], WikiPage)
+            assert count > 0
 
 
 class TestWikiPageModeration(IntegrationTest):

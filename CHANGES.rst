@@ -44,6 +44,8 @@ require additional help please ask on `/r/redditdev
 * :class:`~.WikiPage` supports a revision argument.
 * :meth:`~.SubredditWiki.revisions` to obtain a list of recent revisions to a
   subreddit.
+* :meth:`~.WikiPage.revisions` to obtain a list of revisions for a wiki
+  page.
 * Support installed-type OAuth apps.
 * Support read-only OAuth for all application types.
 * Support script-type OAuth apps.
