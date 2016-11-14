@@ -581,3 +581,4 @@ class TestSubredditWiki(IntegrationTest):
                 count += 1
                 assert isinstance(revision['author'], Redditor)
                 assert isinstance(revision['page'], WikiPage)
+            assert count == 4

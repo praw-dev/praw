@@ -834,17 +834,12 @@ class SubredditWiki(object):
         return new
 
     def revisions(self, **generator_kwargs):
-        """Return a ListingGenerator for recent wiki revisions.
+        """Return a generator for recent wiki revisions.
 
         Additional keyword arguments are passed to the ``ListingGenerator``
         constructor.
 
         """
-        for revision in ListingGenerator(
-                self.subreddit._reddit, API_PATH['wiki_revisions'].format(
-                    subreddit=self.subreddit), **generator_kwargs):
-            revision['author'] = Redditor(self.subreddit._reddit,
-                                          _data=revision['author']['data'])
-            revision['page'] = WikiPage(self.subreddit._reddit, self.subreddit,
-                                        revision['page'], revision['id'])
-            yield revision
+        url = API_PATH['wiki_revisions'].format(subreddit=self.subreddit)
+        return WikiPage._revision_generator(
+            self.subreddit, url, generator_kwargs)
