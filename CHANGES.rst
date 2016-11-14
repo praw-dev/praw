@@ -42,6 +42,8 @@ require additional help please ask on `/r/redditdev
   :meth:`praw.models.Subreddit.random_rising` and
   :meth:`praw.models.Multireddit.random_rising`.
 * :class:`~.WikiPage` supports a revision argument.
+* :meth:`~.SubredditWiki.revisions` to obtain a list of recent revisions to a
+  subreddit.
 * Support installed-type OAuth apps.
 * Support read-only OAuth for all application types.
 * Support script-type OAuth apps.

@@ -568,3 +568,16 @@ class TestSubredditWiki(IntegrationTest):
                                              'This is the new wiki page')
             assert wikipage.name == 'praw_new_page'
             assert wikipage.content_md == 'This is the new wiki page'
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_revisions(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
+
+        with self.recorder.use_cassette('TestSubredditWiki.revisions'):
+            count = 0
+            for revision in subreddit.wiki.revisions(limit=4):
+                count += 1
+                assert isinstance(revision['author'], Redditor)
+                assert isinstance(revision['page'], WikiPage)

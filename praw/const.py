@@ -124,7 +124,8 @@ API_PATH = {
     'wiki_page':              'r/{subreddit}/wiki/{page}',
     'wiki_page_editor':       'r/{subreddit}/api/wiki/alloweditor/{method}',
     'wiki_page_settings':     'r/{subreddit}/wiki/settings/{page}',
-    'wiki_pages':             'r/{subreddit}/wiki/pages/'}
+    'wiki_pages':             'r/{subreddit}/wiki/pages/',
+    'wiki_revisions':         'r/{subreddit}/wiki/revisions/'}
 
 JPEG_HEADER = b'\xff\xd8\xff'
 MAX_IMAGE_SIZE = 512000

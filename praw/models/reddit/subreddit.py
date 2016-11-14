@@ -11,6 +11,7 @@ from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .mixins import MessageableMixin
+from .redditor import Redditor
 from .wikipage import WikiPage
 
 
@@ -831,3 +832,19 @@ class SubredditWiki(object):
         new = WikiPage(self.subreddit._reddit, self.subreddit, name)
         new.edit(content=content, reason=reason, **other_settings)
         return new
+
+    def revisions(self, **generator_kwargs):
+        """Return a ListingGenerator for recent wiki revisions.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        for revision in ListingGenerator(
+                self.subreddit._reddit, API_PATH['wiki_revisions'].format(
+                    subreddit=self.subreddit), **generator_kwargs):
+            revision['author'] = Redditor(self.subreddit._reddit,
+                                          _data=revision['author']['data'])
+            revision['page'] = WikiPage(self.subreddit._reddit, self.subreddit,
+                                        revision['page'], revision['id'])
+            yield revision
