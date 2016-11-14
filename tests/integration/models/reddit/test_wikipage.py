@@ -32,11 +32,20 @@ class TestWikiPage(IntegrationTest):
         with self.recorder.use_cassette('TestWikiPage.test_edit__with_reason'):
             page.edit('PRAW updated with reason', reason='PRAW testing')
 
+    def test_init__with_revision(self):
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, 'index',
+                        revision='2f38e910-b109-11e2-ba44-12313b0d4e76')
+        with self.recorder.use_cassette(
+                'TestWikiPage.test_init__with_revision'):
+            assert isinstance(page.revision_by, Redditor)
+            assert page.revision_date == 1367295177
+
     def test_invalid_page(self):
         subreddit = self.reddit.subreddit(
             pytest.placeholders.test_subreddit)
         page = WikiPage(self.reddit, subreddit, 'invalid')
-
         with self.recorder.use_cassette('TestWikiPage.test_invalid_page'):
             with pytest.raises(NotFound):
                 page.content_md

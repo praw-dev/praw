@@ -23,9 +23,15 @@ class WikiPage(RedditBase):
         """Return the hash of the current instance."""
         return super(WikiPage, self).__hash__()
 
-    def __init__(self, reddit, subreddit, name, _data=None):
-        """Construct an instance of the WikiPage object."""
+    def __init__(self, reddit, subreddit, name, revision=None, _data=None):
+        """Construct an instance of the WikiPage object.
+
+        :param revision: A specific revision ID to fetch. By default, fetches
+            the most recent revision.
+
+        """
         self.name = name
+        self._revision = revision
         self.subreddit = subreddit
         super(WikiPage, self).__init__(reddit, _data)
         self._mod = None
@@ -40,7 +46,8 @@ class WikiPage(RedditBase):
         return '{}/{}'.format(self.subreddit, self.name)
 
     def _fetch(self):
-        data = self._reddit.get(self._info_path())['data']
+        params = {'v': self._revision} if self._revision else None
+        data = self._reddit.get(self._info_path(), params=params)['data']
         data['revision_by'] = Redditor(self._reddit,
                                        _data=data['revision_by']['data'])
         self.__dict__.update(data)
