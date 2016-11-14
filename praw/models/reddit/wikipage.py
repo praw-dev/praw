@@ -18,7 +18,6 @@ class WikiPage(RedditBase):
                                         revision['page'], revision['id'])
             yield revision
 
-
     @property
     def mod(self):
         """An instance of :class:`.WikiPageModeration`."""

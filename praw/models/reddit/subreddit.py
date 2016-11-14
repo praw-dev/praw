@@ -11,7 +11,6 @@ from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .mixins import MessageableMixin
-from .redditor import Redditor
 from .wikipage import WikiPage
 
 
