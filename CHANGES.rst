@@ -38,6 +38,9 @@ require additional help please ask on `/r/redditdev
   moderator's permissions.
 * :meth:`praw.models.reddit.subreddit.ModeratorRelationship.update_invite` to
   update an invited moderator's permissions.
+* :meth:`praw.models.Front.random_rising`,
+  :meth:`praw.models.Subreddit.random_rising` and
+  :meth:`praw.models.Multireddit.random_rising`.
 * Support installed-type OAuth apps.
 * Support read-only OAuth for all application types.
 * Support script-type OAuth apps.

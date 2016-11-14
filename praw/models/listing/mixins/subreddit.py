@@ -18,6 +18,17 @@ class SubredditListingMixin(BaseListingMixin, GildedListingMixin):
         super(SubredditListingMixin, self).__init__(reddit, _data)
         self.comments = CommentHelper(self)
 
+    def random_rising(self, **generator_kwargs):
+        """Return a ListingGenerator for random rising submissions.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        return ListingGenerator(self._reddit,
+                                urljoin(self._path, 'randomrising'),
+                                **generator_kwargs)
+
     def rising(self, **generator_kwargs):
         """Return a ListingGenerator for rising submissions.
 

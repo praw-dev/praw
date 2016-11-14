@@ -131,6 +131,13 @@ class TestMultiredditListings(IntegrationTest):
             submissions = list(multi.new())
         assert len(submissions) == 100
 
+    def test_random_rising(self):
+        multi = self.reddit.multireddit('kjoneslol', 'sfwpornnetwork')
+        with self.recorder.use_cassette(
+                'TestMultiredditListings.test_random_rising'):
+            submissions = list(multi.random_rising())
+        assert len(submissions) > 0
+
     def test_rising(self):
         multi = self.reddit.multireddit('kjoneslol', 'sfwpornnetwork')
         with self.recorder.use_cassette('TestMultiredditListings.test_rising'):
