@@ -42,7 +42,6 @@ API_PATH = {
     'friends':                'api/v1/me/friends/',
     'gild_thing':             'api/v1/gold/gild/{fullname}/',
     'gild_user':              'api/v1/gold/give/{username}/',
-    'help':                   'help/',
     'hide':                   'api/hide/',
     'ignore_reports':         'api/ignore_reports/',
     'inbox':                  'message/inbox/',
