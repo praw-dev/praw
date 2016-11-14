@@ -10,10 +10,11 @@ upstream changes.
 
 .. begin_changelog_body
 
-Unreleased
-----------
+3.6.0 (2016-11-13)
+------------------
 
-* **[FEATURE]** Added support for getting subreddit rules. See :meth:`~praw.__init__.UnauthenticatedReddit.get_rules`.
+* **[FEATURE]** Added support for getting subreddit rules. See
+  :meth:`~praw.__init__.UnauthenticatedReddit.get_rules`.
 
 3.5.0 (2016-05-10)
 ------------------
