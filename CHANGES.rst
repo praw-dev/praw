@@ -70,7 +70,8 @@ require additional help please ask on `/r/redditdev
   through OAuth.
 * Removed `praw-multiprocess` as this functionality is no longer needed with
   PRAW 4.
-* Removed non-oauth functions ``Message.collapse`` and ``Message.uncollapse``.
+* Removed non-oauth functions ``Message.collapse`` and ``Message.uncollapse``
+  ``is_username_available``.
 * Removed captcha related functions.
 
 

@@ -117,7 +117,6 @@ API_PATH = {
     'upload_image':           'api/upload_sr_img',
     'user':                   'user/{user}/',
     'user_about':             'user/{user}/about/',
-    'username_available':     'api/username_available/',
     'vote':                   'api/vote/',
     'wiki_edit':              'r/{subreddit}/api/wiki/edit/',
     'wiki_page':              'r/{subreddit}/wiki/{page}',
