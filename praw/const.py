@@ -88,7 +88,7 @@ API_PATH = {
     'setpermissions':         'r/{subreddit}/api/setpermissions/',
     'sticky_submission':      'api/set_subreddit_sticky/',
     'site_admin':             'api/site_admin/',
-    'sub_recommendations':    'api/recommend/sr/{subreddits}',
+    'sub_recommended':        'api/recommend/sr/{subreddits}',
     'submission':             'comments/{id}/',
     'submission_replies':     'message/selfreply/',
     'submit':                 'api/submit/',

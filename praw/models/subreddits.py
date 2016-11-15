@@ -1,4 +1,5 @@
 """Provide the Subreddits class."""
+from . import Subreddit
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .util import stream_generator
@@ -27,6 +28,31 @@ class Subreddits(PRAWBase):
         """Return a ListingGenerator for default subreddits."""
         return ListingGenerator(self._reddit, API_PATH['subreddits_popular'],
                                 **generator_kwargs)
+
+    def recommended(self, subreddits, omit_subreddits=None):
+        """Return subreddits recommended for the given list of subreddits.
+
+        :param subreddits: A list of Subreddit instances and/or subreddit
+            names.
+        :param omit_subreddits: A list of Subreddit instances and/or subreddit
+            names to exclude from the results (Reddit's end may not work as
+            expected).
+
+        """
+        def _to_list(subreddit_list):
+            return ','.join([str(x) for x in subreddit_list])
+
+        if not isinstance(subreddits, list):
+            raise TypeError('subreddits must be a list')
+        if omit_subreddits is not None and \
+           not isinstance(omit_subreddits, list):
+            raise TypeError('omit_subreddits must be a list or None')
+
+        params = {'omit': _to_list(omit_subreddits or [])}
+        url = API_PATH['sub_recommended'].format(
+            subreddits=_to_list(subreddits))
+        return [Subreddit(self._reddit, sub['sr_name']) for sub in
+                self._reddit.get(url, params=params)]
 
     def search(self, query, **generator_kwargs):
         """Return a ListingGenerator of subreddits matching ``query``.

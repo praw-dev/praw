@@ -26,6 +26,24 @@ class TestSubreddits(IntegrationTest):
             subreddits = list(self.reddit.subreddits.popular())
         assert len(subreddits) == 100
 
+    def test_recommended(self):
+        with self.recorder.use_cassette('TestSubreddits.test_recommended'):
+            subreddits = self.reddit.subreddits.recommended(
+                ['earthporn'], omit_subreddits=['cityporn'])
+        assert len(subreddits) > 1
+        for subreddit in subreddits:
+            assert isinstance(subreddit, Subreddit)
+
+    def test_recommended__with_multiple(self):
+        with self.recorder.use_cassette(
+                'TestSubreddits.test_recommended__with_multiple'):
+            subreddits = self.reddit.subreddits.recommended(
+                ['cityporn', 'earthporn'],
+                omit_subreddits=['skyporn', 'winterporn'])
+        assert len(subreddits) > 1
+        for subreddit in subreddits:
+            assert isinstance(subreddit, Subreddit)
+
     def test_search(self):
         with self.recorder.use_cassette('TestSubreddits.test_search'):
             found = False

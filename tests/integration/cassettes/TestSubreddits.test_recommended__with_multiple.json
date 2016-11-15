@@ -1,0 +1,109 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-11-15T06:44:29",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b22 prawcore/0.2.1"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"e4ygfdGOQoer3uEkiC_IOPpKdcE\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 15 Nov 2016 06:44:29 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "loid=i047c6txQuSolDvZAt; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-sea1922-SEA",
+          "X-Timer": "S1479192269.148460,VS0,VE85",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-11-15T06:44:29",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer e4ygfdGOQoer3uEkiC_IOPpKdcE",
+          "Connection": "keep-alive",
+          "Cookie": "loidcreated=1479192269000; loid=i047c6txQuSolDvZAt",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b22 prawcore/0.2.1"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/recommend/sr/cityporn,earthporn?raw_json=1&omit=skyporn%2Cwinterporn"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"sr_name\": \"BackYardChickens\"}, {\"sr_name\": \"NoShitSherlock\"}, {\"sr_name\": \"Quebec\"}, {\"sr_name\": \"DesignPorn\"}, {\"sr_name\": \"AbandonedPorn\"}, {\"sr_name\": \"earthgifs\"}, {\"sr_name\": \"ruralporn\"}, {\"sr_name\": \"unfazed\"}, {\"sr_name\": \"seinfeldgifs\"}, {\"sr_name\": \"waterporn\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "275",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 15 Nov 2016 06:44:29 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-sea1925-SEA",
+          "X-Timer": "S1479192269.458683,VS0,VE96",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=AcDkd4G9%2Fna%2FH%2FgmJHzWWj0Cigk0DNXYrKOoTsuDjXJD4kFM2MJN1nuZ%2Fkzy099%2BZIzNUXk0xklZU4TV7tujYSkcJzUpQjEIx0qlXvEGmUggGrQdSX%2Fpsw%3D%3D",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/recommend/sr/cityporn,earthporn?raw_json=1&omit=skyporn%2Cwinterporn"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}
