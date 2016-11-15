@@ -72,6 +72,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         _reddit.post(API_PATH['site_admin'], data=model)
 
+    @staticmethod
+    def _subreddit_list(subreddit, other_subreddits):
+        if other_subreddits:
+            return ','.join([str(subreddit)] +
+                            [str(x) for x in other_subreddits])
+        return str(subreddit)
+
     @property
     def flair(self):
         """An instance of :class:`.SubredditFlair`."""
@@ -236,14 +243,21 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             list of subreddits.
 
         """
-        if other_subreddits:
-            subreddits = ','.join([str(self)] +
-                                  [str(x) for x in other_subreddits])
-        else:
-            subreddits = str(self)
         data = {'action': 'sub', 'skip_inital_defaults': True,
-                'sr_name': subreddits}
+                'sr_name': self._subreddit_list(self, other_subreddits)}
         self._reddit.post(API_PATH['subscribe'], data=data)
+
+    def unsubscribe(self, other_subreddits=None):
+        """Unsubscribe from the subreddit.
+
+        :param other_subreddits: When provided, also unsubscribe to the
+            provided list of subreddits.
+
+        """
+        data = {'action': 'unsub',
+                'sr_name': self._subreddit_list(self, other_subreddits)}
+        self._reddit.post(API_PATH['subscribe'], data=data)
+
 
 class SubredditFlair(object):
     """Provide a set of functions to interact with a Subreddit's flair."""

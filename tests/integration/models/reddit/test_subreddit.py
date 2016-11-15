@@ -140,6 +140,19 @@ class TestSubreddit(IntegrationTest):
                 'TestSubreddit.test_subscribe__multiple'):
             subreddit.subscribe(['redditdev', self.reddit.subreddit('iama')])
 
+    def test_unsubscribe(self):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette('TestSubreddit.test_unsubscribe'):
+            subreddit.unsubscribe()
+
+    def test_unsubscribe__multiple(self):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette(
+                'TestSubreddit.test_unsubscribe__multiple'):
+            subreddit.unsubscribe(['redditdev', self.reddit.subreddit('iama')])
+
 
 class TestSubredditFlair(IntegrationTest):
     @property
