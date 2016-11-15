@@ -229,6 +229,21 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             data.update(kind='link', url=url)
         return self._reddit.post(API_PATH['submit'], data=data)
 
+    def subscribe(self, other_subreddits=None):
+        """Subscribe to the subreddit.
+
+        :param other_subreddits: When provided, also subscribe to the provided
+            list of subreddits.
+
+        """
+        if other_subreddits:
+            subreddits = ','.join([str(self)] +
+                                  [str(x) for x in other_subreddits])
+        else:
+            subreddits = str(self)
+        data = {'action': 'sub', 'skip_inital_defaults': True,
+                'sr_name': subreddits}
+        self._reddit.post(API_PATH['subscribe'], data=data)
 
 class SubredditFlair(object):
     """Provide a set of functions to interact with a Subreddit's flair."""

@@ -127,6 +127,19 @@ class TestSubreddit(IntegrationTest):
             assert submission.url == url
             assert submission.title == 'Test Title'
 
+    def test_subscribe(self):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette('TestSubreddit.test_subscribe'):
+            subreddit.subscribe()
+
+    def test_subscribe__multiple(self):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette(
+                'TestSubreddit.test_subscribe__multiple'):
+            subreddit.subscribe(['redditdev', self.reddit.subreddit('iama')])
+
 
 class TestSubredditFlair(IntegrationTest):
     @property
