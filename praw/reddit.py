@@ -152,7 +152,8 @@ class Reddit(object):
                     'LiveUpdateEvent': models.LiveThread,
                     'UserList': models.RedditorList,
                     'modaction': models.ModAction,
-                    'more': models.MoreComments}
+                    'more': models.MoreComments,
+                    'stylesheet': models.Stylesheet}
         for kind, klass in iteritems(mappings):
             self._objector.register(kind, klass)
 

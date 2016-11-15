@@ -101,6 +101,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._stream
 
     @property
+    def stylesheet(self):
+        """An instance of :class:`.SubredditStylesheet`."""
+        if self._stylesheet is None:
+            self._stylesheet = SubredditStylesheet(self)
+        return self._stylesheet
+
+    @property
     def wiki(self):
         """An instance of :class:`.SubredditWiki`."""
         if self._wiki is None:
@@ -120,7 +127,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         super(Subreddit, self).__init__(reddit, _data)
         if display_name:
             self.display_name = display_name
-        self._flair = self._mod = self._stream = self._wiki = None
+        self._flair = self._mod = self._stream = self._stylesheet = \
+                      self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)
         self._prepare_relationships()
 
@@ -820,6 +828,24 @@ class SubredditStream(object):
 
         """
         return stream_generator(self.subreddit.new)
+
+
+class SubredditStylesheet(object):
+    """Provides a set of stylesheet functions to a Subreddit."""
+
+    def __call__(self):
+        """Return the subreddit's stylesheet."""
+        url = API_PATH['about_stylesheet'].format(subreddit=self.subreddit)
+        return self.subreddit._reddit.get(url)
+
+
+    def __init__(self, subreddit):
+        """Create a SubredditStylesheet instance.
+
+        :param subreddit: The subreddit associated with the stylesheet.
+
+        """
+        self.subreddit = subreddit
 
 
 class SubredditWiki(object):

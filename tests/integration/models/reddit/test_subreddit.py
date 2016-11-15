@@ -1,7 +1,7 @@
 """Test praw.models.subreddit."""
 from praw.exceptions import APIException
 from praw.models import (Comment, Redditor, Submission, SubredditMessage,
-                         WikiPage)
+                         Stylesheet, WikiPage)
 import mock
 import pytest
 
@@ -568,6 +568,20 @@ class TestSubredditStreams(IntegrationTest):
             generator = self.reddit.subreddit('all').stream.submissions()
             for i in range(300):
                 assert isinstance(next(generator), Submission)
+
+
+class TestSubredditStylesheet(IntegrationTest):
+    @property
+    def subreddit(self):
+        return self.reddit.subreddit(pytest.placeholders.test_subreddit)
+
+    def test_call(self):
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_call'):
+            stylesheet = self.subreddit.stylesheet()
+        assert isinstance(stylesheet, Stylesheet)
+        assert len(stylesheet.images) > 0
+        assert stylesheet.stylesheet != ''
 
 
 class TestSubredditWiki(IntegrationTest):
