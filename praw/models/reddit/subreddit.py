@@ -792,7 +792,7 @@ class SubredditStream(object):
     def comments(self):
         """Yield new comments as they become available.
 
-        Comments are yielded oldest first. Up to 100 historial comments will
+        Comments are yielded oldest first. Up to 100 historical comments will
         initially be returned.
 
         """
@@ -801,7 +801,7 @@ class SubredditStream(object):
     def submissions(self):
         """Yield new submissions as they become available.
 
-        Submissions are yielded oldest first. Up to 100 historial submissions
+        Submissions are yielded oldest first. Up to 100 historical submissions
         will initially be returned.
 
         """

@@ -57,7 +57,7 @@ class Subreddits(PRAWBase):
     def stream(self):
         """Yield new subreddits as they are created.
 
-        Subreddits are yielded oldest first. Up to 100 historial subreddits
+        Subreddits are yielded oldest first. Up to 100 historical subreddits
         will initially be returned.
 
         """
