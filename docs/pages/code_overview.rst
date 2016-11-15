@@ -52,6 +52,9 @@ Subreddit Utility Classes
 .. autoclass:: praw.models.reddit.subreddit.SubredditStream
    :inherited-members:
 
+.. autoclass:: praw.models.reddit.subreddit.SubredditStylesheet
+   :inherited-members:
+
 .. autoclass:: praw.models.reddit.subreddit.SubredditWiki
    :inherited-members:
 

@@ -576,12 +576,23 @@ class TestSubredditStylesheet(IntegrationTest):
         return self.reddit.subreddit(pytest.placeholders.test_subreddit)
 
     def test_call(self):
-        with self.recorder.use_cassette(
-                'TestSubredditStylesheet.test_call'):
+        with self.recorder.use_cassette('TestSubredditStylesheet.test_call'):
             stylesheet = self.subreddit.stylesheet()
         assert isinstance(stylesheet, Stylesheet)
         assert len(stylesheet.images) > 0
         assert stylesheet.stylesheet != ''
+
+    def test_update(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditStylesheet.test_update'):
+            self.subreddit.stylesheet.update('p { color: red; }')
+
+    def test_update__with_reason(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_update__with_reason'):
+            self.subreddit.stylesheet.update(
+                'div { color: red; }', reason='use div')
 
 
 class TestSubredditWiki(IntegrationTest):

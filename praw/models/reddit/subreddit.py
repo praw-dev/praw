@@ -127,8 +127,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         super(Subreddit, self).__init__(reddit, _data)
         if display_name:
             self.display_name = display_name
-        self._flair = self._mod = self._stream = self._stylesheet = \
-                      self._wiki = None
+        self._flair = self._mod = self._stream = self._stylesheet = None
+        self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)
         self._prepare_relationships()
 
@@ -838,7 +838,6 @@ class SubredditStylesheet(object):
         url = API_PATH['about_stylesheet'].format(subreddit=self.subreddit)
         return self.subreddit._reddit.get(url)
 
-
     def __init__(self, subreddit):
         """Create a SubredditStylesheet instance.
 
@@ -846,6 +845,17 @@ class SubredditStylesheet(object):
 
         """
         self.subreddit = subreddit
+
+    def update(self, stylesheet, reason=None):
+        """Update the subreddit's stylesheet.
+
+        :param stylesheet: The CSS for the new stylesheet.
+
+        """
+        data = {'op': 'save', 'reason': reason,
+                'stylesheet_contents': stylesheet}
+        url = API_PATH['subreddit_stylesheet'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url, data=data)
 
 
 class SubredditWiki(object):
