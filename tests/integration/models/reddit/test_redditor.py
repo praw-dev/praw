@@ -1,7 +1,7 @@
 """Test praw.models.redditor."""
+from prawcore import BadRequest, Forbidden
 import mock
 import pytest
-from prawcore import BadRequest, Forbidden
 
 from ... import IntegrationTest
 
