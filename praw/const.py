@@ -16,7 +16,6 @@ API_PATH = {
     'approve':                'api/approve/',
     'block':                  'api/block',
     'blocked':                'prefs/blocked/',
-    'by_id':                  'by_id/',
     'comment':                'api/comment/',
     'comment_replies':        'message/comments/',
     'compose':                'api/compose/',
