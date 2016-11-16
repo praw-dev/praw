@@ -1,0 +1,112 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-11-16T06:58:33",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b22 prawcore/0.2.1"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"MEEC8do1MQ4rZnSZGuDmT2dLXX8\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Wed, 16 Nov 2016 06:58:33 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "loid=G9jP8vLBUs7zrM7rXB; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-sea1923-SEA",
+          "X-Timer": "S1479279513.070529,VS0,VE541",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-11-16T06:58:34",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer MEEC8do1MQ4rZnSZGuDmT2dLXX8",
+          "Connection": "keep-alive",
+          "Cookie": "loidcreated=1479279513000; loid=G9jP8vLBUs7zrM7rXB",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b22 prawcore/0.2.1"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/message/messages/6vzfan/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"children\": [{\"kind\": \"t4\", \"data\": {\"body\": \"You have been [temporarily muted](https://reddit.zendesk.com/hc/en-us/articles/205269739) from r/<TEST_SUBREDDIT>. You will not be able to message the moderators of r/<TEST_SUBREDDIT> for 72 hours.\", \"was_comment\": false, \"first_message\": null, \"name\": \"t4_6vbagp\", \"first_message_name\": null, \"created\": 1479099024.0, \"dest\": \"PyAPITestUser3\", \"author\": \"<USERNAME>\", \"created_utc\": 1479070224.0, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EYou have been \\u003Ca href=\\\"https://reddit.zendesk.com/hc/en-us/articles/205269739\\\"\\u003Etemporarily muted\\u003C/a\\u003E from \\u003Ca href=\\\"/r/<TEST_SUBREDDIT>\\\"\\u003Er/<TEST_SUBREDDIT>\\u003C/a\\u003E. You will not be able to message the moderators of \\u003Ca href=\\\"/r/<TEST_SUBREDDIT>\\\"\\u003Er/<TEST_SUBREDDIT>\\u003C/a\\u003E for 72 hours.\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"subreddit\": \"<TEST_SUBREDDIT>\", \"parent_id\": null, \"context\": \"\", \"replies\": {\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"children\": [{\"kind\": \"t4\", \"data\": {\"body\": \"No that's silly.\", \"was_comment\": false, \"first_message\": 415391929, \"name\": \"t4_6vzfan\", \"first_message_name\": \"t4_6vbagp\", \"created\": 1479307611.0, \"dest\": \"#<TEST_SUBREDDIT>\", \"author\": \"<USERNAME>\", \"created_utc\": 1479278811.0, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003ENo that\\u0026#39;s silly.\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"subreddit\": \"<TEST_SUBREDDIT>\", \"parent_id\": \"t4_6vbagp\", \"context\": \"\", \"replies\": \"\", \"id\": \"6vzfan\", \"new\": false, \"distinguished\": \"moderator\", \"subject\": \"re: You have been muted from r/<TEST_SUBREDDIT>\"}}, {\"kind\": \"t4\", \"data\": {\"body\": \"Well that's just the way it goes.\", \"was_comment\": false, \"first_message\": 415391929, \"name\": \"t4_6vzfdd\", \"first_message_name\": \"t4_6vbagp\", \"created\": 1479307640.0, \"dest\": \"<USERNAME>\", \"author\": \"<USERNAME>\", \"created_utc\": 1479278840.0, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EWell that\\u0026#39;s just the way it goes.\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"subreddit\": \"<TEST_SUBREDDIT>\", \"parent_id\": \"t4_6vzfan\", \"context\": \"\", \"replies\": \"\", \"id\": \"6vzfdd\", \"new\": false, \"distinguished\": \"moderator\", \"subject\": \"re: You have been muted from r/<TEST_SUBREDDIT>\"}}, {\"kind\": \"t4\", \"data\": {\"body\": \"What does this do?\", \"was_comment\": false, \"first_message\": 415391929, \"name\": \"t4_6vzffh\", \"first_message_name\": \"t4_6vbagp\", \"created\": 1479307662.0, \"dest\": \"<USERNAME>\", \"author\": \"<USERNAME>\", \"created_utc\": 1479278862.0, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EWhat does this do?\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"subreddit\": \"<TEST_SUBREDDIT>\", \"parent_id\": \"t4_6vzfan\", \"context\": \"\", \"replies\": \"\", \"id\": \"6vzffh\", \"new\": false, \"distinguished\": \"moderator\", \"subject\": \"re: You have been muted from r/<TEST_SUBREDDIT>\"}}], \"after\": null, \"before\": null}}, \"id\": \"6vbagp\", \"new\": false, \"distinguished\": \"moderator\", \"subject\": \"You have been muted from r/<TEST_SUBREDDIT>\"}}], \"after\": null, \"before\": null}}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "3244",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Wed, 16 Nov 2016 06:58:34 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-sea1920-SEA",
+          "X-Timer": "S1479279513.940950,VS0,VE301",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "599.0",
+          "x-ratelimit-reset": "87",
+          "x-ratelimit-used": "1",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=Mr%2FAG7YewwGkfMOUTDbeSCjC7cxYHoJZjhZII2eruB34Xjz25oNZz8pOyjMfWICXEcqSKGshUPvABtojqDyOq84oTXz9GFbn",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/message/messages/6vzfan/?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}

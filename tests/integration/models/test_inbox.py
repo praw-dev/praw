@@ -1,6 +1,8 @@
 """Test praw.models.inbox."""
 from praw.models import Comment, Message
+from prawcore import Forbidden
 import mock
+import pytest
 
 from .. import IntegrationTest
 
@@ -56,6 +58,20 @@ class TestInbox(IntegrationTest):
                 assert isinstance(item, Comment)
                 count += 1
             assert count > 0
+
+    def test_message(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestInbox.test_message'):
+            message = self.reddit.inbox.message('6vzfan')
+        assert isinstance(message, Message)
+        assert message.name.split('_', 1)[1] == '6vzfan'
+
+    def test_message__unauthorized(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestInbox.test_message__unauthorized'):
+            with pytest.raises(Forbidden):
+                self.reddit.inbox.message('6i8om7')
 
     def test_messages(self):
         self.reddit.read_only = False

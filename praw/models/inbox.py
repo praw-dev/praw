@@ -65,6 +65,20 @@ class Inbox(PRAWBase):
         return ListingGenerator(self._reddit, API_PATH['mentions'],
                                 **generator_kwargs)
 
+    def message(self, message_id):
+        """Return a Message corresponding to ``message_id``.
+
+        :param message_id: The base36 id of a message.
+
+        """
+        listing = self._reddit.get(API_PATH['message'].format(id=message_id))
+        messages = [listing[0]] + list(self._reddit._objector
+                                       .objectify(listing[0].replies))
+        while messages:
+            message = messages.pop(0)
+            if message.id == message_id:
+                return message
+
     def messages(self, **generator_kwargs):
         """Return a ListingGenerator for inbox messages.
 

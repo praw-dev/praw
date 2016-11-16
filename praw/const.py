@@ -59,7 +59,7 @@ API_PATH = {
     'lock':                   'api/lock/',
     'me':                     'api/v1/me',
     'mentions':               'message/mentions',
-    'message':                'message/messages/{messageid}/',
+    'message':                'message/messages/{id}/',
     'messages':               'message/messages/',
     'moderator_messages':     'r/{subreddit}/message/moderator/',
     'moderator_unread':       'r/{subreddit}/message/moderator/unread/',
