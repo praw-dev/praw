@@ -7,6 +7,8 @@ from .mixins import InboxableMixin
 class Message(RedditBase, InboxableMixin):
     """A class for private messages."""
 
+    STR_FIELD = 'id'
+
     @classmethod
     def parse(cls, data, reddit):
         """Return an instance of Message or SubredditMessage from ``data``.
