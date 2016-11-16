@@ -55,6 +55,16 @@ class Inbox(PRAWBase):
             self._reddit.post(API_PATH['unread_message'], data=data)
             items = items[25:]
 
+    def mentions(self, **generator_kwargs):
+        """Return a ListingGenerator for mentions.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        return ListingGenerator(self._reddit, API_PATH['mentions'],
+                                **generator_kwargs)
+
     def messages(self, **generator_kwargs):
         """Return a ListingGenerator for inbox messages.
 

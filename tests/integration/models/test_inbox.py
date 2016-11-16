@@ -48,6 +48,15 @@ class TestInbox(IntegrationTest):
                 match_requests_on=['uri', 'method', 'body']):
             self.reddit.inbox.mark_unread(list(self.reddit.inbox.all()))
 
+    def test_mentions(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestInbox.test_mentions'):
+            count = 0
+            for item in self.reddit.inbox.mentions(limit=16):
+                assert isinstance(item, Comment)
+                count += 1
+            assert count > 0
+
     def test_messages(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestInbox.test_messages'):
