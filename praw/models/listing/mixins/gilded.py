@@ -1,4 +1,4 @@
-"""Provide the ListingMixin class."""
+"""Provide the GildedListingMixin class."""
 from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from ...base import PRAWBase

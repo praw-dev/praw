@@ -4,9 +4,11 @@ from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 from ..generator import ListingGenerator
 from .base import BaseListingMixin
 from .gilded import GildedListingMixin
+from .rising import RisingListingMixin
 
 
-class SubredditListingMixin(BaseListingMixin, GildedListingMixin):
+class SubredditListingMixin(BaseListingMixin, GildedListingMixin,
+                            RisingListingMixin):
     """Adds additional methods pertianing to Subreddit-like instances."""
 
     def __init__(self, reddit, _data):
@@ -17,27 +19,6 @@ class SubredditListingMixin(BaseListingMixin, GildedListingMixin):
         """
         super(SubredditListingMixin, self).__init__(reddit, _data)
         self.comments = CommentHelper(self)
-
-    def random_rising(self, **generator_kwargs):
-        """Return a ListingGenerator for random rising submissions.
-
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
-
-        """
-        return ListingGenerator(self._reddit,
-                                urljoin(self._path, 'randomrising'),
-                                **generator_kwargs)
-
-    def rising(self, **generator_kwargs):
-        """Return a ListingGenerator for rising submissions.
-
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
-
-        """
-        return ListingGenerator(self._reddit, urljoin(self._path, 'rising'),
-                                **generator_kwargs)
 
 
 class CommentHelper(GildedListingMixin):
