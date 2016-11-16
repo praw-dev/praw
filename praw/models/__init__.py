@@ -4,6 +4,7 @@ from .front import Front  # NOQA
 from .helpers import LiveHelper, MultiredditHelper, SubredditHelper  # NOQA
 from .inbox import Inbox  # NOQA
 from .list.redditor import RedditorList  # NOQA
+from .listing.domain import DomainListing  # NOQA
 from .listing.generator import ListingGenerator  # NOQA
 from .listing.listing import Listing  # NOQA
 from .reddit.comment import Comment  # NOQA
@@ -20,8 +21,9 @@ from .reddit.wikipage import WikiPage  # NOQA
 from .subreddits import Subreddits  # NOQA
 from .user import User  # NOQA
 
-__all__ = ('Auth', 'Comment', 'Front', 'Inbox', 'Listing', 'ListingGenerator',
-           'LiveHelper', 'LiveThread', 'Message', 'ModAction', 'MoreComments',
-           'Multireddit', 'MultiredditHelper', 'Redditor', 'RedditorList',
-           'Stylesheet', 'Submission', 'Subreddit', 'SubredditHelper',
-           'SubredditMessage', 'Subreddits', 'User', 'WikiPage')
+__all__ = ('Auth', 'Comment', 'DomainListing', 'Front', 'Inbox', 'Listing',
+           'ListingGenerator', 'LiveHelper', 'LiveThread', 'Message',
+           'ModAction', 'MoreComments', 'Multireddit', 'MultiredditHelper',
+           'Redditor', 'RedditorList', 'Stylesheet', 'Submission', 'Subreddit',
+           'SubredditHelper', 'SubredditMessage', 'Subreddits', 'User',
+           'WikiPage')

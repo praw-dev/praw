@@ -34,3 +34,38 @@ class TestReddit(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestReddit.test_subreddit_with_random'):
             assert self.reddit.subreddit('random').display_name != 'random'
+
+
+class TestDomainListing(IntegrationTest):
+    def test_controversial(self):
+        with self.recorder.use_cassette(
+                'TestDomainListing.test_controversial'):
+            submissions = list(self.reddit.domain('youtube.com')
+                               .controversial())
+        assert len(submissions) == 100
+
+    def test_hot(self):
+        with self.recorder.use_cassette('TestDomainListing.test_hot'):
+            submissions = list(self.reddit.domain('youtube.com').hot())
+        assert len(submissions) == 100
+
+    def test_new(self):
+        with self.recorder.use_cassette('TestDomainListing.test_new'):
+            submissions = list(self.reddit.domain('youtube.com').new())
+        assert len(submissions) == 100
+
+    def test_random_rising(self):
+        with self.recorder.use_cassette(
+                'TestDomainListing.test_random_rising'):
+            submissions = list(self.reddit.domain('youtube.com')
+                               .random_rising())
+        assert len(submissions) == 100
+
+    def test_rising(self):
+        with self.recorder.use_cassette('TestDomainListing.test_rising'):
+            list(self.reddit.domain('youtube.com').rising())
+
+    def test_top(self):
+        with self.recorder.use_cassette('TestDomainListing.test_top'):
+            submissions = list(self.reddit.domain('youtube.com').top())
+        assert len(submissions) == 100

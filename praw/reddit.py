@@ -200,6 +200,14 @@ class Reddit(object):
         """
         return models.Comment(self, id=id)
 
+    def domain(self, domain):
+        """Return an instance of :class:`.DomainListing`.
+
+        :param domain: The domain to obtain submission listings for.
+
+        """
+        return models.DomainListing(self, domain)
+
     def get(self, path, params=None):
         """Return parsed objects returned from a GET request to ``path``.
 
