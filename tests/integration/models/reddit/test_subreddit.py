@@ -427,6 +427,36 @@ class TestSubredditModeration(IntegrationTest):
             submission = self.reddit.submission('4b536h')
             self.subreddit.mod.remove(submission, spam=True)
 
+    def test_reports(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_reports'):
+            count = 0
+            for item in self.subreddit.mod.reports():
+                assert isinstance(item, (Comment, Submission))
+                count += 1
+            assert count == 100
+
+    def test_reports__only_comments(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_reports__only_comments'):
+            count = 0
+            for item in self.subreddit.mod.reports(only='comments'):
+                assert isinstance(item, Comment)
+                count += 1
+            assert count > 0
+
+    def test_reports__only_submissions(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_reports__only_submissions'):
+            count = 0
+            for item in self.subreddit.mod.reports(only='links'):
+                assert isinstance(item, Submission)
+                count += 1
+            assert count == 100
+
     def test_undistinguish(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(

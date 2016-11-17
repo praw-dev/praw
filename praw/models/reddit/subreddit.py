@@ -468,6 +468,14 @@ class SubredditFlairTemplates(object):
 class SubredditModeration(object):
     """Provides a set of moderation functions to a Subreddit."""
 
+    @staticmethod
+    def _handle_only(only, generator_kwargs):
+        if only is not None:
+            if only == 'submissions':
+                only = 'links'
+            RedditBase._safely_add_arguments(
+                generator_kwargs, 'params', only=only)
+
     def __init__(self, subreddit):
         """Create a SubredditModeration instance.
 
@@ -518,11 +526,7 @@ class SubredditModeration(object):
         constructor.
 
         """
-        if only is not None:
-            if only == 'submissions':
-                only = 'links'
-            RedditBase._safely_add_arguments(
-                generator_kwargs, 'params', only=only)
+        self._handle_only(only, generator_kwargs)
         return ListingGenerator(
             self.subreddit._reddit, API_PATH['about_edited'].format(
                 subreddit=self.subreddit), **generator_kwargs)
@@ -564,6 +568,21 @@ class SubredditModeration(object):
         """
         data = {'id': thing.fullname, 'spam': bool(spam)}
         self.subreddit._reddit.post(API_PATH['remove'], data=data)
+
+    def reports(self, only=None, **generator_kwargs):
+        """Return a ListingGenerator for reported comments or submissions.
+
+        :param only: If specified, one of `comments`, or 'submissions' to yield
+            only results of that type.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        self._handle_only(only, generator_kwargs)
+        return ListingGenerator(
+            self.subreddit._reddit, API_PATH['about_reports'].format(
+                subreddit=self.subreddit), **generator_kwargs)
 
     def settings(self):
         """Return a dictionary of the subreddit's current settings."""
