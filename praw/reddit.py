@@ -219,6 +219,29 @@ class Reddit(object):
         data = self.request('GET', path, params=params)
         return self._objector.objectify(data)
 
+    def info(self, fullnames):
+        """Fetch information about each item in ``fullnames``.
+
+        :param fullnames: A list of fullnames for a comment, submission, or
+            subreddit.
+        :returns: A generator that yields found items in their relative order.
+
+        Items that cannot be matched will not be generated. Requests will be
+        issued in batches for each 100 fullnames.
+
+        """
+        if not isinstance(fullnames, list):
+            raise TypeError('fullnames must be a list')
+
+        def generator():
+            for position in range(0, len(fullnames), 100):
+                fullname_chunk = fullnames[position:position + 100]
+                params = {'id': ','.join(fullname_chunk)}
+                for result in self.get(API_PATH['info'], params=params):
+                    yield result
+
+        return generator()
+
     def post(self, path, data=None, params=None):
         """Return parsed objects returned from a POST request to ``path``.
 

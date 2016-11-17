@@ -33,6 +33,12 @@ class TestReddit(UnitTest):
         with Reddit(**self.REQUIRED_DUMMY_SETTINGS) as reddit:
             assert not reddit.config.check_for_updates
 
+    def test_info__invalid_param(self):
+        with pytest.raises(TypeError) as excinfo:
+            print(self.reddit.info(None))
+
+        assert str(excinfo.value) == 'fullnames must be a list'
+
     def test_multireddit(self):
         assert self.reddit.multireddit('bboe', 'aa').path == '/user/bboe/m/aa'
 

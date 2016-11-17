@@ -2,11 +2,26 @@
 import mock
 
 from praw.models import LiveThread
+from praw.models.reddit.base import RedditBase
 
 from . import IntegrationTest
 
 
 class TestReddit(IntegrationTest):
+    def test_info(self):
+        bases = ['t1_d7ltv', 't3_5dec', 't5_2qk']
+        items = []
+        for i in range(100):
+            for base in bases:
+                items.append('{}{:02d}'.format(base, i))
+
+        item_generator = self.reddit.info(items)
+        with self.recorder.use_cassette('TestReddit.test_info'):
+            results = list(item_generator)
+        assert len(results) > 100
+        for item in results:
+            assert isinstance(item, RedditBase)
+
     @mock.patch('time.sleep', return_value=None)
     def test_live_create(self, _):
         self.reddit.read_only = False
