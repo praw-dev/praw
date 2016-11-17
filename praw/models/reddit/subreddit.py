@@ -639,6 +639,17 @@ class SubredditModeration(object):
         self.subreddit._reddit.post(API_PATH['unignore_reports'],
                                     data={'id': thing.fullname})
 
+    def unmoderated(self, **generator_kwargs):
+        """Return a ListingGenerator for unmoderated submissions.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        return ListingGenerator(
+            self.subreddit._reddit, API_PATH['about_unmoderated'].format(
+                subreddit=self.subreddit), **generator_kwargs)
+
     def unread(self, **generator_kwargs):
         """Return a ListingGenerator for unread moderator messages.
 

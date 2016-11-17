@@ -530,6 +530,16 @@ class TestSubredditModeration(IntegrationTest):
             submission = self.reddit.submission('31ybt2')
             self.subreddit.mod.unignore_reports(submission)
 
+    def test_unmoderated(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_unmoderated'):
+            count = 0
+            for item in self.subreddit.mod.unmoderated():
+                assert isinstance(item, (Comment, Submission))
+                count += 1
+            assert count > 0
+
     def test_unread(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditModeration.test_unread'):
