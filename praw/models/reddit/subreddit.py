@@ -508,6 +508,25 @@ class SubredditModeration(object):
         return self.subreddit._reddit.post(
             API_PATH['distinguish'], data={'how': how, 'id': thing.fullname})
 
+    def edited(self, only=None, **generator_kwargs):
+        """Return a ListingGenerator for edited comments or submissions.
+
+        :param only: If specified, one of `comments`, or 'submissions' to yield
+            only results of that type.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        if only is not None:
+            if only == 'submissions':
+                only = 'links'
+            RedditBase._safely_add_arguments(
+                generator_kwargs, 'params', only=only)
+        return ListingGenerator(
+            self.subreddit._reddit, API_PATH['about_edited'].format(
+                subreddit=self.subreddit), **generator_kwargs)
+
     def ignore_reports(self, thing):
         """Ignore future reports on a Comment or Submission.
 

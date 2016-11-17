@@ -376,6 +376,35 @@ class TestSubredditModeration(IntegrationTest):
             submission = self.reddit.submission('4b536h')
             self.subreddit.mod.distinguish(submission)
 
+    def test_edited(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditModeration.test_edited'):
+            count = 0
+            for item in self.subreddit.mod.edited():
+                assert isinstance(item, (Comment, Submission))
+                count += 1
+            assert count == 100
+
+    def test_edited__only_comments(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_edited__only_comments'):
+            count = 0
+            for item in self.subreddit.mod.edited(only='comments'):
+                assert isinstance(item, Comment)
+                count += 1
+            assert count == 100
+
+    def test_edited__only_submissions(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_edited__only_submissions'):
+            count = 0
+            for item in self.subreddit.mod.edited(only='links'):
+                assert isinstance(item, Submission)
+                count += 1
+            assert count > 0
+
     def test_ignore_reports(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -385,8 +414,7 @@ class TestSubredditModeration(IntegrationTest):
 
     def test_inbox(self):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditModeration.test_inbox'):
+        with self.recorder.use_cassette('TestSubredditModeration.test_inbox'):
             count = 0
             for item in self.reddit.subreddit('all').mod.inbox():
                 assert isinstance(item, SubredditMessage)
