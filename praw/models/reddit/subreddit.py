@@ -589,6 +589,21 @@ class SubredditModeration(object):
         url = API_PATH['subreddit_settings'].format(subreddit=self.subreddit)
         return self.subreddit._reddit.get(url)['data']
 
+    def spam(self, only=None, **generator_kwargs):
+        """Return a ListingGenerator for spam comments or submissions.
+
+        :param only: If specified, one of `comments`, or 'submissions' to yield
+            only results of that type.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        self._handle_only(only, generator_kwargs)
+        return ListingGenerator(
+            self.subreddit._reddit, API_PATH['about_spam'].format(
+                subreddit=self.subreddit), **generator_kwargs)
+
     def undistinguish(self, thing):
         """Remove mod, admin or special distinguishing on object.
 

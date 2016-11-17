@@ -457,6 +457,35 @@ class TestSubredditModeration(IntegrationTest):
                 count += 1
             assert count == 100
 
+    def test_spam(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditModeration.test_spam'):
+            count = 0
+            for item in self.subreddit.mod.spam():
+                assert isinstance(item, (Comment, Submission))
+                count += 1
+            assert count > 0
+
+    def test_spam__only_comments(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_spam__only_comments'):
+            count = 0
+            for item in self.subreddit.mod.spam(only='comments'):
+                assert isinstance(item, Comment)
+                count += 1
+            assert count > 0
+
+    def test_spam__only_submissions(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_spam__only_submissions'):
+            count = 0
+            for item in self.subreddit.mod.spam(only='links'):
+                assert isinstance(item, Submission)
+                count += 1
+            assert count > 0
+
     def test_undistinguish(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
