@@ -517,7 +517,7 @@ class SubredditModeration(object):
             API_PATH['distinguish'], data={'how': how, 'id': thing.fullname})
 
     def edited(self, only=None, **generator_kwargs):
-        """Return a ListingGenerator for edited comments or submissions.
+        """Return a ListingGenerator for edited comments and submissions.
 
         :param only: If specified, one of `comments`, or 'submissions' to yield
             only results of that type.
@@ -585,7 +585,7 @@ class SubredditModeration(object):
         self.subreddit._reddit.post(API_PATH['remove'], data=data)
 
     def reports(self, only=None, **generator_kwargs):
-        """Return a ListingGenerator for reported comments or submissions.
+        """Return a ListingGenerator for reported comments and submissions.
 
         :param only: If specified, one of `comments`, or 'submissions' to yield
             only results of that type.
@@ -605,7 +605,7 @@ class SubredditModeration(object):
         return self.subreddit._reddit.get(url)['data']
 
     def spam(self, only=None, **generator_kwargs):
-        """Return a ListingGenerator for spam comments or submissions.
+        """Return a ListingGenerator for spam comments and submissions.
 
         :param only: If specified, one of `comments`, or 'submissions' to yield
             only results of that type.
