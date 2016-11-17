@@ -421,6 +421,36 @@ class TestSubredditModeration(IntegrationTest):
                 count += 1
             assert count == 100
 
+    def test_modqueue(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_modqueue'):
+            count = 0
+            for item in self.subreddit.mod.modqueue():
+                assert isinstance(item, (Comment, Submission))
+                count += 1
+            assert count > 0
+
+    def test_modqueue__only_comments(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_modqueue__only_comments'):
+            count = 0
+            for item in self.subreddit.mod.modqueue(only='comments'):
+                assert isinstance(item, Comment)
+                count += 1
+            assert count > 0
+
+    def test_modqueue__only_submissions(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_modqueue__only_submissions'):
+            count = 0
+            for item in self.subreddit.mod.modqueue(only='links'):
+                assert isinstance(item, Submission)
+                count += 1
+            assert count > 0
+
     def test_remove(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditModeration.test_remove'):

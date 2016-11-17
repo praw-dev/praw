@@ -558,6 +558,21 @@ class SubredditModeration(object):
             self.subreddit._reddit, API_PATH['moderator_messages'].format(
                 subreddit=self.subreddit), **generator_kwargs)
 
+    def modqueue(self, only=None, **generator_kwargs):
+        """Return a ListingGenerator for comments/submissions in the modqueue.
+
+        :param only: If specified, one of `comments`, or 'submissions' to yield
+            only results of that type.
+
+        Additional keyword arguments are passed to the ``ListingGenerator``
+        constructor.
+
+        """
+        self._handle_only(only, generator_kwargs)
+        return ListingGenerator(
+            self.subreddit._reddit, API_PATH['about_modqueue'].format(
+                subreddit=self.subreddit), **generator_kwargs)
+
     def remove(self, thing, spam=False):
         """Remove a Comment or Submission.
 
