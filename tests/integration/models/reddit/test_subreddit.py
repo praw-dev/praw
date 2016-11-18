@@ -400,7 +400,7 @@ class TestSubredditModeration(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubredditModeration.test_edited__only_submissions'):
             count = 0
-            for item in self.subreddit.mod.edited(only='links'):
+            for item in self.subreddit.mod.edited(only='submissions'):
                 assert isinstance(item, Submission)
                 count += 1
             assert count > 0
@@ -470,7 +470,7 @@ class TestSubredditModeration(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubredditModeration.test_modqueue__only_submissions'):
             count = 0
-            for item in self.subreddit.mod.modqueue(only='links'):
+            for item in self.subreddit.mod.modqueue(only='submissions'):
                 assert isinstance(item, Submission)
                 count += 1
             assert count > 0
@@ -506,7 +506,7 @@ class TestSubredditModeration(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubredditModeration.test_reports__only_submissions'):
             count = 0
-            for item in self.subreddit.mod.reports(only='links'):
+            for item in self.subreddit.mod.reports(only='submissions'):
                 assert isinstance(item, Submission)
                 count += 1
             assert count == 100
@@ -535,7 +535,7 @@ class TestSubredditModeration(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubredditModeration.test_spam__only_submissions'):
             count = 0
-            for item in self.subreddit.mod.spam(only='links'):
+            for item in self.subreddit.mod.spam(only='submissions'):
                 assert isinstance(item, Submission)
                 count += 1
             assert count > 0
