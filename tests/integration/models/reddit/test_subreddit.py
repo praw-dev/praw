@@ -765,6 +765,12 @@ class TestSubredditStylesheet(IntegrationTest):
                 'TestSubredditStylesheet.test_delete_header'):
             self.subreddit.stylesheet.delete_header()
 
+    def test_delete_image(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_delete_image'):
+            self.subreddit.stylesheet.delete_image('praw')
+
     def test_update(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditStylesheet.test_update'):

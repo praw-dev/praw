@@ -970,9 +970,22 @@ class SubredditStylesheet(object):
         self.subreddit = subreddit
 
     def delete_header(self):
-        """Remove the current subreddit header image if one exists."""
+        """Remove the current subreddit header image.
+
+        Succeeds even if there is no header image.
+
+        """
         url = API_PATH['delete_sr_header'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={})
+
+    def delete_image(self, name):
+        """Remove the named image from the subreddit.
+
+        Succeeds even if the named image does not exist.
+
+        """
+        url = API_PATH['delete_sr_image'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url, data={'img_name': name})
 
     def update(self, stylesheet, reason=None):
         """Update the subreddit's stylesheet.
