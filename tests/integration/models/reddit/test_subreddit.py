@@ -153,6 +153,19 @@ class TestSubreddit(IntegrationTest):
                 'TestSubreddit.test_subscribe__multiple'):
             subreddit.subscribe(['redditdev', self.reddit.subreddit('iama')])
 
+    def test_traffic(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette('TestSubreddit.test_traffic'):
+            traffic = subreddit.traffic()
+            assert isinstance(traffic, dict)
+
+    def test_traffic__not_public(self):
+        subreddit = self.reddit.subreddit('announcements')
+        with self.recorder.use_cassette(
+                'TestSubreddit.test_traffic__not_public'):
+            with pytest.raises(NotFound):
+                subreddit.traffic()
+
     def test_unsubscribe(self):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)

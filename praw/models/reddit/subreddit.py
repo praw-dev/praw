@@ -272,6 +272,17 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                 'sr_name': self._subreddit_list(self, other_subreddits)}
         self._reddit.post(API_PATH['subscribe'], data=data)
 
+    def traffic(self):
+        """Return a dictionary of the subreddit's traffic statistics.
+
+        Raises ``prawcore.NotFound`` when the traffic stats aren't available to
+        the authenticated user, that is, they are not public and the
+        authenticated user is not a moderator of the subreddit.
+
+        """
+        return self._reddit.get(API_PATH['about_traffic']
+                                .format(subreddit=self))
+
     def unsubscribe(self, other_subreddits=None):
         """Unsubscribe from the subreddit.
 

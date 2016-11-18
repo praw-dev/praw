@@ -1,0 +1,110 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-11-18T06:58:00",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b23 prawcore/0.2.1"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"wGSbiRUltKdd4_G65IudlOQw0E0\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Fri, 18 Nov 2016 06:58:00 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "loid=krtWhVOE3XAaNwTaNC; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-sea1925-SEA",
+          "X-Timer": "S1479452280.821514,VS0,VE96",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-11-18T06:58:01",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer wGSbiRUltKdd4_G65IudlOQw0E0",
+          "Connection": "keep-alive",
+          "Cookie": "loidcreated=1479452280000; loid=krtWhVOE3XAaNwTaNC",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b23 prawcore/0.2.1"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/about/traffic/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"day\": [[1479427200, 0, 0, 0], [1479340800, 3, 17, 1], [1479254400, 3, 10, 0], [1479168000, 2, 12, 1], [1479081600, 2, 38, 0], [1478995200, 1, 87, 0], [1478908800, 0, 0, 0], [1478822400, 0, 0, 0], [1478736000, 0, 0, 0], [1478649600, 0, 0, 0], [1478563200, 2, 2, 0], [1478476800, 0, 0, 0], [1478390400, 1, 4, 0], [1478304000, 1, 12, 0], [1478217600, 0, 0, 0], [1478131200, 0, 0, 0], [1478044800, 1, 2, 0], [1477958400, 1, 2, 0], [1477872000, 0, 0, 0], [1477785600, 1, 3, 0], [1477699200, 1, 2, 0], [1477612800, 0, 0, 0], [1477526400, 0, 0, 0], [1477440000, 0, 0, 0], [1477353600, 0, 0, 0], [1477267200, 0, 0, 0], [1477180800, 2, 2, 0], [1477094400, 0, 0, 0], [1477008000, 0, 0, 0], [1476921600, 0, 0, 0], [1476835200, 1, 1, 0], [1476748800, 0, 0, 0], [1476662400, 1, 1, 0], [1476576000, 0, 0, 0], [1476489600, 0, 0, 0], [1476403200, 0, 0, 0], [1476316800, 0, 0, 0], [1476230400, 0, 0, 0], [1476144000, 0, 0, 0], [1476057600, 1, 1, 0], [1475971200, 0, 0, 0], [1475884800, 1, 1, 0], [1475798400, 0, 0, 0], [1475712000, 1, 1, 0], [1475625600, 4, 9, 0], [1475539200, 0, 0, 0], [1475452800, 0, 0, 0], [1475366400, 1, 9, 0], [1475280000, 0, 0, 0], [1475193600, 2, 3, 0], [1475107200, 2, 4, 0], [1475020800, 1, 17, 0], [1474934400, 0, 0, 0], [1474848000, 0, 0, 0], [1474761600, 2, 16, 0], [1474675200, 0, 0, 0], [1474588800, 0, 0, 0]], \"hour\": [[1479448800, 0, 0], [1479445200, 0, 0], [1479441600, 0, 0], [1479438000, 0, 0], [1479434400, 0, 0], [1479430800, 0, 0], [1479427200, 0, 0], [1479423600, 0, 0], [1479420000, 0, 0], [1479416400, 0, 0], [1479412800, 0, 0], [1479409200, 0, 0], [1479405600, 0, 0], [1479402000, 0, 0], [1479398400, 0, 0], [1479394800, 0, 0], [1479391200, 0, 0], [1479387600, 0, 0], [1479384000, 0, 0], [1479380400, 0, 0], [1479376800, 0, 0], [1479373200, 1, 1], [1479369600, 1, 1], [1479366000, 2, 3], [1479362400, 2, 12], [1479358800, 0, 0], [1479355200, 0, 0], [1479351600, 0, 0], [1479348000, 0, 0], [1479344400, 0, 0], [1479340800, 0, 0], [1479337200, 0, 0], [1479333600, 0, 0], [1479330000, 0, 0], [1479326400, 0, 0], [1479322800, 0, 0], [1479319200, 0, 0], [1479315600, 1, 1], [1479312000, 0, 0], [1479308400, 0, 0], [1479304800, 0, 0], [1479301200, 0, 0], [1479297600, 0, 0], [1479294000, 0, 0], [1479290400, 0, 0], [1479286800, 0, 0], [1479283200, 0, 0], [1479279600, 1, 1], [1479276000, 1, 8], [1479272400, 0, 0], [1479268800, 0, 0], [1479265200, 0, 0], [1479261600, 0, 0], [1479258000, 0, 0], [1479254400, 0, 0], [1479250800, 0, 0], [1479247200, 0, 0], [1479243600, 0, 0], [1479240000, 0, 0], [1479236400, 0, 0], [1479232800, 0, 0], [1479229200, 0, 0], [1479225600, 0, 0], [1479222000, 1, 1], [1479218400, 0, 0], [1479214800, 0, 0], [1479211200, 0, 0], [1479207600, 0, 0], [1479204000, 0, 0], [1479200400, 0, 0], [1479196800, 1, 1], [1479193200, 1, 9], [1479189600, 1, 1], [1479186000, 0, 0], [1479182400, 0, 0], [1479178800, 0, 0], [1479175200, 0, 0], [1479171600, 0, 0], [1479168000, 0, 0], [1479164400, 0, 0], [1479160800, 0, 0], [1479157200, 0, 0], [1479153600, 0, 0], [1479150000, 0, 0], [1479146400, 0, 0], [1479142800, 0, 0], [1479139200, 0, 0], [1479135600, 1, 1], [1479132000, 0, 0], [1479128400, 0, 0], [1479124800, 0, 0], [1479121200, 0, 0], [1479117600, 0, 0], [1479114000, 0, 0], [1479110400, 0, 0], [1479106800, 1, 18], [1479103200, 1, 19]], \"month\": [[1477958400, 11, 169], [1475280000, 14, 30], [1472688000, 16, 67], [1470009600, 33, 195], [1467331200, 36, 284], [1464739200, 41, 73], [1462060800, 36, 91], [1459468800, 34, 144], [1456790400, 51, 399], [1454284800, 26, 133], [1451606400, 37, 82], [1448928000, 38, 167]]}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "3563",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Fri, 18 Nov 2016 06:58:01 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-sea1921-SEA",
+          "X-Timer": "S1479452281.196420,VS0,VE172",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=I3u7%2F2dMV%2BtSIcFebdSW3Gb3ipdE9VJVizxIYMkQVummkAnlGd9VVSKbFH7a833E%2F1nvqygQVOyDRNgMXM7vH%2F6foR2O5W6t",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/about/traffic/?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}
