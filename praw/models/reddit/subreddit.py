@@ -558,6 +558,22 @@ class SubredditModeration(object):
             self.subreddit._reddit, API_PATH['moderator_messages'].format(
                 subreddit=self.subreddit), **generator_kwargs)
 
+    def log(self, action=None, mod=None, **generator_kwargs):
+        """Return a ListingGenerator for moderator log entries.
+
+        :param action: If given, only return log entries for the specified
+            action.
+        :param mod: If given, only return log entries for actions made by the
+            passed in Redditor.
+
+        """
+        params = {'mod': str(mod) if mod else mod, 'type': action}
+        Subreddit._safely_add_arguments(generator_kwargs, 'params',
+                                        **params)
+        return ListingGenerator(
+            self.subreddit._reddit, API_PATH['about_log'].format(
+                subreddit=self.subreddit), **generator_kwargs)
+
     def modqueue(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for comments/submissions in the modqueue.
 

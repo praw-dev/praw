@@ -1,7 +1,7 @@
 """Test praw.models.subreddit."""
 from praw.exceptions import APIException
-from praw.models import (Comment, Redditor, Submission, SubredditMessage,
-                         Stylesheet, WikiPage)
+from praw.models import (Comment, ModAction, Redditor, Submission,
+                         SubredditMessage, Stylesheet, WikiPage)
 import mock
 import pytest
 
@@ -420,6 +420,30 @@ class TestSubredditModeration(IntegrationTest):
                 assert isinstance(item, SubredditMessage)
                 count += 1
             assert count == 100
+
+    def test_log(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditModeration.test_log'):
+            count = 0
+            for item in self.reddit.subreddit('mod').mod.log():
+                assert isinstance(item, ModAction)
+                count += 1
+            assert count == 100
+
+    def test_log__filters(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_log__filters'):
+            count = 0
+            for item in self.reddit.subreddit('mod').mod.log(
+                    action='invitemoderator',
+                    mod=self.reddit.redditor('bboe_dev')):
+                assert isinstance(item, ModAction)
+                assert item.action == 'invitemoderator'
+                assert isinstance(item.mod, Redditor)
+                assert item.mod == 'bboe_dev'
+                count += 1
+            assert count > 0
 
     def test_modqueue(self):
         self.reddit.read_only = False
