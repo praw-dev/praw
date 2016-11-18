@@ -969,6 +969,11 @@ class SubredditStylesheet(object):
         """
         self.subreddit = subreddit
 
+    def delete_header(self):
+        """Remove the current subreddit header image if one exists."""
+        url = API_PATH['delete_sr_header'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url, data={})
+
     def update(self, stylesheet, reason=None):
         """Update the subreddit's stylesheet.
 
