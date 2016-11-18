@@ -2,6 +2,7 @@
 from praw.exceptions import APIException
 from praw.models import (Comment, ModAction, Redditor, Submission,
                          SubredditMessage, Stylesheet, WikiPage)
+from prawcore import NotFound
 import mock
 import pytest
 
@@ -71,6 +72,18 @@ class TestSubreddit(IntegrationTest):
             submissions = [subreddit.random(), subreddit.random(),
                            subreddit.random(), subreddit.random()]
             assert len(submissions) == len(set(submissions))
+
+    def test_sticky(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette('TestSubreddit.test_sticky'):
+            submission = subreddit.sticky()
+            assert isinstance(submission, Submission)
+
+    def test_sticky__not_set(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette('TestSubreddit.test_sticky__not_set'):
+            with pytest.raises(NotFound):
+                subreddit.sticky(2)
 
     def test_search(self):
         with self.recorder.use_cassette('TestSubreddit.test_search'):

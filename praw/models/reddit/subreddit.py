@@ -174,6 +174,23 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         url = API_PATH['search'].format(subreddit=self)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
+    def sticky(self, number=1):
+        """Return a Submission object for a sticky of the subreddit.
+
+        :param number: Specify which sticky to return. 1 appears at the top
+            (Default: 1).
+
+        Raises ``prawcore.NotFound`` if the sticky does not exist.
+
+        """
+        url = API_PATH['about_sticky'].format(subreddit=self)
+        try:
+            self._reddit.get(url, params={'num': number})
+        except Redirect as redirect:
+            path = redirect.path
+        return self._submission_class(self._reddit, url=urljoin(
+            self._reddit.config.reddit_url, path))
+
     def submissions(self, start=None, end=None, extra_query=None):
         """Yield submissions created between timestamps ``start`` and ``end``.
 
