@@ -1,7 +1,6 @@
 """Provide the ModAction class."""
 
-from ..base import PRAWBase
-from .redditor import Redditor
+from .base import PRAWBase
 
 
 class ModAction(PRAWBase):
@@ -10,7 +9,7 @@ class ModAction(PRAWBase):
     @property
     def mod(self):
         """Return the Redditor who the action was issued by."""
-        return Redditor(self._reddit, name=self._mod)
+        return self._reddit.redditor(self._mod)
 
     @mod.setter
     def mod(self, value):

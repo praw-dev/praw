@@ -1,7 +1,7 @@
 """Provide the Stylesheet class."""
 
-from .base import RedditBase
+from .base import PRAWBase
 
 
-class Stylesheet(RedditBase):
+class Stylesheet(PRAWBase):
     """Represent a stylesheet."""
