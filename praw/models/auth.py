@@ -58,17 +58,16 @@ class Auth(PRAWBase):
         :param state: A string that will be reflected in the callback to
             ``redirect_uri``. This value should be temporarily unique to the
             client for whom the URL was generated for.
-        :param duration: (web app only) Either ``permanent`` or ``temporary``
-            (default: permanent). ``temporary`` authorizations generate access
-            tokens that last only 1 hour. ``permanent`` authorizations
-            additionally generate a refresh token that can be indefinitely used
-            to generate new hour-long access tokens. This value is ignored for
-            installed apps as only temporary tokens can be generated for them.
+        :param duration: Either ``permanent`` or ``temporary`` (default:
+            permanent). ``temporary`` authorizations generate access tokens
+            that last only 1 hour. ``permanent`` authorizations additionally
+            generate a refresh token that can be indefinitely used to generate
+            new hour-long access tokens.
 
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if authenticator.redirect_uri is self._reddit.config.CONFIG_NOT_SET:
             raise ClientException('redirect_uri must be provided')
         if isinstance(authenticator, UntrustedAuthenticator):
-            return authenticator.authorize_url(scopes, state)
+            return authenticator.authorize_url(duration, scopes, state)
         return authenticator.authorize_url(duration, scopes, state)
