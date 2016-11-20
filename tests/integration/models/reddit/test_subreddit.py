@@ -1,4 +1,7 @@
 """Test praw.models.subreddit."""
+from os.path import abspath, dirname, join
+import sys
+
 from praw.exceptions import APIException
 from praw.models import (Comment, ModAction, Redditor, Submission,
                          SubredditMessage, Stylesheet, WikiPage)
@@ -748,6 +751,11 @@ class TestSubredditStreams(IntegrationTest):
 
 
 class TestSubredditStylesheet(IntegrationTest):
+    @staticmethod
+    def image_path(name):
+        test_dir = abspath(dirname(sys.modules[__name__].__file__))
+        return join(test_dir, '..', '..', 'files', name)
+
     @property
     def subreddit(self):
         return self.reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -782,6 +790,22 @@ class TestSubredditStylesheet(IntegrationTest):
                 'TestSubredditStylesheet.test_update__with_reason'):
             self.subreddit.stylesheet.update(
                 'div { color: red; }', reason='use div')
+
+    def test_upload_header__jpg(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload_header__jpg'):
+            response = self.subreddit.stylesheet.upload_header(
+                self.image_path('white-square.jpg'))
+        assert response['img_src'].endswith('.jpg')
+
+    def test_upload_header__png(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload_header__png'):
+            response = self.subreddit.stylesheet.upload_header(
+                self.image_path('white-square.png'))
+        assert response['img_src'].endswith('.png')
 
 
 class TestSubredditWiki(IntegrationTest):

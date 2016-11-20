@@ -242,17 +242,20 @@ class Reddit(object):
 
         return generator()
 
-    def post(self, path, data=None, params=None):
+    def post(self, path, data=None, files=None, params=None):
         """Return parsed objects returned from a POST request to ``path``.
 
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body
-            of the request.
+            of the request (Default: None).
+        :param files: Dictionary, filename to file (like) object mappin
+            (Default: None).
         :param params: The query parameters to add to the request (Default:
             None).
 
         """
-        data = self.request('POST', path, data=data, params=params)
+        data = self.request('POST', path, data=data, files=files,
+                            params=params)
         return self._objector.objectify(data)
 
     def random_subreddit(self, nsfw=False):
@@ -279,7 +282,7 @@ class Reddit(object):
         """
         return models.Redditor(self, name)
 
-    def request(self, method, path, params=None, data=None):
+    def request(self, method, path, params=None, data=None, files=None):
         """Return the parsed JSON data returned from a request to URL.
 
         :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
@@ -287,10 +290,13 @@ class Reddit(object):
         :param params: The query parameters to add to the request (Default:
             None).
         :param data: Dictionary, bytes, or file-like object to send in the body
-            of the request.
+            of the request (Default: None).
+        :param files: Dictionary, filename to file (like) object mappin
+            (Default: None).
 
         """
-        return self._core.request(method, path, params=params, data=data)
+        return self._core.request(method, path, data=data, files=files,
+                                  params=params)
 
     def submission(  # pylint: disable=invalid-name,redefined-builtin
             self, id=None, url=None):

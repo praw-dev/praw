@@ -956,6 +956,8 @@ class SubredditStream(object):
 class SubredditStylesheet(object):
     """Provides a set of stylesheet functions to a Subreddit."""
 
+    JPEG_HEADER = b'\xff\xd8\xff'
+
     def __call__(self):
         """Return the subreddit's stylesheet."""
         url = API_PATH['about_stylesheet'].format(subreddit=self.subreddit)
@@ -997,6 +999,22 @@ class SubredditStylesheet(object):
                 'stylesheet_contents': stylesheet}
         url = API_PATH['subreddit_stylesheet'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
+
+    def upload_header(self, image_path):
+        """Upload an image to be used as the Subreddit's header image.
+
+        :param image_path: A path to a jpeg or png image.
+        :returns: A link to the uploaded image.
+
+        """
+        data = {'upload_type': 'header'}
+        with open(image_path, 'rb') as image:
+            header = image.read(len(self.JPEG_HEADER))
+            image.seek(0)
+            data['img_type'] = 'jpg' if header == self.JPEG_HEADER else 'png'
+            url = API_PATH['upload_image'].format(subreddit=self.subreddit)
+            return self.subreddit._reddit.post(
+                url, data=data, files={'file': image})
 
 
 class SubredditWiki(object):
