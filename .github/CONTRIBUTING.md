@@ -55,3 +55,79 @@ to you, it likely is not to the person asking the question.
 The PRAW's team is always iterested in expanding PRAW's active team member base
 with proven contributors. If you are interested please let us know, In general,
 we would like to see you push a number of contributions before we add you on.
+
+
+## Style Recommendations
+
+To keep PRAW's source consistent, all contributions code must pass the
+`pre_push.sh` script. Travis CI helps enforce that. While this script helps
+ensure consistency with much of PEP8 and PEP257 there are a few things that it
+does not enforce. Please look over the following list:
+
+
+### Import Statement Order
+
+From PEP8: https://www.python.org/dev/peps/pep-0008/#imports
+
+List only a single import per line, and group imports by standard library
+imports, third party imports and application imports.
+
+__Additions__:
+
+* List `from package ... import ...` imports prior to entire package `import
+  ...` type statements.
+
+* Lexicographically sort imports. This has the intended side effect top-level
+  relative packages will be imported prior to lower-level packages.
+
+Example:
+
+```python
+from os.path import abspath, join
+import sys
+import traceback
+
+from prawcore import NotFound
+import six
+
+from ...const import API_PATH
+from ..listing.mixins import SubmissionListingMixin
+from .base import RedditBase
+from .mixins import UserContentMixin
+```
+
+### Method Order within a Class
+
+* Group method names by type:
+
+    * Static methods
+
+    * Class methods
+
+    * Properties
+
+    * Instance methods
+
+* Within each grouping method names should be sorted lexicographically.
+
+Example:
+
+```python
+class Example(object):
+
+    @staticmethod
+    def a_static_method(): pass
+
+    @staticmethod
+    def another_static_method(): pass
+
+    @classmethod
+    def some_class_method(cls): pass
+
+    @property
+    def name(self): pass
+
+    def __init__(self): pass
+
+    def instance_method(self): pass
+```
