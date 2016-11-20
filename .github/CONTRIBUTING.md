@@ -59,11 +59,11 @@ we would like to see you push a number of contributions before we add you on.
 
 ## Style Recommendations
 
-To keep PRAW's source consistent, all contributions code must pass the
-`pre_push.sh` script. Travis CI helps enforce that. While this script helps
-ensure consistency with much of PEP8 and PEP257 there are a few things that it
-does not enforce. Please look over the following list:
-
+To keep PRAW's source consistent, all contribution code must pass the
+`pre_push.sh` script. Travis CI will enforce the passing of the automated
+tests, as well as style checking done via the `pre_push.sh` script. While this
+script helps ensure consistency with much of PEP8 and PEP257 there are a few
+things that it does not enforce. Please look over the following list:
 
 ### Import Statement Order
 
@@ -77,8 +77,9 @@ __Additions__:
 * List `from package ... import ...` imports prior to entire package `import
   ...` type statements.
 
-* Lexicographically sort imports. This has the intended side effect top-level
-  relative packages will be imported prior to lower-level packages.
+* Lexicographically sort imports. This process has the intended side effect
+  that top-level relative packages will be imported prior to lower-level
+  packages.
 
 Example:
 
@@ -98,7 +99,7 @@ from .mixins import UserContentMixin
 
 ### Method Order within a Class
 
-* Group method names by type:
+* Group method names by type and order the groups like so:
 
     * Static methods
 
