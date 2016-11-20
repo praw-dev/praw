@@ -791,6 +791,13 @@ class TestSubredditStylesheet(IntegrationTest):
             self.subreddit.stylesheet.update(
                 'div { color: red; }', reason='use div')
 
+    def test_upload(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditStylesheet.test_upload'):
+            response = self.subreddit.stylesheet.upload(
+                'praw', self.image_path('white-square.png'))
+        assert response['img_src'].endswith('.png')
+
     def test_upload_header__jpg(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
