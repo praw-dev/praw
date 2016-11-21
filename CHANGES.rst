@@ -1,16 +1,16 @@
 Change Log
 ==========
 
-4.0.0rc2
---------
+4.0.0rc2 (2016/11/20)
+---------------------
 
 **Fixed**
 
 * :meth:`~praw.models.Auth.authorize` properly sets the session's
    Authentication (thanks @williammck).
 
-4.0.0rc1
---------
+4.0.0rc1 (2016/11/20)
+---------------------
 
 PRAW 4 introduces significant breaking changes. The numerous changes are not
 listed here, only the feature removals. Please read through
