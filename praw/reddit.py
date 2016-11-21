@@ -254,7 +254,7 @@ class Reddit(object):
             None).
 
         """
-        data = self.request('POST', path, data=data, files=files,
+        data = self.request('POST', path, data=data or {}, files=files,
                             params=params)
         return self._objector.objectify(data)
 

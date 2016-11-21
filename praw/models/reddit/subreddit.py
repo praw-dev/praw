@@ -515,7 +515,7 @@ class SubredditModeration(object):
     def accept_invite(self):
         """Accept an invitation as a moderator of the community."""
         url = API_PATH['accept_mod_invite'].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data={})
+        self.subreddit._reddit.post(url)
 
     def approve(self, thing):
         """Approve a Comment or Submission.
@@ -987,7 +987,7 @@ class SubredditStylesheet(object):
 
         """
         url = API_PATH['delete_sr_header'].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data={})
+        self.subreddit._reddit.post(url)
 
     def delete_image(self, name):
         """Remove the named image from the subreddit.
