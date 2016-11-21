@@ -4,12 +4,12 @@ PRAW: The Python Reddit API Wrapper
 .. image:: https://img.shields.io/pypi/v/praw.svg
    :alt: Latest PRAW Version
    :target: https://pypi.python.org/pypi/praw
-.. image:: https://travis-ci.org/praw-dev/praw.svg?branch=praw4
+.. image:: https://travis-ci.org/praw-dev/praw.svg?branch=master
    :alt: Travis CI Status
    :target: https://travis-ci.org/praw-dev/praw
-.. image:: https://coveralls.io/repos/github/praw-dev/praw/badge.svg?branch=praw4
+.. image:: https://coveralls.io/repos/github/praw-dev/praw/badge.svg?branch=master
    :alt: Coveralls Coverage
-   :target: https://coveralls.io/github/praw-dev/praw?branch=praw4
+   :target: https://coveralls.io/github/praw-dev/praw?branch=master
 .. image:: https://badges.gitter.im/praw-dev/praw.svg
    :alt: Join the chat at https://gitter.im/praw-dev/praw
    :target: https://gitter.im/praw-dev/praw
@@ -43,7 +43,7 @@ To install the latest development version of PRAW4 run the following instead:
 
 .. code-block:: bash
 
-    pip install --upgrade https://github.com/praw-dev/praw/archive/praw4.zip
+    pip install --upgrade https://github.com/praw-dev/praw/archive/master.zip
 
 For instructions on installing python and pip see "The Hitchhiker's Guide to
 Python" `Installation Guides
@@ -78,7 +78,7 @@ give it a thumbs up reaction. Comments to issues containing additional
 information are certainly welcome.
 
 .. note:: This project is released with a `Contributor Code of Conduct
-   <https://github.com/praw-dev/praw/blob/praw4/CODE_OF_CONDUCT.md>`_. By
+   <https://github.com/praw-dev/praw/blob/master/CODE_OF_CONDUCT.md>`_. By
    participating in this project you agree to abide by its terms.
 
 Documentation
