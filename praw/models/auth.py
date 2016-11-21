@@ -24,7 +24,7 @@ class Auth(PRAWBase):
             raise ClientException('authorize can only be used with web apps.')
         authorizer = Authorizer(authenticator)
         authorizer.authorize(code)
-        self._core = self._authorized_core = session(authorizer)
+        self._reddit._core = self._reddit._authorized_core = session(authorizer)
         return authorizer.refresh_token
 
     def implicit(self, access_token, expires_in, scope):
