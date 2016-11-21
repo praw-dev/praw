@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+4.0.0rc2
+--------
+
+**Fixed**
+
+* :meth:`~praw.models.Auth.authorize` properly sets the session's
+   Authentication (thanks @williammck).
+
 4.0.0rc1
 --------
 

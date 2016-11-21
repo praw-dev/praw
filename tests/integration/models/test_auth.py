@@ -18,6 +18,7 @@ class TestAuthWeb(IntegrationTest):
         with self.recorder.use_cassette('TestAuthWeb.test_authorize'):
             token = self.reddit.auth.authorize(pytest.placeholders.auth_code)
             assert isinstance(token, string_types)
+            assert self.reddit.read_only is False
 
 
 class TestAuthImplicit(IntegrationTest):
