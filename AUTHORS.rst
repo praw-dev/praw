@@ -21,4 +21,5 @@ Documentation Contributors
 Source Contributors
 ===================
 
+- William McKinnerney <me@williammck.net> `@williammck <https://github.com/williammck>`_
 - Add "Name <email (optional)> and github profile link" above this line.
