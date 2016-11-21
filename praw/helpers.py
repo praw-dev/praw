@@ -105,8 +105,7 @@ def valid_redditors(redditors, sub):
         flair changing permission on.
 
     Note: Flair will be unset for all valid redditors in `redditors` on the
-    subreddit `sub`. A valid redditor is defined as a redditor that is
-    registered on reddit.
+    subreddit `mod_sub`.
 
     """
     simplified = list(set(six.text_type(x).lower() for x in redditors))
@@ -355,28 +354,6 @@ def _stream_generator(get_function, limit=None, verbosity=1):
             sleep_time, msg, msg_level = sleep  # pylint: disable=W0633
             debug(msg.format(sleep_time), msg_level)
             time.sleep(sleep_time)
-
-
-def chunk_sequence(sequence, chunk_length, allow_incomplete=True):
-    """Given a sequence, divide it into sequences of length `chunk_length`.
-
-    :param allow_incomplete: If True, allow final chunk to be shorter if the
-        given sequence is not an exact multiple of `chunk_length`.
-        If False, the incomplete chunk will be discarded.
-    """
-    (complete, leftover) = divmod(len(sequence), chunk_length)
-    if not allow_incomplete:
-        leftover = 0
-
-    chunk_count = complete + min(leftover, 1)
-
-    chunks = []
-    for x in range(chunk_count):
-        left = chunk_length * x
-        right = left + chunk_length
-        chunks.append(sequence[left:right])
-
-    return chunks
 
 
 def convert_id36_to_numeric_id(id36):

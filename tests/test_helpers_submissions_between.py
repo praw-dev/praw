@@ -37,15 +37,6 @@ class TestHelperSubmissionsBetween(PRAWTest):
                                      verbosity=self.verbosity))
 
     @betamax()
-    def test_submissions_between_special_subreddit(self):
-        for submission in submissions_between(
-                self.r, "all",  # so it doesn't take forever
-                highest_timestamp=1121000000,
-                verbosity=self.verbosity):
-            self.assertLessEqual(submission.created_utc, 1121000000)
-            self.assertGreaterEqual(submission.created_utc, 0)
-
-    @betamax()
     @teardown_on_keyboard_interrupt
     def test_submissions_between_order(self):
         all_subs = list(submissions_between(self.r,

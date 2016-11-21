@@ -18,7 +18,7 @@ do its work.
 
 >>> import praw
 >>> r = praw.Reddit('Comment Scraper 1.0 by u/_Daimon_ see '
-...                 'https://praw.readthedocs.io/en/latest/'
+...                 'https://praw.readthedocs.org/en/latest/'
 ...                 'pages/comment_parsing.html')
 >>> submission = r.get_submission(submission_id='11v36o')
 
@@ -116,7 +116,7 @@ The full program
     import praw
 
     r = praw.Reddit('Comment Scraper 1.0 by u/_Daimon_ see '
-                    'https://praw.readthedocs.io/en/latest/'
+                    'https://praw.readthedocs.org/en/latest/'
                     'pages/comment_parsing.html')
     r.login('bot_username', 'bot_password')
     submission = r.get_submission(submission_id='11v36o')

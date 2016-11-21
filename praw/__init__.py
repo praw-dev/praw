@@ -34,11 +34,9 @@ import six
 import sys
 from praw import decorators, errors
 from praw.handlers import DefaultHandler
-from praw.helpers import chunk_sequence, normalize_url
-from praw.internal import (_image_type, _prepare_request,
-                           _raise_redirect_exceptions,
-                           _raise_response_exceptions,
-                           _to_reddit_list, _warn_pyopenssl)
+from praw.helpers import normalize_url
+from praw.internal import (_prepare_request, _raise_redirect_exceptions,
+                           _raise_response_exceptions, _to_reddit_list)
 from praw.settings import CONFIG
 from requests import Session
 from requests.compat import urljoin
@@ -52,7 +50,19 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '3.6.0'
+__version__ = '3.4.0'
+
+MIN_PNG_SIZE = 67
+MIN_JPEG_SIZE = 128
+MAX_IMAGE_SIZE = 512000
+JPEG_HEADER = b'\xff\xd8\xff'
+PNG_HEADER = b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
+
+# Compatibility
+if six.PY3:
+    CHR = chr
+else:
+    CHR = unichr  # NOQA
 
 
 class Config(object):  # pylint: disable=R0903
@@ -104,7 +114,6 @@ class Config(object):  # pylint: disable=R0903
                  'info':                'api/info/',
                  'leavecontributor':    'api/leavecontributor',
                  'leavemoderator':      'api/leavemoderator',
-                 'lock':                'api/lock/',
                  'login':               'api/login/',
                  'me':                  'api/v1/me',
                  'mentions':            'message/mentions',
@@ -141,7 +150,6 @@ class Config(object):  # pylint: disable=R0903
                  'report':              'api/report/',
                  'reports':             'r/{subreddit}/about/reports/',
                  'rising':              'rising/',
-                 'rules':               'r/{subreddit}/about/rules/',
                  'save':                'api/save/',
                  'saved':               'saved/',
                  'search':              'r/{subreddit}/search/',
@@ -169,7 +177,6 @@ class Config(object):  # pylint: disable=R0903
                  'uncollapse_message':  'api/uncollapse_message/',
                  'unfriend':            'api/unfriend/',
                  'unhide':              'api/unhide/',
-                 'unlock':              'api/unlock/',
                  'unmarknsfw':          'api/unmarknsfw/',
                  'unmoderated':         'r/{subreddit}/about/unmoderated/',
                  'unmute_sender':       'api/unmute_message_author/',
@@ -257,7 +264,6 @@ class Config(object):  # pylint: disable=R0903
         self.client_id = obj.get('oauth_client_id') or None
         self.client_secret = obj.get('oauth_client_secret') or None
         self.redirect_uri = obj.get('oauth_redirect_uri') or None
-        self.grant_type = obj.get('oauth_grant_type') or None
         self.refresh_token = obj.get('oauth_refresh_token') or None
         self.store_json_result = config_boolean(obj.get('store_json_result'))
 
@@ -301,7 +307,6 @@ class BaseReddit(object):
 
     RETRY_CODES = [502, 503, 504]
     update_checked = False
-    openssl_warned = False
 
     def __init__(self, user_agent, site_name=None, handler=None,
                  disable_update_check=False, **kwargs):
@@ -327,7 +332,7 @@ class BaseReddit(object):
         All additional parameters specified via kwargs will be used to
         initialize the Config object. This can be used to specify configuration
         settings during instantiation of the Reddit instance. See
-        https://praw.readthedocs.io/en/latest/pages/configuration_files.html
+        https://praw.readthedocs.org/en/latest/pages/configuration_files.html
         for more details.
 
         """
@@ -362,15 +367,10 @@ class BaseReddit(object):
         self.modhash = None
 
         # Check for updates if permitted and this is the first Reddit instance
-        if not disable_update_check and not BaseReddit.update_checked \
+        if not disable_update_check and not self.update_checked \
                 and self.config.check_for_updates:
             update_check(__name__, __version__)
-            BaseReddit.update_checked = True
-
-        # Warn against a potentially incompatible version of pyOpenSSL
-        if not BaseReddit.openssl_warned and self.config.validate_certs:
-            _warn_pyopenssl()
-            BaseReddit.openssl_warned = True
+            self.update_checked = True
 
         # Initial values
         self._use_oauth = False
@@ -416,7 +416,7 @@ class BaseReddit(object):
             return (request, key_items, kwargs)
 
         def decode(match):
-            return six.unichr(html_entities.name2codepoint[match.group(1)])
+            return CHR(html_entities.name2codepoint[match.group(1)])
 
         def handle_redirect():
             response = None
@@ -677,13 +677,8 @@ class OAuth2Reddit(BaseReddit):
             value will be a set containing the scopes the tokens are valid for.
 
         """
-        if self.config.grant_type == 'password':
-            data = {'grant_type': 'password',
-                    'username': self.config.user,
-                    'password': self.config.pswd}
-        else:
-            data = {'code': code, 'grant_type': 'authorization_code',
-                    'redirect_uri': self.redirect_uri}
+        data = {'code': code, 'grant_type': 'authorization_code',
+                'redirect_uri': self.redirect_uri}
         retval = self._handle_oauth_request(data)
         return {'access_token': retval['access_token'],
                 'refresh_token': retval.get('refresh_token'),
@@ -731,17 +726,10 @@ class OAuth2Reddit(BaseReddit):
             the OAuth2 grant is not refreshable. The scope value will be a set
             containing the scopes the tokens are valid for.
 
-        Password grants aren't refreshable, so use `get_access_information()`
-        again, instead.
         """
-        if self.config.grant_type == 'password':
-            data = {'grant_type': 'password',
-                    'username': self.config.user,
-                    'password': self.config.pswd}
-        else:
-            data = {'grant_type': 'refresh_token',
-                    'redirect_uri': self.redirect_uri,
-                    'refresh_token': refresh_token}
+        data = {'grant_type': 'refresh_token',
+                'redirect_uri': self.redirect_uri,
+                'refresh_token': refresh_token}
         retval = self._handle_oauth_request(data)
         return {'access_token': retval['access_token'],
                 'refresh_token': refresh_token,
@@ -901,63 +889,39 @@ class UnauthenticatedReddit(BaseReddit):
         """
         return self.get_content(self.config['reddit_url'], *args, **kwargs)
 
-    @decorators.restrict_access(scope='read', generator_called=True)
-    def get_info(self, url=None, thing_id=None, *args, **kwargs):
+    @decorators.restrict_access(scope='read')
+    def get_info(self, url=None, thing_id=None, limit=None):
         """Look up existing items by thing_id (fullname) or url.
 
-        :param url: A url to lookup.
+        :param url: The url to lookup.
         :param thing_id: A single thing_id, or a list of thing_ids. A thing_id
             can be any one of Comment (``t1_``), Link (``t3_``), or Subreddit
             (``t5_``) to lookup by fullname.
+        :param limit: The maximum number of Submissions to return when looking
+            up by url. When None, uses account default settings.
         :returns: When a single ``thing_id`` is provided, return the
             corresponding thing object, or ``None`` if not found. When a list
             of ``thing_id``s or a ``url`` is provided return a list of thing
-            objects (up to ``limit``). ``None`` is returned if all of the
+            objects (up to ``limit``). ``None`` is returned if any one of the
             thing_ids or the URL is invalid.
-
-        The additional parameters are passed into :meth:`.get_content` after
-        the `params` parameter is exctracted and used to update the dictionary
-        of url parameters this function sends. Note: the `url` parameter
-        cannot be altered.
-
-        Also, if using thing_id and the `limit` parameter passed to
-        :meth:`.get_content` is used to slice the list of retreived things
-        before returning it to the user, for when `limit > 100` and
-        `(limit % 100) > 0`, to ensure a maximum of `limit` thigns are
-        returned.
 
         """
         if bool(url) == bool(thing_id):
             raise TypeError('Only one of url or thing_id is required!')
-
-        # In these cases, we will have a list of things to return.
-        # Otherwise, it will just be one item.
-        if isinstance(thing_id, six.string_types) and ',' in thing_id:
-            thing_id = thing_id.split(',')
-        return_list = bool(url) or not isinstance(thing_id, six.string_types)
-
+        elif thing_id and limit:
+            raise TypeError('Limit keyword is not applicable with thing_id.')
         if url:
-            param_groups = [{'url': url}]
+            params = {'url': url}
+            if limit:
+                params['limit'] = limit
         else:
-            if isinstance(thing_id, six.string_types):
-                thing_id = [thing_id]
-            id_chunks = chunk_sequence(thing_id, 100)
-            param_groups = [{'id': ','.join(id_chunk)} for
-                            id_chunk in id_chunks]
-
-        items = []
-        update_with = kwargs.pop('params', {})
-        for param_group in param_groups:
-            param_group.update(update_with)
-            kwargs['params'] = param_group
-            chunk = self.get_content(self.config['info'], *args, **kwargs)
-            items.extend(list(chunk))
-
-        # if using ids, manually set the limit
-        if kwargs.get('limit'):
-            items = items[:kwargs['limit']]
-
-        if return_list:
+            if not isinstance(thing_id, six.string_types):
+                thing_id = ','.join(thing_id)
+                url = True  # Enable returning a list
+            params = {'id': thing_id}
+        items = self.request_json(self.config['info'],
+                                  params=params)['data']['children']
+        if url:
             return items if items else None
         elif items:
             return items[0]
@@ -1062,16 +1026,6 @@ class UnauthenticatedReddit(BaseReddit):
 
         """
         return self.get_content(self.config['rising'], *args, **kwargs)
-
-    @decorators.restrict_access(scope='read')
-    def get_rules(self, subreddit, bottom=False):
-        """Return the json dictionary containing rules for a subreddit.
-
-        :param subreddit: The subreddit whose rules we will return.
-
-        """
-        url = self.config['rules'].format(subreddit=six.text_type(subreddit))
-        return self.request_json(url)
 
     @decorators.restrict_access(scope='read')
     def get_sticky(self, subreddit, bottom=False):
@@ -1588,7 +1542,7 @@ class AuthenticatedReddit(OAuth2Reddit, UnauthenticatedReddit):
         self.access_token = access_token
         self.refresh_token = refresh_token
         # Update the user object
-        if update_user and ('identity' in scope or '*' in scope):
+        if update_user and 'identity' in scope:
             self.user = self.get_me()
 
 
@@ -1737,28 +1691,38 @@ class ModConfigMixin(AuthenticatedReddit):
         return self.request_json(self.config['subreddit_css'], data=data)
 
     @decorators.restrict_access(scope='modconfig')
-    def upload_image(self, subreddit, image_path, name=None,
-                     header=False, upload_as=None):
+    def upload_image(self, subreddit, image_path, name=None, header=False):
         """Upload an image to the subreddit.
 
         :param image_path: A path to the jpg or png image you want to upload.
         :param name: The name to provide the image. When None the name will be
             filename less any extension.
         :param header: When True, upload the image as the subreddit header.
-        :param upload_as: Must be `'jpg'`, `'png'` or `None`. When None, this
-            will match the format of the image itself. In all cases where both
-            this value and the image format is not png, reddit will also
-            convert  the image mode to RGBA. reddit optimizes the image
-            according to this value.
         :returns: A link to the uploaded image. Raises an exception otherwise.
 
         """
         if name and header:
             raise TypeError('Both name and header cannot be set.')
-        if upload_as not in (None, 'png', 'jpg'):
-            raise TypeError("upload_as must be 'jpg', 'png', or None.")
+        image_type = None
+        # Verify image is a jpeg or png and meets size requirements
         with open(image_path, 'rb') as image:
-            image_type = upload_as or _image_type(image)
+            size = os.path.getsize(image.name)
+            if size < MIN_PNG_SIZE:
+                raise errors.ClientException('png image is too small.')
+            if size > MAX_IMAGE_SIZE:
+                raise errors.ClientException('`image` is too big. Max: {0} '
+                                             'bytes'.format(MAX_IMAGE_SIZE))
+            first_bytes = image.read(MIN_PNG_SIZE)
+            image.seek(0)
+            if first_bytes.startswith(PNG_HEADER):
+                image_type = 'png'
+            elif first_bytes.startswith(JPEG_HEADER):
+                if size < MIN_JPEG_SIZE:
+                    raise errors.ClientException('jpeg image is too small.')
+                image_type = 'jpg'
+            else:
+                raise errors.ClientException('`image` must be either jpg or '
+                                             'png.')
             data = {'r': six.text_type(subreddit), 'img_type': image_type}
             if header:
                 data['header'] = 1
@@ -1767,9 +1731,9 @@ class ModConfigMixin(AuthenticatedReddit):
                     name = os.path.splitext(os.path.basename(image.name))[0]
                 data['name'] = name
 
-        response = json.loads(self._request(
-            self.config['upload_image'], data=data, files={'file': image},
-            method=to_native_string('POST'), retry_on_error=False))
+            response = json.loads(self._request(
+                self.config['upload_image'], data=data, files={'file': image},
+                method=to_native_string('POST'), retry_on_error=False))
 
         if response['errors']:
             raise errors.APIException(response['errors'], None)
@@ -2603,51 +2567,28 @@ class ReportMixin(AuthenticatedReddit):
 
     @decorators.restrict_access(scope='report')
     def hide(self, thing_id, _unhide=False):
-        """Hide one or multiple objects in the context of the logged in user.
+        """Hide up to 50 objects in the context of the logged in user.
 
         :param thing_id: A single fullname or list of fullnames,
             representing objects which will be hidden.
-        :param _unhide: If True, unhide the object(s) instead. Use
+        :param _unhide: If True, unhide the object(s) instead.  Use
             :meth:`~praw.__init__.ReportMixin.unhide` rather than setting this
             manually.
 
         :returns: The json response from the server.
 
         """
-        if isinstance(thing_id, six.string_types):
-            thing_id = [thing_id]
-        else:
-            # Guarantee a subscriptable type.
-            thing_id = list(thing_id)
+        if not isinstance(thing_id, six.string_types):
+            thing_id = ','.join(thing_id)
+        method = 'unhide' if _unhide else 'hide'
+        data = {'id': thing_id,
+                'executed': method}
+        response = self.request_json(self.config[method], data=data)
 
-        if len(thing_id) == 0:
-            raise ValueError('No fullnames provided')
-
-        # Will we return a list of server responses, or just one?
-        # TODO: In future versions, change the threshold to 1 to get
-        # list-in-list-out, single-in-single-out behavior. Threshold of 50
-        # is to avoid a breaking change at this time.
-        return_list = len(thing_id) > 50
-
-        id_chunks = chunk_sequence(thing_id, 50)
-        responses = []
-        for id_chunk in id_chunks:
-            id_chunk = ','.join(id_chunk)
-
-            method = 'unhide' if _unhide else 'hide'
-            data = {'id': id_chunk,
-                    'executed': method}
-
-            response = self.request_json(self.config[method], data=data)
-            responses.append(response)
-
-            if self.user is not None:
-                self.evict(urljoin(self.user._url,  # pylint: disable=W0212
-                                   'hidden'))
-        if return_list:
-            return responses
-        else:
-            return responses[0]
+        if self.user is not None:
+            self.evict(urljoin(self.user._url,  # pylint: disable=W0212
+                               'hidden'))
+        return response
 
     def unhide(self, thing_id):
         """Unhide up to 50 objects in the context of the logged in user.

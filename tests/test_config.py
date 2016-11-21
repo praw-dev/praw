@@ -5,7 +5,11 @@ from __future__ import print_function, unicode_literals
 import unittest
 from praw import Config
 from praw.errors import ClientException
-from six.moves import configparser
+
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser  # NOQA pylint: disable=F0401
 
 
 class ConfigTest(unittest.TestCase):

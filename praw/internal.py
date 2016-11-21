@@ -19,30 +19,17 @@ The functions in this module are not to be relied upon by third-parties.
 """
 
 from __future__ import print_function, unicode_literals
-import os
 import re
 import six
 import sys
 from requests import Request, codes, exceptions
 from requests.compat import urljoin
 from praw.decorators import restrict_access
-from praw.errors import (ClientException, HTTPException, Forbidden, NotFound,
-                         InvalidSubreddit, OAuthException,
-                         OAuthInsufficientScope, OAuthInvalidToken,
-                         RedirectException)
-from warnings import warn
-try:
-    from OpenSSL import __version__ as _opensslversion
-    _opensslversionlist = [int(minor) if minor.isdigit() else minor
-                           for minor in _opensslversion.split('.')]
-except ImportError:
-    _opensslversionlist = [0, 15]
+from praw.errors import (HTTPException, Forbidden, NotFound, InvalidSubreddit,
+                         OAuthException, OAuthInsufficientScope,
+                         OAuthInvalidToken, RedirectException)
 
-MIN_PNG_SIZE = 67
-MIN_JPEG_SIZE = 128
-MAX_IMAGE_SIZE = 512000
-JPEG_HEADER = b'\xff\xd8\xff'
-PNG_HEADER = b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
+
 RE_REDIRECT = re.compile('(rand(om|nsfw))|about/sticky')
 
 
@@ -86,24 +73,6 @@ def _get_sorter(subpath='', **defaults):
         url = urljoin(self._url, subpath)  # pylint: disable=W0212
         return self.reddit_session.get_content(url, *args, **kwargs)
     return _sorted
-
-
-def _image_type(image):
-    size = os.path.getsize(image.name)
-    if size < MIN_PNG_SIZE:
-        raise ClientException('png image is too small.')
-    if size > MAX_IMAGE_SIZE:
-        raise ClientException('`image` is too big. Max: {0} bytes'
-                              .format(MAX_IMAGE_SIZE))
-    first_bytes = image.read(MIN_PNG_SIZE)
-    image.seek(0)
-    if first_bytes.startswith(PNG_HEADER):
-        return 'png'
-    elif first_bytes.startswith(JPEG_HEADER):
-        if size < MIN_JPEG_SIZE:
-            raise ClientException('jpeg image is too small.')
-        return 'jpg'
-    raise ClientException('`image` must be either jpg or png.')
 
 
 def _modify_relationship(relationship, unlink=False, is_sub=False):
@@ -258,14 +227,3 @@ def _to_reddit_list(arg):
         return six.text_type(arg)
     else:
         return ','.join(six.text_type(a) for a in arg)
-
-
-def _warn_pyopenssl():
-    """Warn the user against faulty versions of pyOpenSSL."""
-    if _opensslversionlist < [0, 15]:  # versions >= 0.15 are fine
-        warn(RuntimeWarning(
-            "pyOpenSSL {0} may be incompatible with praw if validating"
-            "ssl certificates, which is on by default.\nSee https://"
-            "github.com/praw/pull/625 for more information".format(
-                _opensslversion)
-        ))

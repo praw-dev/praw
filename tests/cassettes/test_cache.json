@@ -497,7 +497,7 @@
             "reddit_session=7302867%2C2015-04-28T07%3A57%3A35%2C95e866fc793b75723e53ff54e1be6291797d56ab; __cfduid=dc19bd73cf18348a7ab86d7e35bd059991430233055"
           ],
           "SKIP_BETAMAX": [
-            "0"
+            0
           ],
           "User-Agent": [
             "PRAW_test_suite PRAW/3.0a1 Python/2.7.5 Darwin-13.4.0-x86_64-i386-64bit"

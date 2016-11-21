@@ -1,6 +1,7 @@
-"""Tests for Subreddit class."""
+﻿"""Tests for Subreddit class."""
 
 from __future__ import print_function, unicode_literals
+import warnings
 from praw import errors
 from praw.objects import Subreddit
 from six import text_type
@@ -11,9 +12,6 @@ class SubredditTest(PRAWTest):
     def betamax_init(self):
         self.r.login(self.un, self.un_pswd, disable_warning=True)
         self.subreddit = self.r.get_subreddit(self.sr)
-
-    def test_invalid_subreddit_name(self):
-        self.assertRaises(TypeError, Subreddit, self.r, '')
 
     @betamax()
     def test_attribute_error(self):
@@ -81,8 +79,10 @@ class SubredditTest(PRAWTest):
 
     @betamax()
     def test_multiple_subreddit__fetch(self):
-        self.assertWarnings(UserWarning, self.r.get_subreddit,
-                            'python+redditdev', fetch=True)
+        with warnings.catch_warnings(record=True) as w:
+            self.r.get_subreddit('python+redditdev', fetch=True)
+            assert len(w) == 1
+            assert isinstance(w[0].message, UserWarning)
 
     @betamax()
     def test_subreddit_refresh(self):

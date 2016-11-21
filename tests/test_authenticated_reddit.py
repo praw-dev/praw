@@ -1,6 +1,7 @@
 """Tests for AuthenticatedReddit class and its mixins."""
 
 from __future__ import print_function, unicode_literals
+import warnings
 from praw import errors
 from .helper import PRAWTest, betamax
 
@@ -23,7 +24,7 @@ class AuthenticatedRedditTest(PRAWTest):
 
         # Headers are not included in the cached key so this will have no
         # affect when the request is cached
-        self.r.http.headers['SKIP_BETAMAX'] = '1'
+        self.r.http.headers['SKIP_BETAMAX'] = 1
 
         cached_listing = list(subreddit.get_new(limit=5))
         self.assertEqual(original_listing, cached_listing)
@@ -55,8 +56,11 @@ class AuthenticatedRedditTest(PRAWTest):
 
     @betamax()
     def test_login__deprecation_warning(self):
-        self.assertWarnings(DeprecationWarning, self.r.login,
-                            self.un, self.un_pswd)
+        with warnings.catch_warnings(record=True) as warning_list:
+            self.r.login(self.un, self.un_pswd)
+            self.assertEqual(1, len(warning_list))
+            self.assertTrue(isinstance(warning_list[0].message,
+                                       DeprecationWarning))
 
     @betamax()
     def test_moderator_or_oauth_required__logged_in_from_reddit_obj(self):
@@ -78,6 +82,19 @@ class AuthenticatedRedditTest(PRAWTest):
     def test_moderator_required__multi(self):
         sub = self.r.get_subreddit('{0}+{1}'.format(self.sr, 'test'))
         self.assertRaises(errors.ModeratorRequired, sub.get_mod_queue)
+
+    @betamax()
+    def test_submission_hide_and_unhide_batch(self):
+        sub = self.r.get_subreddit(self.sr)
+        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 1}))
+
+        self.r.hide([item.fullname for item in new])
+        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 2}))
+        self.assertTrue(all(item.hidden for item in new))
+
+        self.r.unhide([item.fullname for item in new])
+        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 3}))
+        self.assertTrue(not any(item.hidden for item in new))
 
 
 class ModFlairMixinTest(PRAWTest):

@@ -77,35 +77,10 @@ class SubmissionTest(PRAWTest):
     @betamax()
     def test_submission_hide_and_unhide(self):
         submission = next(self.r.user.get_submitted())
-        response = submission.hide()
-        self.assertEqual(response, {})
+        submission.hide()
         self.assertTrue(submission.refresh().hidden)
         submission.unhide()
         self.assertFalse(submission.refresh().hidden)
-
-    @betamax()
-    def test_submission_hide_and_unhide_batch(self):
-        sub = self.r.get_subreddit(self.sr)
-        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 1}))
-
-        response = self.r.hide([item.fullname for item in new])
-        self.assertEqual(response, {})
-        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 2}))
-        self.assertTrue(all(item.hidden for item in new))
-
-        self.r.unhide([item.fullname for item in new])
-        new = list(sub.get_new(limit=5, params={'show': 'all', 'count': 3}))
-        self.assertTrue(not any(item.hidden for item in new))
-
-    @betamax()
-    def test_submission_hide_and_unhide_many(self):
-        submissions = list(self.r.get_subreddit('all').get_new(limit=300))
-        fullnames = [submission.fullname for submission in submissions]
-        response = self.r.hide(fullnames)
-        self.assertEqual(response, [{}, {}, {}, {}, {}, {}])
-
-        submissions = self.r.get_info(thing_id=fullnames)
-        self.assertTrue(all(item.hidden for item in submissions))
 
     @betamax()
     def test_submission_refresh(self):
@@ -119,7 +94,7 @@ class SubmissionTest(PRAWTest):
 
     @betamax()
     def test_submit__duplicate_url(self):
-        url = 'https://praw.readthedocs.io/'
+        url = 'https://praw.readthedocs.org/'
         self.assertRaises(errors.AlreadySubmitted, self.subreddit.submit,
                           'PRAW Documentation', url=url)
         submission = self.subreddit.submit(
@@ -208,16 +183,6 @@ class SubmissionModeratorTest(PRAWTest):
         log = next(self.subreddit.get_mod_log(params={'uniq': 2}))
         self.assertEqual('unignorereports', log.action)
         self.assertEqual(submission.fullname, log.target_fullname)
-
-    @betamax()
-    def test_lock_and_unlock(self):
-        submission_id = self.submission_lock_id
-        submission = self.r.get_submission(submission_id=submission_id)
-
-        submission.lock()
-        self.assertTrue(submission.refresh().locked)
-        submission.unlock()
-        self.assertFalse(submission.refresh().locked)
 
     @betamax()
     def test_mark_as_nsfw_and_umark_as_nsfw__as_moderator(self):

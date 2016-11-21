@@ -3,12 +3,9 @@
 from __future__ import print_function, unicode_literals
 
 import mock
-import os
-import re
-from six import text_type, assertRaisesRegex
-from six.moves import filter, reload_module
-import sys
-from praw import Reddit, errors, helpers, settings
+import warnings
+from six import text_type
+from praw import Reddit, errors, helpers
 from praw.objects import Comment, MoreComments, Submission
 from .helper import PRAWTest, betamax
 
@@ -106,47 +103,6 @@ class UnauthenticatedRedditTest(PRAWTest):
         num = 50
         self.assertEqual(num, len(list(self.r.get_front_page(limit=num))))
 
-    def test_load_config(self):
-        environkeys = ('APPDATA', 'XDG_CONFIG_HOME', 'HOME')
-        environkeys = {key: os.getenv(key) for key in environkeys}
-        knownkey = list(filter(None, environkeys.values()))
-        knownkey = knownkey[0] if knownkey else None
-        for environkey, oldkey in environkeys.items():
-            os.environ[environkey] = knownkey
-            try:
-                reload_module(settings)
-            except Exception:
-                raise AssertionError("Could not load config "
-                                     "for key {}".format(environkey))
-            finally:
-                del os.environ[environkey]
-                if oldkey is not None:
-                    os.environ[environkey] = oldkey
-        for environkey in filter(lambda key: key in os.environ, environkeys):
-            del os.environ[environkey]
-        configfiles = [os.path.join(
-                       os.path.dirname(
-                           sys.modules[settings.__name__].__file__),
-                       'praw.ini'), 'praw.ini']
-        configdata = {}
-        for cfile in configfiles:
-            try:
-                with open(cfile, 'r') as f:
-                    configdata[f] = f.read()
-                    os.remove(f.name)
-            except IOError:
-                pass
-        try:
-            assertRaisesRegex(self, Exception, re.escape(str(configfiles)),
-                              reload_module, settings)
-        finally:
-            for environkey, oldkey in environkeys.items():
-                if oldkey is not None:
-                    os.environ[environkey] = oldkey
-            for fileobj, filedata in configdata.items():
-                with open(fileobj.name, 'w') as f:
-                    f.write(filedata)
-
     def test_login_or_oauth_required__not_logged_in(self):
         self.assertRaises(errors.LoginOrScopeRequired,
                           self.r.add_flair_template, self.sr, 'foo')
@@ -221,12 +177,6 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertEqual(num, len(list(result)))
 
     @betamax()
-    def test_get_rules(self):
-        self.assertEqual('Sample rule',
-                         self.r.get_rules('reddit_api_test')['rules'][0]
-                         ['short_name'])
-
-    @betamax()
     def test_get_sticky(self):
         self.assertEqual('2ujhkr', self.r.get_sticky('redditdev').id)
 
@@ -261,28 +211,8 @@ class UnauthenticatedRedditTest(PRAWTest):
 
     @betamax()
     def test_info_by_id(self):
-        submission = self.r.get_info(thing_id=self.link_id)
-        self.assertEqual(self.link_id, submission.fullname)
-
-    @betamax()
-    def test_info_by_id_many(self):
-        listing = list(self.r.get_subreddit(self.sr).get_new(limit=200))
-        listing = [submission.fullname for submission in listing]
-        submissions = self.r.get_info(thing_id=listing)
-
-        listing = set(listing)
-        submissions = set(submission.fullname for submission in submissions)
-        self.assertEqual(listing, submissions)
-
-    @betamax()
-    def test_info_by_id_many_comma_delimited(self):
-        listing = list(self.r.get_subreddit(self.sr).get_new(limit=200))
-        listing = [submission.fullname for submission in listing]
-        submissions = self.r.get_info(thing_id=','.join(listing))
-
-        listing = set(listing)
-        submissions = set(submission.fullname for submission in submissions)
-        self.assertEqual(listing, submissions)
+        self.assertEqual(self.link_id,
+                         self.r.get_info(thing_id=self.link_id).fullname)
 
     @betamax()
     def test_info_by_invalid_id(self):
@@ -314,19 +244,10 @@ class UnauthenticatedRedditTest(PRAWTest):
     def test_not_logged_in_when_initialized(self):
         self.assertEqual(self.r.user, None)
 
-    def test_raise_on_direct_request(self):
-        self.assertRaises(errors.ClientException, self.r.http.request)
-
     def test_require_user_agent(self):
         self.assertRaises(TypeError, Reddit, user_agent=None)
         self.assertRaises(TypeError, Reddit, user_agent='')
         self.assertRaises(TypeError, Reddit, user_agent=1)
-
-    def test_require_single_arg_get_info(self):
-        # ensure that only thing_id or
-        # url can be used separately
-        self.assertRaises(TypeError, self.r.get_info,
-                          'fakeurl', 'fakeid')
 
     @betamax()
     def test_search(self):
@@ -379,14 +300,7 @@ class UnauthenticatedRedditTest(PRAWTest):
         self.assertTrue(subreddit.json_dict)
 
     def test_user_agent(self):
-        self.assertWarnings(UserWarning, Reddit, 'robot agent')
-        google_app_engine = "Google App Engine v2.6"
-        old_server_software, os.environ['SERVER_SOFTWARE'] = \
-            os.getenv('SERVER_SOFTWARE'), google_app_engine
-        try:
-            self.assertIn(google_app_engine,
-                          Reddit('robot engine').http.headers['User-Agent'])
-        finally:
-            del os.environ['SERVER_SOFTWARE']
-            if old_server_software is not None:
-                os.environ['SERVER_SOFTWARE'] = old_server_software
+        with warnings.catch_warnings(record=True) as w:
+            Reddit('robot agent')
+            assert len(w) == 1
+            assert isinstance(w[0].message, UserWarning)

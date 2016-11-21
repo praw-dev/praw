@@ -29,7 +29,7 @@ from six.moves.urllib.parse import (  # pylint: disable=F0401
 from heapq import heappop, heappush
 from json import dumps
 from requests.compat import urljoin
-from warnings import warn, warn_explicit
+from warnings import warn_explicit
 from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   ModFlairMixin as MFMix, ModLogMixin as MLMix,
                   ModOnlyMixin as MOMix, ModSelfMixin as MSMix,
@@ -37,7 +37,7 @@ from praw import (AuthenticatedReddit as AR, ModConfigMixin as MCMix,
                   SubmitMixin, SubscribeMixin, UnauthenticatedReddit as UR)
 from praw.decorators import (alias_function, limit_chars, restrict_access,
                              deprecated)
-from praw.errors import ClientException
+from praw.errors import ClientException, InvalidComment
 from praw.internal import (_get_redditor_listing, _get_sorter,
                            _modify_relationship)
 
@@ -80,12 +80,7 @@ class RedditContentObject(object):
 
     def __getattr__(self, attr):
         """Return the value of the `attr` attribute."""
-        # Because this method may perform web requests, there are certain
-        # attributes we must blacklist to prevent accidental requests:
-        # __members__, __methods__: Caused by `dir(obj)` in Python 2.
-        # __setstate__: Caused by Pickle deserialization.
-        blacklist = ('__members__', '__methods__', '__setstate__')
-        if attr not in blacklist and not self._has_fetched:
+        if attr != '__setstate__' and not self._has_fetched:
             self._has_fetched = self._populate(None, True)
             return getattr(self, attr)
         msg = '\'{0}\' has no attribute \'{1}\''.format(type(self), attr)
@@ -226,13 +221,11 @@ class Moderatable(RedditContentObject):
         return response
 
     @restrict_access(scope='modposts')
-    def distinguish(self, as_made_by='mod', sticky=False):
+    def distinguish(self, as_made_by='mod'):
         """Distinguish object as made by mod, admin or special.
 
         Distinguished objects have a different author color. With Reddit
         Enhancement Suite it is the background color that changes.
-
-        `sticky` argument only used for top-level Comments.
 
         :returns: The json response from the server.
 
@@ -240,8 +233,6 @@ class Moderatable(RedditContentObject):
         url = self.reddit_session.config['distinguish']
         data = {'id': self.fullname,
                 'how': 'yes' if as_made_by == 'mod' else as_made_by}
-        if isinstance(self, Comment) and self.is_root:
-            data['sticky'] = sticky
         return self.reddit_session.request_json(url, data=data)
 
     @restrict_access(scope='modposts')
@@ -439,10 +430,10 @@ class Refreshable(RedditContentObject):
         automatically be refreshed serverside. Refreshing a submission will
         also refresh all its comments.
 
-        In the rare case of a comment being deleted or removed when it had
-        no replies, a second request will be made, not all information will
-        be updated and a warning will list the attributes that could not be
-        retrieved if there were any.
+        In the rare case of a submissions's comment[0] being deleted or
+        removed in between its original retrieval and refresh, or
+        inconsistencies between different endpoints resulting in this,
+        an IndexError will be thrown.
 
         """
         unique = self.reddit_session._unique_count  # pylint: disable=W0212
@@ -454,30 +445,7 @@ class Refreshable(RedditContentObject):
         elif isinstance(self, Comment):
             sub = Submission.from_url(self.reddit_session, self.permalink,
                                       params={'uniq': unique})
-            if sub.comments:
-                other = sub.comments[0]
-            else:
-                # comment is "specially deleted", a reddit inconsistency;
-                # see #519, #524, #535, #537, and #552 it needs to be
-                # retreived via /api/info, but that's okay since these
-                # specially deleted comments always have the same json
-                # structure. The unique count needs to be updated
-                # in case the comment originally came from /api/info
-                msg = ("Comment {0} was deleted or removed, and had "
-                       "no replies when such happened, so a second "
-                       "request was made to /api/info.".format(self.name))
-                unique = self.reddit_session._unique_count
-                self.reddit_session._unique_count += 1
-                other = self.reddit_session.get_info(thing_id=self.name,
-                                                     params={'uniq': unique})
-                oldkeys = set(self.__dict__.keys())
-                newkeys = set(other.__dict__.keys())
-                keydiff = ", ".join(oldkeys - newkeys)
-                if keydiff:
-                    msg += "\nCould not retrieve:\n{0}".format(keydiff)
-                self.__dict__.update(other.__dict__)  # pylint: disable=W0201
-                warn(msg, RuntimeWarning)
-                return self
+            other = sub.comments[0]
         elif isinstance(self, Multireddit):
             other = Multireddit(self.reddit_session, author=self._author,
                                 name=self.name, uniq=unique, fetch=True)
@@ -690,20 +658,11 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         """
         if self._replies is None or not self._has_fetched_replies:
             response = self.reddit_session.request_json(self._fast_permalink)
-            if response[1]['data']['children']:
-                # pylint: disable=W0212
-                self._replies = response[1]['data']['children'][0]._replies
-            else:
-                # comment is "specially deleted", a reddit inconsistency;
-                # see #519, #524, #535, #537, and #552 it needs to be
-                # retreived via /api/info, but that's okay since these
-                # specially deleted comments always have the same json
-                # structure.
-                msg = ("Comment {0} was deleted or removed, and had "
-                       "no replies when such happened, so it still "
-                       "has no replies".format(self.name))
-                warn(msg, RuntimeWarning)
-                self._replies = []
+            if not response[1]['data']['children']:
+                raise InvalidComment('Comment is no longer accessible: {0}'
+                                     .format(self._fast_permalink))
+            # pylint: disable=W0212
+            self._replies = response[1]['data']['children'][0]._replies
             # pylint: enable=W0212
             self._has_fetched_replies = True
             # Set the submission object if it is not set.
@@ -1270,20 +1229,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
         """
         return self.subreddit.get_flair_choices(self.fullname, *args, **kwargs)
 
-    @restrict_access(scope='modposts')
-    def lock(self):
-        """Lock thread.
-
-        Requires that the currently authenticated user has the modposts oauth
-        scope or has user/password authentication as a mod of the subreddit.
-
-        :returns: The json response from the server.
-
-        """
-        url = self.reddit_session.config['lock']
-        data = {'id': self.fullname}
-        return self.reddit_session.request_json(url, data=data)
-
     def mark_as_nsfw(self, unmark_nsfw=False):
         """Mark as Not Safe For Work.
 
@@ -1440,20 +1385,6 @@ class Submission(Editable, Gildable, Hideable, Moderatable, Refreshable,
             data['num'] = 1
         return self.reddit_session.request_json(url, data=data)
 
-    @restrict_access(scope='modposts')
-    def unlock(self):
-        """Lock thread.
-
-        Requires that the currently authenticated user has the modposts oauth
-        scope or has user/password authentication as a mod of the subreddit.
-
-        :returns: The json response from the server.
-
-        """
-        url = self.reddit_session.config['unlock']
-        data = {'id': self.fullname}
-        return self.reddit_session.request_json(url, data=data)
-
     def unmark_as_nsfw(self):
         """Mark as Safe For Work.
 
@@ -1517,7 +1448,6 @@ class Subreddit(Messageable, Refreshable):
                 ('get_muted', MOMix),
                 ('get_random_submission', UR),
                 ('get_reports', MOMix),
-                ('get_rules', UR),
                 ('get_settings', MCMix),
                 ('get_spam', MOMix),
                 ('get_sticky', UR),
@@ -1594,12 +1524,8 @@ class Subreddit(Messageable, Refreshable):
         # Special case for when my_subreddits is called as no name is returned
         # so we have to extract the name from the URL. The URLs are returned
         # as: /r/reddit_name/
-        if subreddit_name is None:
+        if not subreddit_name:
             subreddit_name = json_dict['url'].split('/')[2]
-
-        if not isinstance(subreddit_name, six.string_types) \
-                or not subreddit_name:
-            raise TypeError('subreddit_name must be a non-empty string.')
 
         if fetch and ('+' in subreddit_name or '-' in subreddit_name):
             fetch = False

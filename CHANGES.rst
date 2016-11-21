@@ -10,39 +10,24 @@ upstream changes.
 
 .. begin_changelog_body
 
-3.6.0 (2016-11-13)
-------------------
-
-* **[FEATURE]** Added support for getting subreddit rules. See
-  :meth:`~praw.__init__.UnauthenticatedReddit.get_rules`.
-
-3.5.0 (2016-05-10)
-------------------
- * **[BUGFIX]** Prevent built-in method `dir` from causing RedditContentObjects
-   to perform web requests in Python 2.
- * **[FEATURE]** Added support for thread locking. See
-   :meth:`~praw.objects.Submission.lock` and
-   :meth:`~praw.objects.Submission.unlock`.
- * **[FEATURE]** Added support for comment stickying. Try
-   :meth:`~praw.objects.Comment.distinguish` with new parameter `sticky`.
- * **[FEATURE]** Methods :meth:`~praw.__init__.ReportMixin.hide` and
-   :meth:`~praw.__init__.UnauthenticatedReddit.get_info` now support long lists
-   of fullnames. They will divide the list up into small, requestable chunks
-   automatically.
-
 3.4.0 (2016-02-21)
 ------------------
- * **[CHANGE]** Image uploads support PNG images as small as 67 bytes.
- * **[FEATURE]** Added support for modmail muting. See
+
+**Added**
+
+* Added support for modmail muting. See
    :meth:`~praw.objects.Subreddit.add_mute`,
    :meth:`~praw.__init__.ModOnlyMixin.get_muted`,
    :meth:`~praw.objects.Subreddit.remove_mute`,
    :meth:`~praw.objects.Message.mute_modmail_author`, and
    :meth:`~praw.objects.Message.unmute_modmail_author`.
- * **[FEATURE]** Added
-   :meth:`~praw.__init__.UnauthenticatedReddit.default_subreddits`.
- * **[FEATURE]** Added support for ``*`` OAuth scopes.
- * **[FEATURE]** Added :meth:`~praw.__init__.UnauthenticatedReddit.get_traffic`
+* :meth:`~praw.__init__.UnauthenticatedReddit.default_subreddits`.
+* Support for ``*`` OAuth scopes.
+* :meth:`~praw.__init__.UnauthenticatedReddit.get_traffic`
+
+**Changed**
+
+* Image uploads support PNG images as small as 67 bytes.
 
 PRAW 3.3.0
 ----------
@@ -313,7 +298,7 @@ PRAW 2.1.12
  * **[FEATURE]** Add :attr:`.json_dict` to :class:`.RedditContentObject`.
  * **[FEATURE]** You can now give configuration settings directly when
    instantiating a :class:`.BaseReddit` object. See `the configuration files
-   <https://praw.readthedocs.io/en/latest/pages/configuration_files.html>`_
+   <https://praw.readthedocs.org/en/latest/pages/configuration_files.html>`_
  * **[BUGFIX]** Fixed a bug that caused an ``AttributeError`` to be raised when
    using a deprecated method.
 
@@ -381,7 +366,7 @@ PRAW 2.1.7
    on :class:`.Redditor` allows PRAW to access this info.
  * **[FEATURE]** The ``has_fetched`` attribute has been added to all objects
    save :class:`.Reddit`, see the `lazy loading
-   <http://praw.readthedocs.io/en/latest/pages/lazy-loading.html>`_ page in
+   <http://praw.readthedocs.org/en/latest/pages/lazy-loading.html>`_ page in
    PRAW's documentation for more details.
  * **[BUGFIX]** Fixed a bug that caused the ``timeout`` configuration setting
    to always be the default 45 irrespective of what it was set to in
@@ -707,7 +692,7 @@ PRAW 2.0.0
    instead.
  * **[CHANGE]** Remove depreciated method ``compose_message``.
  * **[CHANGE]** Refactored and add a number of exception classes (`docs
-   <https://praw.readthedocs.io/en/latest/pages/code_overview.html#module-praw.errors>`_,
+   <https://praw.readthedocs.org/en/latest/pages/code_overview.html#module-praw.errors>`_,
    `source <https://github.com/praw-dev/praw/blob/master/praw/errors.py>`_)
    This includes the renaming of:
 

@@ -147,12 +147,6 @@ this page to add in more.
 `Subtitle Bot`_ by `arrayofchar <https://github.com/arrayofchar>`_
     Finds youtube links and see if closed captioning (aka subtitle) is available. Formats subtitle into paragraphs based on  standard deviation of timestamp gaps. If subtitle is longer than Reddit comment limit, puts it in Pastebin.
 
-`Reddit Countdown`_ by `matchu <https://github.com/matchu/>`_
-    Implements a countdown in a subreddit's sidebar to help Reddit communities count down to important events.
-
-`chattR`_ by `DontKillTheMedic <https://github.com/patrickstocklin/>`_
-    Quantitatively analyzes the sophistication-level and polarity/subjectivity of conversation in a subreddit using the Flesch-Kincaid Reading Level Algorithm. 
-
 **\<Your Script Here\>**
     Edit `this page on github <https://github.com/praw-dev/praw/blob/master/
     docs/pages/useful_scripts.rst>`_ to add your script to this list.
@@ -164,7 +158,6 @@ this page to add in more.
 .. _`AutoModerator`: https://github.com/Deimos/AutoModerator
 .. _`Butcher bot`: https://github.com/xiphirx/Butcher-Bot
 .. _`ButtsBot`: https://github.com/jadunawa/ButtsBot
-.. _`chattR`: https://github.com/patrickstocklin/chattr
 .. _`EVE Killmail Reddit Bot`: https://github.com/ArnoldM904/EK_Reddit_Bot
 .. _`GoodReads Bot`: https://github.com/avinassh/Reddit-GoodReads-Bot
 .. _`Groompbot`: https://github.com/AndrewNeo/groompbot
@@ -187,5 +180,4 @@ this page to add in more.
      https://github.com/xiphirx/rdiablo-flair-infographic-generator
 .. _`reddit-analysis`: https://github.com/rhiever/reddit-analysis
 .. _`reddit-cloud`: https://github.com/paul-nechifor/reddit-cloud
-.. _`Reddit Countdown`: https://github.com/matchu/reddit-countdown
 .. _`u/xiphirx`: http://www.reddit.com/user/xiphirx

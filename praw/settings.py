@@ -19,7 +19,10 @@ from __future__ import print_function, unicode_literals
 import os
 import sys
 
-from six.moves import configparser
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser  # NOQA pylint: disable=F0401
 
 
 def _load_configuration():
