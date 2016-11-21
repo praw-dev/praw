@@ -1,0 +1,102 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-07-04T04:56:23",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b5 prawcore/0.0.8"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"KwNTtvEiBLkv3umEjiqPo4lFv0M\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "CF-RAY": "2bcffd89bfe020ea-LAX",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Mon, 04 Jul 2016 04:56:23 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=d85f4a6ba4c576e9d9715b11c0c9655fe1467608183; expires=Tue, 04-Jul-17 04:56:23 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-07-04T04:56:24",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&subject=Test+from+PRAW&text=Test+content&to=%23<TEST_SUBREDDIT>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer KwNTtvEiBLkv3umEjiqPo4lFv0M",
+          "Connection": "keep-alive",
+          "Content-Length": "76",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Cookie": "__cfduid=d85f4a6ba4c576e9d9715b11c0c9655fe1467608183; loidcreated=2016-07-04T04%3A56%3A23.347Z; loid=9sFVgQNuX8BZbCQdOP",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b5 prawcore/0.0.8"
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/compose/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"json\": {\"errors\": []}}"
+        },
+        "headers": {
+          "CF-RAY": "2bcffd8d19895059-LAX",
+          "Connection": "keep-alive",
+          "Content-Length": "24",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Mon, 04 Jul 2016 04:56:24 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "598.0",
+          "x-ratelimit-reset": "217",
+          "x-ratelimit-used": "2",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/compose/?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.5.1"
+}

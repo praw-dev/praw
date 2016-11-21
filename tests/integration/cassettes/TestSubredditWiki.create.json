@@ -1,0 +1,153 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-07-17T22:26:18",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b9 prawcore/0.0.12"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"LM2Ll3r7YOLRM9JrpueQLCrlH7w\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "CF-RAY": "2c411d619c4f226a-LAX",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 17 Jul 2016 22:26:18 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=d0f612634d3978548fc49a20cdbfa4fbd1468794378; expires=Mon, 17-Jul-17 22:26:18 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-07-17T22:26:20",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&content=This+is+the+new+wiki+page&page=praw_new_page"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer LM2Ll3r7YOLRM9JrpueQLCrlH7w",
+          "Connection": "keep-alive",
+          "Content-Length": "66",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Cookie": "loid=whg52MxBwrekDBNT1m; __cfduid=d0f612634d3978548fc49a20cdbfa4fbd1468794378; loidcreated=2016-07-17T22%3A26%3A18.528Z",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b9 prawcore/0.0.12"
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/wiki/edit/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{}"
+        },
+        "headers": {
+          "CF-RAY": "2c411d67e23613cb-LAX",
+          "Connection": "keep-alive",
+          "Content-Length": "2",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 17 Jul 2016 22:26:20 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "599.0",
+          "x-ratelimit-reset": "221",
+          "x-ratelimit-used": "1",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/wiki/edit/?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2016-07-17T22:26:20",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer LM2Ll3r7YOLRM9JrpueQLCrlH7w",
+          "Connection": "keep-alive",
+          "Cookie": "loid=whg52MxBwrekDBNT1m; __cfduid=d0f612634d3978548fc49a20cdbfa4fbd1468794378; loidcreated=2016-07-17T22%3A26%3A18.528Z",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b9 prawcore/0.0.12"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/wiki/praw_new_page?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"wikipage\", \"data\": {\"may_revise\": true, \"revision_date\": 1468822648.0, \"content_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md wiki\\\"\\u003E\\u003Cp\\u003EThis is the new wiki page\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"revision_by\": {\"kind\": \"t2\", \"data\": {\"is_employee\": false, \"features\": {\"inline_image_previews_logged_out\": true, \"register_email_flow_test\": {\"variant\": \"test_group\", \"experiment_id\": 23}, \"live_happening_now\": true, \"adserver_reporting\": true, \"inline_image_previews_logged_in\": true, \"legacy_search_pref\": true, \"mobile_web_targeting\": true, \"adzerk_do_not_track\": true, \"sticky_comments\": true, \"upgrade_cookies\": true, \"ads_auto_refund\": true, \"ads_auction\": true, \"imgur_gif_conversion\": true, \"expando_events\": true, \"eu_cookie_policy\": true, \"force_https\": true, \"mobile_native_banner\": true, \"do_not_track\": true, \"outbound_clicktracking\": true, \"image_uploads\": true, \"new_loggedin_cache_policy\": true, \"https_redirect\": true, \"screenview_events\": true, \"pause_ads\": true, \"give_hsts_grants\": true, \"new_report_dialog\": true, \"moat_tracking\": true, \"subreddit_rules\": true, \"timeouts\": true, \"mobile_settings\": true, \"youtube_scraper\": true, \"activity_service_write\": true, \"ads_auto_extend\": true, \"post_embed\": true, \"autoexpand_media_subreddit_setting\": true, \"adblock_test\": true, \"activity_service_read\": true}, \"is_friend\": false, \"is_suspended\": false, \"gold_expiration\": null, \"id\": \"4cixf\", \"suspension_expiration_utc\": null, \"over_18\": true, \"is_gold\": false, \"is_mod\": true, \"has_verified_email\": true, \"has_mod_mail\": false, \"hide_from_robots\": false, \"modhash\": null, \"link_karma\": 12, \"inbox_count\": 0, \"has_mail\": false, \"name\": \"<USERNAME>\", \"created\": 1284640285.0, \"gold_creddits\": 0, \"created_utc\": 1284611485.0, \"in_beta\": false, \"comment_karma\": 9}}, \"content_md\": \"This is the new wiki page\"}}"
+        },
+        "headers": {
+          "CF-RAY": "2c411d6c729613cb-LAX",
+          "Connection": "keep-alive",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 17 Jul 2016 22:26:20 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Transfer-Encoding": "chunked",
+          "Vary": "accept-encoding",
+          "X-Moose": "majestic",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "598.0",
+          "x-ratelimit-reset": "220",
+          "x-ratelimit-used": "2",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=ZBMmWvC%2F3GM56bmFriTcmqJnxp9KnQAZDjxyegzwUxoODMrpTyzV9RywnQl69VJ%2FczPvQ%2F0P7v92f6sghqwVSvI0WbnUjUWe",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/wiki/praw_new_page?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.7.1"
+}

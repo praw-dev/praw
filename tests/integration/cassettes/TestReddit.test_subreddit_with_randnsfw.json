@@ -1,0 +1,148 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-03-13T01:22:24",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.5"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "base64_string": "H4sIAAAAAAAAA6tWSkxOTi0uji/Jz07NU7JSUNINNvbMMQ8sMo4yqwgLiY8MDC9KLPPzT3XNrDJQ0lFQAiuML6ksSAWpTkpNLEotAomnVhRkFqUWx2eCTDE2MzDQUVAqTs6HKNNSqgUAO0PQZGoAAAA=",
+          "encoding": "UTF-8",
+          "string": ""
+        },
+        "headers": {
+          "CF-RAY": "282bacb7ba873982-PHX",
+          "Connection": "keep-alive",
+          "Content-Encoding": "gzip",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 13 Mar 2016 01:22:24 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=dee9216dbe9f30e636152beedb48c01791457832144; expires=Mon, 13-Mar-17 01:22:24 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Transfer-Encoding": "chunked",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-03-13T01:22:24",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate",
+          "Authorization": "bearer -S3Il7Qr3Z6xVT_YQWravNOeEiz0",
+          "Connection": "keep-alive",
+          "Cookie": "loidcreated=2016-03-13T01%3A22%3A24.634Z; loid=7BNAA1lY7gSYRbjxmg; __cfduid=dee9216dbe9f30e636152beedb48c01791457832144",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.5"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/randnsfw/?unique=0&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "<html>\n <head>\n  <title>302 Found</title>\n </head>\n <body>\n  <h1>302 Found</h1>\n  The resource was found at <a href=\"https://oauth.reddit.com/r/LaBeauteFeminine/.json?unique=0&amp;raw_json=1\">https://oauth.reddit.com/r/LaBeauteFeminine/.json?unique=0&amp;raw_json=1</a>;\nyou should be redirected automatically.\n\n\n </body>\n</html>"
+        },
+        "headers": {
+          "CF-RAY": "282bacb9490239d0-PHX",
+          "Connection": "keep-alive",
+          "Content-Length": "329",
+          "Content-Type": "text/html; charset=UTF-8",
+          "Date": "Sun, 13 Mar 2016 01:22:24 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Content-Type-Options": "nosniff",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "location": "https://oauth.reddit.com/r/LaBeauteFeminine/.json?unique=0&raw_json=1",
+          "x-ua-compatible": "IE=edge"
+        },
+        "status": {
+          "code": 302,
+          "message": "Found"
+        },
+        "url": "https://oauth.reddit.com/r/randnsfw/?unique=0&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2016-03-13T01:22:25",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate",
+          "Authorization": "bearer -S3Il7Qr3Z6xVT_YQWravNOeEiz0",
+          "Connection": "keep-alive",
+          "Cookie": "loidcreated=2016-03-13T01%3A22%3A24.634Z; loid=7BNAA1lY7gSYRbjxmg; __cfduid=dee9216dbe9f30e636152beedb48c01791457832144",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.5"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/LaBeauteFeminine/about/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "base64_string": "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",
+          "encoding": "UTF-8",
+          "string": ""
+        },
+        "headers": {
+          "CF-RAY": "282bacba090439d0-PHX",
+          "Connection": "keep-alive",
+          "Content-Encoding": "gzip",
+          "Content-Length": "4081",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 13 Mar 2016 01:22:25 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "X-Moose": "majestic",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=r0x2kH%2BtUikKvwPgHPVSZrKv9lq1YsuJ%2FSBO4pw4HcEeHhGUPWTFhiUdnQHpWwe1pSqAiJ0j2OolA%2Fpce%2BoHjNoO%2FdkFmgFF",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/LaBeauteFeminine/about/?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.5.1"
+}

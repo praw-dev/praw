@@ -1,117 +1,128 @@
-.. _main_page:
-
 PRAW: The Python Reddit API Wrapper
 ===================================
 
-.. begin_description
-
-.. image:: https://travis-ci.org/praw-dev/praw.svg?branch=master
-           :target: https://travis-ci.org/praw-dev/praw
-.. image:: https://coveralls.io/repos/praw-dev/praw/badge.svg?branch=master
-  :target: https://coveralls.io/r/praw-dev/praw?branch=master
-
+.. image:: https://img.shields.io/pypi/v/praw.svg
+   :alt: Latest PRAW Version
+   :target: https://pypi.python.org/pypi/praw
+.. image:: https://travis-ci.org/praw-dev/praw.svg?branch=praw4
+   :alt: Travis CI Status
+   :target: https://travis-ci.org/praw-dev/praw
+.. image:: https://coveralls.io/repos/github/praw-dev/praw/badge.svg?branch=praw4
+   :alt: Coveralls Coverage
+   :target: https://coveralls.io/github/praw-dev/praw?branch=praw4
+.. image:: https://badges.gitter.im/praw-dev/praw.svg
+   :alt: Join the chat at https://gitter.im/praw-dev/praw
+   :target: https://gitter.im/praw-dev/praw
+.. image:: https://img.shields.io/badge/donate-cash.me%2F%24praw-blue.svg
+   :alt: Donate via https://cash.me/$praw
+   :target: https://cash.me/$praw
 
 PRAW, an acronym for "Python Reddit API Wrapper", is a python package that
-allows for simple access to reddit's API. PRAW aims to be as easy to use as
-possible and is designed to follow all of `reddit's API rules
-<https://github.com/reddit/reddit/wiki/API>`_. You have to give a useragent
-that follows the rules, everything else is handled by PRAW so you needn't worry
-about violating them.
-
-Here's a quick peek, getting the first 5 submissions from
-the 'hot' section of the 'opensource' subreddit:
-
-.. code-block:: pycon
-
-    >>> import praw
-    >>> r = praw.Reddit(user_agent='my_cool_application')
-    >>> submissions = r.get_subreddit('opensource').get_hot(limit=5)
-    >>> [str(x) for x in submissions]
-
-This will display something similar to the following:
-
-.. code-block:: pycon
-
-    ['10 :: Gun.io Debuts Group Funding for Open Source Projects\n Gun.io',
-     '24 :: Support the Free Software Foundation',
-     '67 :: The 10 Most Important Open Source Projects of 2011',
-     '85 :: Plan 9 - A distributed OS with a unified communicatioprotocol  I/O...',
-      '2 :: Open-source webOS is dead on arrival ']
-
-.. end_description
-
-.. begin_installation
+allows for simple access to Reddit's API. PRAW aims to be easy to use and
+internally follows all of `Reddit's API rules
+<https://github.com/reddit/reddit/wiki/API>`_. With PRAW there's no need to
+introduce ``sleep`` calls in your code. Give your client an appropriate user
+agent and you're set.
 
 .. _installation:
 
 Installation
 ------------
 
-PRAW is supported on python 2.7, 3.3, 3.4 and 3.5. The recommended way to
-install is via `pip <https://pypi.python.org/pypi/pip>`_
+PRAW is supported on python 2.7, 3.3, 3.4, and 3.5. The recommended way to
+install PRAW is via `pip <https://pypi.python.org/pypi/pip>`_.
 
 .. code-block:: bash
 
-    $ pip install praw
+    pip install --pre praw
 
+.. note:: The ``--pre`` flag is needed to install PRAW4 as it is not yet the
+   official version.
 
-If you want to run the development version of PRAW try:
-
-.. code-block:: bash
-
-    $ pip install --upgrade https://github.com/praw-dev/praw/archive/master.zip
-
-If you don't have ``pip`` installed, then the Hitchhiker's Guide to Python has
-a section for setting it up on `Windows
-<http://docs.python-guide.org/en/latest/starting/install/win/>`_,
-`Mac <http://docs.python-guide.org/en/latest/starting/install/osx/>`_ and
-`Linux <http://docs.python-guide.org/en/latest/starting/install/linux/>`_.
-There is also a `Stack overflow question on installing pip on Windows
-<http://stackoverflow.com/questions/4750806/how-to-install-pip-on-windows>`_
-that might prove helpful.
-
-Alternatively you can do it via
-`easy_install <https://pypi.python.org/pypi/setuptools>`_
+To install the latest development version of PRAW4 run the following instead:
 
 .. code-block:: bash
 
-    $ easy_install praw
+    pip install --upgrade https://github.com/praw-dev/praw/archive/praw4.zip
 
-.. end_installation
+For instructions on installing python and pip see "The Hitchhiker's Guide to
+Python" `Installation Guides
+<http://docs.python-guide.org/en/latest/starting/installation/>`_.
 
-.. begin_support
+PRAW Discussion and Support
+---------------------------
 
-Support
--------
+For those new to python, or would otherwise consider themselves a python
+beginner, please consider asking questions on the `r/learnpython
+<https://www.reddit.com/r/learnpython>`_ subreddit. There are wonderful people
+there who can help with general python and simple PRAW related questions.
 
-The official place to ask questions about PRAW, reddit and other API wrappers
-is `r/redditdev <https://www.reddit.com/r/redditdev>`_. If the question is more
-about Python and less about PRAW, such as "what are generators", then you're
-likely to get more, faster and more in-depth answers in `r/learnpython
-<https://www.reddit.com/r/learnpython>`_.
+Otherwise, there are a few official places to ask questions about PRAW:
 
-If you've uncovered a bug or have a feature request, then `make an issue on our
-project page at github <https://github.com/praw-dev/praw/issues>`_.
+`/r/redditdev <https://www.reddit.com/r/redditdev>`_ is the best place on
+Reddit to ask PRAW related questions. This subreddit is for all Reddit API
+related discussion so please tag submissions with *[PRAW4]*. Please perform a
+search on the subreddit first to see if anyone has similar questions.
 
-Please note that this project is released with a `Contributor Code of Conduct
-<https://github.com/praw-dev/praw/blob/master/CODE_OF_CONDUCT.md>`_. By
-participating in this project you agree to abide by its terms.
+Real-time chat can be conducted via the `praw-dev/praw
+<https://gitter.im/praw-dev/praw>`_ channel on gitter.
 
-.. end_support
+Please do not directly message any of the contributors via Reddit, email, or
+gitter unless they have indicated otherwise. We strongly encourage everyone to
+help others with their questions.
+
+Please file bugs and feature requests as issues on `GitHub
+<https://github.com/praw-dev/praw/issues>`_ after first searching to ensure a
+similar issue was not already filed. If such an issue already exists please
+give it a thumbs up reaction. Comments to issues containing additional
+information are certainly welcome.
+
+.. note:: This project is released with a `Contributor Code of Conduct
+   <https://github.com/praw-dev/praw/blob/praw4/CODE_OF_CONDUCT.md>`_. By
+   participating in this project you agree to abide by its terms.
 
 Documentation
 -------------
 
-PRAW's documentation, which includes tutorials, information on configuring PRAW
-and other good stuff can be found at `readthedocs
-<https://praw.readthedocs.org>`_.
+PRAW's documentation is located at http://praw.readthedocs.io/en/praw4/.
 
-.. begin_license
+History
+-------
+
+`August 2010
+<https://github.com/praw-dev/praw/commit/efef08a4a713fcfd7dfddf992097cf89426586ae>`_:
+Timothy Mellor created a github project called ``reddit_api``.
+
+`March 2011
+<https://github.com/praw-dev/praw/commit/ebfc9caba5b58b9e68c77af9c8e53f5562a2ee64>`_:
+The python package ``reddit`` was registered and uploaded to pypi.
+
+`December 2011
+<https://github.com/praw-dev/praw/commit/74bb962b3eefe04ce6acad88e6f53f43d10c8803>`_:
+Bryce Boe took over as maintainer of the ``reddit`` package.
+
+`June 2012
+<https://github.com/praw-dev/praw/commit/adaf89fe8631f41ab9913b379de104c9ef6a1e73>`_:
+Bryce renamed the project ``PRAW`` and the repository was relocated to the
+newly created praw-dev organization on GitHub.
+
+`February 2016
+<https://github.com/praw-dev/praw/commit/252083ef1dbfe6ea53c2dc99ac235b4ba330b658>`_:
+Bryce began work on PRAW4, a complete rewrite of PRAW.
+
 
 License
 -------
 
-All of the code contained here is licensed by
-`the GNU GPLv3 <https://github.com/praw-dev/praw/blob/master/COPYING>`_.
+PRAW4's source is provided under the `Simplified BSD License
+<https://github.com/praw-dev/praw/blob/0860c11a9309c80621c267af7caeb6a993933744/LICENSE.txt>`_.
 
-.. end_license
+* Copyright (c), 2016, Bryce Boe
+
+Earlier versions of PRAW were released under `GPLv3
+<https://github.com/praw-dev/praw/blob/0c88697fdc26e75f87b68e2feb11e101e90ce215/COPYING>`_.
+
+Donations
+---------
+
+Please consider donating to PRAW's maintainer via https://cash.me/$praw.

@@ -1,0 +1,98 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-07-12T15:29:25",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b7 prawcore/0.0.10"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"ptiKMleNDJaU0-6nVfQboZDJEyo\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "CF-RAY": "2c1587d3fa972957-DUB",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 12 Jul 2016 15:29:25 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=d99b43d035728a36b296d0299a46039d21468337365; expires=Wed, 12-Jul-17 15:29:25 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-07-12T15:29:25",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&exact=False&include_over_18=True&query=reddit"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer ptiKMleNDJaU0-6nVfQboZDJEyo",
+          "Connection": "keep-alive",
+          "Content-Length": "59",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Cookie": "__cfduid=d99b43d035728a36b296d0299a46039d21468337365; loidcreated=2016-07-12T15%3A29%3A25.415Z; loid=5ufxuoEJWEE0vugzWB",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b7 prawcore/0.0.10"
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/search_reddit_names/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"names\": [\"RedditLaqueristas\", \"redditgetsdrawn\", \"redditsync\", \"redditmobile\", \"RedditWritesSeinfeld\", \"RedditDayOf\", \"RedditForGrownups\", \"RedditDads\", \"RedditorCum\", \"REDDITORSINRECOVERY\"]}"
+        },
+        "headers": {
+          "CF-RAY": "2c1587d778fe2993-DUB",
+          "Connection": "keep-alive",
+          "Content-Length": "193",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 12 Jul 2016 15:29:25 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/search_reddit_names/?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.7.1"
+}

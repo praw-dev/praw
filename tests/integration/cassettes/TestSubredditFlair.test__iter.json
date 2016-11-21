@@ -1,0 +1,101 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-03-20T09:04:05",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "password=<PASSWORD>&username=<USERNAME>&grant_type=password"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.7"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"7302867-yVA8PeyES28ucgkqukQsmm4sUt0\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "CF-RAY": "2867fe9d6e2e39d0-PHX",
+          "Connection": "keep-alive",
+          "Content-Length": "113",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 20 Mar 2016 09:04:05 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=df2430c9e653ed4e50897b97705af702a1458464644; expires=Mon, 20-Mar-17 09:04:04 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-03-20T09:04:05",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer 7302867-yVA8PeyES28ucgkqukQsmm4sUt0",
+          "Connection": "keep-alive",
+          "Cookie": "loid=aNg1hYPSQB8Tbp36ov; loidcreated=2016-03-20T09%3A04%3A04.748Z; __cfduid=df2430c9e653ed4e50897b97705af702a1458464644",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.7"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?limit=1024&unique=0&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"users\": [{\"flair_css_class\": \"\", \"user\": \"reddit\", \"flair_text\": \"reddit\"}, {\"flair_css_class\": \"some class\", \"user\": \"<USERNAME>\", \"flair_text\": \"new flair\"}, {\"flair_css_class\": \"blah\", \"user\": \"PyAPITestUser3\", \"flair_text\": null}]}"
+        },
+        "headers": {
+          "CF-RAY": "2867fea4db0539ac-PHX",
+          "Connection": "keep-alive",
+          "Content-Length": "241",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 20 Mar 2016 09:04:06 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "599.0",
+          "x-ratelimit-reset": "355",
+          "x-ratelimit-used": "1",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=ZA6%2BOZ0%2BuopfDnlTImaF12oaPeaCCBA3V8pCoKQt%2By9nyWCFDEQPJ4pTklQ7Pcw5GSo7KgTDufo3FDSll2JuBWcDggi%2FYxA4",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?limit=1024&unique=0&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.5.1"
+}

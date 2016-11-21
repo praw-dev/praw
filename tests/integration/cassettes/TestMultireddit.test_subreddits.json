@@ -1,0 +1,100 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-07-17T05:09:06",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b9 prawcore/0.0.11"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"5SyKz70659PXSuNX7bhim6yw2do\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "CF-RAY": "2c3b2e0959380673-LAX",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 17 Jul 2016 05:09:06 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=df621b395472e1f07c7cf50ceb58b6b5e1468732146; expires=Mon, 17-Jul-17 05:09:06 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-07-17T05:09:06",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer 5SyKz70659PXSuNX7bhim6yw2do",
+          "Connection": "keep-alive",
+          "Cookie": "loid=bTCvAXltAL8PEZIHmf; loidcreated=2016-07-17T05%3A09%3A06.200Z; __cfduid=df621b395472e1f07c7cf50ceb58b6b5e1468732146",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b9 prawcore/0.0.11"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/multi/user/kjoneslol/m/sfwpornnetwork/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"LabeledMulti\", \"data\": {\"can_edit\": false, \"display_name\": \"sfwpornnetwork\", \"name\": \"sfwpornnetwork\", \"description_html\": \"\", \"created\": 1374639172.0, \"copied_from\": null, \"icon_url\": null, \"subreddits\": [{\"name\": \"MicroPorn\"}, {\"name\": \"AbandonedPorn\"}, {\"name\": \"MilitaryPorn\"}, {\"name\": \"VillagePorn\"}, {\"name\": \"EarthlingPorn\"}, {\"name\": \"policeporn\"}, {\"name\": \"Houseporn\"}, {\"name\": \"SummerPorn\"}, {\"name\": \"DessertPorn\"}, {\"name\": \"BonsaiPorn\"}, {\"name\": \"AdrenalinePorn\"}, {\"name\": \"InfraredPorn\"}, {\"name\": \"MacroPorn\"}, {\"name\": \"WeatherPorn\"}, {\"name\": \"RoomPorn\"}, {\"name\": \"FractalPorn\"}, {\"name\": \"ApocalypsePorn\"}, {\"name\": \"FossilPorn\"}, {\"name\": \"SpringPorn\"}, {\"name\": \"bridgeporn\"}, {\"name\": \"RidesPorn\"}, {\"name\": \"EarthPorn\"}, {\"name\": \"lakeporn\"}, {\"name\": \"BotanicalPorn\"}, {\"name\": \"MapPorn\"}, {\"name\": \"StreetArtPorn\"}, {\"name\": \"SportsPorn\"}, {\"name\": \"drydockporn\"}, {\"name\": \"bookporn\"}, {\"name\": \"InstrumentPorn\"}, {\"name\": \"mtgporn\"}, {\"name\": \"waterporn\"}, {\"name\": \"CityPorn\"}, {\"name\": \"ArtefactPorn\"}, {\"name\": \"CabinPorn\"}, {\"name\": \"MachinePorn\"}, {\"name\": \"Beachporn\"}, {\"name\": \"GunPorn\"}, {\"name\": \"stadiumporn\"}, {\"name\": \"steamporn\"}, {\"name\": \"CemeteryPorn\"}, {\"name\": \"HellscapePorn\"}, {\"name\": \"InfrastructurePorn\"}, {\"name\": \"RetroGamePorn\"}, {\"name\": \"AutumnPorn\"}, {\"name\": \"NewsPorn\"}, {\"name\": \"MegalithPorn\"}, {\"name\": \"fashionporn\"}, {\"name\": \"winterporn\"}, {\"name\": \"ArchitecturePorn\"}, {\"name\": \"VideoPorn\"}, {\"name\": \"futureporn\"}, {\"name\": \"retailporn\"}, {\"name\": \"AnimalPorn\"}, {\"name\": \"GamerPorn\"}, {\"name\": \"ViewPorn\"}, {\"name\": \"desertporn\"}, {\"name\": \"HumanPorn\"}, {\"name\": \"powerwashingporn\"}, {\"name\": \"GeekPorn\"}, {\"name\": \"lavaporn\"}, {\"name\": \"seaporn\"}, {\"name\": \"ArtPorn\"}, {\"name\": \"TeaPorn\"}, {\"name\": \"QuotesPorn\"}, {\"name\": \"DesignPorn\"}, {\"name\": \"FirePorn\"}, {\"name\": \"TechnologyPorn\"}, {\"name\": \"boatporn\"}, {\"name\": \"ThingsCutInHalfPorn\"}, {\"name\": \"MushroomPorn\"}, {\"name\": \"ComicBookPorn\"}, {\"name\": \"TelevisionPosterPorn\"}, {\"name\": \"StarshipPorn\"}, {\"name\": \"toolporn\"}, {\"name\": \"DestructionPorn\"}, {\"name\": \"Knifeporn\"}, {\"name\": \"ruralporn\"}, {\"name\": \"churchporn\"}, {\"name\": \"CulinaryPorn\"}, {\"name\": \"spaceflightporn\"}, {\"name\": \"F1Porn\"}, {\"name\": \"AdPorn\"}, {\"name\": \"spaceporn\"}, {\"name\": \"geologyporn\"}, {\"name\": \"OrganizationPorn\"}, {\"name\": \"AgriculturePorn\"}, {\"name\": \"ClimbingPorn\"}, {\"name\": \"avporn\"}, {\"name\": \"SkyPorn\"}, {\"name\": \"uniformporn\"}, {\"name\": \"AerialPorn\"}, {\"name\": \"MetalPorn\"}, {\"name\": \"carporn\"}, {\"name\": \"FoodPorn\"}, {\"name\": \"AlbumArtPorn\"}, {\"name\": \"HistoryPorn\"}, {\"name\": \"MotorcyclePorn\"}, {\"name\": \"ExposurePorn\"}, {\"name\": \"MoviePosterPorn\"}], \"created_utc\": 1374610372.0, \"key_color\": \"#cee3f8\", \"visibility\": \"public\", \"icon_name\": \"\", \"weighting_scheme\": \"classic\", \"path\": \"/user/kjoneslol/m/sfwpornnetwork\", \"description_md\": \"\"}}"
+        },
+        "headers": {
+          "CF-RAY": "2c3b2e0bdd890d55-LAX",
+          "Connection": "keep-alive",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 17 Jul 2016 05:09:06 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Transfer-Encoding": "chunked",
+          "Vary": "accept-encoding",
+          "X-Moose": "majestic",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=aTC2J9nVu%2BDyxY07hKagKh9FEr76fm8drkhaWkqvAxCN3rkG%2FHVts52MXkcBnvoHIOZwnJvdsWg%3D",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/multi/user/kjoneslol/m/sfwpornnetwork/?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.7.1"
+}

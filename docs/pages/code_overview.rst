@@ -5,55 +5,76 @@ Code Overview
 
 Here you will find an overview of PRAW's objects and methods, but not the
 objects attributes which are generated dynamically from reddit's responses and
-are thus impossible to accurately describe statically. In :ref:`writing_a_bot`
-there is a longer discussion of how to introspect PRAW, which you can use in
-conjunction with this nice visual overview.
+are thus impossible to accurately describe statically.
 
-:mod:`praw` Package
--------------------
+Top Level Classes
+-----------------
 
-.. automodule:: praw.__init__
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. autoclass:: praw.Reddit
+   :inherited-members:
 
-:mod:`objects` Module
----------------------
+Models
+------
 
-.. automodule:: praw.objects
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. automodule:: praw.models
+   :inherited-members:
 
-:mod:`helpers` Module
----------------------
+Submission Utility Classes
+--------------------------
 
-.. automodule:: praw.helpers
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. autoclass:: praw.models.comment_forest.CommentForest
+   :inherited-members:
 
-:mod:`errors` Module
---------------------
+.. autoclass:: praw.models.reddit.submission.SubmissionFlair
+   :inherited-members:
 
-.. automodule:: praw.errors
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. autoclass:: praw.models.reddit.submission.SubmissionModeration
+   :inherited-members:
 
-:mod:`handlers` Module
-----------------------
+Subreddit Utility Classes
+-------------------------
 
-.. automodule:: praw.handlers
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. autoclass:: praw.models.reddit.subreddit.SubredditFlair
+   :inherited-members:
 
+.. autoclass:: praw.models.reddit.subreddit.SubredditFlairTemplates
+   :inherited-members:
 
-:mod:`decorators` Module
-------------------------
+.. autoclass:: praw.models.reddit.subreddit.SubredditModeration
+   :inherited-members:
 
-.. automodule:: praw.decorators
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. autoclass:: praw.models.reddit.subreddit.SubredditRelationship
+   :inherited-members:
+
+.. autoclass:: praw.models.reddit.subreddit.ModeratorRelationship
+   :inherited-members:
+
+.. autoclass:: praw.models.reddit.subreddit.SubredditStream
+   :inherited-members:
+
+.. autoclass:: praw.models.reddit.subreddit.SubredditStylesheet
+   :inherited-members:
+
+.. autoclass:: praw.models.reddit.subreddit.SubredditWiki
+   :inherited-members:
+
+Other Classes
+-------------
+
+.. autoclass:: praw.config.Config
+   :inherited-members:
+
+.. autoclass:: praw.objector.Objector
+   :inherited-members:
+
+.. autoclass:: praw.models.reddit.wikipage.WikiPageModeration
+   :inherited-members:
+
+Exceptions
+----------
+
+.. autoexception:: praw.exceptions.PRAWException
+
+.. autoexception:: praw.exceptions.APIException
+
+.. autoexception:: praw.exceptions.ClientException

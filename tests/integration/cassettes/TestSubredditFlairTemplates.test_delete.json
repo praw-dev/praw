@@ -1,0 +1,153 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-08-23T06:20:21",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b14 prawcore/0.2.1"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"booA_TqaI8cwnlkaKDx6JWBT-Ao\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "CF-RAY": "2d6c7549c646142b-LAX",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 23 Aug 2016 06:20:21 GMT",
+          "Server": "cloudflare-nginx",
+          "Set-Cookie": "__cfduid=d4a1735ecc66ffbf3c14a36becf554a911471933221; expires=Wed, 23-Aug-17 06:20:21 GMT; path=/; domain=.reddit.com; HttpOnly",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-08-23T06:20:22",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&unique=0"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer booA_TqaI8cwnlkaKDx6JWBT-Ao",
+          "Connection": "keep-alive",
+          "Content-Length": "22",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Cookie": "loid=vCQQG70h0cjrQtaMMn; loidcreated=2016-08-23T06%3A20%3A21.442Z; __cfduid=d4a1735ecc66ffbf3c14a36becf554a911471933221",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b14 prawcore/0.2.1"
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairselector/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"current\": {\"flair_css_class\": \"\", \"flair_template_id\": \"12d00200-68f7-11e6-a565-0e3ec6006e2f\", \"flair_text\": \"aaa\", \"flair_position\": \"right\"}, \"choices\": [{\"flair_css_class\": \"\", \"flair_template_id\": \"0f571f6e-68f7-11e6-b114-0e745a265c0d\", \"flair_text_editable\": true, \"flair_position\": \"right\", \"flair_text\": \"\"}, {\"flair_css_class\": \"\", \"flair_template_id\": \"12d00200-68f7-11e6-a565-0e3ec6006e2f\", \"flair_text_editable\": true, \"flair_position\": \"right\", \"flair_text\": \"aaa\"}]}"
+        },
+        "headers": {
+          "CF-RAY": "2d6c754d628c53a2-LAX",
+          "Connection": "keep-alive",
+          "Content-Length": "481",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 23 Aug 2016 06:20:22 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "599.0",
+          "x-ratelimit-reset": "578",
+          "x-ratelimit-used": "1",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairselector/?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2016-08-23T06:20:22",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&flair_template_id=0f571f6e-68f7-11e6-b114-0e745a265c0d"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer booA_TqaI8cwnlkaKDx6JWBT-Ao",
+          "Connection": "keep-alive",
+          "Content-Length": "68",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Cookie": "loid=vCQQG70h0cjrQtaMMn; loidcreated=2016-08-23T06%3A20%3A21.442Z; __cfduid=d4a1735ecc66ffbf3c14a36becf554a911471933221",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b14 prawcore/0.2.1"
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/deleteflairtemplate/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"json\": {\"errors\": []}}"
+        },
+        "headers": {
+          "CF-RAY": "2d6c754e42ad53a2-LAX",
+          "Connection": "keep-alive",
+          "Content-Length": "24",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 23 Aug 2016 06:20:22 GMT",
+          "Server": "cloudflare-nginx",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "X-Moose": "majestic",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "598.0",
+          "x-ratelimit-reset": "578",
+          "x-ratelimit-used": "2",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/deleteflairtemplate/?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.7.2"
+}
