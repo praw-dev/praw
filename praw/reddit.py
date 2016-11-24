@@ -229,6 +229,10 @@ class Reddit(object):
         Items that cannot be matched will not be generated. Requests will be
         issued in batches for each 100 fullnames.
 
+        Note: For comments that are retrieved via this method, if you want to
+        obtain its replies, you will need to call ``refresh`` on the
+        yielded comment.
+
         """
         if not isinstance(fullnames, list):
             raise TypeError('fullnames must be a list')
