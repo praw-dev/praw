@@ -80,6 +80,20 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return str(subreddit)
 
     @property
+    def banned(self):
+        """An instance of :class:`.SubredditRelationship`."""
+        if self._banned is None:
+            self._banned = SubredditRelationship(self, 'banned')
+        return self._banned
+
+    @property
+    def contributor(self):
+        """An instance of :class:`.ContributorRelationship`."""
+        if self._contributor is None:
+            self._contributor = ContributorRelationship(self, 'contributor')
+        return self._contributor
+
+    @property
     def flair(self):
         """An instance of :class:`.SubredditFlair`."""
         if self._flair is None:
@@ -92,6 +106,20 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if self._mod is None:
             self._mod = SubredditModeration(self)
         return self._mod
+
+    @property
+    def moderator(self):
+        """An instance of :class:`.ModeratorRelationship`."""
+        if self._moderator is None:
+            self._moderator = ModeratorRelationship(self, 'moderator')
+        return self._moderator
+
+    @property
+    def muted(self):
+        """An instance of :class:`.SubredditRelationship`."""
+        if self._muted is None:
+            self._muted = SubredditRelationship(self, 'muted')
+        return self._muted
 
     @property
     def stream(self):
@@ -127,19 +155,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         super(Subreddit, self).__init__(reddit, _data)
         if display_name:
             self.display_name = display_name
-        self._flair = self._mod = self._stream = self._stylesheet = None
+        self._banned = self._contributor = self._flair = self._mod = None
+        self._moderator = self._muted = self._stream = self._stylesheet = None
         self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)
-        self._prepare_relationships()
 
     def _info_path(self):
         return API_PATH['subreddit_about'].format(subreddit=self)
-
-    def _prepare_relationships(self):
-        self.banned = SubredditRelationship(self, 'banned')
-        self.contributor = ContributorRelationship(self, 'contributor')
-        self.moderator = ModeratorRelationship(self, 'moderator')
-        self.muted = SubredditRelationship(self, 'muted')
 
     def random(self):
         """Return a random Submission."""
@@ -787,7 +809,19 @@ class SubredditModeration(object):
 
 
 class SubredditRelationship(object):
-    """Represents a relationship between a redditor and subreddit."""
+    """Represents a relationship between a redditor and subreddit.
+
+    Instances of this class can be iterated through in order to discover the
+    Redditors that make up the relationship.
+
+    For example, banned users of a subreddit can be iterated through like so:
+
+    .. code-block:: python
+
+       for ban in reddit.subreddit('redditdev').banned:
+           print(ban)
+
+    """
 
     def __init__(self, subreddit, relationship):
         """Create a SubredditRelationship instance.
@@ -830,7 +864,16 @@ class SubredditRelationship(object):
 
 
 class ContributorRelationship(SubredditRelationship):
-    """Represents methods to interact with a Subreddit's contributors."""
+    """Provides methods to interact with a Subreddit's contributors.
+
+    Contributors of a subreddit can be iterated through like so:
+
+    .. code-block:: python
+
+       for contributor in reddit.subreddit('redditdev').contributors:
+           print(contributor)
+
+    """
 
     def leave(self):
         """Abdicate the contributor position."""
@@ -839,7 +882,16 @@ class ContributorRelationship(SubredditRelationship):
 
 
 class ModeratorRelationship(SubredditRelationship):
-    """Represents a moderator relationship between a redditor and subreddit."""
+    """Provides methods to interact with a Subreddit's moderators.
+
+    Moderators of a subreddit can be iterated through like so:
+
+    .. code-block:: python
+
+       for moderator in reddit.subreddit('redditdev').moderators:
+           print(moderator)
+
+    """
 
     @staticmethod
     def _handle_permissions(permissions, other_settings):

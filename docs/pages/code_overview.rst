@@ -34,6 +34,9 @@ Submission Utility Classes
 Subreddit Utility Classes
 -------------------------
 
+.. autoclass:: praw.models.reddit.subreddit.ContributorRelationship
+   :inherited-members:
+
 .. autoclass:: praw.models.reddit.subreddit.SubredditFlair
    :inherited-members:
 
