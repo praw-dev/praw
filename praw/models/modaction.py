@@ -13,4 +13,4 @@ class ModAction(PRAWBase):
 
     @mod.setter
     def mod(self, value):
-        self._mod = value
+        self._mod = value  # pylint: disable=attribute-defined-outside-init

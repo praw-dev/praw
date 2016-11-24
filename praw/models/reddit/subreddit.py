@@ -36,6 +36,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                           suggested_comment_sort=None, title=None,
                           wiki_edit_age=None, wiki_edit_karma=None,
                           wikimode=None, **other_settings):
+        # pylint: disable=invalid-name,too-many-locals
         model = {'allow_images': allow_images,
                  'allow_top': allow_top,
                  'collapse_deleted_comments': collapse_deleted_comments,
