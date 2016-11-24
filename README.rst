@@ -34,7 +34,7 @@ install PRAW is via `pip <https://pypi.python.org/pypi/pip>`_.
 
 .. code-block:: bash
 
-    pip install --pre praw
+   pip install --pre praw
 
 .. note:: The ``--pre`` flag is needed to install PRAW4 as it is not yet the
    official version.
@@ -43,11 +43,50 @@ To install the latest development version of PRAW4 run the following instead:
 
 .. code-block:: bash
 
-    pip install --upgrade https://github.com/praw-dev/praw/archive/master.zip
+   pip install --upgrade https://github.com/praw-dev/praw/archive/master.zip
 
 For instructions on installing python and pip see "The Hitchhiker's Guide to
 Python" `Installation Guides
 <http://docs.python-guide.org/en/latest/starting/installation/>`_.
+
+Quickstart
+----------
+
+Assuming you already have a credentials for a script-type OAuth application you
+can instantiate an instance of PRAW like so:
+
+.. code-block:: python
+
+  import praw
+  reddit = praw.Reddit(client_id='CLIENT_ID', client_secret="CLIENT_SECRET",
+                       password='PASSWORD', user_agent='USERAGENT',
+                       username='USERNAME')
+
+With the ``reddit`` instance you can then interact with Reddit:
+
+.. code-block:: python
+
+  # Create a submission to /r/test
+  reddit.subreddit('test').submit('Test Submission', url='https://reddit.com')
+
+  # Comment on a known submission
+  submission = reddit.submission(url='https://www.reddit.com/comments/5e1az9')
+  submission.reply('Super rad!')
+
+  # Reply to the first comment of a weekly top thread of a moderated community
+  submission = next(reddit.subreddit('mod').top('week'))
+  submission.comments[0].reply('An automated reply')
+
+  # Output score for the first 256 items on the frontpage
+  for submission in reddit.front.hot(limit=256):
+      print(submission.score)
+
+  # Obtain the moderator listing for redditdev
+  for moderator in reddit.subreddit('redditdev').moderator:
+      print(moderator)
+
+Please see PRAW's `documentation <http://praw.readthedocs.io/en/praw4/>`_ for
+more examples of what you can do with PRAW.
 
 PRAW Discussion and Support
 ---------------------------
