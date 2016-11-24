@@ -63,6 +63,11 @@ class Config(object):
         self._settings = settings
         self.custom = dict(Config.CONFIG.items(site_name), **settings)
 
+        self.client_id = self.client_secret = self.http_proxy = None
+        self.https_proxy = self.oauth_url = self.reddit_url = None
+        self.refresh_token = self.redirect_uri = self.password = None
+        self.user_agent = self.username = None
+
         self._initialize_attributes()
 
     def _fetch(self, key):
