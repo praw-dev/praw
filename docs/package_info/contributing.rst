@@ -1,5 +1,5 @@
-Contributor Guidelines
-======================
+Contributing to PRAW
+====================
 
 PRAW gladly welcomes new contributions. As with most larger projects, we have
 an established consistent way of doing things. A consistent style increases
@@ -30,5 +30,5 @@ Documentation
 * All publicly available functions, classes and modules should have a
   docstring.
 * Use correct terminology. A subreddits name is something like ' t5_xyfc7'.
-  The correct term for a subreddits "name" like
-  `python <http://www.reddit.com/r/python>`_ is its display name.
+  The correct term for a subreddit's "name" like
+  `python <https://www.reddit.com/r/python>`_ is its display name.

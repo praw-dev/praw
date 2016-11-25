@@ -1,32 +1,46 @@
-.. include:: ../README.rst
+PRAW: The Python Reddit API Wrapper
+===================================
 
-Table of Contents
------------------
+PRAW's documetnation is organized into the following sections:
 
+* :ref:`getting_started`
+* :ref:`code_overview`
+* :ref:`tutorial`
+* :ref:`package_info`
+
+.. _getting_started:
 .. toctree::
    :maxdepth: 1
+   :caption: Getting Started
 
-   pages/getting_started
-   pages/changelog
-   pages/code_overview
-   pages/contributor_guidelines
+   getting_started/quick_start
+   getting_started/installation
+   getting_started/authentication
+   getting_started/configuration
 
+.. _code_overview:
+.. toctree::
+   :maxdepth: 1
+   :caption: Code Overview
 
-Other Relevant Pages
---------------------
+   code_overview/reddit_instance
+   code_overview/praw_models
+   code_overview/exceptions
+   code_overview/other
 
-* `PRAW's Source Code <https://github.com/praw-dev/praw>`_
-* `reddit's Source Code <https://github.com/reddit/reddit>`_
-* `reddit's API Wiki Page <https://github.com/reddit/reddit/wiki/API>`_
-* `reddit's API Documentation <https://www.reddit.com/dev/api>`_
+.. _tutorial:
+.. toctree::
+   :maxdepth: 1
+   :caption: Tutorials
 
-* `reddit Markdown Primer
-  <https://www.reddit.com/r/reddit.com/comments/6ewgt/reddit_markdown_primer_or
-  _how_do_you_do_all_that/c03nik6>`_
-* `reddit.com's FAQ <https://www.reddit.com/wiki/faq>`_
-* `reddit.com's Status Twitterbot <https://twitter.com/redditstatus/>`_.
-  Tweets when reddit goes up or down
-* `r/changelog <https://www.reddit.com/r/changelog/>`_. Significant changes to
-  reddit's codebase will be announced here in non-developer speak
-* `r/redditdev <https://www.reddit.com/r/redditdev>`_. Ask questions about
-  reddit's codebase, PRAW and other API clients here
+   tutorials/comments.rst
+   tutorials/reply_bot.rst
+
+.. _package_info:
+.. toctree::
+   :maxdepth: 1
+   :caption: Package Info
+
+   package_info/change_log
+   package_info/contributing
+   package_info/references

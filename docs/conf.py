@@ -10,7 +10,7 @@ extensions = ['sphinx.ext.autodoc']
 html_static_path = ['_static']
 html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
-    'collapse_navigation': False
+    'collapse_navigation': True
 }
 html_use_smartypants = True
 htmlhelp_basename = 'PRAW'

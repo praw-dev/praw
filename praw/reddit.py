@@ -22,7 +22,20 @@ from . import models
 
 
 class Reddit(object):
-    """Provide convenient access to reddit's API."""
+    """The Reddit class provides convenient access to reddit's API.
+
+    Instances of this class are the gateway to interacting with Reddit's API
+    through PRAW. The canonical way to obtain an instance of this class is via:
+
+
+    .. code-block:: python
+
+       import praw
+       reddit = praw.Reddit(client_id='CLIENT_ID',
+                            client_secret="CLIENT_SECRET", password='PASSWORD',
+                            user_agent='USERAGENT', username='USERNAME')
+
+    """
 
     update_checked = False
 
@@ -75,8 +88,8 @@ class Reddit(object):
 
         Additional keyword arguments will be used to initialize the ``Config``
         object. This can be used to specify configuration settings during
-        instantiation of the ``Reddit`` instance. For more details please see:
-        https://praw.readthedocs.org/en/stable/pages/configuration_files.html
+        instantiation of the ``Reddit`` instance. For more details please see
+        :ref:`configuration`.
 
         Required settings are:
 
