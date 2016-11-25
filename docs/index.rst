@@ -34,6 +34,7 @@ PRAW's documetnation is organized into the following sections:
    :caption: Tutorials
 
    tutorials/comments.rst
+   tutorials/refresh_token.rst
    tutorials/reply_bot.rst
 
 .. _package_info:

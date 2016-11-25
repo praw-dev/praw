@@ -1,0 +1,114 @@
+Configuration Options
+=====================
+
+PRAW's configuration options are broken down into the following categories:
+
+* :ref:`basic_options`
+* :ref:`oauth_options`
+* :ref:`site_options`
+* :ref:`custom_options`
+
+All of these options can be provided in any of the ways mentioned in
+:ref:`configuration`.
+
+.. _basic_options:
+
+Basic Configuration Options
+---------------------------
+
+:check_for_updates: When ``true``, check for new versions of PRAW. When a
+                    newever version of PRAW is available a message is reported
+                    via standard out (default: ``true``).
+
+:user_agent: (Required) A unique description of your application. The following
+             format is recommended according to `Reddit's API Rules
+             <https://github.com/reddit/reddit/wiki/API#rules>`_:
+             ``<platform>:<app ID>:<version string> (by /u/<reddit
+             username>)``.
+
+.. _oauth_options:
+
+OAuth Configuration Options
+---------------------------
+
+:client_id: (Required) The OAuth client id associated with your registered
+            Reddit application. See :ref:`oauth` for instructions on
+            registering a Reddit application.
+
+:client_secret: The OAuth client secret associated with your registered Reddit
+                application. For web applications, and script applications this
+                field is required. This option cannot be provided for installed
+                applications.
+
+:refresh_token: For web applications, or installed applications using the code
+                flow, you can directly provide a previously obtained refresh
+                token. This option is useful, for example, if you prefer to not
+                have your username and password available to your program, as
+                required for a script application. See: :ref:`refresh_token`
+
+:redirect_uri: The redirect URI associated with your registered Reddit
+               application. For web applications, and installed applications,
+               this field is required. This field is unused for script
+               applications.
+
+:password: The password of the Reddit account associated with your registered
+           Reddit script application. PRAW assumes it is working with a script
+           application when this option is provided.
+
+:username: The username of the Reddit account associated with your registered
+           Reddit script application. PRAW assumes it is working with a script
+           application when this option is provided.
+
+.. _site_options:
+
+Reddit Site Configuration Options
+---------------------------------
+
+PRAW can be configured to work with instances of Reddit which are not hosted at
+reddit.com. The following options may need to be updated in order to
+successfully access a third-party Reddit site:
+
+:comment_kind: The type prefix for comments on the Reddit instance (default:
+               ``t1_``).
+
+:message_kind: The type prefix for messages on the Reddit instance (default:
+               ``t4_``).
+
+:oauth_url: The URL used to access the Reddit instance's API (default:
+            https://oauth.reddit.com).
+
+:reddit_url: The URL used to access the Reddit instance. PRAW assumes the
+             endpoints for establishing OAuth authorization are accessible
+             under this URL (default: https://www.reddit.com).
+
+:redditor_kind: The type prefix for redditors on the Reddit instance (default:
+                ``t2_``).
+
+:short_url: The URL used to generate short links on the Reddit instance
+            (default: https://redd.it).
+
+:submission_kind: The type prefix for submissions on the Reddit instance
+                  (default: ``t3_``).
+
+:subreddit_kind: The type prefix for subreddits on the Reddit instance
+                 (default: ``t5_``).
+
+.. _custom_options:
+
+Custom Configuration Options
+----------------------------
+
+Your application can utilize PRAW's configuration system in order to provide
+its own custom settings.
+
+For instance you might want to add an ``app_debugging: true`` option to your
+application's ``praw.ini`` file. To retreive the value of this custom option
+from an instance of :class:`.Reddit` you can execute:
+
+.. code-block:: python
+
+   reddit.config.custom['app_debugging']
+
+.. note:: Custom PRAW configuration environment variables are not
+          supported. You can directly access environment variables via
+          ``os.getenv``.
