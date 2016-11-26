@@ -52,6 +52,17 @@ class Auth(PRAWBase):
             authenticator, access_token, expires_in, scope))
         self._reddit._core = self._reddit._authorized_core = implicit_session
 
+    def scopes(self):
+        """Return a set of scopes included in the current authorization.
+
+        For read-only authorizations this should return ``{'*'}``.
+
+        """
+        authorizer = self._reddit._core._authorizer
+        if not authorizer.is_valid():
+            authorizer.refresh()
+        return authorizer.scopes
+
     def url(self, scopes, state, duration='permanent', implicit=False):
         """Return the URL used out-of-band to grant access to your application.
 

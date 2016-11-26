@@ -7,6 +7,13 @@ import pytest
 from .. import IntegrationTest
 
 
+class TestAuthScript(IntegrationTest):
+    def test_scopes(self):
+        with self.recorder.use_cassette('TestAuthScript.test_scopes'):
+            assert self.reddit.read_only is True
+            assert self.reddit.auth.scopes() == {'*'}
+
+
 class TestAuthWeb(IntegrationTest):
     def setup_reddit(self):
         self.reddit = Reddit(client_id=pytest.placeholders.client_id,
@@ -19,6 +26,12 @@ class TestAuthWeb(IntegrationTest):
             token = self.reddit.auth.authorize(pytest.placeholders.auth_code)
             assert isinstance(token, string_types)
             assert self.reddit.read_only is False
+            assert self.reddit.auth.scopes() == {'submit'}
+
+    def test_scopes__read_only(self):
+        with self.recorder.use_cassette('TestAuthWeb.test_scopes__read_only'):
+            assert self.reddit.read_only is True
+            assert self.reddit.auth.scopes() == {'*'}
 
 
 class TestAuthImplicit(IntegrationTest):
@@ -33,3 +46,9 @@ class TestAuthImplicit(IntegrationTest):
                 'TestAuthImplicit.test_implicit__with_invalid_token'):
             with pytest.raises(InvalidToken):
                 self.reddit.user.me()
+
+    def test_scopes__read_only(self):
+        with self.recorder.use_cassette(
+                'TestAuthImplicit.test_scopes__read_only'):
+            assert self.reddit.read_only is True
+            assert self.reddit.auth.scopes() == {'*'}
