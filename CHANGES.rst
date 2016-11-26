@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Added**
+
+* ``implicit`` parameter to :meth:`.url` to support the implicit flow for
+  **installed** applications (see:
+  https://github.com/reddit/reddit/wiki/OAuth2#authorization-implicit-grant-flow)
+
 4.0.0rc2 (2016/11/20)
 ---------------------
 

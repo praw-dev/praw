@@ -52,7 +52,7 @@ class Auth(PRAWBase):
             authenticator, access_token, expires_in, scope))
         self._reddit._core = self._reddit._authorized_core = implicit_session
 
-    def url(self, scopes, state, duration='permanent'):
+    def url(self, scopes, state, duration='permanent', implicit=False):
         """Return the URL used out-of-band to grant access to your application.
 
         :param scopes: A list of OAuth scopes to request authorization for.
@@ -63,12 +63,22 @@ class Auth(PRAWBase):
             permanent). ``temporary`` authorizations generate access tokens
             that last only 1 hour. ``permanent`` authorizations additionally
             generate a refresh token that can be indefinitely used to generate
-            new hour-long access tokens.
+            new hour-long access tokens. This value is ignored when
+            ``implicit=True``.
+        :param implicit: For **installed** applications, this value can be set
+            to use the implicit, rather than the code flow. When True, the
+            ``duration`` argument has no effect as only temporary tokens can be
+            retrieved.
 
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if authenticator.redirect_uri is self._reddit.config.CONFIG_NOT_SET:
             raise ClientException('redirect_uri must be provided')
         if isinstance(authenticator, UntrustedAuthenticator):
-            return authenticator.authorize_url(duration, scopes, state)
+            return authenticator.authorize_url(
+                'temporary' if implicit else duration, scopes, state,
+                implicit=implicit)
+        elif implicit:
+            raise ClientException('implicit can only be set for installed '
+                                  'applications')
         return authenticator.authorize_url(duration, scopes, state)

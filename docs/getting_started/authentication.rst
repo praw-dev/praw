@@ -128,17 +128,14 @@ Installed Application
 ---------------------
 
 The code flow can be used with an **installed** application just as described
-above with one change: set the value of ``client_secret`` to ``None``.
-
-.. warning:: (TODO) PRAW currently doesn't support generating implicit
-             authorization URLs.
+above with one change: set the value of ``client_secret`` to ``None`` when
+initializing :class:`.Reddit`.
 
 The implicit flow is similar, however, the token is returned directly as part
 of the redirect. For the implicit flow call :meth:`.url` like so:
 
 .. code-block:: python
 
-   # Note the following doesn't actually work yet
    print(reddit.auth.url(['identity'], '...', implicit=True)
 
 Then use :meth:`.implicit` to provide the authorization to the :class:`.Reddit`
