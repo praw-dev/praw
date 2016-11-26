@@ -8,6 +8,13 @@ PRAW's documetnation is organized into the following sections:
 * :ref:`tutorial`
 * :ref:`package_info`
 
+Documentation Conventions
+-------------------------
+
+Unless otherwise mentioned, all examples in this document assume the use of a
+**script** application. See :ref:`oauth` for information on using **installed**
+applications and **web** applications.
+
 .. _getting_started:
 .. toctree::
    :maxdepth: 1
