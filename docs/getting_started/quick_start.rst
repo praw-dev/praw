@@ -142,58 +142,8 @@ switch back to read-only mode whenever you want:
    # continue from code above
    reddit.read_only = True
 
-Nonetheless, if you are uncomfortable of hard coding your credentials, we have
-two other options for you.
-
-Providing Configuration Options
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-We have learned that five pieces of settings information are needed in order
-to create a regular ``Reddit`` instance:
-
-1) user agent
-2) client ID
-3) client secret
-4) your reddit user name
-5) your reddit password
-
-And we have been passing these as key-word arguments to the ``Reddit``
-initializer. If you look at the source, however, you may notice that the
-``Reddit`` initializer does not directly ask for any of these parameters.  They
-are all passed along when creating a ``Config`` instance.
-
-So what happens if you don't pass any arguments when calling ``Reddit()``?
-Then the ``Config`` class will look for those settings in two locations in the
-following order of priority:
-
-1) environment variables of the settings names prefixed with ``praw_``.
-   Specifically, these:
-
-   - ``praw_user_agent``
-   - ``praw_client_id``
-   - ``praw_client_secret``
-   - ``praw_username``
-   - ``praw_password``
-
-   For example, you can invoke your script like this:
-
-.. code-block:: shell
-
-   praw_username=bboe praw_password=not_my_password python my_script.py
-
-2) in the ``praw.ini`` file you provide. The section name for these settings
-   should be specified with an environment variable named ``praw_site``; if no
-   such environment variable is set, the default section name is ``DEFAULT``.
-   You can put your ``praw.ini`` file in one or both of the following places
-   (both will be read if present):
-
-   1. the working directory when you invoke your script
-   2. your OS's config directory (for Linux, this is ``$XDG_CONFIG_HOME`` or
-      ``$HOME/.config``; for Windows, this is ``${APPDATA}``)
-
-   If you don't know how to write ini files, follow `this example`_.
-
-.. _`this example`: https://github.com/praw-dev/praw/blob/praw4/praw/praw.ini
+Nonetheless, if you are uncomfortable of hard coding your credentials, there
+are some options available to you. Please see: :ref:`configuration`.
 
 Get a subreddit
 ---------------

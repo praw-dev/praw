@@ -233,8 +233,8 @@ The Complete LMGTFY Bot
 
 The following is the complete LMGTFY Bot:
 
-.. include:: ../examples/lmgtfy_bot.py
-   :code: python
+.. literalinclude:: ../examples/lmgtfy_bot.py
+   :language: python
 
 
 .. _lmgtfy: http://lmgtfy.com/

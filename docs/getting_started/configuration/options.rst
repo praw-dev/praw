@@ -1,3 +1,5 @@
+.. _configuration_options:
+
 Configuration Options
 =====================
 
@@ -36,28 +38,32 @@ OAuth Configuration Options
             registering a Reddit application.
 
 :client_secret: The OAuth client secret associated with your registered Reddit
-                application. For web applications, and script applications this
-                field is required. This option cannot be provided for installed
-                applications.
+                application. For both **web** applications, and **script**
+                applications this field is required. This option cannot be
+                provided for **installed** applications.
 
-:refresh_token: For web applications, or installed applications using the code
-                flow, you can directly provide a previously obtained refresh
-                token. This option is useful, for example, if you prefer to not
-                have your username and password available to your program, as
-                required for a script application. See: :ref:`refresh_token`
+:refresh_token: For either **web** applications, or **installed** applications
+                using the code flow, you can directly provide a previously
+                obtained refresh token. Using a **web** application in
+                conjunction with this option is useful, for example, if you
+                prefer to not have your username and password available to your
+                program, as required for a **script** application. See:
+                :ref:`refresh_token`
 
 :redirect_uri: The redirect URI associated with your registered Reddit
-               application. For web applications, and installed applications,
-               this field is required. This field is unused for script
-               applications.
+               application. For both **web** applications, and **installed**
+               applications, this field is required. This field is unused for
+               **script** applications.
 
 :password: The password of the Reddit account associated with your registered
-           Reddit script application. PRAW assumes it is working with a script
-           application when this option is provided.
+           Reddit **script** application. This field is required for **script**
+           applications, and PRAW assumes it is working with a **script**
+           application by its presence.
 
 :username: The username of the Reddit account associated with your registered
-           Reddit script application. PRAW assumes it is working with a script
-           application when this option is provided.
+           Reddit **script** application. This field is required for **script**
+           applications, and PRAW assumes it is working with a **script**
+           application by its presence.
 
 .. _site_options:
 
@@ -65,8 +71,8 @@ Reddit Site Configuration Options
 ---------------------------------
 
 PRAW can be configured to work with instances of Reddit which are not hosted at
-reddit.com. The following options may need to be updated in order to
-successfully access a third-party Reddit site:
+`reddit.com <https://www.reddit.com>`_. The following options may need to be
+updated in order to successfully access a third-party Reddit site:
 
 :comment_kind: The type prefix for comments on the Reddit instance (default:
                ``t1_``).
