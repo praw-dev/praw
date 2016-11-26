@@ -1,0 +1,35 @@
+# These page redirects are configured in readthedocs and saved in this file
+# only for backup purposes.
+
+/code_overview/exceptions.html -> /pages/exceptions.html
+/code_overview/other.html -> /pages/code_overview.html
+/code_overview/praw_models.html -> /pages/code_overview.html
+/code_overview/reddit_instance.html -> /pages/code_overview.html
+/getting_started/authentication.html -> /pages/oauth.html
+/getting_started/configuration.html -> /pages/configuration_files.html
+/getting_started/configuration/environment_variables.html -> /pages/configuration_files.html
+/getting_started/configuration/options.html -> /pages/configuration_files.html
+/getting_started/configuration/prawini.html -> /pages/configuration_files.html
+/getting_started/configuration/reddit_initialization.html -> /pages/configuration_files.html
+/getting_started/installation.html -> /
+/getting_started/quick_start.html -> /pages/getting_started.html
+/package_info/change_log.html -> /pages/changelog.html
+/package_info/contributing.html -> /pages/contributor_guidelines.html
+/package_info/references.html -> /
+/pages/call_and_response_bot.html -> /tutorials/reply_bot.html
+/pages/changelog.html -> /package_info/change_log.html
+/pages/code_overview.html -> /code_overview/reddit_instance.html
+/pages/comment_parsing.html -> /tutorials/comments.html
+/pages/configuration_files.html -> /getting_started/configuration.html
+/pages/contributor_guidelines.html -> /package_info/contributing.html
+/pages/exceptions.html -> /code_overview/exceptions.html
+/pages/faq.html -> /
+/pages/getting_started.html -> /getting_started/quick_start.html
+/pages/lazy-loading.html -> /
+/pages/multiprocess.html -> /
+/pages/oauth.html -> /getting_started/authentication.html
+/pages/useful_scripts.html -> /
+/pages/writing_a_bot.html -> /tutorials/reply_bot.html
+/tutorials/comments.html -> /pages/comment_parsing.html
+/tutorials/refresh_token.html -> /pages/oauth.html
+/tutorials/reply_bot.html -> /pages/writing_a_bot.html
