@@ -1,8 +1,8 @@
 Change Log
 ==========
 
-Unreleased
-----------
+4.0.0rc3 (2016/11/26)
+---------------------
 
 **Added**
 
@@ -11,6 +11,7 @@ Unreleased
   https://github.com/reddit/reddit/wiki/OAuth2#authorization-implicit-grant-flow)
 * :meth:`.scopes` to discover which scopes are available to the current
   authentication
+* Lots of documentation: http://praw.readthedocs.io/
 
 4.0.0rc2 (2016/11/20)
 ---------------------

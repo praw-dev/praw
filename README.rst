@@ -85,7 +85,7 @@ With the ``reddit`` instance you can then interact with Reddit:
   for moderator in reddit.subreddit('redditdev').moderator:
       print(moderator)
 
-Please see PRAW's `documentation <http://praw.readthedocs.io/en/praw4/>`_ for
+Please see PRAW's `documentation <http://praw.readthedocs.io/>`_ for
 more examples of what you can do with PRAW.
 
 PRAW Discussion and Support
@@ -123,7 +123,7 @@ information are certainly welcome.
 Documentation
 -------------
 
-PRAW's documentation is located at http://praw.readthedocs.io/en/praw4/.
+PRAW's documentation is located at http://praw.readthedocs.io/.
 
 History
 -------
