@@ -8,6 +8,8 @@ Unreleased
 
 * Fix bug where ipython tries to access attribute
   ``_ipython_canary_method_should_not_exist_`` resulting in a useless fetch.
+* Fix bug where Comment replies becomes `[]` after attempting to access an
+  invalid attribute on the Comment.
 
 4.0.0rc3 (2016/11/26)
 ---------------------

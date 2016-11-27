@@ -44,6 +44,8 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         self._submission = None
         if id:
             self.id = id  # pylint: disable=invalid-name
+        else:
+            self._fetched = True
 
     def __setattr__(self, attribute, value):
         """Objectify author, replies, and subreddit."""
