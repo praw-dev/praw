@@ -54,3 +54,9 @@ class TestComment(UnitTest):
     def test_str(self):
         comment = Comment(self.reddit, _data={'id': 'dummy'})
         assert str(comment) == 'dummy'
+
+    def test_unset_hidden_attribute_does_not_fetch(self):
+        comment = Comment(self.reddit, _data={'id': 'dummy'})
+        with pytest.raises(AttributeError):
+            comment._ipython_canary_method_should_not_exist_
+        assert not comment._fetched

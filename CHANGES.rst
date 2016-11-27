@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Fixed**
+
+* Fix bug where ipython tries to access attribute
+  ``_ipython_canary_method_should_not_exist_`` resulting in a useless fetch.
+
 4.0.0rc3 (2016/11/26)
 ---------------------
 

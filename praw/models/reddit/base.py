@@ -27,7 +27,7 @@ class RedditBase(PRAWBase):
 
     def __getattr__(self, attribute):
         """Return the value of `attrribute`."""
-        if not attribute.startswith('__') and not self._fetched:
+        if not attribute.startswith('_') and not self._fetched:
             self._fetch()
             return getattr(self, attribute)
         raise AttributeError('{!r} object has no attribute {!r}'
