@@ -80,7 +80,10 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
                             'provided.')
         super(Submission, self).__init__(reddit, _data)
         self.comment_limit = 2048
+
+        #: Specify the sort order for ``comments``
         self.comment_sort = 'best'
+
         if id is not None:
             self.id = id  # pylint: disable=invalid-name
         elif url is not None:

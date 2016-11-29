@@ -22,6 +22,8 @@ given submission. If you instead want process all comments on Reddit, or
 comments belonging to one or more specific subreddits, please see
 :meth:`praw.models.reddit.subreddit.SubredditStream.comments`.
 
+.. _extracting_comments:
+
 Extracting comments with PRAW
 -----------------------------
 

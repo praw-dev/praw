@@ -44,4 +44,5 @@ instances of them bound to an attribute of one of the PRAW models.
    other/auth
    other/commentforest
    other/domainlisting
+   other/listinggenerator
    other/subredditmessage

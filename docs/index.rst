@@ -1,7 +1,7 @@
 PRAW: The Python Reddit API Wrapper
 ===================================
 
-PRAW's documetnation is organized into the following sections:
+PRAW's documentation is organized into the following sections:
 
 * :ref:`getting_started`
 * :ref:`code_overview`
