@@ -22,4 +22,5 @@ Source Contributors
 ===================
 
 - William McKinnerney <me@williammck.net> `@williammck <https://github.com/williammck>`_
+- Katharine Jarmul <katharine@kjamistan.com> `@kjam <https://github.com/kjam>`_
 - Add "Name <email (optional)> and github profile link" above this line.

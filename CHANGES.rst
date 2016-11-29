@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Added**
+
+* :meth:`praw.models.Subreddits.search_by_topic` to search subreddits by topic.
+  (see: https://www.reddit.com/dev/api/#GET_api_subreddits_by_topic).
+
+
+
 4.0.0 (2016/11/29)
 ------------------
 
