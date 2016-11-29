@@ -13,7 +13,7 @@ participating in this project you agree to abide by its terms.
    in the [praw-dev/praw](https://gitter.im/praw-dev/praw) channel on gitter.
 
 0. Please check the
-   [Unreleased](https://github.com/praw-dev/praw/blob/praw4/CHANGES.rst#unreleased)
+   [Unreleased](https://github.com/praw-dev/praw/blob/master/CHANGES.rst#unreleased)
    section of the latest changelog before filing an issue as it is possible the
    issue has already been resolved.
 

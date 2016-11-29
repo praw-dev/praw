@@ -6,10 +6,7 @@ PRAW is via ``pip``.
 
 .. code-block:: bash
 
-   pip install --pre praw
-
-.. note:: The ``--pre`` option is needed as PRAW4 is not yet the official
-          version.
+   pip install praw
 
 .. note:: Depending on your system, you may need to use ``pip3`` to install
           packages for python 3.
@@ -28,10 +25,7 @@ PRAW can be updated by running:
 
 .. code-block:: bash
 
-   pip install --pre --upgrade praw
-
-.. note:: The ``--pre`` option is needed as PRAW4 is not yet the official
-          version.
+   pip install --upgrade praw
 
 Installing Older Versions
 -------------------------

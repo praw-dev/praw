@@ -34,12 +34,9 @@ install PRAW is via `pip <https://pypi.python.org/pypi/pip>`_.
 
 .. code-block:: bash
 
-   pip install --pre praw
+   pip install praw
 
-.. note:: The ``--pre`` flag is needed to install PRAW4 as it is not yet the
-   official version.
-
-To install the latest development version of PRAW4 run the following instead:
+To install the latest development version of PRAW run the following instead:
 
 .. code-block:: bash
 
@@ -100,7 +97,7 @@ Otherwise, there are a few official places to ask questions about PRAW:
 
 `/r/redditdev <https://www.reddit.com/r/redditdev>`_ is the best place on
 Reddit to ask PRAW related questions. This subreddit is for all Reddit API
-related discussion so please tag submissions with *[PRAW4]*. Please perform a
+related discussion so please tag submissions with *[PRAW]*. Please perform a
 search on the subreddit first to see if anyone has similar questions.
 
 Real-time chat can be conducted via the `praw-dev/praw
@@ -153,7 +150,7 @@ Bryce began work on PRAW4, a complete rewrite of PRAW.
 License
 -------
 
-PRAW4's source is provided under the `Simplified BSD License
+PRAW's source (v4.0.0+) is provided under the `Simplified BSD License
 <https://github.com/praw-dev/praw/blob/0860c11a9309c80621c267af7caeb6a993933744/LICENSE.txt>`_.
 
 * Copyright (c), 2016, Bryce Boe
