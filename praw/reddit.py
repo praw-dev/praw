@@ -122,29 +122,104 @@ class Reddit(object):
         self._prepare_objector()
         self._prepare_prawcore()
 
-        #: An instance of :class:`.Auth`.
         self.auth = models.Auth(self, None)
+        """An instance of :class:`.Auth`.
 
-        #: An instance of :class:`.Front`.
+        Provides the interface for interacting with installed and web
+        applications. See :ref:`auth_url`
+
+        """
+
         self.front = models.Front(self)
+        """An instance of :class:`.Front`.
 
-        #: An instance of :class:`.Inbox`.
+        Provides the interface for interacting with front page listings. For
+        example:
+
+        .. code-block:: python
+
+           for submission in reddit.front.hot():
+               print(submission)
+
+        """
+
         self.inbox = models.Inbox(self, None)
+        """An instance of :class:`.Inbox`.
 
-        #: An instance of :class:`.LiveHelper`.
+        Provides the interface to a user's inbox which produces
+        :class:`.Message`, :class:`.Comment`, and :class:`.Submission`
+        instances. For example to iterate through comments which mention the
+        authorized user run:
+
+        .. code-block:: python
+
+           for comment in reddit.inbox.mentions():
+               print(comment)
+
+        """
+
         self.live = models.LiveHelper(self, None)
+        """An instance of :class:`.LiveHelper`.
 
-        #: An instance of :class:`.MultiredditHelper`.
+        Provides the interface for working with :class:`.LiveThread`
+        instances. At present only new LiveThreads can be created.
+
+        .. code-block:: python
+
+           reddit.live.create('title', 'description')
+
+        """
+
         self.multireddit = models.MultiredditHelper(self, None)
+        """An instance of :class:`.MultiredditHelper`.
 
-        #: An instance of :class:`.SubredditHelper`.
+        Provides the interface to working with :class:`.Multireddit`
+        instances. For example you can obtain a :class:`.Multireddit` instance
+        via:
+
+        .. code-block:: python
+
+           reddit.multireddit('samuraisam', 'programming')
+
+        """
+
         self.subreddit = models.SubredditHelper(self, None)
+        """An instance of :class:`.SubredditHelper`.
 
-        #: An instance of :class:`.Subreddits`.
+        Provides the interface to working with :class:`.Subreddit`
+        instances. For example to create a Subreddit run:
+
+        .. code-block:: python
+
+           reddit.subreddit.create('coolnewsubname')
+
+        """
+
         self.subreddits = models.Subreddits(self, None)
+        """An instance of :class:`.Subreddits`.
 
-        #: An instance of :class:`.User`.
+        Provides the interface for :class:`.Subreddit` discovery. For example
+        to iterate over the set of default subreddits run:
+
+        .. code-block:: python
+
+           for subreddit in reddit.subreddits.default(limit=None):
+               print(subreddit)
+
+        """
+
         self.user = models.User(self, None)
+        """An instance of :class:`.User`.
+
+        Provides the interface to the currently authorized
+        :class:`.Redditor`. For example to get the name of the current user
+        run:
+
+        .. code-block:: python
+
+           print(reddit.user.me())
+
+        """
 
     def _check_for_update(self):
         if UPDATE_CHECKER_MISSING:

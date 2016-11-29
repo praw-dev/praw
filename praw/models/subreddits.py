@@ -25,7 +25,7 @@ class Subreddits(PRAWBase):
                                 **generator_kwargs)
 
     def popular(self, **generator_kwargs):
-        """Return a ListingGenerator for default subreddits."""
+        """Return a ListingGenerator for popular subreddits."""
         return ListingGenerator(self._reddit, API_PATH['subreddits_popular'],
                                 **generator_kwargs)
 

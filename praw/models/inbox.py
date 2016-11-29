@@ -58,6 +58,9 @@ class Inbox(PRAWBase):
     def mentions(self, **generator_kwargs):
         """Return a ListingGenerator for mentions.
 
+        A mention is :class:`.Comment` in which the authorized redditor is
+        named in its body like ``/u/redditor_name``.
+
         Additional keyword arguments are passed to the ``ListingGenerator``
         constructor.
 

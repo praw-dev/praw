@@ -86,6 +86,8 @@ redirect uri when using this script.
 Whether or not you use the script there are two processes involved in obtaining
 access or refresh tokens.
 
+.. _auth_url:
+
 Obtain the Authorization URL
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
