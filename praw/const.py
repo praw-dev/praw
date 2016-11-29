@@ -96,6 +96,7 @@ API_PATH = {
     'subreddit_random':       'r/{subreddit}/random/',
     'subreddit_settings':     'r/{subreddit}/about/edit/',
     'subreddit_stylesheet':   'r/{subreddit}/api/subreddit_stylesheet/',
+    'subreddits_by_topic':    'api/subreddits_by_topic',
     'subreddits_default':     'subreddits/default/',
     'subreddits_gold':        'subreddits/gold/',
     'subreddits_new':         'subreddits/new/',

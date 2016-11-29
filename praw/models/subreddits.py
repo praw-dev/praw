@@ -80,6 +80,17 @@ class Subreddits(PRAWBase):
                                          'exact': exact, 'query': query})
         return [self._reddit.subreddit(x) for x in result['names']]
 
+    def search_by_topic(self, query):
+        """Return list of Subreddits whose topics match ``query``.
+
+        :param query: Search for subreddits relevant to the search topic.
+
+        """
+        result = self._reddit.get(API_PATH['subreddits_by_topic'],
+                                  params={'query': query})
+        return [self._reddit.subreddit(x['name']) for x in result
+                if x.get('name')]
+
     def stream(self):
         """Yield new subreddits as they are created.
 
