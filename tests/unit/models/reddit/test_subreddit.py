@@ -91,6 +91,6 @@ class TestSubredit(UnitTest):
 class TestSubreditWiki(UnitTest):
     def test__getitem(self):
         subreddit = Subreddit(self.reddit, display_name='name')
-        wikipage = subreddit.wiki['foo']
+        wikipage = subreddit.wiki['Foo']
         assert isinstance(wikipage, WikiPage)
         assert 'foo' == wikipage.name

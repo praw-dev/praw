@@ -10,6 +10,9 @@ Unreleased
   ``_ipython_canary_method_should_not_exist_`` resulting in a useless fetch.
 * Fix bug where Comment replies becomes `[]` after attempting to access an
   invalid attribute on the Comment.
+* Reddit.wiki[...] converts the passed in page name to lower case as pages are
+  only saved in lower case and non-lower cases page names results in Redirect
+  exception (thanks pcjonathan).
 
 4.0.0rc3 (2016/11/26)
 ---------------------
