@@ -20,7 +20,7 @@ class BaseListingMixin(PRAWBase):
 
     @staticmethod
     def validate_time_filter(time_filter):
-        """Raise ValueError if time_filter is not valid."""
+        """Raise :py:class:`.ValueError` if ``time_filter`` is not valid."""
         if time_filter not in BaseListingMixin.VALID_TIME_FILTERS:
             raise ValueError('time_filter must be one of: {}'.format(', '.join(
                 BaseListingMixin.VALID_TIME_FILTERS)))
@@ -31,10 +31,10 @@ class BaseListingMixin(PRAWBase):
         :param time_filter: Can be one of: all, day, hour, month, week, year.
             (Default: all)
 
-        Raise ``ValueError`` if ``time_filter`` is invalid.
+        Raise :py:class:`.ValueError` if ``time_filter`` is invalid.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         self.validate_time_filter(time_filter)
@@ -45,8 +45,8 @@ class BaseListingMixin(PRAWBase):
     def hot(self, **generator_kwargs):
         """Return a ListingGenerator for hot items.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         generator_kwargs.setdefault('params', {})
@@ -56,8 +56,8 @@ class BaseListingMixin(PRAWBase):
     def new(self, **generator_kwargs):
         """Return a ListingGenerator for new items.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         generator_kwargs.setdefault('params', {})
@@ -70,10 +70,10 @@ class BaseListingMixin(PRAWBase):
         :param time_filter: Can be one of: all, day, hour, month, week, year.
             (Default: all)
 
-        Raise ``ValueError`` if ``time_filter`` is invalid.
+        Raise :py:class:`.ValueError` if ``time_filter`` is invalid.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         self.validate_time_filter(time_filter)

@@ -1,8 +1,8 @@
 """PRAW exception classes.
 
-Includes two main exceptions: ``APIExeception`` for when something goes wrong
-on the server side, and ``ClientException`` when something goes wrong on the
-client side. Both of these classes extend ``PRAWException``.
+Includes two main exceptions: :class:`.APIException` for when something goes
+wrong on the server side, and :class:`.ClientException` when something goes
+wrong on the client side. Both of these classes extend :class:`.PRAWException`.
 
 """
 
@@ -12,12 +12,12 @@ class PRAWException(Exception):
 
 
 class APIException(PRAWException):
-    """Indicate exception that involve responses from reddit's API."""
+    """Indicate exception that involve responses from Reddit's API."""
 
     def __init__(self, error_type, message, field):
-        """Construct an APIException.
+        """Initialize an instance of APIException.
 
-        :param error_type: The error type set on reddit's end.
+        :param error_type: The error type set on Reddit's end.
         :param message: The associated message for the error.
         :param field: The input field associated with the error if available.
 
@@ -32,4 +32,4 @@ class APIException(PRAWException):
 
 
 class ClientException(PRAWException):
-    """Indicate exceptions that don't involve interaction with reddit's API."""
+    """Indicate exceptions that don't involve interaction with Reddit's API."""

@@ -11,8 +11,8 @@ class GildedListingMixin(PRAWBase):
     def gilded(self, **generator_kwargs):
         """Return a ListingGenerator for gilded items.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, urljoin(self._path, 'gilded'),

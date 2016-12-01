@@ -64,8 +64,8 @@ class CommentForest(object):
     def list(self):
         """Return a flattened list of all Comments.
 
-        This list may contain MoreComments instances if ``replace_more`` was
-        not called first.
+        This list may contain :class:`.MoreComments` instances if
+        :meth:`.replace_more` was not called first.
 
         """
         comments = []

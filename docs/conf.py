@@ -6,7 +6,7 @@ from praw import __version__
 
 copyright = '2016, Bryce Boe'
 exclude_patterns = ['_build']
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
 html_static_path = ['_static']
 html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
@@ -14,6 +14,7 @@ html_theme_options = {
 }
 html_use_smartypants = True
 htmlhelp_basename = 'PRAW'
+intersphinx_mapping = {'python': ('https://docs.python.org/3.5', None)}
 master_doc = 'index'
 nitpicky = True
 project = 'PRAW'

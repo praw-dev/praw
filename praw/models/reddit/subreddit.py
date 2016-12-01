@@ -573,8 +573,8 @@ class SubredditModeration(object):
         :param only: If specified, one of `comments`, or 'submissions' to yield
             only results of that type.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         self._handle_only(only, generator_kwargs)
@@ -599,8 +599,8 @@ class SubredditModeration(object):
     def inbox(self, **generator_kwargs):
         """Return a ListingGenerator for moderator messages.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         See ``unread`` for unread moderator messages.
 
@@ -631,8 +631,8 @@ class SubredditModeration(object):
         :param only: If specified, one of `comments`, or 'submissions' to yield
             only results of that type.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         self._handle_only(only, generator_kwargs)
@@ -657,8 +657,8 @@ class SubredditModeration(object):
         :param only: If specified, one of `comments`, or 'submissions' to yield
             only results of that type.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         self._handle_only(only, generator_kwargs)
@@ -677,8 +677,8 @@ class SubredditModeration(object):
         :param only: If specified, one of `comments`, or 'submissions' to yield
             only results of that type.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         self._handle_only(only, generator_kwargs)
@@ -709,8 +709,8 @@ class SubredditModeration(object):
     def unmoderated(self, **generator_kwargs):
         """Return a ListingGenerator for unmoderated submissions.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(
@@ -720,8 +720,8 @@ class SubredditModeration(object):
     def unread(self, **generator_kwargs):
         """Return a ListingGenerator for unread moderator messages.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         See ``inbox`` for all messages.
 
@@ -1129,8 +1129,8 @@ class SubredditWiki(object):
     def revisions(self, **generator_kwargs):
         """Return a generator for recent wiki revisions.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         url = API_PATH['wiki_revisions'].format(subreddit=self.subreddit)

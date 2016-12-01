@@ -6,7 +6,7 @@ from ..base import PRAWBase
 
 
 class ListingGenerator(PRAWBase):
-    """Instances of this class generate ``RedditBase`` instances."""
+    """Instances of this class generate :class:`.RedditBase` instances."""
 
     def __init__(self, reddit, url, limit=100, params=None):
         """Initialize a ListingGenerator instance.

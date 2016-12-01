@@ -16,8 +16,8 @@ class User(PRAWBase):
     def contributor_subreddits(self, **generator_kwargs):
         """Return a ListingGenerator of subreddits user is a contributor of.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, API_PATH['my_contributor'],
@@ -44,8 +44,8 @@ class User(PRAWBase):
     def moderator_subreddits(self, **generator_kwargs):
         """Return a ListingGenerator of subreddits the user is a moderator of.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, API_PATH['my_moderator'],
@@ -58,8 +58,8 @@ class User(PRAWBase):
     def subreddits(self, **generator_kwargs):
         """Return a ListingGenerator of subreddits the user is subscribed to.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, API_PATH['my_subreddits'],

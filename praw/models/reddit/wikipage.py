@@ -84,8 +84,8 @@ class WikiPage(RedditBase):
     def revisions(self, **generator_kwargs):
         """Return a generator for page revisions.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         url = API_PATH['wiki_page_revisions'].format(subreddit=self.subreddit,

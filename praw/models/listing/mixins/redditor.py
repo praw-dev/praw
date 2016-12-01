@@ -29,11 +29,11 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
         is not authorized to access the list. Note that because this function
-        returns a ``ListingGenerator`` the exception may not occur until
+        returns a :class:`.ListingGenerator` the exception may not occur until
         sometime after this function has returned.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, urljoin(self._path, 'downvoted'),
@@ -44,11 +44,11 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
         is not authorized to access the list. Note that because this function
-        returns a ``ListingGenerator`` the exception may not occur until
+        returns a :class:`.ListingGenerator` the exception may not occur until
         sometime after this function has returned.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit,
@@ -60,11 +60,11 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
         is not authorized to access the list. Note that because this function
-        returns a ``ListingGenerator`` the exception may not occur until
+        returns a :class:`.ListingGenerator` the exception may not occur until
         sometime after this function has returned.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, urljoin(self._path, 'hidden'),
@@ -75,11 +75,11 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
         is not authorized to access the list. Note that because this function
-        returns a ``ListingGenerator`` the exception may not occur until
+        returns a :class:`.ListingGenerator` the exception may not occur until
         sometime after this function has returned.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, urljoin(self._path, 'saved'),
@@ -90,11 +90,11 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
         is not authorized to access the list. Note that because this function
-        returns a ``ListingGenerator`` the exception may not occur until
+        returns a :class:`.ListingGenerator` the exception may not occur until
         sometime after this function has returned.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, urljoin(self._path, 'upvoted'),

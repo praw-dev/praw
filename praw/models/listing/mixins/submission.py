@@ -11,8 +11,8 @@ class SubmissionListingMixin(BaseListingMixin, GildedListingMixin):
     def duplicates(self, **generator_kwargs):
         """Return a ListingGenerator for the submission's duplicates.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         url = API_PATH['duplicates'].format(submission_id=self.id)

@@ -10,5 +10,5 @@ class RedditorList(BaseList):
 
     @staticmethod
     def _convert(reddit, data):
-        """Return a Redditor object from the data."""
+        """Return a :class:`.Redditor` instance from the data."""
         return Redditor(reddit, data['name'])

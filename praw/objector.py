@@ -3,7 +3,7 @@ from .exceptions import APIException
 
 
 class Objector(object):
-    """The objector builds RedditBase objects."""
+    """The objector builds :class:`.RedditBase` objects."""
 
     def __init__(self, reddit):
         """Initialize an Objector instance.

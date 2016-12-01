@@ -85,7 +85,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     def refresh(self):
         """Refresh the comment's attributes.
 
-        If using ``Reddit.comment`` this method must be called in order to
+        If using :meth:`.Reddit.comment` this method must be called in order to
         obtain the comment's replies.
 
         """

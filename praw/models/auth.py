@@ -40,8 +40,8 @@ class Auth(PRAWBase):
         :param scope: A space-delimited string of Reddit OAuth2 scope names as
             returned from Reddit's callback.
 
-        Raise ``ClientException`` if ``Reddit`` was initialized for a
-        non-installed application type.
+        Raise class:`.ClientException` if :class:`.Reddit` was initialized for
+        a non-installed application type.
 
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator

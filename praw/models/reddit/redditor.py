@@ -57,8 +57,8 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
     def friend_info(self):
         """Return a Redditor instance with specific friend-related attributes.
 
-        :returns: A Redditor instance with fields ``date``, ``id``, and
-            possibly ``note`` if the authenticated user has reddit Gold.
+        :returns: A :class:`.Redditor` instance with fields ``date``, ``id``,
+            and possibly ``note`` if the authenticated user has reddit Gold.
 
         """
         return self._reddit.get(API_PATH['friend_v1'].format(user=self))

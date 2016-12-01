@@ -38,7 +38,7 @@ class RedditBase(PRAWBase):
         return hash(self.__class__.__name__) ^ hash(str(self).lower())
 
     def __init__(self, reddit, _data):
-        """Initialize a RedditBase instance.
+        """Initialize a RedditBase instance (or a subclass).
 
         :param reddit: An instance of :class:`~.Reddit`.
 

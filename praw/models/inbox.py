@@ -10,8 +10,8 @@ class Inbox(PRAWBase):
     def all(self, **generator_kwargs):
         """Return a ListingGenerator for all inbox comments and messages.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, API_PATH['inbox'],
@@ -20,8 +20,8 @@ class Inbox(PRAWBase):
     def comment_replies(self, **generator_kwargs):
         """Return a ListingGenerator for comment replies.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, API_PATH['comment_replies'],
@@ -61,8 +61,8 @@ class Inbox(PRAWBase):
         A mention is :class:`.Comment` in which the authorized redditor is
         named in its body like ``/u/redditor_name``.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, API_PATH['mentions'],
@@ -85,8 +85,8 @@ class Inbox(PRAWBase):
     def messages(self, **generator_kwargs):
         """Return a ListingGenerator for inbox messages.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, API_PATH['messages'],
@@ -95,8 +95,8 @@ class Inbox(PRAWBase):
     def submission_replies(self, **generator_kwargs):
         """Return a ListingGenerator for submission replies.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, API_PATH['submission_replies'],
@@ -105,8 +105,8 @@ class Inbox(PRAWBase):
     def sent(self, **generator_kwargs):
         """Return a ListingGenerator for sent messages.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, API_PATH['sent'],
@@ -123,8 +123,8 @@ class Inbox(PRAWBase):
         listing may result in missed messages if you only obtain unread
         messages.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         params = {'mark': mark_read}

@@ -54,8 +54,8 @@ class Reddit(object):
     def read_only(self, value):
         """Set or unset the use of the ReadOnlyAuthorizer.
 
-        Raise ``ClientException`` when attempting to unset ``read_only`` and
-        only the ReadOnlyAuthorizer is available.
+        Raise :class:`ClientException` when attempting to unset ``read_only``
+        and only the ReadOnlyAuthorizer is available.
 
         """
         if value:
@@ -86,10 +86,10 @@ class Reddit(object):
             variable praw_site. If it is not found there, the DEFAULT site will
             be used.
 
-        Additional keyword arguments will be used to initialize the ``Config``
-        object. This can be used to specify configuration settings during
-        instantiation of the ``Reddit`` instance. For more details please see
-        :ref:`configuration`.
+        Additional keyword arguments will be used to initialize the
+        :class`.Config` object. This can be used to specify configuration
+        settings during instantiation of the :class:`.Reddit` instance. For
+        more details please see :ref:`configuration`.
 
         Required settings are:
 
@@ -297,7 +297,7 @@ class Reddit(object):
         :param id: The ID of the comment.
 
         Note: If you want to obtain the comment's replies, you will need to
-        call ``refresh`` on the returned comment.
+        call :meth:`.refresh` on the returned comment.
 
         """
         return models.Comment(self, id=id)
@@ -332,7 +332,7 @@ class Reddit(object):
         issued in batches for each 100 fullnames.
 
         Note: For comments that are retrieved via this method, if you want to
-        obtain its replies, you will need to call ``refresh`` on the
+        obtain its replies, you will need to call :meth:`.refresh` on the
         yielded comment.
 
         """

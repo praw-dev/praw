@@ -27,7 +27,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             * https://reddit.com/comments/2gmzqe/
             * https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/
 
-        Raise ``ClientException`` if URL is not a valid submission URL.
+        Raise :class:`.ClientException` if URL is not a valid submission URL.
 
         """
         parsed = urlparse(url)

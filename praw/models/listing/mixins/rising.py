@@ -11,8 +11,8 @@ class RisingListingMixin(PRAWBase):
     def random_rising(self, **generator_kwargs):
         """Return a ListingGenerator for random rising submissions.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit,
@@ -22,8 +22,8 @@ class RisingListingMixin(PRAWBase):
     def rising(self, **generator_kwargs):
         """Return a ListingGenerator for rising submissions.
 
-        Additional keyword arguments are passed to the ``ListingGenerator``
-        constructor.
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         """
         return ListingGenerator(self._reddit, urljoin(self._path, 'rising'),
