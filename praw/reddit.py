@@ -193,6 +193,20 @@ class Reddit(object):
 
            reddit.subreddit.create('coolnewsubname')
 
+        To obtain a lazy a :class:`.Subreddit` instance run:
+
+        .. code-block:: python
+
+           reddit.subreddit('redditdev')
+
+        Note that multiple subreddits can be combined and filtered views of
+        /r/all can also be used just like a subreddit:
+
+        .. code-block:: python
+
+           reddit.subreddit('redditdev+learnpython+botwatch')
+           reddit.subreddit('all-redditdev-learnpython')
+
         """
 
         self.subreddits = models.Subreddits(self, None)
