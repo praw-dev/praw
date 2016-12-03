@@ -9,6 +9,11 @@ Unreleased
 * :meth:`praw.models.Subreddits.search_by_topic` to search subreddits by topic.
   (see: https://www.reddit.com/dev/api/#GET_api_subreddits_by_topic).
 
+**Deprecated**
+
+* ``validate_time_filter`` will be removed from the public interface in PRAW
+  4.1+ as it was never intended to be part of it to begin with.
+
 
 
 4.0.0 (2016/11/29)
