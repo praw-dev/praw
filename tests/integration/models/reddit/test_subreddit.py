@@ -3,7 +3,7 @@ from os.path import abspath, dirname, join
 import sys
 
 from praw.exceptions import APIException
-from praw.models import (Comment, ModAction, Redditor, Submission,
+from praw.models import (Comment, ModAction, Redditor, Submission, Subreddit,
                          SubredditMessage, Stylesheet, WikiPage)
 from prawcore import NotFound
 import mock
@@ -181,6 +181,26 @@ class TestSubreddit(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubreddit.test_unsubscribe__multiple'):
             subreddit.unsubscribe(['redditdev', self.reddit.subreddit('iama')])
+
+
+class TestSubredditFilters(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test__iter__all(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFilters.test__iter__all'):
+            filters = list(self.reddit.subreddit('all').filters)
+        assert len(filters) > 0
+        assert all(isinstance(x, Subreddit) for x in filters)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test__iter__mod(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFilters.test__iter__mod'):
+            filters = list(self.reddit.subreddit('mod').filters)
+        assert len(filters) > 0
+        assert all(isinstance(x, Subreddit) for x in filters)
 
 
 class TestSubredditFlair(IntegrationTest):

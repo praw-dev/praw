@@ -33,6 +33,7 @@ instances of them bound to an attribute of one of the PRAW models.
    :maxdepth: 2
    :caption: Subreddit Helpers
 
+   other/subredditfilters
    other/subredditstream
    other/subredditstylesheet
    other/subredditwiki

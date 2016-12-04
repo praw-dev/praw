@@ -95,6 +95,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._contributor
 
     @property
+    def filters(self):
+        """An instance of :class:`.SubredditFilters`."""
+        if self._filters is None:
+            self._filters = SubredditFilters(self)
+        return self._filters
+
+    @property
     def flair(self):
         """An instance of :class:`.SubredditFlair`."""
         if self._flair is None:
@@ -156,9 +163,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         super(Subreddit, self).__init__(reddit, _data)
         if display_name:
             self.display_name = display_name
-        self._banned = self._contributor = self._flair = self._mod = None
-        self._moderator = self._muted = self._stream = self._stylesheet = None
-        self._wiki = None
+        self._banned = self._contributor = self._filters = self._flair = None
+        self._mod = self._moderator = self._muted = self._stream = None
+        self._stylesheet = self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)
 
     def _info_path(self):
@@ -316,6 +323,39 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         data = {'action': 'unsub',
                 'sr_name': self._subreddit_list(self, other_subreddits)}
         self._reddit.post(API_PATH['subscribe'], data=data)
+
+
+class SubredditFilters(object):
+    """Provide functions to interact with the special Subreddit's filters."""
+
+    def __init__(self, subreddit):
+        """Create a SubredditFilters instance.
+
+        :param subreddit: The special subreddit whose filters to work with.
+
+        As of this writing filters can only be used with the special subreddits
+        ``all`` and ``mod``.
+
+        """
+        self.subreddit = subreddit
+
+    def __iter__(self):
+        """Iterate through the special subreddit's filters.
+
+        This method should be invoked as:
+
+        .. code:: python
+
+           for subreddit in reddit.subreddit('NAME').filters:
+               ...
+
+        """
+        url = API_PATH['subreddit_filter_list'].format(
+            special=self.subreddit, user=self.subreddit._reddit.user.me())
+        params = {'unique': self.subreddit._reddit._next_unique}
+        response_data = self.subreddit._reddit.get(url, params=params)
+        for subreddit in response_data.subreddits:
+            yield subreddit
 
 
 class SubredditFlair(object):

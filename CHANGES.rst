@@ -8,6 +8,8 @@ Unreleased
 
 * :meth:`praw.models.Subreddits.search_by_topic` to search subreddits by topic.
   (see: https://www.reddit.com/dev/api/#GET_api_subreddits_by_topic).
+* :class:`.SubredditFilters` to work with filters for special subreddits, like
+  ``/r/all``.
 
 **Deprecated**
 

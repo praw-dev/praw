@@ -93,6 +93,7 @@ API_PATH = {
     'submit':                 'api/submit/',
     'subreddit':              'r/{subreddit}/',
     'subreddit_about':        'r/{subreddit}/about/',
+    'subreddit_filter_list':  'api/filter/user/{user}/f/{special}',
     'subreddit_random':       'r/{subreddit}/random/',
     'subreddit_settings':     'r/{subreddit}/about/edit/',
     'subreddit_stylesheet':   'r/{subreddit}/api/subreddit_stylesheet/',
