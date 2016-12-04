@@ -9,6 +9,15 @@ from .reddit.subreddit import Subreddit
 class User(PRAWBase):
     """The user class provides methods for the currently authenticated user."""
 
+    def __init__(self, reddit):
+        """Initialize a User instance.
+
+        This class is intended to be interfaced with through ``reddit.user``.
+
+        """
+        super(User, self).__init__(reddit, None)
+        self._me = None
+
     def blocked(self):
         """Return a RedditorList of blocked Redditors."""
         return self._reddit.get(API_PATH['blocked'])
@@ -36,10 +45,21 @@ class User(PRAWBase):
             karma_map[subreddit] = row
         return karma_map
 
-    def me(self):  # pylint: disable=invalid-name
-        """Return a Redditor instance for the authenticated user."""
-        user_data = self._reddit.get(API_PATH['me'])
-        return Redditor(self._reddit, _data=user_data)
+    def me(self, use_cache=True):  # pylint: disable=invalid-name
+        """Return a Redditor instance for the authenticated user.
+
+        :param use_cache: When true, and if this function has been previously
+            called, returned the cached version (default: True).
+
+        .. note:: If you change the Reddit instance's authorization, you might
+           want to refresh the cached value. Prefer using separate Reddit
+           instances, however, for distinct authorizations.
+
+        """
+        if self._me is None or not use_cache:
+            user_data = self._reddit.get(API_PATH['me'])
+            self._me = Redditor(self._reddit, _data=user_data)
+        return self._me
 
     def moderator_subreddits(self, **generator_kwargs):
         """Return a ListingGenerator of subreddits the user is a moderator of.

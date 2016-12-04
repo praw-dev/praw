@@ -1,5 +1,6 @@
 """Test praw.models.user."""
 from praw.models import Multireddit, Redditor, Subreddit
+import mock
 
 from .. import IntegrationTest
 
@@ -44,6 +45,18 @@ class TestUser(IntegrationTest):
         with self.recorder.use_cassette('TestUser.test_me'):
             me = self.reddit.user.me()
         assert isinstance(me, Redditor)
+        me.praw_is_cached = True
+        assert self.reddit.user.me().praw_is_cached
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_me__bypass_cache(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestUser.test_me__bypass_cache'):
+            me = self.reddit.user.me()
+        assert isinstance(me, Redditor)
+        me.praw_is_cached = True
+        assert not hasattr(self.reddit.user.me(use_cache=False),
+                           'praw_is_cached')
 
     def test_moderator_subreddits(self):
         self.reddit.read_only = False

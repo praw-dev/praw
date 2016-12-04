@@ -222,7 +222,7 @@ class Reddit(object):
 
         """
 
-        self.user = models.User(self, None)
+        self.user = models.User(self)
         """An instance of :class:`.User`.
 
         Provides the interface to the currently authorized
