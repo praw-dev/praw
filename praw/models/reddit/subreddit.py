@@ -387,7 +387,7 @@ class SubredditFilters(object):
         :param subreddit: The subreddit to add to the filter list.
 
         Items from subreddits added to the filtered list will no longer be
-        included when obtaining listings for /r/all.
+        included when obtaining listings for ``/r/all``.
 
         Alternatively, you can filter a subreddit temporarily from a special
         listing in a manner like so:
@@ -836,8 +836,8 @@ class SubredditModeration(object):
 
         :param allow_images: Allow users to upload images using the native
             image hosting. Only applies to link-only subreddits.
-        :param allow_top: Allow the subreddit to appear on /r/all as well as
-            the default and trending lists.
+        :param allow_top: Allow the subreddit to appear on ``/r/all`` as well
+            as the default and trending lists.
         :param collapse_deleted_comments: Collapse deleted and removed comments
             on comments pages by default.
         :param comment_score_hide_mins: The number of minutes to hide comment
