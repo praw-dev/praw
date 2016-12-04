@@ -1,5 +1,6 @@
 """Provide the Subreddit class."""
 from copy import deepcopy
+from json import dumps
 import time
 
 from prawcore import Redirect
@@ -326,7 +327,16 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
 
 class SubredditFilters(object):
-    """Provide functions to interact with the special Subreddit's filters."""
+    """Provide functions to interact with the special Subreddit's filters.
+
+    Members of this class should be utilized via ``Subreddit.fiters``. For
+    example to add a filter run:
+
+    .. code:: python
+
+       reddit.subreddit('all').filters.add('subreddit_name')
+
+    """
 
     def __init__(self, subreddit):
         """Create a SubredditFilters instance.
@@ -356,6 +366,30 @@ class SubredditFilters(object):
         response_data = self.subreddit._reddit.get(url, params=params)
         for subreddit in response_data.subreddits:
             yield subreddit
+
+    def add(self, subreddit):
+        """Add ``subreddit`` to the list of filtered subreddits.
+
+        :param subreddit: The subreddit to add to the filter list.
+
+        Items from subreddits added to the filtered list will no longer be
+        included when obtaining listings for /r/all.
+
+        Alternatively, you can filter a subreddit temporarily from a special
+        listing in a manner like so:
+
+        .. code:: python
+
+           reddit.subreddit('all-redditdev-learnpython')
+
+        Raises ``prawcore.NotFound`` when calling on a non-special subreddit.
+
+        """
+        url = API_PATH['subreddit_filter'].format(
+            special=self.subreddit, user=self.subreddit._reddit.user.me(),
+            subreddit=subreddit)
+        self.subreddit._reddit.request(
+            'PUT', url, data={'model': dumps({'name': subreddit})})
 
 
 class SubredditFlair(object):

@@ -202,6 +202,20 @@ class TestSubredditFilters(IntegrationTest):
         assert len(filters) > 0
         assert all(isinstance(x, Subreddit) for x in filters)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_add(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditFilters.test_add'):
+            self.reddit.subreddit('all').filters.add('redditdev')
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_add__non_special(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFilters.test_add__non_special'):
+            with pytest.raises(NotFound):
+                self.reddit.subreddit('redditdev').filters.add('redditdev')
+
 
 class TestSubredditFlair(IntegrationTest):
     @property
