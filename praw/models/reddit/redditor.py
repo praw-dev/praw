@@ -95,4 +95,4 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
 
     def unfriend(self):
         """Unfriend the Redditor."""
-        self._friend(method='delete', data={'id': str(self)})
+        self._friend(method='DELETE', data={'id': str(self)})

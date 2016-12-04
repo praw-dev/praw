@@ -57,7 +57,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
         url = API_PATH['multireddit_update'].format(
             multi=self.name, user=self._author, subreddit=subreddit)
         self._reddit.request(
-            'put', url, data={'model': dumps({'name': str(subreddit)})})
+            'PUT', url, data={'model': dumps({'name': str(subreddit)})})
         self._reset_attributes('subreddits')
 
     def copy(self, display_name=None):
@@ -81,7 +81,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
 
     def delete(self):
         """Delete this multireddit."""
-        self._reddit.request('delete', self._info_path())
+        self._reddit.request('DELETE', self._info_path())
 
     def remove(self, subreddit):
         """Remove a subreddit from this multireddit.
@@ -92,7 +92,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
         url = API_PATH['multireddit_update'].format(
             multi=self.name, user=self._author, subreddit=subreddit)
         self._reddit.request(
-            'delete', url, data={'model': dumps({'name': str(subreddit)})})
+            'DELETE', url, data={'model': dumps({'name': str(subreddit)})})
         self._reset_attributes('subreddits')
 
     def rename(self, display_name):
@@ -132,6 +132,6 @@ class Multireddit(RedditBase, SubredditListingMixin):
             updated_settings['subreddits'] = [
                 {'name': str(sub)} for sub in updated_settings['subreddits']]
         response = self._reddit.request(
-            'put', self._info_path(), data={'model': dumps(updated_settings)})
+            'PUT', self._info_path(), data={'model': dumps(updated_settings)})
         new = Multireddit(self._reddit, response['data'])
         self.__dict__.update(new.__dict__)
