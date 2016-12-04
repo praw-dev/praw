@@ -216,6 +216,20 @@ class TestSubredditFilters(IntegrationTest):
             with pytest.raises(NotFound):
                 self.reddit.subreddit('redditdev').filters.add('redditdev')
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_remove(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditFilters.test_remove'):
+            self.reddit.subreddit('mod').filters.remove('redditdev')
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_remove__non_special(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFilters.test_remove__non_special'):
+            with pytest.raises(NotFound):
+                self.reddit.subreddit('redditdev').filters.remove('redditdev')
+
 
 class TestSubredditFlair(IntegrationTest):
     @property

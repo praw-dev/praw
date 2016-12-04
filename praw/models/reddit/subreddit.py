@@ -391,6 +391,19 @@ class SubredditFilters(object):
         self.subreddit._reddit.request(
             'PUT', url, data={'model': dumps({'name': subreddit})})
 
+    def remove(self, subreddit):
+        """Remove ``subreddit`` from the list of filtered subreddits.
+
+        :param subreddit: The subreddit to remove from the filter list.
+
+        Raises ``prawcore.NotFound`` when calling on a non-special subreddit.
+
+        """
+        url = API_PATH['subreddit_filter'].format(
+            special=self.subreddit, user=self.subreddit._reddit.user.me(),
+            subreddit=subreddit)
+        self.subreddit._reddit.request('DELETE', url, data={})
+
 
 class SubredditFlair(object):
     """Provide a set of functions to interact with a Subreddit's flair."""
