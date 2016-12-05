@@ -1036,7 +1036,7 @@ class ContributorRelationship(SubredditRelationship):
 
     .. code-block:: python
 
-       for contributor in reddit.subreddit('redditdev').contributors:
+       for contributor in reddit.subreddit('redditdev').contributors():
            print(contributor)
 
     """
@@ -1054,7 +1054,7 @@ class ModeratorRelationship(SubredditRelationship):
 
     .. code-block:: python
 
-       for moderator in reddit.subreddit('redditdev').moderators:
+       for moderator in reddit.subreddit('redditdev').moderators():
            print(moderator)
 
     """
