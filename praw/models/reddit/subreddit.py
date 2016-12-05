@@ -920,10 +920,22 @@ class SubredditRelationship(object):
 
     .. code-block:: python
 
-       for ban in reddit.subreddit('redditdev').banned:
-           print(ban)
+       for ban in reddit.subreddit('redditdev').banned():
+           print('{}: {}'.format(ban, ban.note))
 
     """
+
+    def __call__(self, **generator_kwargs):
+        """Return a generator for Redditors belonging to this relationship.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+
+        """
+        url = API_PATH['list_{}'.format(self.relationship)].format(
+            subreddit=self.subreddit)
+        return ListingGenerator(self.subreddit._reddit, url,
+                                **generator_kwargs)
 
     def __init__(self, subreddit, relationship):
         """Create a SubredditRelationship instance.
@@ -936,7 +948,13 @@ class SubredditRelationship(object):
         self.subreddit = subreddit
 
     def __iter__(self):
-        """Iterate through the Redditors belonging to this relationship."""
+        """Iterate through the Redditors belonging to this relationship.
+
+        Deprecated: This method will be removed in PRAW 5. Prefer calling
+        instead like `subreddit.banned(limit=None)` instead of
+        `subreddit.banned`.
+
+        """
         url = API_PATH['list_{}'.format(self.relationship)].format(
             subreddit=self.subreddit)
         params = {'unique': self.subreddit._reddit._next_unique}

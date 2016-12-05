@@ -674,7 +674,11 @@ class TestSubredditRelationships(IntegrationTest):
     def add_remove(self, base, user, relationship, _):
         relationship = getattr(base, relationship)
         relationship.add(user)
-        assert user in relationship
+        relationships = list(relationship)
+        assert user in relationships
+        redditor = relationships[relationships.index(user)]
+        assert isinstance(redditor, Redditor)
+        assert hasattr(redditor, 'date')
         relationship.remove(user)
         assert user not in relationship
 
@@ -686,6 +690,13 @@ class TestSubredditRelationships(IntegrationTest):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditRelationships.banned'):
             self.add_remove(self.subreddit, self.REDDITOR, 'banned')
+
+    def test_banned__callable(self):
+        self.reddit.read_only = False
+        banned = self.subreddit.banned()
+        with self.recorder.use_cassette(
+                'TestSubredditRelationships.banned__callable'):
+            assert len(list(banned)) > 0
 
     def test_contributor(self):
         self.reddit.read_only = False

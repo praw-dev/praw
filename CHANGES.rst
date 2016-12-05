@@ -10,6 +10,8 @@ Unreleased
   (see: https://www.reddit.com/dev/api/#GET_api_subreddits_by_topic).
 * :class:`.SubredditFilters` to work with filters for special subreddits, like
   ``/r/all``.
+* Added callables for :class:`.SubredditRelationship` so that ``limit`` and
+  other parameters can be passed.
 
 **Changed**
 
@@ -22,7 +24,10 @@ Unreleased
 * ``validate_time_filter`` will be removed from the public interface in PRAW
   4.1+ as it was never intended to be part of it to begin with.
 
-
+* Iterating directly over :class:`.SubredditRelationship`, e.g.,
+  ``subreddit.banned``, ``subreddit.contributor``, ``subreddit.moderator``,
+  etc, will be removed in PRAW 5. Iterate instead over its callable,
+  e.g. ``subreddit.banned()``.
 
 4.0.0 (2016/11/29)
 ------------------
