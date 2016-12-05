@@ -294,6 +294,12 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         Either ``selftext`` or ``url`` can be provided, but not both.
 
+        For example to submit a URL to ``/r/reddit_api_test`` do:
+
+        .. code:: python
+
+           reddit.subreddit('reddit_api_test').submit('https://praw.readthedocs.io')
+
         """
         if bool(selftext) == bool(url):
             raise TypeError('Either `selftext` or `url` must be provided.')
