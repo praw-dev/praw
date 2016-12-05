@@ -53,10 +53,9 @@ class TestUser(IntegrationTest):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestUser.test_me__bypass_cache'):
             me = self.reddit.user.me()
-        assert isinstance(me, Redditor)
-        me.praw_is_cached = True
-        assert not hasattr(self.reddit.user.me(use_cache=False),
-                           'praw_is_cached')
+            me.praw_is_cached = True
+            assert not hasattr(self.reddit.user.me(use_cache=False),
+                               'praw_is_cached')
 
     def test_moderator_subreddits(self):
         self.reddit.read_only = False
