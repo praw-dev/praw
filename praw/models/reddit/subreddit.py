@@ -965,13 +965,19 @@ class SubredditRelationship(object):
 
     """
 
-    def __call__(self, **generator_kwargs):
+    def __call__(self, redditor=None, **generator_kwargs):
         """Return a generator for Redditors belonging to this relationship.
+
+        :param redditor: Yield at most a single :class:`~.Redditor`
+            instance. This is useful to confirm if a relationship exists, or to
+            fetch the metadata associated with a particular relationship.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
         """
+        Subreddit._safely_add_arguments(generator_kwargs, 'params',
+                                        user=redditor)
         url = API_PATH['list_{}'.format(self.relationship)].format(
             subreddit=self.subreddit)
         return ListingGenerator(self.subreddit._reddit, url,

@@ -698,6 +698,13 @@ class TestSubredditRelationships(IntegrationTest):
                 'TestSubredditRelationships.banned__callable'):
             assert len(list(banned)) > 0
 
+    def test_banned__callable__user_filter(self):
+        self.reddit.read_only = False
+        banned = self.subreddit.banned(redditor='pyapitestuser3')
+        with self.recorder.use_cassette(
+                'TestSubredditRelationships.banned__callable_user_filter'):
+            assert len(list(banned)) == 1
+
     def test_contributor(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
