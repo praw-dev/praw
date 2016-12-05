@@ -996,9 +996,9 @@ class SubredditRelationship(object):
     def __iter__(self):
         """Iterate through the Redditors belonging to this relationship.
 
-        Deprecated: This method will be removed in PRAW 5. Prefer calling
-        instead like `subreddit.banned(limit=None)` instead of
-        `subreddit.banned`.
+        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
+                     calling ``subreddit.banned(limit=None)`` instead of
+                     ``subreddit.banned`` and similar for other relationships.
 
         """
         url = API_PATH['list_{}'.format(self.relationship)].format(
