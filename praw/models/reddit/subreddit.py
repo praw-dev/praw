@@ -16,7 +16,38 @@ from .wikipage import WikiPage
 
 
 class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
-    """A class for Subreddits."""
+    """A class for Subreddits.
+
+    To obtain an instance of this class for subreddit ``/r/redditdev`` execute:
+
+    .. code:: python
+
+       subreddit = reddit.subreddit('redditdev')
+
+    While ``/r/all`` is not a real subreddit, it can still be treated like
+    one. The following outputs the titles of the 25 hottest submissions in
+    ``/r/all``:
+
+    .. code:: python
+
+       for submission in reddit.subreddit('all').hot(limit=25):
+           print(submission.title)
+
+    Multiple subreddits can be combined like so:
+
+    .. code:: python
+
+       for submission in reddit.subreddit('redditdev+learnpython').top('all'):
+           print(submission)
+
+    Subreddits can be filtered from combined listings as follows:
+
+    .. code:: python
+
+       for submission in reddit.subreddit('all-redditdev').new():
+           print(submission)
+
+    """
 
     STR_FIELD = 'display_name'
     MESSAGE_PREFIX = '#'
@@ -156,6 +187,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param display_name: The name of the subreddit.
+
+        .. note:: This class should not be initialized directly instead obtain
+           an instance via: ``reddit.subreddit('subreddit_name')``
 
         """
         if bool(display_name) == bool(_data):
