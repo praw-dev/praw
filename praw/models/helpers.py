@@ -3,11 +3,25 @@ from json import dumps
 
 from ..const import API_PATH
 from .base import PRAWBase
+from .reddit.live import LiveThread
 from .reddit.multi import Multireddit, Subreddit
 
 
 class LiveHelper(PRAWBase):
     """Provide a set of functions to interact with LiveThreads."""
+
+    def __call__(self, id):  # pylint: disable=invalid-name,redefined-builtin
+        """Return a new lazy instance of :class:`~.LiveThread`.
+
+        This method is intended to be used as:
+
+        .. code:: python
+
+            livethread = reddit.live('ukaeu1ik4sw5')
+
+        :param id: A live thread ID, e.g., ``ukaeu1ik4sw5``.
+        """
+        return LiveThread(self._reddit, id=id)
 
     def create(self, title, description=None, nsfw=False, resources=None):
         """Create a new LiveThread.
