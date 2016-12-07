@@ -23,6 +23,13 @@ class TestReddit(IntegrationTest):
             assert isinstance(item, RedditBase)
 
     @mock.patch('time.sleep', return_value=None)
+    def test_live_call(self, _):
+        thread_id = 'ukaeu1ik4sw5'
+        thread = self.reddit.live(thread_id)
+        with self.recorder.use_cassette('TestReddit.test_live_call'):
+            assert thread.title == 'reddit updates'
+
+    @mock.patch('time.sleep', return_value=None)
     def test_live_create(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestReddit.test_live_create'):
