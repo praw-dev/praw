@@ -33,8 +33,8 @@ Unreleased
 
 **Fixed**
 
-* :meth:`.SubredditModeration.update` accurately updates ``show_media`` and
-  ``show_media_preview`` values.
+* :meth:`.SubredditModeration.update` accurately updates ``header_hover_text``,
+  ``show_media`` and ``show_media_preview`` values.
 
 4.0.0 (2016/11/29)
 ------------------

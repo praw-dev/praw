@@ -76,7 +76,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                  'description': description,
                  'domain': domain,
                  'exclude_modqueue_banned': exclude_modqueue_banned,
-                 'header_hover_text': header_hover_text,
+                 'header-title': header_hover_text,  # Remap here - better name
                  'hide_ads': hide_ads,
                  'key_color': key_color,
                  'lang': lang,
