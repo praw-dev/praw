@@ -61,7 +61,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                           key_color=None, link_type=None, name=None,
                           over_18=None, public_description=None,
                           public_traffic=None, show_media=None,
-                          show_thumbnails=None, spam_comments=None,
+                          show_media_preview=None, spam_comments=None,
                           spam_links=None, spam_selfposts=None, sr=None,
                           submit_link_label=None, submit_text=None,
                           submit_text_label=None, subreddit_type=None,
@@ -85,8 +85,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                  'over_18': over_18,
                  'public_description': public_description,
                  'public_traffic': public_traffic,
-                 'show_media': show_thumbnails,
-                 'show_media_preview': show_media,
+                 'show_media': show_media,
+                 'show_media_preview': show_media_preview,
                  'spam_comments': spam_comments,
                  'spam_links': spam_links,
                  'spam_selfposts': spam_selfposts,
@@ -899,8 +899,8 @@ class SubredditModeration(object):
         :param public_description: Public description blurb. Appears in search
             results and on the landing page for private subreddits.
         :param public_traffic: Make the traffic stats page public.
-        :param show_media: Expand media previews on comments pages.
-        :param show_thumbnails: Show thumbnails on submissions.
+        :param show_media: Show thumbnails on submissions.
+        :param show_media_preview: Expand media previews on comments pages.
         :param spam_comments: Spam filter strength for comments.
             One of ``all``, ``low``, ``high``.
         :param spam_links: Spam filter strength for links.

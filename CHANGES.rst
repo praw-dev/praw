@@ -31,6 +31,11 @@ Unreleased
   etc, will be removed in PRAW 5. Iterate instead over its callable,
   e.g. ``subreddit.banned()``.
 
+**Fixed**
+
+* :meth:`.SubredditModeration.update` accurately updates ``show_media`` and
+  ``show_media_preview`` values.
+
 4.0.0 (2016/11/29)
 ------------------
 
