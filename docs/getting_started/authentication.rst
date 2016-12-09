@@ -62,6 +62,14 @@ To verify that you are authenticated as the correct user run:
 
 The output should contain the same name as you entered for ``username``.
 
+.. note:: If the following exception is raised, double check your credentials,
+          and ensure that that the username and password you are using are for
+          the same user with which the script application is associated:
+
+          .. code::
+
+             OAuthException: invalid_grant error processing request
+
 
 .. _web_application:
 
