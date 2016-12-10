@@ -6,7 +6,14 @@ from ..base import PRAWBase
 
 
 class ListingGenerator(PRAWBase):
-    """Instances of this class generate :class:`.RedditBase` instances."""
+    """Instances of this class generate :class:`.RedditBase` instances.
+
+    .. warning:: This class should not be directly utilized. Instead you will
+       find a number of methods that return instances of the class:
+
+       http://praw.readthedocs.io/en/latest/search.html?q=ListingGenerator
+
+    """
 
     def __init__(self, reddit, url, limit=100, params=None):
         """Initialize a ListingGenerator instance.
