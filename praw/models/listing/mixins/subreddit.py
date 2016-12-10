@@ -11,6 +11,23 @@ class SubredditListingMixin(BaseListingMixin, GildedListingMixin,
                             RisingListingMixin):
     """Adds additional methods pertianing to Subreddit-like instances."""
 
+    @property
+    def comments(self):
+        """An instance of :class:`.CommentHelper`.
+
+        For example, to output the author of the 25 most recent comments of
+        ``/r/redditdev`` execute:
+
+        .. code:: python
+
+           for comment in reddit.subreddit('redditdev').comments(limit=25):
+               print(comment.author)
+
+        """
+        if self._comments is None:
+            self._comments = CommentHelper(self)
+        return self._comments
+
     def __init__(self, reddit, _data):
         """Initialize a SubredditListingMixin instance.
 
@@ -18,7 +35,7 @@ class SubredditListingMixin(BaseListingMixin, GildedListingMixin,
 
         """
         super(SubredditListingMixin, self).__init__(reddit, _data)
-        self.comments = CommentHelper(self)
+        self._comments = None
 
 
 class CommentHelper(GildedListingMixin):
@@ -34,5 +51,17 @@ class CommentHelper(GildedListingMixin):
         self.subreddit = subreddit
 
     def __call__(self, **generator_kwargs):
-        """Return a ListingGenerator for the Subreddit's comments."""
+        """Return a ListingGenerator for the Subreddit's comments.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+
+        This method should be used in a way similar to the example below:
+
+        .. code:: python
+
+           for comment in reddit.subreddit('redditdev').comments(limit=25):
+               print(comment.author)
+
+        """
         return ListingGenerator(self._reddit, self._path, **generator_kwargs)
