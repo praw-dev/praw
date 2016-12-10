@@ -11,14 +11,34 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     @property
     def comments(self):
-        """An attribute representing the comments made by the Redditor."""
+        r"""An instance of :class:`.SubListing` providing access to comments.
+
+        For example, to output the first line of all new comments by
+        ``/u/spez`` try:
+
+        .. code:: python
+
+           for comment in reddit.redditor('spez').comments.new(limit=None):
+               print(comment.body.split('\n', 1)[0][:79])
+
+        """
         if self.__dict__.get('_comments') is None:
             self._comments = SubListing(self._reddit, self._path, 'comments')
         return self._comments
 
     @property
     def submissions(self):
-        """An attribute representing the submissions made by the Redditor."""
+        """An instance of :class:`.SubListing` providing access to submissions.
+
+        For example, to output the title's of top 100 of all time submissions
+        for ``/u/spez`` try:
+
+        .. code:: python
+
+           for submission in reddit.redditor('spez').submissions.top('all'):
+               print(submission.title)
+
+        """
         if self.__dict__.get('_submissions') is None:
             self._submissions = SubListing(self._reddit, self._path,
                                            'submitted')
@@ -107,7 +127,7 @@ class SubListing(BaseListingMixin):
     def __init__(self, reddit, base_path, subpath):
         """Initialize a SubListing instance.
 
-        :param reddit: An instance of :class:`.Reddit'.
+        :param reddit: An instance of :class:`.Reddit`.
         :param base_path: The path to the object up to this point.
         :param subpath: The additional path to this sublisting.
 
