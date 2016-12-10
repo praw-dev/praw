@@ -46,7 +46,7 @@ class User(PRAWBase):
         return karma_map
 
     def me(self, use_cache=True):  # pylint: disable=invalid-name
-        """Return a Redditor instance for the authenticated user.
+        """Return a :class:`.Redditor` instance for the authenticated user.
 
         :param use_cache: When true, and if this function has been previously
             called, returned the cached version (default: True).
