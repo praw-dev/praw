@@ -11,8 +11,8 @@ class InboxableMixin(object):
 
         :returns: The json response from the server.
 
-        Note: reddit does not permit blocking users unless they you have an
-        Inboxable item from them.
+        .. note:: Reddit does not permit blocking users unless you have an
+                  :class:`.Comment` or :class:`.Message` from them.
 
         """
         return self._reddit.post(API_PATH['block'], data={'id': self.fullname})

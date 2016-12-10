@@ -118,10 +118,10 @@ class Inbox(PRAWBase):
         :param mark_read: Marks the messages as read when they're obtained
             (Default: False).
 
-        Note: When marking messages as read, the entire batch (up to 100 at a
-        time) is marked as read when fetched. Failure to consume the entire
-        listing may result in missed messages if you only obtain unread
-        messages.
+        .. note:: When marking messages as read, the entire batch (up to 100 at
+                  a time) is marked as read when fetched. Failure to consume
+                  the entire listing may result in missed messages if you only
+                  obtain unread messages.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

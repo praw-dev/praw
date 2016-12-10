@@ -296,8 +296,8 @@ class Reddit(object):
 
         :param id: The ID of the comment.
 
-        Note: If you want to obtain the comment's replies, you will need to
-        call :meth:`.refresh` on the returned comment.
+        .. note:: If you want to obtain the comment's replies, you will need to
+                  call :meth:`.refresh` on the returned :class:`.Comment`.
 
         """
         return models.Comment(self, id=id)
@@ -331,9 +331,9 @@ class Reddit(object):
         Items that cannot be matched will not be generated. Requests will be
         issued in batches for each 100 fullnames.
 
-        Note: For comments that are retrieved via this method, if you want to
-        obtain its replies, you will need to call :meth:`.refresh` on the
-        yielded comment.
+        .. note:: For comments that are retrieved via this method, if you want
+                  to obtain its replies, you will need to call :meth:`.refresh`
+                  on the yielded :class:`.Comment`.
 
         """
         if not isinstance(fullnames, list):
