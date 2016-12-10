@@ -339,7 +339,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         .. code:: python
 
-           reddit.subreddit('reddit_api_test').submit(url='https://praw.readthedocs.io')
+           url = 'https://praw.readthedocs.io'
+           reddit.subreddit('reddit_api_test').submit(url=url)
 
         """
         if bool(selftext) == bool(url):
