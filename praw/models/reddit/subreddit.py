@@ -231,6 +231,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         For more information on building a search query see:
             https://www.reddit.com/wiki/search
 
+        For example to search all subreddits for ``praw`` try:
+
+        .. code:: python
+
+           for submission in reddit.subreddit('all').search('praw'):
+               print(submission.title)
+
         """
         self.validate_time_filter(time_filter)
         self._safely_add_arguments(generator_kwargs, 'params', q=query,
