@@ -135,7 +135,18 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     @property
     def flair(self):
-        """An instance of :class:`.SubredditFlair`."""
+        """An instance of :class:`.SubredditFlair`.
+
+        Provides the interface for interacting with a subreddit's flair. For
+        example to list all the flair for a subreddit which you have the
+        ``flair`` moderator permission on try:
+
+        .. code-block:: python
+
+           for flair in reddit.subreddit('NAME').flair:
+               print(flair)
+
+        """
         if self._flair is None:
             self._flair = SubredditFlair(self)
         return self._flair
@@ -480,7 +491,16 @@ class SubredditFlair(object):
         self.templates = SubredditFlairTemplates(subreddit)
 
     def __iter__(self):
-        """Iterate through the Redditors and their associated flair."""
+        """Iterate through the Redditors and their associated flair.
+
+        This method is to be used like:
+
+        .. code-block:: python
+
+           for flair in reddit.subreddit('NAME').flair:
+               print(flair)
+
+        """
         url = API_PATH['flairlist'].format(subreddit=self.subreddit)
         params = {'unique': self.subreddit._reddit._next_unique}
         for item in ListingGenerator(self.subreddit._reddit, url, None,
