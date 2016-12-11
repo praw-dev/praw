@@ -14,6 +14,8 @@ Unreleased
   ``/r/all``.
 * Added callables for :class:`.SubredditRelationship` so that ``limit`` and
   other parameters can be passed.
+* Add :meth:`~praw.models.Message.reply` to :class:`.Message` which was
+  accidentally missed previously.
 
 **Changed**
 

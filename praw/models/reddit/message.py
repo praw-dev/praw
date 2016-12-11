@@ -1,10 +1,10 @@
 """Provide the Message class."""
 from .base import RedditBase
 from ...const import API_PATH
-from .mixins import InboxableMixin
+from .mixins import InboxableMixin, ReplyableMixin
 
 
-class Message(RedditBase, InboxableMixin):
+class Message(RedditBase, InboxableMixin, ReplyableMixin):
     """A class for private messages."""
 
     STR_FIELD = 'id'
