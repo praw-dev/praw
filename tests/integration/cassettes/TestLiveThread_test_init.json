@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2016-12-07T13:19:43",
+      "recorded_at": "2016-12-11T16:33:16",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -22,23 +22,23 @@
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\"access_token\": \"G3zyP28RIGbbTocu0s9pcj9KWI0\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
         },
         "headers": {
           "Accept-Ranges": "bytes",
           "Connection": "keep-alive",
           "Content-Length": "105",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Wed, 07 Dec 2016 13:18:22 GMT",
+          "Date": "Sun, 11 Dec 2016 16:31:41 GMT",
           "Server": "snooserv",
-          "Set-Cookie": "loid=AFJaYzUOC19PMMpeZ5; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Set-Cookie": "loid=3gQy5vpDZz0B0IaMps; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
           "X-Cache": "MISS",
           "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-nrt6135-NRT",
-          "X-Timer": "S1481116702.528734,VS0,VE193",
+          "X-Served-By": "cache-nrt6123-NRT",
+          "X-Timer": "S1481473900.430640,VS0,VE729",
           "cache-control": "max-age=0, must-revalidate",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
@@ -52,7 +52,7 @@
       }
     },
     {
-      "recorded_at": "2016-12-07T13:19:43",
+      "recorded_at": "2016-12-11T16:33:17",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -61,9 +61,9 @@
         "headers": {
           "Accept": "*/*",
           "Accept-Encoding": "identity",
-          "Authorization": "bearer G3zyP28RIGbbTocu0s9pcj9KWI0",
+          "Authorization": "bearer <ACCESS_TOKEN>",
           "Connection": "keep-alive",
-          "Cookie": "loid=AFJaYzUOC19PMMpeZ5; loidcreated=1481116702000",
+          "Cookie": "loid=3gQy5vpDZz0B0IaMps; loidcreated=1481473900000",
           "User-Agent": "<USER_AGENT> PRAW/4.0.0 prawcore/0.3.0"
         },
         "method": "GET",
@@ -72,14 +72,14 @@
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\"kind\": \"LiveUpdateEvent\", \"data\": {\"description\": \"A reddit-official thread detailing smaller site changes and links to larger ones (like in /r/changelog or /r/blog).\", \"description_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EA reddit-official thread detailing smaller site changes and links to larger ones (like in \\u003Ca href=\\\"/r/changelog\\\" rel=\\\"nofollow\\\"\\u003E/r/changelog\\u003C/a\\u003E or \\u003Ca href=\\\"/r/blog\\\" rel=\\\"nofollow\\\"\\u003E/r/blog\\u003C/a\\u003E).\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"title\": \"reddit updates\", \"created\": 1426290512.0, \"created_utc\": 1426261712.0, \"websocket_url\": \"wss://wss.redditmedia.com/live/ukaeu1ik4sw5?m=AQAAn11JWDTuVuoWUCLUGEt19ueG5hxBLOXFxdS02jKfe8wwqCAf\", \"state\": \"live\", \"nsfw\": false, \"viewer_count\": 5, \"viewer_count_fuzzed\": true, \"resources_html\": \"\", \"id\": \"ukaeu1ik4sw5\", \"resources\": \"\", \"name\": \"LiveUpdateEvent_ukaeu1ik4sw5\"}}"
+          "string": "{\"kind\": \"LiveUpdateEvent\", \"data\": {\"description\": \"A reddit-official thread detailing smaller site changes and links to larger ones (like in /r/changelog or /r/blog).\", \"description_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EA reddit-official thread detailing smaller site changes and links to larger ones (like in \\u003Ca href=\\\"/r/changelog\\\" rel=\\\"nofollow\\\"\\u003E/r/changelog\\u003C/a\\u003E or \\u003Ca href=\\\"/r/blog\\\" rel=\\\"nofollow\\\"\\u003E/r/blog\\u003C/a\\u003E).\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"title\": \"reddit updates\", \"created\": 1426290512.0, \"created_utc\": 1426261712.0, \"websocket_url\": \"wss://wss.redditmedia.com/live/ukaeu1ik4sw5?m=AQAA7dBOWHWGpM_AA66ExBXVzKVK1pJKWwtGGsA-U8518tZSEzVT\", \"state\": \"live\", \"nsfw\": false, \"viewer_count\": 9, \"viewer_count_fuzzed\": true, \"resources_html\": \"\", \"id\": \"ukaeu1ik4sw5\", \"resources\": \"\", \"name\": \"LiveUpdateEvent_ukaeu1ik4sw5\"}}"
         },
         "headers": {
           "Accept-Ranges": "bytes",
           "Connection": "keep-alive",
           "Content-Length": "891",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Wed, 07 Dec 2016 13:18:23 GMT",
+          "Date": "Sun, 11 Dec 2016 16:31:41 GMT",
           "Server": "snooserv",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Vary": "accept-encoding",
@@ -87,14 +87,14 @@
           "X-Cache": "MISS",
           "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-nrt6123-NRT",
-          "X-Timer": "S1481116702.832260,VS0,VE393",
+          "X-Served-By": "cache-nrt6131-NRT",
+          "X-Timer": "S1481473901.383310,VS0,VE197",
           "access-control-allow-origin": "*",
           "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
           "cache-control": "max-age=0, must-revalidate",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
-          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=smRKukE%2B2Mf9fSN0cOVgvlmWmtLI%2F8qKmUZ7xsPuIgWs7Vxt4QEeOePAjQcUeXxbLXGsD%2FUTs6Y%3D",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=0tilFlaLUie8qe%2FCL8TkOLeioejS7HsiQAtAOl8Ff3WJOjqC9CQJpjkxuzvBq9mUjb5IyjQfApo%3D",
           "x-ua-compatible": "IE=edge",
           "x-xss-protection": "1; mode=block"
         },

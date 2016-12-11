@@ -1,4 +1,5 @@
 """Prepare py.test."""
+import json
 import os
 import socket
 import time
@@ -28,6 +29,23 @@ def env_default(key):
                           'placeholder_{}'.format(key))
 
 
+def filter_access_token(interaction, current_cassette):
+    """Add Betamax placeholder to filter access token."""
+    request_uri = interaction.data['request']['uri']
+    response = interaction.data['response']
+    if ('api/v1/access_token' not in request_uri or
+            response['status']['code'] != 200):
+        return
+    body = response['body']['string']
+    try:
+        token = json.loads(body)['access_token']
+    except (KeyError, TypeError, ValueError):
+        return
+    current_cassette.placeholders.append(
+            betamax.cassette.cassette.Placeholder(
+                placeholder='<ACCESS_TOKEN>', replace=token))
+
+
 os.environ['praw_check_for_updates'] = 'False'
 
 
@@ -42,6 +60,7 @@ betamax.Betamax.register_serializer(pretty_json.PrettyJSONSerializer)
 with betamax.Betamax.configure() as config:
     config.cassette_library_dir = 'tests/integration/cassettes'
     config.default_cassette_options['serialize_with'] = 'prettyjson'
+    config.before_record(callback=filter_access_token)
     for key, value in placeholders.items():
         config.define_cassette_placeholder('<{}>'.format(key.upper()), value)
 
