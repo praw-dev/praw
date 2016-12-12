@@ -39,6 +39,16 @@ class TestMessage(IntegrationTest):
             message = next(self.reddit.inbox.messages())
             message.mark_unread()
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_reply(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestMessage.test_reply'):
+            message = next(self.reddit.inbox.messages())
+            reply = message.reply('Message reply')
+            assert reply.author == self.reddit.config.username
+            assert reply.body == 'Message reply'
+            assert reply.first_message_name == message.fullname
+
 
 class TestSubredditMessage(IntegrationTest):
     def test_mute(self):
