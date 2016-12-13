@@ -56,7 +56,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     def _create_or_update(_reddit, allow_images=None, allow_top=None,
                           collapse_deleted_comments=None,
                           comment_score_hide_mins=None, description=None,
-                          domain=None, exclude_modqueue_banned=None,
+                          domain=None, exclude_banned_modqueue=None,
                           header_hover_text=None, hide_ads=None, lang=None,
                           key_color=None, link_type=None, name=None,
                           over_18=None, public_description=None,
@@ -75,7 +75,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                  'comment_score_hide_mins': comment_score_hide_mins,
                  'description': description,
                  'domain': domain,
-                 'exclude_modqueue_banned': exclude_modqueue_banned,
+                 'exclude_banned_modqueue': exclude_banned_modqueue,
                  'header-title': header_hover_text,  # Remap here - better name
                  'hide_ads': hide_ads,
                  'key_color': key_color,
