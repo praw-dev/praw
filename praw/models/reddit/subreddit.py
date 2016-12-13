@@ -914,7 +914,7 @@ class SubredditModeration(object):
         :param description: Shown in the sidebar of your subreddit.
         :param domain: Domain name with a cname that points to
             {subreddit}.reddit.com.
-        :param exclude_modqueue_banned: Exclude posts by site-wide banned users
+        :param exclude_banned_modqueue: Exclude posts by site-wide banned users
             from modqueue/unmoderated.
         :param header_hover_text: The text seen when hovering over the snoo.
         :param hide_ads: Don't show ads within this subreddit. Only applies to
@@ -968,7 +968,6 @@ class SubredditModeration(object):
 
         # These attributes come out using different names than they go in.
         remap = {'allow_top': 'default_set',
-                 'exclude_modqueue_banned': 'exclude_banned_modqueue',
                  'lang': 'language',
                  'link_type': 'content_options'}
         for (new, old) in remap.items():
