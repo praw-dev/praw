@@ -11,6 +11,7 @@ from ..util import stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
+from .comment import Comment
 from .mixins import MessageableMixin
 from .wikipage import WikiPage
 
@@ -724,7 +725,7 @@ class SubredditModeration(object):
         self.subreddit._reddit.post(API_PATH['approve'],
                                     data={'id': thing.fullname})
 
-    def distinguish(self, thing, how='yes'):
+    def distinguish(self, thing, how='yes', sticky=False):
         """Distinguish a Comment or Submission.
 
         :param thing: An instance of Comment or Submission.
@@ -733,9 +734,14 @@ class SubredditModeration(object):
             moderator level distinguish. 'no' removes any distinction. 'admin'
             and 'special' require special user priviliges to use.
 
+        :param sticky: Comment is stickied if True, placing it at the top of
+            the comment page regardless of score. If thing is not a top-level
+            comment, this parameter is silently ignored.
         """
-        return self.subreddit._reddit.post(
-            API_PATH['distinguish'], data={'how': how, 'id': thing.fullname})
+        data = {'how': how, 'id': thing.fullname}
+        if sticky and isinstance(thing, Comment) and thing.is_root:
+            data['sticky'] = True
+        return self.subreddit._reddit.post(API_PATH['distinguish'], data=data)
 
     def edited(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for edited comments and submissions.

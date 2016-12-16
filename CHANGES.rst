@@ -16,6 +16,8 @@ Unreleased
   other parameters can be passed.
 * Add :meth:`~praw.models.Message.reply` to :class:`.Message` which was
   accidentally missed previously.
+* Add `sticky` parameter to :meth:`.SubredditModeration.distinguish` to sticky
+  comments.
 
 **Changed**
 
