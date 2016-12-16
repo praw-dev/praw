@@ -1,0 +1,168 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-12-16T07:55:49",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0 prawcore/0.5.0"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Fri, 16 Dec 2016 07:55:49 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "loid=A0qy1dSToIzuljtlxF; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-sea1923-SEA",
+          "X-Timer": "S1481874948.722822,VS0,VE431",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-12-16T07:55:49",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Cookie": "loidcreated=1481874948000; loid=A0qy1dSToIzuljtlxF",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0 prawcore/0.5.0"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/message/mentions?raw_json=1&limit=100"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"children\": [{\"kind\": \"t1\", \"data\": {\"body\": \"But seriously, /u/pyapitestuser2, donde esta?\", \"link_title\": \"Calling test\", \"was_comment\": true, \"first_message\": null, \"name\": \"t1_da2g9oh\", \"first_message_name\": null, \"created\": 1479307053.0, \"dest\": \"<USERNAME>\", \"author\": \"PyAPITestUser3\", \"created_utc\": 1479278253.0, \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EBut seriously, \\u003Ca href=\\\"/u/pyapitestuser2\\\"\\u003E/u/pyapitestuser2\\u003C/a\\u003E, donde esta?\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"subreddit\": \"PRAW_73oy54eo3a\", \"parent_id\": \"t3_5d7tk7\", \"likes\": null, \"context\": \"/r/PRAW_73oy54eo3a/comments/5d7tk7/calling_test/da2g9oh/?context=3\", \"replies\": \"\", \"id\": \"da2g9oh\", \"new\": false, \"distinguished\": null, \"subject\": \"username mention\"}}], \"after\": null, \"before\": null}}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "898",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Fri, 16 Dec 2016 07:55:49 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-sea1926-SEA",
+          "X-Timer": "S1481874949.390698,VS0,VE179",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "597.0",
+          "x-ratelimit-reset": "251",
+          "x-ratelimit-used": "3",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=55sk6QGtPEXE%2BcBidgwYFIB7vofqgg2OCltUA3oVb2LlOrDz7%2F6ggG%2FpCc%2BJGQk5%2F5d7rYTf94%2Fkmkdc4QE3Ce3jZ%2BJP5FZB",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/message/mentions?raw_json=1&limit=100"
+      }
+    },
+    {
+      "recorded_at": "2016-12-16T07:55:49",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Cookie": "loidcreated=1481874948000; loid=A0qy1dSToIzuljtlxF",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0 prawcore/0.5.0"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/PRAW_73oy54eo3a/comments/5d7tk7/calling_test/da2g9oh/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"children\": [{\"kind\": \"t3\", \"data\": {\"contest_mode\": false, \"banned_by\": null, \"media_embed\": {}, \"subreddit\": \"PRAW_73oy54eo3a\", \"selftext_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"/u/pyapitestuser2\\\"\\u003E/u/pyapitestuser2\\u003C/a\\u003E where are you?\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"selftext\": \"/u/pyapitestuser2 where are you?\", \"likes\": null, \"suggested_sort\": null, \"user_reports\": [], \"secure_media\": null, \"saved\": false, \"id\": \"5d7tk7\", \"gilded\": 0, \"secure_media_embed\": {}, \"clicked\": false, \"report_reasons\": [], \"author\": \"PyAPITestUser3\", \"media\": null, \"score\": 1, \"approved_by\": null, \"over_18\": false, \"domain\": \"self.PRAW_73oy54eo3a\", \"hidden\": false, \"num_comments\": 1, \"thumbnail\": \"\", \"subreddit_id\": \"t5_380j4\", \"edited\": false, \"link_flair_css_class\": null, \"author_flair_css_class\": null, \"downs\": 0, \"archived\": false, \"removal_reason\": null, \"stickied\": false, \"is_self\": true, \"hide_score\": false, \"spoiler\": false, \"permalink\": \"/r/PRAW_73oy54eo3a/comments/5d7tk7/calling_test/\", \"locked\": false, \"name\": \"t3_5d7tk7\", \"created\": 1479307002.0, \"url\": \"https://www.reddit.com/r/PRAW_73oy54eo3a/comments/5d7tk7/calling_test/\", \"author_flair_text\": null, \"quarantine\": false, \"title\": \"Calling test\", \"created_utc\": 1479278202.0, \"link_flair_text\": null, \"ups\": 1, \"upvote_ratio\": 1.0, \"mod_reports\": [], \"visited\": false, \"num_reports\": 0, \"distinguished\": null}}], \"after\": null, \"before\": null}}, {\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"children\": [{\"kind\": \"t1\", \"data\": {\"subreddit_id\": \"t5_380j4\", \"banned_by\": null, \"removal_reason\": null, \"link_id\": \"t3_5d7tk7\", \"likes\": null, \"replies\": \"\", \"user_reports\": [], \"saved\": false, \"id\": \"da2g9oh\", \"gilded\": 0, \"archived\": false, \"report_reasons\": [], \"author\": \"PyAPITestUser3\", \"parent_id\": \"t3_5d7tk7\", \"score\": 1, \"approved_by\": null, \"controversiality\": 0, \"body\": \"But seriously, /u/pyapitestuser2, donde esta?\", \"edited\": false, \"author_flair_css_class\": null, \"downs\": 0, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EBut seriously, \\u003Ca href=\\\"/u/pyapitestuser2\\\"\\u003E/u/pyapitestuser2\\u003C/a\\u003E, donde esta?\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"stickied\": false, \"subreddit\": \"PRAW_73oy54eo3a\", \"score_hidden\": false, \"name\": \"t1_da2g9oh\", \"created\": 1479307053.0, \"author_flair_text\": null, \"created_utc\": 1479278253.0, \"ups\": 1, \"mod_reports\": [], \"num_reports\": 0, \"distinguished\": null}}], \"after\": null, \"before\": null}}]"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "2559",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Fri, 16 Dec 2016 07:55:49 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-sea1926-SEA",
+          "X-Timer": "S1481874949.630758,VS0,VE130",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "596.0",
+          "x-ratelimit-reset": "251",
+          "x-ratelimit-used": "4",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=wPxkGPvtuTuOBxchZrYs8ln7y0nO9IJJoyLZM%2B4KL%2FzIvBlSbV2S9lSNN34%2BBPkidJrTjipfAHQT6LSZaL1Avl2Vyts2kMkU",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/PRAW_73oy54eo3a/comments/5d7tk7/calling_test/da2g9oh/?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}

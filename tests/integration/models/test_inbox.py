@@ -35,6 +35,15 @@ class TestInbox(IntegrationTest):
             assert count == 64
 
     @mock.patch('time.sleep', return_value=None)
+    def test_comment_reply__refresh(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestInbox.test_comment_reply__refresh'):
+            comment = next(self.reddit.inbox.comment_replies())
+            assert isinstance(comment, Comment)
+            comment.refresh()
+
+    @mock.patch('time.sleep', return_value=None)
     def test_mark_read(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -49,6 +58,15 @@ class TestInbox(IntegrationTest):
                 'TestInbox.test_mark_unread',
                 match_requests_on=['uri', 'method', 'body']):
             self.reddit.inbox.mark_unread(list(self.reddit.inbox.all()))
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_mention__refresh(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestInbox.test_mention__refresh'):
+            mention = next(self.reddit.inbox.mentions())
+            assert isinstance(mention, Comment)
+            mention.refresh()
 
     def test_mentions(self):
         self.reddit.read_only = False

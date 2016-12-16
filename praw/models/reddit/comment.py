@@ -89,9 +89,13 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         obtain the comment's replies.
 
         """
-        # pylint: disable=no-member
-        comment_path = self.submission._info_path() + '_/{}'.format(self.id)
-        # pylint: enable=no-member
+        if hasattr(self, 'context'):
+            comment_path = self.context.split('?', 1)[0]
+        else:
+            # pylint: disable=no-member
+            comment_path = self.submission._info_path() + \
+                           '_/{}'.format(self.id)
+            # pylint: enable=no-member
         comment_list = self._reddit.get(comment_path)[1].children
         if not comment_list:
             raise ClientException('Comment has been deleted')

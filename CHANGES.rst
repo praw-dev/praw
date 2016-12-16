@@ -38,6 +38,8 @@ Unreleased
 * :meth:`.SubredditModeration.update` accurately updates
   ``exclude_banned_modqueue``, ``header_hover_text``, ``show_media`` and
   ``show_media_preview`` values.
+* Instances of :class:`.Comment` obtained through the inbox (including
+  mentions) are now refreshable.
 
 4.0.0 (2016/11/29)
 ------------------
