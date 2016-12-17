@@ -24,5 +24,5 @@ Source Contributors
 - William McKinnerney <me@williammck.net> `@williammck <https://github.com/williammck>`_
 - Katharine Jarmul <katharine@kjamistan.com> `@kjam <https://github.com/kjam>`_
 - nmtake `@nmtake <https://github.com/nmtake>`_
-- Levi Roth <levimroth@gmail.com> `@leviroth <https://github.com/leviroth`_
+- Levi Roth <levimroth@gmail.com> `@leviroth <https://github.com/leviroth>`_
 - Add "Name <email (optional)> and github profile link" above this line.
