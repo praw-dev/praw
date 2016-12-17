@@ -453,6 +453,14 @@ class TestSubredditModeration(IntegrationTest):
             submission = self.reddit.submission('4b536h')
             self.subreddit.mod.distinguish(submission)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_distinguish__sticky(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModeration.test_distinguish__sticky'):
+            comment = Comment(self.reddit, 'dba9bzn')
+            self.subreddit.mod.distinguish(comment, sticky=True)
+
     def test_edited(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditModeration.test_edited'):
