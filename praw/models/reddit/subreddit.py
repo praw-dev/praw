@@ -11,7 +11,6 @@ from ..util import stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
-from .comment import Comment
 from .mixins import MessageableMixin
 from .wikipage import WikiPage
 
@@ -712,37 +711,27 @@ class SubredditModeration(object):
         url = API_PATH['accept_mod_invite'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
 
-    def approve(self, thing):
-        """Approve a Comment or Submission.
+    @staticmethod
+    def approve(thing):
+        """DEPRECATED.
 
-        :param thing: An instance of Comment or Submission.
-
-        Approving a comment or submission reverts a removal, resets the report
-        counter, adds a green check mark indicator (only visible to other
-        moderators) on the website view, and sets the ``approved_by`` attribute
-        to the authenticated user.
+        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
+                     calling ``comment.mod.approve()``,
+                     ``submission.mod.approve()``.
 
         """
-        self.subreddit._reddit.post(API_PATH['approve'],
-                                    data={'id': thing.fullname})
+        thing.mod.approve()
 
-    def distinguish(self, thing, how='yes', sticky=False):
-        """Distinguish a Comment or Submission.
+    @staticmethod
+    def distinguish(thing, how='yes', sticky=False):
+        """DEPRECATED.
 
-        :param thing: An instance of Comment or Submission.
+        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
+                     calling ``comment.mod.distinguish()``,
+                     ``submission.mod.distinguish()``.
 
-        :param how: One of 'yes', 'no', 'admin', 'special'. 'yes' adds a
-            moderator level distinguish. 'no' removes any distinction. 'admin'
-            and 'special' require special user priviliges to use.
-
-        :param sticky: Comment is stickied if True, placing it at the top of
-            the comment page regardless of score. If thing is not a top-level
-            comment, this parameter is silently ignored.
         """
-        data = {'how': how, 'id': thing.fullname}
-        if sticky and isinstance(thing, Comment) and thing.is_root:
-            data['sticky'] = True
-        return self.subreddit._reddit.post(API_PATH['distinguish'], data=data)
+        thing.mod.distinguish(how=how, sticky=sticky)
 
     def edited(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for edited comments and submissions.
@@ -759,19 +748,16 @@ class SubredditModeration(object):
             self.subreddit._reddit, API_PATH['about_edited'].format(
                 subreddit=self.subreddit), **generator_kwargs)
 
-    def ignore_reports(self, thing):
-        """Ignore future reports on a Comment or Submission.
+    @staticmethod
+    def ignore_reports(thing):
+        """DEPRECATED.
 
-        :param thing: An instance of Comment or Submission.
-
-        Calling this method will prevent future reports on this Comment or
-        Submission from both triggering notifications and appearing in the
-        various moderation listings. The report count will still increment on
-        the Comment or Submission.
+        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
+                     calling ``comment.mod.ignore_reports()``,
+                     ``submission.mod.ignore_reports()``.
 
         """
-        self.subreddit._reddit.post(API_PATH['ignore_reports'],
-                                    data={'id': thing.fullname})
+        thing.mod.ignore_reports()
 
     def inbox(self, **generator_kwargs):
         """Return a ListingGenerator for moderator messages.
@@ -817,16 +803,16 @@ class SubredditModeration(object):
             self.subreddit._reddit, API_PATH['about_modqueue'].format(
                 subreddit=self.subreddit), **generator_kwargs)
 
-    def remove(self, thing, spam=False):
-        """Remove a Comment or Submission.
+    @staticmethod
+    def remove(thing, spam=False):
+        """DEPRECATED.
 
-        :param thing: An instance of Comment or Submission.
-        :param spam: When True, use the removal to help train the Subreddit's
-            spam filter (Default: False)
+        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
+                     calling ``comment.mod.remove()``,
+                     ``submission.mod.remove()``.
 
         """
-        data = {'id': thing.fullname, 'spam': bool(spam)}
-        self.subreddit._reddit.post(API_PATH['remove'], data=data)
+        thing.mod.remove(spam=spam)
 
     def reports(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for reported comments and submissions.
@@ -863,25 +849,27 @@ class SubredditModeration(object):
             self.subreddit._reddit, API_PATH['about_spam'].format(
                 subreddit=self.subreddit), **generator_kwargs)
 
-    def undistinguish(self, thing):
-        """Remove mod, admin or special distinguishing on object.
+    @staticmethod
+    def undistinguish(thing):
+        """DEPRECATED.
 
-        :returns: The json response from the server.
-
-        """
-        return self.distinguish(thing, how='no')
-
-    def unignore_reports(self, thing):
-        """Resume receiving future reports on a Comment or Submission.
-
-        :param thing: An instance of Comment or Submission.
-
-        Future reports on this Comment or Submission will cause notifications,
-        and appear in the various moderation listings.
+        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
+                     calling ``comment.mod.undistinguish()``,
+                     ``submission.mod.undistinguish()``.
 
         """
-        self.subreddit._reddit.post(API_PATH['unignore_reports'],
-                                    data={'id': thing.fullname})
+        thing.mod.undistinguish()
+
+    @staticmethod
+    def unignore_reports(thing):
+        """DEPRECATED.
+
+        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
+                     calling ``comment.mod.unignore_reports()``,
+                     ``submission.mod.unignore_reports()``.
+
+        """
+        thing.mod.unignore_reports()
 
     def unmoderated(self, **generator_kwargs):
         """Return a ListingGenerator for unmoderated submissions.

@@ -143,6 +143,12 @@ class TestSubmissionFlair(IntegrationTest):
 
 
 class TestSubmissionModeration(IntegrationTest):
+    def test_approve(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_approve'):
+            self.reddit.submission('4b536h').mod.approve()
+
     def test_contest_mode(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -157,6 +163,18 @@ class TestSubmissionModeration(IntegrationTest):
             submission = Submission(self.reddit, '4s2idz')
             submission.mod.contest_mode(state=False)
 
+    def test_distinguish(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_distinguish'):
+            self.reddit.submission('4b536h').mod.distinguish()
+
+    def test_ignore_reports(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_ignore_reports'):
+            self.reddit.submission('31ybt2').mod.ignore_reports()
+
     def test_nsfw(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -168,6 +186,12 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubmissionModeration.test_lock'):
             Submission(self.reddit, '4s2idz').mod.lock()
+
+    def test_remove(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_remove'):
+            self.reddit.submission('4b536h').mod.remove(spam=True)
 
     def test_sfw(self):
         self.reddit.read_only = False
@@ -205,7 +229,19 @@ class TestSubmissionModeration(IntegrationTest):
                 'TestSubmissionModeration.test_suggested_sort__clear'):
             Submission(self.reddit, '4s2idz').mod.suggested_sort(sort='blank')
 
-    def test_unock(self):
+    def test_undistinguish(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_undistinguish'):
+            self.reddit.submission('4b536h').mod.undistinguish()
+
+    def test_unignore_reports(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_unignore_reports'):
+            self.reddit.submission('31ybt2').mod.unignore_reports()
+
+    def test_unlock(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestSubmissionModeration.test_unlock'):

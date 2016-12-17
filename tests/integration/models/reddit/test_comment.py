@@ -136,3 +136,47 @@ class TestComment(IntegrationTest):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestComment.test_upvote'):
             Comment(self.reddit, 'd1680wu').upvote()
+
+
+class TestCommentModeration(IntegrationTest):
+    def test_approve(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestCommentModeration.test_approve'):
+            Comment(self.reddit, 'da2g5y6').mod.approve()
+
+    def test_distinguish(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestCommentModeration.test_distinguish'):
+            Comment(self.reddit, 'da2g5y6').mod.distinguish()
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_distinguish__sticky(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestCommentModeration.test_distinguish__sticky'):
+            Comment(self.reddit, 'da2g5y6').mod.distinguish(sticky=True)
+
+    def test_ignore_reports(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestCommentModeration.test_ignore_reports'):
+            self.reddit.comment('da2g5y6').mod.ignore_reports()
+
+    def test_remove(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestCommentModeration.test_remove'):
+            self.reddit.comment('da2g5y6').mod.remove(spam=True)
+
+    def test_undistinguish(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestCommentModeration.test_undistinguish'):
+            self.reddit.comment('da2g5y6').mod.undistinguish()
+
+    def test_unignore_reports(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestCommentModeration.test_unignore_reports'):
+            self.reddit.comment('da2g5y6').mod.unignore_reports()

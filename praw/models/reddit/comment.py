@@ -2,7 +2,7 @@
 from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
 from .base import RedditBase
-from .mixins import InboxableMixin, UserContentMixin
+from .mixins import InboxableMixin, ThingModerationMixin, UserContentMixin
 from .redditor import Redditor
 from ...exceptions import ClientException
 
@@ -17,6 +17,13 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         """Return True when the comment is a top level comment."""
         parent_type = self.parent_id.split('_', 1)[0]
         return parent_type == self._reddit.config.kinds['submission']
+
+    @property
+    def mod(self):
+        """An instance of :class:`.CommentModeration`."""
+        if self._mod is None:
+            self._mod = CommentModeration(self)
+        return self._mod
 
     @property
     def submission(self):
@@ -41,7 +48,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         if bool(id) == bool(_data):
             raise TypeError('Either `id` or `_data` must be provided.')
         super(Comment, self).__init__(reddit, _data)
-        self._submission = None
+        self._mod = self._submission = None
         if id:
             self.id = id  # pylint: disable=invalid-name
         else:
@@ -103,3 +110,15 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         del comment.__dict__['_submission']  # Don't replace
         self.__dict__.update(comment.__dict__)
         return self
+
+
+class CommentModeration(ThingModerationMixin):
+    """Provide a set of functions pertaining to Comment moderation."""
+
+    def __init__(self, comment):
+        """Create a CommentModeration instance.
+
+        :param comment: The comment to moderate.
+
+        """
+        self.thing = comment

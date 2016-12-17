@@ -17,6 +17,7 @@ instances of them bound to an attribute of one of the PRAW models.
    :maxdepth: 2
    :caption: Moderation Helpers
 
+   other/commentmoderation
    other/submissionmoderation
    other/subredditmoderation
    other/wikipagemoderation

@@ -7,7 +7,7 @@ from ...exceptions import ClientException
 from ..comment_forest import CommentForest
 from ..listing.mixins import SubmissionListingMixin
 from .base import RedditBase
-from .mixins import UserContentMixin
+from .mixins import ThingModerationMixin, UserContentMixin
 from .redditor import Redditor
 from .subreddit import Subreddit
 
@@ -166,7 +166,7 @@ class SubmissionFlair(object):
         return self.submission._reddit.post(url, data=data)
 
 
-class SubmissionModeration(object):
+class SubmissionModeration(ThingModerationMixin):
     """Provide a set of functions pertaining to Submission moderation."""
 
     def __init__(self, submission):
@@ -175,7 +175,7 @@ class SubmissionModeration(object):
         :param submission: The submission to moderate.
 
         """
-        self.submission = submission
+        self.thing = submission
 
     def contest_mode(self, state=True):
         """Set contest mode for the comments of this submission.
@@ -191,23 +191,23 @@ class SubmissionModeration(object):
             obscured to "1" for non-moderators.
 
         """
-        self.submission._reddit.post(API_PATH['contest_mode'], data={
-            'id': self.submission.fullname, 'state': state})
+        self.thing._reddit.post(API_PATH['contest_mode'], data={
+            'id': self.thing.fullname, 'state': state})
 
     def lock(self):
         """Lock the submission."""
-        self.submission._reddit.post(API_PATH['lock'],
-                                     data={'id': self.submission.fullname})
+        self.thing._reddit.post(API_PATH['lock'],
+                                data={'id': self.thing.fullname})
 
     def nsfw(self):
         """Mark as not safe for work."""
-        self.submission._reddit.post(API_PATH['marknsfw'],
-                                     data={'id': self.submission.fullname})
+        self.thing._reddit.post(API_PATH['marknsfw'],
+                                data={'id': self.thing.fullname})
 
     def sfw(self):
         """Mark as safe for work."""
-        self.submission._reddit.post(API_PATH['unmarknsfw'],
-                                     data={'id': self.submission.fullname})
+        self.thing._reddit.post(API_PATH['unmarknsfw'],
+                                data={'id': self.thing.fullname})
 
     def sticky(self, state=True, bottom=True):
         """Set the submission's sticky state in its subreddit.
@@ -222,11 +222,11 @@ class SubmissionModeration(object):
         exists.
 
         """
-        data = {'id': self.submission.fullname, 'state': state}
+        data = {'id': self.thing.fullname, 'state': state}
         if not bottom:
             data['num'] = 1
-        return self.submission._reddit.post(API_PATH['sticky_submission'],
-                                            data=data)
+        return self.thing._reddit.post(API_PATH['sticky_submission'],
+                                       data=data)
 
     def suggested_sort(self, sort='blank'):
         """Set the suggested sort for the comments of the submission.
@@ -235,13 +235,13 @@ class SubmissionModeration(object):
             random, qa, blank (default: blank).
 
         """
-        self.submission._reddit.post(API_PATH['suggested_sort'], data={
-            'id': self.submission.fullname, 'sort': sort})
+        self.thing._reddit.post(API_PATH['suggested_sort'], data={
+            'id': self.thing.fullname, 'sort': sort})
 
     def unlock(self):
         """Lock the submission."""
-        self.submission._reddit.post(API_PATH['unlock'],
-                                     data={'id': self.submission.fullname})
+        self.thing._reddit.post(API_PATH['unlock'],
+                                data={'id': self.thing.fullname})
 
 
 Subreddit._submission_class = Submission

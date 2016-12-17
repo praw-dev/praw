@@ -16,7 +16,7 @@ Unreleased
   other parameters can be passed.
 * Add :meth:`~praw.models.Message.reply` to :class:`.Message` which was
   accidentally missed previously.
-* Add `sticky` parameter to :meth:`.SubredditModeration.distinguish` to sticky
+* Add `sticky` parameter to :meth:`.CommentModeration.distinguish` to sticky
   comments.
 
 **Changed**
@@ -29,11 +29,15 @@ Unreleased
 
 * ``validate_time_filter`` will be removed from the public interface in PRAW
   4.1+ as it was never intended to be part of it to begin with.
-
 * Iterating directly over :class:`.SubredditRelationship`, e.g.,
   ``subreddit.banned``, ``subreddit.contributor``, ``subreddit.moderator``,
   etc, will be removed in PRAW 5. Iterate instead over its callable,
   e.g. ``subreddit.banned()``.
+* The following methods are deprecated to be removed in PRAW 5 and are replaced
+  with similar ``Comment.mod...`` and ``Submission.mod...`` alternatives:
+  ``Subreddit.mod.approve``, ``Subreddit.mod.distinguish``,
+  ``Subreddit.mod.ignore_reports``, ``Subreddit.mod.remove``,
+  ``Subreddit.mod.undistinguish``, ``Subreddit.mod.unignore_reports``.
 
 **Fixed**
 
