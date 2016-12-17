@@ -42,6 +42,7 @@ Unreleased
   ``show_media_preview`` values.
 * Instances of :class:`.Comment` obtained through the inbox (including
   mentions) are now refreshable.
+* Searching ``/r/all`` should now work as intended for all users.
 
 4.0.0 (2016/11/29)
 ------------------

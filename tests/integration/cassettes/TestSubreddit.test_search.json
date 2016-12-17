@@ -62,7 +62,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.0.0b8 prawcore/0.0.10"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/r/all/search/?sort=relevance&raw_json=1&syntax=cloudsearch&t=all&restrict_sr=True&limit=1024&q=praw+oauth+search"
+        "uri": "https://oauth.reddit.com/r/all/search/?sort=relevance&raw_json=1&syntax=cloudsearch&t=all&restrict_sr=False&limit=1024&q=praw+oauth+search"
       },
       "response": {
         "body": {

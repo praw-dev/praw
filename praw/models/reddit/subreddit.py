@@ -252,9 +252,10 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         """
         self.validate_time_filter(time_filter)
+        not_all = self.display_name.lower() != 'all'
         self._safely_add_arguments(generator_kwargs, 'params', q=query,
-                                   restrict_sr=True, sort=sort, syntax=syntax,
-                                   t=time_filter)
+                                   restrict_sr=not_all, sort=sort,
+                                   syntax=syntax, t=time_filter)
         url = API_PATH['search'].format(subreddit=self)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
