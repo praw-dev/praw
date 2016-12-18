@@ -71,10 +71,17 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     def parent(self):
         """Return the parent of the comment.
 
-        The parent will be a lazy instance of either :class:`.Comment`, or
-        :class:`.Submission`.
+        The returned parent will be an instance of either
+        :class:`.Comment`, or :class:`.Submission`.
 
-        Example:
+        If this comment was obtained through a :class:`.Submission`, then its
+        entire ancestry should be immediately available, requiring no extra
+        network requests. However, if this comment was obtained through other
+        means, e.g., ``reddit.comment('COMMENT_ID')``, or
+        ``reddit.inbox.comment_replies``, then the returned parent may be a
+        lazy instance of either :class:`.Comment`, or :class:`.Submission`.
+
+        Lazy Comment Example:
 
         .. code:: python
 
@@ -86,10 +93,16 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
            print(parent.replies)  # Output is at least: [Comment(id='cklhv0f')]
 
         """
-        kind, thing_id = self.parent_id.split('_', 1)
-        parent = self._reddit._objector.parsers[kind](self._reddit, thing_id)
-        if isinstance(parent, Comment):
-            parent._submission = self.submission
+        if self.parent_id == self.submission.fullname:
+            return self.submission
+
+        if '_comments' in self.submission.__dict__ \
+           and self.parent_id in self.submission._comments._comments_by_id:
+            # The Comment already exists, so simply return it
+            return self.submission._comments._comments_by_id[self.parent_id]
+
+        parent = Comment(self._reddit, self.parent_id.split('_', 1)[1])
+        parent._submission = self.submission
         return parent
 
     def permalink(self, fast=False):

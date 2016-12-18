@@ -97,6 +97,16 @@ class TestComment(IntegrationTest):
         assert isinstance(parent, Comment)
         assert parent.fullname == comment.parent_id
 
+    def test_parent__comment_from_forest(self):
+        submission = self.reddit.submission('2gmzqe')
+        with self.recorder.use_cassette(
+                'TestComment.test_parent__comment_from_forest'):
+            comment = submission.comments[0].replies[0]
+        parent = comment.parent()
+        assert comment in parent.replies
+        assert isinstance(parent, Comment)
+        assert parent.fullname == comment.parent_id
+
     def test_parent__submission(self):
         comment = Comment(self.reddit, 'cklfmye')
         with self.recorder.use_cassette('TestComment.test_parent__submission'):
