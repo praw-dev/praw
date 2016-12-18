@@ -96,7 +96,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         obtain the comment's replies.
 
         """
-        if hasattr(self, 'context'):
+        if 'context' in self.__dict__:  # Using hasattr triggers a fetch
             comment_path = self.context.split('?', 1)[0]
         else:
             # pylint: disable=no-member
