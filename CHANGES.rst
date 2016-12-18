@@ -21,6 +21,8 @@ Unreleased
 * :meth:`.flair` to add a submission's flair from an instance of
   :class:`.Submission`.
 * :meth:`.Comment.parent` to obtain the parent of a :class:`.Comment`.
+* :meth:`.opt_in` and :meth:`.opt_out` to :class:`.Subreddit` to permit working
+  with quarantined subreddits.
 
 **Changed**
 

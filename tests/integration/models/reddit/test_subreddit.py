@@ -5,7 +5,7 @@ import sys
 from praw.exceptions import APIException
 from praw.models import (Comment, ModAction, Redditor, Submission, Subreddit,
                          SubredditMessage, Stylesheet, WikiPage)
-from prawcore import NotFound
+from prawcore import Forbidden, NotFound
 import mock
 import pytest
 
@@ -680,6 +680,27 @@ class TestSubredditModeration(IntegrationTest):
             # Ensure that nothing has changed besides what was specified.
             before_settings['title'] = new_title
             assert before_settings == after_settings
+
+
+class TestSubredditQuarantine(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_opt_in(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit('ferguson')
+        with self.recorder.use_cassette('TestSubredditQuarantine.opt_in'):
+            with pytest.raises(Forbidden):
+                next(subreddit.hot())
+            subreddit.quaran.opt_in()
+            assert isinstance(next(subreddit.hot()), Submission)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_opt_out(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit('ferguson')
+        with self.recorder.use_cassette('TestSubredditQuarantine.opt_out'):
+            subreddit.quaran.opt_out()
+            with pytest.raises(Forbidden):
+                next(subreddit.hot())
 
 
 class TestSubredditRelationships(IntegrationTest):

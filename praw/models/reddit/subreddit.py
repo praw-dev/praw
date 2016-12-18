@@ -173,6 +173,19 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._muted
 
     @property
+    def quaran(self):
+        """An instance of :class:`.SubredditQuarantine`.
+
+        This property is named ``quaran`` because ``quarantine`` is an
+        Subreddit attribute returned by Reddit to indicate whether or not a
+        Subreddit is quarantined.
+
+        """
+        if self._quarantine is None:
+            self._quarantine = SubredditQuarantine(self)
+        return self._quarantine
+
+    @property
     def stream(self):
         """An instance of :class:`.SubredditStream`."""
         if self._stream is None:
@@ -210,8 +223,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if display_name:
             self.display_name = display_name
         self._banned = self._contributor = self._filters = self._flair = None
-        self._mod = self._moderator = self._muted = self._stream = None
-        self._stylesheet = self._wiki = None
+        self._mod = self._moderator = self._muted = self._quarantine = None
+        self._stream = self._stylesheet = self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)
 
     def _info_path(self):
@@ -990,6 +1003,60 @@ class SubredditModeration(object):
         current_settings.update(settings)
         return Subreddit._create_or_update(_reddit=self.subreddit._reddit,
                                            sr=fullname, **current_settings)
+
+
+class SubredditQuarantine(object):
+    """Provides submission and comment streams."""
+
+    def __init__(self, subreddit):
+        """Create a SubredditQuarantine instance.
+
+        :param subreddit: The subreddit associated with the quarantine.
+
+        """
+        self.subreddit = subreddit
+
+    def opt_in(self):
+        """Permit your user access to the quarantined subreddit.
+
+        Usage:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('QUESTIONABLE')
+           next(subreddit.hot())  # Raises prawcore.Forbidden
+
+           subreddit.quaran.opt_in()
+           next(subreddit.hot())  # Returns Submission
+
+        """
+        data = {'sr_name': self.subreddit}
+        try:
+            self.subreddit._reddit.post(API_PATH['quarantine_opt_in'],
+                                        data=data)
+        except Redirect:
+            pass
+
+    def opt_out(self):
+        """Remove access to the quarantined subreddit.
+
+        Usage:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('QUESTIONABLE')
+           next(subreddit.hot())  # Returns Submission
+
+           subreddit.quaran.opt_out()
+           next(subreddit.hot())  # Raises prawcore.Forbidden
+
+        """
+        data = {'sr_name': self.subreddit}
+        try:
+            self.subreddit._reddit.post(API_PATH['quarantine_opt_out'],
+                                        data=data)
+        except Redirect:
+            pass
 
 
 class SubredditRelationship(object):

@@ -35,6 +35,7 @@ instances of them bound to an attribute of one of the PRAW models.
    :caption: Subreddit Helpers
 
    other/subredditfilters
+   other/subredditquarantine
    other/subredditstream
    other/subredditstylesheet
    other/subredditwiki
