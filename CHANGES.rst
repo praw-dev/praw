@@ -20,6 +20,7 @@ Unreleased
   comments.
 * :meth:`.flair` to add a submission's flair from an instance of
   :class:`.Submission`.
+* :meth:`.Comment.parent` to obtain the parent of a :class:`.Comment`.
 
 **Changed**
 

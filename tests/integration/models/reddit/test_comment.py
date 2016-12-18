@@ -1,5 +1,5 @@
 from praw.exceptions import ClientException, PRAWException
-from praw.models import Comment
+from praw.models import Comment, Submission
 from prawcore import BadRequest
 import mock
 import pytest
@@ -87,6 +87,23 @@ class TestComment(IntegrationTest):
         with self.recorder.use_cassette('TestComment.test_mark_unread'):
             comment = next(self.reddit.inbox.comment_replies())
             comment.mark_unread()
+
+    def test_parent__comment(self):
+        comment = Comment(self.reddit, 'cklhv0f')
+        with self.recorder.use_cassette('TestComment.test_parent__comment'):
+            parent = comment.parent()
+            parent.refresh()
+            assert comment in parent.replies
+        assert isinstance(parent, Comment)
+        assert parent.fullname == comment.parent_id
+
+    def test_parent__submission(self):
+        comment = Comment(self.reddit, 'cklfmye')
+        with self.recorder.use_cassette('TestComment.test_parent__submission'):
+            parent = comment.parent()
+            assert comment in parent.comments
+        assert isinstance(parent, Submission)
+        assert parent.fullname == comment.parent_id
 
     def test_permalink(self):
         with self.recorder.use_cassette('TestComment.test_permalink'):

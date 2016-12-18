@@ -68,6 +68,30 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             value = self._reddit.subreddit(value)
         super(Comment, self).__setattr__(attribute, value)
 
+    def parent(self):
+        """Return the parent of the comment.
+
+        The parent will be a lazy instance of either :class:`.Comment`, or
+        :class:`.Submission`.
+
+        Example:
+
+        .. code:: python
+
+           comment = reddit.comment('cklhv0f')
+           parent = comment.parent()
+           # `replies` is empty until the comment is refreshed
+           print(parent.replies)  # Output: []
+           parent.refresh()
+           print(parent.replies)  # Output is at least: [Comment(id='cklhv0f')]
+
+        """
+        kind, thing_id = self.parent_id.split('_', 1)
+        parent = self._reddit._objector.parsers[kind](self._reddit, thing_id)
+        if isinstance(parent, Comment):
+            parent._submission = self.submission
+        return parent
+
     def permalink(self, fast=False):
         """Return a permalink to the comment.
 

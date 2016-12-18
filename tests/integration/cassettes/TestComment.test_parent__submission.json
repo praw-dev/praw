@@ -1,0 +1,164 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-12-18T21:02:45",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.1.0dev prawcore/0.5.0"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 18 Dec 2016 21:02:45 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "loid=pIf49165EKqa0crHVC; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-lax8631-LAX",
+          "X-Timer": "S1482094965.379595,VS0,VE98",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-12-18T21:02:45",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Cookie": "loidcreated=1482094965000; loid=pIf49165EKqa0crHVC",
+          "User-Agent": "<USER_AGENT> PRAW/4.1.0dev prawcore/0.5.0"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/info/?id=t1_cklfmye&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"children\": [{\"kind\": \"t1\", \"data\": {\"subreddit_id\": \"t5_2qizd\", \"banned_by\": null, \"removal_reason\": null, \"link_id\": \"t3_2gmzqe\", \"likes\": null, \"replies\": \"\", \"user_reports\": [], \"saved\": false, \"id\": \"cklfmye\", \"gilded\": 0, \"archived\": true, \"report_reasons\": null, \"author\": \"paneer_burrito\", \"parent_id\": \"t3_2gmzqe\", \"score\": 1, \"approved_by\": null, \"controversiality\": 0, \"body\": \"Quick question: I remember reading about an issue where the proxy settings for https requests were not getting picked up from the environment variables. Does this branch have that fix? Thanks\", \"edited\": false, \"author_flair_css_class\": null, \"downs\": 0, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EQuick question: I remember reading about an issue where the proxy settings for https requests were not getting picked up from the environment variables. Does this branch have that fix? Thanks\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"subreddit\": \"redditdev\", \"name\": \"t1_cklfmye\", \"score_hidden\": false, \"stickied\": false, \"created\": 1411033912.0, \"author_flair_text\": null, \"created_utc\": 1411005112.0, \"distinguished\": null, \"mod_reports\": [], \"num_reports\": null, \"ups\": 1}}], \"after\": null, \"before\": null}}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "1247",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 18 Dec 2016 21:02:45 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-lax8633-LAX",
+          "X-Timer": "S1482094965.568001,VS0,VE96",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=j9gl7H4%2BBqa7EKkk0jaCgZmqFmZa0FG1eHRcdlRIS4Cz2aK6cRwhTZOlxTHGkO8veOT%2FoBX9c2g%3D",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/info/?id=t1_cklfmye&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2016-12-18T21:02:46",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Cookie": "loidcreated=1482094965000; loid=pIf49165EKqa0crHVC",
+          "User-Agent": "<USER_AGENT> PRAW/4.1.0dev prawcore/0.5.0"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/comments/2gmzqe/?sort=best&raw_json=1&limit=2048"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"children\": [{\"kind\": \"t3\", \"data\": {\"contest_mode\": false, \"banned_by\": null, \"media_embed\": {}, \"subreddit\": \"redditdev\", \"selftext_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EPRAW client developers,\\u003C/p\\u003E\\n\\n\\u003Cp\\u003EI have made a PRAW branch to test using only HTTPS over the API. This change requires some testers to see if there any issues that did not come up from our set of unit tests. This is the first of a few improvements that will (hopefully soon) be released with PRAW version 3. If you want to start using HTTPS exclusively through PRAW please update via the following:\\u003C/p\\u003E\\n\\n\\u003Cpre\\u003E\\u003Ccode\\u003Epip install git+git://github.com/praw-dev/praw.git@praw3\\n\\u003C/code\\u003E\\u003C/pre\\u003E\\n\\n\\u003Cp\\u003EIf you experience any issues feel free to report them here, however filing a bug on github (\\u003Ca href=\\\"https://github.com/praw-dev/praw/issues\\\"\\u003Ehttps://github.com/praw-dev/praw/issues\\u003C/a\\u003E) would be ideal. Thanks!\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"selftext\": \"PRAW client developers,\\n\\nI have made a PRAW branch to test using only HTTPS over the API. This change requires some testers to see if there any issues that did not come up from our set of unit tests. This is the first of a few improvements that will (hopefully soon) be released with PRAW version 3. If you want to start using HTTPS exclusively through PRAW please update via the following:\\n\\n    pip install git+git://github.com/praw-dev/praw.git@praw3\\n\\nIf you experience any issues feel free to report them here, however filing a bug on github (https://github.com/praw-dev/praw/issues) would be ideal. Thanks!\", \"likes\": null, \"suggested_sort\": null, \"user_reports\": [], \"secure_media\": null, \"saved\": false, \"id\": \"2gmzqe\", \"gilded\": 1, \"secure_media_embed\": {}, \"clicked\": false, \"report_reasons\": null, \"author\": \"bboe\", \"media\": null, \"score\": 10, \"approved_by\": null, \"over_18\": false, \"domain\": \"self.redditdev\", \"hidden\": false, \"num_comments\": 2, \"thumbnail\": \"self\", \"subreddit_id\": \"t5_2qizd\", \"edited\": false, \"link_flair_css_class\": null, \"author_flair_css_class\": null, \"downs\": 0, \"archived\": true, \"removal_reason\": null, \"stickied\": false, \"is_self\": true, \"hide_score\": false, \"spoiler\": false, \"permalink\": \"/r/redditdev/comments/2gmzqe/praw_https_enabled_praw_testing_needed/\", \"locked\": false, \"name\": \"t3_2gmzqe\", \"created\": 1410964471.0, \"url\": \"https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https_enabled_praw_testing_needed/\", \"author_flair_text\": null, \"quarantine\": false, \"title\": \"[PRAW] HTTPS enabled PRAW testing needed\", \"created_utc\": 1410935671.0, \"link_flair_text\": null, \"ups\": 10, \"upvote_ratio\": 0.83, \"mod_reports\": [], \"visited\": false, \"num_reports\": null, \"distinguished\": null}}], \"after\": null, \"before\": null}}, {\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"children\": [{\"kind\": \"t1\", \"data\": {\"subreddit_id\": \"t5_2qizd\", \"banned_by\": null, \"removal_reason\": null, \"link_id\": \"t3_2gmzqe\", \"likes\": null, \"replies\": {\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"children\": [{\"kind\": \"t1\", \"data\": {\"subreddit_id\": \"t5_2qizd\", \"banned_by\": null, \"removal_reason\": null, \"link_id\": \"t3_2gmzqe\", \"likes\": null, \"replies\": \"\", \"user_reports\": [], \"saved\": false, \"id\": \"cklhv0f\", \"gilded\": 0, \"archived\": true, \"report_reasons\": null, \"author\": \"bboe\", \"parent_id\": \"t1_cklfmye\", \"score\": 1, \"approved_by\": null, \"controversiality\": 0, \"body\": \"Yes it does. That fix is also in the master branch, we just haven't made a release for it (and we probably won't until 3.0).\", \"edited\": false, \"author_flair_css_class\": null, \"downs\": 0, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EYes it does. That fix is also in the master branch, we just haven\\u0026#39;t made a release for it (and we probably won\\u0026#39;t until 3.0).\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"stickied\": false, \"subreddit\": \"redditdev\", \"score_hidden\": false, \"name\": \"t1_cklhv0f\", \"created\": 1411038834.0, \"author_flair_text\": null, \"created_utc\": 1411010034.0, \"ups\": 1, \"mod_reports\": [], \"num_reports\": null, \"distinguished\": null}}], \"after\": null, \"before\": null}}, \"user_reports\": [], \"saved\": false, \"id\": \"cklfmye\", \"gilded\": 0, \"archived\": true, \"report_reasons\": null, \"author\": \"paneer_burrito\", \"parent_id\": \"t3_2gmzqe\", \"score\": 1, \"approved_by\": null, \"controversiality\": 0, \"body\": \"Quick question: I remember reading about an issue where the proxy settings for https requests were not getting picked up from the environment variables. Does this branch have that fix? Thanks\", \"edited\": false, \"author_flair_css_class\": null, \"downs\": 0, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EQuick question: I remember reading about an issue where the proxy settings for https requests were not getting picked up from the environment variables. Does this branch have that fix? Thanks\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"stickied\": false, \"subreddit\": \"redditdev\", \"score_hidden\": false, \"name\": \"t1_cklfmye\", \"created\": 1411033912.0, \"author_flair_text\": null, \"created_utc\": 1411005112.0, \"ups\": 1, \"mod_reports\": [], \"num_reports\": null, \"distinguished\": null}}], \"after\": null, \"before\": null}}]"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "5274",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 18 Dec 2016 21:02:45 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-lax8633-LAX",
+          "X-Timer": "S1482094965.687799,VS0,VE139",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=ZQVuOL2L%2FHw0732xK7Bwwy3CNgD%2FTwLYwas3WYtUOmHDlTCi9yH1FjgGEd3VGcQBf9J4JIoWOh37RBtQJ2h5dnyT8uzps%2FSG",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/comments/2gmzqe/?sort=best&raw_json=1&limit=2048"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}
