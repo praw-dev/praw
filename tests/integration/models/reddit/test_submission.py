@@ -163,6 +163,12 @@ class TestSubmissionModeration(IntegrationTest):
             submission = Submission(self.reddit, '4s2idz')
             submission.mod.contest_mode(state=False)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_flair(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubmissionModeration.test_flair'):
+            self.reddit.submission('4b536p').mod.flair('submission flair')
+
     def test_distinguish(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(

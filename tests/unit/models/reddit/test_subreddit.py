@@ -88,6 +88,20 @@ class TestSubredit(UnitTest):
         assert str(excinfo.value) == message
 
 
+class TestSubredditFlair(UnitTest):
+    def test_set__redundant_arguments(self):
+        message = '`redditor` must be provided.'
+        subreddit = Subreddit(self.reddit, display_name='name')
+
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.flair.set()
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.flair.set('bboe', thing='bboe')
+        assert str(excinfo.value) == message
+
+
 class TestSubreditWiki(UnitTest):
     def test__getitem(self):
         subreddit = Subreddit(self.reddit, display_name='name')

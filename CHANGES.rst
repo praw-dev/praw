@@ -18,6 +18,8 @@ Unreleased
   accidentally missed previously.
 * Add `sticky` parameter to :meth:`.CommentModeration.distinguish` to sticky
   comments.
+* :meth:`.flair` to add a submission's flair from an instance of
+  :class:`.Submission`.
 
 **Changed**
 
@@ -38,6 +40,10 @@ Unreleased
   ``Subreddit.mod.approve``, ``Subreddit.mod.distinguish``,
   ``Subreddit.mod.ignore_reports``, ``Subreddit.mod.remove``,
   ``Subreddit.mod.undistinguish``, ``Subreddit.mod.unignore_reports``.
+* Support for passing a :class:`.Submission` to :meth:`.SubredditFlair.set`
+  will be removed in PRAW 5. Use :meth:`.flair` instead.
+* The ``thing`` argument to :meth:`.SubredditFlair.set` is replaced with
+  ``redditor`` and will be removed in PRAW 5.
 
 **Fixed**
 

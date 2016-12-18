@@ -194,6 +194,29 @@ class SubmissionModeration(ThingModerationMixin):
         self.thing._reddit.post(API_PATH['contest_mode'], data={
             'id': self.thing.fullname, 'state': state})
 
+    def flair(self, text='', css_class=''):
+        """Set flair for the submission.
+
+        :param text: The flair text to associate with the Submission (Default:
+            '').
+        :param css_class: The css class to associate with the flair html
+            (Default: '').
+
+        This method can only be used by an authenticated user who is a
+        moderator of the Submission's Subreddit.
+
+        Example:
+
+        .. code:: python
+
+           submission.mod.flair(text='PRAW', css_class='bot')
+
+        """
+        data = {'css_class': css_class, 'link': self.thing.fullname,
+                'text': text}
+        url = API_PATH['flair'].format(subreddit=self.thing.subreddit)
+        self.thing._reddit.post(url, data=data)
+
     def lock(self):
         """Lock the submission."""
         self.thing._reddit.post(API_PATH['lock'],

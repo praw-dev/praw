@@ -557,11 +557,11 @@ class SubredditFlair(object):
         """
         return self.update(x['user'] for x in self)
 
-    def set(self, thing, text='', css_class=''):
-        """Set flair for a Redditor or Submission.
+    def set(self, redditor=None, text='', css_class='', thing=None):
+        """Set flair for a Redditor.
 
-        :param thing: An instance of Redditor or Submission, or a string. When
-            a string is provided it will be treated as the name of a Redditor.
+        :param redditor: (Required) An instance of Redditor or a string that is
+            the name of a Redditor.
         :param text: The flair text to associate with the Redditor or
             Submission (Default: '').
         :param css_class: The css class to associate with the flair html
@@ -570,12 +570,31 @@ class SubredditFlair(object):
         This method can only be used by an authenticated user who is a
         moderator of the associated Subreddit.
 
+        .. warning:: The use of this method to set the flair of a
+                     :class:`.Submission` is deprecated and will be removed in
+                     PRAW 5. Use :meth:`.flair` instead.
+
+        .. warning:: The use of the keyword argument ``thing`` is deprecated
+                     and will be removed in PRAW 5. Use ``redditor`` instead.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('redditdev').flair.set('bboe', 'PRAW author')
+
         """
+        # PRAW5 REMOVE
+        if bool(redditor) == bool(thing):
+            raise TypeError('`redditor` must be provided.')
+        if redditor is None:
+            redditor = thing
+
         data = {'css_class': css_class, 'text': text}
-        if thing.__class__.__name__ == 'Submission':
-            data['link'] = thing.fullname
+        if redditor.__class__.__name__ == 'Submission':  # PRAW5 REMOVE
+            data['link'] = redditor.fullname
         else:
-            data['name'] = str(thing)
+            data['name'] = str(redditor)
         url = API_PATH['flair'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
