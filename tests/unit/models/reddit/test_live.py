@@ -1,7 +1,7 @@
 import pickle
 
 import pytest
-from praw.models import LiveThread
+from praw.models import LiveThread, LiveUpdate, Redditor
 
 from ... import UnitTest
 
@@ -44,6 +44,14 @@ class TestLiveThread(UnitTest):
         assert thread2 != 'dummy1'
         assert thread2 == 'Dummy1'
 
+    def test_getitem(self):
+        thread_id = 'dummy_thread_id'
+        update_id = 'dummy_update_id'
+        thread = LiveThread(self.reddit, id=thread_id)
+        update = thread[update_id]
+        assert isinstance(update, LiveUpdate)
+        assert update.id == update_id
+
     def test_hash(self):
         thread1 = LiveThread(self.reddit, id='dummy1')
         thread2 = LiveThread(self.reddit, id='Dummy1')
@@ -68,3 +76,63 @@ class TestLiveThread(UnitTest):
     def test_str(self):
         thread = LiveThread(self.reddit, id='dummy')
         assert str(thread) == 'dummy'
+
+
+class TestLiveUpdate(UnitTest):
+
+    def test_construct_success(self):
+        thread_id = 'dummy_thread_id'
+        update_id = 'dummy_update_id'
+        data = {'id': update_id}
+
+        update = LiveUpdate(self.reddit, thread_id=thread_id,
+                            update_id=update_id)
+        assert isinstance(update, LiveUpdate)
+        assert update.id == update_id
+        assert update._fetched
+        assert isinstance(update.thread, LiveThread)
+        assert update.thread.id == thread_id
+
+        update = LiveUpdate(self.reddit, thread_id, update_id)
+        assert isinstance(update, LiveUpdate)
+        assert update.id == update_id
+        assert update._fetched
+        assert isinstance(update.thread, LiveThread)
+        assert update.thread.id == thread_id
+
+        update = LiveUpdate(self.reddit, _data=data)
+        assert isinstance(update, LiveUpdate)
+        assert update.id == update_id
+        assert update._fetched
+
+    def test_construct_failure(self):
+        message = ('Either `thread_id` and `update_id`, or '
+                   '`_data` must be provided.')
+        thread_id = 'dummy_thread_id'
+        update_id = 'dummy_update_id'
+
+        with pytest.raises(TypeError) as excinfo:
+            LiveUpdate(self.reddit)
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            LiveUpdate(self.reddit, thread_id=thread_id)
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            LiveUpdate(self.reddit, update_id=update_id)
+        assert str(excinfo.value) == message
+
+    def test_setattr(self):
+        data = {'id': 'dummy_update_id', 'author': 'dummy_author'}
+        update = LiveUpdate(self.reddit, _data=data)
+        assert isinstance(update.author, Redditor)
+
+    def test_thread(self):
+        thread_id = 'dummy_thread_id'
+        update_id = 'dummy_update_id'
+
+        update = LiveUpdate(self.reddit, thread_id=thread_id,
+                            update_id=update_id)
+        assert isinstance(update.thread, LiveThread)
+        assert update.thread.id == thread_id

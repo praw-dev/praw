@@ -7,6 +7,7 @@ Working with PRAW's Models
 
    models/comment
    models/livethread
+   models/liveupdate
    models/message
    models/more
    models/multireddit
