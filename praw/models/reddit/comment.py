@@ -1,10 +1,11 @@
 """Provide the Comment class."""
 from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
+from ...exceptions import ClientException
+from ..comment_forest import CommentForest
 from .base import RedditBase
 from .mixins import InboxableMixin, ThingModerationMixin, UserContentMixin
 from .redditor import Redditor
-from ...exceptions import ClientException
 
 
 class Comment(RedditBase, InboxableMixin, UserContentMixin):
@@ -26,6 +27,13 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         return self._mod
 
     @property
+    def replies(self):
+        """An instance of :class:`.CommentForest`."""
+        if isinstance(self._replies, list):
+            self._replies = CommentForest(self.submission, self._replies)
+        return self._replies
+
+    @property
     def submission(self):
         """Return the Submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
@@ -36,8 +44,8 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     @submission.setter
     def submission(self, submission):
         """Update the Submission associated with the Comment."""
-        assert self.name not in submission.comments._comments_by_id
-        submission.comments._comments_by_id[self.name] = self
+        assert self.name not in submission._comments_by_id
+        submission._comments_by_id[self.name] = self
         self._submission = submission
         for reply in getattr(self, 'replies', []):
             reply.submission = submission
@@ -64,6 +72,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
                 value = []
             else:
                 value = self._reddit._objector.objectify(value).children
+            attribute = '_replies'
         elif attribute == 'subreddit':
             value = self._reddit.subreddit(value)
         super(Comment, self).__setattr__(attribute, value)
@@ -97,9 +106,9 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             return self.submission
 
         if '_comments' in self.submission.__dict__ \
-           and self.parent_id in self.submission._comments._comments_by_id:
+           and self.parent_id in self.submission._comments_by_id:
             # The Comment already exists, so simply return it
-            return self.submission._comments._comments_by_id[self.parent_id]
+            return self.submission._comments_by_id[self.parent_id]
 
         parent = Comment(self._reddit, self.parent_id.split('_', 1)[1])
         parent._submission = self.submission
@@ -144,6 +153,8 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         if not comment_list:
             raise ClientException('Comment has been deleted')
         comment = comment_list[0]
+        for reply in comment._replies:
+            reply.submission = self.submission
         del comment.__dict__['_submission']  # Don't replace
         self.__dict__.update(comment.__dict__)
         return self

@@ -1,5 +1,5 @@
 """Test praw.models.comment_forest."""
-from praw.models import Submission
+from praw.models import Comment, MoreComments, Submission
 
 from .. import IntegrationTest
 
@@ -31,7 +31,7 @@ class TestCommentForest(IntegrationTest):
             assert len(skipped) == 0
             assert len(submission.comments.list()) > 1000
             assert len(submission.comments.list()) == \
-                len(submission.comments._comments_by_id)
+                len(submission._comments_by_id)
 
     def test_replace__all_with_comment_limit(self):
         with self.recorder.use_cassette(
@@ -74,3 +74,28 @@ class TestCommentForest(IntegrationTest):
             assert all(x.submission == submission for x in skipped)
             after_count = len(submission.comments.list())
             assert before_count == after_count + len(skipped)
+
+    def test_replace__on_comment_from_submission(self):
+        with self.recorder.use_cassette(
+                'TestCommentForest.test_replace__on_comment_from_submission',
+                match_requests_on=['uri', 'method', 'body']):
+            submission = Submission(self.reddit, '3hahrw')
+            types = [type(x) for x in submission.comments.list()]
+            assert types.count(Comment) == 472
+            assert types.count(MoreComments) == 18
+            assert submission.comments[0].replies.replace_more() == []
+            types = [type(x) for x in submission.comments.list()]
+            assert types.count(Comment) == 489
+            assert types.count(MoreComments) == 11
+
+    def test_replace__on_direct_comment(self):
+        with self.recorder.use_cassette(
+                'TestCommentForest.test_replace__on_direct_comment',
+                match_requests_on=['uri', 'method', 'body']):
+            comment = self.reddit.comment('d8r4im1')
+            comment.refresh()
+            assert any(isinstance(x, MoreComments) for x in
+                       comment.replies.list())
+            comment.replies.replace_more()
+            assert all(isinstance(x, Comment) for x in
+                       comment.replies.list())

@@ -29,6 +29,7 @@ Unreleased
 * :meth:`.me` now caches its result in order to reduce redundant requests for
   methods that depend on it. Set ``use_cache=False`` when calling to bypass the
   cache.
+* :meth:`.replace_more` can be called on :class:`.Comment` ``replies``.
 
 **Deprecated**
 

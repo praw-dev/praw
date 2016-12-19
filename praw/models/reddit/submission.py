@@ -90,8 +90,10 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             self.id = self.id_from_url(url)
         self._flair = self._mod = None
 
+        self._comments_by_id = {}
+
     def __setattr__(self, attribute, value):
-        """Objectify author, comments, and subreddit attributes."""
+        """Objectify author, and subreddit attributes."""
         # pylint: disable=redefined-variable-type
         if attribute == 'author':
             value = Redditor.from_data(self._reddit, value)
