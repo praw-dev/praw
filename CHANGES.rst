@@ -23,6 +23,11 @@ Unreleased
 * :meth:`.Comment.parent` to obtain the parent of a :class:`.Comment`.
 * :meth:`.opt_in` and :meth:`.opt_out` to :class:`.Subreddit` to permit working
   with quarantined subreddits.
+* :class:`.LiveUpdate` to represent an individual update in a
+  :class:`.LiveThread`.
+* Ability to access an individual :class:`.LiveUpdate` via
+  ``reddit.live('THREAD_ID')['UPDATE_ID']``.
+* :meth:`.LiveThread.updates` to iterate the updates of the thread.
 
 **Changed**
 

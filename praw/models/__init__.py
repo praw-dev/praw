@@ -9,7 +9,7 @@ from .listing.generator import ListingGenerator  # NOQA
 from .listing.listing import Listing  # NOQA
 from .modaction import ModAction  # NOQA
 from .reddit.comment import Comment  # NOQA
-from .reddit.live import LiveThread  # NOQA
+from .reddit.live import LiveThread, LiveUpdate  # NOQA
 from .reddit.message import Message, SubredditMessage  # NOQA
 from .reddit.more import MoreComments  # NOQA
 from .reddit.multi import Multireddit  # NOQA
