@@ -24,6 +24,7 @@ class Message(RedditBase, InboxableMixin, ReplyableMixin):
     def __init__(self, reddit, _data):
         """Construct an instance of the Message object."""
         super(Message, self).__init__(reddit, _data)
+        self._fetched = True
 
 
 class SubredditMessage(Message):

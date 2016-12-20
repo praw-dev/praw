@@ -1,11 +1,16 @@
-from praw.models import Message, SubredditMessage
 import pickle
 
+import pytest
+from praw.models import Message, SubredditMessage
 
 from ... import UnitTest
 
 
 class TestMessage(UnitTest):
+    def test_attribute_error(self):
+        with pytest.raises(AttributeError):
+            Message(self.reddit, _data={'id': '1'}).mark_as_read()
+
     def test_equality(self):
         message1 = Message(self.reddit, _data={'id': '1'})
         message2 = Message(self.reddit, _data={'id': '1'})

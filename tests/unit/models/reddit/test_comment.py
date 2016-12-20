@@ -7,6 +7,10 @@ from ... import UnitTest
 
 
 class TestComment(UnitTest):
+    def test_attribute_error(self):
+        with pytest.raises(AttributeError):
+            Comment(self.reddit, _data={'id': '1'}).mark_as_read()
+
     def test_equality(self):
         comment1 = Comment(self.reddit, _data={'id': 'dummy1', 'n': 1})
         comment2 = Comment(self.reddit, _data={'id': 'Dummy1', 'n': 2})

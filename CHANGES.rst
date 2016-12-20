@@ -62,6 +62,8 @@ Unreleased
 * Instances of :class:`.Comment` obtained through the inbox (including
   mentions) are now refreshable.
 * Searching ``/r/all`` should now work as intended for all users.
+* Accessing an invalid attribute on an instance of :class:`.Message` will raise
+  :py:class:`.AttributeError` instead of :class:`.PRAWException`.
 
 4.0.0 (2016/11/29)
 ------------------
