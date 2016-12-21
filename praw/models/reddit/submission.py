@@ -264,7 +264,7 @@ class SubmissionModeration(ThingModerationMixin):
             'id': self.thing.fullname, 'sort': sort})
 
     def unlock(self):
-        """Lock the submission."""
+        """Unlock the submission."""
         self.thing._reddit.post(API_PATH['unlock'],
                                 data={'id': self.thing.fullname})
 
