@@ -143,7 +143,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         .. code-block:: python
 
-           for flair in reddit.subreddit('NAME').flair:
+           for flair in reddit.subreddit('NAME').flair():
                print(flair)
 
         """
@@ -495,6 +495,19 @@ class SubredditFilters(object):
 class SubredditFlair(object):
     """Provide a set of functions to interact with a Subreddit's flair."""
 
+    def __call__(self, redditor=None, **generator_kwargs):
+        """Return a generator for Redditors and their associated flair.
+
+        :param redditor: Yield at most a single :class:`~.Redditor`
+            instance.
+
+        """
+        Subreddit._safely_add_arguments(generator_kwargs, 'params',
+                                        name=redditor)
+        url = API_PATH['flairlist'].format(subreddit=self.subreddit)
+        return ListingGenerator(self.subreddit._reddit, url,
+                                **generator_kwargs)
+
     def __init__(self, subreddit):
         """Create a SubredditFlair instance.
 
@@ -513,6 +526,10 @@ class SubredditFlair(object):
 
            for flair in reddit.subreddit('NAME').flair:
                print(flair)
+
+        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
+                     calling ``subreddit.flair(limit=None)`` instead of
+                     ``subreddit.flair``.
 
         """
         url = API_PATH['flairlist'].format(subreddit=self.subreddit)
