@@ -55,8 +55,8 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         """Construct an instance of the Comment object."""
         if bool(id) == bool(_data):
             raise TypeError('Either `id` or `_data` must be provided.')
+        self._mod = self._replies = self._submission = None
         super(Comment, self).__init__(reddit, _data)
-        self._mod = self._submission = None
         if id:
             self.id = id  # pylint: disable=invalid-name
         else:
@@ -102,6 +102,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
            print(parent.replies)  # Output is at least: [Comment(id='cklhv0f')]
 
         """
+        # pylint: disable=no-member
         if self.parent_id == self.submission.fullname:
             return self.submission
 
@@ -109,6 +110,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
            and self.parent_id in self.submission._comments_by_id:
             # The Comment already exists, so simply return it
             return self.submission._comments_by_id[self.parent_id]
+        # pylint: enable=no-member
 
         parent = Comment(self._reddit, self.parent_id.split('_', 1)[1])
         parent._submission = self.submission
@@ -145,10 +147,9 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         if 'context' in self.__dict__:  # Using hasattr triggers a fetch
             comment_path = self.context.split('?', 1)[0]
         else:
-            # pylint: disable=no-member
-            comment_path = self.submission._info_path() + \
-                           '_/{}'.format(self.id)
-            # pylint: enable=no-member
+            comment_path = '{}_/{}'.format(
+                self.submission._info_path(),  # pylint: disable=no-member
+                self.id)
         comment_list = self._reddit.get(comment_path)[1].children
         if not comment_list:
             raise ClientException('Comment has been deleted')
