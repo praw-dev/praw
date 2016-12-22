@@ -23,8 +23,8 @@ class TestSubreddits(IntegrationTest):
 
     def test_popular(self):
         with self.recorder.use_cassette('TestSubreddits.test_popular'):
-            subreddits = list(self.reddit.subreddits.popular())
-        assert len(subreddits) == 100
+            subreddits = list(self.reddit.subreddits.popular(limit=15))
+        assert len(subreddits) == 15
 
     def test_recommended(self):
         with self.recorder.use_cassette('TestSubreddits.test_recommended'):
