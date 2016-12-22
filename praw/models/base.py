@@ -7,7 +7,7 @@ class PRAWBase(object):
 
     @staticmethod
     def _safely_add_arguments(argument_dict, key, **new_arguments):
-        """Replace arugment_dict[key] with a deepcopy and update.
+        """Replace argument_dict[key] with a deepcopy and update.
 
         This method is often called when new parameters need to be added to a
         request. By calling this method and adding the new or updated

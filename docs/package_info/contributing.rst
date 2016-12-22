@@ -6,9 +6,9 @@ an established consistent way of doing things. A consistent style increases
 readability, decreases bug-potential and makes it faster to understand how
 everything works together.
 
-PRAW follows :PEP:`8` and :PEP:`257`. You can use ``pre-push.py`` to test for
-compliance with these PEP's. The following are PRAW-specific guidelines in to
-those PEP's.
+PRAW follows :PEP:`8` and :PEP:`257`. You can use ``pre_push.py`` to test for
+compliance with these PEP's and a few other checks. The following are
+PRAW-specific guidelines in addition to those PEP's.
 
 Code
 ----
