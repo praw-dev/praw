@@ -854,16 +854,14 @@ class TestSubredditRelationships(IntegrationTest):
 class TestSubredditStreams(IntegrationTest):
     def test_comments(self):
         with self.recorder.use_cassette('TestSubredditStreams.comments'):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit)
-            generator = subreddit.stream.comments()
-            for i in range(101):
+            generator = self.reddit.subreddit('all').stream.comments()
+            for i in range(400):
                 assert isinstance(next(generator), Comment)
 
     def test_submissions(self):
         with self.recorder.use_cassette('TestSubredditStreams.submissions'):
             generator = self.reddit.subreddit('all').stream.submissions()
-            for i in range(300):
+            for i in range(101):
                 assert isinstance(next(generator), Submission)
 
 
