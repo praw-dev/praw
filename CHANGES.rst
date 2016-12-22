@@ -12,8 +12,8 @@ Unreleased
   `praw.models.LiveThread.__init__`.
 * :class:`.SubredditFilters` to work with filters for special subreddits, like
   ``/r/all``.
-* Added callables for :class:`.SubredditRelationship` so that ``limit`` and
-  other parameters can be passed.
+* Added callables for :class:`.SubredditRelationship` and
+  :class:`.SubredditFlair` so that ``limit`` and other parameters can be passed.
 * Add :meth:`~praw.models.Message.reply` to :class:`.Message` which was
   accidentally missed previously.
 * Add `sticky` parameter to :meth:`.CommentModeration.distinguish` to sticky
@@ -40,10 +40,10 @@ Unreleased
 
 * ``validate_time_filter`` will be removed from the public interface in PRAW
   4.1+ as it was never intended to be part of it to begin with.
-* Iterating directly over :class:`.SubredditRelationship`, e.g.,
-  ``subreddit.banned``, ``subreddit.contributor``, ``subreddit.moderator``,
-  etc, will be removed in PRAW 5. Iterate instead over its callable,
-  e.g. ``subreddit.banned()``.
+* Iterating directly over :class:`.SubredditRelationship` (e.g.,
+  ``subreddit.banned``, ``subreddit.contributor``, ``subreddit.moderator``, etc)
+  and :class:`.SubredditFlair` will be removed in PRAW 5. Iterate instead over
+  their callables, e.g. ``subreddit.banned()`` and ``subreddit.flair()``.
 * The following methods are deprecated to be removed in PRAW 5 and are replaced
   with similar ``Comment.mod...`` and ``Submission.mod...`` alternatives:
   ``Subreddit.mod.approve``, ``Subreddit.mod.distinguish``,

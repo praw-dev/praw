@@ -232,9 +232,24 @@ class TestSubredditFilters(IntegrationTest):
 
 
 class TestSubredditFlair(IntegrationTest):
+    REDDITOR = pytest.placeholders.username
+
     @property
     def subreddit(self):
         return self.reddit.subreddit(pytest.placeholders.test_subreddit)
+
+    def test__call(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditFlair.test__call'):
+            mapping = self.subreddit.flair()
+            assert len(list(mapping)) > 0
+
+    def test__call__user_filter(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlair.test__call_user_filter'):
+            mapping = self.subreddit.flair(redditor=self.REDDITOR)
+            assert len(list(mapping)) == 1
 
     def test__iter(self):
         self.reddit.read_only = False
