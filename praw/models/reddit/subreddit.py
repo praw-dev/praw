@@ -501,6 +501,13 @@ class SubredditFlair(object):
         :param redditor: Yield at most a single :class:`~.Redditor`
             instance.
 
+        This method is intended to be used like:
+
+        .. code-block:: python
+
+           for flair in reddit.subreddit('NAME').flair(limit=None):
+               print(flair)
+
         """
         Subreddit._safely_add_arguments(generator_kwargs, 'params',
                                         name=redditor)
@@ -520,15 +527,8 @@ class SubredditFlair(object):
     def __iter__(self):
         """Iterate through the Redditors and their associated flair.
 
-        This method is to be used like:
-
-        .. code-block:: python
-
-           for flair in reddit.subreddit('NAME').flair:
-               print(flair)
-
         .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``subreddit.flair(limit=None)`` instead of
+                     iterating over ``subreddit.flair`` instead of
                      ``subreddit.flair``.
 
         """
