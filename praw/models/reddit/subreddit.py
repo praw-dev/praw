@@ -114,7 +114,15 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     @property
     def banned(self):
-        """An instance of :class:`.SubredditRelationship`."""
+        """An instance of :class:`.SubredditRelationship`.
+
+        For example to ban a user try:
+
+        .. code-block:: python
+
+           reddit.subreddit('SUBREDDIT').banned.add('NAME', reason='a reason')
+
+        """
         if self._banned is None:
             self._banned = SubredditRelationship(self, 'banned')
         return self._banned
