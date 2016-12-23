@@ -11,7 +11,7 @@ class InboxableMixin(object):
 
         :returns: The json response from the server.
 
-        .. note:: Reddit does not permit blocking users unless you have an
+        .. note:: Reddit does not permit blocking users unless you have a
                   :class:`.Comment` or :class:`.Message` from them.
 
         """
