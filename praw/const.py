@@ -1,6 +1,6 @@
 """praw constants."""
 
-__version__ = '4.1.0'
+__version__ = '4.2.0dev0'
 
 API_PATH = {
     'about_edited':           'r/{subreddit}/about/edited/',
