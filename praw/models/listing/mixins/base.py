@@ -19,13 +19,8 @@ class BaseListingMixin(PRAWBase):
     VALID_TIME_FILTERS = {'all', 'day', 'hour', 'month', 'week', 'year'}
 
     @staticmethod
-    def validate_time_filter(time_filter):
-        """Raise :py:class:`.ValueError` if ``time_filter`` is not valid.
-
-        .. warning:: (Deprecated) This method will not be part of the public
-                     interface in PRAW 4.1+.
-
-        """
+    def _validate_time_filter(time_filter):
+        """Raise :py:class:`.ValueError` if ``time_filter`` is not valid."""
         if time_filter not in BaseListingMixin.VALID_TIME_FILTERS:
             raise ValueError('time_filter must be one of: {}'.format(', '.join(
                 BaseListingMixin.VALID_TIME_FILTERS)))
@@ -53,7 +48,7 @@ class BaseListingMixin(PRAWBase):
            reddit.subreddit('all').controversial('hour')
 
         """
-        self.validate_time_filter(time_filter)
+        self._validate_time_filter(time_filter)
         self._safely_add_arguments(generator_kwargs, 'params', t=time_filter)
         url = _prepare(self, generator_kwargs, 'controversial')
         return ListingGenerator(self._reddit, url, **generator_kwargs)
@@ -125,7 +120,7 @@ class BaseListingMixin(PRAWBase):
            reddit.subreddit('all').top('hour')
 
         """
-        self.validate_time_filter(time_filter)
+        self._validate_time_filter(time_filter)
         self._safely_add_arguments(generator_kwargs, 'params', t=time_filter)
         url = _prepare(self, generator_kwargs, 'top')
         return ListingGenerator(self._reddit, url, **generator_kwargs)

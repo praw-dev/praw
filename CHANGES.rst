@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Removed**
+
+* ``validate_time_filter`` is no longer part of the public interface.
+
 4.1.0 (2016/12/24)
 ------------------
 
@@ -39,7 +46,7 @@ Change Log
 **Deprecated**
 
 * ``validate_time_filter`` will be removed from the public interface in PRAW
-  4.1+ as it was never intended to be part of it to begin with.
+  4.2 as it was never intended to be part of it to begin with.
 * Iterating directly over :class:`.SubredditRelationship` (e.g.,
   ``subreddit.banned``, ``subreddit.contributor``, ``subreddit.moderator``, etc)
   and :class:`.SubredditFlair` will be removed in PRAW 5. Iterate instead over

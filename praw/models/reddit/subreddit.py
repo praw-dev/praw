@@ -271,7 +271,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                print(submission.title)
 
         """
-        self.validate_time_filter(time_filter)
+        self._validate_time_filter(time_filter)
         not_all = self.display_name.lower() != 'all'
         self._safely_add_arguments(generator_kwargs, 'params', q=query,
                                    restrict_sr=not_all, sort=sort,
