@@ -10,7 +10,7 @@ Prerequisites
 
 :Python Knowledge: You need to know at least a little Python to use PRAW; it's
                    a Python wrapper after all. PRAW supports `Python 2.7`_, and
-                   `Python 3.3 to 3.5`_. If you are stuck on a problem,
+                   `Python 3.3 to 3.6`_. If you are stuck on a problem,
                    `/r/learnpython`_ is a great place to ask for help.
 
 :Reddit Knowledge: A basic understanding of how `reddit.com`_ works is a
@@ -36,7 +36,7 @@ Prerequisites
 
 
 .. _`Python 2.7`: https://docs.python.org/2/tutorial/index.html
-.. _`Python 3.3 to 3.5`: https://docs.python.org/3/tutorial/index.html
+.. _`Python 3.3 to 3.6`: https://docs.python.org/3/tutorial/index.html
 .. _`/r/learnpython`: https://www.reddit.com/r/learnpython/
 .. _reddit.com: https://www.reddit.com
 .. _FAQ: https://www.reddit.com/wiki/faq

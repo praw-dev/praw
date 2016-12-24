@@ -31,6 +31,7 @@ setup(name=PACKAGE_NAME,
           'Programming Language :: Python :: 3.3',
           'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: Implementation :: CPython',
           'Topic :: Utilities'],
       description=('PRAW, an acronym for `Python Reddit API Wrapper`, is a '

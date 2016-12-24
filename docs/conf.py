@@ -14,7 +14,7 @@ html_theme_options = {
 }
 html_use_smartypants = True
 htmlhelp_basename = 'PRAW'
-intersphinx_mapping = {'python': ('https://docs.python.org/3.5', None)}
+intersphinx_mapping = {'python': ('https://docs.python.org/3.6', None)}
 master_doc = 'index'
 nitpicky = True
 project = 'PRAW'
