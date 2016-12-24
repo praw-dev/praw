@@ -16,14 +16,14 @@ Unreleased
 * :meth:`praw.models.Subreddits.search_by_topic` to search subreddits by topic.
   (see: https://www.reddit.com/dev/api/#GET_api_subreddits_by_topic).
 * :meth:`praw.models.LiveHelper.__call__` to provide interface to
-  `praw.models.LiveThread.__init__`.
+  ``praw.models.LiveThread.__init__``.
 * :class:`.SubredditFilters` to work with filters for special subreddits, like
   ``/r/all``.
 * Added callables for :class:`.SubredditRelationship` and
   :class:`.SubredditFlair` so that ``limit`` and other parameters can be passed.
 * Add :meth:`~praw.models.Message.reply` to :class:`.Message` which was
   accidentally missed previously.
-* Add `sticky` parameter to :meth:`.CommentModeration.distinguish` to sticky
+* Add ``sticky`` parameter to :meth:`.CommentModeration.distinguish` to sticky
   comments.
 * :meth:`.flair` to add a submission's flair from an instance of
   :class:`.Submission`.
