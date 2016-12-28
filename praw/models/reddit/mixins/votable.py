@@ -12,7 +12,7 @@ class VotableMixin(object):
     def clear_vote(self):
         """Clear the authenticated user's vote on the object.
 
-        .. note:: votes must be cast by humans. That is, API clients proxying a
+        .. note:: Votes must be cast by humans. That is, API clients proxying a
            human's action one-for-one are OK, but bots deciding how to vote on
            content or amplifying a human's vote are not. See the reddit rules
            for more details on what constitutes vote cheating. [`Ref
@@ -24,7 +24,7 @@ class VotableMixin(object):
     def downvote(self):
         """Downvote the object.
 
-        .. note:: votes must be cast by humans. That is, API clients proxying a
+        .. note:: Votes must be cast by humans. That is, API clients proxying a
            human's action one-for-one are OK, but bots deciding how to vote on
            content or amplifying a human's vote are not. See the reddit rules
            for more details on what constitutes vote cheating. [`Ref
@@ -36,7 +36,7 @@ class VotableMixin(object):
     def upvote(self):
         """Upvote the object.
 
-        .. note:: votes must be cast by humans. That is, API clients proxying a
+        .. note:: Votes must be cast by humans. That is, API clients proxying a
            human's action one-for-one are OK, but bots deciding how to vote on
            content or amplifying a human's vote are not. See the reddit rules
            for more details on what constitutes vote cheating. [`Ref
