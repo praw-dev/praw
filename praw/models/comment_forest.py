@@ -12,8 +12,8 @@ class CommentForest(object):
     """
 
     @staticmethod
-    def _extract_more_comments(tree):
-        """Return a list of MoreComments objects removed from tree."""
+    def _gather_more_comments(tree, parent_tree=None):
+        """Return a list of MoreComments objects obtained from tree."""
         more_comments = []
         queue = [(None, x) for x in tree]
         while len(queue) > 0:
@@ -21,9 +21,9 @@ class CommentForest(object):
             if isinstance(comment, MoreComments):
                 heappush(more_comments, comment)
                 if parent:
-                    parent.replies._comments.remove(comment)
+                    comment._remove_from = parent.replies._comments
                 else:
-                    tree.remove(comment)
+                    comment._remove_from = parent_tree or tree
             else:
                 for item in comment.replies:
                     queue.append((comment, item))
@@ -52,7 +52,7 @@ class CommentForest(object):
     def _insert_comment(self, comment):
         assert comment.name not in self._submission._comments_by_id
         comment.submission = self._submission
-        if comment.is_root:
+        if isinstance(comment, MoreComments) or comment.is_root:
             self._comments.append(comment)
         else:
             assert comment.parent_id in self._submission._comments_by_id
@@ -113,28 +113,50 @@ class CommentForest(object):
            comment.refresh()
            comment.replace_more()
 
+        .. note:: This method can take a long time as each replacement will
+                  discover at most 20 new :class:`.Comment` or
+                  :class:`.MoreComments` instances. As a result, consider
+                  looping and handling exceptions until the method returns
+                  successfully. For example:
+
+                  .. code:: python
+
+                     while True:
+                         try:
+                             submission.comments.replace_more()
+                             break
+                         except PossibleExceptions:
+                             print('Handling replace_more exception')
+                             sleep(1)
+
         """
         remaining = limit
-        more_comments = self._extract_more_comments(self._comments)
+        more_comments = self._gather_more_comments(self._comments)
         skipped = []
 
         # Fetch largest more_comments until reaching the limit or the threshold
-        while (remaining is None or remaining > 0) and more_comments:
+        while more_comments:
             item = heappop(more_comments)
-            if item.count < threshold:
+            if remaining is not None and remaining <= 0 or \
+               item.count < threshold:
                 skipped.append(item)
+                item._remove_from.remove(item)
                 continue
 
             new_comments = item.comments(update=False)
             if remaining is not None:
                 remaining -= 1
 
-            # Re-add new MoreComment objects to the heap of more_comments
-            for more in self._extract_more_comments(new_comments):
+            # Add new MoreComment objects to the heap of more_comments
+            for more in self._gather_more_comments(new_comments,
+                                                   self._comments):
                 more.submission = self._submission
                 heappush(more_comments, more)
-            # Insert the new comments into the tree
+            # Insert all items into the tree
             for comment in new_comments:
                 self._insert_comment(comment)
+
+            # Remove from forest
+            item._remove_from.remove(item)
 
         return more_comments + skipped

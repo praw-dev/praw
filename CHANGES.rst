@@ -4,6 +4,15 @@ Change Log
 Unreleased
 ----------
 
+**Fixed**
+
+* :meth:`.replace_more` is now recoverable. Previously, when an exception was
+  raised during the work done by :meth:`.replace_more`, all unreplaced
+  :class:`.MoreComments` instances were lost. Now :class:`.MoreComments`
+  instances are only removed once their children have been added to the
+  :class:`.CommentForest` enabling callers of :meth:`.replace_more` to call the
+  method as many times as required to complete the replacement.
+
 **Removed**
 
 * ``validate_time_filter`` is no longer part of the public interface.

@@ -18,6 +18,8 @@ class TestCommentForest(IntegrationTest):
             before_count = len(submission.comments.list())
             skipped = submission.comments.replace_more(None, threshold=0)
             assert len(skipped) == 0
+            assert all(isinstance(x, Comment) for x in
+                       submission.comments.list())
             assert all(x.submission == submission for x in
                        submission.comments.list())
             assert before_count < len(submission.comments.list())
@@ -29,6 +31,8 @@ class TestCommentForest(IntegrationTest):
             submission = Submission(self.reddit, 'n49rw')
             skipped = submission.comments.replace_more(None, threshold=0)
             assert len(skipped) == 0
+            assert all(isinstance(x, Comment) for x in
+                       submission.comments.list())
             assert len(submission.comments.list()) > 1000
             assert len(submission.comments.list()) == \
                 len(submission._comments_by_id)
