@@ -46,7 +46,20 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
     @property
     def comments(self):
-        """An instance of :class:`.CommentForest`."""
+        """An instance of :class:`.CommentForest`.
+
+        This attribute can use used, for example, to obtain a flat list of
+        comments, with any :class:`.MoreComments` removed:
+
+        .. code:: python
+
+           submission.comments.replace_more(limit=0)
+           comments = submission.comments.list()
+
+        See :ref:`extracting_comments` for more on working with a
+        :class:`.CommentForest`.
+
+        """
         # This assumes _comments is set so that _fetch is called when it's not.
         return self._comments
 
