@@ -30,7 +30,23 @@ class CommentForest(object):
         return more_comments
 
     def __getitem__(self, index):
-        """Return the comment at position ``index`` in the list."""
+        """Return the comment at position ``index`` in the list.
+
+        This method is to be used like an array access, such as:
+
+        .. code:: python
+
+           first_comment = submission.comments[0]
+
+        Alternatively, the presence of this method enables one to iterate over
+        all top_level comments, like so:
+
+        .. code:: python
+
+           for comment in submission.comments:
+               print(comment.body)
+
+        """
         return self._comments[index]
 
     def __init__(self, submission, comments=None):
