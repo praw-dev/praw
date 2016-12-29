@@ -3,6 +3,9 @@ Change Log
 
 Unreleased
 ----------
+**Added**
+
+* :meth:`.Subreddit.rules` to get the rules of a subreddit.
 
 **Fixed**
 
