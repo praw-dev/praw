@@ -83,6 +83,7 @@ API_PATH = {
     'read_message':           'api/read_message/',
     'remove':                 'api/remove/',
     'report':                 'api/report/',
+    'rules':                  'r/{subreddit}/about/rules',
     'save':                   'api/save/',
     'search':                 'r/{subreddit}/search/',
     'select_flair':           'r/{subreddit}/api/selectflair/',

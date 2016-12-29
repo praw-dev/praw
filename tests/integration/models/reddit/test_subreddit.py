@@ -76,6 +76,12 @@ class TestSubreddit(IntegrationTest):
                            subreddit.random(), subreddit.random()]
             assert len(submissions) == len(set(submissions))
 
+    def test_rules(self):
+        with self.recorder.use_cassette('TestSubreddit.test_rules'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            assert subreddit.rules()['rules'][0]['short_name'] == 'Sample rule'
+
     def test_sticky(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         with self.recorder.use_cassette('TestSubreddit.test_sticky'):

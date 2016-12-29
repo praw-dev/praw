@@ -248,6 +248,10 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._submission_class(self._reddit, url=urljoin(
             self._reddit.config.reddit_url, path))
 
+    def rules(self):
+        """Return rules for the subreddit."""
+        return self._reddit.get(API_PATH['rules'].format(subreddit=self))
+
     def search(self, query, sort='relevance', syntax='cloudsearch',
                time_filter='all', **generator_kwargs):
         """Return a ListingGenerator for items that match ``query``.
