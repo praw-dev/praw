@@ -54,6 +54,7 @@ API_PATH = {
     'list_muted':             'r/{subreddit}/about/muted/',
     'list_wikibanned':        'r/{subreddit}/about/wikibanned/',
     'list_wikicontributor':   'r/{subreddit}/about/wikicontributors/',
+    'live_contributors':      'live/{id}/contributors',
     'live_updates':           'live/{id}',
     'liveabout':              'api/live/{id}/about/',
     'livecreate':             'api/live/create',

@@ -27,6 +27,7 @@ instances of them bound to an attribute of one of the PRAW models.
    :caption: Relationship Helpers
 
    other/contributorrelationship
+   other/livecontributorrelationship
    other/moderatorrelationship
    other/subredditrelationship
 
@@ -50,5 +51,6 @@ instances of them bound to an attribute of one of the PRAW models.
    other/domainlisting
    other/listinggenerator
    other/redditbase
+   other/redditorlist
    other/sublisting
    other/subredditmessage
