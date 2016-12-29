@@ -643,19 +643,29 @@ class SubredditFlair(object):
     def update(self, flair_list, text='', css_class=''):
         """Set or clear the flair for many Redditors at once.
 
-        :param flair_list: Each item in this list should be either: a Redditor
-            name string, a Redditor, or a dictionary containing the keys
-            ``user``, ``flair_text``, and ``flair_css_class``. The ``user`` key
-            should map to a Redditor name string, or a Redditor. When a
-            dictionary isn't provided, or the dictionary is missing one of
-            ``flair_text``, or ``flair_css_class`` attributes the default
-            values will come from the the following arguments.
+        :param flair_list: Each item in this list should be either: the name of
+            a Redditor, an instance of :class:`.Redditor`, or a dictionary
+            mapping keys ``user``, ``flair_text``, and ``flair_css_class`` to
+            their respective values. The ``user`` key should map to a Redditor,
+            as described above. When a dictionary isn't provided, or the
+            dictionary is missing one of ``flair_text``, or ``flair_css_class``
+            attributes the default values will come from the the following
+            arguments.
+
         :param text: The flair text to use when not explicitly provided in
             ``flair_list`` (Default: '').
         :param css_class: The css class to use when not explicitly provided in
             ``flair_list`` (Default: '').
         :returns: List of dictionaries indicating the success or failure of
             each update.
+
+        For example to clear the flair text, and set the `praw` flair css class
+        on a few users try:
+
+        .. code:: python
+
+           subreddit.flair.update(['bboe', 'spez', 'spladug'],
+                                  css_class='praw')
 
         """
         lines = []
