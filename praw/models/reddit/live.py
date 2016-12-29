@@ -10,6 +10,23 @@ class LiveThread(RedditBase):
 
     STR_FIELD = 'id'
 
+    @property
+    def contributor(self):
+        """An instance of :class:`.LiveContributorRelationship`.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           for contributor in thread.contributor():
+               print(contributor)
+
+        """
+        if self._contributor is None:
+            self._contributor = LiveContributorRelationship(self)
+        return self._contributor
+
     def __eq__(self, other):
         """Return whether the other instance equals the current.
 
@@ -57,6 +74,7 @@ class LiveThread(RedditBase):
         super(LiveThread, self).__init__(reddit, _data)
         if id:
             self.id = id  # pylint: disable=invalid-name
+        self._contributor = None
 
     def _info_path(self):
         return API_PATH['liveabout'].format(id=self.id)
@@ -74,6 +92,33 @@ class LiveThread(RedditBase):
                                        **generator_kwargs):
             update._thread = self
             yield update
+
+
+class LiveContributorRelationship(object):
+    """Provide methods to interact with live threads' contributors."""
+
+    def __call__(self):
+        """Return a :class:`.RedditorList` for live threads' contributors.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           for contributor in thread.contributor():
+               print(contributor)
+
+        """
+        url = API_PATH['live_contributors'].format(id=self.thread.id)
+        return self.thread._reddit.get(url)
+
+    def __init__(self, thread):
+        """Create a LiveContributorRelationship instance.
+
+        :param thread: An instance of :class:`.LiveThread`.
+
+        """
+        self.thread = thread
 
 
 class LiveUpdate(RedditBase):
