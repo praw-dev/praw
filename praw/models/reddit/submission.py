@@ -65,7 +65,23 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
     @property
     def flair(self):
-        """An instance of :class:`.SubmissionFlair`."""
+        """An instance of :class:`.SubmissionFlair`.
+
+        This attribute is used to work with flair as a regular user of the
+        subreddit the submission belongs to. Moderators can directly use
+        :meth:`.flair`.
+
+        For example, to select an arbitrary editable flair text (assuming there
+        is one) and set a custom value try:
+
+        .. code:: python
+
+           choices = submission.flair.choices()
+           template_id = next(x for x in choices
+                              if x['flair_text_editable'])['flair_template_id']
+           submission.flair.select(template_id, 'my custom value')
+
+        """
         if self._flair is None:
             self._flair = SubmissionFlair(self)
         return self._flair
@@ -158,7 +174,17 @@ class SubmissionFlair(object):
         self.submission = submission
 
     def choices(self):
-        """Return list of available flair choices."""
+        """Return list of available flair choices.
+
+        Choices are required in order to use :meth:`.select`.
+
+        Example:
+
+        .. code:: python
+
+           choices = submission.flair.choices()
+
+        """
         url = API_PATH['flairselector'].format(
             subreddit=self.submission.subreddit)
         return self.submission._reddit.post(url, data={
@@ -168,10 +194,20 @@ class SubmissionFlair(object):
         """Select flair for submission.
 
         :param flair_template_id: The flair template to select. The possible
-            ``flair_template_id`` values can be discovered through ``choices``.
-
+            ``flair_template_id`` values can be discovered through
+            :meth:`.choices`.
         :param text: If the template's ``flair_text_editable`` value is True,
             this value will set a custom text (default: None).
+
+        For example, to select an arbitrary editable flair text (assuming there
+        is one) and set a custom value try:
+
+        .. code:: python
+
+           choices = submission.flair.choices()
+           template_id = next(x for x in choices
+                              if x['flair_text_editable'])['flair_template_id']
+           submission.flair.select(template_id, 'my custom value')
 
         """
         data = {'flair_template_id': flair_template_id,
