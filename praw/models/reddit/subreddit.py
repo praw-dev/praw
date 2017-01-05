@@ -1222,6 +1222,24 @@ class ModeratorRelationship(SubredditRelationship):
             other_settings['permissions'] = ','.join(permissions)
         return other_settings
 
+    def __call__(self, redditor=None):
+        """Return a list of Redditors who are moderators.
+
+        :param redditor: Return a list containing at most one
+            :class:`~.Redditor` instance. This is useful to confirm if a
+            relationship exists, or to fetch the metadata associated with a
+            particular relationship.
+
+        .. note:: Unlike other relationship callables, this relationship is not
+                  paginated. Thus it simply returns the full list, rather than
+                  iterates through the results.
+
+        """
+        params = {} if redditor is None else {'user': redditor}
+        url = API_PATH['list_{}'.format(self.relationship)].format(
+            subreddit=self.subreddit)
+        return self.subreddit._reddit.get(url, params=params)
+
     def add(self, redditor, permissions=None, **other_settings):
         """Add or invite ``redditor`` to be a moderator of the subreddit.
 

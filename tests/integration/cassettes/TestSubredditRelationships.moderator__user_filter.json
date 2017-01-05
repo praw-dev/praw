@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2017-01-05T04:54:01",
+      "recorded_at": "2017-01-05T05:02:45",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -29,16 +29,16 @@
           "Connection": "keep-alive",
           "Content-Length": "105",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Thu, 05 Jan 2017 04:53:45 GMT",
+          "Date": "Thu, 05 Jan 2017 05:02:28 GMT",
           "Server": "snooserv",
-          "Set-Cookie": "loid=TxWdoHGUHILrasRuwg; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Set-Cookie": "loid=QU9Vcbyzf4hivxr5FF; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
           "X-Cache": "MISS",
           "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-lax8645-LAX",
-          "X-Timer": "S1483592024.686779,VS0,VE400",
+          "X-Served-By": "cache-lax8642-LAX",
+          "X-Timer": "S1483592548.254793,VS0,VE405",
           "cache-control": "max-age=0, must-revalidate",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
@@ -52,51 +52,50 @@
       }
     },
     {
-      "recorded_at": "2017-01-05T04:54:01",
+      "recorded_at": "2017-01-05T05:02:45",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&name=pyapitestuser3&permissions=%2Ba&type=moderator_invite"
+          "string": ""
         },
         "headers": {
           "Accept": "*/*",
           "Accept-Encoding": "identity",
           "Authorization": "bearer <ACCESS_TOKEN>",
           "Connection": "keep-alive",
-          "Content-Length": "72",
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Cookie": "loidcreated=1483592024000; loid=TxWdoHGUHILrasRuwg",
+          "Cookie": "loid=QU9Vcbyzf4hivxr5FF; loidcreated=1483592548000",
           "User-Agent": "<USER_AGENT> PRAW/4.2.0dev0 prawcore/0.6.0"
         },
-        "method": "POST",
-        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/friend/?raw_json=1"
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/about/moderators/?user=pyapitestuser3&raw_json=1"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\"json\": {\"errors\": [[\"INVALID_PERMISSIONS\", \"invalid permissions string\", \"permissions\"]]}}"
+          "string": "{\"kind\": \"UserList\", \"data\": {\"children\": [{\"date\": 1483592497.0, \"mod_permissions\": [\"config\"], \"name\": \"PyAPITestUser3\", \"id\": \"t2_6c1xj\"}]}}"
         },
         "headers": {
           "Accept-Ranges": "bytes",
           "Connection": "keep-alive",
-          "Content-Length": "92",
+          "Content-Length": "143",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Thu, 05 Jan 2017 04:53:45 GMT",
+          "Date": "Thu, 05 Jan 2017 05:02:28 GMT",
           "Server": "snooserv",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
           "X-Cache": "MISS",
           "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-lax8637-LAX",
-          "X-Timer": "S1483592025.263998,VS0,VE115",
+          "X-Served-By": "cache-lax8631-LAX",
+          "X-Timer": "S1483592548.839807,VS0,VE129",
           "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
           "expires": "-1",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
-          "x-ratelimit-remaining": "584.0",
-          "x-ratelimit-reset": "375",
-          "x-ratelimit-used": "16",
+          "x-ratelimit-remaining": "593.0",
+          "x-ratelimit-reset": "452",
+          "x-ratelimit-used": "7",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=8gcWQdM9KezYCW%2FZ8Z9w%2FdBXu1oyLpqgyWhUt5hTVs%2F92kvJQTyWnAXih0OBTkne9Us2BK1X8JI8u7Tgjue%2BO%2BVyfD2cHZd7",
           "x-ua-compatible": "IE=edge",
           "x-xss-protection": "1; mode=block"
         },
@@ -104,7 +103,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/friend/?raw_json=1"
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/about/moderators/?user=pyapitestuser3&raw_json=1"
       }
     }
   ],

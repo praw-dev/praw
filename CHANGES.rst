@@ -20,6 +20,7 @@ Unreleased
   method as many times as required to complete the replacement.
 * Working with contributors on :class:`.SubredditWiki` is done consistently
   through ``contributor`` not ``contributors``.
+* ``Subreddit.moderator()`` works.
 
 **Removed**
 

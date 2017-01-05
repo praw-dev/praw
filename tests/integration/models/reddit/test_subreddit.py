@@ -784,7 +784,7 @@ class TestSubredditRelationships(IntegrationTest):
             # As of 2016-03-18 there is no API endpoint to get the moderator
             # invite list.
             self.subreddit.moderator.add(self.REDDITOR)
-            assert self.REDDITOR not in self.subreddit.moderator
+            assert self.REDDITOR not in self.subreddit.moderator()
 
     @mock.patch('time.sleep', return_value=None)
     def test_moderator__limited_permissions(self, _):
@@ -796,7 +796,7 @@ class TestSubredditRelationships(IntegrationTest):
             # invite list.
             self.subreddit.moderator.add(self.REDDITOR,
                                          permissions=['access', 'wiki'])
-            assert self.REDDITOR not in self.subreddit.moderator
+            assert self.REDDITOR not in self.subreddit.moderator()
 
     def test_moderator_invite__invalid_perm(self):
         self.reddit.read_only = False
@@ -816,7 +816,7 @@ class TestSubredditRelationships(IntegrationTest):
             # As of 2016-03-18 there is no API endpoint to get the moderator
             # invite list.
             self.subreddit.moderator.invite(self.REDDITOR, permissions=[])
-            assert self.REDDITOR not in self.subreddit.moderator
+            assert self.REDDITOR not in self.subreddit.moderator()
 
     @mock.patch('time.sleep', return_value=None)
     def test_modeator_leave(self, _):
@@ -838,6 +838,13 @@ class TestSubredditRelationships(IntegrationTest):
                 'TestSubredditRelationships.moderator_update_invite'):
             self.subreddit.moderator.update_invite(
                 self.REDDITOR, permissions=['mail'])
+
+    def test_moderator__user_filter(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditRelationships.moderator__user_filter'):
+            moderator = self.subreddit.moderator(redditor='pyapitestuser3')
+        assert len(moderator) == 1
 
     def test_muted(self):
         self.reddit.read_only = False
