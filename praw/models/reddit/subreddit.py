@@ -1414,7 +1414,7 @@ class SubredditWiki(object):
 
         """
         self.banned = SubredditRelationship(subreddit, 'wikibanned')
-        self.contributors = SubredditRelationship(subreddit, 'wikicontributor')
+        self.contributor = SubredditRelationship(subreddit, 'wikicontributor')
         self.subreddit = subreddit
 
     def __iter__(self):

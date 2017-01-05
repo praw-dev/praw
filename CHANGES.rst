@@ -18,6 +18,8 @@ Unreleased
   instances are only removed once their children have been added to the
   :class:`.CommentForest` enabling callers of :meth:`.replace_more` to call the
   method as many times as required to complete the replacement.
+* Working with contributors on :class:`.SubredditWiki` is done consistently
+  through ``contributor`` not ``contributors``.
 
 **Removed**
 

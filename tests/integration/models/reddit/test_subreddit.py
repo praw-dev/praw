@@ -850,11 +850,11 @@ class TestSubredditRelationships(IntegrationTest):
                 'TestSubredditRelationships.wiki_banned'):
             self.add_remove(self.subreddit.wiki, self.REDDITOR, 'banned')
 
-    def test_wiki_contributors(self):
+    def test_wiki_contributor(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-                'TestSubredditRelationships.wiki_contributors'):
-            self.add_remove(self.subreddit.wiki, self.REDDITOR, 'contributors')
+                'TestSubredditRelationships.wiki_contributor'):
+            self.add_remove(self.subreddit.wiki, self.REDDITOR, 'contributor')
 
 
 class TestSubredditStreams(IntegrationTest):
