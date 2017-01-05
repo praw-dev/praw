@@ -731,13 +731,13 @@ class TestSubredditRelationships(IntegrationTest):
     def add_remove(self, base, user, relationship, _):
         relationship = getattr(base, relationship)
         relationship.add(user)
-        relationships = list(relationship)
+        relationships = list(relationship())
         assert user in relationships
         redditor = relationships[relationships.index(user)]
         assert isinstance(redditor, Redditor)
         assert hasattr(redditor, 'date')
         relationship.remove(user)
-        assert user not in relationship
+        assert user not in relationship()
 
     @property
     def subreddit(self):
@@ -748,18 +748,11 @@ class TestSubredditRelationships(IntegrationTest):
         with self.recorder.use_cassette('TestSubredditRelationships.banned'):
             self.add_remove(self.subreddit, self.REDDITOR, 'banned')
 
-    def test_banned__callable(self):
-        self.reddit.read_only = False
-        banned = self.subreddit.banned()
-        with self.recorder.use_cassette(
-                'TestSubredditRelationships.banned__callable'):
-            assert len(list(banned)) > 0
-
-    def test_banned__callable__user_filter(self):
+    def test_banned__user_filter(self):
         self.reddit.read_only = False
         banned = self.subreddit.banned(redditor='pyapitestuser3')
         with self.recorder.use_cassette(
-                'TestSubredditRelationships.banned__callable_user_filter'):
+                'TestSubredditRelationships.banned__user_filter'):
             assert len(list(banned)) == 1
 
     def test_contributor(self):
@@ -774,6 +767,13 @@ class TestSubredditRelationships(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubredditModeration.test_contributor_leave'):
             self.subreddit.contributor.leave()
+
+    def test_contributor__user_filter(self):
+        self.reddit.read_only = False
+        contributor = self.subreddit.contributor(redditor='pyapitestuser3')
+        with self.recorder.use_cassette(
+                'TestSubredditRelationships.contributor__user_filter'):
+            assert len(list(contributor)) == 1
 
     @mock.patch('time.sleep', return_value=None)
     def test_moderator(self, _):
