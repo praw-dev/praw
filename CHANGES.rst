@@ -21,6 +21,7 @@ Unreleased
 * Working with contributors on :class:`.SubredditWiki` is done consistently
   through ``contributor`` not ``contributors``.
 * ``Subreddit.moderator()`` works.
+* ``live_thread.contributor()`` now returns :class:`.RedditorList` correctly.
 
 **Removed**
 
