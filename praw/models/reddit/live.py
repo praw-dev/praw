@@ -1,6 +1,7 @@
 """Provide the LiveThread class."""
 from ...const import API_PATH
 from ..listing.generator import ListingGenerator
+from ..list.redditor import RedditorList
 from .base import RedditBase
 from .redditor import Redditor
 
@@ -110,7 +111,8 @@ class LiveContributorRelationship(object):
 
         """
         url = API_PATH['live_contributors'].format(id=self.thread.id)
-        return self.thread._reddit.get(url)
+        temp = self.thread._reddit.get(url)
+        return temp if isinstance(temp, RedditorList) else temp[0]
 
     def __init__(self, thread):
         """Create a LiveContributorRelationship instance.
