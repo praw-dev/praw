@@ -295,6 +295,12 @@ class SubmissionModeration(ThingModerationMixin):
         This submission will replace an existing stickied submission if one
         exists.
 
+        Example:
+
+        .. code:: python
+
+           submission.mod.sticky()
+
         """
         data = {'id': self.thing.fullname, 'state': state}
         if not bottom:
