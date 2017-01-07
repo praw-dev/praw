@@ -619,20 +619,6 @@ class SubredditFlair(object):
         self.subreddit = subreddit
         self.templates = SubredditFlairTemplates(subreddit)
 
-    def __iter__(self):
-        """Iterate through the Redditors and their associated flair.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     iterating over ``subreddit.flair`` instead of
-                     ``subreddit.flair``.
-
-        """
-        url = API_PATH['flairlist'].format(subreddit=self.subreddit)
-        params = {'unique': self.subreddit._reddit._next_unique}
-        for item in ListingGenerator(self.subreddit._reddit, url, None,
-                                     params=params):
-            yield item
-
     def configure(self, position='right', self_assign=False,
                   link_position='left', link_self_assign=False,
                   **settings):
@@ -1292,20 +1278,6 @@ class SubredditRelationship(object):
         """
         self.relationship = relationship
         self.subreddit = subreddit
-
-    def __iter__(self):
-        """Iterate through the Redditors belonging to this relationship.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``subreddit.banned(limit=None)`` instead of
-                     ``subreddit.banned`` and similar for other relationships.
-
-        """
-        url = API_PATH['list_{}'.format(self.relationship)].format(
-            subreddit=self.subreddit)
-        params = {'unique': self.subreddit._reddit._next_unique}
-        for item in self.subreddit._reddit.get(url, params=params):
-            yield item
 
     def add(self, redditor, **other_settings):
         """Add ``redditor`` to this relationship.
