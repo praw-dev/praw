@@ -1231,11 +1231,17 @@ class ModeratorRelationship(SubredditRelationship):
         :param redditor: When provided, return a list containing at most one
             :class:`~.Redditor` instance. This is useful to confirm if a
             relationship exists, or to fetch the metadata associated with a
-            particular relationship.
+            particular relationship (default: None).
 
         .. note:: Unlike other relationship callables, this relationship is not
                   paginated. Thus it simply returns the full list, rather than
-                  iterates through the results.
+                  an iterator for the results.
+
+        To be used like:
+
+        .. code:: python
+
+           moderators = reddit.subreddit('nameofsub').moderator()
 
         """
         params = {} if redditor is None else {'user': redditor}
