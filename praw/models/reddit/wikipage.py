@@ -107,7 +107,8 @@ class WikiPageModeration(object):
     def add(self, redditor):
         """Add an editor to this WikiPage.
 
-        :param redditor: A string or :class:`~.Redditor` instance.
+        :param redditor: A redditor name (e.g., ``'spez'``) or
+            :class:`~.Redditor` instance.
 
         """
         data = {'page': self.wikipage.name, 'username': str(redditor)}
@@ -118,7 +119,8 @@ class WikiPageModeration(object):
     def remove(self, redditor):
         """Remove an editor from this WikiPage.
 
-        :param redditor: A string or :class:`~.Redditor` instance.
+        :param redditor: A redditor name (e.g., ``'spez'``) or
+            :class:`~.Redditor` instance.
 
         """
         data = {'page': self.wikipage.name, 'username': str(redditor)}

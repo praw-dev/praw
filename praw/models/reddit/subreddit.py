@@ -580,8 +580,8 @@ class SubredditFlair(object):
     def delete(self, redditor):
         """Delete flair for a Redditor.
 
-        :param redditor: An instance of :class:`.Redditor`, or the name of a
-            Redditor.
+        :param redditor: A redditor name (e.g., ``'spez'``) or
+            :class:`~.Redditor` instance.
 
         .. note:: To delete the flair of many Redditors at once, please see
                   :meth:`~praw.models.reddit.subreddit.SubredditFlair.update`.
@@ -602,8 +602,8 @@ class SubredditFlair(object):
     def set(self, redditor=None, text='', css_class='', thing=None):
         """Set flair for a Redditor.
 
-        :param redditor: (Required) An instance of Redditor or a string that is
-            the name of a Redditor.
+        :param redditor: (Required) A redditor name (e.g., ``'spez'``) or
+            :class:`~.Redditor` instance.
         :param text: The flair text to associate with the Redditor or
             Submission (default: '').
         :param css_class: The css class to associate with the flair html
@@ -1159,7 +1159,8 @@ class SubredditRelationship(object):
     def add(self, redditor, **other_settings):
         """Add ``redditor`` to this relationship.
 
-        :param redditor: A string or :class:`~.Redditor` instance.
+        :param redditor: A redditor name (e.g., ``'spez'``) or
+            :class:`~.Redditor` instance.
 
         """
         data = {'name': str(redditor), 'type': self.relationship}
@@ -1170,7 +1171,8 @@ class SubredditRelationship(object):
     def remove(self, redditor):
         """Remove ``redditor`` from this relationship.
 
-        :param redditor: A string or :class:`~.Redditor` instance.
+        :param redditor: A redditor name (e.g., ``'spez'``) or
+            :class:`~.Redditor` instance.
 
         """
         data = {'name': str(redditor), 'type': self.relationship}
@@ -1244,7 +1246,8 @@ class ModeratorRelationship(SubredditRelationship):
     def add(self, redditor, permissions=None, **other_settings):
         """Add or invite ``redditor`` to be a moderator of the subreddit.
 
-        :param redditor: A string or :class:`~.Redditor` instance.
+        :param redditor: A redditor name (e.g., ``'spez'``) or
+            :class:`~.Redditor` instance.
         :param permissions: When provided (not `None`), permissions should be a
             list of strings specifying which subset of permissions to grant. An
             empty list `[]` indicates no permissions, and when not provided
@@ -1260,7 +1263,8 @@ class ModeratorRelationship(SubredditRelationship):
     def invite(self, redditor, permissions=None, **other_settings):
         """Invite ``redditor`` to be a moderator of the subreddit.
 
-        :param redditor: A string or :class:`~.Redditor` instance.
+        :param redditor: A redditor name (e.g., ``'spez'``) or
+            :class:`~.Redditor` instance.
         :param permissions: When provided (not `None`), permissions should be a
             list of strings specifying which subset of permissions to grant. An
             empty list `[]` indicates no permissions, and when not provided
@@ -1280,7 +1284,8 @@ class ModeratorRelationship(SubredditRelationship):
     def update(self, redditor, permissions=None):
         """Update the moderator permissions for ``redditor``.
 
-        :param redditor: A string or :class:`~.Redditor` instance.
+        :param redditor: A redditor name (e.g., ``'spez'``) or
+            :class:`~.Redditor` instance.
         :param permissions: When provided (not `None`), permissions should be a
             list of strings specifying which subset of permissions to grant. An
             empty list `[]` indicates no permissions, and when not provided
@@ -1295,7 +1300,8 @@ class ModeratorRelationship(SubredditRelationship):
     def update_invite(self, redditor, permissions=None):
         """Update the moderator invite permissions for ``redditor``.
 
-        :param redditor: A string or :class:`~.Redditor` instance.
+        :param redditor: A redditor name (e.g., ``'spez'``) or
+            :class:`~.Redditor` instance.
         :param permissions: When provided (not `None`), permissions should be a
             list of strings specifying which subset of permissions to grant. An
             empty list `[]` indicates no permissions, and when not provided
