@@ -1,8 +1,9 @@
 Change Log
 ==========
 
-Unreleased
-----------
+4.2.0 (2017/01/07)
+------------------
+
 **Added**
 
 * :meth:`.Subreddit.rules` to get the rules of a subreddit.
