@@ -14,6 +14,9 @@ Unreleased PRAW5
   ``Subreddit.mod.approve``, ``Subreddit.mod.distinguish``,
   ``Subreddit.mod.ignore_reports``, ``Subreddit.mod.remove``,
   ``Subreddit.mod.undistinguish``, ``Subreddit.mod.unignore_reports``.
+* Support for passing a :class:`.Submission` to :meth:`.SubredditFlair.set`
+  is removed.
+* The ``thing`` argument to :meth:`.SubredditFlair.set` is removed.
 * Return values from :meth:`.Comment.block`, :meth:`.Message.block`,
   :meth:`.SubredditMessage.block`, :meth:`.SubredditFlair.delete`,
   :meth:`.friend`, :meth:`.Redditor.message`, :meth:`.Subreddit.message`,

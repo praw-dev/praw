@@ -668,7 +668,7 @@ class SubredditFlair(object):
         """
         return self.update(x['user'] for x in self())
 
-    def set(self, redditor=None, text='', css_class='', thing=None):
+    def set(self, redditor=None, text='', css_class=''):
         """Set flair for a Redditor.
 
         :param redditor: (Required) A redditor name (e.g., ``'spez'``) or
@@ -681,13 +681,6 @@ class SubredditFlair(object):
         This method can only be used by an authenticated user who is a
         moderator of the associated Subreddit.
 
-        .. warning:: The use of this method to set the flair of a
-                     :class:`.Submission` is deprecated and will be removed in
-                     PRAW 5. Use :meth:`.flair` instead.
-
-        .. warning:: The use of the keyword argument ``thing`` is deprecated
-                     and will be removed in PRAW 5. Use ``redditor`` instead.
-
         Example:
 
         .. code:: python
@@ -695,17 +688,7 @@ class SubredditFlair(object):
            reddit.subreddit('redditdev').flair.set('bboe', 'PRAW author')
 
         """
-        # PRAW5 REMOVE
-        if bool(redditor) == bool(thing):
-            raise TypeError('`redditor` must be provided.')
-        if redditor is None:
-            redditor = thing
-
-        data = {'css_class': css_class, 'text': text}
-        if redditor.__class__.__name__ == 'Submission':  # PRAW5 REMOVE
-            data['link'] = redditor.fullname
-        else:
-            data['name'] = str(redditor)
+        data = {'css_class': css_class, 'name': str(redditor), 'text': text}
         url = API_PATH['flair'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 

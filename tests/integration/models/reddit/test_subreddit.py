@@ -321,13 +321,6 @@ class TestSubredditFlair(IntegrationTest):
             submission = self.subreddit._reddit.submission('4b536p')
             self.subreddit.flair.set(submission, 'submission flair')
 
-    def test_set__submission__by_thing(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditFlair.test_set__submission__by_thing'):
-            submission = self.subreddit._reddit.submission('4b536p')
-            self.subreddit.flair.set(thing=submission, text='submission flair')
-
     def test_update(self):
         self.reddit.read_only = False
         redditor = self.subreddit._reddit.redditor(self.reddit.config.username)
