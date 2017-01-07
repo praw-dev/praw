@@ -523,6 +523,7 @@ class SubredditFlair(object):
         """
         Subreddit._safely_add_arguments(generator_kwargs, 'params',
                                         name=redditor)
+        generator_kwargs.setdefault('limit', None)
         url = API_PATH['flairlist'].format(subreddit=self.subreddit)
         return ListingGenerator(self.subreddit._reddit, url,
                                 **generator_kwargs)
@@ -598,7 +599,7 @@ class SubredditFlair(object):
             each delete.
 
         """
-        return self.update(x['user'] for x in self)
+        return self.update(x['user'] for x in self())
 
     def set(self, redditor=None, text='', css_class='', thing=None):
         """Set flair for a Redditor.

@@ -62,7 +62,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.0.0b7 prawcore/0.0.10"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?raw_json=1&limit=1024&unique=0"
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?raw_json=1&limit=1024"
       },
       "response": {
         "body": {
@@ -94,7 +94,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?raw_json=1&limit=1024&unique=0"
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?raw_json=1&limit=1024"
       }
     },
     {
@@ -113,7 +113,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.0.0b7 prawcore/0.0.10"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?raw_json=1&limit=1024&unique=0&after=t2_svhx6"
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?raw_json=1&limit=1024&after=t2_svhx6"
       },
       "response": {
         "body": {
@@ -145,7 +145,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?raw_json=1&limit=1024&unique=0&after=t2_svhx6"
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?raw_json=1&limit=1024&after=t2_svhx6"
       }
     },
     {

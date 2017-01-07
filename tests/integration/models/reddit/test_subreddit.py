@@ -249,6 +249,7 @@ class TestSubredditFlair(IntegrationTest):
         with self.recorder.use_cassette('TestSubredditFlair.test__call'):
             mapping = self.subreddit.flair()
             assert len(list(mapping)) > 0
+            assert all(isinstance(x['user'], Redditor) for x in mapping)
 
     def test__call__user_filter(self):
         self.reddit.read_only = False

@@ -67,7 +67,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.1.0dev prawcore/0.5.0"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?raw_json=1&limit=100"
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?raw_json=1&limit=1024"
       },
       "response": {
         "body": {
@@ -103,7 +103,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?raw_json=1&limit=100"
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/flairlist/?raw_json=1&limit=1024"
       }
     }
   ],
