@@ -851,28 +851,6 @@ class SubredditModeration(object):
         url = API_PATH['accept_mod_invite'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
 
-    @staticmethod
-    def approve(thing):
-        """DEPRECATED.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``comment.mod.approve()``,
-                     ``submission.mod.approve()``.
-
-        """
-        thing.mod.approve()
-
-    @staticmethod
-    def distinguish(thing, how='yes', sticky=False):
-        """DEPRECATED.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``comment.mod.distinguish()``,
-                     ``submission.mod.distinguish()``.
-
-        """
-        thing.mod.distinguish(how=how, sticky=sticky)
-
     def edited(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for edited comments and submissions.
 
@@ -894,17 +872,6 @@ class SubredditModeration(object):
         return ListingGenerator(
             self.subreddit._reddit, API_PATH['about_edited'].format(
                 subreddit=self.subreddit), **generator_kwargs)
-
-    @staticmethod
-    def ignore_reports(thing):
-        """DEPRECATED.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``comment.mod.ignore_reports()``,
-                     ``submission.mod.ignore_reports()``.
-
-        """
-        thing.mod.ignore_reports()
 
     def inbox(self, **generator_kwargs):
         """Return a ListingGenerator for moderator messages.
@@ -973,17 +940,6 @@ class SubredditModeration(object):
             self.subreddit._reddit, API_PATH['about_modqueue'].format(
                 subreddit=self.subreddit), **generator_kwargs)
 
-    @staticmethod
-    def remove(thing, spam=False):
-        """DEPRECATED.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``comment.mod.remove()``,
-                     ``submission.mod.remove()``.
-
-        """
-        thing.mod.remove(spam=spam)
-
     def reports(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for reported comments and submissions.
 
@@ -1033,28 +989,6 @@ class SubredditModeration(object):
         return ListingGenerator(
             self.subreddit._reddit, API_PATH['about_spam'].format(
                 subreddit=self.subreddit), **generator_kwargs)
-
-    @staticmethod
-    def undistinguish(thing):
-        """DEPRECATED.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``comment.mod.undistinguish()``,
-                     ``submission.mod.undistinguish()``.
-
-        """
-        thing.mod.undistinguish()
-
-    @staticmethod
-    def unignore_reports(thing):
-        """DEPRECATED.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``comment.mod.unignore_reports()``,
-                     ``submission.mod.unignore_reports()``.
-
-        """
-        thing.mod.unignore_reports()
 
     def unmoderated(self, **generator_kwargs):
         """Return a ListingGenerator for unmoderated submissions.

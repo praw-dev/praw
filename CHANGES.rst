@@ -10,6 +10,10 @@ Unreleased PRAW5
   ``subreddit.banned``, ``subreddit.contributor``, ``subreddit.moderator``, etc)
   and :class:`.SubredditFlair` is no longer possible. Iterate instead over
   their callables, e.g. ``subreddit.banned()`` and ``subreddit.flair()``.
+* The following methods are removed:
+  ``Subreddit.mod.approve``, ``Subreddit.mod.distinguish``,
+  ``Subreddit.mod.ignore_reports``, ``Subreddit.mod.remove``,
+  ``Subreddit.mod.undistinguish``, ``Subreddit.mod.unignore_reports``.
 * Return values from :meth:`.Comment.block`, :meth:`.Message.block`,
   :meth:`.SubredditMessage.block`, :meth:`.SubredditFlair.delete`,
   :meth:`.friend`, :meth:`.Redditor.message`, :meth:`.Subreddit.message`,
