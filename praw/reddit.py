@@ -315,7 +315,7 @@ class Reddit(object):
         """Return parsed objects returned from a GET request to ``path``.
 
         :param path: The path to fetch.
-        :param params: The query parameters to add to the request (Default:
+        :param params: The query parameters to add to the request (default:
             None).
 
         """
@@ -354,10 +354,10 @@ class Reddit(object):
 
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body
-            of the request (Default: None).
+            of the request (default: None).
         :param files: Dictionary, filename to file (like) object mappin
-            (Default: None).
-        :param params: The query parameters to add to the request (Default:
+            (default: None).
+        :param params: The query parameters to add to the request (default:
             None).
 
         """
@@ -369,7 +369,7 @@ class Reddit(object):
         """Return a random lazy instance of :class:`~.Subreddit`.
 
         :param nsfw: Return a random NSFW (not safe for work) subreddit
-            (Default: False).
+            (default: False).
 
         """
         url = API_PATH['subreddit'].format(subreddit='randnsfw' if nsfw
@@ -394,12 +394,12 @@ class Reddit(object):
 
         :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
         :param path: The path to fetch.
-        :param params: The query parameters to add to the request (Default:
+        :param params: The query parameters to add to the request (default:
             None).
         :param data: Dictionary, bytes, or file-like object to send in the body
-            of the request (Default: None).
+            of the request (default: None).
         :param files: Dictionary, filename to file (like) object mappin
-            (Default: None).
+            (default: None).
 
         """
         return self._core.request(method, path, data=data, files=files,

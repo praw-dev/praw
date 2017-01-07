@@ -8,9 +8,8 @@ class SavableMixin(object):
     def save(self, category=None):
         """Save the object.
 
-        :param category: (Gold) The category to save to (Default:
-            None). If your user does not have gold this value is ignored by
-            Reddit.
+        :param category: (Gold) The category to save to. If your user does not
+            have gold this value is ignored by Reddit (default: None).
 
         """
         self._reddit.post(API_PATH['save'], data={'category': category,

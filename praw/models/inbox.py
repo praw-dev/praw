@@ -116,7 +116,7 @@ class Inbox(PRAWBase):
         """Return a ListingGenerator for unread comments and messages.
 
         :param mark_read: Marks the messages as read when they're obtained
-            (Default: False).
+            (default: False).
 
         .. note:: When marking messages as read, the entire batch (up to 100 at
                   a time) is marked as read when fetched. Failure to consume

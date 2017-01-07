@@ -73,9 +73,9 @@ class MultiredditHelper(PRAWBase):
             ``video``, or ``None``.
         :param key_color: (Optional) RGB hex color code of the form `#FFFFFF`.
         :param visibility: (Optional) Can be one of: ``hidden``, ``private``,
-            ``public`` (Default: private).
+            ``public`` (default: private).
         :param weighting_scheme: (Optional) Can be one of: ``classic``,
-            ``fresh`` (Default: classic)
+            ``fresh`` (default: classic).
         :returns: The new Multireddit object.
 
         """

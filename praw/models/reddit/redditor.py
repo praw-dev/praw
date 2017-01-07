@@ -45,8 +45,8 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
     def friend(self, note=None):
         """Friend the Redditor.
 
-        :param note: A personal note about the user. Requires reddit
-            Gold. (Default: None)
+        :param note: A note to save along with the relationship. Requires
+            reddit Gold (default: None).
         :returns: The json response from the server.
 
         Calling this method subsequent times will update the note.

@@ -287,7 +287,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         """Return a Submission object for a sticky of the subreddit.
 
         :param number: Specify which sticky to return. 1 appears at the top
-            (Default: 1).
+            (default: 1).
 
         Raises ``prawcore.NotFound`` if the sticky does not exist.
 
@@ -305,13 +305,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         :param start: A UNIX timestamp indicating the earliest creation time of
             submission yielded during the call. A value of ``None`` will
-            consider all submissions older than ``end`` (Default: None).
+            consider all submissions older than ``end`` (default: None).
         :param end: A UNIX timestamp indicating the latest creation time of a
             submission yielded during the call. A value of ``None`` will
-            consider all submissions newer than ``start`` (Default: None).
+            consider all submissions newer than ``start`` (default: None).
         :param extra_query: A cloudsearch query that will be combined via
             ``(and timestamp:start..end EXTRA_QUERY)`` to futher filter
-            results (Default: None).
+            results (default: None).
 
         Submissions are yielded newest first.
 
@@ -364,9 +364,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             submission.
         :param url: The URL for a ``link`` submission.
         :param resubmit: When False, an error will occur if the URL has already
-            been submitted (Default: True).
+            been submitted (default: True).
         :param send_replies: When True, messages will be sent to the submission
-            author when comments are made to the submission (Default: True).
+            author when comments are made to the submission (default: True).
         :returns: A :class:`~.Submission` object for the newly created
             submission.
 
@@ -605,9 +605,9 @@ class SubredditFlair(object):
         :param redditor: (Required) An instance of Redditor or a string that is
             the name of a Redditor.
         :param text: The flair text to associate with the Redditor or
-            Submission (Default: '').
+            Submission (default: '').
         :param css_class: The css class to associate with the flair html
-            (Default: '').
+            (default: '').
 
         This method can only be used by an authenticated user who is a
         moderator of the associated Subreddit.
@@ -653,9 +653,9 @@ class SubredditFlair(object):
             arguments.
 
         :param text: The flair text to use when not explicitly provided in
-            ``flair_list`` (Default: '').
+            ``flair_list`` (default: '').
         :param css_class: The css class to use when not explicitly provided in
-            ``flair_list`` (Default: '').
+            ``flair_list`` (default: '').
         :returns: List of dictionaries indicating the success or failure of
             each update.
 

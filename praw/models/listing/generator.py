@@ -24,7 +24,7 @@ class ListingGenerator(PRAWBase):
             None, then fetch as many entries as possible. Most of reddit's
             listings contain a maximum of 1000 items, and are returned 100 at a
             time. This class will automatically issue all necessary
-            requests. (Default: 100)
+            requests (default: 100).
         :param params: A dictionary containing additional query string
             parameters to send with the request.
 

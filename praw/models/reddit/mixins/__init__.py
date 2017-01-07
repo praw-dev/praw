@@ -56,7 +56,7 @@ class ThingModerationMixin(object):
         """Remove a :class:`~.Comment` or :class:`~.Submission`.
 
         :param spam: When True, use the removal to help train the Subreddit's
-            spam filter (Default: False)
+            spam filter (default: False).
 
         """
         data = {'id': self.thing.fullname, 'spam': bool(spam)}

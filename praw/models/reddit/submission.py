@@ -231,7 +231,8 @@ class SubmissionModeration(ThingModerationMixin):
     def contest_mode(self, state=True):
         """Set contest mode for the comments of this submission.
 
-        :param state: (boolean) True enables contest mode, False, disables.
+        :param state: (boolean) True enables contest mode, False, disables
+            (default: True).
 
         Contest mode have the following effects:
           * The comment thread will default to being sorted randomly.
@@ -248,10 +249,10 @@ class SubmissionModeration(ThingModerationMixin):
     def flair(self, text='', css_class=''):
         """Set flair for the submission.
 
-        :param text: The flair text to associate with the Submission (Default:
+        :param text: The flair text to associate with the Submission (default:
             '').
         :param css_class: The css class to associate with the flair html
-            (Default: '').
+            (default: '').
 
         This method can only be used by an authenticated user who is a
         moderator of the Submission's Subreddit.

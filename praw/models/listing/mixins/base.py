@@ -28,8 +28,8 @@ class BaseListingMixin(PRAWBase):
     def controversial(self, time_filter='all', **generator_kwargs):
         """Return a ListingGenerator for controversial submissions.
 
-        :param time_filter: Can be one of: all, day, hour, month, week, year.
-            (Default: all)
+        :param time_filter: Can be one of: all, day, hour, month, week, year
+            (default: all).
 
         Raise :py:class:`.ValueError` if ``time_filter`` is invalid.
 
@@ -100,8 +100,8 @@ class BaseListingMixin(PRAWBase):
     def top(self, time_filter='all', **generator_kwargs):
         """Return a ListingGenerator for top submissions.
 
-        :param time_filter: Can be one of: all, day, hour, month, week, year.
-            (Default: all)
+        :param time_filter: Can be one of: all, day, hour, month, week, year
+            (default: all).
 
         Raise :py:class:`.ValueError` if ``time_filter`` is invalid.
 
