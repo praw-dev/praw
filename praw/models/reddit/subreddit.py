@@ -510,8 +510,8 @@ class SubredditFlair(object):
     def __call__(self, redditor=None, **generator_kwargs):
         """Return a generator for Redditors and their associated flair.
 
-        :param redditor: Yield at most a single :class:`~.Redditor`
-            instance.
+        :param redditor: When provided, yield at most a single
+            :class:`~.Redditor` instance (default: None).
 
         This method is intended to be used like:
 
@@ -1116,9 +1116,10 @@ class SubredditRelationship(object):
     def __call__(self, redditor=None, **generator_kwargs):
         """Return a generator for Redditors belonging to this relationship.
 
-        :param redditor: Yield at most a single :class:`~.Redditor`
-            instance. This is useful to confirm if a relationship exists, or to
-            fetch the metadata associated with a particular relationship.
+        :param redditor: When provided, yield at most a single
+            :class:`~.Redditor` instance. This is useful to confirm if a
+            relationship exists, or to fetch the metadata associated with a
+            particular relationship (default: None).
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -1225,7 +1226,7 @@ class ModeratorRelationship(SubredditRelationship):
     def __call__(self, redditor=None):
         """Return a list of Redditors who are moderators.
 
-        :param redditor: Return a list containing at most one
+        :param redditor: When provided, return a list containing at most one
             :class:`~.Redditor` instance. This is useful to confirm if a
             relationship exists, or to fetch the metadata associated with a
             particular relationship.
