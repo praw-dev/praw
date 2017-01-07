@@ -9,7 +9,7 @@ Unreleased
 * :class:`.LiveContributorRelationship`, which can be obtained through
   :attr:`.LiveThread.contributor`, to interact with live threads'
   contributors.
-* :meth:`~.remove_invite` to remove a moderator invite.
+* :meth:`~.ModeratorRelationship.remove_invite` to remove a moderator invite.
 * :meth:`.LiveContributorRelationship.invite` to send a contributor invitation.
 * :meth:`.LiveContributorRelationship.remove_invite` to remove the contributor
   invitation.
