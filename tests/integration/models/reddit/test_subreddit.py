@@ -879,6 +879,12 @@ class TestSubredditRelationships(IntegrationTest):
                 'TestSubredditRelationships.muted__deprecated_iter'):
             assert len(list(muted)) > 0
 
+    def test_moderator_remove_invite(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditRelationships.'
+                                        'test_moderator_remove_invite'):
+            self.subreddit.moderator.remove_invite(self.REDDITOR)
+
     def test_wiki_banned(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(

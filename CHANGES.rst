@@ -9,6 +9,7 @@ Unreleased
 * :class:`.LiveContributorRelationship`, which can be obtained through
   :attr:`.LiveThread.contributor`, to interact with live threads'
   contributors.
+* :meth:`~.remove_invite` to remove a moderator invite.
 
 **Fixed**
 

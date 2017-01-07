@@ -1287,6 +1287,23 @@ class ModeratorRelationship(SubredditRelationship):
         self.subreddit._reddit.post(API_PATH['leavemoderator'],
                                     data={'id': self.subreddit.fullname})
 
+    def remove_invite(self, redditor):
+        """Remove the moderator invite for ``redditor``.
+
+        :param redditor: A redditor name (e.g., ``'spez'``) or
+            :class:`~.Redditor` instance.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('subredditname').mod.remove_invite('spez')
+
+        """
+        data = {'name': str(redditor), 'type': 'moderator_invite'}
+        url = API_PATH['unfriend'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url, data=data)
+
     def update(self, redditor, permissions=None):
         """Update the moderator permissions for ``redditor``.
 
