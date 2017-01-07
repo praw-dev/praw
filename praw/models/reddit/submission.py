@@ -143,9 +143,18 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     def _info_path(self):
         return API_PATH['submission'].format(id=self.id)
 
-    def hide(self):
-        """Hide Submission."""
-        self._reddit.post(API_PATH['hide'], data={'id': self.fullname})
+    def hide(self, other_submissions=None):
+        """Hide Submission.
+
+        :param other_subreddits: When given hide provided list of subs
+
+        """
+        if other_submissions:
+            submissions = ','.join([str(self.fullname)] +
+                                   [str(x) for x in other_submissions])
+        else:
+            submissions = str(self.fullname)
+        self._reddit.post(API_PATH['hide'], data={'id': submissions})
 
     @property
     def shortlink(self):
@@ -157,9 +166,18 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         """
         return urljoin(self._reddit.config.short_url, self.id)
 
-    def unhide(self):
-        """Unhide Submission."""
-        self._reddit.post(API_PATH['unhide'], data={'id': self.fullname})
+    def unhide(self, other_submissions=None):
+        """Unhide Submission.
+
+        :param other_subreddits: When given unhide given list of subs
+
+        """
+        if other_submissions:
+            submissions = ','.join([str(self.fullname)] +
+                                   [str(x) for x in other_submissions])
+        else:
+            submissions = str(self.fullname)
+        self._reddit.post(API_PATH['unhide'], data={'id': submissions})
 
 
 class SubmissionFlair(object):

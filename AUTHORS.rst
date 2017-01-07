@@ -26,4 +26,5 @@ Source Contributors
 - Katharine Jarmul <katharine@kjamistan.com> `@kjam <https://github.com/kjam>`_
 - nmtake `@nmtake <https://github.com/nmtake>`_
 - Levi Roth <levimroth@gmail.com> `@leviroth <https://github.com/leviroth>`_
+- Keith Diedrick <diedrickke@gmail.com> `@darthkedrik <https://github.com/darthkedrik>`_
 - Add "Name <email (optional)> and github profile link" above this line.
