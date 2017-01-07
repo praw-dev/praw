@@ -40,8 +40,7 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
 
     def _friend(self, method, data):
         url = API_PATH['friend_v1'].format(user=self)
-        # PRAW5 REMOVE (return statement)
-        return self._reddit.request(method, url, data=dumps(data))
+        self._reddit.request(method, url, data=dumps(data))
 
     def friend(self, note=None):
         """Friend the Redditor.
@@ -52,8 +51,7 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         Calling this method subsequent times will update the note.
 
         """
-        # PRAW5 REMOVE (return statement)
-        return self._friend('PUT', data={'note': note} if note else {})
+        self._friend('PUT', data={'note': note} if note else {})
 
     def friend_info(self):
         """Return a Redditor instance with specific friend-related attributes.
@@ -90,8 +88,7 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         data = {'container': self._reddit.user.me().fullname,
                 'name': str(self), 'type': 'enemy'}
         url = API_PATH['unfriend'].format(subreddit='all')
-        # PRAW5 REMOVE (return statement)
-        return self._reddit.post(url, data=data)
+        self._reddit.post(url, data=data)
 
     def unfriend(self):
         """Unfriend the Redditor."""

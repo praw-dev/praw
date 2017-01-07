@@ -42,5 +42,4 @@ class MessageableMixin(object):
                     self.__class__, 'MESSAGE_PREFIX', ''), self)}
         if from_subreddit:
             data['from_sr'] = str(from_subreddit)
-        # PRAW5 REMOVE (return statement)
-        return self._reddit.post(API_PATH['compose'], data=data)
+        self._reddit.post(API_PATH['compose'], data=data)

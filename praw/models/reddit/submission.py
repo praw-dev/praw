@@ -244,8 +244,7 @@ class SubmissionFlair(object):
                 'link': self.submission.fullname, 'text': text}
         url = API_PATH['select_flair'].format(
             subreddit=self.submission.subreddit)
-        # PRAW5 REMOVE (return statement)
-        return self.submission._reddit.post(url, data=data)
+        self.submission._reddit.post(url, data=data)
 
 
 class SubmissionModeration(ThingModerationMixin):
