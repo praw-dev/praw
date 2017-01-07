@@ -9,12 +9,11 @@ class InboxableMixin(object):
     def block(self):
         """Block the user who sent the item.
 
-        :returns: The json response from the server.
-
         .. note:: Reddit does not permit blocking users unless you have a
                   :class:`.Comment` or :class:`.Message` from them.
 
         """
+        # PRAW5 REMOVE (return statement)
         return self._reddit.post(API_PATH['block'], data={'id': self.fullname})
 
     def mark_read(self):

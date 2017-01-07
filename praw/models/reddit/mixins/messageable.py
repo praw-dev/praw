@@ -16,7 +16,6 @@ class MessageableMixin(object):
             rather than from the authenticated user. Note that the
             authenticated user must be a moderator of the subreddit and have
             mail permissions.
-        :returns: The json response from the server.
 
         """
         data = {'subject': subject, 'text': message,
@@ -24,4 +23,5 @@ class MessageableMixin(object):
                     self.__class__, 'MESSAGE_PREFIX', ''), self)}
         if from_subreddit:
             data['from_sr'] = str(from_subreddit)
+        # PRAW5 REMOVE (return statement)
         return self._reddit.post(API_PATH['compose'], data=data)

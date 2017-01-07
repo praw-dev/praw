@@ -588,6 +588,7 @@ class SubredditFlair(object):
 
         """
         url = API_PATH['deleteflair'].format(subreddit=self.subreddit)
+        # PRAW5 REMOVE (return statement)
         return self.subreddit._reddit.post(url, data={'name': str(redditor)})
 
     def delete_all(self):

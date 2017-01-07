@@ -14,6 +14,14 @@ Unreleased
 * :meth:`.LiveContributorRelationship.remove_invite` to remove the contributor
   invitation.
 
+**Deprecated**
+
+* Return values from :meth:`.Comment.block`, :meth:`.Message.block`,
+  :meth:`.SubredditMessage.block`, :meth:`.SubredditFlair.delete`,
+  :meth:`.friend`, :meth:`.Redditor.message`, :meth:`.Subreddit.message`,
+  :meth:`.select`, and :meth:`.unfriend` will be removed in PRAW 5 as they do
+  not provide any useful information.
+
 **Fixed**
 
 * :meth:`.replace_more` is now recoverable. Previously, when an exception was
