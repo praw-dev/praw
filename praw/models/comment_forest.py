@@ -127,7 +127,7 @@ class CommentForest(object):
 
            comment = reddit.comment('d8r4im1')
            comment.refresh()
-           comment.replace_more()
+           comment.replies.replace_more()
 
         .. note:: This method can take a long time as each replacement will
                   discover at most 20 new :class:`.Comment` or
