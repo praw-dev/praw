@@ -14,6 +14,8 @@ Unreleased
 * :meth:`.LiveContributorRelationship.invite` and
   :meth:`.LiveContributorRelationship.remove_invite` now hit endpoints,
   which starts with 'api/', for consistency.
+* :meth:`.LiveContributorRelationship.remove` to remove the redditor
+  from the live thread contributors.
 
 4.2.0 (2017/01/07)
 ------------------
