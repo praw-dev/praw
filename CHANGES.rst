@@ -4,6 +4,10 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* :meth:`.LiveContributorRelationship.leave` to abdicate the live thread
+  contributor position.
 
 4.2.0 (2017/01/07)
 ------------------
