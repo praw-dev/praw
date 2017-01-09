@@ -56,6 +56,7 @@ API_PATH = {
     'list_wikicontributor':   'r/{subreddit}/about/wikicontributors/',
     'live_contributors':      'live/{id}/contributors',
     'live_invite':            'live/{id}/invite_contributor',
+    'live_leave':             'api/live/{id}/leave_contributor',
     'live_remove_invite':     'live/{id}/rm_contributor_invite',
     'live_updates':           'live/{id}',
     'liveabout':              'api/live/{id}/about/',

@@ -94,6 +94,14 @@ class TestLiveContributorRelationship(IntegrationTest):
             thread.contributor.invite(redditor)
 
     @mock.patch('time.sleep', return_value=None)
+    def test_leave(self, _):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, 'xyu8kmjvfrww')
+        with self.recorder.use_cassette(
+                'TestLiveContributorRelationship_test_leave'):
+            thread.contributor.leave()
+
+    @mock.patch('time.sleep', return_value=None)
     def test_remove_invite__fullname(self, _):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, 'xyu8kmjvfrww')

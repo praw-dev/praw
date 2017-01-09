@@ -160,6 +160,11 @@ class LiveContributorRelationship(object):
         url = API_PATH['live_invite'].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)
 
+    def leave(self):
+        """Abdicate the live thread contributor position (use with care)."""
+        url = API_PATH['live_leave'].format(id=self.thread.id)
+        self.thread._reddit.post(url)
+
     def remove_invite(self, redditor):
         """Remove the invite for redditor.
 
