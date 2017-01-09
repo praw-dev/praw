@@ -104,6 +104,12 @@ submissions from ``/r/learnpython``:
 If you want to do more than retrieve public information from Reddit, then you
 need an authorized :class:`.Reddit` instance.
 
+.. note:: In the above example we are limiting the results to 10. Without the
+          ``limit`` parameter PRAW should yield as many results as it can with
+          a single request. For most endpoints this results in 100 items per
+          request. If you want to retrieve as many as possible pass in
+          ``limit=None``.
+
 .. _authorized:
 
 Authorized :class:`.Reddit` Instances
