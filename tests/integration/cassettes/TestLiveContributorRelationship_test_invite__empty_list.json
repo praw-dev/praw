@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2017-01-07T08:41:17",
+      "recorded_at": "2017-01-10T13:10:34",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -14,7 +14,7 @@
           "Connection": "keep-alive",
           "Content-Length": "83",
           "Content-Type": "application/x-www-form-urlencoded",
-          "User-Agent": "<USER_AGENT> PRAW/4.2.0dev0 prawcore/0.6.0"
+          "User-Agent": "<USER_AGENT> PRAW/4.2.1dev0 prawcore/0.6.0"
         },
         "method": "POST",
         "uri": "https://www.reddit.com/api/v1/access_token"
@@ -29,16 +29,16 @@
           "Connection": "keep-alive",
           "Content-Length": "105",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Sat, 07 Jan 2017 08:41:17 GMT",
+          "Date": "Tue, 10 Jan 2017 13:10:39 GMT",
           "Server": "snooserv",
-          "Set-Cookie": "loid=EE4CkkoM5OzgBMHYvu; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Set-Cookie": "loid=fSHKM155AA2r52aB42; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
           "X-Cache": "MISS",
           "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-nrt6124-NRT",
-          "X-Timer": "S1483778477.447205,VS0,VE499",
+          "X-Served-By": "cache-nrt6127-NRT",
+          "X-Timer": "S1484053839.406494,VS0,VE520",
           "cache-control": "max-age=0, must-revalidate",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
@@ -52,7 +52,7 @@
       }
     },
     {
-      "recorded_at": "2017-01-07T08:41:18",
+      "recorded_at": "2017-01-10T13:10:34",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -65,11 +65,11 @@
           "Connection": "keep-alive",
           "Content-Length": "73",
           "Content-Type": "application/x-www-form-urlencoded",
-          "Cookie": "loid=EE4CkkoM5OzgBMHYvu; loidcreated=1483778477000",
-          "User-Agent": "<USER_AGENT> PRAW/4.2.0dev0 prawcore/0.6.0"
+          "Cookie": "loid=fSHKM155AA2r52aB42; loidcreated=1484053839000",
+          "User-Agent": "<USER_AGENT> PRAW/4.2.1dev0 prawcore/0.6.0"
         },
         "method": "POST",
-        "uri": "https://oauth.reddit.com/live/xyu8kmjvfrww/invite_contributor?raw_json=1"
+        "uri": "https://oauth.reddit.com/api/live/xyu8kmjvfrww/invite_contributor?raw_json=1"
       },
       "response": {
         "body": {
@@ -81,22 +81,22 @@
           "Connection": "keep-alive",
           "Content-Length": "24",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Sat, 07 Jan 2017 08:41:18 GMT",
+          "Date": "Tue, 10 Jan 2017 13:10:40 GMT",
           "Server": "snooserv",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
           "X-Cache": "MISS",
           "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-nrt6133-NRT",
-          "X-Timer": "S1483778478.009603,VS0,VE248",
+          "X-Served-By": "cache-nrt6125-NRT",
+          "X-Timer": "S1484053840.048505,VS0,VE264",
           "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
           "expires": "-1",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
-          "x-ratelimit-remaining": "597.0",
-          "x-ratelimit-reset": "522",
-          "x-ratelimit-used": "3",
+          "x-ratelimit-remaining": "599.0",
+          "x-ratelimit-reset": "560",
+          "x-ratelimit-used": "1",
           "x-ua-compatible": "IE=edge",
           "x-xss-protection": "1; mode=block"
         },
@@ -104,7 +104,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/live/xyu8kmjvfrww/invite_contributor?raw_json=1"
+        "url": "https://oauth.reddit.com/api/live/xyu8kmjvfrww/invite_contributor?raw_json=1"
       }
     }
   ],

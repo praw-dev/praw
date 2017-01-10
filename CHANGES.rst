@@ -9,6 +9,12 @@ Unreleased
 * :meth:`.LiveContributorRelationship.leave` to abdicate the live thread
   contributor position.
 
+**Fixed**
+
+* :meth:`.LiveContributorRelationship.invite` and
+  :meth:`.LiveContributorRelationship.remove_invite` now hit endpoints,
+  which starts with 'api/', for consistency.
+
 4.2.0 (2017/01/07)
 ------------------
 
