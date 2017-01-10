@@ -1,6 +1,5 @@
 """Provide the BaseListingMixin class."""
-from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
-
+from ....const import urljoin
 from ...base import PRAWBase
 from ..generator import ListingGenerator
 

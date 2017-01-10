@@ -3,8 +3,7 @@ from threading import Lock
 import os
 import sys
 
-from six.moves import configparser
-
+from .const import configparser
 from .exceptions import ClientException
 
 

@@ -1,6 +1,5 @@
 """Provide the Comment class."""
-from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
-
+from ...const import urljoin
 from ...exceptions import ClientException
 from ..comment_forest import CommentForest
 from .base import RedditBase

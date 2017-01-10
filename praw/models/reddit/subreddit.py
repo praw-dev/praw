@@ -4,9 +4,8 @@ from json import dumps
 import time
 
 from prawcore import Redirect
-from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
 
-from ...const import API_PATH
+from ...const import API_PATH, urljoin
 from ..util import stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin

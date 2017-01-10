@@ -1,4 +1,6 @@
 """praw constants."""
+import sys
+
 
 __version__ = '4.2.1dev0'
 
@@ -144,3 +146,12 @@ MIN_JPEG_SIZE = 128
 PNG_HEADER = b'\x89\x50\x4e\x47\x0d\x0a\x1a\x0a'
 
 USER_AGENT_FORMAT = '{{}} PRAW/{}'.format(__version__)
+
+
+# pylint: disable=import-error,no-name-in-module,unused-import
+if sys.version_info.major == 2:
+    import ConfigParser as configparser  # NOQA
+    from urlparse import urljoin, urlparse  # NOQA
+else:
+    import configparser  # NOQA
+    from urllib.parse import urljoin, urlparse  # NOQA

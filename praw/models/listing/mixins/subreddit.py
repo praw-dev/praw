@@ -1,6 +1,5 @@
 """Provide the SubredditListingMixin class."""
-from six.moves.urllib.parse import urljoin  # pylint: disable=import-error
-
+from ....const import urljoin
 from ..generator import ListingGenerator
 from .base import BaseListingMixin
 from .gilded import GildedListingMixin
