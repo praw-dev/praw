@@ -38,7 +38,6 @@ setup(name=PACKAGE_NAME,
                    'python package that allows for simple access to '
                    'reddit\'s API.'),
       install_requires=['prawcore >=0.6.0, <0.7',
-                        'requests >=2.3.0',
                         'update_checker >=0.12'],
       keywords='reddit api wrapper',
       license='Simplified BSD License',
