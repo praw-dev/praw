@@ -1,8 +1,6 @@
 """Provide the Reddit class."""
 import os
 
-from six import iteritems
-
 try:
     from update_checker import update_check
     UPDATE_CHECKER_MISSING = False
@@ -257,7 +255,7 @@ class Reddit(object):
                     'modaction': models.ModAction,
                     'more': models.MoreComments,
                     'stylesheet': models.Stylesheet}
-        for kind, klass in iteritems(mappings):
+        for kind, klass in mappings.items():
             self._objector.register(kind, klass)
 
     def _prepare_prawcore(self):
