@@ -1,4 +1,5 @@
 """Provides the code to load PRAW's configuration file `praw.ini`."""
+from threading import Lock
 import os
 import sys
 
@@ -22,6 +23,7 @@ class Config(object):
 
     CONFIG = None
     CONFIG_NOT_SET = _NotSet()  # Represents a config value that is not set.
+    LOCK = Lock()
 
     @staticmethod
     def _config_boolean(item):
@@ -57,8 +59,9 @@ class Config(object):
 
     def __init__(self, site_name, **settings):
         """Initialize a Config instance."""
-        if Config.CONFIG is None:
-            self._load_config()
+        with Config.LOCK:
+            if Config.CONFIG is None:
+                self._load_config()
 
         self._settings = settings
         self.custom = dict(Config.CONFIG.items(site_name), **settings)
