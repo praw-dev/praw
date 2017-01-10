@@ -10,6 +10,12 @@ upstream changes.
 
 .. begin_changelog_body
 
+3.6.1 (2017-01-09)
+------------------
+
+* **[BUGFIX]** Fix ``ValueError: read of closed file`` in
+  :meth:`.image_upload`.
+
 3.6.0 (2016-11-13)
 ------------------
 

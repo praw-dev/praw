@@ -52,7 +52,7 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '3.6.0'
+__version__ = '3.6.1'
 
 
 class Config(object):  # pylint: disable=R0903
@@ -1767,9 +1767,9 @@ class ModConfigMixin(AuthenticatedReddit):
                     name = os.path.splitext(os.path.basename(image.name))[0]
                 data['name'] = name
 
-        response = json.loads(self._request(
-            self.config['upload_image'], data=data, files={'file': image},
-            method=to_native_string('POST'), retry_on_error=False))
+            response = json.loads(self._request(
+                self.config['upload_image'], data=data, files={'file': image},
+                method=to_native_string('POST'), retry_on_error=False))
 
         if response['errors']:
             raise errors.APIException(response['errors'], None)
