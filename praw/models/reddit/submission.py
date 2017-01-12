@@ -146,14 +146,15 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     def hide(self, other_submissions=None):
         """Hide Submission.
 
-        :param other_subreddits: When given hide provided list of subs
+        :param other_submissions: When provided, additionally hide this list of
+            :class:`.Submission` instances as part of a single request (default: None).
 
         """
         if other_submissions:
-            submissions = ','.join([str(self.fullname)] +
-                                   [str(x) for x in other_submissions])
+            submissions = ','.join([self.fullname] +
+                                   [x.fullname for x in other_submissions])
         else:
-            submissions = str(self.fullname)
+            submissions = self.fullname
         self._reddit.post(API_PATH['hide'], data={'id': submissions})
 
     @property
@@ -169,14 +170,15 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     def unhide(self, other_submissions=None):
         """Unhide Submission.
 
-        :param other_subreddits: When given unhide given list of subs
+        :param other_submissions: When provided, additionally unhide this list of
+            :class:`.Submission` instances as part of a single request (default: None).
 
         """
         if other_submissions:
-            submissions = ','.join([str(self.fullname)] +
-                                   [str(x) for x in other_submissions])
+            submissions = ','.join([self.fullname] +
+                                   [x.fullname for x in other_submissions])
         else:
-            submissions = str(self.fullname)
+            submissions = self.fullname
         self._reddit.post(API_PATH['unhide'], data={'id': submissions})
 
 
