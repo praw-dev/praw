@@ -165,6 +165,30 @@ class LiveContributorRelationship(object):
         url = API_PATH['live_leave'].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
+    def remove(self, redditor):
+        """Remove the redditor from the live thread contributors.
+
+        :param redditor: A redditor fullname (e.g., ``'t2_1w72'``) or
+            :class:`~.Redditor` instance.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           redditor = reddit.redditor('spez')
+           thread.contributor.remove(redditor)
+           thread.contributor.remove('t2_1w72')  # with fullname
+
+        """
+        if isinstance(redditor, Redditor):
+            fullname = redditor.fullname
+        else:
+            fullname = redditor
+        data = {'id': fullname}
+        url = API_PATH['live_remove_contrib'].format(id=self.thread.id)
+        self.thread._reddit.post(url, data=data)
+
     def remove_invite(self, redditor):
         """Remove the invite for redditor.
 
