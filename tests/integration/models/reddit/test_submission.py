@@ -69,10 +69,11 @@ class TestSubmission(IntegrationTest):
 
     def test_hide_multiple(self):
         self.reddit.read_only = False
+        submissions = [Submission(self.reddit, 'fewoh'),
+                       Submission(self.reddit, 'c625v')]
         with self.recorder.use_cassette(
                 'TestSubmission.test_hide__multiple'):
-            Submission(self.reddit, '1eipl7').hide([Submission(self.reddit, 'fewoh'),
-                                                    Submission(self.reddit, 'c625v')])
+            Submission(self.reddit, '1eipl7').hide(submissions)
 
     def test_invalid_attribute(self):
         with self.recorder.use_cassette(
@@ -113,10 +114,11 @@ class TestSubmission(IntegrationTest):
 
     def test_unhide_multiple(self):
         self.reddit.read_only = False
+        submissions = [Submission(self.reddit, 'fewoh'),
+                       Submission(self.reddit, 'c625v')]
         with self.recorder.use_cassette(
                 'TestSubmission.test_unhide__multiple'):
-            Submission(self.reddit, '1eipl7').unhide([Submission(self.reddit, 'fewoh'),
-                                                      Submission(self.reddit, 'c625v')])
+            Submission(self.reddit, '1eipl7').unhide(submissions)
 
     def test_unsave(self):
         self.reddit.read_only = False

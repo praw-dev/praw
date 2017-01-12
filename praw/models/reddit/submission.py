@@ -146,8 +146,9 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     def hide(self, other_submissions=None):
         """Hide Submission.
 
-        :param other_submissions: When provided, additionally hide this list of
-            :class:`.Submission` instances as part of a single request (default: None).
+        :param other_submissions: When provided, additionally
+            hide this list of :class:`.Submission` instances
+            as part of a single request (default: None).
 
         """
         if other_submissions:
@@ -170,8 +171,9 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     def unhide(self, other_submissions=None):
         """Unhide Submission.
 
-        :param other_submissions: When provided, additionally unhide this list of
-            :class:`.Submission` instances as part of a single request (default: None).
+        :param other_submissions: When provided, additionally
+            unhide this list of :class:`.Submission` instances
+            as part of a single request (default: None).
 
         """
         if other_submissions:
