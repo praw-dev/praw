@@ -1306,8 +1306,20 @@ class ModeratorRelationship(SubredditRelationship):
             :class:`~.Redditor` instance.
         :param permissions: When provided (not `None`), permissions should be a
             list of strings specifying which subset of permissions to grant. An
-            empty list `[]` indicates no permissions, and when not provided
+            empty list `[]` indicates no permissions, and when not provided,
             `None`, indicates full permissions.
+
+        For example, to add all permissions to the moderator, try:
+
+        .. code:: python
+
+           subreddit.moderator.update('spez')
+
+        To remove all permissions from the moderator, try:
+
+        .. code:: python
+
+           subreddit.moderator.update('spez', [])
 
         """
         url = API_PATH['setpermissions'].format(subreddit=self.subreddit)
@@ -1322,8 +1334,15 @@ class ModeratorRelationship(SubredditRelationship):
             :class:`~.Redditor` instance.
         :param permissions: When provided (not `None`), permissions should be a
             list of strings specifying which subset of permissions to grant. An
-            empty list `[]` indicates no permissions, and when not provided
+            empty list `[]` indicates no permissions, and when not provided,
             `None`, indicates full permissions.
+
+        For example, to grant the flair and mail permissions to the moderator
+        invite, try:
+
+        .. code:: python
+
+           subreddit.moderator.update_invite('spez', ['flair', 'mail'])
 
         """
         url = API_PATH['setpermissions'].format(subreddit=self.subreddit)
