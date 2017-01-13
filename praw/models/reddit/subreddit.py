@@ -6,7 +6,7 @@ import time
 from prawcore import Redirect
 
 from ...const import API_PATH, urljoin
-from ..util import stream_generator
+from ..util import permissions_string, stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
@@ -1215,16 +1215,9 @@ class ModeratorRelationship(SubredditRelationship):
 
     @staticmethod
     def _handle_permissions(permissions, other_settings):
-        to_set = []
-        if permissions is None:
-            to_set = ['+all']
-        else:
-            to_set = ['-all']
-            omitted = ModeratorRelationship.PERMISSIONS - set(permissions)
-            to_set.extend('-{}'.format(x) for x in omitted)
-            to_set.extend('+{}'.format(x) for x in permissions)
         other_settings = deepcopy(other_settings) if other_settings else {}
-        other_settings['permissions'] = ','.join(to_set)
+        other_settings['permissions'] = permissions_string(
+            permissions, ModeratorRelationship.PERMISSIONS)
         return other_settings
 
     def __call__(self, redditor=None):
