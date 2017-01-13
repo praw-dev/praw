@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2017-01-05T05:01:01",
+      "recorded_at": "2017-01-13T05:30:10",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -14,7 +14,7 @@
           "Connection": "keep-alive",
           "Content-Length": "57",
           "Content-Type": "application/x-www-form-urlencoded",
-          "User-Agent": "<USER_AGENT> PRAW/4.2.0dev0 prawcore/0.6.0"
+          "User-Agent": "<USER_AGENT> PRAW/4.2.1dev0 prawcore/0.6.0"
         },
         "method": "POST",
         "uri": "https://www.reddit.com/api/v1/access_token"
@@ -29,16 +29,16 @@
           "Connection": "keep-alive",
           "Content-Length": "105",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Thu, 05 Jan 2017 05:00:44 GMT",
+          "Date": "Fri, 13 Jan 2017 05:30:10 GMT",
           "Server": "snooserv",
-          "Set-Cookie": "loid=pbno9G6hawyx3sTAIk; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Set-Cookie": "loid=2lgBpRoa0P8u47D96K; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
           "X-Cache": "MISS",
           "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-lax8637-LAX",
-          "X-Timer": "S1483592444.080061,VS0,VE401",
+          "X-Served-By": "cache-lax8629-LAX",
+          "X-Timer": "S1484285410.127099,VS0,VE411",
           "cache-control": "max-age=0, must-revalidate",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
@@ -52,21 +52,21 @@
       }
     },
     {
-      "recorded_at": "2017-01-05T05:01:01",
+      "recorded_at": "2017-01-13T05:30:10",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&name=pyapitestuser3&permissions=%2Bmail&type=moderator_invite"
+          "string": "api_type=json&name=pyapitestuser3&permissions=-all%2C-config%2C-access%2C-wiki%2C-flair%2C-posts%2C%2Bmail&type=moderator_invite"
         },
         "headers": {
           "Accept": "*/*",
           "Accept-Encoding": "identity",
           "Authorization": "bearer <ACCESS_TOKEN>",
           "Connection": "keep-alive",
-          "Content-Length": "75",
+          "Content-Length": "128",
           "Content-Type": "application/x-www-form-urlencoded",
-          "Cookie": "loidcreated=1483592444000; loid=pbno9G6hawyx3sTAIk",
-          "User-Agent": "<USER_AGENT> PRAW/4.2.0dev0 prawcore/0.6.0"
+          "Cookie": "loidcreated=1484285410000; loid=2lgBpRoa0P8u47D96K",
+          "User-Agent": "<USER_AGENT> PRAW/4.2.1dev0 prawcore/0.6.0"
         },
         "method": "POST",
         "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/setpermissions/?raw_json=1"
@@ -81,22 +81,22 @@
           "Connection": "keep-alive",
           "Content-Length": "24",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Thu, 05 Jan 2017 05:00:44 GMT",
+          "Date": "Fri, 13 Jan 2017 05:30:10 GMT",
           "Server": "snooserv",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
           "X-Cache": "MISS",
           "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-lax8649-LAX",
-          "X-Timer": "S1483592444.599028,VS0,VE183",
+          "X-Served-By": "cache-lax8635-LAX",
+          "X-Timer": "S1484285410.629887,VS0,VE126",
           "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
           "expires": "-1",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
-          "x-ratelimit-remaining": "595.0",
-          "x-ratelimit-reset": "556",
-          "x-ratelimit-used": "5",
+          "x-ratelimit-remaining": "597.0",
+          "x-ratelimit-reset": "590",
+          "x-ratelimit-used": "3",
           "x-ua-compatible": "IE=edge",
           "x-xss-protection": "1; mode=block"
         },

@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2017-01-07T06:36:55",
+      "recorded_at": "2017-01-13T05:25:58",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -14,7 +14,7 @@
           "Connection": "keep-alive",
           "Content-Length": "57",
           "Content-Type": "application/x-www-form-urlencoded",
-          "User-Agent": "<USER_AGENT> PRAW/4.2.0dev0 prawcore/0.6.0"
+          "User-Agent": "<USER_AGENT> PRAW/4.2.1dev0 prawcore/0.6.0"
         },
         "method": "POST",
         "uri": "https://www.reddit.com/api/v1/access_token"
@@ -29,16 +29,16 @@
           "Connection": "keep-alive",
           "Content-Length": "105",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Sat, 07 Jan 2017 06:36:28 GMT",
+          "Date": "Fri, 13 Jan 2017 05:25:58 GMT",
           "Server": "snooserv",
-          "Set-Cookie": "loid=20cHp8gpQ1hNkyFIMq; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Set-Cookie": "loid=Wrmleh6RauMTeQV1qI; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
           "X-Cache": "MISS",
           "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-lax8647-LAX",
-          "X-Timer": "S1483770988.514142,VS0,VE392",
+          "X-Served-By": "cache-lax8624-LAX",
+          "X-Timer": "S1484285157.714620,VS0,VE630",
           "cache-control": "max-age=0, must-revalidate",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
@@ -52,7 +52,7 @@
       }
     },
     {
-      "recorded_at": "2017-01-07T06:36:55",
+      "recorded_at": "2017-01-13T05:25:58",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -65,8 +65,8 @@
           "Connection": "keep-alive",
           "Content-Length": "55",
           "Content-Type": "application/x-www-form-urlencoded",
-          "Cookie": "loidcreated=1483770988000; loid=20cHp8gpQ1hNkyFIMq",
-          "User-Agent": "<USER_AGENT> PRAW/4.2.0dev0 prawcore/0.6.0"
+          "Cookie": "loidcreated=1484285157000; loid=Wrmleh6RauMTeQV1qI",
+          "User-Agent": "<USER_AGENT> PRAW/4.2.1dev0 prawcore/0.6.0"
         },
         "method": "POST",
         "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/unfriend/?raw_json=1"
@@ -81,22 +81,22 @@
           "Connection": "keep-alive",
           "Content-Length": "2",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Sat, 07 Jan 2017 06:36:29 GMT",
+          "Date": "Fri, 13 Jan 2017 05:25:58 GMT",
           "Server": "snooserv",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
           "X-Cache": "MISS",
           "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-lax8621-LAX",
-          "X-Timer": "S1483770989.014509,VS0,VE157",
+          "X-Served-By": "cache-lax8623-LAX",
+          "X-Timer": "S1484285158.465831,VS0,VE100",
           "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
           "expires": "-1",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
-          "x-ratelimit-remaining": "597.0",
-          "x-ratelimit-reset": "211",
-          "x-ratelimit-used": "3",
+          "x-ratelimit-remaining": "594.0",
+          "x-ratelimit-reset": "242",
+          "x-ratelimit-used": "6",
           "x-ua-compatible": "IE=edge",
           "x-xss-protection": "1; mode=block"
         },

@@ -1211,19 +1211,20 @@ class ModeratorRelationship(SubredditRelationship):
 
     """
 
+    PERMISSIONS = {'access', 'config', 'flair', 'mail', 'posts', 'wiki'}
+
     @staticmethod
     def _handle_permissions(permissions, other_settings):
-        if isinstance(permissions, list):
-            other_settings = deepcopy(other_settings) if other_settings else {}
-            if permissions:
-                permissions = ['+{}'.format(x) for x in permissions]
-            else:
-                # A single permission prefixed with `-` must be provided in
-                # order to have no permissions set. `-all` unfortunately is
-                # treated as if no permissions are passed thus resulting in
-                # full permissions.
-                permissions = ['-access']
-            other_settings['permissions'] = ','.join(permissions)
+        to_set = []
+        if permissions is None:
+            to_set = ['+all']
+        else:
+            to_set = ['-all']
+            omitted = ModeratorRelationship.PERMISSIONS - set(permissions)
+            to_set.extend('-{}'.format(x) for x in omitted)
+            to_set.extend('+{}'.format(x) for x in permissions)
+        other_settings = deepcopy(other_settings) if other_settings else {}
+        other_settings['permissions'] = ','.join(to_set)
         return other_settings
 
     def __call__(self, redditor=None):

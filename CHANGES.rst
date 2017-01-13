@@ -16,6 +16,9 @@ Unreleased
   which starts with 'api/', for consistency.
 * :meth:`.LiveContributorRelationship.remove` to remove the redditor
   from the live thread contributors.
+* :meth:`.ModeratorRelationship.update`, and
+  :meth:`.ModeratorRelationship.update_invite` now always remove known unlisted
+  permissions.
 
 4.2.0 (2017/01/07)
 ------------------
