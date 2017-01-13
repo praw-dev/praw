@@ -41,6 +41,7 @@ Unreleased
 
 **Fixed**
 
+* :meth:`.hide()` and :meth:`.unhide()` now accept a list of additional submissions.
 * :meth:`.replace_more` is now recoverable. Previously, when an exception was
   raised during the work done by :meth:`.replace_more`, all unreplaced
   :class:`.MoreComments` instances were lost. Now :class:`.MoreComments`
