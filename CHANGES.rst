@@ -8,6 +8,8 @@ Unreleased
 
 * :meth:`.LiveContributorRelationship.leave` to abdicate the live thread
   contributor position.
+* :attr:`.limits` to provide insight into number of requests made and remaining
+  in the current rate limit window.
 
 **Fixed**
 

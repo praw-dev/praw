@@ -9,6 +9,24 @@ from ..exceptions import ClientException
 class Auth(PRAWBase):
     """Auth provides an interface to Reddit's authorization."""
 
+    @property
+    def limits(self):
+        """Return a dictionary containing the rate limit info.
+
+        The keys are:
+
+        :remaining: The number of requests remaining to be made in the
+            current rate limit window.
+        :used: The number of requests made in the current rate limit
+            window.
+
+        Both values are initially ``None`` as these values are set in response
+        to issued requests.
+
+        """
+        data = self._reddit._core._rate_limiter
+        return {'remaining': data.remaining, 'used': data.used}
+
     def authorize(self, code):
         """Complete the web authorization flow and return the refresh token.
 

@@ -35,6 +35,10 @@ class TestAuth(UnitTest):
         with pytest.raises(ClientException):
             script_app().auth.implicit('dummy token', 10, '')
 
+    def test_limits(self):
+        for app in [installed_app(), script_app(), web_app()]:
+            assert {'remaining': None, 'used': None} == app.auth.limits
+
     def test_url__installed_app(self):
         url = installed_app().auth.url(['dummy scope'], 'dummy state')
         assert 'client_id=dummy+client' in url
