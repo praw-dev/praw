@@ -8,6 +8,8 @@ Unreleased
 
 * :meth:`.LiveContributorRelationship.leave` to abdicate the live thread
   contributor position.
+* :meth:`.LiveContributorRelationship.remove` to remove the redditor
+  from the live thread contributors.
 * :attr:`.limits` to provide insight into number of requests made and remaining
   in the current rate limit window.
 
@@ -16,8 +18,6 @@ Unreleased
 * :meth:`.LiveContributorRelationship.invite` and
   :meth:`.LiveContributorRelationship.remove_invite` now hit endpoints,
   which starts with 'api/', for consistency.
-* :meth:`.LiveContributorRelationship.remove` to remove the redditor
-  from the live thread contributors.
 * :meth:`.ModeratorRelationship.update`, and
   :meth:`.ModeratorRelationship.update_invite` now always remove known unlisted
   permissions.
