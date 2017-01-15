@@ -3,6 +3,7 @@ import pickle
 import pytest
 from praw.models import LiveThread, LiveUpdate, Redditor
 from praw.models.reddit.live import LiveContributorRelationship
+from praw.models.reddit.live import LiveThreadContribution
 
 from ... import UnitTest
 
@@ -30,6 +31,11 @@ class TestLiveThread(UnitTest):
         with pytest.raises(TypeError) as excinfo:
             LiveThread(self.reddit, id='dummy', _data={'id': 'dummy'})
         assert str(excinfo.value) == message
+
+    def test_contrib(self):
+        thread_id = 'ukaeu1ik4sw5'
+        thread = LiveThread(self.reddit, thread_id)
+        assert isinstance(thread.contrib, LiveThreadContribution)
 
     def test_contributor(self):
         thread_id = 'ukaeu1ik4sw5'

@@ -6,95 +6,6 @@ from .base import RedditBase
 from .redditor import Redditor
 
 
-class LiveThread(RedditBase):
-    """An individual LiveThread object."""
-
-    STR_FIELD = 'id'
-
-    @property
-    def contributor(self):
-        """An instance of :class:`.LiveContributorRelationship`.
-
-        Usage:
-
-        .. code-block:: python
-
-           thread = reddit.live('ukaeu1ik4sw5')
-           for contributor in thread.contributor():
-               print(contributor)
-
-        """
-        if self._contributor is None:
-            self._contributor = LiveContributorRelationship(self)
-        return self._contributor
-
-    def __eq__(self, other):
-        """Return whether the other instance equals the current.
-
-        .. note:: This comparison is case sensitive.
-        """
-        if isinstance(other, str):
-            return other == str(self)
-        return (isinstance(other, self.__class__) and
-                str(self) == str(other))
-
-    def __getitem__(self, update_id):
-        """Return a lazy :class:`.LiveUpdate` instance.
-
-        .. warning:: At this time, accesing lazy attributes, whose value
-           have not loaded, raises ``AttributeError``.
-
-        :param update_id: A live update ID, e.g.,
-            ``'7827987a-c998-11e4-a0b9-22000b6a88d2'``.
-
-        Usage:
-
-        .. code-block:: python
-
-           thread = reddit.live('ukaeu1ik4sw5')
-           update = thread['7827987a-c998-11e4-a0b9-22000b6a88d2']
-           update.thread     # LiveThread(id='ukaeu1ik4sw5')
-           update.id         # '7827987a-c998-11e4-a0b9-22000b6a88d2'
-           update.author     # raise ``AttributeError``
-        """
-        return LiveUpdate(self._reddit, self.id, update_id)
-
-    def __hash__(self):
-        """Return the hash of the current instance."""
-        return hash(self.__class__.__name__) ^ hash(str(self))
-
-    def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
-                 _data=None):
-        """Initialize a lazy :class:`.LiveThread` instance.
-
-        :param reddit: An instance of :class:`.Reddit`.
-        :param id: A live thread ID, e.g., ``'ukaeu1ik4sw5'``
-        """
-        if bool(id) == bool(_data):
-            raise TypeError('Either `id` or `_data` must be provided.')
-        super(LiveThread, self).__init__(reddit, _data)
-        if id:
-            self.id = id  # pylint: disable=invalid-name
-        self._contributor = None
-
-    def _info_path(self):
-        return API_PATH['liveabout'].format(id=self.id)
-
-    def updates(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
-
-        :param generator_kwargs: keyword arguments passed to
-            :class:`.ListingGenerator` constructor.
-        :returns: A :class:`.ListingGenerator` object which yields
-            :class:`.LiveUpdate` object.
-        """
-        url = API_PATH['live_updates'].format(id=self.id)
-        for update in ListingGenerator(self._reddit, url,
-                                       **generator_kwargs):
-            update._thread = self
-            yield update
-
-
 class LiveContributorRelationship(object):
     """Provide methods to interact with live threads' contributors."""
 
@@ -215,6 +126,141 @@ class LiveContributorRelationship(object):
         data = {'id': fullname}
         url = API_PATH['live_remove_invite'].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)
+
+
+class LiveThread(RedditBase):
+    """An individual LiveThread object."""
+
+    STR_FIELD = 'id'
+
+    @property
+    def contrib(self):
+        """An instance of :class:`.LiveThreadContribution`.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           thread.contrib.add('### update')
+
+        """
+        if self._contrib is None:
+            self._contrib = LiveThreadContribution(self)
+        return self._contrib
+
+    @property
+    def contributor(self):
+        """An instance of :class:`.LiveContributorRelationship`.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           for contributor in thread.contributor():
+               print(contributor)
+
+        """
+        if self._contributor is None:
+            self._contributor = LiveContributorRelationship(self)
+        return self._contributor
+
+    def __eq__(self, other):
+        """Return whether the other instance equals the current.
+
+        .. note:: This comparison is case sensitive.
+        """
+        if isinstance(other, str):
+            return other == str(self)
+        return (isinstance(other, self.__class__) and
+                str(self) == str(other))
+
+    def __getitem__(self, update_id):
+        """Return a lazy :class:`.LiveUpdate` instance.
+
+        .. warning:: At this time, accesing lazy attributes, whose value
+           have not loaded, raises ``AttributeError``.
+
+        :param update_id: A live update ID, e.g.,
+            ``'7827987a-c998-11e4-a0b9-22000b6a88d2'``.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           update = thread['7827987a-c998-11e4-a0b9-22000b6a88d2']
+           update.thread     # LiveThread(id='ukaeu1ik4sw5')
+           update.id         # '7827987a-c998-11e4-a0b9-22000b6a88d2'
+           update.author     # raise ``AttributeError``
+        """
+        return LiveUpdate(self._reddit, self.id, update_id)
+
+    def __hash__(self):
+        """Return the hash of the current instance."""
+        return hash(self.__class__.__name__) ^ hash(str(self))
+
+    def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
+                 _data=None):
+        """Initialize a lazy :class:`.LiveThread` instance.
+
+        :param reddit: An instance of :class:`.Reddit`.
+        :param id: A live thread ID, e.g., ``'ukaeu1ik4sw5'``
+        """
+        if bool(id) == bool(_data):
+            raise TypeError('Either `id` or `_data` must be provided.')
+        super(LiveThread, self).__init__(reddit, _data)
+        if id:
+            self.id = id  # pylint: disable=invalid-name
+        self._contrib = None
+        self._contributor = None
+
+    def _info_path(self):
+        return API_PATH['liveabout'].format(id=self.id)
+
+    def updates(self, **generator_kwargs):
+        """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
+
+        :param generator_kwargs: keyword arguments passed to
+            :class:`.ListingGenerator` constructor.
+        :returns: A :class:`.ListingGenerator` object which yields
+            :class:`.LiveUpdate` object.
+        """
+        url = API_PATH['live_updates'].format(id=self.id)
+        for update in ListingGenerator(self._reddit, url,
+                                       **generator_kwargs):
+            update._thread = self
+            yield update
+
+
+class LiveThreadContribution(object):
+    """Provides a set of contribution functions to a LiveThread."""
+
+    def __init__(self, thread):
+        """Create an instance of :class:`.LiveThreadContribution`.
+
+        :param thread: An instance of :class:`.LiveThread`.
+
+        This instance can be retrieved through ``thread.contrib``
+        where thread is a :class:`.LiveThread` instance. E.g.,
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           thread.contrib.add('### update')
+
+        """
+        self.thread = thread
+
+    def add(self, body):
+        """Add an update to the live thread.
+
+        :param body: The markdown formatted content for the update.
+
+        """
+        url = API_PATH['live_add_update'].format(id=self.thread.id)
+        self.thread._reddit.post(url, data={'body': body})
 
 
 class LiveUpdate(RedditBase):
