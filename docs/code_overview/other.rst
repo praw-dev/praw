@@ -15,6 +15,13 @@ instances of them bound to an attribute of one of the PRAW models.
 
 .. toctree::
    :maxdepth: 2
+   :caption: Reddit Live Helpers
+
+   other/livecontributorrelationship
+   other/livethreadcontribution
+
+.. toctree::
+   :maxdepth: 2
    :caption: Moderation Helpers
 
    other/commentmoderation
@@ -27,7 +34,6 @@ instances of them bound to an attribute of one of the PRAW models.
    :caption: Relationship Helpers
 
    other/contributorrelationship
-   other/livecontributorrelationship
    other/moderatorrelationship
    other/subredditrelationship
 

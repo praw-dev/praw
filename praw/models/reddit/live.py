@@ -134,6 +134,22 @@ class LiveThread(RedditBase):
     STR_FIELD = 'id'
 
     @property
+    def contrib(self):
+        """An instance of :class:`.LiveThreadContribution`.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           thread.contrib.add('### update')
+
+        """
+        if self._contrib is None:
+            self._contrib = LiveThreadContribution(self)
+        return self._contrib
+
+    @property
     def contributor(self):
         """An instance of :class:`.LiveContributorRelationship`.
 
@@ -197,6 +213,7 @@ class LiveThread(RedditBase):
         super(LiveThread, self).__init__(reddit, _data)
         if id:
             self.id = id  # pylint: disable=invalid-name
+        self._contrib = None
         self._contributor = None
 
     def _info_path(self):
@@ -215,6 +232,35 @@ class LiveThread(RedditBase):
                                        **generator_kwargs):
             update._thread = self
             yield update
+
+
+class LiveThreadContribution(object):
+    """Provides a set of contribution functions to a LiveThread."""
+
+    def __init__(self, thread):
+        """Create an instance of :class:`.LiveThreadContribution`.
+
+        :param thread: An instance of :class:`.LiveThread`.
+
+        This instance can be retrieved through ``thread.contrib``
+        where thread is a :class:`.LiveThread` instance. E.g.,
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           thread.contrib.add('### update')
+
+        """
+        self.thread = thread
+
+    def add(self, body):
+        """Add an update to the live thread.
+
+        :param body: The markdown formatted content for the update.
+
+        """
+        url = API_PATH['live_add_update'].format(id=self.thread.id)
+        self.thread._reddit.post(url, data={'body': body})
 
 
 class LiveUpdate(RedditBase):

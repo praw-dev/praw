@@ -12,6 +12,9 @@ Unreleased
   from the live thread contributors.
 * :attr:`.limits` to provide insight into number of requests made and remaining
   in the current rate limit window.
+* :attr:`.LiveThread.contrib` to obtain an instance of
+  :class:`.LiveThreadContribution`.
+* :meth:`.LiveThreadContribution.add` to add an update to the live thread.
 
 **Fixed**
 
