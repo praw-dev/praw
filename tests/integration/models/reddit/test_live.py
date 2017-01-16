@@ -148,3 +148,11 @@ class TestLiveThreadContribution(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestLiveThreadContribution_add'):
             thread.contrib.add('* `LiveThreadContribution.add() test`')
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_close(self, _):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, 'ya2tmqiyb064')
+        with self.recorder.use_cassette(
+                'TestLiveThreadContribution_close'):
+            thread.contrib.close()
