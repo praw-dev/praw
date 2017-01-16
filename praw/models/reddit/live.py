@@ -283,6 +283,23 @@ class LiveUpdate(RedditBase):
     STR_FIELD = 'id'
 
     @property
+    def contrib(self):
+        """An instance of :class:`.LiveUpdateContribution`.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           update = thread['7827987a-c998-11e4-a0b9-22000b6a88d2']
+           update.contrib  # LiveUpdateContribution instance
+
+        """
+        if self._contrib is None:
+            self._contrib = LiveUpdateContribution(self)
+        return self._contrib
+
+    @property
     def thread(self):
         """Return :class:`.LiveThread` object the update object belongs to."""
         return self._thread
@@ -319,6 +336,7 @@ class LiveUpdate(RedditBase):
             self._thread = LiveThread(self._reddit, thread_id)
             self.id = update_id  # pylint: disable=invalid-name
             self._fetched = True
+            self._contrib = None
         else:
             raise TypeError('Either `thread_id` and `update_id`, or '
                             '`_data` must be provided.')
@@ -328,3 +346,25 @@ class LiveUpdate(RedditBase):
         if attribute == 'author':
             value = Redditor(self._reddit, name=value)
         super(LiveUpdate, self).__setattr__(attribute, value)
+
+
+class LiveUpdateContribution(object):
+    """Provides a set of contribution functions to LiveUpdate."""
+
+    def __init__(self, update):
+        """Create an instance of :class:`.LiveUpdateContribution`.
+
+        :param update: An instance of :class:`.LiveUpdate`.
+
+        This instance can be retrieved through ``update.contrib``
+        where update is a :class:`.LiveUpdate` instance. E.g.,
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           update = thread['7827987a-c998-11e4-a0b9-22000b6a88d2']
+           update.contrib  # LiveUpdateContribution instance
+           update.contrib.remove()
+
+        """
+        self.update = update
