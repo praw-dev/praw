@@ -1,7 +1,8 @@
 after_success: coveralls
 cache: pip
 install:
-  - pip install coveralls flake8 pydocstyle pytest==2.8.7 sphinx sphinx_rtd_theme
+  - yes | pip uninstall py pytest
+  - pip install coveralls flake8 pydocstyle sphinx sphinx_rtd_theme
   - python setup.py install
 language: python
 matrix:
