@@ -57,6 +57,7 @@ API_PATH = {
     'list_wikibanned':        'r/{subreddit}/about/wikibanned/',
     'list_wikicontributor':   'r/{subreddit}/about/wikicontributors/',
     'live_add_update':        'api/live/{id}/update',
+    'live_close':             'api/live/{id}/close_thread',
     'live_contributors':      'live/{id}/contributors',
     'live_invite':            'api/live/{id}/invite_contributor',
     'live_leave':             'api/live/{id}/leave_contributor',

@@ -15,6 +15,7 @@ Unreleased
 * :attr:`.LiveThread.contrib` to obtain an instance of
   :class:`.LiveThreadContribution`.
 * :meth:`.LiveThreadContribution.add` to add an update to the live thread.
+* :meth:`.LiveThreadContribution.close` to close the live thread permanently.
 
 **Fixed**
 

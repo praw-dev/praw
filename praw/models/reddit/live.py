@@ -262,6 +262,20 @@ class LiveThreadContribution(object):
         url = API_PATH['live_add_update'].format(id=self.thread.id)
         self.thread._reddit.post(url, data={'body': body})
 
+    def close(self):
+        """Close the live thread permanently (cannot be undone).
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           thread.contrib.close()
+
+        """
+        url = API_PATH['live_close'].format(id=self.thread.id)
+        self.thread._reddit.post(url)
+
 
 class LiveUpdate(RedditBase):
     """An individual :class:`.LiveUpdate` object."""

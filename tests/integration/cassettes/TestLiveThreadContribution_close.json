@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2017-01-15T11:09:57",
+      "recorded_at": "2017-01-16T13:38:20",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -29,16 +29,16 @@
           "Connection": "keep-alive",
           "Content-Length": "105",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Sun, 15 Jan 2017 11:09:57 GMT",
+          "Date": "Mon, 16 Jan 2017 13:38:21 GMT",
           "Server": "snooserv",
-          "Set-Cookie": "loid=f7OvvP9F5zSGjU02XL; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Set-Cookie": "loid=GvMynZhCtVMVhRw8qf; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
           "X-Cache": "MISS",
           "X-Cache-Hits": "0",
           "X-Moose": "majestic",
-          "X-Served-By": "cache-nrt6130-NRT",
-          "X-Timer": "S1484478596.941706,VS0,VE480",
+          "X-Served-By": "cache-nrt6121-NRT",
+          "X-Timer": "S1484573900.513909,VS0,VE515",
           "cache-control": "max-age=0, must-revalidate",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
@@ -52,24 +52,24 @@
       }
     },
     {
-      "recorded_at": "2017-01-15T11:09:57",
+      "recorded_at": "2017-01-16T13:38:20",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&body=%2A+%60LiveThreadContrib.add%28%29+test%60"
+          "string": "api_type=json"
         },
         "headers": {
           "Accept": "*/*",
           "Accept-Encoding": "identity",
           "Authorization": "bearer <ACCESS_TOKEN>",
           "Connection": "keep-alive",
-          "Content-Length": "61",
+          "Content-Length": "13",
           "Content-Type": "application/x-www-form-urlencoded",
-          "Cookie": "loid=f7OvvP9F5zSGjU02XL; loidcreated=1484478596000",
+          "Cookie": "loid=GvMynZhCtVMVhRw8qf; loidcreated=1484573900000",
           "User-Agent": "<USER_AGENT> PRAW/4.2.1dev0 prawcore/0.6.0"
         },
         "method": "POST",
-        "uri": "https://oauth.reddit.com/api/live/xyu8kmjvfrww/update?raw_json=1"
+        "uri": "https://oauth.reddit.com/api/live/ya2tmqiyb064/close_thread?raw_json=1"
       },
       "response": {
         "body": {
@@ -81,7 +81,7 @@
           "Connection": "keep-alive",
           "Content-Length": "24",
           "Content-Type": "application/json; charset=UTF-8",
-          "Date": "Sun, 15 Jan 2017 11:09:57 GMT",
+          "Date": "Mon, 16 Jan 2017 13:38:21 GMT",
           "Server": "snooserv",
           "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
           "Via": "1.1 varnish",
@@ -89,14 +89,14 @@
           "X-Cache-Hits": "0",
           "X-Moose": "majestic",
           "X-Served-By": "cache-nrt6127-NRT",
-          "X-Timer": "S1484478597.637939,VS0,VE206",
+          "X-Timer": "S1484573901.276643,VS0,VE186",
           "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
           "expires": "-1",
           "x-content-type-options": "nosniff",
           "x-frame-options": "SAMEORIGIN",
-          "x-ratelimit-remaining": "599.0",
-          "x-ratelimit-reset": "3",
-          "x-ratelimit-used": "1",
+          "x-ratelimit-remaining": "597.0",
+          "x-ratelimit-reset": "99",
+          "x-ratelimit-used": "3",
           "x-ua-compatible": "IE=edge",
           "x-xss-protection": "1; mode=block"
         },
@@ -104,7 +104,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/api/live/xyu8kmjvfrww/update?raw_json=1"
+        "url": "https://oauth.reddit.com/api/live/ya2tmqiyb064/close_thread?raw_json=1"
       }
     }
   ],
