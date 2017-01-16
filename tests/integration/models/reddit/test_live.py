@@ -140,11 +140,11 @@ class TestLiveContributorRelationship(IntegrationTest):
             thread.contributor.remove_invite(redditor)
 
 
-class TestLiveThreadContrib(IntegrationTest):
+class TestLiveThreadContribution(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
     def test_add(self, _):
         self.reddit.read_only = False
         thread = LiveThread(self.reddit, 'xyu8kmjvfrww')
         with self.recorder.use_cassette(
-                'TestLiveThreadContrib_add'):
-            thread.contrib.add('* `LiveThreadContrib.add() test`')
+                'TestLiveThreadContribution_add'):
+            thread.contrib.add('* `LiveThreadContribution.add() test`')
