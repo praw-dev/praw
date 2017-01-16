@@ -368,3 +368,9 @@ class LiveUpdateContribution(object):
 
         """
         self.update = update
+
+    def remove(self):
+        """Remove a live update."""
+        url = API_PATH['live_remove_update'].format(id=self.update.thread.id)
+        data = {'id': self.update.fullname}
+        self.update.thread._reddit.post(url, data=data)

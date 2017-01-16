@@ -1,7 +1,7 @@
 """Test praw.models.LiveThread"""
 from praw.const import API_PATH
 from praw.exceptions import APIException
-from praw.models import LiveThread, Redditor, RedditorList
+from praw.models import LiveThread, LiveUpdate, Redditor, RedditorList
 import mock
 import pytest
 
@@ -156,3 +156,14 @@ class TestLiveThreadContribution(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestLiveThreadContribution_close'):
             thread.contrib.close()
+
+
+class TestLiveUpdateContribution(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_remove(self, _):
+        self.reddit.read_only = False
+        update = LiveUpdate(self.reddit, 'xyu8kmjvfrww',
+                            '5d556760-dbee-11e6-9f46-0e78de675452')
+        with self.recorder.use_cassette(
+                'TestLiveUpdateContribution_remove'):
+            update.contrib.remove()
