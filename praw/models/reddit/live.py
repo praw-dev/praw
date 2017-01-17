@@ -33,6 +33,11 @@ class LiveContributorRelationship(object):
         """
         self.thread = thread
 
+    def accept_invite(self):
+        """Accept an invite to contribute the live thread."""
+        url = API_PATH['live_accept_invite'].format(id=self.thread.id)
+        self.thread._reddit.post(url)
+
     def invite(self, redditor, permissions=None):
         """Invite a redditor to be a contributor of the live thread.
 

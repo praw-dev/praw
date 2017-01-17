@@ -19,6 +19,8 @@ Unreleased
 * :attr:`.LiveUpdate.contrib` to obtain an instance of
   :class:`.LiveUpdateContribution`.
 * :meth:`.LiveUpdateContribution.remove` to remove a live update.
+* :meth:`.LiveContributorRelationship.accept_invite` to accept an invite to
+  contribute the live thread.
 
 **Fixed**
 
