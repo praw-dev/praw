@@ -183,7 +183,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     def quaran(self):
         """An instance of :class:`.SubredditQuarantine`.
 
-        This property is named ``quaran`` because ``quarantine`` is an
+        This property is named ``quaran`` because ``quarantine`` is a
         Subreddit attribute returned by Reddit to indicate whether or not a
         Subreddit is quarantined.
 
