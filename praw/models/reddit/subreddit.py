@@ -227,7 +227,23 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     @property
     def wiki(self):
-        """An instance of :class:`.SubredditWiki`."""
+        """An instance of :class:`.SubredditWiki`.
+
+        This attribute can be used to discover all wikipages for a subreddit:
+
+        .. code:: python
+
+           for wikipage in reddit.subreddit('iama').wiki:
+               print(wikipage)
+
+        To fetch the content for a given wikipage try:
+
+        .. code:: python
+
+           wikipage = reddit.subreddit('iama').wiki['proof']
+           print(wikipage.content_md)
+
+        """
         if self._wiki is None:
             self._wiki = SubredditWiki(self)
         return self._wiki
@@ -1499,7 +1515,16 @@ class SubredditWiki(object):
     """Provides a set of moderation functions to a Subreddit."""
 
     def __getitem__(self, page_name):
-        """Lazily return the WikiPage for the subreddit named ``page_name``."""
+        """Lazily return the WikiPage for the subreddit named ``page_name``.
+
+        This method is to be used to fetch a specific wikipage, like so:
+
+        .. code:: python
+
+           wikipage = reddit.subreddit('iama').wiki['proof']
+           print(wikipage.content_md)
+
+        """
         return WikiPage(self.subreddit._reddit, self.subreddit,
                         page_name.lower())
 
@@ -1514,7 +1539,16 @@ class SubredditWiki(object):
         self.subreddit = subreddit
 
     def __iter__(self):
-        """Iterate through the pages of the wiki."""
+        """Iterate through the pages of the wiki.
+
+        This method is to be used to discover all wikipages for a subreddit:
+
+        .. code:: python
+
+           for wikipage in reddit.subreddit('iama').wiki:
+               print(wikipage)
+
+        """
         response = self.subreddit._reddit.get(
             API_PATH['wiki_pages'].format(subreddit=self.subreddit),
             params={'unique': self.subreddit._reddit._next_unique})
