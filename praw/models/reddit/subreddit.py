@@ -194,7 +194,26 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     @property
     def stream(self):
-        """An instance of :class:`.SubredditStream`."""
+        """An instance of :class:`.SubredditStream`.
+
+        Streams can be used to indefinitely retrieve new comments made to a
+        subreddit, like:
+
+        .. code:: python
+
+           for comment in reddit.subreddit('iama').stream.comments():
+               print(comment)
+
+        Additionally, new submissions can be retrieved via the stream. In the
+        following example all submissions are fetched via the special subreddit
+        ``all``:
+
+        .. code:: python
+
+           for submission in reddit.subreddit('all').stream.submissions():
+               print(submission)
+
+        """
         if self._stream is None:
             self._stream = SubredditStream(self)
         return self._stream
@@ -1368,6 +1387,14 @@ class SubredditStream(object):
         Comments are yielded oldest first. Up to 100 historical comments will
         initially be returned.
 
+        For example, to retrieve all new comments made to the ``iama``
+        subreddit, try:
+
+        .. code:: python
+
+           for comment in reddit.subreddit('iama').stream.comments():
+               print(comment)
+
         """
         return stream_generator(self.subreddit.comments)
 
@@ -1376,6 +1403,13 @@ class SubredditStream(object):
 
         Submissions are yielded oldest first. Up to 100 historical submissions
         will initially be returned.
+
+        For example to retrieve all new submissions made to all of Reddit, try:
+
+        .. code:: python
+
+           for submission in reddit.subreddit('all').stream.submissions():
+               print(submission)
 
         """
         return stream_generator(self.subreddit.new)
