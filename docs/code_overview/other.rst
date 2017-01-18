@@ -19,6 +19,7 @@ instances of them bound to an attribute of one of the PRAW models.
 
    other/livecontributorrelationship
    other/livethreadcontribution
+   other/liveupdatecontribution
 
 .. toctree::
    :maxdepth: 2

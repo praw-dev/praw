@@ -4,6 +4,7 @@ import pytest
 from praw.models import LiveThread, LiveUpdate, Redditor
 from praw.models.reddit.live import LiveContributorRelationship
 from praw.models.reddit.live import LiveThreadContribution
+from praw.models.reddit.live import LiveUpdateContribution
 
 from ... import UnitTest
 
@@ -134,6 +135,12 @@ class TestLiveUpdate(UnitTest):
         with pytest.raises(TypeError) as excinfo:
             LiveUpdate(self.reddit, update_id=update_id)
         assert str(excinfo.value) == message
+
+    def test_contrib(self):
+        thread_id = 'dummy_thread_id'
+        update_id = 'dummy_update_id'
+        update = LiveUpdate(self.reddit, thread_id, update_id)
+        assert isinstance(update.contrib, LiveUpdateContribution)
 
     def test_setattr(self):
         data = {'id': 'dummy_update_id', 'author': 'dummy_author'}
