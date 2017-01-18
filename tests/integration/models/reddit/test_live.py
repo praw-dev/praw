@@ -45,6 +45,13 @@ class TestLiveThread(IntegrationTest):
 
 
 class TestLiveContributorRelationship(IntegrationTest):
+    def test_accept_invite(self):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, 'xyu8kmjvfrww')
+        with self.recorder.use_cassette(
+                'TestLiveContributorRelationship_test_accept_invite'):
+            thread.contributor.accept_invite()
+
     @mock.patch('time.sleep', return_value=None)
     def test_invite__already_invited(self, _):
         self.reddit.read_only = False
