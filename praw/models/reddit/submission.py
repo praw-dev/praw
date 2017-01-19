@@ -295,12 +295,37 @@ class SubmissionModeration(ThingModerationMixin):
                                 data={'id': self.thing.fullname})
 
     def nsfw(self):
-        """Mark as not safe for work."""
+        """Mark as not safe for work.
+
+        This method can be used both by the submission author and moderators of
+        the subreddit that the submission belongs to.
+
+        Example:
+
+        .. code:: python
+
+            submission = reddit.subreddit('test').submit('nsfw test',
+                                                         selftext='nsfw')
+            submission.mod.nsfw()
+
+        """
         self.thing._reddit.post(API_PATH['marknsfw'],
                                 data={'id': self.thing.fullname})
 
     def sfw(self):
-        """Mark as safe for work."""
+        """Mark as safe for work.
+
+        This method can be used both by the submission author and moderators of
+        the subreddit that the submission belongs to.
+
+        Example:
+
+        .. code:: python
+
+            submission = reddit.submission(id='5or86n')
+            submission.mod.sfw()
+
+        """
         self.thing._reddit.post(API_PATH['unmarknsfw'],
                                 data={'id': self.thing.fullname})
 
