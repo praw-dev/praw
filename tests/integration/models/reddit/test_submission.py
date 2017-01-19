@@ -221,6 +221,12 @@ class TestSubmissionModeration(IntegrationTest):
                 'TestSubmissionModeration.test_sfw'):
             Submission(self.reddit, '4s2idz').mod.sfw()
 
+    def test_spoiler(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_spoiler'):
+            Submission(self.reddit, '5ouli3').mod.spoiler()
+
     def test_sticky(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -268,3 +274,9 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubmissionModeration.test_unlock'):
             Submission(self.reddit, '4s2idz').mod.unlock()
+
+    def test_unspoiler(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_unspoiler'):
+            Submission(self.reddit, '5ouli3').mod.unspoiler()

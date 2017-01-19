@@ -329,6 +329,23 @@ class SubmissionModeration(ThingModerationMixin):
         self.thing._reddit.post(API_PATH['unmarknsfw'],
                                 data={'id': self.thing.fullname})
 
+    def spoiler(self):
+        """Indicate that the submission contains spoilers.
+
+        This method can be used both by the submission author and moderators of
+        the subreddit that the submission belongs to.
+
+        Example:
+
+        .. code:: python
+
+            submission = reddit.submission(id='5or86n')
+            submission.mod.spoiler()
+
+        """
+        self.thing._reddit.post(API_PATH['spoiler'],
+                                data={'id': self.thing.fullname})
+
     def sticky(self, state=True, bottom=True):
         """Set the submission's sticky state in its subreddit.
 
@@ -367,6 +384,24 @@ class SubmissionModeration(ThingModerationMixin):
     def unlock(self):
         """Unlock the submission."""
         self.thing._reddit.post(API_PATH['unlock'],
+                                data={'id': self.thing.fullname})
+
+    def unspoiler(self):
+        """Indicate that the submission does not contain spoilers.
+
+        This method can be used both by the submission author and moderators of
+        the subreddit that the submission belongs to.
+
+        Example:
+
+        .. code:: python
+
+            submission = reddit.subreddit('test').submit('not spoiler',
+                                                         selftext='spoiler')
+            submission.mod.unspoiler()
+
+        """
+        self.thing._reddit.post(API_PATH['unspoiler'],
                                 data={'id': self.thing.fullname})
 
 

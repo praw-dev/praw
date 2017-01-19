@@ -26,6 +26,8 @@ Unreleased
   :meth:`.SubredditModeration.update` will currently unset the
   ``spoilers_enabled`` value until such a time that Reddit returns the value
   along with the other settings.
+* :meth:`.spoiler` and :meth:`.unspoiler` to change a submission's spoiler
+  status.
 
 **Fixed**
 
