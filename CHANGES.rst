@@ -62,7 +62,8 @@ Change Log
 
 **Fixed**
 
-* :meth:`.hide()` and :meth:`.unhide()` now accept a list of additional submissions.
+* :meth:`.hide()` and :meth:`.unhide()` now accept a list of additional
+  submissions.
 * :meth:`.replace_more` is now recoverable. Previously, when an exception was
   raised during the work done by :meth:`.replace_more`, all unreplaced
   :class:`.MoreComments` instances were lost. Now :class:`.MoreComments`
@@ -90,7 +91,8 @@ Change Log
 * :class:`.SubredditFilters` to work with filters for special subreddits, like
   ``/r/all``.
 * Added callables for :class:`.SubredditRelationship` and
-  :class:`.SubredditFlair` so that ``limit`` and other parameters can be passed.
+  :class:`.SubredditFlair` so that ``limit`` and other parameters can be
+  passed.
 * Add :meth:`~praw.models.Message.reply` to :class:`.Message` which was
   accidentally missed previously.
 * Add ``sticky`` parameter to :meth:`.CommentModeration.distinguish` to sticky
@@ -118,9 +120,9 @@ Change Log
 * ``validate_time_filter`` will be removed from the public interface in PRAW
   4.2 as it was never intended to be part of it to begin with.
 * Iterating directly over :class:`.SubredditRelationship` (e.g.,
-  ``subreddit.banned``, ``subreddit.contributor``, ``subreddit.moderator``, etc)
-  and :class:`.SubredditFlair` will be removed in PRAW 5. Iterate instead over
-  their callables, e.g. ``subreddit.banned()`` and ``subreddit.flair()``.
+  ``subreddit.banned``, ``subreddit.contributor``, ``subreddit.moderator``,
+  etc) and :class:`.SubredditFlair` will be removed in PRAW 5. Iterate instead
+  over their callables, e.g. ``subreddit.banned()`` and ``subreddit.flair()``.
 * The following methods are deprecated to be removed in PRAW 5 and are replaced
   with similar ``Comment.mod...`` and ``Submission.mod...`` alternatives:
   ``Subreddit.mod.approve``, ``Subreddit.mod.distinguish``,
