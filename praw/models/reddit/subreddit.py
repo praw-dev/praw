@@ -61,7 +61,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                           over_18=None, public_description=None,
                           public_traffic=None, show_media=None,
                           show_media_preview=None, spam_comments=None,
-                          spam_links=None, spam_selfposts=None, sr=None,
+                          spam_links=None, spam_selfposts=None,
+                          spoilers_enabled=None, sr=None,
                           submit_link_label=None, submit_text=None,
                           submit_text_label=None, subreddit_type=None,
                           suggested_comment_sort=None, title=None,
@@ -89,6 +90,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                  'spam_comments': spam_comments,
                  'spam_links': spam_links,
                  'spam_selfposts': spam_selfposts,
+                 'spoilers_enabled': spoilers_enabled,
                  'sr': sr,
                  'submit_link_label': submit_link_label,
                  'submit_text': submit_text,
@@ -1038,6 +1040,7 @@ class SubredditModeration(object):
             One of ``all``, ``low``, ``high``.
         :param spam_selfposts: Spam filter strength for selfposts.
             One of ``all``, ``low``, ``high``.
+        :param spoilers_enabled: Enable marking posts as containing spoilers.
         :param sr: The fullname of the subreddit whose settings will be
             updated.
         :param submit_link_label: Custom label for submit link button

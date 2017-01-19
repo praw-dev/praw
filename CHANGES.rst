@@ -21,6 +21,11 @@ Unreleased
 * :meth:`.LiveUpdateContribution.remove` to remove a live update.
 * :meth:`.LiveContributorRelationship.accept_invite` to accept an invite to
   contribute the live thread.
+* :meth:`.SubredditHelper.create` and :meth:`.SubredditModeration.update` have
+  documented support for ``spoilers_enabled``. Note, however, that
+  :meth:`.SubredditModeration.update` will currently unset the
+  ``spoilers_enabled`` value until such a time that Reddit returns the value
+  along with the other settings.
 
 **Fixed**
 
