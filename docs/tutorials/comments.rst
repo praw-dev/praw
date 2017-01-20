@@ -108,7 +108,7 @@ about their replies? We could output all second-level comments like so:
 
 However, the comment forest can be arbitrarily deep, so we'll want a more
 robust solution. One way to iterate over a tree, or forest, is via a
-breath-first traversal using a queue:
+breadth-first traversal using a queue:
 
 .. code-block:: python
 
