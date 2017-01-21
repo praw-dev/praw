@@ -17,6 +17,18 @@ class MessageableMixin(object):
             authenticated user must be a moderator of the subreddit and have
             mail permissions.
 
+        For example, to send a private message to ``/u/spez``, try:
+
+        .. code:: python
+
+           reddit.redditor('spez').message('TEST', 'test message from PRAW')
+
+        To send a message the moderators of ``/r/test``, try:
+
+        .. code:: python
+
+           reddit.subreddit('test').message('TEST', 'test PM from PRAW')
+
         """
         data = {'subject': subject, 'text': message,
                 'to': '{}{}'.format(getattr(
