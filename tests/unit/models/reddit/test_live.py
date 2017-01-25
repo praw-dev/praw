@@ -91,6 +91,12 @@ class TestLiveThread(UnitTest):
         assert str(thread) == 'dummy'
 
 
+class TestLiveThreadContribution(UnitTest):
+    def test_update__no_args(self):
+        thread = LiveThread(self.reddit, 'xyu8kmjvfrww')
+        assert thread.contrib.update() is None
+
+
 class TestLiveUpdate(UnitTest):
 
     def test_construct_success(self):
