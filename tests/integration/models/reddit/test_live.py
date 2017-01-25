@@ -151,6 +151,55 @@ class TestLiveThreadContribution(IntegrationTest):
                 'TestLiveThreadContribution_close'):
             thread.contrib.close()
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_update__partial_settings(self, _):
+        old_settings = {
+                'title': 'old title',
+                'description': '## old description',
+                'nsfw': False,
+                'resources': '## old resources'}
+        new_settings = {
+                'title': 'new title',
+                'nsfw':  True}
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, 'xyu8kmjvfrww')
+        with self.recorder.use_cassette(
+                'TestLiveThreadContribution.test_update__partial_settings'):
+            thread.contrib.update(**new_settings)
+            assert thread.title == new_settings['title']
+            assert thread.description == old_settings['description']
+            assert thread.nsfw == new_settings['nsfw']
+            assert thread.resources == old_settings['resources']
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_update__full_settings(self, _):
+        new_settings = {
+                'title': 'new title 2',
+                'description': '## new description 2',
+                'nsfw': True,
+                'resources': '## new resources 2'}
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, 'xyu8kmjvfrww')
+        with self.recorder.use_cassette(
+                'TestLiveThreadContribution.test_update__full_settings'):
+            thread.contrib.update(**new_settings)
+            assert thread.title == new_settings['title']
+            assert thread.description == new_settings['description']
+            assert thread.nsfw == new_settings['nsfw']
+            assert thread.resources == new_settings['resources']
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_update__other_settings(self, _):
+        new_settings = {
+                'title': 'new title',
+                'other1': 'other 1',
+                'other2': 'other 2'}
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, 'xyu8kmjvfrww')
+        with self.recorder.use_cassette(
+                'TestLiveThreadContribution.test_update__other_settings'):
+            thread.contrib.update(**new_settings)
+
 
 class TestLiveUpdateContribution(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)

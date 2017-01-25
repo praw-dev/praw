@@ -281,6 +281,58 @@ class LiveThreadContribution(object):
         url = API_PATH['live_close'].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
+    def update(self, title=None, description=None, nsfw=None, resources=None,
+               **other_settings):
+        """Update settings of the live thread.
+
+        :param title: (Optional) The title of the live thread (default: None).
+        :param description: (Optional) The live thread's description
+            (default: None).
+        :param nsfw: (Optional) Indicate whether this thread is not safe for
+            work (default: None).
+        :param resources: (Optional) Markdown formatted information that is
+            useful for the live thread (default: None).
+
+        Does nothing if no arguments are provided.
+
+        Each setting will maintain its current value if ``None`` is specified.
+
+        Additional keyword arguments can be provided to handle new settings as
+        Reddit introduces them.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('xyu8kmjvfrww')
+
+           # update `title` and `nsfw`
+           updated_thread = thread.contrib.update(title=new_title, nsfw=True)
+
+        If Reddit introduces new settings, you must specify ``None`` for the
+        setting you want to maintain:
+
+        .. code-block:: python
+
+           # update `nsfw` and maintain new setting `foo`
+           thread.contrib.update(nsfw=True, foo=None)
+
+        """
+        settings = {'title': title, 'description': description,
+                    'nsfw': nsfw, 'resources': resources}
+        settings.update(other_settings)
+        if all(value is None for value in settings.values()):
+            return
+        # get settings from Reddit (not cache)
+        thread = LiveThread(self.thread._reddit, self.thread.id)
+        data = {key: getattr(thread, key) if value is None else value
+                for key, value in settings.items()}
+
+        url = API_PATH['live_update_thread'].format(id=self.thread.id)
+        # prawcore (0.7.0) Session.request() modifies `data` kwarg
+        self.thread._reddit.post(url, data=data.copy())
+        self.thread._reset_attributes(*data.keys())
+
 
 class LiveUpdate(RedditBase):
     """An individual :class:`.LiveUpdate` object."""
