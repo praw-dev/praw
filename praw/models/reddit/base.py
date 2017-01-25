@@ -75,5 +75,6 @@ class RedditBase(PRAWBase):
 
     def _reset_attributes(self, *attributes):
         for attribute in attributes:
-            del self.__dict__[attribute]
+            if attribute in self.__dict__:
+                del self.__dict__[attribute]
         self._fetched = False
