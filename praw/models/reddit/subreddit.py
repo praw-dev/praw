@@ -1440,7 +1440,15 @@ class SubredditStylesheet(object):
     JPEG_HEADER = b'\xff\xd8\xff'
 
     def __call__(self):
-        """Return the subreddit's stylesheet."""
+        """Return the subreddit's stylesheet.
+
+        To be used as:
+
+        .. code:: python
+
+           stylesheet = reddit.subreddit('SUBREDDIT').stylesheet()
+
+        """
         url = API_PATH['about_stylesheet'].format(subreddit=self.subreddit)
         return self.subreddit._reddit.get(url)
 
@@ -1448,6 +1456,12 @@ class SubredditStylesheet(object):
         """Create a SubredditStylesheet instance.
 
         :param subreddit: The subreddit associated with the stylesheet.
+
+        An instance of this class is provided as:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet
 
         """
         self.subreddit = subreddit
@@ -1466,6 +1480,12 @@ class SubredditStylesheet(object):
 
         Succeeds even if there is no header image.
 
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.delete_header()
+
         """
         url = API_PATH['delete_sr_header'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
@@ -1474,6 +1494,12 @@ class SubredditStylesheet(object):
         """Remove the named image from the subreddit.
 
         Succeeds even if the named image does not exist.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.delete_image('smile')
 
         """
         url = API_PATH['delete_sr_image'].format(subreddit=self.subreddit)
@@ -1484,6 +1510,12 @@ class SubredditStylesheet(object):
 
         Succeeds even if there is no mobile header.
 
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.delete_mobile_header()
+
         """
         url = API_PATH['delete_sr_header'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
@@ -1493,6 +1525,12 @@ class SubredditStylesheet(object):
 
         Succeeds even if there is no mobile icon.
 
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.delete_ombile_icon()
+
         """
         url = API_PATH['delete_sr_icon'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
@@ -1501,6 +1539,13 @@ class SubredditStylesheet(object):
         """Update the subreddit's stylesheet.
 
         :param stylesheet: The CSS for the new stylesheet.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.update(
+               'p { color: green; }', 'color text green')
 
         """
         data = {'op': 'save', 'reason': reason,
@@ -1517,6 +1562,12 @@ class SubredditStylesheet(object):
         :returns: A dictionary containing a link to the uploaded image under
             the key ``img_src``.
 
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.upload('smile', 'img.png')
+
         """
         return self._upload_image(image_path,
                                   {'name': name, 'upload_type': 'img'})
@@ -1527,6 +1578,12 @@ class SubredditStylesheet(object):
         :param image_path: A path to a jpeg or png image.
         :returns: A dictionary containing a link to the uploaded image under
             the key ``img_src``.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.upload_header('header.png')
 
         """
         return self._upload_image(image_path, {'upload_type': 'header'})
