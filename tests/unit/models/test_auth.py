@@ -36,8 +36,9 @@ class TestAuth(UnitTest):
             script_app().auth.implicit('dummy token', 10, '')
 
     def test_limits(self):
+        expected = {'remaining': None, 'reset_timestamp': None, 'used': None}
         for app in [installed_app(), script_app(), web_app()]:
-            assert {'remaining': None, 'used': None} == app.auth.limits
+            assert expected == app.auth.limits
 
     def test_url__installed_app(self):
         url = installed_app().auth.url(['dummy scope'], 'dummy state')

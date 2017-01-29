@@ -17,15 +17,23 @@ class Auth(PRAWBase):
 
         :remaining: The number of requests remaining to be made in the
             current rate limit window.
+        :reset_timestamp: A unix timestamp providing an upper bound on when the
+            rate limit counters will reset.
         :used: The number of requests made in the current rate limit
             window.
 
-        Both values are initially ``None`` as these values are set in response
+        All values are initially ``None`` as these values are set in response
         to issued requests.
+
+        The ``reset_timestamp`` value is an upper bound as the real timestamp
+        is computed on Reddit's end in preparation for sending the
+        response. This value may change slightly within a given window due to
+        slight changes in response times and rounding.
 
         """
         data = self._reddit._core._rate_limiter
-        return {'remaining': data.remaining, 'used': data.used}
+        return {'remaining': data.remaining,
+                'reset_timestamp': data.reset_timestamp, 'used': data.used}
 
     def authorize(self, code):
         """Complete the web authorization flow and return the refresh token.

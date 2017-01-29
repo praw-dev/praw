@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Added**
+
+* ``reset_timestamp`` to :attr:`.limits` to provide insight into when the
+  current rate limit window will expire.
+
 4.3.0 (2017/01/19)
 ------------------
 
