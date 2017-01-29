@@ -13,6 +13,12 @@ Unreleased
 * :meth:`.delete_mobile_header` to remove subreddit mobile header.
 * :meth:`.delete_mobile_icon` to remove subreddit mobile icon.
 
+**Fixed**
+
+* Uploading an image resulting in too large of a request (>500 KB) now
+  raises ``prawcore.TooLarge`` instead of an ``AssertionError``.
+
+
 4.3.0 (2017/01/19)
 ------------------
 

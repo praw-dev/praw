@@ -5,7 +5,7 @@ import sys
 from praw.exceptions import APIException
 from praw.models import (Comment, ModAction, Redditor, Submission, Subreddit,
                          SubredditMessage, Stylesheet, WikiPage)
-from prawcore import Forbidden, NotFound
+from prawcore import Forbidden, NotFound, TooLarge
 import mock
 import pytest
 
@@ -987,6 +987,14 @@ class TestSubredditStylesheet(IntegrationTest):
                 'praw', self.image_path('white-square.png'))
         assert response['img_src'].endswith('.png')
 
+    def test_upload__too_large(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload__too_large'):
+            with pytest.raises(TooLarge):
+                self.subreddit.stylesheet.upload(
+                    'praw', self.image_path('too_large.jpg'))
+
     def test_upload_header__jpg(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -1018,6 +1026,16 @@ class TestSubredditStylesheet(IntegrationTest):
             response = self.subreddit.stylesheet.upload_mobile_icon(
                 self.image_path('icon.jpg'))
         assert response['img_src'].endswith('.jpg')
+
+    def test_upload__others_too_large(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload__others_too_large'):
+            for method in ['upload_header', 'upload_mobile_header',
+                           'upload_mobile_icon']:
+                with pytest.raises(TooLarge):
+                    getattr(self.subreddit.stylesheet, method)(
+                        self.image_path('too_large.jpg'))
 
 
 class TestSubredditWiki(IntegrationTest):

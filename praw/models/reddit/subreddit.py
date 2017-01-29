@@ -1562,6 +1562,8 @@ class SubredditStylesheet(object):
         :returns: A dictionary containing a link to the uploaded image under
             the key ``img_src``.
 
+        Raises ``prawcore.TooLarge`` if the overall request body is too large.
+
         Example:
 
         .. code:: python
@@ -1579,6 +1581,8 @@ class SubredditStylesheet(object):
         :returns: A dictionary containing a link to the uploaded image under
             the key ``img_src``.
 
+        Raises ``prawcore.TooLarge`` if the overall request body is too large.
+
         Example:
 
         .. code:: python
@@ -1594,6 +1598,8 @@ class SubredditStylesheet(object):
         :param image_path: A path to a jpeg or png image.
         :returns: A dictionary containing a link to the uploaded image under
             the key ``img_src``.
+
+        Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
         For example:
 
@@ -1611,6 +1617,8 @@ class SubredditStylesheet(object):
         :param image_path: A path to a jpeg or png image.
         :returns: A dictionary containing a link to the uploaded image under
             the key ``img_src``.
+
+        Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
         For example:
 
