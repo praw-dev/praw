@@ -1571,9 +1571,9 @@ class SubredditStylesheet(object):
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
         Raises :class:`.APIException` if there are other issues with the
-            uploaded image. Unfortunately the exception info might not be very
-            specific, so try through the website with the same image to see
-            what the problem actually might be.
+        uploaded image. Unfortunately the exception info might not be very
+        specific, so try through the website with the same image to see what
+        the problem actually might be.
 
         Example:
 
@@ -1595,9 +1595,9 @@ class SubredditStylesheet(object):
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
         Raises :class:`.APIException` if there are other issues with the
-            uploaded image. Unfortunately the exception info might not be very
-            specific, so try through the website with the same image to see
-            what the problem actually might be.
+        uploaded image. Unfortunately the exception info might not be very
+        specific, so try through the website with the same image to see what
+        the problem actually might be.
 
         Example:
 
@@ -1618,9 +1618,9 @@ class SubredditStylesheet(object):
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
         Raises :class:`.APIException` if there are other issues with the
-            uploaded image. Unfortunately the exception info might not be very
-            specific, so try through the website with the same image to see
-            what the problem actually might be.
+        uploaded image. Unfortunately the exception info might not be very
+        specific, so try through the website with the same image to see what
+        the problem actually might be.
 
         For example:
 
@@ -1642,9 +1642,9 @@ class SubredditStylesheet(object):
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
         Raises :class:`.APIException` if there are other issues with the
-            uploaded image. Unfortunately the exception info might not be very
-            specific, so try through the website with the same image to see
-            what the problem actually might be.
+        uploaded image. Unfortunately the exception info might not be very
+        specific, so try through the website with the same image to see what
+        the problem actually might be.
 
         For example:
 
