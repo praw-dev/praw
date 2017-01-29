@@ -8,6 +8,7 @@ Unreleased
 
 * ``reset_timestamp`` to :attr:`.limits` to provide insight into when the
   current rate limit window will expire.
+* :meth:`.upload_mobile_icon` to upload subreddit mobile icon.
 
 4.3.0 (2017/01/19)
 ------------------

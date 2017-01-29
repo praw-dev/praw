@@ -991,6 +991,14 @@ class TestSubredditStylesheet(IntegrationTest):
                 self.image_path('white-square.png'))
         assert response['img_src'].endswith('.png')
 
+    def test_upload_mobile_icon(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload_mobile_icon'):
+            response = self.subreddit.stylesheet.upload_mobile_icon(
+                self.image_path('icon.jpg'))
+        assert response['img_src'].endswith('.jpg')
+
 
 class TestSubredditWiki(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
