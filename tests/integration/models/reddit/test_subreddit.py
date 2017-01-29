@@ -987,6 +987,15 @@ class TestSubredditStylesheet(IntegrationTest):
                 'praw', self.image_path('white-square.png'))
         assert response['img_src'].endswith('.png')
 
+    def test_upload__invalid(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload__invalid'):
+            with pytest.raises(APIException) as excinfo:
+                self.subreddit.stylesheet.upload(
+                    'praw', self.image_path('invalid.jpg'))
+        assert excinfo.value.error_type == 'IMAGE_ERROR'
+
     def test_upload__too_large(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -1026,6 +1035,18 @@ class TestSubredditStylesheet(IntegrationTest):
             response = self.subreddit.stylesheet.upload_mobile_icon(
                 self.image_path('icon.jpg'))
         assert response['img_src'].endswith('.jpg')
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_upload__others_invalid(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload__others_invalid'):
+            for method in ['upload_header', 'upload_mobile_header',
+                           'upload_mobile_icon']:
+                with pytest.raises(APIException) as excinfo:
+                    getattr(self.subreddit.stylesheet, method)(
+                        self.image_path('invalid.jpg'))
+                assert excinfo.value.error_type == 'IMAGE_ERROR'
 
     def test_upload__others_too_large(self):
         self.reddit.read_only = False

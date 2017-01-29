@@ -17,6 +17,7 @@ Unreleased
 
 * Uploading an image resulting in too large of a request (>500 KB) now
   raises ``prawcore.TooLarge`` instead of an ``AssertionError``.
+* Uploading an invalid image raises :class:`.APIException`.
 
 
 4.3.0 (2017/01/19)

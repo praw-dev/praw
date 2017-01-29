@@ -6,6 +6,7 @@ import time
 from prawcore import Redirect
 
 from ...const import API_PATH, urljoin
+from ...exceptions import APIException
 from ..util import permissions_string, stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
@@ -1472,8 +1473,13 @@ class SubredditStylesheet(object):
             image.seek(0)
             data['img_type'] = 'jpg' if header == self.JPEG_HEADER else 'png'
             url = API_PATH['upload_image'].format(subreddit=self.subreddit)
-            return self.subreddit._reddit.post(
-                url, data=data, files={'file': image})
+            response = self.subreddit._reddit.post(url, data=data,
+                                                   files={'file': image})
+            if response['errors']:
+                assert response['errors'] == ['IMAGE_ERROR'], \
+                                             'Please file a bug with PRAW'
+                raise APIException(response['errors'][0], '', None)
+            return response
 
     def delete_header(self):
         """Remove the current subreddit header image.
@@ -1564,6 +1570,11 @@ class SubredditStylesheet(object):
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
+        Raises :class:`.APIException` if there are other issues with the
+            uploaded image. Unfortunately the exception info might not be very
+            specific, so try through the website with the same image to see
+            what the problem actually might be.
+
         Example:
 
         .. code:: python
@@ -1583,6 +1594,11 @@ class SubredditStylesheet(object):
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
+        Raises :class:`.APIException` if there are other issues with the
+            uploaded image. Unfortunately the exception info might not be very
+            specific, so try through the website with the same image to see
+            what the problem actually might be.
+
         Example:
 
         .. code:: python
@@ -1600,6 +1616,11 @@ class SubredditStylesheet(object):
             the key ``img_src``.
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
+
+        Raises :class:`.APIException` if there are other issues with the
+            uploaded image. Unfortunately the exception info might not be very
+            specific, so try through the website with the same image to see
+            what the problem actually might be.
 
         For example:
 
@@ -1619,6 +1640,11 @@ class SubredditStylesheet(object):
             the key ``img_src``.
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
+
+        Raises :class:`.APIException` if there are other issues with the
+            uploaded image. Unfortunately the exception info might not be very
+            specific, so try through the website with the same image to see
+            what the problem actually might be.
 
         For example:
 

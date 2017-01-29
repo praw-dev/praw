@@ -1,0 +1,224 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2017-01-29T21:21:30",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.3.1.dev0 prawcore/0.8.0"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 29 Jan 2017 21:21:30 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "loid=pNCPJSs6QAoebq5869; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-lax8643-LAX",
+          "X-Timer": "S1485724889.679066,VS0,VE400",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2017-01-29T21:21:30",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "--af95a143064a4dcf8882b6bfd1f0d40a\r\nContent-Disposition: form-data; name=\"api_type\"\r\n\r\njson\r\n--af95a143064a4dcf8882b6bfd1f0d40a\r\nContent-Disposition: form-data; name=\"img_type\"\r\n\r\npng\r\n--af95a143064a4dcf8882b6bfd1f0d40a\r\nContent-Disposition: form-data; name=\"upload_type\"\r\n\r\nheader\r\n--af95a143064a4dcf8882b6bfd1f0d40a\r\nContent-Disposition: form-data; name=\"file\"; filename=\"invalid.jpg\"\r\n\r\ninvalid\n\r\n--af95a143064a4dcf8882b6bfd1f0d40a--\r\n"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Content-Length": "438",
+          "Content-Type": "multipart/form-data; boundary=af95a143064a4dcf8882b6bfd1f0d40a",
+          "Cookie": "loid=pNCPJSs6QAoebq5869; loidcreated=1485724889000",
+          "User-Agent": "<USER_AGENT> PRAW/4.3.1.dev0 prawcore/0.8.0"
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/upload_sr_img?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"errors\": [\"IMAGE_ERROR\"], \"img_src\": \"\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "42",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 29 Jan 2017 21:21:30 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-lax8632-LAX",
+          "X-Timer": "S1485724890.230846,VS0,VE188",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "596.0",
+          "x-ratelimit-reset": "510",
+          "x-ratelimit-used": "4",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/upload_sr_img?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2017-01-29T21:21:30",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "--1737d37edbd5497a8c42dd1019cda428\r\nContent-Disposition: form-data; name=\"api_type\"\r\n\r\njson\r\n--1737d37edbd5497a8c42dd1019cda428\r\nContent-Disposition: form-data; name=\"img_type\"\r\n\r\npng\r\n--1737d37edbd5497a8c42dd1019cda428\r\nContent-Disposition: form-data; name=\"upload_type\"\r\n\r\nbanner\r\n--1737d37edbd5497a8c42dd1019cda428\r\nContent-Disposition: form-data; name=\"file\"; filename=\"invalid.jpg\"\r\n\r\ninvalid\n\r\n--1737d37edbd5497a8c42dd1019cda428--\r\n"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Content-Length": "438",
+          "Content-Type": "multipart/form-data; boundary=1737d37edbd5497a8c42dd1019cda428",
+          "Cookie": "loid=pNCPJSs6QAoebq5869; loidcreated=1485724889000",
+          "User-Agent": "<USER_AGENT> PRAW/4.3.1.dev0 prawcore/0.8.0"
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/upload_sr_img?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"errors\": [\"IMAGE_ERROR\"], \"img_src\": \"\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "42",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 29 Jan 2017 21:21:30 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-lax8632-LAX",
+          "X-Timer": "S1485724890.440484,VS0,VE115",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "595.0",
+          "x-ratelimit-reset": "510",
+          "x-ratelimit-used": "5",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/upload_sr_img?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2017-01-29T21:21:30",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "--4185d6ec8160487388a927f2b1ea0299\r\nContent-Disposition: form-data; name=\"api_type\"\r\n\r\njson\r\n--4185d6ec8160487388a927f2b1ea0299\r\nContent-Disposition: form-data; name=\"img_type\"\r\n\r\npng\r\n--4185d6ec8160487388a927f2b1ea0299\r\nContent-Disposition: form-data; name=\"upload_type\"\r\n\r\nicon\r\n--4185d6ec8160487388a927f2b1ea0299\r\nContent-Disposition: form-data; name=\"file\"; filename=\"invalid.jpg\"\r\n\r\ninvalid\n\r\n--4185d6ec8160487388a927f2b1ea0299--\r\n"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Content-Length": "436",
+          "Content-Type": "multipart/form-data; boundary=4185d6ec8160487388a927f2b1ea0299",
+          "Cookie": "loid=pNCPJSs6QAoebq5869; loidcreated=1485724889000",
+          "User-Agent": "<USER_AGENT> PRAW/4.3.1.dev0 prawcore/0.8.0"
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/upload_sr_img?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"errors\": [\"IMAGE_ERROR\"], \"img_src\": \"\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "42",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 29 Jan 2017 21:21:30 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-lax8632-LAX",
+          "X-Timer": "S1485724890.578098,VS0,VE149",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "594.0",
+          "x-ratelimit-reset": "510",
+          "x-ratelimit-used": "6",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/upload_sr_img?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}
