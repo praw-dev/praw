@@ -25,6 +25,7 @@ API_PATH = {
     'del':                    'api/del/',
     'deleteflair':            'r/{subreddit}/api/deleteflair',
     'delete_sr_header':       'r/{subreddit}/api/delete_sr_header',
+    'delete_sr_icon':         'r/{subreddit}/api/delete_sr_icon',
     'delete_sr_image':        'r/{subreddit}/api/delete_sr_img',
     'distinguish':            'api/distinguish/',
     'domain':                 'domain/{domain}/',
