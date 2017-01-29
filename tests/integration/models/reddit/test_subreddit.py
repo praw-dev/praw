@@ -991,6 +991,14 @@ class TestSubredditStylesheet(IntegrationTest):
                 self.image_path('white-square.png'))
         assert response['img_src'].endswith('.png')
 
+    def test_upload_mobile_header(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload_mobile_header'):
+            response = self.subreddit.stylesheet.upload_mobile_header(
+                self.image_path('header.jpg'))
+        assert response['img_src'].endswith('.jpg')
+
     def test_upload_mobile_icon(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(

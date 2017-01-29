@@ -1513,6 +1513,23 @@ class SubredditStylesheet(object):
         """
         return self._upload_image(image_path, {'upload_type': 'header'})
 
+    def upload_mobile_header(self, image_path):
+        """Upload an image to be used as the Subreddit's mobile header.
+
+        :param image_path: A path to a jpeg or png image.
+        :returns: A dictionary containing a link to the uploaded image under
+            the key ``img_src``.
+
+        For example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.upload_mobile_header(
+               'header.png')
+
+        """
+        return self._upload_image(image_path, {'upload_type': 'banner'})
+
     def upload_mobile_icon(self, image_path):
         """Upload an image to be used as the Subreddit's mobile icon.
 
