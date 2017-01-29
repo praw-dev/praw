@@ -956,6 +956,12 @@ class TestSubredditStylesheet(IntegrationTest):
                 'TestSubredditStylesheet.test_delete_image'):
             self.subreddit.stylesheet.delete_image('praw')
 
+    def test_delete_mobile_header(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_delete_mobile_header'):
+            self.subreddit.stylesheet.delete_mobile_header()
+
     def test_delete_mobile_icon(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(

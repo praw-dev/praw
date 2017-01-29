@@ -1479,6 +1479,15 @@ class SubredditStylesheet(object):
         url = API_PATH['delete_sr_image'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={'img_name': name})
 
+    def delete_mobile_header(self):
+        """Remove the current subreddit mobile header.
+
+        Succeeds even if there is no mobile header.
+
+        """
+        url = API_PATH['delete_sr_header'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.post(url)
+
     def delete_mobile_icon(self):
         """Remove the current subreddit mobile icon.
 

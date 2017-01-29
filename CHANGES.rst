@@ -10,6 +10,7 @@ Unreleased
   current rate limit window will expire.
 * :meth:`.upload_mobile_header` to upload subreddit mobile header.
 * :meth:`.upload_mobile_icon` to upload subreddit mobile icon.
+* :meth:`.delete_mobile_header` to remove subreddit mobile header.
 * :meth:`.delete_mobile_icon` to remove subreddit mobile icon.
 
 4.3.0 (2017/01/19)
