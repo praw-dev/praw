@@ -1066,7 +1066,15 @@ class SubredditModeration(object):
         Additional keyword arguments can be provided to handle new settings as
         Reddit introduces them.
 
-        Unspecified settings will maintain their current value.
+        Settings that are documented here and aren't explitly set by you in a
+        call to :meth:`.SubredditModeration.update` should retain their current
+        value. If they do not please file a bug.
+
+        .. warning:: Undocumented settings, or settings that were very recently
+                     documented, may not retain their current value when
+                     updating. This often occurs when Reddit adds a new setting
+                     but forgets to add that setting to the API endpoint that
+                     is used to fetch the current settings.
 
         """
         current_settings = self.settings()
