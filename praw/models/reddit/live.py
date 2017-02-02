@@ -184,7 +184,7 @@ class LiveThread(RedditBase):
     def __getitem__(self, update_id):
         """Return a lazy :class:`.LiveUpdate` instance.
 
-        .. warning:: At this time, accesing lazy attributes, whose value
+        .. warning:: At this time, accessing lazy attributes, whose value
            have not loaded, raises ``AttributeError``.
 
         :param update_id: A live update ID, e.g.,
@@ -335,7 +335,31 @@ class LiveThreadContribution(object):
 
 
 class LiveUpdate(RedditBase):
-    """An individual :class:`.LiveUpdate` object."""
+    """An individual :class:`.LiveUpdate` object.
+
+    .. warning:: At this time, accessing lazy attributes on this class
+       may raises ``AttributeError``: if an update is instantiated
+       through :meth:`.LiveThread.updates`, the exception is not
+       thrown. For example:
+
+       .. code-block:: python
+
+          thread = reddit.live('xyu8kmjvfrww')
+          for update in thread.updates(limit=None):
+              if update.id == 'cb5fe532-dbee-11e6-9a91-0e6d74fabcc4':
+                  print(update.stricken)  # True
+                  break
+
+       But the update is instantiated through ``thread[update_id]``
+       or ``LiveUpdate(reddit, update_id)``, ``AttributeError`` is thrown:
+
+       .. code-block:: python
+
+          thread = reddit.live('xyu8kmjvfrww')
+          update = thread['cb5fe532-dbee-11e6-9a91-0e6d74fabcc4']
+          update.stricken  # raise AttributeError
+
+    """
 
     STR_FIELD = 'id'
 
@@ -367,8 +391,9 @@ class LiveUpdate(RedditBase):
         Either ``thread_id`` and ``update_id``, or ``_data`` must be
         provided.
 
-        .. warning:: At this time, accesing lazy attributes, whose value
-           have not loaded, raises ``AttributeError``.
+        .. warning:: At this time, accessing lazy attributes, whose value
+           have not loaded, raises ``AttributeError``. See :class:`.LiveUpdate`
+           for details.
 
         :param reddit: An instance of :class:`.Reddit`.
         :param thread_id: A live thread ID, e.g., ``'ukaeu1ik4sw5'``.
@@ -433,7 +458,20 @@ class LiveUpdateContribution(object):
         self.update.thread._reddit.post(url, data=data)
 
     def strike(self):
-        """Strike a content of a live update."""
+        """Strike a content of a live update.
+
+        .. code-block:: python
+
+           thread = reddit.live('xyu8kmjvfrww')
+           update = thread['cb5fe532-dbee-11e6-9a91-0e6d74fabcc4']
+           update.contrib.strike()
+
+        To check whether the update is stricken or not, use ``update.stricken``
+        attribute. But note that accessing lazy attributes on updates
+        (includes ``update.stricken``) may raises ``AttributeError``.
+        See :class:`.LiveUpdate` for details.
+
+        """
         url = API_PATH['live_strike'].format(id=self.update.thread.id)
         data = {'id': self.update.fullname}
         self.update.thread._reddit.post(url, data=data)
