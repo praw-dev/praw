@@ -67,6 +67,7 @@ API_PATH = {
     'live_remove_update':     'api/live/{id}/delete_update',
     'live_remove_contrib':    'api/live/{id}/rm_contributor',
     'live_remove_invite':     'api/live/{id}/rm_contributor_invite',
+    'live_strike':            'api/live/{id}/strike_update',
     'live_update_thread':     'api/live/{id}/edit',
     'live_updates':           'live/{id}',
     'liveabout':              'api/live/{id}/about/',

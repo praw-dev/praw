@@ -6,19 +6,20 @@ Unreleased
 
 **Added**
 
+* :meth:`.LiveThreadContribution.update` to update settings of a live thread.
 * ``reset_timestamp`` to :attr:`.limits` to provide insight into when the
   current rate limit window will expire.
 * :meth:`.upload_mobile_header` to upload subreddit mobile header.
 * :meth:`.upload_mobile_icon` to upload subreddit mobile icon.
 * :meth:`.delete_mobile_header` to remove subreddit mobile header.
 * :meth:`.delete_mobile_icon` to remove subreddit mobile icon.
+* :meth:`.LiveUpdateContribution.strike` to strike a content of a live thread.
 
 **Fixed**
 
 * Uploading an image resulting in too large of a request (>500 KB) now
   raises ``prawcore.TooLarge`` instead of an ``AssertionError``.
 * Uploading an invalid image raises :class:`.APIException`.
-
 
 4.3.0 (2017/01/19)
 ------------------

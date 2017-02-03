@@ -210,3 +210,11 @@ class TestLiveUpdateContribution(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestLiveUpdateContribution_remove'):
             update.contrib.remove()
+
+    def test_strike(self):
+        self.reddit.read_only = False
+        update = LiveUpdate(self.reddit, 'xyu8kmjvfrww',
+                            'cb5fe532-dbee-11e6-9a91-0e6d74fabcc4')
+        with self.recorder.use_cassette(
+                'TestLiveUpdateContribution_strike'):
+            update.contrib.strike()
