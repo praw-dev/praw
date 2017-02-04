@@ -9,6 +9,14 @@ from .redditor import Redditor
 class LiveContributorRelationship(object):
     """Provide methods to interact with live threads' contributors."""
 
+    @staticmethod
+    def _handle_permissions(permissions):
+        if permissions is None:
+            permissions = {'all'}
+        else:
+            permissions = set(permissions)
+        return ','.join('+{}'.format(x) for x in permissions)
+
     def __call__(self):
         """Return a :class:`.RedditorList` for live threads' contributors.
 
@@ -65,15 +73,10 @@ class LiveContributorRelationship(object):
             remove the invite for redditor.
 
         """
-        if permissions is None:
-            permissions = {'all'}
-        else:
-            permissions = set(permissions)
-        encoded = ','.join('+{}'.format(x) for x in permissions)
+        url = API_PATH['live_invite'].format(id=self.thread.id)
         data = {'name': str(redditor),
                 'type': 'liveupdate_contributor_invite',
-                'permissions': encoded}
-        url = API_PATH['live_invite'].format(id=self.thread.id)
+                'permissions': self._handle_permissions(permissions)}
         self.thread._reddit.post(url, data=data)
 
     def leave(self):
