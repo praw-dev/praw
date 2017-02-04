@@ -14,6 +14,8 @@ Unreleased
 * :meth:`.delete_mobile_header` to remove subreddit mobile header.
 * :meth:`.delete_mobile_icon` to remove subreddit mobile icon.
 * :meth:`.LiveUpdateContribution.strike` to strike a content of a live thread.
+* :meth:`.LiveContributorRelationship.update` to update contributor
+  permissions for a redditor.
 
 **Fixed**
 

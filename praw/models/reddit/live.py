@@ -9,6 +9,14 @@ from .redditor import Redditor
 class LiveContributorRelationship(object):
     """Provide methods to interact with live threads' contributors."""
 
+    @staticmethod
+    def _handle_permissions(permissions):
+        if permissions is None:
+            permissions = {'all'}
+        else:
+            permissions = set(permissions)
+        return ','.join('+{}'.format(x) for x in permissions)
+
     def __call__(self):
         """Return a :class:`.RedditorList` for live threads' contributors.
 
@@ -65,15 +73,10 @@ class LiveContributorRelationship(object):
             remove the invite for redditor.
 
         """
-        if permissions is None:
-            permissions = {'all'}
-        else:
-            permissions = set(permissions)
-        encoded = ','.join('+{}'.format(x) for x in permissions)
+        url = API_PATH['live_invite'].format(id=self.thread.id)
         data = {'name': str(redditor),
                 'type': 'liveupdate_contributor_invite',
-                'permissions': encoded}
-        url = API_PATH['live_invite'].format(id=self.thread.id)
+                'permissions': self._handle_permissions(permissions)}
         self.thread._reddit.post(url, data=data)
 
     def leave(self):
@@ -130,6 +133,44 @@ class LiveContributorRelationship(object):
             fullname = redditor
         data = {'id': fullname}
         url = API_PATH['live_remove_invite'].format(id=self.thread.id)
+        self.thread._reddit.post(url, data=data)
+
+    def update(self, redditor, permissions=None):
+        """Update the contributor permissions for ``redditor``.
+
+        :param redditor: A redditor name (e.g., ``'spez'``) or
+            :class:`~.Redditor` instance.
+        :param permissions: When provided (not ``None``), permissions should
+            be a list of strings specifying which subset of permissions to
+            grant (other permissions are removed). An empty list ``[]``
+            indicates no permissions, and when not provided (``None``),
+            indicates full permissions.
+
+        For example, to grant all permissions to the contributor, try:
+
+        .. code:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           thread.contributor.update('spez')
+
+        To grant 'access' and 'edit' permissions (and to remove other
+        permissions), try:
+
+        .. code:: python
+
+           thread.contributor.update('spez', ['access', 'edit'])
+
+        To remove all permissions from the contributor, try:
+
+        .. code:: python
+
+           subreddit.moderator.update('spez', [])
+
+        """
+        url = API_PATH['live_update_perms'].format(id=self.thread.id)
+        data = {'name': str(redditor),
+                'type': 'liveupdate_contributor',
+                'permissions': self._handle_permissions(permissions)}
         self.thread._reddit.post(url, data=data)
 
 
