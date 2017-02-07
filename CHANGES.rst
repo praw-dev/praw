@@ -16,6 +16,9 @@ Unreleased
 * :meth:`.LiveUpdateContribution.strike` to strike a content of a live thread.
 * :meth:`.LiveContributorRelationship.update` to update contributor
   permissions for a redditor.
+* :meth:`.LiveContributorRelationship.update_invite` to update contributor
+  invite permissions for a redditor.
+
 
 **Fixed**
 

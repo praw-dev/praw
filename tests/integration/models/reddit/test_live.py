@@ -156,6 +156,30 @@ class TestLiveContributorRelationship(IntegrationTest):
                 'TestLiveContributorRelationship_test_update__none'):
             thread.contributor.update('nmtake', None)
 
+    def test_update_invite__empty_list(self):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, 'ydwwxneu7vsa')
+        with self.recorder.use_cassette(
+                'TestLiveContributorRelationship_'
+                'test_update_invite__empty_list'):
+            thread.contributor.update_invite('nmtake', [])
+
+    def test_update_invite__limited(self):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, 'ydwwxneu7vsa')
+        with self.recorder.use_cassette(
+                'TestLiveContributorRelationship_'
+                'test_update_invite__limited'):
+            thread.contributor.update_invite('nmtake', ['manage', 'edit'])
+
+    def test_update_invite__none(self):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, 'ydwwxneu7vsa')
+        with self.recorder.use_cassette(
+                'TestLiveContributorRelationship_'
+                'test_update_invite__none'):
+            thread.contributor.update_invite('nmtake', None)
+
 
 class TestLiveThreadContribution(IntegrationTest):
     def test_add(self):
