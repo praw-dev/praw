@@ -18,7 +18,7 @@ Unreleased
   permissions for a redditor.
 * :meth:`.LiveContributorRelationship.update_invite` to update contributor
   invite permissions for a redditor.
-
+* :meth:`.LiveThread.discussions` to get submissions linking to the thread.
 
 **Fixed**
 
