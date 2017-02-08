@@ -23,7 +23,7 @@ Prerequisites
 :Client ID & Client Secret: These two values are needed to access Reddit's API
                             as a **script** application (see :ref:`oauth` for
                             other application types). If you don't already have
-                            a client ID and client secret, follow Redddit's
+                            a client ID and client secret, follow Reddit's
                             `First Steps Guide`_ to create them.
 
 :User Agent: A user agent is a unique indentifer that helps Reddit determine
