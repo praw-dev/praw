@@ -303,6 +303,26 @@ class LiveThread(RedditBase):
     def _info_path(self):
         return API_PATH['liveabout'].format(id=self.id)
 
+    def discussions(self, **generator_kwargs):
+        """Get submissions linking to the thread.
+
+        :param generator_kwargs: keyword arguments passed to
+            :class:`.ListingGenerator` constructor.
+        :returns: A :class:`.ListingGenerator` object which yields
+            :class:`.Submission` object.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           for submission in thread.discussions(limit=None):
+               print(submission.title)
+
+        """
+        url = API_PATH['live_discussions'].format(id=self.id)
+        return ListingGenerator(self._reddit, url, **generator_kwargs)
+
     def updates(self, **generator_kwargs):
         """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
 

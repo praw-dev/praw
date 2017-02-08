@@ -1,7 +1,8 @@
 """Test praw.models.LiveThread"""
 from praw.const import API_PATH
 from praw.exceptions import APIException
-from praw.models import LiveThread, LiveUpdate, Redditor, RedditorList
+from praw.models import (LiveThread, LiveUpdate, Redditor, RedditorList,
+                         Submission)
 import mock
 import pytest
 
@@ -34,6 +35,13 @@ class TestLiveThread(IntegrationTest):
         thread = LiveThread(self.reddit, 'ukaeu1ik4sw5')
         with self.recorder.use_cassette('TestLiveThread_test_init'):
             assert thread.title == 'reddit updates'
+
+    def test_discussions(self):
+        thread = LiveThread(self.reddit, 'ukaeu1ik4sw5')
+        with self.recorder.use_cassette('TestLiveThread_test_discussions'):
+            for submission in thread.discussions(limit=None):
+                assert isinstance(submission, Submission)
+        assert submission.title == 'reddit updates'
 
     @mock.patch('time.sleep', return_value=None)
     def test_updates(self, _):
