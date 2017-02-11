@@ -257,7 +257,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         :param reddit: An instance of :class:`~.Reddit`.
         :param display_name: The name of the subreddit.
 
-        .. note:: This class should not be initialized directly instead obtain
+        .. note:: This class should not be initialized directly. Instead obtain
            an instance via: ``reddit.subreddit('subreddit_name')``
 
         """
