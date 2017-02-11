@@ -43,6 +43,12 @@ class TestLiveThread(IntegrationTest):
                 assert isinstance(submission, Submission)
         assert submission.title == 'reddit updates'
 
+    def test_report(self):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, 'ydwwxneu7vsa')
+        with self.recorder.use_cassette('TestLiveThread_test_report'):
+            thread.report('spam')
+
     @mock.patch('time.sleep', return_value=None)
     def test_updates(self, _):
         thread = LiveThread(self.reddit, 'ukaeu1ik4sw5')

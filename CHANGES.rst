@@ -19,6 +19,7 @@ Unreleased
 * :meth:`.LiveContributorRelationship.update_invite` to update contributor
   invite permissions for a redditor.
 * :meth:`.LiveThread.discussions` to get submissions linking to the thread.
+* :meth:`.LiveThread.report` to report the thread violating the Reddit rules.
 
 **Fixed**
 

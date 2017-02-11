@@ -345,6 +345,24 @@ class LiveThread(RedditBase):
         url = API_PATH['live_discussions'].format(id=self.id)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
+    def report(self, type):  # pylint: disable=redefined-builtin
+        """Report the thread violating the Reddit rules.
+
+        :param type: One of ``'spam'``, ``'vote-manipulation'``,
+            ``'personal-information'``, ``'sexualizing-minors'``,
+            ``'site-breaking'``.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('xyu8kmjvfrww')
+           thread.report('spam')
+
+        """
+        url = API_PATH['live_report'].format(id=self.id)
+        self._reddit.post(url, data={'type': type})
+
     def updates(self, **generator_kwargs):
         """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
 
