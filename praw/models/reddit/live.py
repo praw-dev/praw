@@ -34,15 +34,28 @@ class LiveContributorRelationship(object):
         return temp if isinstance(temp, RedditorList) else temp[0]
 
     def __init__(self, thread):
-        """Create a LiveContributorRelationship instance.
+        """Create a :class:`.LiveContributorRelationship` instance.
 
         :param thread: An instance of :class:`.LiveThread`.
+
+        .. note:: This class should not be initialized directly. Instead obtain
+           an instance via: ``thread.contributor`` where ``thread`` is a
+           :class:`.LiveThread` instance.
 
         """
         self.thread = thread
 
     def accept_invite(self):
-        """Accept an invite to contribute the live thread."""
+        """Accept an invite to contribute the live thread.
+
+        Usage:
+
+        .. code-block:: python
+
+            thread = reddit.live('ydwwxneu7vsa')
+            thread.contributor.accept_invite()
+
+        """
         url = API_PATH['live_accept_invite'].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
@@ -80,7 +93,16 @@ class LiveContributorRelationship(object):
         self.thread._reddit.post(url, data=data)
 
     def leave(self):
-        """Abdicate the live thread contributor position (use with care)."""
+        """Abdicate the live thread contributor position (use with care).
+
+        Usage:
+
+        .. code-block:: python
+
+            thread = reddit.live('ydwwxneu7vsa')
+            thread.contributor.leave()
+
+        """
         url = API_PATH['live_leave'].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
@@ -330,6 +352,16 @@ class LiveThread(RedditBase):
             :class:`.ListingGenerator` constructor.
         :returns: A :class:`.ListingGenerator` object which yields
             :class:`.LiveUpdate` object.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('ukaeu1ik4sw5')
+           after = 'LiveUpdate_fefb3dae-7534-11e6-b259-0ef8c7233633'
+           for submission in thread.updates(limit=5, params={'after': after}):
+               print(submission.body)
+
         """
         url = API_PATH['live_updates'].format(id=self.id)
         for update in ListingGenerator(self._reddit, url,
@@ -361,6 +393,13 @@ class LiveThreadContribution(object):
         """Add an update to the live thread.
 
         :param body: The markdown formatted content for the update.
+
+        Usage:
+
+        .. code-block:: python
+
+           thread = reddit.live('ydwwxneu7vsa')
+           thread.contrib.add('test `LiveThreadContribution.add()`')
 
         """
         url = API_PATH['live_add_update'].format(id=self.thread.id)
@@ -551,7 +590,17 @@ class LiveUpdateContribution(object):
         self.update = update
 
     def remove(self):
-        """Remove a live update."""
+        """Remove a live update.
+
+        Usage:
+
+         .. code-block:: python
+
+           thread = reddit.live('ydwwxneu7vsa')
+           update = thread['6854605a-efec-11e6-b0c7-0eafac4ff094']
+           update.contrib.remove()
+
+        """
         url = API_PATH['live_remove_update'].format(id=self.update.thread.id)
         data = {'id': self.update.fullname}
         self.update.thread._reddit.post(url, data=data)
