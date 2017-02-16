@@ -37,6 +37,11 @@ class TestReddit(IntegrationTest):
             assert isinstance(live, LiveThread)
             assert live.title == 'PRAW Create Test'
 
+    def test_live_now__no_featured(self):
+        with self.recorder.use_cassette('TestReddit.test_live_now'
+                                        '__no_featured'):
+            assert self.reddit.live.now() is None
+
     def test_random_subreddit(self):
         names = set()
         with self.recorder.use_cassette(

@@ -39,6 +39,21 @@ class LiveHelper(PRAWBase):
             'description': description, 'nsfw': nsfw, 'resources': resources,
             'title': title})
 
+    def now(self):
+        """Get the currently featured live thread.
+
+        :returns: The :class:`.LiveThread` object, or ``None`` if there is
+            no currently featured live thread.
+
+        Usage:
+
+        .. code-block:: python
+
+        thread = reddit.live.now()  # LiveThread object or None
+
+        """
+        return self._reddit.get(API_PATH['live_now'])
+
 
 class MultiredditHelper(PRAWBase):
     """Provide a set of functions to interact with Multireddits."""
