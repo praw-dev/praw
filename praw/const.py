@@ -65,6 +65,7 @@ API_PATH = {
     'live_discussions':       'live/{id}/discussions',
     'live_invite':            'api/live/{id}/invite_contributor',
     'live_leave':             'api/live/{id}/leave_contributor',
+    'live_now':               'api/live/happening_now',
     'live_remove_update':     'api/live/{id}/delete_update',
     'live_remove_contrib':    'api/live/{id}/rm_contributor',
     'live_remove_invite':     'api/live/{id}/rm_contributor_invite',
