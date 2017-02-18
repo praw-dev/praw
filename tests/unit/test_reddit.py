@@ -1,3 +1,5 @@
+import types
+
 import mock
 import pytest
 from praw import __version__, Reddit
@@ -38,6 +40,15 @@ class TestReddit(UnitTest):
             print(self.reddit.info(None))
 
         assert str(excinfo.value) == 'fullnames must be a list'
+
+    def test_live_info__valid_param(self):
+        gen = self.reddit.live.info(['dummy', 'dummy2'])
+        assert isinstance(gen, types.GeneratorType)
+
+    def test_live_info__invalid_param(self):
+        with pytest.raises(TypeError) as excinfo:
+            self.reddit.live.info(None)
+        assert str(excinfo.value) == 'ids must be a list'
 
     def test_multireddit(self):
         assert self.reddit.multireddit('bboe', 'aa').path == '/user/bboe/m/aa'

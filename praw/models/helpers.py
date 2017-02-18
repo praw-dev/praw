@@ -23,6 +23,46 @@ class LiveHelper(PRAWBase):
         """
         return LiveThread(self._reddit, id=id)
 
+    def info(self, ids):
+        """Fetch information about each live thread in ``ids``.
+
+        :param ids: A list of IDs for a live thread.
+        :returns: A generator that yields :class:`.LiveThread` instances.
+
+        Live threads that cannot be matched will not be generated.
+        Requests will be issued in batches for each 100 IDs.
+
+        .. note::
+            This method doesn't support IDs for live updates.
+
+        .. warning:
+            Unlike :meth:`.Reddit.info`, the output of this method
+            may not reflect the order of input.
+
+        Usage:
+
+        .. code:: python
+
+            ids = ['3rgnbke2rai6hen7ciytwcxadi',
+                   'sw7bubeycai6hey4ciytwamw3a',
+                   't8jnufucss07']
+            for thread in reddit.live.info(ids)
+                print(thread.title)
+
+        """
+        if not isinstance(ids, list):
+            raise TypeError('ids must be a list')
+
+        def generator():
+            for position in range(0, len(ids), 100):
+                ids_chunk = ids[position:position + 100]
+                url = API_PATH['live_info'].format(ids=','.join(ids_chunk))
+                params = {'limit': 100}  # 25 is used if not specified
+                for result in self._reddit.get(url, params=params):
+                    yield result
+
+        return generator()
+
     def create(self, title, description=None, nsfw=False, resources=None):
         """Create a new LiveThread.
 

@@ -21,6 +21,8 @@ Unreleased
 * :meth:`.LiveThread.discussions` to get submissions linking to the thread.
 * :meth:`.LiveThread.report` to report the thread violating the Reddit rules.
 * :meth:`.LiveHelper.now` to get the currently featured live thread.
+* :meth:`.LiveHelper.info` to fetch information about each live thread in
+  live thread IDs.
 
 **Fixed**
 
