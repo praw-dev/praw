@@ -7,10 +7,6 @@ class BaseList(PRAWBase):
 
     CHILD_ATTRIBUTE = None
 
-    @staticmethod
-    def _convert(reddit, item):
-        raise NotImplementedError('BaseList must be extended.')
-
     def __init__(self, reddit, _data):
         """Initialize a BaseList instance.
 
@@ -24,7 +20,7 @@ class BaseList(PRAWBase):
 
         child_list = getattr(self, self.CHILD_ATTRIBUTE)
         for index, item in enumerate(child_list):
-            child_list[index] = self._convert(reddit, item)
+            child_list[index] = reddit._objector.objectify(item)
 
     def __contains__(self, item):
         """Test if item exists in the list."""

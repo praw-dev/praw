@@ -27,6 +27,9 @@ Unreleased
 * Uploading an image resulting in too large of a request (>500 KB) now
   raises ``prawcore.TooLarge`` instead of an ``AssertionError``.
 * Uploading an invalid image raises :class:`.APIException`.
+* :class:`.Redditor` instances obtained via :attr:`.moderator` (e.g.,
+  ``reddit.subreddit('subreddit').moderator()``) will contain attributes with
+  the relationship metadata (e.g., ``mod_permissions``).
 
 4.3.0 (2017/01/19)
 ------------------

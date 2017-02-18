@@ -124,6 +124,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
            reddit.subreddit('SUBREDDIT').banned.add('NAME', reason='a reason')
 
+        To list the banned users along with any notes, try:
+
+        .. code-block:: python
+
+           for ban in reddit.subreddit('SUBREDDIT').banned():
+               print('{}: {}'.format(ban, ban.note))
+
         """
         if self._banned is None:
             self._banned = SubredditRelationship(self, 'banned')
@@ -170,7 +177,22 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     @property
     def moderator(self):
-        """An instance of :class:`.ModeratorRelationship`."""
+        """An instance of :class:`.ModeratorRelationship`.
+
+        For example to add a moderator try:
+
+        .. code-block:: python
+
+           reddit.subreddit('SUBREDDIT').moderator.add('NAME')
+
+        To list the moderators along with their permissions try:
+
+        .. code-block:: python
+
+           for moderator in reddit.subreddit('SUBREDDIT').moderator():
+               print('{}: {}'.format(moderator, moderator.mod_permissions))
+
+        """
         if self._moderator is None:
             self._moderator = ModeratorRelationship(self, 'moderator')
         return self._moderator
@@ -1284,6 +1306,14 @@ class ModeratorRelationship(SubredditRelationship):
         .. code:: python
 
            moderators = reddit.subreddit('nameofsub').moderator()
+
+        For example, to list the moderators along with their permissions try:
+
+        .. code:: python
+
+           for moderator in reddit.subreddit('SUBREDDIT').moderator():
+               print('{}: {}'.format(moderator, moderator.mod_permissions))
+
 
         """
         params = {} if redditor is None else {'user': redditor}
