@@ -1,0 +1,110 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2017-02-19T04:45:00",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.3.1.dev0 prawcore/0.8.0"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 19 Feb 2017 04:45:01 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "loid=7jKGfQOeqx2QTl5i0M; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-nrt6128-NRT",
+          "X-Timer": "S1487479500.959797,VS0,VE187",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2017-02-19T04:45:01",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Cookie": "loid=7jKGfQOeqx2QTl5i0M; loidcreated=1487479500000",
+          "User-Agent": "<USER_AGENT> PRAW/4.3.1.dev0 prawcore/0.8.0"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/live/by_id/3rgnbke2rai6hen7ciytwcxadi,LiveUpdateEvent_sw7bubeycai6hey4ciytwamw3a,t8jnufucss07?raw_json=1&limit=100"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"children\": [{\"kind\": \"LiveUpdateEvent\", \"data\": {\"description\": \"\", \"description_html\": \"\", \"created\": 1392968635.0, \"title\": \"/r/UkrainianConflict Live Thread\", \"created_utc\": 1392939835.0, \"websocket_url\": null, \"name\": \"LiveUpdateEvent_3rgnbke2rai6hen7ciytwcxadi\", \"state\": \"complete\", \"nsfw\": false, \"resources\": \"Live updates and breaking news on the ongoing Ukrainian conflict.\\n\\n**[Link to Subreddit](http://www.reddit.com/r/UkrainianConflict/)**\\n\\n**[Link to Twitter](https://twitter.com/UkraineConflict)**\\n\\n**[Link to IRC Chatroom](https://kiwiirc.com/client/irc.snoonet.org/UkrainianConflict)**\", \"viewer_count_fuzzed\": null, \"id\": \"3rgnbke2rai6hen7ciytwcxadi\", \"viewer_count\": null, \"resources_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003ELive updates and breaking news on the ongoing Ukrainian conflict.\\u003C/p\\u003E\\n\\n\\u003Cp\\u003E\\u003Cstrong\\u003E\\u003Ca href=\\\"http://www.reddit.com/r/UkrainianConflict/\\\" rel=\\\"nofollow\\\"\\u003ELink to Subreddit\\u003C/a\\u003E\\u003C/strong\\u003E\\u003C/p\\u003E\\n\\n\\u003Cp\\u003E\\u003Cstrong\\u003E\\u003Ca href=\\\"https://twitter.com/UkraineConflict\\\" rel=\\\"nofollow\\\"\\u003ELink to Twitter\\u003C/a\\u003E\\u003C/strong\\u003E\\u003C/p\\u003E\\n\\n\\u003Cp\\u003E\\u003Cstrong\\u003E\\u003Ca href=\\\"https://kiwiirc.com/client/irc.snoonet.org/UkrainianConflict\\\" rel=\\\"nofollow\\\"\\u003ELink to IRC Chatroom\\u003C/a\\u003E\\u003C/strong\\u003E\\u003C/p\\u003E\\n\\u003C/div\\u003E\"}}, {\"kind\": \"LiveUpdateEvent\", \"data\": {\"description\": \"\", \"description_html\": \"\", \"created\": 1405481798.0, \"title\": \"NBA Summer League\", \"created_utc\": 1405452998.0, \"websocket_url\": null, \"name\": \"LiveUpdateEvent_t8jnufucss07\", \"state\": \"complete\", \"nsfw\": false, \"resources\": \"\", \"viewer_count_fuzzed\": null, \"id\": \"t8jnufucss07\", \"viewer_count\": null, \"resources_html\": \"\"}}], \"after\": null, \"before\": null}}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "1869",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 19 Feb 2017 04:45:01 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-nrt6127-NRT",
+          "X-Timer": "S1487479501.232790,VS0,VE207",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=pU7sMv8PML9%2FQxN7xEWCCoFS0lEMvo9LxLRwrurxRuNNHovOmfdDpQfq3KfdXyvvxe1kxkIAu3s%3D",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/live/by_id/3rgnbke2rai6hen7ciytwcxadi,LiveUpdateEvent_sw7bubeycai6hey4ciytwamw3a,t8jnufucss07?raw_json=1&limit=100"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}
