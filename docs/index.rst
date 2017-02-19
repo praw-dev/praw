@@ -52,3 +52,8 @@ applications and **web** applications.
    package_info/change_log
    package_info/contributing
    package_info/references
+
+.. toctree::
+   :hidden:
+
+   genindex

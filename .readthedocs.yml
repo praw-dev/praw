@@ -1,0 +1,6 @@
+formats:
+  - htmlzip
+  - pdf
+python:
+  pip_install: true
+  version: 3.5
