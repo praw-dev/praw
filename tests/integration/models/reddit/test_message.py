@@ -1,4 +1,4 @@
-from praw.models import Message, SubredditMessage
+from praw.models import Message, Redditor, Subreddit, SubredditMessage
 import mock
 import pytest
 
@@ -6,6 +6,29 @@ from ... import IntegrationTest
 
 
 class TestMessage(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_attributes(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestMessage.test_attributes'):
+            messages = list(self.reddit.inbox.messages())
+            count = len(messages)
+            while messages:
+                message = messages.pop(0)
+                messages.extend(message.replies)
+                count -= 1
+                try:
+                    assert message.author is None \
+                        or isinstance(message.author, Redditor)
+                    assert isinstance(message.dest, (Redditor, Subreddit))
+                    assert isinstance(message.replies, list)
+                    assert message.subreddit is None \
+                        or isinstance(message.subreddit, Subreddit)
+                except:
+                    import pprint
+                    pprint.pprint(vars(message))
+                    raise
+        assert count < 0
+
     @mock.patch('time.sleep', return_value=None)
     def test_block(self, _):
         self.reddit.read_only = False

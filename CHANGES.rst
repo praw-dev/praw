@@ -32,6 +32,9 @@ Unreleased
 * :class:`.Redditor` instances obtained via :attr:`.moderator` (e.g.,
   ``reddit.subreddit('subreddit').moderator()``) will contain attributes with
   the relationship metadata (e.g., ``mod_permissions``).
+* :class:`.Message` instances retrieved from the inbox have now have attributes
+  ``author``, ``dest`` ``replies`` and ``subreddit`` properly converted to
+  their appropriate PRAW model.
 
 4.3.0 (2017/01/19)
 ------------------

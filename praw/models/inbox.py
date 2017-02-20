@@ -131,8 +131,7 @@ class Inbox(PRAWBase):
 
         """
         listing = self._reddit.get(API_PATH['message'].format(id=message_id))
-        messages = [listing[0]] + list(self._reddit._objector
-                                       .objectify(listing[0].replies))
+        messages = [listing[0]] + listing[0].replies
         while messages:
             message = messages.pop(0)
             if message.id == message_id:

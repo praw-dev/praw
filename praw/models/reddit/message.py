@@ -1,7 +1,9 @@
 """Provide the Message class."""
-from .base import RedditBase
 from ...const import API_PATH
+from .base import RedditBase
 from .mixins import InboxableMixin, ReplyableMixin
+from .redditor import Redditor
+from .subreddit import Subreddit
 
 
 class Message(RedditBase, InboxableMixin, ReplyableMixin):
@@ -17,8 +19,25 @@ class Message(RedditBase, InboxableMixin, ReplyableMixin):
         :param reddit: An instance of :class:`.Reddit`.
 
         """
-        if data.get('subreddit'):
+        if data['author']:
+            data['author'] = Redditor(reddit, data['author'])
+
+        if data['dest'].startswith('#'):
+            data['dest'] = Subreddit(reddit, data['dest'][1:])
+        else:
+            data['dest'] = Redditor(reddit, data['dest'])
+
+        if data['replies']:
+            replies = data['replies']
+            data['replies'] = reddit._objector.objectify(
+                replies['data']['children'])
+        else:
+            data['replies'] = []
+
+        if data['subreddit']:
+            data['subreddit'] = Subreddit(reddit, data['subreddit'])
             return SubredditMessage(reddit, _data=data)
+
         return cls(reddit, _data=data)
 
     def __init__(self, reddit, _data):
