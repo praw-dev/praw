@@ -55,8 +55,10 @@ class Objector(object):
             if len(errors) == 1:
                 raise APIException(*errors[0])
             assert len(errors) == 0
-        elif isinstance(data, dict) and {'date', 'id', 'name'}.issubset(
-                set(data.keys())):
+
+        elif isinstance(data, dict) and (
+                {'date', 'id', 'name'}.issubset(set(data.keys()))
+                or {'id', 'name', 'permissions'}.issubset(set(data.keys()))):
             parser = self.parsers[self._reddit.config.kinds['redditor']]
             return parser.parse(data, self._reddit)
         elif isinstance(data, dict) and 'user' in data:

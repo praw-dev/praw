@@ -16,6 +16,9 @@ class TestLiveThread(IntegrationTest):
             contributors = thread.contributor()
         assert isinstance(contributors, RedditorList)
         assert len(contributors) > 0
+        for contributor in contributors:
+            assert 'permissions' in contributor.__dict__
+            assert isinstance(contributor, Redditor)
 
     @mock.patch('time.sleep', return_value=None)
     def test_contributor__with_manage_permission(self, _):
