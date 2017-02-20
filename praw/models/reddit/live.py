@@ -259,13 +259,17 @@ class LiveThread(RedditBase):
     def contributor(self):
         """An instance of :class:`.LiveContributorRelationship`.
 
-        Usage:
+        You can call the instance to get a list of contributors which is
+        represented as :class:`.RedditorList` instance consists of
+        :class:`.Redditor` instances. Those Redditor instances have
+        `permissions` attributes as contributors:
 
         .. code-block:: python
 
            thread = reddit.live('ukaeu1ik4sw5')
            for contributor in thread.contributor():
-               print(contributor)
+               # prints `(Redditor(name='Acidtwist'), [u'all'])`
+               print(contributor, contributor.permissions)
 
         """
         if self._contributor is None:
