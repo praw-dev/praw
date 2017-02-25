@@ -308,7 +308,15 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             self._reddit.config.reddit_url, path))
 
     def rules(self):
-        """Return rules for the subreddit."""
+        """Return rules for the subreddit.
+
+        For example to show the rules of ``/r/redditdev`` try:
+
+        .. code:: python
+
+           reddit.subreddit('redditdev').rules()
+
+        """
         return self._reddit.get(API_PATH['rules'].format(subreddit=self))
 
     def search(self, query, sort='relevance', syntax='cloudsearch',
@@ -898,6 +906,15 @@ class SubredditModeration(object):
         :class:`.ListingGenerator`.
 
         See ``unread`` for unread moderator messages.
+
+        To print the last 5 moderator mail messages and their replies, try:
+
+        .. code:: python
+
+          for message in reddit.subreddit('mod').mod.inbox(limit=5):
+            print("Author: {}, Body: {}".format(message.author, message.body))
+            for reply in message.replies:
+              print("Author: {}, Body: {}".format(reply.author, reply.body))
 
         """
         return ListingGenerator(
