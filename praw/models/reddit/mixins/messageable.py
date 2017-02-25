@@ -23,7 +23,14 @@ class MessageableMixin(object):
 
            reddit.redditor('spez').message('TEST', 'test message from PRAW')
 
-        To send a message the moderators of ``/r/test``, try:
+        To send a message to ``u/spez`` from the moderators of ``r/test`` try:
+
+        .. code:: python
+
+           reddit.redditor('spez').message('TEST', 'test message from r/test',
+                                           from_subreddit='test')
+
+        To send a message to the moderators of ``/r/test``, try:
 
         .. code:: python
 
