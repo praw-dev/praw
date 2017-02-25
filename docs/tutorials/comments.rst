@@ -78,7 +78,7 @@ requires one network request, and its response may yield additional
 :class:`.MoreComments` instances. As a result, by default,
 :meth:`.replace_more` only replaces at most thirty-two :class:`.MoreComments`
 instances -- all other instances are simply removed. The maximum number of
-instances to replace can be configured via the ``limit`` paramter. Additionally
+instances to replace can be configured via the ``limit`` parameter. Additionally
 a ``threshold`` parameter can be set to only perform replacement of
 :class:`.MoreComments` instances that represent a minimum number of comments;
 it defaults to 0, meaning all :class:`.MoreComments` instances will be replaced
