@@ -882,6 +882,13 @@ class SubredditModeration(object):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        To print all items in the edited queue try:
+
+        .. code:: python
+
+           for item in reddit.subreddit('mod').mod.edited(limit=None):
+               print(item)
+
         """
         self._handle_only(only, generator_kwargs)
         return ListingGenerator(
@@ -911,10 +918,10 @@ class SubredditModeration(object):
 
         .. code:: python
 
-          for message in reddit.subreddit('mod').mod.inbox(limit=5):
-            print("Author: {}, Body: {}".format(message.author, message.body))
-            for reply in message.replies:
-              print("Author: {}, Body: {}".format(reply.author, reply.body))
+           for message in reddit.subreddit('mod').mod.inbox(limit=5):
+               print("From: {}, Body: {}".format(message.author, message.body))
+               for reply in message.replies:
+                   print("From: {}, Body: {}".format(reply.author, reply.body))
 
         """
         return ListingGenerator(
@@ -928,6 +935,13 @@ class SubredditModeration(object):
             action.
         :param mod: If given, only return log entries for actions made by the
             passed in Redditor.
+
+        To print the moderator and subreddit of the last 5 modlog entries try:
+
+        .. code:: python
+
+           for log in reddit.subreddit('mod').mod.log(limit=5):
+               print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
 
         """
         params = {'mod': str(mod) if mod else mod, 'type': action}
@@ -945,6 +959,13 @@ class SubredditModeration(object):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        To print all modqueue items try:
+
+        .. code:: python
+
+           for item in reddit.subreddit('mod').mod.modqueue(limit=None):
+               print(item)
 
         """
         self._handle_only(only, generator_kwargs)
@@ -972,6 +993,14 @@ class SubredditModeration(object):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        To print the user and mod report reasons in the report queue try:
+
+        .. code:: python
+
+           for item in reddit.subreddit('mod').mod.reports():
+               print("User Reports: {}".format(report.user_reports))
+               print("Mod Reports: {}".format(report.mod_reports))
+
         """
         self._handle_only(only, generator_kwargs)
         return ListingGenerator(
@@ -991,6 +1020,13 @@ class SubredditModeration(object):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        To print the items in the spam queue try:
+
+        .. code:: python
+
+           for item in reddit.subreddit('mod').mod.spam():
+               print(item)
 
         """
         self._handle_only(only, generator_kwargs)
@@ -1026,6 +1062,13 @@ class SubredditModeration(object):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        To print the items in the unmoderated queue try:
+
+        .. code:: python
+
+           for item in reddit.subreddit('mod').mod.unmoderated():
+               print(item)
+
         """
         return ListingGenerator(
             self.subreddit._reddit, API_PATH['about_unmoderated'].format(
@@ -1038,6 +1081,13 @@ class SubredditModeration(object):
         :class:`.ListingGenerator`.
 
         See ``inbox`` for all messages.
+
+        To print the mail in the unread modmail queue try:
+
+        .. code:: python
+
+           for message in reddit.subreddit('mod').mod.unread():
+               print("From: {}, To: {}".format(message.author, message.dest))
 
         """
         return ListingGenerator(
@@ -1351,6 +1401,13 @@ class ModeratorRelationship(SubredditRelationship):
         An invite will be sent unless the user making this call is an admin
         user.
 
+        For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
+            permissions to ``'/r/test/``, try:
+
+        .. code:: python
+
+           reddit.subreddit('test').moderator.add('spez', ['posts', 'mail'])
+
         """
         other_settings = self._handle_permissions(permissions, other_settings)
         super(ModeratorRelationship, self).add(redditor, **other_settings)
@@ -1365,6 +1422,13 @@ class ModeratorRelationship(SubredditRelationship):
             empty list `[]` indicates no permissions, and when not provided
             `None`, indicates full permissions.
 
+        For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
+            permissions to ``'/r/test/``, try:
+
+        .. code:: python
+
+           reddit.subreddit('test').moderator.invite('spez', ['posts', 'mail'])
+
         """
         data = self._handle_permissions(permissions, other_settings)
         data.update({'name': str(redditor), 'type': 'moderator_invite'})
@@ -1372,7 +1436,15 @@ class ModeratorRelationship(SubredditRelationship):
         self.subreddit._reddit.post(url, data=data)
 
     def leave(self):
-        """Abdicate the moderator position (use with care)."""
+        """Abdicate the moderator position (use with care).
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('subredditname').moderator.leave()
+
+        """
         self.subreddit._reddit.post(API_PATH['leavemoderator'],
                                     data={'id': self.subreddit.fullname})
 
@@ -1386,7 +1458,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code:: python
 
-           reddit.subreddit('subredditname').mod.remove_invite('spez')
+           reddit.subreddit('subredditname').moderator.remove_invite('spez')
 
         """
         data = {'name': str(redditor), 'type': 'moderator_invite'}
@@ -1764,6 +1836,13 @@ class SubredditWiki(object):
         :param reason: (Optional) The reason for the creation.
         :param other_settings: Additional keyword arguments to pass.
 
+        To create the wiki page ``'praw_test'`` in ``'/r/test'`` try:
+
+        .. code:: python
+
+           reddit.subreddit('test').wiki.create(
+               'praw_test', 'wiki body text', reason='PRAW Test Creation')
+
         """
         name = name.replace(' ', '_').lower()
         new = WikiPage(self.subreddit._reddit, self.subreddit, name)
@@ -1775,6 +1854,13 @@ class SubredditWiki(object):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        To view the wiki revisions for ``'praw_test'`` in ``'/r/test'`` try:
+
+        .. code:: python
+
+           for item in reddit.subreddit('test').wiki['praw_test'].revisions():
+               print(item)
 
         """
         url = API_PATH['wiki_revisions'].format(subreddit=self.subreddit)

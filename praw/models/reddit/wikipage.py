@@ -87,6 +87,13 @@ class WikiPage(RedditBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        To view the wiki revisions for ``'praw_test'`` in ``'/r/test'`` try:
+
+        .. code:: python
+
+           for item in reddit.subreddit('test').wiki['praw_test'].revisions():
+               print(item)
+
         """
         url = API_PATH['wiki_page_revisions'].format(subreddit=self.subreddit,
                                                      page=self.name)
@@ -110,6 +117,12 @@ class WikiPageModeration(object):
         :param redditor: A redditor name (e.g., ``'spez'``) or
             :class:`~.Redditor` instance.
 
+        To add ``'spez'`` as an editor on the wikipage ``'praw_test'`` try:
+
+        .. code:: python
+
+           reddit.subreddit('test').wiki['praw_test'].mod.add('spez')
+
         """
         data = {'page': self.wikipage.name, 'username': str(redditor)}
         url = API_PATH['wiki_page_editor'].format(
@@ -121,6 +134,12 @@ class WikiPageModeration(object):
 
         :param redditor: A redditor name (e.g., ``'spez'``) or
             :class:`~.Redditor` instance.
+
+        To remove ``'spez'`` as an editor on the wikipage ``'praw_test'`` try:
+
+        .. code:: python
+
+           reddit.subreddit('test').wiki['praw_test'].mod.remove('spez')
 
         """
         data = {'page': self.wikipage.name, 'username': str(redditor)}
@@ -143,6 +162,14 @@ class WikiPageModeration(object):
             edit (see `add`), (2) only mods may edit and view
         :param other_settings: Additional keyword arguments to pass.
         :returns: The updated WikiPage settings.
+
+        To set the wikipage ``'praw_test'`` in ``'/r/test'`` to mod only and
+          disable it from showing in the page list, try:
+
+        .. code:: python
+
+           reddit.subreddit('test').wiki['praw_test'].mod.update(listed=False,
+                                                                 permlevel=2)
 
         """
         other_settings.update({'listed': listed, 'permlevel': permlevel})
