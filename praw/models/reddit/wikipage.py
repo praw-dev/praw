@@ -91,8 +91,8 @@ class WikiPage(RedditBase):
 
         .. code:: python
 
-          for item in reddit.subreddit('test').wiki['praw_test'].revisions():
-              print(item)
+           for item in reddit.subreddit('test').wiki['praw_test'].revisions():
+               print(item)
 
         """
         url = API_PATH['wiki_page_revisions'].format(subreddit=self.subreddit,
@@ -121,7 +121,7 @@ class WikiPageModeration(object):
 
         .. code:: python
 
-          reddit.subreddit('test').wiki['praw_test'].mod.add('spez')
+           reddit.subreddit('test').wiki['praw_test'].mod.add('spez')
 
         """
         data = {'page': self.wikipage.name, 'username': str(redditor)}
@@ -139,7 +139,7 @@ class WikiPageModeration(object):
 
         .. code:: python
 
-          reddit.subreddit('test').wiki['praw_test'].mod.remove('spez')
+           reddit.subreddit('test').wiki['praw_test'].mod.remove('spez')
 
         """
         data = {'page': self.wikipage.name, 'username': str(redditor)}
@@ -168,7 +168,8 @@ class WikiPageModeration(object):
 
         .. code:: python
 
-          reddit.subreddit('test').wiki['praw_test'].mod.update(False, 2)
+           reddit.subreddit('test').wiki['praw_test'].mod.update(listed=False,
+                                                                 permlevel=2)
 
         """
         other_settings.update({'listed': listed, 'permlevel': permlevel})

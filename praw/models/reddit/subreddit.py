@@ -883,10 +883,11 @@ class SubredditModeration(object):
         :class:`.ListingGenerator`.
 
         To print all items in the edited queue try:
+
         .. code:: python
 
-          for item in reddit.subreddit('mod').mod.edited(limit=None):
-            print(item)
+           for item in reddit.subreddit('mod').mod.edited(limit=None):
+               print(item)
 
         """
         self._handle_only(only, generator_kwargs)
@@ -917,10 +918,10 @@ class SubredditModeration(object):
 
         .. code:: python
 
-          for message in reddit.subreddit('mod').mod.inbox(limit=5):
-            print("Author: {}, Body: {}".format(message.author, message.body))
-            for reply in message.replies:
-              print("Author: {}, Body: {}".format(reply.author, reply.body))
+           for message in reddit.subreddit('mod').mod.inbox(limit=5):
+               print("From: {}, Body: {}".format(message.author, message.body))
+               for reply in message.replies:
+                   print("From: {}, Body: {}".format(reply.author, reply.body))
 
         """
         return ListingGenerator(
@@ -939,8 +940,8 @@ class SubredditModeration(object):
 
         .. code:: python
 
-          for log in reddit.subreddit('mod').mod.log(limit=5):
-            print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
+           for log in reddit.subreddit('mod').mod.log(limit=5):
+               print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
 
         """
         params = {'mod': str(mod) if mod else mod, 'type': action}
@@ -963,8 +964,8 @@ class SubredditModeration(object):
 
         .. code:: python
 
-          for item in reddit.subreddit('mod').mod.modqueue(limit=None):
-            print(item)
+           for item in reddit.subreddit('mod').mod.modqueue(limit=None):
+               print(item)
 
         """
         self._handle_only(only, generator_kwargs)
@@ -996,9 +997,9 @@ class SubredditModeration(object):
 
         .. code:: python
 
-          for report in reddit.subreddit('mod').mod.reports():
-              print("User Reports: %s" % report.user_reports)
-              print("Mod Reports: %s" % report.mod_reports)
+           for item in reddit.subreddit('mod').mod.reports():
+               print("User Reports: {}".format(report.user_reports))
+               print("Mod Reports: {}".format(report.mod_reports))
 
         """
         self._handle_only(only, generator_kwargs)
@@ -1024,8 +1025,8 @@ class SubredditModeration(object):
 
         .. code:: python
 
-          for item in reddit.subreddit('mod').mod.spam():
-              print(item)
+           for item in reddit.subreddit('mod').mod.spam():
+               print(item)
 
         """
         self._handle_only(only, generator_kwargs)
@@ -1065,8 +1066,8 @@ class SubredditModeration(object):
 
         .. code:: python
 
-          for item in reddit.subreddit('mod').mod.unmoderated():
-              print(item)
+           for item in reddit.subreddit('mod').mod.unmoderated():
+               print(item)
 
         """
         return ListingGenerator(
@@ -1085,8 +1086,8 @@ class SubredditModeration(object):
 
         .. code:: python
 
-          for mail in reddit.subreddit('mod').mod.unread():
-            print("From: {}, To: {}".format(mail.author, mail.dest))
+           for message in reddit.subreddit('mod').mod.unread():
+               print("From: {}, To: {}".format(message.author, message.dest))
 
         """
         return ListingGenerator(
@@ -1405,7 +1406,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code:: python
 
-          reddit.subreddit('test').moderator.add('spez', ['posts', 'mail'])
+           reddit.subreddit('test').moderator.add('spez', ['posts', 'mail'])
 
         """
         other_settings = self._handle_permissions(permissions, other_settings)
@@ -1426,7 +1427,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         .. code:: python
 
-          reddit.subreddit('test').moderator.invite('spez', ['posts', 'mail'])
+           reddit.subreddit('test').moderator.invite('spez', ['posts', 'mail'])
 
         """
         data = self._handle_permissions(permissions, other_settings)
@@ -1839,8 +1840,8 @@ class SubredditWiki(object):
 
         .. code:: python
 
-          reddit.subreddit('test').wiki.create(
-              'praw_test', 'wiki body text', reason='PRAW Test Creation')
+           reddit.subreddit('test').wiki.create(
+               'praw_test', 'wiki body text', reason='PRAW Test Creation')
 
         """
         name = name.replace(' ', '_').lower()
@@ -1858,8 +1859,8 @@ class SubredditWiki(object):
 
         .. code:: python
 
-          for item in reddit.subreddit('test').wiki['praw_test'].revisions():
-              print(item)
+           for item in reddit.subreddit('test').wiki['praw_test'].revisions():
+               print(item)
 
         """
         url = API_PATH['wiki_revisions'].format(subreddit=self.subreddit)
