@@ -5,8 +5,8 @@ import time
 
 from prawcore import Redirect
 
-from ...const import API_PATH, urljoin
-from ...exceptions import APIException
+from ...const import API_PATH, urljoin, urlparse
+from ...exceptions import APIException, ClientException
 from ..util import permissions_string, stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
@@ -198,6 +198,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._moderator
 
     @property
+    def modmail(self):
+        """An instance of :class:`.Modmail`."""
+        if self._modmail is None:
+            self._modmail = Modmail(self)
+        return self._modmail
+
+    @property
     def muted(self):
         """An instance of :class:`.SubredditRelationship`."""
         if self._muted is None:
@@ -290,8 +297,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if display_name:
             self.display_name = display_name
         self._banned = self._contributor = self._filters = self._flair = None
-        self._mod = self._moderator = self._muted = self._quarantine = None
-        self._stream = self._stylesheet = self._wiki = None
+        self._mod = self._moderator = self._modmail = self._muted = None
+        self._quarantine = self._stream = self._stylesheet = self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)
 
     def _info_path(self):
@@ -1515,6 +1522,55 @@ class ModeratorRelationship(SubredditRelationship):
         data = self._handle_permissions(
             permissions, {'name': str(redditor), 'type': 'moderator_invite'})
         self.subreddit._reddit.post(url, data=data)
+
+
+class Modmail(object):
+    """Provides modmail functions for a subreddit."""
+    def __call__(self,  # pylint: disable=invalid-name,redefined-builtin
+                 id=None, url=None):
+        """Get an individual conversation."""
+        return ModmailConversation(self.subreddit._reddit, id=id, url=url)
+
+    def __init__(self, subreddit):
+        self.subreddit = subreddit
+
+
+class ModmailConversation(RedditBase):
+    """A class for modmail conversations."""
+    STR_FIELD = 'id'
+
+    @staticmethod
+    def id_from_url(url):
+        """Return the ID contained within a conversation URL.
+        :param url: A url to a conversation in the following format:
+            * https://mod.reddit.com/mail/all/2gmz
+        Raise :class:`.ClientException` if URL is not a valid conversation URL.
+        """
+        parsed = urlparse(url)
+        if not parsed.netloc:
+            raise ClientException('Invalid URL: {}'.format(url))
+
+        parts = parsed.path.split('/')
+        submission_id = parts[-1]
+
+        if not submission_id.isalnum():
+            raise ClientException('Invalid URL: {}'.format(url))
+        return submission_id
+
+    def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
+                 url=None, _data=None):
+        super(ModmailConversation, self).__init__(reddit, _data)
+
+        if id is not None:
+            self.id = id  # pylint: disable=invalid-name
+        elif url is not None:
+            self.id = self.id_from_url(url)
+
+    def _fetch(self):
+        data = self._reddit.get(API_PATH['modmail_conversation']
+                                .format(id=self.id))
+        self.__dict__.update(data)
+        self._fetched = True
 
 
 class SubredditStream(object):
