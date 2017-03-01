@@ -122,7 +122,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').banned.add('NAME', reason='a reason')
+           reddit.subreddit('SUBREDDIT').banned.add('NAME', ban_reason='a reason')
 
         To list the banned users along with any notes, try:
 
