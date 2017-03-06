@@ -1,9 +1,9 @@
-import configparser
 import types
 
 import mock
 import pytest
 from praw import __version__, Reddit
+from praw.const import configparser
 from praw.exceptions import ClientException
 
 from . import UnitTest

@@ -1,5 +1,4 @@
 """Provide the Reddit class."""
-import configparser
 import os
 
 try:
@@ -15,7 +14,7 @@ from prawcore import (Authorizer, DeviceIDAuthorizer, ReadOnlyAuthorizer,
 
 from .exceptions import ClientException
 from .config import Config
-from .const import __version__, API_PATH, USER_AGENT_FORMAT
+from .const import __version__, API_PATH, USER_AGENT_FORMAT, configparser
 from .objector import Objector
 from . import models
 
