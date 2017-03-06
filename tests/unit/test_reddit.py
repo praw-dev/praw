@@ -1,3 +1,4 @@
+import configparser
 import types
 
 import mock
@@ -116,6 +117,11 @@ class TestReddit(UnitTest):
             assert str(excinfo.value).startswith('Required configuration '
                                                  'setting \'{}\' missing.'
                                                  .format(setting))
+
+    def test_reddit__site_name_no_section(self):
+        with pytest.raises(configparser.NoSectionError) as excinfo:
+            Reddit('bad_site_name')
+        assert 'praw.readthedocs.io' in excinfo.value.message
 
     def test_submission(self):
         assert self.reddit.submission('2gmzqe').id == '2gmzqe'
