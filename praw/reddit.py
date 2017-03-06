@@ -1,4 +1,5 @@
 """Provide the Reddit class."""
+import configparser
 import os
 
 try:
@@ -99,8 +100,22 @@ class Reddit(object):
         self._core = self._authorized_core = self._read_only_core = None
         self._objector = None
         self._unique_counter = 0
-        self.config = Config(site_name or os.getenv('praw_site') or 'DEFAULT',
-                             **config_settings)
+
+        try:
+            config_section = site_name or os.getenv('praw_site') or 'DEFAULT'
+            self.config = Config(config_section, **config_settings)
+        except configparser.NoSectionError as exc:
+            help_message = ('You provided the name of a praw.ini '
+                            'configuration which does not exist.\n\nFor help '
+                            'with creating a Reddit instance, visit\n'
+                            'https://praw.readthedocs.io/en/latest/code_overvi'
+                            'ew/reddit_instance.html\n\n'
+                            'For help on configuring PRAW, visit\n'
+                            'https://praw.readthedocs.io/en/latest/getting_sta'
+                            'rted/configuration.html')
+            if site_name is not None:
+                exc.message += '\n' + help_message
+            raise
 
         required_message = ('Required configuration setting {!r} missing. \n'
                             'This setting can be provided in a praw.ini file, '
