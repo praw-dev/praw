@@ -103,7 +103,7 @@ class Objector(object):
         elif isinstance(data, dict) and 'displayName' in data.keys():
             # Modmail subreddit
             data = self.fix_dict_keys(data, {'displayName': 'display_name'})
-            parser = self.parsers[self._reddit.config.kinds['subreddit']]
+            parser = self.parsers[self._reddit.config.kinds[data['type']]]
             return parser.parse(data, self._reddit)
         elif isinstance(data, dict) and 'user' in data:
             parser = self.parsers[self._reddit.config.kinds['redditor']]
