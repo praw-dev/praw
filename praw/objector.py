@@ -98,6 +98,7 @@ class Objector(object):
                                 'isOp': 'is_op',
                                 'isParticipant': 'is_participant'}
             data = self.fix_dict_keys(data, camel_attributes)
+            del(data['id'])
             parser = self.parsers[self._reddit.config.kinds['redditor']]
             return parser.parse(data, self._reddit)
         elif isinstance(data, dict) and 'displayName' in data.keys():
