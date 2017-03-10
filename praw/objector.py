@@ -5,6 +5,16 @@ from .exceptions import APIException
 class Objector(object):
     """The objector builds :class:`.RedditBase` objects."""
 
+    @staticmethod
+    def fix_dict_keys(d, corrections):
+        """Return a copy of d with keys replaced according to corrections.
+
+        :param d: The dict to be corrected.
+        :param corrections: A dict mapping keys to their replacements.
+
+        """
+        return {corrections.get(k, k): v for k, v in d.items()}
+
     def __init__(self, reddit):
         """Initialize an Objector instance.
 
@@ -65,7 +75,36 @@ class Objector(object):
                 {'conversation', 'messages', 'user', 'modActions'}
                 .issubset(set(data.keys()))):
             # Modmail conversation
-            return data
+            parser = self.parsers['ModmailConversation']
+            return parser.parse(data, self._reddit)
+        elif isinstance(data, dict) and 'actionTypeId' in data.keys():
+            # Modmail mod action
+            data = self.fix_dict_keys(data, {'actionTypeId': 'action_type'})
+            parser = self.parsers['ModmailAction']
+            return parser.parse(data, self._reddit)
+        elif isinstance(data, dict) and 'isInternal' in data.keys():
+            # Modmail message
+            camel_attributes = {'bodyMarkdown': 'body_markdown',
+                                'isInternal': 'is_internal'}
+            data = self.fix_dict_keys(data, camel_attributes)
+            parser = self.parsers['ModmailMessage']
+            return parser.parse(data, self._reddit)
+        elif isinstance(data, dict) and 'isAdmin' in data.keys():
+            # Modmail author
+            camel_attributes = {'isAdmin': 'is_admin',
+                                'isDeleted': 'is_deleted',
+                                'isHidden': 'is_hidden',
+                                'isMod': 'is_mod',
+                                'isOp': 'is_op',
+                                'isParticipant': 'is_participant'}
+            data = self.fix_dict_keys(data, camel_attributes)
+            parser = self.parsers[self._reddit.config.kinds['redditor']]
+            return parser.parse(data, self._reddit)
+        elif isinstance(data, dict) and 'displayName' in data.keys():
+            # Modmail subreddit
+            data = self.fix_dict_keys(data, {'displayName': 'display_name'})
+            parser = self.parsers[self._reddit.config.kinds['subreddit']]
+            return parser.parse(data, self._reddit)
         elif isinstance(data, dict) and 'user' in data:
             parser = self.parsers[self._reddit.config.kinds['redditor']]
             data['user'] = parser.parse({'name': data['user']}, self._reddit)

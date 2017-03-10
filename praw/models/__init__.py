@@ -15,7 +15,7 @@ from .reddit.more import MoreComments  # NOQA
 from .reddit.multi import Multireddit  # NOQA
 from .reddit.redditor import Redditor  # NOQA
 from .reddit.submission import Submission  # NOQA
-from .reddit.subreddit import Subreddit  # NOQA
+from .reddit.subreddit import ModmailAction, ModmailConversation, ModmailMessage, Subreddit  # NOQA
 from .reddit.wikipage import WikiPage  # NOQA
 from .stylesheet import Stylesheet  # NOQA
 from .subreddits import Subreddits  # NOQA
@@ -23,7 +23,8 @@ from .user import User  # NOQA
 
 __all__ = ('Auth', 'Comment', 'DomainListing', 'Front', 'Inbox', 'Listing',
            'ListingGenerator', 'LiveHelper', 'LiveThread', 'Message',
-           'ModAction', 'MoreComments', 'Multireddit', 'MultiredditHelper',
-           'Redditor', 'RedditorList', 'Stylesheet', 'Submission', 'Subreddit',
-           'SubredditHelper', 'SubredditMessage', 'Subreddits', 'User',
-           'WikiPage')
+           'ModAction', 'ModmailAction', 'ModmailConversation',
+           'ModmailMessage', 'MoreComments', 'Multireddit',
+           'MultiredditHelper', 'Redditor', 'RedditorList', 'Stylesheet',
+           'Submission', 'Subreddit', 'SubredditHelper', 'SubredditMessage',
+           'Subreddits', 'User', 'WikiPage')

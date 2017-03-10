@@ -1539,6 +1539,29 @@ class ModmailConversation(RedditBase):
     """A class for modmail conversations."""
     STR_FIELD = 'id'
 
+    @classmethod
+    def parse(cls, data, reddit):
+        if data['conversation']:
+            # Objectify authors
+            authors = [reddit._objector.objectify(author)
+                       for author in data['conversation']['authors']]
+            data['conversation']['authors'] = authors
+
+            # Objectify owner
+            data['conversation']['owner'] = reddit._objector.objectify(
+                data['conversation']['owner'])
+
+        data['conversation']['messages'] = []
+        data['conversation']['modActions'] = []
+        for obj in data['conversation']['objIds']:
+            obj_data = data[obj['key']][obj['id']]
+            data['conversation'][obj['key']].append(
+                reddit._objector.objectify(obj_data))
+        data['conversation']['mod_actions'] = (
+            data['conversation'].pop('modActions'))
+
+        return cls(reddit, _data=data['conversation'])
+
     @staticmethod
     def id_from_url(url):
         """Return the ID contained within a conversation URL.
@@ -1567,10 +1590,28 @@ class ModmailConversation(RedditBase):
             self.id = self.id_from_url(url)
 
     def _fetch(self):
-        data = self._reddit.get(API_PATH['modmail_conversation']
-                                .format(id=self.id))
-        self.__dict__.update(data)
+        other = self._reddit.get(API_PATH['modmail_conversation']
+                                 .format(id=self.id))
+        self.__dict__.update(other.__dict__)
         self._fetched = True
+
+
+class ModmailObject(RedditBase):
+    AUTHOR_ATTRIBUTE = 'author'
+    STR_FIELD = 'id'
+
+    def __setattr__(self, attribute, value):
+        if attribute == self.AUTHOR_ATTRIBUTE:
+            value = self._reddit._objector.objectify(value)
+        super(RedditBase, self).__setattr__(attribute, value)
+
+
+class ModmailAction(ModmailObject):
+    pass
+
+
+class ModmailMessage(ModmailObject):
+    pass
 
 
 class SubredditStream(object):
