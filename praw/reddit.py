@@ -72,7 +72,7 @@ class Reddit(object):
         """Handle the context manager close."""
         pass
 
-    def __init__(self, site_name=None, **config_settings):
+    def __init__(self, site_name=None, requestor_cls=None, **config_settings):
         """Initialize a Reddit instance.
 
         :param site_name: The name of a section in your ``praw.ini`` file from
@@ -83,6 +83,8 @@ class Reddit(object):
             ``None``, then the site name will be looked for in the environment
             variable praw_site. If it is not found there, the DEFAULT site will
             be used.
+
+        :param requestor_cls: A class that will be used to handle HTTP requests.
 
         Additional keyword arguments will be used to initialize the
         :class`.Config` object. This can be used to specify configuration
@@ -130,6 +132,7 @@ class Reddit(object):
                                   'must be set to None via a keyword arugment '
                                   'to the `Reddit` class constructor.')
 
+        self.requestor_cls = requestor_cls
         self._check_for_update()
         self._prepare_objector()
         self._prepare_prawcore()
@@ -273,8 +276,9 @@ class Reddit(object):
             self._objector.register(kind, klass)
 
     def _prepare_prawcore(self):
-        requestor = Requestor(USER_AGENT_FORMAT.format(self.config.user_agent),
-                              self.config.oauth_url, self.config.reddit_url)
+        req_cls = self.requestor_cls or Requestor
+        requestor = req_cls(USER_AGENT_FORMAT.format(self.config.user_agent),
+                            self.config.oauth_url, self.config.reddit_url)
         if self.config.client_secret:
             self._prepare_trusted_prawcore(requestor)
         else:
