@@ -12,8 +12,9 @@ class WikiPage(RedditBase):
     def _revision_generator(subreddit, url, generator_kwargs):
         for revision in ListingGenerator(subreddit._reddit, url,
                                          **generator_kwargs):
-            revision['author'] = Redditor(subreddit._reddit,
-                                          _data=revision['author']['data'])
+            if revision['author'] is not None:
+                revision['author'] = Redditor(subreddit._reddit,
+                                              _data=revision['author']['data'])
             revision['page'] = WikiPage(subreddit._reddit, subreddit,
                                         revision['page'], revision['id'])
             yield revision
@@ -59,8 +60,9 @@ class WikiPage(RedditBase):
     def _fetch(self):
         params = {'v': self._revision} if self._revision else None
         data = self._reddit.get(self._info_path(), params=params)['data']
-        data['revision_by'] = Redditor(self._reddit,
-                                       _data=data['revision_by']['data'])
+        if data['revision_by'] is not None:
+            data['revision_by'] = Redditor(self._reddit,
+                                           _data=data['revision_by']['data'])
         self.__dict__.update(data)
         self._fetched = True
 
