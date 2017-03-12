@@ -1539,29 +1539,6 @@ class ModmailConversation(RedditBase):
     """A class for modmail conversations."""
     STR_FIELD = 'id'
 
-    @classmethod
-    def parse(cls, data, reddit):
-        if data['conversation']:
-            # Objectify authors
-            authors = [reddit._objector.objectify(author)
-                       for author in data['conversation']['authors']]
-            data['conversation']['authors'] = authors
-
-            # Objectify owner
-            data['conversation']['owner'] = reddit._objector.objectify(
-                data['conversation']['owner'])
-
-        data['conversation']['messages'] = []
-        data['conversation']['modActions'] = []
-        for obj in data['conversation']['objIds']:
-            obj_data = data[obj['key']][obj['id']]
-            data['conversation'][obj['key']].append(
-                reddit._objector.objectify(obj_data))
-        data['conversation']['mod_actions'] = (
-            data['conversation'].pop('modActions'))
-
-        return cls(reddit, _data=data['conversation'])
-
     @staticmethod
     def id_from_url(url):
         """Return the ID contained within a conversation URL.
@@ -1573,12 +1550,34 @@ class ModmailConversation(RedditBase):
         if not parsed.netloc:
             raise ClientException('Invalid URL: {}'.format(url))
 
-        parts = parsed.path.split('/')
-        submission_id = parts[-1]
+        submission_id = parsed.path.rsplit('/', 1)[-1]
 
         if not submission_id.isalnum():
             raise ClientException('Invalid URL: {}'.format(url))
         return submission_id
+
+    @classmethod
+    def parse(cls, data, reddit):
+        conversation = data['conversation']
+
+        conversation['authors'] = [reddit._objector.objectify(author)
+                                   for author in conversation['authors']]
+        conversation['owner'] = reddit._objector.objectify(
+            conversation['owner'])
+        conversation.update(cls._convert_conversation_objects(data, reddit))
+
+        conversation = reddit._objector.snake_case_keys(conversation)
+
+        return cls(reddit, _data=conversation)
+
+    @classmethod
+    def _convert_conversation_objects(cls, data, reddit):
+        result = {'messages': [], 'modActions': []}
+        for object in data['conversation']['objIds']:
+            key = object['key']
+            object_data = data[key][object['id']]
+            result[key].append(reddit._objector.objectify(object_data))
+        return result
 
     def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
                  url=None, _data=None):

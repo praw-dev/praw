@@ -1,4 +1,6 @@
 """Provides the Objector class."""
+import re
+
 from .exceptions import APIException
 
 
@@ -6,14 +8,19 @@ class Objector(object):
     """The objector builds :class:`.RedditBase` objects."""
 
     @staticmethod
-    def fix_dict_keys(d, corrections):
+    def camel_to_snake(name):
+        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+    @staticmethod
+    def snake_case_keys(d):
         """Return a copy of d with keys replaced according to corrections.
 
         :param d: The dict to be corrected.
         :param corrections: A dict mapping keys to their replacements.
 
         """
-        return {corrections.get(k, k): v for k, v in d.items()}
+        return {Objector.camel_to_snake(k): v for k, v in d.items()}
 
     def __init__(self, reddit):
         """Initialize an Objector instance.
@@ -79,31 +86,24 @@ class Objector(object):
             return parser.parse(data, self._reddit)
         elif isinstance(data, dict) and 'actionTypeId' in data.keys():
             # Modmail mod action
-            data = self.fix_dict_keys(data, {'actionTypeId': 'action_type'})
+            data = self.snake_case_keys(data)
             parser = self.parsers['ModmailAction']
             return parser.parse(data, self._reddit)
         elif isinstance(data, dict) and 'isInternal' in data.keys():
             # Modmail message
-            camel_attributes = {'bodyMarkdown': 'body_markdown',
-                                'isInternal': 'is_internal'}
-            data = self.fix_dict_keys(data, camel_attributes)
+            data = self.snake_case_keys(data)
             parser = self.parsers['ModmailMessage']
             return parser.parse(data, self._reddit)
         elif isinstance(data, dict) and 'isAdmin' in data.keys():
             # Modmail author
-            camel_attributes = {'isAdmin': 'is_admin',
-                                'isDeleted': 'is_deleted',
-                                'isHidden': 'is_hidden',
-                                'isMod': 'is_mod',
-                                'isOp': 'is_op',
-                                'isParticipant': 'is_participant'}
-            data = self.fix_dict_keys(data, camel_attributes)
-            del(data['id'])
+            data = self.snake_case_keys(data)
+            # Prevent clobbering base-36 id
+            del data['id']
             parser = self.parsers[self._reddit.config.kinds['redditor']]
             return parser.parse(data, self._reddit)
         elif isinstance(data, dict) and 'displayName' in data.keys():
             # Modmail subreddit
-            data = self.fix_dict_keys(data, {'displayName': 'display_name'})
+            data = self.snake_case_keys(data)
             parser = self.parsers[self._reddit.config.kinds[data['type']]]
             return parser.parse(data, self._reddit)
         elif isinstance(data, dict) and 'user' in data:
