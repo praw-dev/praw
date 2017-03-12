@@ -265,7 +265,8 @@ method on a :class:`.CommentForest` instance. For example:
 As you may be aware there will periodically be :class:`.MoreComments` instances
 scattered throughout the forest. Replace those :class:`.MoreComments` instances
 at any time by calling :meth:`.replace_more` on a :class:`.CommentForest`
-instance. See :ref:`extracting_comments` for an example.
+instance. Calling :meth:`.replace_more` access ``comments``, and so must be done
+after ``comment_sort`` is updated. See :ref:`extracting_comments` for an example.
 
 Determine Available Attributes of an Object
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
