@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Fixed**
+
+* Fix bug where :class:`.WikiPage` revisions with deleted authors caused
+  `TypeError`.
+
 4.4.0 (2017/02/21)
 ------------------
 
