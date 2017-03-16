@@ -11,11 +11,12 @@ from .modaction import ModAction  # NOQA
 from .reddit.comment import Comment  # NOQA
 from .reddit.live import LiveThread, LiveUpdate  # NOQA
 from .reddit.message import Message, SubredditMessage  # NOQA
+from .reddit.modmail import ModmailAction, ModmailConversation, ModmailMessage
 from .reddit.more import MoreComments  # NOQA
 from .reddit.multi import Multireddit  # NOQA
 from .reddit.redditor import Redditor  # NOQA
 from .reddit.submission import Submission  # NOQA
-from .reddit.subreddit import ModmailAction, ModmailConversation, ModmailMessage, Subreddit  # NOQA
+from .reddit.subreddit import Subreddit  # NOQA
 from .reddit.wikipage import WikiPage  # NOQA
 from .stylesheet import Stylesheet  # NOQA
 from .subreddits import Subreddits  # NOQA
