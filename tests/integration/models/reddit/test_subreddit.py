@@ -138,6 +138,17 @@ class TestSubreddit(IntegrationTest):
             assert submission.title == 'Test Title'
 
     @mock.patch('time.sleep', return_value=None)
+    def test_submit__empty_selftext(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubreddit.test_submit__empty_selftext'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            submission = subreddit.submit('Test Title', selftext='')
+            assert submission.author == self.reddit.config.username
+            assert submission.selftext == ''
+            assert submission.title == 'Test Title'
+
+    @mock.patch('time.sleep', return_value=None)
     def test_submit__url(self, _):
         url = 'https://praw.readthedocs.org/en/stable/'
         self.reddit.read_only = False
