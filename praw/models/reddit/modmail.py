@@ -32,6 +32,8 @@ class ModmailConversation(RedditBase):
                                    for author in conversation['authors']]
         conversation['owner'] = reddit._objector.objectify(
             conversation['owner'])
+
+        cls._convert_user_summary(data['user'], reddit)
         conversation['user'] = reddit._objector.objectify(data['user'])
         conversation.update(cls._convert_conversation_objects(data, reddit))
 
@@ -41,12 +43,33 @@ class ModmailConversation(RedditBase):
 
     @classmethod
     def _convert_conversation_objects(cls, data, reddit):
+        """Convert messages and mod actions to PRAW objects."""
         result = {'messages': [], 'modActions': []}
         for object in data['conversation']['objIds']:
             key = object['key']
             object_data = data[key][object['id']]
             result[key].append(reddit._objector.objectify(object_data))
         return result
+
+    @classmethod
+    def _convert_user_summary(cls, data, reddit):
+        """Convert dictionaries of recent user history to PRAW objects."""
+        parsers = {'recentComments':
+                   reddit._objector.parsers[reddit.config.kinds['comment']],
+                   'recentConvos': ModmailConversation,
+                   'recentPosts':
+                   reddit._objector.parsers[reddit.config.kinds['submission']],
+                   }
+        for kind, parser in parsers.items():
+            kind_data = data[kind]
+            for k, v in kind_data.items():
+                v['id'] = k.rsplit('_', 1)[-1]
+                del v['permalink']
+            # Sort by id, oldest to newest
+            sorted_kind = sorted(
+                kind_data.values(),
+                key=lambda x: int(x['id'], base=36), reverse=True)
+            data[kind] = [parser(reddit, _data=x) for x in sorted_kind]
 
     def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
                  url=None, _data=None):

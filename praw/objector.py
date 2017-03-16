@@ -102,6 +102,7 @@ class Objector(object):
             parser = self.parsers[self._reddit.config.kinds['redditor']]
             return parser.parse(data, self._reddit)
         elif isinstance(data, dict) and 'banStatus' in data.keys():
+            # Modmail user
             data = self.snake_case_keys(data)
             parser = self.parsers[self._reddit.config.kinds['redditor']]
             return parser.parse(data, self._reddit)
