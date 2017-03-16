@@ -12,6 +12,8 @@ Unreleased
 
 * Fix bug where :class:`.WikiPage` revisions with deleted authors caused
   `TypeError`.
+* :class:`.Submission` attributes ``comment_limit`` and ``comment_sort``
+  maintain their values after making instances non-lazy.
 
 4.4.0 (2017/02/21)
 ------------------
