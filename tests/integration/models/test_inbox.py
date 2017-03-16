@@ -114,6 +114,13 @@ class TestInbox(IntegrationTest):
                 count += 1
             assert count == 64
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_stream(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestInbox__test_stream'):
+            item = next(self.reddit.inbox.stream())
+            assert isinstance(item, Comment) or isinstance(item, Message)
+
     def test_submission_replies(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestInbox.test_submission_replies'):

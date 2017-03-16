@@ -4,6 +4,10 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* :meth:`.Inbox.stream` to stream new items in the inbox.
+
 **Fixed**
 
 * Fix bug where :class:`.WikiPage` revisions with deleted authors caused
