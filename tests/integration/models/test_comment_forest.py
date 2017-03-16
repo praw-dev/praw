@@ -47,6 +47,16 @@ class TestCommentForest(IntegrationTest):
             assert len(skipped) == 0
             assert len(submission.comments.list()) >= 500
 
+    def test_replace__all_with_comment_sort(self):
+        with self.recorder.use_cassette(
+                'TestCommentForest.test_replace__all_with_comment_sort',
+                match_requests_on=['uri', 'method', 'body']):
+            submission = Submission(self.reddit, '3hahrw')
+            submission.comment_sort = 'old'
+            skipped = submission.comments.replace_more(None, threshold=0)
+            assert len(skipped) == 0
+            assert len(submission.comments.list()) >= 500
+
     def test_replace__skip_at_limit(self):
         with self.recorder.use_cassette(
                 'TestCommentForest.test_replace__skip_at_limit',

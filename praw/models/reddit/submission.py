@@ -141,6 +141,8 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
                                            params={'limit': self.comment_limit,
                                                    'sort': self.comment_sort})
         other = other.children[0]
+        delattr(other, 'comment_limit')
+        delattr(other, 'comment_sort')
         other._comments = CommentForest(self)
         self.__dict__.update(other.__dict__)
         self.comments._update(comments.children)
