@@ -62,14 +62,18 @@ class ModmailConversation(RedditBase):
                    }
         for kind, parser in parsers.items():
             kind_data = data[kind]
-            for k, v in kind_data.items():
-                v['id'] = k.rsplit('_', 1)[-1]
-                del v['permalink']
+            objects = []
+            for id, summary in kind_data.items():
+                object = parser(reddit, id=id.rsplit('_', 1)[-1])
+                if parser is not ModmailConversation:
+                    del summary['permalink']
+                for k, v in summary.items():
+                    setattr(object, k, v)
+                objects.append(object)
             # Sort by id, oldest to newest
-            sorted_kind = sorted(
-                kind_data.values(),
-                key=lambda x: int(x['id'], base=36), reverse=True)
-            data[kind] = [parser(reddit, _data=x) for x in sorted_kind]
+            data[kind] = sorted(
+                objects,
+                key=lambda x: int(x.id, base=36), reverse=True)
 
     def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
                  url=None, _data=None):
