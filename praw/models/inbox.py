@@ -2,6 +2,7 @@
 from ..const import API_PATH
 from .listing.generator import ListingGenerator
 from .base import PRAWBase
+from .util import stream_generator
 
 
 class Inbox(PRAWBase):
@@ -172,6 +173,22 @@ class Inbox(PRAWBase):
         return ListingGenerator(self._reddit, API_PATH['sent'],
                                 **generator_kwargs)
 
+    def stream(self):
+        """Yield new inbox items as they become available.
+
+        Items are yielded oldest first. Up to 100 historical items will
+        initially be returned.
+
+        For example, to retrieve all new inbox items, try:
+
+        .. code:: python
+
+           for item in reddit.inbox.stream():
+               print(item)
+
+        """
+        return stream_generator(self.unread)
+
     def submission_replies(self, **generator_kwargs):
         """Return a ListingGenerator for submission replies.
 
@@ -213,6 +230,7 @@ class Inbox(PRAWBase):
                    print(item.author)
 
         """
-        params = {'mark': mark_read}
+        self._safely_add_arguments(
+            generator_kwargs, 'params', mark=mark_read)
         return ListingGenerator(self._reddit, API_PATH['unread'],
-                                params=params, **generator_kwargs)
+                                **generator_kwargs)
