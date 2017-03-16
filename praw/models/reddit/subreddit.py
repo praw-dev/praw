@@ -428,6 +428,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         :param title: The title of the submission.
         :param selftext: The markdown formatted content for a ``text``
+            submission. Use an empty string, ``''``, to make a title-only
             submission.
         :param url: The URL for a ``link`` submission.
         :param resubmit: When False, an error will occur if the URL has already

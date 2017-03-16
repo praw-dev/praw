@@ -8,6 +8,10 @@ Unreleased
 
 * :meth:`.Inbox.stream` to stream new items in the inbox.
 
+**Changed**
+
+* :meth:`.submit` accepts ``selftext=''`` to create a title-only submission.
+
 **Fixed**
 
 * Fix bug where :class:`.WikiPage` revisions with deleted authors caused
