@@ -33,8 +33,9 @@ class ModmailConversation(RedditBase):
         conversation['owner'] = reddit._objector.objectify(
             conversation['owner'])
 
-        cls._convert_user_summary(data['user'], reddit)
-        conversation['user'] = reddit._objector.objectify(data['user'])
+        if data['user']:
+            cls._convert_user_summary(data['user'], reddit)
+            conversation['user'] = reddit._objector.objectify(data['user'])
         conversation.update(cls._convert_conversation_objects(data, reddit))
 
         conversation = reddit._objector.snake_case_keys(conversation)
