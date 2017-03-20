@@ -1,4 +1,6 @@
 """Provide helper classes used by other models."""
+import random
+import time
 
 
 class BoundedSet(object):
@@ -23,6 +25,31 @@ class BoundedSet(object):
             self._set.remove(self._fifo.pop(0))
         self._fifo.append(item)
         self._set.add(item)
+
+
+class ExponentialCounter(object):
+    """A class to provide an exponential counter with jitter."""
+
+    def __init__(self, max_counter):
+        """Initialize an instance of ExponentialCounter.
+
+        :param max_counter: The maximum base value. Note that the computed
+        value may be 3.125% higher due to jitter.
+
+        """
+        self._base = 1
+        self._max = max_counter
+
+    def counter(self):
+        """Increment the counter and return the current value with jitter."""
+        max_jitter = self._base / 16.
+        value = self._base + random.random() * max_jitter - max_jitter / 2
+        self._base = min(self._base * 2, self._max)
+        return value
+
+    def reset(self):
+        """Reset the counter to 1."""
+        self._base = 1
 
 
 def permissions_string(permissions, known_permissions):
@@ -53,9 +80,11 @@ def permissions_string(permissions, known_permissions):
 def stream_generator(function):
     """Forever yield new items from ListingGenerators."""
     before_fullname = None
+    exponential_counter = ExponentialCounter(max_counter=64)
     seen_fullnames = BoundedSet(301)
     without_before_counter = 0
     while True:
+        found = False
         newest_fullname = None
         limit = 100
         if before_fullname is None:
@@ -65,7 +94,12 @@ def stream_generator(function):
                 limit=limit, params={'before': before_fullname}))):
             if item.fullname in seen_fullnames:
                 continue
+            found = True
             seen_fullnames.add(item.fullname)
             newest_fullname = item.fullname
             yield item
         before_fullname = newest_fullname
+        if found:
+            exponential_counter.reset()
+        else:
+            time.sleep(exponential_counter.counter())

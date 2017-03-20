@@ -927,7 +927,8 @@ class TestSubredditRelationships(IntegrationTest):
 
 
 class TestSubredditStreams(IntegrationTest):
-    def test_comments(self):
+    @mock.patch('time.sleep', return_value=None)
+    def test_comments(self, _):
         with self.recorder.use_cassette('TestSubredditStreams.comments'):
             generator = self.reddit.subreddit('all').stream.comments()
             for i in range(400):
