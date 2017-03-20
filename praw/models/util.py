@@ -1,5 +1,6 @@
 """Provide helper classes used by other models."""
 import random
+import time
 
 
 class BoundedSet(object):
@@ -79,9 +80,11 @@ def permissions_string(permissions, known_permissions):
 def stream_generator(function):
     """Forever yield new items from ListingGenerators."""
     before_fullname = None
+    exponential_counter = ExponentialCounter(max_counter=64)
     seen_fullnames = BoundedSet(301)
     without_before_counter = 0
     while True:
+        found = False
         newest_fullname = None
         limit = 100
         if before_fullname is None:
@@ -91,7 +94,12 @@ def stream_generator(function):
                 limit=limit, params={'before': before_fullname}))):
             if item.fullname in seen_fullnames:
                 continue
+            found = True
             seen_fullnames.add(item.fullname)
             newest_fullname = item.fullname
             yield item
         before_fullname = newest_fullname
+        if found:
+            exponential_counter.reset()
+        else:
+            time.sleep(exponential_counter.counter())

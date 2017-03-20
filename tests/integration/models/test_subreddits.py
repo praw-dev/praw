@@ -1,5 +1,6 @@
 """Test praw.models.subreddits."""
 from praw.models import Subreddit
+import mock
 
 from .. import IntegrationTest
 
@@ -70,7 +71,8 @@ class TestSubreddits(IntegrationTest):
             assert isinstance(subreddits, list)
             assert len(subreddits) == 0
 
-    def test_stream(self):
+    @mock.patch('time.sleep', return_value=None)
+    def test_stream(self, _):
         with self.recorder.use_cassette(
                 'TestSubreddits__test_streams'):
             generator = self.reddit.subreddits.stream()
