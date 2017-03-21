@@ -165,3 +165,9 @@ class TestRedditRequestor(IntegrationTest):
                         requestor=custom_requestor)
         assert reddit._core._requestor is custom_requestor
         assert self.reddit._core._requestor is not custom_requestor
+        reddit = Reddit(client_id=pytest.placeholders.client_id,
+                        client_secret=pytest.placeholders.client_secret,
+                        user_agent=pytest.placeholders.user_agent,
+                        requestor=custom_requestor)
+        assert reddit._core._requestor is custom_requestor
+        assert self.reddit._core._requestor is not custom_requestor
