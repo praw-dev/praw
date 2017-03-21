@@ -1,6 +1,26 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Added**
+
+* :meth:`.Inbox.stream` to stream new items in the inbox.
+* Exponential request delay to all streams when no new items are returned in a
+  request. The maximum delay between requests is 66 seconds.
+
+**Changed**
+
+* :meth:`.submit` accepts ``selftext=''`` to create a title-only submission.
+
+**Fixed**
+
+* Fix bug where :class:`.WikiPage` revisions with deleted authors caused
+  `TypeError`.
+* :class:`.Submission` attributes ``comment_limit`` and ``comment_sort``
+  maintain their values after making instances non-lazy.
+
 4.4.0 (2017/02/21)
 ------------------
 

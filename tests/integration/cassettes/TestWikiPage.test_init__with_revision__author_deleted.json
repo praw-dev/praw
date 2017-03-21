@@ -1,0 +1,110 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2017-03-10T20:22:10",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.8.0"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Fri, 10 Mar 2017 20:22:12 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "loid=9kwxRn2WWjIAIlNPKK; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-atl6240-ATL",
+          "X-Timer": "S1489177332.208043,VS0,VE40",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2017-03-10T20:22:10",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Cookie": "loid=9kwxRn2WWjIAIlNPKK; loidcreated=1489177332000",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.8.0"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/wiki/index?raw_json=1&v=873933a0-5550-11e2-82f1-12313b0c1e2b"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"wikipage\", \"data\": {\"may_revise\": false, \"revision_date\": 1357210312.0, \"content_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md wiki\\\"\\u003E\\u003Cdiv class=\\\"toc\\\"\\u003E\\u003Cul\\u003E\\u003Cli class=\\\"wiki_<TEST_SUBREDDIT>_rules\\\"\\u003E\\u003Ca href=\\\"#wiki_<TEST_SUBREDDIT>_rules\\\"\\u003ETheoryOfReddit Rules\\u003C/a\\u003E\\u003C/li\\u003E\\u003Cli class=\\\"wiki_wiki_editing_protocol\\\"\\u003E\\u003Ca href=\\\"#wiki_wiki_editing_protocol\\\"\\u003EWiki editing protocol\\u003C/a\\u003E\\u003C/li\\u003E\\u003Cli class=\\\"wiki_quality_posts.2C_how_do_i_make_them.3F\\\"\\u003E\\u003Ca href=\\\"#wiki_quality_posts.2C_how_do_i_make_them.3F\\\"\\u003EQuality posts, how do I make them?\\u003C/a\\u003E\\u003C/li\\u003E\\u003Cli class=\\\"wiki_tor.2Freddit_glossary\\\"\\u003E\\u003Ca href=\\\"#wiki_tor.2Freddit_glossary\\\"\\u003EToR/Reddit Glossary\\u003C/a\\u003E\\u003C/li\\u003E\\u003Cli class=\\\"wiki_tor.2Freddit_faq\\\"\\u003E\\u003Ca href=\\\"#wiki_tor.2Freddit_faq\\\"\\u003EToR/Reddit FAQ\\u003C/a\\u003E\\u003C/li\\u003E\\u003Cli class=\\\"wiki_other_pages\\\"\\u003E\\u003Ca href=\\\"#wiki_other_pages\\\"\\u003EOther pages\\u003C/a\\u003E\\u003C/li\\u003E\\u003C/ul\\u003E\\u003C/div\\u003E\\u003Cp\\u003E\\u003Cimg src=\\\"//b.thumbs.redditmedia.com/lCnQ6AfUxbcldFes.png\\\" alt=\\\"TheoryOfReddit - Index\\\" /\\u003E\\u003C/p\\u003E\\n\\u003Ch2 id=\\\"wiki_<TEST_SUBREDDIT>_rules\\\"\\u003E\\u003Ca href=\\\"http://www.reddit.com/r/TheoryOfReddit/wiki/rules\\\" rel=\\\"nofollow\\\"\\u003ETheoryOfReddit Rules\\u003C/a\\u003E\\u003C/h2\\u003E\\n\\u003Cp\\u003EWhy was your comment deleted? What is a bannable offence? Please take a moment to read our \\u003Ca href=\\\"http://www.reddit.com/r/TheoryOfReddit/wiki/rules\\\" rel=\\\"nofollow\\\"\\u003Erules\\u003C/a\\u003E.\\u003C/p\\u003E\\n\\u003Ch2 id=\\\"wiki_wiki_editing_protocol\\\"\\u003E\\u003Ca href=\\\"http://www.reddit.com/r/TheoryOfReddit/wiki/wiki_protocol\\\" rel=\\\"nofollow\\\"\\u003EWiki editing protocol\\u003C/a\\u003E\\u003C/h2\\u003E\\n\\u003Cp\\u003EAny user with an account older than 90 days and who has accumulated at least 50 subreddit karma can edit the wiki. However editing the wiki does come with a few guidelines to keep things organized. That said, Wikipedia\\u0026#39;s \\u003Ca href=\\\"http://en.wikipedia.org/wiki/Wikipedia:Be_bold\\\" rel=\\\"nofollow\\\"\\u003EBe Bold\\u003C/a\\u003E still applies - all edits made in good faith are welcome, and it is easier to restructure existing content than to write something new.\\u003C/p\\u003E\\n\\u003Ch2 id=\\\"wiki_quality_posts.2C_how_do_i_make_them.3F\\\"\\u003E\\u003Ca href=\\\"http://www.reddit.com/r/TheoryOfReddit/wiki/submission_guide\\\" rel=\\\"nofollow\\\"\\u003EQuality posts, how do I make them?\\u003C/a\\u003E\\u003C/h2\\u003E\\n\\u003Cp\\u003EIn ToR we see a good amount of posts appear everyday, a good amount of those posts are of good quality. But we see also a lot of stillborns, posts that from the start had the odds against them and that either get removed by mods or never leave the catacombs of new. This of course how Reddit works, however we noticed that a decent amount of those posts do have relevant information in them, it is just poorly presented. And that is where this guide comes in, with this guide you can check if your post has a decent starting change when you decide to post to Reddit. It is no guarantee for success, but it will certainly give your post a healthy start. \\u003C/p\\u003E\\n\\u003Ch2 id=\\\"wiki_tor.2Freddit_glossary\\\"\\u003E\\u003Ca href=\\\"http://www.reddit.com/r/TheoryOfReddit/wiki/glossary\\\" rel=\\\"nofollow\\\"\\u003EToR/Reddit Glossary\\u003C/a\\u003E\\u003C/h2\\u003E\\n\\u003Cp\\u003EA glossary of terms often used on ToR, reddit or the internet in general. \\u003C/p\\u003E\\n\\u003Ch2 id=\\\"wiki_tor.2Freddit_faq\\\"\\u003E\\u003Ca href=\\\"http://www.reddit.com/r/TheoryOfReddit/wiki/faq\\\" rel=\\\"nofollow\\\"\\u003EToR/Reddit FAQ\\u003C/a\\u003E\\u003C/h2\\u003E\\n\\u003Cp\\u003EThis is not a complete article but a starting point for filling the wiki. \\u003C/p\\u003E\\n\\u003Ch2 id=\\\"wiki_other_pages\\\"\\u003E\\u003Ca href=\\\"http://www.reddit.com/r/TheoryOfReddit/wiki/pages/\\\" rel=\\\"nofollow\\\"\\u003EOther pages\\u003C/a\\u003E\\u003C/h2\\u003E\\n\\u003Cp\\u003EAll pages currently in the wiki\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"revision_by\": null, \"content_md\": \"![TheoryOfReddit - Index](%%wiki%%)\\r\\n\\r\\n## [TheoryOfReddit Rules](http://www.reddit.com/r/TheoryOfReddit/wiki/rules)\\r\\nWhy was your comment deleted? What is a bannable offence? Please take a moment to read our [rules](http://www.reddit.com/r/TheoryOfReddit/wiki/rules).\\r\\n\\r\\n## [Wiki editing protocol](http://www.reddit.com/r/TheoryOfReddit/wiki/wiki_protocol)\\r\\nAny user with an account older than 90 days and who has accumulated at least 50 subreddit karma can edit the wiki. However editing the wiki does come with a few guidelines to keep things organized. That said, Wikipedia's [Be Bold](http://en.wikipedia.org/wiki/Wikipedia:Be_bold) still applies - all edits made in good faith are welcome, and it is easier to restructure existing content than to write something new.\\r\\n\\r\\n## [Quality posts, how do I make them?](http://www.reddit.com/r/TheoryOfReddit/wiki/submission_guide)\\r\\nIn ToR we see a good amount of posts appear everyday, a good amount of those posts are of good quality. But we see also a lot of stillborns, posts that from the start had the odds against them and that either get removed by mods or never leave the catacombs of new. This of course how Reddit works, however we noticed that a decent amount of those posts do have relevant information in them, it is just poorly presented. And that is where this guide comes in, with this guide you can check if your post has a decent starting change when you decide to post to Reddit. It is no guarantee for success, but it will certainly give your post a healthy start. \\r\\n\\r\\n## [ToR/Reddit Glossary](http://www.reddit.com/r/TheoryOfReddit/wiki/glossary)\\r\\nA glossary of terms often used on ToR, reddit or the internet in general. \\r\\n\\r\\n## [ToR/Reddit FAQ](http://www.reddit.com/r/TheoryOfReddit/wiki/faq)\\r\\nThis is not a complete article but a starting point for filling the wiki. \\r\\n\\r\\n## [Other pages](http://www.reddit.com/r/TheoryOfReddit/wiki/pages/) \\r\\nAll pages currently in the wiki\"}}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "6155",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Fri, 10 Mar 2017 20:22:12 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-atl6247-ATL",
+          "X-Timer": "S1489177332.475232,VS0,VE90",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=YkZJykfMz6MRcYSwtjRvb5GzZrIqUxOZtpScxcsfSgRCGOXiHEPM0GT1NdPG3QXNrYfCWClCFsDkEccACrtHZNz7h%2BbfByZy",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/wiki/index?raw_json=1&v=873933a0-5550-11e2-82f1-12313b0c1e2b"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}

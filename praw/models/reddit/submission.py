@@ -54,7 +54,8 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
            comments = submission.comments.list()
 
         Sort order and comment limit can be set with the ``comment_sort`` and
-        ``comment_limit`` attributes before comments are fetched:
+        ``comment_limit`` attributes before comments are fetched, including
+        any call to :meth:`.replace_more`:
 
         .. code:: python
 
@@ -140,6 +141,8 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
                                            params={'limit': self.comment_limit,
                                                    'sort': self.comment_sort})
         other = other.children[0]
+        delattr(other, 'comment_limit')
+        delattr(other, 'comment_sort')
         other._comments = CommentForest(self)
         self.__dict__.update(other.__dict__)
         self.comments._update(comments.children)

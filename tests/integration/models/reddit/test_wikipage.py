@@ -43,6 +43,15 @@ class TestWikiPage(IntegrationTest):
             assert isinstance(page.revision_by, Redditor)
             assert page.revision_date == 1367295177
 
+    def test_init__with_revision__author_deleted(self):
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
+        page = WikiPage(self.reddit, subreddit, 'index',
+                        revision='873933a0-5550-11e2-82f1-12313b0c1e2b')
+        with self.recorder.use_cassette(
+                'TestWikiPage.test_init__with_revision__author_deleted'):
+            assert page.revision_by is None
+
     def test_invalid_page(self):
         subreddit = self.reddit.subreddit(
             pytest.placeholders.test_subreddit)
@@ -71,6 +80,16 @@ class TestWikiPage(IntegrationTest):
                 assert isinstance(revision['author'], Redditor)
                 assert isinstance(revision['page'], WikiPage)
             assert count > 0
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_revisions__author_deleted(self, _):
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
+
+        with self.recorder.use_cassette(
+                'TestWikiPage.test_revisions__author_deleted'):
+            revisions = subreddit.wiki['index'].revisions(limit=10)
+            assert any(revision['author'] is None for revision in revisions)
 
 
 class TestWikiPageModeration(IntegrationTest):
