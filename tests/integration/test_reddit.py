@@ -1,7 +1,13 @@
 """Test praw.reddit."""
+
+from praw import Reddit
+from praw.const import USER_AGENT_FORMAT
+from prawcore import Requestor
 from praw.models import LiveThread
 from praw.models.reddit.base import RedditBase
 import mock
+import pytest
+
 
 from . import IntegrationTest
 
@@ -144,3 +150,18 @@ class TestDomainListing(IntegrationTest):
         with self.recorder.use_cassette('TestDomainListing.test_top'):
             submissions = list(self.reddit.domain('youtube.com').top())
         assert len(submissions) == 100
+
+
+class TestRedditRequestor(IntegrationTest):
+    def test_custom_requestor(self):
+        user_agent = USER_AGENT_FORMAT.format(pytest.placeholders.user_agent)
+        custom_requestor = Requestor(user_agent)
+
+        reddit = Reddit(client_id=pytest.placeholders.client_id,
+                        client_secret=pytest.placeholders.client_secret,
+                        password=pytest.placeholders.password,
+                        user_agent=pytest.placeholders.user_agent,
+                        username=pytest.placeholders.username,
+                        requestor=custom_requestor)
+        assert reddit._core._requestor is custom_requestor
+        assert self.reddit._core._requestor is not custom_requestor
