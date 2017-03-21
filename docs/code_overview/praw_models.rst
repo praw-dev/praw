@@ -9,6 +9,7 @@ Working with PRAW's Models
    models/livethread
    models/liveupdate
    models/message
+   models/modmailconversation
    models/more
    models/multireddit
    models/redditor

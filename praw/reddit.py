@@ -265,6 +265,7 @@ class Reddit(object):
                     'Listing': models.Listing,
                     'LiveUpdate': models.LiveUpdate,
                     'LiveUpdateEvent': models.LiveThread,
+                    'ModmailConversation': models.ModmailConversation,
                     'UserList': models.RedditorList,
                     'modaction': models.ModAction,
                     'more': models.MoreComments,

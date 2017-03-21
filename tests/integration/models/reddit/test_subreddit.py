@@ -716,6 +716,17 @@ class TestSubredditModeration(IntegrationTest):
             assert before_settings == after_settings
 
 
+class TestSubredditModmail(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_call(self, _):
+        self.reddit.read_only = False
+        conversation_id = 'ik72'
+        with self.recorder.use_cassette('TestSubredditModmail.test_call'):
+            conversation = self.reddit.subreddit('all').modmail(
+                conversation_id)
+            assert isinstance(conversation.user, dict)
+
+
 class TestSubredditQuarantine(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
     def test_opt_in(self, _):

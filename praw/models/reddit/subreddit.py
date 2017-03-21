@@ -12,6 +12,7 @@ from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .mixins import MessageableMixin
+from .modmail import ModmailConversation
 from .wikipage import WikiPage
 
 
@@ -198,6 +199,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._moderator
 
     @property
+    def modmail(self):
+        """An instance of :class:`.Modmail`."""
+        if self._modmail is None:
+            self._modmail = Modmail(self)
+        return self._modmail
+
+    @property
     def muted(self):
         """An instance of :class:`.SubredditRelationship`."""
         if self._muted is None:
@@ -290,8 +298,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if display_name:
             self.display_name = display_name
         self._banned = self._contributor = self._filters = self._flair = None
-        self._mod = self._moderator = self._muted = self._quarantine = None
-        self._stream = self._stylesheet = self._wiki = None
+        self._mod = self._moderator = self._modmail = self._muted = None
+        self._quarantine = self._stream = self._stylesheet = self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)
 
     def _info_path(self):
@@ -1516,6 +1524,23 @@ class ModeratorRelationship(SubredditRelationship):
         data = self._handle_permissions(
             permissions, {'name': str(redditor), 'type': 'moderator_invite'})
         self.subreddit._reddit.post(url, data=data)
+
+
+class Modmail(object):
+    """Provides modmail functions for a subreddit."""
+
+    def __call__(self, id=None):
+        """Return an individual conversation.
+
+        :param id: A reddit base36 conversation ID, e.g., ``2gmz``.
+
+        """
+        # pylint: disable=invalid-name,redefined-builtin
+        return ModmailConversation(self.subreddit._reddit, id=id)
+
+    def __init__(self, subreddit):
+        """Construct an instance of the Modmail object."""
+        self.subreddit = subreddit
 
 
 class SubredditStream(object):
