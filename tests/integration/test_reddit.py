@@ -1,12 +1,7 @@
 """Test praw.reddit."""
-
-from praw import Reddit
 from praw.models import LiveThread
 from praw.models.reddit.base import RedditBase
-from prawcore import Requestor
 import mock
-import pytest
-
 
 from . import IntegrationTest
 
@@ -149,35 +144,3 @@ class TestDomainListing(IntegrationTest):
         with self.recorder.use_cassette('TestDomainListing.test_top'):
             submissions = list(self.reddit.domain('youtube.com').top())
         assert len(submissions) == 100
-
-
-class TestRedditRequestor(IntegrationTest):
-    def test_requestor_class(self):
-
-        class CustomRequestor(Requestor):
-            pass
-
-        reddit = Reddit(client_id=pytest.placeholders.client_id,
-                        client_secret=pytest.placeholders.client_secret,
-                        password=pytest.placeholders.password,
-                        user_agent=pytest.placeholders.user_agent,
-                        username=pytest.placeholders.username,
-                        requestor_class=CustomRequestor)
-        assert isinstance(reddit._core._requestor, CustomRequestor)
-        assert not isinstance(self.reddit._core._requestor, CustomRequestor)
-
-        reddit = Reddit(client_id=pytest.placeholders.client_id,
-                        client_secret=pytest.placeholders.client_secret,
-                        user_agent=pytest.placeholders.user_agent,
-                        requestor_class=CustomRequestor)
-        assert isinstance(reddit._core._requestor, CustomRequestor)
-        assert not isinstance(self.reddit._core._requestor, CustomRequestor)
-
-    def test_requestor_kwargs(self):
-        session = mock.Mock(headers={})
-        reddit = Reddit(client_id=pytest.placeholders.client_id,
-                        client_secret=pytest.placeholders.client_secret,
-                        user_agent=pytest.placeholders.user_agent,
-                        requestor_kwargs={'session': session})
-
-        assert reddit._core._requestor._http is session
