@@ -85,9 +85,9 @@ class Reddit(object):
             variable praw_site. If it is not found there, the DEFAULT site will
             be used.
         :param requestor_class: A class that will be used to create a requestor.
-               If not set, use :class:`prawcore.Requestor` (default: None).
-        :param requestor_kwargs: Keyword arguments used to initialize the
-               requestor.
+            If not set, use :class:`prawcore.Requestor` (default: None).
+        :param requestor_kwargs: Dictionary with additional keyword arguments
+            used to initialize the requestor (default: None).
 
         Additional keyword arguments will be used to initialize the
         :class`.Config` object. This can be used to specify configuration
