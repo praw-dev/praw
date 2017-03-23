@@ -281,6 +281,18 @@ class Reddit(object):
         requestor_class = requestor_class or Requestor
         requestor_kwargs = requestor_kwargs or {}
 
+        # Example usage:
+        #     import json, betamax, requests
+        #
+        #     class JSONDebugRequestor(Requestor):
+        #         def request(self, *args, **kwargs):
+        #             response = super().request(*args, **kwargs)
+        #             print(json.dumps(response.json(), indent=4))
+        #             return response
+        #
+        #     my_session = betamax.Betamax(requests.Session())
+        #     reddit = Reddit(..., requestor_class=JSONDebugRequestor,
+        #                     requestor_kwargs={'session': my_session})
         requestor = requestor_class(
                 USER_AGENT_FORMAT.format(self.config.user_agent),
                 self.config.oauth_url, self.config.reddit_url,
