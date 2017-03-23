@@ -281,12 +281,6 @@ class Reddit(object):
         requestor_class = requestor_class or Requestor
         requestor_kwargs = requestor_kwargs or {}
 
-        # Allow overriding oauth_url and reddit_url as Requestor keywords
-        oauth_url = requestor_kwargs.pop('oauth_url', None)
-        oauth_url = oauth_url or self.config.oauth_url
-        reddit_url = requestor_kwargs.pop('reddit_url', None)
-        reddit_url = reddit_url or self.config.reddit_url
-
         # Example usage:
         #     import json, betamax, requests
         #
@@ -300,8 +294,9 @@ class Reddit(object):
         #     reddit = Reddit(..., requestor_class=JSONDebugRequestor,
         #                     requestor_kwargs={'session': my_session})
         requestor = requestor_class(
-            USER_AGENT_FORMAT.format(self.config.user_agent), oauth_url,
-            reddit_url, **requestor_kwargs)
+                USER_AGENT_FORMAT.format(self.config.user_agent),
+                self.config.oauth_url, self.config.reddit_url,
+                **requestor_kwargs)
 
         if self.config.client_secret:
             self._prepare_trusted_prawcore(requestor)
