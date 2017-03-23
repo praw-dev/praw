@@ -1,10 +1,9 @@
 """Test praw.reddit."""
 
 from praw import Reddit
-from praw.const import USER_AGENT_FORMAT
-from prawcore import Requestor
 from praw.models import LiveThread
 from praw.models.reddit.base import RedditBase
+from prawcore import Requestor
 import mock
 import pytest
 
@@ -153,21 +152,32 @@ class TestDomainListing(IntegrationTest):
 
 
 class TestRedditRequestor(IntegrationTest):
-    def test_custom_requestor(self):
-        user_agent = USER_AGENT_FORMAT.format(pytest.placeholders.user_agent)
-        custom_requestor = Requestor(user_agent)
+    def test_requestor_class(self):
+
+        class CustomRequestor(Requestor):
+            pass
 
         reddit = Reddit(client_id=pytest.placeholders.client_id,
                         client_secret=pytest.placeholders.client_secret,
                         password=pytest.placeholders.password,
                         user_agent=pytest.placeholders.user_agent,
                         username=pytest.placeholders.username,
-                        requestor=custom_requestor)
-        assert reddit._core._requestor is custom_requestor
-        assert self.reddit._core._requestor is not custom_requestor
+                        requestor_class=CustomRequestor)
+        assert isinstance(reddit._core._requestor, CustomRequestor)
+        assert not isinstance(self.reddit._core._requestor, CustomRequestor)
+
         reddit = Reddit(client_id=pytest.placeholders.client_id,
                         client_secret=pytest.placeholders.client_secret,
                         user_agent=pytest.placeholders.user_agent,
-                        requestor=custom_requestor)
-        assert reddit._core._requestor is custom_requestor
-        assert self.reddit._core._requestor is not custom_requestor
+                        requestor_class=CustomRequestor)
+        assert isinstance(reddit._core._requestor, CustomRequestor)
+        assert not isinstance(self.reddit._core._requestor, CustomRequestor)
+
+    def test_requestor_kwargs(self):
+        session = mock.Mock(headers={})
+        reddit = Reddit(client_id=pytest.placeholders.client_id,
+                        client_secret=pytest.placeholders.client_secret,
+                        user_agent=pytest.placeholders.user_agent,
+                        requestor_kwargs={'session': session})
+
+        assert reddit._core._requestor._http is session

@@ -72,7 +72,8 @@ class Reddit(object):
         """Handle the context manager close."""
         pass
 
-    def __init__(self, site_name=None, requestor=None, **config_settings):
+    def __init__(self, site_name=None, requestor_class=None,
+                 requestor_kwargs=None, **config_settings):
         """Initialize a Reddit instance.
 
         :param site_name: The name of a section in your ``praw.ini`` file from
@@ -83,8 +84,10 @@ class Reddit(object):
             ``None``, then the site name will be looked for in the environment
             variable praw_site. If it is not found there, the DEFAULT site will
             be used.
-
-        :param requestor_cls: A class that will be used to handle HTTP requests.
+        :param requestor_class: A class that will be used to create a requestor.
+               If not set, use :class:`prawcore.Requestor` (default: None).
+        :param requestor_kwargs: Keyword arguments used to initialize the
+               requestor.
 
         Additional keyword arguments will be used to initialize the
         :class`.Config` object. This can be used to specify configuration
@@ -132,10 +135,9 @@ class Reddit(object):
                                   'must be set to None via a keyword arugment '
                                   'to the `Reddit` class constructor.')
 
-        self.requestor = requestor
         self._check_for_update()
         self._prepare_objector()
-        self._prepare_prawcore()
+        self._prepare_prawcore(requestor_class, requestor_kwargs)
 
         self.auth = models.Auth(self, None)
         """An instance of :class:`.Auth`.
@@ -275,12 +277,15 @@ class Reddit(object):
         for kind, klass in mappings.items():
             self._objector.register(kind, klass)
 
-    def _prepare_prawcore(self):
-        requestor = self.requestor
-        if not self.requestor:
-            UAFMT = USER_AGENT_FORMAT
-            requestor = Requestor(UAFMT.format(self.config.user_agent),
-                                  self.config.oauth_url, self.config.reddit_url)
+    def _prepare_prawcore(self, requestor_class=None, requestor_kwargs=None):
+        requestor_class = requestor_class or Requestor
+        requestor_kwargs = requestor_kwargs or {}
+
+        requestor = requestor_class(
+                USER_AGENT_FORMAT.format(self.config.user_agent),
+                self.config.oauth_url, self.config.reddit_url,
+                **requestor_kwargs)
+
         if self.config.client_secret:
             self._prepare_trusted_prawcore(requestor)
         else:
