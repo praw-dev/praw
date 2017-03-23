@@ -100,6 +100,25 @@ class Reddit(object):
         * client_secret (for installed applications set this value to ``None``)
         * user_agent
 
+        The ``requestor_class`` and ``requerstor_kwargs`` allow for
+        customization of the requestor :class`.Reddit` will use. This allows,
+        e.g., easily adding behavior to the requestor or wrapping it's
+        :class`Session` in a caching layer. Example usage:
+
+        .. code-block:: python
+           import json, betamax, requests
+
+           class JSONDebugRequestor(Requestor):
+               def request(self, *args, **kwargs):
+                   response = super().request(*args, **kwargs)
+                   print(json.dumps(response.json(), indent=4))
+                   return response
+
+           my_session = betamax.Betamax(requests.Session())
+           reddit = Reddit(..., requestor_class=JSONDebugRequestor,
+                           requestor_kwargs={'session': my_session})
+
+
         """
         self._core = self._authorized_core = self._read_only_core = None
         self._objector = None
@@ -281,18 +300,6 @@ class Reddit(object):
         requestor_class = requestor_class or Requestor
         requestor_kwargs = requestor_kwargs or {}
 
-        # Example usage:
-        #     import json, betamax, requests
-        #
-        #     class JSONDebugRequestor(Requestor):
-        #         def request(self, *args, **kwargs):
-        #             response = super().request(*args, **kwargs)
-        #             print(json.dumps(response.json(), indent=4))
-        #             return response
-        #
-        #     my_session = betamax.Betamax(requests.Session())
-        #     reddit = Reddit(..., requestor_class=JSONDebugRequestor,
-        #                     requestor_kwargs={'session': my_session})
         requestor = requestor_class(
                 USER_AGENT_FORMAT.format(self.config.user_agent),
                 self.config.oauth_url, self.config.reddit_url,
