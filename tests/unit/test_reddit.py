@@ -5,6 +5,7 @@ import pytest
 from praw import __version__, Reddit
 from praw.const import configparser
 from praw.exceptions import ClientException
+from prawcore import Requestor
 
 from . import UnitTest
 
@@ -128,3 +129,29 @@ class TestReddit(UnitTest):
 
     def test_subreddit(self):
         assert self.reddit.subreddit('redditdev').display_name == 'redditdev'
+
+
+class TestRedditCustomRequestor(UnitTest):
+    def test_requestor_class(self):
+
+        class CustomRequestor(Requestor):
+            pass
+
+        reddit = Reddit(client_id='dummy', client_secret='dummy',
+                        password='dummy', user_agent='dummy', username='dummy',
+                        requestor_class=CustomRequestor)
+        assert isinstance(reddit._core._requestor, CustomRequestor)
+        assert not isinstance(self.reddit._core._requestor, CustomRequestor)
+
+        reddit = Reddit(client_id='dummy', client_secret='dummy',
+                        user_agent='dummy', requestor_class=CustomRequestor)
+        assert isinstance(reddit._core._requestor, CustomRequestor)
+        assert not isinstance(self.reddit._core._requestor, CustomRequestor)
+
+    def test_requestor_kwargs(self):
+        session = mock.Mock(headers={})
+        reddit = Reddit(client_id='dummy', client_secret='dummy',
+                        user_agent='dummy',
+                        requestor_kwargs={'session': session})
+
+        assert reddit._core._requestor._http is session
