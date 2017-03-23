@@ -152,6 +152,10 @@ class TestRedditCustomRequestor(UnitTest):
         session = mock.Mock(headers={})
         reddit = Reddit(client_id='dummy', client_secret='dummy',
                         user_agent='dummy',
-                        requestor_kwargs={'session': session})
+                        requestor_kwargs={'session': session,
+                                          'oauth_url': 'TEST1',
+                                          'reddit_url': 'TEST2'})
 
         assert reddit._core._requestor._http is session
+        assert reddit._core._requestor.oauth_url == 'TEST1'
+        assert reddit._core._requestor.reddit_url == 'TEST2'
