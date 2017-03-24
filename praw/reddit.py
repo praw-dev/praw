@@ -84,8 +84,8 @@ class Reddit(object):
             ``None``, then the site name will be looked for in the environment
             variable praw_site. If it is not found there, the DEFAULT site will
             be used.
-        :param requestor_class: A class that will be used to create a requestor.
-            If not set, use :class:`prawcore.Requestor` (default: None).
+        :param requestor_class: A class that will be used to create a
+            requestor. If not set, use ``prawcore.Requestor`` (default: None).
         :param requestor_kwargs: Dictionary with additional keyword arguments
             used to initialize the requestor (default: None).
 
@@ -102,10 +102,11 @@ class Reddit(object):
 
         The ``requestor_class`` and ``requerstor_kwargs`` allow for
         customization of the requestor :class`.Reddit` will use. This allows,
-        e.g., easily adding behavior to the requestor or wrapping it's
+        e.g., easily adding behavior to the requestor or wrapping its
         :class`Session` in a caching layer. Example usage:
 
         .. code-block:: python
+
            import json, betamax, requests
 
            class JSONDebugRequestor(Requestor):
@@ -117,7 +118,6 @@ class Reddit(object):
            my_session = betamax.Betamax(requests.Session())
            reddit = Reddit(..., requestor_class=JSONDebugRequestor,
                            requestor_kwargs={'session': my_session})
-
 
         """
         self._core = self._authorized_core = self._read_only_core = None
@@ -301,9 +301,9 @@ class Reddit(object):
         requestor_kwargs = requestor_kwargs or {}
 
         requestor = requestor_class(
-                USER_AGENT_FORMAT.format(self.config.user_agent),
-                self.config.oauth_url, self.config.reddit_url,
-                **requestor_kwargs)
+            USER_AGENT_FORMAT.format(self.config.user_agent),
+            self.config.oauth_url, self.config.reddit_url,
+            **requestor_kwargs)
 
         if self.config.client_secret:
             self._prepare_trusted_prawcore(requestor)
