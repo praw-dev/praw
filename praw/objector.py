@@ -1,9 +1,26 @@
 """Provides the Objector class."""
+import re
+
 from .exceptions import APIException
 
 
 class Objector(object):
     """The objector builds :class:`.RedditBase` objects."""
+
+    @staticmethod
+    def camel_to_snake(name):
+        s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+        return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+    @staticmethod
+    def snake_case_keys(d):
+        """Return a copy of d with keys replaced according to corrections.
+
+        :param d: The dict to be corrected.
+        :param corrections: A dict mapping keys to their replacements.
+
+        """
+        return {Objector.camel_to_snake(k): v for k, v in d.items()}
 
     def __init__(self, reddit):
         """Initialize an Objector instance.
@@ -60,6 +77,39 @@ class Objector(object):
                 {'date', 'id', 'name'}.issubset(set(data.keys()))
                 or {'id', 'name', 'permissions'}.issubset(set(data.keys()))):
             parser = self.parsers[self._reddit.config.kinds['redditor']]
+            return parser.parse(data, self._reddit)
+        elif isinstance(data, dict) and (
+                {'conversation', 'messages', 'user', 'modActions'}
+                .issubset(set(data.keys()))):
+            # Modmail conversation
+            parser = self.parsers['ModmailConversation']
+            return parser.parse(data, self._reddit)
+        elif isinstance(data, dict) and 'actionTypeId' in data.keys():
+            # Modmail mod action
+            data = self.snake_case_keys(data)
+            parser = self.parsers['ModmailAction']
+            return parser.parse(data, self._reddit)
+        elif isinstance(data, dict) and 'isInternal' in data.keys():
+            # Modmail message
+            data = self.snake_case_keys(data)
+            parser = self.parsers['ModmailMessage']
+            return parser.parse(data, self._reddit)
+        elif isinstance(data, dict) and 'isAdmin' in data.keys():
+            # Modmail author
+            data = self.snake_case_keys(data)
+            # Prevent clobbering base-36 id
+            del data['id']
+            parser = self.parsers[self._reddit.config.kinds['redditor']]
+            return parser.parse(data, self._reddit)
+        elif isinstance(data, dict) and 'banStatus' in data.keys():
+            # Modmail user
+            data = self.snake_case_keys(data)
+            parser = self.parsers[self._reddit.config.kinds['redditor']]
+            return parser.parse(data, self._reddit)
+        elif isinstance(data, dict) and 'displayName' in data.keys():
+            # Modmail subreddit
+            data = self.snake_case_keys(data)
+            parser = self.parsers[self._reddit.config.kinds[data['type']]]
             return parser.parse(data, self._reddit)
         elif isinstance(data, dict) and 'user' in data:
             parser = self.parsers[self._reddit.config.kinds['redditor']]
