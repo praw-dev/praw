@@ -90,6 +90,7 @@ API_PATH = {
     'my_multireddits':        'api/multi/mine/',
     'my_subreddits':          'subreddits/mine/subscriber/',
     'marknsfw':               'api/marknsfw/',
+    'modmail_conversation':   'api/mod/conversations/{id}',
     'multireddit':            'user/{user}/m/{multi}/',
     'multireddit_api':        'api/multi/user/{user}/m/{multi}/',
     'multireddit_base':       'api/multi/',
