@@ -14,8 +14,8 @@ Unreleased
 
 * :meth:`.submit` accepts ``selftext=''`` to create a title-only submission.
 * :class:`.Reddit` accepts ``requestor_class=cls`` for a customized requestor
-   class and ``requestor_kwargs={'param': value}`` for passing arguments to
-   requestor initialization.
+  class and ``requestor_kwargs={'param': value}`` for passing arguments to
+  requestor initialization.
 
 **Fixed**
 
