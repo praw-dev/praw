@@ -39,17 +39,26 @@ def send_message(client, message):
 
 def main():
     """Provide the program's entry point when directly executed."""
-    if len(sys.argv) < 2:
-        print('Usage: {} SCOPE...'.format(sys.argv[0]))
-        return 1
+    print("Go here while logged into the account you want to create a token for: https://www.reddit.com/prefs/apps/")
+    print("Click the create an app button. Put something in the name field and select the script radio button.")
+    print("Put http://localhost:8080 in the redirect uri field and click create app")
+    client_id = input("Enter the client ID, it's the line just under Personal use script at the top: ")
+    client_secret = input("Enter the client secret, it's the line next to secret: ")
+    commaScopes = input("Now enter a comma seperated list of scopes, or all for all scopes: ")
 
-    reddit = praw.Reddit(client_id='YOUR_CLIENT_ID',
-                         client_secret='YOUR_CLIENT_SECRET',
+    if commaScopes.lower() == 'all':
+        scopes = ['creddits','edit','flair','history','identity','modconfig','modcontributors','modflair','modlog','modothers','modposts','modself','modwiki','mysubreddits','privatemessages','read','report','save','submit','subscribe','vote','wikiedit','wikiread']
+    else:
+        scopes = commaScopes.strip().split(',')
+
+    reddit = praw.Reddit(client_id=client_id.strip(),
+                         client_secret=client_secret.strip(),
                          redirect_uri='http://localhost:8080',
                          user_agent='praw_refresh_token_example')
     state = str(random.randint(0, 65000))
-    url = reddit.auth.url(sys.argv[1:], state, 'permanent')
-    print(url)
+    url = reddit.auth.url(scopes, state, 'permanent')
+    print("Now open this url in your browser: "+url)
+    sys.stdout.flush()
 
     client = receive_connection()
     data = client.recv(1024).decode('utf-8')
