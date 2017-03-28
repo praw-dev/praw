@@ -6,6 +6,8 @@ Unreleased
 
 **Added**
 
+* :meth:`~praw.models.reddit.subreddit.Modmail.__call__` to get a new modmail
+  conversation.
 * :meth:`.Inbox.stream` to stream new items in the inbox.
 * Exponential request delay to all streams when no new items are returned in a
   request. The maximum delay between requests is 66 seconds.
