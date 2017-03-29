@@ -15,6 +15,15 @@ class TestModmailConversation(IntegrationTest):
             conversation = self.reddit.subreddit('all').modmail('ik72')
             assert conversation.state == 2
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_mute(self, _):
+        self.reddit.read_only = False
+        conversation = self.reddit.subreddit('all').modmail('ik72')
+        with self.recorder.use_cassette('TestModmailConversation.test_mute'):
+            conversation.mute()
+            conversation = self.reddit.subreddit('all').modmail('ik72')
+            assert conversation.user.mute_status['isMuted']
+
     def test_reply(self):
         self.reddit.read_only = False
         conversation = self.reddit.subreddit('all').modmail('ik72')
@@ -31,3 +40,12 @@ class TestModmailConversation(IntegrationTest):
             conversation.unarchive()
             conversation = self.reddit.subreddit('all').modmail('ik72')
             assert conversation.state == 1
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_unmute(self, _):
+        self.reddit.read_only = False
+        conversation = self.reddit.subreddit('all').modmail('ik72')
+        with self.recorder.use_cassette('TestModmailConversation.test_unmute'):
+            conversation.unmute()
+            conversation = self.reddit.subreddit('all').modmail('ik72')
+            assert not conversation.user.mute_status['isMuted']
