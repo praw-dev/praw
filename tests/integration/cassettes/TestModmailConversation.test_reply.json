@@ -1,0 +1,112 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2017-03-29T15:13:08",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.9.0"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Wed, 29 Mar 2017 15:13:07 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-jfk8129-JFK",
+          "X-Timer": "S1490800387.423163,VS0,VE502",
+          "cache-control": "max-age=0, must-revalidate",
+          "set-cookie": "loid=RsGP87VasFTPjHUT4l.1.1490800387435.Z0FBQUFBQlkyODhEU19salBSc29sVjZiNExFNHI2Tjdvd0VBbE9NUXVyR2xfQ3J6WW0temFrV295ZkxCUU5WRVRBQ2lWX1REck0tczN5RVREY1Z1Nm5vNGdLMkJLcDNUaUhIZkFFM2tfSmVfdVNOZzUzOXR2QWFpRlY4T3NQOFNXanZLQUxOT2l3bFg; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Fri, 29-Mar-2019 15:13:07 GMT; secure",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2017-03-29T15:13:08",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&body=A+message&isAuthorHidden=False&isInternal=False"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Content-Length": "66",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Cookie": "loid=RsGP87VasFTPjHUT4l.1.1490800387435.Z0FBQUFBQlkyODhEU19salBSc29sVjZiNExFNHI2Tjdvd0VBbE9NUXVyR2xfQ3J6WW0temFrV295ZkxCUU5WRVRBQ2lWX1REck0tczN5RVREY1Z1Nm5vNGdLMkJLcDNUaUhIZkFFM2tfSmVfdVNOZzUzOXR2QWFpRlY4T3NQOFNXanZLQUxOT2l3bFg; edgebucket=G2YAeUGRUzN9DWkung",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.9.0"
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/mod/conversations/ik72?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"conversation\": {\"isAuto\": false, \"objIds\": [{\"id\": \"uui4\", \"key\": \"messages\"}, {\"id\": \"uuln\", \"key\": \"messages\"}, {\"id\": \"bmb6\", \"key\": \"modActions\"}, {\"id\": \"138au\", \"key\": \"messages\"}, {\"id\": \"138h7\", \"key\": \"messages\"}, {\"id\": \"138qf\", \"key\": \"messages\"}], \"isRepliable\": true, \"lastUserUpdate\": \"2017-03-07T15:28:19.342937+00:00\", \"isInternal\": false, \"lastModUpdate\": \"2017-03-29T15:13:08.069923+00:00\", \"lastUpdated\": \"2017-03-29T15:13:08.069923+00:00\", \"authors\": [{\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": false, \"isAdmin\": false, \"name\": \"BJO_test_user\", \"isOp\": true, \"isParticipant\": false, \"isHidden\": false, \"id\": 56922862, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}], \"owner\": {\"displayName\": \"ThirdRealm\", \"type\": \"subreddit\", \"id\": \"t5_390u2\"}, \"id\": \"ik72\", \"isHighlighted\": false, \"subject\": \"This is an outrage!\", \"participant\": {}, \"modActions\": {\"bmb6\": {\"date\": \"2017-03-07T15:41:54.042442+00:00\", \"actionTypeId\": 2, \"id\": \"bmb6\", \"author\": {\"name\": \"TheGrammarBolshevik\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}}}, \"state\": 1, \"lastUnread\": \"2017-03-29T14:34:27.992316+00:00\", \"numMessages\": 5}, \"messages\": {\"138qf\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>A message</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-29T15:13:08.069923+00:00\", \"bodyMarkdown\": \"A message\", \"id\": \"138qf\"}, \"138h7\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>bazinga</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-29T14:49:59.115263+00:00\", \"bodyMarkdown\": \"bazinga\", \"id\": \"138h7\"}, \"138au\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>A reply</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-29T14:34:27.976932+00:00\", \"bodyMarkdown\": \"A reply\", \"id\": \"138au\"}, \"uuln\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>Tough cookies.</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-07T15:36:18.387648+00:00\", \"bodyMarkdown\": \"Tough cookies.\", \"id\": \"uuln\"}, \"uui4\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>How dare you ban <a href=\\\"/r/ThirdRealm\\\">/r/ThirdRealm</a>&#39;s most prolific poster?</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": false, \"isAdmin\": false, \"name\": \"BJO_test_user\", \"isOp\": true, \"isParticipant\": false, \"isHidden\": false, \"id\": 56922862, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-07T15:28:19.342937+00:00\", \"bodyMarkdown\": \"How dare you ban /r/ThirdRealm's most prolific poster?\", \"id\": \"uui4\"}}}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "3874",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Wed, 29 Mar 2017 15:13:08 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-jfk8134-JFK",
+          "X-Timer": "S1490800388.020090,VS0,VE173",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "599.0",
+          "x-ratelimit-reset": "412",
+          "x-ratelimit-used": "1",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 201,
+          "message": "Created"
+        },
+        "url": "https://oauth.reddit.com/api/mod/conversations/ik72?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}

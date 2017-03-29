@@ -75,6 +75,26 @@ class ModmailConversation(RedditBase):
     def _info_path(self):
         return API_PATH['modmail_conversation'].format(id=self.id)
 
+    def reply(self, body, author_hidden=False, internal=False):
+        """Reply to the conversation.
+
+        :param body: The markdown formatted content for a message.
+        :param author_hidden: When True, author is hidden from non-moderators
+            (default: False).
+        :param internal: When True, message is a private moderator note,
+            hidden from non-moderators (default: False).
+        :returns: A :class:`~.ModmailMessage` object for the newly created
+            message.
+
+        """
+        data = {'body': body, 'isAuthorHidden': author_hidden,
+                'isInternal': internal}
+        response = self._reddit.post(API_PATH['modmail_conversation']
+                                     .format(id=self.id), data=data)
+        message_id = response['conversation']['objIds'][-1]['id']
+        message_data = response['messages'][message_id]
+        return self._reddit._objector.objectify(message_data)
+
 
 class ModmailObject(RedditBase):
     """A base class for objects within a modmail conversation."""

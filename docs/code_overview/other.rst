@@ -58,6 +58,7 @@ instances of them bound to an attribute of one of the PRAW models.
    other/domainlisting
    other/listinggenerator
    other/modmail
+   other/modmailmessage
    other/redditbase
    other/redditorlist
    other/sublisting
