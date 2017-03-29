@@ -17,6 +17,7 @@ Documentation Contributors
 - Zhifu Ge <zhifu@me.com> `@zhifuge <https://github.com/zhifuge>`_
 - diceroll123 `@diceroll123 <https://github.com/diceroll123>`_
 - Mike Wohlrab `@D0cR3d <https://github.com/D0cR3d>`_
+- Watchful1 `@Watchful1 <https://github.com/Watchful1>`_
 - Add "Name <email (optional)> and github profile link" above this line.
 
 
