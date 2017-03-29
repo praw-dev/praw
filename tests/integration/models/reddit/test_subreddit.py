@@ -3,8 +3,9 @@ from os.path import abspath, dirname, join
 import sys
 
 from praw.exceptions import APIException
-from praw.models import (Comment, ModAction, Redditor, Submission, Subreddit,
-                         SubredditMessage, Stylesheet, WikiPage)
+from praw.models import (Comment, ModAction, ModmailAction, ModmailMessage,
+                         Redditor, Submission, Subreddit, SubredditMessage,
+                         Stylesheet, WikiPage)
 from prawcore import Forbidden, NotFound, TooLarge
 import mock
 import pytest
@@ -724,7 +725,24 @@ class TestSubredditModmail(IntegrationTest):
         with self.recorder.use_cassette('TestSubredditModmail.test_call'):
             conversation = self.reddit.subreddit('all').modmail(
                 conversation_id)
-            assert isinstance(conversation.user, dict)
+            assert isinstance(conversation.user, Redditor)
+            for message in conversation.messages:
+                assert isinstance(message, ModmailMessage)
+            for action in conversation.mod_actions:
+                assert isinstance(action, ModmailAction)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_call__internal(self, _):
+        self.reddit.read_only = False
+        conversation_id = 'nbhy'
+        with self.recorder.use_cassette(
+                'TestSubredditModmail.test_call__internal'):
+            conversation = self.reddit.subreddit('all').modmail(
+                conversation_id)
+            for message in conversation.messages:
+                assert isinstance(message, ModmailMessage)
+            for action in conversation.mod_actions:
+                assert isinstance(action, ModmailAction)
 
 
 class TestSubredditQuarantine(IntegrationTest):
