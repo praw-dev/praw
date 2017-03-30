@@ -6,6 +6,8 @@ Unreleased
 
 **Added**
 
+* :meth:`~praw.models.ModmailConversation.reply` to reply to modmail
+  conversations.
 * :meth:`~praw.models.reddit.subreddit.Modmail.__call__` to get a new modmail
   conversation.
 * :meth:`.Inbox.stream` to stream new items in the inbox.
