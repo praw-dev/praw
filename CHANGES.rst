@@ -6,6 +6,17 @@ Unreleased
 
 **Added**
 
+* :meth:`~praw.models.ModmailConversation.highlight` to highlight modmail
+  conversations.
+* :meth:`~praw.models.ModmailConversation.unhighlight` to unhighlight modmail
+  conversations.
+* :meth:`~praw.models.ModmailConversation.mute` to mute modmail conversations.
+* :meth:`~praw.models.ModmailConversation.unmute` to unmute modmail
+  conversations.
+* :meth:`~praw.models.ModmailConversation.archive` to archive modmail
+  conversations.
+* :meth:`~praw.models.ModmailConversation.unarchive` to unarchive modmail
+  conversations.
 * :meth:`~praw.models.ModmailConversation.reply` to reply to modmail
   conversations.
 * :meth:`~praw.models.reddit.subreddit.Modmail.__call__` to get a new modmail
