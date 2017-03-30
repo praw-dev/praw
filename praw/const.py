@@ -92,6 +92,7 @@ API_PATH = {
     'marknsfw':               'api/marknsfw/',
     'modmail_archive':        'api/mod/conversations/{id}/archive',
     'modmail_conversation':   'api/mod/conversations/{id}',
+    'modmail_highlight':      'api/mod/conversations/{id}/highlight',
     'modmail_mute':           'api/mod/conversations/{id}/mute',
     'modmail_unarchive':      'api/mod/conversations/{id}/unarchive',
     'modmail_unmute':         'api/mod/conversations/{id}/unmute',
