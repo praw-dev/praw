@@ -70,7 +70,8 @@ class ModmailConversation(RedditBase):
         """Construct an instance of the ModmailConversation object."""
         super(ModmailConversation, self).__init__(reddit, _data)
 
-        self.id = id  # pylint: disable=invalid-name
+        if id is not None:
+            self.id = id  # pylint: disable=invalid-name
 
     def _info_path(self):
         return API_PATH['modmail_conversation'].format(id=self.id)
