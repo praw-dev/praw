@@ -1,0 +1,110 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2017-03-31T15:37:09",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.9.0"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Fri, 31 Mar 2017 15:37:10 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-jfk8133-JFK",
+          "X-Timer": "S1490974630.126003,VS0,VE340",
+          "cache-control": "max-age=0, must-revalidate",
+          "set-cookie": "loid=mJ7lEdHYokATLEfJ8M.1.1490974630131.Z0FBQUFBQlkzbmVtWkd1MHpsWjRPRFVjMDU1RzBCZVRISDdPLWk3cHctejNsa3RjaGxET1RBek5XYzNxYXJoVENkWjBuSmxNQ1RBVC1tN0xaRks0a01vdmJkUFA3NXNDZk1SR2l0YW9JWG5kMGt4TjBuelFqWlJLQVRlTWNabnFiSkVkWjdCd3JnbjM; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Sun, 31-Mar-2019 15:37:10 GMT; secure",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2017-03-31T15:37:09",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Cookie": "loid=mJ7lEdHYokATLEfJ8M.1.1490974630131.Z0FBQUFBQlkzbmVtWkd1MHpsWjRPRFVjMDU1RzBCZVRISDdPLWk3cHctejNsa3RjaGxET1RBek5XYzNxYXJoVENkWjBuSmxNQ1RBVC1tN0xaRks0a01vdmJkUFA3NXNDZk1SR2l0YW9JWG5kMGt4TjBuelFqWlJLQVRlTWNabnFiSkVkWjdCd3JnbjM; edgebucket=LkdMdjWBqfMX3zMEsn",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.9.0"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/mod/conversations/o7wz?markRead=True&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"conversation\": {\"isAuto\": false, \"objIds\": [{\"id\": \"140ht\", \"key\": \"messages\"}], \"isRepliable\": true, \"lastUserUpdate\": \"2017-03-31T15:35:10.856706+00:00\", \"isInternal\": false, \"lastModUpdate\": null, \"lastUpdated\": \"2017-03-31T15:35:10.856706+00:00\", \"authors\": [{\"isMod\": false, \"isAdmin\": false, \"name\": \"BJO_test_user\", \"isOp\": true, \"isParticipant\": false, \"isHidden\": false, \"id\": 56922862, \"isDeleted\": false}], \"owner\": {\"displayName\": \"ThirdRealm\", \"type\": \"subreddit\", \"id\": \"t5_390u2\"}, \"id\": \"o7wz\", \"isHighlighted\": false, \"subject\": \"A quick test conversation\", \"participant\": {}, \"state\": 0, \"lastUnread\": null, \"numMessages\": 1}, \"messages\": {\"140ht\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>This is a simple test message which we can mark as read.</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": false, \"isAdmin\": false, \"name\": \"BJO_test_user\", \"isOp\": true, \"isParticipant\": false, \"isHidden\": false, \"id\": 56922862, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-31T15:35:10.856706+00:00\", \"bodyMarkdown\": \"This is a simple test message which we can mark as read.\", \"id\": \"140ht\"}}, \"user\": {\"recentComments\": {\"t1_dcmp9du\": {\"comment\": \"OK, that's fantastic. Let me try replying.\", \"date\": \"2017-01-19T15:30:14.741569+00:00\", \"permalink\": \"https://www.reddit.com/r/ThirdRealm/comments/5ox5zg/a_sample_post/dcmp9du/\", \"title\": \"A sample post\"}}, \"muteStatus\": {\"isMuted\": false, \"endDate\": null, \"reason\": \"\"}, \"name\": \"BJO_test_user\", \"created\": \"2016-05-12T23:42:30.337289+00:00\", \"banStatus\": {\"endDate\": null, \"reason\": \"\", \"isBanned\": true, \"isPermanent\": true}, \"isSuspended\": false, \"isShadowBanned\": false, \"recentPosts\": {\"t3_5x52d7\": {\"date\": \"2017-03-02T18:45:33.069013+00:00\", \"permalink\": \"https://www.reddit.com/r/ThirdRealm/comments/5x52d7/second_test_of_mental_health_thing/\", \"title\": \"Second test of mental health thing\"}, \"t3_5xtlly\": {\"date\": \"2017-03-06T14:52:04.116617+00:00\", \"permalink\": \"https://www.reddit.com/r/ThirdRealm/comments/5xtlly/test_for_new_report/\", \"title\": \"test for new report\"}, \"t3_5x51u0\": {\"date\": \"2017-03-02T18:43:15.513237+00:00\", \"permalink\": \"https://www.reddit.com/r/ThirdRealm/comments/5x51u0/mental_health_comment_test/\", \"title\": \"Mental health comment test\"}}, \"recentConvos\": {\"o7wz\": {\"date\": \"2017-03-31T15:35:10.856706+00:00\", \"permalink\": \"https://mod.reddit.com/mail/perma/o7wz\", \"id\": \"o7wz\", \"subject\": \"A quick test conversation\"}, \"o7vz\": {\"date\": \"2017-03-31T15:31:22.374344+00:00\", \"permalink\": \"https://mod.reddit.com/mail/perma/o7vz\", \"id\": \"o7vz\", \"subject\": \"and another one\"}, \"o7kl\": {\"date\": \"2017-03-31T14:51:39.211214+00:00\", \"permalink\": \"https://mod.reddit.com/mail/perma/o7kl\", \"id\": \"o7kl\", \"subject\": \"foobar\"}}, \"id\": \"t2_xw1ym\"}, \"modActions\": {}}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "2769",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Fri, 31 Mar 2017 15:37:10 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-jfk8130-JFK",
+          "X-Timer": "S1490974630.536470,VS0,VE229",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "599.0",
+          "x-ratelimit-reset": "170",
+          "x-ratelimit-used": "1",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/mod/conversations/o7wz?markRead=True&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}
