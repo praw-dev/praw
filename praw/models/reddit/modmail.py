@@ -75,6 +75,19 @@ class ModmailConversation(RedditBase):
     def _info_path(self):
         return API_PATH['modmail_conversation'].format(id=self.id)
 
+    def archive(self):
+        """Archive the conversation."""
+        self._reddit.post(API_PATH['modmail_archive'].format(id=self.id))
+
+    def highlight(self):
+        """Highlight the conversation."""
+        self._reddit.post(API_PATH['modmail_highlight'].format(id=self.id))
+
+    def mute(self):
+        """Mute the non-mod user associated with the conversation."""
+        self._reddit.request('POST',
+                             API_PATH['modmail_mute'].format(id=self.id))
+
     def reply(self, body, author_hidden=False, internal=False):
         """Reply to the conversation.
 
@@ -94,6 +107,20 @@ class ModmailConversation(RedditBase):
         message_id = response['conversation']['objIds'][-1]['id']
         message_data = response['messages'][message_id]
         return self._reddit._objector.objectify(message_data)
+
+    def unarchive(self):
+        """Unarchive the conversation."""
+        self._reddit.post(API_PATH['modmail_unarchive'].format(id=self.id))
+
+    def unhighlight(self):
+        """Un-highlight the conversation."""
+        self._reddit.request('DELETE',
+                             API_PATH['modmail_highlight'].format(id=self.id))
+
+    def unmute(self):
+        """Unmute the non-mod user associated with the conversation."""
+        self._reddit.request('POST',
+                             API_PATH['modmail_unmute'].format(id=self.id))
 
 
 class ModmailObject(RedditBase):
