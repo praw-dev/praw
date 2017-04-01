@@ -74,8 +74,10 @@ class ModmailConversation(RedditBase):
 
         """
         super(ModmailConversation, self).__init__(reddit, _data)
+        if bool(id) == bool(_data):
+            raise TypeError('Either `id` or `_data` must be provided.')
 
-        if id is not None:
+        if id:
             self.id = id  # pylint: disable=invalid-name
         if mark_read:
             self._info_params = {'markRead': True}
