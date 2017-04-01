@@ -75,8 +75,10 @@ class ModmailConversation(RedditBase):
         """
         super(ModmailConversation, self).__init__(reddit, _data)
 
-        self.id = id  # pylint: disable=invalid-name
+        if id is not None:
+            self.id = id  # pylint: disable=invalid-name
         if mark_read:
+        self.id = id  # pylint: disable=invalid-name
             self._info_params = {'markRead': True}
 
     def _info_path(self):
