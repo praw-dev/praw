@@ -1,0 +1,110 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2017-04-04T14:55:35",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.9.0"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 04 Apr 2017 14:55:34 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-jfk8143-JFK",
+          "X-Timer": "S1491317734.560666,VS0,VE311",
+          "cache-control": "max-age=0, must-revalidate",
+          "set-cookie": "loid=TaKXMPbWKH2ALd9cu4.1.1491317734568.Z0FBQUFBQlk0N1BtcXVONm1lNVhnV1dWYndUWEttMENDY2lpSFpvVnE0VHVYdU4zRFVqYllWQzl6LW8wXzVISTBuTVFocDBhRlpLRFlqeWtobXVfbDNKUDVXeHFvSGo1S1JUZjJoM0xMcGIxWWhlUnh6aW9GY3pQUVZOemQ2cV9mZUpfdHNGUjNUWnQ; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Thu, 04-Apr-2019 14:55:34 GMT; secure",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2017-04-04T14:55:36",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Cookie": "loid=TaKXMPbWKH2ALd9cu4.1.1491317734568.Z0FBQUFBQlk0N1BtcXVONm1lNVhnV1dWYndUWEttMENDY2lpSFpvVnE0VHVYdU4zRFVqYllWQzl6LW8wXzVISTBuTVFocDBhRlpLRFlqeWtobXVfbDNKUDVXeHFvSGo1S1JUZjJoM0xMcGIxWWhlUnh6aW9GY3pQUVZOemQ2cV9mZUpfdHNGUjNUWnQ; edgebucket=YWoSxpMCUJ41xyAZuO",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.9.0"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/mod/conversations/?state=mod&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"conversations\": {\"p1ka\": {\"isAuto\": false, \"objIds\": [{\"id\": \"15a30\", \"key\": \"messages\"}], \"isRepliable\": true, \"lastUserUpdate\": null, \"isInternal\": true, \"lastModUpdate\": \"2017-04-03T19:03:01.570078+00:00\", \"lastUpdated\": \"2017-04-03T19:03:01.570078+00:00\", \"authors\": [{\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": true, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}], \"owner\": {\"displayName\": \"ThirdRealm\", \"type\": \"subreddit\", \"id\": \"t5_390u2\"}, \"id\": \"p1ka\", \"isHighlighted\": false, \"subject\": \"here's a test\", \"participant\": {}, \"state\": 0, \"lastUnread\": \"2017-04-03T19:03:01.591477+00:00\", \"numMessages\": 1}, \"p1pc\": {\"isAuto\": false, \"objIds\": [{\"id\": \"15aay\", \"key\": \"messages\"}], \"isRepliable\": true, \"lastUserUpdate\": null, \"isInternal\": true, \"lastModUpdate\": \"2017-04-03T19:24:08.264380+00:00\", \"lastUpdated\": \"2017-04-03T19:24:08.264380+00:00\", \"authors\": [{\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": true, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}], \"owner\": {\"displayName\": \"ThirdRealm\", \"type\": \"subreddit\", \"id\": \"t5_390u2\"}, \"id\": \"p1pc\", \"isHighlighted\": false, \"subject\": \"Subject\", \"participant\": {}, \"state\": 0, \"lastUnread\": null, \"numMessages\": 1}, \"nbhy\": {\"isAuto\": false, \"objIds\": [{\"id\": \"12i4g\", \"key\": \"messages\"}], \"isRepliable\": true, \"lastUserUpdate\": null, \"isInternal\": true, \"lastModUpdate\": \"2017-03-27T16:48:24.529369+00:00\", \"lastUpdated\": \"2017-03-27T16:48:24.529369+00:00\", \"authors\": [{\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": true, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}], \"owner\": {\"displayName\": \"ThirdRealm\", \"type\": \"subreddit\", \"id\": \"t5_390u2\"}, \"id\": \"nbhy\", \"isHighlighted\": false, \"subject\": \"Internal moderator discussion\", \"participant\": {}, \"state\": 0, \"lastUnread\": null, \"numMessages\": 2}}, \"messages\": {\"12i4g\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>This is a reply within the conversation.</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, \"isInternal\": true, \"date\": \"2017-03-27T16:48:24.529369+00:00\", \"bodyMarkdown\": \"This is a reply within the conversation.\", \"id\": \"12i4g\"}, \"15a30\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>Can we message a mod through this?</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": true, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, \"isInternal\": true, \"date\": \"2017-04-03T19:03:01.570078+00:00\", \"bodyMarkdown\": \"Can we message a mod through this?\", \"id\": \"15a30\"}, \"15aay\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>Body</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": true, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, \"isInternal\": true, \"date\": \"2017-04-03T19:24:08.264380+00:00\", \"bodyMarkdown\": \"Body\", \"id\": \"15aay\"}}, \"viewerId\": \"t2_xw27h\", \"conversationIds\": [\"p1pc\", \"p1ka\", \"nbhy\"]}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "3377",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 04 Apr 2017 14:55:35 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-jfk8151-JFK",
+          "X-Timer": "S1491317735.072379,VS0,VE249",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "599.0",
+          "x-ratelimit-reset": "265",
+          "x-ratelimit-used": "1",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/mod/conversations/?state=mod&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}
