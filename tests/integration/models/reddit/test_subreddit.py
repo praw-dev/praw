@@ -744,6 +744,15 @@ class TestSubredditModmail(IntegrationTest):
             for action in conversation.mod_actions:
                 assert isinstance(action, ModmailAction)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_call__mark_read(self, _):
+        self.reddit.read_only = False
+        conversation = self.reddit.subreddit('all').modmail('o7wz',
+                                                            mark_read=True)
+        with self.recorder.use_cassette(
+                'TestSubredditModmail.test_call__mark_read'):
+            assert conversation.last_unread is None
+
 
 class TestSubredditQuarantine(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)

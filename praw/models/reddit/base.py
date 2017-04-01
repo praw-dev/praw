@@ -45,6 +45,7 @@ class RedditBase(PRAWBase):
         """
         super(RedditBase, self).__init__(reddit, _data)
         self._fetched = False
+        self._info_params = {}
 
     def __repr__(self):
         """Return an object initialization representation of the instance."""
@@ -61,10 +62,12 @@ class RedditBase(PRAWBase):
 
     def _fetch(self):
         if '_info_path' in dir(self):
-            other = self._reddit.get(self._info_path())
+            other = self._reddit.get(self._info_path(),
+                                     params=self._info_params)
         else:
+            self._info_params['id'] = self.fullname
             children = self._reddit.get(API_PATH['info'],
-                                        params={'id': self.fullname}).children
+                                        params=self._info_params).children
             if not children:
                 raise PRAWException('No {!r} data returned for thing {}'
                                     .format(self.__class__.__name__,
