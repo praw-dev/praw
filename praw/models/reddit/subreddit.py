@@ -1545,6 +1545,47 @@ class Modmail(object):
         """Construct an instance of the Modmail object."""
         self.subreddit = subreddit
 
+    def conversations(self, after=None, limit=None, other_subreddits=None,
+                      sort=None, state=None):
+        """Generate :class:`.ModmailConversation` objects for subreddit(s).
+
+        :param after: A base36 modmail conversation id. When provided, the
+            listing begins after this conversation (default: None).
+        :param limit: The maximum number of conversations to fetch. If None,
+            the server-side default is 25 at the time of writing
+            (default: None).
+        :param other_subreddits: A list of `.Subreddit` instances for which to
+            fetch conversations (default: None).
+        :param sort: Can be one of: mod, recent, unread, user
+            (default: recent).
+        :param state: Can be one of: all, archived, highlighted, inprogress,
+            mod, new, notifications, (default: all).
+
+        Example:
+
+        .. code:: python
+
+            conversations = reddit.subreddit('all').conversations(state='mod')
+
+        """
+        params = {}
+        if self.subreddit != "all":
+            subreddits = [self.subreddit] + (other_subreddits or [])
+            params['entity'] = ",".join(str(subreddit)
+                                        for subreddit in subreddits)
+
+        for param in ['after', 'limit', 'sort', 'state']:
+            if locals()[param]:
+                params[param] = locals()[param]
+
+        response = self.subreddit._reddit.get(
+            API_PATH['modmail_conversations'], params=params)
+        for conversation_id in response['conversationIds']:
+            data = {'conversation': response['conversations'][conversation_id],
+                    'messages': response['messages']}
+            yield ModmailConversation.parse(data, self.subreddit._reddit,
+                                            convert_objects=False)
+
 
 class SubredditStream(object):
     """Provides submission and comment streams."""
