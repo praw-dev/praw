@@ -1529,14 +1529,17 @@ class ModeratorRelationship(SubredditRelationship):
 class Modmail(object):
     """Provides modmail functions for a subreddit."""
 
-    def __call__(self, id=None):
+    def __call__(self, id=None, mark_read=False):
         """Return an individual conversation.
 
         :param id: A reddit base36 conversation ID, e.g., ``2gmz``.
+        :param mark_read: If True, conversation is marked as read
+            (default: False).
 
         """
         # pylint: disable=invalid-name,redefined-builtin
-        return ModmailConversation(self.subreddit._reddit, id=id)
+        return ModmailConversation(self.subreddit._reddit, id=id,
+                                   mark_read=mark_read)
 
     def __init__(self, subreddit):
         """Construct an instance of the Modmail object."""

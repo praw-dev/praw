@@ -66,12 +66,20 @@ class ModmailConversation(RedditBase):
         return cls(reddit, _data=conversation)
 
     def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
-                 _data=None):
-        """Construct an instance of the ModmailConversation object."""
+                 mark_read=False, _data=None):
+        """Construct an instance of the ModmailConversation object.
+
+        :param mark_read: If True, conversation is marked as read
+            (default: False).
+
+        """
         super(ModmailConversation, self).__init__(reddit, _data)
 
         if id is not None:
             self.id = id  # pylint: disable=invalid-name
+        if mark_read:
+        self.id = id  # pylint: disable=invalid-name
+            self._info_params = {'markRead': True}
 
     def _info_path(self):
         return API_PATH['modmail_conversation'].format(id=self.id)
