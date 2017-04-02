@@ -209,13 +209,10 @@ class Inbox(PRAWBase):
     def unread(self, mark_read=False, **generator_kwargs):
         """Return a ListingGenerator for unread comments and messages.
 
-        :param mark_read: Marks the messages as read when they're obtained
-            (default: False).
+        :param mark_read: Marks the inbox as read (default: False).
 
-        .. note:: When marking messages as read, the entire batch (up to 100 at
-                  a time) is marked as read when fetched. Failure to consume
-                  the entire listing may result in missed messages if you only
-                  obtain unread messages.
+        .. note:: This only marks the inbox as read not the messages. Use
+                  :meth:`.Inbox.mark_read` to mark the messages.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
