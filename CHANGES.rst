@@ -6,6 +6,10 @@ Unreleased
 
 **Added**
 
+* :meth:`~praw.models.ModmailConversation.read` to mark modmail conversations as
+  read.
+* :meth:`~praw.models.ModmailConversation.unread` to mark modmail conversations
+  as unread.
 * :meth:`~praw.models.reddit.subreddit.Modmail.conversations` to get new modmail
   conversations.
 * :meth:`~praw.models.ModmailConversation.highlight` to highlight modmail

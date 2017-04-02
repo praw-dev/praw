@@ -1,0 +1,165 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2017-04-02T17:17:19",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.9.0"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 02 Apr 2017 17:17:19 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-jfk8132-JFK",
+          "X-Timer": "S1491153438.911250,VS0,VE312",
+          "cache-control": "max-age=0, must-revalidate",
+          "set-cookie": "loid=96SqffZwXpLez0dpPj.1.1491153438918.Z0FBQUFBQlk0VElmMzdsemNXaEZwVjZrd2VvOUNIXzJHSU1vUzZobElWSzd6NDJPRFpUWENENWx3bUZRazlTTlpHTG9McklOajNRd09fVFgxLWptUGlDdEhjb2JjbUU4T1dJTkpNNi1acmJkb3VqVDBFcXB4VFM4VkdOR3RIblhGQ0ExVzFDS2dORmk; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Tue, 02-Apr-2019 17:17:19 GMT; secure",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2017-04-02T17:17:20",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&conversationIds=ik72"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Content-Length": "34",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Cookie": "loid=96SqffZwXpLez0dpPj.1.1491153438918.Z0FBQUFBQlk0VElmMzdsemNXaEZwVjZrd2VvOUNIXzJHSU1vUzZobElWSzd6NDJPRFpUWENENWx3bUZRazlTTlpHTG9McklOajNRd09fVFgxLWptUGlDdEhjb2JjbUU4T1dJTkpNNi1acmJkb3VqVDBFcXB4VFM4VkdOR3RIblhGQ0ExVzFDS2dORmk; edgebucket=wQ24NZp81xoagG5hvL",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.9.0"
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/mod/conversations/unread?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "0",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 02 Apr 2017 17:17:19 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-jfk8142-JFK",
+          "X-Timer": "S1491153439.307863,VS0,VE110",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "597.0",
+          "x-ratelimit-reset": "161",
+          "x-ratelimit-used": "3",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/mod/conversations/unread?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2017-04-02T17:17:20",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Cookie": "loid=96SqffZwXpLez0dpPj.1.1491153438918.Z0FBQUFBQlk0VElmMzdsemNXaEZwVjZrd2VvOUNIXzJHSU1vUzZobElWSzd6NDJPRFpUWENENWx3bUZRazlTTlpHTG9McklOajNRd09fVFgxLWptUGlDdEhjb2JjbUU4T1dJTkpNNi1acmJkb3VqVDBFcXB4VFM4VkdOR3RIblhGQ0ExVzFDS2dORmk; edgebucket=wQ24NZp81xoagG5hvL",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.9.0"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/mod/conversations/ik72?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"conversation\": {\"isAuto\": false, \"objIds\": [{\"id\": \"uui4\", \"key\": \"messages\"}, {\"id\": \"uuln\", \"key\": \"messages\"}, {\"id\": \"bmb6\", \"key\": \"modActions\"}, {\"id\": \"138au\", \"key\": \"messages\"}, {\"id\": \"138h7\", \"key\": \"messages\"}, {\"id\": \"138qf\", \"key\": \"messages\"}, {\"id\": \"em79\", \"key\": \"modActions\"}, {\"id\": \"em7z\", \"key\": \"modActions\"}, {\"id\": \"embg\", \"key\": \"modActions\"}, {\"id\": \"13bnx\", \"key\": \"messages\"}, {\"id\": \"emgi\", \"key\": \"modActions\"}, {\"id\": \"emgj\", \"key\": \"modActions\"}, {\"id\": \"13bzw\", \"key\": \"messages\"}, {\"id\": \"emgp\", \"key\": \"modActions\"}, {\"id\": \"emgq\", \"key\": \"modActions\"}, {\"id\": \"13c0x\", \"key\": \"messages\"}, {\"id\": \"emkf\", \"key\": \"modActions\"}, {\"id\": \"13muo\", \"key\": \"messages\"}, {\"id\": \"13n0e\", \"key\": \"messages\"}, {\"id\": \"eqgr\", \"key\": \"modActions\"}, {\"id\": \"eqgt\", \"key\": \"modActions\"}, {\"id\": \"eqgu\", \"key\": \"modActions\"}], \"isRepliable\": true, \"lastUserUpdate\": \"2017-03-07T15:28:19.342937+00:00\", \"isInternal\": false, \"lastModUpdate\": \"2017-03-30T16:18:52.728653+00:00\", \"lastUpdated\": \"2017-03-30T16:18:52.728653+00:00\", \"authors\": [{\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": true, \"id\": 5134815, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": false, \"isAdmin\": false, \"name\": \"BJO_test_user\", \"isOp\": true, \"isParticipant\": false, \"isHidden\": false, \"id\": 56922862, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}], \"owner\": {\"displayName\": \"ThirdRealm\", \"type\": \"subreddit\", \"id\": \"t5_390u2\"}, \"id\": \"ik72\", \"isHighlighted\": false, \"subject\": \"This is an outrage!\", \"participant\": {}, \"state\": 1, \"lastUnread\": \"2017-04-02T17:17:19.417722+00:00\", \"numMessages\": 10}, \"messages\": {\"13bnx\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>You have been <a href=\\\"https://reddit.zendesk.com/hc/en-us/articles/205269739\\\">temporarily muted</a> from <a href=\\\"/r/ThirdRealm\\\">r/ThirdRealm</a>. You will not be able to message the moderators of <a href=\\\"/r/ThirdRealm\\\">r/ThirdRealm</a> for 72 hours.</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-29T18:54:46.194813+00:00\", \"bodyMarkdown\": \"You have been [temporarily muted](https://reddit.zendesk.com/hc/en-us/articles/205269739) from r/ThirdRealm. You will not be able to message the moderators of r/ThirdRealm for 72 hours.\", \"id\": \"13bnx\"}, \"13bzw\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>You have been <a href=\\\"https://reddit.zendesk.com/hc/en-us/articles/205269739\\\">temporarily muted</a> from <a href=\\\"/r/ThirdRealm\\\">r/ThirdRealm</a>. You will not be able to message the moderators of <a href=\\\"/r/ThirdRealm\\\">r/ThirdRealm</a> for 72 hours.</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-29T19:17:45.916739+00:00\", \"bodyMarkdown\": \"You have been [temporarily muted](https://reddit.zendesk.com/hc/en-us/articles/205269739) from r/ThirdRealm. You will not be able to message the moderators of r/ThirdRealm for 72 hours.\", \"id\": \"13bzw\"}, \"138qf\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>A message</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-29T15:13:08.069923+00:00\", \"bodyMarkdown\": \"A message\", \"id\": \"138qf\"}, \"uuln\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>Tough cookies.</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-07T15:36:18.387648+00:00\", \"bodyMarkdown\": \"Tough cookies.\", \"id\": \"uuln\"}, \"138au\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>A reply</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-29T14:34:27.976932+00:00\", \"bodyMarkdown\": \"A reply\", \"id\": \"138au\"}, \"13n0e\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>Internal, not hidden</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, \"isInternal\": true, \"date\": \"2017-03-30T16:18:52.728653+00:00\", \"bodyMarkdown\": \"Internal, not hidden\", \"id\": \"13n0e\"}, \"138h7\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>bazinga</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-29T14:49:59.115263+00:00\", \"bodyMarkdown\": \"bazinga\", \"id\": \"138h7\"}, \"uui4\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>How dare you ban <a href=\\\"/r/ThirdRealm\\\">/r/ThirdRealm</a>&#39;s most prolific poster?</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": false, \"isAdmin\": false, \"name\": \"BJO_test_user\", \"isOp\": true, \"isParticipant\": false, \"isHidden\": false, \"id\": 56922862, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-07T15:28:19.342937+00:00\", \"bodyMarkdown\": \"How dare you ban /r/ThirdRealm's most prolific poster?\", \"id\": \"uui4\"}, \"13c0x\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>You have been <a href=\\\"https://reddit.zendesk.com/hc/en-us/articles/205269739\\\">temporarily muted</a> from <a href=\\\"/r/ThirdRealm\\\">r/ThirdRealm</a>. You will not be able to message the moderators of <a href=\\\"/r/ThirdRealm\\\">r/ThirdRealm</a> for 72 hours.</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"BJO_test_mod\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-03-29T19:19:31.317246+00:00\", \"bodyMarkdown\": \"You have been [temporarily muted](https://reddit.zendesk.com/hc/en-us/articles/205269739) from r/ThirdRealm. You will not be able to message the moderators of r/ThirdRealm for 72 hours.\", \"id\": \"13c0x\"}, \"13muo\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>foobar</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": true, \"isAdmin\": false, \"name\": \"TheGrammarBolshevik\", \"isOp\": false, \"isParticipant\": false, \"isHidden\": true, \"id\": 5134815, \"isDeleted\": false}, \"isInternal\": true, \"date\": \"2017-03-30T16:05:55.890963+00:00\", \"bodyMarkdown\": \"foobar\", \"id\": \"13muo\"}}, \"user\": {\"recentComments\": {\"t1_dcmp9du\": {\"comment\": \"OK, that's fantastic. Let me try replying.\", \"date\": \"2017-01-19T15:30:14.741569+00:00\", \"permalink\": \"https://www.reddit.com/r/ThirdRealm/comments/5ox5zg/a_sample_post/dcmp9du/\", \"title\": \"A sample post\"}}, \"muteStatus\": {\"isMuted\": false, \"endDate\": null, \"reason\": \"\"}, \"name\": \"BJO_test_user\", \"created\": \"2016-05-12T23:42:30.337289+00:00\", \"banStatus\": {\"endDate\": null, \"reason\": \"\", \"isBanned\": true, \"isPermanent\": true}, \"isSuspended\": false, \"isShadowBanned\": false, \"recentPosts\": {\"t3_5x52d7\": {\"date\": \"2017-03-02T18:45:33.069013+00:00\", \"permalink\": \"https://www.reddit.com/r/ThirdRealm/comments/5x52d7/second_test_of_mental_health_thing/\", \"title\": \"Second test of mental health thing\"}, \"t3_5xtlly\": {\"date\": \"2017-03-06T14:52:04.116617+00:00\", \"permalink\": \"https://www.reddit.com/r/ThirdRealm/comments/5xtlly/test_for_new_report/\", \"title\": \"test for new report\"}, \"t3_5x51u0\": {\"date\": \"2017-03-02T18:43:15.513237+00:00\", \"permalink\": \"https://www.reddit.com/r/ThirdRealm/comments/5x51u0/mental_health_comment_test/\", \"title\": \"Mental health comment test\"}}, \"recentConvos\": {\"o808\": {\"date\": \"2017-03-31T15:46:45.693386+00:00\", \"permalink\": \"https://mod.reddit.com/mail/perma/o808\", \"id\": \"o808\", \"subject\": \"A simple test message\"}, \"oqu4\": {\"date\": \"2017-04-02T16:14:00.955985+00:00\", \"permalink\": \"https://mod.reddit.com/mail/perma/oqu4\", \"id\": \"oqu4\", \"subject\": \"Test message\"}, \"o7wz\": {\"date\": \"2017-03-31T15:35:10.856706+00:00\", \"permalink\": \"https://mod.reddit.com/mail/perma/o7wz\", \"id\": \"o7wz\", \"subject\": \"A quick test conversation\"}}, \"id\": \"t2_xw1ym\"}, \"modActions\": {\"eqgr\": {\"date\": \"2017-03-30T17:32:45.442424+00:00\", \"actionTypeId\": 1, \"id\": \"eqgr\", \"author\": {\"name\": \"BJO_test_mod\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}}, \"emkf\": {\"date\": \"2017-03-29T19:44:41.094784+00:00\", \"actionTypeId\": 6, \"id\": \"emkf\", \"author\": {\"name\": \"BJO_test_mod\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}}, \"eqgu\": {\"date\": \"2017-03-30T17:33:45.683073+00:00\", \"actionTypeId\": 1, \"id\": \"eqgu\", \"author\": {\"name\": \"BJO_test_mod\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}}, \"eqgt\": {\"date\": \"2017-03-30T17:33:44.537966+00:00\", \"actionTypeId\": 0, \"id\": \"eqgt\", \"author\": {\"name\": \"BJO_test_mod\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}}, \"em7z\": {\"date\": \"2017-03-29T18:37:50.136706+00:00\", \"actionTypeId\": 3, \"id\": \"em7z\", \"author\": {\"name\": \"BJO_test_mod\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}}, \"emgj\": {\"date\": \"2017-03-29T19:17:45.911611+00:00\", \"actionTypeId\": 5, \"id\": \"emgj\", \"author\": {\"name\": \"TheGrammarBolshevik\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}}, \"emgi\": {\"date\": \"2017-03-29T19:17:39.855191+00:00\", \"actionTypeId\": 6, \"id\": \"emgi\", \"author\": {\"name\": \"TheGrammarBolshevik\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}}, \"embg\": {\"date\": \"2017-03-29T18:54:46.189773+00:00\", \"actionTypeId\": 5, \"id\": \"embg\", \"author\": {\"name\": \"BJO_test_mod\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}}, \"em79\": {\"date\": \"2017-03-29T18:35:08.920838+00:00\", \"actionTypeId\": 2, \"id\": \"em79\", \"author\": {\"name\": \"BJO_test_mod\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}}, \"emgq\": {\"date\": \"2017-03-29T19:19:31.311961+00:00\", \"actionTypeId\": 5, \"id\": \"emgq\", \"author\": {\"name\": \"BJO_test_mod\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 56923181, \"isDeleted\": false}}, \"emgp\": {\"date\": \"2017-03-29T19:18:51.766432+00:00\", \"actionTypeId\": 6, \"id\": \"emgp\", \"author\": {\"name\": \"TheGrammarBolshevik\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}}, \"bmb6\": {\"date\": \"2017-03-07T15:41:54.042442+00:00\", \"actionTypeId\": 2, \"id\": \"bmb6\", \"author\": {\"name\": \"TheGrammarBolshevik\", \"isMod\": true, \"isAdmin\": false, \"isHidden\": false, \"id\": 5134815, \"isDeleted\": false}}}}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "14062",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 02 Apr 2017 17:17:19 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-jfk8142-JFK",
+          "X-Timer": "S1491153439.432176,VS0,VE146",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "596.0",
+          "x-ratelimit-reset": "161",
+          "x-ratelimit-used": "4",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/mod/conversations/ik72?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}

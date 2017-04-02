@@ -34,6 +34,22 @@ class TestModmailConversation(IntegrationTest):
             conversation = self.reddit.subreddit('all').modmail('ik72')
             assert conversation.user.mute_status['isMuted']
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_read(self, _):
+        self.reddit.read_only = False
+        conversation = self.reddit.subreddit('all').modmail('ik72')
+        with self.recorder.use_cassette('TestModmailConversation.test_read'):
+            conversation.read()
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_read__other_conversations(self, _):
+        self.reddit.read_only = False
+        conversation = self.reddit.subreddit('all').modmail('p8rp')
+        other_conversation = self.reddit.subreddit('all').modmail('p8rr')
+        with self.recorder.use_cassette(
+                'TestModmailConversation.test_read__other_conversations'):
+            conversation.read(other_conversations=[other_conversation])
+
     def test_reply(self):
         self.reddit.read_only = False
         conversation = self.reddit.subreddit('all').modmail('ik72')
@@ -69,3 +85,12 @@ class TestModmailConversation(IntegrationTest):
             conversation.unmute()
             conversation = self.reddit.subreddit('all').modmail('ik72')
             assert not conversation.user.mute_status['isMuted']
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_unread(self, _):
+        self.reddit.read_only = False
+        conversation = self.reddit.subreddit('all').modmail('ik72')
+        with self.recorder.use_cassette('TestModmailConversation.test_unread'):
+            conversation.unread()
+            conversation = self.reddit.subreddit('all').modmail('ik72')
+            assert conversation.last_unread is not None

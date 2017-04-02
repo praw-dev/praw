@@ -87,6 +87,11 @@ class ModmailConversation(RedditBase):
         if mark_read:
             self._info_params = {'markRead': True}
 
+    def _build_conversation_list(self, other_conversations):
+        """Return a comma-separated list of conversation IDs."""
+        conversations = [self] + (other_conversations or [])
+        return ",".join(conversation.id for conversation in conversations)
+
     def _info_path(self):
         return API_PATH['modmail_conversation'].format(id=self.id)
 
@@ -102,6 +107,27 @@ class ModmailConversation(RedditBase):
         """Mute the non-mod user associated with the conversation."""
         self._reddit.request('POST',
                              API_PATH['modmail_mute'].format(id=self.id))
+
+    def read(self, other_conversations=None):
+        """Mark the conversation(s) as read.
+
+        :param other_conversations: A list of other conversations to mark
+            (default: None).
+
+        For example, to mark the conversation as read along with other recent
+        conversations from the same user:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('redditdev')
+           conversation = subreddit.modmail.conversation('2gmz')
+           conversation.read(
+               other_conversations=conversation.user.recent_convos)
+
+        """
+        data = {'conversationIds': self._build_conversation_list(
+            other_conversations)}
+        self._reddit.post(API_PATH['modmail_read'], data=data)
 
     def reply(self, body, author_hidden=False, internal=False):
         """Reply to the conversation.
@@ -136,6 +162,27 @@ class ModmailConversation(RedditBase):
         """Unmute the non-mod user associated with the conversation."""
         self._reddit.request('POST',
                              API_PATH['modmail_unmute'].format(id=self.id))
+
+    def unread(self, other_conversations=None):
+        """Mark the conversation(s) as unread.
+
+        :param other_conversations: A list of other conversations to mark
+            (default: None).
+
+        For example, to mark the conversation as unread along with other recent
+        conversations from the same user:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('redditdev')
+           conversation = subreddit.modmail.conversation('2gmz')
+           conversation.unread(
+               other_conversations=conversation.user.recent_convos)
+
+        """
+        data = {'conversationIds': self._build_conversation_list(
+            other_conversations)}
+        self._reddit.post(API_PATH['modmail_unread'], data=data)
 
 
 class ModmailObject(RedditBase):
