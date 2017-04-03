@@ -1586,6 +1586,35 @@ class Modmail(object):
             yield ModmailConversation.parse(data, self.subreddit._reddit,
                                             convert_objects=False)
 
+    def create(self, subject, body, recipient, author_hidden=False):
+        """Create a new modmail conversation.
+
+        :param subject: The message subject. Cannot be empty.
+        :param body: The message body. Cannot be empty.
+        :param recipient: The recipient; a username or an instance of
+            :class:`.Redditor`.
+        :param author_hidden: When True, author is hidden from non-moderators
+            (default: False).
+        :returns: A `.ModmailConversation` object for the newly created
+            conversation.
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('redditdev')
+           redditor = reddit.redditor('bboe')
+           subreddit.modmail.create('Subject', 'Body', redditor)
+
+        """
+        data = {
+            'body': body,
+            'isAuthorHidden': author_hidden,
+            'srName': self.subreddit,
+            'subject': subject,
+            'to': recipient,
+        }
+        return self.subreddit._reddit.post(API_PATH['modmail_conversations'],
+                                           data=data)
+
 
 class SubredditStream(object):
     """Provides submission and comment streams."""
