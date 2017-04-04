@@ -6,6 +6,8 @@ Unreleased
 
 **Added**
 
+* :meth:`~praw.models.reddit.subreddit.Modmail.conversations` to get new modmail
+  conversations.
 * :meth:`~praw.models.ModmailConversation.highlight` to highlight modmail
   conversations.
 * :meth:`~praw.models.ModmailConversation.unhighlight` to unhighlight modmail
