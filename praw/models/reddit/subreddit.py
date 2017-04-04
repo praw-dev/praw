@@ -1545,6 +1545,11 @@ class Modmail(object):
         """Construct an instance of the Modmail object."""
         self.subreddit = subreddit
 
+    def _build_subreddit_list(self, other_subreddits):
+        """Return a comma-separated list of subreddit display names."""
+        subreddits = [self.subreddit] + (other_subreddits or [])
+        return ",".join(str(subreddit) for subreddit in subreddits)
+
     def conversations(self, after=None, limit=None, other_subreddits=None,
                       sort=None, state=None):
         """Generate :class:`.ModmailConversation` objects for subreddit(s).
@@ -1570,9 +1575,7 @@ class Modmail(object):
         """
         params = {}
         if self.subreddit != "all":
-            subreddits = [self.subreddit] + (other_subreddits or [])
-            params['entity'] = ",".join(str(subreddit)
-                                        for subreddit in subreddits)
+            params['entity'] = self._build_subreddit_list(other_subreddits)
 
         for param in ['after', 'limit', 'sort', 'state']:
             if locals()[param]:
