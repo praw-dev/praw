@@ -42,24 +42,29 @@ class ModmailConversation(RedditBase):
                 key=lambda x: int(x.id, base=36), reverse=True)
 
     @classmethod
-    def parse(cls, data, reddit):
+    def parse(cls, data, reddit, convert_objects=True):
         """Return an instance of ModmailConversation from ``data``.
 
         :param data: The structured data.
         :param reddit: An instance of :class:`.Reddit`.
+        :param convert_objects: If True, convert message and mod action data
+            into objects (default: True).
 
         """
         conversation = data['conversation']
 
         conversation['authors'] = [reddit._objector.objectify(author)
                                    for author in conversation['authors']]
-        conversation['owner'] = reddit._objector.objectify(
-            conversation['owner'])
+        for entity in 'owner', 'participant':
+            conversation[entity] = reddit._objector.objectify(
+                conversation[entity])
 
-        if data['user']:
+        if data.get('user'):
             cls._convert_user_summary(data['user'], reddit)
             conversation['user'] = reddit._objector.objectify(data['user'])
-        conversation.update(cls._convert_conversation_objects(data, reddit))
+        if convert_objects:
+            conversation.update(cls._convert_conversation_objects(data,
+                                                                  reddit))
 
         conversation = reddit._objector._snake_case_keys(conversation)
 

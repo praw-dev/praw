@@ -1,0 +1,110 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2017-04-04T15:05:54",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "57",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.9.0"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 04 Apr 2017 15:05:53 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-jfk8134-JFK",
+          "X-Timer": "S1491318353.266774,VS0,VE340",
+          "cache-control": "max-age=0, must-revalidate",
+          "set-cookie": "loid=FTVRbgGLw1qm5yiQGa.1.1491318353275.Z0FBQUFBQlk0N1pSbGxuR0hhNG1WX21RdkotNkFPQUpGcC1GWXVWaDQ1MDZqLUVER0VJV1hrQ3pWVEIzb0MtMWQ4eE9EdkpyYXFwSXJYQzBXYkJ4YS1BV3RTemJGTEw0ODF4ejVGX0g2eHE5dnF6Nzk3S0htYWdUUGNHSWxGMlZtR044dFM3TGhNVEc; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Thu, 04-Apr-2019 15:05:53 GMT; secure",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2017-04-04T15:05:54",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Cookie": "loid=FTVRbgGLw1qm5yiQGa.1.1491318353275.Z0FBQUFBQlk0N1pSbGxuR0hhNG1WX21RdkotNkFPQUpGcC1GWXVWaDQ1MDZqLUVER0VJV1hrQ3pWVEIzb0MtMWQ4eE9EdkpyYXFwSXJYQzBXYkJ4YS1BV3RTemJGTEw0ODF4ejVGX0g2eHE5dnF6Nzk3S0htYWdUUGNHSWxGMlZtR044dFM3TGhNVEc; edgebucket=z0oaVum1V8rwp0jGAp",
+          "User-Agent": "<USER_AGENT> PRAW/4.4.1.dev0 prawcore/0.9.0"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/mod/conversations/?raw_json=1&entity=modmailtestA%2CmodmailtestB"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"conversations\": {\"p8rr\": {\"isAuto\": false, \"objIds\": [{\"id\": \"15lqt\", \"key\": \"messages\"}], \"isRepliable\": true, \"lastUserUpdate\": \"2017-04-04T15:02:38.130283+00:00\", \"isInternal\": false, \"lastModUpdate\": null, \"lastUpdated\": \"2017-04-04T15:02:38.130283+00:00\", \"authors\": [{\"isMod\": false, \"isAdmin\": false, \"name\": \"BJO_test_user\", \"isOp\": true, \"isParticipant\": true, \"isHidden\": false, \"id\": 56922862, \"isDeleted\": false}], \"owner\": {\"displayName\": \"modmailtestB\", \"type\": \"subreddit\", \"id\": \"t5_3jv7w\"}, \"id\": \"p8rr\", \"isHighlighted\": false, \"subject\": \"This is a test message.\", \"participant\": {\"isMod\": false, \"isAdmin\": false, \"name\": \"BJO_test_user\", \"isOp\": true, \"isParticipant\": true, \"isHidden\": false, \"id\": 56922862, \"isDeleted\": false}, \"state\": 0, \"lastUnread\": \"2017-04-04T15:02:38.150322+00:00\", \"numMessages\": 1}, \"p8rp\": {\"isAuto\": false, \"objIds\": [{\"id\": \"15lqr\", \"key\": \"messages\"}], \"isRepliable\": true, \"lastUserUpdate\": \"2017-04-04T15:02:22.381135+00:00\", \"isInternal\": false, \"lastModUpdate\": null, \"lastUpdated\": \"2017-04-04T15:02:22.381135+00:00\", \"authors\": [{\"isMod\": false, \"isAdmin\": false, \"name\": \"BJO_test_user\", \"isOp\": true, \"isParticipant\": true, \"isHidden\": false, \"id\": 56922862, \"isDeleted\": false}], \"owner\": {\"displayName\": \"modmailtestA\", \"type\": \"subreddit\", \"id\": \"t5_3jv7v\"}, \"id\": \"p8rp\", \"isHighlighted\": false, \"subject\": \"This is a test message.\", \"participant\": {\"isMod\": false, \"isAdmin\": false, \"name\": \"BJO_test_user\", \"isOp\": true, \"isParticipant\": true, \"isHidden\": false, \"id\": 56922862, \"isDeleted\": false}, \"state\": 0, \"lastUnread\": \"2017-04-04T15:02:22.604378+00:00\", \"numMessages\": 1}, \"p8rh\": {\"isAuto\": true, \"objIds\": [{\"id\": \"15lqh\", \"key\": \"messages\"}], \"isRepliable\": true, \"lastUserUpdate\": \"2017-04-04T15:01:43.511678+00:00\", \"isInternal\": false, \"lastModUpdate\": null, \"lastUpdated\": \"2017-04-04T15:01:43.511678+00:00\", \"authors\": [{\"isMod\": false, \"isAdmin\": true, \"name\": \"reddit\", \"isOp\": true, \"isParticipant\": true, \"isHidden\": false, \"id\": 81524, \"isDeleted\": false}], \"owner\": {\"displayName\": \"modmailtestB\", \"type\": \"subreddit\", \"id\": \"t5_3jv7w\"}, \"id\": \"p8rh\", \"isHighlighted\": false, \"subject\": \"r/modmailtestB is now enrolled in the New Modmail\", \"participant\": {\"isMod\": false, \"isAdmin\": true, \"name\": \"reddit\", \"isOp\": true, \"isParticipant\": true, \"isHidden\": false, \"id\": 81524, \"isDeleted\": false}, \"state\": 0, \"lastUnread\": null, \"numMessages\": 1}, \"p8rd\": {\"isAuto\": true, \"objIds\": [{\"id\": \"15lqc\", \"key\": \"messages\"}], \"isRepliable\": true, \"lastUserUpdate\": \"2017-04-04T15:01:25.041803+00:00\", \"isInternal\": false, \"lastModUpdate\": null, \"lastUpdated\": \"2017-04-04T15:01:25.041803+00:00\", \"authors\": [{\"isMod\": false, \"isAdmin\": true, \"name\": \"reddit\", \"isOp\": true, \"isParticipant\": true, \"isHidden\": false, \"id\": 81524, \"isDeleted\": false}], \"owner\": {\"displayName\": \"modmailtestA\", \"type\": \"subreddit\", \"id\": \"t5_3jv7v\"}, \"id\": \"p8rd\", \"isHighlighted\": false, \"subject\": \"r/modmailtestA is now enrolled in the New Modmail\", \"participant\": {\"isMod\": false, \"isAdmin\": true, \"name\": \"reddit\", \"isOp\": true, \"isParticipant\": true, \"isHidden\": false, \"id\": 81524, \"isDeleted\": false}, \"state\": 0, \"lastUnread\": null, \"numMessages\": 1}}, \"messages\": {\"15lqt\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>This is its body.</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": false, \"isAdmin\": false, \"name\": \"BJO_test_user\", \"isOp\": true, \"isParticipant\": true, \"isHidden\": false, \"id\": 56922862, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-04-04T15:02:38.130283+00:00\", \"bodyMarkdown\": \"This is its body.\", \"id\": \"15lqt\"}, \"15lqh\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>Please read the <a href=\\\"https://reddit.zendesk.com/hc/en-us/articles/210896606\\\">help document</a> to familiarize yourself with the new features.</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": false, \"isAdmin\": true, \"name\": \"reddit\", \"isOp\": true, \"isParticipant\": true, \"isHidden\": false, \"id\": 81524, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-04-04T15:01:43.511678+00:00\", \"bodyMarkdown\": \"Please read the [help document](https://reddit.zendesk.com/hc/en-us/articles/210896606) to familiarize yourself with the new features.\", \"id\": \"15lqh\"}, \"15lqr\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>This is its body.</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": false, \"isAdmin\": false, \"name\": \"BJO_test_user\", \"isOp\": true, \"isParticipant\": true, \"isHidden\": false, \"id\": 56922862, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-04-04T15:02:22.381135+00:00\", \"bodyMarkdown\": \"This is its body.\", \"id\": \"15lqr\"}, \"15lqc\": {\"body\": \"<!-- SC_OFF --><div class=\\\"md\\\"><p>Please read the <a href=\\\"https://reddit.zendesk.com/hc/en-us/articles/210896606\\\">help document</a> to familiarize yourself with the new features.</p>\\n</div><!-- SC_ON -->\", \"author\": {\"isMod\": false, \"isAdmin\": true, \"name\": \"reddit\", \"isOp\": true, \"isParticipant\": true, \"isHidden\": false, \"id\": 81524, \"isDeleted\": false}, \"isInternal\": false, \"date\": \"2017-04-04T15:01:25.041803+00:00\", \"bodyMarkdown\": \"Please read the [help document](https://reddit.zendesk.com/hc/en-us/articles/210896606) to familiarize yourself with the new features.\", \"id\": \"15lqc\"}}, \"viewerId\": \"t2_xw27h\", \"conversationIds\": [\"p8rr\", \"p8rp\", \"p8rh\", \"p8rd\"]}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "5320",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Tue, 04 Apr 2017 15:05:53 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-jfk8121-JFK",
+          "X-Timer": "S1491318354.816414,VS0,VE57",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "599.0",
+          "x-ratelimit-reset": "247",
+          "x-ratelimit-used": "1",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/mod/conversations/?raw_json=1&entity=modmailtestA%2CmodmailtestB"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}

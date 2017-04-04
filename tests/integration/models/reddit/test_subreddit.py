@@ -3,9 +3,10 @@ from os.path import abspath, dirname, join
 import sys
 
 from praw.exceptions import APIException
-from praw.models import (Comment, ModAction, ModmailAction, ModmailMessage,
-                         Redditor, Submission, Subreddit, SubredditMessage,
-                         Stylesheet, WikiPage)
+from praw.models import (Comment, ModAction, ModmailAction,
+                         ModmailConversation, ModmailMessage, Redditor,
+                         Submission, Subreddit, SubredditMessage, Stylesheet,
+                         WikiPage)
 from prawcore import Forbidden, NotFound, TooLarge
 import mock
 import pytest
@@ -752,6 +753,38 @@ class TestSubredditModmail(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubredditModmail.test_call__mark_read'):
             assert conversation.last_unread is None
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_conversations(self, _):
+        self.reddit.read_only = False
+        conversations = self.reddit.subreddit('all').modmail \
+                                                    .conversations()
+        with self.recorder.use_cassette(
+                'TestSubredditModmail.test_conversations'):
+            for conversation in conversations:
+                assert isinstance(conversation, ModmailConversation)
+                assert isinstance(conversation.authors[0], Redditor)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_conversations__params(self, _):
+        self.reddit.read_only = False
+        conversations = self.reddit.subreddit('all').modmail \
+                                                    .conversations(state='mod')
+        with self.recorder.use_cassette(
+                'TestSubredditModmail.test_conversations__params'):
+            for conversation in conversations:
+                assert conversation.is_internal
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_conversations__other_subreddits(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit('modmailtestA')
+        conversations = subreddit.modmail.conversations(
+            other_subreddits=['modmailtestB'])
+        with self.recorder.use_cassette(
+                'TestSubredditModmail.test_conversations__other_subreddits'):
+            assert len(set(conversation.owner
+                           for conversation in conversations)) > 1
 
 
 class TestSubredditQuarantine(IntegrationTest):
