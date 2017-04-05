@@ -727,6 +727,12 @@ class TestSubredditModmail(IntegrationTest):
     def subreddit(self):
         return self.reddit.subreddit(pytest.placeholders.test_subreddit)
 
+    def test_bulk_read(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditModmail.test_bulk_read'):
+            for conversation in self.subreddit.modmail.bulk_read(state='new'):
+                assert isinstance(conversation, ModmailConversation)
+
     @mock.patch('time.sleep', return_value=None)
     def test_call(self, _):
         self.reddit.read_only = False

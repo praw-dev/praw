@@ -1550,6 +1550,36 @@ class Modmail(object):
         subreddits = [self.subreddit] + (other_subreddits or [])
         return ",".join(str(subreddit) for subreddit in subreddits)
 
+    def bulk_read(self, other_subreddits=None, state=None):
+        """Mark conversations for subreddit(s) as read.
+
+        Due to server-side restrictions, 'all' is not a valid subreddit for
+        this method. Instead, use :meth:`~.Modmail.subreddits` to get a list of
+        subreddits using the new modmail.
+
+        :param other_subreddits: A list of `.Subreddit` instances for which to
+            mark conversations (default: None).
+        :param state: Can be one of: all, archived, highlighted, inprogress,
+            mod, new, notifications, (default: all).
+        :returns: A list of :class:`.ModmailConversation` instances that were
+            marked read.
+
+        For example, to mark all notifications for a subreddit as read:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('redditdev')
+           subreddit.modmail.bulk_read(state='notifications')
+
+        """
+        params = {'entity': self._build_subreddit_list(other_subreddits)}
+        if state:
+            params['state'] = state
+        response = self.subreddit._reddit.post(
+            API_PATH['modmail_bulk_read'], params=params)
+        return [self(conversation_id)
+                for conversation_id in response['conversation_ids']]
+
     def conversations(self, after=None, limit=None, other_subreddits=None,
                       sort=None, state=None):
         """Generate :class:`.ModmailConversation` objects for subreddit(s).

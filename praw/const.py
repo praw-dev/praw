@@ -91,6 +91,7 @@ API_PATH = {
     'my_subreddits':          'subreddits/mine/subscriber/',
     'marknsfw':               'api/marknsfw/',
     'modmail_archive':        'api/mod/conversations/{id}/archive',
+    'modmail_bulk_read':      'api/mod/conversations/bulk/read',
     'modmail_conversation':   'api/mod/conversations/{id}',
     'modmail_conversations':  'api/mod/conversations/',
     'modmail_highlight':      'api/mod/conversations/{id}/highlight',
