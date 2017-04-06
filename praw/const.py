@@ -96,6 +96,7 @@ API_PATH = {
     'modmail_highlight':      'api/mod/conversations/{id}/highlight',
     'modmail_mute':           'api/mod/conversations/{id}/mute',
     'modmail_read':           'api/mod/conversations/read',
+    'modmail_subreddits':     'api/mod/conversations/subreddits',
     'modmail_unarchive':      'api/mod/conversations/{id}/unarchive',
     'modmail_unmute':         'api/mod/conversations/{id}/unmute',
     'modmail_unread':         'api/mod/conversations/unread',

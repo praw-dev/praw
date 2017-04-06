@@ -1618,6 +1618,22 @@ class Modmail(object):
         return self.subreddit._reddit.post(API_PATH['modmail_conversations'],
                                            data=data)
 
+    def subreddits(self):
+        """Yield subreddits using the new modmail that the user moderates.
+
+        Example:
+
+        .. code:: python
+
+           subreddits = reddit.subreddit('all').modmail.subreddits()
+
+        """
+        response = self.subreddit._reddit.get(API_PATH['modmail_subreddits'])
+        for value in response['subreddits'].values():
+            subreddit = self.subreddit._reddit.subreddit(value['display_name'])
+            subreddit.last_updated = value['lastUpdated']
+            yield subreddit
+
 
 class SubredditStream(object):
     """Provides submission and comment streams."""

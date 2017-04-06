@@ -802,6 +802,13 @@ class TestSubredditModmail(IntegrationTest):
                 'Subject', 'Body', self.redditor)
         assert isinstance(conversation, ModmailConversation)
 
+    def test_subreddits(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModmail.test_subreddits'):
+            for subreddit in self.subreddit.modmail.subreddits():
+                assert isinstance(subreddit, Subreddit)
+
 
 class TestSubredditQuarantine(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
