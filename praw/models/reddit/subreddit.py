@@ -1664,6 +1664,25 @@ class Modmail(object):
             subreddit.last_updated = value['lastUpdated']
             yield subreddit
 
+    def unread_count(self):
+        """Return unread conversation count by conversation state.
+
+        At time of writing, possible states are: archived, highlighted,
+        inprogress, mod, new, notifications.
+
+        :returns: A dict mapping conversation states to unread counts.
+
+        For example, to print the count of unread moderator discussions:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('redditdev')
+           unread_counts = subreddit.modmail.unread_count()
+           print(unread_counts['mod'])
+
+        """
+        return self.subreddit._reddit.get(API_PATH['modmail_unread_count'])
+
 
 class SubredditStream(object):
     """Provides submission and comment streams."""

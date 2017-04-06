@@ -815,6 +815,12 @@ class TestSubredditModmail(IntegrationTest):
             for subreddit in self.subreddit.modmail.subreddits():
                 assert isinstance(subreddit, Subreddit)
 
+    def test_unread_count(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModmail.test_unread_count'):
+            assert isinstance(self.subreddit.modmail.unread_count(), dict)
+
 
 class TestSubredditQuarantine(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)

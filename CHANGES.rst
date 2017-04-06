@@ -6,6 +6,8 @@ Unreleased
 
 **Added**
 
+* :meth:`~praw.models.reddit.subreddit.Modmail.bulk_read` to get unread count by
+  conversation state.
 * :meth:`~praw.models.reddit.subreddit.Modmail.bulk_read` to mark conversations
   as read by conversation state.
 * :meth:`~praw.models.reddit.subreddit.Modmail.subreddits` to fetch subreddits
