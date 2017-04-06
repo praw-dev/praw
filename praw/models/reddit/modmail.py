@@ -96,15 +96,39 @@ class ModmailConversation(RedditBase):
         return API_PATH['modmail_conversation'].format(id=self.id)
 
     def archive(self):
-        """Archive the conversation."""
+        """Archive the conversation.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('redditdev').modmail('2gmz').archive()
+
+        """
         self._reddit.post(API_PATH['modmail_archive'].format(id=self.id))
 
     def highlight(self):
-        """Highlight the conversation."""
+        """Highlight the conversation.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('redditdev').modmail('2gmz').highlight()
+
+        """
         self._reddit.post(API_PATH['modmail_highlight'].format(id=self.id))
 
     def mute(self):
-        """Mute the non-mod user associated with the conversation."""
+        """Mute the non-mod user associated with the conversation.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('redditdev').modmail('2gmz').mute()
+
+        """
         self._reddit.request('POST',
                              API_PATH['modmail_mute'].format(id=self.id))
 
@@ -140,6 +164,19 @@ class ModmailConversation(RedditBase):
         :returns: A :class:`~.ModmailMessage` object for the newly created
             message.
 
+        For example, to reply to the non-mod user while hiding your username:
+
+        .. code:: python
+
+           conversation = reddit.subreddit('redditdev').modmail('2gmz')
+           converation.reply('Message body', author_hidden=True)
+
+        To create a private moderator note on the conversation:
+
+        .. code:: python
+
+           converation.reply('Message body', internal=True)
+
         """
         data = {'body': body, 'isAuthorHidden': author_hidden,
                 'isInternal': internal}
@@ -150,16 +187,40 @@ class ModmailConversation(RedditBase):
         return self._reddit._objector.objectify(message_data)
 
     def unarchive(self):
-        """Unarchive the conversation."""
+        """Unarchive the conversation.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('redditdev').modmail('2gmz').unarchive()
+
+        """
         self._reddit.post(API_PATH['modmail_unarchive'].format(id=self.id))
 
     def unhighlight(self):
-        """Un-highlight the conversation."""
+        """Un-highlight the conversation.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('redditdev').modmail('2gmz').unhighlight()
+
+        """
         self._reddit.request('DELETE',
                              API_PATH['modmail_highlight'].format(id=self.id))
 
     def unmute(self):
-        """Unmute the non-mod user associated with the conversation."""
+        """Unmute the non-mod user associated with the conversation.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('redditdev').modmail('2gmz').unmute()
+
+        """
         self._reddit.request('POST',
                              API_PATH['modmail_unmute'].format(id=self.id))
 

@@ -1536,6 +1536,12 @@ class Modmail(object):
         :param mark_read: If True, conversation is marked as read
             (default: False).
 
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('redditdev').modmail('2gmz', mark_read=True)
+
         """
         # pylint: disable=invalid-name,redefined-builtin
         return ModmailConversation(self.subreddit._reddit, id=id,
