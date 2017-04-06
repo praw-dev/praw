@@ -102,7 +102,7 @@ class TestSubredditFlair(UnitTest):
         assert str(excinfo.value) == message
 
 
-class TestSubreditWiki(UnitTest):
+class TestSubredditWiki(UnitTest):
     def test__getitem(self):
         subreddit = Subreddit(self.reddit, display_name='name')
         wikipage = subreddit.wiki['Foo']
