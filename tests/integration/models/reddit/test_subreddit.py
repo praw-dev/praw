@@ -719,6 +719,14 @@ class TestSubredditModeration(IntegrationTest):
 
 
 class TestSubredditModmail(IntegrationTest):
+    @property
+    def redditor(self):
+        return self.reddit.redditor(pytest.placeholders.username)
+
+    @property
+    def subreddit(self):
+        return self.reddit.subreddit(pytest.placeholders.test_subreddit)
+
     @mock.patch('time.sleep', return_value=None)
     def test_call(self, _):
         self.reddit.read_only = False
@@ -785,6 +793,14 @@ class TestSubredditModmail(IntegrationTest):
                 'TestSubredditModmail.test_conversations__other_subreddits'):
             assert len(set(conversation.owner
                            for conversation in conversations)) > 1
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_create(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditModmail.test_create'):
+            conversation = self.subreddit.modmail.create(
+                'Subject', 'Body', self.redditor)
+        assert isinstance(conversation, ModmailConversation)
 
 
 class TestSubredditQuarantine(IntegrationTest):
