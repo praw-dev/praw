@@ -1551,6 +1551,41 @@ class Modmail(object):
         """Construct an instance of the Modmail object."""
         self.subreddit = subreddit
 
+    def _build_subreddit_list(self, other_subreddits):
+        """Return a comma-separated list of subreddit display names."""
+        subreddits = [self.subreddit] + (other_subreddits or [])
+        return ",".join(str(subreddit) for subreddit in subreddits)
+
+    def bulk_read(self, other_subreddits=None, state=None):
+        """Mark conversations for subreddit(s) as read.
+
+        Due to server-side restrictions, 'all' is not a valid subreddit for
+        this method. Instead, use :meth:`~.Modmail.subreddits` to get a list of
+        subreddits using the new modmail.
+
+        :param other_subreddits: A list of `.Subreddit` instances for which to
+            mark conversations (default: None).
+        :param state: Can be one of: all, archived, highlighted, inprogress,
+            mod, new, notifications, (default: all).
+        :returns: A list of :class:`.ModmailConversation` instances that were
+            marked read.
+
+        For example, to mark all notifications for a subreddit as read:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('redditdev')
+           subreddit.modmail.bulk_read(state='notifications')
+
+        """
+        params = {'entity': self._build_subreddit_list(other_subreddits)}
+        if state:
+            params['state'] = state
+        response = self.subreddit._reddit.post(
+            API_PATH['modmail_bulk_read'], params=params)
+        return [self(conversation_id)
+                for conversation_id in response['conversation_ids']]
+
     def conversations(self, after=None, limit=None, other_subreddits=None,
                       sort=None, state=None):
         """Generate :class:`.ModmailConversation` objects for subreddit(s).
@@ -1576,9 +1611,7 @@ class Modmail(object):
         """
         params = {}
         if self.subreddit != "all":
-            subreddits = [self.subreddit] + (other_subreddits or [])
-            params['entity'] = ",".join(str(subreddit)
-                                        for subreddit in subreddits)
+            params['entity'] = self._build_subreddit_list(other_subreddits)
 
         for param in ['after', 'limit', 'sort', 'state']:
             if locals()[param]:
@@ -1620,6 +1653,41 @@ class Modmail(object):
         }
         return self.subreddit._reddit.post(API_PATH['modmail_conversations'],
                                            data=data)
+
+    def subreddits(self):
+        """Yield subreddits using the new modmail that the user moderates.
+
+        Example:
+
+        .. code:: python
+
+           subreddits = reddit.subreddit('all').modmail.subreddits()
+
+        """
+        response = self.subreddit._reddit.get(API_PATH['modmail_subreddits'])
+        for value in response['subreddits'].values():
+            subreddit = self.subreddit._reddit.subreddit(value['display_name'])
+            subreddit.last_updated = value['lastUpdated']
+            yield subreddit
+
+    def unread_count(self):
+        """Return unread conversation count by conversation state.
+
+        At time of writing, possible states are: archived, highlighted,
+        inprogress, mod, new, notifications.
+
+        :returns: A dict mapping conversation states to unread counts.
+
+        For example, to print the count of unread moderator discussions:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('redditdev')
+           unread_counts = subreddit.modmail.unread_count()
+           print(unread_counts['mod'])
+
+        """
+        return self.subreddit._reddit.get(API_PATH['modmail_unread_count'])
 
 
 class SubredditStream(object):

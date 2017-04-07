@@ -727,6 +727,12 @@ class TestSubredditModmail(IntegrationTest):
     def subreddit(self):
         return self.reddit.subreddit(pytest.placeholders.test_subreddit)
 
+    def test_bulk_read(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditModmail.test_bulk_read'):
+            for conversation in self.subreddit.modmail.bulk_read(state='new'):
+                assert isinstance(conversation, ModmailConversation)
+
     @mock.patch('time.sleep', return_value=None)
     def test_call(self, _):
         self.reddit.read_only = False
@@ -801,6 +807,19 @@ class TestSubredditModmail(IntegrationTest):
             conversation = self.subreddit.modmail.create(
                 'Subject', 'Body', self.redditor)
         assert isinstance(conversation, ModmailConversation)
+
+    def test_subreddits(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModmail.test_subreddits'):
+            for subreddit in self.subreddit.modmail.subreddits():
+                assert isinstance(subreddit, Subreddit)
+
+    def test_unread_count(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditModmail.test_unread_count'):
+            assert isinstance(self.subreddit.modmail.unread_count(), dict)
 
 
 class TestSubredditQuarantine(IntegrationTest):
