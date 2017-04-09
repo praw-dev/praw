@@ -6,20 +6,20 @@ Unreleased
 
 **Added**
 
-* :meth:`~praw.models.reddit.subreddit.Modmail.bulk_read` to get unread count by
-  conversation state.
+* :meth:`~praw.models.reddit.subreddit.Modmail.bulk_read` to get unread count
+  by conversation state.
 * :meth:`~praw.models.reddit.subreddit.Modmail.bulk_read` to mark conversations
   as read by conversation state.
 * :meth:`~praw.models.reddit.subreddit.Modmail.subreddits` to fetch subreddits
   using new modmail.
 * :meth:`~praw.models.reddit.subreddit.Modmail.create` to create a new modmail
   conversation.
-* :meth:`~praw.models.ModmailConversation.read` to mark modmail conversations as
-  read.
+* :meth:`~praw.models.ModmailConversation.read` to mark modmail conversations
+  as read.
 * :meth:`~praw.models.ModmailConversation.unread` to mark modmail conversations
   as unread.
-* :meth:`~praw.models.reddit.subreddit.Modmail.conversations` to get new modmail
-  conversations.
+* :meth:`~praw.models.reddit.subreddit.Modmail.conversations` to get new
+  modmail conversations.
 * :meth:`~praw.models.ModmailConversation.highlight` to highlight modmail
   conversations.
 * :meth:`~praw.models.ModmailConversation.unhighlight` to unhighlight modmail
