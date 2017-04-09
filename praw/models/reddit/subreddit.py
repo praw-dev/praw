@@ -335,9 +335,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         :param sort: Can be one of: relevance, hot, top, new,
             comments. (default: relevance).
         :param syntax: Can be one of: cloudsearch, lucene, plain
-            (default: cloudsearch).
+            (default: cloudsearch -- will be lucene in PRAW 5).
         :param time_filter: Can be one of: all, day, hour, month, week, year
             (default: all).
+
+        .. warning:: (Deprecation) The default search syntax is changing to
+           ``lucene`` in PRAW 5. For forward compatability please explicitly
+           provide the search syntax.
 
         For more information on building a search query see:
             https://www.reddit.com/wiki/search
