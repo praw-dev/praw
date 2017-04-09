@@ -25,8 +25,7 @@ class ModmailConversation(RedditBase):
                    reddit._objector.parsers[reddit.config.kinds['comment']],
                    'recentConvos': ModmailConversation,
                    'recentPosts':
-                   reddit._objector.parsers[reddit.config.kinds['submission']],
-                   }
+                   reddit._objector.parsers[reddit.config.kinds['submission']]}
         for kind, parser in parsers.items():
             objects = []
             for thing_id, summary in data[kind].items():
@@ -42,7 +41,8 @@ class ModmailConversation(RedditBase):
                 key=lambda x: int(x.id, base=36), reverse=True)
 
     @classmethod
-    def parse(cls, data, reddit, convert_objects=True):
+    def parse(cls, data, reddit,  # pylint: disable=arguments-differ
+              convert_objects=True):
         """Return an instance of ModmailConversation from ``data``.
 
         :param data: The structured data.

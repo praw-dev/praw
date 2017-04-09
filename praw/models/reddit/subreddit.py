@@ -50,6 +50,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     """
 
+    # pylint: disable=too-many-public-methods
+
     STR_FIELD = 'display_name'
     MESSAGE_PREFIX = '#'
 
@@ -1617,9 +1619,10 @@ class Modmail(object):
         if self.subreddit != "all":
             params['entity'] = self._build_subreddit_list(other_subreddits)
 
-        for param in ['after', 'limit', 'sort', 'state']:
-            if locals()[param]:
-                params[param] = locals()[param]
+        for name, value in {'after': after, 'limit': limit, 'sort': sort,
+                            'state': state}.items():
+            if value:
+                params[name] = value
 
         response = self.subreddit._reddit.get(
             API_PATH['modmail_conversations'], params=params)
