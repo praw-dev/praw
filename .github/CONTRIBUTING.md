@@ -33,8 +33,9 @@ to you, it likely is not to the person asking the question.
    work.
 
 0. Prior to creating a pull request run the `pre_push.sh` script. This script
-   depends on the tools `flake8`, `pylint`, and `pydocstyle`. They can be
-   installed via `pip install flake8 pydocstyle pylint`.
+   depends on the tools `flake8`, `flake8-quotes`, `pylint`, and
+   `pydocstyle`. They can be installed via `pip install flake8 flake8-quotes
+   pydocstyle pylint`.
 
 0. Add yourself as a contributor to the ``AUTHORS.rst``.
 

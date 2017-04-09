@@ -90,7 +90,7 @@ class ModmailConversation(RedditBase):
     def _build_conversation_list(self, other_conversations):
         """Return a comma-separated list of conversation IDs."""
         conversations = [self] + (other_conversations or [])
-        return ",".join(conversation.id for conversation in conversations)
+        return ','.join(conversation.id for conversation in conversations)
 
     def _info_path(self):
         return API_PATH['modmail_conversation'].format(id=self.id)

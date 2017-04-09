@@ -1560,7 +1560,7 @@ class Modmail(object):
     def _build_subreddit_list(self, other_subreddits):
         """Return a comma-separated list of subreddit display names."""
         subreddits = [self.subreddit] + (other_subreddits or [])
-        return ",".join(str(subreddit) for subreddit in subreddits)
+        return ','.join(str(subreddit) for subreddit in subreddits)
 
     def bulk_read(self, other_subreddits=None, state=None):
         """Mark conversations for subreddit(s) as read.
@@ -1616,7 +1616,7 @@ class Modmail(object):
 
         """
         params = {}
-        if self.subreddit != "all":
+        if self.subreddit != 'all':
             params['entity'] = self._build_subreddit_list(other_subreddits)
 
         for name, value in {'after': after, 'limit': limit, 'sort': sort,

@@ -30,7 +30,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
             last_word = title.rfind('_')
             if last_word > 0:
                 title = title[:last_word]
-        return title or "_"
+        return title or '_'
 
     def __init__(self, reddit, _data):
         """Construct an instance of the Multireddit object."""
