@@ -329,7 +329,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         """
         return self._reddit.get(API_PATH['rules'].format(subreddit=self))
 
-    def search(self, query, sort='relevance', syntax='cloudsearch',
+    def search(self, query, sort='relevance', syntax='lucene',
                time_filter='all', **generator_kwargs):
         """Return a ListingGenerator for items that match ``query``.
 
@@ -337,13 +337,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         :param sort: Can be one of: relevance, hot, top, new,
             comments. (default: relevance).
         :param syntax: Can be one of: cloudsearch, lucene, plain
-            (default: cloudsearch -- will be lucene in PRAW 5).
+            (default: lucene).
         :param time_filter: Can be one of: all, day, hour, month, week, year
             (default: all).
-
-        .. warning:: (Deprecation) The default search syntax is changing to
-           ``lucene`` in PRAW 5. For forward compatibility please explicitly
-           provide the search syntax.
 
         For more information on building a search query see:
             https://www.reddit.com/wiki/search
@@ -427,7 +423,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             current_ids = set()
             found_new_submission = False
             for submission in self.search(query, limit=None, params=params,
-                                          sort='new'):
+                                          sort='new', syntax='cloudsearch'):
                 current_ids.add(submission.id)
                 end = min(end, int(submission.created))
                 if submission.id not in last_ids:

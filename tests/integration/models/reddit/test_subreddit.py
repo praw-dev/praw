@@ -99,7 +99,8 @@ class TestSubreddit(IntegrationTest):
     def test_search(self):
         with self.recorder.use_cassette('TestSubreddit.test_search'):
             subreddit = self.reddit.subreddit('all')
-            for item in subreddit.search('praw oauth search', limit=None):
+            for item in subreddit.search('praw oauth search', limit=None,
+                                         syntax='cloudsearch'):
                 assert isinstance(item, Submission)
 
     @mock.patch('time.sleep', return_value=None)

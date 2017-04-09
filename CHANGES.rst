@@ -4,11 +4,17 @@ Change Log
 Unreleased PRAW5
 ----------------
 
+**Changed**
+
+* `cloudsearch` is no longer the default syntax for
+  :meth:`.Subreddit.search`. ``lucene`` is now the default
+  syntax so that PRAW's default is aligned with Reddit's default.
+
 **Removed**
 
 * Iterating directly over :class:`.SubredditRelationship` (e.g.,
-  ``subreddit.banned``, ``subreddit.contributor``, ``subreddit.moderator``, etc)
-  and :class:`.SubredditFlair` is no longer possible. Iterate instead over
+  ``subreddit.banned``, ``subreddit.contributor``, ``subreddit.moderator``,
+  etc) and :class:`.SubredditFlair` is no longer possible. Iterate instead over
   their callables, e.g. ``subreddit.banned()`` and ``subreddit.flair()``.
 * The following methods are removed:
   ``Subreddit.mod.approve``, ``Subreddit.mod.distinguish``,
