@@ -46,6 +46,12 @@ Unreleased
   class and ``requestor_kwargs={'param': value}`` for passing arguments to
   requestor initialization.
 
+**Deprecated**
+
+* `cloudsearch` will no longer be the default syntax for
+  :meth:`.Subreddit.search` in PRAW 5. Instead `lucene` will be the default
+  syntax so that PRAW's default is aligned with Reddit's default.
+
 **Fixed**
 
 * Fix bug where :class:`.WikiPage` revisions with deleted authors caused
