@@ -4,7 +4,7 @@ sys.path.insert(0, '..')
 
 from praw import __version__
 
-copyright = '2016, Bryce Boe'
+copyright = '2017, Bryce Boe'
 exclude_patterns = ['_build']
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
 html_static_path = ['_static']
