@@ -24,6 +24,7 @@ applications and **web** applications.
    getting_started/installation
    getting_started/authentication
    getting_started/configuration
+   getting_started/multiple_instances
    getting_started/logging
 
 .. _code_overview:
