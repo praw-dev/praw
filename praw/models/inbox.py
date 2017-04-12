@@ -161,7 +161,7 @@ class Inbox(PRAWBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        For example, to output the receipient of the mot recent 15 messages
+        For example, to output the recipient of the mot recent 15 messages
         try:
 
         .. code:: python

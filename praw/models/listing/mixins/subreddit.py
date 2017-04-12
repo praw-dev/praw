@@ -8,7 +8,7 @@ from .rising import RisingListingMixin
 
 class SubredditListingMixin(BaseListingMixin, GildedListingMixin,
                             RisingListingMixin):
-    """Adds additional methods pertianing to Subreddit-like instances."""
+    """Adds additional methods pertaining to Subreddit-like instances."""
 
     @property
     def comments(self):

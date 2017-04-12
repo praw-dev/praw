@@ -342,7 +342,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             (default: all).
 
         .. warning:: (Deprecation) The default search syntax is changing to
-           ``lucene`` in PRAW 5. For forward compatability please explicitly
+           ``lucene`` in PRAW 5. For forward compatibility please explicitly
            provide the search syntax.
 
         For more information on building a search query see:
@@ -391,7 +391,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             submission yielded during the call. A value of ``None`` will
             consider all submissions newer than ``start`` (default: None).
         :param extra_query: A cloudsearch query that will be combined via
-            ``(and timestamp:start..end EXTRA_QUERY)`` to futher filter
+            ``(and timestamp:start..end EXTRA_QUERY)`` to further filter
             results (default: None).
 
         Submissions are yielded newest first.
@@ -510,7 +510,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 class SubredditFilters(object):
     """Provide functions to interact with the special Subreddit's filters.
 
-    Members of this class should be utilized via ``Subreddit.fiters``. For
+    Members of this class should be utilized via ``Subreddit.filters``. For
     example to add a filter run:
 
     .. code:: python
@@ -1170,7 +1170,7 @@ class SubredditModeration(object):
         Additional keyword arguments can be provided to handle new settings as
         Reddit introduces them.
 
-        Settings that are documented here and aren't explitly set by you in a
+        Settings that are documented here and aren't explicitly set by you in a
         call to :meth:`.SubredditModeration.update` should retain their current
         value. If they do not please file a bug.
 
@@ -1708,11 +1708,13 @@ class SubredditStream(object):
         """
         self.subreddit = subreddit
 
-    def comments(self):
+    def comments(self, **stream_options):
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will
         initially be returned.
+
+        Additional keyword arguments are passed to the stream generator.
 
         For example, to retrieve all new comments made to the ``iama``
         subreddit, try:
@@ -1722,8 +1724,60 @@ class SubredditStream(object):
            for comment in reddit.subreddit('iama').stream.comments():
                print(comment)
 
+        Using a ``pause_after`` limit to stop querying for comments after
+        6 failed data fetches can be done by:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('redditdev')
+           for comment in subreddit.stream.comments(pause_after=6):
+               if comment is None:
+                   break
+               print(comment)
+
+        To resume fetching comments after hitting a ``pause_after limit``,
+        try:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('help')
+           subreddit_stream = subreddit.stream.comments(pause_after=5)
+
+           for comment in subreddit_stream:
+               if comment is None:
+                   break
+               print(comment)
+           # Do any other processing, then try to fetch more data
+           for comment in subreddit_stream:
+               if comment is None:
+                   break
+               print(comment)
+
+        To pause the generator after each empty fetch use ``pause_after=0``:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('help')
+           subreddit_stream = subreddit.stream.comments(pause_after=0)
+
+           while True:
+               comment = next(subreddit_stream)
+               if comment is None:
+                   logging.info('...')
+                   time.sleep(120)
+                   # Any other operation. Then return to looping when done.
+
+        To never pause the generator use ``pause_after=None`` (the default):
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('help')
+           subreddit_stream = subreddit.stream.comments()
+           for comment subreddit_stream:
+               print(comment.id) # Guaranteed that it will never yield None.
+
         """
-        return stream_generator(self.subreddit.comments)
+        return stream_generator(self.subreddit.comments, **stream_options)
 
     def submissions(self):
         """Yield new submissions as they become available.
@@ -1842,7 +1896,7 @@ class SubredditStylesheet(object):
 
         .. code:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.delete_ombile_icon()
+           reddit.subreddit('SUBREDDIT').stylesheet.delete_mobile_icon()
 
         """
         url = API_PATH['delete_sr_icon'].format(subreddit=self.subreddit)
@@ -2011,7 +2065,8 @@ class SubredditWiki(object):
     def create(self, name, content, reason=None, **other_settings):
         """Create a new wiki page.
 
-        :param name: The name of the new WikiPage. This name will be normalied.
+        :param name: The name of the new WikiPage. This name will be
+            normalized.
         :param content: The content of the new WikiPage.
         :param reason: (Optional) The reason for the creation.
         :param other_settings: Additional keyword arguments to pass.
