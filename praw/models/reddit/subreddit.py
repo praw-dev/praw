@@ -342,7 +342,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             (default: all).
 
         .. warning:: (Deprecation) The default search syntax is changing to
-               ``lucene`` in PRAW 5. For forward compatibility please explicitly
+           ``lucene`` in PRAW 5. For forward compatibility please explicitly
            provide the search syntax.
 
         For more information on building a search query see:
