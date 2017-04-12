@@ -77,12 +77,27 @@ def permissions_string(permissions, known_permissions):
     return ','.join(to_set)
 
 
-def stream_generator(function):
-    """Forever yield new items from ListingGenerators."""
+def stream_generator(function, pause_after=None):
+    """Forever yield new items from ListingGenerators.
+
+    :param function: A callable that returns a ListingGenerator, e.g.
+       ``subreddit.comments`` or ``subreddit.new``.
+    :param pause_after: A integer representing the maximum times to fetch
+       data if no new items are found. Once this limit is reached, it will
+       yield ``None``, signalling to the caller no new data is available.
+       If set to ``0``, it will yield ``None`` after each data fetch that
+       returns no new items. If not set, the fetching loop will just keep
+       running (with sleeps) until a valid item appears. Once ``None`` is
+       yielded, the calling code can still consume the generator, which will
+       yield new data once available using the same ``pause_after`` value
+       (default: None).
+    """
     before_fullname = None
     exponential_counter = ExponentialCounter(max_counter=64)
     seen_fullnames = BoundedSet(301)
     without_before_counter = 0
+    responses_without_new = 0
+    valid_pause_after = pause_after is not None
     while True:
         found = False
         newest_fullname = None
@@ -101,5 +116,11 @@ def stream_generator(function):
         before_fullname = newest_fullname
         if found:
             exponential_counter.reset()
+            responses_without_new = 0
         else:
-            time.sleep(exponential_counter.counter())
+            responses_without_new += 1
+            if valid_pause_after and responses_without_new > pause_after:
+                responses_without_new = 0
+                yield None
+            else:
+                time.sleep(exponential_counter.counter())

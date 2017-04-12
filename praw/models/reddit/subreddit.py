@@ -1708,11 +1708,13 @@ class SubredditStream(object):
         """
         self.subreddit = subreddit
 
-    def comments(self):
+    def comments(self, **stream_options):
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will
         initially be returned.
+
+        Additional keyword arguments are passed to the stream generator.
 
         For example, to retrieve all new comments made to the ``iama``
         subreddit, try:
@@ -1722,8 +1724,60 @@ class SubredditStream(object):
            for comment in reddit.subreddit('iama').stream.comments():
                print(comment)
 
+        Using a ``pause_after`` limit to stop querying for comments after
+        6 failed data fetches can be done by:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('redditdev')
+           for comment in subreddit.stream.comments(pause_after=6):
+               if comment is None:
+                   break
+               print(comment)
+
+        To resume fetching comments after hitting a ``pause_after limit``,
+        try:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('help')
+           subreddit_stream = subreddit.stream.comments(pause_after=5)
+
+           for comment in subreddit_stream:
+               if comment is None:
+                   break
+               print(comment)
+           # Do any other processing, then try to fetch more data
+           for comment in subreddit_stream:
+               if comment is None:
+                   break
+               print(comment)
+
+        To pause the generator after each empty fetch use ``pause_after=0``:
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('help')
+           subreddit_stream = subreddit.stream.comments(pause_after=0)
+
+           while True:
+               comment = next(subreddit_stream)
+               if comment is None:
+                   logging.info('...')
+                   time.sleep(120)
+                   # Any other operation. Then return to looping when done.
+
+        To never pause the generator use ``pause_after=None`` (the default):
+
+        .. code:: python
+
+           subreddit = reddit.subreddit('help')
+           subreddit_stream = subreddit.stream.comments()
+           for comment subreddit_stream:
+               print(comment.id) # Guaranteed that it will never yield None.
+
         """
-        return stream_generator(self.subreddit.comments)
+        return stream_generator(self.subreddit.comments, **stream_options)
 
     def submissions(self):
         """Yield new submissions as they become available.

@@ -45,6 +45,10 @@ Unreleased
 * :class:`.Reddit` accepts ``requestor_class=cls`` for a customized requestor
   class and ``requestor_kwargs={'param': value}`` for passing arguments to
   requestor initialization.
+* :meth:`~praw.models.reddit.subreddit.SubredditStream.comments` accepts
+  `pause_after=0` to allow pausing (by yielding ``None``) the stream
+  generator after a number of requests that return no new comments
+  (the default value of ``None`` keeps previous behavior of never pausing).
 
 **Deprecated**
 
