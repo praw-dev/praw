@@ -30,7 +30,7 @@ class ThingModerationMixin(object):
 
         :param how: One of 'yes', 'no', 'admin', 'special'. 'yes' adds a
             moderator level distinguish. 'no' removes any distinction. 'admin'
-            and 'special' require special user priviliges to use.
+            and 'special' require special user privileges to use.
         :param sticky: Comment is stickied if True, placing it at the top of
             the comment page regardless of score. If thing is not a top-level
             comment, this parameter is silently ignored.

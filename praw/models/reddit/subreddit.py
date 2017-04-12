@@ -342,7 +342,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             (default: all).
 
         .. warning:: (Deprecation) The default search syntax is changing to
-           ``lucene`` in PRAW 5. For forward compatability please explicitly
+               ``lucene`` in PRAW 5. For forward compatibility please explicitly
            provide the search syntax.
 
         For more information on building a search query see:
@@ -391,7 +391,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             submission yielded during the call. A value of ``None`` will
             consider all submissions newer than ``start`` (default: None).
         :param extra_query: A cloudsearch query that will be combined via
-            ``(and timestamp:start..end EXTRA_QUERY)`` to futher filter
+            ``(and timestamp:start..end EXTRA_QUERY)`` to further filter
             results (default: None).
 
         Submissions are yielded newest first.
@@ -480,7 +480,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             list of subreddits.
 
         """
-        data = {'action': 'sub', 'skip_inital_defaults': True,
+        data = {'action': 'sub', 'skip_initial_defaults': True,
                 'sr_name': self._subreddit_list(self, other_subreddits)}
         self._reddit.post(API_PATH['subscribe'], data=data)
 
@@ -510,7 +510,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 class SubredditFilters(object):
     """Provide functions to interact with the special Subreddit's filters.
 
-    Members of this class should be utilized via ``Subreddit.fiters``. For
+    Members of this class should be utilized via ``Subreddit.filters``. For
     example to add a filter run:
 
     .. code:: python
@@ -1170,7 +1170,7 @@ class SubredditModeration(object):
         Additional keyword arguments can be provided to handle new settings as
         Reddit introduces them.
 
-        Settings that are documented here and aren't explitly set by you in a
+        Settings that are documented here and aren't explicitly set by you in a
         call to :meth:`.SubredditModeration.update` should retain their current
         value. If they do not please file a bug.
 
@@ -1842,7 +1842,7 @@ class SubredditStylesheet(object):
 
         .. code:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.delete_ombile_icon()
+           reddit.subreddit('SUBREDDIT').stylesheet.delete_mobile_icon()
 
         """
         url = API_PATH['delete_sr_icon'].format(subreddit=self.subreddit)
@@ -2011,7 +2011,8 @@ class SubredditWiki(object):
     def create(self, name, content, reason=None, **other_settings):
         """Create a new wiki page.
 
-        :param name: The name of the new WikiPage. This name will be normalied.
+        :param name: The name of the new WikiPage. This name will be
+            normalized.
         :param content: The content of the new WikiPage.
         :param reason: (Optional) The reason for the creation.
         :param other_settings: Additional keyword arguments to pass.

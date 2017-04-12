@@ -6,7 +6,7 @@ from praw.models import Subreddit, WikiPage
 from ... import UnitTest
 
 
-class TestSubredit(UnitTest):
+class TestSubreddit(UnitTest):
     def test_equality(self):
         subreddit1 = Subreddit(self.reddit,
                                _data={'display_name': 'dummy1', 'n': 1})
