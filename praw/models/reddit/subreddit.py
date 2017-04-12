@@ -480,7 +480,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             list of subreddits.
 
         """
-        data = {'action': 'sub', 'skip_initial_defaults': True,
+        data = {'action': 'sub', 'skip_inital_defaults': True,
                 'sr_name': self._subreddit_list(self, other_subreddits)}
         self._reddit.post(API_PATH['subscribe'], data=data)
 
