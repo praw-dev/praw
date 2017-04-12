@@ -169,13 +169,13 @@ class ModmailConversation(RedditBase):
         .. code:: python
 
            conversation = reddit.subreddit('redditdev').modmail('2gmz')
-           converation.reply('Message body', author_hidden=True)
+           conversation.reply('Message body', author_hidden=True)
 
         To create a private moderator note on the conversation:
 
         .. code:: python
 
-           converation.reply('Message body', internal=True)
+           conversation.reply('Message body', internal=True)
 
         """
         data = {'body': body, 'isAuthorHidden': author_hidden,

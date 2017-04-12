@@ -13,7 +13,7 @@ checks. The following are PRAW-specific guidelines in addition to those PEP's.
 Code
 ----
 
-* Within a single file classes are sorted alphabetically where inheritence
+* Within a single file classes are sorted alphabetically where inheritance
   permits.
 * Within a class, methods are sorted alphabetically within their respective
   groups with the following as the grouping order:

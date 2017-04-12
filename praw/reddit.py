@@ -100,7 +100,7 @@ class Reddit(object):
         * client_secret (for installed applications set this value to ``None``)
         * user_agent
 
-        The ``requestor_class`` and ``requerstor_kwargs`` allow for
+        The ``requestor_class`` and ``requestor_kwargs`` allow for
         customization of the requestor :class`.Reddit` will use. This allows,
         e.g., easily adding behavior to the requestor or wrapping its
         :class`Session` in a caching layer. Example usage:
@@ -151,7 +151,7 @@ class Reddit(object):
         if self.config.client_secret is self.config.CONFIG_NOT_SET:
             raise ClientException(required_message.format('client_secret') +
                                   '\nFor installed applications this value '
-                                  'must be set to None via a keyword arugment '
+                                  'must be set to None via a keyword argument '
                                   'to the `Reddit` class constructor.')
 
         self._check_for_update()
@@ -400,7 +400,7 @@ class Reddit(object):
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body
             of the request (default: None).
-        :param files: Dictionary, filename to file (like) object mappin
+        :param files: Dictionary, filename to file (like) object mapping
             (default: None).
         :param params: The query parameters to add to the request (default:
             None).
@@ -443,7 +443,7 @@ class Reddit(object):
             None).
         :param data: Dictionary, bytes, or file-like object to send in the body
             of the request (default: None).
-        :param files: Dictionary, filename to file (like) object mappin
+        :param files: Dictionary, filename to file (like) object mapping
             (default: None).
 
         """

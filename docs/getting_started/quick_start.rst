@@ -26,7 +26,7 @@ Prerequisites
                             a client ID and client secret, follow Reddit's
                             `First Steps Guide`_ to create them.
 
-:User Agent: A user agent is a unique indentifer that helps Reddit determine
+:User Agent: A user agent is a unique identifier that helps Reddit determine
              the source of network requests. To use Reddit's API, you need a
              unique and descriptive user agent. The recommended format is
              ``<platform>:<app ID>:<version string> (by /u/<Reddit
@@ -45,7 +45,7 @@ Prerequisites
 .. _`First Steps Guide`:
    https://github.com/reddit/reddit/wiki/OAuth2-Quick-Start-Example#first-steps
 
-With these prerequisites satisifed, you are ready to learn how to do some of
+With these prerequisites satisfied, you are ready to learn how to do some of
 the most common tasks with Reddit's API.
 
 Common Tasks

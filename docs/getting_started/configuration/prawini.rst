@@ -14,7 +14,7 @@ user defined ``praw.ini`` files in a few other locations:
    detected in order as one of the following:
 
    1. In the directory specified by the ``XDG_CONFIG_HOME`` environment
-      varaible on operating systems that define such an environment variable
+      variable on operating systems that define such an environment variable
       (some modern Linux distributions).
 
    2. In the directory specified by ``$HOME/.config`` if the ``HOME``

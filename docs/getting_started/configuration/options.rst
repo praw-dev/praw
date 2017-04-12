@@ -19,7 +19,7 @@ Basic Configuration Options
 ---------------------------
 
 :check_for_updates: When ``true``, check for new versions of PRAW. When a
-                    newever version of PRAW is available a message is reported
+                    newer version of PRAW is available a message is reported
                     via standard out (default: ``true``).
 
 :user_agent: (Required) A unique description of your application. The following
@@ -108,7 +108,7 @@ Your application can utilize PRAW's configuration system in order to provide
 its own custom settings.
 
 For instance you might want to add an ``app_debugging: true`` option to your
-application's ``praw.ini`` file. To retreive the value of this custom option
+application's ``praw.ini`` file. To retrieve the value of this custom option
 from an instance of :class:`.Reddit` you can execute:
 
 .. code-block:: python

@@ -20,7 +20,7 @@ class MoreComments(PRAWBase):
             self.count == other.count and self.children == other.children
 
     def __lt__(self, other):
-        """Proide a sort order on the MoreComments object."""
+        """Provide a sort order on the MoreComments object."""
         # To work with heapq a "smaller" item is the one with the most comments
         # We are intentionally making the biggest element the smallest element
         # to turn the min-heap implementation in heapq into a max-heap.
