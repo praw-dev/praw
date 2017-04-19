@@ -1052,9 +1052,13 @@ class TestSubredditStreams(IntegrationTest):
                                         'comments_pause'):
             stream = self.reddit.subreddit('kakapo').stream
             with_pause = stream.comments(pause_after=0)
-            for i in range(10):
+            was_paused = 0
+            for i in range(35):
                 item = next(with_pause)
                 assert isinstance(item, Comment) or item is None
+                if item is None:
+                    was_paused += 1
+            assert was_paused > 0
 
     @mock.patch('time.sleep', return_value=None)
     def test_resume_comments(self, _):
