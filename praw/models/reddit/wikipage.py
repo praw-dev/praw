@@ -21,7 +21,7 @@ class WikiPage(RedditBase):
 
     @property
     def mod(self):
-        """An instance of :class:`.WikiPageModeration`."""
+        """Provide an instance of :class:`.WikiPageModeration`."""
         if self._mod is None:
             self._mod = WikiPageModeration(self)
         return self._mod

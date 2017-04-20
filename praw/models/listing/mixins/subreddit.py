@@ -12,7 +12,7 @@ class SubredditListingMixin(BaseListingMixin, GildedListingMixin,
 
     @property
     def comments(self):
-        """An instance of :class:`.CommentHelper`.
+        """Provide an instance of :class:`.CommentHelper`.
 
         For example, to output the author of the 25 most recent comments of
         ``/r/redditdev`` execute:

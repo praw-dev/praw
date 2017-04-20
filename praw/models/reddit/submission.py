@@ -43,7 +43,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
     @property
     def comments(self):
-        """An instance of :class:`.CommentForest`.
+        """Provide an instance of :class:`.CommentForest`.
 
         This attribute can use used, for example, to obtain a flat list of
         comments, with any :class:`.MoreComments` removed:
@@ -71,7 +71,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
     @property
     def flair(self):
-        """An instance of :class:`.SubmissionFlair`.
+        """Provide an instance of :class:`.SubmissionFlair`.
 
         This attribute is used to work with flair as a regular user of the
         subreddit the submission belongs to. Moderators can directly use
@@ -94,7 +94,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
     @property
     def mod(self):
-        """An instance of :class:`.SubmissionModeration`."""
+        """Provide an instance of :class:`.SubmissionModeration`."""
         if self._mod is None:
             self._mod = SubmissionModeration(self)
         return self._mod
