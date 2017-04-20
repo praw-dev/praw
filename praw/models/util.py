@@ -34,8 +34,7 @@ class ExponentialCounter(object):
         """Initialize an instance of ExponentialCounter.
 
         :param max_counter: The maximum base value. Note that the computed
-        value may be 3.125% higher due to jitter.
-
+            value may be 3.125% higher due to jitter.
         """
         self._base = 1
         self._max = max_counter
@@ -77,12 +76,73 @@ def permissions_string(permissions, known_permissions):
     return ','.join(to_set)
 
 
-def stream_generator(function):
-    """Forever yield new items from ListingGenerators."""
+def stream_generator(function, pause_after=None):
+    """Yield new items from ListingGenerators and ``None`` when paused.
+
+    :param function: A callable that returns a ListingGenerator, e.g.
+       ``subreddit.comments`` or ``subreddit.new``.
+
+    :param pause_after: An integer representing the number of requests that
+        result in no new items before this function yields ``None``,
+        effectively introducing a pause into the stream. A value of ``0``
+        yields ``None`` after every response resulting in no new items, and a
+        value of ``None`` never introduces a pause (default: None).
+
+    .. note:: This function internally uses an exponential delay with jitter
+       between subsequent responses that contain no new results, up to a
+       maximum delay of just over a minute. In practice that means that the
+       time before pause for ``pause_after=N+1`` is approximately twice the
+       time before pause for ``pause_after=N``.
+
+    For example to pause a comment stream after six responses with no new
+    comments, try:
+
+    .. code:: python
+
+       subreddit = reddit.subreddit('redditdev')
+       for comment in subreddit.stream.comments(pause_after=6):
+           if comment is None:
+               break
+           print(comment)
+
+    To resume fetching comments after a pause, try:
+
+    .. code:: python
+
+       subreddit = reddit.subreddit('help')
+       comment_stream = subreddit.stream.comments(pause_after=5)
+
+       for comment in comment_stream:
+           if comment is None:
+               break
+           print(comment)
+       # Do any other processing, then try to fetch more data
+       for comment in comment_stream:
+           if comment is None:
+               break
+           print(comment)
+
+    To bypass the internal exponential backoff, try the following. This
+    approach is useful if you are monitoring an subreddit with infrequent
+    activity, and you want the to consistently learn about new items from the
+    stream as soon as possible, rather than up to a delay of just over a
+    minute.
+
+    .. code:: python
+
+       subreddit = reddit.subreddit('help')
+       for comment in subreddit.stream.comments(pause_after=0):
+           if comment is None:
+               continue
+           print(comment)
+
+    """
     before_fullname = None
     exponential_counter = ExponentialCounter(max_counter=64)
     seen_fullnames = BoundedSet(301)
     without_before_counter = 0
+    responses_without_new = 0
+    valid_pause_after = pause_after is not None
     while True:
         found = False
         newest_fullname = None
@@ -101,5 +161,11 @@ def stream_generator(function):
         before_fullname = newest_fullname
         if found:
             exponential_counter.reset()
+            responses_without_new = 0
         else:
-            time.sleep(exponential_counter.counter())
+            responses_without_new += 1
+            if valid_pause_after and responses_without_new > pause_after:
+                responses_without_new = 0
+                yield None
+            else:
+                time.sleep(exponential_counter.counter())

@@ -1040,6 +1040,24 @@ class TestSubredditStreams(IntegrationTest):
             for i in range(400):
                 assert isinstance(next(generator), Comment)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_comments__with_pause(self, _):
+        with self.recorder.use_cassette(
+                'TestSubredditStreams.comments__with_pause'):
+            comment_stream = self.reddit.subreddit('kakapo').stream.comments(
+                pause_after=0)
+            comment_count = 1
+            pause_count = 1
+            comment = next(comment_stream)
+            while comment is not None:
+                comment_count += 1
+                comment = next(comment_stream)
+            while comment is None:
+                pause_count += 1
+                comment = next(comment_stream)
+            assert comment_count == 17
+            assert pause_count == 2
+
     def test_submissions(self):
         with self.recorder.use_cassette('TestSubredditStreams.submissions'):
             generator = self.reddit.subreddit('all').stream.submissions()

@@ -1708,11 +1708,13 @@ class SubredditStream(object):
         """
         self.subreddit = subreddit
 
-    def comments(self):
+    def comments(self, **stream_options):
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will
         initially be returned.
+
+        Keyword arguments are passed to :meth:`.stream_generator`.
 
         For example, to retrieve all new comments made to the ``iama``
         subreddit, try:
@@ -1723,7 +1725,7 @@ class SubredditStream(object):
                print(comment)
 
         """
-        return stream_generator(self.subreddit.comments)
+        return stream_generator(self.subreddit.comments, **stream_options)
 
     def submissions(self):
         """Yield new submissions as they become available.
