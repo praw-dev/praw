@@ -34,8 +34,7 @@ class ExponentialCounter(object):
         """Initialize an instance of ExponentialCounter.
 
         :param max_counter: The maximum base value. Note that the computed
-        value may be 3.125% higher due to jitter.
-
+            value may be 3.125% higher due to jitter.
         """
         self._base = 1
         self._max = max_counter
@@ -78,19 +77,65 @@ def permissions_string(permissions, known_permissions):
 
 
 def stream_generator(function, pause_after=None):
-    """Forever yield new items from ListingGenerators.
+    """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
        ``subreddit.comments`` or ``subreddit.new``.
-    :param pause_after: A integer representing the maximum times to fetch
-       data if no new items are found. Once this limit is reached, it will
-       yield ``None``, signalling to the caller no new data is available.
-       If set to ``0``, it will yield ``None`` after each data fetch that
-       returns no new items. If not set, the fetching loop will just keep
-       running (with sleeps) until a valid item appears. Once ``None`` is
-       yielded, the calling code can still consume the generator, which will
-       yield new data once available using the same ``pause_after`` value
-       (default: None).
+
+    :param pause_after: An integer representing the number of requests that
+        result in no new items before this function yields ``None``,
+        effectively introducing a pause into the stream. A value of ``0``
+        yields ``None`` after every response resulting in no new items, and a
+        value of ``None`` never introduces a pause (default: None).
+
+    .. note:: This function internally uses an exponential delay with jitter
+       between subsequent responses that contain no new results, up to a
+       maximum delay of just over a minute. In practice that means that the
+       time before pause for ``pause_after=N+1`` is approximately twice the
+       time before pause for ``pause_after=N``.
+
+    For example to pause a comment stream after six responses with no new
+    comments, try:
+
+    .. code:: python
+
+       subreddit = reddit.subreddit('redditdev')
+       for comment in subreddit.stream.comments(pause_after=6):
+           if comment is None:
+               break
+           print(comment)
+
+    To resume fetching comments after a pause, try:
+
+    .. code:: python
+
+       subreddit = reddit.subreddit('help')
+       comment_stream = subreddit.stream.comments(pause_after=5)
+
+       for comment in comment_stream:
+           if comment is None:
+               break
+           print(comment)
+       # Do any other processing, then try to fetch more data
+       for comment in comment_stream:
+           if comment is None:
+               break
+           print(comment)
+
+    To bypass the internal exponential backoff, try the following. This
+    approach is useful if you are monitoring an subreddit with infrequent
+    activity, and you want the to consistently learn about new items from the
+    stream as soon as possible, rather than up to a delay of just over a
+    minute.
+
+    .. code:: python
+
+       subreddit = reddit.subreddit('help')
+       for comment in subreddit.stream.comments(pause_after=0):
+           if comment is None:
+               continue
+           print(comment)
+
     """
     before_fullname = None
     exponential_counter = ExponentialCounter(max_counter=64)

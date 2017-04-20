@@ -1040,40 +1040,29 @@ class TestSubredditStreams(IntegrationTest):
             for i in range(400):
                 assert isinstance(next(generator), Comment)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_comments__with_pause(self, _):
+        with self.recorder.use_cassette(
+                'TestSubredditStreams.comments__with_pause'):
+            comment_stream = self.reddit.subreddit('kakapo').stream.comments(
+                pause_after=0)
+            comment_count = 1
+            pause_count = 1
+            comment = next(comment_stream)
+            while comment is not None:
+                comment_count += 1
+                comment = next(comment_stream)
+            while comment is None:
+                pause_count += 1
+                comment = next(comment_stream)
+            assert comment_count == 17
+            assert pause_count == 2
+
     def test_submissions(self):
         with self.recorder.use_cassette('TestSubredditStreams.submissions'):
             generator = self.reddit.subreddit('all').stream.submissions()
             for i in range(101):
                 assert isinstance(next(generator), Submission)
-
-    @mock.patch('time.sleep', return_value=None)
-    def test_pause_comments(self, _):
-        with self.recorder.use_cassette('TestSubredditStreams.'
-                                        'comments_pause'):
-            stream = self.reddit.subreddit('kakapo').stream
-            with_pause = stream.comments(pause_after=0)
-            was_paused = 0
-            for i in range(35):
-                item = next(with_pause)
-                assert isinstance(item, Comment) or item is None
-                if item is None:
-                    was_paused += 1
-            assert was_paused > 0
-
-    @mock.patch('time.sleep', return_value=None)
-    def test_resume_comments(self, _):
-        with self.recorder.use_cassette('TestSubredditStreams.'
-                                        'comments_resume'):
-            stream = self.reddit.subreddit('kakapo').stream
-            with_pause = stream.comments(pause_after=0)
-            for comment in with_pause:
-                if comment is None:
-                    break
-                assert isinstance(comment, Comment)
-            # The cassete was recorded with a period of no new comments,
-            # plus a new one at the end.
-            item = next(with_pause)
-            assert isinstance(item, Comment)
 
 
 class TestSubredditStylesheet(IntegrationTest):
