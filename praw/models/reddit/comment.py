@@ -20,14 +20,14 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
     @property
     def mod(self):
-        """An instance of :class:`.CommentModeration`."""
+        """Provide an instance of :class:`.CommentModeration`."""
         if self._mod is None:
             self._mod = CommentModeration(self)
         return self._mod
 
     @property
     def replies(self):
-        """An instance of :class:`.CommentForest`."""
+        """Provide an instance of :class:`.CommentForest`."""
         if isinstance(self._replies, list):
             self._replies = CommentForest(self.submission, self._replies)
         return self._replies

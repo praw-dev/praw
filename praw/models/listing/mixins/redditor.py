@@ -10,7 +10,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     @property
     def comments(self):
-        r"""An instance of :class:`.SubListing` providing access to comments.
+        r"""Provide an instance of :class:`.SubListing` for comment access.
 
         For example, to output the first line of all new comments by
         ``/u/spez`` try:
@@ -27,7 +27,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     @property
     def submissions(self):
-        """An instance of :class:`.SubListing` providing access to submissions.
+        """Provide an instance of :class:`.SubListing` for submission access.
 
         For example, to output the title's of top 100 of all time submissions
         for ``/u/spez`` try:

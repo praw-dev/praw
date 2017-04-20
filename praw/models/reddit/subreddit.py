@@ -119,7 +119,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     @property
     def banned(self):
-        """An instance of :class:`.SubredditRelationship`.
+        """Provide an instance of :class:`.SubredditRelationship`.
 
         For example to ban a user try:
 
@@ -141,21 +141,21 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     @property
     def contributor(self):
-        """An instance of :class:`.ContributorRelationship`."""
+        """Provide an instance of :class:`.ContributorRelationship`."""
         if self._contributor is None:
             self._contributor = ContributorRelationship(self, 'contributor')
         return self._contributor
 
     @property
     def filters(self):
-        """An instance of :class:`.SubredditFilters`."""
+        """Provide an instance of :class:`.SubredditFilters`."""
         if self._filters is None:
             self._filters = SubredditFilters(self)
         return self._filters
 
     @property
     def flair(self):
-        """An instance of :class:`.SubredditFlair`.
+        """Provide an instance of :class:`.SubredditFlair`.
 
         Provides the interface for interacting with a subreddit's flair. For
         example to list all the flair for a subreddit which you have the
@@ -173,14 +173,14 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     @property
     def mod(self):
-        """An instance of :class:`.SubredditModeration`."""
+        """Provide an instance of :class:`.SubredditModeration`."""
         if self._mod is None:
             self._mod = SubredditModeration(self)
         return self._mod
 
     @property
     def moderator(self):
-        """An instance of :class:`.ModeratorRelationship`.
+        """Provide an instance of :class:`.ModeratorRelationship`.
 
         For example to add a moderator try:
 
@@ -202,21 +202,21 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     @property
     def modmail(self):
-        """An instance of :class:`.Modmail`."""
+        """Provide an instance of :class:`.Modmail`."""
         if self._modmail is None:
             self._modmail = Modmail(self)
         return self._modmail
 
     @property
     def muted(self):
-        """An instance of :class:`.SubredditRelationship`."""
+        """Provide an instance of :class:`.SubredditRelationship`."""
         if self._muted is None:
             self._muted = SubredditRelationship(self, 'muted')
         return self._muted
 
     @property
     def quaran(self):
-        """An instance of :class:`.SubredditQuarantine`.
+        """Provide an instance of :class:`.SubredditQuarantine`.
 
         This property is named ``quaran`` because ``quarantine`` is a
         Subreddit attribute returned by Reddit to indicate whether or not a
@@ -229,7 +229,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     @property
     def stream(self):
-        """An instance of :class:`.SubredditStream`.
+        """Provide an instance of :class:`.SubredditStream`.
 
         Streams can be used to indefinitely retrieve new comments made to a
         subreddit, like:
@@ -255,14 +255,14 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     @property
     def stylesheet(self):
-        """An instance of :class:`.SubredditStylesheet`."""
+        """Provide an instance of :class:`.SubredditStylesheet`."""
         if self._stylesheet is None:
             self._stylesheet = SubredditStylesheet(self)
         return self._stylesheet
 
     @property
     def wiki(self):
-        """An instance of :class:`.SubredditWiki`.
+        """Provide an instance of :class:`.SubredditWiki`.
 
         This attribute can be used to discover all wikipages for a subreddit:
 
