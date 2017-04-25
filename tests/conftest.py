@@ -2,12 +2,19 @@
 import json
 import os
 import socket
+import sys
 import time
 from base64 import b64encode
 from sys import platform
 
 import betamax
 from betamax_serializers import pretty_json
+
+# pylint: disable=import-error,no-name-in-module
+if sys.version_info.major == 2:
+    from urllib import quote_plus  # NOQA
+else:
+    from urllib.parse import quote_plus  # NOQA
 
 
 # Prevent calls to sleep
@@ -54,6 +61,7 @@ placeholders = {x: env_default(x) for x in
                  'test_subreddit user_agent username').split()}
 placeholders['basic_auth'] = b64_string(
     '{}:{}'.format(placeholders['client_id'], placeholders['client_secret']))
+placeholders['password'] = quote_plus(placeholders['password'])
 
 
 betamax.Betamax.register_serializer(pretty_json.PrettyJSONSerializer)
