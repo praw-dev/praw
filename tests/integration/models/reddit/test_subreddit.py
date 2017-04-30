@@ -1064,6 +1064,18 @@ class TestSubredditStreams(IntegrationTest):
             for i in range(101):
                 assert isinstance(next(generator), Submission)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_submissions__with_pause(self, _):
+        with self.recorder.use_cassette('TestSubredditStreams.submissions'):
+            generator = self.reddit.subreddit('all').stream.submissions(
+                pause_after=-1)
+            submission = next(generator)
+            submission_count = 0
+            while submission is not None:
+                submission_count += 1
+                submission = next(generator)
+            assert submission_count == 100
+
 
 class TestSubredditStylesheet(IntegrationTest):
     @staticmethod

@@ -173,11 +173,13 @@ class Inbox(PRAWBase):
         return ListingGenerator(self._reddit, API_PATH['sent'],
                                 **generator_kwargs)
 
-    def stream(self):
+    def stream(self, **stream_options):
         """Yield new inbox items as they become available.
 
         Items are yielded oldest first. Up to 100 historical items will
         initially be returned.
+
+        Keyword arguments are passed to :meth:`.stream_generator`.
 
         For example, to retrieve all new inbox items, try:
 
@@ -187,7 +189,7 @@ class Inbox(PRAWBase):
                print(item)
 
         """
-        return stream_generator(self.unread)
+        return stream_generator(self.unread, **stream_options)
 
     def submission_replies(self, **generator_kwargs):
         """Return a ListingGenerator for submission replies.

@@ -45,9 +45,11 @@ Unreleased
 * :class:`.Reddit` accepts ``requestor_class=cls`` for a customized requestor
   class and ``requestor_kwargs={'param': value}`` for passing arguments to
   requestor initialization.
-* :meth:`~praw.models.reddit.subreddit.SubredditStream.comments` accepts a
-  ``pause_after`` argument to allow pausing of the stream when no new results
-  are returned. The default value of ``None`` retains the preexisting behavior.
+* :meth:`~praw.models.reddit.subreddit.SubredditStream.comments`,
+  :meth:`~praw.models.reddit.subreddit.SubredditStream.submissions`, and
+  :meth:`~praw.models.Subreddits.stream` accept a ``pause_after`` argument to
+  allow pausing of the stream. The default value of ``None`` retains the
+  preexisting behavior.
 
 **Deprecated**
 

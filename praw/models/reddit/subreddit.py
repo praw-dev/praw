@@ -1197,7 +1197,7 @@ class SubredditModeration(object):
 
 
 class SubredditQuarantine(object):
-    """Provides submission and comment streams."""
+    """Provides subreddit quarantine related methods."""
 
     def __init__(self, subreddit):
         """Create a SubredditQuarantine instance.
@@ -1727,11 +1727,13 @@ class SubredditStream(object):
         """
         return stream_generator(self.subreddit.comments, **stream_options)
 
-    def submissions(self):
+    def submissions(self, **stream_options):
         """Yield new submissions as they become available.
 
         Submissions are yielded oldest first. Up to 100 historical submissions
         will initially be returned.
+
+        Keyword arguments are passed to :meth:`.stream_generator`.
 
         For example to retrieve all new submissions made to all of Reddit, try:
 
@@ -1741,7 +1743,7 @@ class SubredditStream(object):
                print(submission)
 
         """
-        return stream_generator(self.subreddit.new)
+        return stream_generator(self.subreddit.new, **stream_options)
 
 
 class SubredditStylesheet(object):
