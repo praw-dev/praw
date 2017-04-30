@@ -1197,7 +1197,7 @@ class SubredditModeration(object):
 
 
 class SubredditQuarantine(object):
-    """Provides submission and comment streams."""
+    """Provides subreddit quarantine related methods."""
 
     def __init__(self, subreddit):
         """Create a SubredditQuarantine instance.
