@@ -329,7 +329,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         """
         return self._reddit.get(API_PATH['rules'].format(subreddit=self))
 
-    def search(self, query, sort='relevance', syntax='cloudsearch',
+    def search(self, query, sort='relevance', syntax='lucene',
                time_filter='all', **generator_kwargs):
         """Return a ListingGenerator for items that match ``query``.
 
@@ -337,13 +337,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         :param sort: Can be one of: relevance, hot, top, new,
             comments. (default: relevance).
         :param syntax: Can be one of: cloudsearch, lucene, plain
-            (default: cloudsearch -- will be lucene in PRAW 5).
+            (default: lucene).
         :param time_filter: Can be one of: all, day, hour, month, week, year
             (default: all).
-
-        .. warning:: (Deprecation) The default search syntax is changing to
-           ``lucene`` in PRAW 5. For forward compatibility please explicitly
-           provide the search syntax.
 
         For more information on building a search query see:
             https://www.reddit.com/wiki/search
@@ -427,7 +423,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             current_ids = set()
             found_new_submission = False
             for submission in self.search(query, limit=None, params=params,
-                                          sort='new'):
+                                          sort='new', syntax='cloudsearch'):
                 current_ids.add(submission.id)
                 end = min(end, int(submission.created))
                 if submission.id not in last_ids:
@@ -619,20 +615,6 @@ class SubredditFlair(object):
         self.subreddit = subreddit
         self.templates = SubredditFlairTemplates(subreddit)
 
-    def __iter__(self):
-        """Iterate through the Redditors and their associated flair.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     iterating over ``subreddit.flair`` instead of
-                     ``subreddit.flair``.
-
-        """
-        url = API_PATH['flairlist'].format(subreddit=self.subreddit)
-        params = {'unique': self.subreddit._reddit._next_unique}
-        for item in ListingGenerator(self.subreddit._reddit, url, None,
-                                     params=params):
-            yield item
-
     def configure(self, position='right', self_assign=False,
                   link_position='left', link_self_assign=False,
                   **settings):
@@ -671,8 +653,7 @@ class SubredditFlair(object):
 
         """
         url = API_PATH['deleteflair'].format(subreddit=self.subreddit)
-        # PRAW5 REMOVE (return statement)
-        return self.subreddit._reddit.post(url, data={'name': str(redditor)})
+        self.subreddit._reddit.post(url, data={'name': str(redditor)})
 
     def delete_all(self):
         """Delete all Redditor flair in the Subreddit.
@@ -683,7 +664,7 @@ class SubredditFlair(object):
         """
         return self.update(x['user'] for x in self())
 
-    def set(self, redditor=None, text='', css_class='', thing=None):
+    def set(self, redditor=None, text='', css_class=''):
         """Set flair for a Redditor.
 
         :param redditor: (Required) A redditor name (e.g., ``'spez'``) or
@@ -696,13 +677,6 @@ class SubredditFlair(object):
         This method can only be used by an authenticated user who is a
         moderator of the associated Subreddit.
 
-        .. warning:: The use of this method to set the flair of a
-                     :class:`.Submission` is deprecated and will be removed in
-                     PRAW 5. Use :meth:`.flair` instead.
-
-        .. warning:: The use of the keyword argument ``thing`` is deprecated
-                     and will be removed in PRAW 5. Use ``redditor`` instead.
-
         Example:
 
         .. code:: python
@@ -710,17 +684,7 @@ class SubredditFlair(object):
            reddit.subreddit('redditdev').flair.set('bboe', 'PRAW author')
 
         """
-        # PRAW5 REMOVE
-        if bool(redditor) == bool(thing):
-            raise TypeError('`redditor` must be provided.')
-        if redditor is None:
-            redditor = thing
-
-        data = {'css_class': css_class, 'text': text}
-        if redditor.__class__.__name__ == 'Submission':  # PRAW5 REMOVE
-            data['link'] = redditor.fullname
-        else:
-            data['name'] = str(redditor)
+        data = {'css_class': css_class, 'name': str(redditor), 'text': text}
         url = API_PATH['flair'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
@@ -866,28 +830,6 @@ class SubredditModeration(object):
         url = API_PATH['accept_mod_invite'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
 
-    @staticmethod
-    def approve(thing):
-        """DEPRECATED.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``comment.mod.approve()``,
-                     ``submission.mod.approve()``.
-
-        """
-        thing.mod.approve()
-
-    @staticmethod
-    def distinguish(thing, how='yes', sticky=False):
-        """DEPRECATED.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``comment.mod.distinguish()``,
-                     ``submission.mod.distinguish()``.
-
-        """
-        thing.mod.distinguish(how=how, sticky=sticky)
-
     def edited(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for edited comments and submissions.
 
@@ -909,17 +851,6 @@ class SubredditModeration(object):
         return ListingGenerator(
             self.subreddit._reddit, API_PATH['about_edited'].format(
                 subreddit=self.subreddit), **generator_kwargs)
-
-    @staticmethod
-    def ignore_reports(thing):
-        """DEPRECATED.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``comment.mod.ignore_reports()``,
-                     ``submission.mod.ignore_reports()``.
-
-        """
-        thing.mod.ignore_reports()
 
     def inbox(self, **generator_kwargs):
         """Return a ListingGenerator for moderator messages.
@@ -988,17 +919,6 @@ class SubredditModeration(object):
             self.subreddit._reddit, API_PATH['about_modqueue'].format(
                 subreddit=self.subreddit), **generator_kwargs)
 
-    @staticmethod
-    def remove(thing, spam=False):
-        """DEPRECATED.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``comment.mod.remove()``,
-                     ``submission.mod.remove()``.
-
-        """
-        thing.mod.remove(spam=spam)
-
     def reports(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for reported comments and submissions.
 
@@ -1048,28 +968,6 @@ class SubredditModeration(object):
         return ListingGenerator(
             self.subreddit._reddit, API_PATH['about_spam'].format(
                 subreddit=self.subreddit), **generator_kwargs)
-
-    @staticmethod
-    def undistinguish(thing):
-        """DEPRECATED.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``comment.mod.undistinguish()``,
-                     ``submission.mod.undistinguish()``.
-
-        """
-        thing.mod.undistinguish()
-
-    @staticmethod
-    def unignore_reports(thing):
-        """DEPRECATED.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``comment.mod.unignore_reports()``,
-                     ``submission.mod.unignore_reports()``.
-
-        """
-        thing.mod.unignore_reports()
 
     def unmoderated(self, **generator_kwargs):
         """Return a ListingGenerator for unmoderated submissions.
@@ -1293,20 +1191,6 @@ class SubredditRelationship(object):
         """
         self.relationship = relationship
         self.subreddit = subreddit
-
-    def __iter__(self):
-        """Iterate through the Redditors belonging to this relationship.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 5. Prefer
-                     calling ``subreddit.banned(limit=None)`` instead of
-                     ``subreddit.banned`` and similar for other relationships.
-
-        """
-        url = API_PATH['list_{}'.format(self.relationship)].format(
-            subreddit=self.subreddit)
-        params = {'unique': self.subreddit._reddit._next_unique}
-        for item in self.subreddit._reddit.get(url, params=params):
-            yield item
 
     def add(self, redditor, **other_settings):
         """Add ``redditor`` to this relationship.

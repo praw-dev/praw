@@ -13,8 +13,7 @@ class InboxableMixin(object):
                   :class:`.Comment` or :class:`.Message` from them.
 
         """
-        # PRAW5 REMOVE (return statement)
-        return self._reddit.post(API_PATH['block'], data={'id': self.fullname})
+        self._reddit.post(API_PATH['block'], data={'id': self.fullname})
 
     def mark_read(self):
         """Mark the item as read."""

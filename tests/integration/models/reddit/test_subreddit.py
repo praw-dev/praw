@@ -99,7 +99,8 @@ class TestSubreddit(IntegrationTest):
     def test_search(self):
         with self.recorder.use_cassette('TestSubreddit.test_search'):
             subreddit = self.reddit.subreddit('all')
-            for item in subreddit.search('praw oauth search', limit=None):
+            for item in subreddit.search('praw oauth search', limit=None,
+                                         syntax='cloudsearch'):
                 assert isinstance(item, Submission)
 
     @mock.patch('time.sleep', return_value=None)
@@ -272,13 +273,6 @@ class TestSubredditFlair(IntegrationTest):
             mapping = self.subreddit.flair(redditor=self.REDDITOR)
             assert len(list(mapping)) == 1
 
-    def test__iter(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette('TestSubredditFlair.test__iter'):
-            mapping = list(self.subreddit.flair)
-            assert len(mapping) > 0
-            assert all(isinstance(x['user'], Redditor) for x in mapping)
-
     def test_configure(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -327,13 +321,6 @@ class TestSubredditFlair(IntegrationTest):
                 'TestSubredditFlair.test_set__submission'):
             submission = self.subreddit._reddit.submission('4b536p')
             self.subreddit.flair.set(submission, 'submission flair')
-
-    def test_set__submission__by_thing(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditFlair.test_set__submission__by_thing'):
-            submission = self.subreddit._reddit.submission('4b536p')
-            self.subreddit.flair.set(thing=submission, text='submission flair')
 
     def test_update(self):
         self.reddit.read_only = False
@@ -482,28 +469,6 @@ class TestSubredditModeration(IntegrationTest):
                 self.subreddit.mod.accept_invite()
             assert excinfo.value.error_type == 'NO_INVITE_FOUND'
 
-    def test_approve(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditModeration.test_approve'):
-            submission = self.reddit.submission('4b536h')
-            self.subreddit.mod.approve(submission)
-
-    def test_distinguish(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditModeration.test_distinguish'):
-            submission = self.reddit.submission('4b536h')
-            self.subreddit.mod.distinguish(submission)
-
-    @mock.patch('time.sleep', return_value=None)
-    def test_distinguish__sticky(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditModeration.test_distinguish__sticky'):
-            comment = Comment(self.reddit, 'dba9bzn')
-            self.subreddit.mod.distinguish(comment, sticky=True)
-
     def test_edited(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditModeration.test_edited'):
@@ -532,13 +497,6 @@ class TestSubredditModeration(IntegrationTest):
                 assert isinstance(item, Submission)
                 count += 1
             assert count > 0
-
-    def test_ignore_reports(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditModeration.test_ignore_reports'):
-            submission = self.reddit.submission('31ybt2')
-            self.subreddit.mod.ignore_reports(submission)
 
     def test_inbox(self):
         self.reddit.read_only = False
@@ -603,12 +561,6 @@ class TestSubredditModeration(IntegrationTest):
                 count += 1
             assert count > 0
 
-    def test_remove(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette('TestSubredditModeration.test_remove'):
-            submission = self.reddit.submission('4b536h')
-            self.subreddit.mod.remove(submission, spam=True)
-
     def test_reports(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -667,20 +619,6 @@ class TestSubredditModeration(IntegrationTest):
                 assert isinstance(item, Submission)
                 count += 1
             assert count > 0
-
-    def test_undistinguish(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditModeration.test_undistinguish'):
-            submission = self.reddit.submission('4b536h')
-            self.subreddit.mod.undistinguish(submission)
-
-    def test_unignore_reports(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditModeration.test_unignore_reports'):
-            submission = self.reddit.submission('31ybt2')
-            self.subreddit.mod.unignore_reports(submission)
 
     def test_unmoderated(self):
         self.reddit.read_only = False
@@ -867,13 +805,6 @@ class TestSubredditRelationships(IntegrationTest):
         with self.recorder.use_cassette('TestSubredditRelationships.banned'):
             self.add_remove(self.subreddit, self.REDDITOR, 'banned')
 
-    def test_banned__deprecated_iter(self):
-        self.reddit.read_only = False
-        banned = self.subreddit.banned
-        with self.recorder.use_cassette(
-                'TestSubredditRelationships.banned__deprecated_iter'):
-            assert len(list(banned)) > 0
-
     def test_banned__user_filter(self):
         self.reddit.read_only = False
         banned = self.subreddit.banned(redditor='pyapitestuser3')
@@ -886,13 +817,6 @@ class TestSubredditRelationships(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubredditRelationships.contributor'):
             self.add_remove(self.subreddit, self.REDDITOR, 'contributor')
-
-    def test_contributor__deprecated_iter(self):
-        self.reddit.read_only = False
-        contributor = self.subreddit.contributor
-        with self.recorder.use_cassette(
-                'TestSubredditRelationships.contributor__deprecated_iter'):
-            assert len(list(contributor)) > 0
 
     @mock.patch('time.sleep', return_value=None)
     def test_contributor_leave(self, _):
@@ -918,13 +842,6 @@ class TestSubredditRelationships(IntegrationTest):
             # invite list.
             self.subreddit.moderator.add(self.REDDITOR)
             assert self.REDDITOR not in self.subreddit.moderator()
-
-    def test_moderator__deprecated_iter(self):
-        self.reddit.read_only = False
-        moderator = self.subreddit.moderator
-        with self.recorder.use_cassette(
-                'TestSubredditRelationships.moderator__deprecated_iter'):
-            assert len(list(moderator)) > 0
 
     @mock.patch('time.sleep', return_value=None)
     def test_moderator__limited_permissions(self, _):
@@ -992,13 +909,6 @@ class TestSubredditRelationships(IntegrationTest):
         with self.recorder.use_cassette('TestSubredditRelationships.muted'):
             self.add_remove(self.subreddit, self.REDDITOR, 'muted')
 
-    def test_muted__deprecated_iter(self):
-        self.reddit.read_only = False
-        muted = self.subreddit.muted
-        with self.recorder.use_cassette(
-                'TestSubredditRelationships.muted__deprecated_iter'):
-            assert len(list(muted)) > 0
-
     def test_moderator_remove_invite(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditRelationships.'
@@ -1011,25 +921,11 @@ class TestSubredditRelationships(IntegrationTest):
                 'TestSubredditRelationships.wiki_banned'):
             self.add_remove(self.subreddit.wiki, self.REDDITOR, 'banned')
 
-    def test_wiki_banned__deprecated_iter(self):
-        self.reddit.read_only = False
-        wiki_banned = self.subreddit.wiki.banned
-        with self.recorder.use_cassette(
-                'TestSubredditRelationships.wiki_banned__deprecated_iter'):
-            assert len(list(wiki_banned)) > 0
-
     def test_wiki_contributor(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestSubredditRelationships.wiki_contributor'):
             self.add_remove(self.subreddit.wiki, self.REDDITOR, 'contributor')
-
-    def test_wiki_contributor__deprecated_iter(self):
-        self.reddit.read_only = False
-        wiki_contributor = self.subreddit.wiki.contributor
-        with self.recorder.use_cassette('TestSubredditRelationships.'
-                                        'wiki_contributor__deprecated_iter'):
-            assert len(list(wiki_contributor)) > 0
 
 
 class TestSubredditStreams(IntegrationTest):

@@ -1,6 +1,34 @@
 Change Log
 ==========
 
+Unreleased PRAW5
+----------------
+
+**Changed**
+
+* `cloudsearch` is no longer the default syntax for
+  :meth:`.Subreddit.search`. ``lucene`` is now the default
+  syntax so that PRAW's default is aligned with Reddit's default.
+
+**Removed**
+
+* Iterating directly over :class:`.SubredditRelationship` (e.g.,
+  ``subreddit.banned``, ``subreddit.contributor``, ``subreddit.moderator``,
+  etc) and :class:`.SubredditFlair` is no longer possible. Iterate instead over
+  their callables, e.g. ``subreddit.banned()`` and ``subreddit.flair()``.
+* The following methods are removed:
+  ``Subreddit.mod.approve``, ``Subreddit.mod.distinguish``,
+  ``Subreddit.mod.ignore_reports``, ``Subreddit.mod.remove``,
+  ``Subreddit.mod.undistinguish``, ``Subreddit.mod.unignore_reports``.
+* Support for passing a :class:`.Submission` to :meth:`.SubredditFlair.set`
+  is removed.
+* The ``thing`` argument to :meth:`.SubredditFlair.set` is removed.
+* Return values from :meth:`.Comment.block`, :meth:`.Message.block`,
+  :meth:`.SubredditMessage.block`, :meth:`.SubredditFlair.delete`,
+  :meth:`.friend`, :meth:`.Redditor.message`, :meth:`.Subreddit.message`,
+  :meth:`.select`, and :meth:`.unfriend` are removed as they do not provide
+  any useful information.
+
 4.5.0 (2017/04/29)
 ------------------
 
