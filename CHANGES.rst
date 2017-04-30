@@ -48,8 +48,8 @@ Unreleased
 * :meth:`~praw.models.reddit.subreddit.SubredditStream.comments`,
   :meth:`~praw.models.reddit.subreddit.SubredditStream.submissions`, and
   :meth:`~praw.models.Subreddits.stream` accept a ``pause_after`` argument to
-  allow pausing of the stream when no new results are returned. The default
-  value of ``None`` retains the preexisting behavior.
+  allow pausing of the stream. The default value of ``None`` retains the
+  preexisting behavior.
 
 **Deprecated**
 

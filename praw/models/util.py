@@ -84,9 +84,11 @@ def stream_generator(function, pause_after=None):
 
     :param pause_after: An integer representing the number of requests that
         result in no new items before this function yields ``None``,
-        effectively introducing a pause into the stream. A value of ``0``
-        yields ``None`` after every response resulting in no new items, and a
-        value of ``None`` never introduces a pause (default: None).
+        effectively introducing a pause into the stream. A negative value
+        yields ``None`` after items from a single response have been yielded,
+        regardless of number of new items obtained in that response. A value of
+        ``0`` yields ``None`` after every response resulting in no new items,
+        and a value of ``None`` never introduces a pause (default: None).
 
     .. note:: This function internally uses an exponential delay with jitter
        between subsequent responses that contain no new results, up to a
@@ -159,7 +161,9 @@ def stream_generator(function, pause_after=None):
             newest_fullname = item.fullname
             yield item
         before_fullname = newest_fullname
-        if found:
+        if valid_pause_after and pause_after < 0:
+            yield None
+        elif found:
             exponential_counter.reset()
             responses_without_new = 0
         else:
