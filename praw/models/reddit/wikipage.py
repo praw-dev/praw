@@ -161,7 +161,8 @@ class WikiPageModeration(object):
         :param listed: (boolean) Show this page on page list.
         :param permlevel: (int) Who can edit this page? (0) use subreddit wiki
             permissions, (1) only approved wiki contributors for this page may
-            edit (see `add`), (2) only mods may edit and view
+            edit (see :meth:`.WikiPageModeration.add`), (2) only mods may edit
+            and view
         :param other_settings: Additional keyword arguments to pass.
         :returns: The updated WikiPage settings.
 

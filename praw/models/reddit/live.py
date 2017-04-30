@@ -262,7 +262,7 @@ class LiveThread(RedditBase):
         You can call the instance to get a list of contributors which is
         represented as :class:`.RedditorList` instance consists of
         :class:`.Redditor` instances. Those Redditor instances have
-        `permissions` attributes as contributors:
+        ``permissions`` attributes as contributors:
 
         .. code-block:: python
 

@@ -60,7 +60,7 @@ def permissions_string(permissions, known_permissions):
        these inputs. When not prefixed, all permissions are considered to be
        additions, and all permissions in the ``known_permissions`` set that
        aren't provided are considered to be removals. When None, the result is
-       `+all`.
+       ``+all``.
     :param known_permissions: A set of strings representing the available
        permissions.
 

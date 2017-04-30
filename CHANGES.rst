@@ -6,7 +6,7 @@ Unreleased PRAW5
 
 **Changed**
 
-* `cloudsearch` is no longer the default syntax for
+* ``cloudsearch`` is no longer the default syntax for
   :meth:`.Subreddit.search`. ``lucene`` is now the default
   syntax so that PRAW's default is aligned with Reddit's default.
 
@@ -81,14 +81,14 @@ Unreleased PRAW5
 
 **Deprecated**
 
-* `cloudsearch` will no longer be the default syntax for
-  :meth:`.Subreddit.search` in PRAW 5. Instead `lucene` will be the default
+* ``cloudsearch`` will no longer be the default syntax for
+  :meth:`.Subreddit.search` in PRAW 5. Instead ``lucene`` will be the default
   syntax so that PRAW's default is aligned with Reddit's default.
 
 **Fixed**
 
 * Fix bug where :class:`.WikiPage` revisions with deleted authors caused
-  `TypeError`.
+  ``TypeError``.
 * :class:`.Submission` attributes ``comment_limit`` and ``comment_sort``
   maintain their values after making instances non-lazy.
 
@@ -277,7 +277,7 @@ Unreleased PRAW5
 
 * Fix bug where ipython tries to access attribute
   ``_ipython_canary_method_should_not_exist_`` resulting in a useless fetch.
-* Fix bug where Comment replies becomes `[]` after attempting to access an
+* Fix bug where Comment replies becomes ``[]`` after attempting to access an
   invalid attribute on the Comment.
 * Reddit.wiki[...] converts the passed in page name to lower case as pages are
   only saved in lower case and non-lower case page names results in a Redirect
@@ -370,7 +370,7 @@ PRAW 4. If you require additional help please ask on `/r/redditdev
 
 * Removed :class:`.Reddit`'s ``login`` method. Authentication must be done
   through OAuth.
-* Removed `praw-multiprocess` as this functionality is no longer needed with
+* Removed ``praw-multiprocess`` as this functionality is no longer needed with
   PRAW 4.
 * Removed non-oauth functions ``Message.collapse`` and ``Message.uncollapse``
   ``is_username_available``.

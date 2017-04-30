@@ -126,7 +126,8 @@ class MultiredditHelper(PRAWBase):
             ``philosophy``, ``pictures and gifs``, ``science``, ``shopping``,
             ``sports``, ``style``, ``tech``, ``travel``, ``unusual stories``,
             ``video``, or ``None``.
-        :param key_color: (Optional) RGB hex color code of the form `#FFFFFF`.
+        :param key_color: (Optional) RGB hex color code of the form
+            ``'#FFFFFF'``.
         :param visibility: (Optional) Can be one of: ``hidden``, ``private``,
             ``public`` (default: private).
         :param weighting_scheme: (Optional) Can be one of: ``classic``,

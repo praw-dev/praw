@@ -10,7 +10,7 @@ class EditableMixin(object):
         self._reddit.post(API_PATH['del'], {'id': self.fullname})
 
     def edit(self, body):
-        """Replace the body of the object with `body`.
+        """Replace the body of the object with ``body``.
 
         :param body: The markdown formatted content for the updated object.
         :returns: The current instance after updating its attributes.

@@ -707,8 +707,8 @@ class SubredditFlair(object):
         :returns: List of dictionaries indicating the success or failure of
             each update.
 
-        For example to clear the flair text, and set the `praw` flair css class
-        on a few users try:
+        For example to clear the flair text, and set the ``praw`` flair css
+        class on a few users try:
 
         .. code:: python
 
@@ -833,8 +833,8 @@ class SubredditModeration(object):
     def edited(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for edited comments and submissions.
 
-        :param only: If specified, one of `comments`, or 'submissions' to yield
-            only results of that type.
+        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+            to yield only results of that type.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -900,8 +900,8 @@ class SubredditModeration(object):
     def modqueue(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for comments/submissions in the modqueue.
 
-        :param only: If specified, one of `comments`, or 'submissions' to yield
-            only results of that type.
+        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+            to yield only results of that type.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -922,8 +922,8 @@ class SubredditModeration(object):
     def reports(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for reported comments and submissions.
 
-        :param only: If specified, one of `comments`, or 'submissions' to yield
-            only results of that type.
+        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+            to yield only results of that type.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -950,8 +950,8 @@ class SubredditModeration(object):
     def spam(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for spam comments and submissions.
 
-        :param only: If specified, one of `comments`, or 'submissions' to yield
-            only results of that type.
+        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+            to yield only results of that type.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -1026,8 +1026,8 @@ class SubredditModeration(object):
         :param header_hover_text: The text seen when hovering over the snoo.
         :param hide_ads: Don't show ads within this subreddit. Only applies to
             gold-user only subreddits.
-        :param key_color: A 6-digit rgb hex color (e.g. `#AABBCC`), used as a
-            thematic color for your subreddit on mobile.
+        :param key_color: A 6-digit rgb hex color (e.g. ``'#AABBCC'``), used as
+            a thematic color for your subreddit on mobile.
         :param lang: A valid IETF language tag (underscore separated).
         :param link_type: The types of submissions users can make.
             One of ``any``, ``link``, ``self``.
@@ -1292,10 +1292,10 @@ class ModeratorRelationship(SubredditRelationship):
 
         :param redditor: A redditor name (e.g., ``'spez'``) or
             :class:`~.Redditor` instance.
-        :param permissions: When provided (not `None`), permissions should be a
-            list of strings specifying which subset of permissions to grant. An
-            empty list `[]` indicates no permissions, and when not provided
-            `None`, indicates full permissions.
+        :param permissions: When provided (not ``None``), permissions should be
+            a list of strings specifying which subset of permissions to
+            grant. An empty list ``[]`` indicates no permissions, and when not
+            provided ``None``, indicates full permissions.
 
         An invite will be sent unless the user making this call is an admin
         user.
@@ -1316,10 +1316,10 @@ class ModeratorRelationship(SubredditRelationship):
 
         :param redditor: A redditor name (e.g., ``'spez'``) or
             :class:`~.Redditor` instance.
-        :param permissions: When provided (not `None`), permissions should be a
-            list of strings specifying which subset of permissions to grant. An
-            empty list `[]` indicates no permissions, and when not provided
-            `None`, indicates full permissions.
+        :param permissions: When provided (not ``None``), permissions should be
+            a list of strings specifying which subset of permissions to
+            grant. An empty list ``[]`` indicates no permissions, and when not
+            provided ``None``, indicates full permissions.
 
         For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
             permissions to ``'/r/test/``, try:
@@ -1369,10 +1369,10 @@ class ModeratorRelationship(SubredditRelationship):
 
         :param redditor: A redditor name (e.g., ``'spez'``) or
             :class:`~.Redditor` instance.
-        :param permissions: When provided (not `None`), permissions should be a
-            list of strings specifying which subset of permissions to grant. An
-            empty list `[]` indicates no permissions, and when not provided,
-            `None`, indicates full permissions.
+        :param permissions: When provided (not ``None``), permissions should be
+            a list of strings specifying which subset of permissions to
+            grant. An empty list ``[]`` indicates no permissions, and when not
+            provided, ``None``, indicates full permissions.
 
         For example, to add all permissions to the moderator, try:
 
@@ -1397,10 +1397,10 @@ class ModeratorRelationship(SubredditRelationship):
 
         :param redditor: A redditor name (e.g., ``'spez'``) or
             :class:`~.Redditor` instance.
-        :param permissions: When provided (not `None`), permissions should be a
-            list of strings specifying which subset of permissions to grant. An
-            empty list `[]` indicates no permissions, and when not provided,
-            `None`, indicates full permissions.
+        :param permissions: When provided (not ``None``), permissions should be
+            a list of strings specifying which subset of permissions to
+            grant. An empty list ``[]`` indicates no permissions, and when not
+            provided, ``None``, indicates full permissions.
 
         For example, to grant the flair and mail permissions to the moderator
         invite, try:
@@ -1453,8 +1453,8 @@ class Modmail(object):
         this method. Instead, use :meth:`~.Modmail.subreddits` to get a list of
         subreddits using the new modmail.
 
-        :param other_subreddits: A list of `.Subreddit` instances for which to
-            mark conversations (default: None).
+        :param other_subreddits: A list of :class:`.Subreddit` instances for
+            which to mark conversations (default: None).
         :param state: Can be one of: all, archived, highlighted, inprogress,
             mod, new, notifications, (default: all).
         :returns: A list of :class:`.ModmailConversation` instances that were
@@ -1485,8 +1485,8 @@ class Modmail(object):
         :param limit: The maximum number of conversations to fetch. If None,
             the server-side default is 25 at the time of writing
             (default: None).
-        :param other_subreddits: A list of `.Subreddit` instances for which to
-            fetch conversations (default: None).
+        :param other_subreddits: A list of :class:`.Subreddit` instances for
+            which to fetch conversations (default: None).
         :param sort: Can be one of: mod, recent, unread, user
             (default: recent).
         :param state: Can be one of: all, archived, highlighted, inprogress,
@@ -1525,7 +1525,7 @@ class Modmail(object):
             :class:`.Redditor`.
         :param author_hidden: When True, author is hidden from non-moderators
             (default: False).
-        :returns: A `.ModmailConversation` object for the newly created
+        :returns: A :class:`.ModmailConversation` object for the newly created
             conversation.
 
         .. code:: python

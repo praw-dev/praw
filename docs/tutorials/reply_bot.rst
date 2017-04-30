@@ -85,7 +85,7 @@ subreddit. To indefinitely iterate over new submissions to a subreddit add:
    for submission in subreddit.stream.submissions():
        # do something with submission
 
-Replace `AskReddit` with the name of another subreddit if you want to iterate
+Replace ``AskReddit`` with the name of another subreddit if you want to iterate
 through its new submissions. Additionally multiple subreddits can be specified
 by joining them with pluses, for example ``AskReddit+NoStupidQuestions``. All
 subreddits can be specified using the special name ``all``.

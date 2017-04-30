@@ -37,7 +37,7 @@ entire URL:
 
    submission = reddit.submission(url='https://www.reddit.com/r/funny/comments/3g1jfi/buttons/')
 
-or with the submission's ID which comes after `comments/` in the URL:
+or with the submission's ID which comes after ``comments/`` in the URL:
 
 .. code-block:: python
 
