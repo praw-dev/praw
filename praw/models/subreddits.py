@@ -91,11 +91,13 @@ class Subreddits(PRAWBase):
         return [self._reddit.subreddit(x['name']) for x in result
                 if x.get('name')]
 
-    def stream(self):
+    def stream(self, **stream_options):
         """Yield new subreddits as they are created.
 
         Subreddits are yielded oldest first. Up to 100 historical subreddits
         will initially be returned.
 
+        Keyword arguments are passed to :meth:`.stream_generator`.
+
         """
-        return stream_generator(self.new)
+        return stream_generator(self.new, **stream_options)
