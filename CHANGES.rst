@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+4.5.1 (2017/05/07
+-----------------
+
+**Fixed**
+
+* Calling :meth:`.parent` works on :class:`.Comment` instances obtained via
+  :meth:`.comment_replies`.
+
+
 4.5.0 (2017/04/29)
 ------------------
 
