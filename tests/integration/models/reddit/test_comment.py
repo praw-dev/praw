@@ -107,6 +107,15 @@ class TestComment(IntegrationTest):
         assert isinstance(parent, Comment)
         assert parent.fullname == comment.parent_id
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_parent__from_replies(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestComment.parent__from_replies'):
+            comment = next(self.reddit.inbox.comment_replies())
+        parent = comment.parent()
+        assert isinstance(parent, Comment)
+        assert parent.fullname == comment.parent_id
+
     def test_parent__submission(self):
         comment = Comment(self.reddit, 'cklfmye')
         with self.recorder.use_cassette('TestComment.test_parent__submission'):
