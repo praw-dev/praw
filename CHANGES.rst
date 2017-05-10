@@ -4,6 +4,11 @@ Change Log
 Unreleased PRAW5
 ----------------
 
+**Added**
+
+* ``https_proxy`` can be set in ``praw.ini`` and is passed through
+  to the Requestor instance.
+
 **Changed**
 
 * ``cloudsearch`` is no longer the default syntax for

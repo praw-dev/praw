@@ -303,10 +303,14 @@ class Reddit(object):
         requestor_class = requestor_class or Requestor
         requestor_kwargs = requestor_kwargs or {}
 
+        proxies = {}
+        if self.config.https_proxy:
+            proxies['https'] = self.config.https_proxy
+
         requestor = requestor_class(
             USER_AGENT_FORMAT.format(self.config.user_agent),
             self.config.oauth_url, self.config.reddit_url,
-            **requestor_kwargs)
+            proxies=proxies, **requestor_kwargs)
 
         if self.config.client_secret:
             self._prepare_trusted_prawcore(requestor)
