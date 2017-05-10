@@ -21,6 +21,8 @@ Configuration options can be provided to PRAW in one of three ways:
 Environment variables have the highest priority, followed by keyword arguments
 to :class:`.Reddit`, and finally settings in ``praw.ini`` files.
 
+.. _https_proxy:
+
 Using an HTTP or HTTPS proxy with PRAW
 --------------------------------------
 
@@ -39,3 +41,6 @@ environment variable can be provided on the command line like so:
 .. code-block:: bash
 
    HTTPS_PROXY=https://localhost:3128 ./prawbot.py
+
+It is also possible to add an HTTPS proxy to your ``praw.ini`` file,
+using the ``https_proxy`` key.

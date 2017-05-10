@@ -68,6 +68,7 @@ class Config(object):
         self.client_id = self.client_secret = self.oauth_url = None
         self.reddit_url = self.refresh_token = self.redirect_uri = None
         self.password = self.user_agent = self.username = None
+        self.https_proxy = None
 
         self._initialize_attributes()
 
@@ -100,9 +101,9 @@ class Config(object):
                       ['comment', 'message', 'redditor', 'submission',
                        'subreddit']}
 
-        for attribute in ('client_id', 'client_secret', 'http_proxy',
-                          'https_proxy', 'redirect_uri', 'refresh_token',
-                          'password', 'user_agent', 'username'):
+        for attribute in ('client_id', 'client_secret', 'https_proxy',
+                          'redirect_uri', 'refresh_token', 'password',
+                          'user_agent', 'username'):
             setattr(self, attribute, self._fetch_or_not_set(attribute))
 
         for required_attribute in ('oauth_url', 'reddit_url'):

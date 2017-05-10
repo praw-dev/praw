@@ -28,6 +28,9 @@ Basic Configuration Options
              ``<platform>:<app ID>:<version string> (by /u/<reddit
              username>)``.
 
+:https_proxy: An HTTPS proxy for all requests made by PRAW. See :ref:`https_proxy` for
+              more details.
+
 .. _oauth_options:
 
 OAuth Configuration Options
