@@ -100,9 +100,9 @@ class Config(object):
                       ['comment', 'message', 'redditor', 'submission',
                        'subreddit']}
 
-        for attribute in ('client_id', 'client_secret', 'http_proxy',
-                          'https_proxy', 'redirect_uri', 'refresh_token',
-                          'password', 'user_agent', 'username'):
+        for attribute in ('client_id', 'client_secret', 'redirect_uri',
+                          'refresh_token', 'password', 'user_agent',
+                          'username'):
             setattr(self, attribute, self._fetch_or_not_set(attribute))
 
         for required_attribute in ('oauth_url', 'reddit_url'):

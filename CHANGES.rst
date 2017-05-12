@@ -28,6 +28,7 @@ Unreleased PRAW5
   :meth:`.friend`, :meth:`.Redditor.message`, :meth:`.Subreddit.message`,
   :meth:`.select`, and :meth:`.unfriend` are removed as they do not provide
   any useful information.
+* ``praw.ini`` no longer reads in ``http_proxy`` and ``https_proxy`` settings.
 
 4.5.1 (2017/05/07
 -----------------

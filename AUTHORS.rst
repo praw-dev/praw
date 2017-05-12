@@ -30,4 +30,5 @@ Source Contributors
 - Levi Roth <levimroth@gmail.com> `@leviroth <https://github.com/leviroth>`_
 - Keith Diedrick <diedrickke@gmail.com> `@darthkedrik <https://github.com/darthkedrik>`_
 - elnuno `@elnuno <https://github.com/elnuno>`_
+- Robbie Gibson `@rkgibson2 <https://github.com/rkgibson2>`_
 - Add "Name <email (optional)> and github profile link" above this line.
