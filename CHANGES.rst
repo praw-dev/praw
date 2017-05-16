@@ -30,8 +30,8 @@ Unreleased PRAW5
   any useful information.
 * ``praw.ini`` no longer reads in ``http_proxy`` and ``https_proxy`` settings.
 
-4.5.1 (2017/05/07
------------------
+4.5.1 (2017/05/07)
+------------------
 
 **Fixed**
 
