@@ -1572,7 +1572,8 @@ class Modmail(object):
         :param other_subreddits: A list of `.Subreddit` instances for which to
             mark conversations (default: None).
         :param state: Can be one of: all, archived, highlighted, inprogress,
-            mod, new, notifications, (default: all).
+            mod, new, notifications, (default: all). "all" does not include
+            internal or archived conversations.
         :returns: A list of :class:`.ModmailConversation` instances that were
             marked read.
 
@@ -1606,7 +1607,9 @@ class Modmail(object):
         :param sort: Can be one of: mod, recent, unread, user
             (default: recent).
         :param state: Can be one of: all, archived, highlighted, inprogress,
-            mod, new, notifications, (default: all).
+            mod, new, notifications, (default: all). "all" does not include
+            internal or archived conversations.
+
 
         Example:
 
