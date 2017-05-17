@@ -1432,6 +1432,37 @@ class Modmail(object):
 
            reddit.subreddit('redditdev').modmail('2gmz', mark_read=True)
 
+        To print all messages from a conversation as Markdown source:
+
+        .. code:: python
+
+           conversation = reddit.subreddit('redditdev').modmail('2gmz',
+                                                                mark_read=True)
+           for message in conversation.messages:
+               print(message.body_markdown)
+
+        ``ModmailConversation.user`` is a special instance of
+        :class:`.Redditor` with extra attributes describing the non-moderator
+        user's recent posts, comments, and modmail messages within the
+        subreddit, as well as information on active bans and mutes. This
+        attribute does not exist on internal moderator discussions.
+
+        For example, to print the user's ban status:
+
+        .. code:: python
+
+           conversation = reddit.subreddit('redditdev').modmail('2gmz',
+                                                                mark_read=True)
+           print(conversation.user.ban_status)
+
+        To print a list of recent submissions by the user:
+
+        .. code:: python
+
+           conversation = reddit.subreddit('redditdev').modmail('2gmz',
+                                                                mark_read=True)
+           print(conversation.user.recent_posts)
+
         """
         # pylint: disable=invalid-name,redefined-builtin
         return ModmailConversation(self.subreddit._reddit, id=id,
@@ -1456,7 +1487,8 @@ class Modmail(object):
         :param other_subreddits: A list of :class:`.Subreddit` instances for
             which to mark conversations (default: None).
         :param state: Can be one of: all, archived, highlighted, inprogress,
-            mod, new, notifications, (default: all).
+            mod, new, notifications, (default: all). "all" does not include
+            internal or archived conversations.
         :returns: A list of :class:`.ModmailConversation` instances that were
             marked read.
 
@@ -1490,7 +1522,9 @@ class Modmail(object):
         :param sort: Can be one of: mod, recent, unread, user
             (default: recent).
         :param state: Can be one of: all, archived, highlighted, inprogress,
-            mod, new, notifications, (default: all).
+            mod, new, notifications, (default: all). "all" does not include
+            internal or archived conversations.
+
 
         Example:
 
