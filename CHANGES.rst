@@ -4,6 +4,13 @@ Change Log
 Unreleased PRAW5
 ----------------
 
+**Added**
+
+* :meth:`.Comment.disable_inbox_replies`, :meth:`.Comment.enable_inbox_replies`
+  :meth:`.Submission.disable_inbox_replies`, and
+  :meth:`.Submission.enable_inbox_replies` to toggle inbox replies on comments
+  and submissions.
+
 **Changed**
 
 * ``cloudsearch`` is no longer the default syntax for

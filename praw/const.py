@@ -119,6 +119,7 @@ API_PATH = {
     'save':                   'api/save/',
     'search':                 'r/{subreddit}/search/',
     'select_flair':           'r/{subreddit}/api/selectflair/',
+    'sendreplies':            'api/sendreplies',
     'sent':                   'message/sent/',
     'setpermissions':         'r/{subreddit}/api/setpermissions/',
     'spoiler':                'api/spoiler/',

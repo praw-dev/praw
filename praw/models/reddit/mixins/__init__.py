@@ -3,6 +3,7 @@ from ....const import API_PATH
 from .editable import EditableMixin  # NOQA
 from .gildable import GildableMixin  # NOQA
 from .inboxable import InboxableMixin  # NOQA
+from .inboxtoggleable import InboxToggleableMixin  # NOQA
 from .messageable import MessageableMixin  # NOQA
 from .replyable import ReplyableMixin  # NOQA
 from .reportable import ReportableMixin  # NOQA
@@ -77,6 +78,7 @@ class ThingModerationMixin(object):
                                 data={'id': self.thing.fullname})
 
 
-class UserContentMixin(EditableMixin, GildableMixin, ReplyableMixin,
-                       ReportableMixin, SavableMixin, VotableMixin):
+class UserContentMixin(EditableMixin, GildableMixin, InboxToggleableMixin,
+                       ReplyableMixin, ReportableMixin, SavableMixin,
+                       VotableMixin):
     """A convenience mixin that applies to both Comments and Submissions."""
