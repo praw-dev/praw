@@ -31,6 +31,13 @@ class TestSubmission(IntegrationTest):
             assert submission.author is None
             assert submission.selftext == '[deleted]'
 
+    def test_disable_inbox_replies(self):
+        self.reddit.read_only = False
+        submission = Submission(self.reddit, '6ckfdz')
+        with self.recorder.use_cassette(
+                'TestSubmission.test_disable_inbox_replies'):
+            submission.disable_inbox_replies()
+
     def test_downvote(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -51,6 +58,13 @@ class TestSubmission(IntegrationTest):
             submission = Submission(self.reddit, '4b1tfm')
             submission.edit('New text')
             assert submission.selftext == 'New text'
+
+    def test_enable_inbox_replies(self):
+        self.reddit.read_only = False
+        submission = Submission(self.reddit, '6ckfdz')
+        with self.recorder.use_cassette(
+                'TestSubmission.test_enable_inbox_replies'):
+            submission.enable_inbox_replies()
 
     def test_gild__no_creddits(self):
         self.reddit.read_only = False
