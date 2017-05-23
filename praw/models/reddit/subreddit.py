@@ -157,7 +157,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     def flair(self):
         """Provide an instance of :class:`.SubredditFlair`.
 
-        Provides the interface for interacting with a subreddit's flair. For
+        Use this attribute for interacting with a subreddit's flair. For
         example to list all the flair for a subreddit which you have the
         ``flair`` moderator permission on try:
 
@@ -165,6 +165,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
            for flair in reddit.subreddit('NAME').flair():
                print(flair)
+
+        Flair templates can be interacted with through this attribute via:
+
+        .. code-block:: python
+
+           for template in reddit.subreddit('NAME').flair.templates:
+               print(template)
 
         """
         if self._flair is None:
@@ -585,6 +592,24 @@ class SubredditFilters(object):
 class SubredditFlair(object):
     """Provide a set of functions to interact with a Subreddit's flair."""
 
+    @property
+    def templates(self):
+        """Provide an instance of :class:`.SubredditFlairTemplates`.
+
+        Use this attribute for interacting with a subreddit's flair
+        templates. For example to list all the flair templates for a subreddit
+        which you have the ``flair`` moderator permission on try:
+
+        .. code-block:: python
+
+           for template in reddit.subreddit('NAME').flair.templates:
+               print(template)
+
+        """
+        if self._templates is None:
+            self._templates = SubredditFlairTemplates(self.subreddit)
+        return self._templates
+
     def __call__(self, redditor=None, **generator_kwargs):
         """Return a generator for Redditors and their associated flair.
 
@@ -612,8 +637,8 @@ class SubredditFlair(object):
         :param subreddit: The subreddit whose flair to work with.
 
         """
+        self._templates = None
         self.subreddit = subreddit
-        self.templates = SubredditFlairTemplates(subreddit)
 
     def configure(self, position='right', self_assign=False,
                   link_position='left', link_self_assign=False,
@@ -747,11 +772,25 @@ class SubredditFlairTemplates(object):
 
         :param subreddit: The subreddit whose flair templates to work with.
 
+        .. note:: This class should not be initialized directly. Instead obtain
+           an instance via:
+           ``reddit.subreddit('subreddit_name').flair.templates``
+
         """
         self.subreddit = subreddit
 
     def __iter__(self):
-        """Iterate through the user flair templates."""
+        """Iterate through the user flair templates.
+
+        Example:
+
+        .. code-block:: python
+
+           for template in reddit.subreddit('NAME').flair.templates:
+               print(template)
+
+
+        """
         url = API_PATH['flairselector'].format(subreddit=self.subreddit)
         data = {'unique': self.subreddit._reddit._next_unique}
         for template in self.subreddit._reddit.post(url, data=data)['choices']:
@@ -767,6 +806,13 @@ class SubredditFlairTemplates(object):
         :param is_link: (boolean) When True, add a link flair template rather
             than a Redditor flair template (default: False).
 
+        For example, to add an editable link flair try:
+
+        .. code-block:: python
+
+           reddit.subreddit('NAME').flair.templates.add(
+               css_class='praw', text_editable=True, is_link=True)
+
         """
         url = API_PATH['flairtemplate'].format(subreddit=self.subreddit)
         data = {'css_class': css_class, 'flair_type': self.flair_type(is_link),
@@ -779,13 +825,28 @@ class SubredditFlairTemplates(object):
         :param is_link: (boolean) When True, clear all link flair templates
             rather than a Redditor flair templates (default: False).
 
+        For example, to clear all Redditor flair templates, run:
+
+        .. code-block:: python
+
+           reddit.subreddit('NAME').flair.templates.clear()
+
         """
         url = API_PATH['flairtemplateclear'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(
             url, data={'flair_type': self.flair_type(is_link)})
 
     def delete(self, template_id):
-        """Remove a flair template provided by ``template_id``."""
+        """Remove a flair template provided by ``template_id``.
+
+        For example, to delete the first Redditor flair template listed, try:
+
+        .. code-block:: python
+
+           template_info = list(subreddit.flair.templates)[0]
+           subreddit.flair.templates.delete(template_info['flair_template_id])
+
+        """
         url = API_PATH['flairtemplatedelete'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(
             url, data={'flair_template_id': template_id})
@@ -798,6 +859,15 @@ class SubredditFlairTemplates(object):
         :param css_class: The flair template's new css_class (default: '').
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
+
+        For example to make a link flair template text_editable, try:
+
+        .. code-block:: python
+
+           template_info = list(subreddit.flair.templates)[0]
+           subreddit.flair.templates.update(
+               template_info['flair_template_id'],
+               text_editable=True)
 
         """
         url = API_PATH['flairtemplate'].format(subreddit=self.subreddit)
