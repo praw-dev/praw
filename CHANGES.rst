@@ -16,6 +16,8 @@ Unreleased PRAW5
 * ``cloudsearch`` is no longer the default syntax for
   :meth:`.Subreddit.search`. ``lucene`` is now the default
   syntax so that PRAW's default is aligned with Reddit's default.
+* :meth:`.Reddit.info` will now take either a list of fullnames 
+  or a single URL string.
 
 **Removed**
 
