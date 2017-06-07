@@ -41,6 +41,19 @@ class TestReddit(UnitTest):
         with pytest.raises(TypeError) as excinfo:
             print(self.reddit.info(None))
 
+        err_str = 'Either `fullnames` or `url` must be provided.'
+        assert str(excinfo.value) == err_str
+
+    def test_info__invalid_url(self):
+        with pytest.raises(TypeError) as excinfo:
+            print(self.reddit.info(url='NoTaReAlUrL'))
+
+        assert str(excinfo.value == 'Invalid URL or no posts exist')
+
+    def test_info__not_list(self):
+        with pytest.raises(TypeError) as excinfo:
+            print(self.reddit.info('Let\'s try a string'))
+
         assert str(excinfo.value) == 'fullnames must be a list'
 
     def test_live_info__valid_param(self):

@@ -367,11 +367,14 @@ class Reddit(object):
         data = self.request('GET', path, params=params)
         return self._objector.objectify(data)
 
-    def info(self, fullnames):
-        """Fetch information about each item in ``fullnames``.
+    def info(self, fullnames=None, url=None):
+        """Fetch information about each item in ``fullnames`` or from ``url``.
 
-        :param fullnames: A list of fullnames for a comment, submission, or
-            subreddit.
+        :param param_list: A list of paramaters, either fullnames for a
+            comment/submission/subreddit or a url for a list of link
+            submissions.
+        :param url: A url (as a string) to retrieve lists of link submissions
+            from.
         :returns: A generator that yields found items in their relative order.
 
         Items that cannot be matched will not be generated. Requests will be
@@ -381,18 +384,41 @@ class Reddit(object):
                   to obtain its replies, you will need to call :meth:`.refresh`
                   on the yielded :class:`.Comment`.
 
+        .. note:: When using the url option, it is important to be aware that
+                  urls are treated literally by Reddit apis. As such, the urls
+                  "youtube.com" and "https://www.youtube.com" will provide a
+                  different set of submissions.
+
+        .. note:: When using the url option, it is important to be aware that
+                  urls are treated literally by Reddit apis. As such, the urls
+                  "youtube.com" and "https://www.youtube.com" will provide a
+                  different set of submissions.
+
         """
-        if not isinstance(fullnames, list):
-            raise TypeError('fullnames must be a list')
+        if bool(fullnames) == bool(url):
+            raise TypeError('Either `fullnames` or `url` must be provided.')
 
-        def generator():
-            for position in range(0, len(fullnames), 100):
-                fullname_chunk = fullnames[position:position + 100]
-                params = {'id': ','.join(fullname_chunk)}
-                for result in self.get(API_PATH['info'], params=params):
-                    yield result
+        elif fullnames:
+            if not isinstance(fullnames, list):
+                raise TypeError('fullnames must be a list')
 
-        return generator()
+            def generator():
+                for position in range(0, len(fullnames), 100):
+                    fullname_chunk = fullnames[position:position + 100]
+                    params = {'id': ','.join(fullname_chunk)}
+                    for result in self.get(API_PATH['info'], params=params):
+                        yield result
+
+            return generator()
+
+        else:
+            try:
+                params = {'url': url}
+                url_list = [result for result in
+                            self.get(API_PATH['info'], params=params)]
+                return url_list
+            except:
+                raise TypeError('Invalid URL or no posts exist')
 
     def post(self, path, data=None, files=None, params=None):
         """Return parsed objects returned from a POST request to ``path``.
