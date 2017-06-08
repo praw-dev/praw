@@ -571,17 +571,19 @@ class LiveUpdate(RedditBase):
            update.author     # raise ``AttributeError``
         """
         if _data is not None:
+            # Since _data (part of JSON returned from reddit) have no
+            # thread ID, self._thread must be set by the caller of
+            # LiveUpdate(). See the code of LiveThread.updates() for example.
             super(LiveUpdate, self).__init__(reddit, _data)
-            self._fetched = True
         elif thread_id and update_id:
             super(LiveUpdate, self).__init__(reddit, None)
             self._thread = LiveThread(self._reddit, thread_id)
             self.id = update_id  # pylint: disable=invalid-name
-            self._fetched = True
-            self._contrib = None
         else:
             raise TypeError('Either `thread_id` and `update_id`, or '
                             '`_data` must be provided.')
+        self._fetched = True
+        self._contrib = None
 
     def __setattr__(self, attribute, value):
         """Objectify author."""
