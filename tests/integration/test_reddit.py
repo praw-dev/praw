@@ -93,6 +93,13 @@ class TestReddit(IntegrationTest):
         assert thread_ids != ids
         assert sorted(thread_ids) == ids
 
+    def test_live_now__featured(self):
+        with self.recorder.use_cassette('TestReddit.test_live_now'
+                                        '__featured'):
+            thread = self.reddit.live.now()
+        assert isinstance(thread, LiveThread)
+        assert thread.id == 'z2f981agq7ky'
+
     def test_live_now__no_featured(self):
         with self.recorder.use_cassette('TestReddit.test_live_now'
                                         '__no_featured'):

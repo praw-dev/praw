@@ -1,0 +1,111 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2017-06-08T15:33:45",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/5.0.0.dev0 prawcore/0.10.1"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Thu, 08 Jun 2017 15:35:06 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-nrt6127-NRT",
+          "X-Timer": "S1496936106.317079,VS0,VE194",
+          "cache-control": "max-age=0, must-revalidate",
+          "set-cookie": "session_tracker=x6aRHukf0NyNslKyTa.0.1496936106414.Z0FBQUFBQlpPVzZxVEp3aEFzNkNicUJQWVY3dnVGcVh0S0drb2QzZFJYa3JLeGFTTnF6M3dsa3RYZEhSY1NmV1Y0MDJJV1prVzdvUHl1QWdtZWc3MThBaEZqZEkyV1czQi1pSUlTQWxmSng0ZlV5TmJvNTZ6OE1pMkNrWFRnajhtUzZBbWl5VEZ5N2U; Domain=reddit.com; Max-Age=7199; Path=/; expires=Thu, 08-Jun-2017 17:35:06 GMT; secure",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2017-06-08T15:33:45",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Cookie": "session_tracker=x6aRHukf0NyNslKyTa.0.1496936106414.Z0FBQUFBQlpPVzZxVEp3aEFzNkNicUJQWVY3dnVGcVh0S0drb2QzZFJYa3JLeGFTTnF6M3dsa3RYZEhSY1NmV1Y0MDJJV1prVzdvUHl1QWdtZWc3MThBaEZqZEkyV1czQi1pSUlTQWxmSng0ZlV5TmJvNTZ6OE1pMkNrWFRnajhtUzZBbWl5VEZ5N2U; edgebucket=kEZzbPIjl83mJ5kO2O",
+          "User-Agent": "<USER_AGENT> PRAW/5.0.0.dev0 prawcore/0.10.1"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/live/happening_now?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"LiveUpdateEvent\", \"data\": {\"description\": \"Former FBI Director James Comey is testifying before the Senate Intelligence Committee at 10am EST.\", \"description_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EFormer FBI Director James Comey is testifying before the Senate Intelligence Committee at 10am EST.\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"title\": \"Former FBI Director James Comey's Testimony\", \"created\": 1496956544.0, \"created_utc\": 1496927744.0, \"websocket_url\": \"wss://ws-028a7c28af03f53d3.wss.redditmedia.com/live/z2f981agq7ky?m=AQAAKsA6Wbs-cjSypb-s3mA2Vvf-0Zny63dfso-h125Ms2YxL8yA\", \"state\": \"live\", \"nsfw\": false, \"viewer_count\": 114194, \"viewer_count_fuzzed\": true, \"resources_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Ch1\\u003EDetails\\u003C/h1\\u003E\\n\\n\\u003Cul\\u003E\\n\\u003Cli\\u003EJames Comey, former Director of the FBI, is testifying before the Senate Intelligence Committee\\u003C/li\\u003E\\n\\u003C/ul\\u003E\\n\\n\\u003Ch1\\u003EOther Coverage\\u003C/h1\\u003E\\n\\n\\u003Cul\\u003E\\n\\u003Cli\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"https://www.reddit.com/r/politics/comments/6g0srl/discussion_megathread_james_comey_testifies/?utm_content=title\\u0026amp;utm_medium=front\\u0026amp;utm_source=reddit\\u0026amp;utm_name=politics\\\" rel=\\\"nofollow\\\"\\u003E/r/politics Megathread\\u003C/a\\u003E\\u003C/p\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"https://www.intelligence.senate.gov/sites/default/files/documents/os-jcomey-060817.pdf\\\" rel=\\\"nofollow\\\"\\u003EJames Comey Opening Statement\\u003C/a\\u003E\\u003C/p\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"http://www.bbc.com/news/live/world-us-canada-40193177\\\" rel=\\\"nofollow\\\"\\u003EBBC Comey Testifies\\u003C/a\\u003E\\u003C/p\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"https://webchat.snoonet.org/politics\\\" rel=\\\"nofollow\\\"\\u003E#politics IRC for discussion\\u003C/a\\u003E\\u003C/p\\u003E\\u003C/li\\u003E\\n\\u003C/ul\\u003E\\n\\n\\u003Ch1\\u003ELivestreams\\u003C/h1\\u003E\\n\\n\\u003Cul\\u003E\\n\\u003Cli\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"https://www.c-span.org/video/?429381-1/former-fbi-director-comey-set-testify-russia-probe\\\" rel=\\\"nofollow\\\"\\u003EC-SPAN Video\\u003C/a\\u003E\\u003C/p\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"https://www.intelligence.senate.gov/hearings/videos\\\" rel=\\\"nofollow\\\"\\u003EU.S. Senate Video\\u003C/a\\u003E\\u003C/p\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"https://www.youtube.com/watch?v=7j0f6c-3x6s\\u0026amp;index=3\\u0026amp;list=PLU12uITxBEPEEIlLMEWFXvAeoZl0cSrok\\\" rel=\\\"nofollow\\\"\\u003EYoutube/ABC\\u003C/a\\u003E\\u003C/p\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"https://www.youtube.com/watch?v=67-iTpIqZrU\\\" rel=\\\"nofollow\\\"\\u003EYoutube/CBS\\u003C/a\\u003E\\u003C/p\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"https://www.youtube.com/watch?v=FGuJjfQSL_I\\u0026amp;list=PLU12uITxBEPEEIlLMEWFXvAeoZl0cSrok\\u0026amp;index=2\\\" rel=\\\"nofollow\\\"\\u003EYoutube/NBC\\u003C/a\\u003E\\u003C/p\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"https://www.youtube.com/watch?v=yry9PV3DNfw\\u0026amp;index=5\\u0026amp;list=PLU12uITxBEPEEIlLMEWFXvAeoZl0cSrok\\\" rel=\\\"nofollow\\\"\\u003EYoutube/PBS\\u003C/a\\u003E\\u003C/p\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"https://www.twitch.tv/news?utm_content=sf86339035\\\" rel=\\\"nofollow\\\"\\u003ETwitch\\u003C/a\\u003E\\u003C/p\\u003E\\u003C/li\\u003E\\n\\u003Cli\\u003E\\u003Cp\\u003E\\u003Ca href=\\\"https://twitter.com/TwitterNews/status/872568196502630400\\\" rel=\\\"nofollow\\\"\\u003ETwitter\\u003C/a\\u003E\\u003C/p\\u003E\\u003C/li\\u003E\\n\\u003C/ul\\u003E\\n\\n\\u003Ch1\\u003EPhone\\u003C/h1\\u003E\\n\\n\\u003Cul\\u003E\\n\\u003Cli\\u003EYou can dial into the Senate chambers and listen live at 712-432-4210\\u003C/li\\u003E\\n\\u003C/ul\\u003E\\n\\n\\u003Chr/\\u003E\\n\\n\\u003Cp\\u003E\\u003Cem\\u003EMaintained by the \\u003Ca href=\\\"/r/VolunteerLiveTeam\\\" rel=\\\"nofollow\\\"\\u003E/r/VolunteerLiveTeam\\u003C/a\\u003E\\u003C/em\\u003E\\u003C/p\\u003E\\n\\n\\u003Cp\\u003E\\u003Ca href=\\\"https://twitter.com/VLiveTeam\\\" rel=\\\"nofollow\\\"\\u003E@VLiveTeam\\u003C/a\\u003E \\u00ab\\u00bb \\u003Ca href=\\\"https://www.facebook.com/VLiveTeam\\\" rel=\\\"nofollow\\\"\\u003EFB: VLiveTeam\\u003C/a\\u003E\\u003C/p\\u003E\\n\\n\\u003Cp\\u003EPlease \\u003Ca href=\\\"https://www.reddit.com/message/compose?to=%2Fr%2FVolunteerLiveTeam\\\" rel=\\\"nofollow\\\"\\u003Emessage any of our moderators\\u003C/a\\u003E with any tips or updates.\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"id\": \"z2f981agq7ky\", \"resources\": \"#Details\\n\\n* James Comey, former Director of the FBI, is testifying before the Senate Intelligence Committee\\n\\n#Other Coverage\\n\\n* [/r/politics Megathread](https://www.reddit.com/r/politics/comments/6g0srl/discussion_megathread_james_comey_testifies/?utm_content=title\\u0026utm_medium=front\\u0026utm_source=reddit\\u0026utm_name=politics)\\n\\n* [James Comey Opening Statement](https://www.intelligence.senate.gov/sites/default/files/documents/os-jcomey-060817.pdf)\\n\\n* [BBC Comey Testifies](http://www.bbc.com/news/live/world-us-canada-40193177)\\n\\n* [#politics IRC for discussion](https://webchat.snoonet.org/politics)\\n\\n#Livestreams\\n\\n* [C-SPAN Video](https://www.c-span.org/video/?429381-1/former-fbi-director-comey-set-testify-russia-probe)\\n\\n* [U.S. Senate Video](https://www.intelligence.senate.gov/hearings/videos)\\n\\n* [Youtube/ABC](https://www.youtube.com/watch?v=7j0f6c-3x6s\\u0026index=3\\u0026list=PLU12uITxBEPEEIlLMEWFXvAeoZl0cSrok)\\n\\n* [Youtube/CBS](https://www.youtube.com/watch?v=67-iTpIqZrU)\\n\\n* [Youtube/NBC](https://www.youtube.com/watch?v=FGuJjfQSL_I\\u0026list=PLU12uITxBEPEEIlLMEWFXvAeoZl0cSrok\\u0026index=2)\\n\\n* [Youtube/PBS](https://www.youtube.com/watch?v=yry9PV3DNfw\\u0026index=5\\u0026list=PLU12uITxBEPEEIlLMEWFXvAeoZl0cSrok)\\n\\n* [Twitch](https://www.twitch.tv/news?utm_content=sf86339035)\\n\\n* [Twitter](https://twitter.com/TwitterNews/status/872568196502630400)\\n\\n#Phone\\n* You can dial into the Senate chambers and listen live at 712-432-4210\\n\\n\\n---\\n\\n*Maintained by the /r/VolunteerLiveTeam*\\n\\n[@VLiveTeam](https://twitter.com/VLiveTeam) \\u00ab\\u00bb [FB: VLiveTeam](https://www.facebook.com/VLiveTeam)\\n\\nPlease [message any of our moderators](https://www.reddit.com/message/compose?to=%2Fr%2FVolunteerLiveTeam) with any tips or updates.\", \"name\": \"LiveUpdateEvent_z2f981agq7ky\"}}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "6297",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Thu, 08 Jun 2017 15:35:06 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-nrt6132-NRT",
+          "X-Timer": "S1496936107.581276,VS0,VE185",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "set-cookie": "loid=000000000003gy6xf0.2.1496936106671.Z0FBQUFBQlpPVzZxSjRReXIxa0JmTGlrMmdSWDNmbF9xTWVBdEZhMGVKMmhEQ3RTX1dPNDZJMDltZGxzTzZfY3FfejNENFRsdmtsM05Kd0VTRW5vXzhIY1FIcnJxWGIzTUZZUkE1b1BnbEpGM0dsMXJubU4tT0tKYkQzUmg0NmhSOG1UR0c5dG0yUFU; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Sat, 08-Jun-2019 15:35:06 GMT; secure",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=r%2BImGZMCaAbFGM%2FjmSSvrzQ2jN03QcgKxYM%2Bao%2FcppU3yAs2Rc%2FADRil1dsWjxxIGFUEXj3ljsKryBeLENwbAI7dNLL8Uowa",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/live/happening_now?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}
