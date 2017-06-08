@@ -148,6 +148,10 @@ class TestLiveUpdate(UnitTest):
         update = LiveUpdate(self.reddit, thread_id, update_id)
         assert isinstance(update.contrib, LiveUpdateContribution)
 
+        data = {'id': 'dummy_update_id', 'author': 'dummy_author'}
+        update = LiveUpdate(self.reddit, _data=data)
+        assert isinstance(update.contrib, LiveUpdateContribution)
+
     def test_setattr(self):
         data = {'id': 'dummy_update_id', 'author': 'dummy_author'}
         update = LiveUpdate(self.reddit, _data=data)

@@ -19,6 +19,10 @@ Unreleased PRAW5
 * :meth:`.Reddit.info` will now take either a list of fullnames 
   or a single URL string.
 
+**Fixed**
+
+* Fix accessing :attr:`.LiveUpdate.contrib` raises ``AttributeError``.
+
 **Removed**
 
 * Iterating directly over :class:`.SubredditRelationship` (e.g.,
