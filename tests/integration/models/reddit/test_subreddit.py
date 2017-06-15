@@ -130,6 +130,21 @@ class TestSubreddit(IntegrationTest):
         assert count > 0
 
     @mock.patch('time.sleep', return_value=None)
+    def test_submit__flair(self, _):
+        flair_id = '17bf09c4-520c-11e7-8073-0ef8adb5ef68'
+        flair_text = 'Test flair text'
+        flair_class = 'test-flair-class'
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubreddit.test_submit__flair'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            submission = subreddit.submit('Test Title', selftext='Test text.',
+                                          flair_id=flair_id,
+                                          flair_text=flair_text)
+            assert submission.link_flair_css_class == flair_class
+            assert submission.link_flair_text == flair_text
+
+    @mock.patch('time.sleep', return_value=None)
     def test_submit__selftext(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubreddit.test_submit__selftext'):

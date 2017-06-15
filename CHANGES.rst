@@ -18,6 +18,7 @@ Unreleased PRAW5
   syntax so that PRAW's default is aligned with Reddit's default.
 * :meth:`.Reddit.info` will now take either a list of fullnames 
   or a single URL string.
+* :meth:`.Subreddit.submit` accepts a flair template ID and text.
 
 **Fixed**
 

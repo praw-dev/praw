@@ -439,8 +439,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                 params['after'] = submission.fullname
             last_ids = current_ids
 
-    def submit(self, title, selftext=None, url=None, resubmit=True,
-               send_replies=True):
+    def submit(self, title, selftext=None, url=None, flair_id=None,
+               flair_text=None, resubmit=True, send_replies=True):
         """Add a submission to the subreddit.
 
         :param title: The title of the submission.
@@ -448,6 +448,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             submission. Use an empty string, ``''``, to make a title-only
             submission.
         :param url: The URL for a ``link`` submission.
+        :param flair_id: The flair template to select (default: None).
+        :param flair_text: If the template's ``flair_text_editable`` value is
+            True, this value will set a custom text (default: None).
         :param resubmit: When False, an error will occur if the URL has already
             been submitted (default: True).
         :param send_replies: When True, messages will be sent to the submission
@@ -470,6 +473,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         data = {'sr': str(self), 'resubmit': bool(resubmit),
                 'sendreplies': bool(send_replies), 'title': title}
+        for flair_param in ['flair_id', 'flair_text']:
+            if locals()[flair_param] is not None:
+                data[flair_param] = locals()[flair_param]
         if selftext is not None:
             data.update(kind='self', text=selftext)
         else:
