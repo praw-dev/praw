@@ -10,6 +10,7 @@ Unreleased PRAW5
   :meth:`.Submission.disable_inbox_replies`, and
   :meth:`.Submission.enable_inbox_replies` to toggle inbox replies on comments
   and submissions.
+* :attr:`.SubredditFlair.link_templates` to manage link flair templates.
 
 **Changed**
 
@@ -43,6 +44,9 @@ Unreleased PRAW5
   :meth:`.select`, and :meth:`.unfriend` are removed as they do not provide
   any useful information.
 * ``praw.ini`` no longer reads in ``http_proxy`` and ``https_proxy`` settings.
+* ``is_link`` parameter of :meth:`.SubredditRedditorFlairTemplates.add` and
+  :meth:`.SubredditRedditorFlairTemplates.clear`. Use
+  :class:`.SubredditLinkFlairTemplates` instead.
 
 4.5.1 (2017/05/07)
 ------------------

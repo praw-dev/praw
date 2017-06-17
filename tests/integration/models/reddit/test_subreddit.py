@@ -411,6 +411,33 @@ class TestSubredditFlairTemplates(IntegrationTest):
                 template['flair_template_id'], 'PRAW updated')
 
 
+class TestSubredditLinkFlairTemplates(IntegrationTest):
+    @property
+    def subreddit(self):
+        return self.reddit.subreddit(pytest.placeholders.test_subreddit)
+
+    def test__iter(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditLinkFlairTemplates.test__iter'):
+            templates = list(self.subreddit.flair.link_templates)
+        assert len(templates) == 1
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_add(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditLinkFlairTemplates.test_add'):
+            for i in range(101):
+                self.subreddit.flair.link_templates.add('PRAW{}'.format(i))
+
+    def test_clear(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditLinkFlairTemplates.test_clear'):
+            self.subreddit.flair.link_templates.clear()
+
+
 class TestSubredditListings(IntegrationTest):
     def test_comments(self):
         with self.recorder.use_cassette(
