@@ -12,7 +12,6 @@ html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
     'collapse_navigation': True
 }
-html_use_smartypants = True
 htmlhelp_basename = 'PRAW'
 intersphinx_mapping = {'python': ('https://docs.python.org/3.6', None)}
 master_doc = 'index'
