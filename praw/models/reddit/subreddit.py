@@ -413,6 +413,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         As of this writing there are 809 results.
 
+        .. note:: The results are only as reliable as reddit's search,
+           submissions may be missing from the results.
+
         """
         utc_offset = 28800
         now = int(time.time())
