@@ -12,6 +12,8 @@ instances of them bound to an attribute of one of the PRAW models.
    other/submissionflair
    other/subredditflair
    other/subredditflairtemplates
+   other/subredditlinkflairtemplates
+   other/subredditredditorflairtemplates
 
 .. toctree::
    :maxdepth: 2
