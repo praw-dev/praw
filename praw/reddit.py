@@ -384,13 +384,8 @@ class Reddit(object):
                   to obtain its replies, you will need to call :meth:`.refresh`
                   on the yielded :class:`.Comment`.
 
-        .. note:: When using the url option, it is important to be aware that
-                  urls are treated literally by Reddit apis. As such, the urls
-                  "youtube.com" and "https://www.youtube.com" will provide a
-                  different set of submissions.
-
-        .. note:: When using the url option, it is important to be aware that
-                  urls are treated literally by Reddit apis. As such, the urls
+        .. note:: When using the URL option, it is important to be aware that
+                  URLs are treated literally by Reddit's API. As such, the URLs
                   "youtube.com" and "https://www.youtube.com" will provide a
                   different set of submissions.
 
