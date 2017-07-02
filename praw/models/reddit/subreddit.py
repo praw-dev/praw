@@ -399,11 +399,12 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         Submissions are yielded newest first.
 
-        **Example**: If you want to obtain all submissions to ``/r/politics``
-        on November 8, 2016 PST. First you need to determine the start and end
-        dates as UNIX timestamps. Using http://www.epochconverter.com/ those
-        timestamps are 1478592000, and 1478678400 respectively. The following
-        outputs all such submissions' titles.
+        **Example**: Suppose you want to obtain all submissions to
+        ``/r/politics`` on November 8, 2016 PST. First, you need to determine
+        the start and end dates as UNIX timestamps. Using
+        http://www.epochconverter.com/, those timestamps are 1478592000 and
+        1478678400, respectively. The following outputs all such submissions'
+        titles:
 
         .. code:: python
 
@@ -413,8 +414,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         As of this writing there are 809 results.
 
-        .. note:: The results are only as reliable as reddit's search,
-           submissions may be missing from the results.
+        .. note:: The results are only as reliable as reddit's search.
+           Submissions may be missing from the results.
 
         """
         utc_offset = 28800
@@ -467,8 +468,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         .. code:: python
 
+           title = 'PRAW documentation'
            url = 'https://praw.readthedocs.io'
-           reddit.subreddit('reddit_api_test').submit(url=url)
+           reddit.subreddit('reddit_api_test').submit(title, url=url)
 
         """
         if (bool(selftext) or selftext == '') == bool(url):

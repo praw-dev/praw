@@ -121,7 +121,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
 
 class SubListing(BaseListingMixin):
-    """Helper class for generating SubListing objects."""
+    """Helper class for generating ListingGenerator objects."""
 
     def __init__(self, reddit, base_path, subpath):
         """Initialize a SubListing instance.
