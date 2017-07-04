@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-4.5.2 (2017/07/04)
+4.6.0 (2017/07/04)
 ------------------
 
 The release's sole purpose is to announce the deprecation of the ``is_link``
