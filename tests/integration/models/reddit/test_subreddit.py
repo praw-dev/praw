@@ -384,11 +384,28 @@ class TestSubredditFlairTemplates(IntegrationTest):
             for i in range(101):
                 self.subreddit.flair.templates.add('PRAW{}'.format(i))
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_add__using_deprecated_is_link(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditLinkFlairTemplates.test_add',
+                match_requests_on=['uri', 'method', 'body']):
+            for i in range(101):
+                self.subreddit.flair.templates.add('PRAW{}'.format(i),
+                                                   is_link=True)
+
     def test_clear(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestSubredditFlairTemplates.test_clear'):
             self.subreddit.flair.templates.clear()
+
+    def test_clear__using_deprecated_is_link(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditLinkFlairTemplates.test_clear',
+                match_requests_on=['uri', 'method', 'body']):
+            self.subreddit.flair.templates.clear(is_link=True)
 
     @mock.patch('time.sleep', return_value=None)
     def test_delete(self, _):
@@ -407,6 +424,33 @@ class TestSubredditFlairTemplates(IntegrationTest):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
                 template['flair_template_id'], 'PRAW updated')
+
+
+class TestSubredditLinkFlairTemplates(IntegrationTest):
+    @property
+    def subreddit(self):
+        return self.reddit.subreddit(pytest.placeholders.test_subreddit)
+
+    def test__iter(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditLinkFlairTemplates.test__iter'):
+            templates = list(self.subreddit.flair.link_templates)
+        assert len(templates) == 1
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_add(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditLinkFlairTemplates.test_add'):
+            for i in range(101):
+                self.subreddit.flair.link_templates.add('PRAW{}'.format(i))
+
+    def test_clear(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditLinkFlairTemplates.test_clear'):
+            self.subreddit.flair.link_templates.clear()
 
 
 class TestSubredditListings(IntegrationTest):

@@ -1,8 +1,24 @@
 Change Log
 ==========
 
-4.5.1 (2017/05/07
------------------
+4.5.2 (2017/07/04)
+------------------
+
+The release's sole purpose is to announce the deprecation of the ``is_link``
+parameter as described below:
+
+**Added**
+
+* :attr:`.SubredditFlair.link_templates` to manage link flair templates.
+
+**Deprecated**
+
+* ``is_link`` parameter of :meth:`.SubredditRedditorFlairTemplates.add` and
+  :meth:`.SubredditRedditorFlairTemplates.clear`. Use
+  :class:`.SubredditLinkFlairTemplates` instead.
+
+4.5.1 (2017/05/07)
+------------------
 
 **Fixed**
 
