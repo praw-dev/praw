@@ -10,14 +10,13 @@ Unreleased PRAW5
   :meth:`.Submission.disable_inbox_replies`, and
   :meth:`.Submission.enable_inbox_replies` to toggle inbox replies on comments
   and submissions.
-* :attr:`.SubredditFlair.link_templates` to manage link flair templates.
 
 **Changed**
 
 * ``cloudsearch`` is no longer the default syntax for
   :meth:`.Subreddit.search`. ``lucene`` is now the default
   syntax so that PRAW's default is aligned with Reddit's default.
-* :meth:`.Reddit.info` will now take either a list of fullnames 
+* :meth:`.Reddit.info` will now take either a list of fullnames
   or a single URL string.
 * :meth:`.Subreddit.submit` accepts a flair template ID and text.
 
@@ -44,6 +43,22 @@ Unreleased PRAW5
   :meth:`.select`, and :meth:`.unfriend` are removed as they do not provide
   any useful information.
 * ``praw.ini`` no longer reads in ``http_proxy`` and ``https_proxy`` settings.
+* ``is_link`` parameter of :meth:`.SubredditRedditorFlairTemplates.add` and
+  :meth:`.SubredditRedditorFlairTemplates.clear`. Use
+  :class:`.SubredditLinkFlairTemplates` instead.
+
+4.6.0 (2017/07/04)
+------------------
+
+The release's sole purpose is to announce the deprecation of the ``is_link``
+parameter as described below:
+
+**Added**
+
+* :attr:`.SubredditFlair.link_templates` to manage link flair templates.
+
+**Deprecated**
+
 * ``is_link`` parameter of :meth:`.SubredditRedditorFlairTemplates.add` and
   :meth:`.SubredditRedditorFlairTemplates.clear`. Use
   :class:`.SubredditLinkFlairTemplates` instead.
