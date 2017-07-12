@@ -1,18 +1,15 @@
 Change Log
 ==========
 
-Unreleased
-----------
-
-**Changed**
-
-* Lowered the average maximum delay between inactive stream checks by 4x to 16
-  seconds. It was previously 64 seconds.
+5.0.1 (2017/07/11)
+------------------
 
 **Fixed**
 
 * Calls to :meth:`.hide()` and :meth:`.unhide()` properly batch into requests
   of 50 submissions at a time.
+* Lowered the average maximum delay between inactive stream checks by 4x to 16
+  seconds. It was previously 64 seconds, which was too long.
 
 5.0.0 (2017/07/04)
 ------------------
