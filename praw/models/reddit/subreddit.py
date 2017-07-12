@@ -478,9 +478,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         data = {'sr': str(self), 'resubmit': bool(resubmit),
                 'sendreplies': bool(send_replies), 'title': title}
-        for flair_param in ['flair_id', 'flair_text']:
-            if locals()[flair_param] is not None:
-                data[flair_param] = locals()[flair_param]
+        for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
+            if value is not None:
+                data[key] = value
         if selftext is not None:
             data.update(kind='self', text=selftext)
         else:
