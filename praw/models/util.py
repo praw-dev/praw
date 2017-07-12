@@ -92,7 +92,7 @@ def stream_generator(function, pause_after=None):
 
     .. note:: This function internally uses an exponential delay with jitter
        between subsequent responses that contain no new results, up to a
-       maximum delay of just over a minute. In practice that means that the
+       maximum delay of just over a 16 seconds. In practice that means that the
        time before pause for ``pause_after=N+1`` is approximately twice the
        time before pause for ``pause_after=N``.
 
@@ -127,8 +127,8 @@ def stream_generator(function, pause_after=None):
     To bypass the internal exponential backoff, try the following. This
     approach is useful if you are monitoring an subreddit with infrequent
     activity, and you want the to consistently learn about new items from the
-    stream as soon as possible, rather than up to a delay of just over a
-    minute.
+    stream as soon as possible, rather than up to a delay of just over sixteen
+    seconds.
 
     .. code:: python
 
@@ -140,7 +140,7 @@ def stream_generator(function, pause_after=None):
 
     """
     before_fullname = None
-    exponential_counter = ExponentialCounter(max_counter=64)
+    exponential_counter = ExponentialCounter(max_counter=16)
     seen_fullnames = BoundedSet(301)
     without_before_counter = 0
     responses_without_new = 0

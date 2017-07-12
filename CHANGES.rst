@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Changed**
+
+* Lowered the average maximum delay between inactive stream checks by 4x to 16
+  seconds. It was previously 64 seconds.
+
 5.0.0 (2017/07/04)
 ------------------
 
