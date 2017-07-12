@@ -136,6 +136,14 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             value = Subreddit(self._reddit, value)
         super(Submission, self).__setattr__(attribute, value)
 
+    def _chunk(self, other_submissions, chunk_size):
+        all_submissions = [self.fullname]
+        if other_submissions:
+            all_submissions += [x.fullname for x in other_submissions]
+
+        for position in range(0, len(all_submissions), chunk_size):
+            yield ','.join(all_submissions[position:position + 50])
+
     def _fetch(self):
         other, comments = self._reddit.get(self._info_path(),
                                            params={'limit': self.comment_limit,
@@ -159,12 +167,8 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             as part of a single request (default: None).
 
         """
-        if other_submissions:
-            submissions = ','.join([self.fullname] +
-                                   [x.fullname for x in other_submissions])
-        else:
-            submissions = self.fullname
-        self._reddit.post(API_PATH['hide'], data={'id': submissions})
+        for submissions in self._chunk(other_submissions, 50):
+            self._reddit.post(API_PATH['hide'], data={'id': submissions})
 
     @property
     def shortlink(self):
@@ -184,12 +188,8 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             as part of a single request (default: None).
 
         """
-        if other_submissions:
-            submissions = ','.join([self.fullname] +
-                                   [x.fullname for x in other_submissions])
-        else:
-            submissions = self.fullname
-        self._reddit.post(API_PATH['unhide'], data={'id': submissions})
+        for submissions in self._chunk(other_submissions, 50):
+            self._reddit.post(API_PATH['unhide'], data={'id': submissions})
 
 
 class SubmissionFlair(object):

@@ -89,6 +89,15 @@ class TestSubmission(IntegrationTest):
                 'TestSubmission.test_hide__multiple'):
             Submission(self.reddit, '1eipl7').hide(submissions)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_hide_multiple_in_batches(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_hide__multiple_in_batches'):
+            submissions = list(self.reddit.subreddit('popular').hot(limit=100))
+            assert len(submissions) == 100
+            submissions[0].hide(submissions[1:])
+
     def test_invalid_attribute(self):
         with self.recorder.use_cassette(
                 'TestSubmission.test_invalid_attribute'):
@@ -133,6 +142,15 @@ class TestSubmission(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubmission.test_unhide__multiple'):
             Submission(self.reddit, '1eipl7').unhide(submissions)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_unhide_multiple_in_batches(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_unhide__multiple_in_batches'):
+            submissions = list(self.reddit.subreddit('popular').hot(limit=100))
+            assert len(submissions) == 100
+            submissions[0].unhide(submissions[1:])
 
     def test_unsave(self):
         self.reddit.read_only = False
