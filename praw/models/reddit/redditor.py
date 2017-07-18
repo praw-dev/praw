@@ -3,6 +3,7 @@ from json import dumps
 
 from ...const import API_PATH
 from ..listing.mixins import RedditorListingMixin
+from ..util import stream_generator
 from .base import RedditBase
 from .mixins import MessageableMixin
 
@@ -20,6 +21,32 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         else:
             return cls(reddit, data)
 
+    @property
+    def stream(self):
+        """Provide an instance of :class:`.RedditorStream`.
+
+        Streams can be used to indefinitely retrieve new comments made by a
+        redditor, like:
+
+        .. code:: python
+
+           for comment in reddit.redditor('spez').stream.comments():
+               print(comment)
+
+        Additionally, new submissions can be retrieved via the stream. In the
+        following example all submissions are fetched via the redditor
+        ``spez``:
+
+        .. code:: python
+
+           for submission in reddit.redditor('spez').stream.submissions():
+               print(submission)
+
+        """
+        if self._stream is None:
+            self._stream = RedditorStream(self)
+        return self._stream
+
     def __init__(self, reddit, name=None, _data=None):
         """Initialize a Redditor instance.
 
@@ -34,6 +61,7 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         if name:
             self.name = name
         self._path = API_PATH['user'].format(user=self)
+        self._stream = None
 
     def _info_path(self):
         return API_PATH['user_about'].format(user=self)
@@ -93,3 +121,54 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
     def unfriend(self):
         """Unfriend the Redditor."""
         self._friend(method='DELETE', data={'id': str(self)})
+
+
+class RedditorStream(object):
+    """Provides submission and comment streams."""
+
+    def __init__(self, redditor):
+        """Create a RedditorStream instance.
+
+        :param redditor: The redditor associated with the streams.
+
+        """
+        self.redditor = redditor
+
+    def comments(self, **stream_options):
+        """Yield new comments as they become available.
+
+        Comments are yielded oldest first. Up to 100 historical comments will
+        initially be returned.
+
+        Keyword arguments are passed to :meth:`.stream_generator`.
+
+        For example, to retrieve all new comments made by redditor ``spez``,
+        try:
+
+        .. code:: python
+
+           for comment in reddit.redditor('spez').stream.comments():
+               print(comment)
+
+        """
+        return stream_generator(self.redditor.comments.new, **stream_options)
+
+    def submissions(self, **stream_options):
+        """Yield new submissions as they become available.
+
+        Submissions are yielded oldest first. Up to 100 historical submissions
+        will initially be returned.
+
+        Keyword arguments are passed to :meth:`.stream_generator`.
+
+        For example to retrieve all new submissions made by redditor
+        ``spez``, try:
+
+        .. code:: python
+
+           for submission in reddit.redditor('spez').stream.submissions():
+               print(submission)
+
+        """
+        return stream_generator(self.redditor.submissions.new,
+                                **stream_options)

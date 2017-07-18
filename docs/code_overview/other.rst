@@ -65,4 +65,5 @@ instances of them bound to an attribute of one of the PRAW models.
    other/redditorlist
    other/sublisting
    other/subredditmessage
+   other/redditorstream
    other/util
