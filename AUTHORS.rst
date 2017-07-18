@@ -31,4 +31,5 @@ Source Contributors
 - Keith Diedrick <kediedrick@gmail.com> `@darthkedrik <https://github.com/darthkedrik>`_
 - elnuno `@elnuno <https://github.com/elnuno>`_
 - Robbie Gibson `@rkgibson2 <https://github.com/rkgibson2>`_
+- jarhill0 `@jarhill0 <https://github.com/jarhill0>`_
 - Add "Name <email (optional)> and github profile link" above this line.
