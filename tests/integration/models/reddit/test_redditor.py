@@ -94,7 +94,7 @@ class TestRedditor(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestRedditor.test_stream__submissions'):
             for i in range(101):
-                assert isinstance(next(generator), Submissiong)
+                assert isinstance(next(generator), Submission)
 
 
 class TestRedditorListings(IntegrationTest):
