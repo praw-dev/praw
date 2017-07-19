@@ -9,7 +9,7 @@ Unreleased
 * :attr:`.Redditor.stream`, with methods :meth:`.RedditorStream.submissions()`
   and :meth:`.RedditorStream.comments()` to stream a Redditor's
   comments or submissions
-* :class:`.Redditor` has been added to facilitate
+* :class:`.RedditorStream` has been added to facilitate
   :attr:`.Redditor.stream`
 
 
