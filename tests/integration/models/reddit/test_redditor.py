@@ -1,5 +1,6 @@
 """Test praw.models.redditor."""
 from prawcore import BadRequest, Forbidden
+from praw.models import Comment, Submission
 import mock
 import pytest
 
@@ -79,6 +80,21 @@ class TestRedditor(IntegrationTest):
         with self.recorder.use_cassette('TestRedditor.test_unblock'):
             redditor = self.reddit.user.blocked()[0]
             redditor.unblock()
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_stream__comments(self, _):
+        generator = self.reddit.redditor('AutoModerator').stream.comments()
+        with self.recorder.use_cassette('TestRedditor.test_stream__comments'):
+            for i in range(101):
+                assert isinstance(next(generator), Comment)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_stream__submissions(self, _):
+        generator = self.reddit.redditor('AutoModerator').stream.submissions()
+        with self.recorder.use_cassette(
+                'TestRedditor.test_stream__submissions'):
+            for i in range(101):
+                assert isinstance(next(generator), Submissiong)
 
 
 class TestRedditorListings(IntegrationTest):
