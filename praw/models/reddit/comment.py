@@ -155,10 +155,19 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             comment_path = '{}_/{}'.format(
                 self.submission._info_path(),  # pylint: disable=no-member
                 self.id)
-        comment_list = self._reddit.get(comment_path)[1].children
+
+        # The context limit appears to be 8, but let's ask for more anyway.
+        comment_list = self._reddit.get(comment_path,
+                                        params={'context': 100})[1].children
         if not comment_list:
             raise ClientException('Comment has been deleted')
-        comment = comment_list[0]
+
+        # With context, the comment may be nested so we have to find it
+        comment = None
+        queue = comment_list[:]
+        while queue and (comment is None or comment.id != self.id):
+            comment = queue.pop()
+            queue.extend(comment._replies)
 
         if self._submission is not None:
             del comment.__dict__['_submission']  # Don't replace if set
