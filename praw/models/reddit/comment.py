@@ -43,7 +43,6 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     @submission.setter
     def submission(self, submission):
         """Update the Submission associated with the Comment."""
-        assert self.name not in submission._comments_by_id
         submission._comments_by_id[self.name] = self
         self._submission = submission
         for reply in getattr(self, 'replies', []):
@@ -106,13 +105,38 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
            parent.refresh()
            print(parent.replies)  # Output is at least: [Comment(id='cklhv0f')]
 
+        .. warning: Successive calls to :meth:`.parent()` may result in a
+           network request per call when the comment is not obtained through a
+           :class:`.Submission`. See below for an example of how to minimize
+           requests.
+
+        If you have a deeply nested comment and wish to most efficiently
+        discover its top-most :class:`.Comment` ancestor you can chain
+        successive calls to :meth:`.parent()` with calls to :meth:`.refresh()`
+        at every 9 levels. For example:
+
+        .. code:: python
+
+           comment = reddit.comment('dkk4qjd')
+           ancestor = comment
+           refresh_counter = 0
+           while not ancestor.is_root:
+               ancestor = ancestor.parent()
+               if refresh_counter % 9 == 0:
+                   ancestor.refresh()
+               refresh_counter += 1
+           print('Top-most Ancestor: {}'.format(ancestor))
+
+        The above code should result in 5 network requests to Reddit. Without
+        the calls to :meth:`.refresh` it would make at least 31 network
+        requests.
+
         """
         # pylint: disable=no-member
         if self.parent_id == self.submission.fullname:
             return self.submission
 
-        if '_comments' in self.submission.__dict__ \
-           and self.parent_id in self.submission._comments_by_id:
+        if self.parent_id in self.submission._comments_by_id:
             # The Comment already exists, so simply return it
             return self.submission._comments_by_id[self.parent_id]
         # pylint: enable=no-member
@@ -173,7 +197,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             del comment.__dict__['_submission']  # Don't replace if set
         self.__dict__.update(comment.__dict__)
 
-        for reply in comment._replies:
+        for reply in comment_list:
             reply.submission = self.submission
         return self
 

@@ -12,6 +12,13 @@ Unreleased
 * :class:`.RedditorStream` has been added to facilitate
   :attr:`.Redditor.stream`
 
+**Fixed**
+
+* Calling :meth:`.refresh` on a directly fetched, deeply nested
+  :class:`.Comment` will additionally pull in as many parent comments as
+  possible (currently 8) enabling significantly quicker traversal to the
+  top-most :class:`.Comment` via successive :meth:`.parent()` calls.
+
 
 5.0.1 (2017/07/11)
 ------------------

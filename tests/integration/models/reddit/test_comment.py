@@ -111,6 +111,18 @@ class TestComment(IntegrationTest):
         assert isinstance(parent, Comment)
         assert parent.fullname == comment.parent_id
 
+    def test_parent__chain(self):
+        comment = Comment(self.reddit, 'dkk4qjd')
+        counter = 0
+        with self.recorder.use_cassette('TestComment.test_parent__chain'):
+            comment.refresh()
+            parent = comment.parent()
+            while parent != comment.submission:
+                if counter % 9 == 0:
+                    parent.refresh()
+                counter += 1
+                parent = parent.parent()
+
     def test_parent__comment_from_forest(self):
         submission = self.reddit.submission('2gmzqe')
         with self.recorder.use_cassette(
@@ -149,6 +161,10 @@ class TestComment(IntegrationTest):
         with self.recorder.use_cassette('TestComment.test_refresh'):
             comment = Comment(self.reddit, 'd81vwef').refresh()
         assert len(comment.replies) > 0
+
+    def test_refresh__twice(self):
+        with self.recorder.use_cassette('TestComment.test_refresh__twice'):
+            Comment(self.reddit, 'd81vwef').refresh().refresh()
 
     def test_refresh__deleted_comment(self):
         with self.recorder.use_cassette(
