@@ -123,7 +123,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.0.0 prawcore/0.5.0"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/r/PRAW_73oy54eo3a/comments/5d7tk7/calling_test/da2g9oh/?raw_json=1"
+        "uri": "https://oauth.reddit.com/r/PRAW_73oy54eo3a/comments/5d7tk7/calling_test/da2g9oh/?context=100&raw_json=1"
       },
       "response": {
         "body": {
@@ -160,7 +160,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/r/PRAW_73oy54eo3a/comments/5d7tk7/calling_test/da2g9oh/?raw_json=1"
+        "url": "https://oauth.reddit.com/r/PRAW_73oy54eo3a/comments/5d7tk7/calling_test/da2g9oh/?context=100&raw_json=1"
       }
     }
   ],

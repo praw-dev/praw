@@ -40,8 +40,10 @@ class TestInbox(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestInbox.test_comment_reply__refresh'):
             comment = next(self.reddit.inbox.comment_replies())
+            saved_id = comment.id
             assert isinstance(comment, Comment)
             comment.refresh()
+            assert saved_id == comment.id
 
     @mock.patch('time.sleep', return_value=None)
     def test_mark_read(self, _):
