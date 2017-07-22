@@ -105,7 +105,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
            parent.refresh()
            print(parent.replies)  # Output is at least: [Comment(id='cklhv0f')]
 
-        .. warning: Successive calls to :meth:`.parent()` may result in a
+        .. warning:: Successive calls to :meth:`.parent()` may result in a
            network request per call when the comment is not obtained through a
            :class:`.Submission`. See below for an example of how to minimize
            requests.
