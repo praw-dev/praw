@@ -1862,9 +1862,11 @@ class SubredditStylesheet(object):
             response = self.subreddit._reddit.post(url, data=data,
                                                    files={'file': image})
             if response['errors']:
-                assert response['errors'] == ['IMAGE_ERROR'], \
-                                             'Please file a bug with PRAW'
-                raise APIException(response['errors'][0], '', None)
+                error_type = response['errors'][0]
+                error_value = response.get('errors_values', [''])[0]
+                assert error_type in ['BAD_CSS_NAME', 'IMAGE_ERROR'], \
+                    'Please file a bug with PRAW'
+                raise APIException(error_type, error_value, None)
             return response
 
     def delete_header(self):
