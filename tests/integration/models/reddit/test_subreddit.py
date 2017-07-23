@@ -1084,6 +1084,15 @@ class TestSubredditStylesheet(IntegrationTest):
                     'praw', self.image_path('invalid.jpg'))
         assert excinfo.value.error_type == 'IMAGE_ERROR'
 
+    def test_upload__invalid_ext(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload__invalid_ext'):
+            with pytest.raises(APIException) as excinfo:
+                self.subreddit.stylesheet.upload(
+                    'praw.png', self.image_path('white-square.png'))
+        assert excinfo.value.error_type == 'BAD_CSS_NAME'
+
     def test_upload__too_large(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
