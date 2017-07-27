@@ -125,7 +125,7 @@ def stream_generator(function, pause_after=None):
            print(comment)
 
     To bypass the internal exponential backoff, try the following. This
-    approach is useful if you are monitoring an subreddit with infrequent
+    approach is useful if you are monitoring a subreddit with infrequent
     activity, and you want the to consistently learn about new items from the
     stream as soon as possible, rather than up to a delay of just over sixteen
     seconds.
