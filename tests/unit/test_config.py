@@ -41,6 +41,11 @@ class TestConfig(object):
             config = Config('DEFAULT', check_for_updates=value)
             assert config.check_for_updates is False
 
+    def test_store_json__false(self):
+        for value in [False, 'False', 'other']:
+            config = Config('DEFAULT', store_json=value)
+            assert config.store_json is False
+
     def test_custom__extra_values_set(self):
         config = Config('DEFAULT', user1='foo', user2='bar')
         assert config.custom == {'user1': 'foo', 'user2': 'bar'}
@@ -53,6 +58,11 @@ class TestConfig(object):
         for value in [True, '1', 'true', 'YES', 'on']:
             config = Config('DEFAULT', check_for_updates=value)
             assert config.check_for_updates is True
+
+    def test_store_json__true(self):
+        for value in [True, '1', 'true', 'YES', 'on']:
+            config = Config('DEFAULT', store_json=value)
+            assert config.store_json is True
 
     @mock.patch('six.moves.configparser.RawConfigParser')
     def test_load_ini_from_appdata(self, mock_config):

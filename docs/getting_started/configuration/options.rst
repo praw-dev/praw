@@ -28,6 +28,11 @@ Basic Configuration Options
              ``<platform>:<app ID>:<version string> (by /u/<reddit
              username>)``.
 
+:store_json:  When ``true``, this will store a copy of the Reddit json response 
+              in the class body, accessible with the ``<class>.json_dict``
+              property.  This is memory intensive and may mess with serialization,
+              so this is disabled by default. 
+
 .. _oauth_options:
 
 OAuth Configuration Options

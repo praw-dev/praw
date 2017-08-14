@@ -18,4 +18,5 @@ without using the ``bot3`` site, we would initialize :class:`.Reddit` as:
                         client_secret='xaxkj7HNh8kwg8e5t4m6KvSrbTI',
                         password='1guiwevlfo00esyy',
                         user_agent='testscript by /u/fakebot3',
-                        username='fakebot3')
+                        username='fakebot3',
+                        store_json=False)
