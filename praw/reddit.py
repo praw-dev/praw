@@ -31,7 +31,8 @@ class Reddit(object):
        import praw
        reddit = praw.Reddit(client_id='CLIENT_ID',
                             client_secret="CLIENT_SECRET", password='PASSWORD',
-                            user_agent='USERAGENT', username='USERNAME')
+                            user_agent='USERAGENT', username='USERNAME',
+                            store_json=False)
 
     """
 

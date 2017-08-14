@@ -96,6 +96,8 @@ class Config(object):
                           or self.CONFIG_NOT_SET
         self.check_for_updates = self._config_boolean(
             self._fetch_or_not_set('check_for_updates'))
+        self.store_json = self._config_boolean(
+            self._fetch_or_not_set('store_json'))
         self.kinds = {x: self._fetch('{}_kind'.format(x)) for x in
                       ['comment', 'message', 'redditor', 'submission',
                        'subreddit']}

@@ -18,6 +18,12 @@ class RedditBase(PRAWBase):
         return '{}_{}'.format(self._reddit._objector.kind(self),
                               self.id)  # pylint: disable=invalid-name
 
+    @property
+    def json_dict(self):
+        if not self._reddit.config.store_json:
+            return None
+        return self._json_dict
+
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
@@ -44,6 +50,10 @@ class RedditBase(PRAWBase):
 
         """
         super(RedditBase, self).__init__(reddit, _data)
+        if self._reddit.config.store_json:
+            self._json_dict = _data
+        else:
+            self._json_dict = None
         self._fetched = False
         self._info_params = {}
 
@@ -74,6 +84,7 @@ class RedditBase(PRAWBase):
                                             self.fullname))
             other = children[0]
         self.__dict__.update(other.__dict__)
+        
         self._fetched = True
 
     def _reset_attributes(self, *attributes):
