@@ -32,4 +32,5 @@ Source Contributors
 - elnuno `@elnuno <https://github.com/elnuno>`_
 - Robbie Gibson `@rkgibson2 <https://github.com/rkgibson2>`_
 - jarhill0 `@jarhill0 <https://github.com/jarhill0>`_
+- Mike Wohlrab `@D0cR3d <https://github.com/D0cR3d>`_
 - Add "Name <email (optional)> and github profile link" above this line.
