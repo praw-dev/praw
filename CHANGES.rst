@@ -11,8 +11,8 @@ Unreleased
   comments or submissions
 * :class:`.RedditorStream` has been added to facilitate
   :attr:`.Redditor.stream`
-* :meth:`.inbox.collapse` to mark messages as collapsed.
-* :meth:`.inbox.uncollapse` to mark messages as uncollapsed.
+* :meth:`.Inbox.collapse` to mark messages as collapsed.
+* :meth:`.Inbox.uncollapse` to mark messages as uncollapsed.
 
 **Fixed**
 
