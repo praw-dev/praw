@@ -63,6 +63,22 @@ class TestMessage(IntegrationTest):
             message.mark_unread()
 
     @mock.patch('time.sleep', return_value=None)
+    def test_message_collapse(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestMessage.test_message_collapse'):
+            message = next(self.reddit.inbox.messages())
+            message.collapse()
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_message_uncollapse(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestMessage.test_message_uncollapse'):
+            message = next(self.reddit.inbox.messages())
+            message.uncollapse()
+
+    @mock.patch('time.sleep', return_value=None)
     def test_reply(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestMessage.test_reply'):
