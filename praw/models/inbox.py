@@ -29,8 +29,7 @@ class Inbox(PRAWBase):
     def collapse(self, items):
         """Mark an inbox message as collapsed.
 
-        :param items: A list containing instances of :class:`.Message` or
-            list of t4 message fullnames.
+        :param items: A list containing instances of :class:`.Message`.
 
         Requests are batched at 25 items (reddit limit).
 
@@ -45,25 +44,13 @@ class Inbox(PRAWBase):
                     unread_messages.append(item)
             reddit.inbox.collapse(unread_messages)
 
-        To collapse a list of modmail messages by fullnames, try:
-
-        .. code:: python
-
-            messages = []
-            for message in reddit.subreddit('mod').mod.inbox(limit=None):
-                messages.append(item.fullname)
-            reddit.inbox.collapse(messages)
-
         .. seealso::
 
            :meth:`.Message.uncollapse`
 
         """
         while items:
-            if isinstance(items[0], Message):
-                data = {'id': ','.join(x.fullname for x in items[:25])}
-            else:
-                data = {'id': ','.join(items[:25])}
+            data = {'id': ','.join(x.fullname for x in items[:25])}
             self._reddit.post(API_PATH['collapse'], data=data)
             items = items[25:]
 
@@ -253,8 +240,7 @@ class Inbox(PRAWBase):
     def uncollapse(self, items):
         """Mark an inbox message as uncollapsed.
 
-        :param items: A list containing instances of :class:`.Message` or
-            list of t4 message fullnames.
+        :param items: A list containing instances of :class:`.Message`.
 
         Requests are batched at 25 items (reddit limit).
 
@@ -269,25 +255,13 @@ class Inbox(PRAWBase):
                     unread_messages.append(item)
             reddit.inbox.uncollapse(unread_messages)
 
-        To uncollapse a list of modmail messages by fullnames, try:
-
-        .. code:: python
-
-            messages = []
-            for message in reddit.subreddit('mod').mod.inbox(limit=None):
-                messages.append(item.fullname)
-            reddit.inbox.uncollapse(messages)
-
         .. seealso::
 
            :meth:`.Message.collapse`
 
         """
         while items:
-            if isinstance(items[0], Message):
-                data = {'id': ','.join(x.fullname for x in items[:25])}
-            else:
-                data = {'id': ','.join(items[:25])}
+            data = {'id': ','.join(x.fullname for x in items[:25])}
             self._reddit.post(API_PATH['uncollapse'], data=data)
             items = items[25:]
 

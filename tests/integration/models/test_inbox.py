@@ -90,6 +90,13 @@ class TestInbox(IntegrationTest):
         assert message.replies == []
         assert isinstance(message.subreddit, Subreddit)
 
+    def test_message__unauthorized(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestInbox.test_message__unauthorized'):
+            with pytest.raises(Forbidden):
+                self.reddit.inbox.message('6i8om7')
+
     @mock.patch('time.sleep', return_value=None)
     def test_message_collapse(self, _):
         self.reddit.read_only = False
@@ -105,35 +112,6 @@ class TestInbox(IntegrationTest):
                 'TestInbox.test_message_uncollapse',
                 match_requests_on=['uri', 'method', 'body']):
             self.reddit.inbox.uncollapse(list(self.reddit.inbox.messages()))
-
-    @mock.patch('time.sleep', return_value=None)
-    def test_message_collapse__with_id(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestInbox.test_message_collapse__with_id',
-                match_requests_on=['uri', 'method', 'body']):
-            messages = []
-            for item in self.reddit.inbox.messages():
-                messages.append(item.fullname)
-            self.reddit.inbox.collapse(messages)
-
-    @mock.patch('time.sleep', return_value=None)
-    def test_message_uncollapse__with_id(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestInbox.test_message_uncollapse__with_id',
-                match_requests_on=['uri', 'method', 'body']):
-            messages = []
-            for item in self.reddit.inbox.messages():
-                messages.append(item.fullname)
-            self.reddit.inbox.uncollapse(messages)
-
-    def test_message__unauthorized(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestInbox.test_message__unauthorized'):
-            with pytest.raises(Forbidden):
-                self.reddit.inbox.message('6i8om7')
 
     def test_messages(self):
         self.reddit.read_only = False
