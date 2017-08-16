@@ -106,6 +106,28 @@ class TestInbox(IntegrationTest):
                 match_requests_on=['uri', 'method', 'body']):
             self.reddit.inbox.uncollapse(list(self.reddit.inbox.messages()))
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_message_collapse__with_id(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestInbox.test_message_collapse__with_id',
+                match_requests_on=['uri', 'method', 'body']):
+            messages = []
+            for item in self.reddit.inbox.messages():
+                messages.append(item.fullname)
+            self.reddit.inbox.collapse(messages)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_message_uncollapse__with_id(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestInbox.test_message_uncollapse__with_id',
+                match_requests_on=['uri', 'method', 'body']):
+            messages = []
+            for item in self.reddit.inbox.messages():
+                messages.append(item.fullname)
+            self.reddit.inbox.uncollapse(messages)
+
     def test_message__unauthorized(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
