@@ -90,6 +90,22 @@ class TestInbox(IntegrationTest):
         assert message.replies == []
         assert isinstance(message.subreddit, Subreddit)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_message_collapse(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestInbox.test_message_collapse',
+                match_requests_on=['uri', 'method', 'body']):
+            self.reddit.inbox.collapse(list(self.reddit.inbox.messages()))
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_message_uncollapse(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestInbox.test_message_uncollapse',
+                match_requests_on=['uri', 'method', 'body']):
+            self.reddit.inbox.uncollapse(list(self.reddit.inbox.messages()))
+
     def test_message__unauthorized(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
