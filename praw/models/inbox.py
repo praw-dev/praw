@@ -2,7 +2,6 @@
 from ..const import API_PATH
 from .listing.generator import ListingGenerator
 from .base import PRAWBase
-from .reddit.message import Message
 from .util import stream_generator
 
 
