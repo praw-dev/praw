@@ -16,6 +16,15 @@ class InboxableMixin(object):
         """
         self._reddit.post(API_PATH['block'], data={'id': self.fullname})
 
+    def collapse(self):
+        """Mark the item as collapsed.
+
+        .. note:: This method pertains only to objects which were retrieved via
+                  the inbox.
+
+        """
+        self._reddit.inbox.collapse([self])
+
     def mark_read(self):
         """Mark the item as read.
 
@@ -33,3 +42,12 @@ class InboxableMixin(object):
 
         """
         self._reddit.inbox.mark_unread([self])
+
+    def uncollapse(self):
+        """Mark the item as uncollapsed.
+
+        .. note:: This method pertains only to objects which were retrieved via
+                  the inbox.
+
+        """
+        self._reddit.inbox.uncollapse([self])

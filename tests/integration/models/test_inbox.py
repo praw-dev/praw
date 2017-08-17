@@ -97,6 +97,22 @@ class TestInbox(IntegrationTest):
             with pytest.raises(Forbidden):
                 self.reddit.inbox.message('6i8om7')
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_message_collapse(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestInbox.test_message_collapse',
+                match_requests_on=['uri', 'method', 'body']):
+            self.reddit.inbox.collapse(list(self.reddit.inbox.messages()))
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_message_uncollapse(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestInbox.test_message_uncollapse',
+                match_requests_on=['uri', 'method', 'body']):
+            self.reddit.inbox.uncollapse(list(self.reddit.inbox.messages()))
+
     def test_messages(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestInbox.test_messages'):

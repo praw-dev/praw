@@ -25,6 +25,34 @@ class Inbox(PRAWBase):
         return ListingGenerator(self._reddit, API_PATH['inbox'],
                                 **generator_kwargs)
 
+    def collapse(self, items):
+        """Mark an inbox message as collapsed.
+
+        :param items: A list containing instances of :class:`.Message`.
+
+        Requests are batched at 25 items (reddit limit).
+
+        For example, to collapse all unread Messages, try:
+
+        .. code:: python
+
+            from praw.models import Message
+            unread_messages = []
+            for item in reddit.inbox.unread(limit=None):
+                if isinstance(item, Message):
+                    unread_messages.append(item)
+            reddit.inbox.collapse(unread_messages)
+
+        .. seealso::
+
+           :meth:`.Message.uncollapse`
+
+        """
+        while items:
+            data = {'id': ','.join(x.fullname for x in items[:25])}
+            self._reddit.post(API_PATH['collapse'], data=data)
+            items = items[25:]
+
     def comment_replies(self, **generator_kwargs):
         """Return a ListingGenerator for comment replies.
 
@@ -207,6 +235,34 @@ class Inbox(PRAWBase):
         """
         return ListingGenerator(self._reddit, API_PATH['submission_replies'],
                                 **generator_kwargs)
+
+    def uncollapse(self, items):
+        """Mark an inbox message as uncollapsed.
+
+        :param items: A list containing instances of :class:`.Message`.
+
+        Requests are batched at 25 items (reddit limit).
+
+        For example, to uncollapse all unread Messages, try:
+
+        .. code:: python
+
+            from praw.models import Message
+            unread_messages = []
+            for item in reddit.inbox.unread(limit=None):
+                if isinstance(item, Message):
+                    unread_messages.append(item)
+            reddit.inbox.uncollapse(unread_messages)
+
+        .. seealso::
+
+           :meth:`.Message.collapse`
+
+        """
+        while items:
+            data = {'id': ','.join(x.fullname for x in items[:25])}
+            self._reddit.post(API_PATH['uncollapse'], data=data)
+            items = items[25:]
 
     def unread(self, mark_read=False, **generator_kwargs):
         """Return a ListingGenerator for unread comments and messages.
