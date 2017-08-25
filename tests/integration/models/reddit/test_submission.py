@@ -165,7 +165,7 @@ class TestSubmission(IntegrationTest):
             Submission(self.reddit, '4b536p').upvote()
 
     @mock.patch('time.sleep', return_value=None)
-    def test_crosspost(self,_):
+    def test_crosspost(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubmission.test_crosspost'):
             subreddit = pytest.placeholders.test_subreddit
@@ -177,9 +177,10 @@ class TestSubmission(IntegrationTest):
             assert submission.crosspost_parent == 't3_6vx01b'
 
     @mock.patch('time.sleep', return_value=None)
-    def test_crosspost__subreddit_object(self,_):
+    def test_crosspost__subreddit_object(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette('TestSubmission.test_crosspost__subreddit_object'):
+        with self.recorder.use_cassette(
+                'TestSubmission.test_crosspost__subreddit_object'):
             subreddit = self.reddit.subreddit(
                 pytest.placeholders.test_subreddit)
             crosspost_parent = self.reddit.submission(id='6vx01b')
@@ -190,9 +191,10 @@ class TestSubmission(IntegrationTest):
             assert submission.crosspost_parent == 't3_6vx01b'
 
     @mock.patch('time.sleep', return_value=None)
-    def test_crosspost__custom_title(self,_):
+    def test_crosspost__custom_title(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette('TestSubmission.test_crosspost__custom_title'):
+        with self.recorder.use_cassette(
+                'TestSubmission.test_crosspost__custom_title'):
             subreddit = self.reddit.subreddit(
                 pytest.placeholders.test_subreddit)
             crosspost_parent = self.reddit.submission(id='6vx01b')
