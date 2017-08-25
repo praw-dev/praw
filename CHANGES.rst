@@ -13,6 +13,7 @@ Unreleased
   :attr:`.Redditor.stream`
 * :meth:`.Inbox.collapse` to mark messages as collapsed.
 * :meth:`.Inbox.uncollapse` to mark messages as uncollapsed.
+* :meth:`.Subreddit.crosspost` to crosspost to a subreddit.
 
 **Fixed**
 
