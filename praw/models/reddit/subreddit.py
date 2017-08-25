@@ -486,6 +486,36 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         else:
             data.update(kind='link', url=url)
         return self._reddit.post(API_PATH['submit'], data=data)
+    
+    def crosspost(self, crosspost_fullname, title=None, send_replies=True):
+        """Crosspost a submission to the subreddit.
+        
+        :param crosspost_fullname: The fullname id of the submission
+        :param title: The title of the submission (default=None). Can be set to
+            `None` to use the original submission title.
+        :param send_replies: When True, messages will be sent to the submission
+            author when comments are made to the submission (default: True).
+        :returns: A :class:`~.Submission` object for the newly created submission.
+        """
+
+        origin = None
+
+        if crosspost_fullname.startswith('t3_'): # submission
+            origin = self._reddit.submission(id=crosspost_fullname[3:])
+            if title is None:
+                title = origin.title    
+        elif crosspost_fullname.startswith('t1_'): # comment
+            origin = self._reddit.comment(id=crosspost_fullname[3:])
+            if title is None:
+                raise ValueError('`title` must be provided for crossposting comments.')
+            raise NotImplementedError('Crossposting comments is not yet implemented.')
+
+        if not origin.is_crosspostable:
+            raise ValueError('The provided ' + str(origin.__class__.__name__) + ' is not crosspostable.')
+        
+        data = {'sr': str(self), 'title': title, 'sendreplies': bool(send_replies),
+                'kind': 'crosspost', 'crosspost_fullname': crosspost_fullname }
+        return self._reddit.post(API_PATH['submit'], data=data)
 
     def subscribe(self, other_subreddits=None):
         """Subscribe to the subreddit.
