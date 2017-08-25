@@ -191,6 +191,30 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         for submissions in self._chunk(other_submissions, 50):
             self._reddit.post(API_PATH['unhide'], data={'id': submissions})
 
+    def crosspost(self, subreddit, title=None, send_replies=True):
+        """Crosspost the submission to a subreddit.
+
+        :param subreddit: Name of the subreddit or :class:`~.Subreddit`
+            object to crosspost into.
+        :param title: Title of the submission. Will use this submission's
+            title if `None`. (default: None).
+        :param send_replies: When True, messages will be sent to the
+            submission author when comments are made to the submission
+            (default: True).
+        :returns: A :class:`~.Submission` object for the newly created
+            submission
+        """
+        if not isinstance(subreddit, Subreddit):
+            subreddit = self._reddit.subreddit(subreddit)
+
+        if title is None:
+            title = self.title
+
+        if not self.is_crosspostable:
+            raise ValueError('This Submission is not crosspostable.')
+
+        return subreddit._crosspost(self.fullname, title, send_replies)
+
 
 class SubmissionFlair(object):
     """Provide a set of functions pertaining to Submission flair."""
