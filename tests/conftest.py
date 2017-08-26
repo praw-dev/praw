@@ -61,7 +61,6 @@ placeholders = {x: env_default(x) for x in
                  'test_subreddit user_agent username').split()}
 placeholders['basic_auth'] = b64_string(
     '{}:{}'.format(placeholders['client_id'], placeholders['client_secret']))
-placeholders['password'] = quote_plus(placeholders['password'])
 
 
 betamax.Betamax.register_serializer(pretty_json.PrettyJSONSerializer)
@@ -70,6 +69,8 @@ with betamax.Betamax.configure() as config:
     config.default_cassette_options['serialize_with'] = 'prettyjson'
     config.before_record(callback=filter_access_token)
     for key, value in placeholders.items():
+        if key == 'password':
+            value = quote_plus(value)
         config.define_cassette_placeholder('<{}>'.format(key.upper()), value)
 
 
