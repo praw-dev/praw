@@ -10,6 +10,8 @@ from .redditor import Redditor
 class Comment(RedditBase, InboxableMixin, UserContentMixin):
     """A class that represents a reddit comments."""
 
+    MISSING_COMMENT_MESSAGE = ('This comment does not appear to be in the '
+                               'comment tree')
     STR_FIELD = 'id'
 
     @property
@@ -184,7 +186,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         comment_list = self._reddit.get(comment_path,
                                         params={'context': 100})[1].children
         if not comment_list:
-            raise ClientException('Comment has been deleted')
+            raise ClientException(self.MISSING_COMMENT_MESSAGE)
 
         # With context, the comment may be nested so we have to find it
         comment = None
@@ -192,6 +194,9 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         while queue and (comment is None or comment.id != self.id):
             comment = queue.pop()
             queue.extend(comment._replies)
+
+        if comment.id != self.id:
+            raise ClientException(self.MISSING_COMMENT_MESSAGE)
 
         if self._submission is not None:
             del comment.__dict__['_submission']  # Don't replace if set
