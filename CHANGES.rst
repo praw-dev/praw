@@ -13,6 +13,8 @@ Unreleased
   :attr:`.Redditor.stream`
 * :meth:`.Inbox.collapse` to mark messages as collapsed.
 * :meth:`.Inbox.uncollapse` to mark messages as uncollapsed.
+* Raise :class:`.ClientException` when calling :meth:`.refresh` when the
+  comment does not appear in the resulting comment tree.
 
 **Fixed**
 

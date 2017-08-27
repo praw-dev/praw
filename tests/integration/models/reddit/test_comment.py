@@ -162,6 +162,14 @@ class TestComment(IntegrationTest):
             comment = Comment(self.reddit, 'd81vwef').refresh()
         assert len(comment.replies) > 0
 
+    def test_refresh__raises_exception(self):
+        with self.recorder.use_cassette(
+                'TestComment.test_refresh__raises_exception'):
+            with pytest.raises(ClientException) as excinfo:
+                Comment(self.reddit, 'd81vwef').refresh()
+        assert ('This comment does not appear to be in the '
+                'comment tree',) == excinfo.value.args
+
     def test_refresh__twice(self):
         with self.recorder.use_cassette('TestComment.test_refresh__twice'):
             Comment(self.reddit, 'd81vwef').refresh().refresh()
@@ -171,7 +179,8 @@ class TestComment(IntegrationTest):
                 'TestComment.test_refresh__deleted_comment'):
             with pytest.raises(ClientException) as excinfo:
                 Comment(self.reddit, 'd7ltvl0').refresh()
-        assert ('Comment has been deleted',) == excinfo.value.args
+        assert ('This comment does not appear to be in the '
+                'comment tree',) == excinfo.value.args
 
     def test_reply(self):
         self.reddit.read_only = False
