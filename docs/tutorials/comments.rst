@@ -131,7 +131,7 @@ order as the code above. Thus the above can be rewritten as:
    for comment in submission.comments.list():
        print(comment.body)
 
-Now you can now properly extract and parse all (or most) of the comments
+You can now properly extract and parse all (or most) of the comments
 belonging to a single submission. Combine this with :ref:`submission iteration
 <submission-iteration>` and you can build some really cool stuff.
 
