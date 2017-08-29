@@ -15,6 +15,7 @@ Unreleased
 * :meth:`.Inbox.uncollapse` to mark messages as uncollapsed.
 * Raise :class:`.ClientException` when calling :meth:`.refresh` when the
   comment does not appear in the resulting comment tree.
+* :meth:`.Submission.crosspost` to crosspost to a subreddit.
 
 **Fixed**
 
