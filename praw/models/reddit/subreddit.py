@@ -487,14 +487,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             data.update(kind='link', url=url)
         return self._reddit.post(API_PATH['submit'], data=data)
 
-    def _crosspost(self, fullname, title=None, send_replies=True):
-        data = {'sr': str(self),
-                'title': title,
-                'sendreplies': bool(send_replies),
-                'kind': 'crosspost',
-                'crosspost_fullname': fullname}
-        return self._reddit.post(API_PATH['submit'], data=data)
-
     def subscribe(self, other_subreddits=None):
         """Subscribe to the subreddit.
 
