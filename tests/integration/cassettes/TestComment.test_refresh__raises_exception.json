@@ -1,0 +1,164 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2016-09-25T22:55:01",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "29",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b18 prawcore/0.2.1"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"D6t14wBaCWnkIuo0QZTZZriUEkw\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "105",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 25 Sep 2016 22:55:01 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-sea1922-SEA",
+          "X-Timer": "S1474844101.334944,VS0,VE92",
+          "cache-control": "max-age=0, must-revalidate",
+          "set-cookie": "loid=knEiM7V14xWICth2V1; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Tue, 25-Sep-2018 22:55:01 GMT; secure",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2016-09-25T22:55:01",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer D6t14wBaCWnkIuo0QZTZZriUEkw",
+          "Connection": "keep-alive",
+          "Cookie": "loid=knEiM7V14xWICth2V1; loidcreated=2016-09-25T22%3A55%3A01.383Z",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b18 prawcore/0.2.1"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/info/?raw_json=1&id=t1_d81vwef"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"children\": [{\"kind\": \"t1\", \"data\": {\"subreddit_id\": \"t5_2qizd\", \"banned_by\": null, \"removal_reason\": null, \"link_id\": \"t3_54hhwl\", \"likes\": null, \"replies\": \"\", \"user_reports\": [], \"saved\": false, \"id\": \"d81vwef\", \"gilded\": 0, \"archived\": false, \"report_reasons\": null, \"author\": \"bboe\", \"parent_id\": \"t3_54hhwl\", \"score\": 2, \"approved_by\": null, \"controversiality\": 0, \"body\": \"That appears to be a bug in that PRAW4 is currently using `/api/info` to load the comment's attributes. I'll see what I can do.\", \"edited\": false, \"author_flair_css_class\": null, \"downs\": 0, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThat appears to be a bug in that PRAW4 is currently using \\u003Ccode\\u003E/api/info\\u003C/code\\u003E to load the comment\\u0026#39;s attributes. I\\u0026#39;ll see what I can do.\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"subreddit\": \"redditdev\", \"name\": \"t1_d81vwef\", \"score_hidden\": false, \"stickied\": false, \"created\": 1474871603.0, \"author_flair_text\": null, \"created_utc\": 1474842803.0, \"distinguished\": null, \"mod_reports\": [], \"num_reports\": null, \"ups\": 2}}], \"after\": null, \"before\": null}}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "1159",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 25 Sep 2016 22:55:01 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-sea1927-SEA",
+          "X-Timer": "S1474844101.688635,VS0,VE110",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=N6zydsu5%2F4T76RZvSBUXKq2HCQEmVZHTRe0%2BAjHPQO77ZadInOz2upZ1UM9L8yF35Ikb5FiN7Wk%3D",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/info/?raw_json=1&id=t1_d81vwef"
+      }
+    },
+    {
+      "recorded_at": "2016-09-25T22:55:02",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer D6t14wBaCWnkIuo0QZTZZriUEkw",
+          "Connection": "keep-alive",
+          "Cookie": "loid=knEiM7V14xWICth2V1; loidcreated=2016-09-25T22%3A55%3A01.383Z",
+          "User-Agent": "<USER_AGENT> PRAW/4.0.0b18 prawcore/0.2.1"
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/comments/54hhwl/_/d81vwef?context=100&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"children\": [{\"kind\": \"t3\", \"data\": {\"contest_mode\": false, \"banned_by\": null, \"media_embed\": {}, \"subreddit\": \"redditdev\", \"selftext_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EJust as the title states. I\\u0026#39;m fetching a reddit comment through following lines:\\u003C/p\\u003E\\n\\n\\u003Cp\\u003Esession = praw.Reddit(login_stuff_here)\\n...\\nsession.comment(id=comment_id)\\u003C/p\\u003E\\n\\n\\u003Cp\\u003EHow do I go about fetching and viewing a tree of this specific comment\\u0026#39;s replies? \\u003C/p\\u003E\\n\\n\\u003Cp\\u003EIt was possible in PRAW 3 given that I had the comment object; I was able to call comment.refresh() to fetch all of the comments, then use the member \\u0026quot;replies\\u0026quot;, like \\u0026quot;comment.replies\\u0026quot;, to view all of the specific comment\\u0026#39;s replies.\\u003C/p\\u003E\\n\\n\\u003Cp\\u003ENow, it seems like I\\u0026#39;m only able to get a list of comment replies to that specific comment\\u0026#39;s \\u003Cstrong\\u003Esubmission\\u003C/strong\\u003E, but not just the tree of replies for that specific comment.\\u003C/p\\u003E\\n\\n\\u003Cp\\u003EAny advice on what I should try?\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"selftext\": \"Just as the title states. I'm fetching a reddit comment through following lines:\\n\\nsession = praw.Reddit(login_stuff_here)\\n...\\nsession.comment(id=comment_id)\\n\\nHow do I go about fetching and viewing a tree of this specific comment's replies? \\n\\nIt was possible in PRAW 3 given that I had the comment object; I was able to call comment.refresh() to fetch all of the comments, then use the member \\\"replies\\\", like \\\"comment.replies\\\", to view all of the specific comment's replies.\\n\\nNow, it seems like I'm only able to get a list of comment replies to that specific comment's **submission**, but not just the tree of replies for that specific comment.\\n\\nAny advice on what I should try?\", \"likes\": null, \"suggested_sort\": null, \"user_reports\": [], \"secure_media\": null, \"saved\": false, \"id\": \"54hhwl\", \"gilded\": 0, \"secure_media_embed\": {}, \"clicked\": false, \"report_reasons\": null, \"author\": \"OkRedditBot\", \"media\": null, \"score\": 1, \"approved_by\": null, \"over_18\": false, \"domain\": \"self.redditdev\", \"hidden\": false, \"num_comments\": 2, \"thumbnail\": \"self\", \"subreddit_id\": \"t5_2qizd\", \"edited\": false, \"link_flair_css_class\": null, \"author_flair_css_class\": null, \"downs\": 0, \"archived\": false, \"removal_reason\": null, \"stickied\": false, \"is_self\": true, \"hide_score\": true, \"permalink\": \"/r/redditdev/comments/54hhwl/praw_4_fetch_specific_comment_replies/\", \"locked\": false, \"name\": \"t3_54hhwl\", \"created\": 1474871136.0, \"url\": \"https://www.reddit.com/r/redditdev/comments/54hhwl/praw_4_fetch_specific_comment_replies/\", \"author_flair_text\": null, \"quarantine\": false, \"title\": \"[PRAW 4]: Fetch specific comment replies\", \"created_utc\": 1474842336.0, \"link_flair_text\": null, \"ups\": 1, \"upvote_ratio\": 1.0, \"mod_reports\": [], \"visited\": false, \"num_reports\": null, \"distinguished\": null}}], \"after\": null, \"before\": null}}, {\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"children\": [{\"kind\": \"t1\", \"data\": {\"subreddit_id\": \"t5_2qizd\", \"banned_by\": null, \"removal_reason\": null, \"link_id\": \"t3_54hhwl\", \"likes\": null, \"replies\": {\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"children\": [{\"kind\": \"t1\", \"data\": {\"subreddit_id\": \"t5_2qizd\", \"banned_by\": null, \"removal_reason\": null, \"link_id\": \"t3_54hhwl\", \"likes\": null, \"replies\": \"\", \"user_reports\": [], \"saved\": false, \"id\": \"d81w4vt\", \"gilded\": 0, \"archived\": false, \"report_reasons\": null, \"author\": \"OkRedditBot\", \"parent_id\": \"t1_MISMATCH\", \"score\": 1, \"approved_by\": null, \"controversiality\": 0, \"body\": \"Thank you! My bot currently relies on this functionality for fetching and scanning over comment replies, so it's currently unusable until that feature is added (or unless I revert-migrate back to PRAW 3, but I'd rather not).\", \"edited\": false, \"author_flair_css_class\": null, \"downs\": 0, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThank you! My bot currently relies on this functionality for fetching and scanning over comment replies, so it\\u0026#39;s currently unusable until that feature is added (or unless I revert-migrate back to PRAW 3, but I\\u0026#39;d rather not).\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"stickied\": false, \"subreddit\": \"redditdev\", \"score_hidden\": false, \"name\": \"t1_d81w4vt\", \"created\": 1474871935.0, \"author_flair_text\": null, \"created_utc\": 1474843135.0, \"ups\": 1, \"mod_reports\": [], \"num_reports\": null, \"distinguished\": null}}], \"after\": null, \"before\": null}}, \"user_reports\": [], \"saved\": false, \"id\": \"MISMATCH\", \"gilded\": 0, \"archived\": false, \"report_reasons\": null, \"author\": \"bboe\", \"parent_id\": \"t3_54hhwl\", \"score\": 2, \"approved_by\": null, \"controversiality\": 0, \"body\": \"That appears to be a bug in that PRAW4 is currently using `/api/info` to load the comment's attributes. I'll see what I can do.\", \"edited\": false, \"author_flair_css_class\": null, \"downs\": 0, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThat appears to be a bug in that PRAW4 is currently using \\u003Ccode\\u003E/api/info\\u003C/code\\u003E to load the comment\\u0026#39;s attributes. I\\u0026#39;ll see what I can do.\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"stickied\": false, \"subreddit\": \"redditdev\", \"score_hidden\": false, \"name\": \"t1_MISMATCH\", \"created\": 1474871603.0, \"author_flair_text\": null, \"created_utc\": 1474842803.0, \"ups\": 2, \"mod_reports\": [], \"num_reports\": null, \"distinguished\": null}}], \"after\": null, \"before\": null}}]"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "5589",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sun, 25 Sep 2016 22:55:02 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Vary": "accept-encoding",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-sea1927-SEA",
+          "X-Timer": "S1474844101.851818,VS0,VE185",
+          "access-control-allow-origin": "*",
+          "access-control-expose-headers": "X-Reddit-Tracking, X-Moose",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-reddit-tracking": "https://pixel.redditmedia.com/pixel/of_destiny.png?v=kOnS%2FWOfBIrQmaHdViYG5Q7Jfbh%2FP4WkJgIg8KbTx9RiF5X%2FQZStkTJ8F%2Fl1uT6ijwFF2U8lnmLUZ73RcmTvCIDQa61SYPPk",
+          "x-ua-compatible": "IE=edge",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/comments/54hhwl/_/d81vwef?context=100&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.7.2"
+}
