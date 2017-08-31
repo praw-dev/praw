@@ -47,6 +47,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         """Update the Submission associated with the Comment."""
         submission._comments_by_id[self.name] = self
         self._submission = submission
+        # pylint: disable=not-an-iterable
         for reply in getattr(self, 'replies', []):
             reply.submission = submission
 

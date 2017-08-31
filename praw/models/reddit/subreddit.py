@@ -1412,7 +1412,7 @@ class ModeratorRelationship(SubredditRelationship):
             permissions, ModeratorRelationship.PERMISSIONS)
         return other_settings
 
-    def __call__(self, redditor=None):
+    def __call__(self, redditor=None):  # pylint: disable=arguments-differ
         """Return a list of Redditors who are moderators.
 
         :param redditor: When provided, return a list containing at most one
@@ -1444,6 +1444,7 @@ class ModeratorRelationship(SubredditRelationship):
             subreddit=self.subreddit)
         return self.subreddit._reddit.get(url, params=params)
 
+    # pylint: disable=arguments-differ
     def add(self, redditor, permissions=None, **other_settings):
         """Add or invite ``redditor`` to be a moderator of the subreddit.
 
@@ -1467,6 +1468,7 @@ class ModeratorRelationship(SubredditRelationship):
         """
         other_settings = self._handle_permissions(permissions, other_settings)
         super(ModeratorRelationship, self).add(redditor, **other_settings)
+    # pylint: enable=arguments-differ
 
     def invite(self, redditor, permissions=None, **other_settings):
         """Invite ``redditor`` to be a moderator of the subreddit.
