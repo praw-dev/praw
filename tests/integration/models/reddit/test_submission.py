@@ -75,6 +75,10 @@ class TestSubmission(IntegrationTest):
             reason = excinfo.value.response.json()['reason']
             assert 'INSUFFICIENT_CREDDITS' == reason
 
+    def test_gilded(self):
+        with self.recorder.use_cassette('TestSubmission.test_gilded'):
+            assert 1 == Submission(self.reddit, '2gmzqe').gilded
+
     def test_hide(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
