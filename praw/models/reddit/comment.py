@@ -64,7 +64,6 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
     def __setattr__(self, attribute, value):
         """Objectify author, replies, and subreddit."""
-        # pylint: disable=redefined-variable-type
         if attribute == 'author':
             value = Redditor.from_data(self._reddit, value)
         elif attribute == 'replies':
@@ -80,8 +79,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     def _extract_submission_id(self):
         if 'context' in self.__dict__:
             return self.context.rsplit('/', 4)[1]
-        else:
-            return self.link_id.split('_', 1)[1]
+        return self.link_id.split('_', 1)[1]
 
     def parent(self):
         """Return the parent of the comment.

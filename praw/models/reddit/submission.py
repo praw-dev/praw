@@ -129,7 +129,6 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
     def __setattr__(self, attribute, value):
         """Objectify author, and subreddit attributes."""
-        # pylint: disable=redefined-variable-type
         if attribute == 'author':
             value = Redditor.from_data(self._reddit, value)
         elif attribute == 'subreddit':

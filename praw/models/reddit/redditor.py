@@ -18,8 +18,7 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         """Return an instance of Redditor, or None from ``data``."""
         if data == '[deleted]':
             return None
-        else:
-            return cls(reddit, data)
+        return cls(reddit, data)
 
     @property
     def stream(self):
