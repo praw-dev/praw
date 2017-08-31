@@ -35,7 +35,7 @@ class MoreComments(PRAWBase):
             self.__class__.__name__, self.count, children)
 
     def _continue_comments(self, update):
-        assert len(self.children) == 0
+        assert not self.children
         parent = self._load_comment(self.parent_id.split('_', 1)[1])
         self._comments = parent.replies
         if update:

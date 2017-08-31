@@ -66,7 +66,7 @@ class ListingGenerator(PRAWBase):
             self._listing = FlairListing(self._reddit, self._listing)
         self._list_index = 0
 
-        if len(self._listing) == 0:
+        if not self._listing:
             raise StopIteration()
 
         if self._listing.after:

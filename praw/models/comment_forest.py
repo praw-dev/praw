@@ -16,7 +16,7 @@ class CommentForest(object):
         """Return a list of MoreComments objects obtained from tree."""
         more_comments = []
         queue = [(None, x) for x in tree]
-        while len(queue) > 0:
+        while queue:
             parent, comment = queue.pop(0)
             if isinstance(comment, MoreComments):
                 heappush(more_comments, comment)

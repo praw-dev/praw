@@ -781,7 +781,7 @@ class SubredditFlair(object):
 
         response = []
         url = API_PATH['flaircsv'].format(subreddit=self.subreddit)
-        while len(lines):
+        while lines:
             data = {'flair_csv': '\n'.join(lines[:100])}
             response.extend(self.subreddit._reddit.post(url, data=data))
             lines = lines[100:]

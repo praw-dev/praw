@@ -120,7 +120,7 @@ class Objector(object):
             errors = data['json']['errors']
             if len(errors) == 1:
                 raise APIException(*errors[0])
-            assert len(errors) == 0
+            assert not errors
 
         elif isinstance(data, dict):
             return self._objectify_dict(data)
