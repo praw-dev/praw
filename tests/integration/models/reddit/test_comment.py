@@ -182,6 +182,14 @@ class TestComment(IntegrationTest):
         assert ('This comment does not appear to be in the '
                 'comment tree',) == excinfo.value.args
 
+    def test_refresh__removed_comment(self):
+        with self.recorder.use_cassette(
+                'TestComment.test_refresh__removed_comment'):
+            with pytest.raises(ClientException) as excinfo:
+                Comment(self.reddit, 'dma3mi5').refresh()
+        assert ('This comment does not appear to be in the '
+                'comment tree',) == excinfo.value.args
+
     def test_reply(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestComment.test_reply'):

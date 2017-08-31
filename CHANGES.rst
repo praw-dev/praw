@@ -23,6 +23,9 @@ Unreleased
   :class:`.Comment` will additionally pull in as many parent comments as
   possible (currently 8) enabling significantly quicker traversal to the
   top-most :class:`.Comment` via successive :meth:`.parent()` calls.
+* Calling :meth:`.refresh` previously could have resulted in a
+  ``AttributeError: 'MoreComments' object has no attribute '_replies'``
+  exception. This situation will now result in a :class:`.ClientException`.
 * Properly handle ``BAD_CSS_NAME`` errors when uploading stylesheet images with
   invalid filenames. Previously an ``AssertionError`` was raised.
 * :class:`.Submission`'s ``gilded`` attribute properly returns the expected
