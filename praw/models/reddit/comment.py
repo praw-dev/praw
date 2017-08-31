@@ -192,7 +192,8 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         queue = comment_list[:]
         while queue and (comment is None or comment.id != self.id):
             comment = queue.pop()
-            queue.extend(comment._replies)
+            if isinstance(comment, Comment):
+                queue.extend(comment._replies)
 
         if comment.id != self.id:
             raise ClientException(self.MISSING_COMMENT_MESSAGE)
