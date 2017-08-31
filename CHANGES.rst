@@ -25,6 +25,8 @@ Unreleased
   top-most :class:`.Comment` via successive :meth:`.parent()` calls.
 * Properly handle ``BAD_CSS_NAME`` errors when uploading stylesheet images with
   invalid filenames. Previously an ``AssertionError`` was raised.
+* :class:`.Submission`'s ``gilded`` attribute properly returns the expected
+  value from reddit.
 
 
 5.0.1 (2017/07/11)
