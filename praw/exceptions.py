@@ -21,10 +21,11 @@ class APIException(PRAWException):
         :param message: The associated message for the error.
         :param field: The input field associated with the error if available.
 
-        .. note: Calling `str()` on the instance returns `unicode_escape`d
-            ASCII string because the message may be localized and may contain
-            UNICODE characters. If you want a non-escaped message, access
-            the `message` atribute on the instance.
+        .. note:: Calling ``str()`` on the instance returns
+            ``unicode_escape``-d ASCII string because the message may be
+            localized and may contain UNICODE characters. If you want a
+            non-escaped message, access the ``message`` attribute on
+            the instance.
 
         """
         error_str = u'{}: \'{}\''.format(error_type, message)
