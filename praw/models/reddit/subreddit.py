@@ -41,7 +41,11 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
        for submission in reddit.subreddit('redditdev+learnpython').top('all'):
            print(submission)
 
-    Subreddits can be filtered from combined listings as follows:
+    Subreddits can be filtered from combined listings as follows. Note that
+    these filters are ignored by certain methods, including
+    :attr:`~praw.models.Subreddit.comments`,
+    :meth:`~praw.models.Subreddit.gilded`, and
+    :meth:`.SubredditStream.comments`.
 
     .. code:: python
 
