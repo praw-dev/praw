@@ -8,6 +8,8 @@ from .redditor import Redditor
 class WikiPage(RedditBase):
     """An individual WikiPage object."""
 
+    __hash__ = RedditBase.__hash__
+
     @staticmethod
     def _revision_generator(subreddit, url, generator_kwargs):
         for revision in ListingGenerator(subreddit._reddit, url,
@@ -30,10 +32,6 @@ class WikiPage(RedditBase):
         """Return whether the other instance equals the current."""
         return isinstance(other, self.__class__) and \
             str(self).lower() == str(other).lower()
-
-    def __hash__(self):
-        """Return the hash of the current instance."""
-        return super(WikiPage, self).__hash__()
 
     def __init__(self, reddit, subreddit, name, revision=None, _data=None):
         """Construct an instance of the WikiPage object.
