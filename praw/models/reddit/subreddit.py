@@ -145,7 +145,17 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     @property
     def contributor(self):
-        """Provide an instance of :class:`.ContributorRelationship`."""
+        """Provide an instance of :class:`.ContributorRelationship`.
+
+        Contributors are also known as approved submitters.
+
+        To add a contributor try:
+
+        .. code-block:: python
+
+           reddit.subreddit('SUBREDDIT').contributor.add('NAME')
+
+        """
         if self._contributor is None:
             self._contributor = ContributorRelationship(self, 'contributor')
         return self._contributor
@@ -1379,6 +1389,8 @@ class SubredditRelationship(object):
 
 class ContributorRelationship(SubredditRelationship):
     """Provides methods to interact with a Subreddit's contributors.
+
+    Contributors are also known as approved submitters.
 
     Contributors of a subreddit can be iterated through like so:
 
