@@ -4,7 +4,10 @@ Change Log
 Unreleased
 ----------
 
-Nothing here yet.
+**Deprecated**
+
+* ``subreddit.comments.gilded`` because there isn't actually an endpoint that
+  returns only gilded comments. Use ``subreddit.gilded`` instead.
 
 5.1.0 (2017/08/31)
 ------------------
