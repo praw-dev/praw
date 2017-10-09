@@ -1,5 +1,6 @@
 """Provide the SubredditListingMixin class."""
 from ....const import urljoin
+from ...base import PRAWBase
 from ..generator import ListingGenerator
 from .base import BaseListingMixin
 from .gilded import GildedListingMixin
@@ -37,7 +38,7 @@ class SubredditListingMixin(BaseListingMixin, GildedListingMixin,
         self._comments = None
 
 
-class CommentHelper(GildedListingMixin):
+class CommentHelper(PRAWBase):
     """Provide a set of functions to interact with a subreddit's comments."""
 
     @property
@@ -64,3 +65,17 @@ class CommentHelper(GildedListingMixin):
 
         """
         return ListingGenerator(self._reddit, self._path, **generator_kwargs)
+
+    def gilded(self, **generator_kwargs):
+        """Deprecated.
+
+        .. warning:: (Deprecated) This method will be removed in PRAW 6 because
+                     it doesn't actually restrict the results to gilded
+                     Comments. Use ``subreddit.gilded`` instead.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+
+        """
+        return ListingGenerator(self._reddit, urljoin(self._path, 'gilded'),
+                                **generator_kwargs)

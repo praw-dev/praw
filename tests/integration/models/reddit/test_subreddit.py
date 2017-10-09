@@ -451,6 +451,7 @@ class TestSubredditListings(IntegrationTest):
                 'TestSubredditListings.test_comments_gilded'):
             subreddit = self.reddit.subreddit('askreddit')
             comments = list(subreddit.comments.gilded())
+        assert any(isinstance(x, Submission) for x in comments)
         assert len(comments) == 100
 
     def test_controversial(self):
