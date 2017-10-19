@@ -30,7 +30,7 @@ def do_process(*args):
 def main():
     """Entry point to pre_push.py."""
     success = True
-    success &= do_process('flake8', '--exclude=.eggs,docs')
+    success &= do_process('flake8', '--exclude=.eggs,docs,.tox')
     success &= do_process('pydocstyle', 'praw')
     success &= do_process('pylint', '--rcfile=.pylintrc', 'praw')
 
