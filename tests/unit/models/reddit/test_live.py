@@ -108,14 +108,12 @@ class TestLiveUpdate(UnitTest):
                             update_id=update_id)
         assert isinstance(update, LiveUpdate)
         assert update.id == update_id
-        assert update._fetched
         assert isinstance(update.thread, LiveThread)
         assert update.thread.id == thread_id
 
         update = LiveUpdate(self.reddit, thread_id, update_id)
         assert isinstance(update, LiveUpdate)
         assert update.id == update_id
-        assert update._fetched
         assert isinstance(update.thread, LiveThread)
         assert update.thread.id == thread_id
 

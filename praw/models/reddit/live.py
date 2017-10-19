@@ -289,9 +289,6 @@ class LiveThread(RedditBase):
     def __getitem__(self, update_id):
         """Return a lazy :class:`.LiveUpdate` instance.
 
-        .. warning:: At this time, accessing lazy attributes, whose value
-           have not loaded, raises ``AttributeError``.
-
         :param update_id: A live update ID, e.g.,
             ``'7827987a-c998-11e4-a0b9-22000b6a88d2'``.
 
@@ -303,7 +300,7 @@ class LiveThread(RedditBase):
            update = thread['7827987a-c998-11e4-a0b9-22000b6a88d2']
            update.thread     # LiveThread(id='ukaeu1ik4sw5')
            update.id         # '7827987a-c998-11e4-a0b9-22000b6a88d2'
-           update.author     # raise ``AttributeError``
+           update.author     # 'umbrae'
         """
         return LiveUpdate(self._reddit, self.id, update_id)
 
@@ -495,31 +492,7 @@ class LiveThreadContribution(object):
 
 
 class LiveUpdate(RedditBase):
-    """An individual :class:`.LiveUpdate` object.
-
-    .. warning:: At this time, accessing lazy attributes on this class
-       may raises ``AttributeError``: if an update is instantiated
-       through :meth:`.LiveThread.updates`, the exception is not
-       thrown. For example:
-
-       .. code-block:: python
-
-          thread = reddit.live('xyu8kmjvfrww')
-          for update in thread.updates(limit=None):
-              if update.id == 'cb5fe532-dbee-11e6-9a91-0e6d74fabcc4':
-                  print(update.stricken)  # True
-                  break
-
-       But the update is instantiated through ``thread[update_id]``
-       or ``LiveUpdate(reddit, update_id)``, ``AttributeError`` is thrown:
-
-       .. code-block:: python
-
-          thread = reddit.live('xyu8kmjvfrww')
-          update = thread['cb5fe532-dbee-11e6-9a91-0e6d74fabcc4']
-          update.stricken  # raise AttributeError
-
-    """
+    """An individual :class:`.LiveUpdate` object."""
 
     STR_FIELD = 'id'
 
@@ -551,10 +524,6 @@ class LiveUpdate(RedditBase):
         Either ``thread_id`` and ``update_id``, or ``_data`` must be
         provided.
 
-        .. warning:: At this time, accessing lazy attributes, whose value
-           have not loaded, raises ``AttributeError``. See :class:`.LiveUpdate`
-           for details.
-
         :param reddit: An instance of :class:`.Reddit`.
         :param thread_id: A live thread ID, e.g., ``'ukaeu1ik4sw5'``.
         :param update_id: A live update ID, e.g.,
@@ -568,13 +537,14 @@ class LiveUpdate(RedditBase):
                                '7827987a-c998-11e4-a0b9-22000b6a88d2')
            update.thread     # LiveThread(id='ukaeu1ik4sw5')
            update.id         # '7827987a-c998-11e4-a0b9-22000b6a88d2'
-           update.author     # raise ``AttributeError``
+           update.author     # 'umbrae'
         """
         if _data is not None:
             # Since _data (part of JSON returned from reddit) have no
             # thread ID, self._thread must be set by the caller of
             # LiveUpdate(). See the code of LiveThread.updates() for example.
             super(LiveUpdate, self).__init__(reddit, _data)
+            self._fetched = True
         elif thread_id and update_id:
             super(LiveUpdate, self).__init__(reddit, None)
             self._thread = LiveThread(self._reddit, thread_id)
@@ -582,7 +552,6 @@ class LiveUpdate(RedditBase):
         else:
             raise TypeError('Either `thread_id` and `update_id`, or '
                             '`_data` must be provided.')
-        self._fetched = True
         self._contrib = None
 
     def __setattr__(self, attribute, value):
@@ -590,6 +559,13 @@ class LiveUpdate(RedditBase):
         if attribute == 'author':
             value = Redditor(self._reddit, name=value)
         super(LiveUpdate, self).__setattr__(attribute, value)
+
+    def _fetch(self):
+        url = API_PATH['live_focus'].format(
+            thread_id=self.thread.id, update_id=self.id)
+        other = self._reddit.get(url)[0]
+        self.__dict__.update(other.__dict__)
+        self._fetched = True
 
 
 class LiveUpdateContribution(object):
