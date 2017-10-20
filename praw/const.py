@@ -65,6 +65,7 @@ API_PATH = {
     'live_close':             'api/live/{id}/close_thread',
     'live_contributors':      'live/{id}/contributors',
     'live_discussions':       'live/{id}/discussions',
+    'live_focus':             'live/{thread_id}/updates/{update_id}',
     'live_info':              'api/live/by_id/{ids}',
     'live_invite':            'api/live/{id}/invite_contributor',
     'live_leave':             'api/live/{id}/leave_contributor',

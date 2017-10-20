@@ -9,6 +9,19 @@ import pytest
 from ... import IntegrationTest
 
 
+class TestLiveUpdate(IntegrationTest):
+    def test_attributes(self):
+        update = LiveUpdate(
+            self.reddit, 'ukaeu1ik4sw5',
+            '7827987a-c998-11e4-a0b9-22000b6a88d2')
+        with self.recorder.use_cassette('TestLiveUpdate_test_attributes'):
+            assert isinstance(update.author, Redditor)
+            assert update.author == 'umbrae'
+            assert update.name == (
+                'LiveUpdate_7827987a-c998-11e4-a0b9-22000b6a88d2')
+            assert update.body.startswith('Small change')
+
+
 class TestLiveThread(IntegrationTest):
     def test_contributor(self):
         thread = LiveThread(self.reddit, 'ukaeu1ik4sw5')

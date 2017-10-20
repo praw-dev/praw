@@ -4,10 +4,16 @@ Change Log
 Unreleased
 ----------
 
+**Changed**
+
+* An attribute on :class:`.LiveUpdate` now works as lazy attribute (i.e.
+  populate an attribute when the attribute is first accessed).
+
 **Deprecated**
 
 * ``subreddit.comments.gilded`` because there isn't actually an endpoint that
   returns only gilded comments. Use ``subreddit.gilded`` instead.
+
 
 5.1.0 (2017/08/31)
 ------------------
