@@ -153,9 +153,7 @@ class TestComment(IntegrationTest):
     def test_permalink(self):
         with self.recorder.use_cassette('TestComment.test_permalink'):
             comment = Comment(self.reddit, 'cklhv0f')
-            assert comment.permalink() == ('/r/redditdev/comments/2gmzqe/'
-                                           'praw_https_enabled_praw_testing_'
-                                           'needed/cklhv0f')
+            assert comment.permalink() == '/comments/2gmzqe//cklhv0f'
 
     def test_refresh(self):
         with self.recorder.use_cassette('TestComment.test_refresh'):
