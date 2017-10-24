@@ -151,10 +151,10 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         """Return a permalink to the comment.
 
         :param fast: Has no effect. Accepted to maintain backwards
-        compatibility.
+            compatibility.
 
         .. warning:: (Deprecated) This method will be removed in PRAW 6 because
-                     permalink is now a first class attribute.
+            permalink is now a first class attribute.
 
         """
         # pylint: disable=unused-argument
