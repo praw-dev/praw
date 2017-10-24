@@ -14,7 +14,10 @@ class TestComment(IntegrationTest):
             assert comment.author == 'bboe'
             assert comment.body.startswith('Yes it does.')
             assert not comment.is_root
-            assert comment.permalink(fast=True) == '/comments/2gmzqe//cklhv0f'
+            assert comment.permalink(fast=True) == '/r/redditdev/comments/' \
+                                                   '2gmzqe/praw_https_' \
+                                                   'enabled_praw_testing_' \
+                                                   'needed/cklhv0f/'
             assert comment.submission == '2gmzqe'
 
     @mock.patch('time.sleep', return_value=None)
@@ -153,7 +156,9 @@ class TestComment(IntegrationTest):
     def test_permalink(self):
         with self.recorder.use_cassette('TestComment.test_permalink'):
             comment = Comment(self.reddit, 'cklhv0f')
-            assert comment.permalink() == '/comments/2gmzqe//cklhv0f'
+            assert comment.permalink() == '/r/redditdev/comments/2gmzqe/praw' \
+                                          '_https_enabled_praw_testing_' \
+                                          'needed/cklhv0f/'
 
     def test_refresh(self):
         with self.recorder.use_cassette('TestComment.test_refresh'):
