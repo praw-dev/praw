@@ -2,7 +2,7 @@
 import sys
 
 
-__version__ = '5.1.1dev0'
+__version__ = '5.2.0'
 
 API_PATH = {
     'about_edited':           'r/{subreddit}/about/edited/',
