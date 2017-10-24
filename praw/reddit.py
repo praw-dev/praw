@@ -412,7 +412,7 @@ class Reddit(object):
                 url_list = [result for result in
                             self.get(API_PATH['info'], params=params)]
                 return url_list
-            except:
+            except Exception:
                 raise TypeError('Invalid URL or no posts exist')
 
     def post(self, path, data=None, files=None, params=None):
