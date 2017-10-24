@@ -1,5 +1,4 @@
 """Provide the Comment class."""
-from ...const import urljoin
 from ...exceptions import ClientException
 from ..comment_forest import CommentForest
 from .base import RedditBase
@@ -145,27 +144,6 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         parent = Comment(self._reddit, self.parent_id.split('_', 1)[1])
         parent._submission = self.submission
         return parent
-
-    def permalink(self, fast=False):
-        """Return a permalink to the comment.
-
-        :param fast: Return the result as quickly as possible (default: False).
-
-        In order to determine the full permalink for a comment, the Submission
-        may need to be fetched if it hasn't been already. Set ``fast=True`` if
-        you want to bypass that possible load.
-
-        A full permalink looks like:
-        /r/redditdev/comments/2gmzqe/praw_https_enabled/cklhv0f
-
-        A fast-loaded permalink for the same comment will look like:
-        /comments/2gmzqe//cklhv0f
-
-        """
-        # pylint: disable=no-member
-        if not fast or 'permalink' in self.submission.__dict__:
-            return urljoin(self.submission.permalink, self.id)
-        return '/comments/{}//{}'.format(self.submission.id, self.id)
 
     def refresh(self):
         """Refresh the comment's attributes.

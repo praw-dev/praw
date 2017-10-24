@@ -14,6 +14,11 @@ Unreleased
 * ``subreddit.comments.gilded`` because there isn't actually an endpoint that
   returns only gilded comments. Use ``subreddit.gilded`` instead.
 
+**Fixed**
+
+* Removed ``comment.permalink()`` because ``comment.permalink`` is now an
+  attribute returned by Reddit.
+
 
 5.1.0 (2017/08/31)
 ------------------

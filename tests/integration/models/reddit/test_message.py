@@ -23,7 +23,7 @@ class TestMessage(IntegrationTest):
                     assert isinstance(message.replies, list)
                     assert message.subreddit is None \
                         or isinstance(message.subreddit, Subreddit)
-                except:
+                except Exception:
                     import pprint
                     pprint.pprint(vars(message))
                     raise
