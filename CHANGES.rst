@@ -4,6 +4,12 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* :attr:`.Multireddit.stream`, to stream submissions and comments from a
+  Multireddit.
+
+
 5.2.0 (2017/10/24)
 ------------------
 
