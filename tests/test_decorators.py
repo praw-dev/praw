@@ -65,26 +65,6 @@ class DecoratorTest(OAuthPRAWTest):
         del type(self.r).fake_func
 
     @betamax()
-    def test_error_list(self):
-        # use the other account to get a InvalidCaptcha
-        self.r.refresh_access_information(self.other_refresh_token['submit'])
-        # implicitly tests the RateLimitExceeded Exception as well
-        err_list = self.assertExceptionList(
-            [errors.InvalidCaptcha, errors.RateLimitExceeded], self.r.submit,
-            self.sr, "test ratelimit error 1", 'ratelimit error test call 1')
-        captcha_err, ratelimit_err = err_list.errors
-        self.assertEqual('`{0}` on field `{1}`'.format(captcha_err.message,
-                                                       captcha_err.field),
-                         str(captcha_err))
-        self.assertEqual('`{0}` on field `{1}`'.format(ratelimit_err.message,
-                                                       ratelimit_err.field),
-                         str(ratelimit_err))
-        expected_list_str = '\n' + "".join(
-            '\tError {0}) {1}\n'.format(i, text_type(error))
-            for i, error in enumerate(err_list.errors))
-        self.assertEqual(expected_list_str, str(err_list))
-
-    @betamax()
     def test_limit_chars(self):
         self.r.refresh_access_information(self.refresh_token['read'])
         submission = self.r.get_submission(

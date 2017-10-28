@@ -76,57 +76,25 @@ class PRAWTest(unittest.TestCase):
         self.other_user_pswd = '111111'
         self.other_non_mod_pswd = '111111'
 
-        self.client_id = 'stJlUSUbPQe5lQ'
-        self.client_secret = 'iU-LsOzyJH7BDVoq-qOWNEq2zuI'
-        self.redirect_uri = 'https://127.0.0.1:65010/authorize_callback'
-        self.new_client_id = 'IlQgN8A5fPCbpA'
-        self.new_client_secret = '7iYM6T1rh8REihHQEVNgQsE16OE'
-        self.new_redirect_uri = 'http://localhost:8080'
-
+        self.client_id = 'IlQgN8A5fPCbpA'
+        self.client_secret = '7iYM6T1rh8REihHQEVNgQsE16OE'
+        self.redirect_uri = 'http://localhost:8080'
         self.comment_url = self.url('/r/redditdev/comments/dtg4j/')
         self.reply_warnings_url = self.url('/r/reddit_api_test/'
-                                           'comments/3tvngf/_/cx9lw9x')
+                                           'comments/6wf4jy/example/')
         self.link_id = 't3_dtg4j'
         self.link_url = self.url('/r/UCSantaBarbara/comments/m77nc/')
         self.link_url_link = 'http://imgur.com/Vr8ZZ'
         self.more_comments_url = self.url('/r/redditdev/comments/yjk55')
         self.other_user_id = '6c1xj'
         self.priv_submission_id = '16kbb7'
-        self.refresh_token = {
-            'creddits':         'jLC5Yw9LgoNr4Ldd9j1ESuqJ5DE',
-            'edit':             'FFx_0G7Zumyh4AWzIo39bG9KdIM',
-            'history':          'j_RKymm8srC3j6cxysYFQZbB4vc',
-            'identity':         'E4BgmO7iho0KOB1XlT8WEtyySf8',
-            'modconfig':        'bBGRgMY9Ai9_SZLZsaFvS647Mgk',
-            'modcontributors':  '7302867-nk3NcmGLLHnaDmFdX26tTjYQcSg',
-            'modflair':         'UrMbtk4bOa040XAVz0uQn2gTE3s',
-            'modlog':           'ADW_EDS9-bh7Zicc7ARx7w8ZLMA',
-            'modothers':        '7302867-uHta-txRBG7sBUx1I3pSNq5UCic',
-            'modposts':         'Ffnae7s4K-uXYZB5ZaYJgh0d8DI',
-            'modwiki':          '7302867-i8p-LbgK_BvMrMUC7LQjed8r4lM',
-            'modwiki+contr':    '7302867-4SqdVJq06cEhNEXMEZZCVZ0qZEg',
-            'mysubreddits':     'O7tfWhqem6fQZqxhoTiLca1s7VA',
-            'privatemessages':  'kr_pHPO3sqTn_m5f_FX9TW4joEU',
-            'read':             '_mmtb8YjDym0eC26G-rTxXUMea0',
-            'read+report':      '7302867-nOgTLv05rK1kO9YInHWOPua9sK4',
-            'report':           '7302867-MKjaXZ-w6S8-tC-JPs0NogkIHGQ',
-            'submit':           'k69WTwa2bEQOQY9t61nItd4twhw',
-            'subscribe':        'LlqwOLjyu_l6GMZIBqhcLWB0hAE',
-            'vote':             '5RPnDwg56vAbf7F9yO81cXZAPSQ',
-            'wikiread':         '7302867-PMZfquNPUVYHcrbJkTYpFe9UdAY',
-            # new tokens
-            'auto_refresh':     '7302867-fd_RVSYjT644cKl4J2oRWeRV_mo',
-        }
 
-        self.other_refresh_token = {
-            'read':             '10640071-wxnYQyK9knNV1PCt9a7CxvJH8TI',
-            'modself':          '10640071-v2ZWipt20gPZvfBnvILkBUDq0P4',
-            'privatemessages':  '10640071-mrScbAkbXyjgvwsAE8zz7vMHO_8',
-            'submit':           '10640071-oWSCa5YMSWGQrRCa4fMSO_C1bZg'}
+        from collections import defaultdict
+        self.refresh_token = defaultdict(
+            lambda: '7302867-WK7Y1VCRPgYdckq8Geqb8CjNkRI')
 
         self.comment_deleted_id = 'ctkznxq'
 
-        self.submission_deleted_id = '3f8q10'
         self.submission_edit_id = '16i92b'
         self.submission_hide_id = '3lchjv'
         self.submission_limit_chars_id = '4umin7'
@@ -356,14 +324,6 @@ class OAuthPRAWTest(PRAWTest):
         self.configure()
         self.r = Reddit(USER_AGENT, site_name='reddit_oauth_test',
                         disable_update_check=True)
-
-
-class NewOAuthPRAWTest(OAuthPRAWTest):
-    def betamax_init(self):
-        # All tokens were revoked before all tests were completed
-        self.r.set_oauth_app_info(self.new_client_id,
-                                  self.new_client_secret,
-                                  self.new_redirect_uri)
 
 
 Betamax.register_request_matcher(BodyMatcher)

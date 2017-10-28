@@ -452,7 +452,9 @@ class Refreshable(RedditContentObject):
             other = Redditor(self.reddit_session, self._case_name, fetch=True,
                              uniq=unique)
         elif isinstance(self, Comment):
-            sub = Submission.from_url(self.reddit_session, self.permalink,
+            url = urljoin(self.reddit_session.config.api_url,
+                          getattr(self, 'permalink', self._fast_permalink))
+            sub = Submission.from_url(self.reddit_session, url,
                                       params={'uniq': unique})
             if sub.comments:
                 other = sub.comments[0]
@@ -672,11 +674,6 @@ class Comment(Editable, Gildable, Inboxable, Moderatable, Refreshable,
         """Return True when the comment is a top level comment."""
         sub_prefix = self.reddit_session.config.by_object[Submission]
         return self.parent_id.startswith(sub_prefix)
-
-    @property
-    def permalink(self):
-        """Return a permalink to the comment."""
-        return urljoin(self.submission.permalink, self.id)
 
     @property
     def replies(self):

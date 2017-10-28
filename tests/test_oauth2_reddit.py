@@ -5,7 +5,7 @@ from __future__ import print_function, unicode_literals
 from praw import Reddit, errors, decorators
 from praw.objects import Submission
 from six import text_type
-from .helper import (PRAWTest, NewOAuthPRAWTest, USER_AGENT, betamax,
+from .helper import (PRAWTest, OAuthPRAWTest, USER_AGENT, betamax,
                      betamax_custom_header, mock_sys_stream)
 
 
@@ -34,15 +34,6 @@ class OAuth2RedditTest(PRAWTest):
         self.assertEqual(expected, params)
 
     @betamax()
-    @mock_sys_stream("stdin")
-    def test_empty_captcha_file(self):
-        # Use the alternate account because it has low karma,
-        # so we can test the captcha.
-        self.r.refresh_access_information(self.other_refresh_token['submit'])
-        self.assertRaises(errors.InvalidCaptcha, self.r.submit,
-                          self.sr, 'captcha test will fail', 'body')
-
-    @betamax()
     def test_get_access_information(self):
         # If this test fails, the following URL will need to be visted in order
         # to obtain a new code to pass to `get_access_information`:
@@ -58,24 +49,6 @@ class OAuth2RedditTest(PRAWTest):
     def test_get_access_information_with_invalid_code(self):
         self.assertRaises(errors.OAuthInvalidGrant,
                           self.r.get_access_information, 'invalid_code')
-
-    @betamax()
-    @mock_sys_stream("stdin")
-    def test_inject_captcha_into_kwargs_and_raise(self):
-        # Use the alternate account because it has low karma,
-        # so we can test the captcha.
-        self.r.refresh_access_information(self.other_refresh_token['submit'])
-
-        # praw doesn't currently add the captcha into kwargs so lets
-        # write a function in which it would and alias it to Reddit.submit
-        @decorators.restrict_access(scope='submit')
-        @decorators.require_captcha
-        def submit_alias(r, sr, title, text, **kw):
-            return self.r.submit.__wrapped__.__wrapped__(
-                r, sr, title, text, captcha=kw.get('captcha')
-            )
-        self.assertRaises(errors.InvalidCaptcha, submit_alias, self.r,
-                          self.sr, 'captcha test will fail', 'body')
 
     def test_invalid_app_access_token(self):
         self.r.clear_authentication()
@@ -145,127 +118,8 @@ class OAuth2RedditTest(PRAWTest):
         redirect_exception = errors.RedirectException(apiurl, oauthurl)
         self.assertEqual(redirect_exception.message, str(redirect_exception))
 
-    @betamax()
-    def test_scope_history(self):
-        self.r.refresh_access_information(self.refresh_token['history'])
-        self.assertTrue(list(self.r.get_redditor(self.un).get_upvoted()))
 
-    @betamax()
-    def test_scope_identity(self):
-        self.r.refresh_access_information(self.refresh_token['identity'])
-        self.assertEqual(self.un, self.r.get_me().name)
-
-    @betamax()
-    def test_scope_mysubreddits(self):
-        self.r.refresh_access_information(self.refresh_token['mysubreddits'])
-        self.assertTrue(list(self.r.get_my_moderation()))
-
-    @betamax()
-    def test_scope_creddits(self):
-        # Assume there are insufficient creddits.
-        self.r.refresh_access_information(
-            self.refresh_token['creddits'])
-        redditor = self.r.get_redditor('bboe')
-        sub = self.r.get_submission(url=self.comment_url)
-
-        # Test error conditions
-        self.assertRaises(TypeError, sub.gild, months=1)
-        for value in (False, 0, -1, '0', '-1', 37, '37'):
-            self.assertRaises(TypeError, redditor.gild, value)
-
-        # Test object gilding
-        self.assertRaises(errors.InsufficientCreddits, redditor.gild)
-        self.assertRaises(errors.InsufficientCreddits, sub.gild)
-        self.assertRaises(errors.InsufficientCreddits, sub.comments[0].gild)
-
-    @betamax()
-    def test_scope_privatemessages(self):
-        self.r.refresh_access_information(
-            self.refresh_token['privatemessages'])
-        self.assertTrue(list(self.r.get_inbox()))
-
-    @betamax()
-    def test_scope_read(self):
-        self.r.refresh_access_information(self.refresh_token['read'])
-        self.assertTrue(self.r.get_subreddit(self.priv_sr).subscribers > 0)
-        fullname = '{0}_{1}'.format(self.r.config.by_object[Submission],
-                                    self.priv_submission_id)
-        method1 = self.r.get_info(thing_id=fullname)
-        method2 = self.r.get_submission(submission_id=self.priv_submission_id)
-        self.assertEqual(method1, method2)
-
-    @betamax()
-    def test_scope_read_get_front_page(self):
-        self.r.refresh_access_information(self.refresh_token['mysubreddits'])
-        subscribed = list(self.r.get_my_subreddits(limit=None))
-        self.r.refresh_access_information(self.refresh_token['read'])
-        for post in self.r.get_front_page():
-            self.assertTrue(post.subreddit in subscribed)
-
-    @betamax()
-    def test_set_access_credentials(self):
-        self.assertTrue(self.r.user is None)
-        result = self.r.refresh_access_information(
-            self.refresh_token['identity'], update_session=False)
-        self.assertTrue(self.r.user is None)
-        self.r.set_access_credentials(**result)
-        self.assertFalse(self.r.user is None)
-
-    @betamax()
-    def test_set_access_credentials_with_list(self):
-        self.assertTrue(self.r.user is None)
-        result = self.r.refresh_access_information(
-            self.refresh_token['identity'], update_session=False)
-        self.assertTrue(self.r.user is None)
-        result['scope'] = list(result['scope'])
-        self.r.set_access_credentials(**result)
-        self.assertFalse(self.r.user is None)
-
-    @betamax()
-    def test_set_access_credentials_with_string(self):
-        self.assertTrue(self.r.user is None)
-        result = self.r.refresh_access_information(
-            self.refresh_token['identity'], update_session=False)
-        self.assertTrue(self.r.user is None)
-        result['scope'] = ' '.join(result['scope'])
-        self.r.set_access_credentials(**result)
-        self.assertFalse(self.r.user is None)
-
-    @betamax()
-    @mock_sys_stream("stdin", "ljgtoo")
-    def test_solve_captcha(self):
-        # Use the alternate account because it has low karma,
-        # so we can test the captcha.
-        self.r.refresh_access_information(self.other_refresh_token['submit'])
-        self.r.submit(self.sr, 'captcha test', 'body')
-
-    @betamax()
-    @mock_sys_stream("stdin", "DFIRSW")
-    def test_solve_captcha_on_bound_subreddit(self):
-        # Use the alternate account because it has low karma,
-        # so we can test the captcha.
-        self.r.refresh_access_information(self.other_refresh_token['submit'])
-        subreddit = self.r.get_subreddit(self.sr)
-
-        # praw doesn't currently have a function in which require_captcha
-        # gets a reddit instance from a subreddit and uses it, so lets
-        # write a function in which it would and alias it to Reddit.submit
-        @decorators.restrict_access(scope='submit')
-        @decorators.require_captcha
-        def submit_alias(sr, title, text, **kw):
-            return self.r.submit.__wrapped__.__wrapped__(
-                self.r, sr, title, text, captcha=kw.get('captcha')
-            )
-        submit_alias(subreddit, 'captcha test on bound subreddit', 'body')
-
-    @betamax()
-    def test_oauth_without_identy_doesnt_set_user(self):
-        self.assertTrue(self.r.user is None)
-        self.r.refresh_access_information(self.refresh_token['edit'])
-        self.assertTrue(self.r.user is None)
-
-
-class AutoRefreshTest(NewOAuthPRAWTest):
+class AutoRefreshTest(OAuthPRAWTest):
     @betamax_custom_header()
     def test_auto_refresh_token(self):
         # this test wasn't cached before the new test was made

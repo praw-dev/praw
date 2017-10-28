@@ -10,6 +10,12 @@ upstream changes.
 
 .. begin_changelog_body
 
+3.6.2 (2017-10-28)
+------------------
+
+* **[BUGFIX]** ``Comment.permalink`` is no longer a PRAW provided property as
+  Reddit as officially added it.
+
 3.6.1 (2017-01-09)
 ------------------
 

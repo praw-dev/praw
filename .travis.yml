@@ -1,6 +1,6 @@
 after_success: coveralls
 cache: pip
-install: pip install coveralls flake8 pydocstyle
+install: pip install coveralls
 language: python
 matrix:
   allow_failures:
@@ -14,6 +14,4 @@ python:
   - nightly
 sudo: false
 script:
-  - flake8 --exclude=docs
-  - pydocstyle praw
   - coverage run --source=praw setup.py test
