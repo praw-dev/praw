@@ -72,9 +72,9 @@ class PRAWTest(unittest.TestCase):
         self.other_user_name = 'PyAPITestUser3'
         self.other_non_mod_name = 'PyAPITestUser4'
         self.invalid_user_name = 'PyAPITestInvalid'
-        self.un_pswd = '1111'
-        self.other_user_pswd = '1111'
-        self.other_non_mod_pswd = '1111'
+        self.un_pswd = '111111'
+        self.other_user_pswd = '111111'
+        self.other_non_mod_pswd = '111111'
 
         self.client_id = 'stJlUSUbPQe5lQ'
         self.client_secret = 'iU-LsOzyJH7BDVoq-qOWNEq2zuI'

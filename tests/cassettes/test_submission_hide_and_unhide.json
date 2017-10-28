@@ -5,7 +5,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "user=PyAPITestUser2&passwd=1111&api_type=json"
+          "string": "user=PyAPITestUser2&passwd=111111&api_type=json"
         },
         "headers": {
           "Accept": [
