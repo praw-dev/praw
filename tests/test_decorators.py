@@ -1,7 +1,6 @@
 from __future__ import print_function, unicode_literals
 
 from .helper import OAuthPRAWTest, betamax
-from .mock_response import MockResponse
 from praw import errors
 from praw.decorator_helpers import _make_func_args
 from praw.decorators import restrict_access
@@ -110,15 +109,3 @@ class DecoratorTest(OAuthPRAWTest):
                                                              err.message,
                                                              err.field),
                          str(err))
-
-    @betamax(pass_recorder=True)
-    def test_raise_not_modified(self, recorder):
-        self.r.refresh_access_information(self.refresh_token['read'])
-        with MockResponse.as_context(
-                recorder.current_cassette.interactions[-1], status_code=304,
-                reason="Not Modified", json={'error': 304},
-                headers={"Content-Length": 1}):
-            err = self.assertRaisesAndReturn(
-                errors.NotModified, list, self.r.get_subreddit(
-                    self.sr).get_new(limit=25))
-        self.assertEqual(str(err), 'That page has not been modified.')
