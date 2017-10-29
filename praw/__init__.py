@@ -52,7 +52,7 @@ from update_checker import update_check
 from warnings import warn_explicit
 
 
-__version__ = '3.6.1'
+__version__ = '3.6.2'
 
 
 class Config(object):  # pylint: disable=R0903

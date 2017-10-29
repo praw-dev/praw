@@ -5,7 +5,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "passwd=1111&user=PyAPITestUser2&api_type=json"
+          "string": "passwd=111111&user=PyAPITestUser2&api_type=json"
         },
         "headers": {
           "Accept": [
@@ -94,7 +94,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "passwd=1111&uh=44eayop6ee06b485708d27bc43aada6787e83b56103d90c18a&user=PyAPITestUser3&api_type=json"
+          "string": "passwd=111111&uh=44eayop6ee06b485708d27bc43aada6787e83b56103d90c18a&user=PyAPITestUser3&api_type=json"
         },
         "headers": {
           "Accept": [
