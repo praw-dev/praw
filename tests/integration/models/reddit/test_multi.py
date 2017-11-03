@@ -1,4 +1,4 @@
-from praw.models import Subreddit
+from praw.models import (Comment, Submission, Subreddit)
 import mock
 import pytest
 
@@ -149,3 +149,51 @@ class TestMultiredditListings(IntegrationTest):
         with self.recorder.use_cassette('TestMultiredditListings.test_top'):
             submissions = list(multi.top())
         assert len(submissions) == 100
+
+
+class TestMultiredditStreams(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_comments(self, _):
+        multi = self.reddit.multireddit('kjoneslol', 'sfwpornnetwork')
+        with self.recorder.use_cassette('TestMultiredditStreams.comments'):
+            generator = multi.stream.comments()
+            for i in range(110):
+                assert isinstance(next(generator), Comment)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_comments__with_pause(self, _):
+        multi = self.reddit.multireddit('kjoneslol', 'sfwpornnetwork')
+        with self.recorder.use_cassette(
+                'TestMultiredditStreams.comments__with_pause'):
+            comment_stream = multi.stream.comments(pause_after=0)
+            comment_count = 1
+            pause_count = 1
+            comment = next(comment_stream)
+            while comment is not None:
+                comment_count += 1
+                comment = next(comment_stream)
+            while comment is None:
+                pause_count += 1
+                comment = next(comment_stream)
+            assert comment_count == 102
+            assert pause_count == 4
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_submissions(self, _):
+        multi = self.reddit.multireddit('kjoneslol', 'sfwpornnetwork')
+        with self.recorder.use_cassette('TestMultiredditStreams.submissions'):
+            generator = multi.stream.submissions()
+            for i in range(102):
+                assert isinstance(next(generator), Submission)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_submissions__with_pause(self, _):
+        multi = self.reddit.multireddit('kjoneslol', 'sfwpornnetwork')
+        with self.recorder.use_cassette('TestMultiredditStreams.submissions'):
+            generator = multi.stream.submissions(pause_after=-1)
+            submission = next(generator)
+            submission_count = 0
+            while submission is not None:
+                submission_count += 1
+                submission = next(generator)
+            assert submission_count == 100
