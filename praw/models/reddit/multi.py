@@ -6,7 +6,7 @@ from ...const import API_PATH
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .redditor import Redditor
-from .subreddit import Subreddit
+from .subreddit import Subreddit, SubredditStream
 
 
 class Multireddit(RedditBase, SubredditListingMixin):
@@ -32,6 +32,33 @@ class Multireddit(RedditBase, SubredditListingMixin):
                 title = title[:last_word]
         return title or '_'
 
+    @property
+    def stream(self):
+        """Provide an instance of :class:`.SubredditStream`.
+
+        Streams can be used to indefinitely retrieve new comments made to a
+        subreddit, like:
+
+        .. code:: python
+
+           for comment in reddit.multireddit('spez', 'fun').stream.comments():
+               print(comment)
+
+        Additionally, new submissions can be retrieved via the stream. In the
+        following example all submissions are fetched via the special subreddit
+        ``all``:
+
+        .. code:: python
+
+           for submission in reddit.multireddit('bboe',
+                                                'games').stream.submissions():
+               print(submission)
+
+        """
+        if self._stream is None:
+            self._stream = SubredditStream(self)
+        return self._stream
+
     def __init__(self, reddit, _data):
         """Construct an instance of the Multireddit object."""
         self.path = None
@@ -39,6 +66,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
         self._author = Redditor(reddit, self.path.split('/', 3)[2])
         self._path = API_PATH['multireddit'].format(
             multi=self.name, user=self._author)
+        self._stream = None
         self.path = '/' + self._path[:-1]  # Prevent requests for path
         if 'subreddits' in self.__dict__:
             self.subreddits = [Subreddit(reddit, x['name'])
