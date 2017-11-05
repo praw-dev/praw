@@ -268,6 +268,8 @@ at any time by calling :meth:`.replace_more` on a :class:`.CommentForest`
 instance. Calling :meth:`.replace_more` access ``comments``, and so must be done
 after ``comment_sort`` is updated. See :ref:`extracting_comments` for an example.
 
+.. _determine-available-attributes-of-an-object:
+
 Determine Available Attributes of an Object
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
