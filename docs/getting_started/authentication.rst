@@ -71,6 +71,28 @@ The output should contain the same name as you entered for ``username``.
              OAuthException: invalid_grant error processing request
 
 
+Two-Factor Authentication
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A 2FA token can be used by joining it to the password with a colon:
+
+.. code-block:: python
+
+   reddit = praw.Reddit(client_id='SI8pN3DSbt0zor',
+                        client_secret='xaxkj7HNh8kwg8e5t4m6KvSrbTI',
+                        password='1guiwevlfo00esyy:955413',
+                        user_agent='testscript by /u/fakebot3',
+                        username='fakebot3')
+
+However, for an automated script there is little benefit to using 2FA. The token
+must be refreshed after one hour; therefore, the 2FA secret would have to be
+stored along with the rest of the credentials in order to generate the token,
+which defeats the point of having an extra credential beyond the password.
+
+If you do choose to use 2FA, you must handle the ``prawcore.OAuthException``
+that will be raised by API calls after one hour.
+
+
 .. _web_application:
 
 Web Application
