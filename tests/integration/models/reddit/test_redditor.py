@@ -10,6 +10,13 @@ from ... import IntegrationTest
 class TestRedditor(IntegrationTest):
     FRIEND = 'PyAPITestUser3'
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_block(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestRedditor.test_block'):
+            redditor = self.reddit.redditor(self.FRIEND)
+            redditor.block()
+
     def test_friend(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestRedditor.test_friend'):
