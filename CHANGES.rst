@@ -8,6 +8,7 @@ Unreleased
 
 * :attr:`.Multireddit.stream`, to stream submissions and comments from a
   Multireddit.
+* :meth:`.Redditor.block`
 
 
 5.2.0 (2017/10/24)

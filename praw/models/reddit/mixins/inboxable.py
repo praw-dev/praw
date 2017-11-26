@@ -7,13 +7,7 @@ class InboxableMixin(object):
     """Interface for RedditBase classes that originate from the inbox."""
 
     def block(self):
-        """Block the user who sent the item.
-
-        .. note:: Reddit does not permit blocking users unless you have a
-                  :class:`.Comment` or :class:`.Message` from them in your
-                  inbox.
-
-        """
+        """Block the user who sent the item."""
         self._reddit.post(API_PATH['block'], data={'id': self.fullname})
 
     def collapse(self):

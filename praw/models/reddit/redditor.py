@@ -69,6 +69,11 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         url = API_PATH['friend_v1'].format(user=self)
         self._reddit.request(method, url, data=dumps(data))
 
+    def block(self):
+        """Block the Redditor."""
+        self._reddit.post(API_PATH['block_user'],
+                          params={'account_id': self.fullname})
+
     def friend(self, note=None):
         """Friend the Redditor.
 
@@ -106,12 +111,7 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         return self._reddit.get(API_PATH['multireddit_user'].format(user=self))
 
     def unblock(self):
-        """Unblock the Redditor.
-
-        Blocking must be done from a Message, Comment Reply or Submission
-        Reply.
-
-        """
+        """Unblock the Redditor."""
         data = {'container': self._reddit.user.me().fullname,
                 'name': str(self), 'type': 'enemy'}
         url = API_PATH['unfriend'].format(subreddit='all')

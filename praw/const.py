@@ -17,6 +17,7 @@ API_PATH = {
     'accept_mod_invite':      'r/{subreddit}/api/accept_moderator_invite',
     'approve':                'api/approve/',
     'block':                  'api/block',
+    'block_user':             '/api/block_user/',
     'blocked':                'prefs/blocked/',
     'collapse':               'api/collapse_message/',
     'comment':                'api/comment/',
