@@ -71,21 +71,27 @@ thread" links encountered on the website. While we could ignore
            continue
        print(top_level_comment.body)
 
-The preferred way is to use the :meth:`.replace_more` method of the
-:class:`.CommentForest`. Calling :meth:`.replace_more` will replace or remove
-all the :class:`.MoreComments` objects in the comment forest. Each replacement
-requires one network request, and its response may yield additional
-:class:`.MoreComments` instances. As a result, by default,
+The ``replace_more`` method
+---------------------------
+
+In the previous snippet, we used ``isinstance`` to check whether the item
+in the comment list was a :class:`.MoreComments` so that we could ignore it.
+But there is a better way: the :class:`.CommentForest` object has a method
+called :meth:`.replace_more`, which replaces or removes :class:`.MoreComments`
+objects from the forest.
+
+Each replacement requires one network request, and its response may yield
+additional :class:`.MoreComments` instances. As a result, by default,
 :meth:`.replace_more` only replaces at most thirty-two :class:`.MoreComments`
 instances -- all other instances are simply removed. The maximum number of
-instances to replace can be configured via the ``limit`` parameter. Additionally
-a ``threshold`` parameter can be set to only perform replacement of
-:class:`.MoreComments` instances that represent a minimum number of comments;
-it defaults to 0, meaning all :class:`.MoreComments` instances will be replaced
-up to ``limit``.
+instances to replace can be configured via the ``limit`` parameter.
+Additionally a ``threshold`` parameter can be set to only perform replacement
+of :class:`.MoreComments` instances that represent a minimum number of
+comments; it defaults to 0, meaning all :class:`.MoreComments` instances will
+be replaced up to ``limit``.
 
-We can rewrite the snippet above as the following, which simply removes all
-:class:`.MoreComments` instances from the comment forest:
+A ``limit`` of 0 simply removes all :class:`.MoreComments` from the forest.
+The previous snippet can thus be simplified:
 
 .. code-block:: python
 
@@ -96,12 +102,22 @@ We can rewrite the snippet above as the following, which simply removes all
 .. note:: Calling :meth:`.replace_more` is destructive. Calling it again on the
    same submission instance has no effect.
 
+Meanwhile, a ``limit`` of ``None`` means that all :class:`.MoreComments`
+objects will be replaced until there are none left, as long as they satisfy
+the ``threshold``.
+
+.. code-block:: python
+
+   submission.comments.replace_more(limit=None)
+   for top_level_comment in submission.comments:
+       print(top_level_comment.body)
+
 Now we are able to successfully iterate over all the top-level comments. What
 about their replies? We could output all second-level comments like so:
 
 .. code-block:: python
 
-   submission.comments.replace_more(limit=0)
+   submission.comments.replace_more(limit=None)
    for top_level_comment in submission.comments:
        for second_level_comment in top_level_comment.replies:
            print(second_level_comment.body)
@@ -112,14 +128,14 @@ breadth-first traversal using a queue:
 
 .. code-block:: python
 
-   submission.comments.replace_more(limit=0)
+   submission.comments.replace_more(limit=None)
    comment_queue = submission.comments[:]  # Seed with top-level
    while comment_queue:
        comment = comment_queue.pop(0)
        print(comment.body)
        comment_queue.extend(comment.replies)
 
-The above code will output all the top-level comments, followed, by
+The above code will output all the top-level comments, followed by
 second-level, third-level, etc. While it is awesome to be able to do your own
 breadth-first traversals, :class:`.CommentForest` provides a convenience
 method, :meth:`.list`, which returns a list of comments traversed in the same
@@ -127,7 +143,7 @@ order as the code above. Thus the above can be rewritten as:
 
 .. code-block:: python
 
-   submission.comments.replace_more(limit=0)
+   submission.comments.replace_more(limit=None)
    for comment in submission.comments.list():
        print(comment.body)
 
