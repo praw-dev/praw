@@ -1,14 +1,19 @@
 Change Log
 ==========
 
-Unreleased
-----------
+5.3.0 (2017/12/16)
+------------------
 
 **Added**
 
 * :attr:`.Multireddit.stream`, to stream submissions and comments from a
   Multireddit.
 * :meth:`.Redditor.block`
+
+**Fixed**
+
+* Now raises ``prawcore.UnavailableForLegalReasons`` instead of an
+  ``AssertionError`` when encountering a HTTP 451 response.
 
 
 5.2.0 (2017/10/24)
