@@ -4,4 +4,4 @@ Multireddit
 .. autoclass:: praw.models.Multireddit
    :inherited-members:
 
-.. note:: |note-dynamically-provided-attributes|
+.. include:: note_dynamically_provided_attributes.txt
