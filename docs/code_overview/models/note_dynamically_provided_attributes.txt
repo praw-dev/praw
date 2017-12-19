@@ -1,3 +1,9 @@
+..
+   This file contains a note about dynamically provided attributes. The note
+   is supposed to appear in every PRAW Model's docs page. Therefore, this
+   file will be appended to their reStructuredText files with the include
+   directive.
+
 .. note:: This list of attributes is not complete. PRAW dynamically provides
           the attributes that Reddit returns via the API. Because those
           attributes are subject to change on Reddit's end, PRAW makes no
