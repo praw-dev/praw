@@ -169,6 +169,7 @@ def stream_generator(function, pause_after=None):
         else:
             responses_without_new += 1
             if valid_pause_after and responses_without_new > pause_after:
+                exponential_counter.reset()
                 responses_without_new = 0
                 yield None
             else:
