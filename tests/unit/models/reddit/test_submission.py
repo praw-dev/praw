@@ -64,6 +64,7 @@ class TestSubmission(UnitTest):
     def test_id_from_url(self):
         urls = ['http://my.it/2gmzqe',
                 'https://redd.it/2gmzqe',
+                'https://redd.it/2gmzqe/',
                 'http://reddit.com/comments/2gmzqe',
                 'https://www.reddit.com/r/redditdev/comments/2gmzqe/'
                 'praw_https_enabled_praw_testing_needed/']
