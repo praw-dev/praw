@@ -9,6 +9,8 @@ Unreleased
 * Fix bug with positive ``pause_after`` values in streams provided by
   :meth:`.stream_generator` where the wait time was not reset after a yielded
   ``None``.
+* Parse URLs with trailing slashes and no ``'comments'`` element when creating
+  :class:`.Submission` objects.
 
 
 5.3.0 (2017/12/16)
