@@ -1,4 +1,5 @@
 """Provide the Comment class."""
+from ...const import urlparse
 from ...exceptions import ClientException
 from ..comment_forest import CommentForest
 from .base import RedditBase
@@ -16,10 +17,12 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     @staticmethod
     def id_from_url(url):
         """Get the ID of a comment from the full URL."""
-        try:
-            comment_id = url.rsplit('://')[-1].rsplit('/')[6].rsplit('?')[0]
-        except IndexError:  # Link is shorter than normal permalink
-            comment_id = url.rsplit('://')[-1].rsplit('/')[4].rsplit('?')[0]
+        parsed = urlparse(url)
+        parsed_split = parsed.path.rsplit('/')
+        if len(parsed_split)>=7:
+            comment_id = parsed_split[6]
+        else:
+            comment_id = parsed_split[4]
 
         return comment_id
 
