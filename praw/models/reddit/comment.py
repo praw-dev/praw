@@ -15,7 +15,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     
     @staticmethod
     def id_from_url(url):
-        comment_id = url.rsplit('/', -1)[-2]
+        comment_id = url.rsplit('https://')[-1].rsplit('/')[6]
         
         return comment_id
     
