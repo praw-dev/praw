@@ -337,7 +337,7 @@ class Reddit(object):
         read_only_authorizer = DeviceIDAuthorizer(authenticator)
         self._core = self._read_only_core = session(read_only_authorizer)
 
-    def comment(self, id):  # pylint: disable=invalid-name,redefined-builtin
+    def comment(self, id=None, url=None):  # pylint: disable=invalid-name,redefined-builtin
         """Return a lazy instance of :class:`~.Comment` for ``id``.
 
         :param id: The ID of the comment.
@@ -346,6 +346,12 @@ class Reddit(object):
                   call :meth:`.refresh` on the returned :class:`.Comment`.
 
         """
+        if not id and not url:
+            raise TypeError('Either `id` or `url` must be provided.')
+            
+        if url:
+            id = url.rsplit('/', -1)[-2]
+       
         return models.Comment(self, id=id)
 
     def domain(self, domain):
