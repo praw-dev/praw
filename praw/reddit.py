@@ -337,16 +337,20 @@ class Reddit(object):
         read_only_authorizer = DeviceIDAuthorizer(authenticator)
         self._core = self._read_only_core = session(read_only_authorizer)
 
-    def comment(self, id):  # pylint: disable=invalid-name,redefined-builtin
+    def comment(self,  # pylint: disable=invalid-name
+                id=None,  # pylint: disable=redefined-builtin
+                url=None):
         """Return a lazy instance of :class:`~.Comment` for ``id``.
 
         :param id: The ID of the comment.
+
+        :param url: A permalink pointing to the comment.
 
         .. note:: If you want to obtain the comment's replies, you will need to
                   call :meth:`.refresh` on the returned :class:`.Comment`.
 
         """
-        return models.Comment(self, id=id)
+        return models.Comment(self, id=id, url=url)
 
     def domain(self, domain):
         """Return an instance of :class:`.DomainListing`.

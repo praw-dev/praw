@@ -1,4 +1,5 @@
 """Provide the Comment class."""
+from ...const import urlparse
 from ...exceptions import ClientException
 from ..comment_forest import CommentForest
 from .base import RedditBase
@@ -12,6 +13,26 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     MISSING_COMMENT_MESSAGE = ('This comment does not appear to be in the '
                                'comment tree')
     STR_FIELD = 'id'
+
+    @staticmethod
+    def id_from_url(url):
+        """Get the ID of a comment from the full URL."""
+        parsed = urlparse(url)
+        if not parsed.netloc:
+            raise ClientException('Invalid URL: {}'.format(url))
+
+        stripped_list = list(filter(None, parsed.path.rsplit('/')))
+        comment_id = stripped_list[-1]
+        submission_id = stripped_list[-3]
+
+        if 'comments' not in stripped_list:
+            raise ClientException('Invalid URL: {}'.format(url))
+        if len(stripped_list[stripped_list.index('comments')+1:]) < 3:
+            raise ClientException('Invalid URL: {}'.format(url))
+        if not comment_id.isalnum() or not submission_id.isalnum():
+            raise ClientException('Invalid URL: {}'.format(url))
+
+        return comment_id
 
     @property
     def is_root(self):
@@ -51,14 +72,17 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             reply.submission = submission
 
     def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
-                 _data=None):
+                 url=None, _data=None):
         """Construct an instance of the Comment object."""
-        if bool(id) == bool(_data):
-            raise TypeError('Either `id` or `_data` must be provided.')
+        if [id, url, _data].count(None) != 2:
+            raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
+                            'provided.')
         self._mod = self._replies = self._submission = None
         super(Comment, self).__init__(reddit, _data)
         if id:
             self.id = id  # pylint: disable=invalid-name
+        elif url:
+            self.id = self.id_from_url(url)
         else:
             self._fetched = True
 
