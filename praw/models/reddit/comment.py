@@ -16,7 +16,10 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     @staticmethod
     def id_from_url(url):
         """Get the ID of a comment from the full URL."""
-        comment_id = url.rsplit('https://')[-1].rsplit('/')[6]
+        try:
+            comment_id = url.rsplit('://')[-1].rsplit('/')[6].rsplit('?')[0]
+        except IndexError:  # Link is shorter than normal permalink
+            comment_id = url.rsplit('://')[-1].rsplit('/')[4].rsplit('?')[0]
 
         return comment_id
 
