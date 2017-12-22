@@ -12,13 +12,13 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     MISSING_COMMENT_MESSAGE = ('This comment does not appear to be in the '
                                'comment tree')
     STR_FIELD = 'id'
-    
+
     @staticmethod
     def id_from_url(url):
         comment_id = url.rsplit('https://')[-1].rsplit('/')[6]
-        
+
         return comment_id
-    
+
     @property
     def is_root(self):
         """Return True when the comment is a top level comment."""
@@ -56,11 +56,13 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         for reply in getattr(self, 'replies', []):
             reply.submission = submission
 
-    def __init__(self, reddit, id=None, url=None, # pylint: disable=redefined-builtin
-                 _data=None):
+    def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
+				url=None, _data=None):
+		
         """Construct an instance of the Comment object."""
-        if bool(id) == bool(_data) == bool(url):
-            raise TypeError('Either `id`,  `url`, or `_data` must be provided.')
+        if [id, url, _data].count(None) != 2:
+            raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
+                            'provided.')
         self._mod = self._replies = self._submission = None
         super(Comment, self).__init__(reddit, _data)
         if id is not None:
