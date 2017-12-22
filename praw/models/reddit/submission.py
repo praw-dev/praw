@@ -33,7 +33,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
         parts = parsed.path.split('/')
         if 'comments' not in parts:
-            submission_id = parts[-1]
+            submission_id = parts[-1] if parts[-1] else parts[-2]
         else:
             submission_id = parts[parts.index('comments') + 1]
 
