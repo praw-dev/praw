@@ -346,13 +346,8 @@ class Reddit(object):
                   call :meth:`.refresh` on the returned :class:`.Comment`.
 
         """
-        if not id and not url:
-            raise TypeError('Either `id` or `url` must be provided.')
-            
-        if url:
-            id = url.rsplit('/', -1)[-2]
        
-        return models.Comment(self, id=id)
+        return models.Comment(self, id=id, url=url)
 
     def domain(self, domain):
         """Return an instance of :class:`.DomainListing`.
