@@ -34,4 +34,5 @@ Source Contributors
 - jarhill0 `@jarhill0 <https://github.com/jarhill0>`_
 - Mike Wohlrab `@D0cR3d <https://github.com/D0cR3d>`_
 - Matthew Lee `@kwwxis <https://github.com/kwwxis>`_
+- guaneec `@guaneec <https://github.com/guaneec>`_
 - Add "Name <email (optional)> and github profile link" above this line.
