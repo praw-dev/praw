@@ -453,8 +453,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                 end = min(end, int(submission.created))
                 if submission.id not in last_ids:
                     found_new_submission = True
-                yield submission
-                params['after'] = submission.fullname
+                    yield submission
+                    params['after'] = submission.fullname
             last_ids = current_ids
 
     def submit(self, title, selftext=None, url=None, flair_id=None,
