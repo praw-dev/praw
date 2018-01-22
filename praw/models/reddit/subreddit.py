@@ -60,7 +60,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     MESSAGE_PREFIX = '#'
 
     @staticmethod
-    def _create_or_update(_reddit, allow_images=None, allow_top=None,
+    def _create_or_update(_reddit, allow_images=None,
+                          allow_post_crossposts=None, allow_top=None,
                           collapse_deleted_comments=None,
                           comment_score_hide_mins=None, description=None,
                           domain=None, exclude_banned_modqueue=None,
@@ -78,6 +79,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                           wikimode=None, **other_settings):
         # pylint: disable=invalid-name,too-many-locals
         model = {'allow_images': allow_images,
+                 'allow_post_crossposts': allow_post_crossposts,
                  'allow_top': allow_top,
                  'collapse_deleted_comments': collapse_deleted_comments,
                  'comment_score_hide_mins': comment_score_hide_mins,
@@ -1183,6 +1185,8 @@ class SubredditModeration(object):
 
         :param allow_images: Allow users to upload images using the native
             image hosting. Only applies to link-only subreddits.
+        :param allow_post_crossposts: Allow users to crosspost submissions from
+            other subreddits.
         :param allow_top: Allow the subreddit to appear on ``/r/all`` as well
             as the default and trending lists.
         :param collapse_deleted_comments: Collapse deleted and removed comments
