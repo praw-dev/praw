@@ -75,7 +75,9 @@ class TestSubmission(UnitTest):
         urls = ['', '1', '/', 'my.it/2gmzqe',
                 'http://my.it/_',
                 'https://redd.it/_/',
-                'http://reddit.com/comments/_/2gmzqe']
+                'http://reddit.com/comments/_/2gmzqe',
+                'https://reddit.com/r/wallpapers/',
+                'https://reddit.com/r/wallpapers']
         for url in urls:
             with pytest.raises(ClientException):
                 Submission.id_from_url(url)
