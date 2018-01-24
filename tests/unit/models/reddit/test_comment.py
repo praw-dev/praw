@@ -49,7 +49,7 @@ class TestComment(UnitTest):
 
     def test_construct_from_url(self):
         assert Comment(self.reddit,
-                url='http://reddit.com/comments/2gmzqe/_/cklhv0f/')=='cklhv0f'
+                       url='reddit.com/comments/2gmzqe/_/cklhv0f/') == 'cklhv0f'
 
     def test_hash(self):
         comment1 = Comment(self.reddit, _data={'id': 'dummy1', 'n': 1})
