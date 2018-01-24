@@ -18,13 +18,22 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     def id_from_url(url):
         """Get the ID of a comment from the full URL."""
         parsed = urlparse(url)
-        parsed_split = parsed.path.rsplit('/')
-        if len(parsed_split)>=7:
-            comment_id = parsed_split[6]
-        else:
-            comment_id = parsed_split[4]
+        if not parsed.netloc:
+            raise ClientException('Invalid URL: {}'.format(url))
+        
+        parts = parsed.path.rsplit('/')
+        stripped_list = list(filter(None, parts))
+        comment_id = stripped_list[-1]
 
+        if 'comments' not in stripped_list:
+            raise ClientException('Invalid URL: {}'.format(url))
+        if len(stripped_list[stripped_list.index('comments')+1:]) < 3:
+            raise ClientException('Invalid URL: {}'.format(url))
+        if not comment_id.isalnum() or not stripped_list[-3].isalnum():
+            raise ClientException('Invalid URL: {}'.format(url))
+        
         return comment_id
+        
 
     @property
     def is_root(self):

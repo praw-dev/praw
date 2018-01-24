@@ -343,6 +343,8 @@ class Reddit(object):
 
         :param id: The ID of the comment.
 
+        :param url: A permalink pointing to the comment.
+
         .. note:: If you want to obtain the comment's replies, you will need to
                   call :meth:`.refresh` on the returned :class:`.Comment`.
 
