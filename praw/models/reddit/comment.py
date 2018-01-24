@@ -20,7 +20,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         parsed = urlparse(url)
         if not parsed.netloc:
             raise ClientException('Invalid URL: {}'.format(url))
-        
+
         parts = parsed.path.rsplit('/')
         stripped_list = list(filter(None, parts))
         comment_id = stripped_list[-1]
@@ -31,9 +31,8 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             raise ClientException('Invalid URL: {}'.format(url))
         if not comment_id.isalnum() or not stripped_list[-3].isalnum():
             raise ClientException('Invalid URL: {}'.format(url))
-        
+
         return comment_id
-        
 
     @property
     def is_root(self):
