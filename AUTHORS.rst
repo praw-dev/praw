@@ -35,4 +35,5 @@ Source Contributors
 - Mike Wohlrab `@D0cR3d <https://github.com/D0cR3d>`_
 - Matthew Lee `@kwwxis <https://github.com/kwwxis>`_
 - guaneec `@guaneec <https://github.com/guaneec>`_
+- Jason Woodrich `@jwoodrich <https://github.com/jwoodrich>`_
 - Add "Name <email (optional)> and github profile link" above this line.
