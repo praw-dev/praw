@@ -69,7 +69,8 @@ class ListingGenerator(PRAWBase):
         if not self._listing:
             raise StopIteration()
 
-        if self._listing.after:
+        if (self._listing.after and
+                self._listing.after != self.params.get('after')):
             self.params['after'] = self._listing.after
         else:
             self._exhausted = True
