@@ -484,6 +484,7 @@ PRAW 4. If you require additional help please ask on `/r/redditdev
 * Support installed-type OAuth apps.
 * Support read-only OAuth for all application types.
 * Support script-type OAuth apps.
+* Added the ability to delete comments from inbox
 
 
 **Changed**
