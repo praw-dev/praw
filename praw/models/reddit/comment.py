@@ -21,15 +21,15 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         if not parsed.netloc:
             raise ClientException('Invalid URL: {}'.format(url))
 
-        parts = parsed.path.rsplit('/')
-        stripped_list = list(filter(None, parts))
+        stripped_list = list(filter(None, parsed.path.rsplit('/')))
         comment_id = stripped_list[-1]
+        submission_id = stripped_list[-3]
 
         if 'comments' not in stripped_list:
             raise ClientException('Invalid URL: {}'.format(url))
         if len(stripped_list[stripped_list.index('comments')+1:]) < 3:
             raise ClientException('Invalid URL: {}'.format(url))
-        if not comment_id.isalnum() or not stripped_list[-3].isalnum():
+        if not comment_id.isalnum() or not submission_id.isalnum():
             raise ClientException('Invalid URL: {}'.format(url))
 
         return comment_id
@@ -71,17 +71,17 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         for reply in getattr(self, 'replies', []):
             reply.submission = submission
 
-    def __init__(self, reddit, id=None, url=None, _data=None):
-        # pylint: disable=redefined-builtin
+    def __init__(self, reddit, id=None, # pylint: disable=redefined-builtin
+                 url=None, _data=None):
         """Construct an instance of the Comment object."""
         if [id, url, _data].count(None) != 2:
             raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
                             'provided.')
         self._mod = self._replies = self._submission = None
         super(Comment, self).__init__(reddit, _data)
-        if id is not None:
+        if id:
             self.id = id  # pylint: disable=invalid-name
-        elif url is not None:
+        elif url:
             self.id = self.id_from_url(url)
         else:
             self._fetched = True
