@@ -46,6 +46,7 @@ class Message(RedditBase, InboxableMixin, ReplyableMixin):
         self._fetched = True
 
     def delete(self):
+        """Delete the message from the inbox"""
         self._reddit.post(API_PATH['delete_message'], data={'id': self.name} )
 
 
