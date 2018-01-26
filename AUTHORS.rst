@@ -36,4 +36,5 @@ Source Contributors
 - Matthew Lee `@kwwxis <https://github.com/kwwxis>`_
 - guaneec `@guaneec <https://github.com/guaneec>`_
 - Jason Woodrich `@jwoodrich <https://github.com/jwoodrich>`_
+- Christopher Lambert `@theriley106 <https://github.com/theriley106>`_
 - Add "Name <email (optional)> and github profile link" above this line.
