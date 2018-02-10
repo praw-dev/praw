@@ -1,6 +1,7 @@
 import pickle
 
 import pytest
+from praw.exceptions import ClientException
 from praw.models import Comment
 
 from ... import UnitTest
@@ -25,14 +26,30 @@ class TestComment(UnitTest):
         assert comment2 == 'dummy1'
 
     def test_construct_failure(self):
-        message = 'Either `id` or `_data` must be provided.'
+        message = 'Exactly one of `id`, `url`, or `_data` must be provided.'
         with pytest.raises(TypeError) as excinfo:
             Comment(self.reddit)
         assert str(excinfo.value) == message
 
         with pytest.raises(TypeError) as excinfo:
+            Comment(self.reddit, id='dummy', url='dummy')
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
             Comment(self.reddit, 'dummy', _data={'id': 'dummy'})
         assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            Comment(self.reddit, url='dummy', _data={'id': 'dummy'})
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            Comment(self.reddit, 'dummy', 'dummy', {'id': 'dummy'})
+        assert str(excinfo.value) == message
+
+    def test_construct_from_url(self):
+        assert Comment(self.reddit,
+                       url='reddit.com/comments/2gmzqe/_/cklhv0f/') == 'cklhv0f'
 
     def test_hash(self):
         comment1 = Comment(self.reddit, _data={'id': 'dummy1', 'n': 1})
@@ -44,6 +61,27 @@ class TestComment(UnitTest):
         assert hash(comment1) == hash(comment2)
         assert hash(comment2) != hash(comment3)
         assert hash(comment1) != hash(comment3)
+
+    def test_id_from_url(self):
+        urls = ['http://reddit.com/comments/2gmzqe/_/cklhv0f/',
+                'https://reddit.com/comments/2gmzqe/_/cklhv0f',
+                'http://www.reddit.com/r/redditdev/comments/2gmzqe/_/cklhv0f/',
+                'https://www.reddit.com/r/redditdev/comments/2gmzqe/_/cklhv0f']
+        for url in urls:
+            assert Comment.id_from_url(url) == 'cklhv0f', url
+
+    def test_id_from_url__invalid_urls(self):
+        urls = ['', '1', '/', 'my.it/2gmzqe',
+                'http://my.it/_',
+                'https://redd.it/_/',
+                'http://reddit.com/comments/_/2gmzqe',
+                'http://my.it/2gmzqe',
+                'https://redd.it/2gmzqe',
+                'http://reddit.com/comments/2gmzqe',
+                'https://www.reddit.com/r/redditdev/comments/2gmzqe/']
+        for url in urls:
+            with pytest.raises(ClientException):
+                Comment.id_from_url(url)
 
     def test_pickle(self):
         comment = Comment(self.reddit, _data={'id': 'dummy'})
