@@ -108,7 +108,8 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param id: A reddit base36 submission ID, e.g., ``2gmzqe``.
-        :param url: A URL supported by :meth:`~.id_from_url`.
+        :param url: A URL supported by
+            :meth:`~praw.models.Submission.id_from_url`.
 
         Either ``id`` or ``url`` can be provided, but not both.
 
