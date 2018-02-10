@@ -373,9 +373,8 @@ class Reddit(object):
     def info(self, fullnames=None, url=None):
         """Fetch information about each item in ``fullnames`` or from ``url``.
 
-        :param param_list: A list of paramaters, either fullnames for a
-            comment/submission/subreddit or a url for a list of link
-            submissions.
+        :param fullnames: A list of fullnames for comments, submissions, and/or
+            subreddits.
         :param url: A url (as a string) to retrieve lists of link submissions
             from.
         :returns: A generator that yields found items in their relative order.

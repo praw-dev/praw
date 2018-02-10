@@ -31,9 +31,12 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         if not parsed.netloc:
             raise ClientException('Invalid URL: {}'.format(url))
 
-        parts = parsed.path.split('/')
+        parts = parsed.path.rstrip('/').split('/')
         if 'comments' not in parts:
             submission_id = parts[-1]
+            if '/r/' in parsed.path:
+                raise ClientException('Invalid URL (subreddit, '
+                                      'not submission): {}'.format(url))
         else:
             submission_id = parts[parts.index('comments') + 1]
 
