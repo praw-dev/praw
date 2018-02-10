@@ -15,6 +15,10 @@ Unreleased
 * Fix bug where ``ListingGenerator`` fetches the same batch of submissions in
   an infinite loop when ``'before'`` parameter is provided.
 
+**Removed**
+
+* Removed support for Python 3.3 as it is no longer supported by requests.
+
 
 5.3.0 (2017/12/16)
 ------------------
