@@ -12,6 +12,10 @@ Unreleased
 * Parse URLs with trailing slashes and no ``'comments'`` element when creating
   :class:`.Submission` objects.
 
+**Removed**
+
+* Removed support for Python 3.3 as it is no longer supported by requests.
+
 
 5.3.0 (2017/12/16)
 ------------------
