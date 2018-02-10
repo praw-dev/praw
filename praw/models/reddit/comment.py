@@ -13,6 +13,19 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
                                'comment tree')
     STR_FIELD = 'id'
 
+    @staticmethod
+    def id_from_url(url):
+        """Get the ID of a comment from the full URL."""
+        parts = RedditBase._url_parts(url)
+        try:
+            comment_index = parts.index('comments')
+        except ValueError:
+            raise ClientException('Invalid URL: {}'.format(url))
+
+        if len(parts) - 4 != comment_index:
+            raise ClientException('Invalid URL: {}'.format(url))
+        return parts[-1]
+
     @property
     def is_root(self):
         """Return True when the comment is a top level comment."""
@@ -51,14 +64,17 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             reply.submission = submission
 
     def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
-                 _data=None):
+                 url=None, _data=None):
         """Construct an instance of the Comment object."""
-        if bool(id) == bool(_data):
-            raise TypeError('Either `id` or `_data` must be provided.')
+        if [id, url, _data].count(None) != 2:
+            raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
+                            'provided.')
         self._mod = self._replies = self._submission = None
         super(Comment, self).__init__(reddit, _data)
         if id:
             self.id = id  # pylint: disable=invalid-name
+        elif url:
+            self.id = self.id_from_url(url)
         else:
             self._fetched = True
 

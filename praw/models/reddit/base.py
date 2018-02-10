@@ -1,11 +1,18 @@
 """Provide the RedditBase class."""
-from ...const import API_PATH
-from ...exceptions import PRAWException
+from ...const import API_PATH, urlparse
+from ...exceptions import ClientException, PRAWException
 from ..base import PRAWBase
 
 
 class RedditBase(PRAWBase):
     """Base class that represents actual Reddit objects."""
+
+    @staticmethod
+    def _url_parts(url):
+        parsed = urlparse(url)
+        if not parsed.netloc:
+            raise ClientException('Invalid URL: {}'.format(url))
+        return parsed.path.rstrip('/').split('/')
 
     @property
     def fullname(self):
