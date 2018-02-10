@@ -1,5 +1,5 @@
 """Provide the Submission class."""
-from ...const import API_PATH, urljoin, urlparse
+from ...const import API_PATH, urljoin
 from ...exceptions import ClientException
 from ..comment_forest import CommentForest
 from ..listing.mixins import SubmissionListingMixin
@@ -27,14 +27,10 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         Raise :class:`.ClientException` if URL is not a valid submission URL.
 
         """
-        parsed = urlparse(url)
-        if not parsed.netloc:
-            raise ClientException('Invalid URL: {}'.format(url))
-
-        parts = parsed.path.rstrip('/').split('/')
+        parts = RedditBase._url_parts(url)
         if 'comments' not in parts:
             submission_id = parts[-1]
-            if '/r/' in parsed.path:
+            if 'r' in parts:
                 raise ClientException('Invalid URL (subreddit, '
                                       'not submission): {}'.format(url))
         else:

@@ -48,7 +48,7 @@ class TestComment(UnitTest):
         assert str(excinfo.value) == message
 
     def test_construct_from_url(self):
-        url = 'reddit.com/comments/2gmzqe/_/cklhv0f/'
+        url = 'https://reddit.com/comments/2gmzqe/_/cklhv0f/'
         assert Comment(self.reddit, url=url) == 'cklhv0f'
 
     def test_hash(self):
