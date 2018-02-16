@@ -34,6 +34,10 @@ API_PATH = {
     'domain':                 'domain/{domain}/',
     'duplicates':             'duplicates/{submission_id}/',
     'edit':                   'api/editusertext/',
+    'emoji_delete':           'api/v1/{subreddit}/emoji/{emoji_name}',
+    'emoji_lease':            'api/v1/{subreddit}/emoji_asset_upload_s3.json',
+    'emoji_list':             'api/v1/{subreddit}/emojis/all',
+    'emoji_upload':           'api/v1/{subreddit}/emoji.json',
     'flair':                  'r/{subreddit}/api/flair/',
     'flairconfig':            'r/{subreddit}/api/flairconfig/',
     'flaircsv':               'r/{subreddit}/api/flaircsv/',
@@ -171,11 +175,7 @@ API_PATH = {
     'wiki_page_revisions':    'r/{subreddit}/wiki/revisions/{page}',
     'wiki_page_settings':     'r/{subreddit}/wiki/settings/{page}',
     'wiki_pages':             'r/{subreddit}/wiki/pages/',
-    'wiki_revisions':         'r/{subreddit}/wiki/revisions/',
-    'emoji_upload':           'api/v1/{subreddit}/emoji.json',
-    'emoji_delete':           'api/v1/{subreddit}/emoji/{emoji_name}',
-    'emoji_lease':            'api/v1/{subreddit}/emoji_asset_upload_s3.json',
-    'emoji_list':             'api/v1/{subreddit}/emojis/all'}
+    'wiki_revisions':         'r/{subreddit}/wiki/revisions/'}
 
 JPEG_HEADER = b'\xff\xd8\xff'
 MAX_IMAGE_SIZE = 512000
