@@ -37,4 +37,5 @@ Source Contributors
 - guaneec `@guaneec <https://github.com/guaneec>`_
 - Jason Woodrich `@jwoodrich <https://github.com/jwoodrich>`_
 - Andrew Arnold `@asquared31415 <https://github.com/asquared31415>`_
+- bakonydraco `@bakonydraco <https://github.com/bakonydraco>`_
 - Add "Name <email (optional)> and github profile link" above this line.
