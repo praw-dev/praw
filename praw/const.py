@@ -171,7 +171,11 @@ API_PATH = {
     'wiki_page_revisions':    'r/{subreddit}/wiki/revisions/{page}',
     'wiki_page_settings':     'r/{subreddit}/wiki/settings/{page}',
     'wiki_pages':             'r/{subreddit}/wiki/pages/',
-    'wiki_revisions':         'r/{subreddit}/wiki/revisions/'}
+    'wiki_revisions':         'r/{subreddit}/wiki/revisions/',
+    'emoji_upload':           'api/v1/{subreddit}/emoji.json',
+    'emoji_delete':           'api/v1/{subreddit}/emoji/{emoji_name}',
+    'emoji_lease':            'api/v1/{subreddit}/emoji_asset_upload_s3.json',
+    'emoji_list':             'api/v1/{subreddit}/emojis/all'}
 
 JPEG_HEADER = b'\xff\xd8\xff'
 MAX_IMAGE_SIZE = 512000
