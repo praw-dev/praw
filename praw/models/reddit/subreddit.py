@@ -401,7 +401,12 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             self._reddit.config.reddit_url, path))
 
     def submissions(self, start=None, end=None, extra_query=None):
-        """Yield submissions created between timestamps ``start`` and ``end``.
+        """(DEPRECATED) Yield submissions created between timestamps.
+
+        .. warning:: (Deprecated) The API endpoint backing this feature is
+                     slated to be removed around March 15, 2018. As a result,
+                     this method will be removed in the next major version of
+                     PRAW.
 
         :param start: A UNIX timestamp indicating the earliest creation time of
             submission yielded during the call. A value of ``None`` will
