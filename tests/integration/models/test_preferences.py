@@ -23,7 +23,7 @@ class TestPreferences(IntegrationTest):
 
     @mock.patch('time.sleep', return_value=None)
     def test_update(self, _):
-        # boolean params — as many as are reproducible on multiple accounts.
+        # boolean params, as many as are reproducible on multiple accounts.
         bool_params = ('allow_clicktracking',
                        'beta', 'clickgadget', 'collapse_read_messages',
                        'compress', 'creddit_autorenew', 'domain_details',
