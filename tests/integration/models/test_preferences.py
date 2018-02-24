@@ -73,9 +73,9 @@ class TestPreferences(IntegrationTest):
                 assert response[param] == 3
             for param in bool_params:
                 response = preferences.update(**{param: True})
-                assert response[param] == True
+                assert response[param] is True
                 response = preferences.update(**{param: False})
-                assert response[param] == False
+                assert response[param] is False
             for param, values in str_params.items():
                 response = preferences.update(**{param: values[0]})
                 assert response[param] == values[0]
