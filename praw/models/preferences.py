@@ -89,7 +89,7 @@ class Preferences(object):
         :param hide_locationbar: Hide location bar (boolean).
         :param hide_ups: Don't show me submissions after I've upvoted them,
             except my own (boolean).
-        :param highlight_controversial: Show a dagger (†) on comments voted
+        :param highlight_controversial: Show a dagger on comments voted
             controversial (boolean).
         :param highlight_new_comments: Highlight new comments (boolean).
         :param ignore_suggested_sort: Ignore suggested sorts (boolean).
