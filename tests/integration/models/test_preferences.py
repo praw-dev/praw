@@ -49,10 +49,10 @@ class TestPreferences(IntegrationTest):
         int_params = ('min_comment_score', 'min_link_score', 'num_comments',
                       'numsites')
         # parameters that accept string types, and two valid values
-        str_params = {'default_comment_sort': ('confidence', 'top'),
-                      'lang': ('es', 'en'),
-                      'media': ('on', 'off'),
-                      'media_preview': ('on', 'off')}
+        str_params = (('default_comment_sort', ('confidence', 'top')),
+                      ('lang', ('es', 'en')),
+                      ('media', ('on', 'off')),
+                      ('media_preview', ('on', 'off')))
 
         # there are also subreddit-name parameters related to the Gold
         # styling feature. It's impractical to test for that because not every
@@ -76,7 +76,7 @@ class TestPreferences(IntegrationTest):
                 assert response[param] is True
                 response = preferences.update(**{param: False})
                 assert response[param] is False
-            for param, values in str_params.items():
+            for param, values in str_params:
                 response = preferences.update(**{param: values[0]})
                 assert response[param] == values[0]
                 response = preferences.update(**{param: values[1]})
