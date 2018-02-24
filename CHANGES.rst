@@ -4,6 +4,14 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* Add method :meth:`~.Reddit.patch` to :class:`.Reddit` class to support HTTP
+  PATCH requests.
+* Add class :class:`.Preferences` to access and update Reddit preferences.
+* Add attribute :attr:`.User.preferences` to access an instance of
+  :class:`.Preferences`.
+
 **Deprecated**
 
 * ``subreddit.submissions`` as the API endpoint backing the method is going
@@ -20,7 +28,7 @@ Unreleased
   :class:`.Submission` objects.
 * Fix bug where ``subreddit.submissions()`` returns a same submission more than
   once
-  * Fix bug where ``ListingGenerator`` fetches the same batch of submissions in
+* Fix bug where ``ListingGenerator`` fetches the same batch of submissions in
   an infinite loop when ``'before'`` parameter is provided.
 
 **Removed**

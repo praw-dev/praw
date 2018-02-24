@@ -8,6 +8,7 @@ from .listing.domain import DomainListing  # NOQA
 from .listing.generator import ListingGenerator  # NOQA
 from .listing.listing import Listing  # NOQA
 from .modaction import ModAction  # NOQA
+from .preferences import Preferences  # NOQA
 from .reddit.comment import Comment  # NOQA
 from .reddit.live import LiveThread, LiveUpdate  # NOQA
 from .reddit.message import Message, SubredditMessage  # NOQA
@@ -26,6 +27,6 @@ from .user import User  # NOQA
 __all__ = ('Auth', 'Comment', 'DomainListing', 'Front', 'Inbox', 'Listing',
            'ListingGenerator', 'LiveHelper', 'LiveThread', 'Message',
            'ModAction', 'ModmailConversation', 'MoreComments', 'Multireddit',
-           'MultiredditHelper', 'Redditor', 'RedditorList', 'Stylesheet',
-           'Submission', 'Subreddit', 'SubredditHelper', 'SubredditMessage',
-           'Subreddits', 'User', 'WikiPage')
+           'MultiredditHelper', 'Preferences', 'Redditor', 'RedditorList',
+           'Stylesheet', 'Submission', 'Subreddit', 'SubredditHelper',
+           'SubredditMessage', 'Subreddits', 'User', 'WikiPage')
