@@ -4,6 +4,14 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* Add method :meth:`~.Reddit.patch` to :class:`.Reddit` class to support HTTP
+  PATCH requests.
+* Add class :class:`.Preferences` to access and update Reddit preferences.
+* Add attribute :attr:`.User.preferences` to access an instance of
+  :class:`.Preferences`.
+
 **Deprecated**
 
 * ``subreddit.submissions`` as the API endpoint backing the method is going
