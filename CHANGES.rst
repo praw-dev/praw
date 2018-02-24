@@ -20,7 +20,7 @@ Unreleased
   :class:`.Submission` objects.
 * Fix bug where ``subreddit.submissions()`` returns a same submission more than
   once
-  * Fix bug where ``ListingGenerator`` fetches the same batch of submissions in
+* Fix bug where ``ListingGenerator`` fetches the same batch of submissions in
   an infinite loop when ``'before'`` parameter is provided.
 
 **Removed**
