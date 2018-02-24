@@ -8,8 +8,24 @@ class Preferences(object):
     """A class for Reddit preferences.
 
     The Preferences class provides access to the Reddit preferences of the
-    currently logged in user.
+    currently authenticated user.
     """
+
+    def __call__(self):
+        """Return the preference settings of the authenticated user as a dict.
+
+        This method is intended to be accessed as ``reddit.user.preferences()``
+        like so:
+
+        .. code-block:: python
+
+           preferences = reddit.user.preferences()
+           print(preferences['show_link_flair'])
+
+        See https://www.reddit.com/dev/api#GET_api_v1_me_prefs for the list
+        of possible values.
+        """
+        return self._reddit.get(API_PATH['preferences'])
 
     def __init__(self, reddit):
         """Create a Preferences instance.
@@ -18,23 +34,7 @@ class Preferences(object):
         """
         self._reddit = reddit
 
-    def __call__(self):
-        """Return the preference settings of the logged in user as a dict.
-
-        This is intended to be accessed as ``reddit.user.preferences()``
-        like so:
-
-        .. code-block:: python
-
-           prefs = reddit.user.preferences()
-           print(prefs['show_link_flair'])
-
-        See https://www.reddit.com/dev/api#GET_api_v1_me_prefs for the list
-        of possible values.
-        """
-        return self._reddit.get(API_PATH['prefs'])
-
-    def update(self, **prefs):
+    def update(self, **preferences):
         """Modify the specified settings.
 
         :param 3rd_party_data_personalized_ads: Allow Reddit to use data
@@ -168,9 +168,9 @@ class Preferences(object):
 
         .. code-block:: python
 
-           original_prefs = reddit.user.preferences()
-           new_prefs = reddit.user.preferences.update(invalid_param=123)
-           print(original_prefs == new_prefs)  # True; there was no change
+           original_preferences = reddit.user.preferences()
+           new_preferences = reddit.user.preferences.update(invalid_param=123)
+           print(original_preferences == new_preferences)  # True, no change
 
         .. warning:: Passing an unknown parameter name or an illegal value
                      (such as an int when a boolean is expected) does not
@@ -180,6 +180,15 @@ class Preferences(object):
                      method, which is a dict of the preferences after the
                      update action has been performed.
 
+        Some preferences have names that are not valid keyword arguments in
+        Python. To update these, construct a ``dict`` and use ``**`` to unpack
+        it as keyword arguments:
+
+        .. code-block:: python
+
+           reddit.user.preferences.update(
+                **{'3rd_party_data_personalized_ads': False})
+
         """
-        return self._reddit.patch(API_PATH['prefs'],
-                                  data=dict(json=dumps(prefs)))
+        return self._reddit.patch(API_PATH['preferences'],
+                                  data={'json': dumps(preferences)})

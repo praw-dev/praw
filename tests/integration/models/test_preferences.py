@@ -10,16 +10,15 @@ class TestPreferences(IntegrationTest):
         assert isinstance(prefs_obj, Preferences)
 
     def test_view(self):
-        some_known_keys = ('allow_clicktracking', 'default_comment_sort',
+        some_known_keys = {'allow_clicktracking', 'default_comment_sort',
                            'hide_from_robots', 'lang', 'no_profanity',
-                           'over_18', 'public_votes', 'show_link_flair')
+                           'over_18', 'public_votes', 'show_link_flair'}
 
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestPreferences.test_view'):
             prefs_dict = self.reddit.user.preferences()
         assert isinstance(prefs_dict, dict)
-        for known_key in some_known_keys:
-            assert known_key in prefs_dict
+        assert some_known_keys.issubset(prefs_dict)
 
     @mock.patch('time.sleep', return_value=None)
     def test_update(self, _):

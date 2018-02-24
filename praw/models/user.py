@@ -1,10 +1,10 @@
 """Provides the User class."""
+from ..const import API_PATH
+from ..models import Preferences
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .reddit.redditor import Redditor
 from .reddit.subreddit import Subreddit
-from ..const import API_PATH
-from ..models import Preferences
 
 
 class User(PRAWBase):
@@ -18,8 +18,8 @@ class User(PRAWBase):
 
         .. code-block:: python
 
-           prefs = reddit.user.preferences()
-           print(prefs['show_link_flair'])
+           preferences = reddit.user.preferences()
+           print(preferences['show_link_flair'])
 
         Preferences can be updated via:
 
@@ -34,9 +34,9 @@ class User(PRAWBase):
 
         .. code-block:: python
 
-           original_prefs = reddit.user.preferences()
-           new_prefs = reddit.user.preferences.update(invalid_param=123)
-           print(original_prefs == new_prefs)  # True; there was no change
+           original_preferences = reddit.user.preferences()
+           new_preferences = reddit.user.preferences.update(invalid_param=123)
+           print(original_preferences == new_preferences)  # True, no change
 
 
         """

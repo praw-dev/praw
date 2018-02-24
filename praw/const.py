@@ -114,7 +114,7 @@ API_PATH = {
     'multireddit_update':     'api/multi/user/{user}/m/{multi}/r/{subreddit}',
     'multireddit_user':       'api/multi/user/{user}/',
     'mute_sender':            'api/mute_message_author/',
-    'prefs':                  'api/v1/me/prefs',
+    'preferences':            'api/v1/me/prefs',
     'quarantine_opt_in':      'api/quarantine_optin',
     'quarantine_opt_out':     'api/quarantine_optout',
     'read_message':           'api/read_message/',
