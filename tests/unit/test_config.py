@@ -99,5 +99,5 @@ class TestConfig(object):
         assert str(excinfo.value) == 'No short domain specified.'
 
     def test_unset_value_has_useful_string_representation(self):
-        config = Config('DEFAULT')
+        config = Config('DEFAULT', password=Config.CONFIG_NOT_SET)
         assert str(config.password) == 'NotSet'
