@@ -3,6 +3,7 @@ import types
 import mock
 import pytest
 from praw import __version__, Reddit
+from praw.config import Config
 from praw.const import configparser
 from praw.exceptions import ClientException
 from prawcore import Requestor
@@ -112,7 +113,7 @@ class TestReddit(UnitTest):
         for setting in self.REQUIRED_DUMMY_SETTINGS:
             with pytest.raises(ClientException) as excinfo:
                 settings = self.REQUIRED_DUMMY_SETTINGS.copy()
-                del settings[setting]
+                settings[setting] = Config.CONFIG_NOT_SET
                 Reddit(**settings)
             assert str(excinfo.value).startswith('Required configuration '
                                                  'setting \'{}\' missing.'
