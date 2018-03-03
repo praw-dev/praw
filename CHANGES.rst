@@ -11,6 +11,7 @@ Unreleased
 * Add class :class:`.Preferences` to access and update Reddit preferences.
 * Add attribute :attr:`.User.preferences` to access an instance of
   :class:`.Preferences`.
+* Add method :meth:`.Message.delete()`.
 
 **Deprecated**
 
