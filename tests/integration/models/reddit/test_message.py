@@ -45,16 +45,8 @@ class TestMessage(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
     def test_delete(self, _):
         self.reddit.read_only = False
-        subject = 'Test message from TestMessage.test_delete in PRAW tests'
         with self.recorder.use_cassette('TestMessage.test_delete'):
-            self.reddit.user.me().message(subject, 'delete!')
-            message = None
-            for item in self.reddit.inbox.messages():
-                if item.subject == subject:
-                    message = item
-                    break
-            else:
-                assert False, "couldn't get message sent in test"
+            message = next(self.reddit.inbox.messages())
             message.delete()
 
     @mock.patch('time.sleep', return_value=None)
