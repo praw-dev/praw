@@ -26,6 +26,7 @@ API_PATH = {
     'contest_mode':           'api/set_contest_mode/',
     'del':                    'api/del/',
     'deleteflair':            'r/{subreddit}/api/deleteflair',
+    'delete_message':         'api/del_msg',
     'delete_sr_banner':       'r/{subreddit}/api/delete_sr_banner',
     'delete_sr_header':       'r/{subreddit}/api/delete_sr_header',
     'delete_sr_icon':         'r/{subreddit}/api/delete_sr_icon',
