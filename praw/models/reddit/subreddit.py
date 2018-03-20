@@ -318,13 +318,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
            for emoji in reddit.subreddit('iama').emoji:
                print(emoji)
 
-        To fetch the URL for a given emoji try:
-
-        .. code:: python
-
-           emoji = reddit.subreddit('iama').emoji['cake ']
-           print(wikipage.url)
-
         """
         if self._emoji is None:
             self._emoji = SubredditEmoji(self)
@@ -2177,7 +2170,7 @@ class SubredditWiki(object):
 
 
 class SubredditEmoji(object):
-    """Provides a set of moderation functions to a Subreddit."""
+    """Provides a set of moderation functions to a Subreddit for emoji."""
 
     def __getitem__(self, name):
         """Lazily return the Emoji for the subreddit named ``name``.
