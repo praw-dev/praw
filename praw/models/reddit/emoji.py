@@ -2,6 +2,7 @@
 from ...const import API_PATH
 from .base import RedditBase
 
+
 class Emoji(RedditBase):
     """An individual Emoji object."""
 
