@@ -2179,19 +2179,18 @@ class SubredditWiki(object):
 class SubredditEmoji(object):
     """Provides a set of moderation functions to a Subreddit."""
 
-    def __getitem__(self, page_name):
-        """Lazily return the Emoji for the subreddit named ``page_name``.
+    def __getitem__(self, name):
+        """Lazily return the Emoji for the subreddit named ``name``.
 
         This method is to be used to fetch a specific emoji url, like so:
 
         .. code:: python
 
-           emoji = reddit.subreddit('iama').wiki['cake']
-           print(wikipage.url)
+           emoji = reddit.subreddit('iama').emoji['cake']
+           print(emoji)
 
         """
-        return Emoji(self.subreddit._reddit, self.subreddit,
-                        emoji.lower())
+        return Emoji(self.subreddit._reddit, self.subreddit, name.lower())
 
     def __init__(self, subreddit):
         """Create a SubredditModeration instance.
