@@ -1,9 +1,6 @@
 """Provide the EMOJI class."""
 from ...const import API_PATH
-from ..listing.generator import ListingGenerator
 from .base import RedditBase
-from .redditor import Redditor
-
 
 class Emoji(RedditBase):
     """An individual Emoji object."""
@@ -39,7 +36,7 @@ class EmojiModeration(object):
     def add(self, filepath):
         """Add an emoji to this subreddit.
 
-        :param redditor: An emoji name (e.g., ``'cake'``) or
+        :param emoji: An emoji name (e.g., ``'cake'``) or
             :class:`~.Emoji` instance.
 
         To add ``'cake'`` as an editor on the wikipage ``'praw_test'`` try:
@@ -73,4 +70,4 @@ class EmojiModeration(object):
         """
         url = API_PATH['emoji_delete'].format(
             subreddit=self.subreddit, emoji_name=self.name, method='del')
-        self._reddit.post(url)  
+        self._reddit.post(url)
