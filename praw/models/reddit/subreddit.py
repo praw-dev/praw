@@ -333,6 +333,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
            an instance via: ``reddit.subreddit('subreddit_name')``
 
         """
+        self._emoji = None
         if bool(display_name) == bool(_data):
             raise TypeError(
                 'Either `display_name` or `_data` must be provided.')
@@ -2170,7 +2171,7 @@ class SubredditWiki(object):
 
 
 class SubredditEmoji(object):
-    """Provides a set of moderation functions to a Subreddit for emoji."""
+    """Provides a set of functions to a Subreddit for emoji."""
 
     def __getitem__(self, name):
         """Lazily return the Emoji for the subreddit named ``name``.
@@ -2204,8 +2205,7 @@ class SubredditEmoji(object):
                print(emoji)
 
         """
-        response = self.subreddit._reddit.get(
-            API_PATH['emoji_list'].format(subreddit=self.subreddit),
-            params={'unique': self.subreddit._reddit._next_unique})
-        for emoji_name in response[self.subreddit]:
-            yield Emoji(self.subreddit._reddit, self.subreddit, emoji_name)
+        response = self.subreddit.fullname._reddit.get(
+            API_PATH['emoji_list'].format(subreddit=self.subreddit))
+        for emoji_name, emoji_data in response[self.subreddit.fullname].items():
+            yield Emoji(self.subreddit._reddit, self.subreddit, emoji_name, _data=emoji_data)
