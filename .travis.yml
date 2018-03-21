@@ -19,5 +19,5 @@ sudo: false
 script:
   - flake8 --exclude=docs,.eggs
   - pydocstyle praw
-  - if [ "$TRAVIS_PYTHON_VERSION" != "3.3" ]; then sphinx-build -W docs/ /tmp/foo; fi
+  - sphinx-build -W docs/ /tmp/foo
   - coverage run --source=praw setup.py test
