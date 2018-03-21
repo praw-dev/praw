@@ -43,13 +43,13 @@ class TestEmoji(UnitTest):
                       name='x')
         for level in range(pickle.HIGHEST_PROTOCOL + 1):
             other = pickle.loads(pickle.dumps(emoji, protocol=level))
-            assert page == other
+            assert emoji == other
 
     def test_repr(self):
         emoji = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'a'),
                       name='x')
         assert repr(emoji) == ('Emoji(subreddit=Subreddit(display_name=\'a\''
-                              '), name=\'x\')')
+                               '), name=\'x\')')
 
     def test_str(self):
         emoji = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'a'),
