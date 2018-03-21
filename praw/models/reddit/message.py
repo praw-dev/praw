@@ -45,6 +45,15 @@ class Message(RedditBase, InboxableMixin, ReplyableMixin):
         super(Message, self).__init__(reddit, _data)
         self._fetched = True
 
+    def delete(self):
+        """Delete the message.
+
+        .. note:: Reddit does not return an indication of whether or not the
+                  message was successfully deleted.
+        """
+        self._reddit.post(API_PATH['delete_message'],
+                          data={'id': self.fullname})
+
 
 class SubredditMessage(Message):
     """A class for messages to a subreddit."""

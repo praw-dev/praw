@@ -418,6 +418,17 @@ class Reddit(object):
             except Exception:
                 raise TypeError('Invalid URL or no posts exist')
 
+    def patch(self, path, data=None):
+        """Return parsed objects returned from a PATCH request to ``path``.
+
+        :param path: The path to fetch.
+        :param data: Dictionary, bytes, or file-like object to send in the body
+            of the request (default: None).
+
+        """
+        data = self.request('PATCH', path, data=data)
+        return self._objector.objectify(data)
+
     def post(self, path, data=None, files=None, params=None):
         """Return parsed objects returned from a POST request to ``path``.
 

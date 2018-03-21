@@ -1,5 +1,6 @@
 """Provides the User class."""
 from ..const import API_PATH
+from ..models import Preferences
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .reddit.redditor import Redditor
@@ -9,6 +10,40 @@ from .reddit.subreddit import Subreddit
 class User(PRAWBase):
     """The user class provides methods for the currently authenticated user."""
 
+    @property
+    def preferences(self):
+        """Get an instance of :class:`.Preferences`.
+
+        The preferences can be accessed as a ``dict`` like so:
+
+        .. code-block:: python
+
+           preferences = reddit.user.preferences()
+           print(preferences['show_link_flair'])
+
+        Preferences can be updated via:
+
+        .. code-block:: python
+
+           reddit.user.preferences.update(show_link_flair=True)
+
+        The :meth:`.Preferences.update` method returns the new state of the
+        preferences as a ``dict``, which can be used to check whether a
+        change went through. Changes with invalid types or parameter names
+        fail silently.
+
+        .. code-block:: python
+
+           original_preferences = reddit.user.preferences()
+           new_preferences = reddit.user.preferences.update(invalid_param=123)
+           print(original_preferences == new_preferences)  # True, no change
+
+
+        """
+        if self._preferences is None:
+            self._preferences = Preferences(self._reddit)
+        return self._preferences
+
     def __init__(self, reddit):
         """Initialize a User instance.
 
@@ -16,7 +51,7 @@ class User(PRAWBase):
 
         """
         super(User, self).__init__(reddit, None)
-        self._me = None
+        self._me = self._preferences = None
 
     def blocked(self):
         """Return a RedditorList of blocked Redditors."""

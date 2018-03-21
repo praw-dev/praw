@@ -19,7 +19,8 @@ class TestAuthWeb(IntegrationTest):
         self.reddit = Reddit(client_id=pytest.placeholders.client_id,
                              client_secret=pytest.placeholders.client_secret,
                              redirect_uri=pytest.placeholders.redirect_uri,
-                             user_agent=pytest.placeholders.user_agent)
+                             user_agent=pytest.placeholders.user_agent,
+                             username=None)
 
     def test_authorize(self):
         with self.recorder.use_cassette('TestAuthWeb.test_authorize'):

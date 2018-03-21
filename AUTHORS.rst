@@ -8,6 +8,7 @@ Team Members
 ============
 
 - Ethan Dalool <edalool@yahoo.com> `@voussoir <https://github.com/voussoir>`_
+- Joe RH <jarhill0@gmail.com> `@jarhill0 <https://github.com/jarhill0>`_
 
 
 Documentation Contributors
@@ -31,7 +32,6 @@ Source Contributors
 - Keith Diedrick <kediedrick@gmail.com> `@darthkedrik <https://github.com/darthkedrik>`_
 - elnuno `@elnuno <https://github.com/elnuno>`_
 - Robbie Gibson `@rkgibson2 <https://github.com/rkgibson2>`_
-- jarhill0 `@jarhill0 <https://github.com/jarhill0>`_
 - Mike Wohlrab `@D0cR3d <https://github.com/D0cR3d>`_
 - Matthew Lee `@kwwxis <https://github.com/kwwxis>`_
 - guaneec `@guaneec <https://github.com/guaneec>`_

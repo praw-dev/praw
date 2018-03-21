@@ -63,6 +63,7 @@ instances of them bound to an attribute of one of the PRAW models.
    other/listinggenerator
    other/modmail
    other/modmailmessage
+   other/preferences
    other/redditbase
    other/redditorlist
    other/sublisting

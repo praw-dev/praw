@@ -43,6 +43,13 @@ class TestMessage(IntegrationTest):
             message.block()
 
     @mock.patch('time.sleep', return_value=None)
+    def test_delete(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestMessage.test_delete'):
+            message = next(self.reddit.inbox.messages())
+            message.delete()
+
+    @mock.patch('time.sleep', return_value=None)
     def test_mark_read(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestMessage.test_mark_read'):
