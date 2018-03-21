@@ -7,6 +7,7 @@ class Emoji(RedditBase):
     """An individual Emoji object."""
 
     __hash__ = RedditBase.__hash__
+    STR_FIELD = 'name'
 
     @property
     def mod(self):
