@@ -48,19 +48,20 @@ class EmojiModeration(object):
            reddit.subreddit('test').wiki['praw_test'].mod.add('cake')
 
         """
+        data = None
         if filepath[-4:].lower() == '.png':
             data = {'filepath': filepath, 'mimetype': 'image/png'}
         elif filepath[-4:].lower() == '.jpg' \
                 or filepath[-4:].lower() == '.jpeg':
             data = {'filepath': filepath, 'mimetype': 'image/jpeg'}
-        else: break
-        url = API_PATH['emoji_lease'].format(
-            subreddit=self.subreddit, method='add')
-        s3_key = self._reddit.post(url, data=data)['s3_key']
-        data = {'name': self.name, 's3_key': s3_key}
-        url = API_PATH['emoji_upload'].format(
-            subreddit=self.subreddit, method='add')
-        self._reddit.post(url, data=data)
+        if data is not None:
+            url = API_PATH['emoji_lease'].format(
+                subreddit=self.subreddit, method='add')
+            s3_key = self._reddit.post(url, data=data)['s3_key']
+            data = {'name': self.name, 's3_key': s3_key}
+            url = API_PATH['emoji_upload'].format(
+                subreddit=self.subreddit, method='add')
+            self._reddit.post(url, data=data)
 
     def remove(self):
         """Remove an emoji from this subreddit.
