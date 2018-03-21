@@ -2207,7 +2207,7 @@ class SubredditEmoji(object):
         """
         response = self.subreddit.fullname._reddit.get(
             API_PATH['emoji_list'].format(subreddit=self.subreddit))
-        for emoji_name, emoji_data in
+        for emoji_name, emoji_data in \
                 response[self.subreddit.fullname].items():
             yield Emoji(self.subreddit._reddit,
                 self.subreddit, emoji_name, _data=emoji_data)
