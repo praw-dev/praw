@@ -1,7 +1,7 @@
 import pickle
 
 import pytest
-from praw.models import Subreddit, WikiPage
+from praw.models import Subreddit, WikiPage, Emoji
 
 from ... import UnitTest
 
@@ -94,7 +94,8 @@ class TestSubredditWiki(UnitTest):
         wikipage = subreddit.wiki['Foo']
         assert isinstance(wikipage, WikiPage)
         assert 'foo' == wikipage.name
-        
+
+
 class TestSubredditEmoji(UnitTest):
     def test__getitem(self):
         subreddit = Subreddit(self.reddit, display_name='name')
