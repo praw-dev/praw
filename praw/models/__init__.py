@@ -25,8 +25,8 @@ from .subreddits import Subreddits  # NOQA
 from .user import User  # NOQA
 
 __all__ = ('Auth', 'Comment', 'DomainListing', 'Emoji', 'Front', 'Inbox',
-           'Listing', 'ListingGenerator', 'LiveHelper', 'LiveThread', 'Message',
-           'ModAction', 'ModmailConversation', 'MoreComments', 'Multireddit',
-           'MultiredditHelper', 'Redditor', 'RedditorList', 'Stylesheet',
-           'Submission', 'Subreddit', 'SubredditHelper', 'SubredditMessage',
-           'Subreddits', 'User', 'WikiPage')
+           'Listing', 'ListingGenerator', 'LiveHelper', 'LiveThread',
+           'Message', 'ModAction', 'ModmailConversation', 'MoreComments',
+           'Multireddit', 'MultiredditHelper', 'Redditor', 'RedditorList',
+           'Stylesheet', 'Submission', 'Subreddit', 'SubredditHelper',
+           'SubredditMessage', 'Subreddits', 'User', 'WikiPage')
