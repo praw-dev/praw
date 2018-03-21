@@ -104,3 +104,4 @@ class TestSubredditEmoji(UnitTest):
         assert 'foo' == emoji.name
         for emoji in subreddit.emoji:
             assert(isinstance(emoji,Emoji))
+ 
