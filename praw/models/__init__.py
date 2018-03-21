@@ -8,6 +8,7 @@ from .listing.domain import DomainListing  # NOQA
 from .listing.generator import ListingGenerator  # NOQA
 from .listing.listing import Listing  # NOQA
 from .modaction import ModAction  # NOQA
+from .preferences import Preferences  # NOQA
 from .reddit.comment import Comment  # NOQA
 from .reddit.emoji import Emoji  # NOQA
 from .reddit.live import LiveThread, LiveUpdate  # NOQA
