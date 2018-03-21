@@ -2210,4 +2210,4 @@ class SubredditEmoji(object):
         for emoji_name, emoji_data in \
                 response[self.subreddit.fullname].items():
             yield Emoji(self.subreddit._reddit,
-                self.subreddit, emoji_name, _data=emoji_data)
+                        self.subreddit, emoji_name, _data=emoji_data)
