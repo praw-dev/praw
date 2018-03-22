@@ -2210,7 +2210,7 @@ class SubredditEmoji(object):
                print(emoji)
 
         """
-        response = self.subreddit.fullname._reddit.get(
+        response = self.subreddit._reddit.get(
             API_PATH['emoji_list'].format(subreddit=self.subreddit))
         for emoji_name, emoji_data in \
                 response[self.subreddit.fullname].items():
