@@ -1203,7 +1203,7 @@ class TestSubredditEmoji(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(
             pytest.placeholders.test_subreddit)
-        with self.recorder.use_cassette('TestSubredditEmoji.iter'):
+        with self.recorder.use_cassette('TestSubredditEmoji.test__iter'):
             count = 0
             for emoji in subreddit.emoji:
                 assert isinstance(emoji, Emoji)
