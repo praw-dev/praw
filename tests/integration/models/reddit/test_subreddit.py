@@ -3,7 +3,7 @@ from os.path import abspath, dirname, join
 import sys
 
 from praw.exceptions import APIException
-from praw.models import (Comment, ModAction, ModmailAction,
+from praw.models import (Comment, Emoji, ModAction, ModmailAction,
                          ModmailConversation, ModmailMessage, Redditor,
                          Submission, Subreddit, SubredditMessage, Stylesheet,
                          WikiPage)
@@ -1195,3 +1195,17 @@ class TestSubredditWiki(IntegrationTest):
                 assert isinstance(revision['author'], Redditor)
                 assert isinstance(revision['page'], WikiPage)
             assert count == 4
+
+
+class TestSubredditEmoji(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test__iter(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette('TestSubredditEmoji.iter'):
+            count = 0
+            for emoji in subreddit.emoji:
+                assert isinstance(emoji, Emoji)
+                count += 1
+            assert count > 0
