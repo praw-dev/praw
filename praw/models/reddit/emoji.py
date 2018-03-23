@@ -181,7 +181,7 @@ class SubredditEmoji(object):
                               self.subreddit, emoji_name, _data=emoji_data)
             self.emoji_list.append(emoji_cur)
 
-      def get_emoji(self, name):
+    def get_emoji(self, name):
         """Helper functiomn to get an emoji. Not meant for endusers.
 
         :param name: The name of the emoji
