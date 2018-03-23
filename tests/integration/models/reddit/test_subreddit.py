@@ -3,7 +3,7 @@ from os.path import abspath, dirname, join
 import sys
 
 from praw.exceptions import APIException
-from praw.models import (Comment, Emoji, ModAction, ModmailAction,
+from praw.models import (Comment, ModAction, ModmailAction,
                          ModmailConversation, ModmailMessage, Redditor,
                          Submission, Subreddit, SubredditMessage, Stylesheet,
                          WikiPage)
@@ -1195,40 +1195,3 @@ class TestSubredditWiki(IntegrationTest):
                 assert isinstance(revision['author'], Redditor)
                 assert isinstance(revision['page'], WikiPage)
             assert count == 4
-
-
-class TestSubredditEmoji(IntegrationTest):
-    @mock.patch('time.sleep', return_value=None)
-    def test__iter(self, _):
-        self.reddit.read_only = False
-        subreddit = self.reddit.subreddit(
-            pytest.placeholders.test_subreddit)
-        with self.recorder.use_cassette('TestSubredditEmoji.test__iter'):
-            count = 0
-            for emoji in subreddit.emoji:
-                assert isinstance(emoji, Emoji)
-                count += 1
-            assert count > 0
-
-    @mock.patch('time.sleep', return_value=None)
-    def test_add(self, _):
-        self.reddit.read_only = False
-        subreddit = self.reddit.subreddit(
-            pytest.placeholders.test_subreddit)
-        with self.recorder.use_cassette('TestSubredditEmoji.test_add'):
-            emojipng = subreddit.emoji.add('test_png',
-                                           'tests/integration/files/test.png')
-            assert isinstance(emojipng, Emoji)
-            emojijpg = subreddit.emoji.add('test_jpg',
-                                           'tests/integration/files/test.jpg')
-            assert isinstance(emojijpg, Emoji)
-
-    @mock.patch('time.sleep', return_value=None)
-    def test_remove(self, _):
-        self.reddit.read_only = False
-        subreddit = self.reddit.subreddit(
-            pytest.placeholders.test_subreddit)
-        with self.recorder.use_cassette('TestSubredditEmoji.test_remove'):
-            subreddit.emoji['test_png'].remove()
-            subreddit.emoji['test_jpg'].remove()
-            subreddit.emoji['test_fake'].remove()
