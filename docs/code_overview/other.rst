@@ -59,7 +59,6 @@ instances of them bound to an attribute of one of the PRAW models.
    other/commenthelper
    other/domainlisting
    other/emoji
-   other/emojimoderation
    other/listinggenerator
    other/modmail
    other/modmailmessage
