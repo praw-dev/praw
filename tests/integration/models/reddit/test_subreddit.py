@@ -1221,7 +1221,7 @@ class TestSubredditEmoji(IntegrationTest):
             assert isinstance(emojipng, Emoji)
             emojijpg = subreddit.emoji.add('test_jpg',
                                            'tests/integration/files/test.jpg')
-            assert isinstance(emojijpg, Emoji)                               
+            assert isinstance(emojijpg, Emoji)                         
 
     @mock.patch('time.sleep', return_value=None)
     def test_remove(self, _):
