@@ -14,7 +14,7 @@ class TestSubredditEmoji(IntegrationTest):
         with self.recorder.use_cassette('TestSubredditEmoji.test__call'):
             count = 0
             assert isinstance(subreddit.emoji, SubredditEmoji)
-            for emoji in subreddit.emoji():
+            for emoji in subreddit.emoji(use_cached=False):
                 assert isinstance(emoji, Emoji)
                 count += 1
             assert count > 0
@@ -26,7 +26,8 @@ class TestSubredditEmoji(IntegrationTest):
             pytest.placeholders.test_subreddit)
         with self.recorder.use_cassette('TestSubredditEmoji.test_add'):
             emojipng = subreddit.emoji.add('test_png',
-                                           'tests/integration/files/test.png')
+                                           'tests/integration/files/test.png',
+                                           use_cached=False)
             assert isinstance(emojipng, Emoji)
             emojijpg = subreddit.emoji.add('test_jpg',
                                            'tests/integration/files/test.jpg')
@@ -41,6 +42,8 @@ class TestSubredditEmoji(IntegrationTest):
             emoji = subreddit.emoji['test_png']
             assert isinstance(emoji, Emoji)
             assert 'test_png' == emoji.name
+            emoji = subreddit.emoji['test_fake']
+            assert emoji is None
 
     @mock.patch('time.sleep', return_value=None)
     def test_remove(self, _):
@@ -48,6 +51,6 @@ class TestSubredditEmoji(IntegrationTest):
         subreddit = self.reddit.subreddit(
             pytest.placeholders.test_subreddit)
         with self.recorder.use_cassette('TestSubredditEmoji.test_remove'):
-            subreddit.emoji.remove('test_png')
+            subreddit.emoji.remove('test_png', use_cached=False)
             subreddit.emoji.remove('test_jpg')
             subreddit.emoji.remove('test_fake')
