@@ -1,0 +1,220 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2018-03-23T05:34:53",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<TEST_SUBREDDIT>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "55"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/5.4.0.dev0 prawcore/0.14.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "105"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 23 Mar 2018 05:34:53 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-pao17425-PAO"
+          ],
+          "X-Timer": [
+            "S1521783293.103473,VS0,VE456"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "set-cookie": [
+            "session_tracker=Y2wJ4N4iEkUjrkuvpe.0.1521783293156.Z0FBQUFBQmF0Skg5elMxLTQ4UW9iN2I5N055UzEtZlFkeHFSbHA3YjI2b3ZSX0pXZGNXZGRZdDNyQWhUbnpaeWl5TDlkVEFabjhKWXBBT1FzVTB6QXllM0dyaUlXaHhuckZfa3BzT2o4TkYyMVFLQ2RlYUxCdlFIa2xHTlV6eTRZY1c1Tm9KWnZqWF8; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 07:34:53 GMT; secure",
+            "edgebucket=1fWcWIUNamQ2ihnhhU; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2018-03-23T05:34:54",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "0"
+          ],
+          "Cookie": [
+            "edgebucket=1fWcWIUNamQ2ihnhhU; session_tracker=Y2wJ4N4iEkUjrkuvpe.0.1521783293156.Z0FBQUFBQmF0Skg5elMxLTQ4UW9iN2I5N055UzEtZlFkeHFSbHA3YjI2b3ZSX0pXZGNXZGRZdDNyQWhUbnpaeWl5TDlkVEFabjhKWXBBT1FzVTB6QXllM0dyaUlXaHhuckZfa3BzT2o4TkYyMVFLQ2RlYUxCdlFIa2xHTlV6eTRZY1c1Tm9KWnZqWF8"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/5.4.0.dev0 prawcore/0.14.0"
+          ]
+        },
+        "method": "DELETE",
+        "uri": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emoji/test?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"json\": {\"errors\": []}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "24"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 23 Mar 2018 05:34:54 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-pao17442-PAO"
+          ],
+          "X-Timer": [
+            "S1521783294.717390,VS0,VE575"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=Y2wJ4N4iEkUjrkuvpe.0.1521783293791.Z0FBQUFBQmF0SkgtbDdnTTc4QlpvUXVmVEE3ZXZTd2RGQUdFNkx3MjBlbmJiQUZDcVRRb0l1d0doVnZfaFFkb19KWVFyWlFDdXVadEZGMkpxaVZ1T3U4N1RXQWg1azBzaGRIZE1zZUdzYklPNjc1aWxJaXhLZXZZejEtWk8xc09ic3U0MTdTOE5CSHM; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 07:34:54 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "595.0"
+          ],
+          "x-ratelimit-reset": [
+            "307"
+          ],
+          "x-ratelimit-used": [
+            "5"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emoji/test?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}
