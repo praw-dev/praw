@@ -1,5 +1,4 @@
 from praw.models import Emoji, SubredditEmoji
-from prawcore import NotFound
 import mock
 import pytest
 
@@ -14,6 +13,7 @@ class TestSubredditEmoji(IntegrationTest):
             pytest.placeholders.test_subreddit)
         with self.recorder.use_cassette('TestSubredditEmoji.test__call'):
             count = 0
+            assert isinstance(subreddit.emoji, SubredditEmoji)
             for emoji in subreddit.emoji():
                 assert isinstance(emoji, Emoji)
                 count += 1
