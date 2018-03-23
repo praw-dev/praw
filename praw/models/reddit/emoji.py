@@ -30,19 +30,28 @@ class Emoji(RedditBase):
 
         """
         data = None
-        if filepath[-4:].lower() == '.png':
+        if filepath.lower().endswith('.png'):
             data = {'filepath': filepath, 'mimetype': 'image/png'}
-        elif filepath[-4:].lower() == '.jpg' \
-                or filepath[-4:].lower() == '.jpeg':
+        elif filepath.lower().endswith('.jpg') \
+                or filepath.lower().endswith('.jpeg'):
             data = {'filepath': filepath, 'mimetype': 'image/jpeg'}
         if data is not None:
             url = API_PATH['emoji_lease'].format(
                 subreddit=self.subreddit, method='add')
-            s3_key = self._reddit.post(url, data=data)['s3UploadLease']['fields'][1]['value']
-            data = {'name': self.name, 's3_key': s3_key}
+            s3_lease = self._reddit.post(url, data=data)['s3UploadLease']
+            s3_url = 'https:' + s3_lease['action']
+            # get a raw requests.Session to contact non-reddit domain
+            http = self.subreddit._reddit._core._requestor._http
+            s3_parameters = dict((item['name'], item['value']) for item in s3_lease['fields'])
+            with open(filepath, 'rb') as file:
+                s3_parameters['file'] = file
+                http.post(s3_url, files=s3_parameters)
+            data = {'name': self.name, 's3_key': s3_parameters['key']}
+            # assign uploaded file to subreddit
             url = API_PATH['emoji_upload'].format(
                 subreddit=self.subreddit, method='add')
             self._reddit.post(url, data=data)
+
 
     def remove(self):
         """Remove an emoji from this subreddit.
@@ -58,5 +67,5 @@ class Emoji(RedditBase):
 
         """
         url = API_PATH['emoji_delete'].format(
-            subreddit=self.subreddit, emoji_name=self.name, method='del')
-        self._reddit.post(url)
+            subreddit=self.subreddit, emoji_name=self.name)
+        self._reddit.request('DELETE',url)
