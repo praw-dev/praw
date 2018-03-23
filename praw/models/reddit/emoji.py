@@ -1,4 +1,4 @@
-"""Provide the EMOJI class."""
+"""Provide the Emoji class."""
 from prawcore import Redirect
 
 from ...const import API_PATH
