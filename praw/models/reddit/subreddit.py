@@ -2190,7 +2190,10 @@ class SubredditEmoji(object):
            print(emoji)
 
         """
-        return Emoji(self.subreddit._reddit, self.subreddit, name.lower())
+        if e.name == name for e in self.subreddit.emoji:
+            return e for e in self.subreddit.emoji if e.name == name
+        else:
+            return None
 
     def __init__(self, subreddit):
         """Create a SubredditEmoji instance.
@@ -2255,3 +2258,19 @@ class SubredditEmoji(object):
             subreddit=self.subreddit)
         self.reddit.post(url, data=data)
         return Emoji(self.reddit, self.subreddit, name)
+
+    def remove(self, name):
+        """Remove an emoji from this subreddit.
+
+        To remove ``'cake'`` as an emoji on the subreddit ``'praw_test'`` try:
+
+        .. code:: python
+
+           reddit.subreddit('praw_test').emoji['cake'].remove()
+
+        """
+        emoji_remove = self.subreddit.emoji[name]
+        if emoji_remove is not None:
+            url = API_PATH['emoji_delete'].format(
+                subreddit=self.subreddit, emoji_name=name)
+            self._reddit.request('DELETE', url)
