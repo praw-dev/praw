@@ -26,6 +26,8 @@ class Emoji(RedditBase):
            reddit.subreddit('praw_test').emoji['cake'].remove()
 
         """
-        url = API_PATH['emoji_delete'].format(
-            subreddit=self.subreddit, emoji_name=self.name)
-        self._reddit.request('DELETE', url)
+        try:
+            url = API_PATH['emoji_delete'].format(
+                subreddit=self.subreddit, emoji_name=self.name)
+            self._reddit.request('DELETE', url)
+        except: pass
