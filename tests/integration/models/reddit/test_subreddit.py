@@ -1216,8 +1216,12 @@ class TestSubredditEmoji(IntegrationTest):
         subreddit = self.reddit.subreddit(
             pytest.placeholders.test_subreddit)
         with self.recorder.use_cassette('TestSubredditEmoji.test_add'):
-            assert isinstance(subreddit.emoji.add('test_png', 'tests/integration/files/test.png'), Emoji)
-            assert isinstance(subreddit.emoji.add('test_jpg', 'tests/integration/files/test.jpg'), Emoji)
+            emojipng = subreddit.emoji.add('test_png',
+                                           'tests/integration/files/test.png')
+            assert isinstance(emojipng, Emoji)
+            emojijpg = subreddit.emoji.add('test_jpg',
+                                           'tests/integration/files/test.jpg')
+            assert isinstance(emojijpg, Emoji)                               
 
     @mock.patch('time.sleep', return_value=None)
     def test_remove(self, _):
