@@ -87,7 +87,7 @@ class SubredditEmoji(object):
 
         """
         if not use_cached:
-            self.refresh()
+            self.refresh_emoji()
         return(self.emoji_list)
 
     def __getitem__(self, name):
@@ -104,7 +104,7 @@ class SubredditEmoji(object):
         for e in self.emoji_list:
             if e.name == name:
                 return e
-        self.refresh()
+        self.refresh_emoji()
         for e in self.emoji_list:
             if e.name == name:
                 return e
@@ -119,7 +119,7 @@ class SubredditEmoji(object):
         self.subreddit = subreddit
         self.reddit = self.subreddit._reddit
         self.emoji_list = []
-        self.refresh()
+        self.refresh_emoji()
 
     def add(self, name, filepath, use_cached=True):
         """Add an emoji to this subreddit.
@@ -137,7 +137,7 @@ class SubredditEmoji(object):
 
         """
         if not use_cached:
-            self.refresh()
+            self.refresh_emoji()
         emoji_add = Emoji(self.reddit, self.subreddit, name)
         emoji_add.add(filepath)
         return(emoji_add)
@@ -156,11 +156,11 @@ class SubredditEmoji(object):
 
         """
         if not use_cached:
-            self.refresh()
+            self.refresh_emoji()
         emoji_remove = Emoji(self.reddit, self.subreddit, name)
         emoji_remove.remove()
 
-    def refresh(self):
+    def refresh_emoji(self):
         """Fetch the current emoji for the subreddit. Not meant for endusers.
 
         To refresh emoji on the subreddit ``'praw_test'`` try:
