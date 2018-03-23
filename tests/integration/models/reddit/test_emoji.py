@@ -1,9 +1,8 @@
-from praw.models import Redditor, Emoji
-from prawcore import NotFound
-import mock
+from praw.models import Emoji
 import pytest
 
 from ... import IntegrationTest
+
 
 class TestEmojiModeration(IntegrationTest):
     def test_add(self):
