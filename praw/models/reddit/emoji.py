@@ -10,12 +10,6 @@ class Emoji(RedditBase):
     STR_FIELD = 'name'
 
     @property
-    def mod(self):
-        """Provide an instance of :class:`.EmojiModeration`."""
-        if self._mod is None:
-            self._mod = EmojiModeration(self)
-        return self._mod
-
     def __init__(self, reddit, subreddit, name, _data=None):
         """Construct an instance of the Emoji object."""
         self.name = name
@@ -23,29 +17,17 @@ class Emoji(RedditBase):
         super(Emoji, self).__init__(reddit, _data)
         self._mod = None
 
-
-class EmojiModeration(object):
-    """Provides a set of moderation functions for an Emoji."""
-
-    def __init__(self, emoji):
-        """Create an EmojiModeration instance.
-
-        :param emoji: The emoji to moderate.
-
-        """
-        self.emoji = emoji
-
     def add(self, filepath):
         """Add an emoji to this subreddit.
 
         :param emoji: An emoji name (e.g., ``'cake'``) or
             :class:`~.Emoji` instance.
 
-        To add ``'cake'`` as an editor on the wikipage ``'praw_test'`` try:
+        To add ``'cake'`` to the subreddit ``'praw_test'`` try:
 
         .. code:: python
 
-           reddit.subreddit('test').wiki['praw_test'].mod.add('cake')
+           reddit.subreddit('praw_test').emoji['cake'].add('cake.png')
 
         """
         data = None
@@ -69,11 +51,11 @@ class EmojiModeration(object):
         :param emoji_name: An emoji name (e.g., ``'cake'``) or
             :class:`~.Emoji` instance.
 
-        To remove ``'cake'`` as an editor on the wikipage ``'praw_test'`` try:
+        To remove ``'cake'`` as an emoji on the subreddit ``'praw_test'`` try:
 
         .. code:: python
 
-           reddit.subreddit('test').wiki['praw_test'].mod.remove('cake')
+           reddit.subreddit('praw_test').emoji['cake'].remove()
 
         """
         url = API_PATH['emoji_delete'].format(
