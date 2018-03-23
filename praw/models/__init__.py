@@ -10,7 +10,7 @@ from .listing.listing import Listing  # NOQA
 from .modaction import ModAction  # NOQA
 from .preferences import Preferences  # NOQA
 from .reddit.comment import Comment  # NOQA
-from .reddit.emoji import Emoji  # NOQA
+from .reddit.emoji import Emoji, SubredditEmoji  # NOQA
 from .reddit.live import LiveThread, LiveUpdate  # NOQA
 from .reddit.message import Message, SubredditMessage  # NOQA
 from .reddit.modmail import (ModmailAction, ModmailConversation,  # NOQA
@@ -30,5 +30,5 @@ __all__ = ('Auth', 'Comment', 'DomainListing', 'Emoji', 'Front', 'Inbox',
            'Message', 'ModAction', 'ModmailConversation', 'MoreComments',
            'Multireddit', 'MultiredditHelper', 'Preferences', 'Redditor',
            'RedditorList', 'Stylesheet', 'Submission', 'Subreddit',
-           'SubredditHelper', 'SubredditMessage', 'Subreddits', 'User',
-           'WikiPage')
+           'SubredditEmoji', 'SubredditHelper', 'SubredditMessage',
+           'Subreddits', 'User', 'WikiPage')
