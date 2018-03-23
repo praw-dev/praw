@@ -5,7 +5,6 @@ import pytest
 
 from ... import IntegrationTest
 
-
 class TestEmojiModeration(IntegrationTest):
     def test_add(self):
         subreddit = self.reddit.subreddit(
@@ -14,7 +13,7 @@ class TestEmojiModeration(IntegrationTest):
 
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestEmojiModeration.test_add'):
-            subreddit.emoji['test'].add('../../files/test.png')
+            subreddit.emoji['test'].add('tests/integration/files/test.png')
 
     def test_remove(self):
         subreddit = self.reddit.subreddit(
