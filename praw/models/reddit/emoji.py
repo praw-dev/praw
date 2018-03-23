@@ -90,7 +90,7 @@ class SubredditEmoji(object):
             self.refresh_emoji()
         return(self.emoji_list)
 
-    def __getitem__(self, name, use_cached=True):
+    def __getitem__(self, name):
         """Lazily return the Emoji for the subreddit named ``name``.
 
         :param name: The name of the emoji
@@ -104,10 +104,8 @@ class SubredditEmoji(object):
            print(emoji)
 
         """
-        if not use_cached:
-            self.refresh_emoji()
         e = self.get_emoji(name)
-        if e is None and use_cached:
+        if e is None:
             self.refresh_emoji()
             e = self.get_emoji(name)
         return e
