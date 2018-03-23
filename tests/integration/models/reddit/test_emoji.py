@@ -10,6 +10,7 @@ class TestEmoji(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(
             pytest.placeholders.test_subreddit)
-        with self.recorder.use_cassette('TestEmojiModeration.test_remove'):
+        with self.recorder.use_cassette('TestEmoji.test_remove'):
             subreddit.emoji['test_png'].remove()
             subreddit.emoji['test_jpg'].remove()
+            subreddit.emoji['fake_emoji'].remove()
