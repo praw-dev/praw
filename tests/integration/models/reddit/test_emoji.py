@@ -1,4 +1,3 @@
-from praw.models import Emoji
 import pytest
 import mock
 
