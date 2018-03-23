@@ -1209,12 +1209,12 @@ class TestSubredditEmoji(IntegrationTest):
                 assert isinstance(emoji, Emoji)
                 count += 1
             assert count > 0
-            
+
     @mock.patch('time.sleep', return_value=None)
     def test_add(self, _):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(
             pytest.placeholders.test_subreddit)
         with self.recorder.use_cassette('TestSubredditEmoji.test_add'):
-            subreddit.emoji.add('test_png','tests/integration/files/test.png')
-            subreddit.emoji.add('test_jpg','tests/integration/files/test.jpg')
+            subreddit.emoji.add('test_png', 'tests/integration/files/test.png')
+            subreddit.emoji.add('test_jpg', 'tests/integration/files/test.jpg')
