@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2018-03-23T01:13:11",
+      "recorded_at": "2018-03-23T05:34:53",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -52,7 +52,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 23 Mar 2018 01:13:11 GMT"
+            "Fri, 23 Mar 2018 05:34:53 GMT"
           ],
           "Server": [
             "snooserv"
@@ -73,17 +73,17 @@
             "majestic"
           ],
           "X-Served-By": [
-            "cache-sjc3645-SJC"
+            "cache-pao17425-PAO"
           ],
           "X-Timer": [
-            "S1521767591.703381,VS0,VE366"
+            "S1521783293.103473,VS0,VE456"
           ],
           "cache-control": [
             "max-age=0, must-revalidate"
           ],
           "set-cookie": [
-            "session_tracker=QBRgmFVjBs5zLuN4Gi.0.1521767590737.Z0FBQUFBQmF0RlNuMW5BUWZHcW1zbzlsSS00ejR0bWdVUnEydkRBZVZjNUNHYWtjd1h5bkdFUlNhM1dlMUJqU2JHczBvY0ZYZ3NCbkNVU1pzQmZ4N2ZRd05PU1VENHQwVWpnNWJrRUVvX2loOU90QzZCSjlSQ3g2Ul9aMlRpMl9oancxbThWNExWQTE; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 03:13:11 GMT; secure",
-            "edgebucket=BkOLpMRMRKtqY2PM5S; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+            "session_tracker=Y2wJ4N4iEkUjrkuvpe.0.1521783293156.Z0FBQUFBQmF0Skg5elMxLTQ4UW9iN2I5N055UzEtZlFkeHFSbHA3YjI2b3ZSX0pXZGNXZGRZdDNyQWhUbnpaeWl5TDlkVEFabjhKWXBBT1FzVTB6QXllM0dyaUlXaHhuckZfa3BzT2o4TkYyMVFLQ2RlYUxCdlFIa2xHTlV6eTRZY1c1Tm9KWnZqWF8; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 07:34:53 GMT; secure",
+            "edgebucket=1fWcWIUNamQ2ihnhhU; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
           ],
           "x-content-type-options": [
             "nosniff"
@@ -103,11 +103,11 @@
       }
     },
     {
-      "recorded_at": "2018-03-23T01:13:11",
+      "recorded_at": "2018-03-23T05:34:54",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json"
+          "string": ""
         },
         "headers": {
           "Accept": [
@@ -123,25 +123,22 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "13"
-          ],
-          "Content-Type": [
-            "application/x-www-form-urlencoded"
+            "0"
           ],
           "Cookie": [
-            "edgebucket=BkOLpMRMRKtqY2PM5S; session_tracker=QBRgmFVjBs5zLuN4Gi.0.1521767590737.Z0FBQUFBQmF0RlNuMW5BUWZHcW1zbzlsSS00ejR0bWdVUnEydkRBZVZjNUNHYWtjd1h5bkdFUlNhM1dlMUJqU2JHczBvY0ZYZ3NCbkNVU1pzQmZ4N2ZRd05PU1VENHQwVWpnNWJrRUVvX2loOU90QzZCSjlSQ3g2Ul9aMlRpMl9oancxbThWNExWQTE"
+            "edgebucket=1fWcWIUNamQ2ihnhhU; session_tracker=Y2wJ4N4iEkUjrkuvpe.0.1521783293156.Z0FBQUFBQmF0Skg5elMxLTQ4UW9iN2I5N055UzEtZlFkeHFSbHA3YjI2b3ZSX0pXZGNXZGRZdDNyQWhUbnpaeWl5TDlkVEFabjhKWXBBT1FzVTB6QXllM0dyaUlXaHhuckZfa3BzT2o4TkYyMVFLQ2RlYUxCdlFIa2xHTlV6eTRZY1c1Tm9KWnZqWF8"
           ],
           "User-Agent": [
             "<USER_AGENT> PRAW/5.4.0.dev0 prawcore/0.14.0"
           ]
         },
-        "method": "POST",
+        "method": "DELETE",
         "uri": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emoji/test?raw_json=1"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{\"message\": \"Bad Request\", \"error\": 400}"
+          "string": "{\"json\": {\"errors\": []}}"
         },
         "headers": {
           "Accept-Ranges": [
@@ -151,16 +148,19 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "40"
+            "24"
           ],
           "Content-Type": [
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Fri, 23 Mar 2018 01:13:11 GMT"
+            "Fri, 23 Mar 2018 05:34:54 GMT"
           ],
           "Server": [
             "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
           ],
           "Via": [
             "1.1 varnish"
@@ -175,10 +175,10 @@
             "majestic"
           ],
           "X-Served-By": [
-            "cache-sjc3131-SJC"
+            "cache-pao17442-PAO"
           ],
           "X-Timer": [
-            "S1521767591.131895,VS0,VE99"
+            "S1521783294.717390,VS0,VE575"
           ],
           "cache-control": [
             "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
@@ -187,9 +187,7 @@
             "-1"
           ],
           "set-cookie": [
-            "session_tracker=QBRgmFVjBs5zLuN4Gi.0.1521767591181.Z0FBQUFBQmF0RlNuNktvN2pPanhyX3djUnBYMDRZamh5VFcwZHRtQ09PN2JoejVXamI3dFJaSksxZlVOZWNfMDFKOTc4ZnlmZlh2VU44MXNCbW9rT3JlMGthWWNNczVvQVJ2cUpnLWFsUE9rWEZVbEVwSXplam02bDZFU2VhSnJqMlpxTUdWTGhzNHg; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 03:13:11 GMT; secure",
-            "loid=000000000012wb8aaa.2.1521767591206.Z0FBQUFBQmF0RlNueWVuTzVOUlZnMTlSNU94NGhEWjJ6eEZ1VDFWSU84czJXVWR0b21PR0VKTXU4TFRnSENyaXNDM1Y5Skh4RGplQ3F0RFVUTlBTRERVNkVjN2tmcHB3LTlFZmhRQ3Z4TE1SN2tfVDVwV3o2SlRyczR0cFhzSTRXSUxIcHotXzRUUHc; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Sun, 22-Mar-2020 01:13:11 GMT; secure",
-            "session_tracker=QBRgmFVjBs5zLuN4Gi.0.1521767591201.Z0FBQUFBQmF0RlNuTHhmTnNBb05RTHh2V3RhTjR3cjdxRE5ubGVXY1UyclJ5amZNWnh5NndoZGRDRGpIdV9TdkJPYkJVdG1tdDF1TkJ4aDdwZkl3YUVVYXY5VG0xOUs3QXh2NEJyVnl6cTVwVDM0WHZCeC0zWldBakN1YWxueWY0SEpVWXR0ZWlfY20; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 03:13:11 GMT; secure"
+            "session_tracker=Y2wJ4N4iEkUjrkuvpe.0.1521783293791.Z0FBQUFBQmF0SkgtbDdnTTc4QlpvUXVmVEE3ZXZTd2RGQUdFNkx3MjBlbmJiQUZDcVRRb0l1d0doVnZfaFFkb19KWVFyWlFDdXVadEZGMkpxaVZ1T3U4N1RXQWg1azBzaGRIZE1zZUdzYklPNjc1aWxJaXhLZXZZejEtWk8xc09ic3U0MTdTOE5CSHM; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 07:34:54 GMT; secure"
           ],
           "x-content-type-options": [
             "nosniff"
@@ -198,24 +196,21 @@
             "SAMEORIGIN"
           ],
           "x-ratelimit-remaining": [
-            "594.0"
+            "595.0"
           ],
           "x-ratelimit-reset": [
-            "409"
+            "307"
           ],
           "x-ratelimit-used": [
-            "6"
-          ],
-          "x-ua-compatible": [
-            "IE=edge"
+            "5"
           ],
           "x-xss-protection": [
             "1; mode=block"
           ]
         },
         "status": {
-          "code": 400,
-          "message": "Bad Request"
+          "code": 200,
+          "message": "OK"
         },
         "url": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emoji/test?raw_json=1"
       }
