@@ -1,0 +1,973 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2018-03-23T18:37:04",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<TEST_SUBREDDIT>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "55"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/5.4.0.dev0 prawcore/0.14.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "105"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 23 Mar 2018 18:37:04 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-sjc3127-SJC"
+          ],
+          "X-Timer": [
+            "S1521830224.858753,VS0,VE366"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "set-cookie": [
+            "session_tracker=U65ktSxAEcg1XnR7aD.0.1521830223904.Z0FBQUFBQmF0VWxRTXlLa3ViMU5PdmEzc05ZVTdCb0g2cFAtUzFXNFJuQUptOFFaaExxdnpsVko2dzY0NU5GWVNTdmVjUGRaXzd6R1NzNGlmVVdVLWF2Rm9xTTU3QlZDcHYwSHo5VkQ2N3ZkeDhVNVpRYW9Xa3M0aEpEbFhWT0pVcEVucXlxal9wVDA; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 20:37:04 GMT; secure",
+            "edgebucket=0oYNRXxvHf0SPbXf6l; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2018-03-23T18:37:04",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=0oYNRXxvHf0SPbXf6l; session_tracker=U65ktSxAEcg1XnR7aD.0.1521830223904.Z0FBQUFBQmF0VWxRTXlLa3ViMU5PdmEzc05ZVTdCb0g2cFAtUzFXNFJuQUptOFFaaExxdnpsVko2dzY0NU5GWVNTdmVjUGRaXzd6R1NzNGlmVVdVLWF2Rm9xTTU3QlZDcHYwSHo5VkQ2N3ZkeDhVNVpRYW9Xa3M0aEpEbFhWT0pVcEVucXlxal9wVDA"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/5.4.0.dev0 prawcore/0.14.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emojis/all?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"snoomojis\": {\"cake\": {\"url\": \"https://emoji.redditmedia.com/46kel8lf1guz_t5_3nqvj/cake\", \"created_by\": \"t2_6zfp6ii\"}, \"cat_blep\": {\"url\": \"https://emoji.redditmedia.com/p9sxc1zh1guz_t5_3nqvj/cat_blep\", \"created_by\": \"t2_6zfp6ii\"}, \"doge\": {\"url\": \"https://emoji.redditmedia.com/f0fypg8k1guz_t5_3nqvj/doge\", \"created_by\": \"t2_6zfp6ii\"}, \"downvote\": {\"url\": \"https://emoji.redditmedia.com/r05m1xcm1guz_t5_3nqvj/downvote\", \"created_by\": \"t2_6zfp6ii\"}, \"hamster\": {\"url\": \"https://emoji.redditmedia.com/63xo3dun1guz_t5_3nqvj/hamster\", \"created_by\": \"t2_6zfp6ii\"}, \"illuminati\": {\"url\": \"https://emoji.redditmedia.com/mv60bklq1guz_t5_3nqvj/illuminati\", \"created_by\": \"t2_6zfp6ii\"}, \"kappa\": {\"url\": \"https://emoji.redditmedia.com/2uaduvnr1guz_t5_3nqvj/kappa\", \"created_by\": \"t2_6zfp6ii\"}, \"karma\": {\"url\": \"https://emoji.redditmedia.com/dgnf69ls1guz_t5_3nqvj/karma\", \"created_by\": \"t2_6zfp6ii\"}, \"orly\": {\"url\": \"https://emoji.redditmedia.com/crum4urt1guz_t5_3nqvj/orly\", \"created_by\": \"t2_6zfp6ii\"}, \"partyparrot\": {\"url\": \"https://emoji.redditmedia.com/rk1bpelv1guz_t5_3nqvj/partyparrot\", \"created_by\": \"t2_6zfp6ii\"}, \"pupper\": {\"url\": \"https://emoji.redditmedia.com/l73ksapw1guz_t5_3nqvj/pupper\", \"created_by\": \"t2_6zfp6ii\"}, \"redditgold\": {\"url\": \"https://emoji.redditmedia.com/5knu5pox1guz_t5_3nqvj/redditgold\", \"created_by\": \"t2_6zfp6ii\"}, \"sloth\": {\"url\": \"https://emoji.redditmedia.com/rpczqdwy1guz_t5_3nqvj/sloth\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo\": {\"url\": \"https://emoji.redditmedia.com/3whaar0s9ezz_t5_3nqvj/snoo\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_angry\": {\"url\": \"https://emoji.redditmedia.com/8qgfoo9waezz_t5_3nqvj/snoo_angry\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_biblethump\": {\"url\": \"https://emoji.redditmedia.com/akdtlr0vaezz_t5_3nqvj/snoo_biblethump\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_dealwithit\": {\"url\": \"https://emoji.redditmedia.com/94ntcn2taezz_t5_3nqvj/snoo_dealwithit\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_disapproval\": {\"url\": \"https://emoji.redditmedia.com/49dz5ljraezz_t5_3nqvj/snoo_disapproval\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_facepalm\": {\"url\": \"https://emoji.redditmedia.com/wzxf63qpaezz_t5_3nqvj/snoo_facepalm\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_feelsbadman\": {\"url\": \"https://emoji.redditmedia.com/7xdss4doaezz_t5_3nqvj/snoo_feelsbadman\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_feelsgoodman\": {\"url\": \"https://emoji.redditmedia.com/nbv1idzmaezz_t5_3nqvj/snoo_feelsgoodman\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_hearteyes\": {\"url\": \"https://emoji.redditmedia.com/igu167dlaezz_t5_3nqvj/snoo_hearteyes\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_hug\": {\"url\": \"https://emoji.redditmedia.com/wqivmcpjaezz_t5_3nqvj/snoo_hug\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_joy\": {\"url\": \"https://emoji.redditmedia.com/ehw8l3piaezz_t5_3nqvj/snoo_joy\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_putback\": {\"url\": \"https://emoji.redditmedia.com/8228r6bhaezz_t5_3nqvj/snoo_putback\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_sad\": {\"url\": \"https://emoji.redditmedia.com/a761ck7gaezz_t5_3nqvj/snoo_sad\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_scream\": {\"url\": \"https://emoji.redditmedia.com/19g4yg2faezz_t5_3nqvj/snoo_scream\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_shrug\": {\"url\": \"https://emoji.redditmedia.com/mvwd04vdaezz_t5_3nqvj/snoo_shrug\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_simple_smile\": {\"url\": \"https://emoji.redditmedia.com/dhbi1omcaezz_t5_3nqvj/snoo_simple_smile\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_smile\": {\"url\": \"https://emoji.redditmedia.com/fh0615maaezz_t5_3nqvj/snoo_smile\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_surprised\": {\"url\": \"https://emoji.redditmedia.com/hvfzdhf9aezz_t5_3nqvj/snoo_surprised\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_tableflip\": {\"url\": \"https://emoji.redditmedia.com/nbgogsm7aezz_t5_3nqvj/snoo_tableflip\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_thoughtful\": {\"url\": \"https://emoji.redditmedia.com/7jhvwsc5aezz_t5_3nqvj/snoo_thoughtful\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_tongue\": {\"url\": \"https://emoji.redditmedia.com/pgm55sg3aezz_t5_3nqvj/snoo_tongue\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_trollface\": {\"url\": \"https://emoji.redditmedia.com/mssz6vvv9ezz_t5_3nqvj/snoo_trollface\", \"created_by\": \"t2_6zfp6ii\"}, \"snoo_wink\": {\"url\": \"https://emoji.redditmedia.com/p0vdh98u9ezz_t5_3nqvj/snoo_wink\", \"created_by\": \"t2_6zfp6ii\"}, \"table\": {\"url\": \"https://emoji.redditmedia.com/cbl32coz9ezz_t5_3nqvj/table\", \"created_by\": \"t2_6zfp6ii\"}, \"table_flip\": {\"url\": \"https://emoji.redditmedia.com/l7sfl3z0aezz_t5_3nqvj/table_flip\", \"created_by\": \"t2_6zfp6ii\"}, \"upvote\": {\"url\": \"https://emoji.redditmedia.com/ad1td4bx9ezz_t5_3nqvj/upvote\", \"created_by\": \"t2_6zfp6ii\"}}, \"t5_h6aad\": {\"alamance\": {\"url\": \"https://emoji.redditmedia.com/cz47h98kvjn01_t5_h6aad/alamance\", \"created_by\": \"t2_12vm3jhg\"}, \"TeST\": {\"url\": \"https://emoji.redditmedia.com/ye34gfz51hn01_t5_h6aad/TeST\", \"created_by\": \"t2_12vm3jhg\"}, \"test\": {\"url\": \"https://emoji.redditmedia.com/yflr3b0jvjn01_t5_h6aad/test\", \"created_by\": \"t2_12vm3jhg\"}}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4919"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 23 Mar 2018 18:37:04 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-sjc3629-SJC"
+          ],
+          "X-Timer": [
+            "S1521830224.286014,VS0,VE99"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=U65ktSxAEcg1XnR7aD.0.1521830224322.Z0FBQUFBQmF0VWxRTkQxTW5JU2pjSVB0X2w3UXR0LUpYU3Z6TDMwMzJwMUJNMlRxT3FHekVkbk1tUGZST2lLSWFBVW9qV0pUOTlNVE02NlhWQlhudGdra3A1WGdiZ2NHWGtkdmkzbl9Cd2lFOGZmRzdwb01RNEtudkxBTnBwNi1ESmE0dWN1YU1nZVo; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 20:37:04 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "594.0"
+          ],
+          "x-ratelimit-reset": [
+            "176"
+          ],
+          "x-ratelimit-used": [
+            "6"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emojis/all?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2018-03-23T18:37:04",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=0oYNRXxvHf0SPbXf6l; session_tracker=U65ktSxAEcg1XnR7aD.0.1521830224322.Z0FBQUFBQmF0VWxRTkQxTW5JU2pjSVB0X2w3UXR0LUpYU3Z6TDMwMzJwMUJNMlRxT3FHekVkbk1tUGZST2lLSWFBVW9qV0pUOTlNVE02NlhWQlhudGdra3A1WGdiZ2NHWGtkdmkzbl9Cd2lFOGZmRzdwb01RNEtudkxBTnBwNi1ESmE0dWN1YU1nZVo"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/5.4.0.dev0 prawcore/0.14.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/about/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"t5\", \"data\": {\"notification_level\": null, \"user_flair_background_color\": null, \"banner_img\": \"\", \"user_flair_text\": null, \"submit_text_html\": null, \"user_flair_template_id\": null, \"user_is_banned\": false, \"subreddit_type\": \"public\", \"community_icon\": \"\", \"wiki_enabled\": true, \"show_media\": true, \"id\": \"h6aad\", \"description\": \"\", \"submit_text\": \"\", \"user_flair_type\": \"text\", \"user_can_flair_in_sr\": true, \"display_name\": \"<TEST_SUBREDDIT>\", \"header_img\": null, \"description_html\": null, \"title\": \"For testing emojis\", \"collapse_deleted_comments\": false, \"user_has_favorited\": false, \"public_description\": \"\", \"over18\": false, \"emojis_enabled\": true, \"public_description_html\": null, \"can_assign_user_flair\": false, \"allow_videos\": true, \"spoilers_enabled\": true, \"icon_size\": null, \"primary_color\": \"\", \"user_is_contributor\": false, \"audience_target\": \"\", \"suggested_comment_sort\": null, \"active_user_count\": 6, \"icon_img\": \"\", \"header_title\": null, \"display_name_prefixed\": \"r/<TEST_SUBREDDIT>\", \"can_assign_link_flair\": false, \"submit_link_label\": null, \"link_flair_enabled\": false, \"user_flair_text_color\": null, \"accounts_active\": 6, \"public_traffic\": false, \"header_size\": null, \"subscribers\": 1, \"user_flair_css_class\": null, \"submit_text_label\": null, \"key_color\": \"\", \"user_flair_richtext\": [], \"user_sr_flair_enabled\": true, \"lang\": \"en\", \"is_enrolled_in_new_modmail\": true, \"whitelist_status\": null, \"name\": \"t5_h6aad\", \"user_flair_enabled_in_sr\": true, \"allow_videogifs\": true, \"url\": \"/r/<TEST_SUBREDDIT>/\", \"quarantine\": false, \"hide_ads\": false, \"created_utc\": 1521757752.0, \"banner_size\": null, \"user_is_moderator\": true, \"allow_discovery\": true, \"accounts_active_is_fuzzed\": false, \"advertiser_category\": null, \"user_sr_theme_enabled\": true, \"created\": 1521786552.0, \"allow_images\": true, \"videostream_links_count\": 0, \"comment_score_hide_mins\": 0, \"show_media_preview\": true, \"submission_type\": \"any\", \"user_is_muted\": false, \"user_is_subscriber\": false}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "1966"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 23 Mar 2018 18:37:04 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-sjc3629-SJC"
+          ],
+          "X-Timer": [
+            "S1521830224.403698,VS0,VE109"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "loid=000000000012vm3jhg.2.1521757540492.Z0FBQUFBQmF0VWxRODl4Wk5pWFZqTUpGX2x6MHhMVlJiNzR3b1Vaejc0ZldCN0h6anZmQlVYLW1LcDhwd0JfRVhER21vOGkxRjFsenFkXzlKOENTOUVzNHFkdGZOQWVVRmRsM29aYXk5dXYtcFdhR2o2NF9maUNEZVpWTlRXVktKeXpBX3FEU0EtSjM; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Sun, 22-Mar-2020 18:37:04 GMT; secure",
+            "session_tracker=U65ktSxAEcg1XnR7aD.0.1521830224436.Z0FBQUFBQmF0VWxRYV9Wd3RCLWxTaDBQR3dleVk3cW0tY3FUM3ZaY01rSENRVnBGTHF4RWoxM2VucnA3Snl1aUZuSS1FWFgyS01Gb0RxS0d2NFcyQjJ5MEpLazBJVGdKcWhwaTczdFFZbHUxZTI5OXB5SWJfd2hGRGdyUlBMamNMVkxmTjNUbnpXYzI; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 20:37:04 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "593.0"
+          ],
+          "x-ratelimit-reset": [
+            "176"
+          ],
+          "x-ratelimit-used": [
+            "7"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/about/?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2018-03-23T18:37:04",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&filepath=test.png&mimetype=image%2Fpng"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "52"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "Cookie": [
+            "edgebucket=0oYNRXxvHf0SPbXf6l; loid=000000000012vm3jhg.2.1521757540492.Z0FBQUFBQmF0VWxRODl4Wk5pWFZqTUpGX2x6MHhMVlJiNzR3b1Vaejc0ZldCN0h6anZmQlVYLW1LcDhwd0JfRVhER21vOGkxRjFsenFkXzlKOENTOUVzNHFkdGZOQWVVRmRsM29aYXk5dXYtcFdhR2o2NF9maUNEZVpWTlRXVktKeXpBX3FEU0EtSjM; session_tracker=U65ktSxAEcg1XnR7aD.0.1521830224436.Z0FBQUFBQmF0VWxRYV9Wd3RCLWxTaDBQR3dleVk3cW0tY3FUM3ZaY01rSENRVnBGTHF4RWoxM2VucnA3Snl1aUZuSS1FWFgyS01Gb0RxS0d2NFcyQjJ5MEpLazBJVGdKcWhwaTczdFFZbHUxZTI5OXB5SWJfd2hGRGdyUlBMamNMVkxmTjNUbnpXYzI"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/5.4.0.dev0 prawcore/0.14.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emoji_asset_upload_s3.json?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"s3UploadLease\": {\"action\": \"//reddit-uploaded-emoji.s3-accelerate.amazonaws.com\", \"fields\": [{\"name\": \"acl\", \"value\": \"public-read\"}, {\"name\": \"key\", \"value\": \"t5_h6aad/t2_12vm3jhg/a94a8fe5ccb19ba61c4c0873d391e987982fbbd3\"}, {\"name\": \"X-Amz-Credential\", \"value\": \"ASIAJIBELP5BII4EZ46A/20180323/us-east-1/s3/aws4_request\"}, {\"name\": \"X-Amz-Algorithm\", \"value\": \"AWS4-HMAC-SHA256\"}, {\"name\": \"X-Amz-Date\", \"value\": \"20180323T183704Z\"}, {\"name\": \"success_action_status\", \"value\": \"201\"}, {\"name\": \"content-type\", \"value\": \"image/png\"}, {\"name\": \"x-amz-storage-class\", \"value\": \"STANDARD\"}, {\"name\": \"x-amz-meta-ext\", \"value\": \"png\"}, {\"name\": \"policy\", \"value\": \"eyJjb25kaXRpb25zIjogW3siYnVja2V0IjogInJlZGRpdC11cGxvYWRlZC1lbW9qaSJ9LCB7ImtleSI6ICJ0NV9oNmFhZC90Ml8xMnZtM2poZy9hOTRhOGZlNWNjYjE5YmE2MWM0YzA4NzNkMzkxZTk4Nzk4MmZiYmQzIn0sIHsiYWNsIjogInB1YmxpYy1yZWFkIn0sIHsieC1hbXotc3RvcmFnZS1jbGFzcyI6ICJTVEFOREFSRCJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiQVNJQUpJQkVMUDVCSUk0RVo0NkEvMjAxODAzMjMvdXMtZWFzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotZGF0ZSI6ICIyMDE4MDMyM1QxODM3MDRaIn0sIHsieC1hbXotc2VjdXJpdHktdG9rZW4iOiAiRlFvRFlYZHpFRE1hREdaMUhhYVhjMG1qNFQyeDlDSzNBOWwwK1EyT0lGVDU0NUc1U09EdzhyUGFTZmhPaCtNSk5VUzY2OGpOZk0yTHdQNGJnVzRldk1YSFBqekVsNy9UUXZRUWphaThXeFJSY3BzbVVMQkhTdFJsazVIVzU5R3ZhQ0MzSmlleS9YZW5wdE1WTUEvazFnVnRQWTRMRzc3YWlsMFpsQjlUMDUyTUlWWm1MenIwSTloWk13OWZxa05GSm92U25QNWt2VUNhcW9Xd0UrcG5hNUxLdTBiTlhKWjM2VWlBb0d1YlZzTk9VWGZIeFpPRzZKcXFaMmlVc3gyTVNGNHNWc3VwcDFZRHdrUFlES3NZcHI5Q0VheFFxcXdLcVdiKzgxYWV4QVZxNmhzbE9QZHgyNndYUHpGb3FpVEdWRzlJUVB2eTczdjd1VGZFcnUvc2VEUFR4YmlvQ3VYNkhESXJpZDRkdnJoM2ZnK0hJRDhRZkdQNzBsSzJKRTFZMUlQZVFKS2JqNlQ0WUpRRGNRRWJ3Ynl0cVhGVk5vc3VNZjBHZ3U0Z0tyZ2xyTGZtcDBRbUxDWEFwaHIrSDZvUXdLZG1FSWtNWTNhQW1LaXZ6YkRhUHlEeUpsMkIxRVNMVmZubmNyOElzOW4rNEpLTkt2dEFWZzFFZ0tGdlppRHh4VmhYZHRlS3FWcTN5bk9KdS9hUHozUVg1ZzcwMkFNeWpkbEZ5MHVieDRtdzNYRGhlL2RmUUtEcG04T1RZYThhdGpLVUlTM09icXVXRTVHWmxUYVNUMUZTSHNTQnJnQ2lzeWd6bWhVcDk0b281UGJVMVFVPSJ9LCB7InN1Y2Nlc3NfYWN0aW9uX3N0YXR1cyI6ICIyMDEifSwgWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsIDAsIDY0MDAwXSwgeyJ4LWFtei1tZXRhLWV4dCI6ICJwbmcifSwgeyJjb250ZW50LXR5cGUiOiAiaW1hZ2UvcG5nIn1dLCAiZXhwaXJhdGlvbiI6ICIyMDE4LTAzLTIzVDE4OjM4OjA0WiJ9\"}, {\"name\": \"X-Amz-Signature\", \"value\": \"125a63969b4c956b1719092e96d88c066e157d9c89819482138b9295d96d6e0d\"}, {\"name\": \"x-amz-security-token\", \"value\": \"FQoDYXdzEDMaDGZ1HaaXc0mj4T2x9CK3A9l0+Q2OIFT545G5SODw8rPaSfhOh+MJNUS668jNfM2LwP4bgW4evMXHPjzEl7/TQvQQjai8WxRRcpsmULBHStRlk5HW59GvaCC3Jiey/XenptMVMA/k1gVtPY4LG77ail0ZlB9T052MIVZmLzr0I9hZMw9fqkNFJovSnP5kvUCaqoWwE+pna5LKu0bNXJZ36UiAoGubVsNOUXfHxZOG6JqqZ2iUsx2MSF4sVsupp1YDwkPYDKsYpr9CEaxQqqwKqWb+81aexAVq6hslOPdx26wXPzFoqiTGVG9IQPvy73v7uTfEru/seDPTxbioCuX6HDIrid4dvrh3fg+HID8QfGP70lK2JE1Y1IPeQJKbj6T4YJQDcQEbwbytqXFVNosuMf0Ggu4gKrglrLfmp0QmLCXAphr+H6oQwKdmEIkMY3aAmKivzbDaPyDyJl2B1ESLVfnncr8Is9n+4JKNKvtAVg1EgKFvZiDxxVhXdteKqVq3ynOJu/aPz3QX5g702AMyjdlFy0ubx4mw3XDhe/dfQKDpm8OTYa8atjKUIS3ObquWE5GZlTaST1FSHsSBrgCisygzmhUp94oo5PbU1QU=\"}]}, \"websocketUrl\": \"wss://ws-0f621c0317fc702a1.wss.redditmedia.com/subreddit-emoji/t5_h6aad-t2_12vm3jhg?m=AQAAqEu1Wr5s9c0zAFW5syYRVU1WybZr212gKlWi6pbit8ahH8xL\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "3166"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 23 Mar 2018 18:37:04 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-sjc3629-SJC"
+          ],
+          "X-Timer": [
+            "S1521830225.528349,VS0,VE85"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=U65ktSxAEcg1XnR7aD.0.1521830224562.Z0FBQUFBQmF0VWxRbFkwUXV1X2ljMnM2N1ZMWmFnQWpZenB5enlsdWxtREhRUmZJTm0zbE1yWlNLMkM2eDIwMEk2bGstdnVVbldWREdlSWxQZVJjdUpUbkZhdm1jTFVNeXRoVmxXVFBfODZxRWNOSkk3dVdkTnItYVRsYW1iTUZnSThiS1RIejQ4NGU; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 20:37:04 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "592.0"
+          ],
+          "x-ratelimit-reset": [
+            "176"
+          ],
+          "x-ratelimit-used": [
+            "8"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emoji_asset_upload_s3.json?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2018-03-23T18:37:04",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"acl\"\r\n\r\npublic-read\r\n--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"key\"\r\n\r\nt5_h6aad/t2_12vm3jhg/a94a8fe5ccb19ba61c4c0873d391e987982fbbd3\r\n--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"X-Amz-Credential\"\r\n\r\nASIAJIBELP5BII4EZ46A/20180323/us-east-1/s3/aws4_request\r\n--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"X-Amz-Algorithm\"\r\n\r\nAWS4-HMAC-SHA256\r\n--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"X-Amz-Date\"\r\n\r\n20180323T183704Z\r\n--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"success_action_status\"\r\n\r\n201\r\n--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"content-type\"\r\n\r\nimage/png\r\n--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"x-amz-storage-class\"\r\n\r\nSTANDARD\r\n--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"x-amz-meta-ext\"\r\n\r\npng\r\n--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"policy\"\r\n\r\neyJjb25kaXRpb25zIjogW3siYnVja2V0IjogInJlZGRpdC11cGxvYWRlZC1lbW9qaSJ9LCB7ImtleSI6ICJ0NV9oNmFhZC90Ml8xMnZtM2poZy9hOTRhOGZlNWNjYjE5YmE2MWM0YzA4NzNkMzkxZTk4Nzk4MmZiYmQzIn0sIHsiYWNsIjogInB1YmxpYy1yZWFkIn0sIHsieC1hbXotc3RvcmFnZS1jbGFzcyI6ICJTVEFOREFSRCJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiQVNJQUpJQkVMUDVCSUk0RVo0NkEvMjAxODAzMjMvdXMtZWFzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotZGF0ZSI6ICIyMDE4MDMyM1QxODM3MDRaIn0sIHsieC1hbXotc2VjdXJpdHktdG9rZW4iOiAiRlFvRFlYZHpFRE1hREdaMUhhYVhjMG1qNFQyeDlDSzNBOWwwK1EyT0lGVDU0NUc1U09EdzhyUGFTZmhPaCtNSk5VUzY2OGpOZk0yTHdQNGJnVzRldk1YSFBqekVsNy9UUXZRUWphaThXeFJSY3BzbVVMQkhTdFJsazVIVzU5R3ZhQ0MzSmlleS9YZW5wdE1WTUEvazFnVnRQWTRMRzc3YWlsMFpsQjlUMDUyTUlWWm1MenIwSTloWk13OWZxa05GSm92U25QNWt2VUNhcW9Xd0UrcG5hNUxLdTBiTlhKWjM2VWlBb0d1YlZzTk9VWGZIeFpPRzZKcXFaMmlVc3gyTVNGNHNWc3VwcDFZRHdrUFlES3NZcHI5Q0VheFFxcXdLcVdiKzgxYWV4QVZxNmhzbE9QZHgyNndYUHpGb3FpVEdWRzlJUVB2eTczdjd1VGZFcnUvc2VEUFR4YmlvQ3VYNkhESXJpZDRkdnJoM2ZnK0hJRDhRZkdQNzBsSzJKRTFZMUlQZVFKS2JqNlQ0WUpRRGNRRWJ3Ynl0cVhGVk5vc3VNZjBHZ3U0Z0tyZ2xyTGZtcDBRbUxDWEFwaHIrSDZvUXdLZG1FSWtNWTNhQW1LaXZ6YkRhUHlEeUpsMkIxRVNMVmZubmNyOElzOW4rNEpLTkt2dEFWZzFFZ0tGdlppRHh4VmhYZHRlS3FWcTN5bk9KdS9hUHozUVg1ZzcwMkFNeWpkbEZ5MHVieDRtdzNYRGhlL2RmUUtEcG04T1RZYThhdGpLVUlTM09icXVXRTVHWmxUYVNUMUZTSHNTQnJnQ2lzeWd6bWhVcDk0b281UGJVMVFVPSJ9LCB7InN1Y2Nlc3NfYWN0aW9uX3N0YXR1cyI6ICIyMDEifSwgWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsIDAsIDY0MDAwXSwgeyJ4LWFtei1tZXRhLWV4dCI6ICJwbmcifSwgeyJjb250ZW50LXR5cGUiOiAiaW1hZ2UvcG5nIn1dLCAiZXhwaXJhdGlvbiI6ICIyMDE4LTAzLTIzVDE4OjM4OjA0WiJ9\r\n--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"X-Amz-Signature\"\r\n\r\n125a63969b4c956b1719092e96d88c066e157d9c89819482138b9295d96d6e0d\r\n--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"x-amz-security-token\"\r\n\r\nFQoDYXdzEDMaDGZ1HaaXc0mj4T2x9CK3A9l0+Q2OIFT545G5SODw8rPaSfhOh+MJNUS668jNfM2LwP4bgW4evMXHPjzEl7/TQvQQjai8WxRRcpsmULBHStRlk5HW59GvaCC3Jiey/XenptMVMA/k1gVtPY4LG77ail0ZlB9T052MIVZmLzr0I9hZMw9fqkNFJovSnP5kvUCaqoWwE+pna5LKu0bNXJZ36UiAoGubVsNOUXfHxZOG6JqqZ2iUsx2MSF4sVsupp1YDwkPYDKsYpr9CEaxQqqwKqWb+81aexAVq6hslOPdx26wXPzFoqiTGVG9IQPvy73v7uTfEru/seDPTxbioCuX6HDIrid4dvrh3fg+HID8QfGP70lK2JE1Y1IPeQJKbj6T4YJQDcQEbwbytqXFVNosuMf0Ggu4gKrglrLfmp0QmLCXAphr+H6oQwKdmEIkMY3aAmKivzbDaPyDyJl2B1ESLVfnncr8Is9n+4JKNKvtAVg1EgKFvZiDxxVhXdteKqVq3ynOJu/aPz3QX5g702AMyjdlFy0ubx4mw3XDhe/dfQKDpm8OTYa8atjKUIS3ObquWE5GZlTaST1FSHsSBrgCisygzmhUp94oo5PbU1QU=\r\n--7a0e1b0884914b51a14739512f05857d\r\nContent-Disposition: form-data; name=\"file\"; filename=\"test.png\"\r\n\r\n\ufffdPNG\r\n\u001a\n\u0000\u0000\u0000\rIHDR\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\ufffd\b\u0006\u0000\u0000\u0000\ufffd>a\ufffd\u0000\u0000\u0000\tpHYs\u0000\u0000\u000b\u0013\u0000\u0000\u000b\u0013\u0001\u0000\ufffd\ufffd\u0018\u0000\u0000\u0000\u0007tIME\u0007\ufffd\u0003\u0016\u00173\u0001?\ufffd\ufffd\ufffd\u0000\u0000\u0000\u001diTXtComment\u0000\u0000\u0000\u0000\u0000Created with GIMPd.e\u0007\u0000\u0000\u0006\ufffdIDATx\ufffd\ufffd\ufffd\u007flS\ufffd\u001a\u0007\ufffd\ufffd\ufffdn\ufffd\ufffdlF.\u001a\ufffdC\ufffdbH$\ufffd`\ufffd\ufffd\ufffd\ufffd\ufffdQ\ufffdh\ufffd\ufffd\ufffdq\ufffd\u0010\ufffd\u001bl\u000e\ufffdJb\ufffd\u001fzE\b\ufffd5\ufffd\u000f\ufffd\ufffd?\u0012HT\ufffd&j\ufffd\b&F\ufffdN\ufffd\ufffdJ\\7\u0018\u001a\u0016~\u0206 \ufffd\ufffd\ufffd\ufffd\ufffd?\u05b9S\u01b8\ufffdn\ufffd\ufffd\ufffd~\ufffd&k\ufffd\ufffd\ufffd\ufffd\ufffds\ufffd\ufffd9'g\u0000\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\u0011\ufffdQ\ufffd\ufffd\u000e\u0003\ufffd\ufffd\ufffd\u0010\ufffd\u000bH\ufffd\ufffdV`\ufffd\ufffdK\\\ufffd\ufffd\ufffd\ufffd}\ufffd\ufffd\ufffdn\u0002\ufffd\ufffd\ufffd!\ufffd\u0004*\u0017@P8\ufffd\ufffd\ufffdC\ufffd8\ufffdR\ufffd\ufffdpM\ufffd\ufffdk&\ufffd\ufffd\ufffd-\u0000\ufffd\u00024\ufffd\ufffd\u007f\u0000R\u0002 )\ufffd\u001e(:U\ufffd\ufffdQ}sWl\u9db116#\ufffd\ufffd\ufffd\ufffdO\ufffd\ufffd\ufffd\b\"\ufffdr\u001dX\u0002\ufffd\ufffd\ufffdw=\ufffd\ufffd\u0007\u0007\ufffd\ufffdn\b^\u0000d\ufffd\ufffd&(\ufffd\ufffd\"\u0000\ufffd\b\ufffd\ufffd\ufffd\u0007\ufffd\ufffd'b\ufffd\u00060c`\u0003\ufffdOM\u0002d2\u0004\ufffd\t0\ufffd\u0012y\ufffd\u001f\ufffdl\u0011\ufffd{(\ufffd\ufffd\u0416\u03f1\u0246\ufffd\ufffd\ufffd\u001c\u0631<\u0001\ufffd%\ufffd\ufffdJ\ufffd(tk\ufffd'b\ufffds\u04b3\ufffdG\ufffd\ufffd|\u007f\ufffdd\ufffd\u0011\ufffd\ufffd1\ufffd#\ufffd\ufffd+U}\ufffd\ufffd*\ufffdV\ufffdsl\ufffd\u0001\u0000\ufffdDA\ufffd\u0002\ubde9\u0017z\ufffd\ufffd\ufffdQo\ufffd\b\ufffd\u0007\u000e@\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd?v\ufffd\ufffd\u007f\ufffd\u0018l\ufffd\u007f\ufffdq.\ufffd~c;\ufffdCj\u0321l\ufffd\ufffd\u0012;\ufffd\u001e;:$u\ufffd\ufffd%\ufffd\ufffd\u0203\ufffd\ufffdV\u07c3:\ufffd\ufffd\ufffd.\ufffd\ufffd\ufffdTOA\ufffd1r\ufffd\ufffd\ufffd2\u0018i\u0010\ufffd,\u001d\u0004\ufffd\ufffdx\ufffd\u000fT\ufffd\u000e\ufffd[\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd5\u0000\ufffd|\u0016\ufffd\u0003\ufffd\ufffdtm\ufffd\ufffd\u019f\u0007\ufffd\ufffd\u0002\ufffdx\ufffd\ufffd\ufffdQ\ufffd)\ufffd\ufffd\ufffd\ufffd\ufffde]4\u0017\ufffd?\ufffd\ufffdU3\u0014\ufffd\u0495!\ufffd9F\ufffd\ufffd\u057c\ufffd\ufffd\ufffd\ufffdG\u0001\u001c\u0004\ufffd\\^^\ufffd\u0006\ufffd X<\ufffd\ufffd\ufffd\ufffd\u001a\u0001\u071c\ufffd\ufffd\ufffd\ufffd\u0012\ufffd7\ufffd}\ufffd\ufffd\ufffd\ufffd\u0016\ufffd\ufffd.(\u0005\ufffd\ufffd)&?CGG\ufffdD\ufffd\ufffd{\ufffd\u0002[\\\ufffd\ufffd\ufffd\u000f=w\ufffdX\u001f\ufffd\ufffd\u0011\u0000\ufffd,\ufffd\ufffd\ufffduEV\ufffd8\ufffd\ufffd\ufffd\u0011m\ufffdY\ufffd\u0006\ufffd\ufffd\ufffde\ufffds%\u0003`\ufffd%\u0013=\ufffd\ufffd\ufffd\ufffd\ufffdu]j\ufffd\u06f6G{6C5\u0002h\u0002\ufffd\ufffd'\ufffd\ufffd\ufffd\ufffd\ufffdz8\ufffdC*\ufffd#\ufffd\ufffd3\ufffd\ufffd\r\ufffd3\ufffd\ufffd\ufffd\u001a\ufffd\ufffd\u0016@\ufffdx9^f\ufffd\ufffd7Vv\ufffd\u00a1(\u0010\ufffd_=\ufffd\ufffd\ufffd\u0001pr\u0000\ufffd\ufffd\u000eTm\ufffdB\ufffd\ufffd\u000f5><{v\ufffd;\u0011\ufffdwb,\u0001\"\ufffdYU\ufffd\ufffd\ufffd\ufffd\ufffd/\ufffd\u001a'}cfhE\ufffdZ\ufffd;\u0010jz\u000e@\ufffd@\u0016\u0010H$9\ufffd\ufffd\u0011\u007f\ufffd\ufffd}\ufffd\ufffd\ufffdJ\ufffd\ufffd\u001fZ\ufffd\ufffd3\u0000\ufffdN\u0004\ufffd\ufffd.\n\ufffd\ufffd\ufffd\u0019E\ufffd\u0019\ufffd\u0226x\ufffd\ufffdS}\u001f/\ufffdy,\ufffd[*P]\u0006\u0011+]\u001b\ufffd\u0001\ufffd\u0004b-q\ufffd\ufffd?\u0014\ufffd'\ufffd6Ug\ufffd\ufffd\ufffd$\ufffd\ufffd\ufffd-\u0010V.\u0001\ufffd\u06bb5P\ufffd\ufffdt\ufffdK\ufffdx\ufffd\ufffdA$u\ufffd\ufffd~:L\ufffd8\u0003\ufffdB\u0011\ufffd\u0006\u0006\ufffd\u0003\ufffd\ufffd}\ufffd`\ufffd@ed\u000e\u0003`\ufffds\u0000\ufffd\ufffd\ufffd6t\ufffd\ufffdQ[\ufffd\ufffd\ufffd\ufffdX\ufffd5I\ufffd\ufffdC\ufffdE\n}\u0003\ufffd\ufffda\ufffdO\u0017A5\f\ufffd\ufffd\ufffd\ufffd\ufffd.\ufffdxf*\ufffd\ufffd\ufffd\ufffdrs\ufffd\u0013\ufffd-}\ufffd\ufffd\ufffd3\ufffd\ufffd \ufffd7\ufffd/\ufffd\ufffd{v\ufffdW\n*D\ufffd\n\ufffdWC1w`\ufffd\ufffd/IP\ufffd\ufffdN\ufffd=\ufffdj\u057f\u06feXq\ufffd\u00010\ufffd\ufffd\ufffd\ufffd\ufffd\u0003\u0000>H\ufffdV\ufffd\u000e\ufffd\ufffd\ufffd\ufffd\ufffd\u000e\ufffdz\u0001&\ufffd\ufffd\ufffd4U\ufffd\u0004\ufffdG\ufffd\u0004Lp;\ufffd\ufffd\ufffd\u06e3\ufffdO\ufffd)'\ufffd\ufffd\u000b8\ufffd\ufffd\u0019\u0015\ufffdB\u0006\ufffd\ufffd\ufffd\uebd6~\u000f\u0153\ufffdJ\ufffd\ufffd\ufffdL\ufffd\ufffdK\ufffd8Q\ufffd \ufffd\ufffd\u001e/\ufffd\ufffd@\u0016@\ufffd\ufffdx\ufffd\ufffd\ufffd\ufffd\ufffd\u0011\ufffdY,\ufffdu\ufffd`\ufffde\u0006\u0018'|\ufffd3o\u0014\ufffd:\b.\u0005$\u001c\ufffd\ufffdxU\u0597\u0017\ufffdf\u0016}\u0199\ufffd\u0000\u0018?W\ufffd\ufffd\u0019g\ufffd%\ufffdg\u06c3\ufffd\ufffd\ufffd\ufffd\u0017\ufffde\u0000\ufffd\u0013m-\ufffd\ufffdP\ufffd68yrO6Y\ufffd\ufffd2\\\ufffd\"\ufffd\u0007#H{m\ufffd\ufffdV\u0006\ufffd\ufffd}\ufffd\u6c16qD\ufffdd\ufffd\ufffd\ufffd\r\ufffdy\ufffd\ufffd\ufffd\ufffd\ufffd\u007fI\ufffdY\u0194\ufffd%\ufffd9\ufffd\ufffd\ufffd\ufffd\ufffd\ufffdy=\u0016\ufffd\ufffd+\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u0005r\ufffd?\ufffd\ufffd\u01e2\u0243\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u001d\ufffd\ufffd\u007f\ufffd\ufffd_G\ufffd\ufffdF\u007f\ufffd\ufffd.\ufffd\ufffd\ufffd\u07f9\ufffd\rc\ufffd\ufffdP\ufffd[\u0002}\u06c6\ufffd\ufffd\ufffd5\ufffd\ufffd\u056b\ufffd\ufffd\ufffd<\u0016\ufffdW\ufffd\ufffd\ufffdR\r\ufffd\ufffd7A\ufffd\ufffd\ufffd\ufffd\u02b1>\ufffd\ufffd\ufffd*\ufffdG\u00003\ufffd\ufffdH.\u0006\ufffd\u0018\ufffd\u02aa\u0003\ufffd\u0002\ufffd\u34feh\u0007\\O\u0786\ufffdhb\ufffd\ufffdS\u000b}\ufffdD\ufffdt\u0010X\u0002\ufffd\t\u021d\u0016\f\ufffd\u0002`\ufffd~O\ufffdA\ufffd\u0327\ufffd\ufffd\ufffd\ufffd\\\ufffd\ufffd\u0372Cc}\u0010\ufffd\u0004\bL\ufffd}\"\ufffd*\u0003\ufffd\ufffd\ufffd\ufffd}\u0011\ufffd*\ufffd\f\u0017\ufffd?;\ufffdcy\ufffd=\ufffd\ufffd\r\u0000\ufffd\u0014\ufffd?\ufffd\ufffd\ufffdT\u82fd\ufffdc\u0017\ufffd}\ufffd,\ufffd\ufffd\ufffd\u026ah\ufffdG\u0000\ufffd\ufffdsC\ufffd\n*\u0001\b\u001c\ufffd\ufffd\ufffd\ufffd0\ufffdB\ufffd\ufffd\ufffdxG\u0279\ufffdw\u0003\ufffd)\ufffd\u0014\ufffdxF\u0013FP\ufffd\ufffd\u07b2b\ufffd\ufffd\ufffdvj\ufffd\ufffd\u000f\ufffd%\u0005\ufffd\u0011-(\ufffd.\"\ufffd\ufffd\u0010\u0000\ufffd\u0002F\ufffd\u001e\u0005\ufffd\b\u0425\"\ufffd\ufffd\ufffduI\ufffd\ufffd\ufffd\ufffd-\ufffd\u001b\ufffd\ufffd\ufffdio>\u01c6\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffdB\ufffd\u0003+-W\ufffd+bG\ufffd\u0000\u0000\u0000\u0000IEND\ufffdB`\ufffd\r\n--7a0e1b0884914b51a14739512f05857d--\r\n"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "5513"
+          ],
+          "Content-Type": [
+            "multipart/form-data; boundary=7a0e1b0884914b51a14739512f05857d"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/5.4.0.dev0 prawcore/0.14.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://reddit-uploaded-emoji.s3-accelerate.amazonaws.com/"
+      },
+      "response": {
+        "body": {
+          "encoding": null,
+          "string": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<PostResponse><Location>https://reddit-uploaded-emoji.s3-accelerate.amazonaws.com/t5_h6aad%2Ft2_12vm3jhg%2Fa94a8fe5ccb19ba61c4c0873d391e987982fbbd3</Location><Bucket>reddit-uploaded-emoji</Bucket><Key>t5_h6aad/t2_12vm3jhg/a94a8fe5ccb19ba61c4c0873d391e987982fbbd3</Key><ETag>\"ea541e30b0bf451a2e15e08177af1a6f\"</ETag></PostResponse>"
+        },
+        "headers": {
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "369"
+          ],
+          "Content-Type": [
+            "application/xml"
+          ],
+          "Date": [
+            "Fri, 23 Mar 2018 18:37:05 GMT"
+          ],
+          "ETag": [
+            "\"ea541e30b0bf451a2e15e08177af1a6f\""
+          ],
+          "Location": [
+            "https://reddit-uploaded-emoji.s3-accelerate.amazonaws.com/t5_h6aad%2Ft2_12vm3jhg%2Fa94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
+          ],
+          "Server": [
+            "AmazonS3"
+          ],
+          "Via": [
+            "1.1 c7b4131244863241121573ea02fc44ad.cloudfront.net (CloudFront)"
+          ],
+          "X-Amz-Cf-Id": [
+            "vpt1z2ArYu46lbfjRW5iWPMKiVlATPtwhu1c0nMIkhhMJbqkE2nIOg=="
+          ],
+          "X-Cache": [
+            "Miss from cloudfront"
+          ],
+          "x-amz-expiration": [
+            "expiry-date=\"Sun, 25 Mar 2018 00:00:00 GMT\", rule-id=\"delete-after-1-day\""
+          ],
+          "x-amz-id-2": [
+            "hivqyxBc4kPFdwdJttEmPlnvOnLXUVUIkucP8LQtSGwivF9B1Cy/u+QhxjoR70Qe2U8e9x/WM5U="
+          ],
+          "x-amz-request-id": [
+            "068CD8485EA892E1"
+          ]
+        },
+        "status": {
+          "code": 201,
+          "message": "Created"
+        },
+        "url": "https://reddit-uploaded-emoji.s3-accelerate.amazonaws.com/"
+      }
+    },
+    {
+      "recorded_at": "2018-03-23T18:37:05",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&name=test_png&s3_key=t5_h6aad%2Ft2_12vm3jhg%2Fa94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "100"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "Cookie": [
+            "edgebucket=0oYNRXxvHf0SPbXf6l; loid=000000000012vm3jhg.2.1521757540492.Z0FBQUFBQmF0VWxRODl4Wk5pWFZqTUpGX2x6MHhMVlJiNzR3b1Vaejc0ZldCN0h6anZmQlVYLW1LcDhwd0JfRVhER21vOGkxRjFsenFkXzlKOENTOUVzNHFkdGZOQWVVRmRsM29aYXk5dXYtcFdhR2o2NF9maUNEZVpWTlRXVktKeXpBX3FEU0EtSjM; session_tracker=U65ktSxAEcg1XnR7aD.0.1521830224562.Z0FBQUFBQmF0VWxRbFkwUXV1X2ljMnM2N1ZMWmFnQWpZenB5enlsdWxtREhRUmZJTm0zbE1yWlNLMkM2eDIwMEk2bGstdnVVbldWREdlSWxQZVJjdUpUbkZhdm1jTFVNeXRoVmxXVFBfODZxRWNOSkk3dVdkTnItYVRsYW1iTUZnSThiS1RIejQ4NGU"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/5.4.0.dev0 prawcore/0.14.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emoji.json?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"json\": {\"errors\": []}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "24"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 23 Mar 2018 18:37:05 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-sjc3629-SJC"
+          ],
+          "X-Timer": [
+            "S1521830225.943834,VS0,VE108"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=U65ktSxAEcg1XnR7aD.0.1521830225054.Z0FBQUFBQmF0VWxSRG0tVmdCSkNiLXMtWUhQN0ladC04eUdjRllPNEdmLU9QMzNZMFlwVm5BaTVFR1FveFRrMDhmcTIzM1ZlX0ppSzRpcWxqVDRlRFpWWEFqcGlQSkp3VHhjV2dLYUZBMUFwV25kX3hCS2ctcUJHQW1fOWpVR3kwb28tOUw1TFpOcFE; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 20:37:05 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "591.0"
+          ],
+          "x-ratelimit-reset": [
+            "175"
+          ],
+          "x-ratelimit-used": [
+            "9"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emoji.json?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2018-03-23T18:37:05",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&filepath=test.jpg&mimetype=image%2Fjpeg"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "53"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "Cookie": [
+            "edgebucket=0oYNRXxvHf0SPbXf6l; loid=000000000012vm3jhg.2.1521757540492.Z0FBQUFBQmF0VWxRODl4Wk5pWFZqTUpGX2x6MHhMVlJiNzR3b1Vaejc0ZldCN0h6anZmQlVYLW1LcDhwd0JfRVhER21vOGkxRjFsenFkXzlKOENTOUVzNHFkdGZOQWVVRmRsM29aYXk5dXYtcFdhR2o2NF9maUNEZVpWTlRXVktKeXpBX3FEU0EtSjM; session_tracker=U65ktSxAEcg1XnR7aD.0.1521830225054.Z0FBQUFBQmF0VWxSRG0tVmdCSkNiLXMtWUhQN0ladC04eUdjRllPNEdmLU9QMzNZMFlwVm5BaTVFR1FveFRrMDhmcTIzM1ZlX0ppSzRpcWxqVDRlRFpWWEFqcGlQSkp3VHhjV2dLYUZBMUFwV25kX3hCS2ctcUJHQW1fOWpVR3kwb28tOUw1TFpOcFE"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/5.4.0.dev0 prawcore/0.14.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emoji_asset_upload_s3.json?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"s3UploadLease\": {\"action\": \"//reddit-uploaded-emoji.s3-accelerate.amazonaws.com\", \"fields\": [{\"name\": \"acl\", \"value\": \"public-read\"}, {\"name\": \"key\", \"value\": \"t5_h6aad/t2_12vm3jhg/a94a8fe5ccb19ba61c4c0873d391e987982fbbd3\"}, {\"name\": \"X-Amz-Credential\", \"value\": \"ASIAIGHGSGAH45AQNEJQ/20180323/us-east-1/s3/aws4_request\"}, {\"name\": \"X-Amz-Algorithm\", \"value\": \"AWS4-HMAC-SHA256\"}, {\"name\": \"X-Amz-Date\", \"value\": \"20180323T183705Z\"}, {\"name\": \"success_action_status\", \"value\": \"201\"}, {\"name\": \"content-type\", \"value\": \"image/jpeg\"}, {\"name\": \"x-amz-storage-class\", \"value\": \"STANDARD\"}, {\"name\": \"x-amz-meta-ext\", \"value\": \"jpg\"}, {\"name\": \"policy\", \"value\": \"eyJjb25kaXRpb25zIjogW3siYnVja2V0IjogInJlZGRpdC11cGxvYWRlZC1lbW9qaSJ9LCB7ImtleSI6ICJ0NV9oNmFhZC90Ml8xMnZtM2poZy9hOTRhOGZlNWNjYjE5YmE2MWM0YzA4NzNkMzkxZTk4Nzk4MmZiYmQzIn0sIHsiYWNsIjogInB1YmxpYy1yZWFkIn0sIHsieC1hbXotc3RvcmFnZS1jbGFzcyI6ICJTVEFOREFSRCJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiQVNJQUlHSEdTR0FINDVBUU5FSlEvMjAxODAzMjMvdXMtZWFzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotZGF0ZSI6ICIyMDE4MDMyM1QxODM3MDVaIn0sIHsieC1hbXotc2VjdXJpdHktdG9rZW4iOiAiRlFvRFlYZHpFRE1hREdGWTUyRmJldHFDWFFsaE9pSzNBMk5uRG9Wdml1cWRPMG92UVlVZVZ1MXVoOGFGaW03VFEzdUE3QkVYR01OZUpBWmlUZi9JdlJ3Ymkyb1MyZWo0UTVkQ1kwcDhpd1drdXJpd1hLdFpNRHhDOTZnOVBoSmpmK3B3Y0hMKzNXNTFYMkFSNktiaEVIZCtIRnFqRXBYc0l3YjZHTEJJbTdTYjJPTjY0K3VCZUVsbnlOOHZGS09WclIwcEVqRWx3ajk0YVhQbTlndmxVaDJoNmJVVTAyeVpDMlZPM0lkS3B3bWZmQTJialBlVjUvbyt1bVpxTWowK3pvb0JZY0lPd0QxU2hRYU9wV0Q1Y3RuR1NITEtvV2hhRFdSUzI1WnRpdkRiV0Q1Njk4MFVTeFk2TVlYUndYQkVOaUhuVFR2dHhyVW1Zbi9pZGNYNG9ickNLRlo5L3EzRk5UZVVyYzFOZUtoTS80N2ZEZGUzOGRrakFvT1pwZG1MTmFPOHI2WTUxNnY0MmRKbjU3UzhtM2JtNDNldG9CWVNRT2Jaa2IvMGpZaC93Z0VwMlR0SmF5enAraWpCVHFwS0tlNTFVZkdsRTB6UGVXY0RqWlVnNmhKL2ZwSFM3ckFJbFdmSTJQQkxNY3MzMnc3ZVN3Z2NtYTdzaldzck1hNUJtYjQzL1ZzZ0dvRWYrUWFUM0dWaHhRM3NLMUljTFNVUUtxWGpTK0hCY1d1T3c5b3lzcGlqcWxqblVOd2MzYkxqajEwc3BMdXdZRitRS3VoblBmNVRRVE0zaHFuODZYMWhlU0dnd1lsTUJ0QW8ydmJVMVFVPSJ9LCB7InN1Y2Nlc3NfYWN0aW9uX3N0YXR1cyI6ICIyMDEifSwgWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsIDAsIDY0MDAwXSwgeyJ4LWFtei1tZXRhLWV4dCI6ICJqcGcifSwgeyJjb250ZW50LXR5cGUiOiAiaW1hZ2UvanBlZyJ9XSwgImV4cGlyYXRpb24iOiAiMjAxOC0wMy0yM1QxODozODowNVoifQ==\"}, {\"name\": \"X-Amz-Signature\", \"value\": \"14cc33c87018da283843d6404c120b268bff1865dddf7cf1c826c948b8732fba\"}, {\"name\": \"x-amz-security-token\", \"value\": \"FQoDYXdzEDMaDGFY52FbetqCXQlhOiK3A2NnDoVviuqdO0ovQYUeVu1uh8aFim7TQ3uA7BEXGMNeJAZiTf/IvRwbi2oS2ej4Q5dCY0p8iwWkuriwXKtZMDxC96g9PhJjf+pwcHL+3W51X2AR6KbhEHd+HFqjEpXsIwb6GLBIm7Sb2ON64+uBeElnyN8vFKOVrR0pEjElwj94aXPm9gvlUh2h6bUU02yZC2VO3IdKpwmffA2bjPeV5/o+umZqMj0+zooBYcIOwD1ShQaOpWD5ctnGSHLKoWhaDWRS25ZtivDbWD56980USxY6MYXRwXBENiHnTTvtxrUmYn/idcX4obrCKFZ9/q3FNTeUrc1NeKhM/47fDde38dkjAoOZpdmLNaO8r6Y516v42dJn57S8m3bm43etoBYSQObZkb/0jYh/wgEp2TtJayzp+ijBTqpKKe51UfGlE0zPeWcDjZUg6hJ/fpHS7rAIlWfI2PBLMcs32w7eSwgcma7sjWsrMa5Bmb43/VsgGoEf+QaT3GVhxQ3sK1IcLSUQKqXjS+HBcWuOw9oyspijqljnUNwc3bLjj10spLuwYF+QKuhnPf5TQTM3hqn86X1heSGgwYlMBtAo2vbU1QU=\"}]}, \"websocketUrl\": \"wss://ws-01af5dfdb8c05bed3.wss.redditmedia.com/subreddit-emoji/t5_h6aad-t2_12vm3jhg?m=AQAAqUu1Whiu-6ZhKaBkOVrQBLGBQ4k3k9Q6TX8Nzm9JXrx7AiIe\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "3171"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 23 Mar 2018 18:37:05 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-sjc3629-SJC"
+          ],
+          "X-Timer": [
+            "S1521830225.066357,VS0,VE84"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=U65ktSxAEcg1XnR7aD.0.1521830225107.Z0FBQUFBQmF0VWxSWk5XYXJLdnVTTklpc3dqOTh5bDlBRVVpWnlma1BEcGhuVWtuaXNsc3p0SXBGS0V1SVZwcnRteERZeEw5aExRVUF1ZklxY1N2ZHNRNUNmZ3dmcHhOMjdhbGM2SmRkNEwySzh2ZjBZU3hmY19zRFYwUWV5bElYd1pzN0VzeVF0X3o; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 20:37:05 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "590.0"
+          ],
+          "x-ratelimit-reset": [
+            "175"
+          ],
+          "x-ratelimit-used": [
+            "10"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emoji_asset_upload_s3.json?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2018-03-23T18:37:05",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"acl\"\r\n\r\npublic-read\r\n--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"key\"\r\n\r\nt5_h6aad/t2_12vm3jhg/a94a8fe5ccb19ba61c4c0873d391e987982fbbd3\r\n--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"X-Amz-Credential\"\r\n\r\nASIAIGHGSGAH45AQNEJQ/20180323/us-east-1/s3/aws4_request\r\n--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"X-Amz-Algorithm\"\r\n\r\nAWS4-HMAC-SHA256\r\n--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"X-Amz-Date\"\r\n\r\n20180323T183705Z\r\n--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"success_action_status\"\r\n\r\n201\r\n--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"content-type\"\r\n\r\nimage/jpeg\r\n--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"x-amz-storage-class\"\r\n\r\nSTANDARD\r\n--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"x-amz-meta-ext\"\r\n\r\njpg\r\n--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"policy\"\r\n\r\neyJjb25kaXRpb25zIjogW3siYnVja2V0IjogInJlZGRpdC11cGxvYWRlZC1lbW9qaSJ9LCB7ImtleSI6ICJ0NV9oNmFhZC90Ml8xMnZtM2poZy9hOTRhOGZlNWNjYjE5YmE2MWM0YzA4NzNkMzkxZTk4Nzk4MmZiYmQzIn0sIHsiYWNsIjogInB1YmxpYy1yZWFkIn0sIHsieC1hbXotc3RvcmFnZS1jbGFzcyI6ICJTVEFOREFSRCJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiQVNJQUlHSEdTR0FINDVBUU5FSlEvMjAxODAzMjMvdXMtZWFzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7IngtYW16LWFsZ29yaXRobSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotZGF0ZSI6ICIyMDE4MDMyM1QxODM3MDVaIn0sIHsieC1hbXotc2VjdXJpdHktdG9rZW4iOiAiRlFvRFlYZHpFRE1hREdGWTUyRmJldHFDWFFsaE9pSzNBMk5uRG9Wdml1cWRPMG92UVlVZVZ1MXVoOGFGaW03VFEzdUE3QkVYR01OZUpBWmlUZi9JdlJ3Ymkyb1MyZWo0UTVkQ1kwcDhpd1drdXJpd1hLdFpNRHhDOTZnOVBoSmpmK3B3Y0hMKzNXNTFYMkFSNktiaEVIZCtIRnFqRXBYc0l3YjZHTEJJbTdTYjJPTjY0K3VCZUVsbnlOOHZGS09WclIwcEVqRWx3ajk0YVhQbTlndmxVaDJoNmJVVTAyeVpDMlZPM0lkS3B3bWZmQTJialBlVjUvbyt1bVpxTWowK3pvb0JZY0lPd0QxU2hRYU9wV0Q1Y3RuR1NITEtvV2hhRFdSUzI1WnRpdkRiV0Q1Njk4MFVTeFk2TVlYUndYQkVOaUhuVFR2dHhyVW1Zbi9pZGNYNG9ickNLRlo5L3EzRk5UZVVyYzFOZUtoTS80N2ZEZGUzOGRrakFvT1pwZG1MTmFPOHI2WTUxNnY0MmRKbjU3UzhtM2JtNDNldG9CWVNRT2Jaa2IvMGpZaC93Z0VwMlR0SmF5enAraWpCVHFwS0tlNTFVZkdsRTB6UGVXY0RqWlVnNmhKL2ZwSFM3ckFJbFdmSTJQQkxNY3MzMnc3ZVN3Z2NtYTdzaldzck1hNUJtYjQzL1ZzZ0dvRWYrUWFUM0dWaHhRM3NLMUljTFNVUUtxWGpTK0hCY1d1T3c5b3lzcGlqcWxqblVOd2MzYkxqajEwc3BMdXdZRitRS3VoblBmNVRRVE0zaHFuODZYMWhlU0dnd1lsTUJ0QW8ydmJVMVFVPSJ9LCB7InN1Y2Nlc3NfYWN0aW9uX3N0YXR1cyI6ICIyMDEifSwgWyJjb250ZW50LWxlbmd0aC1yYW5nZSIsIDAsIDY0MDAwXSwgeyJ4LWFtei1tZXRhLWV4dCI6ICJqcGcifSwgeyJjb250ZW50LXR5cGUiOiAiaW1hZ2UvanBlZyJ9XSwgImV4cGlyYXRpb24iOiAiMjAxOC0wMy0yM1QxODozODowNVoifQ==\r\n--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"X-Amz-Signature\"\r\n\r\n14cc33c87018da283843d6404c120b268bff1865dddf7cf1c826c948b8732fba\r\n--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"x-amz-security-token\"\r\n\r\nFQoDYXdzEDMaDGFY52FbetqCXQlhOiK3A2NnDoVviuqdO0ovQYUeVu1uh8aFim7TQ3uA7BEXGMNeJAZiTf/IvRwbi2oS2ej4Q5dCY0p8iwWkuriwXKtZMDxC96g9PhJjf+pwcHL+3W51X2AR6KbhEHd+HFqjEpXsIwb6GLBIm7Sb2ON64+uBeElnyN8vFKOVrR0pEjElwj94aXPm9gvlUh2h6bUU02yZC2VO3IdKpwmffA2bjPeV5/o+umZqMj0+zooBYcIOwD1ShQaOpWD5ctnGSHLKoWhaDWRS25ZtivDbWD56980USxY6MYXRwXBENiHnTTvtxrUmYn/idcX4obrCKFZ9/q3FNTeUrc1NeKhM/47fDde38dkjAoOZpdmLNaO8r6Y516v42dJn57S8m3bm43etoBYSQObZkb/0jYh/wgEp2TtJayzp+ijBTqpKKe51UfGlE0zPeWcDjZUg6hJ/fpHS7rAIlWfI2PBLMcs32w7eSwgcma7sjWsrMa5Bmb43/VsgGoEf+QaT3GVhxQ3sK1IcLSUQKqXjS+HBcWuOw9oyspijqljnUNwc3bLjj10spLuwYF+QKuhnPf5TQTM3hqn86X1heSGgwYlMBtAo2vbU1QU=\r\n--40ad1ae8eb7441e18d4bbc7659c56f58\r\nContent-Disposition: form-data; name=\"file\"; filename=\"test.jpg\"\r\n\r\n\ufffd\ufffd\ufffd\ufffd\u0000\u0010JFIF\u0000\u0001\u0001\u0001\u0000H\u0000H\u0000\u0000\ufffd\ufffd\u0000\u0013Created with GIMP\ufffd\ufffd\u0000C\u0000\u0003\u0002\u0002\u0003\u0002\u0002\u0003\u0003\u0003\u0003\u0004\u0003\u0003\u0004\u0005\b\u0005\u0005\u0004\u0004\u0005\n\u0007\u0007\u0006\b\f\n\f\f\u000b\n\u000b\u000b\r\u000e\u0012\u0010\r\u000e\u0011\u000e\u000b\u000b\u0010\u0016\u0010\u0011\u0013\u0014\u0015\u0015\u0015\f\u000f\u0017\u0018\u0016\u0014\u0018\u0012\u0014\u0015\u0014\ufffd\ufffd\u0000C\u0001\u0003\u0004\u0004\u0005\u0004\u0005\t\u0005\u0005\t\u0014\r\u000b\r\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\u0014\ufffd\ufffd\u0000\u0011\b\u0000\ufffd\u0000\ufffd\u0003\u0001\u0011\u0000\u0002\u0011\u0001\u0003\u0011\u0001\ufffd\ufffd\u0000\u0019\u0000\u0001\u0001\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0007\u0006\u0005\u0004\b\ufffd\ufffd\u0000\u001a\u0001\u0001\u0000\u0003\u0001\u0001\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0004\u0005\u0002\u0001\u0006\ufffd\ufffd\u0000\f\u0003\u0001\u0000\u0002\u0010\u0003\u0010\u0000\u0000\u0001\ufffd\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\ufffd\ufffd\u0374\ufffd\ufffdq\ufffd\u0594\ufffdk\ufffd{8\ufffd\ufffd\ufffd4\ufffdF\u001e\ufffd=ub\ufffdy\ufffd\u000fj\u001e\ufffd\u0019\u0016=\ufffdz\u0000\ufffd\ufffdA\ufffd\ufffd&~\ufffd>)<\ufffd\ufffd\ufffdo\ufffd\u000e\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u0552\u001f\ufffdV\ufffdh\u0000\u0004\ufffdR\r\ufffd)3\ufffd9\ufffd\ufffd\ufffd[S\ufffd\u0005n\ufffd\ufffdx\ufffdj\ufffd\ufffdW\ufffd\u06c9\ufffd\u05b8a\ufffd\u0000\u0001:\u0447[RNT\ufffd\ufffd\ufffd \ufffdC\ufffdn\u000e\ufffd\ufffd8\ufffd\ufffd\ufffd\ufffd\u0006\u050f^\ufffdw\"\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001f\ufffd\ufffd\u0000$\u0010\u0000\u0002\u0002\u0001\u0003\u0004\u0002\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0005\u0006\u0003\u0004\u0002\u0000\u0001\u0007\u0015 46\u00125\u0016`p\ufffd\ufffd\u0000\b\u0001\u0001\u0000\u0001\u0005\u0002\ufffd\t\ufffd\ufffdz\ufffd\ufffdjh\u0015^\u0003\ufffd\ufffda\ufffd\ufffd\ufffd\ufffd5\u0018\ufffd\ufffd\ufffd\ufffd\ufffd:(n0b\ufffdfe%\ufffdG<\ufffd\u0011`\ufffdz\ufffd\ufffdN\f\ufffd\ufffd\ufffd\u000e:\ufffd\ufffd\ufffdS\ufffd\ufffdZ\u0001\ufffdO~\ufffd\ufffdpuu\u838d\ufffdNM\ufffd4\ufffd\u0178\t!\t%\ufffdF\ufffd\ub53c>\ufffdH\ufffd\ufffd\u001fD\ufffd\ua2c9\ufffd\uf0ec\ufffd\u0016\ufffd\ufffd\ufffdi\u045a\ufffdXk\ufffd\ufffd\u0019:\u0004\ufffd\u7d31\ufffd\ufffd\ufffdJ{\ufffd\ufffd\ufffd\ufffd\u0001\r\ufffde$\ufffd!\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd2\ufffd\ufffd\u0002afa\u001f\u001c\ufffd\u033a]\ufffdo\ufffd\u070a6\ufffd*\ufffd\ufffd\ufffd\u0000\ufffd\ufffd\u0000$\u0011\u0000\u0002\u0002\u0001\u0004\u0002\u0002\u0003\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0002\u0000\u0003\u0012\u0011!12\u0010 \u0013QAR`p\ufffd\ufffd\u0000\b\u0001\u0003\u0001\u0001?\u0001\ufffd\t\ufffd\u000e\ufffd\ufffd\ufffd\u0219X\u007f\u0013\"\u0017S\u0003\ufffdw\u0002eo\ufffd-\ufffd\ufffd\ufffd\ufffd\ufffd\"\u0669\u0463\u0017\u001dD6:\ufffd&V\ufffdA\ufffd\ufffd\ufffdu\ufffd\ufffdKz\u0018\ufffd\ufffd\ufffd\ufffdK\ufffd.\u001bAb\ufffdP6\ufffd/\ufffd{\ufffd\ufffd'Q-\ufffdbV\ufffdu\ufffd\ufffd\u0010\ufffd9\ufffd\ufffd1\ufffd\u0178\ufffd\u007f\u0003\ufffd\u046a\ufffd\u0017\ufffd\u001cj\ufffdEvQ\ufffd3\ufffdo\ufffd:\ufffd&n9\u0013F\ufffd\ufffd\ufffd\ufffdH\ufffd\ufffd\u0013\ufffd\ufffd\u00000\u0011\u0000\u0001\u0004\u0000\u0003\u0004\b\u0006\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0001\u0003\u0004\u0011\u0012\ufffd\u0005\u0013!\ufffd\u0010 123ASq\u0014\"#4Qa`p\ufffd\ufffd\ufffd\u0000\b\u0001\u0002\u0001\u0001?\u0001\ufffd\u0005\\ ,w\u0142\ufffd\ufffd9K(\u001b\ufffd\ufffd((\ufffd\ufffd\ufffd\ufffd\ufffd\u0018\u4762\ufffd\ufffd#\ufffdJ7\ufffdF\ufffd\ufffd\ufffd\ufffd4=G\ufffd%\u0014\u000f<\ufffd#OZ\ufffd\u007f,\ufffdqS\ufffda\r\ufffdE\ufffdUp\ufffdC\ufffd\ufffd\u0007Q\u04e97p\ufffd\ufffd\ufffd4=G\ufffd$l,O\ufffd\ufffd\ufffd\ufffd|uc\ufffd?wT>\ufffdu\ufffdA)LN\ufffd\ufffd\ufffd\ufffd[\u0017\u0017\ufffd\u0000\u0016\ufffd1\u0019\u001c_\ufffdKNx\u07c8\u28f1$\u0002@\ufffd}\u001b/\ufffd]}\ufffd\ufffd\u001e1\ufffd\ufffd\ufffd\ufffd#\ufffd%f\ufffd\ufffd\ufffdB%\u00d2+\ufffd\r\ufffd\ufffd \ufffd\u035c\ufffd\ufffd\u0010]\ufffd>\ufffdP\ufffd;A\ufffd9G\ufffdv\ufffd\ufffd[/\ufffd]z\u0006!6$\ufffd)\ufffd\ufffdBv\ufffd\ufffd\ufffd\ufffd\ufffd$]\ufffdj\ufffdJn{\ufffd\ufffd\ufffd\ufffd(=f\ufffd5Z\ufffdU\ufffd\ufffd\ufffd\ufffdz\ufffdd|\ufffd.\t\ufffd\ufffdH_t\ufffd\ufffd\ufffd6t\ufffd\u0019\u0016w\ufffd\ufffd\u0013\ufffd\ufffd\u0000>\u0010\u0000\u0001\u0003\u0002\u0003\u0003\u0004\f\u000f\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0001\u0003\u0004\u0000\u0011\u0005\u0012\u0013!1QAs\ufffd\ufffd\u0010\u0015 5Bqt\ufffd\ufffd\ufffd\ufffd\ufffd\u0014\u0016\"236R`ap\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u0000\b\u0001\u0001\u0000\u0006?\u0002\ufffd\ufffd\ufffdjb5)V\ufffd\ufffd\ufffd\ufffd\ufffd*V\ufffd\ufffd6+M^\u0677\ufffd\u0000:m\ufffd\ufffd\u06c2\ufffd+\ufffd=zr~#\u0018\u001b\ufffd\ufffdmd\u0017f\ufffd%\u0004\ufffd\ufffd\\Sd\ufffd\ufffdq\ufffd\ufffdz\"\ufffd\ufffd\ufffd\ufffd\ufffdR\ufffd&\ufffdr\ufffd\u0004\ufffdxX3i\u001dv\ufffd\ufffd\ufffdT\ufffd\ufffdv\ufffd\u0012\ufffd\ufffd&\ufffd\ufffd\ufffdT\ufffd\ufffdPY\ufffd\u0285\u021c]\ufffd\ufffd\ufffd\ufffd\ufffda\ufffd\u0019C[\u000e\ufffd[\ufffd\ufffd\u0011}\ufffd\ufffdd\ufffd\u00025!E5\u0000w\"\ufffd%\u038da\ufffdL\ufffdU*\u007f\ufffdz\ufffdP[v|f\ufffd\u0016\ufffdN\ufffd*P\ufffd\ufffd\ufffd\ufffd8[\u0010E\ufffdUZ\ufffd\ufffdb\ufffd\ufffd.\\\ufffd8q\ufffd\ufffd)\ufffd\n\ufffdD\ufffd\ufffdT\ufffd*$\ufffd\u0014\ufffd#\ufffd`6\ufffd\u007f/c\u000f\ufffdW\ufffd\u0757:5\ufffdy3}T\ufffd\ufffd!\ufffdC\ufffd\ufffd<\ufffd\u0017\"\ufffd4\ufffd\ufffdM\ufffd\ufffd,\ufffd6\ufffd\ufffdu\rl\ufffd\ufffde\ufffd\u000f\ufffdn>\ufffd@K\u00a5S\ufffd-\ufffd\ufffdk\ufffd{*<\ufffd:S\ufffd\u0014\ufffd)0\ufffd\u041an$\ufffda\ufffd\ufffd\ufffd;\ufffdn;D\udb28\udcb9A.\ufffd\u0005\ufffd\u0007)\ufffd\u0000$\ufffd\u0239jdv\u00073\ufffd)\ufffdx\ufffdQ\u007fjb\u001f\ufffd\ufffdN\ufffd\\\ufffdI/\u046f\ufffd2\ufffd\u007f\u05a2\ufffd\u0003\ufffdY\u0366\ufffd\ufffd\ufffd_x\ufffd#2\ufffd'e:;5Z\ufffd\ufffdB-0\ufffd\ufffd~\ufffd\ufffd\ufffd-\ufffd\ufffd%\ufffd\u0000j\u0271*\nE`\ufffdQwj\u0002^\u07d0\ufffd\ufffd\ufffd\u0000'\u0010\u0001\u0000\u0001\u0003\u0004\u0000\u0006\u0002\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0011\u0000!1AQa\ufffd\u0010 q\ufffd\ufffd\ufffd`\ufffdp\ufffd\ufffd\ufffd\ufffd\u0000\b\u0001\u0001\u0000\u0001?!\ufffd\t=W\ufffd\ufffdk_\u069b\ufffd\ufffd\ufffd\ufffd\u0018U\ufffd\ufffd\u0016BG\ufffd;\u0439;\ufffdc&\ufffd\u0007\u0011\ufffd$;\u0015\ufffd\ufffd\ufffd\u0001\u0004\ufffd\u007f\ufffd\ufffd(\ufffd\u0749\ufffd\u0016~\ufffd\u0019l\u0012\ufffd\ufffd\ufffd'L\ufffd\ufffd\ufffd\ufffd\b\ufffdh\u060fz\ufffd\ufffdC\ufffd_iT;rf\u001d\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd;2\ufffd9\u0016\ufffd\ufffdK\ufffd`\ufffd\u04fdU\ufffd\u0011\ufffd\u0016\ufffd\ufffd=\ufffd\u0011\ufffd\ufffdg\ufffd{\ufffd\ufffd\u00020\u0017RM<>gg\ufffd\ufffdy\ufffdm\ufffd\u0013\u001by\u001e\ufffdh\ufffd\n\ufffd\ufffd\ufffd\u0018\ufffd\ufffd\ufffd3\u001f\u07b4\ufffd.\ufffd\ufffdY\ufffd\ufffd\ufffdv\ufffdba\ufffd\"\r\ufffdJ\ufffd(3\ufffd_3\ufffd\ufffd\u0011\ufffd\u000e\u0007jV\u0019\ufffd\u0000\u0012\ufffd\ufffd\ufffd@\ufffd}Z\ufffd\t;J\ufffd\ufffd\ufffd\u0010*\u0641V\ufffd\ufffd\ufffd(\ufffd&\ufffd\u0348\ufffdA\ufffd\ufffd\u0000[v\ufffd\ufffd`(\ufffd  \nR\ufffd\ufffd\ufffd\ufffd\ufffd?\ufffd\ufffd\ufffd\ufffd\u0000\f\u0003\u0001\u0000\u0002\u0000\u0003\u0000\u0000\u0000\u0010\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffd$[\ufffd&T\ufffdo\ufffd'\ufffd$\ufffdo\ufffd\ufffd\u001b$\ufffd`\ufffd]%$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffdI$\ufffd\ufffd\u0000$\u0011\u0001\u0000\u0002\u0001\u0003\u0003\u0004\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0011\ufffd!1\ufffdAaq\u00100Q\ufffd `p\ufffd\ufffd\u0000\b\u0001\u0003\u0001\u0001?\u0010\ufffd\n\ufffd\ufffd\f\ufffd\ufffd`k\u0006s\u0015\ufffdX\u001d\n\ufffd\ufffd\ufffdaM\u000fzy\ufffd-\u00151\ufffd\ufffdk@g\ufffd\ufffd\ufffd1(\ufffd\ufffd\ufffd\ufffdL\u001ea\ufffd\u0010f\ufffd\u0019)\ufffd\u0017\ufffdQ\ufffdt\ufffd\ufffd\ufffd\t\ufffd\ufffd\b\ufffdy\ufffdXE\u0001o7b*\u001fH6_\ufffd\u0012\ufffdp!?\u0004f\u001b\ufffd\ufffdi\ufffd\u0013\ufffd\ufffd\"\ufffdh\ufffdulN\ufffd\u0007\ufffd\ufffd_\ufffdO\ufffd\ufffd\u0000(\u0011\u0001\u0000\u0001\u0002\u0004\u0005\u0004\u0003\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0011!1AQ\ufffd\u0010a\ufffd\ufffd\ufffd q\ufffd\ufffd`p\ufffd\ufffd\ufffd\ufffd\u0000\b\u0001\u0002\u0001\u0001?\u0010\ufffd\t\ufffd\ufffd)Jg\ufffdL\ufffd\ufffd\u01b0\ufffd\ufffdh\ufffd\u0000!X\ufffd7\u001c*\ufffdBp\u01c09\u0012\ufffd\ufffd5c\ufffd4cO\ufffd\ufffds\u001e5<\ufffd\nEK\u0530i\ufffd\u0191\ufffd\u001c:\ufffd\u0004\ufffdV\ufffd.\ufffd\ufffd\u001ffx\rY\ufffd\ufffd\u0012\ufffd\\A\ufffd\u000e\f\ufffd\ufffd0\ufffdE\ufffdy\ufffdCPj^\ufffd\ufffd\ufffda\u0007b&\u0019p\ufffd\ufffd\ufffd\ufffd\u001ffx\rY\ufffd\ufffd(T\r\ufffd\ufffd\u001c\ufffd6lt\"\ufffdK\ufffdR\u0509\ufffd\ufffd\ufffd\u0011\ufffd\ufffd\u0013\u03b4b\"\ufffd}s\u007fY3\n7c\ufffdQI\ufffd\ufffd\ufffd\ufffdH?,T\ufffd\ufffd<\ufffd\u0018\u0296S\ufffd\t)\ufffd\u001c\ufffduF\u0011k\ufffd\ufffdS\ufffd\ufffd-Z\ufffd\ufffdj3\ufffd\t\ufffd\ufffd\u0000%\u0010\u0001\u0001\u0000\u0002\u0002\u0001\u0003\u0003\u0005\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0011\u0000!1AQ\u00100a q\ufffd`p\ufffd\ufffd\ufffd\ufffd\ufffd\u0000\b\u0001\u0001\u0000\u0001?\u0010\ufffd\u0004v\u000b\u0510\ufffd\u001d\ufffd\ufffd\ufffdo\u0010\ufffdc\ufffd\u0012;s\ufffd\u0017J=\u0003D\ufffd\ufffdb\u000eoY\ufffd\u0000\ufffdL\ufffd(o\ufffdC\ufffd`\u001bT\ufffd\ufffd;\ufffd\ufffdS\ufffd9\ufffd\ufffd\u0136\ufffd\ufffd\ufffd\ufffdTp\ufffd\u000f\ufffd\ufffd\u0004\ufffd\ufffd^\ufffd1,\ufffd\u001c\ufffd1\ufffd\ufffd)\u0004\ufffds\ufffd9: \u001d\ufffd\ufffd&?\ufffd\ufffd\ufffdS\ufffd\ufffd\ufffdB/\ufffd*\u8cb4\u001b\ufffd\ufffdy~\ufffd\ufffd\ufffd\ufffdP\u000fAf\ufffd\u0381G\ufffd\ufffd\u007f\ufffd\u0007\ufffd\rO\ufffd\u0004\ufffd\ufffda\u001d\u001a=fR\ufffd\"\ufffdk\u000e\u000bL\u0007\u0010%Ha\ufffd\n\u0012\ufffd\u07f2#\ufffd~}T\u0003\ufffd\ufffdW\ufffd\ufffd!\ufffdA\ufffdf\ufffd+(\ufffd\u0010J;1\u0007v\ufffd\ufffd\u001a\u0010(,\u0015\ufffdb\ufffd\u05cb\ufffdA\ufffdu\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffdH\ufffd\ufffd#\ufffd(\t\u007f\ufffd`E\ufffdr\ufffd\u0287l\ufffd\u0019\ufffd\ufffd\ufffd\u0015|\ufffd\ufffd\ufffd)\ufffd1\u0005\ufffd/h\ufffd\ufffd3\ufffd\u0018\u01d2:V=-\ufffdZ\u041d\ufffdC\ufffd\ufffd\"5\ufffd\u000b\u0002\ufffd\ufffd\f\ufffd\ufffdU\u0003\ufffd\u0357\ufffdZ$\t`i\u0011PZ#t  \u0007\u0001\ufffd\ufffd8\" \u000e(\ufffd\ufffd\ufffd~\ufffd\u007f\ufffd\ufffd\r\n--40ad1ae8eb7441e18d4bbc7659c56f58--\r\n"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "6544"
+          ],
+          "Content-Type": [
+            "multipart/form-data; boundary=40ad1ae8eb7441e18d4bbc7659c56f58"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/5.4.0.dev0 prawcore/0.14.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://reddit-uploaded-emoji.s3-accelerate.amazonaws.com/"
+      },
+      "response": {
+        "body": {
+          "encoding": null,
+          "string": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<PostResponse><Location>https://reddit-uploaded-emoji.s3-accelerate.amazonaws.com/t5_h6aad%2Ft2_12vm3jhg%2Fa94a8fe5ccb19ba61c4c0873d391e987982fbbd3</Location><Bucket>reddit-uploaded-emoji</Bucket><Key>t5_h6aad/t2_12vm3jhg/a94a8fe5ccb19ba61c4c0873d391e987982fbbd3</Key><ETag>\"0ac31d1821b63d2e9dd528f9206b1603\"</ETag></PostResponse>"
+        },
+        "headers": {
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "369"
+          ],
+          "Content-Type": [
+            "application/xml"
+          ],
+          "Date": [
+            "Fri, 23 Mar 2018 18:37:06 GMT"
+          ],
+          "ETag": [
+            "\"0ac31d1821b63d2e9dd528f9206b1603\""
+          ],
+          "Location": [
+            "https://reddit-uploaded-emoji.s3-accelerate.amazonaws.com/t5_h6aad%2Ft2_12vm3jhg%2Fa94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
+          ],
+          "Server": [
+            "AmazonS3"
+          ],
+          "Via": [
+            "1.1 c7b4131244863241121573ea02fc44ad.cloudfront.net (CloudFront)"
+          ],
+          "X-Amz-Cf-Id": [
+            "Ov0dgJ7Qb8INQSA5iw3H0vgqYyvTfzV77YHcnuvmFvZFBKp09V4bNQ=="
+          ],
+          "X-Cache": [
+            "Miss from cloudfront"
+          ],
+          "x-amz-expiration": [
+            "expiry-date=\"Sun, 25 Mar 2018 00:00:00 GMT\", rule-id=\"delete-after-1-day\""
+          ],
+          "x-amz-id-2": [
+            "VXszf0CjUf7xpbICTSbZLNg8991vFBl1fC89YNInz+0gm/+KbzMEEz7parYTHK0lDbmcdHnt3i4="
+          ],
+          "x-amz-request-id": [
+            "3CDC71AF5AEC96A7"
+          ]
+        },
+        "status": {
+          "code": 201,
+          "message": "Created"
+        },
+        "url": "https://reddit-uploaded-emoji.s3-accelerate.amazonaws.com/"
+      }
+    },
+    {
+      "recorded_at": "2018-03-23T18:37:05",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&name=test_jpg&s3_key=t5_h6aad%2Ft2_12vm3jhg%2Fa94a8fe5ccb19ba61c4c0873d391e987982fbbd3"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "100"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "Cookie": [
+            "edgebucket=0oYNRXxvHf0SPbXf6l; loid=000000000012vm3jhg.2.1521757540492.Z0FBQUFBQmF0VWxRODl4Wk5pWFZqTUpGX2x6MHhMVlJiNzR3b1Vaejc0ZldCN0h6anZmQlVYLW1LcDhwd0JfRVhER21vOGkxRjFsenFkXzlKOENTOUVzNHFkdGZOQWVVRmRsM29aYXk5dXYtcFdhR2o2NF9maUNEZVpWTlRXVktKeXpBX3FEU0EtSjM; session_tracker=U65ktSxAEcg1XnR7aD.0.1521830225107.Z0FBQUFBQmF0VWxSWk5XYXJLdnVTTklpc3dqOTh5bDlBRVVpWnlma1BEcGhuVWtuaXNsc3p0SXBGS0V1SVZwcnRteERZeEw5aExRVUF1ZklxY1N2ZHNRNUNmZ3dmcHhOMjdhbGM2SmRkNEwySzh2ZjBZU3hmY19zRFYwUWV5bElYd1pzN0VzeVF0X3o"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/5.4.0.dev0 prawcore/0.14.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emoji.json?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"json\": {\"errors\": []}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "24"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Fri, 23 Mar 2018 18:37:05 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-sjc3629-SJC"
+          ],
+          "X-Timer": [
+            "S1521830225.333118,VS0,VE91"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=U65ktSxAEcg1XnR7aD.0.1521830225352.Z0FBQUFBQmF0VWxSdzhFNzd4OEZkM0d4WTI5RDNFX1hBbGtERjBpcFRCd0s1M1dGXzc0OTJyMkdfaW1hTlR4aENtTHRxYVdfZHREaDdtLU9URGd4OVZPSGx6QldnTV9QS1drQWt3d2VfVWQ0dWRrbVZ6bUpmUFRJMXhhQW5ZMWtnN1JZakZJQjlGVlc; Domain=reddit.com; Max-Age=7199; Path=/; expires=Fri, 23-Mar-2018 20:37:05 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "589.0"
+          ],
+          "x-ratelimit-reset": [
+            "175"
+          ],
+          "x-ratelimit-used": [
+            "11"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/emoji.json?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}
