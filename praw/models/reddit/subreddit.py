@@ -1,7 +1,6 @@
 """Provide the Subreddit class."""
 from copy import deepcopy
 from json import dumps
-import os
 import time
 
 from prawcore import Redirect
@@ -316,7 +315,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         .. code:: python
 
-           for emoji in reddit.subreddit('iama').emoji:
+           for emoji in reddit.subreddit('iama').emoji():
                print(emoji)
 
         """
@@ -334,7 +333,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
            an instance via: ``reddit.subreddit('subreddit_name')``
 
         """
-        self._emoji = None
         if bool(display_name) == bool(_data):
             raise TypeError(
                 'Either `display_name` or `_data` must be provided.')
@@ -342,6 +340,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if display_name:
             self.display_name = display_name
         self._banned = self._contributor = self._filters = self._flair = None
+        self._emoji = None
         self._mod = self._moderator = self._modmail = self._muted = None
         self._quarantine = self._stream = self._stylesheet = self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)
