@@ -9,13 +9,12 @@ class Emoji(RedditBase):
     __hash__ = RedditBase.__hash__
     STR_FIELD = 'name'
 
-    @property
     def __init__(self, reddit, subreddit, name, _data=None):
         """Construct an instance of the Emoji object."""
-        self.name = name
+        self.reddit = reddit
         self.subreddit = subreddit
+        self.name = name
         super(Emoji, self).__init__(reddit, _data)
-        self._mod = None
 
     def add(self, filepath):
         """Add an emoji to this subreddit.
@@ -39,7 +38,7 @@ class Emoji(RedditBase):
         if data is not None:
             url = API_PATH['emoji_lease'].format(
                 subreddit=self.subreddit, method='add')
-            s3_key = self._reddit.post(url, data=data)['s3_key']
+            s3_key = self._reddit.post(url, data=data)['s3UploadLease']['fields'][1]['value']
             data = {'name': self.name, 's3_key': s3_key}
             url = API_PATH['emoji_upload'].format(
                 subreddit=self.subreddit, method='add')
