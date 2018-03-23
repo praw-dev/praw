@@ -99,6 +99,6 @@ class TestSubredditWiki(UnitTest):
 class TestSubredditEmoji(UnitTest):
     def test__getitem(self):
         subreddit = Subreddit(self.reddit, display_name='name')
-        emoji = subreddit.emoji['Foo']
+        emoji = subreddit.emoji['foo']
         assert isinstance(emoji, Emoji)
         assert 'foo' == emoji.name
