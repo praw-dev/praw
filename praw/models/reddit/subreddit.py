@@ -2196,9 +2196,11 @@ class SubredditEmoji(object):
         """Create a SubredditEmoji instance.
 
         :param subreddit: The subreddit whose emoji are affected.
+        :param reddit: The reddit instance.
 
         """
         self.subreddit = subreddit
+        self.reddit = self.subreddit._reddit
 
     def __iter__(self):
         """Iterate through the Emoji for the subreddit.
@@ -2218,7 +2220,7 @@ class SubredditEmoji(object):
             yield Emoji(self.subreddit._reddit,
                         self.subreddit, emoji_name, _data=emoji_data)
 
-    def add(self, filepath):
+    def add(self, name, filepath):
         """Add an emoji to this subreddit.
 
         :param filepath: Path to the file being added.
@@ -2231,25 +2233,25 @@ class SubredditEmoji(object):
            reddit.subreddit('praw_test').emoji.add('cake','cake.png')
 
         """
-        filepath = os.path.basename(filepath.strip())
-        data = {'filepath': filepath, 'mimetype': 'image/jpeg'}
-        if filepath.lower().endswith('.png'):
+        filepath = filepath.strip()
+        filebasename = os.path.basename(filepath)
+        data = {'filepath': filebasename, 'mimetype': 'image/jpeg'}
+        if filebasename.lower().endswith('.png'):
             data['mimetype'] = 'image/png'
         url = API_PATH['emoji_lease'].format(
             subreddit=self.subreddit, method='add')
         # until we learn otherwise, assume this request always succeeds
-        s3_lease = self._reddit.post(url, data=data)['s3UploadLease']
+        s3_lease = self.reddit.post(url, data=data)['s3UploadLease']
         s3_url = 'https:' + s3_lease['action']
         # get a raw requests.Session to contact non-reddit domain
-        http = self.subreddit._reddit._core._requestor._http
+        http = self.reddit._core._requestor._http
         s3_data = {item['name']: item['value'] for item in s3_lease['fields']}
         with open(filepath, 'rb') as fp:
             response = http.post(s3_url, data=s3_data, files={'file': fp})
             response.raise_for_status()
-        data = {'name': self.name, 's3_key': s3_data['key']}
+        data = {'name': name, 's3_key': s3_data['key']}
         # assign uploaded file to subreddit
         url = API_PATH['emoji_upload'].format(
             subreddit=self.subreddit)
-        self._reddit.post(url, data=data)
-        return Emoji(self.subreddit._reddit,
-                     self.subreddit, self.name)
+        self.reddit.post(url, data=data)
+        return Emoji(self.reddit, self.subreddit, name)
