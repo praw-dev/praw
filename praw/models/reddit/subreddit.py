@@ -11,7 +11,7 @@ from ..util import permissions_string, stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
-from .emoji import Emoji, SubredditEmoji
+from .emoji import SubredditEmoji
 from .mixins import MessageableMixin
 from .modmail import ModmailConversation
 from .wikipage import WikiPage
