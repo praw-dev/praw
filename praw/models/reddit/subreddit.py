@@ -1,7 +1,7 @@
 """Provide the Subreddit class."""
 from copy import deepcopy
 from json import dumps
-import time
+import time, os
 
 from prawcore import Redirect
 
@@ -2245,7 +2245,7 @@ class SubredditEmoji(object):
         with open(filepath, 'rb') as fp:
             response = http.post(s3_url, data=s3_data, files={'file': fp})
             response.raise_for_status()
-        data = {'name': self.name, 's3_key': s3_parameters['key']}
+        data = {'name': self.name, 's3_key': s3_data['key']}
         # assign uploaded file to subreddit
         url = API_PATH['emoji_upload'].format(
             subreddit=self.subreddit)
