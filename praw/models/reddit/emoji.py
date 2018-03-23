@@ -30,4 +30,5 @@ class Emoji(RedditBase):
             url = API_PATH['emoji_delete'].format(
                 subreddit=self.subreddit, emoji_name=self.name)
             self._reddit.request('DELETE', url)
-        except: pass
+        except Redirect:
+            pass
