@@ -1,4 +1,6 @@
 """Provide the EMOJI class."""
+from prawcore import Redirect
+
 from ...const import API_PATH
 from .base import RedditBase
 
