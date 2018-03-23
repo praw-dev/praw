@@ -17,20 +17,3 @@ class Emoji(RedditBase):
         self.subreddit = subreddit
         self.name = name
         super(Emoji, self).__init__(reddit, _data)
-
-    def remove(self):
-        """Remove an emoji from this subreddit.
-
-        To remove ``'cake'`` as an emoji on the subreddit ``'praw_test'`` try:
-
-        .. code:: python
-
-           reddit.subreddit('praw_test').emoji['cake'].remove()
-
-        """
-        try:
-            url = API_PATH['emoji_delete'].format(
-                subreddit=self.subreddit, emoji_name=self.name)
-            self._reddit.request('DELETE', url)
-        except Redirect:
-            pass
