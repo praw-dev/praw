@@ -90,8 +90,11 @@ class SubredditEmoji(object):
             self.refresh_emoji()
         return(self.emoji_list)
 
-    def __getitem__(self, name):
+    def __getitem__(self, name, use_cached=True):
         """Lazily return the Emoji for the subreddit named ``name``.
+
+        :param name: The name of the emoji
+        :param use_cached: If False, refresh the list.
 
         This method is to be used to fetch a specific emoji url, like so:
 
@@ -101,14 +104,13 @@ class SubredditEmoji(object):
            print(emoji)
 
         """
-        for e in self.emoji_list:
-            if e.name == name:
-                return e
-        self.refresh_emoji()
-        for e in self.emoji_list:
-            if e.name == name:
-                return e
-        return None
+        if not use_cached:
+            self.refresh_emoji()
+        e = self.get_emoji(name)
+        if e is None and use_cached:
+            self.refresh_emoji()
+            e = self.get_emoji(name)
+        return e
 
     def __init__(self, subreddit):
         """Create a SubredditEmoji instance.
@@ -178,3 +180,20 @@ class SubredditEmoji(object):
             emoji_cur = Emoji(self.subreddit._reddit,
                               self.subreddit, emoji_name, _data=emoji_data)
             self.emoji_list.append(emoji_cur)
+
+      def get_emoji(self, name):
+        """Helper functiomn to get an emoji. Not meant for endusers.
+
+        :param name: The name of the emoji
+
+        To refresh emoji on the subreddit ``'praw_test'`` try:
+
+        .. code:: python
+
+           reddit.subreddit('praw_test').emoji.get_emoji('cake')
+
+        """
+        for e in self.emoji_list:
+            if e.name == name:
+                return e
+        return None
