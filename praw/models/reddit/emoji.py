@@ -53,7 +53,6 @@ class Emoji(RedditBase):
                 subreddit=self.subreddit, method='add')
             self._reddit.post(url, data=data)
 
-
     def remove(self):
         """Remove an emoji from this subreddit.
 
@@ -69,4 +68,4 @@ class Emoji(RedditBase):
         """
         url = API_PATH['emoji_delete'].format(
             subreddit=self.subreddit, emoji_name=self.name)
-        self._reddit.request('DELETE',url)
+        self._reddit.request('DELETE', url)
