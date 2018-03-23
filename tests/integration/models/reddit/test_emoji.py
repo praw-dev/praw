@@ -5,7 +5,8 @@ from ... import IntegrationTest
 
 
 class TestEmojiModeration(IntegrationTest):
-    def test_add(self):
+    @mock.patch('time.sleep', return_value=None)
+    def test_add(self, _):
         subreddit = self.reddit.subreddit(
             pytest.placeholders.test_subreddit)
         emoji = Emoji(self.reddit, subreddit, 'test')
@@ -14,7 +15,8 @@ class TestEmojiModeration(IntegrationTest):
         with self.recorder.use_cassette('TestEmojiModeration.test_add'):
             emoji.add('tests/integration/files/test.png')
 
-    def test_remove(self):
+    @mock.patch('time.sleep', return_value=None)
+    def test_remove(self, _):
         subreddit = self.reddit.subreddit(
             pytest.placeholders.test_subreddit)
         emoji = Emoji(self.reddit, subreddit, 'test')
