@@ -1,7 +1,8 @@
 """Provide the Subreddit class."""
 from copy import deepcopy
 from json import dumps
-import time, os
+import os
+import time
 
 from prawcore import Redirect
 
