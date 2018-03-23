@@ -2222,7 +2222,7 @@ class SubredditEmoji(object):
 
         :param filepath: Path to the file being added.
         :returns: The Emoji added.
-        
+
         To add ``'cake'`` to the subreddit ``'praw_test'`` try:
 
         .. code:: python
@@ -2241,7 +2241,7 @@ class SubredditEmoji(object):
         s3_url = 'https:' + s3_lease['action']
         # get a raw requests.Session to contact non-reddit domain
         http = self.subreddit._reddit._core._requestor._http
-        s3_data = {item['name'], item['value'] 
+        s3_data = {item['name'], item['value'] \
                    for item in s3_lease['fields']}
         with open(filepath, 'rb') as fp:
             response = http.post(s3_url, data=s3_data, files={'file': fp})
