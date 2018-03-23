@@ -1,8 +1,6 @@
 """Provide the Emoji class."""
 import os
 
-from prawcore import Redirect
-
 from ...const import API_PATH
 from .base import RedditBase
 
@@ -53,7 +51,7 @@ class Emoji(RedditBase):
         url = API_PATH['emoji_upload'].format(
             subreddit=self.subreddit)
         self.reddit.post(url, data=data)
-        return Emoji(self.reddit, self.subreddit, self.name)        
+        return Emoji(self.reddit, self.subreddit, self.name)
 
     def remove(self):
         """Remove an emoji from this subreddit by Emoji.
