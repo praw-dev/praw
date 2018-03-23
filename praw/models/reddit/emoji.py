@@ -140,6 +140,7 @@ class SubredditEmoji(object):
             self.refresh_emoji()
         emoji_add = Emoji(self.reddit, self.subreddit, name)
         emoji_add.add(filepath)
+        self.refresh_emoji()
         return(emoji_add)
 
     def remove(self, name, use_cached=True):
@@ -158,6 +159,7 @@ class SubredditEmoji(object):
         if not use_cached:
             self.refresh_emoji()
         emoji_remove = Emoji(self.reddit, self.subreddit, name)
+        self.refresh_emoji()
         emoji_remove.remove()
 
     def refresh_emoji(self):
