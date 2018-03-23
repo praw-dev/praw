@@ -1,4 +1,6 @@
 """Provide the Emoji class."""
+import os
+
 from prawcore import Redirect
 
 from ...const import API_PATH
@@ -18,9 +20,77 @@ class Emoji(RedditBase):
         self.name = name
         super(Emoji, self).__init__(reddit, _data)
 
+    def add(self, filepath):
+        """Add an emoji to this subreddit by Emoji.
+
+        :param filepath: Path to the file being added.
+        :returns: The Emoji added.
+
+        To add ``'cake'`` to the subreddit ``'praw_test'`` try:
+
+        .. code:: python
+
+           reddit.subreddit('praw_test').emoji['cake'].add('cake.png')
+
+        """
+        filepath = filepath.strip()
+        filebasename = os.path.basename(filepath)
+        data = {'filepath': filebasename, 'mimetype': 'image/jpeg'}
+        if filebasename.lower().endswith('.png'):
+            data['mimetype'] = 'image/png'
+        url = API_PATH['emoji_lease'].format(subreddit=self.subreddit)
+        # until we learn otherwise, assume this request always succeeds
+        s3_lease = self.reddit.post(url, data=data)['s3UploadLease']
+        s3_url = 'https:' + s3_lease['action']
+        # get a raw requests.Session to contact non-reddit domain
+        http = self.reddit._core._requestor._http
+        s3_data = {item['name']: item['value'] for item in s3_lease['fields']}
+        with open(filepath, 'rb') as fp:
+            response = http.post(s3_url, data=s3_data, files={'file': fp})
+            response.raise_for_status()
+        data = {'name': self.name, 's3_key': s3_data['key']}
+        # assign uploaded file to subreddit
+        url = API_PATH['emoji_upload'].format(
+            subreddit=self.subreddit)
+        self.reddit.post(url, data=data)
+        return Emoji(self.reddit, self.subreddit, self.name)        
+
+    def remove(self):
+        """Remove an emoji from this subreddit by Emoji.
+
+        To remove ``'cake'`` as an emoji on the subreddit ``'praw_test'`` try:
+
+        .. code:: python
+
+           reddit.subreddit('praw_test').emoji['cake'].remove()
+
+        """
+        emoji_remove = self.subreddit.emoji[self.name]
+        if emoji_remove is not None:
+            url = API_PATH['emoji_delete'].format(
+                subreddit=self.subreddit, emoji_name=self.name)
+            self._reddit.request('DELETE', url)
+
 
 class SubredditEmoji(object):
     """Provides a set of functions to a Subreddit for emoji."""
+
+    def __call__(self, use_cached=True):
+        """Return a list of Emoji for the subreddit.
+
+        :param use_cached: If False, refresh the list.
+
+        This method is to be used to discover all emoji for a subreddit:
+
+        .. code:: python
+
+           for emoji in reddit.subreddit('praw_test').emoji():
+               print(emoji)
+
+        """
+        if not use_cached:
+            self.refresh()
+        return(self.emoji_list)
 
     def __getitem__(self, name):
         """Lazily return the Emoji for the subreddit named ``name``.
@@ -33,43 +103,32 @@ class SubredditEmoji(object):
            print(emoji)
 
         """
-        if e.name == name for e in self.subreddit.emoji:
-            return e for e in self.subreddit.emoji if e.name == name
-        else:
-            return None
+        for e in self.emoji_list:
+            if e.name == name:
+                return e
+        self.refresh()
+        for e in self.emoji_list:
+            if e.name == name:
+                return e
+        return None
 
     def __init__(self, subreddit):
         """Create a SubredditEmoji instance.
 
         :param subreddit: The subreddit whose emoji are affected.
-        :param reddit: The reddit instance.
 
         """
         self.subreddit = subreddit
         self.reddit = self.subreddit._reddit
+        self.emoji_list = []
+        self.refresh()
 
-    def __iter__(self):
-        """Iterate through the Emoji for the subreddit.
-
-        This method is to be used to discover all emoji for a subreddit:
-
-        .. code:: python
-
-           for emoji in reddit.subreddit('praw_test').emoji:
-               print(emoji)
-
-        """
-        response = self.subreddit._reddit.get(
-            API_PATH['emoji_list'].format(subreddit=self.subreddit))
-        for emoji_name, emoji_data in \
-                response[self.subreddit.fullname].items():
-            yield Emoji(self.subreddit._reddit,
-                        self.subreddit, emoji_name, _data=emoji_data)
-
-    def add(self, name, filepath):
+    def add(self, name, filepath, use_cached=True):
         """Add an emoji to this subreddit.
 
+        :param name: The name of the emoji
         :param filepath: Path to the file being added.
+        :param use_cached: If False, refresh the list.
         :returns: The Emoji added.
 
         To add ``'cake'`` to the subreddit ``'praw_test'`` try:
@@ -79,41 +138,45 @@ class SubredditEmoji(object):
            reddit.subreddit('praw_test').emoji.add('cake','cake.png')
 
         """
-        filepath = filepath.strip()
-        filebasename = os.path.basename(filepath)
-        data = {'filepath': filebasename, 'mimetype': 'image/jpeg'}
-        if filebasename.lower().endswith('.png'):
-            data['mimetype'] = 'image/png'
-        url = API_PATH['emoji_lease'].format(
-            subreddit=self.subreddit, method='add')
-        # until we learn otherwise, assume this request always succeeds
-        s3_lease = self.reddit.post(url, data=data)['s3UploadLease']
-        s3_url = 'https:' + s3_lease['action']
-        # get a raw requests.Session to contact non-reddit domain
-        http = self.reddit._core._requestor._http
-        s3_data = {item['name']: item['value'] for item in s3_lease['fields']}
-        with open(filepath, 'rb') as fp:
-            response = http.post(s3_url, data=s3_data, files={'file': fp})
-            response.raise_for_status()
-        data = {'name': name, 's3_key': s3_data['key']}
-        # assign uploaded file to subreddit
-        url = API_PATH['emoji_upload'].format(
-            subreddit=self.subreddit)
-        self.reddit.post(url, data=data)
-        return Emoji(self.reddit, self.subreddit, name)
+        if not use_cached:
+            self.refresh()
+        emoji_add = Emoji(self.reddit, self.subreddit, name)
+        emoji_add.add(filepath)
+        return(emoji_add)
 
-    def remove(self, name):
-        """Remove an emoji from this subreddit.
+    def remove(self, name, use_cached=True):
+        """Remove an emoji from this subreddit by name.
+
+        :param name: The name of the emoji
+        :param use_cached: If False, refresh the list.
 
         To remove ``'cake'`` as an emoji on the subreddit ``'praw_test'`` try:
 
         .. code:: python
 
-           reddit.subreddit('praw_test').emoji['cake'].remove()
+           reddit.subreddit('praw_test').emoji.remove('cake')
 
         """
-        emoji_remove = self.subreddit.emoji[name]
-        if emoji_remove is not None:
-            url = API_PATH['emoji_delete'].format(
-                subreddit=self.subreddit, emoji_name=name)
-            self._reddit.request('DELETE', url)
+        if not use_cached:
+            self.refresh()
+        emoji_remove = Emoji(self.reddit, self.subreddit, name)
+        emoji_remove.remove()
+
+    def refresh(self):
+        """Fetch the current emoji for the subreddit. Not meant for endusers.
+
+        To refresh emoji on the subreddit ``'praw_test'`` try:
+
+        .. code:: python
+
+           reddit.subreddit('praw_test').emoji.refresh()
+
+        """
+        self.emoji_list = []
+        response = self.subreddit._reddit.get(
+            API_PATH['emoji_list'].format(subreddit=self.subreddit))
+        for emoji_name, emoji_data in \
+                response[self.subreddit.fullname].items():
+            emoji_cur = Emoji(self.subreddit._reddit,
+                              self.subreddit, emoji_name, _data=emoji_data)
+            self.emoji_list.append(emoji_cur)
