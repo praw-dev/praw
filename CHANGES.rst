@@ -12,6 +12,7 @@ Unreleased
 * Add attribute :attr:`.User.preferences` to access an instance of
   :class:`.Preferences`.
 * Add method :meth:`.Message.delete()`.
+* Add class :class:`.Emoji` to work with custom subreddit emoji.
 
 **Deprecated**
 
