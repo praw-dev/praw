@@ -20,6 +20,7 @@ class TestEmoji(UnitTest):
         emoji6 = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'b'),
                        name='x')
         assert emoji1 == emoji1
+        assert emoji1 == 'x'
         assert emoji2 == emoji2
         assert emoji3 == emoji3
         assert emoji1 != emoji2
