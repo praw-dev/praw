@@ -50,7 +50,7 @@ class TestSubredditEmoji(IntegrationTest):
             assert isinstance(emoji, Emoji)
             assert 'test_png' == emoji.name
             emoji = subreddit.emoji['test_fake']
-            assert emoji is None
+            assert emoji.url is None
 
     @mock.patch('time.sleep', return_value=None)
     def test_remove(self, _):
