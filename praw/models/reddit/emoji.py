@@ -51,7 +51,7 @@ class Emoji(RedditBase):
 
         """
         emoji_remove = self.subreddit.emoji[self.name]
-        if emoji_remove is not None:
+        if emoji_remove.url is not None:
             url = API_PATH['emoji_delete'].format(
                 subreddit=self.subreddit, emoji_name=self.name)
             self._reddit.request('DELETE', url)
@@ -93,13 +93,15 @@ class SubredditEmoji(RedditBase):
            print(emoji)
 
         """
-        e = self._get_emoji(name, self.emoji_subreddit)
-        if e is None:
-            e = self._get_emoji(name, self.emoji_default)
-        if e is None:
+        emoji = self._get_emoji(name, self.emoji_subreddit)
+        if emoji is None:
+            emoji = self._get_emoji(name, self.emoji_default)
+        if emoji is None:
             self._refresh_emoji()
-            e = self._get_emoji(name, self.emoji_subreddit)
-        return e
+            emoji = self._get_emoji(name, self.emoji_subreddit)
+        if emoji is None:
+            emoji = Emoji(self._reddit, self.subreddit, name)
+        return emoji
 
     def __init__(self, subreddit):
         """Create a SubredditEmoji instance.
@@ -131,8 +133,9 @@ class SubredditEmoji(RedditBase):
         """
         if not use_cached:
             self._refresh_emoji()
-        if self.subreddit.emoji[name] is not None:
-            if self.subreddit.emoji[name].emoji_set == 'default':
+        emoji_check = self.subreddit.emoji[name]
+        if emoji_check.url is not None:
+            if emoji_check.emoji_set == 'default':
                 return None
             if not force_upload:
                 return None
@@ -216,7 +219,7 @@ class SubredditEmoji(RedditBase):
                _get_emoji('test',self.emoji_subreddit)
 
         """
-        for e in emoji_set:
-            if e.name == name:
-                return e
+        for emoji in emoji_set:
+            if emoji.name == name:
+                return emoji
         return None
