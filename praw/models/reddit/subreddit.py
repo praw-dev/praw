@@ -315,8 +315,17 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         .. code:: python
 
-           for emoji in reddit.subreddit('iama').emoji():
+           for emoji in reddit.subreddit('iama').emoji:
                print(emoji)
+
+        A single emoji can be lazily retrieved via:
+
+        .. code:: python
+
+           reddit.subreddit('blah').emoji['emoji_name']
+
+        .. note:: Attempting to access attributes of an nonexistent emoji will
+           result in a :class:`.ClientException`.
 
         """
         if self._emoji is None:

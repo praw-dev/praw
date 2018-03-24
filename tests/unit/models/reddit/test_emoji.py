@@ -22,6 +22,11 @@ class TestEmoji(UnitTest):
         assert emoji1 != emoji3
         assert emoji1 == emoji4
 
+    def test__get(self):
+        subreddit = self.reddit.subreddit('a')
+        emoji = subreddit.emoji['a']
+        assert isinstance(emoji, Emoji)
+
     def test_hash(self):
         emoji1 = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'a'),
                        name='x')

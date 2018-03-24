@@ -1,20 +1,47 @@
-from praw.models import Emoji, SubredditEmoji
+from praw.exceptions import ClientException
+from praw.models import Emoji
 import mock
 import pytest
 
 from ... import IntegrationTest
 
 
+class TestEmoji(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test__fetch(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        emoji = subreddit.emoji['test_png']
+        with self.recorder.use_cassette('TestEmoji.test__fetch'):
+            assert emoji.created_by.startswith('t2_')
+
+    @mock.patch('time.sleep', return_value=None)
+    def test__fetch__invalid_emoji(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        emoji = subreddit.emoji['invalid']
+        with self.recorder.use_cassette(
+                'TestEmoji.test__fetch__invalid_emoji'):
+            with pytest.raises(ClientException) as excinfo:
+                emoji.url
+            assert str(excinfo.value) == ('/r/{} does not have the emoji {}'
+                                          .format(subreddit, 'invalid'))
+
+    def test_delete(self):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette('TestEmoji.test_delete'):
+            subreddit.emoji['test_png'].delete()
+
+
 class TestSubredditEmoji(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
-    def test__call(self, _):
+    def test__iter(self, _):
         self.reddit.read_only = False
-        subreddit = self.reddit.subreddit(
-            pytest.placeholders.test_subreddit)
-        with self.recorder.use_cassette('TestSubredditEmoji.test__call'):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette('TestSubredditEmoji.test__iter'):
             count = 0
-            assert isinstance(subreddit.emoji, SubredditEmoji)
-            for emoji in subreddit.emoji(use_cached=False):
+            for emoji in subreddit.emoji:
                 assert isinstance(emoji, Emoji)
                 count += 1
             assert count > 0
@@ -22,42 +49,10 @@ class TestSubredditEmoji(IntegrationTest):
     @mock.patch('time.sleep', return_value=None)
     def test_add(self, _):
         self.reddit.read_only = False
-        subreddit = self.reddit.subreddit(
-            pytest.placeholders.test_subreddit)
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         with self.recorder.use_cassette('TestSubredditEmoji.test_add'):
-            emojipng = subreddit.emoji.add('test_png',
-                                           'tests/integration/files/test.png',
-                                           use_cached=False)
-            assert isinstance(emojipng, Emoji)
-            emojijpg = subreddit.emoji['test_jpg']
-            emojijpg.add('tests/integration/files/test.jpg')
-            assert isinstance(emojijpg, Emoji)
-            emojicake = subreddit.emoji.add('cake',
-                                            'tests/integration/files/test.jpg')
-            assert emojicake is None
-            emojirep = subreddit.emoji.add('test_png',
-                                           'tests/integration/files/test.png',
-                                           force_upload=False)
-            assert emojirep is None
-
-    @mock.patch('time.sleep', return_value=None)
-    def test__get(self, _):
-        self.reddit.read_only = False
-        subreddit = self.reddit.subreddit(
-            pytest.placeholders.test_subreddit)
-        with self.recorder.use_cassette('TestSubredditEmoji.test__get'):
-            emoji = subreddit.emoji['test_png']
-            assert isinstance(emoji, Emoji)
-            assert 'test_png' == emoji.name
-            emoji = subreddit.emoji['test_fake']
-            assert emoji.url is None
-
-    @mock.patch('time.sleep', return_value=None)
-    def test_remove(self, _):
-        self.reddit.read_only = False
-        subreddit = self.reddit.subreddit(
-            pytest.placeholders.test_subreddit)
-        with self.recorder.use_cassette('TestSubredditEmoji.test_remove'):
-            subreddit.emoji.remove('test_png', use_cached=False)
-            subreddit.emoji.remove('test_jpg')
-            subreddit.emoji.remove('test_fake')
+            for extension in ['jpg', 'png']:
+                emoji = subreddit.emoji.add(
+                    'test_{}'.format(extension),
+                    'tests/integration/files/test.{}'.format(extension))
+                assert isinstance(emoji, Emoji)

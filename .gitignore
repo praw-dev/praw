@@ -11,6 +11,7 @@
 .cache/
 .coverage
 .idea/
+.pytest_cache/
 .tox/
 _build/
 build/
