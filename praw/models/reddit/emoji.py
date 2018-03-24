@@ -14,7 +14,7 @@ class Emoji(RedditBase):
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
-            return (other == str(self) and other.subreddit == self.subreddit)
+            return other == str(self)
         return (isinstance(other, self.__class__) and
                 str(self) == str(other) and other.subreddit == self.subreddit)
 
