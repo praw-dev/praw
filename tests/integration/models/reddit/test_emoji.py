@@ -30,7 +30,7 @@ class TestEmoji(IntegrationTest):
             with pytest.raises(ClientException) as excinfo2:
                 emoji2.url
             assert str(excinfo2.value) == ('/r/{} does not have the emoji {}'
-                                          .format(subreddit, 'Test_png'))
+                                           .format(subreddit, 'Test_png'))
 
     def test_delete(self):
         self.reddit.read_only = False
