@@ -32,6 +32,13 @@ class TestSubredditEmoji(IntegrationTest):
             emojijpg = subreddit.emoji.add('test_jpg',
                                            'tests/integration/files/test.jpg')
             assert isinstance(emojijpg, Emoji)
+            emojicake = subreddit.emoji.add('cake',
+                                           'tests/integration/files/test.jpg')
+            assert emojicake is None
+            emojirepeat = subreddit.emoji.add('test_png',
+                                           'tests/integration/files/test.png',
+                                           force_upload=False)
+            assert emojirepeat is None
 
     @mock.patch('time.sleep', return_value=None)
     def test__get(self, _):
