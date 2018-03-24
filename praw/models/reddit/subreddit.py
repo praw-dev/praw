@@ -11,6 +11,7 @@ from ..util import permissions_string, stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
+from .emoji import SubredditEmoji
 from .mixins import MessageableMixin
 from .modmail import ModmailConversation
 from .wikipage import WikiPage
@@ -306,6 +307,22 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             self._wiki = SubredditWiki(self)
         return self._wiki
 
+    @property
+    def emoji(self):
+        """Provide an instance of :class:`.SubredditEmoji`.
+
+        This attribute can be used to discover all emoji for a subreddit:
+
+        .. code:: python
+
+           for emoji in reddit.subreddit('iama').emoji():
+               print(emoji)
+
+        """
+        if self._emoji is None:
+            self._emoji = SubredditEmoji(self)
+        return self._emoji
+
     def __init__(self, reddit, display_name=None, _data=None):
         """Initialize a Subreddit instance.
 
@@ -323,6 +340,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if display_name:
             self.display_name = display_name
         self._banned = self._contributor = self._filters = self._flair = None
+        self._emoji = None
         self._mod = self._moderator = self._modmail = self._muted = None
         self._quarantine = self._stream = self._stylesheet = self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)
