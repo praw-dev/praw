@@ -11,7 +11,8 @@ class Emoji(RedditBase):
     __hash__ = RedditBase.__hash__
     STR_FIELD = 'name'
 
-    def __init__(self, reddit, subreddit, name, _data=None, emoji_set='subreddit'):
+    def __init__(self, reddit, subreddit, name, _data=None,
+                 emoji_set='subreddit'):
         """Construct an instance of the Emoji object."""
         self.subreddit = subreddit
         self.name = name
@@ -37,7 +38,7 @@ class Emoji(RedditBase):
            reddit.subreddit('praw_test').emoji['test'].add('test.png')
 
         """
-        self.subreddit.emoji.add(self.name,filepath)
+        self.subreddit.emoji.add(self.name, filepath)
 
     def remove(self):
         """Remove an emoji from this subreddit by Emoji.
@@ -92,12 +93,12 @@ class SubredditEmoji(RedditBase):
            print(emoji)
 
         """
-        e = self._get_emoji(name,self.emoji_subreddit)
+        e = self._get_emoji(name, self.emoji_subreddit)
         if e is None:
-            e = self._get_emoji(name,self.emoji_default)
+            e = self._get_emoji(name, self.emoji_default)
         if e is None:
             self._refresh_emoji()
-            e = self._get_emoji(name,self.emoji_subreddit)
+            e = self._get_emoji(name, self.emoji_subreddit)
         return e
 
     def __init__(self, subreddit):
@@ -133,7 +134,7 @@ class SubredditEmoji(RedditBase):
         if self.subreddit.emoji[name] is not None:
             if self.subreddit.emoji[name].emoji_set == 'default':
                 return None
-            if force_upload == False:
+            if not force_upload:
                 return None
         self._refresh_emoji()
         filepath = filepath.strip()
