@@ -29,8 +29,8 @@ class TestSubredditEmoji(IntegrationTest):
                                            'tests/integration/files/test.png',
                                            use_cached=False)
             assert isinstance(emojipng, Emoji)
-            emojijpg = subreddit.emoji.add('test_jpg',
-                                           'tests/integration/files/test.jpg')
+            emojijpg = subreddit.emoji['test_jpg']
+            emojijpg.add('tests/integration/files/test.jpg')
             assert isinstance(emojijpg, Emoji)
             emojicake = subreddit.emoji.add('cake',
                                             'tests/integration/files/test.jpg')
