@@ -9,8 +9,19 @@ from .base import RedditBase
 class Emoji(RedditBase):
     """An individual Emoji object."""
 
-    __hash__ = RedditBase.__hash__
     STR_FIELD = 'name'
+
+    def __eq__(self, other):
+        """Return whether the other instance equals the current."""
+        if isinstance(other, str):
+            return (other == str(self) and other.subreddit == self.subreddit)
+        return (isinstance(other, self.__class__) and
+                str(self) == str(other) and other.subreddit == self.subreddit)
+
+    def __hash__(self):
+        """Return the hash of the current instance."""
+        return (hash(self.__class__.__name__) ^ hash(str(self)) ^
+                hash(self.subreddit))
 
     def __init__(self, reddit, subreddit, name, _data=None):
         """Construct an instance of the Emoji object."""
@@ -20,7 +31,7 @@ class Emoji(RedditBase):
 
     def _fetch(self):
         for emoji in self.subreddit.emoji:
-            if emoji.name.lower() == self.name.lower():
+            if emoji.name == self.name:
                 self.__dict__.update(emoji.__dict__)
                 self._fetched = True
                 return

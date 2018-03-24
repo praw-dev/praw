@@ -15,12 +15,18 @@ class TestEmoji(UnitTest):
                        name='1')
         emoji4 = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'A'),
                        name='x')
+        emoji5 = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'a'),
+                       name='X')
+        emoji6 = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'b'),
+                       name='x')
         assert emoji1 == emoji1
         assert emoji2 == emoji2
         assert emoji3 == emoji3
         assert emoji1 != emoji2
         assert emoji1 != emoji3
         assert emoji1 == emoji4
+        assert emoji1 != emoji5
+        assert emoji1 != emoji6
 
     def test__get(self):
         subreddit = self.reddit.subreddit('a')
@@ -36,12 +42,18 @@ class TestEmoji(UnitTest):
                        name='1')
         emoji4 = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'A'),
                        name='x')
+        emoji5 = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'a'),
+                       name='X')
+        emoji6 = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'b'),
+                       name='x')
         assert hash(emoji1) == hash(emoji1)
         assert hash(emoji2) == hash(emoji2)
         assert hash(emoji3) == hash(emoji3)
         assert hash(emoji1) != hash(emoji2)
         assert hash(emoji1) != hash(emoji3)
         assert hash(emoji1) == hash(emoji4)
+        assert hash(emoji1) != hash(emoji5)
+        assert hash(emoji1) != hash(emoji6)
 
     def test_pickle(self):
         emoji = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'a'),
