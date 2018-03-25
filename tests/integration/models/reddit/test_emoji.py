@@ -20,12 +20,17 @@ class TestEmoji(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         emoji = subreddit.emoji['invalid']
+        emoji2 = subreddit.emoji['Test_png']
         with self.recorder.use_cassette(
                 'TestEmoji.test__fetch__invalid_emoji'):
             with pytest.raises(ClientException) as excinfo:
                 emoji.url
             assert str(excinfo.value) == ('/r/{} does not have the emoji {}'
                                           .format(subreddit, 'invalid'))
+            with pytest.raises(ClientException) as excinfo2:
+                emoji2.url
+            assert str(excinfo2.value) == ('/r/{} does not have the emoji {}'
+                                           .format(subreddit, 'Test_png'))
 
     def test_delete(self):
         self.reddit.read_only = False
