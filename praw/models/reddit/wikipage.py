@@ -94,6 +94,13 @@ class WikiPage(RedditBase):
            for item in reddit.subreddit('test').wiki['praw_test'].revisions():
                print(item)
 
+        To get :class:`.WikiPage` objects for each revision:
+
+        .. code:: python
+
+           for item in reddit.subreddit('test').wiki['praw_test'].revisions():
+               print(item['page'])
+
         """
         url = API_PATH['wiki_page_revisions'].format(subreddit=self.subreddit,
                                                      page=self.name)
