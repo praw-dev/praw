@@ -4,7 +4,9 @@ Change Log
 Unreleased
 ----------
 
+**Fixed**
 
+* Fix ``RecursionError`` on :class:`.SubredditEmoji`'s ``repr`` and ``str``.
 
 5.4.0 (2018/03/27)
 ------------------
