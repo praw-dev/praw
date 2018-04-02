@@ -53,10 +53,8 @@ class Emoji(RedditBase):
         self._reddit.request('DELETE', url)
 
 
-class SubredditEmoji(RedditBase):
+class SubredditEmoji(object):
     """Provides a set of functions to a Subreddit for emoji."""
-
-    __hash__ = RedditBase.__hash__
 
     def __getitem__(self, name):
         """Lazily return the Emoji for the subreddit named ``name``.
@@ -80,7 +78,7 @@ class SubredditEmoji(RedditBase):
 
         """
         self.subreddit = subreddit
-        super(SubredditEmoji, self).__init__(subreddit._reddit, None)
+        self._reddit = subreddit._reddit
 
     def __iter__(self):
         """Return a list of Emoji for the subreddit.
