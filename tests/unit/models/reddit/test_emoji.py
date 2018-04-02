@@ -1,6 +1,7 @@
 import pickle
 
 from praw.models import Subreddit, Emoji
+from praw.models.reddit.emoji import SubredditEmoji
 
 from ... import UnitTest
 
@@ -72,3 +73,9 @@ class TestEmoji(UnitTest):
         emoji = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'a'),
                       name='x')
         assert str(emoji) == 'x'
+
+
+class TestSubredditEmoji(UnitTest):
+    def test_repr(self):
+        se = SubredditEmoji(subreddit=Subreddit(self.reddit, 'a'))
+        assert repr(se)  # assert it has some repr
