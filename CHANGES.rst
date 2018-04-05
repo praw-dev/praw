@@ -12,6 +12,12 @@ Unreleased
 
 * Fix ``RecursionError`` on :class:`.SubredditEmoji`'s ``repr`` and ``str``.
 
+**Removed**
+
+* ``Subreddit.submissions`` as the API endpoint backing the method is no
+  more. See
+  https://www.reddit.com/r/changelog/comments/7tus5f/update_to_search_api/.
+
 5.4.0 (2018/03/27)
 ------------------
 
@@ -27,7 +33,7 @@ Unreleased
 
 **Deprecated**
 
-* ``subreddit.submissions`` as the API endpoint backing the method is going
+* ``Subreddit.submissions`` as the API endpoint backing the method is going
   away. See
   https://www.reddit.com/r/changelog/comments/7tus5f/update_to_search_api/.
 
@@ -39,7 +45,7 @@ Unreleased
   ``None``.
 * Parse URLs with trailing slashes and no ``'comments'`` element when creating
   :class:`.Submission` objects.
-* Fix bug where ``subreddit.submissions()`` returns a same submission more than
+* Fix bug where ``Subreddit.submissions`` returns a same submission more than
   once
 * Fix bug where ``ListingGenerator`` fetches the same batch of submissions in
   an infinite loop when ``'before'`` parameter is provided.
@@ -526,7 +532,7 @@ PRAW 4. If you require additional help please ask on `/r/redditdev
 * ``helpers.comments_stream`` is now
   :meth:`praw.models.reddit.subreddit.SubredditStream.comments`
 * ``helpers.submissions_between`` is now
-  :meth:`praw.models.Subreddit.submissions`. This new method now only iterates
+  ``Subreddit.submissions``. This new method now only iterates
   through newest submissions first and as a result makes approximately 33%
   fewer requests.
 * ``helpers.submission_stream`` is now

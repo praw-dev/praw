@@ -1,7 +1,6 @@
 """Provide the Subreddit class."""
 from copy import deepcopy
 from json import dumps
-import time
 
 from prawcore import Redirect
 
@@ -426,70 +425,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             path = redirect.path
         return self._submission_class(self._reddit, url=urljoin(
             self._reddit.config.reddit_url, path))
-
-    def submissions(self, start=None, end=None, extra_query=None):
-        """(DEPRECATED) Yield submissions created between timestamps.
-
-        .. warning:: (Deprecated) The API endpoint backing this feature is
-                     slated to be removed around March 15, 2018. As a result,
-                     this method will be removed in the next major version of
-                     PRAW.
-
-        :param start: A UNIX timestamp indicating the earliest creation time of
-            submission yielded during the call. A value of ``None`` will
-            consider all submissions older than ``end`` (default: None).
-        :param end: A UNIX timestamp indicating the latest creation time of a
-            submission yielded during the call. A value of ``None`` will
-            consider all submissions newer than ``start`` (default: None).
-        :param extra_query: A cloudsearch query that will be combined via
-            ``(and timestamp:start..end EXTRA_QUERY)`` to further filter
-            results (default: None).
-
-        Submissions are yielded newest first.
-
-        **Example**: Suppose you want to obtain all submissions to
-        ``/r/politics`` on November 8, 2016 PST. First, you need to determine
-        the start and end dates as UNIX timestamps. Using
-        http://www.epochconverter.com/, those timestamps are 1478592000 and
-        1478678400, respectively. The following outputs all such submissions'
-        titles:
-
-        .. code:: python
-
-           subreddit = reddit.subreddit('politics')
-           for submission in subreddit.submissions(1478592000, 1478678400):
-               print(submission.title)
-
-        As of this writing there are 809 results.
-
-        .. note:: The results are only as reliable as reddit's search.
-           Submissions may be missing from the results.
-
-        """
-        utc_offset = 28800
-        now = int(time.time())
-        start = max(int(start) + utc_offset if start else 0, 0)
-        end = min(int(end) if end else now, now) + utc_offset
-
-        found_new_submission = True
-        last_ids = set()
-        params = {}
-        while found_new_submission:
-            query = 'timestamp:{}..{}'.format(start, end)
-            if extra_query:
-                query = '(and {} {})'.format(query, extra_query)
-
-            current_ids = set()
-            found_new_submission = False
-            for submission in self.search(query, limit=None, params=params,
-                                          sort='new', syntax='cloudsearch'):
-                current_ids.add(submission.id)
-                end = min(end, int(submission.created))
-                if submission.id not in last_ids:
-                    found_new_submission = True
-                    yield submission
-                    params['after'] = submission.fullname
-            last_ids = current_ids
 
     def submit(self, title, selftext=None, url=None, flair_id=None,
                flair_text=None, resubmit=True, send_replies=True):
