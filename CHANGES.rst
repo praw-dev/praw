@@ -4,6 +4,10 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* Add method :meth:`.WikiPage.revision` to get a specific wiki page revision.
+
 **Fixed**
 
 * Fix ``RecursionError`` on :class:`.SubredditEmoji`'s ``repr`` and ``str``.
@@ -20,7 +24,6 @@ Unreleased
   :class:`.Preferences`.
 * Add method :meth:`.Message.delete()`.
 * Add class :class:`.Emoji` to work with custom subreddit emoji.
-* Add method :meth:`.WikiPage.revision` to get a specific wiki page revision.
 
 **Deprecated**
 
