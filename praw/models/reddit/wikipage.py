@@ -81,6 +81,19 @@ class WikiPage(RedditBase):
         self._reddit.post(API_PATH['wiki_edit'].format(
             subreddit=self.subreddit), data=other_settings)
 
+    def revision(self, revision):
+        """Return a specific version of this page by revision ID.
+
+        To view revision ``[ID]`` of ``'praw_test'`` in ``'/r/test'``:
+
+        .. code:: python
+
+           page = reddit.subreddit('test').wiki['praw_test'].revision('[ID]')
+
+        """
+        return WikiPage(self.subreddit._reddit, self.subreddit, self.name,
+                        revision)
+
     def revisions(self, **generator_kwargs):
         """Return a generator for page revisions.
 

@@ -68,6 +68,15 @@ class TestWikiPage(IntegrationTest):
         with self.recorder.use_cassette('TestWikiPage.test_revision_by'):
             assert isinstance(page.revision_by, Redditor)
 
+    def test_revision(self):
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit)
+        revision_id = 'f31e1988-07d0-11e6-b927-0ea0743a0543'
+        page = subreddit.wiki['index'].revision(revision_id)
+
+        with self.recorder.use_cassette('TestWikiPage.test_revision'):
+            assert len(page.content_md) > 0
+
     @mock.patch('time.sleep', return_value=None)
     def test_revisions(self, _):
         subreddit = self.reddit.subreddit(
