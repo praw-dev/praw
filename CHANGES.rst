@@ -20,6 +20,7 @@ Unreleased
   :class:`.Preferences`.
 * Add method :meth:`.Message.delete()`.
 * Add class :class:`.Emoji` to work with custom subreddit emoji.
+* Add method :meth:`.WikiPage.revision` to get a specific wiki page revision.
 
 **Deprecated**
 
