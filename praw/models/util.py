@@ -96,7 +96,15 @@ def stream_generator(function, pause_after=None):
        time before pause for ``pause_after=N+1`` is approximately twice the
        time before pause for ``pause_after=N``.
 
-    For example to pause a comment stream after six responses with no new
+    For example, to create a stream of comment replies, try:
+
+    .. code:: python
+
+       reply_function = reddit.inbox.comment_replies
+       for reply in praw.models.util.stream_generator(reply_function):
+           print(reply)
+
+    To pause a comment stream after six responses with no new
     comments, try:
 
     .. code:: python
