@@ -52,6 +52,32 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
        for submission in reddit.subreddit('all-redditdev').new():
            print(submission)
 
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    comprehensive in any way.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``created_utc``         Time the subreddit was created, represented in
+                            `Unix Time`_.
+    ``description``         Subreddit description, in Markdown.
+    ``description_html``    Subreddit description, in HTML.
+    ``display_name``        Name of the subreddit.
+    ``over18``              Whether or not the subreddit is NSFW.
+    ``public_description``  Description of the subreddit, shown in searches
+                            and on the "You must be invited to visit this
+                            community" page (if applicable).
+    ``subscribers``         Count of subscribers to the subreddit.
+    ======================= ===================================================
+
+
+    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+
     """
 
     # pylint: disable=too-many-public-methods

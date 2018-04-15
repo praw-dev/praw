@@ -7,6 +7,9 @@ from praw import __version__
 copyright = '2017, Bryce Boe'
 exclude_patterns = ['_build']
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
+html_context = {
+    'css_files': ['_static/theme_overrides.css']
+}
 html_static_path = ['_static']
 html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
