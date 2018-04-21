@@ -209,6 +209,7 @@ class CommentModeration(ThingModerationMixin):
     .. code:: python
        reddit.comment(id="dxocde6").mod.approve()
     """
+    
     def __init__(self, comment):
         """Create a CommentModeration instance.
 
