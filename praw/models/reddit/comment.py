@@ -202,7 +202,15 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
 
 class CommentModeration(ThingModerationMixin):
-    """Provide a set of functions pertaining to Comment moderation."""
+    """Provide a set of functions pertaining to Comment moderation.
+
+    Example usage:
+
+    .. code:: python
+
+       reddit.comment(id="dxocde6").mod.approve()
+
+    """
 
     def __init__(self, comment):
         """Create a CommentModeration instance.
