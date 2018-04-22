@@ -76,7 +76,7 @@ def permissions_string(permissions, known_permissions):
     return ','.join(to_set)
 
 
-def stream_generator(function, pause_after=None):
+def stream_generator(function, pause_after=None, skip_existing=False):
     """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
@@ -89,6 +89,10 @@ def stream_generator(function, pause_after=None):
         regardless of number of new items obtained in that response. A value of
         ``0`` yields ``None`` after every response resulting in no new items,
         and a value of ``None`` never introduces a pause (default: None).
+
+    :param skip_existing: When True does not yield any results from the first
+        request thereby skipping any items that existed in the stream prior to
+        starting the stream (default: False).
 
     .. note:: This function internally uses an exponential delay with jitter
        between subsequent responses that contain no new results, up to a
@@ -159,8 +163,10 @@ def stream_generator(function, pause_after=None):
             found = True
             seen_fullnames.add(item.fullname)
             newest_fullname = item.fullname
-            yield item
+            if not skip_existing:
+                yield item
         before_fullname = newest_fullname
+        skip_existing = False
         if valid_pause_after and pause_after < 0:
             yield None
         elif found:

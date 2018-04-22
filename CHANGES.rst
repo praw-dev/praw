@@ -7,6 +7,8 @@ Unreleased
 **Added**
 
 * Add method :meth:`.WikiPage.revision` to get a specific wiki page revision.
+* Added parameter ``skip_existing`` to :meth:`.stream_generator` to skip
+  existing items when starting a stream`.
 
 **Fixed**
 
