@@ -42,9 +42,12 @@ class Objector(object):
         :param instance: An instance of a subclass of RedditBase.
 
         """
+        retval = None
         for key in self.parsers:
             if isinstance(instance, self.parsers[key]):
-                return key
+                retval = key
+                break
+        return retval
 
     def _objectify_dict(self, data):
         """Create RedditBase objects from dicts.
@@ -100,7 +103,7 @@ class Objector(object):
         """
         # pylint: disable=too-many-return-statements
         if data is None:  # 204 no content
-            return
+            return None
         if isinstance(data, list):
             return [self.objectify(item) for item in data]
         if 'kind' in data and data['kind'] in self.parsers:
