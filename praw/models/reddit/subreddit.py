@@ -103,7 +103,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                           suggested_comment_sort=None, title=None,
                           wiki_edit_age=None, wiki_edit_karma=None,
                           wikimode=None, **other_settings):
-        # pylint: disable=invalid-name,too-many-locals
+        # pylint: disable=invalid-name,too-many-locals,too-many-arguments
         model = {'allow_images': allow_images,
                  'allow_post_crossposts': allow_post_crossposts,
                  'allow_top': allow_top,

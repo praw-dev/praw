@@ -46,6 +46,8 @@ class Objector(object):
             if isinstance(instance, self.parsers[key]):
                 return key
 
+        return None
+
     def _objectify_dict(self, data):
         """Create RedditBase objects from dicts.
 
@@ -100,7 +102,7 @@ class Objector(object):
         """
         # pylint: disable=too-many-return-statements
         if data is None:  # 204 no content
-            return
+            return None
         if isinstance(data, list):
             return [self.objectify(item) for item in data]
         if 'kind' in data and data['kind'] in self.parsers:
