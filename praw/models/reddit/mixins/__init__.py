@@ -22,6 +22,17 @@ class ThingModerationMixin(object):
         moderators) on the website view, and sets the ``approved_by`` attribute
         to the authenticated user.
 
+        Example usage:
+
+        .. code:: python
+
+           # approve a comment:
+           comment = reddit.comment('dkk4qjd')
+           comment.mod.approve()
+           # approve a submission:
+           submission = reddit.submission(id='5or86n')
+           submission.mod.approve()
+
         """
         self.thing._reddit.post(API_PATH['approve'],
                                 data={'id': self.thing.fullname})
@@ -35,6 +46,20 @@ class ThingModerationMixin(object):
         :param sticky: Comment is stickied if True, placing it at the top of
             the comment page regardless of score. If thing is not a top-level
             comment, this parameter is silently ignored.
+
+        Example usage:
+
+        .. code:: python
+
+           # distinguish and sticky a comment:
+           comment = reddit.comment('dkk4qjd')
+           comment.mod.distinguish(how='yes', sticky=True)
+           # undistinguish a submission:
+           submission = reddit.submission(id='5or86n')
+           submission.mod.distinguish(how='no')
+
+        See also :meth:`~.undistinguish`
+
         """
         data = {'how': how, 'id': self.thing.fullname}
         if sticky and getattr(self.thing, 'is_root', False):
@@ -49,6 +74,19 @@ class ThingModerationMixin(object):
         various moderation listings. The report count will still increment on
         the Comment or Submission.
 
+        Example usage:
+
+        .. code:: python
+
+           # ignore future reports on a comment:
+           comment = reddit.comment('dkk4qjd')
+           comment.mod.ignore_reports()
+           # ignore future reports on a submission
+           submission = reddit.submission(id='5or86n')
+           submission.mod.ignore_reports()
+
+        See also :meth:`~.unignore_reports`
+
         """
         self.thing._reddit.post(API_PATH['ignore_reports'],
                                 data={'id': self.thing.fullname})
@@ -59,12 +97,40 @@ class ThingModerationMixin(object):
         :param spam: When True, use the removal to help train the Subreddit's
             spam filter (default: False).
 
+        Example usage:
+
+        .. code:: python
+
+           # remove a comment and mark as spam:
+           comment = reddit.comment('dkk4qjd')
+           comment.mod.remove(spam=True)
+           # remove a submission
+           submission = reddit.submission(id='5or86n')
+           submission.mod.remove()
+
         """
         data = {'id': self.thing.fullname, 'spam': bool(spam)}
         self.thing._reddit.post(API_PATH['remove'], data=data)
 
     def undistinguish(self):
-        """Remove mod, admin, or special distinguishing on object."""
+        """Remove mod, admin, or special distinguishing on object.
+
+        Also unstickies the object if applicable.
+
+        Example usage:
+
+        .. code:: python
+
+           # undistinguish a comment:
+           comment = reddit.comment('dkk4qjd')
+           comment.mod.undistinguish()
+           # undistinguish a submission:
+           submission = reddit.submission(id='5or86n')
+           submission.mod.undistinguish()
+
+        See also :meth:`~.distinguish`
+
+        """
         self.distinguish(how='no')
 
     def unignore_reports(self):
@@ -72,6 +138,19 @@ class ThingModerationMixin(object):
 
         Future reports on this Comment or Submission will cause notifications,
         and appear in the various moderation listings.
+
+        Example usage:
+
+        .. code:: python
+
+           # accept future reports on a comment:
+           comment = reddit.comment('dkk4qjd')
+           comment.mod.unignore_reports()
+           # accept future reports on a submission
+           submission = reddit.submission(id='5or86n')
+           submission.mod.unignore_reports()
+
+        See also :meth:`~.ignore_reports`
 
         """
         self.thing._reddit.post(API_PATH['unignore_reports'],

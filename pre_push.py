@@ -44,4 +44,10 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    exit_code = main()
+    if exit_code != 0:
+        input("Build failed")
+    else:
+        input("Build successful")
+
+    sys.exit(exit_code)

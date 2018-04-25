@@ -270,7 +270,15 @@ class SubmissionFlair(object):
 
 
 class SubmissionModeration(ThingModerationMixin):
-    """Provide a set of functions pertaining to Submission moderation."""
+    """Provide a set of functions pertaining to Submission moderation.
+
+    Example usage:
+
+    .. code:: python
+
+       reddit.submission(id="8dmv8z").mod.approve()
+
+    """
 
     def __init__(self, submission):
         """Create a SubmissionModeration instance.
@@ -294,6 +302,13 @@ class SubmissionModeration(ThingModerationMixin):
           * Scores accessed through the API (mobile apps, bots) will be
             obscured to "1" for non-moderators.
 
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.mod.contest_mode(state=True)
+
         """
         self.thing._reddit.post(API_PATH['contest_mode'], data={
             'id': self.thing.fullname, 'state': state})
@@ -309,10 +324,11 @@ class SubmissionModeration(ThingModerationMixin):
         This method can only be used by an authenticated user who is a
         moderator of the Submission's Subreddit.
 
-        Example:
+        Example usage:
 
         .. code:: python
 
+           submission = reddit.submission(id='5or86n')
            submission.mod.flair(text='PRAW', css_class='bot')
 
         """
@@ -322,7 +338,18 @@ class SubmissionModeration(ThingModerationMixin):
         self.thing._reddit.post(url, data=data)
 
     def lock(self):
-        """Lock the submission."""
+        """Lock the submission.
+
+        Example usage:
+
+        .. code:: python
+
+            submission = reddit.submission(id='5or86n')
+            submission.mod.lock()
+
+        See also :meth:`~.unlock`
+
+        """
         self.thing._reddit.post(API_PATH['lock'],
                                 data={'id': self.thing.fullname})
 
@@ -332,13 +359,15 @@ class SubmissionModeration(ThingModerationMixin):
         This method can be used both by the submission author and moderators of
         the subreddit that the submission belongs to.
 
-        Example:
+        Example usage:
 
         .. code:: python
 
             submission = reddit.subreddit('test').submit('nsfw test',
                                                          selftext='nsfw')
             submission.mod.nsfw()
+
+        See also :meth:`~.sfw`
 
         """
         self.thing._reddit.post(API_PATH['marknsfw'],
@@ -350,12 +379,14 @@ class SubmissionModeration(ThingModerationMixin):
         This method can be used both by the submission author and moderators of
         the subreddit that the submission belongs to.
 
-        Example:
+        Example usage:
 
         .. code:: python
 
             submission = reddit.submission(id='5or86n')
             submission.mod.sfw()
+
+        See also :meth:`~.nsfw`
 
         """
         self.thing._reddit.post(API_PATH['unmarknsfw'],
@@ -367,12 +398,14 @@ class SubmissionModeration(ThingModerationMixin):
         This method can be used both by the submission author and moderators of
         the subreddit that the submission belongs to.
 
-        Example:
+        Example usage:
 
         .. code:: python
 
             submission = reddit.submission(id='5or86n')
             submission.mod.spoiler()
+
+        See also :meth:`~.unspoiler`
 
         """
         self.thing._reddit.post(API_PATH['spoiler'],
@@ -394,6 +427,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code:: python
 
+           submission = reddit.submission(id='5or86n')
            submission.mod.sticky()
 
         """
@@ -414,7 +448,18 @@ class SubmissionModeration(ThingModerationMixin):
             'id': self.thing.fullname, 'sort': sort})
 
     def unlock(self):
-        """Unlock the submission."""
+        """Unlock the submission.
+
+        Example:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.mod.unlock()
+
+        See also :meth:`~.lock`
+
+        """
         self.thing._reddit.post(API_PATH['unlock'],
                                 data={'id': self.thing.fullname})
 
@@ -431,6 +476,8 @@ class SubmissionModeration(ThingModerationMixin):
             submission = reddit.subreddit('test').submit('not spoiler',
                                                          selftext='spoiler')
             submission.mod.unspoiler()
+
+        See also :meth:`~.spoiler`
 
         """
         self.thing._reddit.post(API_PATH['unspoiler'],

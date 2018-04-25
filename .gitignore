@@ -16,3 +16,4 @@
 _build/
 build/
 dist/
+pre_push.py
