@@ -219,6 +219,13 @@ class TestSubredditFilters(IntegrationTest):
             self.reddit.subreddit('all').filters.add('redditdev')
 
     @mock.patch('time.sleep', return_value=None)
+    def test_add__subreddit_model(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditFilters.test_add'):
+            self.reddit.subreddit('all').filters.add(
+                self.reddit.subreddit('redditdev'))
+
+    @mock.patch('time.sleep', return_value=None)
     def test_add__non_special(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -231,6 +238,13 @@ class TestSubredditFilters(IntegrationTest):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubredditFilters.test_remove'):
             self.reddit.subreddit('mod').filters.remove('redditdev')
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_remove__subreddit_model(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubredditFilters.test_remove'):
+            self.reddit.subreddit('mod').filters.remove(
+                self.reddit.subreddit('redditdev'))
 
     @mock.patch('time.sleep', return_value=None)
     def test_remove__non_special(self, _):
