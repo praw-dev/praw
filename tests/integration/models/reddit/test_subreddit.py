@@ -7,7 +7,7 @@ from praw.models import (Comment, ModAction, ModmailAction,
                          ModmailConversation, ModmailMessage, Redditor,
                          Submission, Subreddit, SubredditMessage, Stylesheet,
                          WikiPage)
-from prawcore import Forbidden, NotFound, TooLarge
+from prawcore import Forbidden, NotFound, RequestException, TooLarge
 import mock
 import pytest
 
@@ -971,6 +971,21 @@ class TestSubredditStreams(IntegrationTest):
             assert comment_count == 17
             assert pause_count == 2
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_comments__with_skip_existing(self, _):
+        with self.recorder.use_cassette('TestSubredditStreams.comments'):
+            generator = self.reddit.subreddit('all').stream.comments(
+                skip_existing=True)
+            count = 0
+            try:
+                for comment in generator:
+                    count += 1
+            except RequestException:
+                pass
+            # This test uses the same cassette as test_comments which shows
+            # that there are at least 400 comments in the stream.
+            assert count < 400
+
     def test_submissions(self):
         with self.recorder.use_cassette('TestSubredditStreams.submissions'):
             generator = self.reddit.subreddit('all').stream.submissions()
@@ -988,6 +1003,20 @@ class TestSubredditStreams(IntegrationTest):
                 submission_count += 1
                 submission = next(generator)
             assert submission_count == 100
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_submissions__with_pause_and_skip_after(self, _):
+        with self.recorder.use_cassette('TestSubredditStreams.submissions'):
+            generator = self.reddit.subreddit('all').stream.submissions(
+                pause_after=-1, skip_existing=True)
+            submission = next(generator)
+            assert submission is None  # The first thing yielded should be None
+            submission_count = 0
+            submission = next(generator)
+            while submission is not None:
+                submission_count += 1
+                submission = next(generator)
+            assert submission_count < 100
 
 
 class TestSubredditStylesheet(IntegrationTest):

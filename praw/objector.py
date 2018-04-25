@@ -42,9 +42,12 @@ class Objector(object):
         :param instance: An instance of a subclass of RedditBase.
 
         """
+        retval = None
         for key in self.parsers:
             if isinstance(instance, self.parsers[key]):
-                return key
+                retval = key
+                break
+        return retval
 
         return None
 
