@@ -42,13 +42,9 @@ class Objector(object):
         :param instance: An instance of a subclass of RedditBase.
 
         """
-        retval = None
         for key in self.parsers:
             if isinstance(instance, self.parsers[key]):
-                retval = key
-                break
-        return retval
-
+                return key
         return None
 
     def _objectify_dict(self, data):
