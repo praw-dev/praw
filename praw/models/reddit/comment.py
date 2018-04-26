@@ -208,7 +208,8 @@ class CommentModeration(ThingModerationMixin):
 
     .. code:: python
 
-       reddit.comment(id="dxocde6").mod.approve()
+       comment = reddit.comment('dkk4qjd')
+       comment.mod.approve()
 
     """
 
