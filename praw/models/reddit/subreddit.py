@@ -593,7 +593,7 @@ class SubredditFilters(object):
             special=self.subreddit, user=self.subreddit._reddit.user.me(),
             subreddit=subreddit)
         self.subreddit._reddit.request(
-            'PUT', url, data={'model': dumps({'name': subreddit})})
+            'PUT', url, data={'model': dumps({'name': str(subreddit)})})
 
     def remove(self, subreddit):
         """Remove ``subreddit`` from the list of filtered subreddits.
@@ -605,7 +605,7 @@ class SubredditFilters(object):
         """
         url = API_PATH['subreddit_filter'].format(
             special=self.subreddit, user=self.subreddit._reddit.user.me(),
-            subreddit=subreddit)
+            subreddit=str(subreddit))
         self.subreddit._reddit.request('DELETE', url, data={})
 
 

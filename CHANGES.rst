@@ -13,6 +13,8 @@ Unreleased
 **Fixed**
 
 * Fix ``RecursionError`` on :class:`.SubredditEmoji`'s ``repr`` and ``str``.
+* :meth:`.SubredditFilters.add` and :meth:`.SubredditFilters.remove`
+  also accept a :class:`.Subreddit` for the ``subreddit`` parameter.
 
 **Removed**
 
