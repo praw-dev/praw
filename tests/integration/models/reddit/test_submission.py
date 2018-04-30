@@ -15,6 +15,46 @@ class TestSubmission(IntegrationTest):
             assert isinstance(submission.comments[0], Comment)
             assert isinstance(submission.comments[0].replies[0], Comment)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_crosspost(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubmission.test_crosspost'):
+            subreddit = pytest.placeholders.test_subreddit
+            crosspost_parent = self.reddit.submission(id='6vx01b')
+
+            submission = crosspost_parent.crosspost(subreddit)
+            assert submission.author == self.reddit.config.username
+            assert submission.title == 'Test Title'
+            assert submission.crosspost_parent == 't3_6vx01b'
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_crosspost__subreddit_object(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_crosspost__subreddit_object'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            crosspost_parent = self.reddit.submission(id='6vx01b')
+
+            submission = crosspost_parent.crosspost(subreddit)
+            assert submission.author == self.reddit.config.username
+            assert submission.title == 'Test Title'
+            assert submission.crosspost_parent == 't3_6vx01b'
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_crosspost__custom_title(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_crosspost__custom_title'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            crosspost_parent = self.reddit.submission(id='6vx01b')
+
+            submission = crosspost_parent.crosspost(subreddit, 'my title')
+            assert submission.author == self.reddit.config.username
+            assert submission.title == 'my title'
+            assert submission.crosspost_parent == 't3_6vx01b'
+
     def test_clear_vote(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -167,46 +207,6 @@ class TestSubmission(IntegrationTest):
         with self.recorder.use_cassette(
                 'TestSubmission.test_upvote'):
             Submission(self.reddit, '4b536p').upvote()
-
-    @mock.patch('time.sleep', return_value=None)
-    def test_crosspost(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette('TestSubmission.test_crosspost'):
-            subreddit = pytest.placeholders.test_subreddit
-            crosspost_parent = self.reddit.submission(id='6vx01b')
-
-            submission = crosspost_parent.crosspost(subreddit)
-            assert submission.author == self.reddit.config.username
-            assert submission.title == 'Test Title'
-            assert submission.crosspost_parent == 't3_6vx01b'
-
-    @mock.patch('time.sleep', return_value=None)
-    def test_crosspost__subreddit_object(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubmission.test_crosspost__subreddit_object'):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit)
-            crosspost_parent = self.reddit.submission(id='6vx01b')
-
-            submission = crosspost_parent.crosspost(subreddit)
-            assert submission.author == self.reddit.config.username
-            assert submission.title == 'Test Title'
-            assert submission.crosspost_parent == 't3_6vx01b'
-
-    @mock.patch('time.sleep', return_value=None)
-    def test_crosspost__custom_title(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubmission.test_crosspost__custom_title'):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit)
-            crosspost_parent = self.reddit.submission(id='6vx01b')
-
-            submission = crosspost_parent.crosspost(subreddit, 'my title')
-            assert submission.author == self.reddit.config.username
-            assert submission.title == 'my title'
-            assert submission.crosspost_parent == 't3_6vx01b'
 
 
 class TestSubmissionFlair(IntegrationTest):
