@@ -156,7 +156,10 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         self._fetched = True
 
     def _info_path(self):
-        return API_PATH['submission'].format(id=self.id)
+        path = API_PATH['submission'].format(id=self.id)
+        if 'subreddit' in self.__dict__:
+            path = 'r/{}/{}'.format(self.subreddit, path)
+        return path
 
     def hide(self, other_submissions=None):
         """Hide Submission.

@@ -7,6 +7,17 @@ from ... import IntegrationTest
 
 
 class TestSubmission(IntegrationTest):
+    def test__fetch_does_not_overwrite_attributs(self):
+        with self.recorder.use_cassette(
+                'TestSubmission.test__fetch_does_not_overwrite_attributs'):
+            listing = self.reddit.subreddit('mechmarket').new()
+            submission = next(listing)
+            while submission.author_flair_css_class is None:
+                submission = next(listing)
+            assert submission.author_flair_css_class
+            submission.comments
+            assert submission.author_flair_css_class
+
     def test_comments(self):
         with self.recorder.use_cassette(
                 'TestSubmission.test_comments'):
