@@ -13,6 +13,6 @@ documentation, Redddit source code changeset).
 
 ## System Information
 
-    PRAW Version:
-  Python Version:
-Operating System:
+- PRAW Version:
+- Python Version:
+- Operating System:
