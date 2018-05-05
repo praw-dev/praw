@@ -1592,7 +1592,7 @@ class ModeratorRelationship(SubredditRelationship):
 class Modmail(object):
     """Provides modmail functions for a subreddit."""
 
-    def __call__(self, id=None, mark_read=False):
+    def __call__(self, id=None, mark_read=False):  # noqa: D207, D301
         """Return an individual conversation.
 
         :param id: A reddit base36 conversation ID, e.g., ``2gmz``.
@@ -1609,8 +1609,8 @@ class Modmail(object):
 
         .. code:: python
 
-           conversation = reddit.subreddit('redditdev').modmail('2gmz',
-                                                                mark_read=True)
+           conversation = reddit.subreddit('redditdev').modmail('2gmz', \
+mark_read=True)
            for message in conversation.messages:
                print(message.body_markdown)
 
@@ -1624,16 +1624,16 @@ class Modmail(object):
 
         .. code:: python
 
-           conversation = reddit.subreddit('redditdev').modmail('2gmz',
-                                                                mark_read=True)
+           conversation = reddit.subreddit('redditdev').modmail('2gmz', \
+mark_read=True)
            print(conversation.user.ban_status)
 
         To print a list of recent submissions by the user:
 
         .. code:: python
 
-           conversation = reddit.subreddit('redditdev').modmail('2gmz',
-                                                                mark_read=True)
+           conversation = reddit.subreddit('redditdev').modmail('2gmz', \
+mark_read=True)
            print(conversation.user.recent_posts)
 
         """
@@ -1682,7 +1682,7 @@ class Modmail(object):
                 for conversation_id in response['conversation_ids']]
 
     def conversations(self, after=None, limit=None, other_subreddits=None,
-                      sort=None, state=None):
+                      sort=None, state=None):  # noqa: D207, D301
         """Generate :class:`.ModmailConversation` objects for subreddit(s).
 
         :param after: A base36 modmail conversation id. When provided, the
@@ -1703,8 +1703,8 @@ class Modmail(object):
 
         .. code:: python
 
-            conversations = reddit.subreddit('all').modmail.conversations(
-                state='mod')
+            conversations = reddit.subreddit('all').modmail.conversations(\
+state='mod')
 
         """
         params = {}

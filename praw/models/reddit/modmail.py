@@ -132,7 +132,7 @@ class ModmailConversation(RedditBase):
         self._reddit.request('POST',
                              API_PATH['modmail_mute'].format(id=self.id))
 
-    def read(self, other_conversations=None):
+    def read(self, other_conversations=None):  # noqa: D207, D301
         """Mark the conversation(s) as read.
 
         :param other_conversations: A list of other conversations to mark
@@ -145,8 +145,8 @@ class ModmailConversation(RedditBase):
 
            subreddit = reddit.subreddit('redditdev')
            conversation = subreddit.modmail.conversation('2gmz')
-           conversation.read(
-               other_conversations=conversation.user.recent_convos)
+           conversation.read(\
+other_conversations=conversation.user.recent_convos)
 
         """
         data = {'conversationIds': self._build_conversation_list(
@@ -224,7 +224,7 @@ class ModmailConversation(RedditBase):
         self._reddit.request('POST',
                              API_PATH['modmail_unmute'].format(id=self.id))
 
-    def unread(self, other_conversations=None):
+    def unread(self, other_conversations=None):  # noqa: D207, D301
         """Mark the conversation(s) as unread.
 
         :param other_conversations: A list of other conversations to mark
@@ -237,8 +237,8 @@ class ModmailConversation(RedditBase):
 
            subreddit = reddit.subreddit('redditdev')
            conversation = subreddit.modmail.conversation('2gmz')
-           conversation.unread(
-               other_conversations=conversation.user.recent_convos)
+           conversation.unread(\
+other_conversations=conversation.user.recent_convos)
 
         """
         data = {'conversationIds': self._build_conversation_list(
