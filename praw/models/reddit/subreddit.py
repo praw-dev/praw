@@ -1703,7 +1703,8 @@ class Modmail(object):
 
         .. code:: python
 
-            conversations = reddit.subreddit('all').conversations(state='mod')
+            conversations = reddit.subreddit('all').modmail.conversations(
+                state='mod')
 
         """
         params = {}
