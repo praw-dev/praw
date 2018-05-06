@@ -3,6 +3,11 @@ from .. import IntegrationTest
 
 
 class TestFront(IntegrationTest):
+    def test_best(self):
+        with self.recorder.use_cassette('TestFront.test_best'):
+            submissions = list(self.reddit.front.best())
+        assert len(submissions) == 100
+
     def test_controversial(self):
         with self.recorder.use_cassette('TestFront.test_controversial'):
             submissions = list(self.reddit.front.controversial())
