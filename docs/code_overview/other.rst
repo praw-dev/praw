@@ -48,7 +48,29 @@ instances of them bound to an attribute of one of the PRAW models.
    other/subredditquarantine
    other/subredditstream
    other/subredditstylesheet
+   other/subredditwidgets
    other/subredditwiki
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Widgets
+
+   other/widget
+   other/buttonwidget
+   other/calendar
+   other/communitylist
+   other/customwidget
+   other/idcard
+   other/imagewidget
+   other/menu
+   other/moderatorswidget
+   other/ruleswidget
+   other/textarea
+   other/button
+   other/image
+   other/imagedata
+   other/menulink
+   other/submenu
 
 .. toctree::
    :maxdepth: 2

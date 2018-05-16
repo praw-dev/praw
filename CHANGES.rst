@@ -10,6 +10,11 @@ Unreleased
 * Added parameter ``skip_existing`` to :meth:`.stream_generator` to skip
   existing items when starting a stream`.
 * Add method :meth:`.Front.best` to get the front page "best" listing.
+* Add :attr:`.Subreddit.widgets()`, :class:`.SubredditWidgets`,
+  :class:`.Widget` and subclasses like :class:`.TextArea` to support creating,
+  reading, updating, and deleting Reddit widgets.
+* Add :meth:`.Reddit.delete()` and :meth:`.Reddit.put()` to perform HTTP DELETE
+  and PUT requests.
 
 **Fixed**
 

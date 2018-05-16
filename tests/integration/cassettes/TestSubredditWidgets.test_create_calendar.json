@@ -1,0 +1,111 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2018-05-19T18:24:04",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "53",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/6.0.0.dev0 prawcore/1.0.0"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "116",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sat, 19 May 2018 18:24:04 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "edgebucket=bAf9DOTLxEM0CMRUMx; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-pao17438-PAO",
+          "X-Timer": "S1526754244.907717,VS0,VE430",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2018-05-19T18:24:04",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&json=%7B%22kind%22%3A+%22calendar%22%2C+%22googleCalendarId%22%3A+%22nytimes.com_c9hche3raajglitokho7rvu664%40group.calendar.google.com%22%2C+%22shortName%22%3A+%22My+great+calendar%22%2C+%22requiresSync%22%3A+true%2C+%22configuration%22%3A+%7B%22showDate%22%3A+true%2C+%22showDescription%22%3A+true%2C+%22showLocation%22%3A+false%2C+%22showTime%22%3A+false%2C+%22showTitle%22%3A+true%7D%7D"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Content-Length": "404",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Cookie": "edgebucket=bAf9DOTLxEM0CMRUMx",
+          "User-Agent": "<USER_AGENT> PRAW/6.0.0.dev0 prawcore/1.0.0"
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widget?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"calendar\", \"googleCalendarId\": \"nytimes.com_c9hche3raajglitokho7rvu664@group.calendar.google.com\", \"requiresSync\": true, \"shortName\": \"My great calendar\", \"configuration\": {\"showTime\": false, \"showDescription\": true, \"showLocation\": false, \"showTitle\": true, \"showDate\": true}, \"data\": [], \"id\": \"widget_10yuupwrlp1vg\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "329",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sat, 19 May 2018 18:24:04 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-pao17436-PAO",
+          "X-Timer": "S1526754244.438699,VS0,VE477",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "599.0",
+          "x-ratelimit-reset": "356",
+          "x-ratelimit-used": "1",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widget?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}

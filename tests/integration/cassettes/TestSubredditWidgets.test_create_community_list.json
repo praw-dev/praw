@@ -1,0 +1,111 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2018-05-19T18:24:05",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "Basic <BASIC_AUTH>",
+          "Connection": "keep-alive",
+          "Content-Length": "53",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "<USER_AGENT> PRAW/6.0.0.dev0 prawcore/1.0.0"
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "116",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sat, 19 May 2018 18:24:05 GMT",
+          "Server": "snooserv",
+          "Set-Cookie": "edgebucket=F0v5GvvKmkzhX0EGHe; Domain=reddit.com; Max-Age=63071999; Path=/;  secure",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-pao17427-PAO",
+          "X-Timer": "S1526754245.129402,VS0,VE418",
+          "cache-control": "max-age=0, must-revalidate",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2018-05-19T18:24:06",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&json=%7B%22kind%22%3A+%22community-list%22%2C+%22data%22%3A+%5B%22redditdev%22%2C+%22programming%22%2C+%22LEARNPYTHON%22%5D%2C+%22shortName%22%3A+%22Other+Subreddits%22%7D"
+        },
+        "headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "identity",
+          "Authorization": "bearer <ACCESS_TOKEN>",
+          "Connection": "keep-alive",
+          "Content-Length": "185",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Cookie": "edgebucket=F0v5GvvKmkzhX0EGHe",
+          "User-Agent": "<USER_AGENT> PRAW/6.0.0.dev0 prawcore/1.0.0"
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widget?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"community-list\", \"data\": [{\"isSubscribed\": false, \"iconUrl\": \"https://b.thumbs.redditmedia.com/7GVLmrH9CdZeqXceSEWkmL8_DSUKRGUfwMxnUNh8D8A.png\", \"name\": \"redditdev\", \"subscribers\": 14222}, {\"isSubscribed\": false, \"iconUrl\": \"\", \"name\": \"programming\", \"subscribers\": 1068826}, {\"isSubscribed\": false, \"iconUrl\": \"\", \"name\": \"learnpython\", \"subscribers\": 122128}], \"shortName\": \"Other Subreddits\", \"id\": \"widget_10yuuq2hn6dt7\"}"
+        },
+        "headers": {
+          "Accept-Ranges": "bytes",
+          "Connection": "keep-alive",
+          "Content-Length": "435",
+          "Content-Type": "application/json; charset=UTF-8",
+          "Date": "Sat, 19 May 2018 18:24:06 GMT",
+          "Server": "snooserv",
+          "Strict-Transport-Security": "max-age=15552000; includeSubDomains; preload",
+          "Via": "1.1 varnish",
+          "X-Cache": "MISS",
+          "X-Cache-Hits": "0",
+          "X-Moose": "majestic",
+          "X-Served-By": "cache-pao17442-PAO",
+          "X-Timer": "S1526754246.912995,VS0,VE206",
+          "cache-control": "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate",
+          "expires": "-1",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-ratelimit-remaining": "598.0",
+          "x-ratelimit-reset": "355",
+          "x-ratelimit-used": "2",
+          "x-xss-protection": "1; mode=block"
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widget?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.0"
+}

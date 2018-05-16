@@ -20,15 +20,24 @@ from .reddit.multi import Multireddit  # NOQA
 from .reddit.redditor import Redditor  # NOQA
 from .reddit.submission import Submission  # NOQA
 from .reddit.subreddit import Subreddit  # NOQA
+from .reddit.widgets import (Button, ButtonWidget, Calendar,  # NOQA
+                             CommunityList, CustomWidget, IDCard,  # NOQA
+                             Image, ImageData, ImageWidget, Menu,  # NOQA
+                             MenuLink, ModeratorsWidget, RulesWidget,  # NOQA
+                             SubredditWidgets, Submenu, TextArea,  # NOQA
+                             Widget)  # NOQA
 from .reddit.wikipage import WikiPage  # NOQA
 from .stylesheet import Stylesheet  # NOQA
 from .subreddits import Subreddits  # NOQA
 from .user import User  # NOQA
 
-__all__ = ('Auth', 'Comment', 'DomainListing', 'Emoji', 'Front', 'Inbox',
-           'Listing', 'ListingGenerator', 'LiveHelper', 'LiveThread',
-           'Message', 'ModAction', 'ModmailConversation', 'MoreComments',
-           'Multireddit', 'MultiredditHelper', 'Preferences', 'Redditor',
-           'RedditorList', 'Stylesheet', 'Submission', 'Subreddit',
-           'SubredditHelper', 'SubredditMessage', 'Subreddits', 'User',
-           'WikiPage')
+__all__ = ('Auth', 'Button', 'ButtonWidget', 'Calendar', 'Comment',
+           'CommunityList', 'CustomWidget', 'DomainListing', 'Emoji', 'Front',
+           'IDCard', 'Image', 'ImageData', 'ImageWidget', 'Inbox', 'Listing',
+           'ListingGenerator', 'LiveHelper', 'LiveThread', 'Menu', 'MenuLink',
+           'Message', 'ModAction', 'ModeratorsWidget', 'ModmailConversation',
+           'MoreComments', 'Multireddit', 'MultiredditHelper',
+           'Preferences', 'Redditor', 'RedditorList', 'RulesWidget',
+           'Stylesheet', 'Submenu', 'Submission', 'Subreddit',
+           'SubredditHelper', 'SubredditMessage', 'SubredditWidgets',
+           'Subreddits', 'TextArea', 'User', 'Widget', 'WikiPage')

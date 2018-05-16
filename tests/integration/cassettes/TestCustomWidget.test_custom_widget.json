@@ -1,0 +1,775 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2018-05-20T00:05:42",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "53"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.0.0.dev0 prawcore/1.0.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "116"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sun, 20 May 2018 00:05:42 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=5fZEG1B1MZA9L1k4yk; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-pao17425-PAO"
+          ],
+          "X-Timer": [
+            "S1526774742.014978,VS0,VE651"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2018-05-20T00:05:43",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&json=%7B%22kind%22%3A+%22custom%22%2C+%22css%22%3A+%22em+%7Bcolor%3A+%23ff00ff%3B%7D%22%2C+%22height%22%3A+300%2C+%22imageData%22%3A+%5B%5D%2C+%22shortName%22%3A+%22Name+not+displayed%22%2C+%22text%22%3A+%22This+%2Ais%2A+the+text%5Cn%5Cnyes%3F%22%7D"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "263"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "Cookie": [
+            "edgebucket=5fZEG1B1MZA9L1k4yk"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.0.0.dev0 prawcore/1.0.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widget?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"custom\", \"imageData\": [], \"text\": \"This *is* the text\\n\\nyes?\", \"stylesheetUrl\": \"https://styles.redditmedia.com/t5_3nwlq/styles/customWidget-stylesheet-3k8in87ojwy01.css\", \"height\": 300, \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis \\u003Cem\\u003Eis\\u003C/em\\u003E the text\\u003C/p\\u003E\\n\\n\\u003Cp\\u003Eyes?\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Name not displayed\", \"id\": \"widget_10ywjo7fc1nar\", \"css\": \"em {color: #ff00ff;}\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "511"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sun, 20 May 2018 00:05:43 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-pao17439-PAO"
+          ],
+          "X-Timer": [
+            "S1526774743.883999,VS0,VE286"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "595.0"
+          ],
+          "x-ratelimit-reset": [
+            "258"
+          ],
+          "x-ratelimit-used": [
+            "5"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widget?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2018-05-20T00:05:43",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=5fZEG1B1MZA9L1k4yk"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.0.0.dev0 prawcore/1.0.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widgets?progressive_images=False&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"items\": {\"widget_10ybihknwu6dt\": {\"text\": \" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum in enim ut nibh dictum lacinia ut eu lacus. Sed facilisis venenatis nisi et venenatis. Donec venenatis diam et dolor ultricies interdum. Phasellus quis dolor et tellus maximus luctus ut eu mauris. Fusce rutrum tortor laoreet purus venenatis mollis. Integer sed nunc dui. Nunc dapibus dapibus tincidunt. Nullam feugiat ligula non leo lacinia condimentum. Ut vel nibh ullamcorper, tincidunt mi quis, rhoncus neque. Sed vel ligula volutpat est convallis aliquam quis nec sem. Integer feugiat dui eu diam elementum, vel finibus diam bibendum. \", \"kind\": \"textarea\", \"shortName\": \"My text area\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003ELorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum in enim ut nibh dictum lacinia ut eu lacus. Sed facilisis venenatis nisi et venenatis. Donec venenatis diam et dolor ultricies interdum. Phasellus quis dolor et tellus maximus luctus ut eu mauris. Fusce rutrum tortor laoreet purus venenatis mollis. Integer sed nunc dui. Nunc dapibus dapibus tincidunt. Nullam feugiat ligula non leo lacinia condimentum. Ut vel nibh ullamcorper, tincidunt mi quis, rhoncus neque. Sed vel ligula volutpat est convallis aliquam quis nec sem. Integer feugiat dui eu diam elementum, vel finibus diam bibendum. \\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"id\": \"widget_10ybihknwu6dt\"}, \"widget_10ybj8kifzrol\": {\"kind\": \"custom\", \"imageData\": [{\"url\": \"https://styles.redditmedia.com/t5_3nwlq/styles/image_widget_rn34xgy3jby01.png\", \"width\": 512, \"name\": \"mypic\", \"height\": 512}], \"text\": \"# Header\\n\\nHere is some *Markdown*!\", \"stylesheetUrl\": \"https://styles.redditmedia.com/t5_3nwlq/styles/customWidget-stylesheet-3albq8k8jby01.css\", \"height\": 500, \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Ch1\\u003EHeader\\u003C/h1\\u003E\\n\\n\\u003Cp\\u003EHere is some \\u003Cem\\u003EMarkdown\\u003C/em\\u003E!\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"My custom widget\", \"id\": \"widget_10ybj8kifzrol\", \"css\": \"body {\\n    background-image: url(%%mypic%%);\\n}\"}, \"widget_10ybivnv4pger\": {\"kind\": \"calendar\", \"googleCalendarId\": \"ccahu0rstno2jrvioq4ccffn78@group.calendar.google.com\", \"requiresSync\": true, \"shortName\": \"My calendar widget\", \"configuration\": {\"showTime\": true, \"showDescription\": true, \"showLocation\": true, \"showTitle\": true, \"showDate\": true}, \"data\": [], \"id\": \"widget_10ybivnv4pger\"}, \"widget_10ywjo7fc1nar\": {\"kind\": \"custom\", \"imageData\": [], \"text\": \"This *is* the text\\n\\nyes?\", \"stylesheetUrl\": \"https://styles.redditmedia.com/t5_3nwlq/styles/customWidget-stylesheet-3k8in87ojwy01.css\", \"height\": 300, \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis \\u003Cem\\u003Eis\\u003C/em\\u003E the text\\u003C/p\\u003E\\n\\n\\u003Cp\\u003Eyes?\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Name not displayed\", \"id\": \"widget_10ywjo7fc1nar\", \"css\": \"em {color: #ff00ff;}\"}, \"6154190-moderator\": {\"kind\": \"moderators\", \"mods\": [{\"name\": \"throwaway_the_fourth\", \"authorFlairType\": \"text\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"\", \"authorFlairRichText\": [], \"authorFlairText\": null}, {\"name\": \"<USERNAME>\", \"authorFlairType\": \"richtext\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"#dadada\", \"authorFlairRichText\": [{\"a\": \":cake:\", \"u\": \"https://emoji.redditmedia.com/46kel8lf1guz_t5_3nqvj/cake\", \"e\": \"emoji\"}], \"authorFlairText\": \":cake:\"}], \"totalMods\": 2, \"id\": \"6154190-moderator\"}, \"widget_10ybipa7h0u1b\": {\"kind\": \"image\", \"data\": [{\"url\": \"https://styles.redditmedia.com/t5_3nwlq/styles/image_widget_7f71bsdoiby01.png\", \"width\": 100, \"linkUrl\": \"https://github.com/praw-dev/praw/\", \"height\": 100}], \"shortName\": \"My image widget\", \"id\": \"widget_10ybipa7h0u1b\"}, \"widget_id-card-3nwlq\": {\"kind\": \"id-card\", \"description\": \"for my own tests.\", \"subscribersText\": \"Our subscribers\", \"currentlyViewingCount\": 6, \"subscribersCount\": 0, \"currentlyViewingText\": \"Our viewers\", \"shortName\": \"About dis place\", \"id\": \"widget_id-card-3nwlq\"}, \"widget_rules-3nwlq\": {\"shortName\": \"Subreddit Rules\", \"kind\": \"subreddit-rules\", \"data\": [{\"violationReason\": \"being bad one\", \"description\": \"This is a full description of rule 1\", \"createdUtc\": 1526467021.0, \"priority\": 0, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 1\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 1\"}, {\"violationReason\": \"being bad two\", \"description\": \"This is a full description of rule 2\", \"createdUtc\": 1526467034.0, \"priority\": 1, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 2\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 2\"}], \"display\": \"compact\", \"id\": \"widget_rules-3nwlq\"}, \"widget_10yvkr5u6mw51\": {\"kind\": \"menu\", \"data\": [{\"url\": \"https://reddit.com/r/redditdev/\", \"text\": \"rdev\"}, {\"text\": \"PRAW\", \"children\": [{\"url\": \"https://github.com/praw-dev/praw/\", \"text\": \"Source\"}, {\"url\": \"https://praw.readthedocs.io\", \"text\": \"Docs\"}]}], \"id\": \"widget_10yvkr5u6mw51\"}, \"widget_10ybil6m8crgc\": {\"buttons\": [{\"url\": \"https://github.com/praw-dev/praw/\", \"text\": \"PRAW\", \"color\": \"#014980\"}], \"kind\": \"button\", \"description\": \"Here you will find some buttons.\", \"shortName\": \"My button widget\", \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EHere you will find some buttons.\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"id\": \"widget_10ybil6m8crgc\"}, \"widget_10ybirymsnnic\": {\"kind\": \"community-list\", \"data\": [{\"isSubscribed\": false, \"iconUrl\": \"https://b.thumbs.redditmedia.com/7GVLmrH9CdZeqXceSEWkmL8_DSUKRGUfwMxnUNh8D8A.png\", \"name\": \"redditdev\", \"subscribers\": 14224}, {\"isSubscribed\": false, \"iconUrl\": \"\", \"name\": \"learnpython\", \"subscribers\": 122160}], \"shortName\": \"My community list\", \"id\": \"widget_10ybirymsnnic\"}}, \"layout\": {\"idCardWidget\": \"widget_id-card-3nwlq\", \"topbar\": {\"order\": [\"widget_10yvkr5u6mw51\"]}, \"sidebar\": {\"order\": [\"widget_rules-3nwlq\", \"widget_10ybj8kifzrol\", \"widget_10ybivnv4pger\", \"widget_10ybirymsnnic\", \"widget_10ybipa7h0u1b\", \"widget_10ybil6m8crgc\", \"widget_10ybihknwu6dt\", \"widget_10ywjo7fc1nar\"]}, \"moderatorWidget\": \"6154190-moderator\"}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "6454"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sun, 20 May 2018 00:05:43 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-pao17439-PAO"
+          ],
+          "X-Timer": [
+            "S1526774743.430453,VS0,VE119"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "594.0"
+          ],
+          "x-ratelimit-reset": [
+            "257"
+          ],
+          "x-ratelimit-used": [
+            "6"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widgets?progressive_images=False&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2018-05-20T00:05:43",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&json=%7B%22kind%22%3A+%22custom%22%2C+%22css%22%3A+%22em+%7Bcolor%3A+%23ff00ff%3B%7D%22%2C+%22height%22%3A+300%2C+%22imageData%22%3A+%5B%5D%2C+%22shortName%22%3A+%22Name+not+displayed%22%2C+%22text%22%3A+%22%2AThis%2A+text+is+new%21%22%7D"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "252"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "Cookie": [
+            "edgebucket=5fZEG1B1MZA9L1k4yk"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.0.0.dev0 prawcore/1.0.0"
+          ]
+        },
+        "method": "PUT",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widget/widget_10ywjo7fc1nar?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"custom\", \"imageData\": [], \"text\": \"*This* text is new!\", \"stylesheetUrl\": \"https://styles.redditmedia.com/t5_3nwlq/styles/customWidget-stylesheet-3k8in87ojwy01.css\", \"height\": 300, \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E\\u003Cem\\u003EThis\\u003C/em\\u003E text is new!\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Name not displayed\", \"id\": \"widget_10ywjo7fc1nar\", \"css\": \"em {color: #ff00ff;}\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "470"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sun, 20 May 2018 00:05:43 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-pao17439-PAO"
+          ],
+          "X-Timer": [
+            "S1526774744.575509,VS0,VE203"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "593.0"
+          ],
+          "x-ratelimit-reset": [
+            "257"
+          ],
+          "x-ratelimit-used": [
+            "7"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widget/widget_10ywjo7fc1nar?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2018-05-20T00:05:44",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&json=%7B%22kind%22%3A+%22custom%22%2C+%22css%22%3A+%22em+%7Bcolor%3A+%23ff00ff%3B%7D%22%2C+%22height%22%3A+300%2C+%22imageData%22%3A+%5B%5D%2C+%22shortName%22%3A+%22Invisible%22%2C+%22text%22%3A+%22%2AThis%2A+text+is+new%21%22%7D"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "243"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "Cookie": [
+            "edgebucket=5fZEG1B1MZA9L1k4yk"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.0.0.dev0 prawcore/1.0.0"
+          ]
+        },
+        "method": "PUT",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widget/widget_10ywjo7fc1nar?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"custom\", \"imageData\": [], \"text\": \"*This* text is new!\", \"stylesheetUrl\": \"https://styles.redditmedia.com/t5_3nwlq/styles/customWidget-stylesheet-3k8in87ojwy01.css\", \"height\": 300, \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003E\\u003Cem\\u003EThis\\u003C/em\\u003E text is new!\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Invisible\", \"id\": \"widget_10ywjo7fc1nar\", \"css\": \"em {color: #ff00ff;}\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "461"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sun, 20 May 2018 00:05:44 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-pao17439-PAO"
+          ],
+          "X-Timer": [
+            "S1526774744.800533,VS0,VE220"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "592.0"
+          ],
+          "x-ratelimit-reset": [
+            "257"
+          ],
+          "x-ratelimit-used": [
+            "8"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widget/widget_10ywjo7fc1nar?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2018-05-20T00:05:45",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "0"
+          ],
+          "Cookie": [
+            "edgebucket=5fZEG1B1MZA9L1k4yk"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.0.0.dev0 prawcore/1.0.0"
+          ]
+        },
+        "method": "DELETE",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widget/widget_10ywjo7fc1nar?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "0"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sun, 20 May 2018 00:05:45 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-pao17439-PAO"
+          ],
+          "X-Timer": [
+            "S1526774745.636889,VS0,VE448"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "591.0"
+          ],
+          "x-ratelimit-reset": [
+            "256"
+          ],
+          "x-ratelimit-used": [
+            "9"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widget/widget_10ywjo7fc1nar?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2018-05-20T00:05:45",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=5fZEG1B1MZA9L1k4yk"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.0.0.dev0 prawcore/1.0.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widgets?progressive_images=False&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"items\": {\"widget_10ybihknwu6dt\": {\"text\": \" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum in enim ut nibh dictum lacinia ut eu lacus. Sed facilisis venenatis nisi et venenatis. Donec venenatis diam et dolor ultricies interdum. Phasellus quis dolor et tellus maximus luctus ut eu mauris. Fusce rutrum tortor laoreet purus venenatis mollis. Integer sed nunc dui. Nunc dapibus dapibus tincidunt. Nullam feugiat ligula non leo lacinia condimentum. Ut vel nibh ullamcorper, tincidunt mi quis, rhoncus neque. Sed vel ligula volutpat est convallis aliquam quis nec sem. Integer feugiat dui eu diam elementum, vel finibus diam bibendum. \", \"kind\": \"textarea\", \"shortName\": \"My text area\", \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003ELorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum in enim ut nibh dictum lacinia ut eu lacus. Sed facilisis venenatis nisi et venenatis. Donec venenatis diam et dolor ultricies interdum. Phasellus quis dolor et tellus maximus luctus ut eu mauris. Fusce rutrum tortor laoreet purus venenatis mollis. Integer sed nunc dui. Nunc dapibus dapibus tincidunt. Nullam feugiat ligula non leo lacinia condimentum. Ut vel nibh ullamcorper, tincidunt mi quis, rhoncus neque. Sed vel ligula volutpat est convallis aliquam quis nec sem. Integer feugiat dui eu diam elementum, vel finibus diam bibendum. \\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"id\": \"widget_10ybihknwu6dt\"}, \"widget_10ybj8kifzrol\": {\"kind\": \"custom\", \"imageData\": [{\"url\": \"https://styles.redditmedia.com/t5_3nwlq/styles/image_widget_rn34xgy3jby01.png\", \"width\": 512, \"name\": \"mypic\", \"height\": 512}], \"text\": \"# Header\\n\\nHere is some *Markdown*!\", \"stylesheetUrl\": \"https://styles.redditmedia.com/t5_3nwlq/styles/customWidget-stylesheet-3albq8k8jby01.css\", \"height\": 500, \"textHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Ch1\\u003EHeader\\u003C/h1\\u003E\\n\\n\\u003Cp\\u003EHere is some \\u003Cem\\u003EMarkdown\\u003C/em\\u003E!\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"My custom widget\", \"id\": \"widget_10ybj8kifzrol\", \"css\": \"body {\\n    background-image: url(%%mypic%%);\\n}\"}, \"widget_10ybivnv4pger\": {\"kind\": \"calendar\", \"googleCalendarId\": \"ccahu0rstno2jrvioq4ccffn78@group.calendar.google.com\", \"requiresSync\": true, \"shortName\": \"My calendar widget\", \"configuration\": {\"showTime\": true, \"showDescription\": true, \"showLocation\": true, \"showTitle\": true, \"showDate\": true}, \"data\": [], \"id\": \"widget_10ybivnv4pger\"}, \"6154190-moderator\": {\"kind\": \"moderators\", \"mods\": [{\"name\": \"throwaway_the_fourth\", \"authorFlairType\": \"text\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"\", \"authorFlairRichText\": [], \"authorFlairText\": null}, {\"name\": \"<USERNAME>\", \"authorFlairType\": \"richtext\", \"authorFlairTextColor\": \"dark\", \"authorFlairBackgroundColor\": \"#dadada\", \"authorFlairRichText\": [{\"a\": \":cake:\", \"u\": \"https://emoji.redditmedia.com/46kel8lf1guz_t5_3nqvj/cake\", \"e\": \"emoji\"}], \"authorFlairText\": \":cake:\"}], \"totalMods\": 2, \"id\": \"6154190-moderator\"}, \"widget_10ybipa7h0u1b\": {\"kind\": \"image\", \"data\": [{\"url\": \"https://styles.redditmedia.com/t5_3nwlq/styles/image_widget_7f71bsdoiby01.png\", \"width\": 100, \"linkUrl\": \"https://github.com/praw-dev/praw/\", \"height\": 100}], \"shortName\": \"My image widget\", \"id\": \"widget_10ybipa7h0u1b\"}, \"widget_id-card-3nwlq\": {\"kind\": \"id-card\", \"description\": \"for my own tests.\", \"subscribersText\": \"Our subscribers\", \"currentlyViewingCount\": 7, \"subscribersCount\": 0, \"currentlyViewingText\": \"Our viewers\", \"shortName\": \"About dis place\", \"id\": \"widget_id-card-3nwlq\"}, \"widget_rules-3nwlq\": {\"shortName\": \"Subreddit Rules\", \"kind\": \"subreddit-rules\", \"data\": [{\"violationReason\": \"being bad one\", \"description\": \"This is a full description of rule 1\", \"createdUtc\": 1526467021.0, \"priority\": 0, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 1\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 1\"}, {\"violationReason\": \"being bad two\", \"description\": \"This is a full description of rule 2\", \"createdUtc\": 1526467034.0, \"priority\": 1, \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThis is a full description of rule 2\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"shortName\": \"Rule 2\"}], \"display\": \"compact\", \"id\": \"widget_rules-3nwlq\"}, \"widget_10yvkr5u6mw51\": {\"kind\": \"menu\", \"data\": [{\"url\": \"https://reddit.com/r/redditdev/\", \"text\": \"rdev\"}, {\"text\": \"PRAW\", \"children\": [{\"url\": \"https://github.com/praw-dev/praw/\", \"text\": \"Source\"}, {\"url\": \"https://praw.readthedocs.io\", \"text\": \"Docs\"}]}], \"id\": \"widget_10yvkr5u6mw51\"}, \"widget_10ybil6m8crgc\": {\"buttons\": [{\"url\": \"https://github.com/praw-dev/praw/\", \"text\": \"PRAW\", \"color\": \"#014980\"}], \"kind\": \"button\", \"description\": \"Here you will find some buttons.\", \"shortName\": \"My button widget\", \"descriptionHtml\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EHere you will find some buttons.\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"id\": \"widget_10ybil6m8crgc\"}, \"widget_10ybirymsnnic\": {\"kind\": \"community-list\", \"data\": [{\"isSubscribed\": false, \"iconUrl\": \"https://b.thumbs.redditmedia.com/7GVLmrH9CdZeqXceSEWkmL8_DSUKRGUfwMxnUNh8D8A.png\", \"name\": \"redditdev\", \"subscribers\": 14224}, {\"isSubscribed\": false, \"iconUrl\": \"\", \"name\": \"learnpython\", \"subscribers\": 122160}], \"shortName\": \"My community list\", \"id\": \"widget_10ybirymsnnic\"}}, \"layout\": {\"idCardWidget\": \"widget_id-card-3nwlq\", \"topbar\": {\"order\": [\"widget_10yvkr5u6mw51\"]}, \"sidebar\": {\"order\": [\"widget_rules-3nwlq\", \"widget_10ybj8kifzrol\", \"widget_10ybivnv4pger\", \"widget_10ybirymsnnic\", \"widget_10ybipa7h0u1b\", \"widget_10ybil6m8crgc\", \"widget_10ybihknwu6dt\"]}, \"moderatorWidget\": \"6154190-moderator\"}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "5893"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sun, 20 May 2018 00:05:45 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-pao17439-PAO"
+          ],
+          "X-Timer": [
+            "S1526774745.244685,VS0,VE127"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "590.0"
+          ],
+          "x-ratelimit-reset": [
+            "255"
+          ],
+          "x-ratelimit-used": [
+            "10"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/widgets?progressive_images=False&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}
