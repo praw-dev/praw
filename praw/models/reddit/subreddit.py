@@ -189,6 +189,31 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._contributor
 
     @property
+    def emoji(self):
+        """Provide an instance of :class:`.SubredditEmoji`.
+
+        This attribute can be used to discover all emoji for a subreddit:
+
+        .. code:: python
+
+           for emoji in reddit.subreddit('iama').emoji:
+               print(emoji)
+
+        A single emoji can be lazily retrieved via:
+
+        .. code:: python
+
+           reddit.subreddit('blah').emoji['emoji_name']
+
+        .. note:: Attempting to access attributes of an nonexistent emoji will
+           result in a :class:`.ClientException`.
+
+        """
+        if self._emoji is None:
+            self._emoji = SubredditEmoji(self)
+        return self._emoji
+
+    @property
     def filters(self):
         """Provide an instance of :class:`.SubredditFilters`."""
         if self._filters is None:
@@ -331,31 +356,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if self._wiki is None:
             self._wiki = SubredditWiki(self)
         return self._wiki
-
-    @property
-    def emoji(self):
-        """Provide an instance of :class:`.SubredditEmoji`.
-
-        This attribute can be used to discover all emoji for a subreddit:
-
-        .. code:: python
-
-           for emoji in reddit.subreddit('iama').emoji:
-               print(emoji)
-
-        A single emoji can be lazily retrieved via:
-
-        .. code:: python
-
-           reddit.subreddit('blah').emoji['emoji_name']
-
-        .. note:: Attempting to access attributes of an nonexistent emoji will
-           result in a :class:`.ClientException`.
-
-        """
-        if self._emoji is None:
-            self._emoji = SubredditEmoji(self)
-        return self._emoji
 
     def __init__(self, reddit, display_name=None, _data=None):
         """Initialize a Subreddit instance.
