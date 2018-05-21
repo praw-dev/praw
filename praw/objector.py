@@ -56,7 +56,7 @@ class Objector(object):
         :returns: An instance of :class:`~.RedditBase`.
 
         """
-        if ({'conversation', 'messages', 'modActions'}.issubset(data)):
+        if {'conversation', 'messages', 'modActions'}.issubset(data):
             parser = self.parsers['ModmailConversation']
         elif {'actionTypeId', 'author', 'date'}.issubset(data):
             # Modmail mod action
