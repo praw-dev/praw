@@ -352,6 +352,14 @@ class Reddit(object):
         """
         return models.Comment(self, id=id, url=url)
 
+    def delete(self, path):
+        """Return parsed objects returned from a DELETE request to ``path``.
+
+        :param path: The path to fetch.
+        """
+        data = self.request('DELETE', path)
+        return self._objector.objectify(data)
+
     def domain(self, domain):
         """Return an instance of :class:`.DomainListing`.
 
@@ -443,6 +451,17 @@ class Reddit(object):
         """
         data = self.request('POST', path, data=data or {}, files=files,
                             params=params)
+        return self._objector.objectify(data)
+
+    def put(self, path, data=None):
+        """Return parsed objects returned from a PUT request to ``path``.
+
+        :param path: The path to fetch.
+        :param data: Dictionary, bytes, or file-like object to send in the body
+            of the request (default: None).
+
+        """
+        data = self.request('PUT', path, data=data)
         return self._objector.objectify(data)
 
     def random_subreddit(self, nsfw=False):

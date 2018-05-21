@@ -13,6 +13,7 @@ from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import MessageableMixin
 from .modmail import ModmailConversation
+from .widgets import SubredditWidgets
 from .wikipage import WikiPage
 
 
@@ -189,6 +190,31 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._contributor
 
     @property
+    def emoji(self):
+        """Provide an instance of :class:`.SubredditEmoji`.
+
+        This attribute can be used to discover all emoji for a subreddit:
+
+        .. code:: python
+
+           for emoji in reddit.subreddit('iama').emoji:
+               print(emoji)
+
+        A single emoji can be lazily retrieved via:
+
+        .. code:: python
+
+           reddit.subreddit('blah').emoji['emoji_name']
+
+        .. note:: Attempting to access attributes of an nonexistent emoji will
+           result in a :class:`.ClientException`.
+
+        """
+        if self._emoji is None:
+            self._emoji = SubredditEmoji(self)
+        return self._emoji
+
+    @property
     def filters(self):
         """Provide an instance of :class:`.SubredditFilters`."""
         if self._filters is None:
@@ -310,6 +336,27 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._stylesheet
 
     @property
+    def widgets(self):
+        """Provide an instance of :class:`.SubredditWidgets`.
+
+        Example usage:
+
+        .. code-block:: python
+
+           # get all widgets
+           for widget in reddit.subreddit('redditdev').widgets().sidebar:
+               print(widget)
+
+           # add a new widget
+           widgets = reddit.subreddit('redditdev').widgets
+           widgets.create_text_area('About us',
+                                    'This is a group of Reddit developers.')
+        """
+        if self._widgets is None:
+            self._widgets = SubredditWidgets(self)
+        return self._widgets
+
+    @property
     def wiki(self):
         """Provide an instance of :class:`.SubredditWiki`.
 
@@ -332,31 +379,6 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             self._wiki = SubredditWiki(self)
         return self._wiki
 
-    @property
-    def emoji(self):
-        """Provide an instance of :class:`.SubredditEmoji`.
-
-        This attribute can be used to discover all emoji for a subreddit:
-
-        .. code:: python
-
-           for emoji in reddit.subreddit('iama').emoji:
-               print(emoji)
-
-        A single emoji can be lazily retrieved via:
-
-        .. code:: python
-
-           reddit.subreddit('blah').emoji['emoji_name']
-
-        .. note:: Attempting to access attributes of an nonexistent emoji will
-           result in a :class:`.ClientException`.
-
-        """
-        if self._emoji is None:
-            self._emoji = SubredditEmoji(self)
-        return self._emoji
-
     def __init__(self, reddit, display_name=None, _data=None):
         """Initialize a Subreddit instance.
 
@@ -374,7 +396,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if display_name:
             self.display_name = display_name
         self._banned = self._contributor = self._filters = self._flair = None
-        self._emoji = None
+        self._emoji = self._widgets = None
         self._mod = self._moderator = self._modmail = self._muted = None
         self._quarantine = self._stream = self._stylesheet = self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)
