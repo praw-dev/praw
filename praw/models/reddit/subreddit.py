@@ -13,6 +13,7 @@ from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import MessageableMixin
 from .modmail import ModmailConversation
+from .widgets import SubredditWidgets
 from .wikipage import WikiPage
 
 
@@ -335,6 +336,30 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._stylesheet
 
     @property
+    def widgets(self):
+        """Provide an instance of :class:`.SubredditWidgets`.
+
+        **Example usage**
+
+        Get all sidebar widgets:
+
+        .. code-block:: python
+
+           for widget in reddit.subreddit('redditdev').widgets.sidebar:
+               print(widget)
+
+        Get ID card widget:
+
+        .. code-block:: python
+
+           print(reddit.subreddit('redditdev').widgets.id_card)
+
+        """
+        if self._widgets is None:
+            self._widgets = SubredditWidgets(self)
+        return self._widgets
+
+    @property
     def wiki(self):
         """Provide an instance of :class:`.SubredditWiki`.
 
@@ -374,7 +399,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if display_name:
             self.display_name = display_name
         self._banned = self._contributor = self._filters = self._flair = None
-        self._emoji = None
+        self._emoji = self._widgets = None
         self._mod = self._moderator = self._modmail = self._muted = None
         self._quarantine = self._stream = self._stylesheet = self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)

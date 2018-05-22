@@ -85,6 +85,20 @@ class Objector(object):
         elif ({'date', 'id', 'name'}.issubset(data)
               or {'id', 'name', 'permissions'}.issubset(data)):
             parser = self.parsers[self._reddit.config.kinds['redditor']]
+        elif {'color', 'text', 'url'}.issubset(data):
+            parser = self.parsers['Button']
+        elif {'text', 'url'}.issubset(data):
+            parser = self.parsers['MenuLink']
+        elif {'children', 'text'}.issubset(data):
+            parser = self.parsers['Submenu']
+        elif {'height', 'url', 'width'}.issubset(data):
+            parser = self.parsers['Image']
+        elif {'isSubscribed', 'name', 'subscribers'}.issubset(data):
+            # discards icon and subscribed information
+            return self._reddit.subreddit(data['name'])
+        elif {'authorFlairType', 'name'}.issubset(data):
+            # discards flair information
+            return self._reddit.redditor(data['name'])
         else:
             if 'user' in data:
                 parser = self.parsers[self._reddit.config.kinds['redditor']]
@@ -106,7 +120,11 @@ class Objector(object):
             return None
         if isinstance(data, list):
             return [self.objectify(item) for item in data]
-        if 'kind' in data and data['kind'] in self.parsers:
+        if 'kind' in data and ('shortName' in data or data['kind'] in
+                               ('menu', 'moderators')):
+            parser = self.parsers[data['kind']]
+            return parser.parse(data, self._reddit)
+        elif 'kind' in data and data['kind'] in self.parsers:
             parser = self.parsers[data['kind']]
             return parser.parse(data['data'], self._reddit)
         elif 'json' in data and 'data' in data['json']:

@@ -285,17 +285,31 @@ class Reddit(object):
                     self.config.kinds['redditor']: models.Redditor,
                     self.config.kinds['submission']: models.Submission,
                     self.config.kinds['subreddit']: models.Subreddit,
+                    'Button': models.Button,
+                    'Image': models.Image,
                     'LabeledMulti': models.Multireddit,
                     'Listing': models.Listing,
                     'LiveUpdate': models.LiveUpdate,
                     'LiveUpdateEvent': models.LiveThread,
+                    'MenuLink': models.MenuLink,
                     'ModmailAction': models.ModmailAction,
                     'ModmailConversation': models.ModmailConversation,
                     'ModmailMessage': models.ModmailMessage,
+                    'Submenu': models.Submenu,
                     'UserList': models.RedditorList,
+                    'button': models.ButtonWidget,
+                    'calendar': models.Calendar,
+                    'community-list': models.CommunityList,
+                    'custom': models.CustomWidget,
+                    'id-card': models.IDCard,
+                    'image': models.ImageWidget,
                     'modaction': models.ModAction,
+                    'moderators': models.ModeratorsWidget,
+                    'menu': models.Menu,
                     'more': models.MoreComments,
-                    'stylesheet': models.Stylesheet}
+                    'stylesheet': models.Stylesheet,
+                    'subreddit-rules': models.RulesWidget,
+                    'textarea': models.TextArea}
         for kind, klass in mappings.items():
             self._objector.register(kind, klass)
 
