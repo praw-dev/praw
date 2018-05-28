@@ -53,7 +53,7 @@ to you, it likely is not to the person asking the question.
 
 ## Becoming a Team Member
 
-The PRAW's team is always iterested in expanding PRAW's active team member base
+The PRAW team is always interested in expanding PRAW's active team member base
 with proven contributors. If you are interested please let us know, In general,
 we would like to see you push a number of contributions before we add you on.
 
