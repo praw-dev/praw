@@ -41,7 +41,12 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
     @property
     def replies(self):
-        """Provide an instance of :class:`.CommentForest`."""
+        """Provide an instance of :class:`.CommentForest`.
+
+        This method may return an empty list if the comment
+        has not been refreshed with :meth:`.refresh()`
+
+        """
         if isinstance(self._replies, list):
             self._replies = CommentForest(self.submission, self._replies)
         return self._replies
@@ -144,7 +149,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
            print('Top-most Ancestor: {}'.format(ancestor))
 
         The above code should result in 5 network requests to Reddit. Without
-        the calls to :meth:`.refresh` it would make at least 31 network
+        the calls to :meth:`.refresh()` it would make at least 31 network
         requests.
 
         """
@@ -166,6 +171,13 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
         If using :meth:`.Reddit.comment` this method must be called in order to
         obtain the comment's replies.
+
+        Example usage:
+
+        .. code:: python
+
+           comment = reddit.comment('dkk4qjd')
+           comment.refresh()
 
         """
         if 'context' in self.__dict__:  # Using hasattr triggers a fetch
