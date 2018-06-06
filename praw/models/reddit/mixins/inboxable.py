@@ -48,7 +48,7 @@ class InboxableMixin(object):
         self._reddit.inbox.collapse([self])
 
     def mark_read(self):
-        """Mark the item as read.
+        """Mark a single inbox item as read.
 
         .. note:: This method pertains only to objects which were retrieved via
                   the inbox.
@@ -63,6 +63,9 @@ class InboxableMixin(object):
                # process unread messages
 
         See also :meth:`~.mark_unread`
+
+        To mark the whole inbox as read with a single network request,
+        use :meth:`praw.models.Inbox.mark_read`
 
         """
         self._reddit.inbox.mark_read([self])
