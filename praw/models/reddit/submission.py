@@ -165,6 +165,15 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             hide this list of :class:`.Submission` instances
             as part of a single request (default: None).
 
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.hide()
+
+        See also :meth:`~.unhide`
+
         """
         for submissions in self._chunk(other_submissions, 50):
             self._reddit.post(API_PATH['hide'], data={'id': submissions})
@@ -186,6 +195,15 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             unhide this list of :class:`.Submission` instances
             as part of a single request (default: None).
 
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.unhide()
+
+        See also :meth:`~.hide`
+
         """
         for submissions in self._chunk(other_submissions, 50):
             self._reddit.post(API_PATH['unhide'], data={'id': submissions})
@@ -202,6 +220,17 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             (default: True).
         :returns: A :class:`~.Submission` object for the newly created
             submission.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           cross_post = submission.crosspost(subreddit="learnprogramming",
+                                             send_replies=False)
+
+        See also :meth:`~.hide`
+
         """
         if title is None:
             title = self.title
@@ -276,7 +305,8 @@ class SubmissionModeration(ThingModerationMixin):
 
     .. code:: python
 
-       reddit.submission(id="8dmv8z").mod.approve()
+       submission = reddit.submission(id="8dmv8z")
+       submission.mod.approve()
 
     """
 
@@ -344,8 +374,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code:: python
 
-            submission = reddit.submission(id='5or86n')
-            submission.mod.lock()
+           submission = reddit.submission(id='5or86n')
+           submission.mod.lock()
 
         See also :meth:`~.unlock`
 
@@ -363,9 +393,9 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code:: python
 
-            submission = reddit.subreddit('test').submit('nsfw test',
-                                                         selftext='nsfw')
-            submission.mod.nsfw()
+           submission = reddit.subreddit('test').submit('nsfw test',
+                                                        selftext='nsfw')
+           submission.mod.nsfw()
 
         See also :meth:`~.sfw`
 
@@ -383,8 +413,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code:: python
 
-            submission = reddit.submission(id='5or86n')
-            submission.mod.sfw()
+           submission = reddit.submission(id='5or86n')
+           submission.mod.sfw()
 
         See also :meth:`~.nsfw`
 
@@ -402,8 +432,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code:: python
 
-            submission = reddit.submission(id='5or86n')
-            submission.mod.spoiler()
+           submission = reddit.submission(id='5or86n')
+           submission.mod.spoiler()
 
         See also :meth:`~.unspoiler`
 
@@ -473,9 +503,9 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code:: python
 
-            submission = reddit.subreddit('test').submit('not spoiler',
-                                                         selftext='spoiler')
-            submission.mod.unspoiler()
+           submission = reddit.subreddit('test').submit('not spoiler',
+                                                        selftext='spoiler')
+           submission.mod.unspoiler()
 
         See also :meth:`~.spoiler`
 

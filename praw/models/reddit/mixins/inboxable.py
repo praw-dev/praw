@@ -7,7 +7,23 @@ class InboxableMixin(object):
     """Interface for RedditBase classes that originate from the inbox."""
 
     def block(self):
-        """Block the user who sent the item."""
+        """Block the user who sent the item.
+
+        .. note:: This method pertains only to objects which were retrieved via
+            the inbox.
+
+        Example usage:
+
+        .. code:: python
+
+           comment = reddit.comment('dkk4qjd')
+           comment.block()
+
+           # or, identically:
+
+           comment.author.block()
+
+        """
         self._reddit.post(API_PATH['block'], data={'id': self.fullname})
 
     def collapse(self):
@@ -16,14 +32,40 @@ class InboxableMixin(object):
         .. note:: This method pertains only to objects which were retrieved via
                   the inbox.
 
+        Example usage:
+
+        .. code:: python
+
+           inbox = reddit.inbox()
+
+           # select first inbox item and collapse it
+           message = next(inbox)
+           message.collapse()
+
+        See also :meth:`~.uncollapse`
+
         """
         self._reddit.inbox.collapse([self])
 
     def mark_read(self):
-        """Mark the item as read.
+        """Mark a single inbox item as read.
 
         .. note:: This method pertains only to objects which were retrieved via
                   the inbox.
+
+        Example usage:
+
+        .. code:: python
+
+           inbox = reddit.inbox.unread()
+
+           for message in inbox:
+               # process unread messages
+
+        See also :meth:`~.mark_unread`
+
+        To mark the whole inbox as read with a single network request,
+        use :meth:`praw.models.Inbox.mark_read`
 
         """
         self._reddit.inbox.mark_read([self])
@@ -34,6 +76,17 @@ class InboxableMixin(object):
         .. note:: This method pertains only to objects which were retrieved via
                   the inbox.
 
+        Example usage:
+
+        .. code:: python
+
+           inbox = reddit.inbox(limit=10)
+
+           for message in inbox:
+               # process messages
+
+        See also :meth:`~.mark_read`
+
         """
         self._reddit.inbox.mark_unread([self])
 
@@ -42,6 +95,18 @@ class InboxableMixin(object):
 
         .. note:: This method pertains only to objects which were retrieved via
                   the inbox.
+
+        Example usage:
+
+        .. code:: python
+
+           inbox = reddit.inbox()
+
+           # select first inbox item and uncollapse it
+           message = next(inbox)
+           message.uncollapse()
+
+        See also :meth:`~.collapse`
 
         """
         self._reddit.inbox.uncollapse([self])

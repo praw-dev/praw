@@ -11,10 +11,36 @@ class SavableMixin(object):
         :param category: (Gold) The category to save to. If your user does not
             have gold this value is ignored by Reddit (default: None).
 
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.save(category="view later")
+
+           comment = reddit.comment(id='dxolpyc')
+           comment.save()
+
+        See also :meth:`~.unsave`
+
         """
         self._reddit.post(API_PATH['save'], data={'category': category,
                                                   'id': self.fullname})
 
     def unsave(self):
-        """Unsave the object."""
+        """Unsave the object.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.unsave()
+
+           comment = reddit.comment(id='dxolpyc')
+           comment.unsave()
+
+        See also :meth:`~.save`
+
+        """
         self._reddit.post(API_PATH['unsave'], data={'id': self.fullname})

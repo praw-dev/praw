@@ -13,6 +13,17 @@ class SubmissionListingMixin(PRAWBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+
+           for duplicate in submission.duplicates():
+               # process each duplicate
+
+        See also :meth:`~.upvote`
+
         """
         url = API_PATH['duplicates'].format(submission_id=self.id)
         return ListingGenerator(self._reddit, url, **generator_kwargs)

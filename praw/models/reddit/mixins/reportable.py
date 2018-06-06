@@ -10,6 +10,16 @@ class ReportableMixin(object):
 
         :param reason: The reason for reporting.
 
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.report('report reason')
+
+           comment = reddit.comment(id='dxolpyc')
+           comment.report('report reason')
+
         """
         self._reddit.post(API_PATH['report'],
                           data={'id': self.fullname, 'reason': reason})
