@@ -285,17 +285,31 @@ class Reddit(object):
                     self.config.kinds['redditor']: models.Redditor,
                     self.config.kinds['submission']: models.Submission,
                     self.config.kinds['subreddit']: models.Subreddit,
+                    'Button': models.Button,
+                    'Image': models.Image,
                     'LabeledMulti': models.Multireddit,
                     'Listing': models.Listing,
                     'LiveUpdate': models.LiveUpdate,
                     'LiveUpdateEvent': models.LiveThread,
+                    'MenuLink': models.MenuLink,
                     'ModmailAction': models.ModmailAction,
                     'ModmailConversation': models.ModmailConversation,
                     'ModmailMessage': models.ModmailMessage,
+                    'Submenu': models.Submenu,
                     'UserList': models.RedditorList,
+                    'button': models.ButtonWidget,
+                    'calendar': models.Calendar,
+                    'community-list': models.CommunityList,
+                    'custom': models.CustomWidget,
+                    'id-card': models.IDCard,
+                    'image': models.ImageWidget,
                     'modaction': models.ModAction,
+                    'moderators': models.ModeratorsWidget,
+                    'menu': models.Menu,
                     'more': models.MoreComments,
-                    'stylesheet': models.Stylesheet}
+                    'stylesheet': models.Stylesheet,
+                    'subreddit-rules': models.RulesWidget,
+                    'textarea': models.TextArea}
         for kind, klass in mappings.items():
             self._objector.register(kind, klass)
 
@@ -347,7 +361,8 @@ class Reddit(object):
         :param url: A permalink pointing to the comment.
 
         .. note:: If you want to obtain the comment's replies, you will need to
-                  call :meth:`.refresh` on the returned :class:`.Comment`.
+                  call :meth:`~.Comment.refresh` on the returned
+                  :class:`.Comment`.
 
         """
         return models.Comment(self, id=id, url=url)
@@ -384,8 +399,8 @@ class Reddit(object):
         issued in batches for each 100 fullnames.
 
         .. note:: For comments that are retrieved via this method, if you want
-                  to obtain its replies, you will need to call :meth:`.refresh`
-                  on the yielded :class:`.Comment`.
+                  to obtain its replies, you will need to call
+                  :meth:`~.Comment.refresh` on the yielded :class:`.Comment`.
 
         .. note:: When using the URL option, it is important to be aware that
                   URLs are treated literally by Reddit's API. As such, the URLs

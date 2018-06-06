@@ -10,6 +10,9 @@ Unreleased
 * Added parameter ``skip_existing`` to :meth:`.stream_generator` to skip
   existing items when starting a stream`.
 * Add method :meth:`.Front.best` to get the front page "best" listing.
+* Add :attr:`.Subreddit.widgets`, :class:`.SubredditWidgets`,
+  and widget subclasses like :class:`.TextArea` to support fetching
+  Reddit widgets.
 
 **Fixed**
 
@@ -106,17 +109,17 @@ Unreleased
   :attr:`.Redditor.stream`
 * :meth:`.Inbox.collapse` to mark messages as collapsed.
 * :meth:`.Inbox.uncollapse` to mark messages as uncollapsed.
-* Raise :class:`.ClientException` when calling :meth:`.refresh` when the
-  comment does not appear in the resulting comment tree.
+* Raise :class:`.ClientException` when calling :meth:`~.Comment.refresh` when
+  the comment does not appear in the resulting comment tree.
 * :meth:`.Submission.crosspost` to crosspost to a subreddit.
 
 **Fixed**
 
-* Calling :meth:`.refresh` on a directly fetched, deeply nested
+* Calling :meth:`~.Comment.refresh` on a directly fetched, deeply nested
   :class:`.Comment` will additionally pull in as many parent comments as
   possible (currently 8) enabling significantly quicker traversal to the
   top-most :class:`.Comment` via successive :meth:`.parent()` calls.
-* Calling :meth:`.refresh` previously could have resulted in a
+* Calling :meth:`~.Comment.refresh` previously could have resulted in a
   ``AttributeError: 'MoreComments' object has no attribute '_replies'``
   exception. This situation will now result in a :class:`.ClientException`.
 * Properly handle ``BAD_CSS_NAME`` errors when uploading stylesheet images with
