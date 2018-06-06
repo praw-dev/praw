@@ -43,7 +43,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     def replies(self):
         """Provide an instance of :class:`.CommentForest`.
 
-        This method may return an empty list if the comment
+        This property may return an empty list if the comment
         has not been refreshed with :meth:`.refresh()`
 
         """

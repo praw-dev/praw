@@ -15,11 +15,11 @@ class SavableMixin(object):
 
         .. code:: python
 
-            submission = reddit.submission(id='5or86n')
-            submission.save(category="view later")
+           submission = reddit.submission(id='5or86n')
+           submission.save(category="view later")
 
-            comment = reddit.comment(id='dxolpyc')
-            comment.save()
+           comment = reddit.comment(id='dxolpyc')
+           comment.save()
 
         See also :meth:`~.unsave`
 
@@ -34,11 +34,11 @@ class SavableMixin(object):
 
         .. code:: python
 
-            submission = reddit.submission(id='5or86n')
-            submission.unsave()
+           submission = reddit.submission(id='5or86n')
+           submission.unsave()
 
-            comment = reddit.comment(id='dxolpyc')
-            comment.unsave()
+           comment = reddit.comment(id='dxolpyc')
+           comment.unsave()
 
         See also :meth:`~.save`
 

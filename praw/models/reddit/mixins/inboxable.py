@@ -9,6 +9,9 @@ class InboxableMixin(object):
     def block(self):
         """Block the user who sent the item.
 
+        .. note:: This method pertains only to objects which were retrieved via
+            the inbox.
+
         Example usage:
 
         .. code:: python
@@ -36,7 +39,7 @@ class InboxableMixin(object):
            inbox = reddit.inbox()
 
            # select first inbox item and collapse it
-           message = list(inbox)[0]
+           message = next(inbox)
            message.collapse()
 
         See also :meth:`~.uncollapse`
@@ -56,9 +59,8 @@ class InboxableMixin(object):
 
            inbox = reddit.inbox.unread()
 
-           # mark all unread inbox items as read
            for message in inbox:
-               message.mark_read()
+               # process unread messages
 
         See also :meth:`~.mark_unread`
 
@@ -75,11 +77,10 @@ class InboxableMixin(object):
 
         .. code:: python
 
-           inbox = reddit.inbox(limit=5)
+           inbox = reddit.inbox(limit=10)
 
-           # mark last 5 inbox items as unread
            for message in inbox:
-               message.mark_unread()
+               # process messages
 
         See also :meth:`~.mark_read`
 
@@ -99,10 +100,10 @@ class InboxableMixin(object):
            inbox = reddit.inbox()
 
            # select first inbox item and uncollapse it
-           message = list(inbox)[0]
+           message = next(inbox)
            message.uncollapse()
 
-        See also :meth:`~.uncollapse`
+        See also :meth:`~.collapse`
 
         """
         self._reddit.inbox.uncollapse([self])

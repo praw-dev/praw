@@ -17,10 +17,10 @@ class SubmissionListingMixin(PRAWBase):
 
         .. code:: python
 
-            submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id='5or86n')
 
-            # get a ListingGenerator of duplicate submissions
-            duplicates = submission.duplicates()
+           for duplicate in submission.duplicates():
+               # process each duplicate
 
         See also :meth:`~.upvote`
 

@@ -14,11 +14,11 @@ class ReportableMixin(object):
 
         .. code:: python
 
-            submission = reddit.submission(id='5or86n')
-            submission.report(reason_text)
+           submission = reddit.submission(id='5or86n')
+           submission.report('report reason')
 
-            comment = reddit.comment(id='dxolpyc')
-            comment.report(reason_text)
+           comment = reddit.comment(id='dxolpyc')
+           comment.report('report reason')
 
         """
         self._reddit.post(API_PATH['report'],
