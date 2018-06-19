@@ -133,6 +133,12 @@ class TestSubmission(IntegrationTest):
                 'TestSubmission.test_save'):
             Submission(self.reddit, '4b536p').save()
 
+    def test_mark_visited(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmission.test_mark_visited'):
+            Submission(self.reddit, '8s529q').mark_visited()
+
     def test_unhide(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
