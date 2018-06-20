@@ -97,7 +97,7 @@ class Subreddits(PRAWBase):
         Subreddits are yielded oldest first. Up to 100 historical subreddits
         will initially be returned.
 
-        Keyword arguments are passed to :meth:`.stream_generator`.
+        Keyword arguments are passed to :func:`.stream_generator`.
 
         """
         return stream_generator(self.new, **stream_options)

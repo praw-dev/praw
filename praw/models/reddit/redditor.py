@@ -139,7 +139,7 @@ class RedditorStream(object):
         Comments are yielded oldest first. Up to 100 historical comments will
         initially be returned.
 
-        Keyword arguments are passed to :meth:`.stream_generator`.
+        Keyword arguments are passed to :func:`.stream_generator`.
 
         For example, to retrieve all new comments made by redditor ``spez``,
         try:
@@ -158,7 +158,7 @@ class RedditorStream(object):
         Submissions are yielded oldest first. Up to 100 historical submissions
         will initially be returned.
 
-        Keyword arguments are passed to :meth:`.stream_generator`.
+        Keyword arguments are passed to :func:`.stream_generator`.
 
         For example to retrieve all new submissions made by redditor
         ``spez``, try:

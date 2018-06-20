@@ -207,7 +207,7 @@ class Inbox(PRAWBase):
         Items are yielded oldest first. Up to 100 historical items will
         initially be returned.
 
-        Keyword arguments are passed to :meth:`.stream_generator`.
+        Keyword arguments are passed to :func:`.stream_generator`.
 
         For example, to retrieve all new inbox items, try:
 

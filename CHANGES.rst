@@ -7,7 +7,7 @@ Unreleased
 **Added**
 
 * Add method :meth:`.WikiPage.revision` to get a specific wiki page revision.
-* Added parameter ``skip_existing`` to :meth:`.stream_generator` to skip
+* Added parameter ``skip_existing`` to :func:`.stream_generator` to skip
   existing items when starting a stream`.
 * Add method :meth:`.Front.best` to get the front page "best" listing.
 * Add :attr:`.Subreddit.widgets`, :class:`.SubredditWidgets`,
@@ -49,7 +49,7 @@ Unreleased
 **Fixed**
 
 * Fix bug with positive ``pause_after`` values in streams provided by
-  :meth:`.stream_generator` where the wait time was not reset after a yielded
+  :func:`.stream_generator` where the wait time was not reset after a yielded
   ``None``.
 * Parse URLs with trailing slashes and no ``'comments'`` element when creating
   :class:`.Submission` objects.
