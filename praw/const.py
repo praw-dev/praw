@@ -135,6 +135,7 @@ API_PATH = {
     'site_admin':             'api/site_admin/',
     'spoiler':                'api/spoiler/',
     'sticky_submission':      'api/set_subreddit_sticky/',
+    'store_visits':           'api/store_visits',
     'sub_recommended':        'api/recommend/sr/{subreddits}',
     'submission':             'comments/{id}/',
     'submission_replies':     'message/selfreply/',

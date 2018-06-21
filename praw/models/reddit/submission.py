@@ -98,6 +98,16 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             self._mod = SubmissionModeration(self)
         return self._mod
 
+    @property
+    def shortlink(self):
+        """Return a shortlink to the submission.
+
+        For example http://redd.it/eorhm is a shortlink for
+        https://www.reddit.com/r/announcements/comments/eorhm/reddit_30_less_typing/.
+
+        """
+        return urljoin(self._reddit.config.short_url, self.id)
+
     def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
                  url=None, _data=None):
         """Initialize a Submission instance.
@@ -158,6 +168,20 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     def _info_path(self):
         return API_PATH['submission'].format(id=self.id)
 
+    def mark_visited(self):
+        """Mark submission as visited.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.mark_visited()
+
+        """
+        data = {'links': self.fullname}
+        self._reddit.post(API_PATH['store_visits'], data=data)
+
     def hide(self, other_submissions=None):
         """Hide Submission.
 
@@ -177,16 +201,6 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         """
         for submissions in self._chunk(other_submissions, 50):
             self._reddit.post(API_PATH['hide'], data={'id': submissions})
-
-    @property
-    def shortlink(self):
-        """Return a shortlink to the submission.
-
-        For example http://redd.it/eorhm is a shortlink for
-        https://www.reddit.com/r/announcements/comments/eorhm/reddit_30_less_typing/.
-
-        """
-        return urljoin(self._reddit.config.short_url, self.id)
 
     def unhide(self, other_submissions=None):
         """Unhide Submission.

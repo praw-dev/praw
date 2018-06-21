@@ -13,6 +13,8 @@ Unreleased
 * Add :attr:`.Subreddit.widgets`, :class:`.SubredditWidgets`,
   and widget subclasses like :class:`.TextArea` to support fetching
   Reddit widgets.
+* Add method :meth:`.Submission.mark_visited` to mark a submission as visited
+  on the Reddit backend.
 
 **Fixed**
 
