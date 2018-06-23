@@ -21,6 +21,8 @@ Unreleased
 * Fix ``RecursionError`` on :class:`.SubredditEmoji`'s ``repr`` and ``str``.
 * :meth:`.SubredditFilters.add` and :meth:`.SubredditFilters.remove`
   also accept a :class:`.Subreddit` for the ``subreddit`` parameter.
+* Instances of :class:`.Submission` no longer lose subreddit specific
+  information such as ``author_flair_css_class`` when loading comments.
 
 **Removed**
 
