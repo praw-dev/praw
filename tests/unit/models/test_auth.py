@@ -13,6 +13,11 @@ def installed_app():
 
 def script_app():
     return Reddit(client_id='dummy client', client_secret='dummy secret',
+                  redirect_uri='https://dummy.tld/', user_agent='dummy')
+
+
+def script_app_with_password():
+    return Reddit(client_id='dummy client', client_secret='dummy secret',
                   password='dummy password', user_agent='dummy',
                   username='dummy username')
 
@@ -23,21 +28,20 @@ def web_app():
 
 
 class TestAuth(UnitTest):
-    def test_authorize__from_installed_app(self):
-        with pytest.raises(ClientException):
-            installed_app().auth.authorize('dummy code')
-
-    def test_authorize__from_script_app(self):
-        with pytest.raises(ClientException):
-            script_app().auth.authorize('dummy code')
-
     def test_implicit__from_script_app(self):
         with pytest.raises(ClientException):
             script_app().auth.implicit('dummy token', 10, '')
+        with pytest.raises(ClientException):
+            script_app_with_password().auth.implicit('dummy token', 10, '')
+
+    def test_implicit__from_web_app(self):
+        with pytest.raises(ClientException):
+            web_app().auth.implicit('dummy token', 10, '')
 
     def test_limits(self):
         expected = {'remaining': None, 'reset_timestamp': None, 'used': None}
-        for app in [installed_app(), script_app(), web_app()]:
+        for app in [installed_app(), script_app(), script_app_with_password(),
+                    web_app()]:
             assert expected == app.auth.limits
 
     def test_url__installed_app(self):
