@@ -78,6 +78,16 @@ class TestReddit(UnitTest):
             reddit.read_only = False
             assert not reddit.read_only
 
+    def test_read_only__with_authenticated_core__non_confidential(self):
+        with Reddit(client_id='dummy', client_secret=None,
+                    redirect_uri='dummy', user_agent='dummy',
+                    refresh_token='dummy') as reddit:
+            assert not reddit.read_only
+            reddit.read_only = True
+            assert reddit.read_only
+            reddit.read_only = False
+            assert not reddit.read_only
+
     def test_read_only__with_script_authenticated_core(self):
         with Reddit(password='dummy', username='dummy',
                     **self.REQUIRED_DUMMY_SETTINGS) as reddit:

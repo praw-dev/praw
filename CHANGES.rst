@@ -21,6 +21,8 @@ Unreleased
 * Fix ``RecursionError`` on :class:`.SubredditEmoji`'s ``repr`` and ``str``.
 * :meth:`.SubredditFilters.add` and :meth:`.SubredditFilters.remove`
   also accept a :class:`.Subreddit` for the ``subreddit`` parameter.
+* Remove restriction which prevents installed (non-confidential) apps from
+  using OAuth2 authorization code grant flow.
 
 **Removed**
 

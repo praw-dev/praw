@@ -1,6 +1,6 @@
 """Provide the Auth class."""
-from prawcore import (Authorizer, ImplicitAuthorizer, TrustedAuthenticator,
-                      UntrustedAuthenticator, session)
+from prawcore import (Authorizer, ImplicitAuthorizer, UntrustedAuthenticator,
+                      session)
 
 from .base import PRAWBase
 from ..exceptions import ClientException
@@ -45,9 +45,6 @@ class Auth(PRAWBase):
 
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator
-        if not isinstance(authenticator, TrustedAuthenticator) or \
-           self._reddit.config.username:
-            raise ClientException('authorize can only be used with web apps.')
         authorizer = Authorizer(authenticator)
         authorizer.authorize(code)
         authorized_session = session(authorizer)

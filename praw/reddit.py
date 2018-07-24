@@ -349,7 +349,12 @@ class Reddit(object):
                                                self.config.client_id,
                                                self.config.redirect_uri)
         read_only_authorizer = DeviceIDAuthorizer(authenticator)
-        self._core = self._read_only_core = session(read_only_authorizer)
+        self._read_only_core = session(read_only_authorizer)
+        if self.config.refresh_token:
+            authorizer = Authorizer(authenticator, self.config.refresh_token)
+            self._core = self._authorized_core = session(authorizer)
+        else:
+            self._core = self._read_only_core
 
     def comment(self,  # pylint: disable=invalid-name
                 id=None,  # pylint: disable=redefined-builtin
