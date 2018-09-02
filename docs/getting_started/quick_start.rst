@@ -54,6 +54,13 @@ Common Tasks
 Obtain a :class:`.Reddit` Instance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. warning:: For the sake of brevity, the following examples pass authentication
+             information via arguments to :py:func:`praw.Reddit`. If you do
+             this, you need to be careful not to reveal this information to the
+             outside world if you share your code. It is recommended to use a
+             :ref:`praw.ini file <praw.ini>` in order to keep your
+             authentication information separate from your code.
+
 You need an instance of the :class:`.Reddit` class to do *anything* with
 PRAW. There are two distinct states a :class:`.Reddit` instance can be in:
 :ref:`read-only <read-only>`, and :ref:`authorized <authorized>`.
