@@ -30,6 +30,12 @@ class TestRedditor(UnitTest):
             Redditor(self.reddit, 'dummy', {'id': 'dummy'})
         assert str(excinfo.value) == message
 
+        with pytest.raises(AssertionError):
+            Redditor(self.reddit, _data=[{'name': 'dummy'}])
+
+        with pytest.raises(AssertionError):
+            Redditor(self.reddit, _data={'notname': 'dummy'})
+
     def test_fullname(self):
         redditor = Redditor(self.reddit, _data={'name': 'name', 'id': 'dummy'})
         assert redditor.fullname == 't2_dummy'

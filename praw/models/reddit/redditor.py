@@ -55,6 +55,9 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         """
         if bool(name) == bool(_data):
             raise TypeError('Either `name` or `_data` must be provided.')
+        if _data:
+            assert isinstance(_data, dict) and 'name' in _data, \
+                   'Please file a bug with PRAW'
         super(Redditor, self).__init__(reddit, _data)
         self._listing_use_sort = True
         if name:

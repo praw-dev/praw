@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Changed**
+
+* :meth:`.User.me` returns ``None`` in :attr:`~praw.Reddit.read_only` mode.
+
 6.0.0 (2018/07/24)
 ------------------
 

@@ -83,6 +83,8 @@ class User(PRAWBase):
     def me(self, use_cache=True):  # pylint: disable=invalid-name
         """Return a :class:`.Redditor` instance for the authenticated user.
 
+        In :attr:`~praw.Reddit.read_only` mode, this method returns ``None``.
+
         :param use_cache: When true, and if this function has been previously
             called, returned the cached version (default: True).
 
@@ -91,6 +93,8 @@ class User(PRAWBase):
            instances, however, for distinct authorizations.
 
         """
+        if self._reddit.read_only:
+            return None
         if self._me is None or not use_cache:
             user_data = self._reddit.get(API_PATH['me'])
             self._me = Redditor(self._reddit, _data=user_data)
