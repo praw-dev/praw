@@ -76,7 +76,7 @@ def permissions_string(permissions, known_permissions):
     return ','.join(to_set)
 
 
-def stream_generator(function, pause_after=None, skip_existing=False):
+def stream_generator(function, pause_after=None, skip_existing=False, limit=100):
     """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
@@ -160,7 +160,7 @@ def stream_generator(function, pause_after=None, skip_existing=False):
     while True:
         found = False
         newest_fullname = None
-        limit = 100
+        #limit = 100
         if before_fullname is None:
             limit -= without_before_counter
             without_before_counter = (without_before_counter + 1) % 30
