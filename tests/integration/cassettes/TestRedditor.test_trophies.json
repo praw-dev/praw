@@ -1,0 +1,207 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2018-09-15T15:15:33",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "29"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.0.0 prawcore/1.0.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "106"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 15 Sep 2018 15:15:33 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=mMrGQHUy4LkI5Bne2f; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-nrt6149-NRT"
+          ],
+          "X-Timer": [
+            "S1537024534.632072,VS0,VE200"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-reddit-loid": [
+            "000000000027u5eowh.2.1537024533734.Z0FBQUFBQmJuU0lWUVZ4RU1FRi1VUjFOMEpHSVM3dlBxME1WcUtXbnpoQUU3MEhMOU9ucEMwdExUTGNjVHBacWQzT0JrWjVRQkg0blpOdVVfQWJMZnJsSkJvOVIwQlFUMWNoa1RSYkdnX3R4SFFzRXBGcjRSbU1yN3ZrR0NxY3N2T2U5NTd5Y2Ziclk"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2018-09-15T15:15:33",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=mMrGQHUy4LkI5Bne2f"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.0.0 prawcore/1.0.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/v1/user/spez/trophies?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"TrophyList\", \"data\": {\"trophies\": [{\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/thanos_spared-70.png\", \"name\": \"Spared\", \"url\": \"https://www.reddit.com/r/thanosdidnothingwrong/\", \"icon_40\": \"https://www.redditstatic.com/awards2/thanos_spared-40.png\", \"award_id\": \"2b\", \"id\": \"1w20p2\", \"description\": null}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/alpha_user-70.png\", \"name\": \"Alpha Tester\", \"url\": null, \"icon_40\": \"https://www.redditstatic.com/awards2/alpha_user-40.png\", \"award_id\": \"29\", \"id\": \"1v9cjg\", \"description\": null}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/inciteful_comment-70.png\", \"name\": \"Inciteful Comment\", \"url\": \"/r/announcements/comments/827zqc/in_response_to_recent_reports_about_the_integrity/dv83xs6/?context=5#dv83xs6\", \"icon_40\": \"https://www.redditstatic.com/awards2/inciteful_comment-40.png\", \"award_id\": \"8\", \"id\": \"1uf5vo\", \"description\": \"2018-03-05\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/inciteful_link-70.png\", \"name\": \"Inciteful Link\", \"url\": \"/tb/827zqc\", \"icon_40\": \"https://www.redditstatic.com/awards2/inciteful_link-40.png\", \"award_id\": \"7\", \"id\": \"1uf5tz\", \"description\": \"2018-03-05\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/rgexchange-70.png\", \"name\": \"redditgifts Exchanges\", \"url\": \"https://redditgifts.com/profiles/view/spez/\", \"icon_40\": \"https://www.redditstatic.com/awards2/rgexchange-40.png\", \"award_id\": \"1k\", \"id\": \"1teu74\", \"description\": \"2 Exchanges\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/elf-70.png\", \"name\": \"redditgifts Elf\", \"url\": \"https://redditgifts.com/elves/\", \"icon_40\": \"https://www.redditstatic.com/awards2/elf-40.png\", \"award_id\": \"1j\", \"id\": \"1sywxd\", \"description\": \"Since November 2017\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/inciteful_comment-70.png\", \"name\": \"Inciteful Comment\", \"url\": \"/r/announcements/comments/59k22p/hey_its_reddits_totally_politically_neutral_ceo/d9929yb/?context=5#d9929yb\", \"icon_40\": \"https://www.redditstatic.com/awards2/inciteful_comment-40.png\", \"award_id\": \"8\", \"id\": \"1izjfq\", \"description\": \"2016-10-26\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/beta_team-70.png\", \"name\": \"Beta Team\", \"url\": null, \"icon_40\": \"https://www.redditstatic.com/awards2/beta_team-40.png\", \"award_id\": \"w\", \"id\": \"1gh8e9\", \"description\": \"Reddit for iOS\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/inciteful_link-70.png\", \"name\": \"Inciteful Link\", \"url\": \"/tb/4x35a3\", \"icon_40\": \"https://www.redditstatic.com/awards2/inciteful_link-40.png\", \"award_id\": \"7\", \"id\": \"1f5ifn\", \"description\": \"2016-08-10\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/inciteful_comment-70.png\", \"name\": \"Inciteful Comment\", \"url\": \"/r/announcements/comments/4ny59k/lets_talk_about_orlando/d480txj?context=5#d480txj\", \"icon_40\": \"https://www.redditstatic.com/awards2/inciteful_comment-40.png\", \"award_id\": \"8\", \"id\": \"1c6kx9\", \"description\": \"2016-06-13\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/inciteful_link-70.png\", \"name\": \"Inciteful Link\", \"url\": \"/tb/4ny59k\", \"icon_40\": \"https://www.redditstatic.com/awards2/inciteful_link-40.png\", \"award_id\": \"7\", \"id\": \"1c6kuc\", \"description\": \"2016-06-13\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/inciteful_link-70.png\", \"name\": \"Inciteful Link\", \"url\": \"/tb/3fx2au\", \"icon_40\": \"https://www.redditstatic.com/awards2/inciteful_link-40.png\", \"award_id\": \"7\", \"id\": \"wt7cq\", \"description\": \"2015-08-05\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/inciteful_link-70.png\", \"name\": \"Inciteful Link\", \"url\": \"/tb/3djjxw\", \"icon_40\": \"https://www.redditstatic.com/awards2/inciteful_link-40.png\", \"award_id\": \"7\", \"id\": \"w0w18\", \"description\": \"2015-07-16\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/inciteful_link-70.png\", \"name\": \"Inciteful Link\", \"url\": \"/tb/3dautm\", \"icon_40\": \"https://www.redditstatic.com/awards2/inciteful_link-40.png\", \"award_id\": \"7\", \"id\": \"vy4q0\", \"description\": \"2015-07-14\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/best_comment-70.png\", \"name\": \"Best Comment\", \"url\": \"/r/IAmA/comments/3cxedn/i_am_steve_huffman_the_new_ceo_of_reddit_ama/cszv2lg?context=5#cszv2lg\", \"icon_40\": \"https://www.redditstatic.com/awards2/best_comment-40.png\", \"award_id\": \"4\", \"id\": \"vt6s4\", \"description\": \"2015-07-11\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/best_comment-70.png\", \"name\": \"Best Comment\", \"url\": \"/r/announcements/comments/3cucye/an_old_team_at_reddit/csz1fte?context=5#csz1fte\", \"icon_40\": \"https://www.redditstatic.com/awards2/best_comment-40.png\", \"award_id\": \"4\", \"id\": \"vrpju\", \"description\": \"2015-07-10\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/reddit_gold-70.png\", \"name\": \"reddit gold\", \"url\": \"/gold/about\", \"icon_40\": \"https://www.redditstatic.com/awards2/reddit_gold-40.png\", \"award_id\": \"v\", \"id\": \"vr3vt\", \"description\": \"Since July 2015\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/mold-participant-70.png\", \"name\": \"reddit mold\", \"url\": \"http://blog.reddit.com/2011/03/reddit-mold-is-now-live.html\", \"icon_40\": \"https://www.redditstatic.com/awards2/mold-participant-40.png\", \"award_id\": \"15\", \"id\": \"1r0kj\", \"description\": null}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/represent-70.png\", \"name\": \"Rally Monkey\", \"url\": \"http://www.reddit.com/r/ColbertRally\", \"icon_40\": \"https://www.redditstatic.com/awards2/represent-40.png\", \"award_id\": \"11\", \"id\": \"12ahw\", \"description\": \"Century Club\"}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/verified_email-70.png\", \"name\": \"Verified Email\", \"url\": null, \"icon_40\": \"https://www.redditstatic.com/awards2/verified_email-40.png\", \"award_id\": \"o\", \"id\": \"4zhv\", \"description\": null}}, {\"kind\": \"t6\", \"data\": {\"icon_70\": \"https://www.redditstatic.com/awards2/combocommenter-70.png\", \"name\": \"ComboCommenter\", \"url\": null, \"icon_40\": \"https://www.redditstatic.com/awards2/combocommenter-40.png\", \"award_id\": \"6\", \"id\": \"12qg\", \"description\": \"2009-10-16\"}}]}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "6424"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 15 Sep 2018 15:15:34 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-nrt6138-NRT"
+          ],
+          "X-Timer": [
+            "S1537024534.900955,VS0,VE213"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/v1/user/spez/trophies?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

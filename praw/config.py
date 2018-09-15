@@ -98,7 +98,7 @@ class Config(object):
             self._fetch_or_not_set('check_for_updates'))
         self.kinds = {x: self._fetch('{}_kind'.format(x)) for x in
                       ['comment', 'message', 'redditor', 'submission',
-                       'subreddit']}
+                       'subreddit', 'trophy']}
 
         for attribute in ('client_id', 'client_secret', 'redirect_uri',
                           'refresh_token', 'password', 'user_agent',

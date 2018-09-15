@@ -4,6 +4,7 @@ from .front import Front  # NOQA
 from .helpers import LiveHelper, MultiredditHelper, SubredditHelper  # NOQA
 from .inbox import Inbox  # NOQA
 from .list.redditor import RedditorList  # NOQA
+from .list.trophy import TrophyList  # NOQA
 from .listing.domain import DomainListing  # NOQA
 from .listing.generator import ListingGenerator  # NOQA
 from .listing.listing import Listing  # NOQA
@@ -29,6 +30,7 @@ from .reddit.widgets import (Button, ButtonWidget, Calendar,  # NOQA
 from .reddit.wikipage import WikiPage  # NOQA
 from .stylesheet import Stylesheet  # NOQA
 from .subreddits import Subreddits  # NOQA
+from .trophy import Trophy  # NOQA
 from .user import User  # NOQA
 
 __all__ = ('Auth', 'Button', 'ButtonWidget', 'Calendar', 'Comment',
@@ -40,4 +42,5 @@ __all__ = ('Auth', 'Button', 'ButtonWidget', 'Calendar', 'Comment',
            'Preferences', 'Redditor', 'RedditorList', 'RulesWidget',
            'Stylesheet', 'Submenu', 'Submission', 'Subreddit',
            'SubredditHelper', 'SubredditMessage', 'SubredditWidgets',
-           'Subreddits', 'TextArea', 'User', 'Widget', 'WikiPage')
+           'Subreddits', 'TextArea', 'Trophy', 'TrophyList', 'User',
+           'Widget', 'WikiPage')

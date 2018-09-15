@@ -75,20 +75,6 @@ class TestRedditor(IntegrationTest):
                 assert False, 'sfwpornnetwork not found in multireddits'
 
     @mock.patch('time.sleep', return_value=None)
-    def test_unfriend(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette('TestRedditor.test_unfriend'):
-            redditor = self.reddit.user.friends()[0]
-            assert redditor.unfriend() is None
-
-    @mock.patch('time.sleep', return_value=None)
-    def test_unblock(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette('TestRedditor.test_unblock'):
-            redditor = self.reddit.user.blocked()[0]
-            redditor.unblock()
-
-    @mock.patch('time.sleep', return_value=None)
     def test_stream__comments(self, _):
         generator = self.reddit.redditor('AutoModerator').stream.comments()
         with self.recorder.use_cassette('TestRedditor.test_stream__comments'):
@@ -102,6 +88,36 @@ class TestRedditor(IntegrationTest):
                 'TestRedditor.test_stream__submissions'):
             for i in range(101):
                 assert isinstance(next(generator), Submission)
+
+    def test_trophies(self):
+        redditor = self.reddit.redditor('spez')
+        with self.recorder.use_cassette('TestRedditor.test_trophies'):
+            trophies = redditor.trophies()
+            assert len(trophies) > 0
+            assert len(trophies[0].name) > 0
+
+    def test_trophies__user_not_exist(self):
+        redditor = self.reddit.redditor('thisusershouldnotexist')
+        with self.recorder.use_cassette(
+                'TestRedditor.test_trophies__user_not_exist'):
+            with pytest.raises(BadRequest) as excinfo:
+                redditor.trophies()
+            response = excinfo.value.response
+            assert 'USER_DOESNT_EXIST' == response.json()['reason']
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_unblock(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestRedditor.test_unblock'):
+            redditor = self.reddit.user.blocked()[0]
+            redditor.unblock()
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_unfriend(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestRedditor.test_unfriend'):
+            redditor = self.reddit.user.friends()[0]
+            assert redditor.unfriend() is None
 
 
 class TestRedditorListings(IntegrationTest):

@@ -113,6 +113,26 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         """Return a list of the redditor's public multireddits."""
         return self._reddit.get(API_PATH['multireddit_user'].format(user=self))
 
+    def trophies(self):
+        """Return a list of the redditor's trophies.
+
+        :returns: A ``list`` of :class:`~praw.models.Trophy` objects.
+            Return ``[]`` if the redditor has no trophy.
+
+        Raise ``prawcore.exceptions.BadRequest`` if the redditor doesn't exist.
+
+        Usage:
+
+        .. code:: python
+
+            for trophy in reddit.redditor('spez').trophies():
+                print(trophy.name)
+                print(trophy.description)
+
+        """
+        return list(self._reddit.get(
+            API_PATH['trophies'].format(user=self)))
+
     def unblock(self):
         """Unblock the Redditor."""
         data = {'container': self._reddit.user.me().fullname,

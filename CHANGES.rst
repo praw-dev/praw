@@ -4,6 +4,11 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* Add method :meth:`.Redditor.trophies` to get a list of the Redditor's
+  trophies.
+
 **Changed**
 
 * :meth:`.User.me` returns ``None`` in :attr:`~praw.Reddit.read_only` mode.
