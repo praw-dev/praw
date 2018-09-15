@@ -157,10 +157,11 @@ def stream_generator(function, pause_after=None, skip_existing=False, limit=100)
     without_before_counter = 0
     responses_without_new = 0
     valid_pause_after = pause_after is not None
+    given_limit = limit
     while True:
         found = False
         newest_fullname = None
-        #limit = 100
+        limit = given_limit
         if before_fullname is None:
             limit -= without_before_counter
             without_before_counter = (without_before_counter + 1) % 30
