@@ -157,6 +157,7 @@ API_PATH = {
     'subreddits_search':      'subreddits/search/',
     'subscribe':              'api/subscribe/',
     'suggested_sort':         'api/set_suggested_sort/',
+    'trophies':               'api/v1/user/{user}/trophies',
     'uncollapse':             'api/uncollapse_message/',
     'unfriend':               'r/{subreddit}/api/unfriend/',
     'unhide':                 'api/unhide/',

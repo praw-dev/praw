@@ -12,11 +12,11 @@ from prawcore import (Authorizer, DeviceIDAuthorizer, ReadOnlyAuthorizer,
                       Redirect, Requestor, ScriptAuthorizer,
                       TrustedAuthenticator, UntrustedAuthenticator, session)
 
-from .exceptions import ClientException
+from . import models
 from .config import Config
 from .const import __version__, API_PATH, USER_AGENT_FORMAT, configparser
+from .exceptions import ClientException
 from .objector import Objector
-from . import models
 
 
 class Reddit(object):
@@ -285,6 +285,7 @@ class Reddit(object):
                     self.config.kinds['redditor']: models.Redditor,
                     self.config.kinds['submission']: models.Submission,
                     self.config.kinds['subreddit']: models.Subreddit,
+                    self.config.kinds['trophy']: models.Trophy,
                     'Button': models.Button,
                     'Image': models.Image,
                     'LabeledMulti': models.Multireddit,
@@ -296,6 +297,7 @@ class Reddit(object):
                     'ModmailConversation': models.ModmailConversation,
                     'ModmailMessage': models.ModmailMessage,
                     'Submenu': models.Submenu,
+                    'TrophyList': models.TrophyList,
                     'UserList': models.RedditorList,
                     'button': models.ButtonWidget,
                     'calendar': models.Calendar,
@@ -303,9 +305,9 @@ class Reddit(object):
                     'custom': models.CustomWidget,
                     'id-card': models.IDCard,
                     'image': models.ImageWidget,
+                    'menu': models.Menu,
                     'modaction': models.ModAction,
                     'moderators': models.ModeratorsWidget,
-                    'menu': models.Menu,
                     'more': models.MoreComments,
                     'stylesheet': models.Stylesheet,
                     'subreddit-rules': models.RulesWidget,
