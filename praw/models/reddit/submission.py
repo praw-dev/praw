@@ -10,7 +10,46 @@ from .subreddit import Subreddit
 
 
 class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
-    """A class for submissions to reddit."""
+    """A class for submissions to reddit.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    comprehensive in any way.
+
+    =======================  =============================================================
+    Attribute                Description
+    =======================  =============================================================
+    ``author``               Provides an instance of :class:`.Redditor`.
+    ``clicked``              Whether or not the submission has been clicked by the client.
+    ``comments``             Provides an instance of :class:`.CommentForest`.
+    ``created_utc``          Time the submission was created, represented in `Unix Time`_.
+    ``distinguished``        Whether or not the submission is distinguished.
+    ``edited``               Whether or not the submission has been edited.
+    ``id``                   The ID of the submission.
+    ``is_video``             Whether or not the submission is a Reddit-hosted video.
+    ``link_flair_css_class`` The CSS class for the submissions' flair.
+    ``link_flair_text``      The flair text for the submissions' flair.
+    ``locked``               Whether or not the submission has been locked.
+    ``num_comments``         The number of comments on the submission.
+    ``over18``               Whether or not the submission has been marked as NSFW.
+    ``permalink``            A permalink for the submission.
+    ``score``                The number of upvotes for the submission.
+    ``selftext``             The submissions' selftext.
+    ``stickied``             Whether or not the submission is stickied.
+    ``subreddit``            Provides an instance of :class:`.Subreddit`.
+    ``subreddit_id``         The ID of the subreddit that the submission belongs to.
+    ``title``                The title of the submission.
+    ``upvote_ratio``         The percentage of upvotes from all votes on the submission.
+    =======================  =============================================================
+
+
+    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+
+    """
 
     STR_FIELD = 'id'
 
