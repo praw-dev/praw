@@ -76,7 +76,8 @@ def permissions_string(permissions, known_permissions):
     return ','.join(to_set)
 
 
-def stream_generator(function, pause_after=None, skip_existing=False):
+def stream_generator(function, pause_after=None, skip_existing=False,
+                     limit=100):
     """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
@@ -93,6 +94,9 @@ def stream_generator(function, pause_after=None, skip_existing=False):
     :param skip_existing: When True does not yield any results from the first
         request thereby skipping any items that existed in the stream prior to
         starting the stream (default: False).
+
+    :param limit: An integer which defines the maximum number of items
+       that may be generated
 
     .. note:: This function internally uses an exponential delay with jitter
        between subsequent responses that contain no new results, up to a
@@ -157,10 +161,11 @@ def stream_generator(function, pause_after=None, skip_existing=False):
     without_before_counter = 0
     responses_without_new = 0
     valid_pause_after = pause_after is not None
+    given_limit = limit
     while True:
         found = False
         newest_fullname = None
-        limit = 100
+        limit = given_limit
         if before_fullname is None:
             limit -= without_before_counter
             without_before_counter = (without_before_counter + 1) % 30
