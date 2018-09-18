@@ -7,7 +7,47 @@ from .redditor import Redditor
 
 
 class Comment(RedditBase, InboxableMixin, UserContentMixin):
-    """A class that represents a reddit comments."""
+    """A class that represents a reddit comments.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    comprehensive in any way.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``author``              Provides an instance of :class:`.Redditor`.
+    ``body``                The body of the comment.
+    ``created_utc``         Time the comment was created, represented in
+                            `Unix Time`_.
+    ``distinguished``       Whether or not the comment is distinguished.
+    ``edited``              Whether or not the comment has been edited.
+    ``id``                  The ID of the comment.
+    ``is_submitter``        Whether or not the comment author is also the
+                            author of the submission.
+    ``link_id``             The submission ID that the comment belongs to.
+    ``parent_id``           The ID of the parent comment. If it is a top-level
+                            comment, this returns the submission ID instead
+                            (prefixed with 't3').
+    ``permalink``           A permalink for the comment.
+    ``replies``             Provides an instance of :class:`.CommentForest`.
+    ``score``               The number of upvotes for the comment.
+    ``stickied``            Whether or not the comment is stickied.
+    ``submission``          Provides an instance of :class:`.Submission`. The
+                            submission that the comment belongs to.
+    ``subreddit``           Provides an instance of :class:`.Subreddit`. The
+                            subreddit that the comment belongs to.
+    ``subreddit_id``        The subreddit ID that the comment belongs to.
+    ======================= ===================================================
+
+
+    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+
+    """
 
     MISSING_COMMENT_MESSAGE = ('This comment does not appear to be in the '
                                'comment tree')
