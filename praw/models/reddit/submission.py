@@ -20,9 +20,9 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     guarantee that these attributes will always be present, nor is this list
     comprehensive in any way.
 
-    =======================  ==================================================
+    ======================== ==================================================
     Attribute                Description
-    =======================  ==================================================
+    ======================== ==================================================
     ``author``               Provides an instance of :class:`.Redditor`.
     ``clicked``              Whether or not the submission has been clicked by
                              the client.
@@ -50,7 +50,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     ``title``                The title of the submission.
     ``upvote_ratio``         The percentage of upvotes from all votes on the
                              submission.
-    =======================  ==================================================
+    ======================== ==================================================
 
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
