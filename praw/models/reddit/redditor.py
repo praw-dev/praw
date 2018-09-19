@@ -50,9 +50,9 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
                                          NSFW.
     ``subreddit['public_description']``  The public description of the user-
                                          subreddit.
-    `subreddit['subscribers']``          The number of users subscribed to the
+    ``subreddit['subscribers']``         The number of users subscribed to the
                                          user-subreddit.
-    `subreddit['title']``                The title of the user-subreddit.
+    ``subreddit['title']``               The title of the user-subreddit.
     ==================================== ======================================
 
 
