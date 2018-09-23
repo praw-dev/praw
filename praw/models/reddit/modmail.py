@@ -4,7 +4,50 @@ from .base import RedditBase
 
 
 class ModmailConversation(RedditBase):
-    """A class for modmail conversations."""
+    """A class for modmail conversations.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    comprehensive in any way.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``authors``             Provides an ordered list of :class:`.Redditor`
+                            instances. The authors of each message in the
+                            modmail conversation.
+    ``id``                  The ID of the ModmailConversation.
+    ``is_highlighted``      Whether or not the ModmailConversation is
+                            highlighted.
+    ``is_internal``         Whether or not the ModmailConversation is a private
+                            mod conversation.
+    ``last_mod_update``     Time of the last mod message reply, represented in
+                            the `ISO 8601`_ standard with timezone.
+    ``last_updated``        Time of the last message reply, represented in
+                            the `ISO 8601`_ standard with timezone.
+    ``last_user_update``    Time of the last user message reply, represented in
+                            the `ISO 8601`_ standard with timezone.
+    ``num_messages``        The number of messages in the ModmailConversation.
+    ``obj_ids``             Provides a list of dictionaries representing
+                            mod actions on the ModmailConversation. Each dict
+                            contains attributes of 'key' and 'id'. The key can
+                            be either 'messages' or 'ModAction'. ModAction
+                            represents archiving/highlighting etc.
+    ``owner``               Provides an instance of :class:`.Subreddit`. The
+                            subreddit that the ModmailConversation belongs to.
+    ``participant``         Provides an instance of :class:`.Redditor`. The
+                            participating user in the ModmailConversation.
+    ``subject``             The subject of the ModmailConversation.
+    ======================= ===================================================
+
+
+    .. _ISO 8601: https://en.wikipedia.org/wiki/ISO_8601
+
+    """
 
     STR_FIELD = 'id'
 
