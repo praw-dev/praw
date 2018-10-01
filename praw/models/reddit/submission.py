@@ -38,7 +38,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     ``link_flair_text``      The flair text for the submissions' flair.
     ``locked``               Whether or not the submission has been locked.
     ``num_comments``         The number of comments on the submission.
-    ``over18``               Whether or not the submission has been marked as
+    ``over_18``               Whether or not the submission has been marked as
                              NSFW.
     ``permalink``            A permalink for the submission.
     ``score``                The number of upvotes for the submission.
