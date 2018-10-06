@@ -8,6 +8,11 @@ Unreleased
 
 * Add method :meth:`.Redditor.trophies` to get a list of the Redditor's
   trophies.
+* Add class :class:`.RemovalReason` to manage subreddit removal reasons.
+* Add method ``Submission.mod.set_removal_reason`` to set a removal
+  reason and mod note on one or more Submissions and/or Comments.
+* Add method ``Submission.mod.send_removal_message`` to send a removal
+  message about the Submission or Comment.
 
 **Changed**
 

@@ -19,6 +19,7 @@ from .reddit.modmail import (ModmailAction, ModmailConversation,  # NOQA
 from .reddit.more import MoreComments  # NOQA
 from .reddit.multi import Multireddit  # NOQA
 from .reddit.redditor import Redditor  # NOQA
+from .reddit.removalreason import RemovalReason  # NOQA
 from .reddit.submission import Submission  # NOQA
 from .reddit.subreddit import Subreddit  # NOQA
 from .reddit.widgets import (Button, ButtonWidget, Calendar,  # NOQA
@@ -39,8 +40,8 @@ __all__ = ('Auth', 'Button', 'ButtonWidget', 'Calendar', 'Comment',
            'ListingGenerator', 'LiveHelper', 'LiveThread', 'Menu', 'MenuLink',
            'Message', 'ModAction', 'ModeratorsWidget', 'ModmailConversation',
            'MoreComments', 'Multireddit', 'MultiredditHelper',
-           'Preferences', 'Redditor', 'RedditorList', 'RulesWidget',
-           'Stylesheet', 'Submenu', 'Submission', 'Subreddit',
+           'Preferences', 'Redditor', 'RedditorList', 'RemovalReason',
+           'RulesWidget', 'Stylesheet', 'Submenu', 'Submission', 'Subreddit',
            'SubredditHelper', 'SubredditMessage', 'SubredditWidgets',
            'Subreddits', 'TextArea', 'Trophy', 'TrophyList', 'User',
            'Widget', 'WikiPage')

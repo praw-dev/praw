@@ -41,4 +41,5 @@ Source Contributors
 - Andrew Arnold `@asquared31415 <https://github.com/asquared31415>`_
 - bakonydraco `@bakonydraco <https://github.com/bakonydraco>`_
 - salehio `@salehio <https://github.com/salehio>`_
+- Declan Hoare <declanhoare@exemail.com.au> `@NetwideRogue <https://github.com/NetwideRogue>`_
 - Add "Name <email (optional)> and github profile link" above this line.

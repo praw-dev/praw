@@ -123,6 +123,12 @@ API_PATH = {
     'quarantine_opt_in':      'api/quarantine_optin',
     'quarantine_opt_out':     'api/quarantine_optout',
     'read_message':           'api/read_message/',
+    ('removal_comment_'
+     'message'):              'api/v1/modactions/removal_comment_message',
+    'removal_link_message':   'api/v1/modactions/removal_link_message',
+    'removal_reasons':        'api/v1/{subreddit}/removal_reasons',
+    'removal_reason_update':  'api/v1/{subreddit}/removal_reasons/{id}',
+    'removal_reason_set':     'api/v1/modactions/removal_reasons',
     'remove':                 'api/remove/',
     'report':                 'api/report/',
     'rules':                  'r/{subreddit}/about/rules',

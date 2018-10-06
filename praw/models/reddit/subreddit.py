@@ -13,6 +13,7 @@ from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import MessageableMixin
 from .modmail import ModmailConversation
+from .removalreason import SubredditRemovalReasons
 from .widgets import SubredditWidgets
 from .wikipage import WikiPage
 
@@ -303,6 +304,13 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._quarantine
 
     @property
+    def removal_reasons(self):
+        """Provide an instance of :class:`.SubredditRemovalReasons`."""
+        if self._removal_reasons is None:
+            self._removal_reasons = SubredditRemovalReasons(self)
+        return self._removal_reasons
+
+    @property
     def stream(self):
         """Provide an instance of :class:`.SubredditStream`.
 
@@ -399,7 +407,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if display_name:
             self.display_name = display_name
         self._banned = self._contributor = self._filters = self._flair = None
-        self._emoji = self._widgets = None
+        self._emoji = self._removal_reasons = self._widgets = None
         self._mod = self._moderator = self._modmail = self._muted = None
         self._quarantine = self._stream = self._stylesheet = self._wiki = None
         self._path = API_PATH['subreddit'].format(subreddit=self)

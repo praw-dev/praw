@@ -85,10 +85,12 @@ instances of them bound to an attribute of one of the PRAW models.
    other/preferences
    other/redditbase
    other/redditorlist
+   other/removalreason
    other/sublisting
    other/submenu
    other/subredditemoji
    other/subredditmessage
+   other/subredditremovalreasons
    other/redditorstream
    other/trophy
    other/util
