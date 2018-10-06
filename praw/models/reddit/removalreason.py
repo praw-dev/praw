@@ -46,7 +46,7 @@ class RemovalReason(RedditBase):
             message = self.message
         url = API_PATH['removal_reason_update'].format(
             id=self.id, subreddit=self.subreddit)
-        self._reddit.request('PUT', url, {"title": title, "message": message})
+        self._reddit.request('PUT', url, {'title': title, 'message': message})
         self.title = title
         self.message = message
 
@@ -78,13 +78,13 @@ class SubredditRemovalReasons(object):
         # The returned object has a dictionary called "data", followed by
         # a list called "order" which has dictionary keys in iteration
         # order, so start by getting the corresponding values:
-        data = (raw["data"][k] for k in raw["order"])
+        data = (raw['data'][k] for k in raw['order'])
         # then convert them to our model:
         self._reasons = [RemovalReason(self._reddit,
                                        self.subreddit,
-                                       reason["id"],
-                                       reason["title"],
-                                       reason["message"])
+                                       reason['id'],
+                                       reason['title'],
+                                       reason['message'])
                          for reason in data]
 
     def __iter__(self):
@@ -99,10 +99,10 @@ class SubredditRemovalReasons(object):
         :returns: The RemovalReason added
         """
         url = API_PATH['removal_reasons'].format(subreddit=self.subreddit)
-        response = self._reddit.post(url, {"title": title, "message": message})
+        response = self._reddit.post(url, {'title': title, 'message': message})
         reason = RemovalReason(self._reddit,
                                self.subreddit,
-                               response["id"],
+                               response['id'],
                                title,
                                message)
         self._reasons.append(reason)

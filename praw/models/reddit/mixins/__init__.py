@@ -135,16 +135,16 @@ class ThingModerationMixin(object):
         url = API_PATH[self.REMOVAL_MESSAGE_API]
 
         # Only the first element of the item_id list is used.
-        data = {"item_id": [self.thing.fullname],
-                "message": message,
-                "title": title,
-                "type": str(type)}
+        data = {'item_id': [self.thing.fullname],
+                'message': message,
+                'title': title,
+                'type': str(type)}
 
         # Use the core to make the request in order to send the data as
         # JSON - this endpoint doesn't like URL encoding.
         self.thing._reddit._core.request('POST', url, json=data)
 
-    def set_removal_reason(self, reason=None, mod_note="", other_things=None):
+    def set_removal_reason(self, reason=None, mod_note='', other_things=None):
         """Set a removal reason for a Comment or Submission.
 
         Note that the removal message is not sent.  This can be done separately
