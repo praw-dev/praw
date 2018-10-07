@@ -297,6 +297,40 @@ class TestSubmissionModeration(IntegrationTest):
                 'TestSubmissionModeration.test_remove'):
             self.reddit.submission('4b536h').mod.remove(spam=True)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_send_removal_message(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_send_removal_message'):
+            submission = self.reddit.submission('9m1ya8')
+            mod = submission.mod
+            mod.remove()
+            message = "message"
+            res = [mod.send_removal_message(t, "title", message)
+                for t in ("public", "private", "private_exposed")]
+            assert isinstance(res[0], Comment)
+            assert res[0].parent_id == "t3_" + submission.id
+            assert res[0].stickied
+            assert res[0].body == message
+            assert res[1] is None
+            assert res[2] is None
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_set_removal_reason(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_set_removal_reason'):
+            submission = self.reddit.submission('9m1ya8')
+            comment = self.reddit.comment('e7b7z5y')
+            mod = submission.mod
+            subreddit = submission.subreddit
+            reason = subreddit.removal_reasons[0]
+            submission.mod.remove()
+            comment.mod.remove()
+            mod.set_removal_reason(reason, "this is a note", [comment])
+            mod.set_removal_reason(None, "this is still a note", [comment])
+            mod.set_removal_reason(reason, other_things=[comment])
+
     def test_sfw(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(

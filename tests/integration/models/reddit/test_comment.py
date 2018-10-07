@@ -244,6 +244,23 @@ class TestCommentModeration(IntegrationTest):
                 'TestCommentModeration.test_remove'):
             self.reddit.comment('da2g5y6').mod.remove(spam=True)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_send_removal_message(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestCommentModeration.test_send_removal_message'):
+            comment = self.reddit.comment('e7b7z5y')
+            mod = comment.mod
+            mod.remove()
+            message = "message"
+            res = [mod.send_removal_message(t, "title", message)
+                for t in ("public", "private", "private_exposed")]
+            assert isinstance(res[0], Comment)
+            assert res[0].parent_id == "t1_" + comment.id
+            assert res[0].body == message
+            assert res[1] is None
+            assert res[2] is None
+
     def test_undistinguish(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
