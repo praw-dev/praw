@@ -34,6 +34,8 @@ class RemovalReason(RedditBase):
         except KeyError:
             raise ClientException('/r/{} does not have the removal reason {}'
                                   .format(self.subreddit, self.id))
+        else:
+            self._fetched = True
 
     def delete(self):
         """Delete a removal reason from its subreddit."""
