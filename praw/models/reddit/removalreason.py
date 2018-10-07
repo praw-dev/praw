@@ -50,16 +50,16 @@ class RemovalReason(RedditBase):
 class SubredditRemovalReasons(object):
     """Provides management functions for a subreddit's removal reasons."""
 
-    def __getitem__(self, id):  # pylint:disable=invalid-name,redefined-builtin
-        """Return a :class:`.RemovalReason` from this subreddit by ID.
+    def __getitem__(self, key):
+        """Return a :class:`.RemovalReason` from this subreddit by ID or index.
 
-        :param id: The ID of the removal reason
+        :param key: The ID or index of the removal reason
         """
-        for reason in self._reasons:
-            if reason.id == id:
+        for i, reason in enumerate(self._reasons):
+            if i == key or reason == key:
                 return reason
-        raise KeyError('/r/{} does not have a removal reason of ID {}'
-                       .format(self.subreddit, id))
+        raise KeyError('/r/{} does not have a removal reason {}'
+                       .format(self.subreddit, key))
 
     def __init__(self, subreddit):
         """Create a SubredditRemovalReasons instance.
