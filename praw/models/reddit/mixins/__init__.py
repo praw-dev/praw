@@ -115,7 +115,7 @@ class ThingModerationMixin(object):
         self.thing._reddit.post(API_PATH['remove'], data=data)
 
     def send_removal_message(self, type,  # pylint: disable=redefined-builtin
-                             title=None, message=None):
+                             title, message):
         """Send a removal message for a Comment or Submission.
 
         Reddit adds human-readable information about the object to the message.
