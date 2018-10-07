@@ -38,12 +38,8 @@ class RemovalReason(RedditBase):
         # Update the list to match.
         self.subreddit.removal_reasons._reasons.remove(self)
 
-    def edit(self, title=None, message=None):
+    def edit(self, title, message):
         """Edit a removal reason."""
-        if title is None:
-            title = self.title
-        if message is None:
-            message = self.message
         url = API_PATH['removal_reason_update'].format(
             id=self.id, subreddit=self.subreddit)
         self._reddit.request('PUT', url, {'title': title, 'message': message})
