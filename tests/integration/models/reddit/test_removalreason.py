@@ -22,8 +22,8 @@ class TestRemovalReason(IntegrationTest):
             with pytest.raises(ClientException) as excinfo:
                 fake.title
             assert (str(excinfo.value) ==
-                '/r/{} does not have the removal reason {}'.format(subreddit,
-                    fake_id))
+                    '/r/{} does not have the removal reason {}'.format(
+                    subreddit, fake_id))
 
     @mock.patch('time.sleep', return_value=None)
     def test_delete(self, _):
@@ -38,8 +38,6 @@ class TestRemovalReason(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         reason = subreddit.removal_reasons['11qo9awftokz1']
-        oldtitle = reason.title
-        oldmessage = reason.message
         newmessage = "now this reason is being edited"
         with self.recorder.use_cassette('TestRemovalReason.test_edit'):
             reason.edit(reason.title, newmessage)
@@ -51,7 +49,7 @@ class TestSubredditRemovalReasons(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         with self.recorder.use_cassette(
-            'TestSubredditRemovalReasons.test__getitem'):
+                'TestSubredditRemovalReasons.test__getitem'):
             reason1 = subreddit.removal_reasons[5]
             reason2 = subreddit.removal_reasons[reason1.id]
             assert reason1 == reason2
@@ -63,7 +61,7 @@ class TestSubredditRemovalReasons(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         with self.recorder.use_cassette(
-            'TestSubredditRemovalReasons.test__iter'):
+                'TestSubredditRemovalReasons.test__iter'):
             count = 0
             seen = set()
             for reason in subreddit.removal_reasons:
@@ -71,7 +69,7 @@ class TestSubredditRemovalReasons(IntegrationTest):
                 seen.add(reason)
                 count += 1
             assert count > 0
-            assert count == len(seen) # No duplicates
+            assert count == len(seen)  # No duplicates
 
     @mock.patch('time.sleep', return_value=None)
     def test_add(self, _):
@@ -79,7 +77,8 @@ class TestSubredditRemovalReasons(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         title = "test"
         message = "adding a test reason"
-        with self.recorder.use_cassette('TestSubredditRemovalReasons.test_add'):
+        with self.recorder.use_cassette(
+                'TestSubredditRemovalReasons.test_add'):
             reason = subreddit.removal_reasons.add(title, message)
             assert isinstance(reason, RemovalReason)
             assert reason == subreddit.removal_reasons[reason.id]
