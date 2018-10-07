@@ -105,7 +105,6 @@ class SubredditRemovalReasons(object):
                                 reason,
                                 _data=raw['data'][reason])
 
-
     def add(self, title, message):
         """Add a removal reason to this subreddit.
 

@@ -148,6 +148,7 @@ class ThingModerationMixin(object):
         if ret != {}:
             from ..comment import Comment
             return Comment(self.thing._reddit, _data=ret)
+        return None
 
     def set_removal_reason(self, reason=None, mod_note='', other_things=None):
         """Set a removal reason for a Comment or Submission.
