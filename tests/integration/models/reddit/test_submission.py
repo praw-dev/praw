@@ -305,11 +305,11 @@ class TestSubmissionModeration(IntegrationTest):
             submission = self.reddit.submission('9m1ya8')
             mod = submission.mod
             mod.remove()
-            message = "message"
-            res = [mod.send_removal_message(t, "title", message)
-                   for t in ("public", "private", "private_exposed")]
+            message = 'message'
+            res = [mod.send_removal_message(t, 'title', message)
+                   for t in ('public', 'private', 'private_exposed')]
             assert isinstance(res[0], Comment)
-            assert res[0].parent_id == "t3_" + submission.id
+            assert res[0].parent_id == 't3_' + submission.id
             assert res[0].stickied
             assert res[0].body == message
             assert res[1] is None
@@ -327,8 +327,8 @@ class TestSubmissionModeration(IntegrationTest):
             reason = subreddit.removal_reasons[0]
             submission.mod.remove()
             comment.mod.remove()
-            mod.set_removal_reason(reason, "this is a note", [comment])
-            mod.set_removal_reason(None, "this is still a note", [comment])
+            mod.set_removal_reason(reason, 'this is a note', [comment])
+            mod.set_removal_reason(None, 'this is still a note', [comment])
             mod.set_removal_reason(reason, other_things=[comment])
 
     def test_sfw(self):

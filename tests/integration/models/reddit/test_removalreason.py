@@ -38,7 +38,7 @@ class TestRemovalReason(IntegrationTest):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         reason = subreddit.removal_reasons['11qo9awftokz1']
-        newmessage = "now this reason is being edited"
+        newmessage = 'now this reason is being edited'
         with self.recorder.use_cassette('TestRemovalReason.test_edit'):
             reason.edit(reason.title, newmessage)
 
@@ -75,8 +75,8 @@ class TestSubredditRemovalReasons(IntegrationTest):
     def test_add(self, _):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-        title = "test"
-        message = "adding a test reason"
+        title = 'test'
+        message = 'adding a test reason'
         with self.recorder.use_cassette(
                 'TestSubredditRemovalReasons.test_add'):
             reason = subreddit.removal_reasons.add(title, message)
