@@ -1,5 +1,6 @@
 """Provide the RemovalReason class."""
 from ...const import API_PATH
+from ...exceptions import ClientException
 from .base import RedditBase
 
 
