@@ -20,14 +20,20 @@ class RemovalReason(RedditBase):
         return hash(str(self))
 
     def __init__(self, reddit, subreddit,
-                 id,  # pylint: disable=redefined-builtin
-                 title, message, _data=None):
+                 id, _data=None):  # pylint: disable=redefined-builtin
         """Construct an instance of the RemovalReason object."""
         self.subreddit = subreddit
         self.id = id  # pylint: disable=invalid-name
-        self.title = title
-        self.message = message
         super(RemovalReason, self).__init__(reddit, _data)
+
+    def _fetch(self):
+        raw = self._reddit.get(
+            API_PATH['removal_reasons'].format(subreddit=self.subreddit))
+        try:
+            self.__dict__.update(raw['data'][self.id])
+        except KeyError:
+            raise ClientException('/r/{} does not have the removal reason {}'
+                                  .format(self.subreddit, self.id))
 
     def delete(self):
         """Delete a removal reason from its subreddit."""
@@ -35,16 +41,11 @@ class RemovalReason(RedditBase):
             id=self.id, subreddit=self.subreddit)
         self._reddit.request('DELETE', url)
 
-        # Update the list to match.
-        self.subreddit.removal_reasons._reasons.remove(self)
-
     def edit(self, title, message):
         """Edit a removal reason."""
         url = API_PATH['removal_reason_update'].format(
             id=self.id, subreddit=self.subreddit)
         self._reddit.request('PUT', url, {'title': title, 'message': message})
-        self.title = title
-        self.message = message
 
 
 class SubredditRemovalReasons(object):
@@ -53,53 +54,64 @@ class SubredditRemovalReasons(object):
     def __getitem__(self, key):
         """Return a :class:`.RemovalReason` from this subreddit by ID or index.
 
-        :param key: The ID or index of the removal reason
+        Getting by ID is lazy, but getting by index is eager.
+
+        :param key: The ID or index of the removal reason.
+
+        To get the first removal reason of /r/praw_test:
+
+        .. code:: python
+
+            subreddit = reddit.subreddit('praw_test')
+            reason = subreddit.removal_reasons[0]
+
+        To get a removal reason from /r/praw_test with the ID '11qiw1rp2mlqd':
+
+        .. code:: python
+
+            subreddit = reddit.subreddit('praw_test')
+            reason = subreddit.removal_reasons['11qiw1rp2mlqd']
+
         """
-        for i, reason in enumerate(self._reasons):
-            if i == key or reason == key:
-                return reason
-        raise KeyError('/r/{} does not have a removal reason {}'
-                       .format(self.subreddit, key))
+        if isinstance(key, int):
+            raw = self._reddit.get(
+                API_PATH['removal_reasons'].format(subreddit=self.subreddit))
+            reason = raw['order'][key]
+            return RemovalReason(self._reddit,
+                                 self.subreddit,
+                                 reason,
+                                 _data=raw['data'][reason])
+        return RemovalReason(self._reddit, self.subreddit, key)
 
     def __init__(self, subreddit):
         """Create a SubredditRemovalReasons instance.
 
         :param subreddit: The subreddit whose removal reasons are
-            affected
+            affected.
         """
         self.subreddit = subreddit
         self._reddit = subreddit._reddit
-        raw = self._reddit.get(
-            API_PATH['removal_reasons'].format(subreddit=self.subreddit))
-        # The returned object has a dictionary called "data", followed by
-        # a list called "order" which has dictionary keys in iteration
-        # order, so start by getting the corresponding values:
-        data = (raw['data'][k] for k in raw['order'])
-        # then convert them to our model:
-        self._reasons = [RemovalReason(self._reddit,
-                                       self.subreddit,
-                                       reason['id'],
-                                       reason['title'],
-                                       reason['message'])
-                         for reason in data]
 
     def __iter__(self):
         """Iterate over the removal reasons for this subreddit, in order."""
-        return iter(self._reasons)
+        raw = self._reddit.get(
+            API_PATH['removal_reasons'].format(subreddit=self.subreddit))
+        for reason in raw['order']:
+            yield RemovalReason(self._reddit,
+                                self.subreddit,
+                                reason,
+                                _data=raw['data'][reason])
+
 
     def add(self, title, message):
         """Add a removal reason to this subreddit.
 
-        :param title: The title of the removal reason
-        :param message: The body of the removal reason
-        :returns: The RemovalReason added
+        :param title: The title of the removal reason.
+        :param message: The body of the removal reason.
+        :returns: The RemovalReason added.  (Lazy)
         """
         url = API_PATH['removal_reasons'].format(subreddit=self.subreddit)
         response = self._reddit.post(url, {'title': title, 'message': message})
-        reason = RemovalReason(self._reddit,
-                               self.subreddit,
-                               response['id'],
-                               title,
-                               message)
-        self._reasons.append(reason)
-        return reason
+        return RemovalReason(self._reddit,
+                             self.subreddit,
+                             response['id'])
