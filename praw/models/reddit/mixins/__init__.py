@@ -127,6 +127,8 @@ class ThingModerationMixin(object):
         :param title: The short reason given in the message.
             (Ignored if type is 'public'.)
         :param message: The body of the message.
+
+        If ``type`` is 'public', the new :class:`~.Comment` is returned.
         """
         # The API endpoint used to send removal messages is different
         # for posts and comments, so the derived classes specify which one.
@@ -142,7 +144,10 @@ class ThingModerationMixin(object):
 
         # Use the core to make the request in order to send the data as
         # JSON - this endpoint doesn't like URL encoding.
-        self.thing._reddit._core.request('POST', url, json=data)
+        ret = self.thing._reddit._core.request('POST', url, json=data)
+        if ret != {}:
+            from ..comment import Comment
+            return Comment(self.thing._reddit, _data=ret)
 
     def set_removal_reason(self, reason=None, mod_note='', other_things=None):
         """Set a removal reason for a Comment or Submission.
