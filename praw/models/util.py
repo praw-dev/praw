@@ -76,7 +76,7 @@ def permissions_string(permissions, known_permissions):
     return ','.join(to_set)
 
 
-def stream_generator(function, pause_after=None, skip_existing=False):
+def stream_generator(function, pause_after=None, skip_existing=False, key_name="fullname"):
     """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
@@ -93,6 +93,8 @@ def stream_generator(function, pause_after=None, skip_existing=False):
     :param skip_existing: When True does not yield any results from the first
         request thereby skipping any items that existed in the stream prior to
         starting the stream (default: False).
+
+    :param key_name: The field to use as an id (default: "fullname").
 
     .. note:: This function internally uses an exponential delay with jitter
        between subsequent responses that contain no new results, up to a
@@ -166,11 +168,12 @@ def stream_generator(function, pause_after=None, skip_existing=False):
             without_before_counter = (without_before_counter + 1) % 30
         for item in reversed(list(function(
                 limit=limit, params={'before': before_fullname}))):
-            if item.fullname in seen_fullnames:
+            key = getattr(item, key_name)
+            if key in seen_fullnames:
                 continue
             found = True
-            seen_fullnames.add(item.fullname)
-            newest_fullname = item.fullname
+            seen_fullnames.add(key)
+            newest_fullname = key
             if not skip_existing:
                 yield item
         before_fullname = newest_fullname
