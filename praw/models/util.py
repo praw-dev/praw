@@ -77,7 +77,7 @@ def permissions_string(permissions, known_permissions):
 
 
 def stream_generator(function, pause_after=None, skip_existing=False,
-                     key_name="fullname"):
+                     key_name='fullname'):
     """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
