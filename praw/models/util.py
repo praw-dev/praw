@@ -77,7 +77,7 @@ def permissions_string(permissions, known_permissions):
 
 
 def stream_generator(function, pause_after=None, skip_existing=False,
-                     key_name='fullname'):
+                     attribute_name='fullname'):
     """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
@@ -154,30 +154,30 @@ def stream_generator(function, pause_after=None, skip_existing=False,
            print(comment)
 
     """
-    before_fullname = None
+    before_attribute = None
     exponential_counter = ExponentialCounter(max_counter=16)
-    seen_fullnames = BoundedSet(301)
+    seen_attributes = BoundedSet(301)
     without_before_counter = 0
     responses_without_new = 0
     valid_pause_after = pause_after is not None
     while True:
         found = False
-        newest_fullname = None
+        newest_attribute = None
         limit = 100
-        if before_fullname is None:
+        if before_attribute is None:
             limit -= without_before_counter
             without_before_counter = (without_before_counter + 1) % 30
         for item in reversed(list(function(
-                limit=limit, params={'before': before_fullname}))):
-            key = getattr(item, key_name)
-            if key in seen_fullnames:
+                limit=limit, params={'before': before_attribute}))):
+            attribute = getattr(item, attribute_name)
+            if attribute in seen_attributes:
                 continue
             found = True
-            seen_fullnames.add(key)
-            newest_fullname = key
+            seen_attributes.add(attribute)
+            newest_attribute = attribute
             if not skip_existing:
                 yield item
-        before_fullname = newest_fullname
+        before_attribute = newest_attribute
         skip_existing = False
         if valid_pause_after and pause_after < 0:
             yield None
