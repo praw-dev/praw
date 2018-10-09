@@ -95,7 +95,7 @@ def stream_generator(function, pause_after=None, skip_existing=False,
         request thereby skipping any items that existed in the stream prior to
         starting the stream (default: False).
 
-    :param key_name: The field to use as an id (default: "fullname").
+    :param attribute_name: The field to use as an id (default: "fullname").
 
     .. note:: This function internally uses an exponential delay with jitter
        between subsequent responses that contain no new results, up to a
