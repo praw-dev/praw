@@ -53,12 +53,7 @@ def main():
                         'all for all tokens: ')
 
     if commaScopes.lower() == 'all':
-        scopes = ['creddits', 'edit', 'flair', 'history', 'identity',
-                  'modconfig', 'modcontributors', 'modflair', 'modlog',
-                  'modothers', 'modposts', 'modself', 'modwiki',
-                  'mysubreddits', 'privatemessages', 'read', 'report',
-                  'save', 'submit', 'subscribe', 'vote', 'wikiedit',
-                  'wikiread']
+        scopes = ['*']
     else:
         scopes = commaScopes.strip().split(',')
 
