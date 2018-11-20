@@ -216,6 +216,8 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     def mark_visited(self):
         """Mark submission as visited.
 
+        This method requires a subscription to reddit premium.
+
         Example usage:
 
         .. code:: python
