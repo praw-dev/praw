@@ -122,7 +122,7 @@ class Objector(object):
             return [self.objectify(item) for item in data]
         if 'kind' in data and ('shortName' in data or data['kind'] in
                                ('menu', 'moderators')):
-            parser = self.parsers[data['kind']]
+            parser = self.parsers.get(data['kind'], self.parsers['widget'])
             return parser.parse(data, self._reddit)
         elif 'kind' in data and data['kind'] in self.parsers:
             parser = self.parsers[data['kind']]

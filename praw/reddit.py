@@ -311,7 +311,8 @@ class Reddit(object):
                     'more': models.MoreComments,
                     'stylesheet': models.Stylesheet,
                     'subreddit-rules': models.RulesWidget,
-                    'textarea': models.TextArea}
+                    'textarea': models.TextArea,
+                    'widget': models.Widget}
         for kind, klass in mappings.items():
             self._objector.register(kind, klass)
 
