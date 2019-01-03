@@ -309,6 +309,7 @@ class Reddit(object):
                     'modaction': models.ModAction,
                     'moderators': models.ModeratorsWidget,
                     'more': models.MoreComments,
+                    'post-flair': models.PostFlairWidget,
                     'stylesheet': models.Stylesheet,
                     'subreddit-rules': models.RulesWidget,
                     'textarea': models.TextArea,

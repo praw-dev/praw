@@ -79,6 +79,7 @@ class SubredditWidgets(PRAWBase):
     - :class:`.ImageWidget`
     - :class:`.Menu`
     - :class:`.ModeratorsWidget`
+    - :class:`.PostFlairWidget`
     - :class:`.RulesWidget`
     - :class:`.TextArea`
 
@@ -357,6 +358,36 @@ class ModeratorsWidget(Widget, BaseList):
     """
 
     CHILD_ATTRIBUTE = 'mods'
+
+
+class PostFlairWidget(Widget, BaseList):
+    """Class to represent a post flair widget.
+
+    Find an existing one:
+
+    .. code-block:: python
+
+       post_flair_widget = None
+       widgets = reddit.subreddit('redditdev').widgets
+       for widget in widgets.sidebar:
+           if isinstance(widget, praw.models.PostFlairWidget):
+               post_flair_widget = widget
+               break
+
+       for flair in post_flair_widget:
+           print(flair['text'])
+
+    """
+
+    def __init__(self, reddit, _data):
+        """Initialize a PostFlairWidget."""
+        order = _data['order']
+        templates = _data['templates']
+        for i, template in enumerate(order):
+            order[i] = templates[template]
+        super(PostFlairWidget, self).__init__(reddit, _data)
+
+    CHILD_ATTRIBUTE = 'order'
 
 
 class RulesWidget(Widget, BaseList):
