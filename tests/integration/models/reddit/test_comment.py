@@ -183,7 +183,8 @@ class TestComment(IntegrationTest):
                 'comment tree',) == excinfo.value.args
 
     def test_refresh__with_reply_sort_and_limit(self):
-        with self.recorder.use_cassette('TestComment.test_refresh__with_reply_sort_and_limit'):
+        with self.recorder.use_cassette(
+                'TestComment.test_refresh__with_reply_sort_and_limit'):
             comment = Comment(self.reddit, 'e4j4830')
             comment.reply_limit = 4
             comment.reply_sort = 'new'
