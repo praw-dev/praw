@@ -211,8 +211,112 @@ class SubredditWidgetsModeration(object):
         widget.subreddit = self._subreddit
         return widget
 
+    def add_calendar(self, short_name, google_calendar_id, requires_sync,
+                     configuration, styles, **other_settings):
+        """Add and return a calendar widget.
+
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param google_calendar_id: An email-style calendar ID. To share a
+                                   Google Calendar, make it public,
+                                   then find the "Calendar ID."
+        :param requires_sync: A ``bool``.
+        :param configuration: A ``dict`` as specified in `Reddit docs`_.
+                              Example:
+
+                              .. code-block:: python
+
+                                 {'numEvents': 10,
+                                  'showDate': True,
+                                  'showDescription': False,
+                                  'showLocation': False,
+                                  'showTime': True,
+                                  'showTitle': True}
+        :param styles: A ``dict`` with keys ``backgroundColor`` and
+                       ``headerColor``, and values of hex colors. For example,
+                       ``{'backgroundColor': '#FFFF66', 'headerColor':
+                       '#3333EE'}``.
+
+        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+
+        Example usage:
+
+        .. code-block:: python
+
+           widget_moderation = reddit.subreddit('mysub').widgets.mod
+           styles = {'backgroundColor': '#FFFF66', 'headerColor': '#3333EE'}
+           config = {'numEvents': 10,
+                     'showDate': True,
+                     'showDescription': False,
+                     'showLocation': False,
+                     'showTime': True,
+                     'showTitle': True}
+           cal_id = 'y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com'
+           new_widget = widget_moderation.add_calendar('Upcoming Events',
+                                                       cal_id, True,
+                                                       config, styles)
+        """
+        calendar = {'shortName': short_name,
+                    'googleCalendarId': google_calendar_id,
+                    'requiresSync': requires_sync,
+                    'configuration': configuration,
+                    'styles': styles,
+                    'kind': 'calendar'}
+        calendar.update(other_settings)
+        return self._create_widget(calendar)
+
+    def add_community_list(self, short_name, data, styles, **other_settings):
+        """Add and return a community list widget.
+
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param data: A ``list`` of subreddits. Subreddits can be represented as
+                     ``str`` (e.g. the string ``'redditdev'``) or as
+                     :class:`.Subreddit` (e.g.
+                     ``reddit.subreddit('redditdev')``). These types may be
+                     mixed within the list.
+        :param styles: A ``dict`` with keys ``backgroundColor`` and
+                       ``headerColor``, and values of hex colors. For example,
+                       ``{'backgroundColor': '#FFFF66', 'headerColor':
+                       '#3333EE'}``.
+
+        Example usage:
+
+        .. code-block:: python
+
+           widget_moderation = reddit.subreddit('mysub').widgets.mod
+           styles = {'backgroundColor': '#FFFF66', 'headerColor': '#3333EE'}
+           subreddits = ['learnpython', reddit.subreddit('redditdev')]
+           new_widget = widget_moderation.add_community_list('My fav subs',
+                                                             subreddits,
+                                                             styles)
+
+        """
+        community_list = {'data': [str(datum) for datum in data],
+                          'kind': 'community-list', 'shortName': short_name,
+                          'styles': styles}
+        community_list.update(other_settings)
+        return self._create_widget(community_list)
+
     def add_text_area(self, short_name, text, styles, **other_settings):
-        """Add and return a text area widget."""
+        """Add and return a text area widget.
+
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param text: The Markdown text displayed in the widget.
+        :param styles: A ``dict`` with keys ``backgroundColor`` and
+                       ``headerColor``, and values of hex colors. For example,
+                       ``{'backgroundColor': '#FFFF66', 'headerColor':
+                       '#3333EE'}``.
+
+        Example usage:
+
+        .. code-block:: python
+
+           widget_moderation = reddit.subreddit('mysub').widgets.mod
+           styles = {'backgroundColor': '#FFFF66', 'headerColor': '#3333EE'}
+           new_widget = widget_moderation.add_text_area('My cool title',
+                                                        '*Hello* **world**!',
+                                                        styles)
+
+        """
         text_area = {'shortName': short_name, 'text': text, 'styles': styles,
                      'kind': 'textarea'}
         text_area.update(other_settings)

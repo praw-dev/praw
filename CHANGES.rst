@@ -16,6 +16,7 @@ Unreleased
   attribute on any widget) with methods :meth:`~.WidgetModeration.update` and
   :meth:`~.WidgetModeration.delete`.
 * Add method :meth:`.Reddit.put` for HTTP PUT requests.
+* Add methods :meth:`.add_calendar` and :meth:`.add_community_list`.
 
 **Changed**
 
