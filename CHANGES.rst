@@ -10,6 +10,12 @@ Unreleased
   trophies.
 * Add class :class:`.PostFlairWidget`.
 * Add attributes ``reply_limit`` and ``reply_sort`` to class :class:`.Comment`
+* Add class :class:`.SubredditWidgetsModeration` (accessible through
+  :attr:`.SubredditWidgets.mod`) and method :meth:`.add_text_area`.
+* Add class :class:`.WidgetModeration` (accessible through the ``.mod``
+  attribute on any widget) with methods :meth:`~.WidgetModeration.update` and
+  :meth:`~.WidgetModeration.delete`.
+* Add method :meth:`.Reddit.put` for HTTP PUT requests.
 
 **Changed**
 
