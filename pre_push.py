@@ -45,5 +45,6 @@ def main():
 
 if __name__ == '__main__':
     exit_code = main()
-    print('Build successful' if exit_code == 0 else 'Build failed')
+    print()
+    print('pre_push.py: Success!' if exit_code == 0 else 'pre_push.py: Fail')
     sys.exit(exit_code)
