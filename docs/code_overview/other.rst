@@ -30,6 +30,8 @@ instances of them bound to an attribute of one of the PRAW models.
    other/commentmoderation
    other/submissionmoderation
    other/subredditmoderation
+   other/subredditwidgetsmoderation
+   other/widgetmoderation
    other/wikipagemoderation
 
 .. toctree::

@@ -1,4 +1,6 @@
-"""Provide classes relating to widgets."""
+"""Provide classes related to widgets."""
+
+from json import dumps
 
 from ...const import API_PATH
 from ..base import PRAWBase
@@ -103,6 +105,14 @@ class SubredditWidgets(PRAWBase):
         return self._items
 
     @property
+    def mod(self):
+        """Get an instance of :class:`.SubredditWidgetsModeration`."""
+        if self._mod is None:
+            self._mod = SubredditWidgetsModeration(self.subreddit,
+                                                   self._reddit)
+        return self._mod
+
+    @property
     def moderators_widget(self):
         """Get this subreddit's :class:`.ModeratorsWidget`."""
         if self._moderators_widget is None:
@@ -159,7 +169,7 @@ class SubredditWidgets(PRAWBase):
         """
         # set private variables used with properties to None.
         self._id_card = self._moderators_widget = self._sidebar = None
-        self._topbar = self._items = self._raw_items = None
+        self._topbar = self._items = self._raw_items = self._mod = None
 
         self._fetched = False
         self.subreddit = subreddit
@@ -187,15 +197,51 @@ class SubredditWidgets(PRAWBase):
         self._fetched = True
 
 
-# pylint: disable=no-member
+class SubredditWidgetsModeration(object):
+    """Class for moderating a subreddit's widgets."""
+
+    def __init__(self, subreddit, reddit):
+        """Initialize the class."""
+        self._subreddit = subreddit
+        self._reddit = reddit
+
+    def _create_widget(self, payload):
+        path = API_PATH['widget_create'].format(subreddit=self._subreddit)
+        widget = self._reddit.post(path, data={'json': dumps(payload)})
+        widget.subreddit = self._subreddit
+        return widget
+
+    def add_text_area(self, short_name, text, styles, **other_settings):
+        """Add and return a text area widget."""
+        text_area = {'shortName': short_name, 'text': text, 'styles': styles,
+                     'kind': 'textarea'}
+        text_area.update(other_settings)
+        return self._create_widget(text_area)
+
+
 class Widget(PRAWBase):
     """Base class to represent a Widget."""
+
+    @property
+    def mod(self):
+        """Get an instance of :class:`.WidgetModeration` for this widget."""
+        if self._mod is None:
+            self._mod = WidgetModeration(self, self.subreddit, self._reddit)
+        return self._mod
 
     def __eq__(self, other):
         """Check equality against another object."""
         if isinstance(other, Widget):
             return self.id.lower() == other.id.lower()
         return str(other).lower() == self.id.lower()
+
+    # pylint: disable=invalid-name
+    def __init__(self, reddit, _data):
+        """Initialize an instance of the class."""
+        self.subreddit = ''  # in case it isn't in _data
+        self.id = ''  # in case it isn't in _data
+        super(Widget, self).__init__(reddit, _data)
+        self._mod = None
 
 
 class ButtonWidget(Widget, BaseList):
@@ -239,7 +285,6 @@ class Calendar(Widget):
     """
 
 
-# pylint: disable=no-member
 class CommunityList(Widget, BaseList):
     """Class to represent a Related Communities widget.
 
@@ -298,7 +343,6 @@ class IDCard(Widget):
     """
 
 
-# pylint: disable=no-member
 class ImageWidget(Widget, BaseList):
     """Class to represent an image widget.
 
@@ -321,7 +365,6 @@ class ImageWidget(Widget, BaseList):
     CHILD_ATTRIBUTE = 'data'
 
 
-# pylint: disable=no-member
 class Menu(Widget, BaseList):
     """Class to represent the top menu widget of a subreddit.
 
@@ -346,7 +389,6 @@ class Menu(Widget, BaseList):
     CHILD_ATTRIBUTE = 'data'
 
 
-# pylint: disable=no-member
 class ModeratorsWidget(Widget, BaseList):
     """Class to represent a moderators widget.
 
@@ -423,3 +465,41 @@ class TextArea(Widget):
                break
        print(text_area.text)
     """
+
+
+class WidgetModeration(object):
+    """Class for moderating a particular widget."""
+
+    def __init__(self, widget, subreddit, reddit):
+        """Initialize the widget moderation object."""
+        self.widget = widget
+        self._reddit = reddit
+        self._subreddit = subreddit
+
+    def delete(self):
+        """Delete the widget."""
+        path = API_PATH['widget_modify'].format(widget_id=self.widget.id,
+                                                subreddit=self._subreddit)
+        self._reddit.request('DELETE', path)
+
+    def update(self, **kwargs):
+        """Update the widget. Returns the updated widget.
+
+        Parameters differ based on the type of widget. See
+        `Reddit documentation
+        <https://www.reddit.com/dev/api#PUT_api_widget_{widget_id}>`_.
+        For example, update a text widget like so:
+
+        .. code-block:: python
+
+           text_widget.mod.update(shortName='New text area', text='Hello!')
+        """
+        path = API_PATH['widget_modify'].format(widget_id=self.widget.id,
+                                                subreddit=self._subreddit)
+        payload = {key: value for key, value in vars(self.widget).items()
+                   if not key.startswith('_')}
+        del payload['subreddit']  # not JSON serializable
+        payload.update(kwargs)
+        widget = self._reddit.put(path, data={'json': dumps(payload)})
+        widget.subreddit = self._subreddit
+        return widget
