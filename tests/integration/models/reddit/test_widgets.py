@@ -1,3 +1,4 @@
+import mock
 import pytest
 
 from praw.models import (Button, ButtonWidget, Calendar, CommunityList,
@@ -335,6 +336,33 @@ class TestSubredditWidgets(IntegrationTest):
 
 
 class TestTextArea(IntegrationTest):
+    @mock.patch('time.sleep', return_value=None)
+    def test_create_and_update_and_delete(self, _):
+        self.reddit.read_only = False
+
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+
+        with self.recorder.use_cassette('TestTextArea.test_create'):
+            styles = {'headerColor': '#123456', 'backgroundColor': '#bb0e00'}
+            widget = widgets.mod.add_text_area(short_name='My new widget!',
+                                               text='Hello world!',
+                                               styles=styles)
+
+            assert isinstance(widget, TextArea)
+            assert widget.shortName == 'My new widget!'
+            assert widget.styles == styles
+            assert widget.text == 'Hello world!'
+
+            widget = widget.mod.update(shortName='My old widget :(',
+                                       text='Feed me')
+
+            assert isinstance(widget, TextArea)
+            assert widget.shortName == 'My old widget :('
+            assert widget.styles == styles
+            assert widget.text == 'Feed me'
+
+            widget.mod.delete()
 
     def test_text_area(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)

@@ -469,6 +469,17 @@ class Reddit(object):
                             params=params)
         return self._objector.objectify(data)
 
+    def put(self, path, data=None):
+        """Return parsed objects returned from a PUT request to ``path``.
+
+        :param path: The path to fetch.
+        :param data: Dictionary, bytes, or file-like object to send in the body
+            of the request (default: None).
+
+        """
+        data = self.request('PUT', path, data=data)
+        return self._objector.objectify(data)
+
     def random_subreddit(self, nsfw=False):
         """Return a random lazy instance of :class:`~.Subreddit`.
 
