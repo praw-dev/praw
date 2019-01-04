@@ -241,9 +241,9 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
         # The context limit appears to be 8, but let's ask for more anyway.
         params = {'context': 100}
-        if self.reply_limit:
+        if 'reply_limit' in self.__dict__:
             params['limit'] = self.reply_limit
-        if self.reply_sort:
+        if 'reply_sort' in self.__dict__:
             params['sort'] = self.reply_sort
         comment_list = self._reddit.get(comment_path,
                                         params=params)[1].children

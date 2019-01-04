@@ -9,6 +9,7 @@ Unreleased
 * Add method :meth:`.Redditor.trophies` to get a list of the Redditor's
   trophies.
 * Add class :class:`.PostFlairWidget`.
+* Add attributes ``reply_limit`` and ``reply_sort`` to class :class:`.Comment`
 
 **Changed**
 
