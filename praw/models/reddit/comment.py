@@ -87,8 +87,8 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         has not been refreshed with :meth:`.refresh()`
 
         Sort order and reply limit can be set with the ``reply_sort`` and
-        ``reply_limit`` attributes before comments are fetched, including
-        any call to :meth:`.replace_more` or :meth:`.refresh`:
+        ``reply_limit`` attributes before replies are fetched, including
+        any call to :meth:`.refresh`:
 
         .. code:: python
 
