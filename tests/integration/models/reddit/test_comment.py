@@ -189,12 +189,12 @@ class TestComment(IntegrationTest):
             comment.reply_sort = 'new'
             comment.refresh()
             replies = comment.replies
-        lastCreated = float('inf')
+        last_created = float('inf')
         for reply in replies:
             if type(reply) is Comment:
-                if (reply.created_utc > lastCreated):
+                if (reply.created_utc > last_created):
                     assert False, 'sort order incorrect'
-                lastCreated = reply.created_utc
+                last_created = reply.created_utc
         assert len(comment.replies) == 3
 
     def test_reply(self):
