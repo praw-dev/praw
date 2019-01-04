@@ -191,7 +191,7 @@ class TestComment(IntegrationTest):
             replies = comment.replies
         last_created = float('inf')
         for reply in replies:
-            if type(reply) is Comment:
+            if isinstance(reply, Comment):
                 if (reply.created_utc > last_created):
                     assert False, 'sort order incorrect'
                 last_created = reply.created_utc
