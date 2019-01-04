@@ -182,6 +182,22 @@ class TestComment(IntegrationTest):
         assert ('This comment does not appear to be in the '
                 'comment tree',) == excinfo.value.args
 
+    def test_refresh__with_reply_sort_and_limit(self):
+        with self.recorder.use_cassette(
+                'TestComment.test_refresh__with_reply_sort_and_limit'):
+            comment = Comment(self.reddit, 'e4j4830')
+            comment.reply_limit = 4
+            comment.reply_sort = 'new'
+            comment.refresh()
+            replies = comment.replies
+        last_created = float('inf')
+        for reply in replies:
+            if isinstance(reply, Comment):
+                if (reply.created_utc > last_created):
+                    assert False, 'sort order incorrect'
+                last_created = reply.created_utc
+        assert len(comment.replies) == 3
+
     def test_reply(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestComment.test_reply'):

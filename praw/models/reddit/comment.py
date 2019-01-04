@@ -86,6 +86,16 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         This property may return an empty list if the comment
         has not been refreshed with :meth:`.refresh()`
 
+        Sort order and reply limit can be set with the ``reply_sort`` and
+        ``reply_limit`` attributes before replies are fetched, including
+        any call to :meth:`.refresh`:
+
+        .. code:: python
+
+           comment.reply_sort = 'new'
+           comment.refresh()
+           replies = comment.replies
+
         """
         if isinstance(self._replies, list):
             self._replies = CommentForest(self.submission, self._replies)
@@ -228,8 +238,13 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
                 self.id)
 
         # The context limit appears to be 8, but let's ask for more anyway.
+        params = {'context': 100}
+        if 'reply_limit' in self.__dict__:
+            params['limit'] = self.reply_limit
+        if 'reply_sort' in self.__dict__:
+            params['sort'] = self.reply_sort
         comment_list = self._reddit.get(comment_path,
-                                        params={'context': 100})[1].children
+                                        params=params)[1].children
         if not comment_list:
             raise ClientException(self.MISSING_COMMENT_MESSAGE)
 
