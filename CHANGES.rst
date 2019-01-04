@@ -8,10 +8,16 @@ Unreleased
 
 * Add method :meth:`.Redditor.trophies` to get a list of the Redditor's
   trophies.
+* Add class :class:`.PostFlairWidget`.
 
 **Changed**
 
 * :meth:`.User.me` returns ``None`` in :attr:`~praw.Reddit.read_only` mode.
+
+**Fixed**
+
+* Widgets of unknown types are parsed as ``Widget`` s rather than raising an
+  exception
 
 6.0.0 (2018/07/24)
 ------------------

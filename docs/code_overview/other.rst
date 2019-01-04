@@ -63,6 +63,7 @@ instances of them bound to an attribute of one of the PRAW models.
    other/imagewidget
    other/menu
    other/moderatorswidget
+   other/postflairwidget
    other/ruleswidget
    other/textarea
 

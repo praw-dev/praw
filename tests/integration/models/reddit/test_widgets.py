@@ -2,8 +2,9 @@ import pytest
 
 from praw.models import (Button, ButtonWidget, Calendar, CommunityList,
                          CustomWidget, Menu, MenuLink, IDCard, Image,
-                         ImageData, ImageWidget, ModeratorsWidget, Redditor,
-                         RulesWidget, Submenu, Subreddit, TextArea, Widget)
+                         ImageData, ImageWidget, ModeratorsWidget,
+                         PostFlairWidget, Redditor, RulesWidget, Submenu,
+                         Subreddit, TextArea, Widget)
 from ... import IntegrationTest
 
 
@@ -198,6 +199,30 @@ class TestModeratorsWidget(IntegrationTest):
             assert isinstance(mods[0], Redditor)
 
             assert subreddit == mods.subreddit
+
+
+class TestPostFlairWidget(IntegrationTest):
+
+    def test_post_flair_widget(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+        with self.recorder.use_cassette('TestSubredditWidgets.fetch_widgets'):
+            pf_widget = None
+            for widget in widgets.sidebar:
+                if isinstance(widget, PostFlairWidget):
+                    pf_widget = widget
+                    break
+            assert isinstance(pf_widget, PostFlairWidget)
+            assert len(pf_widget) >= 1
+            assert all(isinstance(flair, dict) for flair in pf_widget)
+            assert pf_widget == pf_widget
+            assert pf_widget.id == pf_widget
+            assert pf_widget in widgets.sidebar
+
+            assert pf_widget.shortName
+            assert all(flair in pf_widget for flair in pf_widget)
+
+            assert subreddit == pf_widget.subreddit
 
 
 class TestRulesWidget(IntegrationTest):

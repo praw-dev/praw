@@ -24,7 +24,8 @@ from .reddit.subreddit import Subreddit  # NOQA
 from .reddit.widgets import (Button, ButtonWidget, Calendar,  # NOQA
                              CommunityList, CustomWidget, IDCard,  # NOQA
                              Image, ImageData, ImageWidget, Menu,  # NOQA
-                             MenuLink, ModeratorsWidget, RulesWidget,  # NOQA
+                             MenuLink, ModeratorsWidget,  # NOQA
+                             PostFlairWidget, RulesWidget,  # NOQA
                              SubredditWidgets, Submenu, TextArea,  # NOQA
                              Widget)  # NOQA
 from .reddit.wikipage import WikiPage  # NOQA
@@ -39,8 +40,8 @@ __all__ = ('Auth', 'Button', 'ButtonWidget', 'Calendar', 'Comment',
            'ListingGenerator', 'LiveHelper', 'LiveThread', 'Menu', 'MenuLink',
            'Message', 'ModAction', 'ModeratorsWidget', 'ModmailConversation',
            'MoreComments', 'Multireddit', 'MultiredditHelper',
-           'Preferences', 'Redditor', 'RedditorList', 'RulesWidget',
-           'Stylesheet', 'Submenu', 'Submission', 'Subreddit',
+           'PostFlairWidget', 'Preferences', 'Redditor', 'RedditorList',
+           'RulesWidget', 'Stylesheet', 'Submenu', 'Submission', 'Subreddit',
            'SubredditHelper', 'SubredditMessage', 'SubredditWidgets',
            'Subreddits', 'TextArea', 'Trophy', 'TrophyList', 'User',
            'Widget', 'WikiPage')
