@@ -198,6 +198,47 @@ class TestIDCard(IntegrationTest):
 
 
 class TestImageWidget(IntegrationTest):
+    @staticmethod
+    def image_path(name):
+        test_dir = abspath(dirname(sys.modules[__name__].__file__))
+        return join(test_dir, '..', '..', 'files', name)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_create_and_update_and_delete(self, _):
+        self.reddit.read_only = False
+
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+
+        with self.recorder.use_cassette(
+                'TestImageWidget.test_create_and_update_and_delete'):
+            image_paths = (self.image_path(name) for name in
+                           ('test.jpg', 'test.png'))
+            image_dicts = [{'width': 0, 'height': 0, 'linkUrl': '',
+                            'url': widgets.mod.upload_image(img_path)}
+                           for img_path in image_paths]
+
+            styles = {'headerColor': '#123456', 'backgroundColor': '#bb0e00'}
+            widget = widgets.mod.add_image_widget(short_name='My new pics!',
+                                                  data=image_dicts,
+                                                  styles=styles)
+
+            assert isinstance(widget, ImageWidget)
+            assert widget.shortName == 'My new pics!'
+            assert widget.styles == styles
+            assert len(widget) == 2
+            assert all(isinstance(img, Image) for img in widget)
+
+            widget = widget.mod.update(shortName='My old pics :(',
+                                       data=image_dicts[:1])
+
+            assert isinstance(widget, ImageWidget)
+            assert widget.shortName == 'My old pics :('
+            assert widget.styles == styles
+            assert len(widget) == 1
+            assert all(isinstance(img, Image) for img in widget)
+
+            widget.mod.delete()
 
     def test_image_widget(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
