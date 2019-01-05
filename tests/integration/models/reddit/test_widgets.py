@@ -56,6 +56,44 @@ class TestCalendar(IntegrationTest):
 
             assert subreddit == calendar.subreddit
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_create_and_update_and_delete(self, _):
+        self.reddit.read_only = False
+
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+
+        with self.recorder.use_cassette(
+                'TestCalendar.test_create_and_update_and_delete'):
+            styles = {'headerColor': '#123456', 'backgroundColor': '#bb0e00'}
+            config = {'numEvents': 10,
+                      'showDate': True,
+                      'showDescription': False,
+                      'showLocation': False,
+                      'showTime': True,
+                      'showTitle': True}
+            cal_id = 'ccahu0rstno2jrvioq4ccffn78@group.calendar.google.com'
+            widget = widgets.mod.add_calendar('Upcoming Events', cal_id, True,
+                                              config, styles)
+
+            assert isinstance(widget, Calendar)
+            assert widget.shortName == 'Upcoming Events'
+            assert widget.googleCalendarId == 'ccahu0rstno2jrvioq4ccffn78@' \
+                                              'group.calendar.google.com'
+            assert widget.configuration == config
+            assert widget.styles == styles
+
+            widget = widget.mod.update(shortName='Past Events :(')
+
+            assert isinstance(widget, Calendar)
+            assert widget.shortName == 'Past Events :('
+            assert widget.googleCalendarId == 'ccahu0rstno2jrvioq4ccffn78@' \
+                                              'group.calendar.google.com'
+            assert widget.configuration == config
+            assert widget.styles == styles
+
+            widget.mod.delete()
+
 
 class TestCommunityList(IntegrationTest):
 
@@ -80,6 +118,36 @@ class TestCommunityList(IntegrationTest):
             assert comm_list[0] in comm_list
 
             assert subreddit == comm_list.subreddit
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_create_and_update_and_delete(self, _):
+        self.reddit.read_only = False
+
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+
+        with self.recorder.use_cassette(
+                'TestCommunityList.test_create_and_update_and_delete'):
+            styles = {'headerColor': '#123456', 'backgroundColor': '#bb0e00'}
+            subreddits = ['learnpython', self.reddit.subreddit('redditdev')]
+            widget = widgets.mod.add_community_list('My fav subs', subreddits,
+                                                    styles)
+
+            assert isinstance(widget, CommunityList)
+            assert widget.shortName == 'My fav subs'
+            assert widget.styles == styles
+            assert self.reddit.subreddit('learnpython') in widget
+            assert 'redditdev' in widget
+
+            widget = widget.mod.update(shortName='My least fav subs :(',
+                                       data=['redesign'])
+
+            assert isinstance(widget, CommunityList)
+            assert widget.shortName == 'My least fav subs :('
+            assert widget.styles == styles
+            assert self.reddit.subreddit('redesign') in widget
+
+            widget.mod.delete()
 
 
 class TestCustomWidget(IntegrationTest):
@@ -343,7 +411,8 @@ class TestTextArea(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
 
-        with self.recorder.use_cassette('TestTextArea.test_create'):
+        with self.recorder.use_cassette(
+                'TestTextArea.test_create_and_update_and_delete'):
             styles = {'headerColor': '#123456', 'backgroundColor': '#bb0e00'}
             widget = widgets.mod.add_text_area(short_name='My new widget!',
                                                text='Hello world!',
