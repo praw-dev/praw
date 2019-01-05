@@ -1,5 +1,6 @@
 """Provide classes related to widgets."""
 
+import os.path
 from json import dumps
 
 from ...const import API_PATH
@@ -213,7 +214,7 @@ class SubredditWidgetsModeration(object):
 
     def add_calendar(self, short_name, google_calendar_id, requires_sync,
                      configuration, styles, **other_settings):
-        """Add and return a calendar widget.
+        """Add and return a :class:`.Calendar` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param google_calendar_id: An email-style calendar ID. To share a
@@ -265,7 +266,7 @@ class SubredditWidgetsModeration(object):
         return self._create_widget(calendar)
 
     def add_community_list(self, short_name, data, styles, **other_settings):
-        """Add and return a community list widget.
+        """Add and return a :class:`.CommunityList` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param data: A ``list`` of subreddits. Subreddits can be represented as
@@ -296,8 +297,52 @@ class SubredditWidgetsModeration(object):
         community_list.update(other_settings)
         return self._create_widget(community_list)
 
+    def add_image_widget(self, short_name, data, styles, **other_settings):
+        r"""Add and return an :class:`.ImageWidget`.
+
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param data: A ``list`` of ``dict``\ s as specified in `Reddit docs`_.
+            Each ``dict`` has the key ``'url'`` which maps to the URL
+            of an image hosted on Reddit's servers. Images should
+            be uploaded using :meth:`.upload_image`.
+            Example:
+
+            .. code-block:: python
+
+               [{'url': 'https://some.link',  # from upload_image()
+                 'width': 600, 'height': 450,
+                 'linkUrl': 'https://github.com/praw-dev/praw'},
+                {'url': 'https://other.link',  # from upload_image()
+                 'width': 450, 'height': 600,
+                 'linkUrl': 'https://praw.readthedocs.io'}]
+
+        :param styles: A ``dict`` with keys ``backgroundColor`` and
+            ``headerColor``, and values of hex colors. For example,
+            ``{'backgroundColor': '#FFFF66', 'headerColor': '#3333EE'}``.
+
+        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+
+        Example usage:
+
+        .. code-block:: python
+
+           widget_moderation = reddit.subreddit('mysub').widgets.mod
+           image_paths = ['/path/to/image1.jpg', '/path/to/image2.png']
+           image_dicts = [{'width': 600, 'height': 450, 'linkUrl': '',
+                           'url': widget_moderation.upload_image(img_path)}
+                          for img_path in image_paths]
+           styles = {'backgroundColor': '#FFFF66', 'headerColor': '#3333EE'}
+           new_widget = widget_moderation.add_image_widget('My cool pictures',
+                                                           image_dicts, styles)
+
+        """
+        image_widget = {'data': data, 'kind': 'image',
+                        'shortName': short_name, 'styles': styles}
+        image_widget.update(other_settings)
+        return self._create_widget(image_widget)
+
     def add_text_area(self, short_name, text, styles, **other_settings):
-        """Add and return a text area widget.
+        """Add and return a :class:`.TextArea` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param text: The Markdown text displayed in the widget.
@@ -321,6 +366,34 @@ class SubredditWidgetsModeration(object):
                      'kind': 'textarea'}
         text_area.update(other_settings)
         return self._create_widget(text_area)
+
+    def upload_image(self, file_path):
+        """Upload an image to Reddit and get the URL.
+
+        :param file_path: The path to the local file.
+        :returns: The URL of the uploaded image as a ``str``.
+
+        This method is used to upload images for widgets. For example,
+        it can be used in conjunction with :meth:`.add_image_widget`.
+        """
+        img_data = {'filepath': os.path.basename(file_path),
+                    'mimetype': 'image/jpeg'}
+        if file_path.lower().endswith('.png'):
+            img_data['mimetype'] = 'image/png'
+
+        url = API_PATH['widget_lease'].format(subreddit=self._subreddit)
+        # until we learn otherwise, assume this request always succeeds
+        upload_lease = self._reddit.post(url, data=img_data)['s3UploadLease']
+        upload_data = {item['name']: item['value']
+                       for item in upload_lease['fields']}
+        upload_url = 'https:{}'.format(upload_lease['action'])
+
+        with open(file_path, 'rb') as image:
+            response = self._reddit._core._requestor._http.post(
+                upload_url, data=upload_data, files={'file': image})
+        response.raise_for_status()
+
+        return upload_url + '/' + upload_data['key']
 
 
 class Widget(PRAWBase):

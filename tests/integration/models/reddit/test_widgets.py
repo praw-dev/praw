@@ -1,5 +1,7 @@
 import mock
 import pytest
+from os.path import abspath, dirname, join
+import sys
 
 from praw.models import (Button, ButtonWidget, Calendar, CommunityList,
                          CustomWidget, Menu, MenuLink, IDCard, Image,
@@ -401,6 +403,25 @@ class TestSubredditWidgets(IntegrationTest):
             assert 1 <= len(widgets.topbar)
             assert all(isinstance(widget, Widget) and type(widget) != Widget
                        for widget in widgets.topbar)
+
+
+class TestSubredditWidgetsModeration(IntegrationTest):
+    @staticmethod
+    def image_path(name):
+        test_dir = abspath(dirname(sys.modules[__name__].__file__))
+        return join(test_dir, '..', '..', 'files', name)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_upload_image(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+
+        with self.recorder.use_cassette(
+                'TestSubredditWidgetsModeration.test_upload_image'):
+            for image in ('test.jpg', 'test.png'):
+                image_url = widgets.mod.upload_image(self.image_path(image))
+                assert image_url
 
 
 class TestTextArea(IntegrationTest):
