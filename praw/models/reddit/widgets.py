@@ -1,7 +1,7 @@
 """Provide classes related to widgets."""
 
 import os.path
-from json import dumps
+from json import dumps, JSONEncoder
 
 from ...const import API_PATH
 from ..base import PRAWBase
@@ -297,6 +297,67 @@ class SubredditWidgetsModeration(object):
         community_list.update(other_settings)
         return self._create_widget(community_list)
 
+    def add_custom_widget(self, short_name, text, css, height, image_data,
+                          styles, **other_settings):
+        r"""Add and return an :class:`.CustomWidget`.
+
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param text: The Markdown text displayed in the widget.
+        :param css: The CSS for the widget, no longer than 100000 characters.
+
+            .. note::
+                As of this writing, Reddit will not accept empty CSS. If you
+                wish to create a custom widget without CSS, consider using
+                ``'/**/'`` (an empty comment) as your CSS.
+
+        :param height: The height of the widget, between 50 and 500.
+        :param image_data: A ``list`` of ``dict``\ s as specified in
+            `Reddit docs`_. Each ``dict`` represents an image and has the
+            key ``'url'`` which maps to the URL of an image hosted on
+            Reddit's servers. Images should be uploaded using
+            :meth:`.upload_image`.
+            Example:
+
+            .. code-block:: python
+
+               [{'url': 'https://some.link',  # from upload_image()
+                 'width': 600, 'height': 450,
+                 'name': 'logo'},
+                {'url': 'https://other.link',  # from upload_image()
+                 'width': 450, 'height': 600,
+                 'name': 'icon'}]
+
+        :param styles: A ``dict`` with keys ``backgroundColor`` and
+            ``headerColor``, and values of hex colors. For example,
+            ``{'backgroundColor': '#FFFF66', 'headerColor': '#3333EE'}``.
+
+        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+
+        Example usage:
+
+        .. code-block:: python
+
+           widget_moderation = reddit.subreddit('mysub').widgets.mod
+           image_paths = ['/path/to/image1.jpg', '/path/to/image2.png']
+           image_urls = [widget_moderation.upload_image(img_path)
+                         for img_path in image_paths]
+           image_dicts = [{'width': 600, 'height': 450, 'name': 'logo',
+                           'url': image_urls[0]},
+                          {'width': 450, 'height': 600, 'name': 'icon',
+                           'url': image_urls[1]}]
+           styles = {'backgroundColor': '#FFFF66', 'headerColor': '#3333EE'}
+           new_widget = widget_moderation.add_custom_widget('My widget',
+                                                           '# Hello world!',
+                                                           '/**/', 200,
+                                                           image_dicts, styles)
+
+        """
+        custom_widget = {'css': css, 'height': height, 'imageData': image_data,
+                         'kind': 'custom', 'shortName': short_name,
+                         'styles': styles, 'text': text}
+        custom_widget.update(other_settings)
+        return self._create_widget(custom_widget)
+
     def add_image_widget(self, short_name, data, styles, **other_settings):
         r"""Add and return an :class:`.ImageWidget`.
 
@@ -374,7 +435,8 @@ class SubredditWidgetsModeration(object):
         :returns: The URL of the uploaded image as a ``str``.
 
         This method is used to upload images for widgets. For example,
-        it can be used in conjunction with :meth:`.add_image_widget`.
+        it can be used in conjunction with :meth:`.add_image_widget` or
+        :meth:`.add_custom_widget`.
         """
         img_data = {'filepath': os.path.basename(file_path),
                     'mimetype': 'image/jpeg'}
@@ -644,6 +706,17 @@ class TextArea(Widget):
     """
 
 
+class WidgetEncoder(JSONEncoder):
+    """Class to encode widget-related objects."""
+
+    def default(self, o):  # pylint: disable=E0202
+        """Serialize ``PRAWBase`` objects."""
+        if isinstance(o, PRAWBase):
+            return {key: val for key, val in vars(o).items()
+                    if not key.startswith('_')}
+        return JSONEncoder.default(self, o)
+
+
 class WidgetModeration(object):
     """Class for moderating a particular widget."""
 
@@ -677,6 +750,7 @@ class WidgetModeration(object):
                    if not key.startswith('_')}
         del payload['subreddit']  # not JSON serializable
         payload.update(kwargs)
-        widget = self._reddit.put(path, data={'json': dumps(payload)})
+        widget = self._reddit.put(path, data={
+            'json': dumps(payload, cls=WidgetEncoder)})
         widget.subreddit = self._subreddit
         return widget

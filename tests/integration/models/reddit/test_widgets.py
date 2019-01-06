@@ -153,6 +153,60 @@ class TestCommunityList(IntegrationTest):
 
 
 class TestCustomWidget(IntegrationTest):
+    @staticmethod
+    def image_path(name):
+        test_dir = abspath(dirname(sys.modules[__name__].__file__))
+        return join(test_dir, '..', '..', 'files', name)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_create_and_update_and_delete(self, _):
+        self.reddit.read_only = False
+
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+
+        with self.recorder.use_cassette(
+                'TestCustomWidget.test_create_and_update_and_delete'):
+            image_dicts = [{'width': 0,
+                            'height': 0,
+                            'name': 'a',
+                            'url': widgets.mod.upload_image(self.image_path(
+                                'test.png'))}]
+
+            styles = {'headerColor': '#123456', 'backgroundColor': '#bb0e00'}
+            widget = widgets.mod.add_custom_widget('My widget',
+                                                   '# Hello world!', '/**/',
+                                                   200, image_dicts, styles)
+
+            assert isinstance(widget, CustomWidget)
+            assert widget.shortName == 'My widget'
+            assert widget.text == '# Hello world!'
+            assert widget.css == '/**/'
+            assert widget.height == 200
+            assert widget.styles == styles
+            assert len(widget.imageData) == 1
+            assert all(isinstance(img, ImageData) for img in widget.imageData)
+
+            # initially, image URLs are incorrect, so we much refresh to get
+            # the proper ones.
+            widgets.refresh()
+            refreshed = widgets.sidebar[-1]
+            assert refreshed == widget
+            widget = refreshed
+
+            new_css = 'h1,h2,h3,h4,h5,h6 {color: #00ff00;}'
+            widget = widget.mod.update(css=new_css)
+
+            assert isinstance(widget, CustomWidget)
+            assert widget.shortName == 'My widget'
+            assert widget.text == '# Hello world!'
+            assert widget.css == new_css
+            assert widget.height == 200
+            assert widget.styles == styles
+            assert len(widget.imageData) == 1
+            assert all(isinstance(img, ImageData) for img in widget.imageData)
+
+            widget.mod.delete()
 
     def test_custom_widget(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
