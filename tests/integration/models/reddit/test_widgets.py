@@ -380,7 +380,7 @@ class TestPostFlairWidget(IntegrationTest):
                     break
             assert isinstance(pf_widget, PostFlairWidget)
             assert len(pf_widget) >= 1
-            assert all(isinstance(flair, dict) for flair in pf_widget)
+            assert all(flair_id in widget.templates for flair_id in widget)
             assert pf_widget == pf_widget
             assert pf_widget.id == pf_widget
             assert pf_widget in widgets.sidebar

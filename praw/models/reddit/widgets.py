@@ -299,7 +299,7 @@ class SubredditWidgetsModeration(object):
 
     def add_custom_widget(self, short_name, text, css, height, image_data,
                           styles, **other_settings):
-        r"""Add and return an :class:`.CustomWidget`.
+        r"""Add and return a :class:`.CustomWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param text: The Markdown text displayed in the widget.
@@ -656,17 +656,10 @@ class PostFlairWidget(Widget, BaseList):
                break
 
        for flair in post_flair_widget:
-           print(flair['text'])
+           print(flair)
+           print(post_flair_widget.templates[flair])
 
     """
-
-    def __init__(self, reddit, _data):
-        """Initialize a PostFlairWidget."""
-        order = _data['order']
-        templates = _data['templates']
-        for i, template in enumerate(order):
-            order[i] = templates[template]
-        super(PostFlairWidget, self).__init__(reddit, _data)
 
     CHILD_ATTRIBUTE = 'order'
 
