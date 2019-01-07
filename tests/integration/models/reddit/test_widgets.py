@@ -318,6 +318,68 @@ class TestImageWidget(IntegrationTest):
 
 class TestMenu(IntegrationTest):
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_create_and_update_and_delete(self, _):
+        self.reddit.read_only = False
+
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+
+        menu_contents = [
+            {'text': 'My homepage', 'url': 'https://example.com'},
+            {'text': 'Python packages',
+             'children': [
+                 {'text': 'PRAW', 'url': 'https://praw.readthedocs.io/'},
+                 {'text': 'requests', 'url': 'http://python-requests.org'}
+             ]},
+            {'text': 'Reddit homepage', 'url': 'https://reddit.com'}
+        ]
+
+        with self.recorder.use_cassette(
+                'TestMenu.test_create_and_update_and_delete'):
+            widget = widgets.mod.add_menu(menu_contents)
+
+            assert isinstance(widget, Menu)
+            assert len(widget) == 3
+            assert all(isinstance(item, (Submenu, MenuLink))
+                       for item in widget)
+            assert all(all(isinstance(item, MenuLink) for item in subm)
+                       for subm in widget if isinstance(subm, Submenu))
+
+            assert widget[0].text == 'My homepage'
+            assert widget[0].url == 'https://example.com'
+            assert widget[2].text == 'Reddit homepage'
+            assert widget[2].url == 'https://reddit.com'
+
+            assert widget[1].text == 'Python packages'
+            assert widget[1][0].text == 'PRAW'
+            assert widget[1][0].url == 'https://praw.readthedocs.io/'
+            assert widget[1][1].text == 'requests'
+            assert widget[1][1].url == 'http://python-requests.org'
+
+            menu_contents.reverse()
+            widget = widget.mod.update(data=menu_contents)
+
+            assert isinstance(widget, Menu)
+            assert len(widget) == 3
+            assert all(isinstance(item, (Submenu, MenuLink))
+                       for item in widget)
+            assert all(all(isinstance(item, MenuLink) for item in subm)
+                       for subm in widget if isinstance(subm, Submenu))
+
+            assert widget[0].text == 'Reddit homepage'
+            assert widget[0].url == 'https://reddit.com'
+            assert widget[2].text == 'My homepage'
+            assert widget[2].url == 'https://example.com'
+
+            assert widget[1].text == 'Python packages'
+            assert widget[1][0].text == 'PRAW'
+            assert widget[1][0].url == 'https://praw.readthedocs.io/'
+            assert widget[1][1].text == 'requests'
+            assert widget[1][1].url == 'http://python-requests.org'
+
+            widget.mod.delete()
+
     def test_menu(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets

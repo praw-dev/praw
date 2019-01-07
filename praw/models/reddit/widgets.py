@@ -402,6 +402,58 @@ class SubredditWidgetsModeration(object):
         image_widget.update(other_settings)
         return self._create_widget(image_widget)
 
+    def add_menu(self, data, **other_settings):
+        r"""Add and return a :class:`.Menu` widget.
+
+        :param data: A ``list`` of ``dict``\ s describing menu contents, as
+            specified in `Reddit docs`_. As of this writing, the format is:
+
+            .. code-block:: none
+
+               [
+                 {
+                   "text": a string no longer than 20 characters,
+                   "url": a valid URL
+                 },
+
+                 OR
+
+                 {
+                   "children": [
+                     {
+                        "text": a string no longer than 20 characters,
+                        "url": a valid URL,
+                     },
+                     ...
+                    ],
+                   "text": a string no longer than 20 characters,
+                 },
+                 ...
+               ]
+
+        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+
+        Example usage:
+
+        .. code-block:: python
+
+           widget_moderation = reddit.subreddit('mysub').widgets.mod
+           menu_contents = [
+               {'text': 'My homepage', 'url': 'https://example.com'},
+               {'text': 'Python packages',
+                'children': [
+                    {'text': 'PRAW', 'url': 'https://praw.readthedocs.io/'},
+                    {'text': 'requests', 'url': 'http://python-requests.org'}
+                ]},
+               {'text': 'Reddit homepage', 'url': 'https://reddit.com'}
+           ]
+           new_widget = widget_moderation.add_menu(menu_contents)
+
+        """
+        menu = {'data': data, 'kind': 'menu'}
+        menu.update(other_settings)
+        return self._create_widget(menu)
+
     def add_post_flair_widget(self, short_name, display, order, styles,
                               **other_settings):
         """Add and return a :class:`.PostFlairWidget`.

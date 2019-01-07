@@ -20,6 +20,7 @@ Unreleased
 * Add methods :meth:`.add_image_widget` and :meth:`.upload_image`.
 * Add method :meth:`.add_custom_widget`.
 * Add method :meth:`.add_post_flair_widget`.
+* Add method :meth:`.add_menu`.
 
 **Changed**
 
