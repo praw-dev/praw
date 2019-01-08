@@ -10,6 +10,9 @@ from praw.models import (Button, ButtonWidget, Calendar, CommunityList,
                          Subreddit, TextArea, Widget)
 from ... import IntegrationTest
 
+if sys.version_info.major > 2:
+    basestring = str  # pylint: disable=invalid-name
+
 
 class TestButtonWidget(IntegrationTest):
     @staticmethod
@@ -734,6 +737,35 @@ class TestSubredditWidgetsModeration(IntegrationTest):
     def image_path(name):
         test_dir = abspath(dirname(sys.modules[__name__].__file__))
         return join(test_dir, '..', '..', 'files', name)
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_reorder(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+
+        with self.recorder.use_cassette(
+                'TestSubredditWidgetsModeration.test_reorder'):
+            old_order = list(widgets.sidebar)
+            new_order = list(reversed(old_order))
+
+            widgets.mod.reorder(new_order)
+            widgets.refresh()
+            assert list(widgets.sidebar) == new_order
+
+            widgets.mod.reorder(old_order)
+            widgets.refresh()
+            assert list(widgets.sidebar) == old_order
+
+            mixed_types = [thing if i % 2 == 0 else thing.id
+                           for i, thing in enumerate(new_order)]
+            # mixed_types has some str and some Widget.
+            assert any(isinstance(thing, basestring) for thing in mixed_types)
+            assert any(isinstance(thing, Widget) for thing in mixed_types)
+
+            widgets.mod.reorder(mixed_types)
+            widgets.refresh()
+            assert list(widgets.sidebar) == new_order
 
     @mock.patch('time.sleep', return_value=None)
     def test_upload_image(self, _):
