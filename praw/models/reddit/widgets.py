@@ -464,6 +464,30 @@ class SubredditWidgetsModeration(object):
         text_area.update(other_settings)
         return self._create_widget(text_area)
 
+    def reorder(self, new_order, section='sidebar'):
+        """Reorder the widgets.
+
+        :param new_order: A list of widgets. Represented as a ``list`` that
+            contains ``Widget`` objects or widget IDs as strings.
+        :param section: The section to reorder. (default: ``'sidebar'``)
+
+        Example usage:
+
+        .. code-block:: python
+
+           widgets = reddit.subreddit('mysub').widgets
+           order = list(widgets.sidebar)
+           order.reverse()
+           widgets.mod.reorder(order)
+
+        """
+        order = [thing.id if isinstance(thing, Widget) else str(thing)
+                 for thing in new_order]
+        path = API_PATH['widget_order'].format(subreddit=self._subreddit,
+                                               section=section)
+        self._reddit.patch(path, data={'json': dumps(order),
+                                       'section': section})
+
     def upload_image(self, file_path):
         """Upload an image to Reddit and get the URL.
 
