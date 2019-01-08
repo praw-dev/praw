@@ -8,6 +8,7 @@ from base64 import b64encode
 from sys import platform
 
 import betamax
+import pytest
 from betamax_serializers import pretty_json
 
 # pylint: disable=import-error,no-name-in-module
@@ -74,9 +75,13 @@ with betamax.Betamax.configure() as config:
         config.define_cassette_placeholder('<{}>'.format(key.upper()), value)
 
 
-def pytest_namespace():
-    """Add attributes to pytest in all tests."""
-    return {'placeholders': placeholders}
+class Placeholders(object):
+    def __init__(self, _dict):
+        self.__dict__ = _dict
+
+
+def pytest_configure():
+    pytest.placeholders = Placeholders(placeholders)
 
 
 if platform == 'darwin':  # Work around issue with betamax on OS X
