@@ -299,7 +299,7 @@ class SubredditWidgetsModeration(object):
 
     def add_custom_widget(self, short_name, text, css, height, image_data,
                           styles, **other_settings):
-        r"""Add and return an :class:`.CustomWidget`.
+        r"""Add and return a :class:`.CustomWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param text: The Markdown text displayed in the widget.
@@ -401,6 +401,42 @@ class SubredditWidgetsModeration(object):
                         'shortName': short_name, 'styles': styles}
         image_widget.update(other_settings)
         return self._create_widget(image_widget)
+
+    def add_post_flair_widget(self, short_name, display, order, styles,
+                              **other_settings):
+        """Add and return a :class:`.PostFlairWidget`.
+
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param display: Display style. Either ``'cloud'`` or ``'list'``.
+        :param order: A ``list`` of flair template IDs. You can get all flair
+            template IDs in a subreddit with:
+
+            .. code-block:: python
+
+               flairs = [f['id'] for f in subreddit.flair.link_templates]
+
+        :param styles: A ``dict`` with keys ``backgroundColor`` and
+                       ``headerColor``, and values of hex colors. For example,
+                       ``{'backgroundColor': '#FFFF66', 'headerColor':
+                       '#3333EE'}``.
+
+        Example usage:
+
+        .. code-block:: python
+
+           subreddit = reddit.subreddit('mysub')
+           widget_moderation = subreddit.widgets.mod
+           flairs = [f['id'] for f in subreddit.flair.link_templates]
+           styles = {'backgroundColor': '#FFFF66', 'headerColor': '#3333EE'}
+           new_widget = widget_moderation.add_post_flair('Some flairs', 'list',
+                                                         flairs, styles)
+
+        """
+        post_flair = {'kind': 'post-flair', 'display': display,
+                      'shortName': short_name, 'order': order,
+                      'styles': styles}
+        post_flair.update(other_settings)
+        return self._create_widget(post_flair)
 
     def add_text_area(self, short_name, text, styles, **other_settings):
         """Add and return a :class:`.TextArea` widget.
@@ -656,17 +692,10 @@ class PostFlairWidget(Widget, BaseList):
                break
 
        for flair in post_flair_widget:
-           print(flair['text'])
+           print(flair)
+           print(post_flair_widget.templates[flair])
 
     """
-
-    def __init__(self, reddit, _data):
-        """Initialize a PostFlairWidget."""
-        order = _data['order']
-        templates = _data['templates']
-        for i, template in enumerate(order):
-            order[i] = templates[template]
-        super(PostFlairWidget, self).__init__(reddit, _data)
 
     CHILD_ATTRIBUTE = 'order'
 

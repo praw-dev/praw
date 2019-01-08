@@ -369,6 +369,51 @@ class TestModeratorsWidget(IntegrationTest):
 
 class TestPostFlairWidget(IntegrationTest):
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_create_and_update_and_delete(self, _):
+        self.reddit.read_only = False
+
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+
+        with self.recorder.use_cassette(
+                'TestPostFlairWidget.test_create_and_update_and_delete'):
+            flairs = [f['id'] for f in subreddit.flair.link_templates]
+
+            styles = {'headerColor': '#123456', 'backgroundColor': '#bb0e00'}
+            widget = widgets.mod.add_post_flair_widget('Some flairs', 'list',
+                                                       flairs, styles)
+
+            assert isinstance(widget, PostFlairWidget)
+            assert widget.shortName == 'Some flairs'
+            assert widget.display == 'list'
+            assert widget.order == flairs
+            assert widget.styles == styles
+            assert len(widget) == 2
+            assert all(flair_id in widget.templates for flair_id in widget)
+
+            widget = widget.mod.update(display='cloud')
+
+            assert isinstance(widget, PostFlairWidget)
+            assert widget.shortName == 'Some flairs'
+            assert widget.display == 'cloud'
+            assert widget.order == flairs
+            assert widget.styles == styles
+            assert len(widget) == 2
+            assert all(flair_id in widget.templates for flair_id in widget)
+
+            widget = widget.mod.update(order=widget.order[1:])
+
+            assert isinstance(widget, PostFlairWidget)
+            assert widget.shortName == 'Some flairs'
+            assert widget.display == 'cloud'
+            assert widget.order == flairs[1:]
+            assert widget.styles == styles
+            assert len(widget) == 1
+            assert all(flair_id in widget.templates for flair_id in widget)
+
+            widget.mod.delete()
+
     def test_post_flair_widget(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
@@ -380,7 +425,7 @@ class TestPostFlairWidget(IntegrationTest):
                     break
             assert isinstance(pf_widget, PostFlairWidget)
             assert len(pf_widget) >= 1
-            assert all(isinstance(flair, dict) for flair in pf_widget)
+            assert all(flair_id in widget.templates for flair_id in widget)
             assert pf_widget == pf_widget
             assert pf_widget.id == pf_widget
             assert pf_widget in widgets.sidebar
