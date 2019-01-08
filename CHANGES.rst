@@ -21,7 +21,7 @@ Unreleased
 * Add method :meth:`.add_custom_widget`.
 * Add method :meth:`.add_post_flair_widget`.
 * Add method :meth:`.add_menu`.
-* ADd method :meth:`.add_button_widget`.
+* Add method :meth:`.add_button_widget`.
 * Add method :meth:`~.SubredditWidgetsModeration.reorder` to reorder a
   subreddit's widgets.
 
