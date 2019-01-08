@@ -212,6 +212,137 @@ class SubredditWidgetsModeration(object):
         widget.subreddit = self._subreddit
         return widget
 
+    def add_button_widget(self, short_name, description, buttons,
+                          styles, **other_settings):
+        r"""Add and return a :class:`.ButtonWidget`.
+
+        :param short_name: A name for the widget, no longer than 30 characters.
+        :param description: Markdown text to describe the widget.
+        :param buttons: A ``list`` of ``dict``\ s describing buttons, as
+            specified in `Reddit docs`_. As of this writing, the format is:
+
+            Each button is either a text button or an image button. A text
+            button looks like this:
+
+            .. code-block:: none
+
+               {
+                 "kind": "text",
+                 "text": a string no longer than 30 characters,
+                 "url": a valid URL,
+                 "color": a 6-digit rgb hex color, e.g. `#AABBCC`,
+                 "textColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+                 "fillColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+                 "hoverState": {...}
+               }
+
+            An image button looks like this:
+
+            .. code-block:: none
+
+               {
+                 "kind": "image",
+                 "text": a string no longer than 30 characters,
+                 "linkUrl": a valid URL,
+                 "url": a valid URL of a reddit-hosted image,
+                 "height": an integer,
+                 "width": an integer,
+                 "hoverState": {...}
+               }
+
+            Both types of buttons have the field ``hoverState``. The field does
+            not have to be included (it is optional). If it is included, it can
+            be one of two types: text or image. A text ``hoverState`` looks
+            like this:
+
+            .. code-block:: none
+
+               {
+                 "kind": "text",
+                 "text": a string no longer than 30 characters,
+                 "color": a 6-digit rgb hex color, e.g. `#AABBCC`,
+                 "textColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+                 "fillColor": a 6-digit rgb hex color, e.g. `#AABBCC`
+               }
+
+            An image ``hoverState`` looks like this:
+
+            .. code-block:: none
+
+               {
+                 "kind": "image",
+                 "url": a valid URL of a reddit-hosted image,
+                 "height": an integer,
+                 "width": an integer
+               }
+
+
+            .. note::
+
+               The method :meth:`.upload_image` can be used to upload images to
+               Reddit for a ``url`` field that holds a Reddit-hosted image.
+
+            .. note::
+
+               An image ``hoverState`` may be paired with a text widget, and a
+               text ``hoverState`` may be paired with an image widget.
+
+        :param styles: A ``dict`` with keys ``backgroundColor`` and
+                       ``headerColor``, and values of hex colors. For example,
+                       ``{'backgroundColor': '#FFFF66', 'headerColor':
+                       '#3333EE'}``.
+
+        .. _Reddit docs: https://www.reddit.com/dev/api#POST_api_widget
+
+        Example usage:
+
+        .. code-block:: python
+
+           widget_moderation = reddit.subreddit('mysub').widgets.mod
+           my_image = widget_moderation.upload_image('/path/to/pic.jpg')
+           buttons = [
+               {
+                   'kind': 'text',
+                   'text': 'View source',
+                   'url': 'https://github.com/praw-dev/praw',
+                   'color': '#FF0000',
+                   'textColor': '#00FF00',
+                   'fillColor': '#0000FF',
+                   'hoverState': {
+                       'kind': 'text',
+                       'text': 'VIEW SOURCE',
+                       'color': '#FFFFFF',
+                       'textColor': '#000000',
+                       'fillColor': '#0000FF'
+                   }
+               },
+               {
+                   'kind': 'image',
+                   'text': 'View documentation',
+                   'linkUrl': 'https://praw.readthedocs.io',
+                   'url': my_image,
+                   'height': 200,
+                   'width': 200,
+                   'hoverState': {
+                       'kind': 'image',
+                       'url': my_image,
+                       'height': 200,
+                       'width': 200
+                   }
+               }
+           ]
+           styles = {'backgroundColor': '#FFFF66', 'headerColor': '#3333EE'}
+           new_widget = widget_moderation.add_button_widget(
+               'Things to click', 'Click some of these *cool* links!',
+               buttons, styles)
+
+        """
+        button_widget = {'buttons': buttons, 'description': description,
+                         'kind': 'button', 'shortName': short_name,
+                         'styles': styles}
+        button_widget.update(other_settings)
+        return self._create_widget(button_widget)
+
     def add_calendar(self, short_name, google_calendar_id, requires_sync,
                      configuration, styles, **other_settings):
         """Add and return a :class:`.Calendar` widget.
