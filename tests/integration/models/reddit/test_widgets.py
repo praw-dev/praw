@@ -15,6 +15,10 @@ if sys.version_info.major > 2:
 
 
 class TestButtonWidget(IntegrationTest):
+    @staticmethod
+    def image_path(name):
+        test_dir = abspath(dirname(sys.modules[__name__].__file__))
+        return join(test_dir, '..', '..', 'files', name)
 
     def test_button_widget(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
@@ -38,6 +42,124 @@ class TestButtonWidget(IntegrationTest):
             assert hasattr(button_widget, 'description')
 
             assert subreddit == button_widget.subreddit
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_create_and_update_and_delete(self, _):
+        self.reddit.read_only = False
+
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+
+        with self.recorder.use_cassette(
+                'TestButtonWidget.test_create_and_update_and_delete'):
+            styles = {'headerColor': '#123456', 'backgroundColor': '#bb0e00'}
+            my_image = widgets.mod.upload_image(self.image_path('test.png'))
+            buttons = [
+                {
+                    'kind': 'text',
+                    'text': 'View source',
+                    'url': 'https://github.com/praw-dev/praw',
+                    'color': '#FF0000',
+                    'textColor': '#00FF00',
+                    'fillColor': '#0000FF',
+                    'hoverState': {
+                        'kind': 'text',
+                        'text': 'VIEW SOURCE!',
+                        'color': '#FFFFFF',
+                        'textColor': '#000000',
+                        'fillColor': '#0000FF'
+                    }
+                },
+                {
+                    'kind': 'image',
+                    'text': 'View documentation',
+                    'linkUrl': 'https://praw.readthedocs.io',
+                    'url': my_image,
+                    'height': 200,
+                    'width': 200,
+                    'hoverState': {
+                        'kind': 'image',
+                        'url': my_image,
+                        'height': 200,
+                        'width': 200
+                    }
+                },
+                {
+                    'kind': 'text',
+                    'text': '/r/redditdev',
+                    'url': 'https://reddit.com/r/redditdev',
+                    'color': '#000000',
+                    'textColor': '#FF00FF',
+                    'fillColor': '#005500'
+                }
+            ]
+            widget = widgets.mod.add_button_widget(
+                'Things to click', 'Click some of these *cool* links!',
+                buttons, styles)
+
+            assert isinstance(widget, ButtonWidget)
+            assert len(widget) == 3
+            assert all(isinstance(item, Button) for item in widget)
+            assert widget.shortName == 'Things to click'
+            assert widget.description == 'Click some of these *cool* links!'
+            assert widget.styles == styles
+
+            assert widget[0].text == 'View source'
+            assert widget[0].url == 'https://github.com/praw-dev/praw'
+            assert widget[2].text == '/r/redditdev'
+            assert widget[2].url == 'https://reddit.com/r/redditdev'
+
+            assert widget[1].text == 'View documentation'
+            assert widget[1].linkUrl == 'https://praw.readthedocs.io'
+            assert widget[1].hoverState['kind'] == 'image'
+            assert widget[1].hoverState['height'] == 200
+
+            widgets.refresh()  # the links are initially invalid
+            for new_widget in widgets.sidebar:
+                if new_widget == widget:
+                    widget = new_widget
+                    break
+
+            widget = widget.mod.update(shortName='New short name')
+
+            assert isinstance(widget, ButtonWidget)
+            assert len(widget) == 3
+            assert all(isinstance(item, Button) for item in widget)
+            assert widget.shortName == 'New short name'
+            assert widget.description == 'Click some of these *cool* links!'
+            assert widget.styles == styles
+
+            assert widget[0].text == 'View source'
+            assert widget[0].url == 'https://github.com/praw-dev/praw'
+            assert widget[2].text == '/r/redditdev'
+            assert widget[2].url == 'https://reddit.com/r/redditdev'
+
+            assert widget[1].text == 'View documentation'
+            assert widget[1].linkUrl == 'https://praw.readthedocs.io'
+            assert widget[1].hoverState['kind'] == 'image'
+            assert widget[1].hoverState['height'] == 200
+
+            buttons.reverse()
+            widget = widget.mod.update(buttons=buttons)
+
+            assert isinstance(widget, ButtonWidget)
+            assert len(widget) == 3
+            assert all(isinstance(item, Button) for item in widget)
+            assert widget.shortName == 'New short name'
+            assert widget.description == 'Click some of these *cool* links!'
+            assert widget.styles == styles
+
+            assert widget[0].text == '/r/redditdev'
+            assert widget[0].url == 'https://reddit.com/r/redditdev'
+            assert widget[2].text == 'View source'
+            assert widget[2].url == 'https://github.com/praw-dev/praw'
+
+            assert widget[1].text == 'View documentation'
+            assert widget[1].linkUrl == 'https://praw.readthedocs.io'
+            assert widget[1].hoverState['kind'] == 'image'
+            assert widget[1].hoverState['height'] == 200
+
+            widget.mod.delete()
 
 
 class TestCalendar(IntegrationTest):
@@ -320,6 +442,68 @@ class TestImageWidget(IntegrationTest):
 
 
 class TestMenu(IntegrationTest):
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_create_and_update_and_delete(self, _):
+        self.reddit.read_only = False
+
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+
+        menu_contents = [
+            {'text': 'My homepage', 'url': 'https://example.com'},
+            {'text': 'Python packages',
+             'children': [
+                 {'text': 'PRAW', 'url': 'https://praw.readthedocs.io/'},
+                 {'text': 'requests', 'url': 'http://python-requests.org'}
+             ]},
+            {'text': 'Reddit homepage', 'url': 'https://reddit.com'}
+        ]
+
+        with self.recorder.use_cassette(
+                'TestMenu.test_create_and_update_and_delete'):
+            widget = widgets.mod.add_menu(menu_contents)
+
+            assert isinstance(widget, Menu)
+            assert len(widget) == 3
+            assert all(isinstance(item, (Submenu, MenuLink))
+                       for item in widget)
+            assert all(all(isinstance(item, MenuLink) for item in subm)
+                       for subm in widget if isinstance(subm, Submenu))
+
+            assert widget[0].text == 'My homepage'
+            assert widget[0].url == 'https://example.com'
+            assert widget[2].text == 'Reddit homepage'
+            assert widget[2].url == 'https://reddit.com'
+
+            assert widget[1].text == 'Python packages'
+            assert widget[1][0].text == 'PRAW'
+            assert widget[1][0].url == 'https://praw.readthedocs.io/'
+            assert widget[1][1].text == 'requests'
+            assert widget[1][1].url == 'http://python-requests.org'
+
+            menu_contents.reverse()
+            widget = widget.mod.update(data=menu_contents)
+
+            assert isinstance(widget, Menu)
+            assert len(widget) == 3
+            assert all(isinstance(item, (Submenu, MenuLink))
+                       for item in widget)
+            assert all(all(isinstance(item, MenuLink) for item in subm)
+                       for subm in widget if isinstance(subm, Submenu))
+
+            assert widget[0].text == 'Reddit homepage'
+            assert widget[0].url == 'https://reddit.com'
+            assert widget[2].text == 'My homepage'
+            assert widget[2].url == 'https://example.com'
+
+            assert widget[1].text == 'Python packages'
+            assert widget[1][0].text == 'PRAW'
+            assert widget[1][0].url == 'https://praw.readthedocs.io/'
+            assert widget[1][1].text == 'requests'
+            assert widget[1][1].url == 'http://python-requests.org'
+
+            widget.mod.delete()
 
     def test_menu(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
