@@ -375,6 +375,28 @@ class TestIDCard(IntegrationTest):
 
             assert subreddit == card.subreddit
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_update(self, _):
+        self.reddit.read_only = False
+
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+        with self.recorder.use_cassette('TestIDCard.test_update'):
+            assert widgets.id_card.currentlyViewingText != 'Users here NOW!'
+            assert widgets.id_card.subscribersText != 'Loyal readers'
+
+            widgets.id_card.mod.update(currentlyViewingText='Users here NOW!')
+            widgets.refresh()
+
+            assert widgets.id_card.currentlyViewingText == 'Users here NOW!'
+            assert widgets.id_card.subscribersText != 'Loyal readers'
+
+            widgets.id_card.mod.update(subscribersText='Loyal readers')
+            widgets.refresh()
+
+            assert widgets.id_card.currentlyViewingText == 'Users here NOW!'
+            assert widgets.id_card.subscribersText == 'Loyal readers'
+
 
 class TestImageWidget(IntegrationTest):
     @staticmethod
@@ -553,6 +575,21 @@ class TestModeratorsWidget(IntegrationTest):
 
             assert subreddit == mods.subreddit
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_update(self, _):
+        self.reddit.read_only = False
+
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+        new_styles = {'backgroundColor': '#bababa', 'headerColor': '#407bee'}
+        with self.recorder.use_cassette('TestModeratorsWidget.test_update'):
+            assert widgets.moderators_widget.styles != new_styles
+
+            widgets.moderators_widget.mod.update(styles=new_styles)
+            widgets.refresh()
+
+            assert widgets.moderators_widget.styles == new_styles
+
 
 class TestPostFlairWidget(IntegrationTest):
 
@@ -643,6 +680,32 @@ class TestRulesWidget(IntegrationTest):
 
             assert len(rules) > 0
             assert subreddit == rules.subreddit
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_update(self, _):
+        self.reddit.read_only = False
+
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        widgets = subreddit.widgets
+        new_styles = {'backgroundColor': '#fedcba', 'headerColor': '#012345'}
+        with self.recorder.use_cassette('TestRulesWidget.test_update'):
+            rules = None
+            for widget in widgets.sidebar:
+                if isinstance(widget, RulesWidget):
+                    rules = widget
+                    break
+            assert isinstance(rules, RulesWidget)
+
+            assert rules.shortName != 'Our regulations'
+            assert rules.styles != new_styles
+
+            rules = rules.mod.update(display='compact',
+                                     shortName='Our regulations',
+                                     styles=new_styles)
+
+            assert rules.display == 'compact'
+            assert rules.shortName == 'Our regulations'
+            assert rules.styles == new_styles
 
 
 class TestSubredditWidgets(IntegrationTest):

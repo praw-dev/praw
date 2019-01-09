@@ -1444,6 +1444,13 @@ class ModeratorsWidget(Widget, BaseList):
 
     CHILD_ATTRIBUTE = 'mods'
 
+    def __init__(self, reddit, _data):
+        """Initialize the moderators widget."""
+        if self.CHILD_ATTRIBUTE not in _data:
+            # .mod.update() sometimes returns payload without 'mods' field
+            _data[self.CHILD_ATTRIBUTE] = []
+        super(ModeratorsWidget, self).__init__(reddit, _data)
+
 
 class PostFlairWidget(Widget, BaseList):
     r"""Class to represent a post flair widget.
@@ -1571,6 +1578,13 @@ class RulesWidget(Widget, BaseList):
     """
 
     CHILD_ATTRIBUTE = 'data'
+
+    def __init__(self, reddit, _data):
+        """Initialize the rules widget."""
+        if self.CHILD_ATTRIBUTE not in _data:
+            # .mod.update() sometimes returns payload without 'data' field
+            _data[self.CHILD_ATTRIBUTE] = []
+        super(RulesWidget, self).__init__(reddit, _data)
 
 
 class TextArea(Widget):
