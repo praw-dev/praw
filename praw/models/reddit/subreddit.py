@@ -843,10 +843,25 @@ class SubredditFlairTemplates(object):
         """
         self.subreddit = subreddit
 
-    def _add(self, text, css_class='', text_editable=False, is_link=None):
-        url = API_PATH['flairtemplate'].format(subreddit=self.subreddit)
-        data = {'css_class': css_class, 'flair_type': self.flair_type(is_link),
-                'text': text, 'text_editable': bool(text_editable)}
+    def _add(self, text, css_class='', text_editable=False, is_link=None,
+             background_color=None, text_color=None, mod_only=None):
+        if css_class and any(param is not None for param in
+                             (background_color, text_color, mod_only)):
+            raise TypeError('Parameter `css_class` cannot be used in '
+                            'conjunction with parameters `background_color`, '
+                            '`text_color`, or `mod_only`.')
+        if css_class:
+            url = API_PATH['flairtemplate'].format(subreddit=self.subreddit)
+            data = {'css_class': css_class,
+                    'flair_type': self.flair_type(is_link),
+                    'text': text, 'text_editable': bool(text_editable)}
+        else:
+            url = API_PATH['flairtemplate_v2'].format(subreddit=self.subreddit)
+            data = {'background_color': background_color,
+                    'text_color': text_color,
+                    'flair_type': self.flair_type(is_link),
+                    'text': text, 'text_editable': bool(text_editable),
+                    'mod_only': bool(mod_only)}
         self.subreddit._reddit.post(url, data=data)
 
     def _clear(self, is_link=None):
@@ -862,35 +877,64 @@ class SubredditFlairTemplates(object):
         .. code-block:: python
 
            template_info = list(subreddit.flair.templates)[0]
-           subreddit.flair.templates.delete(template_info['flair_template_id])
+           subreddit.flair.templates.delete(template_info['id'])
 
         """
         url = API_PATH['flairtemplatedelete'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(
             url, data={'flair_template_id': template_id})
 
-    def update(self, template_id, text, css_class='', text_editable=False):
-        """Update the flair templated provided by ``template_id``.
+    def update(self, template_id, text, css_class='', text_editable=False,
+               background_color=None, text_color=None, mod_only=None):
+        """Update the flair template provided by ``template_id``.
 
         :param template_id: The flair template to update.
         :param text: The flair template's new text (required).
         :param css_class: The flair template's new css_class (default: '').
+            Cannot be used in conjunction with ``background_color``,
+            ``text_color``, or ``mod_only``.
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
+        :param background_color: The flair template's new background color,
+            as a hex color. Cannot be used in conjunction with ``css_class``.
+        :param text_color: The flair template's new text color, either
+            ``'light'`` or ``'dark'``. Cannot be used in conjunction with
+            ``css_class``.
+        :param mod_only: (boolean) Indicate if the flair can only be used by
+            moderators. Cannot be used in conjunction with ``css_class``.
 
-        For example to make a link flair template text_editable, try:
+        For example to make a user flair template text_editable, try:
 
         .. code-block:: python
 
            template_info = list(subreddit.flair.templates)[0]
            subreddit.flair.templates.update(
-               template_info['flair_template_id'],
+               template_info['id'],
+               template_info['flair_text'],
                text_editable=True)
 
+        .. note::
+
+           Any parameters not provided will be set to default values (usually
+           ``None`` or ``False``) on Reddit's end.
+
         """
-        url = API_PATH['flairtemplate'].format(subreddit=self.subreddit)
-        data = {'css_class': css_class, 'flair_template_id': template_id,
-                'text': text, 'text_editable': bool(text_editable)}
+        if css_class and any(param is not None for param in
+                             (background_color, text_color, mod_only)):
+            raise TypeError('Parameter `css_class` cannot be used in '
+                            'conjunction with parameters `background_color`, '
+                            '`text_color`, or `mod_only`.')
+
+        if css_class:
+            url = API_PATH['flairtemplate'].format(subreddit=self.subreddit)
+            data = {'css_class': css_class, 'flair_template_id': template_id,
+                    'text': text, 'text_editable': bool(text_editable)}
+        else:
+            url = API_PATH['flairtemplate_v2'].format(subreddit=self.subreddit)
+            data = {'flair_template_id': template_id, 'text': text,
+                    'background_color': background_color,
+                    'text_color': text_color, 'text_editable': text_editable,
+                    'mod_only': mod_only}
         self.subreddit._reddit.post(url, data=data)
 
 
@@ -909,18 +953,28 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
 
         """
-        url = API_PATH['flairselector'].format(subreddit=self.subreddit)
-        data = {'unique': self.subreddit._reddit._next_unique}
-        for template in self.subreddit._reddit.post(url, data=data)['choices']:
+        url = API_PATH['user_flair'].format(subreddit=self.subreddit)
+        params = {'unique': self.subreddit._reddit._next_unique}
+        for template in self.subreddit._reddit.get(url, params=params):
             yield template
 
-    def add(self, text, css_class='', text_editable=False):
+    def add(self, text, css_class='', text_editable=False,
+            background_color=None, text_color=None, mod_only=None):
         """Add a Redditor flair template to the associated subreddit.
 
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
+            Cannot be used in conjunction with ``background_color``,
+            ``text_color``, or ``mod_only``.
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
+        :param background_color: The flair template's new background color,
+            as a hex color. Cannot be used in conjunction with ``css_class``.
+        :param text_color: The flair template's new text color, either
+            ``'light'`` or ``'dark'``. Cannot be used in conjunction with
+            ``css_class``.
+        :param mod_only: (boolean) Indicate if the flair can only be used by
+            moderators. Cannot be used in conjunction with ``css_class``.
 
         For example, to add an editable Redditor flair try:
 
@@ -931,7 +985,8 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
         """
         self._add(text, css_class=css_class, text_editable=text_editable,
-                  is_link=False)
+                  is_link=False, background_color=background_color,
+                  text_color=text_color, mod_only=mod_only)
 
     def clear(self):
         """Remove all Redditor flair templates from the subreddit.
@@ -965,13 +1020,23 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         for template in self.subreddit._reddit.get(url):
             yield template
 
-    def add(self, text, css_class='', text_editable=False):
+    def add(self, text, css_class='', text_editable=False,
+            background_color=None, text_color=None, mod_only=None):
         """Add a link flair template to the associated subreddit.
 
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
+            Cannot be used in conjunction with ``background_color``,
+            ``text_color``, or ``mod_only``.
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
+        :param background_color: The flair template's new background color,
+            as a hex color. Cannot be used in conjunction with ``css_class``.
+        :param text_color: The flair template's new text color, either
+            ``'light'`` or ``'dark'``. Cannot be used in conjunction with
+            ``css_class``.
+        :param mod_only: (boolean) Indicate if the flair can only be used by
+            moderators. Cannot be used in conjunction with ``css_class``.
 
         For example, to add an editable link flair try:
 
@@ -982,7 +1047,8 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         """
         self._add(text, css_class=css_class, text_editable=text_editable,
-                  is_link=True)
+                  is_link=True, background_color=background_color,
+                  text_color=text_color, mod_only=mod_only)
 
     def clear(self):
         """Remove all link flair templates from the subreddit.
