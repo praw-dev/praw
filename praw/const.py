@@ -58,7 +58,6 @@ API_PATH = {
     'info':                   'api/info/',
     'karma':                  'api/v1/me/karma',
     'leavecontributor':       'api/leavecontributor',
-    'leavemoderator':         'api/leavemoderator',
     'link_flair':             'r/{subreddit}/api/link_flair',
     'list_banned':            'r/{subreddit}/about/banned/',
     'list_contributor':       'r/{subreddit}/about/contributors/',
