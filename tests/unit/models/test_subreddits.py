@@ -1,4 +1,4 @@
-"""Test praw.models.front."""
+"""Test praw.models.subreddits."""
 import pytest
 
 from .. import UnitTest

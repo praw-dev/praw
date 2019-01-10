@@ -12,6 +12,7 @@ The Reddit Instance
    reddit/inbox
    reddit/live
    reddit/multireddit
+   reddit/redditors
    reddit/subreddit
    reddit/subreddits
    reddit/user

@@ -219,6 +219,19 @@ class Reddit(object):
 
         """
 
+        self.redditors = models.Redditors(self, None)
+        """An instance of :class:`.Redditors`.
+
+        Provides the interface for Redditor discovery. For example
+        to iterate over the newest Redditors, run:
+
+        .. code-block:: python
+
+           for redditor in reddit.redditors.new(limit=None):
+               print(redditor)
+
+        """
+
         self.subreddit = models.SubredditHelper(self, None)
         """An instance of :class:`.SubredditHelper`.
 

@@ -30,6 +30,7 @@ from .reddit.widgets import (Button, ButtonWidget, Calendar,  # NOQA
                              SubredditWidgetsModeration, Submenu,  # NOQA
                              TextArea, Widget, WidgetModeration)  # NOQA
 from .reddit.wikipage import WikiPage  # NOQA
+from .redditors import Redditors  # NOQA
 from .stylesheet import Stylesheet  # NOQA
 from .subreddits import Subreddits  # NOQA
 from .trophy import Trophy  # NOQA
@@ -42,7 +43,7 @@ __all__ = ('Auth', 'Button', 'ButtonWidget', 'Calendar', 'Comment',
            'Message', 'ModAction', 'ModeratorsWidget', 'ModmailConversation',
            'MoreComments', 'Multireddit', 'MultiredditHelper',
            'PostFlairWidget', 'Preferences', 'Redditor', 'RedditorList',
-           'RulesWidget', 'Stylesheet', 'Submenu', 'Submission', 'Subreddit',
-           'SubredditHelper', 'SubredditMessage', 'SubredditWidgets',
-           'SubredditWidgetsModeration', 'Subreddits', 'TextArea', 'Trophy',
-           'TrophyList', 'User', 'Widget', 'WidgetModeration', 'WikiPage')
+           'Redditors', 'RulesWidget', 'Stylesheet', 'Submenu',
+           'Submission', 'Subreddit', 'SubredditHelper', 'SubredditMessage',
+           'SubredditWidgets', 'TrophyList', 'User', 'Widget',
+           'WidgetModeration', 'WikiPage')
