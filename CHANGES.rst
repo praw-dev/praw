@@ -24,6 +24,7 @@ Unreleased
 * Add method :meth:`.add_button_widget`.
 * Add method :meth:`~.SubredditWidgetsModeration.reorder` to reorder a
   subreddit's widgets.
+* Add :class:`.Users` (``reddit.users``) to provide user listings.
 
 **Changed**
 

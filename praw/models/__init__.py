@@ -34,6 +34,8 @@ from .stylesheet import Stylesheet  # NOQA
 from .subreddits import Subreddits  # NOQA
 from .trophy import Trophy  # NOQA
 from .user import User  # NOQA
+from .users import Users  # NOQA
+
 
 __all__ = ('Auth', 'Button', 'ButtonWidget', 'Calendar', 'Comment',
            'CommunityList', 'CustomWidget', 'DomainListing', 'Emoji', 'Front',
@@ -45,4 +47,5 @@ __all__ = ('Auth', 'Button', 'ButtonWidget', 'Calendar', 'Comment',
            'RulesWidget', 'Stylesheet', 'Submenu', 'Submission', 'Subreddit',
            'SubredditHelper', 'SubredditMessage', 'SubredditWidgets',
            'SubredditWidgetsModeration', 'Subreddits', 'TextArea', 'Trophy',
-           'TrophyList', 'User', 'Widget', 'WidgetModeration', 'WikiPage')
+           'TrophyList', 'User', 'Users', 'Widget', 'WidgetModeration',
+           'WikiPage')

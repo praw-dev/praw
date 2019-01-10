@@ -15,3 +15,4 @@ The Reddit Instance
    reddit/subreddit
    reddit/subreddits
    reddit/user
+   reddit/users

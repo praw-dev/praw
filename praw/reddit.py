@@ -271,6 +271,19 @@ class Reddit(object):
 
         """
 
+        self.users = models.Users(self, None)
+        """An instance of :class:`.Users`.
+
+        Provides the interface for user discovery. For example
+        to iterate over the newest users, run:
+
+        .. code-block:: python
+
+           for user in reddit.users.new(limit=None):
+               print(user)
+
+        """
+
     def _check_for_update(self):
         if UPDATE_CHECKER_MISSING:
             return
