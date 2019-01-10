@@ -1,5 +1,6 @@
 """Test praw.models.subreddit."""
 from os.path import abspath, dirname, join
+from json import dumps
 import sys
 
 from praw.exceptions import APIException
@@ -14,7 +15,29 @@ import pytest
 from ... import IntegrationTest
 
 
+class WebsocketMock(object):
+    POST_URL = 'https://reddit.com/r/<TEST_SUBREDDIT>/comments/{}/test_title/'
+
+    @classmethod
+    def make_dict(cls, post_id):
+        return {'payload': {'redirect': cls.POST_URL.format(post_id)}}
+
+    def __init__(self, *post_ids):
+        self.post_ids = post_ids
+        self.i = -1
+
+    def recv(self):
+        assert 0 <= self.i + 1 < len(self.post_ids)
+        self.i += 1
+        return dumps(self.make_dict(self.post_ids[self.i]))
+
+
 class TestSubreddit(IntegrationTest):
+    @staticmethod
+    def image_path(name):
+        test_dir = abspath(dirname(sys.modules[__name__].__file__))
+        return join(test_dir, '..', '..', 'files', name)
+
     @mock.patch('time.sleep', return_value=None)
     def test_create(self, _):
         self.reddit.read_only = False
@@ -117,6 +140,23 @@ class TestSubreddit(IntegrationTest):
                                           flair_text=flair_text)
             assert submission.link_flair_css_class == flair_class
             assert submission.link_flair_text == flair_text
+
+    @mock.patch('time.sleep', return_value=None)
+    @mock.patch('websocket.create_connection',
+                return_value=WebsocketMock('af5aek',  # update with cassette
+                                           'af5af1'))  # update with cassette
+    def test_submit__image(self, _, __):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubreddit.test_submit__image'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            for file_name in ('test.png', 'test.jpg'):
+                img_path = self.image_path(file_name)
+
+                submission = subreddit.submit('Test Title', img_path=img_path)
+                assert submission.author == self.reddit.config.username
+                assert submission.is_reddit_media_domain
+                assert submission.title == 'Test Title'
 
     @mock.patch('time.sleep', return_value=None)
     def test_submit__selftext(self, _):

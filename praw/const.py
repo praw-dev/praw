@@ -88,6 +88,7 @@ API_PATH = {
     'lock':                   'api/lock/',
     'marknsfw':               'api/marknsfw/',
     'me':                     'api/v1/me',
+    'media_asset':            'api/media/asset.json',
     'mentions':               'message/mentions',
     'message':                'message/messages/{id}/',
     'messages':               'message/messages/',

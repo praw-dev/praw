@@ -28,6 +28,7 @@ Unreleased
 **Changed**
 
 * :meth:`.User.me` returns ``None`` in :attr:`~praw.Reddit.read_only` mode.
+* :meth:`.submit` accepts an ``img_path`` parameter to upload images to Reddit.
 
 **Fixed**
 

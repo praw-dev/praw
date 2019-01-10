@@ -1,8 +1,10 @@
 """Provide the Subreddit class."""
 from copy import deepcopy
-from json import dumps
+from json import dumps, loads
+import os.path
 
 from prawcore import Redirect
+import websocket
 
 from ...const import API_PATH, urljoin
 from ...exceptions import APIException
@@ -407,6 +409,27 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     def _info_path(self):
         return API_PATH['subreddit_about'].format(subreddit=self)
 
+    def _upload_image(self, img_path):
+        """Upload an image and return its URL. Uses undocumented endpoint."""
+        img_data = {'filepath': os.path.basename(img_path),
+                    'mimetype': 'image/jpeg'}
+        if img_path.lower().endswith('.png'):
+            img_data['mimetype'] = 'image/png'
+
+        url = API_PATH['media_asset']
+        # until we learn otherwise, assume this request always succeeds
+        upload_lease = self._reddit.post(url, data=img_data)['args']
+        upload_data = {item['name']: item['value']
+                       for item in upload_lease['fields']}
+        upload_url = 'https:{}'.format(upload_lease['action'])
+
+        with open(img_path, 'rb') as image:
+            response = self._reddit._core._requestor._http.post(
+                upload_url, data=upload_data, files={'file': image})
+        response.raise_for_status()
+
+        return upload_url + '/' + upload_data['key']
+
     def random(self):
         """Return a random Submission."""
         url = API_PATH['subreddit_random'].format(subreddit=self)
@@ -478,7 +501,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             self._reddit.config.reddit_url, path))
 
     def submit(self, title, selftext=None, url=None, flair_id=None,
-               flair_text=None, resubmit=True, send_replies=True):
+               flair_text=None, resubmit=True, send_replies=True,
+               img_path=None):
         """Add a submission to the subreddit.
 
         :param title: The title of the submission.
@@ -493,10 +517,12 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             been submitted (default: True).
         :param send_replies: When True, messages will be sent to the submission
             author when comments are made to the submission (default: True).
+        :param img_path: The path to an image, to upload and post
         :returns: A :class:`~.Submission` object for the newly created
             submission.
 
-        Either ``selftext`` or ``url`` can be provided, but not both.
+        Exactly one of ``selftext``, ``url``, or ``img_path`` must be provided,
+        but no more.
 
         For example to submit a URL to ``/r/reddit_api_test`` do:
 
@@ -507,8 +533,10 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
            reddit.subreddit('reddit_api_test').submit(title, url=url)
 
         """
-        if (bool(selftext) or selftext == '') == bool(url):
-            raise TypeError('Either `selftext` or `url` must be provided.')
+        if ((bool(selftext) or selftext == ''), bool(url), bool(img_path)) \
+                .count(True) != 1:
+            raise TypeError('Exactly one of `selftext`, `url`, or `img_path` '
+                            'must be provided, but no more.')
 
         data = {'sr': str(self), 'resubmit': bool(resubmit),
                 'sendreplies': bool(send_replies), 'title': title}
@@ -517,6 +545,36 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                 data[key] = value
         if selftext is not None:
             data.update(kind='self', text=selftext)
+        elif img_path:
+            data.update(kind='image', url=self._upload_image(img_path))
+            resp = self._reddit.post(API_PATH['submit'], data=data)
+
+            # About the websockets:
+            #
+            # Reddit responds to this request with only two fields: a link to
+            # the user's /submitted page, and a websocket URL. We can use the
+            # websocket URL to get a link to the new post once it is created.
+            #
+            # An important note to PRAW contributors or anyone who would
+            # wish to step through this section with a debugger: This block
+            # of code is NOT debugger-friendly. If there is *any*
+            # significant time between the POST request just above this
+            # comment and the creation of the websocket connection just
+            # below, the code will become stuck in an infinite loop at the
+            # socket.recv() call. I believe this is because only one message is
+            # sent over the websocket, and if the client doesn't connect
+            # soon enough, it will miss the message and get stuck forever
+            # waiting for another.
+            #
+            # So if you need to debug this section of code, please let the
+            # websocket creation happen right after the POST request,
+            # otherwise you will have trouble.
+
+            socket = websocket.create_connection(resp['json']['data']
+                                                 ['websocket_url'])
+            ws_update = loads(socket.recv())
+            url = ws_update['payload']['redirect']
+            return self._reddit.submission(url=url)
         else:
             data.update(kind='link', url=url)
         return self._reddit.post(API_PATH['submit'], data=data)
