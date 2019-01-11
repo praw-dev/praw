@@ -371,6 +371,8 @@ class SubmissionModeration(ThingModerationMixin):
 
     """
 
+    REMOVAL_MESSAGE_API = 'removal_link_message'
+
     def __init__(self, submission):
         """Create a SubmissionModeration instance.
 

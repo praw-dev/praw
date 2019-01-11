@@ -43,4 +43,5 @@ Source Contributors
 - salehio `@salehio <https://github.com/salehio>`_
 - Amanda O'Neal <amanda.oneal.dev@gmail.com> `@amandaoneal <https://github.com/amandaoneal>`_
 - Gourari Oussama <gourari.ouss@gmail.com> `@O-Gourari <https://github.com/O-Gourari>`_
+- Declan Hoare <declanhoare@exemail.com.au> `@NetwideRogue <https://github.com/NetwideRogue>`_
 - Add "Name <email (optional)> and github profile link" above this line.

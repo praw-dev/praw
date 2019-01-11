@@ -112,6 +112,42 @@ class ThingModerationMixin(object):
         data = {'id': self.thing.fullname, 'spam': bool(spam)}
         self.thing._reddit.post(API_PATH['remove'], data=data)
 
+    def send_removal_message(self, type,  # pylint: disable=redefined-builtin
+                             title, message):
+        """Send a removal message for a Comment or Submission.
+
+        Reddit adds human-readable information about the object to the message.
+
+        :param type: One of 'public', 'private', 'private_exposed'.
+            'public' leaves a stickied comment on the post.
+            'private' sends a Modmail message with hidden username.
+            'private_exposed' sends a Modmail message without hidden username.
+        :param title: The short reason given in the message.
+            (Ignored if type is 'public'.)
+        :param message: The body of the message.
+
+        If ``type`` is 'public', the new :class:`~.Comment` is returned.
+        """
+        # The API endpoint used to send removal messages is different
+        # for posts and comments, so the derived classes specify which one.
+        if self.REMOVAL_MESSAGE_API is None:
+            raise NotImplementedError('ThingModerationMixin must be extended.')  # NOQA
+        url = API_PATH[self.REMOVAL_MESSAGE_API]
+
+        # Only the first element of the item_id list is used.
+        data = {'item_id': [self.thing.fullname],
+                'message': message,
+                'title': title,
+                'type': str(type)}
+
+        # Use the core to make the request in order to send the data as
+        # JSON - this endpoint doesn't like URL encoding.
+        ret = self.thing._reddit._core.request('POST', url, json=data)
+        if ret != {}:
+            from ..comment import Comment
+            return Comment(self.thing._reddit, _data=ret)
+        return None
+
     def undistinguish(self):
         """Remove mod, admin, or special distinguishing on object.
 

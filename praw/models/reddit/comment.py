@@ -280,6 +280,8 @@ class CommentModeration(ThingModerationMixin):
 
     """
 
+    REMOVAL_MESSAGE_API = 'removal_comment_message'
+
     def __init__(self, comment):
         """Create a CommentModeration instance.
 

@@ -297,6 +297,24 @@ class TestSubmissionModeration(IntegrationTest):
                 'TestSubmissionModeration.test_remove'):
             self.reddit.submission('4b536h').mod.remove(spam=True)
 
+    @mock.patch('time.sleep', return_value=None)
+    def test_send_removal_message(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubmissionModeration.test_send_removal_message'):
+            submission = self.reddit.submission('aezo6s')
+            mod = submission.mod
+            mod.remove()
+            message = 'message'
+            res = [mod.send_removal_message(t, 'title', message)
+                   for t in ('public', 'private', 'private_exposed')]
+            assert isinstance(res[0], Comment)
+            assert res[0].parent_id == 't3_' + submission.id
+            assert res[0].stickied
+            assert res[0].body == message
+            assert res[1] is None
+            assert res[2] is None
+
     def test_sfw(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
