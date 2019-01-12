@@ -602,7 +602,7 @@ class TestPostFlairWidget(IntegrationTest):
 
         with self.recorder.use_cassette(
                 'TestPostFlairWidget.test_create_and_update_and_delete'):
-            flairs = [f['id'] for f in subreddit.flair.link_templates]
+            flairs = [f['id'] for f in subreddit.flair.link_templates][:30]
 
             styles = {'headerColor': '#123456', 'backgroundColor': '#bb0e00'}
             widget = widgets.mod.add_post_flair_widget('Some flairs', 'list',
@@ -613,7 +613,7 @@ class TestPostFlairWidget(IntegrationTest):
             assert widget.display == 'list'
             assert widget.order == flairs
             assert widget.styles == styles
-            assert len(widget) == 2
+            assert len(widget) == len(flairs)
             assert all(flair_id in widget.templates for flair_id in widget)
 
             widget = widget.mod.update(display='cloud')
@@ -623,15 +623,15 @@ class TestPostFlairWidget(IntegrationTest):
             assert widget.display == 'cloud'
             assert widget.order == flairs
             assert widget.styles == styles
-            assert len(widget) == 2
+            assert len(widget) == len(flairs)
             assert all(flair_id in widget.templates for flair_id in widget)
 
-            widget = widget.mod.update(order=widget.order[1:])
+            widget = widget.mod.update(order=widget.order[:1])
 
             assert isinstance(widget, PostFlairWidget)
             assert widget.shortName == 'Some flairs'
             assert widget.display == 'cloud'
-            assert widget.order == flairs[1:]
+            assert widget.order == flairs[:1]
             assert widget.styles == styles
             assert len(widget) == 1
             assert all(flair_id in widget.templates for flair_id in widget)
