@@ -1,4 +1,5 @@
 """Package providing reddit class mixins."""
+from json import dumps
 from ....const import API_PATH
 from .editable import EditableMixin  # NOQA
 from .gildable import GildableMixin  # NOQA
@@ -13,6 +14,8 @@ from .votable import VotableMixin  # NOQA
 
 class ThingModerationMixin(object):
     """Provides moderation methods for Comments and Submissions."""
+
+    REMOVAL_MESSAGE_API = None
 
     def approve(self):
         """Approve a :class:`~.Comment` or :class:`~.Submission`.
@@ -131,7 +134,7 @@ class ThingModerationMixin(object):
         # The API endpoint used to send removal messages is different
         # for posts and comments, so the derived classes specify which one.
         if self.REMOVAL_MESSAGE_API is None:
-            raise NotImplementedError('ThingModerationMixin must be extended.')  # NOQA
+            raise NotImplementedError('ThingModerationMixin must be extended.')
         url = API_PATH[self.REMOVAL_MESSAGE_API]
 
         # Only the first element of the item_id list is used.
@@ -140,9 +143,7 @@ class ThingModerationMixin(object):
                 'title': title,
                 'type': str(type)}
 
-        # Use the core to make the request in order to send the data as
-        # JSON - this endpoint doesn't like URL encoding.
-        ret = self.thing._reddit._core.request('POST', url, json=data)
+        ret = self.thing._reddit.post(url, data={'json': dumps(data)})
         if ret != {}:
             from ..comment import Comment
             return Comment(self.thing._reddit, _data=ret)
