@@ -144,10 +144,7 @@ class ThingModerationMixin(object):
                 'type': str(type)}
 
         ret = self.thing._reddit.post(url, data={'json': dumps(data)})
-        if ret != {}:
-            from ..comment import Comment
-            return Comment(self.thing._reddit, _data=ret)
-        return None
+        return None if ret == {} else ret
 
     def undistinguish(self):
         """Remove mod, admin, or special distinguishing on object.
