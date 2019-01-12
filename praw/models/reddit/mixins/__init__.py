@@ -115,8 +115,9 @@ class ThingModerationMixin(object):
         data = {'id': self.thing.fullname, 'spam': bool(spam)}
         self.thing._reddit.post(API_PATH['remove'], data=data)
 
-    def send_removal_message(self, type,  # pylint: disable=redefined-builtin
-                             title, message):
+    def send_removal_message(self, message, title='ignored',
+                             type='public'  # pylint: disable=redefined-builtin
+                             ):
         """Send a removal message for a Comment or Submission.
 
         Reddit adds human-readable information about the object to the message.
@@ -141,10 +142,9 @@ class ThingModerationMixin(object):
         data = {'item_id': [self.thing.fullname],
                 'message': message,
                 'title': title,
-                'type': str(type)}
+                'type': type}
 
-        ret = self.thing._reddit.post(url, data={'json': dumps(data)})
-        return None if ret == {} else ret
+        return self.thing._reddit.post(url, data={'json': dumps(data)}) or None
 
     def undistinguish(self):
         """Remove mod, admin, or special distinguishing on object.

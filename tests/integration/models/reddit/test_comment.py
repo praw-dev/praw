@@ -269,8 +269,8 @@ class TestCommentModeration(IntegrationTest):
             mod = comment.mod
             mod.remove()
             message = 'message'
-            res = [mod.send_removal_message(t, 'title', message)
-                   for t in ('public', 'private', 'private_exposed')]
+            res = [mod.send_removal_message(message, 'title', type)
+                   for type in ('public', 'private', 'private_exposed')]
             assert isinstance(res[0], Comment)
             assert res[0].parent_id == 't1_' + comment.id
             assert res[0].body == message
