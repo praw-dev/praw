@@ -29,6 +29,17 @@ Unreleased
 **Changed**
 
 * :meth:`.User.me` returns ``None`` in :attr:`~praw.Reddit.read_only` mode.
+* :meth:`.SubredditLinkFlairTemplates.__iter__` uses the v2 flair API endpoint.
+  This change will result in additional fields being returned. All fields that
+  were previously returned will still be returned.
+* :meth:`.SubredditRedditorFlairTemplates.__iter__` uses the v2 flair API
+  endpoint. The method will still return the exact same items.
+* Methods :meth:`~.SubredditRedditorFlairTemplates.add`,
+  :meth:`~.SubredditLinkFlairTemplates.add`,
+  :meth:`~.SubredditRedditorFlairTemplates.update`, and
+  :meth:`~.SubredditLinkFlairTemplates.update` can add and update
+  redesign-style flairs with the v2 flair API endpoint. They can still update
+  pre-redesign-style flairs with the older endpoint.
 
 **Fixed**
 
