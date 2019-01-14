@@ -100,6 +100,8 @@ class Objector(object):
         elif {'authorFlairType', 'name'}.issubset(data):
             # discards flair information
             return self._reddit.redditor(data['name'])
+        elif {'parent_id'}.issubset(data):
+            parser = self.parsers[self._reddit.config.kinds['comment']]
         else:
             if 'user' in data:
                 parser = self.parsers[self._reddit.config.kinds['redditor']]

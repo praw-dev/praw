@@ -88,6 +88,47 @@ class TestSubreddit(UnitTest):
         assert str(excinfo.value) == message
 
 
+class TestSubredditFlairTemplates(UnitTest):
+    def test_bad_add(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with pytest.raises(TypeError):
+            subreddit.flair.templates.add('impossible', css_class='conflict',
+                                          background_color='#ABCDEF')
+        with pytest.raises(TypeError):
+            subreddit.flair.templates.add('impossible', css_class='conflict',
+                                          mod_only=False)
+        with pytest.raises(TypeError):
+            subreddit.flair.templates.add('impossible', css_class='conflict',
+                                          text_color='dark')
+        with pytest.raises(TypeError):
+            subreddit.flair.templates.add('impossible', css_class='conflict',
+                                          background_color='#ABCDEF',
+                                          mod_only=False, text_color='dark')
+
+
+class TestSubredditLinkFlairTemplates(UnitTest):
+    def test_bad_add(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with pytest.raises(TypeError):
+            subreddit.flair.link_templates.add('impossible',
+                                               css_class='conflict',
+                                               background_color='#ABCDEF')
+        with pytest.raises(TypeError):
+            subreddit.flair.link_templates.add('impossible',
+                                               css_class='conflict',
+                                               mod_only=False)
+        with pytest.raises(TypeError):
+            subreddit.flair.link_templates.add('impossible',
+                                               css_class='conflict',
+                                               text_color='dark')
+        with pytest.raises(TypeError):
+            subreddit.flair.link_templates.add('impossible',
+                                               css_class='conflict',
+                                               background_color='#ABCDEF',
+                                               mod_only=False,
+                                               text_color='dark')
+
+
 class TestSubredditWiki(UnitTest):
     def test__getitem(self):
         subreddit = Subreddit(self.reddit, display_name='name')

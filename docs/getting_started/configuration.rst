@@ -75,5 +75,5 @@ The code above creates a Session and `configures it to use a custom certificate
 <http://docs.python-requests
 .org/en/master/user/advanced/#ssl-cert-verification>`_, then passes it as a
 parameter when creating the :class:`.Reddit` instance. Note that the example
-above uses a :ref:`script_application` authentication type, but this method
+above uses a :ref:`password_flow` authentication type, but this method
 will work for any authentication type.

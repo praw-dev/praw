@@ -1,7 +1,7 @@
 {
   "http_interactions": [
     {
-      "recorded_at": "2019-01-09T23:21:33",
+      "recorded_at": "2019-01-10T02:41:39",
       "request": {
         "body": {
           "encoding": "utf-8",
@@ -21,7 +21,7 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "55"
+            "53"
           ],
           "Content-Type": [
             "application/x-www-form-urlencoded"
@@ -46,19 +46,19 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "114"
+            "116"
           ],
           "Content-Type": [
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 09 Jan 2019 23:21:32 GMT"
+            "Thu, 10 Jan 2019 02:41:38 GMT"
           ],
           "Server": [
             "snooserv"
           ],
           "Set-Cookie": [
-            "edgebucket=kqrCF7x7xeSfSuCNjR; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+            "edgebucket=SMqOKUbXCpIn1L0TAB; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
           ],
           "Strict-Transport-Security": [
             "max-age=15552000; includeSubDomains; preload"
@@ -76,10 +76,10 @@
             "majestic"
           ],
           "X-Served-By": [
-            "cache-cdg20739-CDG"
+            "cache-sea1039-SEA"
           ],
           "X-Timer": [
-            "S1547076092.731358,VS0,VE689"
+            "S1547088098.964870,VS0,VE463"
           ],
           "cache-control": [
             "max-age=0, must-revalidate"
@@ -102,11 +102,11 @@
       }
     },
     {
-      "recorded_at": "2019-01-09T23:21:35",
+      "recorded_at": "2019-01-10T02:41:39",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&name=<USERNAME>&type=moderator"
+          "string": ""
         },
         "headers": {
           "Accept": [
@@ -121,26 +121,20 @@
           "Connection": [
             "keep-alive"
           ],
-          "Content-Length": [
-            "41"
-          ],
-          "Content-Type": [
-            "application/x-www-form-urlencoded"
-          ],
           "Cookie": [
-            "edgebucket=kqrCF7x7xeSfSuCNjR"
+            "edgebucket=SMqOKUbXCpIn1L0TAB"
           ],
           "User-Agent": [
             "<USER_AGENT> PRAW/6.0.0 prawcore/1.0.0"
           ]
         },
-        "method": "POST",
-        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/unfriend/?raw_json=1"
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=0&raw_json=1"
       },
       "response": {
         "body": {
           "encoding": "UTF-8",
-          "string": "{}"
+          "string": "[{\"text_editable\": true, \"type\": \"richtext\", \"text\": \"my text\", \"mod_only\": false, \"richtext\": [{\"e\": \"text\", \"t\": \"my text\"}], \"background_color\": \"\", \"id\": \"261864c8-1481-11e9-bbc8-0e693be74de2\", \"text_color\": \"dark\"}]"
         },
         "headers": {
           "Accept-Ranges": [
@@ -150,13 +144,13 @@
             "keep-alive"
           ],
           "Content-Length": [
-            "2"
+            "220"
           ],
           "Content-Type": [
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Wed, 09 Jan 2019 23:21:35 GMT"
+            "Thu, 10 Jan 2019 02:41:39 GMT"
           ],
           "Server": [
             "snooserv"
@@ -177,10 +171,10 @@
             "majestic"
           ],
           "X-Served-By": [
-            "cache-cdg20750-CDG"
+            "cache-sea1025-SEA"
           ],
           "X-Timer": [
-            "S1547076095.967755,VS0,VE300"
+            "S1547088099.176756,VS0,VE144"
           ],
           "cache-control": [
             "private, s-maxage=0, max-age=0, must-revalidate, max-age=0, must-revalidate"
@@ -198,7 +192,7 @@
             "599.0"
           ],
           "x-ratelimit-reset": [
-            "505"
+            "501"
           ],
           "x-ratelimit-used": [
             "1"
@@ -214,7 +208,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/unfriend/?raw_json=1"
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=0&raw_json=1"
       }
     }
   ],
