@@ -1,4 +1,5 @@
 """Provide the Subreddit class."""
+# pylint: disable=too-many-lines
 from copy import deepcopy
 from json import dumps, loads
 import os.path
@@ -409,21 +410,21 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     def _info_path(self):
         return API_PATH['subreddit_about'].format(subreddit=self)
 
-    def _upload_image(self, img_path):
+    def _upload_image(self, image_path):
         """Upload an image and return its URL. Uses undocumented endpoint."""
-        img_data = {'filepath': os.path.basename(img_path),
+        img_data = {'filepath': os.path.basename(image_path),
                     'mimetype': 'image/jpeg'}
-        if img_path.lower().endswith('.png'):
+        if image_path.lower().endswith('.png'):
             img_data['mimetype'] = 'image/png'
 
         url = API_PATH['media_asset']
         # until we learn otherwise, assume this request always succeeds
         upload_lease = self._reddit.post(url, data=img_data)['args']
+        upload_url = 'https:{}'.format(upload_lease['action'])
         upload_data = {item['name']: item['value']
                        for item in upload_lease['fields']}
-        upload_url = 'https:{}'.format(upload_lease['action'])
 
-        with open(img_path, 'rb') as image:
+        with open(image_path, 'rb') as image:
             response = self._reddit._core._requestor._http.post(
                 upload_url, data=upload_data, files={'file': image})
         response.raise_for_status()
@@ -502,7 +503,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     def submit(self, title, selftext=None, url=None, flair_id=None,
                flair_text=None, resubmit=True, send_replies=True,
-               img_path=None):
+               image_path=None):
         """Add a submission to the subreddit.
 
         :param title: The title of the submission.
@@ -517,12 +518,20 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             been submitted (default: True).
         :param send_replies: When True, messages will be sent to the submission
             author when comments are made to the submission (default: True).
-        :param img_path: The path to an image, to upload and post
+        :param image_path: The path to an image, to upload and post.
+
+            .. note::
+
+               Reddit's API uses WebSockets to respond with the link of the
+               newly created post when the ``image_path`` parameter is used.
+               Very occasionally, this will fail and the method will return
+               ``None``. In this case, the post was still successfully created.
+
         :returns: A :class:`~.Submission` object for the newly created
             submission.
 
-        Exactly one of ``selftext``, ``url``, or ``img_path`` must be provided,
-        but no more.
+        Exactly one of ``selftext``, ``url``, or ``image_path`` must be
+        provided, but no more.
 
         For example to submit a URL to ``/r/reddit_api_test`` do:
 
@@ -533,10 +542,10 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
            reddit.subreddit('reddit_api_test').submit(title, url=url)
 
         """
-        if ((bool(selftext) or selftext == ''), bool(url), bool(img_path)) \
+        if ((bool(selftext) or selftext == ''), bool(url), bool(image_path)) \
                 .count(True) != 1:
-            raise TypeError('Exactly one of `selftext`, `url`, or `img_path` '
-                            'must be provided, but no more.')
+            raise TypeError('Exactly one of `selftext`, `url`, or `image_path`'
+                            ' must be provided, but no more.')
 
         data = {'sr': str(self), 'resubmit': bool(resubmit),
                 'sendreplies': bool(send_replies), 'title': title}
@@ -545,9 +554,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                 data[key] = value
         if selftext is not None:
             data.update(kind='self', text=selftext)
-        elif img_path:
-            data.update(kind='image', url=self._upload_image(img_path))
-            resp = self._reddit.post(API_PATH['submit'], data=data)
+        elif image_path:
+            data.update(kind='image', url=self._upload_image(image_path))
+            response = self._reddit.post(API_PATH['submit'], data=data)
 
             # About the websockets:
             #
@@ -570,9 +579,14 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             # websocket creation happen right after the POST request,
             # otherwise you will have trouble.
 
-            socket = websocket.create_connection(resp['json']['data']
-                                                 ['websocket_url'])
-            ws_update = loads(socket.recv())
+            try:
+                socket = websocket.create_connection(response['json']['data']
+                                                     ['websocket_url'],
+                                                     timeout=2)
+                ws_update = loads(socket.recv())
+                socket.close(timeout=2)
+            except websocket.WebSocketTimeoutException:
+                return None
             url = ws_update['payload']['redirect']
             return self._reddit.submission(url=url)
         else:

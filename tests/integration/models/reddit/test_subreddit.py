@@ -11,6 +11,7 @@ from praw.models import (Comment, ModAction, ModmailAction,
 from prawcore import Forbidden, NotFound, RequestException, TooLarge
 import mock
 import pytest
+import websocket
 
 from ... import IntegrationTest
 
@@ -26,7 +27,12 @@ class WebsocketMock(object):
         self.post_ids = post_ids
         self.i = -1
 
+    def close(self, *args, **kwargs):
+        pass
+
     def recv(self):
+        if not self.post_ids:
+            raise websocket.WebSocketTimeoutException()
         assert 0 <= self.i + 1 < len(self.post_ids)
         self.i += 1
         return dumps(self.make_dict(self.post_ids[self.i]))
@@ -151,12 +157,25 @@ class TestSubreddit(IntegrationTest):
             subreddit = self.reddit.subreddit(
                 pytest.placeholders.test_subreddit)
             for file_name in ('test.png', 'test.jpg'):
-                img_path = self.image_path(file_name)
+                image = self.image_path(file_name)
 
-                submission = subreddit.submit('Test Title', img_path=img_path)
+                submission = subreddit.submit('Test Title', image_path=image)
                 assert submission.author == self.reddit.config.username
                 assert submission.is_reddit_media_domain
                 assert submission.title == 'Test Title'
+
+    @mock.patch('time.sleep', return_value=None)
+    @mock.patch('websocket.create_connection', return_value=WebsocketMock())
+    def test_submit__image__bad_websocket(self, _, __):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubreddit.test_submit__image'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            for file_name in ('test.png', 'test.jpg'):
+                image = self.image_path(file_name)
+
+                submission = subreddit.submit('Test Title', image_path=image)
+                assert submission is None
 
     @mock.patch('time.sleep', return_value=None)
     def test_submit__selftext(self, _):
