@@ -14,3 +14,5 @@ https://rackerlabs.github.io/docs-rackspace/tools/rtd-tables.html */
       overflow: visible !important;
    }
 }
+
+table.center-table-items, table.center-table-items th { text-align: center; }
