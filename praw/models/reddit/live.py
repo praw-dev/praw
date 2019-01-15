@@ -235,7 +235,30 @@ class LiveContributorRelationship(object):
 
 
 class LiveThread(RedditBase):
-    """An individual LiveThread object."""
+    """An individual LiveThread object.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    necessarily comprehensive.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``created_utc``         The creation time of the live thread, in `Unix
+                            Time`_.
+    ``description``         Description of the live thread, as Markdown.
+    ``description_html``    Description of the live thread, as HTML.
+    ``id``                  The ID of the live thread.
+    ``nsfw``                A ``bool`` representing whether or not the live
+                            thread is marked as NSFW.
+    ======================= ===================================================
+
+    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    """
 
     STR_FIELD = 'id'
 
@@ -492,7 +515,29 @@ class LiveThreadContribution(object):
 
 
 class LiveUpdate(RedditBase):
-    """An individual :class:`.LiveUpdate` object."""
+    """An individual :class:`.LiveUpdate` object.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    necessarily comprehensive.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``author``              The :class:`.Redditor` who made the update.
+    ``body``                Body of the update, as Markdown.
+    ``body_html``           Body of the update, as HTML.
+    ``created_utc``         The time the update was created, as `Unix Time`_.
+    ``stricken``            A ``bool`` representing whether or not the update
+                            was stricken (see :meth:`.strike`).
+    ======================= ===================================================
+
+    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    """
 
     STR_FIELD = 'id'
 
