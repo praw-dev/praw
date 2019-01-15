@@ -7,7 +7,23 @@ from .base import RedditBase
 
 
 class Emoji(RedditBase):
-    """An individual Emoji object."""
+    """An individual Emoji object.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    necessarily comprehensive.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``name``                The name of the emoji.
+    ``url``                 The URL of the emoji image.
+    ======================= ===================================================
+    """
 
     STR_FIELD = 'name'
 
