@@ -6,7 +6,7 @@ from ..const import API_PATH
 
 
 class Redditors(PRAWBase):
-    """Users is a Listing class that provides various Redditor lists."""
+    """Redditors is a Listing class that provides various Redditor lists."""
 
     def new(self, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for new Redditors.
