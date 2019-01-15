@@ -10,7 +10,38 @@ from .subreddit import Subreddit, SubredditStream
 
 
 class Multireddit(RedditBase, SubredditListingMixin):
-    """A class for users' Multireddits."""
+    r"""A class for users' Multireddits.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    necessarily comprehensive.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``can_edit``            A ``bool`` representing whether or not the
+                            authenticated user may edit the multireddit.
+    ``copied_from``         The multireddit that the multireddit was copied
+                            from, if it exists, otherwise ``None``.
+    ``created_utc``         When the multireddit was created, in `Unix Time`_.
+    ``description_html``    The description of the multireddit, as HTML.
+    ``description_md``      The description of the multireddit, as Markdown.
+    ``display_name``        The display name of the multireddit.
+    ``name``                The name of the multireddit.
+    ``over_18``             A ``bool`` representing whether or not the
+                            multireddit is restricted for users over 18.
+    ``subreddits``          A ``list`` of :class:`.Subreddit`\ s that make up
+                            the multireddit.
+    ``visibility``          The visibility of the multireddit, either
+                            ``private``, ``public``, or ``hidden``.
+    ======================= ===================================================
+
+    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    """
 
     STR_FIELD = 'path'
     RE_INVALID = re.compile(r'(\s|\W|_)+', re.UNICODE)

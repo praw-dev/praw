@@ -6,7 +6,32 @@ from .redditor import Redditor
 
 
 class WikiPage(RedditBase):
-    """An individual WikiPage object."""
+    """An individual WikiPage object.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    necessarily comprehensive.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``content_html``        The contents of the wiki page, as HTML.
+    ``content_md``          The contents of the wiki page, as Markdown.
+    ``may_revise``          A ``bool`` representing whether or not the
+                            authenticated user may edit the wiki page.
+    ``name``                The name of the wiki page.
+    ``revision_by``         The :class:`.Redditor` who authored this
+                            revision of the wiki page.
+    ``revision_date``       The time of this revision, in `Unix Time`_.
+    ``subreddit``           The :class:`.Subreddit` this wiki page belongs to.
+    ======================= ===================================================
+
+    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+    """
 
     __hash__ = RedditBase.__hash__
 
