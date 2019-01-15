@@ -76,7 +76,8 @@ class TestSubreddit(UnitTest):
         assert str(subreddit) == 'name'
 
     def test_submit_failure(self):
-        message = 'Either `selftext` or `url` must be provided.'
+        message = ('Exactly one of `selftext`, `url`, or `image_path` must be '
+                   'provided, but no more.')
         subreddit = Subreddit(self.reddit, display_name='name')
 
         with pytest.raises(TypeError) as excinfo:
@@ -85,6 +86,32 @@ class TestSubreddit(UnitTest):
 
         with pytest.raises(TypeError) as excinfo:
             subreddit.submit('Cool title', selftext='a', url='b')
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.submit('Cool title', selftext='', url='b')
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.submit('Cool title', selftext='a', url='b',
+                             image_path='c')
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.submit('Cool title', selftext='', url='b',
+                             image_path='c')
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.submit('Cool title', url='b', image_path='c')
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.submit('Cool title', selftext='a', image_path='c')
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.submit('Cool title', selftext='', image_path='c')
         assert str(excinfo.value) == message
 
 

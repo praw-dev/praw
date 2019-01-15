@@ -132,6 +132,8 @@ class Objector(object):
             parser = self.parsers[data['kind']]
             return parser.parse(data['data'], self._reddit)
         elif 'json' in data and 'data' in data['json']:
+            if 'websocket_url' in data['json']['data']:
+                return data
             if 'things' in data['json']['data']:  # Submission.reply
                 return self.objectify(data['json']['data']['things'])
             if 'url' in data['json']['data']:  # Subreddit.submit
