@@ -410,6 +410,46 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     def _info_path(self):
         return API_PATH['subreddit_about'].format(subreddit=self)
 
+    def _submit_media(self, data):
+        """Submit and return an `image`, `video`, or `videogif`.
+
+        This is a helper method for submitting posts that are not link posts or
+        self posts.
+        """
+        response = self._reddit.post(API_PATH['submit'], data=data)
+
+        # About the websockets:
+        #
+        # Reddit responds to this request with only two fields: a link to
+        # the user's /submitted page, and a websocket URL. We can use the
+        # websocket URL to get a link to the new post once it is created.
+        #
+        # An important note to PRAW contributors or anyone who would
+        # wish to step through this section with a debugger: This block
+        # of code is NOT debugger-friendly. If there is *any*
+        # significant time between the POST request just above this
+        # comment and the creation of the websocket connection just
+        # below, the code will become stuck in an infinite loop at the
+        # socket.recv() call. I believe this is because only one message is
+        # sent over the websocket, and if the client doesn't connect
+        # soon enough, it will miss the message and get stuck forever
+        # waiting for another.
+        #
+        # So if you need to debug this section of code, please let the
+        # websocket creation happen right after the POST request,
+        # otherwise you will have trouble.
+
+        try:
+            socket = websocket.create_connection(response['json']['data']
+                                                 ['websocket_url'],
+                                                 timeout=2)
+            ws_update = loads(socket.recv())
+            socket.close(timeout=2)
+        except websocket.WebSocketTimeoutException:
+            return None
+        url = ws_update['payload']['redirect']
+        return self._reddit.submission(url=url)
+
     def _upload_image(self, image_path):
         """Upload an image and return its URL. Uses undocumented endpoint."""
         img_data = {'filepath': os.path.basename(image_path),
@@ -502,8 +542,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             self._reddit.config.reddit_url, path))
 
     def submit(self, title, selftext=None, url=None, flair_id=None,
-               flair_text=None, resubmit=True, send_replies=True,
-               image_path=None):
+               flair_text=None, resubmit=True, send_replies=True):
         """Add a submission to the subreddit.
 
         :param title: The title of the submission.
@@ -518,20 +557,10 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             been submitted (default: True).
         :param send_replies: When True, messages will be sent to the submission
             author when comments are made to the submission (default: True).
-        :param image_path: The path to an image, to upload and post.
-
-            .. note::
-
-               Reddit's API uses WebSockets to respond with the link of the
-               newly created post when the ``image_path`` parameter is used.
-               Very occasionally, this will fail and the method will return
-               ``None``. In this case, the post was still successfully created.
-
         :returns: A :class:`~.Submission` object for the newly created
             submission.
 
-        Exactly one of ``selftext``, ``url``, or ``image_path`` must be
-        provided, but no more.
+        Either ``selftext`` or ``url`` can be provided, but not both.
 
         For example to submit a URL to ``/r/reddit_api_test`` do:
 
@@ -542,10 +571,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
            reddit.subreddit('reddit_api_test').submit(title, url=url)
 
         """
-        if ((bool(selftext) or selftext == ''), bool(url), bool(image_path)) \
-                .count(True) != 1:
-            raise TypeError('Exactly one of `selftext`, `url`, or `image_path`'
-                            ' must be provided, but no more.')
+        if (bool(selftext) or selftext == '') == bool(url):
+            raise TypeError('Either `selftext` or `url` must be provided.')
 
         data = {'sr': str(self), 'resubmit': bool(resubmit),
                 'sendreplies': bool(send_replies), 'title': title}
@@ -554,44 +581,50 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                 data[key] = value
         if selftext is not None:
             data.update(kind='self', text=selftext)
-        elif image_path:
-            data.update(kind='image', url=self._upload_image(image_path))
-            response = self._reddit.post(API_PATH['submit'], data=data)
-
-            # About the websockets:
-            #
-            # Reddit responds to this request with only two fields: a link to
-            # the user's /submitted page, and a websocket URL. We can use the
-            # websocket URL to get a link to the new post once it is created.
-            #
-            # An important note to PRAW contributors or anyone who would
-            # wish to step through this section with a debugger: This block
-            # of code is NOT debugger-friendly. If there is *any*
-            # significant time between the POST request just above this
-            # comment and the creation of the websocket connection just
-            # below, the code will become stuck in an infinite loop at the
-            # socket.recv() call. I believe this is because only one message is
-            # sent over the websocket, and if the client doesn't connect
-            # soon enough, it will miss the message and get stuck forever
-            # waiting for another.
-            #
-            # So if you need to debug this section of code, please let the
-            # websocket creation happen right after the POST request,
-            # otherwise you will have trouble.
-
-            try:
-                socket = websocket.create_connection(response['json']['data']
-                                                     ['websocket_url'],
-                                                     timeout=2)
-                ws_update = loads(socket.recv())
-                socket.close(timeout=2)
-            except websocket.WebSocketTimeoutException:
-                return None
-            url = ws_update['payload']['redirect']
-            return self._reddit.submission(url=url)
         else:
             data.update(kind='link', url=url)
         return self._reddit.post(API_PATH['submit'], data=data)
+
+    def submit_image(self, title, image_path, flair_id=None,
+                     flair_text=None, resubmit=True, send_replies=True):
+        """Add an image submission to the subreddit.
+
+        :param title: The title of the submission.
+        :param image_path: The path to an image, to upload and post.
+        :param flair_id: The flair template to select (default: None).
+        :param flair_text: If the template's ``flair_text_editable`` value is
+            True, this value will set a custom text (default: None).
+        :param resubmit: When False, an error will occur if the URL has already
+            been submitted (default: True).
+        :param send_replies: When True, messages will be sent to the submission
+            author when comments are made to the submission (default: True).
+
+        .. note::
+
+           Reddit's API uses WebSockets to respond with the link of the
+           newly created post. Very occasionally, this will fail and the
+           method will return ``None``. In this case, the post was still
+           successfully created.
+
+        :returns: A :class:`~.Submission` object for the newly created
+            submission.
+
+        For example to submit an image to ``/r/reddit_api_test`` do:
+
+        .. code:: python
+
+           title = 'My favorite picture'
+           image = '/path/to/image.png'
+           reddit.subreddit('reddit_api_test').submit_image(title, image)
+
+        """
+        data = {'sr': str(self), 'resubmit': bool(resubmit),
+                'sendreplies': bool(send_replies), 'title': title}
+        for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
+            if value is not None:
+                data[key] = value
+        data.update(kind='image', url=self._upload_image(image_path))
+        return self._submit_media(data)
 
     def subscribe(self, other_subreddits=None):
         """Subscribe to the subreddit.
