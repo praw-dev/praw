@@ -25,12 +25,11 @@ Unreleased
 * Add method :meth:`~.SubredditWidgetsModeration.reorder` to reorder a
   subreddit's widgets.
 * Add :class:`.Redditors` (``reddit.redditors``) to provide Redditor listings.
+* Add :meth:`.submit_image` for submitting native images to Reddit.
 
 **Changed**
 
 * :meth:`.User.me` returns ``None`` in :attr:`~praw.Reddit.read_only` mode.
-* :meth:`.submit` accepts an ``image_path`` parameter to upload images to
-  Reddit.
 * :meth:`.SubredditLinkFlairTemplates.__iter__` uses the v2 flair API endpoint.
   This change will result in additional fields being returned. All fields that
   were previously returned will still be returned.

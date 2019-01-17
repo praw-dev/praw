@@ -148,36 +148,6 @@ class TestSubreddit(IntegrationTest):
             assert submission.link_flair_text == flair_text
 
     @mock.patch('time.sleep', return_value=None)
-    @mock.patch('websocket.create_connection',
-                return_value=WebsocketMock('af5aek',  # update with cassette
-                                           'af5af1'))  # update with cassette
-    def test_submit__image(self, _, __):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette('TestSubreddit.test_submit__image'):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit)
-            for file_name in ('test.png', 'test.jpg'):
-                image = self.image_path(file_name)
-
-                submission = subreddit.submit('Test Title', image_path=image)
-                assert submission.author == self.reddit.config.username
-                assert submission.is_reddit_media_domain
-                assert submission.title == 'Test Title'
-
-    @mock.patch('time.sleep', return_value=None)
-    @mock.patch('websocket.create_connection', return_value=WebsocketMock())
-    def test_submit__image__bad_websocket(self, _, __):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette('TestSubreddit.test_submit__image'):
-            subreddit = self.reddit.subreddit(
-                pytest.placeholders.test_subreddit)
-            for file_name in ('test.png', 'test.jpg'):
-                image = self.image_path(file_name)
-
-                submission = subreddit.submit('Test Title', image_path=image)
-                assert submission is None
-
-    @mock.patch('time.sleep', return_value=None)
     def test_submit__selftext(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette('TestSubreddit.test_submit__selftext'):
@@ -211,6 +181,55 @@ class TestSubreddit(IntegrationTest):
             assert submission.author == self.reddit.config.username
             assert submission.url == url
             assert submission.title == 'Test Title'
+
+    @mock.patch('time.sleep', return_value=None)
+    @mock.patch('websocket.create_connection',
+                return_value=WebsocketMock('af5aek',  # update with cassette
+                                           'af5af1'))  # update with cassette
+    def test_submit_image(self, _, __):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubreddit.test_submit_image'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            for file_name in ('test.png', 'test.jpg'):
+                image = self.image_path(file_name)
+
+                submission = subreddit.submit_image('Test Title', image)
+                assert submission.author == self.reddit.config.username
+                assert submission.is_reddit_media_domain
+                assert submission.title == 'Test Title'
+
+    @mock.patch('time.sleep', return_value=None)
+    @mock.patch('websocket.create_connection', return_value=WebsocketMock())
+    def test_submit_image__bad_websocket(self, _, __):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubreddit.test_submit_image'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            for file_name in ('test.png', 'test.jpg'):
+                image = self.image_path(file_name)
+
+                submission = subreddit.submit_image('Test Title', image)
+                assert submission is None
+
+    @mock.patch('time.sleep', return_value=None)
+    @mock.patch('websocket.create_connection',
+                return_value=WebsocketMock('ah3gqo'))  # update with cassette
+    def test_submit_image__flair(self, _, __):
+        flair_id = '6bd28436-1aa7-11e9-9902-0e05ab0fad46'
+        flair_text = 'Test flair text'
+        flair_class = 'test-flair-class'
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubreddit.test_submit_image__flair'):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            image = self.image_path('test.jpg')
+            submission = subreddit.submit_image('Test Title', image,
+                                                flair_id=flair_id,
+                                                flair_text=flair_text)
+            assert submission.link_flair_css_class == flair_class
+            assert submission.link_flair_text == flair_text
 
     def test_subscribe(self):
         self.reddit.read_only = False
