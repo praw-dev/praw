@@ -26,6 +26,8 @@ Unreleased
   subreddit's widgets.
 * Add :class:`.Redditors` (``reddit.redditors``) to provide Redditor listings.
 * Add :meth:`.submit_image` for submitting native images to Reddit.
+* Add :meth:`.submit_video` for submitting native videos and videogifs to
+  Reddit.
 
 **Changed**
 
