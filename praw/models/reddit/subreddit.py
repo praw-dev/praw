@@ -2,13 +2,13 @@
 # pylint: disable=too-many-lines
 from copy import deepcopy
 from json import dumps, loads
-import os.path
+from os.path import basename, dirname, join
 
 from prawcore import Redirect
 import websocket
 
 from ...const import API_PATH, urljoin
-from ...exceptions import APIException
+from ...exceptions import APIException, ClientException
 from ..util import permissions_string, stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
@@ -439,6 +439,10 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         # websocket creation happen right after the POST request,
         # otherwise you will have trouble.
 
+        if not isinstance(response, dict):
+            raise ClientException('Something went wrong with your post: '
+                                  '{!r}'.format(response))
+
         try:
             socket = websocket.create_connection(response['json']['data']
                                                  ['websocket_url'],
@@ -446,16 +450,24 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             ws_update = loads(socket.recv())
             socket.close(timeout=2)
         except websocket.WebSocketTimeoutException:
-            return None
+            raise ClientException('Websocket error. Check your media file. '
+                                  'Your post may still have been created.')
         url = ws_update['payload']['redirect']
         return self._reddit.submission(url=url)
 
-    def _upload_image(self, image_path):
-        """Upload an image and return its URL. Uses undocumented endpoint."""
-        img_data = {'filepath': os.path.basename(image_path),
-                    'mimetype': 'image/jpeg'}
-        if image_path.lower().endswith('.png'):
-            img_data['mimetype'] = 'image/png'
+    def _upload_media(self, media_path):
+        """Upload media and return its URL. Uses undocumented endpoint."""
+        if media_path is None:
+            media_path = join(dirname(dirname(dirname(__file__))),
+                              'images', 'PRAW logo.png')
+
+        file_name = basename(media_path).lower()
+        mime_type = {'png': 'image/png', 'mov': 'video/quicktime',
+                     'mp4': 'video/mp4', 'jpg': 'image/jpeg',
+                     'jpeg': 'image/jpeg',
+                     'gif': 'image/gif'}.get(file_name.rpartition('.')[2],
+                                             'image/jpeg')  # default to JPEG
+        img_data = {'filepath': file_name, 'mimetype': mime_type}
 
         url = API_PATH['media_asset']
         # until we learn otherwise, assume this request always succeeds
@@ -464,9 +476,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         upload_data = {item['name']: item['value']
                        for item in upload_lease['fields']}
 
-        with open(image_path, 'rb') as image:
+        with open(media_path, 'rb') as media:
             response = self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={'file': image})
+                upload_url, data=upload_data, files={'file': media})
         response.raise_for_status()
 
         return upload_url + '/' + upload_data['key']
@@ -570,6 +582,11 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
            url = 'https://praw.readthedocs.io'
            reddit.subreddit('reddit_api_test').submit(title, url=url)
 
+        .. note ::
+
+           For submitting images, videos, and videogifs,
+           see :meth:`.submit_image` and :meth:`.submit_video`.
+
         """
         if (bool(selftext) or selftext == '') == bool(url):
             raise TypeError('Either `selftext` or `url` must be provided.')
@@ -602,9 +619,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         .. note::
 
            Reddit's API uses WebSockets to respond with the link of the
-           newly created post. Very occasionally, this will fail and the
-           method will return ``None``. In this case, the post was still
-           successfully created.
+           newly created post. If this fails, the method will raise
+           :class:`.ClientException`. Occasionally, the Reddit post will still
+           be created. More often, there is an error with the image file.
 
         :returns: A :class:`~.Submission` object for the newly created
             submission.
@@ -623,7 +640,59 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
             if value is not None:
                 data[key] = value
-        data.update(kind='image', url=self._upload_image(image_path))
+        data.update(kind='image', url=self._upload_media(image_path))
+        return self._submit_media(data)
+
+    def submit_video(self, title, video_path, videogif=False,
+                     thumbnail_path=None, flair_id=None, flair_text=None,
+                     resubmit=True, send_replies=True):
+        """Add a video or videogif submission to the subreddit.
+
+        :param title: The title of the submission.
+        :param video_path: The path to a video, to upload and post.
+        :param videogif: A ``bool`` value. If ``True``, the video is
+            uploaded as a videogif, which is essentially a silent video (
+            default: ``False``).
+        :param thumbnail_path: (Optional) The path to an image, to be uploaded
+            and used as the thumbnail for this video. If not provided, the
+            PRAW logo will be used as the thumbnail.
+        :param flair_id: The flair template to select (default: ``None``).
+        :param flair_text: If the template's ``flair_text_editable`` value is
+            True, this value will set a custom text (default: ``None``).
+        :param resubmit: When False, an error will occur if the URL has already
+            been submitted (default: ``True``).
+        :param send_replies: When True, messages will be sent to the submission
+            author when comments are made to the submission
+            (default: ``True``).
+
+        .. note::
+
+           Reddit's API uses WebSockets to respond with the link of the
+           newly created post. If this fails, the method will raise
+           :class:`.ClientException`. Occasionally, the Reddit post will still
+           be created. More often, there is an error with the video file.
+
+        :returns: A :class:`~.Submission` object for the newly created
+            submission.
+
+        For example to submit a video to ``/r/reddit_api_test`` do:
+
+        .. code:: python
+
+           title = 'My favorite movie'
+           video = '/path/to/video.mp4'
+           reddit.subreddit('reddit_api_test').submit_video(title, video)
+
+        """
+        data = {'sr': str(self), 'resubmit': bool(resubmit),
+                'sendreplies': bool(send_replies), 'title': title}
+        for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
+            if value is not None:
+                data[key] = value
+        data.update(kind='videogif' if videogif else 'video',
+                    url=self._upload_media(video_path),
+                    # if thumbnail_path is None, it uploads the PRAW logo
+                    video_poster_url=self._upload_media(thumbnail_path))
         return self._submit_media(data)
 
     def subscribe(self, other_subreddits=None):
