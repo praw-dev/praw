@@ -926,7 +926,8 @@ class SubredditFlair(object):
         """
         return self.update(x['user'] for x in self())
 
-    def set(self, redditor=None, text='', css_class=''):
+    def set(self, redditor=None, text='', css_class='',
+            flair_template_id=None):
         """Set flair for a Redditor.
 
         :param redditor: (Required) A redditor name (e.g., ``'spez'``) or
@@ -934,7 +935,9 @@ class SubredditFlair(object):
         :param text: The flair text to associate with the Redditor or
             Submission (default: '').
         :param css_class: The css class to associate with the flair html
-            (default: '').
+            (default: ''). Use either this or ``flair_template_id``.
+        :param flair_template_id: The ID of the flair template to be used
+            (default: ``None``). Use either this or ``css_class``.
 
         This method can only be used by an authenticated user who is a
         moderator of the associated Subreddit.
@@ -943,11 +946,23 @@ class SubredditFlair(object):
 
         .. code:: python
 
-           reddit.subreddit('redditdev').flair.set('bboe', 'PRAW author')
+           reddit.subreddit('redditdev').flair.set('bboe', 'PRAW author',
+                                                   css_class='mods')
+           template = '6bd28436-1aa7-11e9-9902-0e05ab0fad46'
+           reddit.subreddit('redditdev').flair.set('spez', 'Reddit CEO',
+                                                   flair_template_id=template)
 
         """
-        data = {'css_class': css_class, 'name': str(redditor), 'text': text}
-        url = API_PATH['flair'].format(subreddit=self.subreddit)
+        if css_class and flair_template_id is not None:
+            raise TypeError('Parameter `css_class` cannot be used in '
+                            'conjunction with `flair_template_id`.')
+        data = {'name': str(redditor), 'text': text}
+        if flair_template_id is not None:
+            data['flair_template_id'] = flair_template_id
+            url = API_PATH['select_flair'].format(subreddit=self.subreddit)
+        else:
+            data['css_class'] = css_class
+            url = API_PATH['flair'].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
 
     def update(self, flair_list, text='', css_class=''):

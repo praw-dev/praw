@@ -92,6 +92,14 @@ class TestSubreddit(UnitTest):
         assert str(excinfo.value) == message
 
 
+class TestSubredditFlair(UnitTest):
+    def test_set(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with pytest.raises(TypeError):
+            subreddit.flair.set('a_redditor', css_class='myCSS',
+                                flair_template_id='gibberish')
+
+
 class TestSubredditFlairTemplates(UnitTest):
     def test_bad_add(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
