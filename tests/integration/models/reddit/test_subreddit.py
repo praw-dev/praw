@@ -498,6 +498,23 @@ class TestSubredditFlair(IntegrationTest):
             assert len(response) > 100
             assert all('removed' in x['status'] for x in response)
 
+    def test_set__flair_id(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlair.test_set__flair_id'):
+            redditor = self.reddit.redditor(self.reddit.config.username)
+            flair = '11c32eee-1482-11e9-bfc0-0efc81a5e8e8'
+            self.subreddit.flair.set(redditor, 'redditor flair',
+                                     flair_template_id=flair)
+
+    def test_set__flair_id_default_text(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlair.test_set__flair_id_default_text'):
+            redditor = self.reddit.redditor(self.reddit.config.username)
+            flair = '11c32eee-1482-11e9-bfc0-0efc81a5e8e8'
+            self.subreddit.flair.set(redditor, flair_template_id=flair)
+
     def test_set__redditor(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -506,19 +523,19 @@ class TestSubredditFlair(IntegrationTest):
                 self.reddit.config.username)
             self.subreddit.flair.set(redditor, 'redditor flair')
 
+    def test_set__redditor_css_only(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditFlair.test_set__redditor_css_only'):
+            self.subreddit.flair.set(self.reddit.config.username,
+                                     css_class='some class')
+
     def test_set__redditor_string(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
                 'TestSubredditFlair.test_set__redditor_string'):
             self.subreddit.flair.set(self.reddit.config.username, 'new flair',
                                      'some class')
-
-    def test_set__submission(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-                'TestSubredditFlair.test_set__submission'):
-            submission = self.subreddit._reddit.submission('4b536p')
-            self.subreddit.flair.set(submission, 'submission flair')
 
     def test_update(self):
         self.reddit.read_only = False

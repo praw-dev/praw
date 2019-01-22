@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Added**
+
+* :meth:`~.SubredditFlair.set` supports parameter ``flair_template_id`` for
+  giving a user redesign flair.
+
 6.1.0 (2019/01/19)
 ------------------
 
