@@ -270,7 +270,10 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             self._reddit.post(API_PATH['unhide'], data={'id': submissions})
 
     def crosspost(self, subreddit, title=None, send_replies=True):
-        """Crosspost the submission to a subreddit. Be aware you have to be subscribed to the target subreddit.
+        """Crosspost the submission to a subreddit. 
+        
+        .. attention::
+            Be aware you have to be subscribed to the target subreddit.
 
         :param subreddit: Name of the subreddit or :class:`~.Subreddit`
             object to crosspost into.
