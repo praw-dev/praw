@@ -272,6 +272,9 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     def crosspost(self, subreddit, title=None, send_replies=True):
         """Crosspost the submission to a subreddit.
 
+        .. note::
+            Be aware you have to be subscribed to the target subreddit.
+
         :param subreddit: Name of the subreddit or :class:`~.Subreddit`
             object to crosspost into.
         :param title: Title of the submission. Will use this submission's

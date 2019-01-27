@@ -21,6 +21,7 @@ Documentation Contributors
 - Watchful1 `@Watchful1 <https://github.com/Watchful1>`_
 - theonefoster `@theonefoster <https://github.com/theonefoster>`_
 - Eric Woolard `@ericwoolard <https://github.com/ericwoolard>`_
+- Marc `@PerhapsSomeone <https://github.com/PerhapsSomeone>`_
 - Add "Name <email (optional)> and github profile link" above this line.
 
 
