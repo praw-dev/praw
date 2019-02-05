@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Other**
+
+* Bumped minimum prawcore version to 1.0.1.
+
 6.1.1 (2019/01/29)
 ------------------
 
