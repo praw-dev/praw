@@ -36,7 +36,7 @@ setup(name=PACKAGE_NAME,
       description=('PRAW, an acronym for `Python Reddit API Wrapper`, is a '
                    'python package that allows for simple access to '
                    'reddit\'s API.'),
-      install_requires=['prawcore >=1.0.0, <2.0',
+      install_requires=['prawcore >=1.0.1, <2.0',
                         'update_checker >=0.16',
                         'websocket-client >=0.54.0'],
       keywords='reddit api wrapper',
