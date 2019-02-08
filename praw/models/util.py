@@ -1,31 +1,7 @@
 """Provide helper classes used by other models."""
+from collections import deque
 import random
 import time
-
-
-class BoundedSet(object):
-    """A set with a maximum size that evicts the oldest items when necessary.
-
-    This class does not implement the complete set interface.
-    """
-
-    def __init__(self, max_items):
-        """Construct an instance of the BoundedSet."""
-        self.max_items = max_items
-        self._fifo = []
-        self._set = set()
-
-    def __contains__(self, item):
-        """Test if the BoundedSet contains item."""
-        return item in self._set
-
-    def add(self, item):
-        """Add an item to the set discarding the oldest item if necessary."""
-        if len(self._set) == self.max_items:
-            self._set.remove(self._fifo.pop(0))
-        self._fifo.append(item)
-        self._set.add(item)
-
 
 class ExponentialCounter(object):
     """A class to provide an exponential counter with jitter."""
@@ -156,7 +132,7 @@ def stream_generator(function, pause_after=None, skip_existing=False,
     """
     before_attribute = None
     exponential_counter = ExponentialCounter(max_counter=16)
-    seen_attributes = BoundedSet(301)
+    seen_attributes = deque(maxlen=301)
     without_before_counter = 0
     responses_without_new = 0
     valid_pause_after = pause_after is not None
@@ -173,7 +149,7 @@ def stream_generator(function, pause_after=None, skip_existing=False,
             if attribute in seen_attributes:
                 continue
             found = True
-            seen_attributes.add(attribute)
+            seen_attributes.append(attribute)
             newest_attribute = attribute
             if not skip_existing:
                 yield item
