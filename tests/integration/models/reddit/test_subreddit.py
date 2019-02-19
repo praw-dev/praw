@@ -1323,6 +1323,24 @@ class TestSubredditStylesheet(IntegrationTest):
         assert len(stylesheet.images) > 0
         assert stylesheet.stylesheet != ''
 
+    def test_delete_banner(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_delete_banner'):
+            self.subreddit.stylesheet.delete_banner()
+
+    def test_delete_banner_additional_image(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_delete_banner_additional_image'):
+            self.subreddit.stylesheet.delete_banner_additional_image()
+
+    def test_delete_banner_hover_image(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_delete_banner_hover_image'):
+            self.subreddit.stylesheet.delete_banner_hover_image()
+
     def test_delete_header(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
@@ -1391,6 +1409,64 @@ class TestSubredditStylesheet(IntegrationTest):
             with pytest.raises(TooLarge):
                 self.subreddit.stylesheet.upload(
                     'praw', self.image_path('too_large.jpg'))
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_upload_banner__jpg(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload_banner__jpg'):
+            response = self.subreddit.stylesheet.upload_banner(
+                self.image_path('white-square.jpg'))
+        assert response.headers['location'].endswith('.jpg')
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_upload_banner__png(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload_banner__png'):
+            response = self.subreddit.stylesheet.upload_banner(
+                self.image_path('white-square.png'))
+        assert response.headers['location'].endswith('.png')
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_upload_banner_additional_image__jpg(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload_banner_additional_image__jpg'):
+            response = self.subreddit.stylesheet.upload_banner_additional_image(
+                self.image_path('white-square.jpg'))
+        assert response.headers['location'].endswith('.jpg')
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_upload_banner_additional_image__png(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload_banner_additional_image__png'):
+            response = self.subreddit.stylesheet.upload_banner_additional_image(
+                self.image_path('white-square.png'))
+        assert response.headers['location'].endswith('.png')
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_upload_banner_hover_image__jpg(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload_banner_hover_image__jpg'):
+            self.subreddit.stylesheet.upload_banner_additional_image(
+                self.image_path('white-square.png'))
+            response = self.subreddit.stylesheet.upload_banner_hover_image(
+                self.image_path('white-square.jpg'))
+        assert response.headers['location'].endswith('.jpg')
+
+    @mock.patch('time.sleep', return_value=None)
+    def test_upload_banner_hover_image__png(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+                'TestSubredditStylesheet.test_upload_banner_hover_image__png'):
+            self.subreddit.stylesheet.upload_banner_additional_image(
+                self.image_path('white-square.jpg'))
+            response = self.subreddit.stylesheet.upload_banner_hover_image(
+                self.image_path('white-square.png'))
+        assert response.headers['location'].endswith('.png')
 
     def test_upload_header__jpg(self):
         self.reddit.read_only = False
