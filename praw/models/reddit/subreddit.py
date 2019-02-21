@@ -593,8 +593,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if (bool(selftext) or selftext == '') == bool(url):
             raise TypeError('Either `selftext` or `url` must be provided.')
 
-        data = {'sr': str(self), 'resubmit': bool(resubmit), 'nsfw': bool(nsfw),
-                'sendreplies': bool(send_replies), 'title': title}
+        data = {'sr': str(self), 'resubmit': bool(resubmit),
+                'sendreplies': bool(send_replies), 'title': title,
+                'nsfw': bool(nsfw)}
         for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
             if value is not None:
                 data[key] = value
@@ -640,8 +641,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
            reddit.subreddit('reddit_api_test').submit_image(title, image)
 
         """
-        data = {'sr': str(self), 'resubmit': bool(resubmit), 'nsfw': bool(nsfw),
-                'sendreplies': bool(send_replies), 'title': title}
+        data = {'sr': str(self), 'resubmit': bool(resubmit),
+                'sendreplies': bool(send_replies), 'title': title,
+                'nsfw': bool(nsfw)}
         for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
             if value is not None:
                 data[key] = value
@@ -691,8 +693,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
            reddit.subreddit('reddit_api_test').submit_video(title, video)
 
         """
-        data = {'sr': str(self), 'resubmit': bool(resubmit), 'nsfw': bool(nsfw),
-                'sendreplies': bool(send_replies), 'title': title}
+        data = {'sr': str(self), 'resubmit': bool(resubmit),
+                'sendreplies': bool(send_replies), 'title': title,
+                'nsfw': bool(nsfw)}
         for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
             if value is not None:
                 data[key] = value
