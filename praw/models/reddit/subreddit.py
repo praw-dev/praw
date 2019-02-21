@@ -554,7 +554,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             self._reddit.config.reddit_url, path))
 
     def submit(self, title, selftext=None, url=None, flair_id=None,
-               flair_text=None, resubmit=True, send_replies=True):
+               flair_text=None, resubmit=True, send_replies=True, nsfw=False):
         """Add a submission to the subreddit.
 
         :param title: The title of the submission.
@@ -569,6 +569,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             been submitted (default: True).
         :param send_replies: When True, messages will be sent to the submission
             author when comments are made to the submission (default: True).
+        :param nsfw: Whether or not the submission should be marked NSFW
+            (default: False).
         :returns: A :class:`~.Submission` object for the newly created
             submission.
 
@@ -592,7 +594,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             raise TypeError('Either `selftext` or `url` must be provided.')
 
         data = {'sr': str(self), 'resubmit': bool(resubmit),
-                'sendreplies': bool(send_replies), 'title': title}
+                'sendreplies': bool(send_replies), 'title': title,
+                'nsfw': bool(nsfw)}
         for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
             if value is not None:
                 data[key] = value
@@ -600,10 +603,12 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             data.update(kind='self', text=selftext)
         else:
             data.update(kind='link', url=url)
+
         return self._reddit.post(API_PATH['submit'], data=data)
 
     def submit_image(self, title, image_path, flair_id=None,
-                     flair_text=None, resubmit=True, send_replies=True):
+                     flair_text=None, resubmit=True, send_replies=True,
+                     nsfw=False):
         """Add an image submission to the subreddit.
 
         :param title: The title of the submission.
@@ -615,6 +620,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             been submitted (default: True).
         :param send_replies: When True, messages will be sent to the submission
             author when comments are made to the submission (default: True).
+        :param nsfw: Whether or not the submission should be marked NSFW
+            (default: False).
 
         .. note::
 
@@ -636,7 +643,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         """
         data = {'sr': str(self), 'resubmit': bool(resubmit),
-                'sendreplies': bool(send_replies), 'title': title}
+                'sendreplies': bool(send_replies), 'title': title,
+                'nsfw': bool(nsfw)}
         for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
             if value is not None:
                 data[key] = value
@@ -645,7 +653,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     def submit_video(self, title, video_path, videogif=False,
                      thumbnail_path=None, flair_id=None, flair_text=None,
-                     resubmit=True, send_replies=True):
+                     resubmit=True, send_replies=True, nsfw=False):
         """Add a video or videogif submission to the subreddit.
 
         :param title: The title of the submission.
@@ -664,6 +672,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         :param send_replies: When True, messages will be sent to the submission
             author when comments are made to the submission
             (default: ``True``).
+        :param nsfw: Whether or not the submission should be marked NSFW
+            (default: False).
 
         .. note::
 
@@ -685,7 +695,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         """
         data = {'sr': str(self), 'resubmit': bool(resubmit),
-                'sendreplies': bool(send_replies), 'title': title}
+                'sendreplies': bool(send_replies), 'title': title,
+                'nsfw': bool(nsfw)}
         for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
             if value is not None:
                 data[key] = value

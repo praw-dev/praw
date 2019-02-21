@@ -4,6 +4,12 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image`, and
+  :meth:`~.Subreddit.submit_video` support parameter ``nsfw`` to
+  mark the submission NSFW immediately upon posting.
+
 **Other**
 
 * Bumped minimum prawcore version to 1.0.1.
