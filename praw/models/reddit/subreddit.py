@@ -553,8 +553,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._submission_class(self._reddit, url=urljoin(
             self._reddit.config.reddit_url, path))
 
-    def submit(self, title, selftext=None, url=None, flair_id=None, nsfw=False,
-               flair_text=None, resubmit=True, send_replies=True):
+    def submit(self, title, selftext=None, url=None, flair_id=None,
+               flair_text=None, resubmit=True, send_replies=True, nsfw=False):
         """Add a submission to the subreddit.
 
         :param title: The title of the submission.
@@ -606,8 +606,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         return self._reddit.post(API_PATH['submit'], data=data)
 
-    def submit_image(self, title, image_path, flair_id=None, nsfw=False,
-                     flair_text=None, resubmit=True, send_replies=True):
+    def submit_image(self, title, image_path, flair_id=None,
+                     flair_text=None, resubmit=True, send_replies=True,
+                     nsfw=False):
         """Add an image submission to the subreddit.
 
         :param title: The title of the submission.
@@ -650,9 +651,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         data.update(kind='image', url=self._upload_media(image_path))
         return self._submit_media(data)
 
-    def submit_video(self, title, video_path, videogif=False, nsfw=True,
+    def submit_video(self, title, video_path, videogif=False,
                      thumbnail_path=None, flair_id=None, flair_text=None,
-                     resubmit=True, send_replies=True):
+                     resubmit=True, send_replies=True, nsfw=False):
         """Add a video or videogif submission to the subreddit.
 
         :param title: The title of the submission.
