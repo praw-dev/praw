@@ -6,8 +6,6 @@ Unreleased
 
 **Added**
 
-* Add method :meth:`_fetch_structured_styles` to class :class:`SubredditStylesheet`
-* Add method :meth:`_upload_style_asset` to class :class:`SubredditStylesheet`
 * Add method :meth:`delete_banner` to class :class:`SubredditStylesheet`
 * Add method :meth:`delete_banner_additional_image` to class :class:`SubredditStylesheet`
 * Add method :meth:`delete_banner_hover_image` to class :class:`SubredditStylesheet`

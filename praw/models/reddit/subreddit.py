@@ -2163,6 +2163,10 @@ class SubredditStylesheet(object):
         response = self.subreddit._reddit.get(url)
         return response['data']['style']
 
+    def _update_structured_styles(self, style_data):
+        url = API_PATH['structured_styles'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.patch(url, style_data)
+
     def _upload_image(self, image_path, data):
         with open(image_path, 'rb') as image:
             header = image.read(len(self.JPEG_HEADER))
@@ -2179,7 +2183,9 @@ class SubredditStylesheet(object):
                 raise APIException(error_type, error_value, None)
             return response
 
-    def _upload_style_asset(self, image_path, data):
+    def _upload_style_asset(self, image_path, image_type):
+        data = {}
+        data['imagetype'] = image_type
         data['filepath'] = basename(image_path)
         data['mimetype'] = 'image/jpeg'
         if image_path.lower().endswith('.png'):
@@ -2187,7 +2193,8 @@ class SubredditStylesheet(object):
         url = API_PATH['style_asset_lease'].format(subreddit=self.subreddit)
 
         # until we learn otherwise, assume this request always succeeds
-        upload_lease = self.subreddit._reddit.post(url, data=data)['s3UploadLease']
+        upload_lease = self.subreddit._reddit.post(url,
+                                                   data=data)['s3UploadLease']
         upload_data = {item['name']: item['value']
                        for item in upload_lease['fields']}
         upload_url = 'https:{}'.format(upload_lease['action'])
@@ -2197,16 +2204,10 @@ class SubredditStylesheet(object):
                 upload_url, data=upload_data, files={'file': image})
         response.raise_for_status()
 
-        structured_style = {}
-        image_url = response.headers['location']
-        structured_style[data['imagetype']] = image_url
-
-        style_url = API_PATH['structured_styles'].format(subreddit=self.subreddit)
-        self.subreddit._reddit.patch(style_url, structured_style)
-        return response
+        return response.headers['location']
 
     def delete_banner(self):
-        """Remove the current subreddit (Reddit redesign) banner image
+        """Remove the current subreddit (redesign) banner image.
 
         Succeeds even if there is no banner image.
 
@@ -2217,15 +2218,15 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner()
 
         """
-        url = API_PATH['structured_styles'].format(subreddit=self.subreddit)
         data = {}
         data['bannerBackgroundImage'] = ''
-        self.subreddit._reddit.patch(url, data)
+        self._update_structured_styles(data)
 
     def delete_banner_additional_image(self):
-        """Remove the current subreddit (Reddit redesign) banner additional image
+        """Remove the current subreddit (redesign) banner additional image.
 
-        Succeeds even if there is no additional image.  Will also delete any configured hover image.
+        Succeeds even if there is no additional image.  Will also delete any
+        configured hover image.
 
         Example:
 
@@ -2234,14 +2235,13 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_additional_image()
 
         """
-        url = API_PATH['structured_styles'].format(subreddit=self.subreddit)
         data = {}
         data['bannerPositionedImage'] = ''
         data['secondaryBannerPositionedImage'] = ''
-        self.subreddit._reddit.patch(url, data)
+        self._update_structured_styles(data)
 
     def delete_banner_hover_image(self):
-        """Remove the current subreddit (Reddit redesign) banner additional image hover image
+        """Remove the current subreddit (redesign) banner hover image.
 
         Succeeds even if there is no hover image.
 
@@ -2252,10 +2252,9 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_hover_image()
 
         """
-        url = API_PATH['structured_styles'].format(subreddit=self.subreddit)
         data = {}
         data['secondaryBannerPositionedImage'] = ''
-        self.subreddit._reddit.patch(url, data)
+        self._update_structured_styles(data)
 
     def delete_header(self):
         """Remove the current subreddit header image.
@@ -2362,7 +2361,7 @@ class SubredditStylesheet(object):
                                   {'name': name, 'upload_type': 'img'})
 
     def upload_banner(self, image_path):
-        """Upload an image to be used as the Subreddit's (Reddit redesign) banner image.
+        """Upload an image for the subreddit's (redesign) banner image.
 
         :param image_path: A path to a jpeg or png image.
         :returns: The url for the uploaded file in S3.
@@ -2381,10 +2380,13 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.upload_banner('banner.png')
 
         """
-        return self._upload_style_asset(image_path, {'imagetype': 'bannerBackgroundImage'})
+        image_type = 'bannerBackgroundImage'
+        image_url = self._upload_style_asset(image_path, image_type)
+        self._update_structured_styles({image_type: image_url})
+        return image_url
 
     def upload_banner_additional_image(self, image_path):
-        """Upload an image to be used as the Subreddit's (Reddit redesign) additional image.
+        """Upload an image for the subreddit's (redesign) additional image.
 
         :param image_path: A path to a jpeg or png image.
         :returns: The url for the uploaded file in S3.
@@ -2403,15 +2405,18 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_additional_image('banner.png')
 
         """
-        return self._upload_style_asset(image_path, {'imagetype': 'bannerPositionedImage'})
+        image_type = 'bannerPositionedImage'
+        image_url = self._upload_style_asset(image_path, image_type)
+        self._update_structured_styles({image_type: image_url})
+        return image_url
 
     def upload_banner_hover_image(self, image_path):
-        """Upload an image to be used as the Subreddit's (Reddit redesign) additional image.
+        """Upload an image for the subreddit's (redesign) additional image.
 
         :param image_path: A path to a jpeg or png image.
         :returns: The url for the uploaded file in S3.
 
-        Fails if the Subreddit does not already have an additional image defined
+        Fails if the Subreddit does not have an additional image defined
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
@@ -2427,7 +2432,10 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_hover_image('banner.png')
 
         """
-        return self._upload_style_asset(image_path, {'imagetype': 'secondaryBannerPositionedImage'})
+        image_type = 'secondaryBannerPositionedImage'
+        image_url = self._upload_style_asset(image_path, image_type)
+        self._update_structured_styles({image_type: image_url})
+        return image_url
 
     def upload_header(self, image_path):
         """Upload an image to be used as the Subreddit's header image.
