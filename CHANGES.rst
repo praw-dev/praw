@@ -6,12 +6,18 @@ Unreleased
 
 **Added**
 
-* Add method :meth:`delete_banner` to class :class:`SubredditStylesheet`
-* Add method :meth:`delete_banner_additional_image` to class :class:`SubredditStylesheet`
-* Add method :meth:`delete_banner_hover_image` to class :class:`SubredditStylesheet`
-* Add method :meth:`upload_banner` to class :class:`SubredditStylesheet`
-* Add method :meth:`upload_banner_additional_image` to class :class:`SubredditStylesheet`
-* Add method :meth:`upload_banner_hover_image` to class :class:`SubredditStylesheet`
+* Add method :meth:`.SubredditStylesheet.delete_banner` to class
+  :class:`.Subreddit`
+* Add method :meth:`.SubredditStylesheet.delete_banner_additional_image` to
+  class :class:`.Subreddit`
+* Add method :meth:`.SubredditStylesheet.delete_banner_hover_image` to class
+  :class:`.Subreddit`
+* Add method :meth:`.SubredditStylesheet.upload_banner` to class
+  :class:`.Subreddit`
+* Add method :meth:`.SubredditStylesheet.upload_banner_additional_image` to
+  class :class:`.Subreddit`
+* Add method :meth:`.SubredditStylesheet.upload_banner_hover_image` to class
+  :class:`.Subreddit`
 
 **Other**
 
