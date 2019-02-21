@@ -553,7 +553,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return self._submission_class(self._reddit, url=urljoin(
             self._reddit.config.reddit_url, path))
 
-    def submit(self, title, selftext=None, url=None, flair_id=None,
+    def submit(self, title, selftext=None, url=None, flair_id=None, nsfw=False,
                flair_text=None, resubmit=True, send_replies=True):
         """Add a submission to the subreddit.
 
@@ -569,6 +569,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             been submitted (default: True).
         :param send_replies: When True, messages will be sent to the submission
             author when comments are made to the submission (default: True).
+        :param nsfw: Whether or not the submission should be marked NSFW
+            (default: False).
         :returns: A :class:`~.Submission` object for the newly created
             submission.
 
@@ -591,7 +593,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if (bool(selftext) or selftext == '') == bool(url):
             raise TypeError('Either `selftext` or `url` must be provided.')
 
-        data = {'sr': str(self), 'resubmit': bool(resubmit),
+        data = {'sr': str(self), 'resubmit': bool(resubmit), 'nsfw': bool(nsfw),
                 'sendreplies': bool(send_replies), 'title': title}
         for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
             if value is not None:
@@ -600,6 +602,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             data.update(kind='self', text=selftext)
         else:
             data.update(kind='link', url=url)
+
         return self._reddit.post(API_PATH['submit'], data=data)
 
     def submit_image(self, title, image_path, flair_id=None,
