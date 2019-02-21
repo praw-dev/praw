@@ -2158,11 +2158,6 @@ class SubredditStylesheet(object):
         """
         self.subreddit = subreddit
 
-    def _fetch_structured_styles(self):
-        url = API_PATH['structured_styles'].format(subreddit=self.subreddit)
-        response = self.subreddit._reddit.get(url)
-        return response['data']['style']
-
     def _update_structured_styles(self, style_data):
         url = API_PATH['structured_styles'].format(subreddit=self.subreddit)
         self.subreddit._reddit.patch(url, style_data)
