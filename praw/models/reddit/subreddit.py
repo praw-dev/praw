@@ -2169,6 +2169,10 @@ class SubredditStylesheet(object):
         """
         self.subreddit = subreddit
 
+    def _update_structured_styles(self, style_data):
+        url = API_PATH['structured_styles'].format(subreddit=self.subreddit)
+        self.subreddit._reddit.patch(url, style_data)
+
     def _upload_image(self, image_path, data):
         with open(image_path, 'rb') as image:
             header = image.read(len(self.JPEG_HEADER))
@@ -2184,6 +2188,79 @@ class SubredditStylesheet(object):
                     'Please file a bug with PRAW'
                 raise APIException(error_type, error_value, None)
             return response
+
+    def _upload_style_asset(self, image_path, image_type):
+        data = {}
+        data['imagetype'] = image_type
+        data['filepath'] = basename(image_path)
+        data['mimetype'] = 'image/jpeg'
+        if image_path.lower().endswith('.png'):
+            data['mimetype'] = 'image/png'
+        url = API_PATH['style_asset_lease'].format(subreddit=self.subreddit)
+
+        # until we learn otherwise, assume this request always succeeds
+        upload_lease = self.subreddit._reddit.post(url,
+                                                   data=data)['s3UploadLease']
+        upload_data = {item['name']: item['value']
+                       for item in upload_lease['fields']}
+        upload_url = 'https:{}'.format(upload_lease['action'])
+
+        with open(image_path, 'rb') as image:
+            response = self.subreddit._reddit._core._requestor._http.post(
+                upload_url, data=upload_data, files={'file': image})
+        response.raise_for_status()
+
+        return '{}/{}'.format(upload_url, upload_data['key'])
+
+    def delete_banner(self):
+        """Remove the current subreddit (redesign) banner image.
+
+        Succeeds even if there is no banner image.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.delete_banner()
+
+        """
+        data = {}
+        data['bannerBackgroundImage'] = ''
+        self._update_structured_styles(data)
+
+    def delete_banner_additional_image(self):
+        """Remove the current subreddit (redesign) banner additional image.
+
+        Succeeds even if there is no additional image.  Will also delete any
+        configured hover image.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_additional_image()
+
+        """
+        data = {}
+        data['bannerPositionedImage'] = ''
+        data['secondaryBannerPositionedImage'] = ''
+        self._update_structured_styles(data)
+
+    def delete_banner_hover_image(self):
+        """Remove the current subreddit (redesign) banner hover image.
+
+        Succeeds even if there is no hover image.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_hover_image()
+
+        """
+        data = {}
+        data['secondaryBannerPositionedImage'] = ''
+        self._update_structured_styles(data)
 
     def delete_header(self):
         """Remove the current subreddit header image.
@@ -2288,6 +2365,77 @@ class SubredditStylesheet(object):
         """
         return self._upload_image(image_path,
                                   {'name': name, 'upload_type': 'img'})
+
+    def upload_banner(self, image_path):
+        """Upload an image for the subreddit's (redesign) banner image.
+
+        :param image_path: A path to a jpeg or png image.
+
+        Raises ``prawcore.TooLarge`` if the overall request body is too large.
+
+        Raises :class:`.APIException` if there are other issues with the
+        uploaded image. Unfortunately the exception info might not be very
+        specific, so try through the website with the same image to see what
+        the problem actually might be.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.upload_banner('banner.png')
+
+        """
+        image_type = 'bannerBackgroundImage'
+        image_url = self._upload_style_asset(image_path, image_type)
+        self._update_structured_styles({image_type: image_url})
+
+    def upload_banner_additional_image(self, image_path):
+        """Upload an image for the subreddit's (redesign) additional image.
+
+        :param image_path: A path to a jpeg or png image.
+
+        Raises ``prawcore.TooLarge`` if the overall request body is too large.
+
+        Raises :class:`.APIException` if there are other issues with the
+        uploaded image. Unfortunately the exception info might not be very
+        specific, so try through the website with the same image to see what
+        the problem actually might be.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_additional_image('banner.png')
+
+        """
+        image_type = 'bannerPositionedImage'
+        image_url = self._upload_style_asset(image_path, image_type)
+        self._update_structured_styles({image_type: image_url})
+
+    def upload_banner_hover_image(self, image_path):
+        """Upload an image for the subreddit's (redesign) additional image.
+
+        :param image_path: A path to a jpeg or png image.
+
+        Fails if the Subreddit does not have an additional image defined
+
+        Raises ``prawcore.TooLarge`` if the overall request body is too large.
+
+        Raises :class:`.APIException` if there are other issues with the
+        uploaded image. Unfortunately the exception info might not be very
+        specific, so try through the website with the same image to see what
+        the problem actually might be.
+
+        Example:
+
+        .. code:: python
+
+           reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_hover_image('banner.png')
+
+        """
+        image_type = 'secondaryBannerPositionedImage'
+        image_url = self._upload_style_asset(image_path, image_type)
+        self._update_structured_styles({image_type: image_url})
 
     def upload_header(self, image_path):
         """Upload an image to be used as the Subreddit's header image.

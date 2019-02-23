@@ -6,6 +6,12 @@ Unreleased
 
 **Added**
 
+* :meth:`.SubredditStylesheet.upload_banner`
+* :meth:`.SubredditStylesheet.upload_banner_additional_image`
+* :meth:`.SubredditStylesheet.upload_banner_hover_image`
+* :meth:`.SubredditStylesheet.delete_banner`
+* :meth:`.SubredditStylesheet.delete_banner_additional_image`
+* :meth:`.SubredditStylesheet.delete_banner_hover_image`
 * :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image`, and
   :meth:`~.Subreddit.submit_video` support parameter ``nsfw`` to
   mark the submission NSFW immediately upon posting.
