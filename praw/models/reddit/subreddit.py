@@ -2199,7 +2199,7 @@ class SubredditStylesheet(object):
                 upload_url, data=upload_data, files={'file': image})
         response.raise_for_status()
 
-        return response.headers['location']
+        return '{}/{}'.format(upload_url, upload_data['key'])
 
     def delete_banner(self):
         """Remove the current subreddit (redesign) banner image.
