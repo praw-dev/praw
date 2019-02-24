@@ -37,8 +37,8 @@ class TestRedditor(IntegrationTest):
                 'TestRedditor.test_friend_info'):
             redditor = self.reddit.redditor(self.FRIEND).friend_info()
             assert self.FRIEND == redditor
-            assert 'date' in redditor.__dict__
-            assert 'created_utc' not in redditor.__dict__
+            assert 'date' in redditor.a
+            assert 'created_utc' not in redditor.a
             assert hasattr(redditor, 'created_utc')
 
     def test_gild__no_creddits(self):

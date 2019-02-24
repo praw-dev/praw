@@ -1206,7 +1206,7 @@ class TestSubredditRelationships(IntegrationTest):
                 'TestSubredditRelationships.moderator__user_filter'):
             moderator = self.subreddit.moderator(redditor='pyapitestuser3')
         assert len(moderator) == 1
-        assert 'mod_permissions' in moderator[0].__dict__
+        assert 'mod_permissions' in moderator[0].a
 
     def test_muted(self):
         self.reddit.read_only = False
