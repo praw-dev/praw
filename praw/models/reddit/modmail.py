@@ -76,7 +76,7 @@ class ModmailConversation(RedditBase):
                 if parser is not ModmailConversation:
                     del summary['permalink']
                 for key, value in summary.items():
-                    setattr(thing, key, value)
+                    thing._data[key] = value
                 objects.append(thing)
             # Sort by id, oldest to newest
             data[kind] = sorted(
@@ -121,12 +121,12 @@ class ModmailConversation(RedditBase):
             (default: False).
 
         """
-        super(ModmailConversation, self).__init__(reddit, _data)
+        super(ModmailConversation, self).__init__(reddit, _data=_data)
         if bool(id) == bool(_data):
             raise TypeError('Either `id` or `_data` must be provided.')
 
         if id:
-            self.id = id  # pylint: disable=invalid-name
+            self._data['id'] = id
         if mark_read:
             self._info_params = {'markRead': True}
 

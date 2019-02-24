@@ -20,6 +20,17 @@ class RedditBase(PRAWBase):
             raise ClientException('Invalid URL: {}'.format(url))
         return parsed.path.rstrip('/').split('/')
 
+    # pylint: disable=invalid-name
+    @property
+    def id(self):
+        """Return the object's id."""
+        try:
+            return self._data['id']
+        except KeyError:
+            if not self._fetched:
+                self._fetch()
+            return self._data['id']
+
     @property
     def fullname(self):
         """Return the object's fullname.
@@ -29,7 +40,7 @@ class RedditBase(PRAWBase):
 
         """
         return '{}_{}'.format(self._reddit._objector.kind(self),
-                              self.id)  # pylint: disable=invalid-name
+                              self.id)
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
@@ -38,13 +49,21 @@ class RedditBase(PRAWBase):
         return (isinstance(other, self.__class__) and
                 str(self).lower() == str(other).lower())
 
-    def __getattr__(self, attribute):
-        """Return the value of `attribute`."""
-        if not attribute.startswith('_') and not self._fetched:
+    def __ne__(self, other):
+        """Return whether the other instance differs from the current."""
+        return not self == other
+
+    def __getattr__(self, name):
+        """Return the value of attribute `name`."""
+        try:
+            return super(RedditBase, self).__getattr__(name)
+        except AttributeError:
+            pass
+
+        if not (self._fetched or name.startswith('_')):
             self._fetch()
-            return getattr(self, attribute)
-        raise AttributeError('{!r} object has no attribute {!r}'
-                             .format(self.__class__.__name__, attribute))
+
+        return super(RedditBase, self).__getattr__(name)
 
     def __hash__(self):
         """Return the hash of the current instance."""
@@ -56,7 +75,7 @@ class RedditBase(PRAWBase):
         :param reddit: An instance of :class:`~.Reddit`.
 
         """
-        super(RedditBase, self).__init__(reddit, _data)
+        super(RedditBase, self).__init__(reddit, _data=_data)
         self._fetched = False
         self._info_params = {}
 
@@ -67,11 +86,7 @@ class RedditBase(PRAWBase):
 
     def __str__(self):
         """Return a string representation of the instance."""
-        return getattr(self, self.STR_FIELD)
-
-    def __ne__(self, other):
-        """Return whether the other instance differs from the current."""
-        return not self == other
+        return self._data[self.STR_FIELD]
 
     def _fetch(self):
         if '_info_path' in dir(self):
@@ -79,18 +94,19 @@ class RedditBase(PRAWBase):
                                      params=self._info_params)
         else:
             self._info_params['id'] = self.fullname
-            children = self._reddit.get(API_PATH['info'],
-                                        params=self._info_params).children
+            children = self._reddit \
+                .get(API_PATH['info'],
+                     params=self._info_params)._data['children']
             if not children:
                 raise PRAWException('No {!r} data returned for thing {}'
                                     .format(self.__class__.__name__,
                                             self.fullname))
             other = children[0]
-        self.__dict__.update(other.__dict__)
+        self._data.update(other._data)
         self._fetched = True
 
     def _reset_attributes(self, *attributes):
         for attribute in attributes:
-            if attribute in self.__dict__:
-                del self.__dict__[attribute]
+            if attribute in self._data:
+                del self._data[attribute]
         self._fetched = False

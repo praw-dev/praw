@@ -92,20 +92,19 @@ class Multireddit(RedditBase, SubredditListingMixin):
 
     def __init__(self, reddit, _data):
         """Construct an instance of the Multireddit object."""
-        self.path = None
-        super(Multireddit, self).__init__(reddit, _data)
-        self._author = Redditor(reddit, self.path.split('/', 3)[2])
+        super(Multireddit, self).__init__(reddit, _data=_data)
+        self._author = Redditor(reddit, self._data['path'].split('/', 3)[2])
         self._path = API_PATH['multireddit'].format(
-            multi=self.name, user=self._author)
+            multi=self._data['name'], user=self._author)
         self._stream = None
-        self.path = '/' + self._path[:-1]  # Prevent requests for path
-        if 'subreddits' in self.__dict__:
-            self.subreddits = [Subreddit(reddit, x['name'])
-                               for x in self.subreddits]
+        self._data['path'] = '/' + self._path[:-1]  # Prevent requests for path
+        if 'subreddits' in self._data:
+            self._data['subreddits'] = [Subreddit(reddit, x['name'])
+                                        for x in self._data['subreddits']]
 
     def _info_path(self):
         return API_PATH['multireddit_api'].format(
-            multi=self.name, user=self._author)
+            multi=self._data['name'], user=self._author)
 
     def add(self, subreddit):
         """Add a subreddit to this multireddit.
@@ -114,7 +113,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
 
         """
         url = API_PATH['multireddit_update'].format(
-            multi=self.name, user=self._author, subreddit=subreddit)
+            multi=self._data['name'], user=self._author, subreddit=subreddit)
         self._reddit.request(
             'PUT', url, data={'model': dumps({'name': str(subreddit)})})
         self._reset_attributes('subreddits')
@@ -132,7 +131,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
             name = self.sluggify(display_name)
         else:
             display_name = self.display_name
-            name = self.name
+            name = self._data['name']
         data = {'display_name': display_name, 'from': self.path,
                 'to': API_PATH['multireddit'].format(
                     multi=name, user=self._reddit.user.me())}
@@ -149,7 +148,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
 
         """
         url = API_PATH['multireddit_update'].format(
-            multi=self.name, user=self._author, subreddit=subreddit)
+            multi=self._data['name'], user=self._author, subreddit=subreddit)
         self._reddit.request(
             'DELETE', url, data={'model': dumps({'name': str(subreddit)})})
         self._reset_attributes('subreddits')
@@ -163,7 +162,7 @@ class Multireddit(RedditBase, SubredditListingMixin):
         """
         data = {'from': self.path, 'display_name': display_name}
         updated = self._reddit.post(API_PATH['multireddit_rename'], data=data)
-        self.__dict__.update(updated.__dict__)
+        self._data.update(updated._data)
 
     def update(self, **updated_settings):
         """Update this multireddit.
@@ -193,4 +192,4 @@ class Multireddit(RedditBase, SubredditListingMixin):
         response = self._reddit.request(
             'PUT', self._info_path(), data={'model': dumps(updated_settings)})
         new = Multireddit(self._reddit, response['data'])
-        self.__dict__.update(new.__dict__)
+        self._data.update(new._data)

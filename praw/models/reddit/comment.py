@@ -4,6 +4,7 @@ from ..comment_forest import CommentForest
 from .base import RedditBase
 from .mixins import InboxableMixin, ThingModerationMixin, UserContentMixin
 from .redditor import Redditor
+from .subreddit import Subreddit
 
 
 class Comment(RedditBase, InboxableMixin, UserContentMixin):
@@ -66,6 +67,31 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             raise ClientException('Invalid URL: {}'.format(url))
         return parts[-1]
 
+    @classmethod
+    def _objectify_acknowledged(cls, reddit, data):
+        key = 'author'
+        item = data.get(key)
+        if isinstance(item, str):
+            data[key] = (None
+                         if item == '[deleted]' else
+                         Redditor(reddit, name=item))
+        elif isinstance(item, Redditor):
+            item._reddit = reddit
+
+        key = 'replies'
+        item = data.get(key)
+        if isinstance(item, (str, dict)):
+            data[key] = ([]
+                         if item == '' else
+                         reddit._objector.objectify(item)._data['children'])
+
+        key = 'subreddit'
+        item = data.get(key)
+        if isinstance(item, str):
+            data[key] = Subreddit(reddit, display_name=item)
+        elif isinstance(item, Subreddit):
+            item._reddit = reddit
+
     @property
     def is_root(self):
         """Return True when the comment is a top level comment."""
@@ -125,30 +151,23 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
                             'provided.')
         self._mod = self._replies = self._submission = None
-        super(Comment, self).__init__(reddit, _data)
-        if id:
-            self.id = id  # pylint: disable=invalid-name
-        elif url:
-            self.id = self.id_from_url(url)
+        if _data is not None:
+            self._objectify_acknowledged(reddit, _data)
+            self._replies = _data.pop('replies', None)
+
+        super(Comment, self).__init__(reddit, _data=_data)
+        if id is not None:
+            self._data['id'] = id
+        elif url is not None:
+            self._data['id'] = self.id_from_url(url)
         else:
             self._fetched = True
 
-    def __setattr__(self, attribute, value):
-        """Objectify author, replies, and subreddit."""
-        if attribute == 'author':
-            value = Redditor.from_data(self._reddit, value)
-        elif attribute == 'replies':
-            if value == '':
-                value = []
-            else:
-                value = self._reddit._objector.objectify(value).children
-            attribute = '_replies'
-        elif attribute == 'subreddit':
-            value = self._reddit.subreddit(value)
-        super(Comment, self).__setattr__(attribute, value)
+        self.reply_limit = None
+        self.reply_sort = None
 
     def _extract_submission_id(self):
-        if 'context' in self.__dict__:
+        if 'context' in self._data:
             return self.context.rsplit('/', 4)[1]
         return self.link_id.split('_', 1)[1]
 
@@ -230,7 +249,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
            comment.refresh()
 
         """
-        if 'context' in self.__dict__:  # Using hasattr triggers a fetch
+        if 'context' in self._data:
             comment_path = self.context.split('?', 1)[0]
         else:
             comment_path = '{}_/{}'.format(
@@ -239,12 +258,14 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
         # The context limit appears to be 8, but let's ask for more anyway.
         params = {'context': 100}
-        if 'reply_limit' in self.__dict__:
+        if self.reply_limit is not None:
             params['limit'] = self.reply_limit
-        if 'reply_sort' in self.__dict__:
+        if self.reply_sort:
             params['sort'] = self.reply_sort
         comment_list = self._reddit.get(comment_path,
                                         params=params)[1].children
+        import builtins
+        builtins.comment_list = comment_list[:]
         if not comment_list:
             raise ClientException(self.MISSING_COMMENT_MESSAGE)
 
@@ -259,9 +280,8 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         if comment.id != self.id:
             raise ClientException(self.MISSING_COMMENT_MESSAGE)
 
-        if self._submission is not None:
-            del comment.__dict__['_submission']  # Don't replace if set
-        self.__dict__.update(comment.__dict__)
+        self._replies = comment._replies
+        self._data.update(comment._data)
 
         for reply in comment_list:
             reply.submission = self.submission

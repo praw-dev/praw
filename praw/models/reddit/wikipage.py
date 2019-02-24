@@ -68,7 +68,7 @@ class WikiPage(RedditBase):
         self.name = name
         self._revision = revision
         self.subreddit = subreddit
-        super(WikiPage, self).__init__(reddit, _data)
+        super(WikiPage, self).__init__(reddit, _data=_data)
         self._mod = None
 
     def __repr__(self):
@@ -86,7 +86,7 @@ class WikiPage(RedditBase):
         if data['revision_by'] is not None:
             data['revision_by'] = Redditor(self._reddit,
                                            _data=data['revision_by']['data'])
-        self.__dict__.update(data)
+        self._data.update(data)
         self._fetched = True
 
     def _info_path(self):

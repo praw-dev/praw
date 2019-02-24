@@ -43,12 +43,13 @@ class Emoji(RedditBase):
         """Construct an instance of the Emoji object."""
         self.name = name
         self.subreddit = subreddit
-        super(Emoji, self).__init__(reddit, _data)
+        _data = {'name': name} if _data is None else _data
+        super(Emoji, self).__init__(reddit, _data=_data)
 
     def _fetch(self):
         for emoji in self.subreddit.emoji:
             if emoji.name == self.name:
-                self.__dict__.update(emoji.__dict__)
+                self._data.update(emoji._data)
                 self._fetched = True
                 return
         raise ClientException('/r/{} does not have the emoji {}'

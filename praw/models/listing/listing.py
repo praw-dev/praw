@@ -7,19 +7,24 @@ class Listing(PRAWBase):
 
     CHILD_ATTRIBUTE = 'children'
 
+    def __init__(self, reddit, _data):
+        """Initialize a Listing instance.
+
+        :param reddit: An instance of :class:`.Reddit`.
+
+        """
+        if self.CHILD_ATTRIBUTE in _data:
+            _data[self.CHILD_ATTRIBUTE] = reddit._objector \
+                    .objectify(_data[self.CHILD_ATTRIBUTE])
+        super(Listing, self).__init__(reddit, _data=_data)
+
     def __len__(self):
         """Return the number of items in the Listing."""
-        return len(getattr(self, self.CHILD_ATTRIBUTE))
+        return len(self._data[self.CHILD_ATTRIBUTE])
 
     def __getitem__(self, index):
         """Return the item at position index in the list."""
-        return getattr(self, self.CHILD_ATTRIBUTE)[index]
-
-    def __setattr__(self, attribute, value):
-        """Objectify the CHILD_ATTRIBUTE attribute."""
-        if attribute == self.CHILD_ATTRIBUTE:
-            value = self._reddit._objector.objectify(value)
-        super(Listing, self).__setattr__(attribute, value)
+        return self._data[self.CHILD_ATTRIBUTE][index]
 
 
 class FlairListing(Listing):

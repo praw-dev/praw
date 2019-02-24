@@ -29,7 +29,7 @@ class ListingGenerator(PRAWBase):
             parameters to send with the request.
 
         """
-        super(ListingGenerator, self).__init__(reddit, None)
+        super(ListingGenerator, self).__init__(reddit, _data=None)
         self._exhausted = False
         self._listing = None
         self._list_index = None

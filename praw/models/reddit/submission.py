@@ -85,6 +85,22 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             raise ClientException('Invalid URL: {}'.format(url))
         return submission_id
 
+    @classmethod
+    def _objectify_acknowledged(cls, reddit, data):
+        key = 'author'
+        item = data.get(key)
+        if isinstance(item, str):
+            data[key] = (None
+                         if item == '[deleted]' else
+                         Redditor(reddit, name=item))
+        elif isinstance(item, Redditor):
+            item._reddit = reddit
+
+        key = 'subreddit'
+        item = data.get(key)
+        if isinstance(item, str):
+            data[key] = Subreddit(reddit, item)
+
     @property
     def comments(self):
         """Provide an instance of :class:`.CommentForest`.
@@ -110,7 +126,9 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         :class:`.CommentForest`.
 
         """
-        # This assumes _comments is set so that _fetch is called when it's not.
+        if not self._fetched:
+            self._fetch()
+
         return self._comments
 
     @property
@@ -168,27 +186,22 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         if [id, url, _data].count(None) != 2:
             raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
                             'provided.')
-        super(Submission, self).__init__(reddit, _data)
-        self.comment_limit = 2048
 
-        #: Specify the sort order for ``comments``
+        if _data is not None:
+            self._objectify_acknowledged(reddit, _data)
+
+        super(Submission, self).__init__(reddit, _data=_data)
+        self.comment_limit = 2048
         self.comment_sort = 'best'
 
         if id is not None:
-            self.id = id  # pylint: disable=invalid-name
+            self._data['id'] = id
         elif url is not None:
-            self.id = self.id_from_url(url)
+            self._data['id'] = self.id_from_url(url)
         self._flair = self._mod = None
 
         self._comments_by_id = {}
-
-    def __setattr__(self, attribute, value):
-        """Objectify author, and subreddit attributes."""
-        if attribute == 'author':
-            value = Redditor.from_data(self._reddit, value)
-        elif attribute == 'subreddit':
-            value = Subreddit(self._reddit, value)
-        super(Submission, self).__setattr__(attribute, value)
+        self._comments = None
 
     def _chunk(self, other_submissions, chunk_size):
         all_submissions = [self.fullname]
@@ -202,12 +215,15 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         other, comments = self._reddit.get(self._info_path(),
                                            params={'limit': self.comment_limit,
                                                    'sort': self.comment_sort})
-        other = other.children[0]
-        delattr(other, 'comment_limit')
-        delattr(other, 'comment_sort')
-        other._comments = CommentForest(self)
-        self.__dict__.update(other.__dict__)
-        self.comments._update(comments.children)
+        other = other._data['children'][0]
+        self._comments = CommentForest(self)
+        self._comments_by_id = other._comments_by_id
+        self._comments._update(comments._data['children'])
+        self._data.clear()
+        self._data.update(other._data)
+        self._flair = other._flair
+        self._info_params = other._info_params
+        self._mod = other._mod
         self._fetched = True
 
     def _info_path(self):

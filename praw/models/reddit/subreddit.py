@@ -398,9 +398,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         if bool(display_name) == bool(_data):
             raise TypeError(
                 'Either `display_name` or `_data` must be provided.')
-        super(Subreddit, self).__init__(reddit, _data)
+        super(Subreddit, self).__init__(reddit, _data=_data)
         if display_name:
-            self.display_name = display_name
+            self._data['display_name'] = display_name
         self._banned = self._contributor = self._filters = self._flair = None
         self._emoji = self._widgets = None
         self._mod = self._moderator = self._modmail = self._muted = None

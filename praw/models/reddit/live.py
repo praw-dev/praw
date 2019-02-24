@@ -340,9 +340,9 @@ class LiveThread(RedditBase):
         """
         if bool(id) == bool(_data):
             raise TypeError('Either `id` or `_data` must be provided.')
-        super(LiveThread, self).__init__(reddit, _data)
+        super(LiveThread, self).__init__(reddit, _data=_data)
         if id:
-            self.id = id  # pylint: disable=invalid-name
+            self._data['id'] = id
         self._contrib = None
         self._contributor = None
 
@@ -541,6 +541,15 @@ class LiveUpdate(RedditBase):
 
     STR_FIELD = 'id'
 
+    @classmethod
+    def _objectify_acknowledged(cls, reddit, data):
+        key = 'author'
+        item = data.get(key)
+        if isinstance(item, str):
+            data[key] = Redditor(reddit, name=item)
+        elif isinstance(item, Redditor):
+            item._reddit = reddit
+
     @property
     def contrib(self):
         """Provide an instance of :class:`.LiveUpdateContribution`.
@@ -585,31 +594,26 @@ class LiveUpdate(RedditBase):
            update.author     # 'umbrae'
         """
         if _data is not None:
+            self._objectify_acknowledged(reddit, _data)
             # Since _data (part of JSON returned from reddit) have no
             # thread ID, self._thread must be set by the caller of
             # LiveUpdate(). See the code of LiveThread.updates() for example.
-            super(LiveUpdate, self).__init__(reddit, _data)
+            super(LiveUpdate, self).__init__(reddit, _data=_data)
             self._fetched = True
         elif thread_id and update_id:
             super(LiveUpdate, self).__init__(reddit, None)
             self._thread = LiveThread(self._reddit, thread_id)
-            self.id = update_id  # pylint: disable=invalid-name
+            self._data['id'] = update_id
         else:
             raise TypeError('Either `thread_id` and `update_id`, or '
                             '`_data` must be provided.')
         self._contrib = None
 
-    def __setattr__(self, attribute, value):
-        """Objectify author."""
-        if attribute == 'author':
-            value = Redditor(self._reddit, name=value)
-        super(LiveUpdate, self).__setattr__(attribute, value)
-
     def _fetch(self):
         url = API_PATH['live_focus'].format(
             thread_id=self.thread.id, update_id=self.id)
         other = self._reddit.get(url)[0]
-        self.__dict__.update(other.__dict__)
+        self._data.update(other._data)
         self._fetched = True
 
 

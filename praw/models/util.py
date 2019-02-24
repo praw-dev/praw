@@ -1,6 +1,113 @@
 """Provide helper classes used by other models."""
+from collections.abc import MutableMapping
+from pprint import PrettyPrinter, pformat
 import random
 import time
+
+
+class AttributeDict(MutableMapping):
+    """A dict class extended to expose its keys though attributes.
+
+    Inherited dict methods (`.update()`, `.clear()`, etc.) as well as
+    `._data0` always takes precedence over arbitaty attribute access.
+    Indexing can be used to access values assigned to these names.
+
+    There are no restrictions on the key name. If a key can't be get/set
+    with an attribute then indexing should be used.
+
+    The inner dict object is accessible with `abs(self)`.
+    """
+
+    __slots__ = ('_data0',)
+
+    def __init__(self, data=None, **kwargs):
+        """Construct an AttributeDict instance."""
+        data = {} if data is None else data
+        if kwargs:
+            data = dict(data, **kwargs)
+        object.__setattr__(self, '_data0', data)
+
+    def __getitem__(self, key):
+        """x.__getitem__(y) <==> x[y]"""
+        return self._data0[key]
+
+    def __setitem__(self, key, value):
+        """Set self[key] to value."""
+        self._data0[key] = value
+
+    def __delitem__(self, key):
+        """Delete self[key]."""
+        del self._data0[key]
+
+    def __iter__(self):
+        """Implement iter(self)."""
+        return iter(self._data0)
+
+    def __len__(self):
+        """Return len(self)."""
+        return len(self._data0)
+
+    def __getattr__(self, name):
+        """Implement getattr(self, name)."""
+        try:
+            attr = self._data0[name]
+        except KeyError:
+            raise AttributeError(repr(name)) from None
+        else:
+            if isinstance(attr, dict):
+                return type(self)(attr)
+            return attr
+
+    def __setattr__(self, name, value):
+        """Implement setattr(self, name, value)."""
+        self.__setitem__(name, value)
+
+    def __delattr__(self, name):
+        """Implement delattr(self, name)."""
+        self.__delitem__(name)
+
+    def __str__(self):
+        """Return str(self)."""
+        return str(self._data0)
+
+    def __repr__(self):
+        """Return repr(self)."""
+        if self._data0:
+            return '%s(%r)' % (
+                type(self).__name__,
+                self._data0)
+        return type(self).__name__ + '()'
+
+    def __abs__(self):
+        """Return the inner dict object."""
+        return self._data0
+
+    def __getstate__(self):
+        """Extract state to pickle."""
+        return self._data0
+
+    def __setstate__(self, state):
+        """Restore from pickled state."""
+        object.__setattr__(self, '_data0', state)
+
+class AttributeCollection(AttributeDict):
+    """A container for holding arbitrary attributes."""
+
+    @staticmethod
+    def _pprint_attribute_collection(printer, obj, stream, indent, allowance,
+                                     context, level):
+        cls = obj.__class__
+        stream.write(cls.__name__ + '(')
+        printer._format(abs(obj), stream, indent + len(cls.__name__) + 1,
+                        allowance + 1, context, level)
+        stream.write(')')
+
+    def __str__(self):
+        """Return a pretty-print formatted string of the instance."""
+        return pformat(self)
+
+PrettyPrinter._dispatch[AttributeCollection.__repr__] = \
+        AttributeCollection._pprint_attribute_collection
 
 
 class BoundedSet(object):

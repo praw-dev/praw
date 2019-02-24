@@ -21,7 +21,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
                print(comment.body.split('\n', 1)[0][:79])
 
         """
-        if self.__dict__.get('_comments') is None:
+        if self._data.get('_comments') is None:
             self._comments = SubListing(self._reddit, self._path, 'comments')
         return self._comments
 
@@ -38,7 +38,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
                print(submission.title)
 
         """
-        if self.__dict__.get('_submissions') is None:
+        if self._data.get('_submissions') is None:
             self._submissions = SubListing(self._reddit, self._path,
                                            'submitted')
         return self._submissions

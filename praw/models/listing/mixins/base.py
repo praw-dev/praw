@@ -6,7 +6,8 @@ from ..generator import ListingGenerator
 
 def _prepare(praw_object, arguments_dict, target):
     """Fix for Redditor methods that use a query param rather than subpath."""
-    if praw_object.__dict__.get('_listing_use_sort'):
+    if (hasattr(praw_object, '_listing_use_sort')
+            and praw_object._listing_use_sort):
         PRAWBase._safely_add_arguments(arguments_dict, 'params', sort=target)
         return praw_object._path
     return urljoin(praw_object._path, target)
