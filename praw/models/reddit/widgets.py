@@ -308,8 +308,9 @@ class SubredditWidgets(PRAWBase):
 
     def __repr__(self):
         """Return an object initialization representation of the object."""
-        return 'SubredditWidgets(subreddit={subreddit!r})'.format(
-            subreddit=self.subreddit)
+        return '{}(subreddit={!r})'.format(
+            self.__class__.__name__,
+            self.subreddit)
 
     def _fetch(self):
         data = self._reddit.get(

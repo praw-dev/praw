@@ -21,8 +21,8 @@ class TestMessage(UnitTest):
         assert message1 == message2
         assert message2 != message3
         assert message1 != message3
-        assert '1' == message1
-        assert message1 == '1'
+        assert 't4_1' == message1
+        assert message1 == 't4_1'
 
     def test_fullname(self):
         message = Message(self.reddit, _data={'id': 'dummy'})
@@ -47,11 +47,11 @@ class TestMessage(UnitTest):
 
     def test_repr(self):
         message = Message(self.reddit, _data={'id': 'dummy'})
-        assert repr(message) == 'Message(id=\'dummy\')'
+        assert repr(message) == "<Message(id='dummy')>"
 
     def test_str(self):
         message = Message(self.reddit, _data={'id': 'dummy'})
-        assert str(message) == 'dummy'
+        assert str(message) == 't4_dummy'
 
 
 class TestSubredditMessage(UnitTest):
@@ -61,8 +61,8 @@ class TestSubredditMessage(UnitTest):
 
     def test_repr(self):
         message = SubredditMessage(self.reddit, _data={'id': 'dummy'})
-        assert repr(message) == 'SubredditMessage(id=\'dummy\')'
+        assert repr(message) == "<SubredditMessage(id='dummy')>"
 
     def test_str(self):
         message = SubredditMessage(self.reddit, _data={'id': 'dummy'})
-        assert str(message) == 'dummy'
+        assert str(message) == 't4_dummy'

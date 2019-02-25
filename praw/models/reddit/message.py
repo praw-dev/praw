@@ -39,7 +39,8 @@ class Message(RedditBase, InboxableMixin, ReplyableMixin):
 
     """
 
-    STR_FIELD = 'id'
+    REPR_INIT_FIELD = 'id'
+    STR_FIELD = 'fullname'
 
     @classmethod
     def parse(cls, data, reddit):

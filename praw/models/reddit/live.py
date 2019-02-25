@@ -260,7 +260,8 @@ class LiveThread(RedditBase):
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
     """
 
-    STR_FIELD = 'id'
+    REPR_INIT_FIELD = 'id'
+    STR_FIELD = 'fullname'
 
     @property
     def contrib(self):

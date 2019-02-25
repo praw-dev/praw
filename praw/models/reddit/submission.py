@@ -57,7 +57,8 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
     """
 
-    STR_FIELD = 'id'
+    REPR_INIT_FIELD = 'id'
+    STR_FIELD = 'fullname'
 
     @staticmethod
     def id_from_url(url):

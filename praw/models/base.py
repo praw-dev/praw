@@ -39,6 +39,7 @@ class PRAWBase(object):
         self._reddit = reddit
         self._data = {} if _data is None else _data
         self._initial_data = dict(self._data)
+        # pylint: disable=invalid-name
         self._a = AttributeCollection(self._data)
 
     def __getattr__(self, name):
@@ -62,6 +63,6 @@ class PRAWBase(object):
         self.__dict__.update(state)
 
     @property
-    def a(self):
+    def a(self):  # pylint: disable=invalid-name
         """Provide an object to access the data fetched from reddit."""
         return self._a

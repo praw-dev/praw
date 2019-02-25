@@ -60,7 +60,8 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
 
     """
 
-    STR_FIELD = 'name'
+    REPR_INIT_FIELD = 'name'
+    STR_FIELD = REPR_INIT_FIELD
 
     @classmethod
     def from_data(cls, reddit, data):
@@ -115,11 +116,11 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         super(Redditor, self).__init__(reddit, _data=_data)
 
         self._listing_use_sort = True
-        self._path = API_PATH['user'].format(user=self)
+        self._path = API_PATH['user'].format(user=self.name)
         self._stream = None
 
     def _info_path(self):
-        return API_PATH['user_about'].format(user=self)
+        return API_PATH['user_about'].format(user=self.name)
 
     def _friend(self, method, data):
         url = API_PATH['friend_v1'].format(user=self)

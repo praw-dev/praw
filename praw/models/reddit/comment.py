@@ -52,7 +52,8 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
     MISSING_COMMENT_MESSAGE = ('This comment does not appear to be in the '
                                'comment tree')
-    STR_FIELD = 'id'
+    REPR_INIT_FIELD = 'id'
+    STR_FIELD = 'fullname'
 
     @staticmethod
     def id_from_url(url):
@@ -261,7 +262,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             comment_path = self.context.split('?', 1)[0]
         else:
             comment_path = '{}_/{}'.format(
-                self.submission._info_path(),  # pylint: disable=no-member
+                self.submission._info_path(),
                 self.id)
 
         # The context limit appears to be 8, but let's ask for more anyway.

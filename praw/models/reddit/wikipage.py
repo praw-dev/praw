@@ -73,7 +73,7 @@ class WikiPage(RedditBase):
 
     def __repr__(self):
         """Return an object initialization representation of the instance."""
-        return '{}(subreddit={!r}, name={!r})'.format(
+        return '<{}(subreddit={!r}, name={!r})>'.format(
             self.__class__.__name__, self.subreddit, self.name)
 
     def __str__(self):

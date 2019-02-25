@@ -22,8 +22,8 @@ class TestComment(UnitTest):
         assert comment1 == comment2
         assert comment2 != comment3
         assert comment1 != comment3
-        assert 'dummy1' == comment1
-        assert comment2 == 'dummy1'
+        assert 't1_dummy1' == comment1
+        assert comment2 == 't1_dummy1'
 
     def test_construct_failure(self):
         message = 'Exactly one of `id`, `url`, or `_data` must be provided.'
@@ -49,7 +49,7 @@ class TestComment(UnitTest):
 
     def test_construct_from_url(self):
         url = 'https://reddit.com/comments/2gmzqe/_/cklhv0f/'
-        assert Comment(self.reddit, url=url) == 'cklhv0f'
+        assert Comment(self.reddit, url=url) == 't1_cklhv0f'
 
     def test_hash(self):
         comment1 = Comment(self.reddit, _data={'id': 'dummy1', 'n': 1})
@@ -91,11 +91,11 @@ class TestComment(UnitTest):
 
     def test_repr(self):
         comment = Comment(self.reddit, id='dummy')
-        assert repr(comment) == 'Comment(id=\'dummy\')'
+        assert repr(comment) == "<Comment(id='dummy')>"
 
     def test_str(self):
         comment = Comment(self.reddit, _data={'id': 'dummy'})
-        assert str(comment) == 'dummy'
+        assert str(comment) == 't1_dummy'
 
     def test_unset_hidden_attribute_does_not_fetch(self):
         comment = Comment(self.reddit, _data={'id': 'dummy'})

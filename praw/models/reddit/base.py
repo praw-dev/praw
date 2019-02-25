@@ -13,6 +13,9 @@ if version_info.major > 2:
 class RedditBase(PRAWBase):
     """Base class that represents actual Reddit objects."""
 
+    REPR_INIT_FIELD = None
+    STR_FIELD = None
+
     @staticmethod
     def _url_parts(url):
         parsed = urlparse(url)
@@ -85,13 +88,14 @@ class RedditBase(PRAWBase):
         self._info_params = {}
 
     def __repr__(self):
-        """Return an object initialization representation of the instance."""
-        return '{}({}={!r})'.format(self.__class__.__name__, self.STR_FIELD,
-                                    str(self))
+        """Return a representation of the instance."""
+        return '<{}({}={!r})>'.format(self.__class__.__name__,
+                                      self.REPR_INIT_FIELD,
+                                      getattr(self, self.REPR_INIT_FIELD))
 
     def __str__(self):
         """Return a string representation of the instance."""
-        return self._data[self.STR_FIELD]
+        return getattr(self, self.STR_FIELD)
 
     def _fetch(self):
         if '_info_path' in dir(self):

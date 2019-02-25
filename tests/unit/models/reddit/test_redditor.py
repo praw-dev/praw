@@ -69,7 +69,7 @@ class TestRedditor(UnitTest):
 
     def test_repr(self):
         redditor = Redditor(self.reddit, name='RedditorName')
-        assert repr(redditor) == 'Redditor(name=\'RedditorName\')'
+        assert repr(redditor) == "<Redditor(name='RedditorName')>"
 
     def test_str(self):
         redditor = Redditor(self.reddit, _data={'name': 'name', 'id': 'dummy'})

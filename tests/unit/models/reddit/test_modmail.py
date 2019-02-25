@@ -20,4 +20,4 @@ class TestModmailConversation(UnitTest):
                                            _data={'id': 'ik72'})
 
         conversation = ModmailConversation(self.reddit, 'ik72')
-        assert str(conversation) == 'ik72'
+        assert str(conversation) == 'ModmailConversation_ik72'

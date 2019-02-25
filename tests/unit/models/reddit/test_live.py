@@ -53,9 +53,8 @@ class TestLiveThread(UnitTest):
         assert thread1 != thread2  # live thread ID in a URL is case sensitive
         assert thread2 != thread3
         assert thread1 != thread3
-        assert 'dummy1' == thread1
-        assert thread2 != 'dummy1'
-        assert thread2 == 'Dummy1'
+        assert 'LiveUpdateEvent_dummy1' == thread1
+        assert thread2 == 'LiveUpdateEvent_Dummy1'
 
     def test_getitem(self):
         thread_id = 'dummy_thread_id'
@@ -84,11 +83,11 @@ class TestLiveThread(UnitTest):
 
     def test_repr(self):
         thread = LiveThread(self.reddit, id='dummy')
-        assert repr(thread) == 'LiveThread(id=\'dummy\')'
+        assert repr(thread) == "<LiveThread(id='dummy')>"
 
     def test_str(self):
         thread = LiveThread(self.reddit, id='dummy')
-        assert str(thread) == 'dummy'
+        assert str(thread) == 'LiveUpdateEvent_dummy'
 
 
 class TestLiveThreadContribution(UnitTest):

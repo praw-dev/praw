@@ -86,7 +86,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     # pylint: disable=too-many-public-methods
 
-    STR_FIELD = 'display_name'
+    REPR_INIT_FIELD = 'display_name'
+    STR_FIELD = REPR_INIT_FIELD
     MESSAGE_PREFIX = '#'
 
     @staticmethod
@@ -418,10 +419,10 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         self._stylesheet = None
         self._wiki = None
         self._widgets = None
-        self._path = API_PATH['subreddit'].format(subreddit=self)
+        self._path = API_PATH['subreddit'].format(subreddit=self.display_name)
 
     def _info_path(self):
-        return API_PATH['subreddit_about'].format(subreddit=self)
+        return API_PATH['subreddit_about'].format(subreddit=self.display_name)
 
     def _submit_media(self, data):
         """Submit and return an `image`, `video`, or `videogif`.

@@ -14,7 +14,7 @@ class TestComment(IntegrationTest):
             assert comment.author == 'bboe'
             assert comment.body.startswith('Yes it does.')
             assert not comment.is_root
-            assert comment.submission == '2gmzqe'
+            assert comment.submission == 't3_2gmzqe'
 
     @mock.patch('time.sleep', return_value=None)
     def test_block(self, _):

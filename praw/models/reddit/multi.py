@@ -43,7 +43,8 @@ class Multireddit(RedditBase, SubredditListingMixin):
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
     """
 
-    STR_FIELD = 'path'
+    REPR_INIT_FIELD = 'path'
+    STR_FIELD = REPR_INIT_FIELD
     RE_INVALID = re.compile(r'(\s|\W|_)+', re.UNICODE)
 
     @staticmethod
@@ -101,6 +102,12 @@ class Multireddit(RedditBase, SubredditListingMixin):
         if 'subreddits' in self._data:
             self._data['subreddits'] = [Subreddit(reddit, x['name'])
                                         for x in self._data['subreddits']]
+
+    def __repr__(self):
+        """Return a representation of the instance."""
+        return '<{} {}={!r}>'.format(self.__class__.__name__,
+                                     self.REPR_INIT_FIELD,
+                                     getattr(self, self.REPR_INIT_FIELD))
 
     def _info_path(self):
         return API_PATH['multireddit_api'].format(

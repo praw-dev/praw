@@ -49,7 +49,8 @@ class ModmailConversation(RedditBase):
 
     """
 
-    STR_FIELD = 'id'
+    REPR_INIT_FIELD = 'id'
+    STR_FIELD = 'fullname'
 
     @staticmethod
     def _convert_conversation_objects(data, reddit):
