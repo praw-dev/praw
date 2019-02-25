@@ -121,12 +121,14 @@ class ModmailConversation(RedditBase):
             (default: False).
 
         """
-        super(ModmailConversation, self).__init__(reddit, _data=_data)
-        if bool(id) == bool(_data):
+        if [id, _data].count(None) != 1:
             raise TypeError('Either `id` or `_data` must be provided.')
 
-        if id:
-            self._data['id'] = id
+        if _data is None:
+            _data = {'id': id}
+
+        super(ModmailConversation, self).__init__(reddit, _data=_data)
+
         if mark_read:
             self._info_params = {'markRead': True}
 

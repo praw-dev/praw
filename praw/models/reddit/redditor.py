@@ -102,15 +102,17 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         :param name: The name of the redditor.
 
         """
-        if bool(name) == bool(_data):
+        if [name, _data].count(None) != 1:
             raise TypeError('Either `name` or `_data` must be provided.')
 
-        super(Redditor, self).__init__(reddit, _data=_data)
-        if name:
-            self._data['name'] = name
         if _data:
             assert isinstance(_data, dict) and 'name' in _data, \
                    'Please file a bug with PRAW'
+
+        if _data is None:
+            _data = {'name': name}
+
+        super(Redditor, self).__init__(reddit, _data=_data)
 
         self._listing_use_sort = True
         self._path = API_PATH['user'].format(user=self)

@@ -42,6 +42,11 @@ class RedditBase(PRAWBase):
         return '{}_{}'.format(self._reddit._objector.kind(self),
                               self.id)
 
+    @property
+    def fetched(self):
+        """Return True if reddit attributes have been fetched."""
+        return self._fetched
+
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
         if isinstance(other, basestring):  # basestring needed for py2 support
@@ -110,3 +115,10 @@ class RedditBase(PRAWBase):
             if attribute in self._data:
                 del self._data[attribute]
         self._fetched = False
+
+    def fetch(self, force=False):
+        """Manually fetch the reddit attributes for this object."""
+        if force or not self._fetched:
+            self._data.clear()
+            self._data.update(self._initial_data)
+            self._fetch()

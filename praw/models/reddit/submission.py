@@ -187,21 +187,24 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
             raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
                             'provided.')
 
-        if _data is not None:
+        if _data is None:
+            _data = {}
+        else:
             self._objectify_acknowledged(reddit, _data)
+        if id is not None:
+            _data['id'] = id
+        elif url is not None:
+            _data['id'] = self.id_from_url(url)
 
         super(Submission, self).__init__(reddit, _data=_data)
-        self.comment_limit = 2048
-        self.comment_sort = 'best'
-
-        if id is not None:
-            self._data['id'] = id
-        elif url is not None:
-            self._data['id'] = self.id_from_url(url)
-        self._flair = self._mod = None
 
         self._comments_by_id = {}
         self._comments = None
+        self._flair = None
+        self._mod = None
+
+        self.comment_limit = 2048
+        self.comment_sort = 'best'
 
     def _chunk(self, other_submissions, chunk_size):
         all_submissions = [self.fullname]

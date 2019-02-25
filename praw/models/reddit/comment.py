@@ -140,8 +140,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         """Update the Submission associated with the Comment."""
         submission._comments_by_id[self.name] = self
         self._submission = submission
-        # pylint: disable=not-an-iterable
-        for reply in getattr(self, 'replies', []):
+        for reply in self.replies:
             reply.submission = submission
 
     def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
@@ -150,17 +149,26 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         if [id, url, _data].count(None) != 2:
             raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
                             'provided.')
-        self._mod = self._replies = self._submission = None
-        if _data is not None:
+
+        self._mod = None
+        self._replies = None
+        self._submission = None
+
+        init_by_data = _data is not None
+
+        if _data is None:
+            _data = {}
+            if id is not None:
+                _data['id'] = id
+            elif url is not None:
+                _data['id'] = self.id_from_url(url)
+        else:
             self._objectify_acknowledged(reddit, _data)
             self._replies = _data.pop('replies', None)
 
         super(Comment, self).__init__(reddit, _data=_data)
-        if id is not None:
-            self._data['id'] = id
-        elif url is not None:
-            self._data['id'] = self.id_from_url(url)
-        else:
+
+        if init_by_data:
             self._fetched = True
 
         self.reply_limit = None

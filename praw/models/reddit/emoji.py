@@ -43,7 +43,10 @@ class Emoji(RedditBase):
         """Construct an instance of the Emoji object."""
         self.name = name
         self.subreddit = subreddit
-        _data = {'name': name} if _data is None else _data
+
+        if _data is None:
+            _data = {'name': name}
+
         super(Emoji, self).__init__(reddit, _data=_data)
 
     def _fetch(self):

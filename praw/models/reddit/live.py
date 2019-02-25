@@ -338,11 +338,14 @@ class LiveThread(RedditBase):
         :param reddit: An instance of :class:`.Reddit`.
         :param id: A live thread ID, e.g., ``'ukaeu1ik4sw5'``
         """
-        if bool(id) == bool(_data):
+        if [id, _data].count(None) != 1:
             raise TypeError('Either `id` or `_data` must be provided.')
+
+        if _data is None:
+            _data = {'id': id}
+
         super(LiveThread, self).__init__(reddit, _data=_data)
-        if id:
-            self._data['id'] = id
+
         self._contrib = None
         self._contributor = None
 

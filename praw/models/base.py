@@ -38,6 +38,7 @@ class PRAWBase(object):
         """
         self._reddit = reddit
         self._data = {} if _data is None else _data
+        self._initial_data = dict(self._data)
         self._a = AttributeCollection(self._data)
 
     def __getattr__(self, name):

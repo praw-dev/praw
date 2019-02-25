@@ -74,9 +74,9 @@ class AttributeDict(MutableMapping):
         """Return repr(self)."""
         if self._data0:
             return '%s(%r)' % (
-                type(self).__name__,
+                self.__class__.__name__,
                 self._data0)
-        return type(self).__name__ + '()'
+        return self.__class__.__name__ + '()'
 
     def __abs__(self):
         """Return the inner dict object."""
@@ -90,7 +90,13 @@ class AttributeDict(MutableMapping):
         """Restore from pickled state."""
         object.__setattr__(self, '_data0', state)
 
-class AttributeCollection(AttributeDict):
+class ImmutableContainer(object):
+    def _immutable(self, *args, **kwargs):
+        raise TypeError('%r is immutable' % self.__class__.__name__)
+
+    __setattr__ = __setitem__ = __delitem__ = _immutable
+
+class AttributeCollection(ImmutableContainer, AttributeDict):
     """A container for holding arbitrary attributes."""
 
     @staticmethod

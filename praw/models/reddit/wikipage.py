@@ -65,10 +65,10 @@ class WikiPage(RedditBase):
             the most recent revision.
 
         """
+        super(WikiPage, self).__init__(reddit, _data=_data)
+        self.subreddit = subreddit
         self.name = name
         self._revision = revision
-        self.subreddit = subreddit
-        super(WikiPage, self).__init__(reddit, _data=_data)
         self._mod = None
 
     def __repr__(self):
