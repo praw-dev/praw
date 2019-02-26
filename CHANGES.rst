@@ -15,6 +15,9 @@ Unreleased
 * :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image`, and
   :meth:`~.Subreddit.submit_video` support parameter ``nsfw`` to
   mark the submission NSFW immediately upon posting.
+* :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image`, and
+  :meth:`~.Subreddit.submit_video` support parameter ``spoiler`` to
+  mark the submission as a spoiler immediately upon posting.
 
 **Other**
 
