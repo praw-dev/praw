@@ -193,6 +193,16 @@ class TestSubreddit(IntegrationTest):
             assert submission.over_18 is True
 
     @mock.patch('time.sleep', return_value=None)
+    def test_submit__spoiler(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette('TestSubreddit.test_submit__spoiler'):
+            subreddit = self.subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit)
+            submission = subreddit.submit('Test Title', selftext='Test text.',
+                                          spoiler=True)
+            assert submission.spoiler is True
+
+    @mock.patch('time.sleep', return_value=None)
     @mock.patch('websocket.create_connection',
                 return_value=WebsocketMock('ahf0uh',  # update with cassette
                                            'ahf0uq',  # update with cassette

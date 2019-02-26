@@ -554,7 +554,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             self._reddit.config.reddit_url, path))
 
     def submit(self, title, selftext=None, url=None, flair_id=None,
-               flair_text=None, resubmit=True, send_replies=True, nsfw=False):
+               flair_text=None, resubmit=True, send_replies=True, nsfw=False,
+               spoiler=False):
         """Add a submission to the subreddit.
 
         :param title: The title of the submission.
@@ -571,6 +572,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             author when comments are made to the submission (default: True).
         :param nsfw: Whether or not the submission should be marked NSFW
             (default: False).
+        :param spoiler: Whether or not the submission should be marked as
+            a spoiler (default: False).
         :returns: A :class:`~.Submission` object for the newly created
             submission.
 
@@ -595,7 +598,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         data = {'sr': str(self), 'resubmit': bool(resubmit),
                 'sendreplies': bool(send_replies), 'title': title,
-                'nsfw': bool(nsfw)}
+                'nsfw': bool(nsfw), 'spoiler': bool(spoiler)}
         for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
             if value is not None:
                 data[key] = value
@@ -608,7 +611,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     def submit_image(self, title, image_path, flair_id=None,
                      flair_text=None, resubmit=True, send_replies=True,
-                     nsfw=False):
+                     nsfw=False, spoiler=False):
         """Add an image submission to the subreddit.
 
         :param title: The title of the submission.
@@ -622,6 +625,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             author when comments are made to the submission (default: True).
         :param nsfw: Whether or not the submission should be marked NSFW
             (default: False).
+        :param spoiler: Whether or not the submission should be marked as
+            a spoiler (default: False).
 
         .. note::
 
@@ -644,7 +649,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         """
         data = {'sr': str(self), 'resubmit': bool(resubmit),
                 'sendreplies': bool(send_replies), 'title': title,
-                'nsfw': bool(nsfw)}
+                'nsfw': bool(nsfw), 'spoiler': bool(spoiler)}
         for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
             if value is not None:
                 data[key] = value
@@ -653,7 +658,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     def submit_video(self, title, video_path, videogif=False,
                      thumbnail_path=None, flair_id=None, flair_text=None,
-                     resubmit=True, send_replies=True, nsfw=False):
+                     resubmit=True, send_replies=True, nsfw=False,
+                     spoiler=False):
         """Add a video or videogif submission to the subreddit.
 
         :param title: The title of the submission.
@@ -674,6 +680,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             (default: ``True``).
         :param nsfw: Whether or not the submission should be marked NSFW
             (default: False).
+        :param spoiler: Whether or not the submission should be marked as
+            a spoiler (default: False).
 
         .. note::
 
@@ -696,7 +704,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         """
         data = {'sr': str(self), 'resubmit': bool(resubmit),
                 'sendreplies': bool(send_replies), 'title': title,
-                'nsfw': bool(nsfw)}
+                'nsfw': bool(nsfw), 'spoiler': bool(spoiler)}
         for key, value in (('flair_id', flair_id), ('flair_text', flair_text)):
             if value is not None:
                 data[key] = value
