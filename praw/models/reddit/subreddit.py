@@ -67,16 +67,24 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     ======================= ===================================================
     Attribute               Description
     ======================= ===================================================
+    ``can_assign_link_flair`` Whether users can assign their own link flair.
+    ``can_assign_user_flair`` Whether users can assign their own user flair.
     ``created_utc``         Time the subreddit was created, represented in
                             `Unix Time`_.
     ``description``         Subreddit description, in Markdown.
     ``description_html``    Subreddit description, in HTML.
     ``display_name``        Name of the subreddit.
-    ``over18``              Whether or not the subreddit is NSFW.
+    ``id``                  Reddit 'thing ID' of the subreddit.
+    ``name``                Fullname of the subreddit.
+    ``over18``              Whether the subreddit is NSFW.
     ``public_description``  Description of the subreddit, shown in searches
                             and on the "You must be invited to visit this
                             community" page (if applicable).
-    ``subscribers``         Count of subscribers to the subreddit.
+    ``spoilers_enabled``    Whether the spoiler tag feature is enabled.
+    ``subscribers``         Count of subscribers.
+    ``user_is_banned``      Whether the authenticated user is banned.
+    ``user_is_moderator``   Whether the authenticated user is a moderator.
+    ``user_is_subscriber``  Whether the authenticated user is subscribed.
     ======================= ===================================================
 
 
