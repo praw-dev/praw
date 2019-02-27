@@ -665,8 +665,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         :param title: The title of the submission.
         :param video_path: The path to a video, to upload and post.
         :param videogif: A ``bool`` value. If ``True``, the video is
-            uploaded as a videogif, which is essentially a silent video (
-            default: ``False``).
+            uploaded as a videogif, which is essentially a silent video
+            (default: ``False``).
         :param thumbnail_path: (Optional) The path to an image, to be uploaded
             and used as the thumbnail for this video. If not provided, the
             PRAW logo will be used as the thumbnail.
