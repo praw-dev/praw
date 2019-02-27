@@ -410,7 +410,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     def _info_path(self):
         return API_PATH['subreddit_about'].format(subreddit=self)
 
-    def _submit_media(self, data):
+    def _submit_media(self, data, timeout):
         """Submit and return an `image`, `video`, or `videogif`.
 
         This is a helper method for submitting posts that are not link posts or
@@ -446,9 +446,9 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         try:
             socket = websocket.create_connection(response['json']['data']
                                                  ['websocket_url'],
-                                                 timeout=2)
+                                                 timeout=timeout)
             ws_update = loads(socket.recv())
-            socket.close(timeout=2)
+            socket.close()
         except websocket.WebSocketTimeoutException:
             raise ClientException('Websocket error. Check your media file. '
                                   'Your post may still have been created.')
@@ -611,7 +611,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     def submit_image(self, title, image_path, flair_id=None,
                      flair_text=None, resubmit=True, send_replies=True,
-                     nsfw=False, spoiler=False):
+                     nsfw=False, spoiler=False, timeout=10):
         """Add an image submission to the subreddit.
 
         :param title: The title of the submission.
@@ -627,13 +627,17 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             (default: False).
         :param spoiler: Whether or not the submission should be marked as
             a spoiler (default: False).
+        :param timeout: Specifies a particular timeout, in seconds. Use to
+            avoid "Websocket error" exceptions (default: 10).
 
         .. note::
 
            Reddit's API uses WebSockets to respond with the link of the
            newly created post. If this fails, the method will raise
            :class:`.ClientException`. Occasionally, the Reddit post will still
-           be created. More often, there is an error with the image file.
+           be created. More often, there is an error with the image file. If
+           you frequently get exceptions but successfully created posts, try
+           setting the ``timeout`` parameter to a value above 10.
 
         :returns: A :class:`~.Submission` object for the newly created
             submission.
@@ -654,12 +658,12 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             if value is not None:
                 data[key] = value
         data.update(kind='image', url=self._upload_media(image_path))
-        return self._submit_media(data)
+        return self._submit_media(data, timeout)
 
     def submit_video(self, title, video_path, videogif=False,
                      thumbnail_path=None, flair_id=None, flair_text=None,
                      resubmit=True, send_replies=True, nsfw=False,
-                     spoiler=False):
+                     spoiler=False, timeout=10):
         """Add a video or videogif submission to the subreddit.
 
         :param title: The title of the submission.
@@ -682,13 +686,17 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             (default: False).
         :param spoiler: Whether or not the submission should be marked as
             a spoiler (default: False).
+        :param timeout: Specifies a particular timeout, in seconds. Use to
+            avoid "Websocket error" exceptions (default: 10).
 
         .. note::
 
            Reddit's API uses WebSockets to respond with the link of the
            newly created post. If this fails, the method will raise
            :class:`.ClientException`. Occasionally, the Reddit post will still
-           be created. More often, there is an error with the video file.
+           be created. More often, there is an error with the video file. If
+           you frequently get exceptions but successfully created posts, try
+           setting the ``timeout`` parameter to a value above 10.
 
         :returns: A :class:`~.Submission` object for the newly created
             submission.
@@ -712,7 +720,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
                     url=self._upload_media(video_path),
                     # if thumbnail_path is None, it uploads the PRAW logo
                     video_poster_url=self._upload_media(thumbnail_path))
-        return self._submit_media(data)
+        return self._submit_media(data, timeout)
 
     def subscribe(self, other_subreddits=None):
         """Subscribe to the subreddit.
