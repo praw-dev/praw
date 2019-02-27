@@ -74,7 +74,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     ``description``         Subreddit description, in Markdown.
     ``description_html``    Subreddit description, in HTML.
     ``display_name``        Name of the subreddit.
-    ``id``                  Reddit 'thing ID' of the subreddit.
+    ``id``                  ID of the subreddit.
     ``name``                Fullname of the subreddit.
     ``over18``              Whether the subreddit is NSFW.
     ``public_description``  Description of the subreddit, shown in searches
