@@ -1,5 +1,8 @@
 """Provide helper classes used by other models."""
-from collections.abc import MutableMapping
+try:
+    from collections.abc import MutableMapping
+except ImportError:
+    from collections import MutableMapping
 from pprint import PrettyPrinter, pformat
 import random
 import time
@@ -28,7 +31,7 @@ class AttributeDict(MutableMapping):
         object.__setattr__(self, '_data0', data)
 
     def __getitem__(self, key):
-        """x.__getitem__(y) <==> x[y]"""
+        """Get self[key]."""
         return self._data0[key]
 
     def __setitem__(self, key, value):
@@ -52,11 +55,13 @@ class AttributeDict(MutableMapping):
         try:
             attr = self._data0[name]
         except KeyError:
-            raise AttributeError(repr(name)) from None
+            pass
         else:
             if isinstance(attr, dict):
                 return type(self)(attr)
             return attr
+
+        raise AttributeError(repr(name))
 
     def __setattr__(self, name, value):
         """Implement setattr(self, name, value)."""
@@ -90,14 +95,18 @@ class AttributeDict(MutableMapping):
         """Restore from pickled state."""
         object.__setattr__(self, '_data0', state)
 
+
 class ImmutableContainer(object):
+    """A mixin that makes container objects immutable."""
+
     def _immutable(self, *args, **kwargs):
         raise TypeError('%r is immutable' % self.__class__.__name__)
 
     __setattr__ = __setitem__ = __delitem__ = _immutable
 
+
 class AttributeCollection(ImmutableContainer, AttributeDict):
-    """A container for holding arbitrary attributes."""
+    """An immutable container for holding arbitrary attributes."""
 
     @staticmethod
     def _pprint_attribute_collection(printer, obj, stream, indent, allowance,
@@ -112,8 +121,10 @@ class AttributeCollection(ImmutableContainer, AttributeDict):
         """Return a pretty-print formatted string of the instance."""
         return pformat(self)
 
-PrettyPrinter._dispatch[AttributeCollection.__repr__] = \
-        AttributeCollection._pprint_attribute_collection
+
+if isinstance(getattr(PrettyPrinter, '_dispatch', None), dict):
+    PrettyPrinter._dispatch[AttributeCollection.__repr__] = \
+            AttributeCollection._pprint_attribute_collection
 
 
 class BoundedSet(object):

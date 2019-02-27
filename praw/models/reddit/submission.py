@@ -1,4 +1,6 @@
 """Provide the Submission class."""
+from six import string_types
+
 from ...const import API_PATH, urljoin
 from ...exceptions import ClientException
 from ..comment_forest import CommentForest
@@ -90,7 +92,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     def _objectify_acknowledged(cls, reddit, data):
         key = 'author'
         item = data.get(key)
-        if isinstance(item, str):
+        if isinstance(item, string_types):
             data[key] = (None
                          if item == '[deleted]' else
                          Redditor(reddit, name=item))
@@ -99,7 +101,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
         key = 'subreddit'
         item = data.get(key)
-        if isinstance(item, str):
+        if isinstance(item, string_types):
             data[key] = Subreddit(reddit, item)
 
     @property

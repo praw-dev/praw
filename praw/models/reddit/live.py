@@ -1,4 +1,6 @@
 """Provide the LiveThread class."""
+from six import string_types
+
 from ...const import API_PATH
 from ..listing.generator import ListingGenerator
 from ..list.redditor import RedditorList
@@ -305,7 +307,7 @@ class LiveThread(RedditBase):
 
         .. note:: This comparison is case sensitive.
         """
-        if isinstance(other, str):
+        if isinstance(other, string_types):
             return other == str(self)
         return (isinstance(other, self.__class__) and
                 str(self) == str(other))
@@ -549,7 +551,7 @@ class LiveUpdate(RedditBase):
     def _objectify_acknowledged(cls, reddit, data):
         key = 'author'
         item = data.get(key)
-        if isinstance(item, str):
+        if isinstance(item, string_types):
             data[key] = Redditor(reddit, name=item)
         elif isinstance(item, Redditor):
             item._reddit = reddit

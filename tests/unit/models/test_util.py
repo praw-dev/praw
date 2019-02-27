@@ -1,7 +1,12 @@
 """Test praw.models.util module."""
-from collections.abc import MutableMapping
+try:
+    from collections.abc import MutableMapping
+except ImportError:
+    from collections import MutableMapping
 import pickle
+
 import pytest
+
 from .. import UnitTest
 from praw.models.util import (
     ExponentialCounter,
@@ -129,14 +134,37 @@ class TestAttributeDict:
         assert found_items == expected_items
 
     def test_str(self):
-        assert str(self.attrdict) == "{'a': 1, 'b': 2, 'c': 3}"
+        def assert_attrdict_str(attrdict, items):
+            str_attrdict = str(attrdict)
+            if not (str_attrdict.startswith('{')
+                    and str_attrdict.endswith('}')):
+                return False
+
+            str_dict_items = ('%r: %r' % (key, value)
+                              for key, value in items.items())
+            return all(item in str_attrdict for item in str_dict_items)
+
+        assert assert_attrdict_str(self.attrdict, {'a': 1, 'b': 2, 'c': 3})
         self.attrdict.pop('c')
-        assert str(self.attrdict) == "{'a': 1, 'b': 2}"
+        assert assert_attrdict_str(self.attrdict, {'a': 1, 'b': 2})
+
+        assert str(AttributeDict()) == '{}'
 
     def test_repr(self):
-        assert repr(self.attrdict) == "AttributeDict({'a': 1, 'b': 2, 'c': 3})"
+        def assert_attrdict_repr(attrdict, items):
+            attrdict_cls = type(attrdict).__name__
+            repr_attrdict = repr(attrdict)
+            if not (repr_attrdict.startswith(attrdict_cls + '({')
+                    and repr_attrdict.endswith('})')):
+                return False
+
+            str_dict_items = ('%r: %r' % (key, value)
+                              for key, value in items.items())
+            return all(item in repr_attrdict for item in str_dict_items)
+
+        assert assert_attrdict_repr(self.attrdict, {'a': 1, 'b': 2, 'c': 3})
         self.attrdict.pop('c')
-        assert repr(self.attrdict) == "AttributeDict({'a': 1, 'b': 2})"
+        assert assert_attrdict_repr(self.attrdict, {'a': 1, 'b': 2})
 
         attrdict1 = AttributeDict()
         attrdict2 = AttributeDict({})
@@ -144,7 +172,7 @@ class TestAttributeDict:
         assert abs(attrdict1) is not abs(attrdict2)
 
         attrdict3 = AttributeDict({'a': 1})
-        assert repr(attrdict3) == "AttributeDict({'a': 1})"
+        assert assert_attrdict_repr(attrdict3, {'a': 1})
         attrdict3.pop('a')
         assert repr(attrdict3) == 'AttributeDict()'
 
@@ -188,3 +216,15 @@ class TestAttributeDict:
         for level in range(pickle.HIGHEST_PROTOCOL + 1):
             other = pickle.loads(pickle.dumps(attrdict, protocol=level))
             assert attrdict == other
+
+    def test_noclobber(self):
+        attrdict = AttributeDict()
+        update_method = attrdict.update
+        attrdict.update = 1
+        assert attrdict.update == update_method
+        assert attrdict['update'] == 1
+
+        clear_method = attrdict.clear
+        attrdict.update({'clear': 2})
+        assert attrdict.clear == clear_method
+        assert attrdict['clear'] == 2

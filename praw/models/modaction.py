@@ -1,4 +1,5 @@
 """Provide the ModAction class."""
+from six import string_types
 
 from .base import PRAWBase
 from .reddit.redditor import Redditor
@@ -16,7 +17,7 @@ class ModAction(PRAWBase):
     def _objectify_acknowledged(cls, reddit, data):
         key = 'mod'
         item = data.get(key)
-        if isinstance(item, str):
+        if isinstance(item, string_types):
             data[key] = Redditor(reddit, name=item)
         elif isinstance(item, Redditor):
             item._reddit = reddit

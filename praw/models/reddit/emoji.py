@@ -1,6 +1,8 @@
 """Provide the Emoji class."""
 import os
 
+from six import string_types
+
 from ...const import API_PATH
 from ...exceptions import ClientException
 from .base import RedditBase
@@ -30,7 +32,7 @@ class Emoji(RedditBase):
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
-        if isinstance(other, str):
+        if isinstance(other, string_types):
             return other == str(self)
         return (isinstance(other, self.__class__) and
                 str(self) == str(other) and other.subreddit == self.subreddit)

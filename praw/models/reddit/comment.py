@@ -1,4 +1,6 @@
 """Provide the Comment class."""
+from six import string_types
+
 from ...exceptions import ClientException
 from ..comment_forest import CommentForest
 from .base import RedditBase
@@ -72,7 +74,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     def _objectify_acknowledged(cls, reddit, data):
         key = 'author'
         item = data.get(key)
-        if isinstance(item, str):
+        if isinstance(item, string_types):
             data[key] = (None
                          if item == '[deleted]' else
                          Redditor(reddit, name=item))
@@ -81,14 +83,14 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
         key = 'replies'
         item = data.get(key)
-        if isinstance(item, (str, dict)):
+        if isinstance(item, (string_types, dict)):
             data[key] = ([]
                          if item == '' else
                          reddit._objector.objectify(item)._data['children'])
 
         key = 'subreddit'
         item = data.get(key)
-        if isinstance(item, str):
+        if isinstance(item, string_types):
             data[key] = Subreddit(reddit, display_name=item)
         elif isinstance(item, Subreddit):
             item._reddit = reddit
@@ -155,8 +157,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         self._replies = None
         self._submission = None
 
-        init_by_data = _data is not None
-
+        init_by_data = False
         if _data is None:
             _data = {}
             if id is not None:
@@ -164,6 +165,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             elif url is not None:
                 _data['id'] = self.id_from_url(url)
         else:
+            init_by_data = True
             self._objectify_acknowledged(reddit, _data)
             self._replies = _data.pop('replies', None)
 
@@ -267,14 +269,12 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
         # The context limit appears to be 8, but let's ask for more anyway.
         params = {'context': 100}
-        if self.reply_limit is not None:
+        if self.reply_limit:
             params['limit'] = self.reply_limit
         if self.reply_sort:
             params['sort'] = self.reply_sort
         comment_list = self._reddit.get(comment_path,
                                         params=params)[1].children
-        import builtins
-        builtins.comment_list = comment_list[:]
         if not comment_list:
             raise ClientException(self.MISSING_COMMENT_MESSAGE)
 
