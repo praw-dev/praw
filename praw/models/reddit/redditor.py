@@ -35,7 +35,9 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
     ``is_employee``                      Whether or not the Redditor is a
                                          Reddit employee.
     ``is_friend``                        Whether or not the Redditor is friends
-                                         with the authenticated client.
+                                         with the authenticated user.
+    ``is_mod``                           Whether or not the Redditor mods any
+                                         subreddits.
     ``is_gold``                          Whether or not the Redditor has active
                                          gold status.
     ``link_karma``                       The link karma for the Redditor.
@@ -43,9 +45,8 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
     ``subreddit``                        If the Redditor has created a
                                          user-subreddit, provides a dictionary
                                          of additional attributes. See below.
-    ``subreddit['banner_img']``          The url of the user-subreddit banner.
-    ``subreddit['name']``                The name of the user-subreddit
-                                         (prefixed with 't5').
+    ``subreddit['banner_img']``          The URL of the user-subreddit banner.
+    ``subreddit['name']``                The fullname of the user-subreddit.
     ``subreddit['over_18']``             Whether or not the user-subreddit is
                                          NSFW.
     ``subreddit['public_description']``  The public description of the user-

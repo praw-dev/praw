@@ -20,37 +20,43 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
     guarantee that these attributes will always be present, nor is this list
     comprehensive in any way.
 
-    ======================== ==================================================
-    Attribute                Description
-    ======================== ==================================================
-    ``author``               Provides an instance of :class:`.Redditor`.
-    ``clicked``              Whether or not the submission has been clicked by
-                             the client.
-    ``comments``             Provides an instance of :class:`.CommentForest`.
-    ``created_utc``          Time the submission was created, represented in
-                             `Unix Time`_.
-    ``distinguished``        Whether or not the submission is distinguished.
-    ``edited``               Whether or not the submission has been edited.
-    ``id``                   The ID of the submission.
-    ``is_video``             Whether or not the submission is a Reddit-hosted
-                             video.
-    ``link_flair_css_class`` The CSS class for the submissions' flair.
-    ``link_flair_text``      The flair text for the submissions' flair.
-    ``locked``               Whether or not the submission has been locked.
-    ``num_comments``         The number of comments on the submission.
-    ``over_18``              Whether or not the submission has been marked as
-                             NSFW.
-    ``permalink``            A permalink for the submission.
-    ``score``                The number of upvotes for the submission.
-    ``selftext``             The submissions' selftext.
-    ``stickied``             Whether or not the submission is stickied.
-    ``subreddit``            Provides an instance of :class:`.Subreddit`.
-    ``subreddit_id``         The ID of the subreddit that the submission
-                             belongs to.
-    ``title``                The title of the submission.
-    ``upvote_ratio``         The percentage of upvotes from all votes on the
-                             submission.
-    ======================== ==================================================
+    =========================== ===============================================
+    Attribute                   Description
+    =========================== ===============================================
+    ``author``                  Provides an instance of :class:`.Redditor`.
+    ``clicked``                 Whether or not the submission has been clicked
+                                by the client.
+    ``comments``                Provides an instance of
+                                :class:`.CommentForest`.
+    ``created_utc``             Time the submission was created, represented in
+                                `Unix Time`_.
+    ``distinguished``           Whether or not the submission is distinguished.
+    ``edited``                  Whether or not the submission has been edited.
+    ``id``                      ID of the submission.
+    ``is_self``                 Whether or not the submission is a selfpost
+                                (text-only).
+    ``link_flair_template_id``  The link flair's ID, or None if not flaired.
+    ``link_flair_text``         The link flair's text content, or None if not
+                                flaired.
+    ``locked``                  Whether or not the submission has been locked.
+    ``name``                    Fullname of the submission.
+    ``num_comments``            The number of comments on the submission.
+    ``over_18``                 Whether or not the submission has been marked
+                                as NSFW.
+    ``permalink``               A permalink for the submission.
+    ``score``                   The number of upvotes for the submission.
+    ``selftext``                The submissions' selftext - an empty string if
+                                a link post.
+    ``spoiler``                 Whether or not the submission has been marked
+                                as a spoiler.
+    ``stickied``                Whether or not the submission is stickied.
+    ``subreddit``               Provides an instance of :class:`.Subreddit`.
+    ``title``                   The title of the submission.
+    ``upvote_ratio``            The percentage of upvotes from all votes on the
+                                submission.
+    ``url``                     The URL the submission links to, or the
+                                permalink if a selfpost.
+    =========================== ===============================================
 
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
