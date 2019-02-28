@@ -64,28 +64,28 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
     guarantee that these attributes will always be present, nor is this list
     comprehensive in any way.
 
-    ======================= ===================================================
-    Attribute               Description
-    ======================= ===================================================
-    ``can_assign_link_flair`` Whether users can assign their own link flair.
-    ``can_assign_user_flair`` Whether users can assign their own user flair.
-    ``created_utc``         Time the subreddit was created, represented in
-                            `Unix Time`_.
-    ``description``         Subreddit description, in Markdown.
-    ``description_html``    Subreddit description, in HTML.
-    ``display_name``        Name of the subreddit.
-    ``id``                  ID of the subreddit.
-    ``name``                Fullname of the subreddit.
-    ``over18``              Whether the subreddit is NSFW.
-    ``public_description``  Description of the subreddit, shown in searches
-                            and on the "You must be invited to visit this
-                            community" page (if applicable).
-    ``spoilers_enabled``    Whether the spoiler tag feature is enabled.
-    ``subscribers``         Count of subscribers.
-    ``user_is_banned``      Whether the authenticated user is banned.
-    ``user_is_moderator``   Whether the authenticated user is a moderator.
-    ``user_is_subscriber``  Whether the authenticated user is subscribed.
-    ======================= ===================================================
+    ========================== ===============================================
+    Attribute                  Description
+    ========================== ===============================================
+    ``can_assign_link_flair``  Whether users can assign their own link flair.
+    ``can_assign_user_flair``  Whether users can assign their own user flair.
+    ``created_utc``            Time the subreddit was created, represented in
+                               `Unix Time`_.
+    ``description``            Subreddit description, in Markdown.
+    ``description_html``       Subreddit description, in HTML.
+    ``display_name``           Name of the subreddit.
+    ``id``                     ID of the subreddit.
+    ``name``                   Fullname of the subreddit.
+    ``over18``                 Whether the subreddit is NSFW.
+    ``public_description``     Description of the subreddit, shown in searches
+                               and on the "You must be invited to visit this
+                               community" page (if applicable).
+    ``spoilers_enabled``       Whether the spoiler tag feature is enabled.
+    ``subscribers``            Count of subscribers.
+    ``user_is_banned``         Whether the authenticated user is banned.
+    ``user_is_moderator``      Whether the authenticated user is a moderator.
+    ``user_is_subscriber``     Whether the authenticated user is subscribed.
+    ========================== ===============================================
 
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
