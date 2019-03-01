@@ -11,14 +11,14 @@ import time
 class AttributeDict(MutableMapping):
     """A dict class extended to expose its keys though attributes.
 
-    Inherited dict methods (`.update()`, `.clear()`, etc.) as well as
-    `._data0` always takes precedence over arbitaty attribute access.
-    Indexing can be used to access values assigned to these names.
+    Inherited dict methods (`.update()`, `.clear()`, etc.) always take
+    precedence over arbitrary attribute access. Indexing should instead
+    be used to access the values of those names.
 
     There are no restrictions on the key name. If a key can't be get/set
-    with an attribute then indexing should be used.
+    as an attribute then indexing should be used.
 
-    The inner dict object is accessible with `abs(self)`.
+    The inner dict object can be retrieved using `abs(self)`.
     """
 
     __slots__ = ('_data0',)
@@ -29,6 +29,18 @@ class AttributeDict(MutableMapping):
         if kwargs:
             data = dict(data, **kwargs)
         object.__setattr__(self, '_data0', data)
+
+    def __contains__(self, item):
+        """Implement `in` membership test."""
+        return item in self._data0
+
+    def __iter__(self):
+        """Implement iter(self)."""
+        return iter(self._data0)
+
+    def __len__(self):
+        """Return len(self)."""
+        return len(self._data0)
 
     def __getitem__(self, key):
         """Get self[key]."""
@@ -41,14 +53,6 @@ class AttributeDict(MutableMapping):
     def __delitem__(self, key):
         """Delete self[key]."""
         del self._data0[key]
-
-    def __iter__(self):
-        """Implement iter(self)."""
-        return iter(self._data0)
-
-    def __len__(self):
-        """Return len(self)."""
-        return len(self._data0)
 
     def __getattr__(self, name):
         """Implement getattr(self, name)."""
@@ -105,12 +109,15 @@ class ImmutableContainer(object):
     __setattr__ = __setitem__ = __delitem__ = _immutable
 
 
-class AttributeCollection(ImmutableContainer, AttributeDict):
-    """An immutable container for holding arbitrary attributes."""
+class AttributeContainer(ImmutableContainer, AttributeDict):
+    """An immutable container for holding arbitrary attributes.
+
+    Members can be accessed using dot notation, or by indexing like a dict.
+    """
 
     @staticmethod
-    def _pprint_attribute_collection(printer, obj, stream, indent, allowance,
-                                     context, level):
+    def _pprint_attribute_collection(printer, obj, stream, indent,
+                                     allowance, context, level):
         cls = obj.__class__
         stream.write(cls.__name__ + '(')
         printer._format(abs(obj), stream, indent + len(cls.__name__) + 1,
@@ -123,8 +130,58 @@ class AttributeCollection(ImmutableContainer, AttributeDict):
 
 
 if isinstance(getattr(PrettyPrinter, '_dispatch', None), dict):
-    PrettyPrinter._dispatch[AttributeCollection.__repr__] = \
-            AttributeCollection._pprint_attribute_collection
+    PrettyPrinter._dispatch[AttributeContainer.__repr__] = \
+            AttributeContainer._pprint_attribute_collection
+
+
+class RedditAttributes(AttributeContainer):
+    """A namespace for fetched reddit attributes.
+
+    Members can be accessed using dot notation, or by indexing like a dict.
+    """
+
+    def __init__(self, data, prawobj=None):
+        """Initialize a RedditAttributes instance.
+
+        If available, prawobj is used to initiate a fetch the first time an
+        attribute cannot be found.
+        """
+        super(RedditAttributes, self).__init__(data)
+        object.__setattr__(self, '_prawobj', prawobj)
+
+    def __getitem__(self, key):
+        """Return the value of a reddit attribute via indexing."""
+        if self._prawobj is None:
+            return self._data0[key]
+
+        assert self._prawobj._data is self._data0
+
+        try:
+            return self._data0[key]
+        except KeyError:
+            pass
+
+        if not (self._prawobj._fetched or key.startswith('_')):
+            self._prawobj._fetch()
+
+        return self._data0[key]
+
+    def __getattr__(self, name):
+        """Return the value of a reddit attribute via dot notation.
+
+        If the retrieved value is a dict type then it will be wrapped
+        in an :class:`.AttributeContainer` before being returned.
+        """
+        try:
+            attr = self.__getitem__(name)
+        except KeyError:
+            pass
+        else:
+            if isinstance(attr, dict):
+                return self.__class__.__base__(attr)
+            return attr
+
+        raise AttributeError(repr(name))
 
 
 class BoundedSet(object):
