@@ -9,7 +9,7 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 
-class Comment(RedditBase, InboxableMixin, UserContentMixin):
+class Comment(InboxableMixin, UserContentMixin, RedditBase):
     """A class that represents a reddit comments.
 
     **Typical Attributes**

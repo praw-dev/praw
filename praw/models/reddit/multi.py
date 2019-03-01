@@ -9,7 +9,7 @@ from .redditor import Redditor
 from .subreddit import Subreddit, SubredditStream
 
 
-class Multireddit(RedditBase, SubredditListingMixin):
+class Multireddit(SubredditListingMixin, RedditBase):
     r"""A class for users' Multireddits.
 
     **Typical Attributes**
