@@ -49,7 +49,7 @@ class ModmailConversation(RedditBase):
 
     """
 
-    REPR_INIT_FIELD = 'id'
+    REPR_FIELD = 'id'
     STR_FIELD = 'fullname'
 
     @staticmethod

@@ -9,7 +9,7 @@ from ..base import PRAWBase
 class RedditBase(PRAWBase):
     """Base class that represents actual Reddit objects."""
 
-    REPR_INIT_FIELD = None
+    REPR_FIELD = None
     STR_FIELD = None
 
     @staticmethod
@@ -86,8 +86,8 @@ class RedditBase(PRAWBase):
     def __repr__(self):
         """Return a representation of the instance."""
         return '<{}({}={!r})>'.format(self.__class__.__name__,
-                                      self.REPR_INIT_FIELD,
-                                      getattr(self, self.REPR_INIT_FIELD))
+                                      self.REPR_FIELD,
+                                      getattr(self, self.REPR_FIELD))
 
     def __str__(self):
         """Return a string representation of the instance."""

@@ -59,7 +59,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
 
     """
 
-    REPR_INIT_FIELD = 'id'
+    REPR_FIELD = 'id'
     STR_FIELD = 'fullname'
 
     @staticmethod

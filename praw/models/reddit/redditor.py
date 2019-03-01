@@ -60,8 +60,8 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
 
     """
 
-    REPR_INIT_FIELD = 'name'
-    STR_FIELD = REPR_INIT_FIELD
+    REPR_FIELD = 'name'
+    STR_FIELD = REPR_FIELD
 
     @classmethod
     def from_data(cls, reddit, data):

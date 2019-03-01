@@ -54,7 +54,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
     MISSING_COMMENT_MESSAGE = ('This comment does not appear to be in the '
                                'comment tree')
-    REPR_INIT_FIELD = 'id'
+    REPR_FIELD = 'id'
     STR_FIELD = 'fullname'
 
     @staticmethod

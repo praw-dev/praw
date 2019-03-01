@@ -262,7 +262,7 @@ class LiveThread(RedditBase):
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
     """
 
-    REPR_INIT_FIELD = 'id'
+    REPR_FIELD = 'id'
     STR_FIELD = 'fullname'
 
     @property

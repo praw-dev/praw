@@ -39,7 +39,7 @@ class Message(RedditBase, InboxableMixin, ReplyableMixin):
 
     """
 
-    REPR_INIT_FIELD = 'id'
+    REPR_FIELD = 'id'
     STR_FIELD = 'fullname'
 
     @classmethod

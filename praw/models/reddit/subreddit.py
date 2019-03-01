@@ -86,8 +86,8 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
     # pylint: disable=too-many-public-methods
 
-    REPR_INIT_FIELD = 'display_name'
-    STR_FIELD = REPR_INIT_FIELD
+    REPR_FIELD = 'display_name'
+    STR_FIELD = REPR_FIELD
     MESSAGE_PREFIX = '#'
 
     @staticmethod

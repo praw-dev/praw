@@ -27,8 +27,8 @@ class Emoji(RedditBase):
     ======================= ===================================================
     """
 
-    REPR_INIT_FIELD = 'name'
-    STR_FIELD = REPR_INIT_FIELD
+    REPR_FIELD = 'name'
+    STR_FIELD = REPR_FIELD
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
