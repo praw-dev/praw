@@ -94,7 +94,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
         item = data.get(key)
         if isinstance(item, string_types):
             data[key] = (None
-                         if item == '[deleted]' else
+                         if item in ('[deleted]', '[removed]') else
                          Redditor(reddit, name=item))
         elif isinstance(item, Redditor):
             item._reddit = reddit
@@ -103,6 +103,8 @@ class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
         item = data.get(key)
         if isinstance(item, string_types):
             data[key] = Subreddit(reddit, item)
+        elif isinstance(item, Subreddit):
+            item._reddit = reddit
 
     @property
     def comments(self):

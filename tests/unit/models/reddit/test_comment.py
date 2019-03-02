@@ -2,7 +2,7 @@ import pickle
 
 import pytest
 from praw.exceptions import ClientException
-from praw.models import Comment
+from praw.models import Comment, Redditor, Subreddit
 
 from ... import UnitTest
 
@@ -102,3 +102,69 @@ class TestComment(UnitTest):
         assert comment._fetched
         with pytest.raises(AttributeError):
             comment._ipython_canary_method_should_not_exist_
+
+    def test_objectify_acknowledged(self):
+        data = {
+            'author': 'dummy_author',
+            'replies': '',
+            'subreddit': 'dummy_subreddit'
+        }
+        Comment._objectify_acknowledged(self.reddit, data=data)
+
+        redditor = data.pop('author')
+        assert type(redditor) is Redditor
+        assert redditor.name == redditor.a.name == 'dummy_author'
+        item = data.pop('replies')
+        assert item == []
+        subreddit = data.pop('subreddit')
+        assert type(subreddit) is Subreddit
+        assert subreddit.display_name \
+            == subreddit.a.display_name == 'dummy_subreddit'
+        assert data == {}
+
+        #
+        redditor._reddit = None
+        subreddit._reddit = None
+        data = {
+            'author': redditor,
+            'subreddit': subreddit
+        }
+        Comment._objectify_acknowledged(self.reddit, data=data)
+
+        item = data.pop('author')
+        assert type(item) is Redditor
+        assert redditor.name == redditor.a.name == 'dummy_author'
+        assert item._reddit is self.reddit
+        item = data.pop('subreddit')
+        assert type(item) is Subreddit
+        assert subreddit.display_name \
+            == subreddit.a.display_name == 'dummy_subreddit'
+        assert item._reddit is self.reddit
+        assert data == {}
+
+        #
+        data = {
+            'replies': {
+                'data': {
+                    'after': None,
+                    'before': None,
+                    'children': [
+                        {
+                            'data': {
+                                'id': 'abc',
+                                'body': 'Pretty cool stuff!',
+                                'created_utc': 9999
+                            },
+                            'kind': 't1'
+                        }
+                    ]
+                },
+                'kind': 'Listing'
+            }
+        }
+        Comment._objectify_acknowledged(self.reddit, data=data)
+
+        item = data.pop('replies')
+        assert type(item[0]) is Comment
+        assert item[0].id == item[0].a.id == 'abc'
+        assert data == {}

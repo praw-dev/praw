@@ -11,7 +11,8 @@ from .. import UnitTest
 from praw.models.util import (
     ExponentialCounter,
     permissions_string,
-    AttributeDict
+    AttributeDict,
+    AttributeContainer
 )
 
 
@@ -70,7 +71,7 @@ class TestUtil(UnitTest):
                                                         self.PERMISSIONS)
 
 
-class TestAttributeDict:
+class TestAttributeDict(UnitTest):
     def setup_method(self):
         self.attrdict = AttributeDict({'a': 1, 'b': 2, 'c': 3})
         self.attrdict_dict_nest = AttributeDict({'a': {'b': 3}})
@@ -105,14 +106,6 @@ class TestAttributeDict:
 
         assert type(self.attrdict_dict_nest['a']) is dict
 
-    def test_getattr(self):
-        assert self.attrdict.a == 1
-
-        with pytest.raises(AttributeError):
-            self.attrdict.z
-
-        assert type(self.attrdict_dict_nest.a) is AttributeDict
-
     def test_setitem(self):
         assert len(self.attrdict) == 3
         self.attrdict['d'] = 4
@@ -122,6 +115,26 @@ class TestAttributeDict:
     def test_delitem(self):
         assert len(self.attrdict) == 3
         del self.attrdict['a']
+        assert 'a' not in self.attrdict
+        assert len(self.attrdict) == 2
+
+    def test_getattr(self):
+        assert self.attrdict.a == 1
+
+        with pytest.raises(AttributeError):
+            self.attrdict.z
+
+        assert type(self.attrdict_dict_nest.a) is AttributeDict
+
+    def test_setattr(self):
+        assert len(self.attrdict) == 3
+        self.attrdict.d = 4
+        assert 'd' in self.attrdict
+        assert len(self.attrdict) == 4
+
+    def test_delattr(self):
+        assert len(self.attrdict) == 3
+        del self.attrdict.a
         assert 'a' not in self.attrdict
         assert len(self.attrdict) == 2
 
@@ -228,3 +241,42 @@ class TestAttributeDict:
         attrdict.update({'clear': 2})
         assert attrdict.clear == clear_method
         assert attrdict['clear'] == 2
+
+
+class TestAttributeContainer(UnitTest):
+    def setup_method(self):
+        self.attrcon = AttributeContainer({'a': 1, 'b': 2, 'c': 3})
+        self.attrcon_dict_nest = AttributeContainer({'a': {'b': 3}})
+
+    def test_immutable(self):
+        with pytest.raises(TypeError) as excinfo:
+            self.attrcon.attr = 3
+        assert 'immutable' in excinfo.value.args[0]
+
+        with pytest.raises(TypeError) as excinfo:
+            self.attrcon['attr'] = 3
+        assert 'immutable' in excinfo.value.args[0]
+
+        with pytest.raises(TypeError) as excinfo:
+            del self.attrcon.attr
+        assert 'immutable' in excinfo.value.args[0]
+
+        with pytest.raises(TypeError) as excinfo:
+            del self.attrcon['attr']
+        assert 'immutable' in excinfo.value.args[0]
+
+    def test_getitem(self):
+        assert self.attrcon['a'] == 1
+
+        with pytest.raises(KeyError):
+            self.attrcon['z']
+
+        assert type(self.attrcon_dict_nest['a']) is dict
+
+    def test_getattr(self):
+        assert self.attrcon.a == 1
+
+        with pytest.raises(AttributeError):
+            self.attrcon.z
+
+        assert type(self.attrcon_dict_nest.a) is AttributeContainer

@@ -10,7 +10,6 @@ from ... import UnitTest
 
 
 class TestLiveThread(UnitTest):
-
     def test_construct_success(self):
         thread_id = 'ukaeu1ik4sw5'
         data = {'id': thread_id}
@@ -97,7 +96,6 @@ class TestLiveThreadContribution(UnitTest):
 
 
 class TestLiveUpdate(UnitTest):
-
     def test_construct_success(self):
         thread_id = 'dummy_thread_id'
         update_id = 'dummy_update_id'
@@ -162,3 +160,23 @@ class TestLiveUpdate(UnitTest):
                             update_id=update_id)
         assert isinstance(update.thread, LiveThread)
         assert update.thread.id == thread_id
+
+    def test_objectify_acknowledged(self):
+        data = {'author': 'dummy_author'}
+        LiveUpdate._objectify_acknowledged(self.reddit, data=data)
+
+        redditor = data.pop('author')
+        assert type(redditor) is Redditor
+        assert redditor.name == redditor.a.name == 'dummy_author'
+        assert data == {}
+
+        #
+        redditor._reddit = None
+        data = {'author': redditor}
+        LiveUpdate._objectify_acknowledged(self.reddit, data=data)
+
+        item = data.pop('author')
+        assert type(item) is Redditor
+        assert redditor.name == redditor.a.name == 'dummy_author'
+        assert item._reddit is self.reddit
+        assert data == {}
