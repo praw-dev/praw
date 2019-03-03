@@ -886,14 +886,11 @@ class Widget(PRAWBase):
     def __init__(self, reddit, _data):
         """Initialize an instance of the class."""
         super(Widget, self).__init__(reddit, _data=_data)
+        if 'id' not in _data:
+            _data['id'] = ''
+        if 'subreddit' not in _data:
+            _data['subreddit'] = ''
         self._mod = None
-
-    def __getattr__(self, name):
-        """Return the value of attribute `name`."""
-        if name in ('id', 'subreddit'):
-            return self._data.get(name, '')
-
-        return super(Widget, self).__getattr__(name)
 
 
 class ButtonWidget(Widget, BaseList):

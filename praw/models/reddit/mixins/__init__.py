@@ -65,7 +65,7 @@ class ThingModerationMixin(object):
 
         """
         data = {'how': how, 'id': self.thing.fullname}
-        if sticky and getattr(self.thing, 'is_root', False):
+        if sticky and self.thing.is_root:
             data['sticky'] = True
         self.thing._reddit.post(API_PATH['distinguish'], data=data)
 

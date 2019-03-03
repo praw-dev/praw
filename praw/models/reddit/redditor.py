@@ -63,13 +63,6 @@ class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
     REPR_FIELD = 'name'
     STR_FIELD = REPR_FIELD
 
-    @classmethod
-    def from_data(cls, reddit, data):
-        """Return an instance of Redditor, or None from ``data``."""
-        if data == '[deleted]':
-            return None
-        return cls(reddit, data)
-
     @property
     def stream(self):
         """Provide an instance of :class:`.RedditorStream`.

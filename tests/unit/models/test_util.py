@@ -12,7 +12,8 @@ from praw.models.util import (
     ExponentialCounter,
     permissions_string,
     AttributeDict,
-    AttributeContainer
+    AttributeContainer,
+    RedditAttributes
 )
 
 
@@ -189,6 +190,9 @@ class TestAttributeDict(UnitTest):
         attrdict3.pop('a')
         assert repr(attrdict3) == 'AttributeDict()'
 
+    def test_dir(self):
+        assert dir(self.attrdict) == sorted(list(self.attrdict))
+
     def test_abs(self):
         mydict = {'key': 'value'}
         attrdict = AttributeDict(mydict)
@@ -280,3 +284,26 @@ class TestAttributeContainer(UnitTest):
             self.attrcon.z
 
         assert type(self.attrcon_dict_nest.a) is AttributeContainer
+
+    def test_str(self):
+        # Assert there is a __str__. This may not be in a pretty printed
+        # format in some older Python versions.
+        assert str(self.attrcon)
+
+
+class TestRedditAttributes(UnitTest):
+    def setup_method(self):
+        self.redditattrs = RedditAttributes({'a': 1, 'b': {'c': 3}})
+
+    def test_getitem(self):
+        assert self.redditattrs['a'] == 1
+
+        assert type(self.redditattrs['b']) is dict
+        assert self.redditattrs['b'] == {'c': 3}
+
+        with pytest.raises(KeyError):
+            self.redditattrs['z']
+
+    def test_getattr(self):
+        assert type(self.redditattrs.b) is AttributeContainer
+        assert self.redditattrs['b'] == AttributeContainer({'c': 3})

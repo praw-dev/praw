@@ -295,14 +295,7 @@ other_conversations=conversation.user.recent_convos)
 class ModmailObject(RedditBase):
     """A base class for objects within a modmail conversation."""
 
-    AUTHOR_ATTRIBUTE = 'author'
     STR_FIELD = 'id'
-
-    def __setattr__(self, attribute, value):
-        """Objectify the AUTHOR_ATTRIBUTE attribute."""
-        if attribute == self.AUTHOR_ATTRIBUTE:
-            value = self._reddit._objector.objectify(value)
-        super(ModmailObject, self).__setattr__(attribute, value)
 
 
 class ModmailAction(ModmailObject):

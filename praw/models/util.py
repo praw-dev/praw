@@ -121,7 +121,8 @@ class AttributeContainer(ImmutableContainer, AttributeDict):
 
     @staticmethod
     def _pprint_attribute_collection(printer, obj, stream, indent,
-                                     allowance, context, level):
+                                     allowance, context, level
+                                     ):  # pragma: no cover
         cls = obj.__class__
         stream.write(cls.__name__ + '(')
         printer._format(abs(obj), stream, indent + len(cls.__name__) + 1,
