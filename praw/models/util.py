@@ -91,6 +91,10 @@ class AttributeDict(MutableMapping):
         """Return the inner dict object."""
         return self._data0
 
+    def __dir__(self):
+        """Support tab completion."""
+        return self._data0.keys()
+
     def __getstate__(self):
         """Extract state to pickle."""
         return self._data0
