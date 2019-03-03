@@ -16,8 +16,8 @@ class RedditBase(PRAWBase):
     def _url_parts(url):
         parsed = urlparse(url)
         if not parsed.netloc:
-            raise ClientException('Invalid URL: {}'.format(url))
-        return parsed.path.rstrip('/').split('/')
+            raise ClientException("Invalid URL: {}".format(url))
+        return parsed.path.rstrip("/").split("/")
 
     # pylint: disable=invalid-name
     @property
@@ -50,8 +50,10 @@ class RedditBase(PRAWBase):
         """Return whether the other instance equals the current."""
         if isinstance(other, string_types):
             return other.lower() == str(self).lower()
-        return (isinstance(other, self.__class__) and
-                str(self).lower() == str(other).lower())
+        return (
+            isinstance(other, self.__class__)
+            and str(self).lower() == str(other).lower()
+        )
 
     def __ne__(self, other):
         """Return whether the other instance differs from the current."""
@@ -94,18 +96,21 @@ class RedditBase(PRAWBase):
         return getattr(self, self.STR_FIELD)
 
     def _fetch(self):
-        if '_info_path' in dir(self):
-            other = self._reddit.get(self._info_path(),
-                                     params=self._info_params)
+        if "_info_path" in dir(self):
+            other = self._reddit.get(
+                self._info_path(), params=self._info_params
+            )
         else:
             self._info_params['id'] = self.fullname
             children = self._reddit \
                 .get(API_PATH['info'],
                      params=self._info_params)._data['children']
             if not children:
-                raise PRAWException('No {!r} data returned for thing {}'
-                                    .format(self.__class__.__name__,
-                                            self.fullname))
+                raise PRAWException(
+                    "No {!r} data returned for thing {}".format(
+                        self.__class__.__name__, self.fullname
+                    )
+                )
             other = children[0]
         self._data.update(other._data)
         self._fetched = True

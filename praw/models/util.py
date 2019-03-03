@@ -227,7 +227,7 @@ class ExponentialCounter(object):
 
     def counter(self):
         """Increment the counter and return the current value with jitter."""
-        max_jitter = self._base / 16.
+        max_jitter = self._base / 16.0
         value = self._base + random.random() * max_jitter - max_jitter / 2
         self._base = min(self._base * 2, self._max)
         return value
@@ -253,17 +253,18 @@ def permissions_string(permissions, known_permissions):
     """
     to_set = []
     if permissions is None:
-        to_set = ['+all']
+        to_set = ["+all"]
     else:
-        to_set = ['-all']
+        to_set = ["-all"]
         omitted = sorted(known_permissions - set(permissions))
-        to_set.extend('-{}'.format(x) for x in omitted)
-        to_set.extend('+{}'.format(x) for x in permissions)
-    return ','.join(to_set)
+        to_set.extend("-{}".format(x) for x in omitted)
+        to_set.extend("+{}".format(x) for x in permissions)
+    return ",".join(to_set)
 
 
-def stream_generator(function, pause_after=None, skip_existing=False,
-                     attribute_name='fullname'):
+def stream_generator(
+    function, pause_after=None, skip_existing=False, attribute_name="fullname"
+):
     """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
@@ -353,8 +354,9 @@ def stream_generator(function, pause_after=None, skip_existing=False,
         if before_attribute is None:
             limit -= without_before_counter
             without_before_counter = (without_before_counter + 1) % 30
-        for item in reversed(list(function(
-                limit=limit, params={'before': before_attribute}))):
+        for item in reversed(
+            list(function(limit=limit, params={"before": before_attribute}))
+        ):
             attribute = getattr(item, attribute_name)
             if attribute in seen_attributes:
                 continue

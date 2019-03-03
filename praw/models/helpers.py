@@ -51,13 +51,13 @@ class LiveHelper(PRAWBase):
 
         """
         if not isinstance(ids, list):
-            raise TypeError('ids must be a list')
+            raise TypeError("ids must be a list")
 
         def generator():
             for position in range(0, len(ids), 100):
-                ids_chunk = ids[position:position + 100]
-                url = API_PATH['live_info'].format(ids=','.join(ids_chunk))
-                params = {'limit': 100}  # 25 is used if not specified
+                ids_chunk = ids[position : position + 100]
+                url = API_PATH["live_info"].format(ids=",".join(ids_chunk))
+                params = {"limit": 100}  # 25 is used if not specified
                 for result in self._reddit.get(url, params=params):
                     yield result
 
@@ -75,9 +75,15 @@ class LiveHelper(PRAWBase):
         :returns: The new LiveThread object.
 
         """
-        return self._reddit.post(API_PATH['livecreate'], data={
-            'description': description, 'nsfw': nsfw, 'resources': resources,
-            'title': title})
+        return self._reddit.post(
+            API_PATH["livecreate"],
+            data={
+                "description": description,
+                "nsfw": nsfw,
+                "resources": resources,
+                "title": title,
+            },
+        )
 
     def now(self):
         """Get the currently featured live thread.
@@ -92,7 +98,7 @@ class LiveHelper(PRAWBase):
         thread = reddit.live.now()  # LiveThread object or None
 
         """
-        return self._reddit.get(API_PATH['live_now'])
+        return self._reddit.get(API_PATH["live_now"])
 
 
 class MultiredditHelper(PRAWBase):
@@ -106,12 +112,19 @@ class MultiredditHelper(PRAWBase):
         :param name: The name of the multireddit.
 
         """
-        path = '/user/{}/m/{}'.format(redditor, name)
-        return Multireddit(self._reddit, _data={'name': name, 'path': path})
+        path = "/user/{}/m/{}".format(redditor, name)
+        return Multireddit(self._reddit, _data={"name": name, "path": path})
 
-    def create(self, display_name, subreddits, description_md=None,
-               icon_name=None, key_color=None, visibility='private',
-               weighting_scheme='classic'):
+    def create(
+        self,
+        display_name,
+        subreddits,
+        description_md=None,
+        icon_name=None,
+        key_color=None,
+        visibility="private",
+        weighting_scheme="classic",
+    ):
         """Create a new multireddit.
 
         :param display_name: The display name for the new multireddit.
@@ -135,15 +148,18 @@ class MultiredditHelper(PRAWBase):
         :returns: The new Multireddit object.
 
         """
-        model = {'description_md': description_md,
-                 'display_name': display_name,
-                 'icon_name': icon_name,
-                 'key_color': key_color,
-                 'subreddits': [{'name': str(sub)} for sub in subreddits],
-                 'visibility': visibility,
-                 'weighting_scheme': weighting_scheme}
-        return self._reddit.post(API_PATH['multireddit_base'],
-                                 data={'model': dumps(model)})
+        model = {
+            "description_md": description_md,
+            "display_name": display_name,
+            "icon_name": icon_name,
+            "key_color": key_color,
+            "subreddits": [{"name": str(sub)} for sub in subreddits],
+            "visibility": visibility,
+            "weighting_scheme": weighting_scheme,
+        }
+        return self._reddit.post(
+            API_PATH["multireddit_base"], data={"model": dumps(model)}
+        )
 
 
 class SubredditHelper(PRAWBase):
@@ -156,15 +172,22 @@ class SubredditHelper(PRAWBase):
         """
         lower_name = display_name.lower()
 
-        if lower_name == 'random':
+        if lower_name == "random":
             return self._reddit.random_subreddit()
-        elif lower_name == 'randnsfw':
+        if lower_name == "randnsfw":
             return self._reddit.random_subreddit(nsfw=True)
 
         return Subreddit(self._reddit, display_name=display_name)
 
-    def create(self, name, title=None, link_type='any',
-               subreddit_type='public', wikimode='disabled', **other_settings):
+    def create(
+        self,
+        name,
+        title=None,
+        link_type="any",
+        subreddit_type="public",
+        wikimode="disabled",
+        **other_settings
+    ):
         """Create a new subreddit.
 
         :param name: The name for the new subreddit.
@@ -186,9 +209,13 @@ class SubredditHelper(PRAWBase):
         take on a default value assigned by the Reddit server.
 
         """
-        Subreddit._create_or_update(_reddit=self._reddit, name=name,
-                                    link_type=link_type,
-                                    subreddit_type=subreddit_type,
-                                    title=title or name, wikimode=wikimode,
-                                    **other_settings)
+        Subreddit._create_or_update(
+            _reddit=self._reddit,
+            name=name,
+            link_type=link_type,
+            subreddit_type=subreddit_type,
+            title=title or name,
+            wikimode=wikimode,
+            **other_settings
+        )
         return self(name)

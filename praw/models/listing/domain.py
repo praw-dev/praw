@@ -14,4 +14,4 @@ class DomainListing(BaseListingMixin, RisingListingMixin):
 
         """
         super(DomainListing, self).__init__(reddit, None)
-        self._path = API_PATH['domain'].format(domain=domain)
+        self._path = API_PATH["domain"].format(domain=domain)

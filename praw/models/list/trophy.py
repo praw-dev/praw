@@ -10,4 +10,4 @@ class TrophyList(BaseList):
 
     """
 
-    CHILD_ATTRIBUTE = 'trophies'
+    CHILD_ATTRIBUTE = "trophies"

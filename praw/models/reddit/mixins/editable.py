@@ -19,7 +19,7 @@ class EditableMixin(object):
            submission.delete()
 
         """
-        self._reddit.post(API_PATH['del'], {'id': self.fullname})
+        self._reddit.post(API_PATH["del"], {"id": self.fullname})
 
     def edit(self, body):
         """Replace the body of the object with ``body``.

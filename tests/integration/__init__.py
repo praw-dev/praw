@@ -19,14 +19,16 @@ class IntegrationTest(object):
 
         # Disable response compression in order to see the response bodies in
         # the betamax cassettes.
-        http.headers['Accept-Encoding'] = 'identity'
+        http.headers["Accept-Encoding"] = "identity"
 
         # Require tests to explicitly disable read_only mode.
         self.reddit.read_only = True
 
     def setup_reddit(self):
-        self.reddit = Reddit(client_id=pytest.placeholders.client_id,
-                             client_secret=pytest.placeholders.client_secret,
-                             password=pytest.placeholders.password,
-                             user_agent=pytest.placeholders.user_agent,
-                             username=pytest.placeholders.username)
+        self.reddit = Reddit(
+            client_id=pytest.placeholders.client_id,
+            client_secret=pytest.placeholders.client_secret,
+            password=pytest.placeholders.password,
+            user_agent=pytest.placeholders.user_agent,
+            username=pytest.placeholders.username,
+        )

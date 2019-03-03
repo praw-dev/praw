@@ -35,7 +35,9 @@ class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
     ``is_employee``                      Whether or not the Redditor is a
                                          Reddit employee.
     ``is_friend``                        Whether or not the Redditor is friends
-                                         with the authenticated client.
+                                         with the authenticated user.
+    ``is_mod``                           Whether or not the Redditor mods any
+                                         subreddits.
     ``is_gold``                          Whether or not the Redditor has active
                                          gold status.
     ``link_karma``                       The link karma for the Redditor.
@@ -43,9 +45,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
     ``subreddit``                        If the Redditor has created a
                                          user-subreddit, provides a dictionary
                                          of additional attributes. See below.
-    ``subreddit['banner_img']``          The url of the user-subreddit banner.
-    ``subreddit['name']``                The name of the user-subreddit
-                                         (prefixed with 't5').
+    ``subreddit['banner_img']``          The URL of the user-subreddit banner.
+    ``subreddit['name']``                The fullname of the user-subreddit.
     ``subreddit['over_18']``             Whether or not the user-subreddit is
                                          NSFW.
     ``subreddit['public_description']``  The public description of the user-
@@ -116,13 +117,14 @@ class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
         return API_PATH['user_about'].format(user=self.name)
 
     def _friend(self, method, data):
-        url = API_PATH['friend_v1'].format(user=self)
+        url = API_PATH["friend_v1"].format(user=self)
         self._reddit.request(method, url, data=dumps(data))
 
     def block(self):
         """Block the Redditor."""
-        self._reddit.post(API_PATH['block_user'],
-                          params={'account_id': self.fullname})
+        self._reddit.post(
+            API_PATH["block_user"], params={"account_id": self.fullname}
+        )
 
     def friend(self, note=None):
         """Friend the Redditor.
@@ -133,7 +135,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
         Calling this method subsequent times will update the note.
 
         """
-        self._friend('PUT', data={'note': note} if note else {})
+        self._friend("PUT", data={"note": note} if note else {})
 
     def friend_info(self):
         """Return a Redditor instance with specific friend-related attributes.
@@ -142,7 +144,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
             and possibly ``note`` if the authenticated user has reddit Gold.
 
         """
-        return self._reddit.get(API_PATH['friend_v1'].format(user=self))
+        return self._reddit.get(API_PATH["friend_v1"].format(user=self))
 
     def gild(self, months=1):
         """Gild the Redditor.
@@ -152,13 +154,15 @@ class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
 
         """
         if months < 1 or months > 36:
-            raise TypeError('months must be between 1 and 36')
-        self._reddit.post(API_PATH['gild_user'].format(username=self),
-                          data={'months': months})
+            raise TypeError("months must be between 1 and 36")
+        self._reddit.post(
+            API_PATH["gild_user"].format(username=self),
+            data={"months": months},
+        )
 
     def multireddits(self):
         """Return a list of the redditor's public multireddits."""
-        return self._reddit.get(API_PATH['multireddit_user'].format(user=self))
+        return self._reddit.get(API_PATH["multireddit_user"].format(user=self))
 
     def trophies(self):
         """Return a list of the redditor's trophies.
@@ -177,19 +181,21 @@ class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
                 print(trophy.description)
 
         """
-        return list(self._reddit.get(
-            API_PATH['trophies'].format(user=self)))
+        return list(self._reddit.get(API_PATH["trophies"].format(user=self)))
 
     def unblock(self):
         """Unblock the Redditor."""
-        data = {'container': self._reddit.user.me().fullname,
-                'name': str(self), 'type': 'enemy'}
-        url = API_PATH['unfriend'].format(subreddit='all')
+        data = {
+            "container": self._reddit.user.me().fullname,
+            "name": str(self),
+            "type": "enemy",
+        }
+        url = API_PATH["unfriend"].format(subreddit="all")
         self._reddit.post(url, data=data)
 
     def unfriend(self):
         """Unfriend the Redditor."""
-        self._friend(method='DELETE', data={'id': str(self)})
+        self._friend(method="DELETE", data={"id": str(self)})
 
 
 class RedditorStream(object):
@@ -239,5 +245,6 @@ class RedditorStream(object):
                print(submission)
 
         """
-        return stream_generator(self.redditor.submissions.new,
-                                **stream_options)
+        return stream_generator(
+            self.redditor.submissions.new, **stream_options
+        )

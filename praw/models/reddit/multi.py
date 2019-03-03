@@ -56,13 +56,13 @@ class Multireddit(SubredditListingMixin, RedditBase):
         Adapted from reddit's utils.py.
 
         """
-        title = Multireddit.RE_INVALID.sub('_', title).strip('_').lower()
+        title = Multireddit.RE_INVALID.sub("_", title).strip("_").lower()
         if len(title) > 21:  # truncate to nearest word
             title = title[:21]
-            last_word = title.rfind('_')
+            last_word = title.rfind("_")
             if last_word > 0:
                 title = title[:last_word]
-        return title or '_'
+        return title or "_"
 
     @property
     def stream(self):
@@ -122,8 +122,9 @@ class Multireddit(SubredditListingMixin, RedditBase):
         url = API_PATH['multireddit_update'].format(
             multi=self._data['name'], user=self._author, subreddit=subreddit)
         self._reddit.request(
-            'PUT', url, data={'model': dumps({'name': str(subreddit)})})
-        self._reset_attributes('subreddits')
+            "PUT", url, data={"model": dumps({"name": str(subreddit)})}
+        )
+        self._reset_attributes("subreddits")
 
     def copy(self, display_name=None):
         """Copy this multireddit and return the new multireddit.
@@ -146,7 +147,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
     def delete(self):
         """Delete this multireddit."""
-        self._reddit.request('DELETE', self._info_path())
+        self._reddit.request("DELETE", self._info_path())
 
     def remove(self, subreddit):
         """Remove a subreddit from this multireddit.
@@ -157,8 +158,9 @@ class Multireddit(SubredditListingMixin, RedditBase):
         url = API_PATH['multireddit_update'].format(
             multi=self._data['name'], user=self._author, subreddit=subreddit)
         self._reddit.request(
-            'DELETE', url, data={'model': dumps({'name': str(subreddit)})})
-        self._reset_attributes('subreddits')
+            "DELETE", url, data={"model": dumps({"name": str(subreddit)})}
+        )
+        self._reset_attributes("subreddits")
 
     def rename(self, display_name):
         """Rename this multireddit.
@@ -193,9 +195,10 @@ class Multireddit(SubredditListingMixin, RedditBase):
         :param weighting_scheme: Can be one of: ``classic``, ``fresh``.
 
         """
-        if 'subreddits' in updated_settings:
-            updated_settings['subreddits'] = [
-                {'name': str(sub)} for sub in updated_settings['subreddits']]
+        if "subreddits" in updated_settings:
+            updated_settings["subreddits"] = [
+                {"name": str(sub)} for sub in updated_settings["subreddits"]
+            ]
         response = self._reddit.request(
             'PUT', self._info_path(), data={'model': dumps(updated_settings)})
         new = Multireddit(self._reddit, response['data'])

@@ -27,28 +27,28 @@ class TestBaseList(object):
             BaseList(None, None)
 
     def test__contains__(self):
-        BaseList.CHILD_ATTRIBUTE = 'praw'
-        items = ['foo', 1, {'a': 'b'}]
-        base_list = BaseList(Dummy(), {'praw': items})
+        BaseList.CHILD_ATTRIBUTE = "praw"
+        items = ["foo", 1, {"a": "b"}]
+        base_list = BaseList(Dummy(), {"praw": items})
         for item in items:
             assert item in base_list
 
     def test__getitem__(self):
-        BaseList.CHILD_ATTRIBUTE = 'praw'
-        items = ['foo', 1, {'a': 'b'}]
-        base_list = BaseList(Dummy(), {'praw': items})
+        BaseList.CHILD_ATTRIBUTE = "praw"
+        items = ["foo", 1, {"a": "b"}]
+        base_list = BaseList(Dummy(), {"praw": items})
         for i, item in enumerate(items):
             assert item == base_list[i]
 
     def test__iter__(self):
-        BaseList.CHILD_ATTRIBUTE = 'praw'
-        items = ['foo', 1, {'a': 'b'}]
-        base_list = BaseList(Dummy(), {'praw': items})
+        BaseList.CHILD_ATTRIBUTE = "praw"
+        items = ["foo", 1, {"a": "b"}]
+        base_list = BaseList(Dummy(), {"praw": items})
         for i, item in enumerate(base_list):
             assert items[i] == item
 
     def test__str__(self):
-        BaseList.CHILD_ATTRIBUTE = 'praw'
-        items = ['foo', 1, {'a': 'b'}]
-        base_list = BaseList(Dummy(), {'praw': items})
+        BaseList.CHILD_ATTRIBUTE = "praw"
+        items = ["foo", 1, {"a": "b"}]
+        base_list = BaseList(Dummy(), {"praw": items})
         assert str(items) == str(base_list)

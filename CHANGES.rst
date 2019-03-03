@@ -4,6 +4,24 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* :meth:`.SubredditStylesheet.upload_banner`
+* :meth:`.SubredditStylesheet.upload_banner_additional_image`
+* :meth:`.SubredditStylesheet.upload_banner_hover_image`
+* :meth:`.SubredditStylesheet.delete_banner`
+* :meth:`.SubredditStylesheet.delete_banner_additional_image`
+* :meth:`.SubredditStylesheet.delete_banner_hover_image`
+* :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image`, and
+  :meth:`~.Subreddit.submit_video` support parameter ``nsfw`` to
+  mark the submission NSFW immediately upon posting.
+* :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image`, and
+  :meth:`~.Subreddit.submit_video` support parameter ``spoiler`` to
+  mark the submission as a spoiler immediately upon posting.
+* :meth:`~.Subreddit.submit_image` and `~.Subreddit.submit_video` support
+  parameter ``timeout``. Default timeout has been raised from 2 seconds to
+  10 seconds.
+
 **Other**
 
 * Bumped minimum prawcore version to 1.0.1.

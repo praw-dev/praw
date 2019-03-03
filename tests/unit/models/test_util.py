@@ -18,7 +18,7 @@ from praw.models.util import (
 
 
 class TestExponentialCounter(UnitTest):
-    MAX_DELTA = 1. / 32
+    MAX_DELTA = 1.0 / 32
 
     def test_exponential_counter__counter(self):
         def assert_range(number, exponent):
@@ -52,19 +52,20 @@ class TestExponentialCounter(UnitTest):
 
 
 class TestUtil(UnitTest):
-    PERMISSIONS = {'a', 'b', 'c'}
+    PERMISSIONS = {"a", "b", "c"}
 
     def test_permissions_string__all_explicit(self):
-        assert '-all,+b,+a,+c' == permissions_string(['b', 'a', 'c'],
-                                                     self.PERMISSIONS)
+        assert "-all,+b,+a,+c" == permissions_string(
+            ["b", "a", "c"], self.PERMISSIONS
+        )
 
     def test_permissions_string__empty_list(self):
-        assert '-all' == permissions_string([], set())
-        assert '-all,-a,-b,-c' == permissions_string([], self.PERMISSIONS)
+        assert "-all" == permissions_string([], set())
+        assert "-all,-a,-b,-c" == permissions_string([], self.PERMISSIONS)
 
     def test_permissions_string__none(self):
-        assert '+all' == permissions_string(None, set())
-        assert '+all' == permissions_string(None, self.PERMISSIONS)
+        assert "+all" == permissions_string(None, set())
+        assert "+all" == permissions_string(None, self.PERMISSIONS)
 
     def test_permissions_string__with_additional_permissions(self):
         assert '-all,+d' == permissions_string(['d'], set())

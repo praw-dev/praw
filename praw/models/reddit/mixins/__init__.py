@@ -1,15 +1,15 @@
 """Package providing reddit class mixins."""
 from json import dumps
 from ....const import API_PATH
-from .editable import EditableMixin  # NOQA
-from .gildable import GildableMixin  # NOQA
-from .inboxable import InboxableMixin  # NOQA
-from .inboxtoggleable import InboxToggleableMixin  # NOQA
-from .messageable import MessageableMixin  # NOQA
-from .replyable import ReplyableMixin  # NOQA
-from .reportable import ReportableMixin  # NOQA
-from .savable import SavableMixin  # NOQA
-from .votable import VotableMixin  # NOQA
+from .editable import EditableMixin
+from .gildable import GildableMixin
+from .inboxable import InboxableMixin
+from .inboxtoggleable import InboxToggleableMixin
+from .messageable import MessageableMixin
+from .replyable import ReplyableMixin
+from .reportable import ReportableMixin
+from .savable import SavableMixin
+from .votable import VotableMixin
 
 
 class ThingModerationMixin(object):
@@ -37,10 +37,11 @@ class ThingModerationMixin(object):
            submission.mod.approve()
 
         """
-        self.thing._reddit.post(API_PATH['approve'],
-                                data={'id': self.thing.fullname})
+        self.thing._reddit.post(
+            API_PATH["approve"], data={"id": self.thing.fullname}
+        )
 
-    def distinguish(self, how='yes', sticky=False):
+    def distinguish(self, how="yes", sticky=False):
         """Distinguish a :class:`~.Comment` or :class:`~.Submission`.
 
         :param how: One of 'yes', 'no', 'admin', 'special'. 'yes' adds a
@@ -91,8 +92,9 @@ class ThingModerationMixin(object):
         See also :meth:`~.unignore_reports`
 
         """
-        self.thing._reddit.post(API_PATH['ignore_reports'],
-                                data={'id': self.thing.fullname})
+        self.thing._reddit.post(
+            API_PATH["ignore_reports"], data={"id": self.thing.fullname}
+        )
 
     def remove(self, spam=False):
         """Remove a :class:`~.Comment` or :class:`~.Submission`.
@@ -112,12 +114,15 @@ class ThingModerationMixin(object):
            submission.mod.remove()
 
         """
-        data = {'id': self.thing.fullname, 'spam': bool(spam)}
-        self.thing._reddit.post(API_PATH['remove'], data=data)
+        data = {"id": self.thing.fullname, "spam": bool(spam)}
+        self.thing._reddit.post(API_PATH["remove"], data=data)
 
-    def send_removal_message(self, message, title='ignored',
-                             type='public'  # pylint: disable=redefined-builtin
-                             ):
+    def send_removal_message(
+        self,
+        message,
+        title="ignored",
+        type="public",  # pylint: disable=redefined-builtin
+    ):
         """Send a removal message for a Comment or Submission.
 
         Reddit adds human-readable information about the object to the message.
@@ -135,16 +140,18 @@ class ThingModerationMixin(object):
         # The API endpoint used to send removal messages is different
         # for posts and comments, so the derived classes specify which one.
         if self.REMOVAL_MESSAGE_API is None:
-            raise NotImplementedError('ThingModerationMixin must be extended.')
+            raise NotImplementedError("ThingModerationMixin must be extended.")
         url = API_PATH[self.REMOVAL_MESSAGE_API]
 
         # Only the first element of the item_id list is used.
-        data = {'item_id': [self.thing.fullname],
-                'message': message,
-                'title': title,
-                'type': type}
+        data = {
+            "item_id": [self.thing.fullname],
+            "message": message,
+            "title": title,
+            "type": type,
+        }
 
-        return self.thing._reddit.post(url, data={'json': dumps(data)}) or None
+        return self.thing._reddit.post(url, data={"json": dumps(data)}) or None
 
     def undistinguish(self):
         """Remove mod, admin, or special distinguishing on object.
@@ -165,7 +172,7 @@ class ThingModerationMixin(object):
         See also :meth:`~.distinguish`
 
         """
-        self.distinguish(how='no')
+        self.distinguish(how="no")
 
     def unignore_reports(self):
         """Resume receiving future reports on a Comment or Submission.
@@ -187,11 +194,18 @@ class ThingModerationMixin(object):
         See also :meth:`~.ignore_reports`
 
         """
-        self.thing._reddit.post(API_PATH['unignore_reports'],
-                                data={'id': self.thing.fullname})
+        self.thing._reddit.post(
+            API_PATH["unignore_reports"], data={"id": self.thing.fullname}
+        )
 
 
-class UserContentMixin(EditableMixin, GildableMixin, InboxToggleableMixin,
-                       ReplyableMixin, ReportableMixin, SavableMixin,
-                       VotableMixin):
+class UserContentMixin(
+    EditableMixin,
+    GildableMixin,
+    InboxToggleableMixin,
+    ReplyableMixin,
+    ReportableMixin,
+    SavableMixin,
+    VotableMixin,
+):
     """A convenience mixin that applies to both Comments and Submissions."""

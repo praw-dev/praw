@@ -126,7 +126,7 @@ class Submenu(BaseList):
     ======================= ===================================================
     """
 
-    CHILD_ATTRIBUTE = 'children'
+    CHILD_ATTRIBUTE = "children"
 
 
 class SubredditWidgets(PRAWBase):
@@ -211,7 +211,7 @@ class SubredditWidgets(PRAWBase):
     def id_card(self):
         """Get this subreddit's :class:`.IDCard` widget."""
         if self._id_card is None:
-            self._id_card = self.items[self.layout['idCardWidget']]
+            self._id_card = self.items[self.layout["idCardWidget"]]
         return self._id_card
 
     @property
@@ -223,7 +223,7 @@ class SubredditWidgets(PRAWBase):
         if self._items is None:
             self._items = {}
             for item_name, data in self._raw_items.items():
-                data['subreddit'] = self.subreddit
+                data["subreddit"] = self.subreddit
                 self._items[item_name] = self._reddit._objector.objectify(data)
         return self._items
 
@@ -238,8 +238,9 @@ class SubredditWidgets(PRAWBase):
            being outdated. To re-sync, call :meth:`.refresh`.
         """
         if self._mod is None:
-            self._mod = SubredditWidgetsModeration(self.subreddit,
-                                                   self._reddit)
+            self._mod = SubredditWidgetsModeration(
+                self.subreddit, self._reddit
+            )
         return self._mod
 
     @property
@@ -247,23 +248,28 @@ class SubredditWidgets(PRAWBase):
         """Get this subreddit's :class:`.ModeratorsWidget`."""
         if self._moderators_widget is None:
             self._moderators_widget = self.items[
-                self.layout['moderatorWidget']]
+                self.layout["moderatorWidget"]
+            ]
         return self._moderators_widget
 
     @property
     def sidebar(self):
         """Get a list of Widgets that make up the sidebar."""
         if self._sidebar is None:
-            self._sidebar = [self.items[widget_name] for widget_name in
-                             self.layout['sidebar']['order']]
+            self._sidebar = [
+                self.items[widget_name]
+                for widget_name in self.layout["sidebar"]["order"]
+            ]
         return self._sidebar
 
     @property
     def topbar(self):
         """Get a list of Widgets that make up the top bar."""
         if self._topbar is None:
-            self._topbar = [self.items[widget_name]
-                            for widget_name in self.layout['topbar']['order']]
+            self._topbar = [
+                self.items[widget_name]
+                for widget_name in self.layout["topbar"]["order"]
+            ]
         return self._topbar
 
     def refresh(self):
@@ -314,8 +320,9 @@ class SubredditWidgets(PRAWBase):
 
     def _fetch(self):
         data = self._reddit.get(
-            API_PATH['widgets'].format(subreddit=self.subreddit),
-            params={'progressive_images': self.progressive_images})
+            API_PATH["widgets"].format(subreddit=self.subreddit),
+            params={"progressive_images": self.progressive_images},
+        )
 
         self._raw_items = data.pop('items')
         self._data.update(data)
@@ -352,13 +359,14 @@ class SubredditWidgetsModeration(object):
         self._reddit = reddit
 
     def _create_widget(self, payload):
-        path = API_PATH['widget_create'].format(subreddit=self._subreddit)
-        widget = self._reddit.post(path, data={'json': dumps(payload)})
+        path = API_PATH["widget_create"].format(subreddit=self._subreddit)
+        widget = self._reddit.post(path, data={"json": dumps(payload)})
         widget.subreddit = self._subreddit
         return widget
 
-    def add_button_widget(self, short_name, description, buttons,
-                          styles, **other_settings):
+    def add_button_widget(
+        self, short_name, description, buttons, styles, **other_settings
+    ):
         r"""Add and return a :class:`.ButtonWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -482,14 +490,25 @@ class SubredditWidgetsModeration(object):
                buttons, styles)
 
         """
-        button_widget = {'buttons': buttons, 'description': description,
-                         'kind': 'button', 'shortName': short_name,
-                         'styles': styles}
+        button_widget = {
+            "buttons": buttons,
+            "description": description,
+            "kind": "button",
+            "shortName": short_name,
+            "styles": styles,
+        }
         button_widget.update(other_settings)
         return self._create_widget(button_widget)
 
-    def add_calendar(self, short_name, google_calendar_id, requires_sync,
-                     configuration, styles, **other_settings):
+    def add_calendar(
+        self,
+        short_name,
+        google_calendar_id,
+        requires_sync,
+        configuration,
+        styles,
+        **other_settings
+    ):
         """Add and return a :class:`.Calendar` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -532,12 +551,14 @@ class SubredditWidgetsModeration(object):
                                                        cal_id, True,
                                                        config, styles)
         """
-        calendar = {'shortName': short_name,
-                    'googleCalendarId': google_calendar_id,
-                    'requiresSync': requires_sync,
-                    'configuration': configuration,
-                    'styles': styles,
-                    'kind': 'calendar'}
+        calendar = {
+            "shortName": short_name,
+            "googleCalendarId": google_calendar_id,
+            "requiresSync": requires_sync,
+            "configuration": configuration,
+            "styles": styles,
+            "kind": "calendar",
+        }
         calendar.update(other_settings)
         return self._create_widget(calendar)
 
@@ -567,14 +588,25 @@ class SubredditWidgetsModeration(object):
                                                              styles)
 
         """
-        community_list = {'data': [str(datum) for datum in data],
-                          'kind': 'community-list', 'shortName': short_name,
-                          'styles': styles}
+        community_list = {
+            "data": [str(datum) for datum in data],
+            "kind": "community-list",
+            "shortName": short_name,
+            "styles": styles,
+        }
         community_list.update(other_settings)
         return self._create_widget(community_list)
 
-    def add_custom_widget(self, short_name, text, css, height, image_data,
-                          styles, **other_settings):
+    def add_custom_widget(
+        self,
+        short_name,
+        text,
+        css,
+        height,
+        image_data,
+        styles,
+        **other_settings
+    ):
         r"""Add and return a :class:`.CustomWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -628,9 +660,15 @@ class SubredditWidgetsModeration(object):
                                                            image_dicts, styles)
 
         """
-        custom_widget = {'css': css, 'height': height, 'imageData': image_data,
-                         'kind': 'custom', 'shortName': short_name,
-                         'styles': styles, 'text': text}
+        custom_widget = {
+            "css": css,
+            "height": height,
+            "imageData": image_data,
+            "kind": "custom",
+            "shortName": short_name,
+            "styles": styles,
+            "text": text,
+        }
         custom_widget.update(other_settings)
         return self._create_widget(custom_widget)
 
@@ -673,8 +711,12 @@ class SubredditWidgetsModeration(object):
                                                            image_dicts, styles)
 
         """
-        image_widget = {'data': data, 'kind': 'image',
-                        'shortName': short_name, 'styles': styles}
+        image_widget = {
+            "data": data,
+            "kind": "image",
+            "shortName": short_name,
+            "styles": styles,
+        }
         image_widget.update(other_settings)
         return self._create_widget(image_widget)
 
@@ -726,12 +768,13 @@ class SubredditWidgetsModeration(object):
            new_widget = widget_moderation.add_menu(menu_contents)
 
         """
-        menu = {'data': data, 'kind': 'menu'}
+        menu = {"data": data, "kind": "menu"}
         menu.update(other_settings)
         return self._create_widget(menu)
 
-    def add_post_flair_widget(self, short_name, display, order, styles,
-                              **other_settings):
+    def add_post_flair_widget(
+        self, short_name, display, order, styles, **other_settings
+    ):
         """Add and return a :class:`.PostFlairWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -761,9 +804,13 @@ class SubredditWidgetsModeration(object):
                                                                 flairs, styles)
 
         """
-        post_flair = {'kind': 'post-flair', 'display': display,
-                      'shortName': short_name, 'order': order,
-                      'styles': styles}
+        post_flair = {
+            "kind": "post-flair",
+            "display": display,
+            "shortName": short_name,
+            "order": order,
+            "styles": styles,
+        }
         post_flair.update(other_settings)
         return self._create_widget(post_flair)
 
@@ -788,12 +835,16 @@ class SubredditWidgetsModeration(object):
                                                         styles)
 
         """
-        text_area = {'shortName': short_name, 'text': text, 'styles': styles,
-                     'kind': 'textarea'}
+        text_area = {
+            "shortName": short_name,
+            "text": text,
+            "styles": styles,
+            "kind": "textarea",
+        }
         text_area.update(other_settings)
         return self._create_widget(text_area)
 
-    def reorder(self, new_order, section='sidebar'):
+    def reorder(self, new_order, section="sidebar"):
         """Reorder the widgets.
 
         :param new_order: A list of widgets. Represented as a ``list`` that
@@ -811,12 +862,16 @@ class SubredditWidgetsModeration(object):
            widgets.mod.reorder(order)
 
         """
-        order = [thing.id if isinstance(thing, Widget) else str(thing)
-                 for thing in new_order]
-        path = API_PATH['widget_order'].format(subreddit=self._subreddit,
-                                               section=section)
-        self._reddit.patch(path, data={'json': dumps(order),
-                                       'section': section})
+        order = [
+            thing.id if isinstance(thing, Widget) else str(thing)
+            for thing in new_order
+        ]
+        path = API_PATH["widget_order"].format(
+            subreddit=self._subreddit, section=section
+        )
+        self._reddit.patch(
+            path, data={"json": dumps(order), "section": section}
+        )
 
     def upload_image(self, file_path):
         """Upload an image to Reddit and get the URL.
@@ -840,24 +895,28 @@ class SubredditWidgetsModeration(object):
            my_sub.widgets.mod.add_image_widget('My cool pictures', images,
                                                styles)
         """
-        img_data = {'filepath': os.path.basename(file_path),
-                    'mimetype': 'image/jpeg'}
-        if file_path.lower().endswith('.png'):
-            img_data['mimetype'] = 'image/png'
+        img_data = {
+            "filepath": os.path.basename(file_path),
+            "mimetype": "image/jpeg",
+        }
+        if file_path.lower().endswith(".png"):
+            img_data["mimetype"] = "image/png"
 
-        url = API_PATH['widget_lease'].format(subreddit=self._subreddit)
+        url = API_PATH["widget_lease"].format(subreddit=self._subreddit)
         # until we learn otherwise, assume this request always succeeds
-        upload_lease = self._reddit.post(url, data=img_data)['s3UploadLease']
-        upload_data = {item['name']: item['value']
-                       for item in upload_lease['fields']}
-        upload_url = 'https:{}'.format(upload_lease['action'])
+        upload_lease = self._reddit.post(url, data=img_data)["s3UploadLease"]
+        upload_data = {
+            item["name"]: item["value"] for item in upload_lease["fields"]
+        }
+        upload_url = "https:{}".format(upload_lease["action"])
 
-        with open(file_path, 'rb') as image:
+        with open(file_path, "rb") as image:
             response = self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={'file': image})
+                upload_url, data=upload_data, files={"file": image}
+            )
         response.raise_for_status()
 
-        return upload_url + '/' + upload_data['key']
+        return upload_url + "/" + upload_data["key"]
 
 
 class Widget(PRAWBase):
@@ -988,7 +1047,7 @@ class ButtonWidget(Widget, BaseList):
     ======================= ===================================================
     """
 
-    CHILD_ATTRIBUTE = 'buttons'
+    CHILD_ATTRIBUTE = "buttons"
 
 
 class Calendar(Widget):
@@ -1131,7 +1190,7 @@ class CommunityList(Widget, BaseList):
     ======================= ===================================================
     """
 
-    CHILD_ATTRIBUTE = 'data'
+    CHILD_ATTRIBUTE = "data"
 
 
 class CustomWidget(Widget):
@@ -1326,7 +1385,7 @@ class ImageWidget(Widget, BaseList):
     ======================= ===================================================
     """
 
-    CHILD_ATTRIBUTE = 'data'
+    CHILD_ATTRIBUTE = "data"
 
 
 class Menu(Widget, BaseList):
@@ -1403,7 +1462,7 @@ class Menu(Widget, BaseList):
 
     """
 
-    CHILD_ATTRIBUTE = 'data'
+    CHILD_ATTRIBUTE = "data"
 
 
 class ModeratorsWidget(Widget, BaseList):
@@ -1446,7 +1505,7 @@ class ModeratorsWidget(Widget, BaseList):
     ======================= ===================================================
     """
 
-    CHILD_ATTRIBUTE = 'mods'
+    CHILD_ATTRIBUTE = "mods"
 
     def __init__(self, reddit, _data):
         """Initialize the moderators widget."""
@@ -1530,7 +1589,7 @@ class PostFlairWidget(Widget, BaseList):
     ======================= ===================================================
     """
 
-    CHILD_ATTRIBUTE = 'order'
+    CHILD_ATTRIBUTE = "order"
 
 
 class RulesWidget(Widget, BaseList):
@@ -1581,7 +1640,7 @@ class RulesWidget(Widget, BaseList):
     ======================= ===================================================
     """
 
-    CHILD_ATTRIBUTE = 'data'
+    CHILD_ATTRIBUTE = "data"
 
     def __init__(self, reddit, _data):
         """Initialize the rules widget."""
@@ -1694,9 +1753,10 @@ class WidgetModeration(object):
 
            widget.mod.delete()
         """
-        path = API_PATH['widget_modify'].format(widget_id=self.widget.id,
-                                                subreddit=self._subreddit)
-        self._reddit.request('DELETE', path)
+        path = API_PATH["widget_modify"].format(
+            widget_id=self.widget.id, subreddit=self._subreddit
+        )
+        self._reddit.request("DELETE", path)
 
     def update(self, **kwargs):
         """Update the widget. Returns the updated widget.
@@ -1721,7 +1781,8 @@ class WidgetModeration(object):
         payload = {key: value for key, value in self.widget._data.items()
                    if not key.startswith('_')}
         payload.update(kwargs)
-        widget = self._reddit.put(path, data={
-            'json': dumps(payload, cls=WidgetEncoder)})
+        widget = self._reddit.put(
+            path, data={"json": dumps(payload, cls=WidgetEncoder)}
+        )
         widget.subreddit = self._subreddit
         return widget

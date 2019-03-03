@@ -55,8 +55,9 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit, urljoin(self._path, 'downvoted'),
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, urljoin(self._path, "downvoted"), **generator_kwargs
+        )
 
     def gildings(self, **generator_kwargs):
         """Return a ListingGenerator for items the user has gilded.
@@ -70,9 +71,11 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit,
-                                urljoin(self._path, 'gilded/given'),
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit,
+            urljoin(self._path, "gilded/given"),
+            **generator_kwargs
+        )
 
     def hidden(self, **generator_kwargs):
         """Return a ListingGenerator for items the user has hidden.
@@ -86,8 +89,9 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit, urljoin(self._path, 'hidden'),
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, urljoin(self._path, "hidden"), **generator_kwargs
+        )
 
     def saved(self, **generator_kwargs):
         """Return a ListingGenerator for items the user has saved.
@@ -101,8 +105,9 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit, urljoin(self._path, 'saved'),
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, urljoin(self._path, "saved"), **generator_kwargs
+        )
 
     def upvoted(self, **generator_kwargs):
         """Return a ListingGenerator for items the user has upvoted.
@@ -116,8 +121,9 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit, urljoin(self._path, 'upvoted'),
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, urljoin(self._path, "upvoted"), **generator_kwargs
+        )
 
 
 class SubListing(BaseListingMixin):

@@ -62,12 +62,12 @@ class Comment(InboxableMixin, UserContentMixin, RedditBase):
         """Get the ID of a comment from the full URL."""
         parts = RedditBase._url_parts(url)
         try:
-            comment_index = parts.index('comments')
+            comment_index = parts.index("comments")
         except ValueError:
-            raise ClientException('Invalid URL: {}'.format(url))
+            raise ClientException("Invalid URL: {}".format(url))
 
         if len(parts) - 4 != comment_index:
-            raise ClientException('Invalid URL: {}'.format(url))
+            raise ClientException("Invalid URL: {}".format(url))
         return parts[-1]
 
     @classmethod
@@ -98,8 +98,8 @@ class Comment(InboxableMixin, UserContentMixin, RedditBase):
     @property
     def is_root(self):
         """Return True when the comment is a top level comment."""
-        parent_type = self.parent_id.split('_', 1)[0]
-        return parent_type == self._reddit.config.kinds['submission']
+        parent_type = self.parent_id.split("_", 1)[0]
+        return parent_type == self._reddit.config.kinds["submission"]
 
     @property
     def mod(self):
@@ -135,7 +135,8 @@ class Comment(InboxableMixin, UserContentMixin, RedditBase):
         """Return the Submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
             self._submission = self._reddit.submission(
-                self._extract_submission_id())
+                self._extract_submission_id()
+            )
         return self._submission
 
     @submission.setter
@@ -146,8 +147,13 @@ class Comment(InboxableMixin, UserContentMixin, RedditBase):
         for reply in self.replies:
             reply.submission = submission
 
-    def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
-                 url=None, _data=None):
+    def __init__(
+        self,
+        reddit,
+        id=None,  # pylint: disable=redefined-builtin
+        url=None,
+        _data=None,
+    ):
         """Construct an instance of the Comment object."""
         if [id, url, _data].count(None) != 2:
             raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
@@ -242,7 +248,7 @@ class Comment(InboxableMixin, UserContentMixin, RedditBase):
             return self.submission._comments_by_id[self.parent_id]
         # pylint: enable=no-member
 
-        parent = Comment(self._reddit, self.parent_id.split('_', 1)[1])
+        parent = Comment(self._reddit, self.parent_id.split("_", 1)[1])
         parent._submission = self.submission
         return parent
 
@@ -309,7 +315,7 @@ class CommentModeration(ThingModerationMixin):
 
     """
 
-    REMOVAL_MESSAGE_API = 'removal_comment_message'
+    REMOVAL_MESSAGE_API = "removal_comment_message"
 
     def __init__(self, comment):
         """Create a CommentModeration instance.

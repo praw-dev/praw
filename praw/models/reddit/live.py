@@ -14,10 +14,10 @@ class LiveContributorRelationship(object):
     @staticmethod
     def _handle_permissions(permissions):
         if permissions is None:
-            permissions = {'all'}
+            permissions = {"all"}
         else:
             permissions = set(permissions)
-        return ','.join('+{}'.format(x) for x in permissions)
+        return ",".join("+{}".format(x) for x in permissions)
 
     def __call__(self):
         """Return a :class:`.RedditorList` for live threads' contributors.
@@ -31,7 +31,7 @@ class LiveContributorRelationship(object):
                print(contributor)
 
         """
-        url = API_PATH['live_contributors'].format(id=self.thread.id)
+        url = API_PATH["live_contributors"].format(id=self.thread.id)
         temp = self.thread._reddit.get(url)
         return temp if isinstance(temp, RedditorList) else temp[0]
 
@@ -58,7 +58,7 @@ class LiveContributorRelationship(object):
             thread.contributor.accept_invite()
 
         """
-        url = API_PATH['live_accept_invite'].format(id=self.thread.id)
+        url = API_PATH["live_accept_invite"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
     def invite(self, redditor, permissions=None):
@@ -88,10 +88,12 @@ class LiveContributorRelationship(object):
             remove the invite for redditor.
 
         """
-        url = API_PATH['live_invite'].format(id=self.thread.id)
-        data = {'name': str(redditor),
-                'type': 'liveupdate_contributor_invite',
-                'permissions': self._handle_permissions(permissions)}
+        url = API_PATH["live_invite"].format(id=self.thread.id)
+        data = {
+            "name": str(redditor),
+            "type": "liveupdate_contributor_invite",
+            "permissions": self._handle_permissions(permissions),
+        }
         self.thread._reddit.post(url, data=data)
 
     def leave(self):
@@ -105,7 +107,7 @@ class LiveContributorRelationship(object):
             thread.contributor.leave()
 
         """
-        url = API_PATH['live_leave'].format(id=self.thread.id)
+        url = API_PATH["live_leave"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
     def remove(self, redditor):
@@ -128,8 +130,8 @@ class LiveContributorRelationship(object):
             fullname = redditor.fullname
         else:
             fullname = redditor
-        data = {'id': fullname}
-        url = API_PATH['live_remove_contrib'].format(id=self.thread.id)
+        data = {"id": fullname}
+        url = API_PATH["live_remove_contrib"].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)
 
     def remove_invite(self, redditor):
@@ -155,8 +157,8 @@ class LiveContributorRelationship(object):
             fullname = redditor.fullname
         else:
             fullname = redditor
-        data = {'id': fullname}
-        url = API_PATH['live_remove_invite'].format(id=self.thread.id)
+        data = {"id": fullname}
+        url = API_PATH["live_remove_invite"].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)
 
     def update(self, redditor, permissions=None):
@@ -191,10 +193,12 @@ class LiveContributorRelationship(object):
            subreddit.moderator.update('spez', [])
 
         """
-        url = API_PATH['live_update_perms'].format(id=self.thread.id)
-        data = {'name': str(redditor),
-                'type': 'liveupdate_contributor',
-                'permissions': self._handle_permissions(permissions)}
+        url = API_PATH["live_update_perms"].format(id=self.thread.id)
+        data = {
+            "name": str(redditor),
+            "type": "liveupdate_contributor",
+            "permissions": self._handle_permissions(permissions),
+        }
         self.thread._reddit.post(url, data=data)
 
     def update_invite(self, redditor, permissions=None):
@@ -229,10 +233,12 @@ class LiveContributorRelationship(object):
            thread.contributor.update_invite('spez', [])
 
         """
-        url = API_PATH['live_update_perms'].format(id=self.thread.id)
-        data = {'name': str(redditor),
-                'type': 'liveupdate_contributor_invite',
-                'permissions': self._handle_permissions(permissions)}
+        url = API_PATH["live_update_perms"].format(id=self.thread.id)
+        data = {
+            "name": str(redditor),
+            "type": "liveupdate_contributor_invite",
+            "permissions": self._handle_permissions(permissions),
+        }
         self.thread._reddit.post(url, data=data)
 
 
@@ -309,8 +315,7 @@ class LiveThread(RedditBase):
         """
         if isinstance(other, string_types):
             return other == str(self)
-        return (isinstance(other, self.__class__) and
-                str(self) == str(other))
+        return isinstance(other, self.__class__) and str(self) == str(other)
 
     def __getitem__(self, update_id):
         """Return a lazy :class:`.LiveUpdate` instance.
@@ -334,8 +339,9 @@ class LiveThread(RedditBase):
         """Return the hash of the current instance."""
         return hash(self.__class__.__name__) ^ hash(str(self))
 
-    def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
-                 _data=None):
+    def __init__(
+        self, reddit, id=None, _data=None  # pylint: disable=redefined-builtin
+    ):
         """Initialize a lazy :class:`.LiveThread` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -353,7 +359,7 @@ class LiveThread(RedditBase):
         self._contributor = None
 
     def _info_path(self):
-        return API_PATH['liveabout'].format(id=self.id)
+        return API_PATH["liveabout"].format(id=self.id)
 
     def discussions(self, **generator_kwargs):
         """Get submissions linking to the thread.
@@ -372,7 +378,7 @@ class LiveThread(RedditBase):
                print(submission.title)
 
         """
-        url = API_PATH['live_discussions'].format(id=self.id)
+        url = API_PATH["live_discussions"].format(id=self.id)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
     def report(self, type):  # pylint: disable=redefined-builtin
@@ -390,8 +396,8 @@ class LiveThread(RedditBase):
            thread.report('spam')
 
         """
-        url = API_PATH['live_report'].format(id=self.id)
-        self._reddit.post(url, data={'type': type})
+        url = API_PATH["live_report"].format(id=self.id)
+        self._reddit.post(url, data={"type": type})
 
     def updates(self, **generator_kwargs):
         """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
@@ -411,9 +417,8 @@ class LiveThread(RedditBase):
                print(submission.body)
 
         """
-        url = API_PATH['live_updates'].format(id=self.id)
-        for update in ListingGenerator(self._reddit, url,
-                                       **generator_kwargs):
+        url = API_PATH["live_updates"].format(id=self.id)
+        for update in ListingGenerator(self._reddit, url, **generator_kwargs):
             update._thread = self
             yield update
 
@@ -450,8 +455,8 @@ class LiveThreadContribution(object):
            thread.contrib.add('test `LiveThreadContribution.add()`')
 
         """
-        url = API_PATH['live_add_update'].format(id=self.thread.id)
-        self.thread._reddit.post(url, data={'body': body})
+        url = API_PATH["live_add_update"].format(id=self.thread.id)
+        self.thread._reddit.post(url, data={"body": body})
 
     def close(self):
         """Close the live thread permanently (cannot be undone).
@@ -464,11 +469,17 @@ class LiveThreadContribution(object):
            thread.contrib.close()
 
         """
-        url = API_PATH['live_close'].format(id=self.thread.id)
+        url = API_PATH["live_close"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
-    def update(self, title=None, description=None, nsfw=None, resources=None,
-               **other_settings):
+    def update(
+        self,
+        title=None,
+        description=None,
+        nsfw=None,
+        resources=None,
+        **other_settings
+    ):
         """Update settings of the live thread.
 
         :param title: (Optional) The title of the live thread (default: None).
@@ -504,17 +515,23 @@ class LiveThreadContribution(object):
            thread.contrib.update(nsfw=True, foo=None)
 
         """
-        settings = {'title': title, 'description': description,
-                    'nsfw': nsfw, 'resources': resources}
+        settings = {
+            "title": title,
+            "description": description,
+            "nsfw": nsfw,
+            "resources": resources,
+        }
         settings.update(other_settings)
         if all(value is None for value in settings.values()):
             return
         # get settings from Reddit (not cache)
         thread = LiveThread(self.thread._reddit, self.thread.id)
-        data = {key: getattr(thread, key) if value is None else value
-                for key, value in settings.items()}
+        data = {
+            key: getattr(thread, key) if value is None else value
+            for key, value in settings.items()
+        }
 
-        url = API_PATH['live_update_thread'].format(id=self.thread.id)
+        url = API_PATH["live_update_thread"].format(id=self.thread.id)
         # prawcore (0.7.0) Session.request() modifies `data` kwarg
         self.thread._reddit.post(url, data=data.copy())
         self.thread._reset_attributes(*data.keys())
@@ -545,7 +562,7 @@ class LiveUpdate(RedditBase):
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
     """
 
-    STR_FIELD = 'id'
+    STR_FIELD = "id"
 
     @classmethod
     def _objectify_acknowledged(cls, reddit, data):
@@ -611,13 +628,16 @@ class LiveUpdate(RedditBase):
             self._thread = LiveThread(self._reddit, thread_id)
             self._data['id'] = update_id
         else:
-            raise TypeError('Either `thread_id` and `update_id`, or '
-                            '`_data` must be provided.')
+            raise TypeError(
+                "Either `thread_id` and `update_id`, or "
+                "`_data` must be provided."
+            )
         self._contrib = None
 
     def _fetch(self):
-        url = API_PATH['live_focus'].format(
-            thread_id=self.thread.id, update_id=self.id)
+        url = API_PATH["live_focus"].format(
+            thread_id=self.thread.id, update_id=self.id
+        )
         other = self._reddit.get(url)[0]
         self._data.update(other._data)
         self._fetched = True
@@ -656,8 +676,8 @@ class LiveUpdateContribution(object):
            update.contrib.remove()
 
         """
-        url = API_PATH['live_remove_update'].format(id=self.update.thread.id)
-        data = {'id': self.update.fullname}
+        url = API_PATH["live_remove_update"].format(id=self.update.thread.id)
+        data = {"id": self.update.fullname}
         self.update.thread._reddit.post(url, data=data)
 
     def strike(self):
@@ -675,6 +695,6 @@ class LiveUpdateContribution(object):
         See :class:`.LiveUpdate` for details.
 
         """
-        url = API_PATH['live_strike'].format(id=self.update.thread.id)
-        data = {'id': self.update.fullname}
+        url = API_PATH["live_strike"].format(id=self.update.thread.id)
+        data = {"id": self.update.fullname}
         self.update.thread._reddit.post(url, data=data)

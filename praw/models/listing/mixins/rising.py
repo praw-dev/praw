@@ -14,9 +14,11 @@ class RisingListingMixin(PRAWBase):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit,
-                                urljoin(self._path, 'randomrising'),
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit,
+            urljoin(self._path, "randomrising"),
+            **generator_kwargs
+        )
 
     def rising(self, **generator_kwargs):
         """Return a ListingGenerator for rising submissions.
@@ -25,5 +27,6 @@ class RisingListingMixin(PRAWBase):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit, urljoin(self._path, 'rising'),
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, urljoin(self._path, "rising"), **generator_kwargs
+        )

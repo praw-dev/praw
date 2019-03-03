@@ -5,7 +5,7 @@ from ..base import PRAWBase
 class Listing(PRAWBase):
     """A listing is a collection of RedditBase instances."""
 
-    CHILD_ATTRIBUTE = 'children'
+    CHILD_ATTRIBUTE = "children"
 
     def __init__(self, reddit, _data):
         """Initialize a Listing instance.
@@ -30,11 +30,11 @@ class Listing(PRAWBase):
 class FlairListing(Listing):
     """Special Listing for handling flair lists."""
 
-    CHILD_ATTRIBUTE = 'users'
+    CHILD_ATTRIBUTE = "users"
 
     @property
     def after(self):
         """Return the next attribute or None."""
-        if hasattr(self, 'next'):
+        if hasattr(self, "next"):
             return self.next  # pylint: disable=no-member
         return None

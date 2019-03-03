@@ -3,14 +3,23 @@ import os
 
 try:
     from update_checker import update_check
+
     UPDATE_CHECKER_MISSING = False
 except ImportError:  # pragma: no cover
     UPDATE_CHECKER_MISSING = True
 
 
-from prawcore import (Authorizer, DeviceIDAuthorizer, ReadOnlyAuthorizer,
-                      Redirect, Requestor, ScriptAuthorizer,
-                      TrustedAuthenticator, UntrustedAuthenticator, session)
+from prawcore import (
+    Authorizer,
+    DeviceIDAuthorizer,
+    ReadOnlyAuthorizer,
+    Redirect,
+    Requestor,
+    ScriptAuthorizer,
+    TrustedAuthenticator,
+    UntrustedAuthenticator,
+    session,
+)
 
 from . import models
 from .config import Config
@@ -59,8 +68,10 @@ class Reddit(object):
         if value:
             self._core = self._read_only_core
         elif self._authorized_core is None:
-            raise ClientException('read_only cannot be unset as only the '
-                                  'ReadOnlyAuthorizer is available.')
+            raise ClientException(
+                "read_only cannot be unset as only the "
+                "ReadOnlyAuthorizer is available."
+            )
         else:
             self._core = self._authorized_core
 
@@ -70,10 +81,14 @@ class Reddit(object):
 
     def __exit__(self, *_args):
         """Handle the context manager close."""
-        pass
 
-    def __init__(self, site_name=None, requestor_class=None,
-                 requestor_kwargs=None, **config_settings):
+    def __init__(
+        self,
+        site_name=None,
+        requestor_class=None,
+        requestor_kwargs=None,
+        **config_settings
+    ):
         """Initialize a Reddit instance.
 
         :param site_name: The name of a section in your ``praw.ini`` file from
@@ -125,34 +140,42 @@ class Reddit(object):
         self._unique_counter = 0
 
         try:
-            config_section = site_name or os.getenv('praw_site') or 'DEFAULT'
+            config_section = site_name or os.getenv("praw_site") or "DEFAULT"
             self.config = Config(config_section, **config_settings)
         except configparser.NoSectionError as exc:
-            help_message = ('You provided the name of a praw.ini '
-                            'configuration which does not exist.\n\nFor help '
-                            'with creating a Reddit instance, visit\n'
-                            'https://praw.readthedocs.io/en/latest/code_overvi'
-                            'ew/reddit_instance.html\n\n'
-                            'For help on configuring PRAW, visit\n'
-                            'https://praw.readthedocs.io/en/latest/getting_sta'
-                            'rted/configuration.html')
+            help_message = (
+                "You provided the name of a praw.ini "
+                "configuration which does not exist.\n\nFor help "
+                "with creating a Reddit instance, visit\n"
+                "https://praw.readthedocs.io/en/latest/code_overvi"
+                "ew/reddit_instance.html\n\n"
+                "For help on configuring PRAW, visit\n"
+                "https://praw.readthedocs.io/en/latest/getting_sta"
+                "rted/configuration.html"
+            )
             if site_name is not None:
-                exc.message += '\n' + help_message
+                exc.message += "\n" + help_message
             raise
 
-        required_message = ('Required configuration setting {!r} missing. \n'
-                            'This setting can be provided in a praw.ini file, '
-                            'as a keyword argument to the `Reddit` class '
-                            'constructor, or as an environment variable.')
-        for attribute in ('client_id', 'user_agent'):
-            if getattr(self.config, attribute) in (self.config.CONFIG_NOT_SET,
-                                                   None):
+        required_message = (
+            "Required configuration setting {!r} missing. \n"
+            "This setting can be provided in a praw.ini file, "
+            "as a keyword argument to the `Reddit` class "
+            "constructor, or as an environment variable."
+        )
+        for attribute in ("client_id", "user_agent"):
+            if getattr(self.config, attribute) in (
+                self.config.CONFIG_NOT_SET,
+                None,
+            ):
                 raise ClientException(required_message.format(attribute))
         if self.config.client_secret is self.config.CONFIG_NOT_SET:
-            raise ClientException(required_message.format('client_secret') +
-                                  '\nFor installed applications this value '
-                                  'must be set to None via a keyword argument '
-                                  'to the `Reddit` class constructor.')
+            raise ClientException(
+                required_message.format("client_secret")
+                + "\nFor installed applications this value "
+                "must be set to None via a keyword argument "
+                "to the `Reddit` class constructor."
+            )
 
         self._check_for_update()
         self._prepare_objector()
@@ -293,40 +316,42 @@ class Reddit(object):
 
     def _prepare_objector(self):
         self._objector = Objector(self)
-        mappings = {self.config.kinds['comment']: models.Comment,
-                    self.config.kinds['message']: models.Message,
-                    self.config.kinds['redditor']: models.Redditor,
-                    self.config.kinds['submission']: models.Submission,
-                    self.config.kinds['subreddit']: models.Subreddit,
-                    self.config.kinds['trophy']: models.Trophy,
-                    'Button': models.Button,
-                    'Image': models.Image,
-                    'LabeledMulti': models.Multireddit,
-                    'Listing': models.Listing,
-                    'LiveUpdate': models.LiveUpdate,
-                    'LiveUpdateEvent': models.LiveThread,
-                    'MenuLink': models.MenuLink,
-                    'ModmailAction': models.ModmailAction,
-                    'ModmailConversation': models.ModmailConversation,
-                    'ModmailMessage': models.ModmailMessage,
-                    'Submenu': models.Submenu,
-                    'TrophyList': models.TrophyList,
-                    'UserList': models.RedditorList,
-                    'button': models.ButtonWidget,
-                    'calendar': models.Calendar,
-                    'community-list': models.CommunityList,
-                    'custom': models.CustomWidget,
-                    'id-card': models.IDCard,
-                    'image': models.ImageWidget,
-                    'menu': models.Menu,
-                    'modaction': models.ModAction,
-                    'moderators': models.ModeratorsWidget,
-                    'more': models.MoreComments,
-                    'post-flair': models.PostFlairWidget,
-                    'stylesheet': models.Stylesheet,
-                    'subreddit-rules': models.RulesWidget,
-                    'textarea': models.TextArea,
-                    'widget': models.Widget}
+        mappings = {
+            self.config.kinds["comment"]: models.Comment,
+            self.config.kinds["message"]: models.Message,
+            self.config.kinds["redditor"]: models.Redditor,
+            self.config.kinds["submission"]: models.Submission,
+            self.config.kinds["subreddit"]: models.Subreddit,
+            self.config.kinds["trophy"]: models.Trophy,
+            "Button": models.Button,
+            "Image": models.Image,
+            "LabeledMulti": models.Multireddit,
+            "Listing": models.Listing,
+            "LiveUpdate": models.LiveUpdate,
+            "LiveUpdateEvent": models.LiveThread,
+            "MenuLink": models.MenuLink,
+            "ModmailAction": models.ModmailAction,
+            "ModmailConversation": models.ModmailConversation,
+            "ModmailMessage": models.ModmailMessage,
+            "Submenu": models.Submenu,
+            "TrophyList": models.TrophyList,
+            "UserList": models.RedditorList,
+            "button": models.ButtonWidget,
+            "calendar": models.Calendar,
+            "community-list": models.CommunityList,
+            "custom": models.CustomWidget,
+            "id-card": models.IDCard,
+            "image": models.ImageWidget,
+            "menu": models.Menu,
+            "modaction": models.ModAction,
+            "moderators": models.ModeratorsWidget,
+            "more": models.MoreComments,
+            "post-flair": models.PostFlairWidget,
+            "stylesheet": models.Stylesheet,
+            "subreddit-rules": models.RulesWidget,
+            "textarea": models.TextArea,
+            "widget": models.Widget,
+        }
         for kind, klass in mappings.items():
             self._objector.register(kind, klass)
 
@@ -336,8 +361,10 @@ class Reddit(object):
 
         requestor = requestor_class(
             USER_AGENT_FORMAT.format(self.config.user_agent),
-            self.config.oauth_url, self.config.reddit_url,
-            **requestor_kwargs)
+            self.config.oauth_url,
+            self.config.reddit_url,
+            **requestor_kwargs
+        )
 
         if self.config.client_secret:
             self._prepare_trusted_prawcore(requestor)
@@ -345,15 +372,19 @@ class Reddit(object):
             self._prepare_untrusted_prawcore(requestor)
 
     def _prepare_trusted_prawcore(self, requestor):
-        authenticator = TrustedAuthenticator(requestor, self.config.client_id,
-                                             self.config.client_secret,
-                                             self.config.redirect_uri)
+        authenticator = TrustedAuthenticator(
+            requestor,
+            self.config.client_id,
+            self.config.client_secret,
+            self.config.redirect_uri,
+        )
         read_only_authorizer = ReadOnlyAuthorizer(authenticator)
         self._read_only_core = session(read_only_authorizer)
 
         if self.config.username and self.config.password:
             script_authorizer = ScriptAuthorizer(
-                authenticator, self.config.username, self.config.password)
+                authenticator, self.config.username, self.config.password
+            )
             self._core = self._authorized_core = session(script_authorizer)
         elif self.config.refresh_token:
             authorizer = Authorizer(authenticator, self.config.refresh_token)
@@ -362,9 +393,9 @@ class Reddit(object):
             self._core = self._read_only_core
 
     def _prepare_untrusted_prawcore(self, requestor):
-        authenticator = UntrustedAuthenticator(requestor,
-                                               self.config.client_id,
-                                               self.config.redirect_uri)
+        authenticator = UntrustedAuthenticator(
+            requestor, self.config.client_id, self.config.redirect_uri
+        )
         read_only_authorizer = DeviceIDAuthorizer(authenticator)
         self._read_only_core = session(read_only_authorizer)
         if self.config.refresh_token:
@@ -373,9 +404,11 @@ class Reddit(object):
         else:
             self._core = self._read_only_core
 
-    def comment(self,  # pylint: disable=invalid-name
-                id=None,  # pylint: disable=redefined-builtin
-                url=None):
+    def comment(
+        self,  # pylint: disable=invalid-name
+        id=None,  # pylint: disable=redefined-builtin
+        url=None,
+    ):
         """Return a lazy instance of :class:`~.Comment` for ``id``.
 
         :param id: The ID of the comment.
@@ -405,7 +438,7 @@ class Reddit(object):
             None).
 
         """
-        data = self.request('GET', path, params=params)
+        data = self.request("GET", path, params=params)
         return self._objector.objectify(data)
 
     def info(self, fullnames=None, url=None):
@@ -431,29 +464,28 @@ class Reddit(object):
 
         """
         if bool(fullnames) == bool(url):
-            raise TypeError('Either `fullnames` or `url` must be provided.')
-
-        elif fullnames:
+            raise TypeError("Either `fullnames` or `url` must be provided.")
+        if fullnames:
             if not isinstance(fullnames, list):
-                raise TypeError('fullnames must be a list')
+                raise TypeError("fullnames must be a list")
 
             def generator():
                 for position in range(0, len(fullnames), 100):
-                    fullname_chunk = fullnames[position:position + 100]
-                    params = {'id': ','.join(fullname_chunk)}
-                    for result in self.get(API_PATH['info'], params=params):
+                    fullname_chunk = fullnames[position : position + 100]
+                    params = {"id": ",".join(fullname_chunk)}
+                    for result in self.get(API_PATH["info"], params=params):
                         yield result
 
             return generator()
 
-        else:
-            try:
-                params = {'url': url}
-                url_list = [result for result in
-                            self.get(API_PATH['info'], params=params)]
-                return url_list
-            except Exception:
-                raise TypeError('Invalid URL or no posts exist')
+        try:
+            params = {"url": url}
+            url_list = [
+                result for result in self.get(API_PATH["info"], params=params)
+            ]
+            return url_list
+        except Exception:
+            raise TypeError("Invalid URL or no posts exist")
 
     def patch(self, path, data=None):
         """Return parsed objects returned from a PATCH request to ``path``.
@@ -463,7 +495,7 @@ class Reddit(object):
             of the request (default: None).
 
         """
-        data = self.request('PATCH', path, data=data)
+        data = self.request("PATCH", path, data=data)
         return self._objector.objectify(data)
 
     def post(self, path, data=None, files=None, params=None):
@@ -478,8 +510,9 @@ class Reddit(object):
             None).
 
         """
-        data = self.request('POST', path, data=data or {}, files=files,
-                            params=params)
+        data = self.request(
+            "POST", path, data=data or {}, files=files, params=params
+        )
         return self._objector.objectify(data)
 
     def put(self, path, data=None):
@@ -490,7 +523,7 @@ class Reddit(object):
             of the request (default: None).
 
         """
-        data = self.request('PUT', path, data=data)
+        data = self.request("PUT", path, data=data)
         return self._objector.objectify(data)
 
     def random_subreddit(self, nsfw=False):
@@ -500,14 +533,15 @@ class Reddit(object):
             (default: False).
 
         """
-        url = API_PATH['subreddit'].format(subreddit='randnsfw' if nsfw
-                                           else 'random')
+        url = API_PATH["subreddit"].format(
+            subreddit="randnsfw" if nsfw else "random"
+        )
         path = None
         try:
-            self.get(url, params={'unique': self._next_unique})
+            self.get(url, params={"unique": self._next_unique})
         except Redirect as redirect:
             path = redirect.path
-        return models.Subreddit(self, path.split('/')[2])
+        return models.Subreddit(self, path.split("/")[2])
 
     def redditor(self, name):
         """Return a lazy instance of :class:`~.Redditor` for ``name``.
@@ -530,11 +564,13 @@ class Reddit(object):
             (default: None).
 
         """
-        return self._core.request(method, path, data=data, files=files,
-                                  params=params)
+        return self._core.request(
+            method, path, data=data, files=files, params=params
+        )
 
     def submission(  # pylint: disable=invalid-name,redefined-builtin
-            self, id=None, url=None):
+        self, id=None, url=None
+    ):
         """Return a lazy instance of :class:`~.Submission`.
 
         :param id: A reddit base36 submission ID, e.g., ``2gmzqe``.

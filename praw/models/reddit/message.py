@@ -50,23 +50,24 @@ class Message(InboxableMixin, ReplyableMixin, RedditBase):
         :param reddit: An instance of :class:`.Reddit`.
 
         """
-        if data['author']:
-            data['author'] = Redditor(reddit, data['author'])
+        if data["author"]:
+            data["author"] = Redditor(reddit, data["author"])
 
-        if data['dest'].startswith('#'):
-            data['dest'] = Subreddit(reddit, data['dest'][1:])
+        if data["dest"].startswith("#"):
+            data["dest"] = Subreddit(reddit, data["dest"][1:])
         else:
-            data['dest'] = Redditor(reddit, data['dest'])
+            data["dest"] = Redditor(reddit, data["dest"])
 
-        if data['replies']:
-            replies = data['replies']
-            data['replies'] = reddit._objector.objectify(
-                replies['data']['children'])
+        if data["replies"]:
+            replies = data["replies"]
+            data["replies"] = reddit._objector.objectify(
+                replies["data"]["children"]
+            )
         else:
-            data['replies'] = []
+            data["replies"] = []
 
-        if data['subreddit']:
-            data['subreddit'] = Subreddit(reddit, data['subreddit'])
+        if data["subreddit"]:
+            data["subreddit"] = Subreddit(reddit, data["subreddit"])
             return SubredditMessage(reddit, _data=data)
 
         return cls(reddit, _data=data)
@@ -82,8 +83,9 @@ class Message(InboxableMixin, ReplyableMixin, RedditBase):
         .. note:: Reddit does not return an indication of whether or not the
                   message was successfully deleted.
         """
-        self._reddit.post(API_PATH['delete_message'],
-                          data={'id': self.fullname})
+        self._reddit.post(
+            API_PATH["delete_message"], data={"id": self.fullname}
+        )
 
 
 class SubredditMessage(Message):
@@ -91,9 +93,10 @@ class SubredditMessage(Message):
 
     def mute(self, _unmute=False):
         """Mute the sender of this SubredditMessage."""
-        self._reddit.post(API_PATH['mute_sender'], data={'id': self.fullname})
+        self._reddit.post(API_PATH["mute_sender"], data={"id": self.fullname})
 
     def unmute(self):
         """Unmute the sender of this SubredditMessage."""
-        self._reddit.post(API_PATH['unmute_sender'],
-                          data={'id': self.fullname})
+        self._reddit.post(
+            API_PATH["unmute_sender"], data={"id": self.fullname}
+        )

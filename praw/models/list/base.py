@@ -16,7 +16,7 @@ class BaseList(PRAWBase):
         super(BaseList, self).__init__(reddit, _data=_data)
 
         if self.CHILD_ATTRIBUTE is None:
-            raise NotImplementedError('BaseList must be extended.')
+            raise NotImplementedError("BaseList must be extended.")
 
         child_list = self._data[self.CHILD_ATTRIBUTE]
         for index, item in enumerate(child_list):

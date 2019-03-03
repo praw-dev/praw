@@ -7,7 +7,8 @@ class UnitTest(object):
 
     def setup(self):
         """Setup runs before all test cases."""
-        self.reddit = Reddit(client_id='dummy', client_secret='dummy',
-                             user_agent='dummy')
+        self.reddit = Reddit(
+            client_id="dummy", client_secret="dummy", user_agent="dummy"
+        )
         # Unit tests should never issue requests
         self.reddit._core._requestor._http = None

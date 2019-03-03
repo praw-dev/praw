@@ -55,7 +55,7 @@ class User(PRAWBase):
 
     def blocked(self):
         """Return a RedditorList of blocked Redditors."""
-        return self._reddit.get(API_PATH['blocked'])
+        return self._reddit.get(API_PATH["blocked"])
 
     def contributor_subreddits(self, **generator_kwargs):
         """Return a ListingGenerator of subreddits user is a contributor of.
@@ -64,19 +64,20 @@ class User(PRAWBase):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit, API_PATH['my_contributor'],
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, API_PATH["my_contributor"], **generator_kwargs
+        )
 
     def friends(self):
         """Return a RedditorList of friends."""
-        return self._reddit.get(API_PATH['friends'])
+        return self._reddit.get(API_PATH["friends"])
 
     def karma(self):
         """Return a dictionary mapping subreddits to their karma."""
         karma_map = {}
-        for row in self._reddit.get(API_PATH['karma'])['data']:
-            subreddit = Subreddit(self._reddit, row['sr'])
-            del row['sr']
+        for row in self._reddit.get(API_PATH["karma"])["data"]:
+            subreddit = Subreddit(self._reddit, row["sr"])
+            del row["sr"]
             karma_map[subreddit] = row
         return karma_map
 
@@ -98,7 +99,7 @@ class User(PRAWBase):
             raise RuntimeError('reddit instance must not be read_only')
 
         if self._me is None or not use_cache:
-            user_data = self._reddit.get(API_PATH['me'])
+            user_data = self._reddit.get(API_PATH["me"])
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me
 
@@ -109,12 +110,13 @@ class User(PRAWBase):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit, API_PATH['my_moderator'],
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, API_PATH["my_moderator"], **generator_kwargs
+        )
 
     def multireddits(self):
         """Return a list of multireddits belonging to the user."""
-        return self._reddit.get(API_PATH['my_multireddits'])
+        return self._reddit.get(API_PATH["my_multireddits"])
 
     def subreddits(self, **generator_kwargs):
         """Return a ListingGenerator of subreddits the user is subscribed to.
@@ -123,5 +125,6 @@ class User(PRAWBase):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit, API_PATH['my_subreddits'],
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, API_PATH["my_subreddits"], **generator_kwargs
+        )
