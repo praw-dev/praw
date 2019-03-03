@@ -44,7 +44,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
     """
 
     REPR_FIELD = 'path'
-    STR_FIELD = REPR_FIELD
+    STR_FIELD = 'path'
     RE_INVALID = re.compile(r'(\s|\W|_)+', re.UNICODE)
 
     @staticmethod

@@ -268,9 +268,6 @@ class LiveThread(RedditBase):
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
     """
 
-    REPR_FIELD = 'id'
-    STR_FIELD = 'fullname'
-
     @property
     def contrib(self):
         """Provide an instance of :class:`.LiveThreadContribution`.

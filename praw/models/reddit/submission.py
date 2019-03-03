@@ -65,9 +65,6 @@ class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
 
     """
 
-    REPR_FIELD = 'id'
-    STR_FIELD = 'fullname'
-
     @staticmethod
     def id_from_url(url):
         """Return the ID contained within a submission URL.

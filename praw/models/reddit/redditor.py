@@ -62,7 +62,7 @@ class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
     """
 
     REPR_FIELD = 'name'
-    STR_FIELD = REPR_FIELD
+    STR_FIELD = 'name'
 
     @property
     def stream(self):

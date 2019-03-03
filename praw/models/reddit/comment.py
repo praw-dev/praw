@@ -54,8 +54,6 @@ class Comment(InboxableMixin, UserContentMixin, RedditBase):
 
     MISSING_COMMENT_MESSAGE = ('This comment does not appear to be in the '
                                'comment tree')
-    REPR_FIELD = 'id'
-    STR_FIELD = 'fullname'
 
     @staticmethod
     def id_from_url(url):

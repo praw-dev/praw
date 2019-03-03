@@ -49,9 +49,6 @@ class ModmailConversation(RedditBase):
 
     """
 
-    REPR_FIELD = 'id'
-    STR_FIELD = 'fullname'
-
     @staticmethod
     def _convert_conversation_objects(data, reddit):
         """Convert messages and mod actions to PRAW objects."""
@@ -321,8 +318,6 @@ other_conversations=conversation.user.recent_convos)
 
 class ModmailObject(RedditBase):
     """A base class for objects within a modmail conversation."""
-
-    STR_FIELD = 'id'
 
 
 class ModmailAction(ModmailObject):

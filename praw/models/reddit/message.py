@@ -39,9 +39,6 @@ class Message(InboxableMixin, ReplyableMixin, RedditBase):
 
     """
 
-    REPR_FIELD = 'id'
-    STR_FIELD = 'fullname'
-
     @classmethod
     def parse(cls, data, reddit):
         """Return an instance of Message or SubredditMessage from ``data``.

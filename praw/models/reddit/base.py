@@ -9,8 +9,8 @@ from ..base import PRAWBase
 class RedditBase(PRAWBase):
     """Base class that represents actual Reddit objects."""
 
-    REPR_FIELD = None
-    STR_FIELD = None
+    REPR_FIELD = 'id'
+    STR_FIELD = 'fullname'
 
     @staticmethod
     def _url_parts(url):
@@ -127,3 +127,5 @@ class RedditBase(PRAWBase):
             self._data.clear()
             self._data.update(self._initial_data)
             self._fetch()
+
+        return self

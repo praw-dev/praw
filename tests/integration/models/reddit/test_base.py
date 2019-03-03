@@ -48,3 +48,7 @@ class TestFetch(IntegrationTest):
             self.redditor.fetch(True)
         assert self.redditor.fetched
         assert int(self.redditor.a.created_utc) == 1118030400
+
+    def test_return(self):
+        with self.recorder.use_cassette('TestFetch.test_return'):
+            self.redditor.fetch().fetch(True)
