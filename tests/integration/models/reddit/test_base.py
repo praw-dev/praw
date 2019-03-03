@@ -5,9 +5,7 @@ from ... import IntegrationTest
 class TestFetch(IntegrationTest):
     def setup(self):
         super(TestFetch, self).setup()
-        self.reddit.read_only = True
-        with self.recorder.use_cassette('TestFetch.setup'):
-            self.redditor = self.reddit.redditor('spez')
+        self.redditor = self.reddit.redditor('spez')
         assert self.redditor.name == 'spez'
         assert not self.redditor.fetched
         assert not self.redditor._fetched
