@@ -1355,13 +1355,15 @@ class SubredditModeration(object):
             self.subreddit._reddit, API_PATH['moderator_messages'].format(
                 subreddit=self.subreddit), **generator_kwargs)
 
-    def log(self, action=None, mod=None, **generator_kwargs):
+    def log(self, action=None, mod=None, after=None, **generator_kwargs):
         """Return a ListingGenerator for moderator log entries.
 
         :param action: If given, only return log entries for the specified
             action.
         :param mod: If given, only return log entries for actions made by the
             passed in Redditor.
+        :param after: If given, return log entries for actions after the passed 
+            fullname of a modlog entry.
 
         To print the moderator and subreddit of the last 5 modlog entries try:
 
@@ -1371,7 +1373,8 @@ class SubredditModeration(object):
                print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
 
         """
-        params = {'mod': str(mod) if mod else mod, 'type': action}
+        params = {'mod': str(mod) if mod else mod, 'type': action, 
+                  'after': after}
         Subreddit._safely_add_arguments(generator_kwargs, 'params',
                                         **params)
         return ListingGenerator(
