@@ -61,12 +61,12 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
 
     """
 
-    STR_FIELD = 'name'
+    STR_FIELD = "name"
 
     @classmethod
     def from_data(cls, reddit, data):
         """Return an instance of Redditor, or None from ``data``."""
-        if data == '[deleted]':
+        if data == "[deleted]":
             return None
         return cls(reddit, data)
 
@@ -104,28 +104,30 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
 
         """
         if bool(name) == bool(_data):
-            raise TypeError('Either `name` or `_data` must be provided.')
+            raise TypeError("Either `name` or `_data` must be provided.")
         if _data:
-            assert isinstance(_data, dict) and 'name' in _data, \
-                   'Please file a bug with PRAW'
+            assert (
+                isinstance(_data, dict) and "name" in _data
+            ), "Please file a bug with PRAW"
         super(Redditor, self).__init__(reddit, _data)
         self._listing_use_sort = True
         if name:
             self.name = name
-        self._path = API_PATH['user'].format(user=self)
+        self._path = API_PATH["user"].format(user=self)
         self._stream = None
 
     def _info_path(self):
-        return API_PATH['user_about'].format(user=self)
+        return API_PATH["user_about"].format(user=self)
 
     def _friend(self, method, data):
-        url = API_PATH['friend_v1'].format(user=self)
+        url = API_PATH["friend_v1"].format(user=self)
         self._reddit.request(method, url, data=dumps(data))
 
     def block(self):
         """Block the Redditor."""
-        self._reddit.post(API_PATH['block_user'],
-                          params={'account_id': self.fullname})
+        self._reddit.post(
+            API_PATH["block_user"], params={"account_id": self.fullname}
+        )
 
     def friend(self, note=None):
         """Friend the Redditor.
@@ -136,7 +138,7 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
         Calling this method subsequent times will update the note.
 
         """
-        self._friend('PUT', data={'note': note} if note else {})
+        self._friend("PUT", data={"note": note} if note else {})
 
     def friend_info(self):
         """Return a Redditor instance with specific friend-related attributes.
@@ -145,7 +147,7 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
             and possibly ``note`` if the authenticated user has reddit Gold.
 
         """
-        return self._reddit.get(API_PATH['friend_v1'].format(user=self))
+        return self._reddit.get(API_PATH["friend_v1"].format(user=self))
 
     def gild(self, months=1):
         """Gild the Redditor.
@@ -155,13 +157,15 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
 
         """
         if months < 1 or months > 36:
-            raise TypeError('months must be between 1 and 36')
-        self._reddit.post(API_PATH['gild_user'].format(username=self),
-                          data={'months': months})
+            raise TypeError("months must be between 1 and 36")
+        self._reddit.post(
+            API_PATH["gild_user"].format(username=self),
+            data={"months": months},
+        )
 
     def multireddits(self):
         """Return a list of the redditor's public multireddits."""
-        return self._reddit.get(API_PATH['multireddit_user'].format(user=self))
+        return self._reddit.get(API_PATH["multireddit_user"].format(user=self))
 
     def trophies(self):
         """Return a list of the redditor's trophies.
@@ -180,19 +184,21 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
                 print(trophy.description)
 
         """
-        return list(self._reddit.get(
-            API_PATH['trophies'].format(user=self)))
+        return list(self._reddit.get(API_PATH["trophies"].format(user=self)))
 
     def unblock(self):
         """Unblock the Redditor."""
-        data = {'container': self._reddit.user.me().fullname,
-                'name': str(self), 'type': 'enemy'}
-        url = API_PATH['unfriend'].format(subreddit='all')
+        data = {
+            "container": self._reddit.user.me().fullname,
+            "name": str(self),
+            "type": "enemy",
+        }
+        url = API_PATH["unfriend"].format(subreddit="all")
         self._reddit.post(url, data=data)
 
     def unfriend(self):
         """Unfriend the Redditor."""
-        self._friend(method='DELETE', data={'id': str(self)})
+        self._friend(method="DELETE", data={"id": str(self)})
 
 
 class RedditorStream(object):
@@ -242,5 +248,6 @@ class RedditorStream(object):
                print(submission)
 
         """
-        return stream_generator(self.redditor.submissions.new,
-                                **stream_options)
+        return stream_generator(
+            self.redditor.submissions.new, **stream_options
+        )

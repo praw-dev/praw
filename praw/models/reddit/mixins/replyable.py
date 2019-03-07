@@ -22,5 +22,5 @@ class ReplyableMixin(object):
            comment.reply('reply')
 
         """
-        data = {'text': body, 'thing_id': self.fullname}
-        return self._reddit.post(API_PATH['comment'], data=data)[0]
+        data = {"text": body, "thing_id": self.fullname}
+        return self._reddit.post(API_PATH["comment"], data=data)[0]

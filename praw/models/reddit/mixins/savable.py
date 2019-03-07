@@ -24,8 +24,9 @@ class SavableMixin(object):
         See also :meth:`~.unsave`
 
         """
-        self._reddit.post(API_PATH['save'], data={'category': category,
-                                                  'id': self.fullname})
+        self._reddit.post(
+            API_PATH["save"], data={"category": category, "id": self.fullname}
+        )
 
     def unsave(self):
         """Unsave the object.
@@ -43,4 +44,4 @@ class SavableMixin(object):
         See also :meth:`~.save`
 
         """
-        self._reddit.post(API_PATH['unsave'], data={'id': self.fullname})
+        self._reddit.post(API_PATH["unsave"], data={"id": self.fullname})

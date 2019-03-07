@@ -19,7 +19,7 @@ class EditableMixin(object):
            submission.delete()
 
         """
-        self._reddit.post(API_PATH['del'], {'id': self.fullname})
+        self._reddit.post(API_PATH["del"], {"id": self.fullname})
 
     def edit(self, body):
         """Replace the body of the object with ``body``.
@@ -38,10 +38,15 @@ class EditableMixin(object):
            comment.edit(edited_body)
 
         """
-        data = {'text': body, 'thing_id': self.fullname}
-        updated = self._reddit.post(API_PATH['edit'], data=data)[0]
-        for attribute in ['_fetched', '_reddit', '_submission', 'replies',
-                          'subreddit']:
+        data = {"text": body, "thing_id": self.fullname}
+        updated = self._reddit.post(API_PATH["edit"], data=data)[0]
+        for attribute in [
+            "_fetched",
+            "_reddit",
+            "_submission",
+            "replies",
+            "subreddit",
+        ]:
             if attribute in updated.__dict__:
                 delattr(updated, attribute)
         self.__dict__.update(updated.__dict__)

@@ -22,8 +22,9 @@ class Inbox(PRAWBase):
                print(repr(item))
 
         """
-        return ListingGenerator(self._reddit, API_PATH['inbox'],
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, API_PATH["inbox"], **generator_kwargs
+        )
 
     def collapse(self, items):
         """Mark an inbox message as collapsed.
@@ -49,8 +50,8 @@ class Inbox(PRAWBase):
 
         """
         while items:
-            data = {'id': ','.join(x.fullname for x in items[:25])}
-            self._reddit.post(API_PATH['collapse'], data=data)
+            data = {"id": ",".join(x.fullname for x in items[:25])}
+            self._reddit.post(API_PATH["collapse"], data=data)
             items = items[25:]
 
     def comment_replies(self, **generator_kwargs):
@@ -67,8 +68,9 @@ class Inbox(PRAWBase):
                print(reply.author)
 
         """
-        return ListingGenerator(self._reddit, API_PATH['comment_replies'],
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, API_PATH["comment_replies"], **generator_kwargs
+        )
 
     def mark_read(self, items):
         """Mark Comments or Messages as read.
@@ -96,8 +98,8 @@ class Inbox(PRAWBase):
 
         """
         while items:
-            data = {'id': ','.join(x.fullname for x in items[:25])}
-            self._reddit.post(API_PATH['read_message'], data=data)
+            data = {"id": ",".join(x.fullname for x in items[:25])}
+            self._reddit.post(API_PATH["read_message"], data=data)
             items = items[25:]
 
     def mark_unread(self, items):
@@ -122,8 +124,8 @@ class Inbox(PRAWBase):
 
         """
         while items:
-            data = {'id': ','.join(x.fullname for x in items[:25])}
-            self._reddit.post(API_PATH['unread_message'], data=data)
+            data = {"id": ",".join(x.fullname for x in items[:25])}
+            self._reddit.post(API_PATH["unread_message"], data=data)
             items = items[25:]
 
     def mentions(self, **generator_kwargs):
@@ -144,8 +146,9 @@ class Inbox(PRAWBase):
                print('{}\n{}\n'.format(mention.author, mention.body))
 
         """
-        return ListingGenerator(self._reddit, API_PATH['mentions'],
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, API_PATH["mentions"], **generator_kwargs
+        )
 
     def message(self, message_id):
         """Return a Message corresponding to ``message_id``.
@@ -159,7 +162,7 @@ class Inbox(PRAWBase):
            message = reddit.inbox.message('7bnlgu')
 
         """
-        listing = self._reddit.get(API_PATH['message'].format(id=message_id))
+        listing = self._reddit.get(API_PATH["message"].format(id=message_id))
         messages = [listing[0]] + listing[0].replies
         while messages:
             message = messages.pop(0)
@@ -180,8 +183,9 @@ class Inbox(PRAWBase):
                print(message.subject)
 
         """
-        return ListingGenerator(self._reddit, API_PATH['messages'],
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, API_PATH["messages"], **generator_kwargs
+        )
 
     def sent(self, **generator_kwargs):
         """Return a ListingGenerator for sent messages.
@@ -198,8 +202,9 @@ class Inbox(PRAWBase):
                print(message.dest)
 
         """
-        return ListingGenerator(self._reddit, API_PATH['sent'],
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, API_PATH["sent"], **generator_kwargs
+        )
 
     def stream(self, **stream_options):
         """Yield new inbox items as they become available.
@@ -233,8 +238,9 @@ class Inbox(PRAWBase):
                print(reply.author)
 
         """
-        return ListingGenerator(self._reddit, API_PATH['submission_replies'],
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, API_PATH["submission_replies"], **generator_kwargs
+        )
 
     def uncollapse(self, items):
         """Mark an inbox message as uncollapsed.
@@ -260,8 +266,8 @@ class Inbox(PRAWBase):
 
         """
         while items:
-            data = {'id': ','.join(x.fullname for x in items[:25])}
-            self._reddit.post(API_PATH['uncollapse'], data=data)
+            data = {"id": ",".join(x.fullname for x in items[:25])}
+            self._reddit.post(API_PATH["uncollapse"], data=data)
             items = items[25:]
 
     def unread(self, mark_read=False, **generator_kwargs):
@@ -285,7 +291,7 @@ class Inbox(PRAWBase):
                    print(item.author)
 
         """
-        self._safely_add_arguments(
-            generator_kwargs, 'params', mark=mark_read)
-        return ListingGenerator(self._reddit, API_PATH['unread'],
-                                **generator_kwargs)
+        self._safely_add_arguments(generator_kwargs, "params", mark=mark_read)
+        return ListingGenerator(
+            self._reddit, API_PATH["unread"], **generator_kwargs
+        )

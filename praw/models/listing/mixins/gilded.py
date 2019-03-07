@@ -14,5 +14,6 @@ class GildedListingMixin(PRAWBase):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit, urljoin(self._path, 'gilded'),
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, urljoin(self._path, "gilded"), **generator_kwargs
+        )
