@@ -25,19 +25,25 @@ class Emoji(RedditBase):
     ======================= ===================================================
     """
 
-    STR_FIELD = 'name'
+    STR_FIELD = "name"
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other == str(self)
-        return (isinstance(other, self.__class__) and
-                str(self) == str(other) and other.subreddit == self.subreddit)
+        return (
+            isinstance(other, self.__class__)
+            and str(self) == str(other)
+            and other.subreddit == self.subreddit
+        )
 
     def __hash__(self):
         """Return the hash of the current instance."""
-        return (hash(self.__class__.__name__) ^ hash(str(self)) ^
-                hash(self.subreddit))
+        return (
+            hash(self.__class__.__name__)
+            ^ hash(str(self))
+            ^ hash(self.subreddit)
+        )
 
     def __init__(self, reddit, subreddit, name, _data=None):
         """Construct an instance of the Emoji object."""
@@ -51,8 +57,11 @@ class Emoji(RedditBase):
                 self.__dict__.update(emoji.__dict__)
                 self._fetched = True
                 return
-        raise ClientException('/r/{} does not have the emoji {}'
-                              .format(self.subreddit, self.name))
+        raise ClientException(
+            "/r/{} does not have the emoji {}".format(
+                self.subreddit, self.name
+            )
+        )
 
     def delete(self):
         """Delete an emoji from this subreddit by Emoji.
@@ -64,9 +73,10 @@ class Emoji(RedditBase):
            reddit.subreddit('praw_test').emoji['test'].delete()
 
         """
-        url = API_PATH['emoji_delete'].format(
-            emoji_name=self.name, subreddit=self.subreddit)
-        self._reddit.request('DELETE', url)
+        url = API_PATH["emoji_delete"].format(
+            emoji_name=self.name, subreddit=self.subreddit
+        )
+        self._reddit.request("DELETE", url)
 
 
 class SubredditEmoji(object):
@@ -108,11 +118,14 @@ class SubredditEmoji(object):
 
         """
         response = self.subreddit._reddit.get(
-            API_PATH['emoji_list'].format(subreddit=self.subreddit))
-        for emoji_name, emoji_data in \
-                response[self.subreddit.fullname].items():
-            yield Emoji(self._reddit, self.subreddit, emoji_name,
-                        _data=emoji_data)
+            API_PATH["emoji_list"].format(subreddit=self.subreddit)
+        )
+        for emoji_name, emoji_data in response[
+            self.subreddit.fullname
+        ].items():
+            yield Emoji(
+                self._reddit, self.subreddit, emoji_name, _data=emoji_data
+            )
 
     def add(self, name, image_path):
         """Add an emoji to this subreddit.
@@ -128,25 +141,29 @@ class SubredditEmoji(object):
            reddit.subreddit('praw_test').emoji.add('test','test.png')
 
         """
-        data = {'filepath': os.path.basename(image_path),
-                'mimetype': 'image/jpeg'}
-        if image_path.lower().endswith('.png'):
-            data['mimetype'] = 'image/png'
-        url = API_PATH['emoji_lease'].format(subreddit=self.subreddit)
+        data = {
+            "filepath": os.path.basename(image_path),
+            "mimetype": "image/jpeg",
+        }
+        if image_path.lower().endswith(".png"):
+            data["mimetype"] = "image/png"
+        url = API_PATH["emoji_lease"].format(subreddit=self.subreddit)
 
         # until we learn otherwise, assume this request always succeeds
-        upload_lease = self._reddit.post(url, data=data)['s3UploadLease']
-        upload_data = {item['name']: item['value']
-                       for item in upload_lease['fields']}
-        upload_url = 'https:{}'.format(upload_lease['action'])
+        upload_lease = self._reddit.post(url, data=data)["s3UploadLease"]
+        upload_data = {
+            item["name"]: item["value"] for item in upload_lease["fields"]
+        }
+        upload_url = "https:{}".format(upload_lease["action"])
 
-        with open(image_path, 'rb') as image:
+        with open(image_path, "rb") as image:
             response = self._reddit._core._requestor._http.post(
-                upload_url, data=upload_data, files={'file': image})
+                upload_url, data=upload_data, files={"file": image}
+            )
         response.raise_for_status()
 
-        url = API_PATH['emoji_upload'].format(
-            subreddit=self.subreddit)
-        self._reddit.post(url,
-                          data={'name': name, 's3_key': upload_data['key']})
+        url = API_PATH["emoji_upload"].format(subreddit=self.subreddit)
+        self._reddit.post(
+            url, data={"name": name, "s3_key": upload_data["key"]}
+        )
         return Emoji(self._reddit, self.subreddit, name)

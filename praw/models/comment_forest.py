@@ -153,8 +153,11 @@ class CommentForest(object):
         # Fetch largest more_comments until reaching the limit or the threshold
         while more_comments:
             item = heappop(more_comments)
-            if remaining is not None and remaining <= 0 or \
-               item.count < threshold:
+            if (
+                remaining is not None
+                and remaining <= 0
+                or item.count < threshold
+            ):
                 skipped.append(item)
                 item._remove_from.remove(item)
                 continue
@@ -164,8 +167,9 @@ class CommentForest(object):
                 remaining -= 1
 
             # Add new MoreComment objects to the heap of more_comments
-            for more in self._gather_more_comments(new_comments,
-                                                   self._comments):
+            for more in self._gather_more_comments(
+                new_comments, self._comments
+            ):
                 more.submission = self._submission
                 heappush(more_comments, more)
             # Insert all items into the tree

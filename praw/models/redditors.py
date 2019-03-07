@@ -13,16 +13,18 @@ class Redditors(PRAWBase):
 
         :returns Redditor profiles, which are a type of :class:`.Subreddit`.
         """
-        return ListingGenerator(self._reddit, API_PATH['users_new'],
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, API_PATH["users_new"], **generator_kwargs
+        )
 
     def popular(self, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for popular Redditors.
 
         :returns Redditor profiles, which are a type of :class:`.Subreddit`.
         """
-        return ListingGenerator(self._reddit, API_PATH['users_popular'],
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, API_PATH["users_popular"], **generator_kwargs
+        )
 
     def search(self, query, **generator_kwargs):
         r"""Return a :class:`.ListingGenerator` of Redditors for ``query``.
@@ -32,9 +34,10 @@ class Redditors(PRAWBase):
         :returns :class:`.Redditor`\ s.
 
         """
-        self._safely_add_arguments(generator_kwargs, 'params', q=query)
-        return ListingGenerator(self._reddit, API_PATH['users_search'],
-                                **generator_kwargs)
+        self._safely_add_arguments(generator_kwargs, "params", q=query)
+        return ListingGenerator(
+            self._reddit, API_PATH["users_search"], **generator_kwargs
+        )
 
     def stream(self, **stream_options):
         """Yield new Redditors as they are created.

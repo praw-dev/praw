@@ -1,49 +1,100 @@
 """Provide the PRAW models."""
-from .auth import Auth  # NOQA
-from .front import Front  # NOQA
-from .helpers import LiveHelper, MultiredditHelper, SubredditHelper  # NOQA
-from .inbox import Inbox  # NOQA
-from .list.redditor import RedditorList  # NOQA
-from .list.trophy import TrophyList  # NOQA
-from .listing.domain import DomainListing  # NOQA
-from .listing.generator import ListingGenerator  # NOQA
-from .listing.listing import Listing  # NOQA
-from .modaction import ModAction  # NOQA
-from .preferences import Preferences  # NOQA
-from .reddit.comment import Comment  # NOQA
-from .reddit.emoji import Emoji  # NOQA
-from .reddit.live import LiveThread, LiveUpdate  # NOQA
-from .reddit.message import Message, SubredditMessage  # NOQA
-from .reddit.modmail import (ModmailAction, ModmailConversation,  # NOQA
-                             ModmailMessage)  # NOQA
-from .reddit.more import MoreComments  # NOQA
-from .reddit.multi import Multireddit  # NOQA
-from .reddit.redditor import Redditor  # NOQA
-from .reddit.submission import Submission  # NOQA
-from .reddit.subreddit import Subreddit  # NOQA
-from .reddit.widgets import (Button, ButtonWidget, Calendar,  # NOQA
-                             CommunityList, CustomWidget, IDCard,  # NOQA
-                             Image, ImageData, ImageWidget, Menu,  # NOQA
-                             MenuLink, ModeratorsWidget,  # NOQA
-                             PostFlairWidget, RulesWidget,  # NOQA
-                             SubredditWidgets,  # NOQA
-                             SubredditWidgetsModeration, Submenu,  # NOQA
-                             TextArea, Widget, WidgetModeration)  # NOQA
-from .reddit.wikipage import WikiPage  # NOQA
-from .redditors import Redditors  # NOQA
-from .stylesheet import Stylesheet  # NOQA
-from .subreddits import Subreddits  # NOQA
-from .trophy import Trophy  # NOQA
-from .user import User  # NOQA
+from .auth import Auth
+from .front import Front
+from .helpers import LiveHelper, MultiredditHelper, SubredditHelper
+from .inbox import Inbox
+from .list.redditor import RedditorList
+from .list.trophy import TrophyList
+from .listing.domain import DomainListing
+from .listing.generator import ListingGenerator
+from .listing.listing import Listing
+from .modaction import ModAction
+from .preferences import Preferences
+from .reddit.comment import Comment
+from .reddit.emoji import Emoji
+from .reddit.live import LiveThread, LiveUpdate
+from .reddit.message import Message, SubredditMessage
+from .reddit.modmail import ModmailAction, ModmailConversation, ModmailMessage
+from .reddit.more import MoreComments
+from .reddit.multi import Multireddit
+from .reddit.redditor import Redditor
+from .reddit.submission import Submission
+from .reddit.subreddit import Subreddit
+from .reddit.widgets import (
+    Button,
+    ButtonWidget,
+    Calendar,
+    CommunityList,
+    CustomWidget,
+    IDCard,
+    Image,
+    ImageData,
+    ImageWidget,
+    Menu,
+    MenuLink,
+    ModeratorsWidget,
+    PostFlairWidget,
+    RulesWidget,
+    SubredditWidgets,
+    SubredditWidgetsModeration,
+    Submenu,
+    TextArea,
+    Widget,
+    WidgetModeration,
+)
+from .reddit.wikipage import WikiPage
+from .redditors import Redditors
+from .stylesheet import Stylesheet
 
-__all__ = ('Auth', 'Button', 'ButtonWidget', 'Calendar', 'Comment',
-           'CommunityList', 'CustomWidget', 'DomainListing', 'Emoji', 'Front',
-           'IDCard', 'Image', 'ImageData', 'ImageWidget', 'Inbox', 'Listing',
-           'ListingGenerator', 'LiveHelper', 'LiveThread', 'Menu', 'MenuLink',
-           'Message', 'ModAction', 'ModeratorsWidget', 'ModmailConversation',
-           'MoreComments', 'Multireddit', 'MultiredditHelper',
-           'PostFlairWidget', 'Preferences', 'Redditor', 'RedditorList',
-           'Redditors', 'RulesWidget', 'Stylesheet', 'Submenu',
-           'Submission', 'Subreddit', 'SubredditHelper', 'SubredditMessage',
-           'SubredditWidgets', 'TrophyList', 'User', 'Widget',
-           'WidgetModeration', 'WikiPage')
+from .subreddits import Subreddits
+from .trophy import Trophy
+from .user import User
+
+__all__ = (
+    "Auth",
+    "Button",
+    "ButtonWidget",
+    "Calendar",
+    "Comment",
+    "CommunityList",
+    "CustomWidget",
+    "DomainListing",
+    "Emoji",
+    "Front",
+    "IDCard",
+    "Image",
+    "ImageData",
+    "ImageWidget",
+    "Inbox",
+    "Listing",
+    "ListingGenerator",
+    "LiveHelper",
+    "LiveThread",
+    "Menu",
+    "MenuLink",
+    "Message",
+    "ModAction",
+    "ModeratorsWidget",
+    "ModmailConversation",
+    "MoreComments",
+    "Multireddit",
+    "MultiredditHelper",
+    "PostFlairWidget",
+    "Preferences",
+    "Redditor",
+    "RedditorList",
+    "Redditors",
+    "RulesWidget",
+    "Stylesheet",
+    "Submenu",
+    "Submission",
+    "Subreddit",
+    "SubredditHelper",
+    "SubredditMessage",
+    "SubredditWidgets",
+    "TrophyList",
+    "User",
+    "Widget",
+    "WidgetModeration",
+    "WikiPage",
+)

@@ -9,7 +9,7 @@ class ModAction(PRAWBase):
     @property
     def mod(self):
         """Return the Redditor who the action was issued by."""
-        return self._reddit.redditor(self._mod)
+        return self._reddit.redditor(self._mod)  # pylint: disable=no-member
 
     @mod.setter
     def mod(self, value):

@@ -49,28 +49,29 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
     """
 
-    MISSING_COMMENT_MESSAGE = ('This comment does not appear to be in the '
-                               'comment tree')
-    STR_FIELD = 'id'
+    MISSING_COMMENT_MESSAGE = (
+        "This comment does not appear to be in the " "comment tree"
+    )
+    STR_FIELD = "id"
 
     @staticmethod
     def id_from_url(url):
         """Get the ID of a comment from the full URL."""
         parts = RedditBase._url_parts(url)
         try:
-            comment_index = parts.index('comments')
+            comment_index = parts.index("comments")
         except ValueError:
-            raise ClientException('Invalid URL: {}'.format(url))
+            raise ClientException("Invalid URL: {}".format(url))
 
         if len(parts) - 4 != comment_index:
-            raise ClientException('Invalid URL: {}'.format(url))
+            raise ClientException("Invalid URL: {}".format(url))
         return parts[-1]
 
     @property
     def is_root(self):
         """Return True when the comment is a top level comment."""
-        parent_type = self.parent_id.split('_', 1)[0]
-        return parent_type == self._reddit.config.kinds['submission']
+        parent_type = self.parent_id.split("_", 1)[0]
+        return parent_type == self._reddit.config.kinds["submission"]
 
     @property
     def mod(self):
@@ -106,7 +107,8 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         """Return the Submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
             self._submission = self._reddit.submission(
-                self._extract_submission_id())
+                self._extract_submission_id()
+            )
         return self._submission
 
     @submission.setter
@@ -115,15 +117,21 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         submission._comments_by_id[self.name] = self
         self._submission = submission
         # pylint: disable=not-an-iterable
-        for reply in getattr(self, 'replies', []):
+        for reply in getattr(self, "replies", []):
             reply.submission = submission
 
-    def __init__(self, reddit, id=None,  # pylint: disable=redefined-builtin
-                 url=None, _data=None):
+    def __init__(
+        self,
+        reddit,
+        id=None,  # pylint: disable=redefined-builtin
+        url=None,
+        _data=None,
+    ):
         """Construct an instance of the Comment object."""
         if [id, url, _data].count(None) != 2:
-            raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
-                            'provided.')
+            raise TypeError(
+                "Exactly one of `id`, `url`, or `_data` must be " "provided."
+            )
         self._mod = self._replies = self._submission = None
         super(Comment, self).__init__(reddit, _data)
         if id:
@@ -135,22 +143,22 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
 
     def __setattr__(self, attribute, value):
         """Objectify author, replies, and subreddit."""
-        if attribute == 'author':
+        if attribute == "author":
             value = Redditor.from_data(self._reddit, value)
-        elif attribute == 'replies':
-            if value == '':
+        elif attribute == "replies":
+            if value == "":
                 value = []
             else:
                 value = self._reddit._objector.objectify(value).children
-            attribute = '_replies'
-        elif attribute == 'subreddit':
+            attribute = "_replies"
+        elif attribute == "subreddit":
             value = self._reddit.subreddit(value)
         super(Comment, self).__setattr__(attribute, value)
 
     def _extract_submission_id(self):
-        if 'context' in self.__dict__:
-            return self.context.rsplit('/', 4)[1]
-        return self.link_id.split('_', 1)[1]
+        if "context" in self.__dict__:
+            return self.context.rsplit("/", 4)[1]
+        return self.link_id.split("_", 1)[1]
 
     def parent(self):
         """Return the parent of the comment.
@@ -212,7 +220,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             return self.submission._comments_by_id[self.parent_id]
         # pylint: enable=no-member
 
-        parent = Comment(self._reddit, self.parent_id.split('_', 1)[1])
+        parent = Comment(self._reddit, self.parent_id.split("_", 1)[1])
         parent._submission = self.submission
         return parent
 
@@ -230,21 +238,23 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
            comment.refresh()
 
         """
-        if 'context' in self.__dict__:  # Using hasattr triggers a fetch
-            comment_path = self.context.split('?', 1)[0]
+        if "context" in self.__dict__:  # Using hasattr triggers a fetch
+            comment_path = self.context.split("?", 1)[0]
         else:
-            comment_path = '{}_/{}'.format(
+            comment_path = "{}_/{}".format(
                 self.submission._info_path(),  # pylint: disable=no-member
-                self.id)
+                self.id,
+            )
 
         # The context limit appears to be 8, but let's ask for more anyway.
-        params = {'context': 100}
-        if 'reply_limit' in self.__dict__:
-            params['limit'] = self.reply_limit
-        if 'reply_sort' in self.__dict__:
-            params['sort'] = self.reply_sort
-        comment_list = self._reddit.get(comment_path,
-                                        params=params)[1].children
+        params = {"context": 100}
+        if "reply_limit" in self.__dict__:
+            params["limit"] = self.reply_limit
+        if "reply_sort" in self.__dict__:
+            params["sort"] = self.reply_sort
+        comment_list = self._reddit.get(comment_path, params=params)[
+            1
+        ].children
         if not comment_list:
             raise ClientException(self.MISSING_COMMENT_MESSAGE)
 
@@ -260,7 +270,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
             raise ClientException(self.MISSING_COMMENT_MESSAGE)
 
         if self._submission is not None:
-            del comment.__dict__['_submission']  # Don't replace if set
+            del comment.__dict__["_submission"]  # Don't replace if set
         self.__dict__.update(comment.__dict__)
 
         for reply in comment_list:
@@ -280,7 +290,7 @@ class CommentModeration(ThingModerationMixin):
 
     """
 
-    REMOVAL_MESSAGE_API = 'removal_comment_message'
+    REMOVAL_MESSAGE_API = "removal_comment_message"
 
     def __init__(self, comment):
         """Create a CommentModeration instance.

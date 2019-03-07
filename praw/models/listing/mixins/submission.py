@@ -25,5 +25,5 @@ class SubmissionListingMixin(PRAWBase):
         See also :meth:`~.upvote`
 
         """
-        url = API_PATH['duplicates'].format(submission_id=self.id)
+        url = API_PATH["duplicates"].format(submission_id=self.id)
         return ListingGenerator(self._reddit, url, **generator_kwargs)

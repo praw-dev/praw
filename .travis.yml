@@ -1,8 +1,9 @@
 after_success: coveralls
 cache: pip
+dist: xenial
 install:
   - yes | pip uninstall py pytest
-  - pip install coveralls flake8 flake8-quotes pydocstyle sphinx sphinx_rtd_theme
+  - pip install coveralls flake8 pydocstyle sphinx sphinx_rtd_theme
   - python setup.py install
 language: python
 matrix:
@@ -11,13 +12,11 @@ matrix:
   fast_finish: true
 python:
   - 2.7
-  - 3.4
   - 3.5
   - 3.6
-  - nightly
-sudo: false
+  - 3.7
 script:
-  - flake8 --exclude=docs,.eggs
+  - flake8 --exclude=.eggs,build,docs
   - pydocstyle praw
   - sphinx-build -W docs/ /tmp/foo
   - coverage run --source=praw setup.py test

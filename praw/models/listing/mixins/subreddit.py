@@ -7,8 +7,9 @@ from .gilded import GildedListingMixin
 from .rising import RisingListingMixin
 
 
-class SubredditListingMixin(BaseListingMixin, GildedListingMixin,
-                            RisingListingMixin):
+class SubredditListingMixin(
+    BaseListingMixin, GildedListingMixin, RisingListingMixin
+):
     """Adds additional methods pertaining to Subreddit-like instances."""
 
     @property
@@ -43,7 +44,7 @@ class CommentHelper(PRAWBase):
 
     @property
     def _path(self):
-        return urljoin(self.subreddit._path, 'comments/')
+        return urljoin(self.subreddit._path, "comments/")
 
     def __init__(self, subreddit):
         """Initialize a CommentHelper instance."""
@@ -77,5 +78,6 @@ class CommentHelper(PRAWBase):
         :class:`.ListingGenerator`.
 
         """
-        return ListingGenerator(self._reddit, urljoin(self._path, 'gilded'),
-                                **generator_kwargs)
+        return ListingGenerator(
+            self._reddit, urljoin(self._path, "gilded"), **generator_kwargs
+        )

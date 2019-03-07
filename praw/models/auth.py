@@ -1,6 +1,10 @@
 """Provide the Auth class."""
-from prawcore import (Authorizer, ImplicitAuthorizer, UntrustedAuthenticator,
-                      session)
+from prawcore import (
+    Authorizer,
+    ImplicitAuthorizer,
+    UntrustedAuthenticator,
+    session,
+)
 
 from .base import PRAWBase
 from ..exceptions import ClientException
@@ -32,8 +36,11 @@ class Auth(PRAWBase):
 
         """
         data = self._reddit._core._rate_limiter
-        return {'remaining': data.remaining,
-                'reset_timestamp': data.reset_timestamp, 'used': data.used}
+        return {
+            "remaining": data.remaining,
+            "reset_timestamp": data.reset_timestamp,
+            "used": data.used,
+        }
 
     def authorize(self, code):
         """Complete the web authorization flow and return the refresh token.
@@ -69,10 +76,12 @@ class Auth(PRAWBase):
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if not isinstance(authenticator, UntrustedAuthenticator):
-            raise ClientException('implicit can only be used with installed '
-                                  'apps.')
-        implicit_session = session(ImplicitAuthorizer(
-            authenticator, access_token, expires_in, scope))
+            raise ClientException(
+                "implicit can only be used with installed " "apps."
+            )
+        implicit_session = session(
+            ImplicitAuthorizer(authenticator, access_token, expires_in, scope)
+        )
         self._reddit._core = self._reddit._authorized_core = implicit_session
 
     def scopes(self):
@@ -86,7 +95,7 @@ class Auth(PRAWBase):
             authorizer.refresh()
         return authorizer.scopes
 
-    def url(self, scopes, state, duration='permanent', implicit=False):
+    def url(self, scopes, state, duration="permanent", implicit=False):
         """Return the URL used out-of-band to grant access to your application.
 
         :param scopes: A list of OAuth scopes to request authorization for.
@@ -107,12 +116,16 @@ class Auth(PRAWBase):
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if authenticator.redirect_uri is self._reddit.config.CONFIG_NOT_SET:
-            raise ClientException('redirect_uri must be provided')
+            raise ClientException("redirect_uri must be provided")
         if isinstance(authenticator, UntrustedAuthenticator):
             return authenticator.authorize_url(
-                'temporary' if implicit else duration, scopes, state,
-                implicit=implicit)
-        elif implicit:
-            raise ClientException('implicit can only be set for installed '
-                                  'applications')
+                "temporary" if implicit else duration,
+                scopes,
+                state,
+                implicit=implicit,
+            )
+        if implicit:
+            raise ClientException(
+                "implicit can only be set for installed " "applications"
+            )
         return authenticator.authorize_url(duration, scopes, state)
