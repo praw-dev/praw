@@ -825,7 +825,7 @@ class TestSubredditWidgets(IntegrationTest):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
         widgets = subreddit.widgets
         assert (
-            "SubredditWidgets(subreddit=<Subreddit" "(display_name='{}')>)"
+            "SubredditWidgets(subreddit=<Subreddit(display_name='{}')>)"
         ).format(pytest.placeholders.test_subreddit) == repr(widgets)
 
     def test_sidebar(self):

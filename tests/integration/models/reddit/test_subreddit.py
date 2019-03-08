@@ -1409,7 +1409,7 @@ class TestSubredditRelationships(IntegrationTest):
     def test_moderator_remove_invite(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-            "TestSubredditRelationships." "moderator_remove_invite"
+            "TestSubredditRelationships.moderator_remove_invite"
         ):
             self.subreddit.moderator.remove_invite(self.REDDITOR)
 
