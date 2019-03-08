@@ -8,7 +8,7 @@ jobs:
     - install: pip install black flake8 pydocstyle sphinx sphinx_rtd_theme .
       python: 3.7
       script:
-        - black --check -l 79 *.py docs praw tests
+        - black --check --verbose *.py docs praw tests
         - flake8 --exclude=.eggs,build,docs
         - pydocstyle praw
         - sphinx-build -W docs/ /tmp/foo
