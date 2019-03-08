@@ -97,7 +97,7 @@ class RedditBase(PRAWBase):
         return getattr(self, self.STR_FIELD)
 
     def _fetch(self):
-        if "_info_path" in dir(self):
+        if hasattr(self, "_info_path"):
             other = self._reddit.get(
                 self._info_path(), params=self._info_params
             )
