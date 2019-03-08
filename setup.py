@@ -39,6 +39,7 @@ setup(
         "python package that allows for simple access to "
         "reddit's API."
     ),
+    extras_require={"dev": ["pre-commit"]},
     install_requires=[
         "prawcore >=1.0.1, <2.0",
         "update_checker >=0.16",
