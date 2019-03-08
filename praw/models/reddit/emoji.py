@@ -27,8 +27,8 @@ class Emoji(RedditBase):
     ======================= ===================================================
     """
 
-    REPR_FIELD = 'name'
-    STR_FIELD = 'name'
+    REPR_FIELD = "name"
+    STR_FIELD = "name"
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
@@ -54,16 +54,15 @@ class Emoji(RedditBase):
         self.subreddit = subreddit
 
         if _data is None:
-            _data = {'name': name}
+            _data = {"name": name}
 
         super(Emoji, self).__init__(reddit, _data=_data)
 
     def __repr__(self):
         """Return a representation of the instance."""
-        return '<{}(subreddit={!r}, name={!r})>' \
-            .format(self.__class__.__name__,
-                    self.subreddit,
-                    self.name)
+        return "<{}(subreddit={!r}, name={!r})>".format(
+            self.__class__.__name__, self.subreddit, self.name
+        )
 
     def _fetch(self):
         for emoji in self.subreddit.emoji:
@@ -143,8 +142,9 @@ class SubredditEmoji(object):
 
     def __repr__(self):
         """Return an object initialization representation of the object."""
-        return '{}(subreddit={!r})'.format(self.__class__.__name__,
-                                           self.subreddit)
+        return "{}(subreddit={!r})".format(
+            self.__class__.__name__, self.subreddit
+        )
 
     def add(self, name, image_path):
         """Add an emoji to this subreddit.

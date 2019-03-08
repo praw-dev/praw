@@ -78,19 +78,21 @@ class WikiPage(RedditBase):
 
     def __repr__(self):
         """Return an object initialization representation of the instance."""
-        return '<{}(subreddit={!r}, name={!r})>'.format(
-            self.__class__.__name__, self.subreddit, self.name)
+        return "<{}(subreddit={!r}, name={!r})>".format(
+            self.__class__.__name__, self.subreddit, self.name
+        )
 
     def __str__(self):
         """Return a string representation of the instance."""
         return "{}/{}".format(self.subreddit, self.name)
 
     def _fetch(self):
-        params = {'v': self._revision} if self._revision else None
-        data = self._reddit.get(self._info_path(), params=params)['data']
-        if data['revision_by'] is not None:
-            data['revision_by'] = Redditor(self._reddit,
-                                           _data=data['revision_by']['data'])
+        params = {"v": self._revision} if self._revision else None
+        data = self._reddit.get(self._info_path(), params=params)["data"]
+        if data["revision_by"] is not None:
+            data["revision_by"] = Redditor(
+                self._reddit, _data=data["revision_by"]["data"]
+            )
         self._data.update(data)
         self._fetched = True
 

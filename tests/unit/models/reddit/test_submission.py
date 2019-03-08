@@ -18,8 +18,8 @@ class TestSubmission(UnitTest):
         assert submission1 == submission2
         assert submission2 != submission3
         assert submission1 != submission3
-        assert 't3_dummy1' == submission1
-        assert submission2 == 't3_dummy1'
+        assert "t3_dummy1" == submission1
+        assert submission2 == "t3_dummy1"
 
     def test_construct_failure(self):
         message = "Exactly one of `id`, `url`, or `_data` must be provided."
@@ -44,8 +44,8 @@ class TestSubmission(UnitTest):
         assert str(excinfo.value) == message
 
     def test_construct_from_url(self):
-        url = 'http://my.it/2gmzqe'
-        assert Submission(self.reddit, url=url) == 't3_2gmzqe'
+        url = "http://my.it/2gmzqe"
+        assert Submission(self.reddit, url=url) == "t3_2gmzqe"
 
     def test_fullname(self):
         submission = Submission(self.reddit, _data={"id": "dummy"})
@@ -97,12 +97,12 @@ class TestSubmission(UnitTest):
             assert submission == other
 
     def test_repr(self):
-        submission = Submission(self.reddit, id='2gmzqe')
+        submission = Submission(self.reddit, id="2gmzqe")
         assert repr(submission) == "<Submission(id='2gmzqe')>"
 
     def test_str(self):
-        submission = Submission(self.reddit, _data={'id': 'dummy'})
-        assert str(submission) == 't3_dummy'
+        submission = Submission(self.reddit, _data={"id": "dummy"})
+        assert str(submission) == "t3_dummy"
 
     def test_shortlink(self):
         submission = Submission(self.reddit, _data={"id": "dummy"})

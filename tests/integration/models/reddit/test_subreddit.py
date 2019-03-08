@@ -1399,7 +1399,7 @@ class TestSubredditRelationships(IntegrationTest):
         ):
             moderator = self.subreddit.moderator(redditor="pyapitestuser3")
         assert len(moderator) == 1
-        assert 'mod_permissions' in moderator[0].a
+        assert "mod_permissions" in moderator[0].a
 
     def test_muted(self):
         self.reddit.read_only = False

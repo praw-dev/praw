@@ -43,9 +43,9 @@ class Multireddit(SubredditListingMixin, RedditBase):
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
     """
 
-    REPR_FIELD = 'path'
-    STR_FIELD = 'path'
-    RE_INVALID = re.compile(r'(\s|\W|_)+', re.UNICODE)
+    REPR_FIELD = "path"
+    STR_FIELD = "path"
+    RE_INVALID = re.compile(r"(\s|\W|_)+", re.UNICODE)
 
     @staticmethod
     def sluggify(title):
@@ -94,24 +94,29 @@ class Multireddit(SubredditListingMixin, RedditBase):
     def __init__(self, reddit, _data):
         """Construct an instance of the Multireddit object."""
         super(Multireddit, self).__init__(reddit, _data=_data)
-        self._author = Redditor(reddit, self._data['path'].split('/', 3)[2])
-        self._path = API_PATH['multireddit'].format(
-            multi=self._data['name'], user=self._author)
+        self._author = Redditor(reddit, self._data["path"].split("/", 3)[2])
+        self._path = API_PATH["multireddit"].format(
+            multi=self._data["name"], user=self._author
+        )
         self._stream = None
-        self._data['path'] = '/' + self._path[:-1]  # Prevent requests for path
-        if 'subreddits' in self._data:
-            self._data['subreddits'] = [Subreddit(reddit, x['name'])
-                                        for x in self._data['subreddits']]
+        self._data["path"] = "/" + self._path[:-1]  # Prevent requests for path
+        if "subreddits" in self._data:
+            self._data["subreddits"] = [
+                Subreddit(reddit, x["name"]) for x in self._data["subreddits"]
+            ]
 
     def __repr__(self):
         """Return a representation of the instance."""
-        return '<{} {}={!r}>'.format(self.__class__.__name__,
-                                     self.REPR_FIELD,
-                                     getattr(self, self.REPR_FIELD))
+        return "<{} {}={!r}>".format(
+            self.__class__.__name__,
+            self.REPR_FIELD,
+            getattr(self, self.REPR_FIELD),
+        )
 
     def _info_path(self):
-        return API_PATH['multireddit_api'].format(
-            multi=self._data['name'], user=self._author)
+        return API_PATH["multireddit_api"].format(
+            multi=self._data["name"], user=self._author
+        )
 
     def add(self, subreddit):
         """Add a subreddit to this multireddit.
@@ -119,8 +124,9 @@ class Multireddit(SubredditListingMixin, RedditBase):
         :param subreddit: The subreddit to add to this multi.
 
         """
-        url = API_PATH['multireddit_update'].format(
-            multi=self._data['name'], user=self._author, subreddit=subreddit)
+        url = API_PATH["multireddit_update"].format(
+            multi=self._data["name"], user=self._author, subreddit=subreddit
+        )
         self._reddit.request(
             "PUT", url, data={"model": dumps({"name": str(subreddit)})}
         )
@@ -139,11 +145,15 @@ class Multireddit(SubredditListingMixin, RedditBase):
             name = self.sluggify(display_name)
         else:
             display_name = self.display_name
-            name = self._data['name']
-        data = {'display_name': display_name, 'from': self.path,
-                'to': API_PATH['multireddit'].format(
-                    multi=name, user=self._reddit.user.me())}
-        return self._reddit.post(API_PATH['multireddit_copy'], data=data)
+            name = self._data["name"]
+        data = {
+            "display_name": display_name,
+            "from": self.path,
+            "to": API_PATH["multireddit"].format(
+                multi=name, user=self._reddit.user.me()
+            ),
+        }
+        return self._reddit.post(API_PATH["multireddit_copy"], data=data)
 
     def delete(self):
         """Delete this multireddit."""
@@ -155,8 +165,9 @@ class Multireddit(SubredditListingMixin, RedditBase):
         :param subreddit: The subreddit to remove from this multi.
 
         """
-        url = API_PATH['multireddit_update'].format(
-            multi=self._data['name'], user=self._author, subreddit=subreddit)
+        url = API_PATH["multireddit_update"].format(
+            multi=self._data["name"], user=self._author, subreddit=subreddit
+        )
         self._reddit.request(
             "DELETE", url, data={"model": dumps({"name": str(subreddit)})}
         )
@@ -169,8 +180,8 @@ class Multireddit(SubredditListingMixin, RedditBase):
             will generate the ``name`` field from this display name.
 
         """
-        data = {'from': self.path, 'display_name': display_name}
-        updated = self._reddit.post(API_PATH['multireddit_rename'], data=data)
+        data = {"from": self.path, "display_name": display_name}
+        updated = self._reddit.post(API_PATH["multireddit_rename"], data=data)
         self._data.update(updated._data)
 
     def update(self, **updated_settings):
@@ -200,6 +211,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
                 {"name": str(sub)} for sub in updated_settings["subreddits"]
             ]
         response = self._reddit.request(
-            'PUT', self._info_path(), data={'model': dumps(updated_settings)})
-        new = Multireddit(self._reddit, response['data'])
+            "PUT", self._info_path(), data={"model": dumps(updated_settings)}
+        )
+        new = Multireddit(self._reddit, response["data"])
         self._data.update(new._data)

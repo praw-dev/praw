@@ -14,8 +14,9 @@ class Listing(PRAWBase):
 
         """
         if self.CHILD_ATTRIBUTE in _data:
-            _data[self.CHILD_ATTRIBUTE] = reddit._objector \
-                    .objectify(_data[self.CHILD_ATTRIBUTE])
+            _data[self.CHILD_ATTRIBUTE] = reddit._objector.objectify(
+                _data[self.CHILD_ATTRIBUTE]
+            )
         super(Listing, self).__init__(reddit, _data=_data)
 
     def __len__(self):

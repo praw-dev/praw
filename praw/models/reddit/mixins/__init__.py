@@ -65,10 +65,10 @@ class ThingModerationMixin(object):
         See also :meth:`~.undistinguish`
 
         """
-        data = {'how': how, 'id': self.thing.fullname}
+        data = {"how": how, "id": self.thing.fullname}
         if sticky and self.thing.is_root:
-            data['sticky'] = True
-        self.thing._reddit.post(API_PATH['distinguish'], data=data)
+            data["sticky"] = True
+        self.thing._reddit.post(API_PATH["distinguish"], data=data)
 
     def ignore_reports(self):
         """Ignore future reports on a Comment or Submission.

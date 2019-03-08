@@ -38,7 +38,7 @@ class Trophy(PRAWBase):
             and key ``'name'`` must be provided.
 
         """
-        assert isinstance(_data, dict) and 'name' in _data
+        assert isinstance(_data, dict) and "name" in _data
         super(Trophy, self).__init__(reddit, _data=_data)
 
     def __str__(self):

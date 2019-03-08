@@ -68,7 +68,7 @@ class TestSubreddit(UnitTest):
             assert subreddit == other
 
     def test_repr(self):
-        subreddit = Subreddit(self.reddit, display_name='name')
+        subreddit = Subreddit(self.reddit, display_name="name")
         assert repr(subreddit) == "<Subreddit(display_name='name')>"
 
     def test_search__params_not_modified(self):

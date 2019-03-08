@@ -11,11 +11,11 @@ class ModAction(PRAWBase):
     @property
     def mod(self):
         """Return the Redditor who the action was issued by."""
-        return self._data['mod']
+        return self._data["mod"]
 
     @classmethod
     def _objectify_acknowledged(cls, reddit, data):
-        key = 'mod'
+        key = "mod"
         item = data.get(key)
         if isinstance(item, string_types):
             data[key] = Redditor(reddit, name=item)

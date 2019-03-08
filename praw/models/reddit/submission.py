@@ -95,16 +95,18 @@ class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
 
     @classmethod
     def _objectify_acknowledged(cls, reddit, data):
-        key = 'author'
+        key = "author"
         item = data.get(key)
         if isinstance(item, string_types):
-            data[key] = (None
-                         if item in ('[deleted]', '[removed]') else
-                         Redditor(reddit, name=item))
+            data[key] = (
+                None
+                if item in ("[deleted]", "[removed]")
+                else Redditor(reddit, name=item)
+            )
         elif isinstance(item, Redditor):
             item._reddit = reddit
 
-        key = 'subreddit'
+        key = "subreddit"
         item = data.get(key)
         if isinstance(item, string_types):
             data[key] = Subreddit(reddit, item)
@@ -199,17 +201,18 @@ class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
 
         """
         if [id, url, _data].count(None) != 2:
-            raise TypeError('Exactly one of `id`, `url`, or `_data` must be '
-                            'provided.')
+            raise TypeError(
+                "Exactly one of `id`, `url`, or `_data` must be " "provided."
+            )
 
         if _data is None:
             _data = {}
         else:
             self._objectify_acknowledged(reddit, _data)
         if id is not None:
-            _data['id'] = id
+            _data["id"] = id
         elif url is not None:
-            _data['id'] = self.id_from_url(url)
+            _data["id"] = self.id_from_url(url)
 
         super(Submission, self).__init__(reddit, _data=_data)
 
@@ -219,7 +222,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
         self._mod = None
 
         self.comment_limit = 2048
-        self.comment_sort = 'best'
+        self.comment_sort = "best"
 
     def _chunk(self, other_submissions, chunk_size):
         all_submissions = [self.fullname]
@@ -230,13 +233,14 @@ class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
             yield ",".join(all_submissions[position : position + 50])
 
     def _fetch(self):
-        other, comments = self._reddit.get(self._info_path(),
-                                           params={'limit': self.comment_limit,
-                                                   'sort': self.comment_sort})
-        other = other._data['children'][0]
+        other, comments = self._reddit.get(
+            self._info_path(),
+            params={"limit": self.comment_limit, "sort": self.comment_sort},
+        )
+        other = other._data["children"][0]
         self._comments = CommentForest(self)
         self._comments_by_id = other._comments_by_id
-        self._comments._update(comments._data['children'])
+        self._comments._update(comments._data["children"])
         self._data.clear()
         self._data.update(other._data)
         self._flair = other._flair

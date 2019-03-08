@@ -38,10 +38,15 @@ class EditableMixin(object):
            comment.edit(edited_body)
 
         """
-        data = {'text': body, 'thing_id': self.fullname}
-        updated = self._reddit.post(API_PATH['edit'], data=data)[0]
-        for attribute in ['_fetched', '_reddit', '_submission', 'replies',
-                          'subreddit']:
+        data = {"text": body, "thing_id": self.fullname}
+        updated = self._reddit.post(API_PATH["edit"], data=data)[0]
+        for attribute in [
+            "_fetched",
+            "_reddit",
+            "_submission",
+            "replies",
+            "subreddit",
+        ]:
             if attribute in updated._data:
                 del updated._data[attribute]
         self._data.update(updated._data)

@@ -51,8 +51,11 @@ class PRAWBase(object):
         except KeyError:
             pass
 
-        raise AttributeError('{!r} object has no attribute {!r}'
-                             .format(self.__class__.__name__, name))
+        raise AttributeError(
+            "{!r} object has no attribute {!r}".format(
+                self.__class__.__name__, name
+            )
+        )
 
     def __getstate__(self):
         """Extract state to pickle."""

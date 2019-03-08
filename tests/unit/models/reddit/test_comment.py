@@ -22,8 +22,8 @@ class TestComment(UnitTest):
         assert comment1 == comment2
         assert comment2 != comment3
         assert comment1 != comment3
-        assert 't1_dummy1' == comment1
-        assert comment2 == 't1_dummy1'
+        assert "t1_dummy1" == comment1
+        assert comment2 == "t1_dummy1"
 
     def test_construct_failure(self):
         message = "Exactly one of `id`, `url`, or `_data` must be provided."
@@ -48,8 +48,8 @@ class TestComment(UnitTest):
         assert str(excinfo.value) == message
 
     def test_construct_from_url(self):
-        url = 'https://reddit.com/comments/2gmzqe/_/cklhv0f/'
-        assert Comment(self.reddit, url=url) == 't1_cklhv0f'
+        url = "https://reddit.com/comments/2gmzqe/_/cklhv0f/"
+        assert Comment(self.reddit, url=url) == "t1_cklhv0f"
 
     def test_hash(self):
         comment1 = Comment(self.reddit, _data={"id": "dummy1", "n": 1})
@@ -97,12 +97,12 @@ class TestComment(UnitTest):
             assert comment == other
 
     def test_repr(self):
-        comment = Comment(self.reddit, id='dummy')
+        comment = Comment(self.reddit, id="dummy")
         assert repr(comment) == "<Comment(id='dummy')>"
 
     def test_str(self):
-        comment = Comment(self.reddit, _data={'id': 'dummy'})
-        assert str(comment) == 't1_dummy'
+        comment = Comment(self.reddit, _data={"id": "dummy"})
+        assert str(comment) == "t1_dummy"
 
     def test_unset_hidden_attribute_does_not_fetch(self):
         comment = Comment(self.reddit, _data={"id": "dummy"})
@@ -112,66 +112,69 @@ class TestComment(UnitTest):
 
     def test_objectify_acknowledged(self):
         data = {
-            'author': 'dummy_author',
-            'replies': '',
-            'subreddit': 'dummy_subreddit'
+            "author": "dummy_author",
+            "replies": "",
+            "subreddit": "dummy_subreddit",
         }
         Comment._objectify_acknowledged(self.reddit, data=data)
 
-        redditor = data.pop('author')
+        redditor = data.pop("author")
         assert type(redditor) is Redditor
-        assert redditor.name == redditor.a.name == 'dummy_author'
-        item = data.pop('replies')
+        assert redditor.name == redditor.a.name == "dummy_author"
+        item = data.pop("replies")
         assert item == []
-        subreddit = data.pop('subreddit')
+        subreddit = data.pop("subreddit")
         assert type(subreddit) is Subreddit
-        assert subreddit.display_name \
-            == subreddit.a.display_name == 'dummy_subreddit'
+        assert (
+            subreddit.display_name
+            == subreddit.a.display_name
+            == "dummy_subreddit"
+        )
         assert data == {}
 
         #
         redditor._reddit = None
         subreddit._reddit = None
-        data = {
-            'author': redditor,
-            'subreddit': subreddit
-        }
+        data = {"author": redditor, "subreddit": subreddit}
         Comment._objectify_acknowledged(self.reddit, data=data)
 
-        item = data.pop('author')
+        item = data.pop("author")
         assert type(item) is Redditor
-        assert redditor.name == redditor.a.name == 'dummy_author'
+        assert redditor.name == redditor.a.name == "dummy_author"
         assert item._reddit is self.reddit
-        item = data.pop('subreddit')
+        item = data.pop("subreddit")
         assert type(item) is Subreddit
-        assert subreddit.display_name \
-            == subreddit.a.display_name == 'dummy_subreddit'
+        assert (
+            subreddit.display_name
+            == subreddit.a.display_name
+            == "dummy_subreddit"
+        )
         assert item._reddit is self.reddit
         assert data == {}
 
         #
         data = {
-            'replies': {
-                'data': {
-                    'after': None,
-                    'before': None,
-                    'children': [
+            "replies": {
+                "data": {
+                    "after": None,
+                    "before": None,
+                    "children": [
                         {
-                            'data': {
-                                'id': 'abc',
-                                'body': 'Pretty cool stuff!',
-                                'created_utc': 9999
+                            "data": {
+                                "id": "abc",
+                                "body": "Pretty cool stuff!",
+                                "created_utc": 9999,
                             },
-                            'kind': 't1'
+                            "kind": "t1",
                         }
-                    ]
+                    ],
                 },
-                'kind': 'Listing'
+                "kind": "Listing",
             }
         }
         Comment._objectify_acknowledged(self.reddit, data=data)
 
-        item = data.pop('replies')
+        item = data.pop("replies")
         assert type(item[0]) is Comment
-        assert item[0].id == item[0].a.id == 'abc'
+        assert item[0].id == item[0].a.id == "abc"
         assert data == {}

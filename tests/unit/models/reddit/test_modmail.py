@@ -18,5 +18,5 @@ class TestModmailConversation(UnitTest):
     def test_str(self):
         conversation = ModmailConversation(self.reddit, _data={"id": "ik72"})
 
-        conversation = ModmailConversation(self.reddit, 'ik72')
-        assert str(conversation) == 'ModmailConversation_ik72'
+        conversation = ModmailConversation(self.reddit, "ik72")
+        assert str(conversation) == "ModmailConversation_ik72"

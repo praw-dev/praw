@@ -68,7 +68,7 @@ class TestRedditor(UnitTest):
             assert redditor == other
 
     def test_repr(self):
-        redditor = Redditor(self.reddit, name='RedditorName')
+        redditor = Redditor(self.reddit, name="RedditorName")
         assert repr(redditor) == "<Redditor(name='RedditorName')>"
 
     def test_str(self):

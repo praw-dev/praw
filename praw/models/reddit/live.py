@@ -345,10 +345,10 @@ class LiveThread(RedditBase):
         :param id: A live thread ID, e.g., ``'ukaeu1ik4sw5'``
         """
         if [id, _data].count(None) != 1:
-            raise TypeError('Either `id` or `_data` must be provided.')
+            raise TypeError("Either `id` or `_data` must be provided.")
 
         if _data is None:
-            _data = {'id': id}
+            _data = {"id": id}
 
         super(LiveThread, self).__init__(reddit, _data=_data)
 
@@ -563,7 +563,7 @@ class LiveUpdate(RedditBase):
 
     @classmethod
     def _objectify_acknowledged(cls, reddit, data):
-        key = 'author'
+        key = "author"
         item = data.get(key)
         if isinstance(item, string_types):
             data[key] = Redditor(reddit, name=item)
@@ -623,7 +623,7 @@ class LiveUpdate(RedditBase):
         elif thread_id and update_id:
             super(LiveUpdate, self).__init__(reddit, None)
             self._thread = LiveThread(self._reddit, thread_id)
-            self._data['id'] = update_id
+            self._data["id"] = update_id
         else:
             raise TypeError(
                 "Either `thread_id` and `update_id`, or "

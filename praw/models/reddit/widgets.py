@@ -291,7 +291,7 @@ class SubredditWidgets(PRAWBase):
 
     def __getattr__(self, name):
         """Return the value of attribute `name`."""
-        if not (self._fetched or name.startswith('_')):
+        if not (self._fetched or name.startswith("_")):
             self._fetch()
 
         return super(SubredditWidgets, self).__getattr__(name)
@@ -314,9 +314,9 @@ class SubredditWidgets(PRAWBase):
 
     def __repr__(self):
         """Return an object initialization representation of the object."""
-        return '{}(subreddit={!r})'.format(
-            self.__class__.__name__,
-            self.subreddit)
+        return "{}(subreddit={!r})".format(
+            self.__class__.__name__, self.subreddit
+        )
 
     def _fetch(self):
         data = self._reddit.get(
@@ -324,7 +324,7 @@ class SubredditWidgets(PRAWBase):
             params={"progressive_images": self.progressive_images},
         )
 
-        self._raw_items = data.pop('items')
+        self._raw_items = data.pop("items")
         self._data.update(data)
 
         # reset private variables used with properties to None.
@@ -945,10 +945,10 @@ class Widget(PRAWBase):
     def __init__(self, reddit, _data):
         """Initialize an instance of the class."""
         super(Widget, self).__init__(reddit, _data=_data)
-        if 'id' not in _data:
-            _data['id'] = ''
-        if 'subreddit' not in _data:
-            _data['subreddit'] = ''
+        if "id" not in _data:
+            _data["id"] = ""
+        if "subreddit" not in _data:
+            _data["subreddit"] = ""
         self._mod = None
 
 
@@ -1265,8 +1265,9 @@ class CustomWidget(Widget):
 
     def __init__(self, reddit, _data):
         """Initialize the class."""
-        _data['imageData'] = [ImageData(reddit, data)
-                              for data in _data.pop('imageData')]
+        _data["imageData"] = [
+            ImageData(reddit, data) for data in _data.pop("imageData")
+        ]
         super(CustomWidget, self).__init__(reddit, _data=_data)
 
 
@@ -1721,8 +1722,11 @@ class WidgetEncoder(JSONEncoder):
     def default(self, o):  # pylint: disable=E0202
         """Serialize ``PRAWBase`` objects."""
         if isinstance(o, PRAWBase):
-            return {key: val for key, val in o._data.items()
-                    if not key.startswith('_')}
+            return {
+                key: val
+                for key, val in o._data.items()
+                if not key.startswith("_")
+            }
         return JSONEncoder.default(self, o)
 
 
@@ -1776,10 +1780,14 @@ class WidgetModeration(object):
            Most parameters follow the ``lowerCamelCase`` convention. When in
            doubt, check the Reddit documentation linked above.
         """
-        path = API_PATH['widget_modify'].format(widget_id=self.widget.id,
-                                                subreddit=self._subreddit)
-        payload = {key: value for key, value in self.widget._data.items()
-                   if not key.startswith('_')}
+        path = API_PATH["widget_modify"].format(
+            widget_id=self.widget.id, subreddit=self._subreddit
+        )
+        payload = {
+            key: value
+            for key, value in self.widget._data.items()
+            if not key.startswith("_")
+        }
         payload.update(kwargs)
         widget = self._reddit.put(
             path, data={"json": dumps(payload, cls=WidgetEncoder)}

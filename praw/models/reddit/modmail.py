@@ -134,10 +134,10 @@ class ModmailConversation(RedditBase):
 
         """
         if [id, _data].count(None) != 1:
-            raise TypeError('Either `id` or `_data` must be provided.')
+            raise TypeError("Either `id` or `_data` must be provided.")
 
         if _data is None:
-            _data = {'id': id}
+            _data = {"id": id}
 
         super(ModmailConversation, self).__init__(reddit, _data=_data)
 

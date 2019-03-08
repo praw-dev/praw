@@ -78,10 +78,12 @@ class TestEmoji(UnitTest):
             assert emoji == other
 
     def test_repr(self):
-        emoji = Emoji(self.reddit, subreddit=Subreddit(self.reddit, 'a'),
-                      name='x')
-        assert repr(emoji) == ('<Emoji(subreddit='
-                               "<Subreddit(display_name='a')>, name='x')>")
+        emoji = Emoji(
+            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+        )
+        assert repr(emoji) == (
+            "<Emoji(subreddit=" "<Subreddit(display_name='a')>, name='x')>"
+        )
 
     def test_str(self):
         emoji = Emoji(
@@ -92,6 +94,7 @@ class TestEmoji(UnitTest):
 
 class TestSubredditEmoji(UnitTest):
     def test_repr(self):
-        se = SubredditEmoji(subreddit=Subreddit(self.reddit, 'a'))
-        assert repr(se) == ('SubredditEmoji(subreddit='
-                            "<Subreddit(display_name='a')>)")
+        se = SubredditEmoji(subreddit=Subreddit(self.reddit, "a"))
+        assert repr(se) == (
+            "SubredditEmoji(subreddit=" "<Subreddit(display_name='a')>)"
+        )

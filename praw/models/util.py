@@ -21,14 +21,14 @@ class AttributeDict(MutableMapping):
     The inner dict object can be retrieved using `abs(self)`.
     """
 
-    __slots__ = ('_data0',)
+    __slots__ = ("_data0",)
 
     def __init__(self, data=None, **kwargs):
         """Construct an AttributeDict instance."""
         data = {} if data is None else data
         if kwargs:
             data = dict(data, **kwargs)
-        object.__setattr__(self, '_data0', data)
+        object.__setattr__(self, "_data0", data)
 
     def __contains__(self, item):
         """Implement `in` membership test."""
@@ -82,10 +82,8 @@ class AttributeDict(MutableMapping):
     def __repr__(self):
         """Return repr(self)."""
         if self._data0:
-            return '%s(%r)' % (
-                self.__class__.__name__,
-                self._data0)
-        return self.__class__.__name__ + '()'
+            return "%s(%r)" % (self.__class__.__name__, self._data0)
+        return self.__class__.__name__ + "()"
 
     def __abs__(self):
         """Return the inner dict object."""
@@ -101,14 +99,14 @@ class AttributeDict(MutableMapping):
 
     def __setstate__(self, state):
         """Restore from pickled state."""
-        object.__setattr__(self, '_data0', state)
+        object.__setattr__(self, "_data0", state)
 
 
 class ImmutableContainer(object):
     """A mixin that makes container objects immutable."""
 
     def _immutable(self, *args, **kwargs):
-        raise TypeError('%r is immutable' % self.__class__.__name__)
+        raise TypeError("%r is immutable" % self.__class__.__name__)
 
     __setattr__ = __setitem__ = __delitem__ = _immutable
 
@@ -120,23 +118,30 @@ class AttributeContainer(ImmutableContainer, AttributeDict):
     """
 
     @staticmethod
-    def _pprint_attribute_collection(printer, obj, stream, indent,
-                                     allowance, context, level
-                                     ):  # pragma: no cover
+    def _pprint_attribute_collection(
+        printer, obj, stream, indent, allowance, context, level
+    ):  # pragma: no cover
         cls = obj.__class__
-        stream.write(cls.__name__ + '(')
-        printer._format(abs(obj), stream, indent + len(cls.__name__) + 1,
-                        allowance + 1, context, level)
-        stream.write(')')
+        stream.write(cls.__name__ + "(")
+        printer._format(
+            abs(obj),
+            stream,
+            indent + len(cls.__name__) + 1,
+            allowance + 1,
+            context,
+            level,
+        )
+        stream.write(")")
 
     def __str__(self):
         """Return a pretty-print formatted string of the instance."""
         return pformat(self)
 
 
-if isinstance(getattr(PrettyPrinter, '_dispatch', None), dict):
-    PrettyPrinter._dispatch[AttributeContainer.__repr__] = \
-            AttributeContainer._pprint_attribute_collection
+if isinstance(getattr(PrettyPrinter, "_dispatch", None), dict):
+    PrettyPrinter._dispatch[
+        AttributeContainer.__repr__
+    ] = AttributeContainer._pprint_attribute_collection
 
 
 class RedditAttributes(AttributeContainer):
@@ -152,7 +157,7 @@ class RedditAttributes(AttributeContainer):
         attribute cannot be found.
         """
         super(RedditAttributes, self).__init__(data)
-        object.__setattr__(self, '_prawobj', prawobj)
+        object.__setattr__(self, "_prawobj", prawobj)
 
     def __getitem__(self, key):
         """Return the value of a reddit attribute via indexing."""
@@ -166,7 +171,7 @@ class RedditAttributes(AttributeContainer):
         except KeyError:
             pass
 
-        if not (self._prawobj._fetched or key.startswith('_')):
+        if not (self._prawobj._fetched or key.startswith("_")):
             self._prawobj._fetch()
 
         return self._data0[key]

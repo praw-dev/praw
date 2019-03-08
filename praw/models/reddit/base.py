@@ -9,8 +9,8 @@ from ..base import PRAWBase
 class RedditBase(PRAWBase):
     """Base class that represents actual Reddit objects."""
 
-    REPR_FIELD = 'id'
-    STR_FIELD = 'fullname'
+    REPR_FIELD = "id"
+    STR_FIELD = "fullname"
 
     @staticmethod
     def _url_parts(url):
@@ -24,11 +24,11 @@ class RedditBase(PRAWBase):
     def id(self):
         """Return the object's id."""
         try:
-            return self._data['id']
+            return self._data["id"]
         except KeyError:
             if not self._fetched:
                 self._fetch()
-            return self._data['id']
+            return self._data["id"]
 
     @property
     def fullname(self):
@@ -38,8 +38,7 @@ class RedditBase(PRAWBase):
         underscore and the object's base36 ID, e.g., ``t1_c5s96e0``.
 
         """
-        return '{}_{}'.format(self._reddit._objector.kind(self),
-                              self.id)
+        return "{}_{}".format(self._reddit._objector.kind(self), self.id)
 
     @property
     def fetched(self):
@@ -66,7 +65,7 @@ class RedditBase(PRAWBase):
         except AttributeError:
             pass
 
-        if not (self._fetched or name.startswith('_')):
+        if not (self._fetched or name.startswith("_")):
             self._fetch()
 
         return super(RedditBase, self).__getattr__(name)
@@ -87,9 +86,11 @@ class RedditBase(PRAWBase):
 
     def __repr__(self):
         """Return a representation of the instance."""
-        return '<{}({}={!r})>'.format(self.__class__.__name__,
-                                      self.REPR_FIELD,
-                                      getattr(self, self.REPR_FIELD))
+        return "<{}({}={!r})>".format(
+            self.__class__.__name__,
+            self.REPR_FIELD,
+            getattr(self, self.REPR_FIELD),
+        )
 
     def __str__(self):
         """Return a string representation of the instance."""
@@ -101,10 +102,10 @@ class RedditBase(PRAWBase):
                 self._info_path(), params=self._info_params
             )
         else:
-            self._info_params['id'] = self.fullname
-            children = self._reddit \
-                .get(API_PATH['info'],
-                     params=self._info_params)._data['children']
+            self._info_params["id"] = self.fullname
+            children = self._reddit.get(
+                API_PATH["info"], params=self._info_params
+            )._data["children"]
             if not children:
                 raise PRAWException(
                     "No {!r} data returned for thing {}".format(

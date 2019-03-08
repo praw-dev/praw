@@ -63,10 +63,12 @@ class TestWikiPage(UnitTest):
             assert page == other
 
     def test_repr(self):
-        page = WikiPage(self.reddit, subreddit=Subreddit(self.reddit, 'a'),
-                        name='x')
-        assert repr(page) == ('<WikiPage(subreddit='
-                              "<Subreddit(display_name='a')>, name='x')>")
+        page = WikiPage(
+            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+        )
+        assert repr(page) == (
+            "<WikiPage(subreddit=" "<Subreddit(display_name='a')>, name='x')>"
+        )
 
     def test_str(self):
         page = WikiPage(

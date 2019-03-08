@@ -94,9 +94,9 @@ class Subreddit(MessageableMixin, SubredditListingMixin, RedditBase):
 
     # pylint: disable=too-many-public-methods
 
-    REPR_FIELD = 'display_name'
-    STR_FIELD = 'display_name'
-    MESSAGE_PREFIX = '#'
+    REPR_FIELD = "display_name"
+    STR_FIELD = "display_name"
+    MESSAGE_PREFIX = "#"
 
     @staticmethod
     def _create_or_update(
@@ -429,10 +429,11 @@ class Subreddit(MessageableMixin, SubredditListingMixin, RedditBase):
         """
         if [display_name, _data].count(None) != 1:
             raise TypeError(
-                'Either `display_name` or `_data` must be provided.')
+                "Either `display_name` or `_data` must be provided."
+            )
 
         if _data is None:
-            _data = {'display_name': display_name}
+            _data = {"display_name": display_name}
 
         super(Subreddit, self).__init__(reddit, _data=_data)
 
@@ -450,10 +451,10 @@ class Subreddit(MessageableMixin, SubredditListingMixin, RedditBase):
         self._stylesheet = None
         self._wiki = None
         self._widgets = None
-        self._path = API_PATH['subreddit'].format(subreddit=self.display_name)
+        self._path = API_PATH["subreddit"].format(subreddit=self.display_name)
 
     def _info_path(self):
-        return API_PATH['subreddit_about'].format(subreddit=self.display_name)
+        return API_PATH["subreddit_about"].format(subreddit=self.display_name)
 
     def _submit_media(self, data, timeout):
         """Submit and return an `image`, `video`, or `videogif`.

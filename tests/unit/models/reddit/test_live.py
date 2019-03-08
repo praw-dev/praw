@@ -52,8 +52,8 @@ class TestLiveThread(UnitTest):
         assert thread1 != thread2  # live thread ID in a URL is case sensitive
         assert thread2 != thread3
         assert thread1 != thread3
-        assert 'LiveUpdateEvent_dummy1' == thread1
-        assert thread2 == 'LiveUpdateEvent_Dummy1'
+        assert "LiveUpdateEvent_dummy1" == thread1
+        assert thread2 == "LiveUpdateEvent_Dummy1"
 
     def test_getitem(self):
         thread_id = "dummy_thread_id"
@@ -81,12 +81,12 @@ class TestLiveThread(UnitTest):
             assert thread == other
 
     def test_repr(self):
-        thread = LiveThread(self.reddit, id='dummy')
+        thread = LiveThread(self.reddit, id="dummy")
         assert repr(thread) == "<LiveThread(id='dummy')>"
 
     def test_str(self):
-        thread = LiveThread(self.reddit, id='dummy')
-        assert str(thread) == 'LiveUpdateEvent_dummy'
+        thread = LiveThread(self.reddit, id="dummy")
+        assert str(thread) == "LiveUpdateEvent_dummy"
 
 
 class TestLiveThreadContribution(UnitTest):
@@ -166,21 +166,21 @@ class TestLiveUpdate(UnitTest):
         assert update.thread.id == thread_id
 
     def test_objectify_acknowledged(self):
-        data = {'author': 'dummy_author'}
+        data = {"author": "dummy_author"}
         LiveUpdate._objectify_acknowledged(self.reddit, data=data)
 
-        redditor = data.pop('author')
+        redditor = data.pop("author")
         assert type(redditor) is Redditor
-        assert redditor.name == redditor.a.name == 'dummy_author'
+        assert redditor.name == redditor.a.name == "dummy_author"
         assert data == {}
 
         #
         redditor._reddit = None
-        data = {'author': redditor}
+        data = {"author": redditor}
         LiveUpdate._objectify_acknowledged(self.reddit, data=data)
 
-        item = data.pop('author')
+        item = data.pop("author")
         assert type(item) is Redditor
-        assert redditor.name == redditor.a.name == 'dummy_author'
+        assert redditor.name == redditor.a.name == "dummy_author"
         assert item._reddit is self.reddit
         assert data == {}

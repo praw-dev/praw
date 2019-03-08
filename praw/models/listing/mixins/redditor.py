@@ -21,8 +21,8 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
                print(comment.body.split('\n', 1)[0][:79])
 
         """
-        if self._data.get('_comments') is None:
-            self._comments = SubListing(self._reddit, self._path, 'comments')
+        if self._data.get("_comments") is None:
+            self._comments = SubListing(self._reddit, self._path, "comments")
         return self._comments
 
     @property
@@ -38,9 +38,10 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
                print(submission.title)
 
         """
-        if self._data.get('_submissions') is None:
-            self._submissions = SubListing(self._reddit, self._path,
-                                           'submitted')
+        if self._data.get("_submissions") is None:
+            self._submissions = SubListing(
+                self._reddit, self._path, "submitted"
+            )
         return self._submissions
 
     def downvoted(self, **generator_kwargs):

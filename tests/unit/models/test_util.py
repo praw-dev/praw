@@ -13,7 +13,7 @@ from praw.models.util import (
     permissions_string,
     AttributeDict,
     AttributeContainer,
-    RedditAttributes
+    RedditAttributes,
 )
 
 
@@ -68,15 +68,16 @@ class TestUtil(UnitTest):
         assert "+all" == permissions_string(None, self.PERMISSIONS)
 
     def test_permissions_string__with_additional_permissions(self):
-        assert '-all,+d' == permissions_string(['d'], set())
-        assert '-all,-a,-b,-c,+d' == permissions_string(['d'],
-                                                        self.PERMISSIONS)
+        assert "-all,+d" == permissions_string(["d"], set())
+        assert "-all,-a,-b,-c,+d" == permissions_string(
+            ["d"], self.PERMISSIONS
+        )
 
 
 class TestAttributeDict(UnitTest):
     def setup_method(self):
-        self.attrdict = AttributeDict({'a': 1, 'b': 2, 'c': 3})
-        self.attrdict_dict_nest = AttributeDict({'a': {'b': 3}})
+        self.attrdict = AttributeDict({"a": 1, "b": 2, "c": 3})
+        self.attrdict_dict_nest = AttributeDict({"a": {"b": 3}})
 
     def test_init(self):
         attrdict1 = AttributeDict()
@@ -84,40 +85,40 @@ class TestAttributeDict(UnitTest):
         attrdict3 = attrdict4 = AttributeDict()
         assert isinstance(attrdict1, MutableMapping)
 
-        attrdict1['a'] = 10
-        assert 'a' in attrdict1
-        assert 'a' not in attrdict2
+        attrdict1["a"] = 10
+        assert "a" in attrdict1
+        assert "a" not in attrdict2
         assert abs(attrdict1) is not abs(attrdict2)
 
-        attrdict3['b'] = 20
-        assert 'b' in attrdict3
-        assert 'b' in attrdict4
+        attrdict3["b"] = 20
+        assert "b" in attrdict3
+        assert "b" in attrdict4
         assert abs(attrdict3) is abs(attrdict4)
 
-        mydict = {'key': 'value'}
-        attrdict5 = AttributeDict(mydict, another_key='another_value')
+        mydict = {"key": "value"}
+        attrdict5 = AttributeDict(mydict, another_key="another_value")
         assert abs(attrdict5) is not mydict
         attrdict5.clear()
-        assert mydict == {'key': 'value'}
+        assert mydict == {"key": "value"}
 
     def test_getitem(self):
-        assert self.attrdict['a'] == 1
+        assert self.attrdict["a"] == 1
 
         with pytest.raises(KeyError):
-            self.attrdict['z']
+            self.attrdict["z"]
 
-        assert type(self.attrdict_dict_nest['a']) is dict
+        assert type(self.attrdict_dict_nest["a"]) is dict
 
     def test_setitem(self):
         assert len(self.attrdict) == 3
-        self.attrdict['d'] = 4
-        assert 'd' in self.attrdict
+        self.attrdict["d"] = 4
+        assert "d" in self.attrdict
         assert len(self.attrdict) == 4
 
     def test_delitem(self):
         assert len(self.attrdict) == 3
-        del self.attrdict['a']
-        assert 'a' not in self.attrdict
+        del self.attrdict["a"]
+        assert "a" not in self.attrdict
         assert len(self.attrdict) == 2
 
     def test_getattr(self):
@@ -131,17 +132,17 @@ class TestAttributeDict(UnitTest):
     def test_setattr(self):
         assert len(self.attrdict) == 3
         self.attrdict.d = 4
-        assert 'd' in self.attrdict
+        assert "d" in self.attrdict
         assert len(self.attrdict) == 4
 
     def test_delattr(self):
         assert len(self.attrdict) == 3
         del self.attrdict.a
-        assert 'a' not in self.attrdict
+        assert "a" not in self.attrdict
         assert len(self.attrdict) == 2
 
     def test_iter(self):
-        expected_items = {'a', 'b', 'c'}
+        expected_items = {"a", "b", "c"}
         found_items = set()
         for item in self.attrdict:
             found_items.add(item)
@@ -151,84 +152,83 @@ class TestAttributeDict(UnitTest):
     def test_str(self):
         def assert_attrdict_str(attrdict, items):
             str_attrdict = str(attrdict)
-            if not (str_attrdict.startswith('{')
-                    and str_attrdict.endswith('}')):
+            if not (
+                str_attrdict.startswith("{") and str_attrdict.endswith("}")
+            ):
                 return False
 
-            str_dict_items = ('%r: %r' % (key, value)
-                              for key, value in items.items())
+            str_dict_items = (
+                "%r: %r" % (key, value) for key, value in items.items()
+            )
             return all(item in str_attrdict for item in str_dict_items)
 
-        assert assert_attrdict_str(self.attrdict, {'a': 1, 'b': 2, 'c': 3})
-        self.attrdict.pop('c')
-        assert assert_attrdict_str(self.attrdict, {'a': 1, 'b': 2})
+        assert assert_attrdict_str(self.attrdict, {"a": 1, "b": 2, "c": 3})
+        self.attrdict.pop("c")
+        assert assert_attrdict_str(self.attrdict, {"a": 1, "b": 2})
 
-        assert str(AttributeDict()) == '{}'
+        assert str(AttributeDict()) == "{}"
 
     def test_repr(self):
         def assert_attrdict_repr(attrdict, items):
             attrdict_cls = type(attrdict).__name__
             repr_attrdict = repr(attrdict)
-            if not (repr_attrdict.startswith(attrdict_cls + '({')
-                    and repr_attrdict.endswith('})')):
+            if not (
+                repr_attrdict.startswith(attrdict_cls + "({")
+                and repr_attrdict.endswith("})")
+            ):
                 return False
 
-            str_dict_items = ('%r: %r' % (key, value)
-                              for key, value in items.items())
+            str_dict_items = (
+                "%r: %r" % (key, value) for key, value in items.items()
+            )
             return all(item in repr_attrdict for item in str_dict_items)
 
-        assert assert_attrdict_repr(self.attrdict, {'a': 1, 'b': 2, 'c': 3})
-        self.attrdict.pop('c')
-        assert assert_attrdict_repr(self.attrdict, {'a': 1, 'b': 2})
+        assert assert_attrdict_repr(self.attrdict, {"a": 1, "b": 2, "c": 3})
+        self.attrdict.pop("c")
+        assert assert_attrdict_repr(self.attrdict, {"a": 1, "b": 2})
 
         attrdict1 = AttributeDict()
         attrdict2 = AttributeDict({})
-        assert repr(attrdict1) == repr(attrdict2) == 'AttributeDict()'
+        assert repr(attrdict1) == repr(attrdict2) == "AttributeDict()"
         assert abs(attrdict1) is not abs(attrdict2)
 
-        attrdict3 = AttributeDict({'a': 1})
-        assert assert_attrdict_repr(attrdict3, {'a': 1})
-        attrdict3.pop('a')
-        assert repr(attrdict3) == 'AttributeDict()'
+        attrdict3 = AttributeDict({"a": 1})
+        assert assert_attrdict_repr(attrdict3, {"a": 1})
+        attrdict3.pop("a")
+        assert repr(attrdict3) == "AttributeDict()"
 
     def test_dir(self):
         assert dir(self.attrdict) == sorted(list(self.attrdict))
 
     def test_abs(self):
-        mydict = {'key': 'value'}
+        mydict = {"key": "value"}
         attrdict = AttributeDict(mydict)
-        mydict['key2'] = 'value2'
-        assert 'key2' in attrdict
-        assert attrdict['key2'] == 'value2'
+        mydict["key2"] = "value2"
+        assert "key2" in attrdict
+        assert attrdict["key2"] == "value2"
         assert abs(attrdict) is mydict
 
     def test_update(self):
         assert len(self.attrdict) == 3
-        self.attrdict.update({'c': 8, 'd': 11})
+        self.attrdict.update({"c": 8, "d": 11})
         assert len(self.attrdict) == 4
-        assert self.attrdict['a'] == 1
-        assert self.attrdict['b'] == 2
-        assert self.attrdict['c'] == 8
-        assert self.attrdict['d'] == 11
+        assert self.attrdict["a"] == 1
+        assert self.attrdict["b"] == 2
+        assert self.attrdict["c"] == 8
+        assert self.attrdict["d"] == 11
 
     def test_clear(self):
         assert len(self.attrdict) == 3
         self.attrdict.clear()
         assert len(self.attrdict) == 0
-        assert 'a' not in self.attrdict
+        assert "a" not in self.attrdict
 
     def test_pickle(self):
         mydict = {
-            'a': 1,
-            'b': 2,
-            'c': {
-                'dee': 40,
-                'eee': {
-                    'eff': 'gee',
-                    'hch': 80
-                }
-            },
-            'foo': [1, 2, 3]
+            "a": 1,
+            "b": 2,
+            "c": {"dee": 40, "eee": {"eff": "gee", "hch": 80}},
+            "foo": [1, 2, 3],
         }
         attrdict = AttributeDict(mydict)
         for level in range(pickle.HIGHEST_PROTOCOL + 1):
@@ -240,43 +240,43 @@ class TestAttributeDict(UnitTest):
         update_method = attrdict.update
         attrdict.update = 1
         assert attrdict.update == update_method
-        assert attrdict['update'] == 1
+        assert attrdict["update"] == 1
 
         clear_method = attrdict.clear
-        attrdict.update({'clear': 2})
+        attrdict.update({"clear": 2})
         assert attrdict.clear == clear_method
-        assert attrdict['clear'] == 2
+        assert attrdict["clear"] == 2
 
 
 class TestAttributeContainer(UnitTest):
     def setup_method(self):
-        self.attrcon = AttributeContainer({'a': 1, 'b': 2, 'c': 3})
-        self.attrcon_dict_nest = AttributeContainer({'a': {'b': 3}})
+        self.attrcon = AttributeContainer({"a": 1, "b": 2, "c": 3})
+        self.attrcon_dict_nest = AttributeContainer({"a": {"b": 3}})
 
     def test_immutable(self):
         with pytest.raises(TypeError) as excinfo:
             self.attrcon.attr = 3
-        assert 'immutable' in excinfo.value.args[0]
+        assert "immutable" in excinfo.value.args[0]
 
         with pytest.raises(TypeError) as excinfo:
-            self.attrcon['attr'] = 3
-        assert 'immutable' in excinfo.value.args[0]
+            self.attrcon["attr"] = 3
+        assert "immutable" in excinfo.value.args[0]
 
         with pytest.raises(TypeError) as excinfo:
             del self.attrcon.attr
-        assert 'immutable' in excinfo.value.args[0]
+        assert "immutable" in excinfo.value.args[0]
 
         with pytest.raises(TypeError) as excinfo:
-            del self.attrcon['attr']
-        assert 'immutable' in excinfo.value.args[0]
+            del self.attrcon["attr"]
+        assert "immutable" in excinfo.value.args[0]
 
     def test_getitem(self):
-        assert self.attrcon['a'] == 1
+        assert self.attrcon["a"] == 1
 
         with pytest.raises(KeyError):
-            self.attrcon['z']
+            self.attrcon["z"]
 
-        assert type(self.attrcon_dict_nest['a']) is dict
+        assert type(self.attrcon_dict_nest["a"]) is dict
 
     def test_getattr(self):
         assert self.attrcon.a == 1
@@ -294,17 +294,17 @@ class TestAttributeContainer(UnitTest):
 
 class TestRedditAttributes(UnitTest):
     def setup_method(self):
-        self.redditattrs = RedditAttributes({'a': 1, 'b': {'c': 3}})
+        self.redditattrs = RedditAttributes({"a": 1, "b": {"c": 3}})
 
     def test_getitem(self):
-        assert self.redditattrs['a'] == 1
+        assert self.redditattrs["a"] == 1
 
-        assert type(self.redditattrs['b']) is dict
-        assert self.redditattrs['b'] == {'c': 3}
+        assert type(self.redditattrs["b"]) is dict
+        assert self.redditattrs["b"] == {"c": 3}
 
         with pytest.raises(KeyError):
-            self.redditattrs['z']
+            self.redditattrs["z"]
 
     def test_getattr(self):
         assert type(self.redditattrs.b) is AttributeContainer
-        assert self.redditattrs['b'] == AttributeContainer({'c': 3})
+        assert self.redditattrs["b"] == AttributeContainer({"c": 3})

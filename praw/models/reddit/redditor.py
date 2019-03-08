@@ -61,8 +61,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
 
     """
 
-    REPR_FIELD = 'name'
-    STR_FIELD = 'name'
+    REPR_FIELD = "name"
+    STR_FIELD = "name"
 
     @property
     def stream(self):
@@ -98,23 +98,24 @@ class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
 
         """
         if [name, _data].count(None) != 1:
-            raise TypeError('Either `name` or `_data` must be provided.')
+            raise TypeError("Either `name` or `_data` must be provided.")
 
         if _data:
-            assert isinstance(_data, dict) and 'name' in _data, \
-                   'Please file a bug with PRAW'
+            assert (
+                isinstance(_data, dict) and "name" in _data
+            ), "Please file a bug with PRAW"
 
         if _data is None:
-            _data = {'name': name}
+            _data = {"name": name}
 
         super(Redditor, self).__init__(reddit, _data=_data)
 
         self._listing_use_sort = True
-        self._path = API_PATH['user'].format(user=self.name)
+        self._path = API_PATH["user"].format(user=self.name)
         self._stream = None
 
     def _info_path(self):
-        return API_PATH['user_about'].format(user=self.name)
+        return API_PATH["user_about"].format(user=self.name)
 
     def _friend(self, method, data):
         url = API_PATH["friend_v1"].format(user=self)

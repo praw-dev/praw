@@ -96,7 +96,7 @@ class User(PRAWBase):
 
         """
         if self._reddit.read_only:
-            raise RuntimeError('reddit instance must not be read_only')
+            raise RuntimeError("reddit instance must not be read_only")
 
         if self._me is None or not use_cache:
             user_data = self._reddit.get(API_PATH["me"])
