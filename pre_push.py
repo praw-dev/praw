@@ -30,7 +30,7 @@ def do_process(args, shell=False):
 def main():
     """Entry point to pre_push.py."""
     success = True
-    success &= do_process(["black -l 79 *.py docs praw tests"], shell=True)
+    success &= do_process(["black *.py docs praw tests"], shell=True)
     success &= do_process(["flake8", "--exclude=.eggs,docs,.tox"])
     success &= do_process(["pydocstyle", "praw"])
     # success &= do_process(["pylint", "--rcfile=.pylintrc", "praw"])
