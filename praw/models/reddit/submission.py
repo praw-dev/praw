@@ -202,7 +202,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
         """
         if [id, url, _data].count(None) != 2:
             raise TypeError(
-                "Exactly one of `id`, `url`, or `_data` must be " "provided."
+                "Exactly one of `id`, `url`, or `_data` must be provided."
             )
 
         if _data is None:
