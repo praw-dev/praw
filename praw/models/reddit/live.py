@@ -559,8 +559,6 @@ class LiveUpdate(RedditBase):
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
     """
 
-    STR_FIELD = "id"
-
     @classmethod
     def _objectify_acknowledged(cls, reddit, data):
         key = "author"

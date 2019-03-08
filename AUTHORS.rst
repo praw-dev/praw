@@ -45,5 +45,7 @@ Source Contributors
 - Amanda O'Neal <amanda.oneal.dev@gmail.com> `@amandaoneal <https://github.com/amandaoneal>`_
 - Gourari Oussama <gourari.ouss@gmail.com> `@O-Gourari <https://github.com/O-Gourari>`_
 - Declan Hoare <declanhoare@exemail.com.au> `@NetwideRogue <https://github.com/NetwideRogue>`_
+- Elaina Martineau `@CrackedP0t <https://github.com/CrackedP0t>`_
+- Rob Curtis <BourbonInExile@gmail.com> `@waab76 <https://github.com/waab76>`_
 - pyprohly `@Pyprohly <https://github.com/Pyprohly>`_
 - Add "Name <email (optional)> and github profile link" above this line.
