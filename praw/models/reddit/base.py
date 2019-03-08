@@ -125,8 +125,5 @@ class RedditBase(PRAWBase):
     def fetch(self, force=False):
         """Manually fetch the reddit attributes for this object."""
         if force or not self._fetched:
-            self._data.clear()
-            self._data.update(self._initial_data)
             self._fetch()
-
         return self

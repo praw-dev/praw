@@ -70,12 +70,14 @@ class Comment(InboxableMixin, UserContentMixin, RedditBase):
         return parts[-1]
 
     @classmethod
-    def _objectify_acknowledged(cls, reddit, data):
+    def _objectify(cls, reddit, data):
         key = "author"
         item = data.get(key)
         if isinstance(item, string_types):
             data[key] = (
-                None if item == "[deleted]" else Redditor(reddit, name=item)
+                None
+                if item in ("[deleted]", "[removed]")
+                else Redditor(reddit, name=item)
             )
         elif isinstance(item, Redditor):
             item._reddit = reddit
@@ -174,7 +176,7 @@ class Comment(InboxableMixin, UserContentMixin, RedditBase):
                 _data["id"] = self.id_from_url(url)
         else:
             init_by_data = True
-            self._objectify_acknowledged(reddit, _data)
+            self._objectify(reddit, _data)
             self._replies = _data.pop("replies", None)
 
         super(Comment, self).__init__(reddit, _data=_data)

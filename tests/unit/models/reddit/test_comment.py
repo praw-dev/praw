@@ -110,13 +110,13 @@ class TestComment(UnitTest):
         with pytest.raises(AttributeError):
             comment._ipython_canary_method_should_not_exist_
 
-    def test_objectify_acknowledged(self):
+    def test_objectify(self):
         data = {
             "author": "dummy_author",
             "replies": "",
             "subreddit": "dummy_subreddit",
         }
-        Comment._objectify_acknowledged(self.reddit, data=data)
+        Comment._objectify(self.reddit, data=data)
 
         redditor = data.pop("author")
         assert type(redditor) is Redditor
@@ -136,7 +136,7 @@ class TestComment(UnitTest):
         redditor._reddit = None
         subreddit._reddit = None
         data = {"author": redditor, "subreddit": subreddit}
-        Comment._objectify_acknowledged(self.reddit, data=data)
+        Comment._objectify(self.reddit, data=data)
 
         item = data.pop("author")
         assert type(item) is Redditor
@@ -172,7 +172,7 @@ class TestComment(UnitTest):
                 "kind": "Listing",
             }
         }
-        Comment._objectify_acknowledged(self.reddit, data=data)
+        Comment._objectify(self.reddit, data=data)
 
         item = data.pop("replies")
         assert type(item[0]) is Comment

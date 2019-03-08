@@ -4,9 +4,9 @@ from .. import UnitTest
 
 
 class TestModAction(UnitTest):
-    def test_objectify_acknowledged(self):
+    def test_objectify(self):
         data = {"mod": "dummy_author"}
-        ModAction._objectify_acknowledged(self.reddit, data=data)
+        ModAction._objectify(self.reddit, data=data)
 
         redditor = data.pop("mod")
         assert type(redditor) is Redditor
@@ -15,7 +15,7 @@ class TestModAction(UnitTest):
 
         redditor._reddit = None
         data = {"mod": redditor}
-        ModAction._objectify_acknowledged(self.reddit, data=data)
+        ModAction._objectify(self.reddit, data=data)
         redditor = data.pop("mod")
         assert type(redditor) is Redditor
         assert redditor.name == redditor.a.name == "dummy_author"

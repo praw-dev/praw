@@ -560,7 +560,7 @@ class LiveUpdate(RedditBase):
     """
 
     @classmethod
-    def _objectify_acknowledged(cls, reddit, data):
+    def _objectify(cls, reddit, data):
         key = "author"
         item = data.get(key)
         if isinstance(item, string_types):
@@ -612,7 +612,7 @@ class LiveUpdate(RedditBase):
            update.author     # 'umbrae'
         """
         if _data is not None:
-            self._objectify_acknowledged(reddit, _data)
+            self._objectify(reddit, _data)
             # Since _data (part of JSON returned from reddit) have no
             # thread ID, self._thread must be set by the caller of
             # LiveUpdate(). See the code of LiveThread.updates() for example.

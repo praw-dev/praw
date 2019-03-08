@@ -94,7 +94,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
         return submission_id
 
     @classmethod
-    def _objectify_acknowledged(cls, reddit, data):
+    def _objectify(cls, reddit, data):
         key = "author"
         item = data.get(key)
         if isinstance(item, string_types):
@@ -208,7 +208,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
         if _data is None:
             _data = {}
         else:
-            self._objectify_acknowledged(reddit, _data)
+            self._objectify(reddit, _data)
         if id is not None:
             _data["id"] = id
         elif url is not None:

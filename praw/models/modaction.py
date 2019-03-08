@@ -14,7 +14,7 @@ class ModAction(PRAWBase):
         return self._data["mod"]
 
     @classmethod
-    def _objectify_acknowledged(cls, reddit, data):
+    def _objectify(cls, reddit, data):
         key = "mod"
         item = data.get(key)
         if isinstance(item, string_types):
@@ -25,5 +25,5 @@ class ModAction(PRAWBase):
     def __init__(self, reddit, _data):
         """Initialize a ModAction instance."""
         if _data is not None:
-            self._objectify_acknowledged(reddit, _data)
+            self._objectify(reddit, _data)
         super(ModAction, self).__init__(reddit, _data=_data)

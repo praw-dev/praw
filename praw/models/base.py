@@ -1,5 +1,6 @@
 """Provide the PRAWBase superclass."""
 from copy import deepcopy
+
 from .util import RedditAttributes
 
 
@@ -38,14 +39,11 @@ class PRAWBase(object):
         """
         self._reddit = reddit
         self._data = {} if _data is None else _data
-        self._initial_data = dict(self._data)
         # pylint: disable=invalid-name
         self._a = RedditAttributes(prawobj=self, data=self._data)
 
     def __getattr__(self, name):
         """Return the value of attribute `name`."""
-        assert self._data is abs(self._a)
-
         try:
             return self._data[name]
         except KeyError:

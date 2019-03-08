@@ -165,9 +165,9 @@ class TestLiveUpdate(UnitTest):
         assert isinstance(update.thread, LiveThread)
         assert update.thread.id == thread_id
 
-    def test_objectify_acknowledged(self):
+    def test_objectify(self):
         data = {"author": "dummy_author"}
-        LiveUpdate._objectify_acknowledged(self.reddit, data=data)
+        LiveUpdate._objectify(self.reddit, data=data)
 
         redditor = data.pop("author")
         assert type(redditor) is Redditor
@@ -177,7 +177,7 @@ class TestLiveUpdate(UnitTest):
         #
         redditor._reddit = None
         data = {"author": redditor}
-        LiveUpdate._objectify_acknowledged(self.reddit, data=data)
+        LiveUpdate._objectify(self.reddit, data=data)
 
         item = data.pop("author")
         assert type(item) is Redditor

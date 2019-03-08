@@ -4,9 +4,9 @@ from .. import UnitTest
 
 
 class TestSubmission(UnitTest):
-    def test_objectify_acknowledged(self):
+    def test_objectify(self):
         data = {"author": "dummy_author", "subreddit": "dummy_subreddit"}
-        Submission._objectify_acknowledged(self.reddit, data=data)
+        Submission._objectify(self.reddit, data=data)
 
         redditor = data.pop("author")
         assert type(redditor) is Redditor
@@ -24,7 +24,7 @@ class TestSubmission(UnitTest):
         redditor._reddit = None
         subreddit._reddit = None
         data = {"author": redditor, "subreddit": subreddit}
-        Submission._objectify_acknowledged(self.reddit, data=data)
+        Submission._objectify(self.reddit, data=data)
 
         item = data.pop("author")
         assert type(item) is Redditor
@@ -42,14 +42,14 @@ class TestSubmission(UnitTest):
 
         #
         data = {"author": "[deleted]"}
-        Submission._objectify_acknowledged(self.reddit, data=data)
+        Submission._objectify(self.reddit, data=data)
 
         item = data.pop("author")
         assert item is None
 
         #
         data = {"author": "[removed]"}
-        Submission._objectify_acknowledged(self.reddit, data=data)
+        Submission._objectify(self.reddit, data=data)
 
         item = data.pop("author")
         assert item is None
