@@ -527,15 +527,22 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
         return upload_url + "/" + upload_data["key"]
 
     def random(self):
-        """Return a random Submission."""
+        """Return a random Submission.
+
+        Returns ``None`` on subreddits that do not support the random feature.
+        One example, at the time of writing, is /r/wallpapers.
+        """
         url = API_PATH["subreddit_random"].format(subreddit=self)
         try:
             self._reddit.get(url, params={"unique": self._reddit._next_unique})
         except Redirect as redirect:
             path = redirect.path
-        return self._submission_class(
-            self._reddit, url=urljoin(self._reddit.config.reddit_url, path)
-        )
+        try:
+            return self._submission_class(
+                self._reddit, url=urljoin(self._reddit.config.reddit_url, path)
+            )
+        except ClientException:
+            return None
 
     def rules(self):
         """Return rules for the subreddit.

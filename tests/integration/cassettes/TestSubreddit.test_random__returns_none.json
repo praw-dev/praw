@@ -1,0 +1,220 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2019-03-09T18:26:01",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "29"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.1.2.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "106"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 09 Mar 2019 18:26:03 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=GwXc0wbGP8qmtmR16B; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-bur17520-BUR"
+          ],
+          "X-Timer": [
+            "S1552155963.947519,VS0,VE334"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-reddit-loid": [
+            "00000000003dkbrpbb.2.1552155963235.Z0FBQUFBQmNoQVU3UElPYXZKVU8wRWVPN0w0RXVzV3hWNWRTRFpIRnBuZm9jeFEtWlZ5V25BZEt5d3EtQXoxSkZScnJhRHVjS2RHcVhURjJVMTF5ZVVVYms0RlpSVEFnUjZ5QU5aWUdsUHE0QW9kSXRDVEFtOUhlVC02NVFLbGN4Qk94RkdmakxScl8"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2019-03-09T18:26:01",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=GwXc0wbGP8qmtmR16B"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.1.2.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/wallpapers/random/?unique=0&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "0"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 09 Mar 2019 18:26:03 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-bur17528-BUR"
+          ],
+          "X-Timer": [
+            "S1552155963.475956,VS0,VE211"
+          ],
+          "access-control-allow-origin": [
+            "*"
+          ],
+          "access-control-expose-headers": [
+            "X-Moose"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "location": [
+            "https://www.reddit.com/r/wallpapers/.json?utm_campaign=redirect&utm_medium=desktop&utm_source=reddit&utm_name=random_link"
+          ],
+          "set-cookie": [
+            "loid=00000000003dkbrpbb.2.1552155963235.Z0FBQUFBQmNoQVU3RzBWcURXYXBNTzdCU0FEelAyaXc0OHpmTm5vdFh2dUNyYmVHNU4yV0U0WHJSY2pxMTRfT09RMEstT1lRRS1mWmkzVE42aXFEU00xSTdaYTE3X3hDZEttSlh1TnJrVzFnRUdfc0pYcjhVdnB1T3hkYjFTYmJtN0h6ZGc1YnFLUUY; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Mon, 08-Mar-2021 18:26:03 GMT; secure",
+            "session_tracker=ES9DTLwanxM1RT5ULY.0.1552155963543.Z0FBQUFBQmNoQVU3WWwyUXpHMDZqTW5XUG9hdDR1aGJhcmplVkNyT18xQ0F2WlNydFZWeVlmNjdVYUhfSHBuem52eVAzZ3RWcURRMnpHNC1uODhYN1RmeTZSXzRlNFFlQmNHUG1HOVhna2FjZWNVQjZsdW1tRVd2UUFZZjF0ZjJYRVpFcWJlY0FQVGI; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 09-Mar-2019 20:26:03 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 302,
+          "message": "Found"
+        },
+        "url": "https://oauth.reddit.com/r/wallpapers/random/?unique=0&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

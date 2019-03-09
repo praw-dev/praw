@@ -22,6 +22,12 @@ Unreleased
   parameter ``timeout``. Default timeout has been raised from 2 seconds to
   10 seconds.
 
+**Fixed**
+
+* :meth:`.Subreddit.random` returns ``None`` instead of raising
+  :class:`.ClientException` when the subreddit does not support generating
+  random submissions.
+
 **Other**
 
 * Bumped minimum prawcore version to 1.0.1.
