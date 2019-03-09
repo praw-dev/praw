@@ -133,7 +133,14 @@ class TestSubreddit(IntegrationTest):
                 subreddit.random(),
                 subreddit.random(),
             ]
-            assert len(submissions) == len(set(submissions))
+        assert len(submissions) == len(set(submissions))
+
+    def test_random__returns_none(self):
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_random__returns_none"
+        ):
+            subreddit = self.reddit.subreddit("wallpapers")
+            assert subreddit.random() is None
 
     def test_rules(self):
         with self.recorder.use_cassette("TestSubreddit.test_rules"):
