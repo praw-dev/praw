@@ -359,7 +359,10 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         """
         if self._stream is None:
-            self._stream = SubredditStream(self)
+            if self.display_name == "all":
+                self._stream = SubredditStream(self, before_adjusting=False)
+            else:
+                self._stream = SubredditStream(self)
         return self._stream
 
     @property
@@ -2348,13 +2351,14 @@ state='mod')
 class SubredditStream(object):
     """Provides submission and comment streams."""
 
-    def __init__(self, subreddit):
+    def __init__(self, subreddit, before_adjusting=True):
         """Create a SubredditStream instance.
 
         :param subreddit: The subreddit associated with the streams.
 
         """
         self.subreddit = subreddit
+        self._before_adjusting = before_adjusting
 
     def comments(self, **stream_options):
         """Yield new comments as they become available.
@@ -2382,7 +2386,13 @@ class SubredditStream(object):
                print(comment)
 
         """
-        return stream_generator(self.subreddit.comments, **stream_options)
+        return stream_generator(
+            self.subreddit.comments,
+            before_adjusting=stream_options.pop(
+                "before_adjusting", self._before_adjusting
+            ),
+            **stream_options
+        )
 
     def submissions(self, **stream_options):
         """Yield new submissions as they become available.
@@ -2400,7 +2410,11 @@ class SubredditStream(object):
                print(submission)
 
         """
-        return stream_generator(self.subreddit.new, **stream_options)
+        return stream_generator(
+            self.subreddit.new,
+            before_adjusting=self._before_adjusting,
+            **stream_options
+        )
 
 
 class SubredditStylesheet(object):

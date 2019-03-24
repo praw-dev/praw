@@ -77,7 +77,11 @@ def permissions_string(permissions, known_permissions):
 
 
 def stream_generator(
-    function, pause_after=None, skip_existing=False, attribute_name="fullname"
+    function,
+    pause_after=None,
+    skip_existing=False,
+    attribute_name="fullname",
+    before_adjusting=True,
 ):
     """Yield new items from ListingGenerators and ``None`` when paused.
 
@@ -164,10 +168,8 @@ def stream_generator(
     while True:
         found = False
         newest_attribute = None
-        limit = 100
-        if before_attribute is None:
-            limit -= without_before_counter
-            without_before_counter = (without_before_counter + 1) % 30
+        limit = 100 - without_before_counter
+        without_before_counter = (without_before_counter + 1) % 6
         for item in reversed(
             list(function(limit=limit, params={"before": before_attribute}))
         ):
@@ -179,7 +181,8 @@ def stream_generator(
             newest_attribute = attribute
             if not skip_existing:
                 yield item
-        before_attribute = newest_attribute
+        if before_adjusting:
+            before_attribute = newest_attribute
         skip_existing = False
         if valid_pause_after and pause_after < 0:
             yield None
