@@ -135,7 +135,7 @@ class ModmailConversation(RedditBase):
             (default: False).
 
         """
-        super(ModmailConversation, self).__init__(reddit, _data)
+        super(ModmailConversation, self).__init__(reddit, _data=_data)
         if bool(id) == bool(_data):
             raise TypeError("Either `id` or `_data` must be provided.")
 

@@ -6,7 +6,7 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 
-class Message(RedditBase, InboxableMixin, ReplyableMixin):
+class Message(InboxableMixin, ReplyableMixin, RedditBase):
     """A class for private messages.
 
     **Typical Attributes**
@@ -73,7 +73,7 @@ class Message(RedditBase, InboxableMixin, ReplyableMixin):
 
     def __init__(self, reddit, _data):
         """Construct an instance of the Message object."""
-        super(Message, self).__init__(reddit, _data)
+        super(Message, self).__init__(reddit, _data=_data)
         self._fetched = True
 
     def delete(self):

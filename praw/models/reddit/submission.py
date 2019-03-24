@@ -9,7 +9,7 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 
-class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
+class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
     """A class for submissions to reddit.
 
     **Typical Attributes**
@@ -180,9 +180,9 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         """
         if [id, url, _data].count(None) != 2:
             raise TypeError(
-                "Exactly one of `id`, `url`, or `_data` must be " "provided."
+                "Exactly one of `id`, `url`, or `_data` must be provided."
             )
-        super(Submission, self).__init__(reddit, _data)
+        super(Submission, self).__init__(reddit, _data=_data)
         self.comment_limit = 2048
 
         #: Specify the sort order for ``comments``

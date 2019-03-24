@@ -6,7 +6,7 @@ from .mixins import InboxableMixin, ThingModerationMixin, UserContentMixin
 from .redditor import Redditor
 
 
-class Comment(RedditBase, InboxableMixin, UserContentMixin):
+class Comment(InboxableMixin, UserContentMixin, RedditBase):
     """A class that represents a reddit comments.
 
     **Typical Attributes**
@@ -50,7 +50,7 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
     """
 
     MISSING_COMMENT_MESSAGE = (
-        "This comment does not appear to be in the " "comment tree"
+        "This comment does not appear to be in the comment tree"
     )
     STR_FIELD = "id"
 
@@ -130,10 +130,10 @@ class Comment(RedditBase, InboxableMixin, UserContentMixin):
         """Construct an instance of the Comment object."""
         if [id, url, _data].count(None) != 2:
             raise TypeError(
-                "Exactly one of `id`, `url`, or `_data` must be " "provided."
+                "Exactly one of `id`, `url`, or `_data` must be provided."
             )
         self._mod = self._replies = self._submission = None
-        super(Comment, self).__init__(reddit, _data)
+        super(Comment, self).__init__(reddit, _data=_data)
         if id:
             self.id = id  # pylint: disable=invalid-name
         elif url:

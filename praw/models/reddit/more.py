@@ -10,7 +10,7 @@ class MoreComments(PRAWBase):
         """Construct an instance of the MoreComments object."""
         self.count = self.parent_id = None
         self.children = []
-        super(MoreComments, self).__init__(reddit, _data)
+        super(MoreComments, self).__init__(reddit, _data=_data)
         self._comments = None
         self.submission = None
 

@@ -20,7 +20,7 @@ from .widgets import SubredditWidgets
 from .wikipage import WikiPage
 
 
-class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
+class Subreddit(MessageableMixin, SubredditListingMixin, RedditBase):
     """A class for Subreddits.
 
     To obtain an instance of this class for subreddit ``/r/redditdev`` execute:
@@ -430,7 +430,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
             raise TypeError(
                 "Either `display_name` or `_data` must be provided."
             )
-        super(Subreddit, self).__init__(reddit, _data)
+        super(Subreddit, self).__init__(reddit, _data=_data)
         if display_name:
             self.display_name = display_name
         self._banned = self._contributor = self._filters = self._flair = None
@@ -473,7 +473,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         if not isinstance(response, dict):
             raise ClientException(
-                "Something went wrong with your post: " "{!r}".format(response)
+                "Something went wrong with your post: {!r}".format(response)
             )
 
         try:
@@ -2459,15 +2459,12 @@ class SubredditStylesheet(object):
             return response
 
     def _upload_style_asset(self, image_path, image_type):
-        data = {}
-        data["imagetype"] = image_type
-        data["filepath"] = basename(image_path)
+        data = {"imagetype": image_type, "filepath": basename(image_path)}
         data["mimetype"] = "image/jpeg"
         if image_path.lower().endswith(".png"):
             data["mimetype"] = "image/png"
         url = API_PATH["style_asset_lease"].format(subreddit=self.subreddit)
 
-        # until we learn otherwise, assume this request always succeeds
         upload_lease = self.subreddit._reddit.post(url, data=data)[
             "s3UploadLease"
         ]
@@ -2496,8 +2493,7 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner()
 
         """
-        data = {}
-        data["bannerBackgroundImage"] = ""
+        data = {"bannerBackgroundImage": ""}
         self._update_structured_styles(data)
 
     def delete_banner_additional_image(self):
@@ -2513,9 +2509,10 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_additional_image()
 
         """
-        data = {}
-        data["bannerPositionedImage"] = ""
-        data["secondaryBannerPositionedImage"] = ""
+        data = {
+            "bannerPositionedImage": "",
+            "secondaryBannerPositionedImage": "",
+        }
         self._update_structured_styles(data)
 
     def delete_banner_hover_image(self):
@@ -2530,8 +2527,7 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_hover_image()
 
         """
-        data = {}
-        data["secondaryBannerPositionedImage"] = ""
+        data = {"secondaryBannerPositionedImage": ""}
         self._update_structured_styles(data)
 
     def delete_header(self):

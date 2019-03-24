@@ -108,7 +108,7 @@ class TestSubmission(IntegrationTest):
             with pytest.raises(AttributeError) as excinfo:
                 submission.invalid_attribute
         assert excinfo.value.args[0] == (
-            "'Submission' object has no attribute" " 'invalid_attribute'"
+            "'Submission' object has no attribute 'invalid_attribute'"
         )
 
     def test_reply(self):

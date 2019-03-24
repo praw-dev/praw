@@ -8,7 +8,7 @@ from .base import RedditBase
 from .mixins import MessageableMixin
 
 
-class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
+class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
     """A class representing the users of reddit.
 
     **Typical Attributes**
@@ -109,7 +109,7 @@ class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
             assert (
                 isinstance(_data, dict) and "name" in _data
             ), "Please file a bug with PRAW"
-        super(Redditor, self).__init__(reddit, _data)
+        super(Redditor, self).__init__(reddit, _data=_data)
         self._listing_use_sort = True
         if name:
             self.name = name

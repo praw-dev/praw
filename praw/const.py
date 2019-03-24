@@ -124,9 +124,7 @@ API_PATH = {
     "quarantine_opt_in": "api/quarantine_optin",
     "quarantine_opt_out": "api/quarantine_optout",
     "read_message": "api/read_message/",
-    (
-        "removal_comment_" "message"
-    ): "api/v1/modactions/removal_comment_message",
+    "removal_comment_message": "api/v1/modactions/removal_comment_message",
     "removal_link_message": "api/v1/modactions/removal_link_message",
     "remove": "api/remove/",
     "report": "api/report/",
@@ -149,9 +147,7 @@ API_PATH = {
     "submit": "api/submit/",
     "subreddit": "r/{subreddit}/",
     "subreddit_about": "r/{subreddit}/about/",
-    "subreddit_filter": (
-        "api/filter/user/{user}/f/{special}/" "r/{subreddit}"
-    ),
+    "subreddit_filter": "api/filter/user/{user}/f/{special}/r/{subreddit}",
     "subreddit_filter_list": "api/filter/user/{user}/f/{special}",
     "subreddit_random": "r/{subreddit}/random/",
     "subreddit_settings": "r/{subreddit}/about/edit/",

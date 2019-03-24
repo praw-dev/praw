@@ -346,7 +346,7 @@ class LiveThread(RedditBase):
         """
         if bool(id) == bool(_data):
             raise TypeError("Either `id` or `_data` must be provided.")
-        super(LiveThread, self).__init__(reddit, _data)
+        super(LiveThread, self).__init__(reddit, _data=_data)
         if id:
             self.id = id  # pylint: disable=invalid-name
         self._contrib = None
@@ -605,7 +605,7 @@ class LiveUpdate(RedditBase):
             # Since _data (part of JSON returned from reddit) have no
             # thread ID, self._thread must be set by the caller of
             # LiveUpdate(). See the code of LiveThread.updates() for example.
-            super(LiveUpdate, self).__init__(reddit, _data)
+            super(LiveUpdate, self).__init__(reddit, _data=_data)
             self._fetched = True
         elif thread_id and update_id:
             super(LiveUpdate, self).__init__(reddit, None)

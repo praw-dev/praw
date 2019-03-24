@@ -35,7 +35,7 @@ class SubredditListingMixin(
         :param reddit: An instance of :class:`.Reddit`.
 
         """
-        super(SubredditListingMixin, self).__init__(reddit, _data)
+        super(SubredditListingMixin, self).__init__(reddit, _data=_data)
         self._comments = None
 
 

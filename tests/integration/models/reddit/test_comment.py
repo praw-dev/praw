@@ -164,7 +164,7 @@ class TestComment(IntegrationTest):
             with pytest.raises(ClientException) as excinfo:
                 Comment(self.reddit, "d81vwef").refresh()
         assert (
-            "This comment does not appear to be in the " "comment tree",
+            "This comment does not appear to be in the comment tree",
         ) == excinfo.value.args
 
     def test_refresh__twice(self):
@@ -178,7 +178,7 @@ class TestComment(IntegrationTest):
             with pytest.raises(ClientException) as excinfo:
                 Comment(self.reddit, "d7ltvl0").refresh()
         assert (
-            "This comment does not appear to be in the " "comment tree",
+            "This comment does not appear to be in the comment tree",
         ) == excinfo.value.args
 
     def test_refresh__removed_comment(self):
@@ -188,7 +188,7 @@ class TestComment(IntegrationTest):
             with pytest.raises(ClientException) as excinfo:
                 Comment(self.reddit, "dma3mi5").refresh()
         assert (
-            "This comment does not appear to be in the " "comment tree",
+            "This comment does not appear to be in the comment tree",
         ) == excinfo.value.args
 
     def test_refresh__with_reply_sort_and_limit(self):

@@ -73,7 +73,7 @@ class WikiPage(RedditBase):
         self.name = name
         self._revision = revision
         self.subreddit = subreddit
-        super(WikiPage, self).__init__(reddit, _data)
+        super(WikiPage, self).__init__(reddit, _data=_data)
         self._mod = None
 
     def __repr__(self):

@@ -77,7 +77,7 @@ class Auth(PRAWBase):
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if not isinstance(authenticator, UntrustedAuthenticator):
             raise ClientException(
-                "implicit can only be used with installed " "apps."
+                "implicit can only be used with installed apps."
             )
         implicit_session = session(
             ImplicitAuthorizer(authenticator, access_token, expires_in, scope)
@@ -126,6 +126,6 @@ class Auth(PRAWBase):
             )
         if implicit:
             raise ClientException(
-                "implicit can only be set for installed " "applications"
+                "implicit can only be set for installed applications"
             )
         return authenticator.authorize_url(duration, scopes, state)
