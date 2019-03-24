@@ -62,7 +62,7 @@ class RedditBase(PRAWBase):
         :param reddit: An instance of :class:`~.Reddit`.
 
         """
-        super(RedditBase, self).__init__(reddit, _data)
+        super(RedditBase, self).__init__(reddit, _data=_data)
         self._fetched = False
         self._info_params = {}
 

@@ -182,7 +182,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
             raise TypeError(
                 "Exactly one of `id`, `url`, or `_data` must be provided."
             )
-        super(Submission, self).__init__(reddit, _data)
+        super(Submission, self).__init__(reddit, _data=_data)
         self.comment_limit = 2048
 
         #: Specify the sort order for ``comments``

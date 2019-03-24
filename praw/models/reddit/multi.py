@@ -93,7 +93,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
     def __init__(self, reddit, _data):
         """Construct an instance of the Multireddit object."""
         self.path = None
-        super(Multireddit, self).__init__(reddit, _data)
+        super(Multireddit, self).__init__(reddit, _data=_data)
         self._author = Redditor(reddit, self.path.split("/", 3)[2])
         self._path = API_PATH["multireddit"].format(
             multi=self.name, user=self._author

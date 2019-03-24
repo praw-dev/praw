@@ -948,7 +948,7 @@ class Widget(PRAWBase):
         """Initialize an instance of the class."""
         self.subreddit = ""  # in case it isn't in _data
         self.id = ""  # in case it isn't in _data
-        super(Widget, self).__init__(reddit, _data)
+        super(Widget, self).__init__(reddit, _data=_data)
         self._mod = None
 
 
@@ -1268,7 +1268,7 @@ class CustomWidget(Widget):
         _data["imageData"] = [
             ImageData(reddit, data) for data in _data.pop("imageData")
         ]
-        super(CustomWidget, self).__init__(reddit, _data)
+        super(CustomWidget, self).__init__(reddit, _data=_data)
 
 
 class IDCard(Widget):
@@ -1513,7 +1513,7 @@ class ModeratorsWidget(Widget, BaseList):
         if self.CHILD_ATTRIBUTE not in _data:
             # .mod.update() sometimes returns payload without 'mods' field
             _data[self.CHILD_ATTRIBUTE] = []
-        super(ModeratorsWidget, self).__init__(reddit, _data)
+        super(ModeratorsWidget, self).__init__(reddit, _data=_data)
 
 
 class PostFlairWidget(Widget, BaseList):
@@ -1648,7 +1648,7 @@ class RulesWidget(Widget, BaseList):
         if self.CHILD_ATTRIBUTE not in _data:
             # .mod.update() sometimes returns payload without 'data' field
             _data[self.CHILD_ATTRIBUTE] = []
-        super(RulesWidget, self).__init__(reddit, _data)
+        super(RulesWidget, self).__init__(reddit, _data=_data)
 
 
 class TextArea(Widget):

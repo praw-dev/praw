@@ -73,7 +73,7 @@ class Message(InboxableMixin, ReplyableMixin, RedditBase):
 
     def __init__(self, reddit, _data):
         """Construct an instance of the Message object."""
-        super(Message, self).__init__(reddit, _data)
+        super(Message, self).__init__(reddit, _data=_data)
         self._fetched = True
 
     def delete(self):

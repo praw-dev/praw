@@ -133,7 +133,7 @@ class Comment(InboxableMixin, UserContentMixin, RedditBase):
                 "Exactly one of `id`, `url`, or `_data` must be provided."
             )
         self._mod = self._replies = self._submission = None
-        super(Comment, self).__init__(reddit, _data)
+        super(Comment, self).__init__(reddit, _data=_data)
         if id:
             self.id = id  # pylint: disable=invalid-name
         elif url:
