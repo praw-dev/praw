@@ -473,7 +473,7 @@ class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
 
         if not isinstance(response, dict):
             raise ClientException(
-                "Something went wrong with your post: " "{!r}".format(response)
+                "Something went wrong with your post: {!r}".format(response)
             )
 
         try:

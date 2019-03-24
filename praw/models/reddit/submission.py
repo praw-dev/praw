@@ -180,7 +180,7 @@ class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
         """
         if [id, url, _data].count(None) != 2:
             raise TypeError(
-                "Exactly one of `id`, `url`, or `_data` must be " "provided."
+                "Exactly one of `id`, `url`, or `_data` must be provided."
             )
         super(Submission, self).__init__(reddit, _data)
         self.comment_limit = 2048

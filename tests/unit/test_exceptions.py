@@ -20,7 +20,7 @@ class TestAPIException(object):
             "BAD_SOMETHING", "invalid something", "some_field"
         )
         assert str(exception) == (
-            "BAD_SOMETHING: 'invalid something' on " "field 'some_field'"
+            "BAD_SOMETHING: 'invalid something' on field 'some_field'"
         )
 
     def test_str_for_localized_error_string(self):

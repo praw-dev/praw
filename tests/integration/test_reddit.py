@@ -52,7 +52,7 @@ class TestReddit(IntegrationTest):
         ]  # NBA
         gen = self.reddit.live.info(ids)
         with self.recorder.use_cassette(
-            "TestReddit.test_live_info" "__contain_invalid_id"
+            "TestReddit.test_live_info__contain_invalid_id"
         ):
             threads = list(gen)
         assert len(threads) == 2
@@ -97,16 +97,14 @@ class TestReddit(IntegrationTest):
         assert sorted(thread_ids) == ids
 
     def test_live_now__featured(self):
-        with self.recorder.use_cassette(
-            "TestReddit.test_live_now" "__featured"
-        ):
+        with self.recorder.use_cassette("TestReddit.test_live_now__featured"):
             thread = self.reddit.live.now()
         assert isinstance(thread, LiveThread)
         assert thread.id == "z2f981agq7ky"
 
     def test_live_now__no_featured(self):
         with self.recorder.use_cassette(
-            "TestReddit.test_live_now" "__no_featured"
+            "TestReddit.test_live_now__no_featured"
         ):
             assert self.reddit.live.now() is None
 
