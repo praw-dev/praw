@@ -2459,15 +2459,12 @@ class SubredditStylesheet(object):
             return response
 
     def _upload_style_asset(self, image_path, image_type):
-        data = {}
-        data["imagetype"] = image_type
-        data["filepath"] = basename(image_path)
+        data = {"imagetype": image_type, "filepath": basename(image_path)}
         data["mimetype"] = "image/jpeg"
         if image_path.lower().endswith(".png"):
             data["mimetype"] = "image/png"
         url = API_PATH["style_asset_lease"].format(subreddit=self.subreddit)
 
-        # until we learn otherwise, assume this request always succeeds
         upload_lease = self.subreddit._reddit.post(url, data=data)[
             "s3UploadLease"
         ]
@@ -2496,8 +2493,7 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner()
 
         """
-        data = {}
-        data["bannerBackgroundImage"] = ""
+        data = {"bannerBackgroundImage": ""}
         self._update_structured_styles(data)
 
     def delete_banner_additional_image(self):
@@ -2513,9 +2509,10 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_additional_image()
 
         """
-        data = {}
-        data["bannerPositionedImage"] = ""
-        data["secondaryBannerPositionedImage"] = ""
+        data = {
+            "bannerPositionedImage": "",
+            "secondaryBannerPositionedImage": "",
+        }
         self._update_structured_styles(data)
 
     def delete_banner_hover_image(self):
@@ -2530,8 +2527,7 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_hover_image()
 
         """
-        data = {}
-        data["secondaryBannerPositionedImage"] = ""
+        data = {"secondaryBannerPositionedImage": ""}
         self._update_structured_styles(data)
 
     def delete_header(self):
