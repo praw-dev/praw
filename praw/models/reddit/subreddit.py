@@ -20,7 +20,7 @@ from .widgets import SubredditWidgets
 from .wikipage import WikiPage
 
 
-class Subreddit(RedditBase, MessageableMixin, SubredditListingMixin):
+class Subreddit(MessageableMixin, SubredditListingMixin, RedditBase):
     """A class for Subreddits.
 
     To obtain an instance of this class for subreddit ``/r/redditdev`` execute:

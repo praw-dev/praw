@@ -8,7 +8,7 @@ from .base import RedditBase
 from .mixins import MessageableMixin
 
 
-class Redditor(RedditBase, MessageableMixin, RedditorListingMixin):
+class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
     """A class representing the users of reddit.
 
     **Typical Attributes**

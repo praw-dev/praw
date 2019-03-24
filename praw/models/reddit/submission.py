@@ -9,7 +9,7 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 
-class Submission(RedditBase, SubmissionListingMixin, UserContentMixin):
+class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
     """A class for submissions to reddit.
 
     **Typical Attributes**

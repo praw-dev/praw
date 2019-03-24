@@ -6,7 +6,7 @@ from .redditor import Redditor
 from .subreddit import Subreddit
 
 
-class Message(RedditBase, InboxableMixin, ReplyableMixin):
+class Message(InboxableMixin, ReplyableMixin, RedditBase):
     """A class for private messages.
 
     **Typical Attributes**
