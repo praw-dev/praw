@@ -77,7 +77,7 @@ def permissions_string(permissions, known_permissions):
 
 
 def stream_generator(function, pause_after=None, skip_existing=False,
-                     attribute_name='fullname', **kwargs):
+                     attribute_name='fullname', **function_kwargs):
     """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
@@ -97,7 +97,7 @@ def stream_generator(function, pause_after=None, skip_existing=False,
 
     :param attribute_name: The field to use as an id (default: "fullname").
 
-    Additional arguments will be passed to the function.
+    Additional keyword arguments will be passed to ``function``.
 
     .. note:: This function internally uses an exponential delay with jitter
        between subsequent responses that contain no new results, up to a
@@ -170,7 +170,7 @@ def stream_generator(function, pause_after=None, skip_existing=False,
             limit -= without_before_counter
             without_before_counter = (without_before_counter + 1) % 30
         for item in reversed(list(function(
-                limit=limit, params={'before': before_attribute}, **kwargs))):
+                limit=limit, params={'before': before_attribute}, **function_kwargs))):
             attribute = getattr(item, attribute_name)
             if attribute in seen_attributes:
                 continue
