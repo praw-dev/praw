@@ -21,7 +21,7 @@ Unreleased
 * :meth:`~.Subreddit.submit_image` and `~.Subreddit.submit_video` support
   parameter ``timeout``. Default timeout has been raised from 2 seconds to
   10 seconds.
-* Added parameter ``function_kwargsargs`` to :func:`.stream_generator` to
+* Added parameter ``function_kwargs`` to :func:`.stream_generator` to
   pass additonal kwargs to ``function``.
 
 **Fixed**
