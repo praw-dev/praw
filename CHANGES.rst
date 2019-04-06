@@ -21,6 +21,8 @@ Unreleased
 * :meth:`~.Subreddit.submit_image` and `~.Subreddit.submit_video` support
   parameter ``timeout``. Default timeout has been raised from 2 seconds to
   10 seconds.
+* Added parameter ``function_kwargs`` to :func:`.stream_generator` to
+  pass additonal kwargs to ``function``.
 
 **Fixed**
 
@@ -95,7 +97,7 @@ Unreleased
 
 * Add method :meth:`.WikiPage.revision` to get a specific wiki page revision.
 * Added parameter ``skip_existing`` to :func:`.stream_generator` to skip
-  existing items when starting a stream`.
+  existing items when starting a stream.
 * Add method :meth:`.Front.best` to get the front page "best" listing.
 * Add :attr:`.Subreddit.widgets`, :class:`.SubredditWidgets`,
   and widget subclasses like :class:`.TextArea` to support fetching
