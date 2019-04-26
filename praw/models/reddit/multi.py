@@ -3,6 +3,7 @@ from json import dumps
 import re
 
 from ...const import API_PATH
+from ...util.cache import cachedproperty
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .redditor import Redditor
@@ -63,7 +64,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
                 title = title[:last_word]
         return title or "_"
 
-    @property
+    @cachedproperty
     def stream(self):
         """Provide an instance of :class:`.SubredditStream`.
 
@@ -86,9 +87,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
                print(submission)
 
         """
-        if self._stream is None:
-            self._stream = SubredditStream(self)
-        return self._stream
+        return SubredditStream(self)
 
     def __init__(self, reddit, _data):
         """Construct an instance of the Multireddit object."""
@@ -98,7 +97,6 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self._path = API_PATH["multireddit"].format(
             multi=self.name, user=self._author
         )
-        self._stream = None
         self.path = "/" + self._path[:-1]  # Prevent requests for path
         if "subreddits" in self.__dict__:
             self.subreddits = [

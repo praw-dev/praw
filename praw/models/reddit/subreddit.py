@@ -10,6 +10,7 @@ import websocket
 from ...compat import urljoin
 from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import APIException, ClientException
+from ...util.cache import cachedproperty
 from ..util import permissions_string, stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
@@ -187,7 +188,7 @@ class Subreddit(
             )
         return str(subreddit)
 
-    @property
+    @cachedproperty
     def banned(self):
         """Provide an instance of :class:`.SubredditRelationship`.
 
@@ -205,11 +206,9 @@ class Subreddit(
                print('{}: {}'.format(ban, ban.note))
 
         """
-        if self._banned is None:
-            self._banned = SubredditRelationship(self, "banned")
-        return self._banned
+        return SubredditRelationship(self, "banned")
 
-    @property
+    @cachedproperty
     def contributor(self):
         """Provide an instance of :class:`.ContributorRelationship`.
 
@@ -222,11 +221,9 @@ class Subreddit(
            reddit.subreddit('SUBREDDIT').contributor.add('NAME')
 
         """
-        if self._contributor is None:
-            self._contributor = ContributorRelationship(self, "contributor")
-        return self._contributor
+        return ContributorRelationship(self, "contributor")
 
-    @property
+    @cachedproperty
     def emoji(self):
         """Provide an instance of :class:`.SubredditEmoji`.
 
@@ -247,18 +244,14 @@ class Subreddit(
            result in a :class:`.ClientException`.
 
         """
-        if self._emoji is None:
-            self._emoji = SubredditEmoji(self)
-        return self._emoji
+        return SubredditEmoji(self)
 
-    @property
+    @cachedproperty
     def filters(self):
         """Provide an instance of :class:`.SubredditFilters`."""
-        if self._filters is None:
-            self._filters = SubredditFilters(self)
-        return self._filters
+        return SubredditFilters(self)
 
-    @property
+    @cachedproperty
     def flair(self):
         """Provide an instance of :class:`.SubredditFlair`.
 
@@ -279,18 +272,14 @@ class Subreddit(
                print(template)
 
         """
-        if self._flair is None:
-            self._flair = SubredditFlair(self)
-        return self._flair
+        return SubredditFlair(self)
 
-    @property
+    @cachedproperty
     def mod(self):
         """Provide an instance of :class:`.SubredditModeration`."""
-        if self._mod is None:
-            self._mod = SubredditModeration(self)
-        return self._mod
+        return SubredditModeration(self)
 
-    @property
+    @cachedproperty
     def moderator(self):
         """Provide an instance of :class:`.ModeratorRelationship`.
 
@@ -308,25 +297,19 @@ class Subreddit(
                print('{}: {}'.format(moderator, moderator.mod_permissions))
 
         """
-        if self._moderator is None:
-            self._moderator = ModeratorRelationship(self, "moderator")
-        return self._moderator
+        return ModeratorRelationship(self, "moderator")
 
-    @property
+    @cachedproperty
     def modmail(self):
         """Provide an instance of :class:`.Modmail`."""
-        if self._modmail is None:
-            self._modmail = Modmail(self)
-        return self._modmail
+        return Modmail(self)
 
-    @property
+    @cachedproperty
     def muted(self):
         """Provide an instance of :class:`.SubredditRelationship`."""
-        if self._muted is None:
-            self._muted = SubredditRelationship(self, "muted")
-        return self._muted
+        return SubredditRelationship(self, "muted")
 
-    @property
+    @cachedproperty
     def quaran(self):
         """Provide an instance of :class:`.SubredditQuarantine`.
 
@@ -335,11 +318,9 @@ class Subreddit(
         Subreddit is quarantined.
 
         """
-        if self._quarantine is None:
-            self._quarantine = SubredditQuarantine(self)
-        return self._quarantine
+        return SubredditQuarantine(self)
 
-    @property
+    @cachedproperty
     def stream(self):
         """Provide an instance of :class:`.SubredditStream`.
 
@@ -361,18 +342,14 @@ class Subreddit(
                print(submission)
 
         """
-        if self._stream is None:
-            self._stream = SubredditStream(self)
-        return self._stream
+        return SubredditStream(self)
 
-    @property
+    @cachedproperty
     def stylesheet(self):
         """Provide an instance of :class:`.SubredditStylesheet`."""
-        if self._stylesheet is None:
-            self._stylesheet = SubredditStylesheet(self)
-        return self._stylesheet
+        return SubredditStylesheet(self)
 
-    @property
+    @cachedproperty
     def widgets(self):
         """Provide an instance of :class:`.SubredditWidgets`.
 
@@ -392,11 +369,9 @@ class Subreddit(
            print(reddit.subreddit('redditdev').widgets.id_card)
 
         """
-        if self._widgets is None:
-            self._widgets = SubredditWidgets(self)
-        return self._widgets
+        return SubredditWidgets(self)
 
-    @property
+    @cachedproperty
     def wiki(self):
         """Provide an instance of :class:`.SubredditWiki`.
 
@@ -415,9 +390,7 @@ class Subreddit(
            print(wikipage.content_md)
 
         """
-        if self._wiki is None:
-            self._wiki = SubredditWiki(self)
-        return self._wiki
+        return SubredditWiki(self)
 
     def __init__(self, reddit, display_name=None, _data=None):
         """Initialize a Subreddit instance.
@@ -436,10 +409,6 @@ class Subreddit(
         super(Subreddit, self).__init__(reddit, _data=_data)
         if display_name:
             self.display_name = display_name
-        self._banned = self._contributor = self._filters = self._flair = None
-        self._emoji = self._widgets = None
-        self._mod = self._moderator = self._modmail = self._muted = None
-        self._quarantine = self._stream = self._stylesheet = self._wiki = None
         self._path = API_PATH["subreddit"].format(subreddit=self)
 
     def _info_path(self):
@@ -962,7 +931,7 @@ class SubredditFilters(object):
 class SubredditFlair(object):
     """Provide a set of functions to interact with a Subreddit's flair."""
 
-    @property
+    @cachedproperty
     def link_templates(self):
         """Provide an instance of :class:`.SubredditLinkFlairTemplates`.
 
@@ -976,11 +945,9 @@ class SubredditFlair(object):
                print(template)
 
         """
-        if self._link_templates is None:
-            self._link_templates = SubredditLinkFlairTemplates(self.subreddit)
-        return self._link_templates
+        return SubredditLinkFlairTemplates(self.subreddit)
 
-    @property
+    @cachedproperty
     def templates(self):
         """Provide an instance of :class:`.SubredditRedditorFlairTemplates`.
 
@@ -994,9 +961,7 @@ class SubredditFlair(object):
                print(template)
 
         """
-        if self._templates is None:
-            self._templates = SubredditRedditorFlairTemplates(self.subreddit)
-        return self._templates
+        return SubredditRedditorFlairTemplates(self.subreddit)
 
     def __call__(self, redditor=None, **generator_kwargs):
         """Return a generator for Redditors and their associated flair.
@@ -1027,7 +992,6 @@ class SubredditFlair(object):
         :param subreddit: The subreddit whose flair to work with.
 
         """
-        self._link_templates = self._templates = None
         self.subreddit = subreddit
 
     def configure(

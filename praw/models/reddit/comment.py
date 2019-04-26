@@ -1,5 +1,6 @@
 """Provide the Comment class."""
 from ...exceptions import ClientException
+from ...util.cache import cachedproperty
 from ..comment_forest import CommentForest
 from .base import RedditBase
 from .mixins import (
@@ -78,12 +79,10 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         parent_type = self.parent_id.split("_", 1)[0]
         return parent_type == self._reddit.config.kinds["submission"]
 
-    @property
+    @cachedproperty
     def mod(self):
         """Provide an instance of :class:`.CommentModeration`."""
-        if self._mod is None:
-            self._mod = CommentModeration(self)
-        return self._mod
+        return CommentModeration(self)
 
     @property
     def replies(self):
@@ -137,7 +136,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             raise TypeError(
                 "Exactly one of `id`, `url`, or `_data` must be provided."
             )
-        self._mod = self._replies = self._submission = None
+        self._replies = self._submission = None
         super(Comment, self).__init__(reddit, _data=_data)
         if id:
             self.id = id  # pylint: disable=invalid-name

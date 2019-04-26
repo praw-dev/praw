@@ -1,5 +1,6 @@
 """Provide the RedditorListingMixin class."""
 from ....compat import urljoin
+from ....util.cache import cachedproperty
 from ..generator import ListingGenerator
 from .base import BaseListingMixin
 from .gilded import GildedListingMixin
@@ -8,7 +9,7 @@ from .gilded import GildedListingMixin
 class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
     """Adds additional methods pertaining to Redditor instances."""
 
-    @property
+    @cachedproperty
     def comments(self):
         r"""Provide an instance of :class:`.SubListing` for comment access.
 
@@ -21,11 +22,9 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
                print(comment.body.split('\n', 1)[0][:79])
 
         """
-        if self.__dict__.get("_comments") is None:
-            self._comments = SubListing(self._reddit, self._path, "comments")
-        return self._comments
+        return SubListing(self._reddit, self._path, "comments")
 
-    @property
+    @cachedproperty
     def submissions(self):
         """Provide an instance of :class:`.SubListing` for submission access.
 
@@ -38,11 +37,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
                print(submission.title)
 
         """
-        if self.__dict__.get("_submissions") is None:
-            self._submissions = SubListing(
-                self._reddit, self._path, "submitted"
-            )
-        return self._submissions
+        return SubListing(self._reddit, self._path, "submitted")
 
     def downvoted(self, **generator_kwargs):
         """Return a ListingGenerator for items the user has downvoted.

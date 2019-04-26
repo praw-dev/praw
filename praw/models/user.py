@@ -1,6 +1,7 @@
 """Provides the User class."""
 from ..const import API_PATH
 from ..models import Preferences
+from ..util.cache import cachedproperty
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .reddit.redditor import Redditor
@@ -10,7 +11,7 @@ from .reddit.subreddit import Subreddit
 class User(PRAWBase):
     """The user class provides methods for the currently authenticated user."""
 
-    @property
+    @cachedproperty
     def preferences(self):
         """Get an instance of :class:`.Preferences`.
 
@@ -40,9 +41,7 @@ class User(PRAWBase):
 
 
         """
-        if self._preferences is None:
-            self._preferences = Preferences(self._reddit)
-        return self._preferences
+        return Preferences(self._reddit)
 
     def __init__(self, reddit):
         """Initialize a User instance.
@@ -51,7 +50,6 @@ class User(PRAWBase):
 
         """
         super(User, self).__init__(reddit, None)
-        self._me = self._preferences = None
 
     def blocked(self):
         """Return a RedditorList of blocked Redditors."""
@@ -96,7 +94,7 @@ class User(PRAWBase):
         """
         if self._reddit.read_only:
             return None
-        if self._me is None or not use_cache:
+        if "_me" not in self.__dict__ or not use_cache:
             user_data = self._reddit.get(API_PATH["me"])
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me

@@ -4,6 +4,7 @@ import os.path
 from json import dumps, JSONEncoder
 
 from ...const import API_PATH
+from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
 
@@ -207,24 +208,21 @@ class SubredditWidgets(PRAWBase):
 
     """
 
-    @property
+    @cachedproperty
     def id_card(self):
         """Get this subreddit's :class:`.IDCard` widget."""
-        if self._id_card is None:
-            self._id_card = self.items[self.layout["idCardWidget"]]
-        return self._id_card
+        return self.items[self.layout["idCardWidget"]]
 
-    @property
+    @cachedproperty
     def items(self):
         """Get this subreddit's widgets as a dict from ID to widget."""
-        if self._items is None:
-            self._items = {}
-            for item_name, data in self._raw_items.items():
-                data["subreddit"] = self.subreddit
-                self._items[item_name] = self._reddit._objector.objectify(data)
-        return self._items
+        items = {}
+        for item_name, data in self._raw_items.items():
+            data["subreddit"] = self.subreddit
+            items[item_name] = self._reddit._objector.objectify(data)
+        return items
 
-    @property
+    @cachedproperty
     def mod(self):
         """Get an instance of :class:`.SubredditWidgetsModeration`.
 
@@ -234,40 +232,28 @@ class SubredditWidgets(PRAWBase):
            will likely result in the data of this :class:`.SubredditWidgets`
            being outdated. To re-sync, call :meth:`.refresh`.
         """
-        if self._mod is None:
-            self._mod = SubredditWidgetsModeration(
-                self.subreddit, self._reddit
-            )
-        return self._mod
+        return SubredditWidgetsModeration(self.subreddit, self._reddit)
 
-    @property
+    @cachedproperty
     def moderators_widget(self):
         """Get this subreddit's :class:`.ModeratorsWidget`."""
-        if self._moderators_widget is None:
-            self._moderators_widget = self.items[
-                self.layout["moderatorWidget"]
-            ]
-        return self._moderators_widget
+        return self.items[self.layout["moderatorWidget"]]
 
-    @property
+    @cachedproperty
     def sidebar(self):
         """Get a list of Widgets that make up the sidebar."""
-        if self._sidebar is None:
-            self._sidebar = [
-                self.items[widget_name]
-                for widget_name in self.layout["sidebar"]["order"]
-            ]
-        return self._sidebar
+        return [
+            self.items[widget_name]
+            for widget_name in self.layout["sidebar"]["order"]
+        ]
 
-    @property
+    @cachedproperty
     def topbar(self):
         """Get a list of Widgets that make up the top bar."""
-        if self._topbar is None:
-            self._topbar = [
-                self.items[widget_name]
-                for widget_name in self.layout["topbar"]["order"]
-            ]
-        return self._topbar
+        return [
+            self.items[widget_name]
+            for widget_name in self.layout["topbar"]["order"]
+        ]
 
     def refresh(self):
         """Refresh the subreddit's widgets.
@@ -303,10 +289,7 @@ class SubredditWidgets(PRAWBase):
         :param subreddit: The :class:`.Subreddit` the widgets belong to.
 
         """
-        # set private variables used with properties to None.
-        self._id_card = self._moderators_widget = self._sidebar = None
-        self._topbar = self._items = self._raw_items = self._mod = None
-
+        self._raw_items = None
         self._fetched = False
         self.subreddit = subreddit
         self.progressive_images = False
@@ -328,9 +311,16 @@ class SubredditWidgets(PRAWBase):
         self._raw_items = data.pop("items")
         super(SubredditWidgets, self).__init__(self.subreddit._reddit, data)
 
-        # reset private variables used with properties to None.
-        self._id_card = self._moderators_widget = self._sidebar = None
-        self._topbar = self._items = None
+        cached_property_names = [
+            "id_card",
+            "moderators_widget",
+            "sidebar",
+            "topbar",
+            "items",
+        ]
+        inst_dict_pop = self.__dict__.pop
+        for name in cached_property_names:
+            inst_dict_pop(name, None)
 
         self._fetched = True
 

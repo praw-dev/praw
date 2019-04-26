@@ -1,5 +1,6 @@
 """Provide the SubredditListingMixin class."""
 from ....compat import urljoin
+from ....util.cache import cachedproperty
 from ...base import PRAWBase
 from ..generator import ListingGenerator
 from .base import BaseListingMixin
@@ -12,7 +13,7 @@ class SubredditListingMixin(
 ):
     """Adds additional methods pertaining to Subreddit-like instances."""
 
-    @property
+    @cachedproperty
     def comments(self):
         """Provide an instance of :class:`.CommentHelper`.
 
@@ -25,9 +26,7 @@ class SubredditListingMixin(
                print(comment.author)
 
         """
-        if self._comments is None:
-            self._comments = CommentHelper(self)
-        return self._comments
+        return CommentHelper(self)
 
     def __init__(self, reddit, _data):
         """Initialize a SubredditListingMixin instance.
@@ -36,7 +35,6 @@ class SubredditListingMixin(
 
         """
         super(SubredditListingMixin, self).__init__(reddit, _data=_data)
-        self._comments = None
 
 
 class CommentHelper(PRAWBase):
