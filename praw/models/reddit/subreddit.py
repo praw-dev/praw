@@ -15,13 +15,15 @@ from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .emoji import SubredditEmoji
-from .mixins import MessageableMixin
+from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
 from .widgets import SubredditWidgets
 from .wikipage import WikiPage
 
 
-class Subreddit(MessageableMixin, SubredditListingMixin, RedditBase):
+class Subreddit(
+    MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBase
+):
     """A class for Subreddits.
 
     To obtain an instance of this class for subreddit ``/r/redditdev`` execute:

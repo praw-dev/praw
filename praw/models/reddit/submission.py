@@ -5,12 +5,14 @@ from ...exceptions import ClientException
 from ..comment_forest import CommentForest
 from ..listing.mixins import SubmissionListingMixin
 from .base import RedditBase
-from .mixins import ThingModerationMixin, UserContentMixin
+from .mixins import FullnameMixin, ThingModerationMixin, UserContentMixin
 from .redditor import Redditor
 from .subreddit import Subreddit
 
 
-class Submission(SubmissionListingMixin, UserContentMixin, RedditBase):
+class Submission(
+    SubmissionListingMixin, UserContentMixin, FullnameMixin, RedditBase
+):
     """A class for submissions to reddit.
 
     **Typical Attributes**

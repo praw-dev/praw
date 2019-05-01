@@ -1,12 +1,12 @@
 """Provide the Message class."""
 from ...const import API_PATH
 from .base import RedditBase
-from .mixins import InboxableMixin, ReplyableMixin
+from .mixins import FullnameMixin, InboxableMixin, ReplyableMixin
 from .redditor import Redditor
 from .subreddit import Subreddit
 
 
-class Message(InboxableMixin, ReplyableMixin, RedditBase):
+class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     """A class for private messages.
 
     **Typical Attributes**

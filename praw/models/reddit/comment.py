@@ -2,11 +2,16 @@
 from ...exceptions import ClientException
 from ..comment_forest import CommentForest
 from .base import RedditBase
-from .mixins import InboxableMixin, ThingModerationMixin, UserContentMixin
+from .mixins import (
+    FullnameMixin,
+    InboxableMixin,
+    ThingModerationMixin,
+    UserContentMixin,
+)
 from .redditor import Redditor
 
 
-class Comment(InboxableMixin, UserContentMixin, RedditBase):
+class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     """A class that represents a reddit comments.
 
     **Typical Attributes**
