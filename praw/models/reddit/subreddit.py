@@ -1615,9 +1615,9 @@ class SubredditModeration(object):
 
         .. code:: python
 
-           for item in reddit.subreddit('mod').mod.reports():
-               print("User Reports: {}".format(report.user_reports))
-               print("Mod Reports: {}".format(report.mod_reports))
+           for reported_item in reddit.subreddit('mod').mod.reports():
+               print("User Reports: {}".format(reported_item.user_reports))
+               print("Mod Reports: {}".format(reported_item.mod_reports))
 
         """
         self._handle_only(only, generator_kwargs)
