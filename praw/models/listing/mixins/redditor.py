@@ -1,5 +1,5 @@
 """Provide the RedditorListingMixin class."""
-from ....const import urljoin
+from ....compat import urljoin
 from ..generator import ListingGenerator
 from .base import BaseListingMixin
 from .gilded import GildedListingMixin

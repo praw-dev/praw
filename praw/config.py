@@ -3,7 +3,7 @@ from threading import Lock
 import os
 import sys
 
-from .const import configparser
+from .compat import configparser
 from .exceptions import ClientException
 
 

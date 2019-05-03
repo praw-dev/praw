@@ -1,5 +1,5 @@
 """Provide the RisingListingMixin class."""
-from ....const import urljoin
+from ....compat import urljoin
 from ...base import PRAWBase
 from ..generator import ListingGenerator
 

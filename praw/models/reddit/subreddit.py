@@ -7,7 +7,8 @@ from os.path import basename, dirname, join
 from prawcore import Redirect
 import websocket
 
-from ...const import API_PATH, urljoin
+from ...compat import urljoin
+from ...const import API_PATH
 from ...exceptions import APIException, ClientException
 from ..util import permissions_string, stream_generator
 from ..listing.generator import ListingGenerator

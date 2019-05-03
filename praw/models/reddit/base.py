@@ -1,13 +1,9 @@
 """Provide the RedditBase class."""
 
-from sys import version_info
-
-from ...const import API_PATH, urlparse
+from ...compat import string_types, urlparse
+from ...const import API_PATH
 from ...exceptions import ClientException, PRAWException
 from ..base import PRAWBase
-
-if version_info.major > 2:
-    basestring = str  # pylint: disable=invalid-name
 
 
 class RedditBase(PRAWBase):
@@ -34,7 +30,7 @@ class RedditBase(PRAWBase):
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
-        if isinstance(other, basestring):  # basestring needed for py2 support
+        if isinstance(other, string_types):
             return other.lower() == str(self).lower()
         return (
             isinstance(other, self.__class__)
