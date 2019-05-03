@@ -8,7 +8,7 @@ from prawcore import Redirect
 import websocket
 
 from ...compat import urljoin
-from ...const import API_PATH
+from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import APIException, ClientException
 from ..util import permissions_string, stream_generator
 from ..listing.generator import ListingGenerator
@@ -2407,8 +2407,6 @@ class SubredditStream(object):
 class SubredditStylesheet(object):
     """Provides a set of stylesheet functions to a Subreddit."""
 
-    JPEG_HEADER = b"\xff\xd8\xff"
-
     def __call__(self):
         """Return the subreddit's stylesheet.
 
@@ -2442,9 +2440,9 @@ class SubredditStylesheet(object):
 
     def _upload_image(self, image_path, data):
         with open(image_path, "rb") as image:
-            header = image.read(len(self.JPEG_HEADER))
+            header = image.read(len(JPEG_HEADER))
             image.seek(0)
-            data["img_type"] = "jpg" if header == self.JPEG_HEADER else "png"
+            data["img_type"] = "jpg" if header == JPEG_HEADER else "png"
             url = API_PATH["upload_image"].format(subreddit=self.subreddit)
             response = self.subreddit._reddit.post(
                 url, data=data, files={"file": image}
