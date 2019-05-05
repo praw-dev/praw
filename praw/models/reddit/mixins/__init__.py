@@ -2,6 +2,7 @@
 from json import dumps
 from ....const import API_PATH
 from .editable import EditableMixin
+from .fullname import FullnameMixin
 from .gildable import GildableMixin
 from .inboxable import InboxableMixin
 from .inboxtoggleable import InboxToggleableMixin

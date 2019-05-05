@@ -3,6 +3,7 @@ from ...const import API_PATH
 from ..listing.generator import ListingGenerator
 from ..list.redditor import RedditorList
 from .base import RedditBase
+from .mixins import FullnameMixin
 from .redditor import Redditor
 
 
@@ -531,7 +532,7 @@ class LiveThreadContribution(object):
         self.thread._reset_attributes(*data.keys())
 
 
-class LiveUpdate(RedditBase):
+class LiveUpdate(FullnameMixin, RedditBase):
     """An individual :class:`.LiveUpdate` object.
 
     **Typical Attributes**

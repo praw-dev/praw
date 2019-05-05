@@ -5,10 +5,12 @@ from ...const import API_PATH
 from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
 from .base import RedditBase
-from .mixins import MessageableMixin
+from .mixins import FullnameMixin, MessageableMixin
 
 
-class Redditor(MessageableMixin, RedditorListingMixin, RedditBase):
+class Redditor(
+    MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
+):
     """A class representing the users of reddit.
 
     **Typical Attributes**
