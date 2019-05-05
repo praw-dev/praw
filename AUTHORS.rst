@@ -1,13 +1,7 @@
-Author/Maintainer
-=================
+Maintainers
+===========
 
 - Bryce Boe <bbzbryce@gmail.com> `@bboe <https://github.com/bboe>`_
-
-
-Team Members
-============
-
-- Ethan Dalool <edalool@yahoo.com> `@voussoir <https://github.com/voussoir>`_
 - Joe RH <jarhill0@gmail.com> `@jarhill0 <https://github.com/jarhill0>`_
 
 
@@ -28,6 +22,7 @@ Documentation Contributors
 Source Contributors
 ===================
 
+- Ethan Dalool <edalool@yahoo.com> `@voussoir <https://github.com/voussoir>`_
 - William McKinnerney <me@williammck.net> `@williammck <https://github.com/williammck>`_
 - Katharine Jarmul <katharine@kjamistan.com> `@kjam <https://github.com/kjam>`_
 - nmtake `@nmtake <https://github.com/nmtake>`_
