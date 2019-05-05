@@ -22,8 +22,9 @@ from prawcore import (
 )
 
 from . import models
+from .compat import configparser
 from .config import Config
-from .const import __version__, API_PATH, USER_AGENT_FORMAT, configparser
+from .const import __version__, API_PATH, USER_AGENT_FORMAT
 from .exceptions import ClientException
 from .objector import Objector
 

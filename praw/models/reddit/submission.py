@@ -1,5 +1,6 @@
 """Provide the Submission class."""
-from ...const import API_PATH, urljoin
+from ...compat import urljoin
+from ...const import API_PATH
 from ...exceptions import ClientException
 from ..comment_forest import CommentForest
 from ..listing.mixins import SubmissionListingMixin
