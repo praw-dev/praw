@@ -18,7 +18,7 @@ Unreleased
 * :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image`, and
   :meth:`~.Subreddit.submit_video` support parameter ``spoiler`` to
   mark the submission as a spoiler immediately upon posting.
-* :meth:`~.Subreddit.submit_image` and `~.Subreddit.submit_video` support
+* :meth:`~.Subreddit.submit_image` and :meth:`~.Subreddit.submit_video` support
   parameter ``timeout``. Default timeout has been raised from 2 seconds to
   10 seconds.
 * Added parameter ``function_kwargs`` to :func:`.stream_generator` to
