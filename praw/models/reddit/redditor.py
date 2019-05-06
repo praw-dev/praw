@@ -2,6 +2,7 @@
 from json import dumps
 
 from ...const import API_PATH
+from ...util.cache import cachedproperty
 from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
 from .base import RedditBase
@@ -72,7 +73,7 @@ class Redditor(
             return None
         return cls(reddit, data)
 
-    @property
+    @cachedproperty
     def stream(self):
         """Provide an instance of :class:`.RedditorStream`.
 
@@ -94,9 +95,7 @@ class Redditor(
                print(submission)
 
         """
-        if self._stream is None:
-            self._stream = RedditorStream(self)
-        return self._stream
+        return RedditorStream(self)
 
     def __init__(self, reddit, name=None, _data=None):
         """Initialize a Redditor instance.
@@ -116,7 +115,6 @@ class Redditor(
         if name:
             self.name = name
         self._path = API_PATH["user"].format(user=self)
-        self._stream = None
 
     def _info_path(self):
         return API_PATH["user_about"].format(user=self)

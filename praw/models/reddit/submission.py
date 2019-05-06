@@ -2,6 +2,7 @@
 from ...compat import urljoin
 from ...const import API_PATH
 from ...exceptions import ClientException
+from ...util.cache import cachedproperty
 from ..comment_forest import CommentForest
 from ..listing.mixins import SubmissionListingMixin
 from .base import RedditBase
@@ -124,7 +125,7 @@ class Submission(
         # This assumes _comments is set so that _fetch is called when it's not.
         return self._comments
 
-    @property
+    @cachedproperty
     def flair(self):
         """Provide an instance of :class:`.SubmissionFlair`.
 
@@ -143,16 +144,12 @@ class Submission(
            submission.flair.select(template_id, 'my custom value')
 
         """
-        if self._flair is None:
-            self._flair = SubmissionFlair(self)
-        return self._flair
+        return SubmissionFlair(self)
 
-    @property
+    @cachedproperty
     def mod(self):
         """Provide an instance of :class:`.SubmissionModeration`."""
-        if self._mod is None:
-            self._mod = SubmissionModeration(self)
-        return self._mod
+        return SubmissionModeration(self)
 
     @property
     def shortlink(self):
@@ -195,7 +192,6 @@ class Submission(
             self.id = id  # pylint: disable=invalid-name
         elif url is not None:
             self.id = self.id_from_url(url)
-        self._flair = self._mod = None
 
         self._comments_by_id = {}
 

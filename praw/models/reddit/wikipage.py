@@ -1,5 +1,6 @@
 """Provide the WikiPage class."""
 from ...const import API_PATH
+from ...util.cache import cachedproperty
 from ..listing.generator import ListingGenerator
 from .base import RedditBase
 from .redditor import Redditor
@@ -49,12 +50,10 @@ class WikiPage(RedditBase):
             )
             yield revision
 
-    @property
+    @cachedproperty
     def mod(self):
         """Provide an instance of :class:`.WikiPageModeration`."""
-        if self._mod is None:
-            self._mod = WikiPageModeration(self)
-        return self._mod
+        return WikiPageModeration(self)
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
@@ -74,7 +73,6 @@ class WikiPage(RedditBase):
         self._revision = revision
         self.subreddit = subreddit
         super(WikiPage, self).__init__(reddit, _data=_data)
-        self._mod = None
 
     def __repr__(self):
         """Return an object initialization representation of the instance."""

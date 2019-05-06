@@ -1,5 +1,6 @@
 """Provide the LiveThread class."""
 from ...const import API_PATH
+from ...util.cache import cachedproperty
 from ..listing.generator import ListingGenerator
 from ..list.redditor import RedditorList
 from .base import RedditBase
@@ -269,7 +270,7 @@ class LiveThread(RedditBase):
 
     STR_FIELD = "id"
 
-    @property
+    @cachedproperty
     def contrib(self):
         """Provide an instance of :class:`.LiveThreadContribution`.
 
@@ -281,11 +282,9 @@ class LiveThread(RedditBase):
            thread.contrib.add('### update')
 
         """
-        if self._contrib is None:
-            self._contrib = LiveThreadContribution(self)
-        return self._contrib
+        return LiveThreadContribution(self)
 
-    @property
+    @cachedproperty
     def contributor(self):
         """Provide an instance of :class:`.LiveContributorRelationship`.
 
@@ -302,9 +301,7 @@ class LiveThread(RedditBase):
                print(contributor, contributor.permissions)
 
         """
-        if self._contributor is None:
-            self._contributor = LiveContributorRelationship(self)
-        return self._contributor
+        return LiveContributorRelationship(self)
 
     def __eq__(self, other):
         """Return whether the other instance equals the current.
@@ -350,8 +347,6 @@ class LiveThread(RedditBase):
         super(LiveThread, self).__init__(reddit, _data=_data)
         if id:
             self.id = id  # pylint: disable=invalid-name
-        self._contrib = None
-        self._contributor = None
 
     def _info_path(self):
         return API_PATH["liveabout"].format(id=self.id)
@@ -559,7 +554,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
 
     STR_FIELD = "id"
 
-    @property
+    @cachedproperty
     def contrib(self):
         """Provide an instance of :class:`.LiveUpdateContribution`.
 
@@ -572,9 +567,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
            update.contrib  # LiveUpdateContribution instance
 
         """
-        if self._contrib is None:
-            self._contrib = LiveUpdateContribution(self)
-        return self._contrib
+        return LiveUpdateContribution(self)
 
     @property
     def thread(self):
@@ -617,7 +610,6 @@ class LiveUpdate(FullnameMixin, RedditBase):
                 "Either `thread_id` and `update_id`, or "
                 "`_data` must be provided."
             )
-        self._contrib = None
 
     def __setattr__(self, attribute, value):
         """Objectify author."""
