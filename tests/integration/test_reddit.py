@@ -24,7 +24,7 @@ class TestReddit(IntegrationTest):
 
     def test_info_url(self):
         with self.recorder.use_cassette("TestReddit.test_info_url"):
-            results = self.reddit.info(url="youtube.com")
+            results = list(self.reddit.info(url="youtube.com"))
         assert len(results) > 0
         for item in results:
             assert isinstance(item, Submission)
