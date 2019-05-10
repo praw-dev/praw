@@ -1,5 +1,6 @@
 """Provide the Reddit class."""
 import os
+from itertools import islice
 
 try:
     from update_checker import update_check
@@ -22,7 +23,7 @@ from prawcore import (
 )
 
 from . import models
-from .compat import configparser
+from .compat import configparser, string_types
 from .config import Config
 from .const import __version__, API_PATH, USER_AGENT_FORMAT
 from .exceptions import ClientException
@@ -464,29 +465,37 @@ class Reddit(object):
                   different set of submissions.
 
         """
-        if bool(fullnames) == bool(url):
+        none_count = [fullnames, url].count(None)
+        if none_count > 1:
             raise TypeError("Either `fullnames` or `url` must be provided.")
-        if fullnames:
-            if not isinstance(fullnames, list):
-                raise TypeError("fullnames must be a list")
+        if none_count < 1:
+            raise TypeError(
+                "Mutually exclusive parameters: `fullnames`, `url`"
+            )
 
-            def generator():
-                for position in range(0, len(fullnames), 100):
-                    fullname_chunk = fullnames[position : position + 100]
-                    params = {"id": ",".join(fullname_chunk)}
+        if fullnames is not None:
+            if isinstance(fullnames, string_types):
+                raise TypeError("`fullnames` must be a non-str iterable.")
+
+            def generator(fullnames):
+                iterable = iter(fullnames)
+                while True:
+                    chunk = list(islice(iterable, 100))
+                    if not chunk:
+                        break
+
+                    params = {"id": ",".join(chunk)}
                     for result in self.get(API_PATH["info"], params=params):
                         yield result
 
-            return generator()
+            return generator(fullnames)
 
-        try:
+        def generator(url):
             params = {"url": url}
-            url_list = [
-                result for result in self.get(API_PATH["info"], params=params)
-            ]
-            return url_list
-        except Exception:
-            raise TypeError("Invalid URL or no posts exist")
+            for result in self.get(API_PATH["info"], params=params):
+                yield result
+
+        return generator(url)
 
     def patch(self, path, data=None):
         """Return parsed objects returned from a PATCH request to ``path``.

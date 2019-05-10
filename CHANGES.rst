@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Changed**
+
+* :meth:`.Reddit.info` now accepts any non-str iterable for fullnames.
+* :meth:`.Reddit.info` now returns a generator instead of a list when
+  using the ``url`` parameter.
+
 6.2.0 (2019/05/05)
 ------------------
 
