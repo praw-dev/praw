@@ -22,7 +22,7 @@ Change Log
   parameter ``timeout``. Default timeout has been raised from 2 seconds to
   10 seconds.
 * Added parameter ``function_kwargs`` to :func:`.stream_generator` to
-  pass additonal kwargs to ``function``.
+  pass additional kwargs to ``function``.
 
 **Fixed**
 
