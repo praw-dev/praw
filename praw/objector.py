@@ -106,6 +106,8 @@ class Objector(object):
             return self._reddit.redditor(data["name"])
         elif {"parent_id"}.issubset(data):
             parser = self.parsers[self._reddit.config.kinds["comment"]]
+        elif "collection_id" in data.keys():
+            parser = self.parsers["Collection"]
         else:
             if "user" in data:
                 parser = self.parsers[self._reddit.config.kinds["redditor"]]

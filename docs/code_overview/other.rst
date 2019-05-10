@@ -7,6 +7,15 @@ instances of them bound to an attribute of one of the PRAW models.
 
 .. toctree::
    :maxdepth: 2
+   :caption: Collections
+
+   other/collection
+   other/collectionmoderation
+   other/subredditcollections
+   other/subredditcollectionsmoderation
+
+.. toctree::
+   :maxdepth: 2
    :caption: Flair Helpers
 
    other/submissionflair
