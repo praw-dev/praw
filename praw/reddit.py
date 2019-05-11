@@ -317,7 +317,6 @@ class Reddit(object):
             Reddit.update_checked = True
 
     def _prepare_objector(self):
-        self._objector = Objector(self)
         mappings = {
             self.config.kinds["comment"]: models.Comment,
             self.config.kinds["message"]: models.Message,
@@ -355,8 +354,7 @@ class Reddit(object):
             "textarea": models.TextArea,
             "widget": models.Widget,
         }
-        for kind, klass in mappings.items():
-            self._objector.register(kind, klass)
+        self._objector = Objector(self, mappings)
 
     def _prepare_prawcore(self, requestor_class=None, requestor_kwargs=None):
         requestor_class = requestor_class or Requestor

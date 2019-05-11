@@ -28,13 +28,13 @@ class Objector(object):
         """
         return {cls._camel_to_snake(k): v for k, v in dictionary.items()}
 
-    def __init__(self, reddit):
+    def __init__(self, reddit, parsers=None):
         """Initialize an Objector instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
 
         """
-        self.parsers = {}
+        self.parsers = {} if parsers is None else parsers
         self._reddit = reddit
 
     def kind(self, instance):
