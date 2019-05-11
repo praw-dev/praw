@@ -553,6 +553,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
     """
 
     STR_FIELD = "id"
+    kind = "LiveUpdate"
 
     @cachedproperty
     def contrib(self):

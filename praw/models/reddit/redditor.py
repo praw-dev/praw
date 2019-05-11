@@ -97,6 +97,11 @@ class Redditor(
         """
         return RedditorStream(self)
 
+    @property
+    def kind(self):
+        """Return the class's kind."""
+        return self._reddit.config.kinds["redditor"]
+
     def __init__(self, reddit, name=None, _data=None):
         """Initialize a Redditor instance.
 

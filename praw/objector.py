@@ -38,7 +38,9 @@ class Objector(object):
         self._reddit = reddit
 
     def kind(self, instance):
-        """Return the kind from the instance class.
+        """Deprecated.
+
+        Return the kind from the instance class.
 
         :param instance: An instance of a subclass of RedditBase.
 

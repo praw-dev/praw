@@ -98,6 +98,11 @@ class Submission(
         return submission_id
 
     @property
+    def kind(self):
+        """Return the class's kind."""
+        return self._reddit.config.kinds["submission"]
+
+    @property
     def comments(self):
         """Provide an instance of :class:`.CommentForest`.
 

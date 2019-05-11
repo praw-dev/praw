@@ -188,6 +188,11 @@ class Subreddit(
             )
         return str(subreddit)
 
+    @property
+    def kind(self):
+        """Return the class's kind."""
+        return self._reddit.config.kinds["subreddit"]
+
     @cachedproperty
     def banned(self):
         """Provide an instance of :class:`.SubredditRelationship`.
