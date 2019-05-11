@@ -9,10 +9,13 @@ Unreleased
 * Collections (:class:`.Collection` and helper classes).
 * :meth:`.submit`, :meth:`.submit_image`, and :meth:`.submit_video` can be used
   to submit a post directly to a collection.
+* ``FullnameMixin.kind``
+* ``praw.util.camel_to_snake`` and ``praw.util.snake_case_keys``.
 
 **Changed**
 
-* :meth:`.Reddit.info` now accepts any non-str iterable for fullnames.
+* :meth:`.Reddit.info` now accepts any non-str iterable for fullnames
+  (not just ``list``).
 * :meth:`.Reddit.info` now returns a generator instead of a list when
   using the ``url`` parameter.
 
