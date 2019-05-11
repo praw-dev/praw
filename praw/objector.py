@@ -1,32 +1,10 @@
 """Provides the Objector class."""
-import re
-
 from .exceptions import APIException
+from .util import snake_case_keys
 
 
 class Objector(object):
     """The objector builds :class:`.RedditBase` objects."""
-
-    @staticmethod
-    def _camel_to_snake(name):
-        """Return `name` converted from camelCase to snake_case.
-
-        Code from http://stackoverflow.com/a/1176023/.
-
-        """
-        first_break_replaced = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
-        return re.sub(
-            "([a-z0-9])([A-Z])", r"\1_\2", first_break_replaced
-        ).lower()
-
-    @classmethod
-    def _snake_case_keys(cls, dictionary):
-        """Return a copy of dictionary with keys converted to snake_case.
-
-        :param dictionary: The dict to be corrected.
-
-        """
-        return {cls._camel_to_snake(k): v for k, v in dictionary.items()}
 
     def __init__(self, reddit, parsers=None):
         """Initialize an Objector instance.
@@ -63,27 +41,27 @@ class Objector(object):
             parser = self.parsers["ModmailConversation"]
         elif {"actionTypeId", "author", "date"}.issubset(data):
             # Modmail mod action
-            data = self._snake_case_keys(data)
+            data = snake_case_keys(data)
             parser = self.parsers["ModmailAction"]
         elif {"bodyMarkdown", "isInternal"}.issubset(data):
             # Modmail message
-            data = self._snake_case_keys(data)
+            data = snake_case_keys(data)
             parser = self.parsers["ModmailMessage"]
         elif {"isAdmin", "isDeleted"}.issubset(data):
             # Modmail author
-            data = self._snake_case_keys(data)
+            data = snake_case_keys(data)
             # Prevent clobbering base-36 id
             del data["id"]
             data["is_subreddit_mod"] = data.pop("is_mod")
             parser = self.parsers[self._reddit.config.kinds["redditor"]]
         elif {"banStatus", "muteStatus", "recentComments"}.issubset(data):
             # Modmail user
-            data = self._snake_case_keys(data)
+            data = snake_case_keys(data)
             data["created_string"] = data.pop("created")
             parser = self.parsers[self._reddit.config.kinds["redditor"]]
         elif {"displayName", "id", "type"}.issubset(data):
             # Modmail subreddit
-            data = self._snake_case_keys(data)
+            data = snake_case_keys(data)
             parser = self.parsers[self._reddit.config.kinds[data["type"]]]
         elif {"date", "id", "name"}.issubset(data) or {
             "id",
