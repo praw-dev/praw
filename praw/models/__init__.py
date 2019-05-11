@@ -10,6 +10,7 @@ from .listing.generator import ListingGenerator
 from .listing.listing import Listing
 from .modaction import ModAction
 from .preferences import Preferences
+from .reddit.collections import Collection
 from .reddit.comment import Comment
 from .reddit.emoji import Emoji
 from .reddit.live import LiveThread, LiveUpdate

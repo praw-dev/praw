@@ -209,6 +209,30 @@ class Subreddit(
         return SubredditRelationship(self, "banned")
 
     @cachedproperty
+    def collections(self):
+        r"""Provide an instance of :class:`.SubredditCollections`.
+
+        To see the permalinks of all :class:`.Collection`\ s that belong to
+        a subreddit, try:
+
+        .. code-block:: python
+
+           for collection in reddit.subreddit('SUBREDDIT').collections:
+               print(collection.permalink)
+
+        To get a specific :class:`.Collection` by its UUID or permalink,
+        use one of the following:
+
+        .. code-block:: python
+
+           collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
+           collection = reddit.subreddit('SUBREDDIT').collections(
+               permalink='https://reddit.com/r/SUBREDDIT/collection/some_uuid')
+
+        """
+        return self._subreddit_collections_class(self._reddit, self)
+
+    @cachedproperty
     def contributor(self):
         """Provide an instance of :class:`.ContributorRelationship`.
 
@@ -600,6 +624,7 @@ class Subreddit(
         send_replies=True,
         nsfw=False,
         spoiler=False,
+        collection_id=None,
     ):
         """Add a submission to the subreddit.
 
@@ -608,6 +633,8 @@ class Subreddit(
             submission. Use an empty string, ``''``, to make a title-only
             submission.
         :param url: The URL for a ``link`` submission.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
         :param flair_id: The flair template to select (default: None).
         :param flair_text: If the template's ``flair_text_editable`` value is
             True, this value will set a custom text (default: None).
@@ -649,7 +676,11 @@ class Subreddit(
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
         }
-        for key, value in (("flair_id", flair_id), ("flair_text", flair_text)):
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+        ):
             if value is not None:
                 data[key] = value
         if selftext is not None:
@@ -670,11 +701,14 @@ class Subreddit(
         nsfw=False,
         spoiler=False,
         timeout=10,
+        collection_id=None,
     ):
         """Add an image submission to the subreddit.
 
         :param title: The title of the submission.
         :param image_path: The path to an image, to upload and post.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
         :param flair_id: The flair template to select (default: None).
         :param flair_text: If the template's ``flair_text_editable`` value is
             True, this value will set a custom text (default: None).
@@ -718,7 +752,11 @@ class Subreddit(
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
         }
-        for key, value in (("flair_id", flair_id), ("flair_text", flair_text)):
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+        ):
             if value is not None:
                 data[key] = value
         data.update(kind="image", url=self._upload_media(image_path))
@@ -737,6 +775,7 @@ class Subreddit(
         nsfw=False,
         spoiler=False,
         timeout=10,
+        collection_id=None,
     ):
         """Add a video or videogif submission to the subreddit.
 
@@ -748,6 +787,8 @@ class Subreddit(
         :param thumbnail_path: (Optional) The path to an image, to be uploaded
             and used as the thumbnail for this video. If not provided, the
             PRAW logo will be used as the thumbnail.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
         :param flair_id: The flair template to select (default: ``None``).
         :param flair_text: If the template's ``flair_text_editable`` value is
             True, this value will set a custom text (default: ``None``).
@@ -792,7 +833,11 @@ class Subreddit(
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
         }
-        for key, value in (("flair_id", flair_id), ("flair_text", flair_text)):
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+        ):
             if value is not None:
                 data[key] = value
         data.update(

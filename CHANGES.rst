@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Added**
+
+* Collections (:class:`.Collection` and helper classes).
+* :meth:`.submit`, :meth:`.submit_image`, and :meth:`.submit_video` can be used
+  to submit a post directly to a collection.
+
 6.2.0 (2019/05/05)
 ------------------
 
@@ -22,7 +31,7 @@ Change Log
   parameter ``timeout``. Default timeout has been raised from 2 seconds to
   10 seconds.
 * Added parameter ``function_kwargs`` to :func:`.stream_generator` to
-  pass additonal kwargs to ``function``.
+  pass additional kwargs to ``function``.
 
 **Fixed**
 
