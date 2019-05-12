@@ -210,13 +210,15 @@ class CollectionModeration(PRAWBase):
         """
         if isinstance(post, Submission):
             return post.fullname
-        elif not isinstance(post, string_types[0]):
+        elif not isinstance(post, string_types):
             raise TypeError(
                 "Cannot get fullname from object of type {}.".format(
                     type(post)
                 )
             )
-        if post.startswith("{}_".format(self._submission_kind)):
+        if post.startswith(
+            "{}_".format(self._reddit.config.kinds["submission"])
+        ):
             return post
         try:
             return self._reddit.submission(url=post).fullname
@@ -230,9 +232,6 @@ class CollectionModeration(PRAWBase):
         """
         super(CollectionModeration, self).__init__(reddit, _data=None)
         self.collection_id = collection_id
-        self._submission_kind = self._reddit._objector.kind(
-            self._reddit.submission(id="fake")
-        )
 
     def add_post(self, submission):
         """Add a post to the collection.
