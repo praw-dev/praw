@@ -4,6 +4,12 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* Collections (:class:`.Collection` and helper classes).
+* :meth:`.submit`, :meth:`.submit_image`, and :meth:`.submit_video` can be used
+  to submit a post directly to a collection.
+
 **Changed**
 
 * :meth:`.Reddit.info` now accepts any non-str iterable for fullnames.
@@ -31,7 +37,7 @@ Unreleased
   parameter ``timeout``. Default timeout has been raised from 2 seconds to
   10 seconds.
 * Added parameter ``function_kwargs`` to :func:`.stream_generator` to
-  pass additonal kwargs to ``function``.
+  pass additional kwargs to ``function``.
 
 **Fixed**
 

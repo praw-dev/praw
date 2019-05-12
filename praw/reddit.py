@@ -326,6 +326,7 @@ class Reddit(object):
             self.config.kinds["subreddit"]: models.Subreddit,
             self.config.kinds["trophy"]: models.Trophy,
             "Button": models.Button,
+            "Collection": models.Collection,
             "Image": models.Image,
             "LabeledMulti": models.Multireddit,
             "Listing": models.Listing,
