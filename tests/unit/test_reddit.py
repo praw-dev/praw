@@ -41,22 +41,21 @@ class TestReddit(UnitTest):
 
     def test_info__invalid_param(self):
         with pytest.raises(TypeError) as excinfo:
-            print(self.reddit.info(None))
+            self.reddit.info(None)
 
         err_str = "Either `fullnames` or `url` must be provided."
         assert str(excinfo.value) == err_str
 
-    def test_info__invalid_url(self):
         with pytest.raises(TypeError) as excinfo:
-            print(self.reddit.info(url="NoTaReAlUrL"))
+            self.reddit.info([], "")
 
-        assert str(excinfo.value == "Invalid URL or no posts exist")
+        assert excinfo.match("(?i)mutually exclusive")
 
     def test_info__not_list(self):
         with pytest.raises(TypeError) as excinfo:
-            print(self.reddit.info("Let's try a string"))
+            self.reddit.info("Let's try a string")
 
-        assert str(excinfo.value) == "fullnames must be a list"
+        assert "must be a non-str iterable" in str(excinfo.value)
 
     def test_live_info__valid_param(self):
         gen = self.reddit.live.info(["dummy", "dummy2"])
