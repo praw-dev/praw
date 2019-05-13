@@ -15,21 +15,6 @@ class Objector(object):
         self.parsers = {} if parsers is None else parsers
         self._reddit = reddit
 
-    def kind(self, instance):
-        """Deprecated.
-
-        Return the kind from the instance class.
-
-        :param instance: An instance of a subclass of RedditBase.
-
-        """
-        retval = None
-        for key in self.parsers:
-            if isinstance(instance, self.parsers[key]):
-                retval = key
-                break
-        return retval
-
     def _objectify_dict(self, data):
         """Create RedditBase objects from dicts.
 
@@ -140,12 +125,3 @@ class Objector(object):
             return self._objectify_dict(data)
 
         return data
-
-    def register(self, kind, cls):
-        """Register a class for a given kind.
-
-        :param kind: The kind in the parsed data to map to ``cls``.
-        :param cls: A RedditBase class.
-
-        """
-        self.parsers[kind] = cls
