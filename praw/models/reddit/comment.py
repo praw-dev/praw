@@ -1,4 +1,5 @@
 """Provide the Comment class."""
+from ...const import API_PATH
 from ...exceptions import ClientException
 from ...util.cache import cachedproperty
 from ..comment_forest import CommentForest
@@ -164,6 +165,30 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             value = self._reddit.subreddit(value)
         super(Comment, self).__setattr__(attribute, value)
 
+    def _fetch_info(self):
+        return ("info", {}, {"id": self.fullname})
+
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request("GET", path, params)
+
+    def _fetch(self):
+        data = self._fetch_data()
+        data = data["data"]
+
+        if not data["children"]:
+            raise ClientException(
+                "No data returned for comment {}".format(
+                    self.__class__.__name__, self.fullname
+                )
+            )
+
+        comment_data = data["children"][0]["data"]
+        other = type(self)(self._reddit, _data=comment_data)
+        self.__dict__.update(other.__dict__)
+        self._fetched = True
+
     def _extract_submission_id(self):
         if "context" in self.__dict__:
             return self.context.rsplit("/", 4)[1]
@@ -250,10 +275,8 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         if "context" in self.__dict__:  # Using hasattr triggers a fetch
             comment_path = self.context.split("?", 1)[0]
         else:
-            comment_path = "{}_/{}".format(
-                self.submission._info_path(),  # pylint: disable=no-member
-                self.id,
-            )
+            path = API_PATH["submission"].format(id=self.submission.id)
+            comment_path = "{}_/{}".format(path, self.id)
 
         # The context limit appears to be 8, but let's ask for more anyway.
         params = {"context": 100}

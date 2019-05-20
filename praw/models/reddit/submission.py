@@ -4,6 +4,7 @@ from ...const import API_PATH
 from ...exceptions import ClientException
 from ...util.cache import cachedproperty
 from ..comment_forest import CommentForest
+from ..listing.listing import Listing
 from ..listing.mixins import SubmissionListingMixin
 from .base import RedditBase
 from .mixins import FullnameMixin, ThingModerationMixin, UserContentMixin
@@ -190,7 +191,7 @@ class Submission(
         super(Submission, self).__init__(reddit, _data=_data)
         self.comment_limit = 2048
 
-        #: Specify the sort order for ``comments``
+        # Specify the sort order for ``comments``
         self.comment_sort = "best"
 
         if id is not None:
@@ -216,21 +217,33 @@ class Submission(
         for position in range(0, len(all_submissions), chunk_size):
             yield ",".join(all_submissions[position : position + 50])
 
-    def _fetch(self):
-        other, comments = self._reddit.get(
-            self._info_path(),
-            params={"limit": self.comment_limit, "sort": self.comment_sort},
+    def _fetch_info(self):
+        return (
+            "submission",
+            {"id": self.id},
+            {"limit": self.comment_limit, "sort": self.comment_sort},
         )
-        other = other.children[0]
-        delattr(other, "comment_limit")
-        delattr(other, "comment_sort")
-        other._comments = CommentForest(self)
-        self.__dict__.update(other.__dict__)
-        self.comments._update(comments.children)
-        self._fetched = True
 
-    def _info_path(self):
-        return API_PATH["submission"].format(id=self.id)
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request("GET", path, params)
+
+    def _fetch(self):
+        data = self._fetch_data()
+        submission_listing, comment_listing = data
+        comment_listing = Listing(self._reddit, _data=comment_listing["data"])
+
+        submission_data = submission_listing["data"]["children"][0]["data"]
+        submission = type(self)(self._reddit, _data=submission_data)
+        delattr(submission, "comment_limit")
+        delattr(submission, "comment_sort")
+        submission._comments = CommentForest(self)
+
+        self.__dict__.update(submission.__dict__)
+        self.comments._update(comment_listing.children)
+
+        self._fetched = True
 
     def mark_visited(self):
         """Mark submission as visited.
