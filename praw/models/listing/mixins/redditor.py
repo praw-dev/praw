@@ -133,7 +133,7 @@ class SubListing(BaseListingMixin):
         :param subpath: The additional path to this sublisting.
 
         """
-        super(SubListing, self).__init__(reddit, None)
+        super(SubListing, self).__init__(reddit, _data=None)
         self._listing_use_sort = True
         self._reddit = reddit
         self._path = urljoin(base_path, subpath)

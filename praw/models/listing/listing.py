@@ -30,6 +30,4 @@ class FlairListing(Listing):
     @property
     def after(self):
         """Return the next attribute or None."""
-        if hasattr(self, "next"):
-            return self.next  # pylint: disable=no-member
-        return None
+        return getattr(self, "next", None)

@@ -49,7 +49,7 @@ class User(PRAWBase):
         This class is intended to be interfaced with through ``reddit.user``.
 
         """
-        super(User, self).__init__(reddit, None)
+        super(User, self).__init__(reddit, _data=None)
 
     def blocked(self):
         """Return a RedditorList of blocked Redditors."""

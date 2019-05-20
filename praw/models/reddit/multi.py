@@ -45,7 +45,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
     """
 
     STR_FIELD = "path"
-    RE_INVALID = re.compile(r"(\s|\W|_)+", re.UNICODE)
+    RE_INVALID = re.compile(r"[\W_]+", re.UNICODE)
 
     @staticmethod
     def sluggify(title):

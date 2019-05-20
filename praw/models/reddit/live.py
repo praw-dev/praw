@@ -615,7 +615,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
             super(LiveUpdate, self).__init__(reddit, _data=_data)
             self._fetched = True
         elif thread_id and update_id:
-            super(LiveUpdate, self).__init__(reddit, None)
+            super(LiveUpdate, self).__init__(reddit, _data=None)
             self._thread = LiveThread(self._reddit, thread_id)
             self.id = update_id  # pylint: disable=invalid-name
         else:
