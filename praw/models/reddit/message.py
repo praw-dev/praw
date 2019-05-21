@@ -71,6 +71,11 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
 
         return cls(reddit, _data=data)
 
+    @property
+    def kind(self):
+        """Return the class's kind."""
+        return self._reddit.config.kinds["message"]
+
     def __init__(self, reddit, _data):
         """Construct an instance of the Message object."""
         super(Message, self).__init__(reddit, _data=_data)

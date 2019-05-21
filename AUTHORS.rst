@@ -3,6 +3,7 @@ Maintainers
 
 - Bryce Boe <bbzbryce@gmail.com> `@bboe <https://github.com/bboe>`_
 - Joe RH <jarhill0@gmail.com> `@jarhill0 <https://github.com/jarhill0>`_
+- Daniel P. <pyprohly@outlook.com> `@Pyprohly <https://github.com/Pyprohly>`_
 
 
 Documentation Contributors

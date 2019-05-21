@@ -74,6 +74,11 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return parts[-1]
 
     @property
+    def kind(self):
+        """Return the class's kind."""
+        return self._reddit.config.kinds["comment"]
+
+    @property
     def is_root(self):
         """Return True when the comment is a top level comment."""
         parent_type = self.parent_id.split("_", 1)[0]

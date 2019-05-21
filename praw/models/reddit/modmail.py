@@ -1,5 +1,6 @@
 """Provide models for new modmail."""
 from ...const import API_PATH
+from ...util import snake_case_keys
 from .base import RedditBase
 
 
@@ -118,7 +119,7 @@ class ModmailConversation(RedditBase):
                 cls._convert_conversation_objects(data, reddit)
             )
 
-        conversation = reddit._objector._snake_case_keys(conversation)
+        conversation = snake_case_keys(conversation)
 
         return cls(reddit, _data=conversation)
 

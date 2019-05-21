@@ -6,6 +6,8 @@ from ....exceptions import PRAWException
 class FullnameMixin(object):
     """Interface for classes that have a fullname."""
 
+    kind = None
+
     @property
     def fullname(self):
         """Return the object's fullname.
@@ -14,9 +16,7 @@ class FullnameMixin(object):
         underscore and the object's base36 ID, e.g., ``t1_c5s96e0``.
 
         """
-        return "{}_{}".format(
-            self._reddit._objector.kind(self), self.id
-        )  # pylint: disable=invalid-name
+        return "{}_{}".format(self.kind, self.id)
 
     def _fetch(self):
         if "_info_path" in dir(self):
