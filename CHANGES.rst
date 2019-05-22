@@ -11,6 +11,9 @@ Unreleased
   to submit a post directly to a collection.
 * ``FullnameMixin.kind``
 * ``praw.util.camel_to_snake`` and ``praw.util.snake_case_keys``.
+* Comments can now be locked and unlocked via ``comment.mod.lock()`` and
+  ``comment.mod.unlock()``. See: (:meth:`.ThingModerationMixin.lock` and
+  :meth:`.ThingModerationMixin.unlock`).
 
 **Changed**
 
@@ -618,8 +621,8 @@ PRAW 4. If you require additional help please ask on `/r/redditdev
   near-realtime.
 * :meth:`praw.models.User.karma` to retrieve the current user's subreddit
   karma.
-* :meth:`praw.models.reddit.submission.SubmissionModeration.lock` and
-  :meth:`praw.models.reddit.submission.SubmissionModeration.unlock` to change a
+* ``praw.models.reddit.submission.SubmissionModeration.lock`` and
+  ``praw.models.reddit.submission.SubmissionModeration.unlock`` to change a
   Submission's lock state.
 * :meth:`praw.models.reddit.subreddit.SubredditFlairTemplates.delete` to
   delete a single flair template.
