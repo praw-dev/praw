@@ -44,4 +44,5 @@ Source Contributors
 - Elaina Martineau `@CrackedP0t <https://github.com/CrackedP0t>`_
 - Rob Curtis <BourbonInExile@gmail.com> `@waab76 <https://github.com/waab76>`_
 - LilSpazJoekp `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
+- Timendum `@timendum <https://github.com/timendum>`_
 - Add "Name <email (optional)> and github profile link" above this line.
