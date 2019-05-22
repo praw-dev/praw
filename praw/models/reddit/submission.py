@@ -465,23 +465,6 @@ class SubmissionModeration(ThingModerationMixin):
         url = API_PATH["flair"].format(subreddit=self.thing.subreddit)
         self.thing._reddit.post(url, data=data)
 
-    def lock(self):
-        """Lock the submission.
-
-        Example usage:
-
-        .. code:: python
-
-           submission = reddit.submission(id='5or86n')
-           submission.mod.lock()
-
-        See also :meth:`~.unlock`
-
-        """
-        self.thing._reddit.post(
-            API_PATH["lock"], data={"id": self.thing.fullname}
-        )
-
     def nsfw(self):
         """Mark as not safe for work.
 
@@ -580,23 +563,6 @@ class SubmissionModeration(ThingModerationMixin):
         self.thing._reddit.post(
             API_PATH["suggested_sort"],
             data={"id": self.thing.fullname, "sort": sort},
-        )
-
-    def unlock(self):
-        """Unlock the submission.
-
-        Example:
-
-        .. code:: python
-
-           submission = reddit.submission(id='5or86n')
-           submission.mod.unlock()
-
-        See also :meth:`~.lock`
-
-        """
-        self.thing._reddit.post(
-            API_PATH["unlock"], data={"id": self.thing.fullname}
         )
 
     def unspoiler(self):

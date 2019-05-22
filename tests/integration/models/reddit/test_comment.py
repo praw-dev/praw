@@ -267,10 +267,20 @@ class TestCommentModeration(IntegrationTest):
         ):
             self.reddit.comment("da2g5y6").mod.ignore_reports()
 
+    def test_lock(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestCommentModeration.test_lock"):
+            Comment(self.reddit, "da2g6ne").mod.lock()
+
     def test_remove(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestCommentModeration.test_remove"):
             self.reddit.comment("da2g5y6").mod.remove(spam=True)
+
+    def test_unlock(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestCommentModeration.test_unlock"):
+            Comment(self.reddit, "da2g6ne").mod.unlock()
 
     @mock.patch("time.sleep", return_value=None)
     def test_send_removal_message(self, _):
