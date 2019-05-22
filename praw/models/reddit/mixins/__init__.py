@@ -97,6 +97,25 @@ class ThingModerationMixin(object):
             API_PATH["ignore_reports"], data={"id": self.thing.fullname}
         )
 
+    def lock(self):
+        """Lock the a :class:`~.Comment` or :class:`~.Submission`.
+
+        Example usage:
+
+           # lock a comment:
+           comment = reddit.comment('dkk4qjd')
+           comment.mod.lock()
+           # lock a submission:
+           submission = reddit.submission(id='5or86n')
+           submission.mod.lock()
+
+        See also :meth:`~.unlock`
+
+        """
+        self.thing._reddit.post(
+            API_PATH["lock"], data={"id": self.thing.fullname}
+        )
+
     def remove(self, spam=False):
         """Remove a :class:`~.Comment` or :class:`~.Submission`.
 
@@ -197,6 +216,25 @@ class ThingModerationMixin(object):
         """
         self.thing._reddit.post(
             API_PATH["unignore_reports"], data={"id": self.thing.fullname}
+        )
+
+    def unlock(self):
+        """Unlock the a :class:`~.Comment` or :class:`~.Submission`.
+
+        Example usage:
+
+           # unlock a comment:
+           comment = reddit.comment('dkk4qjd')
+           comment.mod.unlock()
+           # unlock a submission:
+           submission = reddit.submission(id='5or86n')
+           submission.mod.unlock()
+
+        See also :meth:`~.lock`
+
+        """
+        self.thing._reddit.post(
+            API_PATH["unlock"], data={"id": self.thing.fullname}
         )
 
 

@@ -40,6 +40,7 @@ instances of them bound to an attribute of one of the PRAW models.
    other/submissionmoderation
    other/subredditmoderation
    other/subredditwidgetsmoderation
+   other/thingmoderationmixin
    other/widgetmoderation
    other/wikipagemoderation
 
