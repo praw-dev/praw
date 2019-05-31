@@ -1741,6 +1741,9 @@ class SubredditModeration(object):
         :param comment_score_hide_mins: The number of minutes to hide comment
             scores.
         :param description: Shown in the sidebar of your subreddit.
+        :param disable_contributor_requests: Specifies whether redditors may
+            send automated modmail messages requesting approval as a submitter.
+        :type disable_contributor_requests: bool
         :param domain: Domain name with a cname that points to
             {subreddit}.reddit.com.
         :param exclude_banned_modqueue: Exclude posts by site-wide banned users
@@ -1757,6 +1760,12 @@ class SubredditModeration(object):
         :param public_description: Public description blurb. Appears in search
             results and on the landing page for private subreddits.
         :param public_traffic: Make the traffic stats page public.
+        :param restrict_commenting: Specifies whether approved users have the
+            ability to comment.
+        :type restrict_commenting: bool
+        :param restrict_posting: Specifies whether approved users have the
+            ability to submit posts.
+        :type restrict_posting: bool
         :param show_media: Show thumbnails on submissions.
         :param show_media_preview: Expand media previews on comments pages.
         :param spam_comments: Spam filter strength for comments.
