@@ -14,6 +14,7 @@ Unreleased
 * Comments can now be locked and unlocked via ``comment.mod.lock()`` and
   ``comment.mod.unlock()``. See: (:meth:`.ThingModerationMixin.lock` and
   :meth:`.ThingModerationMixin.unlock`).
+* ``align`` parameter to :meth:`.SubredditStylesheet.upload_banner_additional_image`
 
 **Changed**
 

@@ -1675,6 +1675,18 @@ class TestSubredditStylesheet(IntegrationTest):
             )
 
     @mock.patch("time.sleep", return_value=None)
+    def test_upload_banner_additional_image__align(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditStylesheet."
+            "test_upload_banner_additional_image__align"
+        ):
+            for alignment in ("left", "centered", "right"):
+                self.subreddit.stylesheet.upload_banner_additional_image(
+                    self.image_path("white-square.png"), align=alignment
+                )
+
+    @mock.patch("time.sleep", return_value=None)
     def test_upload_banner_hover_image__jpg(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(

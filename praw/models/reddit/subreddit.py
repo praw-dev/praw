@@ -2697,10 +2697,12 @@ class SubredditStylesheet(object):
         image_url = self._upload_style_asset(image_path, image_type)
         self._update_structured_styles({image_type: image_url})
 
-    def upload_banner_additional_image(self, image_path):
+    def upload_banner_additional_image(self, image_path, align=None):
         """Upload an image for the subreddit's (redesign) additional image.
 
         :param image_path: A path to a jpeg or png image.
+        :param align: Either ``left``, ``centered``, or ``right``. (default:
+            ``left``).
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
@@ -2716,9 +2718,21 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_additional_image('banner.png')
 
         """
+        alignment = {}
+        if align is not None:
+            if align not in {"left", "centered", "right"}:
+                raise ValueError(
+                    "align argument must be either "
+                    "`left`, `centered`, or `right`"
+                )
+            alignment["bannerPositionedImagePosition"] = align
+
         image_type = "bannerPositionedImage"
         image_url = self._upload_style_asset(image_path, image_type)
-        self._update_structured_styles({image_type: image_url})
+        style_data = {image_type: image_url}
+        if alignment:
+            style_data.update(alignment)
+        self._update_structured_styles(style_data)
 
     def upload_banner_hover_image(self, image_path):
         """Upload an image for the subreddit's (redesign) additional image.
