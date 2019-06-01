@@ -45,7 +45,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
     """
 
     STR_FIELD = "path"
-    RE_INVALID = re.compile(r"(\s|\W|_)+", re.UNICODE)
+    RE_INVALID = re.compile(r"[\W_]+", re.UNICODE)
 
     @staticmethod
     def sluggify(title):
@@ -103,10 +103,24 @@ class Multireddit(SubredditListingMixin, RedditBase):
                 Subreddit(reddit, x["name"]) for x in self.subreddits
             ]
 
-    def _info_path(self):
-        return API_PATH["multireddit_api"].format(
-            multi=self.name, user=self._author
+    def _fetch_info(self):
+        return (
+            "multireddit_api",
+            {"multi": self.name, "user": self._author.name},
+            None,
         )
+
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request("GET", path, params)
+
+    def _fetch(self):
+        data = self._fetch_data()
+        data = data["data"]
+        other = type(self)(self._reddit, _data=data)
+        self.__dict__.update(other.__dict__)
+        self._fetched = True
 
     def add(self, subreddit):
         """Add a subreddit to this multireddit.
@@ -147,7 +161,10 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
     def delete(self):
         """Delete this multireddit."""
-        self._reddit.request("DELETE", self._info_path())
+        path = API_PATH["multireddit_api"].format(
+            multi=self.name, user=self._author.name
+        )
+        self._reddit.request("DELETE", path)
 
     def remove(self, subreddit):
         """Remove a subreddit from this multireddit.
@@ -200,8 +217,11 @@ class Multireddit(SubredditListingMixin, RedditBase):
             updated_settings["subreddits"] = [
                 {"name": str(sub)} for sub in updated_settings["subreddits"]
             ]
+        path = API_PATH["multireddit_api"].format(
+            multi=self.name, user=self._author.name
+        )
         response = self._reddit.request(
-            "PUT", self._info_path(), data={"model": dumps(updated_settings)}
+            "PUT", path, data={"model": dumps(updated_settings)}
         )
         new = Multireddit(self._reddit, response["data"])
         self.__dict__.update(new.__dict__)

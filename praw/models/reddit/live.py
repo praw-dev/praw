@@ -348,8 +348,20 @@ class LiveThread(RedditBase):
         if id:
             self.id = id  # pylint: disable=invalid-name
 
-    def _info_path(self):
-        return API_PATH["liveabout"].format(id=self.id)
+    def _fetch_info(self):
+        return ("liveabout", {"id": self.id}, None)
+
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request("GET", path, params)
+
+    def _fetch(self):
+        data = self._fetch_data()
+        data = data["data"]
+        other = type(self)(self._reddit, _data=data)
+        self.__dict__.update(other.__dict__)
+        self._fetched = True
 
     def discussions(self, **generator_kwargs):
         """Get submissions linking to the thread.
@@ -603,7 +615,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
             super(LiveUpdate, self).__init__(reddit, _data=_data)
             self._fetched = True
         elif thread_id and update_id:
-            super(LiveUpdate, self).__init__(reddit, None)
+            super(LiveUpdate, self).__init__(reddit, _data=None)
             self._thread = LiveThread(self._reddit, thread_id)
             self.id = update_id  # pylint: disable=invalid-name
         else:

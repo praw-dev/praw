@@ -1,10 +1,46 @@
 """Provides the Objector class."""
-from .exceptions import APIException
+from .exceptions import APIException, ClientException
 from .util import snake_case_keys
 
 
 class Objector(object):
     """The objector builds :class:`.RedditBase` objects."""
+
+    @classmethod
+    def parse_error(cls, data):
+        """Convert JSON response into an error object.
+
+        :param data: The dict to be converted.
+        :returns: An instance of :class:`~.APIException`, or ``None`` if
+            ``data`` doesn't fit this model.
+
+        """
+        if isinstance(data, list):
+            # Fetching a Submission returns a list (of two items).
+            # Although it's handled manually in `Submission._fetch()`,
+            # assume it's a possibility here.
+            return None
+
+        errors = data.get("json", {}).get("errors")
+        if errors is None:
+            return None
+        if len(errors) < 1:
+            # See `Collection._fetch()`.
+            raise ClientException("successful error response", data)
+        if len(errors) > 1:
+            # Yet to be observed.
+            raise AssertionError(
+                "multiple error descriptions in response", data
+            )
+
+        return APIException(*errors[0])
+
+    @classmethod
+    def check_error(cls, data):
+        """Raise an error if the argument resolves to an error object."""
+        error = cls.parse_error(data)
+        if error:
+            raise error
 
     def __init__(self, reddit, parsers=None):
         """Initialize an Objector instance.

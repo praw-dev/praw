@@ -46,7 +46,7 @@ class CommentHelper(PRAWBase):
 
     def __init__(self, subreddit):
         """Initialize a CommentHelper instance."""
-        super(CommentHelper, self).__init__(subreddit._reddit, None)
+        super(CommentHelper, self).__init__(subreddit._reddit, _data=None)
         self.subreddit = subreddit
 
     def __call__(self, **generator_kwargs):

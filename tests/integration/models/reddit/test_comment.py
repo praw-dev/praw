@@ -84,9 +84,9 @@ class TestComment(IntegrationTest):
         with self.recorder.use_cassette("TestComment.test_invalid"):
             with pytest.raises(PRAWException) as excinfo:
                 Comment(self.reddit, "0").body
-            assert (
-                "No 'Comment' data returned for thing t1_0",
-            ) == excinfo.value.args
+            assert excinfo.value.args[0].startswith(
+                "No data returned for comment"
+            )
 
     @mock.patch("time.sleep", return_value=None)
     def test_mark_read(self, _):

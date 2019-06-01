@@ -9,7 +9,7 @@ class Front(SubredditListingMixin):
 
     def __init__(self, reddit):
         """Initialize a Front instance."""
-        super(Front, self).__init__(reddit, None)
+        super(Front, self).__init__(reddit, _data=None)
         self._path = "/"
 
     def best(self, **generator_kwargs):

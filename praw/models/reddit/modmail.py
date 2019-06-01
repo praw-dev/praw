@@ -142,16 +142,27 @@ class ModmailConversation(RedditBase):
 
         if id:
             self.id = id  # pylint: disable=invalid-name
-        if mark_read:
-            self._info_params = {"markRead": True}
+
+        self._info_params = {"markRead": True} if mark_read else None
 
     def _build_conversation_list(self, other_conversations):
         """Return a comma-separated list of conversation IDs."""
         conversations = [self] + (other_conversations or [])
         return ",".join(conversation.id for conversation in conversations)
 
-    def _info_path(self):
-        return API_PATH["modmail_conversation"].format(id=self.id)
+    def _fetch_info(self):
+        return ("modmail_conversation", {"id": self.id}, self._info_params)
+
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request("GET", path, params)
+
+    def _fetch(self):
+        data = self._fetch_data()
+        other = self._reddit._objector.objectify(data)
+        self.__dict__.update(other.__dict__)
+        self._fetched = True
 
     def archive(self):
         """Archive the conversation.

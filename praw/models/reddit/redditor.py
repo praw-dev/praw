@@ -121,8 +121,20 @@ class Redditor(
             self.name = name
         self._path = API_PATH["user"].format(user=self)
 
-    def _info_path(self):
-        return API_PATH["user_about"].format(user=self)
+    def _fetch_info(self):
+        return ("user_about", {"user": self.name}, None)
+
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request("GET", path, params)
+
+    def _fetch(self):
+        data = self._fetch_data()
+        data = data["data"]
+        other = type(self)(self._reddit, _data=data)
+        self.__dict__.update(other.__dict__)
+        self._fetched = True
 
     def _friend(self, method, data):
         url = API_PATH["friend_v1"].format(user=self)

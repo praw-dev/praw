@@ -440,8 +440,20 @@ class Subreddit(
             self.display_name = display_name
         self._path = API_PATH["subreddit"].format(subreddit=self)
 
-    def _info_path(self):
-        return API_PATH["subreddit_about"].format(subreddit=self)
+    def _fetch_info(self):
+        return ("subreddit_about", {"subreddit": self}, None)
+
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request("GET", path, params)
+
+    def _fetch(self):
+        data = self._fetch_data()
+        data = data["data"]
+        other = type(self)(self._reddit, _data=data)
+        self.__dict__.update(other.__dict__)
+        self._fetched = True
 
     def _submit_media(self, data, timeout):
         """Submit and return an `image`, `video`, or `videogif`.

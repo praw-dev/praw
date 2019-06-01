@@ -13,5 +13,5 @@ class DomainListing(BaseListingMixin, RisingListingMixin):
         :param domain: The domain for which to obtain listings.
 
         """
-        super(DomainListing, self).__init__(reddit, None)
+        super(DomainListing, self).__init__(reddit, _data=None)
         self._path = API_PATH["domain"].format(domain=domain)

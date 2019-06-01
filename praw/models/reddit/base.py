@@ -47,7 +47,6 @@ class RedditBase(PRAWBase):
         """
         super(RedditBase, self).__init__(reddit, _data=_data)
         self._fetched = False
-        self._info_params = {}
 
     def __repr__(self):
         """Return an object initialization representation of the instance."""
@@ -63,10 +62,7 @@ class RedditBase(PRAWBase):
         """Return whether the other instance differs from the current."""
         return not self == other
 
-    def _fetch(self):
-        other = self._reddit.get(self._info_path(), params=self._info_params)
-
-        self.__dict__.update(other.__dict__)
+    def _fetch(self):  # pragma: no cover
         self._fetched = True
 
     def _reset_attributes(self, *attributes):
