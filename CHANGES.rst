@@ -7,6 +7,7 @@ Unreleased
 **Changed**
 
 * Removed ``FullnameMixin.kind``
+* Removed ``SubredditListingMixin.gilded()``
 
 6.3.0 (2019/06/09)
 ------------------
