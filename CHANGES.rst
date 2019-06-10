@@ -1,13 +1,13 @@
 Change Log
 ==========
 
-Unreleased
-----------
+6.3.1 (2019/06/10)
+------------------
 
-**Changed**
+**Removed**
 
-* Removed ``FullnameMixin.kind``
-* Removed ``SubredditListingMixin.gilded()``
+* ``SubredditListingMixin.gilded()``, as this was supposed to be removed
+  in 6.0.0 after deprecation in 5.2.0.
 
 6.3.0 (2019/06/09)
 ------------------
@@ -17,7 +17,6 @@ Unreleased
 * Collections (:class:`.Collection` and helper classes).
 * :meth:`.submit`, :meth:`.submit_image`, and :meth:`.submit_video` can be used
   to submit a post directly to a collection.
-* ``FullnameMixin.kind``
 * ``praw.util.camel_to_snake`` and ``praw.util.snake_case_keys``.
 * Comments can now be locked and unlocked via ``comment.mod.lock()`` and
   ``comment.mod.unlock()``. See: (:meth:`.ThingModerationMixin.lock` and
