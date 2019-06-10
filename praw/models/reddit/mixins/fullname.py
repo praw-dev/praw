@@ -4,7 +4,7 @@
 class FullnameMixin(object):
     """Interface for classes that have a fullname."""
 
-    kind = None
+    _kind = None
 
     @property
     def fullname(self):
@@ -14,4 +14,4 @@ class FullnameMixin(object):
         underscore and the object's base36 ID, e.g., ``t1_c5s96e0``.
 
         """
-        return "{}_{}".format(self.kind, self.id)
+        return "{}_{}".format(self._kind, self.id)

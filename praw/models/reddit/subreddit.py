@@ -189,7 +189,7 @@ class Subreddit(
         return str(subreddit)
 
     @property
-    def kind(self):
+    def _kind(self):
         """Return the class's kind."""
         return self._reddit.config.kinds["subreddit"]
 

@@ -98,7 +98,7 @@ class Redditor(
         return RedditorStream(self)
 
     @property
-    def kind(self):
+    def _kind(self):
         """Return the class's kind."""
         return self._reddit.config.kinds["redditor"]
 
