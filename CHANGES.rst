@@ -2,7 +2,7 @@ Change Log
 ==========
 
 6.3.0 (2019/06/09)
-----------
+------------------
 
 **Added**
 
@@ -393,7 +393,7 @@ parameter as described below:
 **Added**
 
 * :meth:`.LiveThreadContribution.update` to update settings of a live thread.
-* ``reset_timestamp`` to :attr:`.limits` to provide insight into when the
+* ``reset_timestamp`` to :meth:`.limits` to provide insight into when the
   current rate limit window will expire.
 * :meth:`.upload_mobile_header` to upload subreddit mobile header.
 * :meth:`.upload_mobile_icon` to upload subreddit mobile icon.
@@ -431,7 +431,7 @@ parameter as described below:
   contributor position.
 * :meth:`.LiveContributorRelationship.remove` to remove the redditor
   from the live thread contributors.
-* :attr:`.limits` to provide insight into number of requests made and remaining
+* :meth:`.limits` to provide insight into number of requests made and remaining
   in the current rate limit window.
 * :attr:`.LiveThread.contrib` to obtain an instance of
   :class:`.LiveThreadContribution`.
