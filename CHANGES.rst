@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Changed**
+
+* Removed ``FullnameMixin.kind``
+
 6.3.0 (2019/06/09)
 ------------------
 
