@@ -87,6 +87,7 @@ instances of them bound to an attribute of one of the PRAW models.
    other/button
    other/commentforest
    other/commenthelper
+   other/config
    other/domainlisting
    other/emoji
    other/listinggenerator

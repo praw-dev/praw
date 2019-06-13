@@ -90,7 +90,7 @@ class Reddit(object):
         requestor_class=None,
         requestor_kwargs=None,
         **config_settings
-    ):
+    ):  # noqa: D207, D301
         """Initialize a Reddit instance.
 
         :param site_name: The name of a section in your ``praw.ini`` file from
@@ -107,7 +107,7 @@ class Reddit(object):
             used to initialize the requestor (default: None).
 
         Additional keyword arguments will be used to initialize the
-        :class`.Config` object. This can be used to specify configuration
+        :class:`.Config` object. This can be used to specify configuration
         settings during instantiation of the :class:`.Reddit` instance. For
         more details please see :ref:`configuration`.
 
@@ -118,9 +118,13 @@ class Reddit(object):
         * user_agent
 
         The ``requestor_class`` and ``requestor_kwargs`` allow for
-        customization of the requestor :class`.Reddit` will use. This allows,
+        customization of the requestor :class:`.Reddit` will use. This allows,
         e.g., easily adding behavior to the requestor or wrapping its
-        :class`Session` in a caching layer. Example usage:
+        |Session|_ in a caching layer. Example usage:
+
+        .. |Session| replace:: ``Session``
+        .. _Session: https://2.python-requests.org/en/master/api/\
+#requests.Session
 
         .. code-block:: python
 
