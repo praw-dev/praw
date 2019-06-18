@@ -301,7 +301,16 @@ class Submission(
         for submissions in self._chunk(other_submissions, 50):
             self._reddit.post(API_PATH["unhide"], data={"id": submissions})
 
-    def crosspost(self, subreddit, title=None, send_replies=True):
+    def crosspost(
+        self,
+        subreddit,
+        title=None,
+        send_replies=True,
+        flair_id=None,
+        flair_text=None,
+        nsfw=False,
+        spoiler=False
+    ):
         """Crosspost the submission to a subreddit.
 
         .. note::
@@ -311,9 +320,16 @@ class Submission(
             object to crosspost into.
         :param title: Title of the submission. Will use this submission's
             title if `None` (default: None).
+        :param flair_id: The flair template to select (default: None).
+        :param flair_text: If the template's ``flair_text_editable`` value is
+            True, this value will set a custom text (default: None).
         :param send_replies: When True, messages will be sent to the
             submission author when comments are made to the submission
             (default: True).
+        :param nsfw: Whether or not the submission should be marked NSFW
+            (default: False).
+        :param spoiler: Whether or not the submission should be marked as
+            a spoiler (default: False).
         :returns: A :class:`~.Submission` object for the newly created
             submission.
 
@@ -337,7 +353,16 @@ class Submission(
             "sendreplies": bool(send_replies),
             "kind": "crosspost",
             "crosspost_fullname": self.fullname,
+            "nsfw": bool(nsfw),
+            "spoiler": bool(spoiler),
         }
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+        ):
+            if value is not None:
+                data[key] = value
+
         return self._reddit.post(API_PATH["submit"], data=data)
 
 
