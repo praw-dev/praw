@@ -214,7 +214,54 @@ class TestSubmission(IntegrationTest):
             assert submission.author == self.reddit.config.username
             assert submission.title == "my title"
             assert submission.crosspost_parent == "t3_6vx01b"
+            
+    @mock.patch("time.sleep", return_value=None)
+    def test_crosspost__flair(self, _):
+        flair_id = "2d2321ca-9205-11e9-a847-0e9f3cfadcac"
+        flair_text = "Test flair text"
+        flair_class = "test-flair-class"
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmission.test_crosspost__flair"
+        ):
+            subreddit = pytest.placeholders.test_subreddit
+            crosspost_parent = self.reddit.submission(id="6vx01b")
 
+            submission = crosspost_parent.crosspost(
+                subreddit,
+                flair_id=flair_id,
+                flair_text=flair_text,
+            )
+            assert submission.link_flair_css_class == flair_class
+            assert submission.link_flair_text == flair_text
+            assert submission.crosspost_parent == "t3_6vx01b"
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_crosspost__nsfw(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmission.test_crosspost__nsfw"
+        ):
+            subreddit = pytest.placeholders.test_subreddit
+            crosspost_parent = self.reddit.submission(id="6vx01b")
+
+            submission = crosspost_parent.crosspost(subreddit, nsfw=True)
+            assert submission.over_18 is True
+            assert submission.crosspost_parent == "t3_6vx01b"
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_crosspost__spoiler(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmission.test_crosspost__spoiler"
+        ):
+            subreddit = pytest.placeholders.test_subreddit
+            crosspost_parent = self.reddit.submission(id="6vx01b")
+
+            submission = crosspost_parent.crosspost(subreddit, spoiler=True)
+            assert submission.spoiler is True
+            assert submission.crosspost_parent == "t3_6vx01b"
+            
 
 class TestSubmissionFlair(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
