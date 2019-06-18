@@ -6,13 +6,13 @@ Unreleased
 
 **Added**
 
-* :meth:`~.Subreddit.crosspost` support parameter ``flair_id`` to
+* :meth:`~.Submission.crosspost` support parameter ``flair_id`` to
   flair the submission immediately upon crossposting.
-* :meth:`~.Subreddit.crosspost` support parameter ``flair_text`` to
+* :meth:`~.Submission.crosspost` support parameter ``flair_text`` to
   set a custom text to the flair immediately upon crossposting.
-* :meth:`~.Subreddit.crosspost` support parameter ``nsfw`` to
+* :meth:`~.Submission.crosspost` support parameter ``nsfw`` to
   mark the submission NSFW immediately upon crossposting.
-* :meth:`~.Subreddit.crosspost` support parameter ``spoiler`` to
+* :meth:`~.Submission.crosspost` support parameter ``spoiler`` to
   mark the submission as a spoiler immediately upon crossposting.
 
 6.3.1 (2019/06/10)
