@@ -301,16 +301,8 @@ class Submission(
         for submissions in self._chunk(other_submissions, 50):
             self._reddit.post(API_PATH["unhide"], data={"id": submissions})
 
-    def crosspost(
-        self,
-        subreddit,
-        title=None,
-        send_replies=True,
-        flair_id=None,
-        flair_text=None,
-        nsfw=False,
-        spoiler=False
-    ):
+    def crosspost(self, subreddit, title=None, send_replies=True, flair_id=None,
+                  flair_text=None, nsfw=False, spoiler=False):
         """Crosspost the submission to a subreddit.
 
         .. note::
