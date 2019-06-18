@@ -221,16 +221,12 @@ class TestSubmission(IntegrationTest):
         flair_text = "Test flair text"
         flair_class = "test-flair-class"
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmission.test_crosspost__flair"
-        ):
+        with self.recorder.use_cassette("TestSubmission.test_crosspost__flair"):
             subreddit = pytest.placeholders.test_subreddit
             crosspost_parent = self.reddit.submission(id="6vx01b")
 
             submission = crosspost_parent.crosspost(
-                subreddit,
-                flair_id=flair_id,
-                flair_text=flair_text,
+                subreddit, flair_id=flair_id, flair_text=flair_text
             )
             assert submission.link_flair_css_class == flair_class
             assert submission.link_flair_text == flair_text
@@ -239,9 +235,7 @@ class TestSubmission(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_crosspost__nsfw(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmission.test_crosspost__nsfw"
-        ):
+        with self.recorder.use_cassette("TestSubmission.test_crosspost__nsfw"):
             subreddit = pytest.placeholders.test_subreddit
             crosspost_parent = self.reddit.submission(id="6vx01b")
 
@@ -252,9 +246,7 @@ class TestSubmission(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_crosspost__spoiler(self, _):
         self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubmission.test_crosspost__spoiler"
-        ):
+        with self.recorder.use_cassette("TestSubmission.test_crosspost__spoiler"):
             subreddit = pytest.placeholders.test_subreddit
             crosspost_parent = self.reddit.submission(id="6vx01b")
 
