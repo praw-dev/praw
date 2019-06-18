@@ -356,10 +356,7 @@ class Submission(
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
         }
-        for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-        ):
+        for key, value in (("flair_id", flair_id), ("flair_text", flair_text)):
             if value is not None:
                 data[key] = value
 
