@@ -214,7 +214,7 @@ class TestSubmission(IntegrationTest):
             assert submission.author == self.reddit.config.username
             assert submission.title == "my title"
             assert submission.crosspost_parent == "t3_6vx01b"
-            
+
     @mock.patch("time.sleep", return_value=None)
     def test_crosspost__flair(self, _):
         flair_id = "2d2321ca-9205-11e9-a847-0e9f3cfadcac"
@@ -257,7 +257,7 @@ class TestSubmission(IntegrationTest):
             submission = crosspost_parent.crosspost(subreddit, spoiler=True)
             assert submission.spoiler is True
             assert submission.crosspost_parent == "t3_6vx01b"
-            
+
 
 class TestSubmissionFlair(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
