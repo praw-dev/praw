@@ -15,10 +15,10 @@ Unreleased
 * :meth:`~.Submission.crosspost` support parameter ``spoiler`` to
   mark the submission as a spoiler immediately upon crossposting.
 
-
 **Removed**
 
 * Drop official support for Python 2.7.
+* ``Multireddit.rename()`` no longer works due to a change in the Reddit API.
 
 6.3.1 (2019/06/10)
 ------------------

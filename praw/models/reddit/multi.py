@@ -13,6 +13,8 @@ from .subreddit import Subreddit, SubredditStream
 class Multireddit(SubredditListingMixin, RedditBase):
     r"""A class for users' Multireddits.
 
+    This is referred to as a Custom Feed on the Reddit UI.
+
     **Typical Attributes**
 
     This table describes attributes that typically belong to objects of this
@@ -180,24 +182,14 @@ class Multireddit(SubredditListingMixin, RedditBase):
         )
         self._reset_attributes("subreddits")
 
-    def rename(self, display_name):
-        """Rename this multireddit.
-
-        :param display_name: The new display name for this multireddit. Reddit
-            will generate the ``name`` field from this display name.
-
-        """
-        data = {"from": self.path, "display_name": display_name}
-        updated = self._reddit.post(API_PATH["multireddit_rename"], data=data)
-        self.__dict__.update(updated.__dict__)
-
     def update(self, **updated_settings):
         """Update this multireddit.
 
         Keyword arguments are passed for settings that should be updated. They
         can any of:
 
-        :param display_name: The display name for this multireddit.
+        :param display_name: The display name for this multireddit. Must be no
+            longer than 50 characters.
         :param subreddits: Subreddits for this multireddit.
         :param description_md: Description for this multireddit, formatted in
             markdown.
