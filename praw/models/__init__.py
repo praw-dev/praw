@@ -50,5 +50,3 @@ from .stylesheet import Stylesheet
 from .subreddits import Subreddits
 from .trophy import Trophy
 from .user import User
-
-__all__ = [n for n in globals().keys() if n[:1] != "_"]
