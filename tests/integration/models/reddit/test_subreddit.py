@@ -861,15 +861,6 @@ class TestSubredditListings(IntegrationTest):
             comments = list(subreddit.comments())
         assert len(comments) == 100
 
-    def test_comments_gilded(self):
-        with self.recorder.use_cassette(
-            "TestSubredditListings.test_comments_gilded"
-        ):
-            subreddit = self.reddit.subreddit("askreddit")
-            comments = list(subreddit.comments.gilded())
-        assert any(isinstance(x, Submission) for x in comments)
-        assert len(comments) == 100
-
     def test_controversial(self):
         with self.recorder.use_cassette(
             "TestSubredditListings.test_controversial"
@@ -1673,6 +1664,18 @@ class TestSubredditStylesheet(IntegrationTest):
             self.subreddit.stylesheet.upload_banner_additional_image(
                 self.image_path("white-square.png")
             )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_upload_banner_additional_image__align(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditStylesheet."
+            "test_upload_banner_additional_image__align"
+        ):
+            for alignment in ("left", "centered", "right"):
+                self.subreddit.stylesheet.upload_banner_additional_image(
+                    self.image_path("white-square.png"), align=alignment
+                )
 
     @mock.patch("time.sleep", return_value=None)
     def test_upload_banner_hover_image__jpg(self, _):

@@ -46,7 +46,7 @@ class CommentHelper(PRAWBase):
 
     def __init__(self, subreddit):
         """Initialize a CommentHelper instance."""
-        super(CommentHelper, self).__init__(subreddit._reddit, None)
+        super(CommentHelper, self).__init__(subreddit._reddit, _data=None)
         self.subreddit = subreddit
 
     def __call__(self, **generator_kwargs):
@@ -64,18 +64,3 @@ class CommentHelper(PRAWBase):
 
         """
         return ListingGenerator(self._reddit, self._path, **generator_kwargs)
-
-    def gilded(self, **generator_kwargs):
-        """Deprecated.
-
-        .. warning:: (Deprecated) This method will be removed in PRAW 6 because
-                     it doesn't actually restrict the results to gilded
-                     Comments. Use ``subreddit.gilded`` instead.
-
-        Additional keyword arguments are passed in the initialization of
-        :class:`.ListingGenerator`.
-
-        """
-        return ListingGenerator(
-            self._reddit, urljoin(self._path, "gilded"), **generator_kwargs
-        )

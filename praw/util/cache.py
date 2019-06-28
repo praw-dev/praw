@@ -15,7 +15,7 @@ class cachedproperty(object):
     The cache can be invalidated via `delattr()`, or by modifying `__dict__`
     directly. It will be repopulated on next access.
 
-    *New in version |version|.*
+    *New in version 6.3.0.*
     """
 
     def __init__(self, func, doc=None):

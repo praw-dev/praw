@@ -84,20 +84,27 @@ class WikiPage(RedditBase):
         """Return a string representation of the instance."""
         return "{}/{}".format(self.subreddit, self.name)
 
+    def _fetch_info(self):
+        return (
+            "wiki_page",
+            {"subreddit": self.subreddit, "page": self.name},
+            {"v": self._revision} if self._revision else None,
+        )
+
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request("GET", path, params)
+
     def _fetch(self):
-        params = {"v": self._revision} if self._revision else None
-        data = self._reddit.get(self._info_path(), params=params)["data"]
+        data = self._fetch_data()
+        data = data["data"]
         if data["revision_by"] is not None:
             data["revision_by"] = Redditor(
                 self._reddit, _data=data["revision_by"]["data"]
             )
         self.__dict__.update(data)
         self._fetched = True
-
-    def _info_path(self):
-        return API_PATH["wiki_page"].format(
-            subreddit=self.subreddit, page=self.name
-        )
 
     def edit(self, content, reason=None, **other_settings):
         """Edit this WikiPage's contents.

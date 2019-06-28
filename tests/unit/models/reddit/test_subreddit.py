@@ -100,6 +100,13 @@ class TestSubreddit(UnitTest):
             subreddit.submit("Cool title", selftext="", url="b")
         assert str(excinfo.value) == message
 
+    def test_upload_banner_additional_image(self):
+        subreddit = Subreddit(self.reddit, display_name="name")
+        with pytest.raises(ValueError):
+            subreddit.stylesheet.upload_banner_additional_image(
+                "dummy_path", align="asdf"
+            )
+
 
 class TestSubredditFlair(UnitTest):
     def test_set(self):

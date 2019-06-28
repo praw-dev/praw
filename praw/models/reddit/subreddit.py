@@ -189,7 +189,7 @@ class Subreddit(
         return str(subreddit)
 
     @property
-    def kind(self):
+    def _kind(self):
         """Return the class's kind."""
         return self._reddit.config.kinds["subreddit"]
 
@@ -440,8 +440,20 @@ class Subreddit(
             self.display_name = display_name
         self._path = API_PATH["subreddit"].format(subreddit=self)
 
-    def _info_path(self):
-        return API_PATH["subreddit_about"].format(subreddit=self)
+    def _fetch_info(self):
+        return ("subreddit_about", {"subreddit": self}, None)
+
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request("GET", path, params)
+
+    def _fetch(self):
+        data = self._fetch_data()
+        data = data["data"]
+        other = type(self)(self._reddit, _data=data)
+        self.__dict__.update(other.__dict__)
+        self._fetched = True
 
     def _submit_media(self, data, timeout):
         """Submit and return an `image`, `video`, or `videogif`.
@@ -1729,6 +1741,9 @@ class SubredditModeration(object):
         :param comment_score_hide_mins: The number of minutes to hide comment
             scores.
         :param description: Shown in the sidebar of your subreddit.
+        :param disable_contributor_requests: Specifies whether redditors may
+            send automated modmail messages requesting approval as a submitter.
+        :type disable_contributor_requests: bool
         :param domain: Domain name with a cname that points to
             {subreddit}.reddit.com.
         :param exclude_banned_modqueue: Exclude posts by site-wide banned users
@@ -1745,6 +1760,12 @@ class SubredditModeration(object):
         :param public_description: Public description blurb. Appears in search
             results and on the landing page for private subreddits.
         :param public_traffic: Make the traffic stats page public.
+        :param restrict_commenting: Specifies whether approved users have the
+            ability to comment.
+        :type restrict_commenting: bool
+        :param restrict_posting: Specifies whether approved users have the
+            ability to submit posts.
+        :type restrict_posting: bool
         :param show_media: Show thumbnails on submissions.
         :param show_media_preview: Expand media previews on comments pages.
         :param spam_comments: Spam filter strength for comments.
@@ -2676,10 +2697,12 @@ class SubredditStylesheet(object):
         image_url = self._upload_style_asset(image_path, image_type)
         self._update_structured_styles({image_type: image_url})
 
-    def upload_banner_additional_image(self, image_path):
+    def upload_banner_additional_image(self, image_path, align=None):
         """Upload an image for the subreddit's (redesign) additional image.
 
         :param image_path: A path to a jpeg or png image.
+        :param align: Either ``left``, ``centered``, or ``right``. (default:
+            ``left``).
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
@@ -2695,9 +2718,21 @@ class SubredditStylesheet(object):
            reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_additional_image('banner.png')
 
         """
+        alignment = {}
+        if align is not None:
+            if align not in {"left", "centered", "right"}:
+                raise ValueError(
+                    "align argument must be either "
+                    "`left`, `centered`, or `right`"
+                )
+            alignment["bannerPositionedImagePosition"] = align
+
         image_type = "bannerPositionedImage"
         image_url = self._upload_style_asset(image_path, image_type)
-        self._update_structured_styles({image_type: image_url})
+        style_data = {image_type: image_url}
+        if alignment:
+            style_data.update(alignment)
+        self._update_structured_styles(style_data)
 
     def upload_banner_hover_image(self, image_path):
         """Upload an image for the subreddit's (redesign) additional image.

@@ -104,8 +104,10 @@ class Collection(RedditBase):
         if collection_id is not None:
             self.collection_id = collection_id  # set from _data otherwise
 
-        self._info_params["collection_id"] = self.collection_id
-        self._info_params["include_links"] = True
+        self._info_params = {
+            "collection_id": self.collection_id,
+            "include_links": True,
+        }
 
     def __iter__(self):
         """Provide a way to iterate over the posts in this Collection.
@@ -143,21 +145,30 @@ class Collection(RedditBase):
             value = self._reddit._objector.objectify(value)
         super(Collection, self).__setattr__(attribute, value)
 
+    def _fetch_info(self):
+        return ("collection", {}, self._info_params)
+
+    def _fetch_data(self):
+        name, fields, params = self._fetch_info()
+        path = API_PATH[name].format(**fields)
+        return self._reddit.request("GET", path, params)
+
     def _fetch(self):
+        data = self._fetch_data()
         try:
-            # Unfortunately, Reddit responds with 200 (success) when we try to
-            # fetch a collection that doesn't exist, so we manually handle
-            # this case.
-            return super(Collection, self)._fetch()
-        except AttributeError:
+            self._reddit._objector.check_error(data)
+        except ClientException:
+            # A well-formed but invalid Collections ID during fetch time
+            # causes Reddit to return something that looks like an error
+            # but with no content.
             raise ClientException(
-                "Error fetching Collection. Check whether "
+                "Error during fetch. Check collection "
                 "ID {!r} is correct.".format(self.collection_id)
             )
 
-    def _info_path(self):
-        """Return the path used for fetching this Collection."""
-        return API_PATH["collection"]
+        other = type(self)(self._reddit, _data=data)
+        self.__dict__.update(other.__dict__)
+        self._fetched = True
 
     def follow(self):
         """Follow this Collection.

@@ -6,11 +6,36 @@ Unreleased
 
 **Added**
 
+* :meth:`~.Submission.crosspost` support parameter ``flair_id`` to
+  flair the submission immediately upon crossposting.
+* :meth:`~.Submission.crosspost` support parameter ``flair_text`` to
+  set a custom text to the flair immediately upon crossposting.
+* :meth:`~.Submission.crosspost` support parameter ``nsfw`` to
+  mark the submission NSFW immediately upon crossposting.
+* :meth:`~.Submission.crosspost` support parameter ``spoiler`` to
+  mark the submission as a spoiler immediately upon crossposting.
+
+6.3.1 (2019/06/10)
+------------------
+
+**Removed**
+
+* ``SubredditListingMixin.gilded()``, as this was supposed to be removed
+  in 6.0.0 after deprecation in 5.2.0.
+
+6.3.0 (2019/06/09)
+------------------
+
+**Added**
+
 * Collections (:class:`.Collection` and helper classes).
 * :meth:`.submit`, :meth:`.submit_image`, and :meth:`.submit_video` can be used
   to submit a post directly to a collection.
-* ``FullnameMixin.kind``
 * ``praw.util.camel_to_snake`` and ``praw.util.snake_case_keys``.
+* Comments can now be locked and unlocked via ``comment.mod.lock()`` and
+  ``comment.mod.unlock()``. See: (:meth:`.ThingModerationMixin.lock` and
+  :meth:`.ThingModerationMixin.unlock`).
+* ``align`` parameter to :meth:`.SubredditStylesheet.upload_banner_additional_image`
 
 **Changed**
 
@@ -389,7 +414,7 @@ parameter as described below:
 **Added**
 
 * :meth:`.LiveThreadContribution.update` to update settings of a live thread.
-* ``reset_timestamp`` to :attr:`.limits` to provide insight into when the
+* ``reset_timestamp`` to :meth:`.limits` to provide insight into when the
   current rate limit window will expire.
 * :meth:`.upload_mobile_header` to upload subreddit mobile header.
 * :meth:`.upload_mobile_icon` to upload subreddit mobile icon.
@@ -427,7 +452,7 @@ parameter as described below:
   contributor position.
 * :meth:`.LiveContributorRelationship.remove` to remove the redditor
   from the live thread contributors.
-* :attr:`.limits` to provide insight into number of requests made and remaining
+* :meth:`.limits` to provide insight into number of requests made and remaining
   in the current rate limit window.
 * :attr:`.LiveThread.contrib` to obtain an instance of
   :class:`.LiveThreadContribution`.
@@ -618,8 +643,8 @@ PRAW 4. If you require additional help please ask on `/r/redditdev
   near-realtime.
 * :meth:`praw.models.User.karma` to retrieve the current user's subreddit
   karma.
-* :meth:`praw.models.reddit.submission.SubmissionModeration.lock` and
-  :meth:`praw.models.reddit.submission.SubmissionModeration.unlock` to change a
+* ``praw.models.reddit.submission.SubmissionModeration.lock`` and
+  ``praw.models.reddit.submission.SubmissionModeration.unlock`` to change a
   Submission's lock state.
 * :meth:`praw.models.reddit.subreddit.SubredditFlairTemplates.delete` to
   delete a single flair template.
