@@ -107,6 +107,8 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
            replies = comment.replies
 
         """
+        if not self._fetched:
+            self._fetch()
         if isinstance(self._replies, list):
             self._replies = CommentForest(self.submission, self._replies)
         return self._replies
