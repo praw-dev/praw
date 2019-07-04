@@ -2,7 +2,7 @@
 from praw import Reddit
 
 
-class UnitTest(object):
+class UnitTest:
     """Base class for PRAW unit tests."""
 
     def setup(self):

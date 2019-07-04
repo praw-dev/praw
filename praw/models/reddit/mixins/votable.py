@@ -2,7 +2,7 @@
 from ....const import API_PATH
 
 
-class VotableMixin(object):
+class VotableMixin:
     """Interface for RedditBase classes that can be voted on."""
 
     def _vote(self, direction):

@@ -2,7 +2,7 @@
 from copy import deepcopy
 
 
-class PRAWBase(object):
+class PRAWBase:
     """Superclass for all models in PRAW."""
 
     @staticmethod

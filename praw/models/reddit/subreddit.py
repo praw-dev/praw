@@ -905,7 +905,7 @@ class Subreddit(
         self._reddit.post(API_PATH["subscribe"], data=data)
 
 
-class SubredditFilters(object):
+class SubredditFilters:
     """Provide functions to interact with the special Subreddit's filters.
 
     Members of this class should be utilized via ``Subreddit.filters``. For
@@ -990,7 +990,7 @@ class SubredditFilters(object):
         self.subreddit._reddit.request("DELETE", url, data={})
 
 
-class SubredditFlair(object):
+class SubredditFlair:
     """Provide a set of functions to interact with a Subreddit's flair."""
 
     @cachedproperty
@@ -1203,7 +1203,7 @@ class SubredditFlair(object):
         return response
 
 
-class SubredditFlairTemplates(object):
+class SubredditFlairTemplates:
     """Provide functions to interact with a Subreddit's flair templates."""
 
     @staticmethod
@@ -1510,7 +1510,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         self._clear(is_link=True)
 
 
-class SubredditModeration(object):
+class SubredditModeration:
     """Provides a set of moderation functions to a Subreddit."""
 
     @staticmethod
@@ -1828,7 +1828,7 @@ class SubredditModeration(object):
         )
 
 
-class SubredditQuarantine(object):
+class SubredditQuarantine:
     """Provides subreddit quarantine related methods."""
 
     def __init__(self, subreddit):
@@ -1884,7 +1884,7 @@ class SubredditQuarantine(object):
             pass
 
 
-class SubredditRelationship(object):
+class SubredditRelationship:
     """Represents a relationship between a redditor and subreddit.
 
     Instances of this class can be iterated through in order to discover the
@@ -2164,7 +2164,7 @@ class ModeratorRelationship(SubredditRelationship):
         self.subreddit._reddit.post(url, data=data)
 
 
-class Modmail(object):
+class Modmail:
     """Provides modmail functions for a subreddit."""
 
     def __call__(self, id=None, mark_read=False):  # noqa: D207, D301
@@ -2383,7 +2383,7 @@ state='mod')
         return self.subreddit._reddit.get(API_PATH["modmail_unread_count"])
 
 
-class SubredditStream(object):
+class SubredditStream:
     """Provides submission and comment streams."""
 
     def __init__(self, subreddit):
@@ -2441,7 +2441,7 @@ class SubredditStream(object):
         return stream_generator(self.subreddit.new, **stream_options)
 
 
-class SubredditStylesheet(object):
+class SubredditStylesheet:
     """Provides a set of stylesheet functions to a Subreddit."""
 
     def __call__(self):
@@ -2831,7 +2831,7 @@ class SubredditStylesheet(object):
         return self._upload_image(image_path, {"upload_type": "icon"})
 
 
-class SubredditWiki(object):
+class SubredditWiki:
     """Provides a set of moderation functions to a Subreddit."""
 
     def __getitem__(self, page_name):

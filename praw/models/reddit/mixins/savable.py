@@ -2,7 +2,7 @@
 from ....const import API_PATH
 
 
-class SavableMixin(object):
+class SavableMixin:
     """Interface for RedditBase classes that can be saved."""
 
     def save(self, category=None):

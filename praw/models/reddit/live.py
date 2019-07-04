@@ -8,7 +8,7 @@ from .mixins import FullnameMixin
 from .redditor import Redditor
 
 
-class LiveContributorRelationship(object):
+class LiveContributorRelationship:
     """Provide methods to interact with live threads' contributors."""
 
     @staticmethod
@@ -425,7 +425,7 @@ class LiveThread(RedditBase):
             yield update
 
 
-class LiveThreadContribution(object):
+class LiveThreadContribution:
     """Provides a set of contribution functions to a LiveThread."""
 
     def __init__(self, thread):
@@ -639,7 +639,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
         self._fetched = True
 
 
-class LiveUpdateContribution(object):
+class LiveUpdateContribution:
     """Provides a set of contribution functions to LiveUpdate."""
 
     def __init__(self, update):

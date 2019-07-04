@@ -7,7 +7,7 @@ import sys
 from .exceptions import ClientException
 
 
-class _NotSet(object):
+class _NotSet:
     def __bool__(self):
         return False
 
@@ -17,7 +17,7 @@ class _NotSet(object):
         return "NotSet"
 
 
-class Config(object):
+class Config:
     """A class containing the configuration for a reddit site."""
 
     CONFIG = None

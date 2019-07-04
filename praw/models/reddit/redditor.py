@@ -218,7 +218,7 @@ class Redditor(
         self._friend(method="DELETE", data={"id": str(self)})
 
 
-class RedditorStream(object):
+class RedditorStream:
     """Provides submission and comment streams."""
 
     def __init__(self, redditor):

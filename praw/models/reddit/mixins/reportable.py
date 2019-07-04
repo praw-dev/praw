@@ -2,7 +2,7 @@
 from ....const import API_PATH
 
 
-class ReportableMixin(object):
+class ReportableMixin:
     """Interface for RedditBase classes that can be reported."""
 
     def report(self, reason):

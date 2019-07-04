@@ -325,7 +325,7 @@ class SubredditWidgets(PRAWBase):
         self._fetched = True
 
 
-class SubredditWidgetsModeration(object):
+class SubredditWidgetsModeration:
     """Class for moderating a subreddit's widgets.
 
     Get an instance of this class from :attr:`.SubredditWidgets.mod`.
@@ -1720,7 +1720,7 @@ class WidgetEncoder(JSONEncoder):
         return JSONEncoder.default(self, o)
 
 
-class WidgetModeration(object):
+class WidgetModeration:
     """Class for moderating a particular widget.
 
     Example usage:

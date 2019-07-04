@@ -4,18 +4,18 @@ import pytest
 from praw.models.list.base import BaseList
 
 
-class DummyObjector(object):
+class DummyObjector:
     @staticmethod
     def objectify(value):
         return value
 
 
-class Dummy(object):
+class Dummy:
     def __init__(self):
         self._objector = DummyObjector
 
 
-class TestBaseList(object):
+class TestBaseList:
     def setup(self):
         self._prev_child_attribute = BaseList.CHILD_ATTRIBUTE
 

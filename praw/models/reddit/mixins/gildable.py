@@ -2,7 +2,7 @@
 from ....const import API_PATH
 
 
-class GildableMixin(object):
+class GildableMixin:
     """Interface for classes that can be gilded."""
 
     def gild(self):

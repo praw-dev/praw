@@ -25,7 +25,7 @@ import websocket
 from ... import IntegrationTest
 
 
-class WebsocketMock(object):
+class WebsocketMock:
     POST_URL = "https://reddit.com/r/<TEST_SUBREDDIT>/comments/{}/test_title/"
 
     @classmethod

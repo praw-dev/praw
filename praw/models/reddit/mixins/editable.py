@@ -2,7 +2,7 @@
 from ....const import API_PATH
 
 
-class EditableMixin(object):
+class EditableMixin:
     """Interface for classes that can be edited and deleted."""
 
     def delete(self):

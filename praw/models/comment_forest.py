@@ -4,7 +4,7 @@ from heapq import heappop, heappush
 from .reddit.more import MoreComments
 
 
-class CommentForest(object):
+class CommentForest:
     """A forest of comments starts with multiple top-level comments.
 
     Each of these comments can be a tree of replies.

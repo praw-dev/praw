@@ -2,7 +2,7 @@
 from praw.exceptions import APIException, ClientException, PRAWException
 
 
-class TestPRAWException(object):
+class TestPRAWException:
     def test_inheritance(self):
         assert isinstance(PRAWException(), Exception)
 
@@ -11,7 +11,7 @@ class TestPRAWException(object):
         assert str(PRAWException("foo")) == "foo"
 
 
-class TestAPIException(object):
+class TestAPIException:
     def test_inheritance(self):
         assert isinstance(APIException(None, None, None), PRAWException)
 
@@ -32,7 +32,7 @@ class TestAPIException(object):
         )
 
 
-class TestClientException(object):
+class TestClientException:
     def test_inheritance(self):
         assert isinstance(ClientException(), PRAWException)
 

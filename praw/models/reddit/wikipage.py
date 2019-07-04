@@ -163,7 +163,7 @@ class WikiPage(RedditBase):
         return self._revision_generator(self.subreddit, url, generator_kwargs)
 
 
-class WikiPageModeration(object):
+class WikiPageModeration:
     """Provides a set of moderation functions for a WikiPage."""
 
     def __init__(self, wikipage):

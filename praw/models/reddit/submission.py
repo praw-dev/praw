@@ -364,7 +364,7 @@ class Submission(
         return self._reddit.post(API_PATH["submit"], data=data)
 
 
-class SubmissionFlair(object):
+class SubmissionFlair:
     """Provide a set of functions pertaining to Submission flair."""
 
     def __init__(self, submission):
