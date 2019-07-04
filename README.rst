@@ -26,7 +26,7 @@ agent and you're set.
 Installation
 ------------
 
-PRAW is supported on python 2.7, 3.3, 3.4, 3.5 and 3.6. The recommended way to
+PRAW is supported on python 3.5+. The recommended way to
 install PRAW is via `pip <https://pypi.python.org/pypi/pip>`_.
 
 .. code-block:: bash

@@ -89,7 +89,7 @@ import sys
 import traceback
 
 from prawcore import NotFound
-import six
+import requests
 
 from ...const import API_PATH
 from ..listing.mixins import SubmissionListingMixin

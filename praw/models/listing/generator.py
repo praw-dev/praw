@@ -44,7 +44,7 @@ class ListingGenerator(PRAWBase):
         return self
 
     def __next__(self):
-        """Permit ListingGenerator to operate as a generator in py3."""
+        """Permit ListingGenerator to operate as a generator."""
         if self.limit is not None and self.yielded >= self.limit:
             raise StopIteration()
 
@@ -75,7 +75,3 @@ class ListingGenerator(PRAWBase):
             self.params["after"] = self._listing.after
         else:
             self._exhausted = True
-
-    def next(self):
-        """Permit ListingGenerator to operate as a generator in py2."""
-        return self.__next__()
