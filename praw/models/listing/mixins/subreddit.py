@@ -1,5 +1,6 @@
 """Provide the SubredditListingMixin class."""
-from ....compat import urljoin
+from urllib.parse import urljoin
+
 from ....util.cache import cachedproperty
 from ...base import PRAWBase
 from ..generator import ListingGenerator

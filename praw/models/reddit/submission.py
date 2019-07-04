@@ -1,5 +1,6 @@
 """Provide the Submission class."""
-from ...compat import urljoin
+from urllib.parse import urljoin
+
 from ...const import API_PATH
 from ...exceptions import ClientException
 from ...util.cache import cachedproperty

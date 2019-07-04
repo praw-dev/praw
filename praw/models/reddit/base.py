@@ -1,6 +1,6 @@
 """Provide the RedditBase class."""
+from urllib.parse import urlparse
 
-from ...compat import string_types, urlparse
 from ...exceptions import ClientException
 from ..base import PRAWBase
 
@@ -17,7 +17,7 @@ class RedditBase(PRAWBase):
 
     def __eq__(self, other):
         """Return whether the other instance equals the current."""
-        if isinstance(other, string_types):
+        if isinstance(other, str):
             return other.lower() == str(self).lower()
         return (
             isinstance(other, self.__class__)

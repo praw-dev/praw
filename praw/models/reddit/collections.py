@@ -1,6 +1,5 @@
 """Provide Collections functionality."""
 
-from ...compat import string_types
 from ...const import API_PATH
 from ...exceptions import ClientException
 from ...util.cache import cachedproperty
@@ -221,7 +220,7 @@ class CollectionModeration(PRAWBase):
         """
         if isinstance(post, Submission):
             return post.fullname
-        elif not isinstance(post, string_types):
+        elif not isinstance(post, str):
             raise TypeError(
                 "Cannot get fullname from object of type {}.".format(
                     type(post)

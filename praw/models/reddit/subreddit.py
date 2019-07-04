@@ -3,11 +3,11 @@
 from copy import deepcopy
 from json import dumps, loads
 from os.path import basename, dirname, join
+from urllib.parse import urljoin
 
 from prawcore import Redirect
 import websocket
 
-from ...compat import urljoin
 from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import APIException, ClientException
 from ...util.cache import cachedproperty

@@ -1,9 +1,9 @@
 """Provides the code to load PRAW's configuration file `praw.ini`."""
 from threading import Lock
+import configparser
 import os
 import sys
 
-from .compat import configparser
 from .exceptions import ClientException
 
 

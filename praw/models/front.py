@@ -1,5 +1,6 @@
 """Provide the Front class."""
-from ..compat import urljoin
+from urllib.parse import urljoin
+
 from .listing.generator import ListingGenerator
 from .listing.mixins import SubredditListingMixin
 

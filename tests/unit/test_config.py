@@ -58,15 +58,19 @@ class TestConfig(object):
             config = Config("DEFAULT", check_for_updates=value)
             assert config.check_for_updates is True
 
+    @mock.patch("configparser.RawConfigParser")
     def test_load_ini_from_appdata(self, mock_config):
         self._assert_config_read("APPDATA", mock_config)
 
+    @mock.patch("configparser.RawConfigParser")
     def test_load_ini_from_home(self, mock_config):
         self._assert_config_read("HOME", mock_config)
 
+    @mock.patch("configparser.RawConfigParser")
     def test_load_ini_from_xdg_config_home(self, mock_config):
         self._assert_config_read("XDG_CONFIG_HOME", mock_config)
 
+    @mock.patch("configparser.RawConfigParser")
     def test_load_ini_with_no_config_directory(self, mock_config):
         mock_instance = mock_config.return_value
         Config.CONFIG = None  # Force config file reload
