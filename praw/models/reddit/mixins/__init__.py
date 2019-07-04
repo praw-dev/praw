@@ -13,7 +13,7 @@ from .savable import SavableMixin
 from .votable import VotableMixin
 
 
-class ThingModerationMixin(object):
+class ThingModerationMixin:
     """Provides moderation methods for Comments and Submissions."""
 
     REMOVAL_MESSAGE_API = None

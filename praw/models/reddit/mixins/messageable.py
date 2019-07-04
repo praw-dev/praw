@@ -2,7 +2,7 @@
 from ....const import API_PATH
 
 
-class MessageableMixin(object):
+class MessageableMixin:
     """Interface for classes that can be messaged."""
 
     def message(self, subject, message, from_subreddit=None):

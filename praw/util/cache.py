@@ -1,7 +1,7 @@
 """Caching utilities."""
 
 
-class cachedproperty(object):
+class cachedproperty:
     """A decorator for caching a property's result.
 
     Similar to `property`, but the wrapped method's result is cached

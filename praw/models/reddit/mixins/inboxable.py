@@ -3,7 +3,7 @@
 from ....const import API_PATH
 
 
-class InboxableMixin(object):
+class InboxableMixin:
     """Interface for RedditBase classes that originate from the inbox."""
 
     def block(self):

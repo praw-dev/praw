@@ -1,7 +1,7 @@
 """Provide the FullnameMixin class."""
 
 
-class FullnameMixin(object):
+class FullnameMixin:
     """Interface for classes that have a fullname."""
 
     _kind = None

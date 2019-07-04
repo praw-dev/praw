@@ -3,7 +3,7 @@ from .exceptions import APIException, ClientException
 from .util import snake_case_keys
 
 
-class Objector(object):
+class Objector:
     """The objector builds :class:`.RedditBase` objects."""
 
     @classmethod

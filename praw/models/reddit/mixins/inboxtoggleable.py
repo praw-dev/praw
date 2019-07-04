@@ -2,7 +2,7 @@
 from ....const import API_PATH
 
 
-class InboxToggleableMixin(object):
+class InboxToggleableMixin:
     """Interface for classes that can optionally receive inbox replies."""
 
     def disable_inbox_replies(self):

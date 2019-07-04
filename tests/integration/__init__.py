@@ -4,7 +4,7 @@ from betamax import Betamax
 from praw import Reddit
 
 
-class IntegrationTest(object):
+class IntegrationTest:
     """Base class for PRAW integration tests."""
 
     def setup(self):

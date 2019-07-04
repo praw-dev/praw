@@ -85,7 +85,7 @@ with betamax.Betamax.configure() as config:
         config.define_cassette_placeholder("<{}>".format(key.upper()), value)
 
 
-class Placeholders(object):
+class Placeholders:
     def __init__(self, _dict):
         self.__dict__ = _dict
 

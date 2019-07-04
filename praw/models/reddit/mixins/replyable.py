@@ -2,7 +2,7 @@
 from ....const import API_PATH
 
 
-class ReplyableMixin(object):
+class ReplyableMixin:
     """Interface for RedditBase classes that can be replied to."""
 
     def reply(self, body):

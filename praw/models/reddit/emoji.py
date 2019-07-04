@@ -79,7 +79,7 @@ class Emoji(RedditBase):
         self._reddit.request("DELETE", url)
 
 
-class SubredditEmoji(object):
+class SubredditEmoji:
     """Provides a set of functions to a Subreddit for emoji."""
 
     def __getitem__(self, name):

@@ -30,7 +30,7 @@ from .exceptions import ClientException
 from .objector import Objector
 
 
-class Reddit(object):
+class Reddit:
     """The Reddit class provides convenient access to reddit's API.
 
     Instances of this class are the gateway to interacting with Reddit's API

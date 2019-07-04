@@ -4,7 +4,7 @@ from json import dumps
 from ..const import API_PATH
 
 
-class Preferences(object):
+class Preferences:
     """A class for Reddit preferences.
 
     The Preferences class provides access to the Reddit preferences of the

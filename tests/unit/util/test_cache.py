@@ -6,7 +6,7 @@ from praw.util.cache import cachedproperty
 
 
 class TestCachedProperty(UnitTest):
-    class Klass(object):
+    class Klass:
         @cachedproperty
         def nine(self):
             """Return 9."""
