@@ -1,4 +1,5 @@
 """Provide the Reddit class."""
+import configparser
 import os
 from itertools import islice
 
@@ -23,7 +24,6 @@ from prawcore import (
 )
 
 from . import models
-from .compat import configparser, string_types
 from .config import Config
 from .const import __version__, API_PATH, USER_AGENT_FORMAT
 from .exceptions import ClientException
@@ -477,7 +477,7 @@ class Reddit(object):
             )
 
         if fullnames is not None:
-            if isinstance(fullnames, string_types):
+            if isinstance(fullnames, str):
                 raise TypeError("`fullnames` must be a non-str iterable.")
 
             def generator(fullnames):

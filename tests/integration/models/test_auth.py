@@ -1,7 +1,6 @@
 """Test praw.models.auth."""
 from prawcore import InvalidToken
 from praw import Reddit
-from six import string_types
 import pytest
 
 from .. import IntegrationTest
@@ -27,7 +26,7 @@ class TestAuthWeb(IntegrationTest):
     def test_authorize(self):
         with self.recorder.use_cassette("TestAuthWeb.test_authorize"):
             token = self.reddit.auth.authorize(pytest.placeholders.auth_code)
-            assert isinstance(token, string_types)
+            assert isinstance(token, str)
             assert self.reddit.read_only is False
             assert self.reddit.auth.scopes() == {"submit"}
 
