@@ -15,6 +15,10 @@ Unreleased
 * :meth:`~.Submission.crosspost` support parameter ``spoiler`` to
   mark the submission as a spoiler immediately upon crossposting.
 
+**Fixed**
+
+* :meth:`.add_community_list` has parameter ``description`` to support
+  unannounced upstream Reddit API changes.
 
 **Removed**
 

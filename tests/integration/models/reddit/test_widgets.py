@@ -287,22 +287,26 @@ class TestCommunityList(IntegrationTest):
             styles = {"headerColor": "#123456", "backgroundColor": "#bb0e00"}
             subreddits = ["learnpython", self.reddit.subreddit("redditdev")]
             widget = widgets.mod.add_community_list(
-                "My fav subs", subreddits, styles
+                "My fav subs", subreddits, styles, "My description"
             )
 
             assert isinstance(widget, CommunityList)
             assert widget.shortName == "My fav subs"
             assert widget.styles == styles
+            assert widget.description == "My description"
             assert self.reddit.subreddit("learnpython") in widget
             assert "redditdev" in widget
 
             widget = widget.mod.update(
-                shortName="My least fav subs :(", data=["redesign"]
+                shortName="My least fav subs :(",
+                data=["redesign"],
+                description="My new description",
             )
 
             assert isinstance(widget, CommunityList)
             assert widget.shortName == "My least fav subs :("
             assert widget.styles == styles
+            assert widget.description == "My new description"
             assert self.reddit.subreddit("redesign") in widget
 
             widget.mod.delete()
