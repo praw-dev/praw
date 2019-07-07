@@ -2832,7 +2832,7 @@ class SubredditStylesheet:
 
 
 class SubredditWiki:
-    """Provides a set of moderation functions to a Subreddit."""
+    """Provides a set of wiki functions to a Subreddit."""
 
     def __getitem__(self, page_name):
         """Lazily return the WikiPage for the subreddit named ``page_name``.
@@ -2850,9 +2850,9 @@ class SubredditWiki:
         )
 
     def __init__(self, subreddit):
-        """Create a SubredditModeration instance.
+        """Create a SubredditWiki instance.
 
-        :param subreddit: The subreddit to moderate.
+        :param subreddit: The subreddit whose wiki to work with.
 
         """
         self.banned = SubredditRelationship(subreddit, "wikibanned")
