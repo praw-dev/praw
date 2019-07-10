@@ -75,7 +75,8 @@ class LiveHelper(PRAWBase):
         :returns: The new LiveThread object.
 
         """
-        return self._reddit.post(
+        data = self._reddit._request_and_check_error(
+            "POST",
             API_PATH["livecreate"],
             data={
                 "description": description,
@@ -84,6 +85,7 @@ class LiveHelper(PRAWBase):
                 "title": title,
             },
         )
+        return LiveThread(self._reddit, _data=data["json"]["data"])
 
     def now(self):
         """Get the currently featured live thread.
@@ -98,7 +100,10 @@ class LiveHelper(PRAWBase):
         thread = reddit.live.now()  # LiveThread object or None
 
         """
-        return self._reddit.get(API_PATH["live_now"])
+        data = self._reddit.request("GET", API_PATH["live_now"])
+        if data is None:
+            return None
+        return LiveThread(self._reddit, _data=data["data"])
 
 
 class MultiredditHelper(PRAWBase):
@@ -157,9 +162,10 @@ class MultiredditHelper(PRAWBase):
             "visibility": visibility,
             "weighting_scheme": weighting_scheme,
         }
-        return self._reddit.post(
-            API_PATH["multireddit_base"], data={"model": dumps(model)}
+        data = self._reddit._request_and_check_error(
+            "POST", API_PATH["multireddit_base"], data={"model": dumps(model)}
         )
+        return Multireddit(self._reddit, _data=data["data"])
 
 
 class SubredditHelper(PRAWBase):

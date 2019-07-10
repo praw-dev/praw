@@ -172,7 +172,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit._request_and_check_error("GET", path, params)
 
     def _fetch(self):
         data = self._fetch_data()

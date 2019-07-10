@@ -24,7 +24,9 @@ class InboxableMixin:
            comment.author.block()
 
         """
-        self._reddit.post(API_PATH["block"], data={"id": self.fullname})
+        self._reddit._request_and_check_error(
+            "POST", API_PATH["block"], data={"id": self.fullname}
+        )
 
     def collapse(self):
         """Mark the item as collapsed.

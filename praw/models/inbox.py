@@ -2,6 +2,7 @@
 from ..const import API_PATH
 from .listing.generator import ListingGenerator
 from .base import PRAWBase
+from .reddit.message import SubredditMessage
 from .util import stream_generator
 
 
@@ -51,7 +52,9 @@ class Inbox(PRAWBase):
         """
         while items:
             data = {"id": ",".join(x.fullname for x in items[:25])}
-            self._reddit.post(API_PATH["collapse"], data=data)
+            self._reddit._request_and_check_error(
+                "POST", API_PATH["collapse"], data=data
+            )
             items = items[25:]
 
     def comment_replies(self, **generator_kwargs):
@@ -99,7 +102,9 @@ class Inbox(PRAWBase):
         """
         while items:
             data = {"id": ",".join(x.fullname for x in items[:25])}
-            self._reddit.post(API_PATH["read_message"], data=data)
+            self._reddit._request_and_check_error(
+                "POST", API_PATH["read_message"], data=data
+            )
             items = items[25:]
 
     def mark_unread(self, items):
@@ -125,7 +130,9 @@ class Inbox(PRAWBase):
         """
         while items:
             data = {"id": ",".join(x.fullname for x in items[:25])}
-            self._reddit.post(API_PATH["unread_message"], data=data)
+            self._reddit._request_and_check_error(
+                "POST", API_PATH["unread_message"], data=data
+            )
             items = items[25:]
 
     def mentions(self, **generator_kwargs):
@@ -162,8 +169,14 @@ class Inbox(PRAWBase):
            message = reddit.inbox.message('7bnlgu')
 
         """
-        listing = self._reddit.get(API_PATH["message"].format(id=message_id))
-        messages = [listing[0]] + listing[0].replies
+        data = self._reddit._request_and_check_error(
+            "GET", API_PATH["message"].format(id=message_id)
+        )
+
+        subreddit_message = SubredditMessage.parse(
+            data["data"]["children"][0]["data"], self._reddit
+        )
+        messages = [subreddit_message] + subreddit_message.replies
         while messages:
             message = messages.pop(0)
             if message.id == message_id:
@@ -267,7 +280,9 @@ class Inbox(PRAWBase):
         """
         while items:
             data = {"id": ",".join(x.fullname for x in items[:25])}
-            self._reddit.post(API_PATH["uncollapse"], data=data)
+            self._reddit._request_and_check_error(
+                "POST", API_PATH["uncollapse"], data=data
+            )
             items = items[25:]
 
     def unread(self, mark_read=False, **generator_kwargs):

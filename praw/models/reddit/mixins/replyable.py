@@ -9,13 +9,14 @@ class ReplyableMixin:
         """Reply to the object.
 
         :param body: The markdown formatted content for a comment.
-        :returns: A :class:`~.Comment` object for the newly created
-            comment or ``None`` if Reddit doesn't provide one.
+        :returns: :class:`~.Comment` if the target is a comment,
+            :class:`~.Message` if the target is a message, or ``None``
+            if Reddit doesn't return any context.
 
-        A ``None`` value can be returned if the target is a comment or
+        A ``None`` value may be returned if the target is a comment or
         submission in a quarantined subreddit and the authenticated user
-        has not opt-ed in to viewing the content. When this happens the
-        comment will be sucessfully created on Reddit and can be retried
+        is not opt-ed in to viewing the content. When this happens the
+        comment will be sucessfully created on Reddit and can be retrieved
         by drawing the comment from the user's comment history.
 
         Example usage:
@@ -30,8 +31,22 @@ class ReplyableMixin:
 
         """
         data = {"text": body, "thing_id": self.fullname}
-        comments = self._reddit.post(API_PATH["comment"], data=data)
+        response_data = self._reddit._request_and_check_error(
+            "POST", API_PATH["comment"], data=data
+        )
+
+        obj = None
+        things = response_data["json"]["data"]["things"]
         try:
-            return comments[0]
+            schema = things[0]
         except IndexError:
             return None
+        if schema["kind"] == self._reddit.config.kinds["comment"]:
+            obj = self._reddit._objector.parsers[
+                self._reddit.config.kinds["comment"]
+            ](self._reddit, _data=schema["data"])
+        elif schema["kind"] == self._reddit.config.kinds["message"]:
+            obj = self._reddit._objector.parsers[
+                self._reddit.config.kinds["message"]
+            ](self._reddit, _data=schema["data"])
+        return obj

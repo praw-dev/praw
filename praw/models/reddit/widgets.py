@@ -303,13 +303,16 @@ class SubredditWidgets(PRAWBase):
         )
 
     def _fetch(self):
-        data = self._reddit.get(
+        data = self._reddit._request_and_check_error(
+            "GET",
             API_PATH["widgets"].format(subreddit=self.subreddit),
             params={"progressive_images": self.progressive_images},
         )
 
         self._raw_items = data.pop("items")
-        super(SubredditWidgets, self).__init__(self.subreddit._reddit, data)
+        super(SubredditWidgets, self).__init__(
+            self.subreddit._reddit, _data=data
+        )
 
         cached_property_names = [
             "id_card",
@@ -868,8 +871,8 @@ class SubredditWidgetsModeration:
         path = API_PATH["widget_order"].format(
             subreddit=self._subreddit, section=section
         )
-        self._reddit.patch(
-            path, data={"json": dumps(order), "section": section}
+        self._reddit.request(
+            "PATCH", path, data={"json": dumps(order), "section": section}
         )
 
     def upload_image(self, file_path):
@@ -902,8 +905,11 @@ class SubredditWidgetsModeration:
             img_data["mimetype"] = "image/png"
 
         url = API_PATH["widget_lease"].format(subreddit=self._subreddit)
-        # until we learn otherwise, assume this request always succeeds
-        upload_lease = self._reddit.post(url, data=img_data)["s3UploadLease"]
+        data = self._reddit._request_and_check_error(
+            "POST", url, data=img_data
+        )
+
+        upload_lease = data["s3UploadLease"]
         upload_data = {
             item["name"]: item["value"] for item in upload_lease["fields"]
         }

@@ -3,7 +3,9 @@ from ..const import API_PATH
 from ..models import Preferences
 from ..util.cache import cachedproperty
 from .base import PRAWBase
+from .list.redditor import RedditorList
 from .listing.generator import ListingGenerator
+from .reddit.multi import Multireddit
 from .reddit.redditor import Redditor
 from .reddit.subreddit import Subreddit
 
@@ -53,7 +55,10 @@ class User(PRAWBase):
 
     def blocked(self):
         """Return a RedditorList of blocked Redditors."""
-        return self._reddit.get(API_PATH["blocked"])
+        data = self._reddit._request_and_check_error(
+            "GET", API_PATH["blocked"]
+        )
+        return RedditorList(self._reddit, data["data"])
 
     def contributor_subreddits(self, **generator_kwargs):
         """Return a ListingGenerator of subreddits user is a contributor of.
@@ -68,12 +73,16 @@ class User(PRAWBase):
 
     def friends(self):
         """Return a RedditorList of friends."""
-        return self._reddit.get(API_PATH["friends"])
+        data = self._reddit._request_and_check_error(
+            "GET", API_PATH["friends"]
+        )
+        return RedditorList(self._reddit, data["data"])
 
     def karma(self):
         """Return a dictionary mapping subreddits to their karma."""
         karma_map = {}
-        for row in self._reddit.get(API_PATH["karma"])["data"]:
+        data = self._reddit._request_and_check_error("GET", API_PATH["karma"])
+        for row in data["data"]:
             subreddit = Subreddit(self._reddit, row["sr"])
             del row["sr"]
             karma_map[subreddit] = row
@@ -95,8 +104,8 @@ class User(PRAWBase):
         if self._reddit.read_only:
             return None
         if "_me" not in self.__dict__ or not use_cache:
-            user_data = self._reddit.get(API_PATH["me"])
-            self._me = Redditor(self._reddit, _data=user_data)
+            data = self._reddit._request_and_check_error("GET", API_PATH["me"])
+            self._me = Redditor(self._reddit, _data=data)
         return self._me
 
     def moderator_subreddits(self, **generator_kwargs):
@@ -112,7 +121,10 @@ class User(PRAWBase):
 
     def multireddits(self):
         """Return a list of multireddits belonging to the user."""
-        return self._reddit.get(API_PATH["my_multireddits"])
+        data = self._reddit.request("GET", API_PATH["my_multireddits"])
+        return [
+            Multireddit(self._reddit, _data=schema["data"]) for schema in data
+        ]
 
     def subreddits(self, **generator_kwargs):
         """Return a ListingGenerator of subreddits the user is subscribed to.

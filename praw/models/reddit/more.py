@@ -51,15 +51,23 @@ class MoreComments(PRAWBase):
         path = "{}_/{}".format(
             API_PATH["submission"].format(id=self.submission.id), comment_id
         )
-        _, comments = self._reddit.get(
+        data = self._reddit.request(
+            "GET",
             path,
             params={
                 "limit": self.submission.comment_limit,
                 "sort": self.submission.comment_sort,
             },
         )
-        assert len(comments.children) == 1
-        return comments.children[0]
+
+        Comment = self._reddit._objector.parsers[
+            self._reddit.config.kinds["comment"]
+        ]
+        comments = [
+            Comment(self._reddit, _data=schema["data"])
+            for schema in data[1]["data"]["children"]
+        ]
+        return comments[0]
 
     def comments(self, update=True):
         """Fetch and return the comments for a single MoreComments object."""

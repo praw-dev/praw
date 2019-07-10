@@ -22,6 +22,6 @@ class GildableMixin:
            submission.gild()
 
         """
-        self._reddit.post(
-            API_PATH["gild_thing"].format(fullname=self.fullname)
+        self._reddit._request_and_check_error(
+            "POST", API_PATH["gild_thing"].format(fullname=self.fullname)
         )

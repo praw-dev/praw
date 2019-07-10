@@ -14,10 +14,12 @@ from ...util.cache import cachedproperty
 from ..util import permissions_string, stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
+from ..stylesheet import Stylesheet
 from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
+from .redditor import Redditor
 from .widgets import SubredditWidgets
 from .wikipage import WikiPage
 
@@ -178,7 +180,9 @@ class Subreddit(
 
         model.update(other_settings)
 
-        _reddit.post(API_PATH["site_admin"], data=model)
+        _reddit._request_and_check_error(
+            "POST", API_PATH["site_admin"], data=model
+        )
 
     @staticmethod
     def _subreddit_list(subreddit, other_subreddits):
@@ -446,7 +450,7 @@ class Subreddit(
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit._request_and_check_error("GET", path, params)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -524,8 +528,11 @@ class Subreddit(
         img_data = {"filepath": file_name, "mimetype": mime_type}
 
         url = API_PATH["media_asset"]
-        # until we learn otherwise, assume this request always succeeds
-        upload_lease = self._reddit.post(url, data=img_data)["args"]
+        data = self._reddit._request_and_check_error(
+            "POST", url, data=img_data
+        )
+
+        upload_lease = data["args"]
         upload_url = "https:{}".format(upload_lease["action"])
         upload_data = {
             item["name"]: item["value"] for item in upload_lease["fields"]
@@ -567,7 +574,9 @@ class Subreddit(
            reddit.subreddit('redditdev').rules()
 
         """
-        return self._reddit.get(API_PATH["rules"].format(subreddit=self))
+        return self._reddit._request_and_check_error(
+            "GET", API_PATH["rules"].format(subreddit=self)
+        )
 
     def search(
         self,
@@ -705,7 +714,14 @@ class Subreddit(
         else:
             data.update(kind="link", url=url)
 
-        return self._reddit.post(API_PATH["submit"], data=data)
+        response_data = self._reddit._request_and_check_error(
+            "POST", API_PATH["submit"], data=data
+        )
+
+        Submission = self._reddit._objector.parsers[
+            self._reddit.config.kinds["submission"]
+        ]
+        return Submission(self._reddit, _data=response_data["json"]["data"])
 
     def submit_image(
         self,
@@ -877,7 +893,10 @@ class Subreddit(
             "skip_inital_defaults": True,
             "sr_name": self._subreddit_list(self, other_subreddits),
         }
-        self._reddit.post(API_PATH["subscribe"], data=data)
+
+        self._reddit._request_and_check_error(
+            "POST", API_PATH["subscribe"], data=data
+        )
 
     def traffic(self):
         """Return a dictionary of the subreddit's traffic statistics.
@@ -887,8 +906,8 @@ class Subreddit(
         authenticated user is not a moderator of the subreddit.
 
         """
-        return self._reddit.get(
-            API_PATH["about_traffic"].format(subreddit=self)
+        return self._reddit._request_and_check_error(
+            "GET", API_PATH["about_traffic"].format(subreddit=self)
         )
 
     def unsubscribe(self, other_subreddits=None):
@@ -902,7 +921,9 @@ class Subreddit(
             "action": "unsub",
             "sr_name": self._subreddit_list(self, other_subreddits),
         }
-        self._reddit.post(API_PATH["subscribe"], data=data)
+        self._reddit._request_and_check_error(
+            "POST", API_PATH["subscribe"], data=data
+        )
 
 
 class SubredditFilters:
@@ -970,7 +991,7 @@ class SubredditFilters:
             user=self.subreddit._reddit.user.me(),
             subreddit=subreddit,
         )
-        self.subreddit._reddit.request(
+        self.subreddit._reddit._request_and_check_error(
             "PUT", url, data={"model": dumps({"name": str(subreddit)})}
         )
 
@@ -1088,7 +1109,7 @@ class SubredditFlair:
         }
         data.update(settings)
         url = API_PATH["flairconfig"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data=data)
+        self.subreddit._reddit._request_and_check_error("POST", url, data=data)
 
     def delete(self, redditor):
         """Delete flair for a Redditor.
@@ -1101,7 +1122,9 @@ class SubredditFlair:
 
         """
         url = API_PATH["deleteflair"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data={"name": str(redditor)})
+        self.subreddit._reddit._request_and_check_error(
+            "POST", url, data={"name": str(redditor)}
+        )
 
     def delete_all(self):
         """Delete all Redditor flair in the Subreddit.
@@ -1152,7 +1175,7 @@ class SubredditFlair:
         else:
             data["css_class"] = css_class
             url = API_PATH["flair"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data=data)
+        self.subreddit._reddit._request_and_check_error("POST", url, data=data)
 
     def update(self, flair_list, text="", css_class=""):
         """Set or clear the flair for many Redditors at once.
@@ -1198,7 +1221,10 @@ class SubredditFlair:
         url = API_PATH["flaircsv"].format(subreddit=self.subreddit)
         while lines:
             data = {"flair_csv": "\n".join(lines[:100])}
-            response.extend(self.subreddit._reddit.post(url, data=data))
+            response_data = self.subreddit._reddit.request(
+                "POST", url, data=data
+            )
+            response.extend(response_data)
             lines = lines[100:]
         return response
 
@@ -1261,12 +1287,12 @@ class SubredditFlairTemplates:
                 "text_editable": bool(text_editable),
                 "mod_only": bool(mod_only),
             }
-        self.subreddit._reddit.post(url, data=data)
+        self.subreddit._reddit._request_and_check_error("POST", url, data=data)
 
     def _clear(self, is_link=None):
         url = API_PATH["flairtemplateclear"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(
-            url, data={"flair_type": self.flair_type(is_link)}
+        self.subreddit._reddit._request_and_check_error(
+            "POST", url, data={"flair_type": self.flair_type(is_link)}
         )
 
     def delete(self, template_id):
@@ -1281,8 +1307,8 @@ class SubredditFlairTemplates:
 
         """
         url = API_PATH["flairtemplatedelete"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(
-            url, data={"flair_template_id": template_id}
+        self.subreddit._reddit._request_and_check_error(
+            "POST", url, data={"flair_template_id": template_id}
         )
 
     def update(
@@ -1356,7 +1382,8 @@ class SubredditFlairTemplates:
                 "text_editable": text_editable,
                 "mod_only": mod_only,
             }
-        self.subreddit._reddit.post(url, data=data)
+
+        self.subreddit._reddit._request_and_check_error("POST", url, data=data)
 
 
 class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
@@ -1533,7 +1560,7 @@ class SubredditModeration:
     def accept_invite(self):
         """Accept an invitation as a moderator of the community."""
         url = API_PATH["accept_mod_invite"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url)
+        self.subreddit._reddit._request_and_check_error("POST", url)
 
     def edited(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for edited comments and submissions.
@@ -1659,7 +1686,8 @@ class SubredditModeration:
     def settings(self):
         """Return a dictionary of the subreddit's current settings."""
         url = API_PATH["subreddit_settings"].format(subreddit=self.subreddit)
-        return self.subreddit._reddit.get(url)["data"]
+        data = self.subreddit._reddit._request_and_check_error("GET", url)
+        return data["data"]
 
     def spam(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for spam comments and submissions.
@@ -1855,8 +1883,8 @@ class SubredditQuarantine:
         """
         data = {"sr_name": self.subreddit}
         try:
-            self.subreddit._reddit.post(
-                API_PATH["quarantine_opt_in"], data=data
+            self.subreddit._reddit._request_and_check_error(
+                "POST", API_PATH["quarantine_opt_in"], data=data
             )
         except Redirect:
             pass
@@ -1877,8 +1905,8 @@ class SubredditQuarantine:
         """
         data = {"sr_name": self.subreddit}
         try:
-            self.subreddit._reddit.post(
-                API_PATH["quarantine_opt_out"], data=data
+            self.subreddit._reddit._request_and_check_error(
+                "POST", API_PATH["quarantine_opt_out"], data=data
             )
         except Redirect:
             pass
@@ -1941,7 +1969,7 @@ class SubredditRelationship:
         data = {"name": str(redditor), "type": self.relationship}
         data.update(other_settings)
         url = API_PATH["friend"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data=data)
+        self.subreddit._reddit._request_and_check_error("POST", url, data=data)
 
     def remove(self, redditor):
         """Remove ``redditor`` from this relationship.
@@ -1952,7 +1980,7 @@ class SubredditRelationship:
         """
         data = {"name": str(redditor), "type": self.relationship}
         url = API_PATH["unfriend"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data=data)
+        self.subreddit._reddit._request_and_check_error("POST", url, data=data)
 
 
 class ContributorRelationship(SubredditRelationship):
@@ -1971,8 +1999,10 @@ class ContributorRelationship(SubredditRelationship):
 
     def leave(self):
         """Abdicate the contributor position."""
-        self.subreddit._reddit.post(
-            API_PATH["leavecontributor"], data={"id": self.subreddit.fullname}
+        self.subreddit._reddit._request_and_check_error(
+            "POST",
+            API_PATH["leavecontributor"],
+            data={"id": self.subreddit.fullname},
         )
 
 
@@ -2029,7 +2059,13 @@ class ModeratorRelationship(SubredditRelationship):
         url = API_PATH["list_{}".format(self.relationship)].format(
             subreddit=self.subreddit
         )
-        return self.subreddit._reddit.get(url, params=params)
+        data = self.subreddit._reddit._request_and_check_error(
+            "GET", url, params=params
+        )
+        return [
+            Redditor(self.subreddit._reddit, _data=schema)
+            for schema in data["data"]["children"]
+        ]
 
     # pylint: disable=arguments-differ
     def add(self, redditor, permissions=None, **other_settings):
@@ -2079,7 +2115,7 @@ class ModeratorRelationship(SubredditRelationship):
         data = self._handle_permissions(permissions, other_settings)
         data.update({"name": str(redditor), "type": "moderator_invite"})
         url = API_PATH["friend"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data=data)
+        self.subreddit._reddit._request_and_check_error("POST", url, data=data)
 
     def leave(self):
         """Abdicate the moderator position (use with care).
@@ -2108,7 +2144,7 @@ class ModeratorRelationship(SubredditRelationship):
         """
         data = {"name": str(redditor), "type": "moderator_invite"}
         url = API_PATH["unfriend"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data=data)
+        self.subreddit._reddit._request_and_check_error("POST", url, data=data)
 
     def update(self, redditor, permissions=None):
         """Update the moderator permissions for ``redditor``.
@@ -2137,7 +2173,7 @@ class ModeratorRelationship(SubredditRelationship):
         data = self._handle_permissions(
             permissions, {"name": str(redditor), "type": "moderator"}
         )
-        self.subreddit._reddit.post(url, data=data)
+        self.subreddit._reddit._request_and_check_error("POST", url, data=data)
 
     def update_invite(self, redditor, permissions=None):
         """Update the moderator invite permissions for ``redditor``.
@@ -2161,7 +2197,7 @@ class ModeratorRelationship(SubredditRelationship):
         data = self._handle_permissions(
             permissions, {"name": str(redditor), "type": "moderator_invite"}
         )
-        self.subreddit._reddit.post(url, data=data)
+        self.subreddit._reddit._request_and_check_error("POST", url, data=data)
 
 
 class Modmail:
@@ -2252,12 +2288,12 @@ mark_read=True)
         params = {"entity": self._build_subreddit_list(other_subreddits)}
         if state:
             params["state"] = state
-        response = self.subreddit._reddit.post(
-            API_PATH["modmail_bulk_read"], params=params
+        response_data = self.subreddit._reddit._request_and_check_error(
+            "POST", API_PATH["modmail_bulk_read"], params=params
         )
         return [
             self(conversation_id)
-            for conversation_id in response["conversation_ids"]
+            for conversation_id in response_data["conversation_ids"]
         ]
 
     def conversations(
@@ -2305,13 +2341,15 @@ state='mod')
             if value:
                 params[name] = value
 
-        response = self.subreddit._reddit.get(
-            API_PATH["modmail_conversations"], params=params
+        response_data = self.subreddit._reddit._request_and_check_error(
+            "GET", API_PATH["modmail_conversations"], params=params
         )
-        for conversation_id in response["conversationIds"]:
+        for conversation_id in response_data["conversationIds"]:
             data = {
-                "conversation": response["conversations"][conversation_id],
-                "messages": response["messages"],
+                "conversation": response_data["conversations"][
+                    conversation_id
+                ],
+                "messages": response_data["messages"],
             }
             yield ModmailConversation.parse(
                 data, self.subreddit._reddit, convert_objects=False
@@ -2343,9 +2381,10 @@ state='mod')
             "subject": subject,
             "to": recipient,
         }
-        return self.subreddit._reddit.post(
-            API_PATH["modmail_conversations"], data=data
+        response_data = self.subreddit._reddit._request_and_check_error(
+            "POST", API_PATH["modmail_conversations"], data=data
         )
+        return ModmailConversation(self.subreddit._reddit, _data=response_data)
 
     def subreddits(self):
         """Yield subreddits using the new modmail that the user moderates.
@@ -2357,8 +2396,10 @@ state='mod')
            subreddits = reddit.subreddit('all').modmail.subreddits()
 
         """
-        response = self.subreddit._reddit.get(API_PATH["modmail_subreddits"])
-        for value in response["subreddits"].values():
+        response_data = self.subreddit._reddit._request_and_check_error(
+            "GET", API_PATH["modmail_subreddits"]
+        )
+        for value in response_data["subreddits"].values():
             subreddit = self.subreddit._reddit.subreddit(value["display_name"])
             subreddit.last_updated = value["lastUpdated"]
             yield subreddit
@@ -2380,7 +2421,9 @@ state='mod')
            print(unread_counts['mod'])
 
         """
-        return self.subreddit._reddit.get(API_PATH["modmail_unread_count"])
+        return self.subreddit._reddit._request_and_check_error(
+            "GET", API_PATH["modmail_unread_count"]
+        )
 
 
 class SubredditStream:
@@ -2455,7 +2498,8 @@ class SubredditStylesheet:
 
         """
         url = API_PATH["about_stylesheet"].format(subreddit=self.subreddit)
-        return self.subreddit._reddit.get(url)
+        data = self.subreddit._reddit._request_and_check_error("GET", url)
+        return Stylesheet(self.subreddit._reddit, _data=data["data"])
 
     def __init__(self, subreddit):
         """Create a SubredditStylesheet instance.
@@ -2481,8 +2525,8 @@ class SubredditStylesheet:
             image.seek(0)
             data["img_type"] = "jpg" if header == JPEG_HEADER else "png"
             url = API_PATH["upload_image"].format(subreddit=self.subreddit)
-            response = self.subreddit._reddit.post(
-                url, data=data, files={"file": image}
+            response = self.subreddit._reddit._request_and_check_error(
+                "POST", url, data=data, files={"file": image}
             )
             if response["errors"]:
                 error_type = response["errors"][0]
@@ -2501,9 +2545,11 @@ class SubredditStylesheet:
             data["mimetype"] = "image/png"
         url = API_PATH["style_asset_lease"].format(subreddit=self.subreddit)
 
-        upload_lease = self.subreddit._reddit.post(url, data=data)[
-            "s3UploadLease"
-        ]
+        data = self.subreddit._reddit._request_and_check_error(
+            "POST", url, data=data
+        )
+
+        upload_lease = data["s3UploadLease"]
         upload_data = {
             item["name"]: item["value"] for item in upload_lease["fields"]
         }
@@ -2579,7 +2625,7 @@ class SubredditStylesheet:
 
         """
         url = API_PATH["delete_sr_header"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url)
+        self.subreddit._reddit._request_and_check_error("POST", url)
 
     def delete_image(self, name):
         """Remove the named image from the subreddit.
@@ -2594,7 +2640,9 @@ class SubredditStylesheet:
 
         """
         url = API_PATH["delete_sr_image"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data={"img_name": name})
+        self.subreddit._reddit._request_and_check_error(
+            "POST", url, data={"img_name": name}
+        )
 
     def delete_mobile_header(self):
         """Remove the current subreddit mobile header.
@@ -2609,7 +2657,7 @@ class SubredditStylesheet:
 
         """
         url = API_PATH["delete_sr_header"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url)
+        self.subreddit._reddit._request_and_check_error("POST", url)
 
     def delete_mobile_icon(self):
         """Remove the current subreddit mobile icon.
@@ -2624,7 +2672,7 @@ class SubredditStylesheet:
 
         """
         url = API_PATH["delete_sr_icon"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url)
+        self.subreddit._reddit._request_and_check_error("POST", url)
 
     def update(self, stylesheet, reason=None):
         """Update the subreddit's stylesheet.
@@ -2645,7 +2693,7 @@ class SubredditStylesheet:
             "stylesheet_contents": stylesheet,
         }
         url = API_PATH["subreddit_stylesheet"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(url, data=data)
+        self.subreddit._reddit._request_and_check_error("POST", url, data=data)
 
     def upload(self, name, image_path):
         """Upload an image to the Subreddit.
@@ -2870,11 +2918,12 @@ class SubredditWiki:
                print(wikipage)
 
         """
-        response = self.subreddit._reddit.get(
+        response_data = self.subreddit._reddit._request_and_check_error(
+            "GET",
             API_PATH["wiki_pages"].format(subreddit=self.subreddit),
             params={"unique": self.subreddit._reddit._next_unique},
         )
-        for page_name in response["data"]:
+        for page_name in response_data["data"]:
             yield WikiPage(self.subreddit._reddit, self.subreddit, page_name)
 
     def create(self, name, content, reason=None, **other_settings):

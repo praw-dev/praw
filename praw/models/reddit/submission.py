@@ -260,7 +260,9 @@ class Submission(
 
         """
         data = {"links": self.fullname}
-        self._reddit.post(API_PATH["store_visits"], data=data)
+        self._reddit._request_and_check_error(
+            "POST", API_PATH["store_visits"], data=data
+        )
 
     def hide(self, other_submissions=None):
         """Hide Submission.
@@ -280,7 +282,9 @@ class Submission(
 
         """
         for submissions in self._chunk(other_submissions, 50):
-            self._reddit.post(API_PATH["hide"], data={"id": submissions})
+            self._reddit._request_and_check_error(
+                "POST", API_PATH["hide"], data={"id": submissions}
+            )
 
     def unhide(self, other_submissions=None):
         """Unhide Submission.
@@ -300,7 +304,9 @@ class Submission(
 
         """
         for submissions in self._chunk(other_submissions, 50):
-            self._reddit.post(API_PATH["unhide"], data={"id": submissions})
+            self._reddit._request_and_check_error(
+                "POST", API_PATH["unhide"], data={"id": submissions}
+            )
 
     def crosspost(
         self,
@@ -361,7 +367,10 @@ class Submission(
             if value is not None:
                 data[key] = value
 
-        return self._reddit.post(API_PATH["submit"], data=data)
+        response_data = self._reddit._request_and_check_error(
+            "POST", API_PATH["submit"], data=data
+        )
+        return type(self)(self._reddit, _data=response_data["json"]["data"])
 
 
 class SubmissionFlair:
@@ -390,9 +399,10 @@ class SubmissionFlair:
         url = API_PATH["flairselector"].format(
             subreddit=self.submission.subreddit
         )
-        return self.submission._reddit.post(
-            url, data={"link": self.submission.fullname}
-        )["choices"]
+        data = self.submission._reddit._request_and_check_error(
+            "POST", url, data={"link": self.submission.fullname}
+        )
+        return data["choices"]
 
     def select(self, flair_template_id, text=None):
         """Select flair for submission.
@@ -422,7 +432,9 @@ class SubmissionFlair:
         url = API_PATH["select_flair"].format(
             subreddit=self.submission.subreddit
         )
-        self.submission._reddit.post(url, data=data)
+        self.submission._reddit._request_and_check_error(
+            "POST", url, data=data
+        )
 
 
 class SubmissionModeration(ThingModerationMixin):
@@ -469,7 +481,8 @@ class SubmissionModeration(ThingModerationMixin):
            submission.mod.contest_mode(state=True)
 
         """
-        self.thing._reddit.post(
+        self.thing._reddit._request_and_check_error(
+            "POST",
             API_PATH["contest_mode"],
             data={"id": self.thing.fullname, "state": state},
         )
@@ -499,7 +512,7 @@ class SubmissionModeration(ThingModerationMixin):
             "text": text,
         }
         url = API_PATH["flair"].format(subreddit=self.thing.subreddit)
-        self.thing._reddit.post(url, data=data)
+        self.thing._reddit._request_and_check_error("POST", url, data=data)
 
     def nsfw(self):
         """Mark as not safe for work.
@@ -518,8 +531,8 @@ class SubmissionModeration(ThingModerationMixin):
         See also :meth:`~.sfw`
 
         """
-        self.thing._reddit.post(
-            API_PATH["marknsfw"], data={"id": self.thing.fullname}
+        self.thing._reddit._request_and_check_error(
+            "POST", API_PATH["marknsfw"], data={"id": self.thing.fullname}
         )
 
     def sfw(self):
@@ -538,8 +551,8 @@ class SubmissionModeration(ThingModerationMixin):
         See also :meth:`~.nsfw`
 
         """
-        self.thing._reddit.post(
-            API_PATH["unmarknsfw"], data={"id": self.thing.fullname}
+        self.thing._reddit._request_and_check_error(
+            "POST", API_PATH["unmarknsfw"], data={"id": self.thing.fullname}
         )
 
     def spoiler(self):
@@ -558,8 +571,8 @@ class SubmissionModeration(ThingModerationMixin):
         See also :meth:`~.unspoiler`
 
         """
-        self.thing._reddit.post(
-            API_PATH["spoiler"], data={"id": self.thing.fullname}
+        self.thing._reddit._request_and_check_error(
+            "POST", API_PATH["spoiler"], data={"id": self.thing.fullname}
         )
 
     def sticky(self, state=True, bottom=True):
@@ -585,8 +598,9 @@ class SubmissionModeration(ThingModerationMixin):
         data = {"id": self.thing.fullname, "state": state}
         if not bottom:
             data["num"] = 1
-        return self.thing._reddit.post(
-            API_PATH["sticky_submission"], data=data
+
+        self.thing._reddit._request_and_check_error(
+            "POST", API_PATH["sticky_submission"], data=data
         )
 
     def suggested_sort(self, sort="blank"):
@@ -596,7 +610,8 @@ class SubmissionModeration(ThingModerationMixin):
             random, qa, blank (default: blank).
 
         """
-        self.thing._reddit.post(
+        self.thing._reddit._request_and_check_error(
+            "POST",
             API_PATH["suggested_sort"],
             data={"id": self.thing.fullname, "sort": sort},
         )
@@ -618,8 +633,8 @@ class SubmissionModeration(ThingModerationMixin):
         See also :meth:`~.spoiler`
 
         """
-        self.thing._reddit.post(
-            API_PATH["unspoiler"], data={"id": self.thing.fullname}
+        self.thing._reddit._request_and_check_error(
+            "POST", API_PATH["unspoiler"], data={"id": self.thing.fullname}
         )
 
 

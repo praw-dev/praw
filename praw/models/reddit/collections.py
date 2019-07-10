@@ -150,20 +150,20 @@ class Collection(RedditBase):
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit._request_and_check_error("GET", path, params)
 
     def _fetch(self):
         data = self._fetch_data()
-        try:
-            self._reddit._objector.check_error(data)
-        except ClientException:
-            # A well-formed but invalid Collections ID during fetch time
-            # causes Reddit to return something that looks like an error
-            # but with no content.
-            raise ClientException(
-                "Error during fetch. Check collection "
-                "ID {!r} is correct.".format(self.collection_id)
-            )
+        errors = data.get("json", {}).get("errors")
+        if errors is not None:
+            if not errors:
+                # A well-formed but invalid Collections ID during fetch time
+                # causes Reddit to return an empty error:
+                #     {'json': {'errors': []}}
+                raise ClientException(
+                    "Error during fetch. Check collection "
+                    "ID {!r} is correct.".format(self.collection_id)
+                )
 
         other = type(self)(self._reddit, _data=data)
         self.__dict__.update(other.__dict__)
@@ -180,7 +180,8 @@ class Collection(RedditBase):
 
         See also :meth:`~.unfollow`.
         """
-        self._reddit.post(
+        self._reddit._request_and_check_error(
+            "POST",
             API_PATH["collection_follow"],
             data={"collection_id": self.collection_id, "follow": True},
         )
@@ -196,7 +197,8 @@ class Collection(RedditBase):
 
         See also :meth:`~.follow`.
         """
-        self._reddit.post(
+        self._reddit._request_and_check_error(
+            "POST",
             API_PATH["collection_follow"],
             data={"collection_id": self.collection_id, "follow": False},
         )
@@ -262,7 +264,8 @@ class CollectionModeration(PRAWBase):
         """
         link_fullname = self._post_fullname(submission)
 
-        self._reddit.post(
+        self._reddit._request_and_check_error(
+            "POST",
             API_PATH["collection_add_post"],
             data={
                 "collection_id": self.collection_id,
@@ -282,7 +285,8 @@ class CollectionModeration(PRAWBase):
         See also :meth:`~.SubredditCollectionsModeration.create`.
 
         """
-        self._reddit.post(
+        self._reddit._request_and_check_error(
+            "POST",
             API_PATH["collection_delete"],
             data={"collection_id": self.collection_id},
         )
@@ -306,7 +310,8 @@ class CollectionModeration(PRAWBase):
         """
         link_fullname = self._post_fullname(submission)
 
-        self._reddit.post(
+        self._reddit._request_and_check_error(
+            "POST",
             API_PATH["collection_remove_post"],
             data={
                 "collection_id": self.collection_id,
@@ -331,7 +336,8 @@ class CollectionModeration(PRAWBase):
 
         """
         link_ids = ",".join(self._post_fullname(post) for post in links)
-        self._reddit.post(
+        self._reddit._request_and_check_error(
+            "POST",
             API_PATH["collection_reorder"],
             data={"collection_id": self.collection_id, "link_ids": link_ids},
         )
@@ -351,7 +357,8 @@ class CollectionModeration(PRAWBase):
         See also :meth:`.update_title`.
 
         """
-        self._reddit.post(
+        self._reddit._request_and_check_error(
+            "POST",
             API_PATH["collection_desc"],
             data={
                 "collection_id": self.collection_id,
@@ -374,7 +381,8 @@ class CollectionModeration(PRAWBase):
         See also :meth:`.update_description`.
 
         """
-        self._reddit.post(
+        self._reddit._request_and_check_error(
+            "POST",
             API_PATH["collection_title"],
             data={"collection_id": self.collection_id, "title": title},
         )
@@ -458,12 +466,14 @@ class SubredditCollections(PRAWBase):
                print(collection.permalink)
 
         """
-        request = self._reddit.get(
+        response_data = self._reddit.request(
+            "GET",
             API_PATH["collection_subreddit"],
             params={"sr_fullname": self.subreddit.fullname},
         )
-        for collection in request:
-            yield collection
+
+        for attrib_data in response_data:
+            yield Collection(self._reddit, _data=attrib_data)
 
 
 class SubredditCollectionsModeration(PRAWBase):
@@ -504,7 +514,8 @@ class SubredditCollectionsModeration(PRAWBase):
         See also :meth:`~CollectionModeration.delete`.
 
         """
-        return self._reddit.post(
+        data = self._reddit._request_and_check_error(
+            "POST",
             API_PATH["collection_create"],
             data={
                 "sr_fullname": self.subreddit_fullname,
@@ -512,6 +523,7 @@ class SubredditCollectionsModeration(PRAWBase):
                 "description": description,
             },
         )
+        return Collection(self._reddit, _data=data)
 
 
 Subreddit._subreddit_collections_class = SubredditCollections

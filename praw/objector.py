@@ -1,5 +1,6 @@
 """Provides the Objector class."""
-from .exceptions import APIException, ClientException
+from . import models
+from .exceptions import APIException
 from .util import snake_case_keys
 
 
@@ -15,24 +16,14 @@ class Objector:
             ``data`` doesn't fit this model.
 
         """
-        if isinstance(data, list):
-            # Fetching a Submission returns a list (of two items).
-            # Although it's handled manually in `Submission._fetch()`,
-            # assume it's a possibility here.
+        errors = data.get("json", {}).get("errors", ())
+        if not errors:
             return None
-
-        errors = data.get("json", {}).get("errors")
-        if errors is None:
-            return None
-        if len(errors) < 1:
-            # See `Collection._fetch()`.
-            raise ClientException("successful error response", data)
         if len(errors) > 1:
-            # Yet to be observed.
+            # TODO
             raise AssertionError(
                 "multiple error descriptions in response", data
             )
-
         return APIException(*errors[0])
 
     @classmethod
@@ -42,16 +33,52 @@ class Objector:
         if error:
             raise error
 
-    def __init__(self, reddit, parsers=None):
+    def __init__(self, reddit):
         """Initialize an Objector instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
 
         """
-        self.parsers = {} if parsers is None else parsers
+        self.parsers = {
+            reddit.config.kinds["comment"]: models.Comment,
+            reddit.config.kinds["message"]: models.Message,
+            reddit.config.kinds["redditor"]: models.Redditor,
+            reddit.config.kinds["submission"]: models.Submission,
+            reddit.config.kinds["subreddit"]: models.Subreddit,
+            reddit.config.kinds["trophy"]: models.Trophy,
+            "Button": models.Button,
+            "Collection": models.Collection,
+            "Image": models.Image,
+            "LabeledMulti": models.Multireddit,
+            "Listing": models.Listing,
+            "LiveUpdate": models.LiveUpdate,
+            "LiveUpdateEvent": models.LiveThread,
+            "MenuLink": models.MenuLink,
+            "ModmailAction": models.ModmailAction,
+            "ModmailConversation": models.ModmailConversation,
+            "ModmailMessage": models.ModmailMessage,
+            "Submenu": models.Submenu,
+            "TrophyList": models.TrophyList,
+            "UserList": models.RedditorList,
+            "button": models.ButtonWidget,
+            "calendar": models.Calendar,
+            "community-list": models.CommunityList,
+            "custom": models.CustomWidget,
+            "id-card": models.IDCard,
+            "image": models.ImageWidget,
+            "menu": models.Menu,
+            "modaction": models.ModAction,
+            "moderators": models.ModeratorsWidget,
+            "more": models.MoreComments,
+            "post-flair": models.PostFlairWidget,
+            "stylesheet": models.Stylesheet,
+            "subreddit-rules": models.RulesWidget,
+            "textarea": models.TextArea,
+            "widget": models.Widget,
+        }
         self._reddit = reddit
 
-    def _objectify_dict(self, data):
+    def _objectify_dict(self, data):  # pragma: no cover
         """Create RedditBase objects from dicts.
 
         :param data: The structured data, assumed to be a dict.
@@ -118,7 +145,7 @@ class Objector:
             return data
         return parser.parse(data, self._reddit)
 
-    def objectify(self, data):
+    def objectify(self, data):  # pragma: no cover
         """Create RedditBase objects from data.
 
         :param data: The structured data.

@@ -32,8 +32,14 @@ class LiveContributorRelationship:
 
         """
         url = API_PATH["live_contributors"].format(id=self.thread.id)
-        temp = self.thread._reddit.get(url)
-        return temp if isinstance(temp, RedditorList) else temp[0]
+        data = self.thread._reddit.request("GET", url)
+
+        obj = None
+        if isinstance(data, dict):
+            obj = RedditorList(self.thread._reddit, _data=data["data"])
+        elif isinstance(data, list):
+            obj = RedditorList(self.thread._reddit, _data=data[0]["data"])
+        return obj
 
     def __init__(self, thread):
         """Create a :class:`.LiveContributorRelationship` instance.
@@ -59,7 +65,7 @@ class LiveContributorRelationship:
 
         """
         url = API_PATH["live_accept_invite"].format(id=self.thread.id)
-        self.thread._reddit.post(url)
+        self.thread._reddit._request_and_check_error("POST", url)
 
     def invite(self, redditor, permissions=None):
         """Invite a redditor to be a contributor of the live thread.
@@ -94,7 +100,7 @@ class LiveContributorRelationship:
             "type": "liveupdate_contributor_invite",
             "permissions": self._handle_permissions(permissions),
         }
-        self.thread._reddit.post(url, data=data)
+        self.thread._reddit._request_and_check_error("POST", url, data=data)
 
     def leave(self):
         """Abdicate the live thread contributor position (use with care).
@@ -108,7 +114,7 @@ class LiveContributorRelationship:
 
         """
         url = API_PATH["live_leave"].format(id=self.thread.id)
-        self.thread._reddit.post(url)
+        self.thread._reddit._request_and_check_error("POST", url)
 
     def remove(self, redditor):
         """Remove the redditor from the live thread contributors.
@@ -132,7 +138,7 @@ class LiveContributorRelationship:
             fullname = redditor
         data = {"id": fullname}
         url = API_PATH["live_remove_contrib"].format(id=self.thread.id)
-        self.thread._reddit.post(url, data=data)
+        self.thread._reddit._request_and_check_error("POST", url, data=data)
 
     def remove_invite(self, redditor):
         """Remove the invite for redditor.
@@ -159,7 +165,7 @@ class LiveContributorRelationship:
             fullname = redditor
         data = {"id": fullname}
         url = API_PATH["live_remove_invite"].format(id=self.thread.id)
-        self.thread._reddit.post(url, data=data)
+        self.thread._reddit._request_and_check_error("POST", url, data=data)
 
     def update(self, redditor, permissions=None):
         """Update the contributor permissions for ``redditor``.
@@ -199,7 +205,7 @@ class LiveContributorRelationship:
             "type": "liveupdate_contributor",
             "permissions": self._handle_permissions(permissions),
         }
-        self.thread._reddit.post(url, data=data)
+        self.thread._reddit._request_and_check_error("POST", url, data=data)
 
     def update_invite(self, redditor, permissions=None):
         """Update the contributor invite permissions for ``redditor``.
@@ -239,7 +245,7 @@ class LiveContributorRelationship:
             "type": "liveupdate_contributor_invite",
             "permissions": self._handle_permissions(permissions),
         }
-        self.thread._reddit.post(url, data=data)
+        self.thread._reddit._request_and_check_error("POST", url, data=data)
 
 
 class LiveThread(RedditBase):
@@ -354,7 +360,7 @@ class LiveThread(RedditBase):
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit._request_and_check_error("GET", path, params)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -399,7 +405,7 @@ class LiveThread(RedditBase):
 
         """
         url = API_PATH["live_report"].format(id=self.id)
-        self._reddit.post(url, data={"type": type})
+        self._reddit._request_and_check_error("POST", url, data={"type": type})
 
     def updates(self, **generator_kwargs):
         """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
@@ -458,7 +464,9 @@ class LiveThreadContribution:
 
         """
         url = API_PATH["live_add_update"].format(id=self.thread.id)
-        self.thread._reddit.post(url, data={"body": body})
+        self.thread._reddit._request_and_check_error(
+            "POST", url, data={"body": body}
+        )
 
     def close(self):
         """Close the live thread permanently (cannot be undone).
@@ -472,7 +480,7 @@ class LiveThreadContribution:
 
         """
         url = API_PATH["live_close"].format(id=self.thread.id)
-        self.thread._reddit.post(url)
+        self.thread._reddit._request_and_check_error("POST", url)
 
     def update(
         self,
@@ -535,7 +543,9 @@ class LiveThreadContribution:
 
         url = API_PATH["live_update_thread"].format(id=self.thread.id)
         # prawcore (0.7.0) Session.request() modifies `data` kwarg
-        self.thread._reddit.post(url, data=data.copy())
+        self.thread._reddit._request_and_check_error(
+            "POST", url, data=data.copy()
+        )
         self.thread._reset_attributes(*data.keys())
 
 
@@ -634,7 +644,11 @@ class LiveUpdate(FullnameMixin, RedditBase):
         url = API_PATH["live_focus"].format(
             thread_id=self.thread.id, update_id=self.id
         )
-        other = self._reddit.get(url)[0]
+        data = self._reddit._request_and_check_error("GET", url)
+
+        other = type(self)(
+            self._reddit, _data=data["data"]["children"][0]["data"]
+        )
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
@@ -674,7 +688,9 @@ class LiveUpdateContribution:
         """
         url = API_PATH["live_remove_update"].format(id=self.update.thread.id)
         data = {"id": self.update.fullname}
-        self.update.thread._reddit.post(url, data=data)
+        self.update.thread._reddit._request_and_check_error(
+            "POST", url, data=data
+        )
 
     def strike(self):
         """Strike a content of a live update.
@@ -693,4 +709,6 @@ class LiveUpdateContribution:
         """
         url = API_PATH["live_strike"].format(id=self.update.thread.id)
         data = {"id": self.update.fullname}
-        self.update.thread._reddit.post(url, data=data)
+        self.update.thread._reddit._request_and_check_error(
+            "POST", url, data=data
+        )

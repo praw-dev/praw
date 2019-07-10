@@ -183,8 +183,9 @@ class Reddit:
                 "to the `Reddit` class constructor."
             )
 
+        self._objector = Objector(self)
+
         self._check_for_update()
-        self._prepare_objector()
         self._prepare_prawcore(requestor_class, requestor_kwargs)
 
         self.auth = models.Auth(self, None)
@@ -320,46 +321,6 @@ class Reddit:
             update_check(__package__, __version__)
             Reddit.update_checked = True
 
-    def _prepare_objector(self):
-        mappings = {
-            self.config.kinds["comment"]: models.Comment,
-            self.config.kinds["message"]: models.Message,
-            self.config.kinds["redditor"]: models.Redditor,
-            self.config.kinds["submission"]: models.Submission,
-            self.config.kinds["subreddit"]: models.Subreddit,
-            self.config.kinds["trophy"]: models.Trophy,
-            "Button": models.Button,
-            "Collection": models.Collection,
-            "Image": models.Image,
-            "LabeledMulti": models.Multireddit,
-            "Listing": models.Listing,
-            "LiveUpdate": models.LiveUpdate,
-            "LiveUpdateEvent": models.LiveThread,
-            "MenuLink": models.MenuLink,
-            "ModmailAction": models.ModmailAction,
-            "ModmailConversation": models.ModmailConversation,
-            "ModmailMessage": models.ModmailMessage,
-            "Submenu": models.Submenu,
-            "TrophyList": models.TrophyList,
-            "UserList": models.RedditorList,
-            "button": models.ButtonWidget,
-            "calendar": models.Calendar,
-            "community-list": models.CommunityList,
-            "custom": models.CustomWidget,
-            "id-card": models.IDCard,
-            "image": models.ImageWidget,
-            "menu": models.Menu,
-            "modaction": models.ModAction,
-            "moderators": models.ModeratorsWidget,
-            "more": models.MoreComments,
-            "post-flair": models.PostFlairWidget,
-            "stylesheet": models.Stylesheet,
-            "subreddit-rules": models.RulesWidget,
-            "textarea": models.TextArea,
-            "widget": models.Widget,
-        }
-        self._objector = Objector(self, mappings)
-
     def _prepare_prawcore(self, requestor_class=None, requestor_kwargs=None):
         requestor_class = requestor_class or Requestor
         requestor_kwargs = requestor_kwargs or {}
@@ -408,6 +369,16 @@ class Reddit:
             self._core = self._authorized_core = session(authorizer)
         else:
             self._core = self._read_only_core
+
+    def _request_and_check_error(
+        self, method, path, params=None, data=None, files=None
+    ):
+        response_data = self._core.request(
+            method, path, data=data, files=files, params=params
+        )
+        if isinstance(response_data, dict):
+            self._objector.check_error(response_data)
+        return response_data
 
     def comment(
         self,  # pylint: disable=invalid-name

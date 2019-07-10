@@ -19,7 +19,9 @@ class EditableMixin:
            submission.delete()
 
         """
-        self._reddit.post(API_PATH["del"], {"id": self.fullname})
+        self._reddit._request_and_check_error(
+            "POST", API_PATH["del"], data={"id": self.fullname}
+        )
 
     def edit(self, body):
         """Replace the body of the object with ``body``.
@@ -39,7 +41,21 @@ class EditableMixin:
 
         """
         data = {"text": body, "thing_id": self.fullname}
-        updated = self._reddit.post(API_PATH["edit"], data=data)[0]
+        response_data = self._reddit._request_and_check_error(
+            "POST", API_PATH["edit"], data=data
+        )
+
+        updated = None
+        schema = response_data["json"]["data"]["things"][0]
+        if schema["kind"] == self._reddit.config.kinds["comment"]:
+            updated = self._reddit._objector.parsers[
+                self._reddit.config.kinds["comment"]
+            ](self._reddit, _data=schema["data"])
+        elif schema["kind"] == self._reddit.config.kinds["submission"]:
+            updated = self._reddit._objector.parsers[
+                self._reddit.config.kinds["submission"]
+            ](self._reddit, _data=schema["data"])
+
         for attribute in [
             "_fetched",
             "_reddit",

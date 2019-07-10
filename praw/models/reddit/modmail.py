@@ -156,7 +156,7 @@ class ModmailConversation(RedditBase):
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit._request_and_check_error("GET", path, params)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -174,7 +174,9 @@ class ModmailConversation(RedditBase):
            reddit.subreddit('redditdev').modmail('2gmz').archive()
 
         """
-        self._reddit.post(API_PATH["modmail_archive"].format(id=self.id))
+        self._reddit.request(
+            "POST", API_PATH["modmail_archive"].format(id=self.id)
+        )
 
     def highlight(self):
         """Highlight the conversation.
@@ -186,7 +188,9 @@ class ModmailConversation(RedditBase):
            reddit.subreddit('redditdev').modmail('2gmz').highlight()
 
         """
-        self._reddit.post(API_PATH["modmail_highlight"].format(id=self.id))
+        self._reddit._request_and_check_error(
+            "POST", API_PATH["modmail_highlight"].format(id=self.id)
+        )
 
     def mute(self):
         """Mute the non-mod user associated with the conversation.
@@ -198,7 +202,7 @@ class ModmailConversation(RedditBase):
            reddit.subreddit('redditdev').modmail('2gmz').mute()
 
         """
-        self._reddit.request(
+        self._reddit._request_and_check_error(
             "POST", API_PATH["modmail_mute"].format(id=self.id)
         )
 
@@ -224,7 +228,7 @@ other_conversations=conversation.user.recent_convos)
                 other_conversations
             )
         }
-        self._reddit.post(API_PATH["modmail_read"], data=data)
+        self._reddit.request("POST", API_PATH["modmail_read"], data=data)
 
     def reply(self, body, author_hidden=False, internal=False):
         """Reply to the conversation.
@@ -256,12 +260,15 @@ other_conversations=conversation.user.recent_convos)
             "isAuthorHidden": author_hidden,
             "isInternal": internal,
         }
-        response = self._reddit.post(
-            API_PATH["modmail_conversation"].format(id=self.id), data=data
+        response_data = self._reddit._request_and_check_error(
+            "POST",
+            API_PATH["modmail_conversation"].format(id=self.id),
+            data=data,
         )
-        message_id = response["conversation"]["objIds"][-1]["id"]
-        message_data = response["messages"][message_id]
-        return self._reddit._objector.objectify(message_data)
+
+        message_id = response_data["conversation"]["objIds"][-1]["id"]
+        message_data = response_data["messages"][message_id]
+        return ModmailMessage(self._reddit, _data=message_data)
 
     def unarchive(self):
         """Unarchive the conversation.
@@ -273,7 +280,9 @@ other_conversations=conversation.user.recent_convos)
            reddit.subreddit('redditdev').modmail('2gmz').unarchive()
 
         """
-        self._reddit.post(API_PATH["modmail_unarchive"].format(id=self.id))
+        self._reddit._request_and_check_error(
+            "POST", API_PATH["modmail_unarchive"].format(id=self.id)
+        )
 
     def unhighlight(self):
         """Un-highlight the conversation.
@@ -285,7 +294,7 @@ other_conversations=conversation.user.recent_convos)
            reddit.subreddit('redditdev').modmail('2gmz').unhighlight()
 
         """
-        self._reddit.request(
+        self._reddit._request_and_check_error(
             "DELETE", API_PATH["modmail_highlight"].format(id=self.id)
         )
 
@@ -299,7 +308,7 @@ other_conversations=conversation.user.recent_convos)
            reddit.subreddit('redditdev').modmail('2gmz').unmute()
 
         """
-        self._reddit.request(
+        self._reddit._request_and_check_error(
             "POST", API_PATH["modmail_unmute"].format(id=self.id)
         )
 
@@ -325,7 +334,7 @@ other_conversations=conversation.user.recent_convos)
                 other_conversations
             )
         }
-        self._reddit.post(API_PATH["modmail_unread"], data=data)
+        self._reddit.request("POST", API_PATH["modmail_unread"], data=data)
 
 
 class ModmailObject(RedditBase):

@@ -4,6 +4,7 @@ from json import dumps
 from ...const import API_PATH
 from ...util.cache import cachedproperty
 from ..listing.mixins import RedditorListingMixin
+from ..trophy import Trophy
 from ..util import stream_generator
 from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
@@ -127,7 +128,7 @@ class Redditor(
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit._request_and_check_error("GET", path, params)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -142,8 +143,10 @@ class Redditor(
 
     def block(self):
         """Block the Redditor."""
-        self._reddit.post(
-            API_PATH["block_user"], params={"account_id": self.fullname}
+        self._reddit._request_and_check_error(
+            "POST",
+            API_PATH["block_user"],
+            params={"account_id": self.fullname},
         )
 
     def friend(self, note=None):
@@ -164,7 +167,10 @@ class Redditor(
             and possibly ``note`` if the authenticated user has reddit Gold.
 
         """
-        return self._reddit.get(API_PATH["friend_v1"].format(user=self))
+        data = self._reddit._request_and_check_error(
+            "GET", API_PATH["friend_v1"].format(user=self)
+        )
+        return type(self)(self._reddit, _data=data)
 
     def gild(self, months=1):
         """Gild the Redditor.
@@ -175,14 +181,22 @@ class Redditor(
         """
         if months < 1 or months > 36:
             raise TypeError("months must be between 1 and 36")
-        self._reddit.post(
+        self._reddit._request_and_check_error(
+            "POST",
             API_PATH["gild_user"].format(username=self),
             data={"months": months},
         )
 
     def multireddits(self):
         """Return a list of the redditor's public multireddits."""
-        return self._reddit.get(API_PATH["multireddit_user"].format(user=self))
+        data = self._reddit.request(
+            "GET", API_PATH["multireddit_user"].format(user=self)
+        )
+
+        Multireddit = self._reddit._objector.parsers["LabeledMulti"]
+        return [
+            Multireddit(self._reddit, _data=schema["data"]) for schema in data
+        ]
 
     def trophies(self):
         """Return a list of the redditor's trophies.
@@ -201,7 +215,13 @@ class Redditor(
                 print(trophy.description)
 
         """
-        return list(self._reddit.get(API_PATH["trophies"].format(user=self)))
+        data = self._reddit._request_and_check_error(
+            "GET", API_PATH["trophies"].format(user=self)
+        )
+        return [
+            Trophy(self._reddit, _data=schema["data"])
+            for schema in data["data"]["trophies"]
+        ]
 
     def unblock(self):
         """Unblock the Redditor."""
@@ -211,7 +231,7 @@ class Redditor(
             "type": "enemy",
         }
         url = API_PATH["unfriend"].format(subreddit="all")
-        self._reddit.post(url, data=data)
+        self._reddit._request_and_check_error("POST", url, data=data)
 
     def unfriend(self):
         """Unfriend the Redditor."""

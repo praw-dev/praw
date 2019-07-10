@@ -46,4 +46,6 @@ class MessageableMixin:
         }
         if from_subreddit:
             data["from_sr"] = str(from_subreddit)
-        self._reddit.post(API_PATH["compose"], data=data)
+        self._reddit._request_and_check_error(
+            "POST", API_PATH["compose"], data=data
+        )

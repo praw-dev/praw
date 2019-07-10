@@ -25,7 +25,9 @@ class Preferences:
         See https://www.reddit.com/dev/api#GET_api_v1_me_prefs for the list
         of possible values.
         """
-        return self._reddit.get(API_PATH["preferences"])
+        return self._reddit._request_and_check_error(
+            "GET", API_PATH["preferences"]
+        )
 
     def __init__(self, reddit):
         """Create a Preferences instance.
@@ -190,6 +192,6 @@ class Preferences:
                 **{'3rd_party_data_personalized_ads': False})
 
         """
-        return self._reddit.patch(
-            API_PATH["preferences"], data={"json": dumps(preferences)}
+        return self._reddit._request_and_check_error(
+            "PATCH", API_PATH["preferences"], data={"json": dumps(preferences)}
         )

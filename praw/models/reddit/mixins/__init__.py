@@ -1,6 +1,7 @@
 """Package providing reddit class mixins."""
 from json import dumps
 from ....const import API_PATH
+from ....objector import Objector
 from .editable import EditableMixin
 from .fullname import FullnameMixin
 from .gildable import GildableMixin
@@ -38,8 +39,8 @@ class ThingModerationMixin:
            submission.mod.approve()
 
         """
-        self.thing._reddit.post(
-            API_PATH["approve"], data={"id": self.thing.fullname}
+        self.thing._reddit._request_and_check_error(
+            "POST", API_PATH["approve"], data={"id": self.thing.fullname}
         )
 
     def distinguish(self, how="yes", sticky=False):
@@ -69,7 +70,9 @@ class ThingModerationMixin:
         data = {"how": how, "id": self.thing.fullname}
         if sticky and getattr(self.thing, "is_root", False):
             data["sticky"] = True
-        self.thing._reddit.post(API_PATH["distinguish"], data=data)
+        self.thing._reddit._request_and_check_error(
+            "POST", API_PATH["distinguish"], data=data
+        )
 
     def ignore_reports(self):
         """Ignore future reports on a Comment or Submission.
@@ -93,8 +96,10 @@ class ThingModerationMixin:
         See also :meth:`~.unignore_reports`
 
         """
-        self.thing._reddit.post(
-            API_PATH["ignore_reports"], data={"id": self.thing.fullname}
+        self.thing._reddit._request_and_check_error(
+            "POST",
+            API_PATH["ignore_reports"],
+            data={"id": self.thing.fullname},
         )
 
     def lock(self):
@@ -112,8 +117,8 @@ class ThingModerationMixin:
         See also :meth:`~.unlock`
 
         """
-        self.thing._reddit.post(
-            API_PATH["lock"], data={"id": self.thing.fullname}
+        self.thing._reddit._request_and_check_error(
+            "POST", API_PATH["lock"], data={"id": self.thing.fullname}
         )
 
     def remove(self, spam=False):
@@ -135,7 +140,9 @@ class ThingModerationMixin:
 
         """
         data = {"id": self.thing.fullname, "spam": bool(spam)}
-        self.thing._reddit.post(API_PATH["remove"], data=data)
+        self.thing._reddit._request_and_check_error(
+            "POST", API_PATH["remove"], data=data
+        )
 
     def send_removal_message(
         self,
@@ -170,8 +177,16 @@ class ThingModerationMixin:
             "title": title,
             "type": type,
         }
+        response_data = self.thing._reddit._request_and_check_error(
+            "POST", url, data={"json": dumps(data)}
+        )
 
-        return self.thing._reddit.post(url, data={"json": dumps(data)}) or None
+        if response_data:
+            Comment = self.thing._reddit._objector.parsers[
+                self.thing._reddit.config.kinds["comment"]
+            ]
+            return Comment(self.thing._reddit, _data=response_data)
+        return None
 
     def undistinguish(self):
         """Remove mod, admin, or special distinguishing on object.
@@ -214,8 +229,10 @@ class ThingModerationMixin:
         See also :meth:`~.ignore_reports`
 
         """
-        self.thing._reddit.post(
-            API_PATH["unignore_reports"], data={"id": self.thing.fullname}
+        self.thing._reddit._request_and_check_error(
+            "POST",
+            API_PATH["unignore_reports"],
+            data={"id": self.thing.fullname},
         )
 
     def unlock(self):
@@ -233,8 +250,8 @@ class ThingModerationMixin:
         See also :meth:`~.lock`
 
         """
-        self.thing._reddit.post(
-            API_PATH["unlock"], data={"id": self.thing.fullname}
+        self.thing._reddit._request_and_check_error(
+            "POST", API_PATH["unlock"], data={"id": self.thing.fullname}
         )
 
 

@@ -167,6 +167,20 @@ class TestReddit(UnitTest):
     def test_subreddit(self):
         assert self.reddit.subreddit("redditdev").display_name == "redditdev"
 
+    def test_request_verbs_objectify(self):
+        with mock.patch.object(self.reddit, "request") as mock_request:
+            mock_request.return_value = sentinel = object()
+
+            with mock.patch.object(
+                self.reddit._objector, "objectify"
+            ) as mock_objectify:
+                for verb in "get patch post put".split():
+                    mock_objectify.reset_mock()
+                    func = getattr(self.reddit, verb)
+                    func("TEST")
+                    assert mock_objectify.called
+                    assert mock_objectify.call_args[0] == (sentinel,)
+
 
 class TestRedditCustomRequestor(UnitTest):
     def test_requestor_class(self):

@@ -6,8 +6,10 @@ class VotableMixin:
     """Interface for RedditBase classes that can be voted on."""
 
     def _vote(self, direction):
-        self._reddit.post(
-            API_PATH["vote"], data={"dir": str(direction), "id": self.fullname}
+        self._reddit._request_and_check_error(
+            "POST",
+            API_PATH["vote"],
+            data={"dir": str(direction), "id": self.fullname},
         )
 
     def clear_vote(self):

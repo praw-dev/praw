@@ -94,7 +94,7 @@ class WikiPage(RedditBase):
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit._request_and_check_error("GET", path, params)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -117,7 +117,8 @@ class WikiPage(RedditBase):
         other_settings.update(
             {"content": content, "page": self.name, "reason": reason}
         )
-        self._reddit.post(
+        self._reddit._request_and_check_error(
+            "POST",
             API_PATH["wiki_edit"].format(subreddit=self.subreddit),
             data=other_settings,
         )
@@ -191,7 +192,7 @@ class WikiPageModeration:
         url = API_PATH["wiki_page_editor"].format(
             subreddit=self.wikipage.subreddit, method="add"
         )
-        self.wikipage._reddit.post(url, data=data)
+        self.wikipage._reddit._request_and_check_error("POST", url, data=data)
 
     def remove(self, redditor):
         """Remove an editor from this WikiPage.
@@ -210,14 +211,15 @@ class WikiPageModeration:
         url = API_PATH["wiki_page_editor"].format(
             subreddit=self.wikipage.subreddit, method="del"
         )
-        self.wikipage._reddit.post(url, data=data)
+        self.wikipage._reddit._request_and_check_error("POST", url, data=data)
 
     def settings(self):
         """Return the settings for this WikiPage."""
         url = API_PATH["wiki_page_settings"].format(
             subreddit=self.wikipage.subreddit, page=self.wikipage.name
         )
-        return self.wikipage._reddit.get(url)["data"]
+        data = self.wikipage._reddit._request_and_check_error("GET", url)
+        return data["data"]
 
     def update(self, listed, permlevel, **other_settings):
         """Update the settings for this WikiPage.
@@ -243,4 +245,7 @@ class WikiPageModeration:
         url = API_PATH["wiki_page_settings"].format(
             subreddit=self.wikipage.subreddit, page=self.wikipage.name
         )
-        return self.wikipage._reddit.post(url, data=other_settings)["data"]
+        data = self.wikipage._reddit._request_and_check_error(
+            "POST", url, data=other_settings
+        )
+        return data["data"]

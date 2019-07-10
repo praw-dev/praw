@@ -76,7 +76,7 @@ class Emoji(RedditBase):
         url = API_PATH["emoji_delete"].format(
             emoji_name=self.name, subreddit=self.subreddit
         )
-        self._reddit.request("DELETE", url)
+        self._reddit._request_and_check_error("DELETE", url)
 
 
 class SubredditEmoji:
@@ -117,10 +117,11 @@ class SubredditEmoji:
                print(emoji)
 
         """
-        response = self.subreddit._reddit.get(
-            API_PATH["emoji_list"].format(subreddit=self.subreddit)
+        response_data = self.subreddit._reddit._request_and_check_error(
+            "GET", API_PATH["emoji_list"].format(subreddit=self.subreddit)
         )
-        for emoji_name, emoji_data in response[
+
+        for emoji_name, emoji_data in response_data[
             self.subreddit.fullname
         ].items():
             yield Emoji(
@@ -149,8 +150,10 @@ class SubredditEmoji:
             data["mimetype"] = "image/png"
         url = API_PATH["emoji_lease"].format(subreddit=self.subreddit)
 
-        # until we learn otherwise, assume this request always succeeds
-        upload_lease = self._reddit.post(url, data=data)["s3UploadLease"]
+        upload_lease = self._reddit._request_and_check_error(
+            "POST", url, data=data
+        )["s3UploadLease"]
+
         upload_data = {
             item["name"]: item["value"] for item in upload_lease["fields"]
         }
@@ -163,7 +166,8 @@ class SubredditEmoji:
         response.raise_for_status()
 
         url = API_PATH["emoji_upload"].format(subreddit=self.subreddit)
-        self._reddit.post(
-            url, data={"name": name, "s3_key": upload_data["key"]}
+        self._reddit._request_and_check_error(
+            "POST", url, data={"name": name, "s3_key": upload_data["key"]}
         )
+
         return Emoji(self._reddit, self.subreddit, name)

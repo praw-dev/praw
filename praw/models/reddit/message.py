@@ -87,8 +87,8 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
         .. note:: Reddit does not return an indication of whether or not the
                   message was successfully deleted.
         """
-        self._reddit.post(
-            API_PATH["delete_message"], data={"id": self.fullname}
+        self._reddit._request_and_check_error(
+            "POST", API_PATH["delete_message"], data={"id": self.fullname}
         )
 
 
@@ -97,10 +97,12 @@ class SubredditMessage(Message):
 
     def mute(self, _unmute=False):
         """Mute the sender of this SubredditMessage."""
-        self._reddit.post(API_PATH["mute_sender"], data={"id": self.fullname})
+        self._reddit._request_and_check_error(
+            "POST", API_PATH["mute_sender"], data={"id": self.fullname}
+        )
 
     def unmute(self):
         """Unmute the sender of this SubredditMessage."""
-        self._reddit.post(
-            API_PATH["unmute_sender"], data={"id": self.fullname}
+        self._reddit._request_and_check_error(
+            "POST", API_PATH["unmute_sender"], data={"id": self.fullname}
         )

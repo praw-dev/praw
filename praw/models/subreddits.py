@@ -9,10 +9,6 @@ from ..const import API_PATH
 class Subreddits(PRAWBase):
     """Subreddits is a Listing class that provides various subreddit lists."""
 
-    @staticmethod
-    def _to_list(subreddit_list):
-        return ",".join([str(x) for x in subreddit_list])
-
     def default(self, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for default subreddits."""
         return ListingGenerator(
@@ -60,7 +56,6 @@ class Subreddits(PRAWBase):
             subreddits=",".join(map(str, subreddits))
         )
         data = self._reddit.request("GET", url, params=params)
-        self._reddit._objector.check_error(data)
         return [
             Subreddit(self._reddit, display_name=item["sr_name"])
             for item in data
@@ -88,7 +83,8 @@ class Subreddits(PRAWBase):
         :param exact: Return only exact matches to ``query`` (default: False).
 
         """
-        result = self._reddit.post(
+        data = self._reddit._request_and_check_error(
+            "POST",
             API_PATH["subreddits_name_search"],
             data={
                 "include_over_18": include_nsfw,
@@ -96,7 +92,8 @@ class Subreddits(PRAWBase):
                 "query": query,
             },
         )
-        return [self._reddit.subreddit(x) for x in result["names"]]
+        names = data["names"]
+        return [Subreddit(self._reddit, display_name=name) for name in names]
 
     def stream(self, **stream_options):
         """Yield new subreddits as they are created.

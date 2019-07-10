@@ -115,7 +115,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
         path = API_PATH[name].format(**fields)
-        return self._reddit.request("GET", path, params)
+        return self._reddit._request_and_check_error("GET", path, params)
 
     def _fetch(self):
         data = self._fetch_data()
@@ -133,7 +133,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         url = API_PATH["multireddit_update"].format(
             multi=self.name, user=self._author, subreddit=subreddit
         )
-        self._reddit.request(
+        self._reddit._request_and_check_error(
             "PUT", url, data={"model": dumps({"name": str(subreddit)})}
         )
         self._reset_attributes("subreddits")
@@ -159,7 +159,10 @@ class Multireddit(SubredditListingMixin, RedditBase):
                 multi=name, user=self._reddit.user.me()
             ),
         }
-        return self._reddit.post(API_PATH["multireddit_copy"], data=data)
+        response_data = self._reddit._request_and_check_error(
+            "POST", API_PATH["multireddit_copy"], data=data
+        )
+        return type(self)(self._reddit, _data=response_data["data"])
 
     def delete(self):
         """Delete this multireddit."""
@@ -212,7 +215,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         path = API_PATH["multireddit_api"].format(
             multi=self.name, user=self._author.name
         )
-        response = self._reddit.request(
+        response = self._reddit._request_and_check_error(
             "PUT", path, data={"model": dumps(updated_settings)}
         )
         new = Multireddit(self._reddit, response["data"])

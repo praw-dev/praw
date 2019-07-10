@@ -1,6 +1,6 @@
 import pytest
 
-from praw.exceptions import APIException, ClientException
+from praw.exceptions import APIException
 
 from . import UnitTest
 
@@ -12,7 +12,6 @@ class TestObjector(UnitTest):
     def test_parse_error(self):
         objector = self.reddit._objector
         assert objector.parse_error({}) is None
-        assert objector.parse_error([]) is None
         assert objector.parse_error({"asdf": 1}) is None
 
         error_response = {
@@ -26,8 +25,7 @@ class TestObjector(UnitTest):
         assert isinstance(error, APIException)
 
         error_response = {"json": {"errors": []}}
-        with pytest.raises(ClientException):
-            objector.parse_error(error_response)
+        assert objector.parse_error(error_response) is None
 
         error_response = {
             "json": {
