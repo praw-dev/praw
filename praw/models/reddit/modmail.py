@@ -167,7 +167,7 @@ class ModmailConversation(RedditBase):
     def archive(self):
         """Archive the conversation.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -179,7 +179,7 @@ class ModmailConversation(RedditBase):
     def highlight(self):
         """Highlight the conversation.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -191,7 +191,7 @@ class ModmailConversation(RedditBase):
     def mute(self):
         """Mute the non-mod user associated with the conversation.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -266,7 +266,7 @@ other_conversations=conversation.user.recent_convos)
     def unarchive(self):
         """Unarchive the conversation.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -278,7 +278,7 @@ other_conversations=conversation.user.recent_convos)
     def unhighlight(self):
         """Un-highlight the conversation.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -292,7 +292,7 @@ other_conversations=conversation.user.recent_convos)
     def unmute(self):
         """Unmute the non-mod user associated with the conversation.
 
-        Example:
+        For example:
 
         .. code:: python
 

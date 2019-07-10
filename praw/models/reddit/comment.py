@@ -207,7 +207,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         ``reddit.inbox.comment_replies``, then the returned parent may be a
         lazy instance of either :class:`.Comment`, or :class:`.Submission`.
 
-        Lazy Comment Example:
+        Lazy comment example:
 
         .. code:: python
 
