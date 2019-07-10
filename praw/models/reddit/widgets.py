@@ -508,7 +508,8 @@ class SubredditWidgetsModeration:
                                    then find the "Calendar ID."
         :param requires_sync: A ``bool``.
         :param configuration: A ``dict`` as specified in `Reddit docs`_.
-                              Example:
+
+                              For example:
 
                               .. code-block:: python
 
@@ -615,7 +616,8 @@ class SubredditWidgetsModeration:
             key ``'url'`` which maps to the URL of an image hosted on
             Reddit's servers. Images should be uploaded using
             :meth:`.upload_image`.
-            Example:
+
+            For example:
 
             .. code-block:: python
 
@@ -671,7 +673,8 @@ class SubredditWidgetsModeration:
             Each ``dict`` has the key ``'url'`` which maps to the URL
             of an image hosted on Reddit's servers. Images should
             be uploaded using :meth:`.upload_image`.
-            Example:
+
+            For example:
 
             .. code-block:: python
 
