@@ -196,7 +196,7 @@ class Submission(
         self.comment_sort = "best"
 
         if id is not None:
-            self.id = id  # pylint: disable=invalid-name
+            self.id = id
         elif url is not None:
             self.id = self.id_from_url(url)
 
