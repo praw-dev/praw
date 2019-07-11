@@ -218,6 +218,15 @@ class TestComment(IntegrationTest):
             assert not comment.is_root
             assert comment.parent_id == parent_comment.fullname
 
+    def test_reply__none(self):
+        comment = Comment(self.reddit, "d1616q2")
+        response_data = {"json": {"errors": [], "data": {"things": []}}}
+        with mock.patch.object(
+            self.reddit, "request", return_value=response_data
+        ):
+            reply = comment.reply("TEST")
+        assert reply is None
+
     def test_report(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestComment.test_report"):

@@ -120,6 +120,15 @@ class TestSubmission(IntegrationTest):
             assert comment.body == "Test reply"
             assert comment.parent_id == submission.fullname
 
+    def test_reply__none(self):
+        submission = Submission(self.reddit, "4b1tfm")
+        response_data = {"json": {"errors": [], "data": {"things": []}}}
+        with mock.patch.object(
+            self.reddit, "request", return_value=response_data
+        ):
+            reply = submission.reply("TEST")
+        assert reply is None
+
     def test_report(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubmission.test_report"):

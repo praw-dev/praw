@@ -9,7 +9,14 @@ class ReplyableMixin:
         """Reply to the object.
 
         :param body: The markdown formatted content for a comment.
-        :returns: A :class:`~.Comment` object for the newly created comment.
+        :returns: A :class:`~.Comment` object for the newly created
+            comment or ``None`` if Reddit doesn't provide one.
+
+        A ``None`` value can be returned if the target is a comment or
+        submission in a quarantined subreddit and the authenticated user
+        has not opt-ed in to viewing the content. When this happens the
+        comment will be sucessfully created on Reddit and can be retried
+        by drawing the comment from the user's comment history.
 
         Example usage:
 
@@ -23,4 +30,8 @@ class ReplyableMixin:
 
         """
         data = {"text": body, "thing_id": self.fullname}
-        return self._reddit.post(API_PATH["comment"], data=data)[0]
+        comments = self._reddit.post(API_PATH["comment"], data=data)
+        try:
+            return comments[0]
+        except IndexError:
+            return None

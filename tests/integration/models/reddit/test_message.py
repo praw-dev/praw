@@ -96,6 +96,17 @@ class TestMessage(IntegrationTest):
             assert reply.body == "Message reply"
             assert reply.first_message_name == message.fullname
 
+    def test_reply__none(self):
+        with self.recorder.use_cassette("TestMessage.test_reply"):
+            message = next(self.reddit.inbox.messages())
+
+        response_data = {"json": {"errors": [], "data": {"things": []}}}
+        with mock.patch.object(
+            self.reddit, "request", return_value=response_data
+        ):
+            reply = message.reply("TEST")
+        assert reply is None
+
 
 class TestSubredditMessage(IntegrationTest):
     def test_mute(self):
