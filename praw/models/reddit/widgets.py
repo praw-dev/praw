@@ -554,7 +554,9 @@ class SubredditWidgetsModeration:
         calendar.update(other_settings)
         return self._create_widget(calendar)
 
-    def add_community_list(self, short_name, data, styles, **other_settings):
+    def add_community_list(
+        self, short_name, data, styles, description="", **other_settings
+    ):
         """Add and return a :class:`.CommunityList` widget.
 
         :param short_name: A name for the widget, no longer than 30 characters.
@@ -567,6 +569,7 @@ class SubredditWidgetsModeration:
                        ``headerColor``, and values of hex colors. For example,
                        ``{'backgroundColor': '#FFFF66', 'headerColor':
                        '#3333EE'}``.
+        :param description: A ``str`` containing Markdown (default: ``''``).
 
         Example usage:
 
@@ -577,7 +580,8 @@ class SubredditWidgetsModeration:
            subreddits = ['learnpython', reddit.subreddit('redditdev')]
            new_widget = widget_moderation.add_community_list('My fav subs',
                                                              subreddits,
-                                                             styles)
+                                                             styles,
+                                                             'description')
 
         """
         community_list = {
@@ -585,6 +589,7 @@ class SubredditWidgetsModeration:
             "kind": "community-list",
             "shortName": short_name,
             "styles": styles,
+            "description": description,
         }
         community_list.update(other_settings)
         return self._create_widget(community_list)
@@ -1140,7 +1145,8 @@ class CommunityList(Widget, BaseList):
        styles = {'backgroundColor': '#FFFF66', 'headerColor': '#3333EE'}
        subreddits = ['learnpython', reddit.subreddit('announcements')]
        community_list = widgets.mod.add_community_list('Related subreddits',
-                                                       subreddits, styles)
+                                                       subreddits, styles,
+                                                       'description')
 
     For more information on creation, see :meth:`.add_community_list`.
 
