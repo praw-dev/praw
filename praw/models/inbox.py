@@ -155,7 +155,7 @@ class Inbox(PRAWBase):
 
         :param message_id: The base36 id of a message.
 
-        Example:
+        For example:
 
         .. code:: python
 

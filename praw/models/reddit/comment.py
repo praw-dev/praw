@@ -142,10 +142,11 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             raise TypeError(
                 "Exactly one of `id`, `url`, or `_data` must be provided."
             )
-        self._replies = self._submission = None
+        self._replies = []
+        self._submission = None
         super(Comment, self).__init__(reddit, _data=_data)
         if id:
-            self.id = id  # pylint: disable=invalid-name
+            self.id = id
         elif url:
             self.id = self.id_from_url(url)
         else:
@@ -207,7 +208,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         ``reddit.inbox.comment_replies``, then the returned parent may be a
         lazy instance of either :class:`.Comment`, or :class:`.Submission`.
 
-        Lazy Comment Example:
+        Lazy comment example:
 
         .. code:: python
 

@@ -196,7 +196,7 @@ class Submission(
         self.comment_sort = "best"
 
         if id is not None:
-            self.id = id  # pylint: disable=invalid-name
+            self.id = id
         elif url is not None:
             self.id = self.id_from_url(url)
 
@@ -380,7 +380,7 @@ class SubmissionFlair:
 
         Choices are required in order to use :meth:`.select`.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -574,7 +574,7 @@ class SubmissionModeration(ThingModerationMixin):
         This submission will replace an existing stickied submission if one
         exists.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -607,7 +607,7 @@ class SubmissionModeration(ThingModerationMixin):
         This method can be used both by the submission author and moderators of
         the subreddit that the submission belongs to.
 
-        Example:
+        For example:
 
         .. code:: python
 

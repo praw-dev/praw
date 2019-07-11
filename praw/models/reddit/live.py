@@ -346,7 +346,7 @@ class LiveThread(RedditBase):
             raise TypeError("Either `id` or `_data` must be provided.")
         super(LiveThread, self).__init__(reddit, _data=_data)
         if id:
-            self.id = id  # pylint: disable=invalid-name
+            self.id = id
 
     def _fetch_info(self):
         return ("liveabout", {"id": self.id}, None)
@@ -617,7 +617,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
         elif thread_id and update_id:
             super(LiveUpdate, self).__init__(reddit, _data=None)
             self._thread = LiveThread(self._reddit, thread_id)
-            self.id = update_id  # pylint: disable=invalid-name
+            self.id = update_id
         else:
             raise TypeError(
                 "Either `thread_id` and `update_id`, or "

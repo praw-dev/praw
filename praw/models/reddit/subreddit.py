@@ -1129,7 +1129,7 @@ class SubredditFlair:
         This method can only be used by an authenticated user who is a
         moderator of the associated Subreddit.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -1365,7 +1365,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
     def __iter__(self):
         """Iterate through the user flair templates.
 
-        Example:
+        For example:
 
         .. code-block:: python
 
@@ -1441,7 +1441,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
     def __iter__(self):
         """Iterate through the link flair templates.
 
-        Example:
+        For example:
 
         .. code-block:: python
 
@@ -2084,7 +2084,7 @@ class ModeratorRelationship(SubredditRelationship):
     def leave(self):
         """Abdicate the moderator position (use with care).
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2099,7 +2099,7 @@ class ModeratorRelationship(SubredditRelationship):
         :param redditor: A redditor name (e.g., ``'spez'``) or
             :class:`~.Redditor` instance.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2174,7 +2174,7 @@ class Modmail:
         :param mark_read: If True, conversation is marked as read
             (default: False).
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2284,7 +2284,7 @@ mark_read=True)
             internal or archived conversations.
 
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2350,7 +2350,7 @@ state='mod')
     def subreddits(self):
         """Yield subreddits using the new modmail that the user moderates.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2522,7 +2522,7 @@ class SubredditStylesheet:
 
         Succeeds even if there is no banner image.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2538,7 +2538,7 @@ class SubredditStylesheet:
         Succeeds even if there is no additional image.  Will also delete any
         configured hover image.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2556,7 +2556,7 @@ class SubredditStylesheet:
 
         Succeeds even if there is no hover image.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2571,7 +2571,7 @@ class SubredditStylesheet:
 
         Succeeds even if there is no header image.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2586,7 +2586,7 @@ class SubredditStylesheet:
 
         Succeeds even if the named image does not exist.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2601,7 +2601,7 @@ class SubredditStylesheet:
 
         Succeeds even if there is no mobile header.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2616,7 +2616,7 @@ class SubredditStylesheet:
 
         Succeeds even if there is no mobile icon.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2631,7 +2631,7 @@ class SubredditStylesheet:
 
         :param stylesheet: The CSS for the new stylesheet.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2663,7 +2663,7 @@ class SubredditStylesheet:
         specific, so try through the website with the same image to see what
         the problem actually might be.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2686,7 +2686,7 @@ class SubredditStylesheet:
         specific, so try through the website with the same image to see what
         the problem actually might be.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2711,7 +2711,7 @@ class SubredditStylesheet:
         specific, so try through the website with the same image to see what
         the problem actually might be.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2748,7 +2748,7 @@ class SubredditStylesheet:
         specific, so try through the website with the same image to see what
         the problem actually might be.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2773,7 +2773,7 @@ class SubredditStylesheet:
         specific, so try through the website with the same image to see what
         the problem actually might be.
 
-        Example:
+        For example:
 
         .. code:: python
 
@@ -2832,7 +2832,7 @@ class SubredditStylesheet:
 
 
 class SubredditWiki:
-    """Provides a set of moderation functions to a Subreddit."""
+    """Provides a set of wiki functions to a Subreddit."""
 
     def __getitem__(self, page_name):
         """Lazily return the WikiPage for the subreddit named ``page_name``.
@@ -2850,9 +2850,9 @@ class SubredditWiki:
         )
 
     def __init__(self, subreddit):
-        """Create a SubredditModeration instance.
+        """Create a SubredditWiki instance.
 
-        :param subreddit: The subreddit to moderate.
+        :param subreddit: The subreddit whose wiki to work with.
 
         """
         self.banned = SubredditRelationship(subreddit, "wikibanned")
