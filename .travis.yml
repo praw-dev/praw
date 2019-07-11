@@ -5,8 +5,7 @@ install:
   - pip install coveralls
 jobs:
   include:
-    - install: pip install black flake8 sphinx sphinx_rtd_theme
-        'pydocstyle<4' .
+    - install: pip install black flake8 pydocstyle sphinx sphinx_rtd_theme .
       python: 3.7
       script:
         - black --check --verbose *.py docs praw tests
