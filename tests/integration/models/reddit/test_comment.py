@@ -153,9 +153,11 @@ class TestComment(IntegrationTest):
         assert parent.fullname == comment.parent_id
 
     def test_refresh(self):
+        comment = Comment(self.reddit, "d81vwef")
         with self.recorder.use_cassette("TestComment.test_refresh"):
-            comment = Comment(self.reddit, "d81vwef").refresh()
-        assert len(comment.replies) > 0
+            assert len(comment.replies) == 0
+            comment.refresh()
+            assert len(comment.replies) > 0
 
     def test_refresh__raises_exception(self):
         with self.recorder.use_cassette(

@@ -141,7 +141,7 @@ class ModmailConversation(RedditBase):
             raise TypeError("Either `id` or `_data` must be provided.")
 
         if id:
-            self.id = id  # pylint: disable=invalid-name
+            self.id = id
 
         self._info_params = {"markRead": True} if mark_read else None
 
