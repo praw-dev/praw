@@ -151,6 +151,23 @@ You can now properly extract and parse all (or most) of the comments
 belonging to a single submission. Combine this with :ref:`submission iteration
 <submission-iteration>` and you can build some really cool stuff.
 
+.. code-block:: python
+   
+   def child_comments(previous_level_comment, n):
+    if(previous_level_comment.replies):
+        for next_level_comment in previous_level_comment.replies:
+            print(next_level_comments.body)
+            morecomm(next_level_comment, n+1)
+    return None
+   submission.comments.replace_more(limit=None)
+   for first_level_comment in submission.comments:
+    print(first_level_comment.body)
+    child_comments(first_level_comment, 2)
+   
+Using the code above you can parse all the comments on a submission.
+This code retains the order of the comments. It will parse all the comments 
+from top level comments to deep child comments similar to DFS traversal.
+
 Finally, note that the value of ``submission.num_comments`` may not match up
 100% with the number of comments extracted via PRAW. This discrepancy is
 normal as that count includes deleted, removed, and spam comments.
