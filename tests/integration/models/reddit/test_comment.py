@@ -220,6 +220,13 @@ class TestComment(IntegrationTest):
             assert not comment.is_root
             assert comment.parent_id == parent_comment.fullname
 
+    def test_reply__none(self):
+        self.reddit.read_only = False
+        comment = Comment(self.reddit, "eear2ml")
+        with self.recorder.use_cassette("TestComment.test_reply__none"):
+            reply = comment.reply("TEST")
+        assert reply is None
+
     def test_report(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestComment.test_report"):

@@ -120,6 +120,13 @@ class TestSubmission(IntegrationTest):
             assert comment.body == "Test reply"
             assert comment.parent_id == submission.fullname
 
+    def test_reply__none(self):
+        self.reddit.read_only = False
+        submission = Submission(self.reddit, "ah19vv")
+        with self.recorder.use_cassette("TestSubmission.test_reply__none"):
+            reply = submission.reply("TEST")
+        assert reply is None
+
     def test_report(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubmission.test_report"):
