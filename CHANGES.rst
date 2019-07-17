@@ -20,6 +20,11 @@ Unreleased
 * :meth:`.add_community_list` has parameter ``description`` to support
   unannounced upstream Reddit API changes.
 
+**Changed**
+
+* :meth:`.Subreddits.recommended` now accepts any non-str iterable
+  (not just ``list``).
+
 **Removed**
 
 * Drop official support for Python 2.7.

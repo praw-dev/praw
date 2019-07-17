@@ -47,20 +47,23 @@ class Subreddits(PRAWBase):
             expected).
 
         """
-        if not isinstance(subreddits, list):
-            raise TypeError("subreddits must be a list")
-        if omit_subreddits is not None and not isinstance(
-            omit_subreddits, list
-        ):
-            raise TypeError("omit_subreddits must be a list or None")
+        if isinstance(subreddits, str):
+            raise TypeError("`subreddits` must be a non-str iterable")
+        if isinstance(omit_subreddits, str):
+            raise TypeError("`omit_subreddits` must be a non-str iterable")
 
-        params = {"omit": self._to_list(omit_subreddits or [])}
+        params = None
+        if omit_subreddits:
+            params = {"omit": ",".join(map(str, omit_subreddits))}
+
         url = API_PATH["sub_recommended"].format(
-            subreddits=self._to_list(subreddits)
+            subreddits=",".join(map(str, subreddits))
         )
+        data = self._reddit.request("GET", url, params=params)
+        self._reddit._objector.check_error(data)
         return [
-            Subreddit(self._reddit, sub["sr_name"])
-            for sub in self._reddit.get(url, params=params)
+            Subreddit(self._reddit, display_name=item["sr_name"])
+            for item in data
         ]
 
     def search(self, query, **generator_kwargs):
