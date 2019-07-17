@@ -24,6 +24,8 @@ Unreleased
 
 * Drop official support for Python 2.7.
 * ``Multireddit.rename()`` no longer works due to a change in the Reddit API.
+* Remove `Subreddits.search_by_topic()` because its endpoint no longer exists.
+  (See https://www.reddit.com/r/redditdev/comments/8gmf9v.)
 
 6.3.1 (2019/06/10)
 ------------------
@@ -536,7 +538,7 @@ parameter as described below:
 
 **Added**
 
-* :meth:`praw.models.Subreddits.search_by_topic` to search subreddits by topic.
+* :meth:`!praw.models.Subreddits.search_by_topic` to search subreddits by topic.
   (see: https://www.reddit.com/dev/api/#GET_api_subreddits_by_topic).
 * :meth:`praw.models.LiveHelper.__call__` to provide interface to
   ``praw.models.LiveThread.__init__``.

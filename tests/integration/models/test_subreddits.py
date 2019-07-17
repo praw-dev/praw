@@ -64,17 +64,6 @@ class TestSubreddits(IntegrationTest):
             assert len(subreddits) > 1
             assert all(isinstance(x, Subreddit) for x in subreddits)
 
-    def test_search_by_topic(self):
-        with self.recorder.use_cassette("TestSubreddits.test_search_by_topic"):
-            subreddits = self.reddit.subreddits.search_by_topic("python")
-            assert isinstance(subreddits, list)
-            assert len(subreddits) > 1
-            assert all(isinstance(x, Subreddit) for x in subreddits)
-
-            subreddits = self.reddit.subreddits.search_by_topic("xvfx2741r")
-            assert isinstance(subreddits, list)
-            assert len(subreddits) == 0
-
     @mock.patch("time.sleep", return_value=None)
     def test_stream(self, _):
         with self.recorder.use_cassette("TestSubreddits__test_streams"):
