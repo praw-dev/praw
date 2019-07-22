@@ -52,7 +52,6 @@ API_PATH = {
     "flaircsv":                "r/{subreddit}/api/flaircsv/",
     "flairlist":               "r/{subreddit}/api/flairlist/",
     "flairselector":           "r/{subreddit}/api/flairselector/",
-    "flairtemplate":           "r/{subreddit}/api/flairtemplate/",
     "flairtemplate_v2":        "r/{subreddit}/api/flairtemplate_v2",
     "flairtemplateclear":      "r/{subreddit}/api/clearflairtemplates/",
     "flairtemplatedelete":     "r/{subreddit}/api/deleteflairtemplate/",

@@ -20,6 +20,15 @@ Unreleased
 * :meth:`.add_community_list` has parameter ``description`` to support
   unannounced upstream Reddit API changes.
 
+**Changed**
+
+* Removed ``css_class`` parameter cannot be used with ``background_color``,
+  ``text_color``, or ``mod_only`` constraint on methods:
+
+    * ``SubredditFlairTemplates.update()``
+    * ``SubredditRedditorFlairTemplates.add()``
+    * ``SubredditLinkFlairTemplates.add()``
+
 **Removed**
 
 * Drop official support for Python 2.7.

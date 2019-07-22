@@ -1234,33 +1234,16 @@ class SubredditFlairTemplates:
         text_color=None,
         mod_only=None,
     ):
-        if css_class and any(
-            param is not None
-            for param in (background_color, text_color, mod_only)
-        ):
-            raise TypeError(
-                "Parameter `css_class` cannot be used in "
-                "conjunction with parameters `background_color`, "
-                "`text_color`, or `mod_only`."
-            )
-        if css_class:
-            url = API_PATH["flairtemplate"].format(subreddit=self.subreddit)
-            data = {
-                "css_class": css_class,
-                "flair_type": self.flair_type(is_link),
-                "text": text,
-                "text_editable": bool(text_editable),
-            }
-        else:
-            url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
-            data = {
-                "background_color": background_color,
-                "text_color": text_color,
-                "flair_type": self.flair_type(is_link),
-                "text": text,
-                "text_editable": bool(text_editable),
-                "mod_only": bool(mod_only),
-            }
+        url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
+        data = {
+            "css_class": css_class,
+            "background_color": background_color,
+            "text_color": text_color,
+            "flair_type": self.flair_type(is_link),
+            "text": text,
+            "text_editable": bool(text_editable),
+            "mod_only": bool(mod_only),
+        }
         self.subreddit._reddit.post(url, data=data)
 
     def _clear(self, is_link=None):
@@ -1372,17 +1355,14 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
-            Cannot be used in conjunction with ``background_color``,
-            ``text_color``, or ``mod_only``.
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
-            as a hex color. Cannot be used in conjunction with ``css_class``.
+            as a hex color.
         :param text_color: The flair template's new text color, either
-            ``'light'`` or ``'dark'``. Cannot be used in conjunction with
-            ``css_class``.
+            ``'light'`` or ``'dark'``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
-            moderators. Cannot be used in conjunction with ``css_class``.
+            moderators.
 
         For example, to add an editable Redditor flair try:
 
@@ -1447,17 +1427,14 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
-            Cannot be used in conjunction with ``background_color``,
-            ``text_color``, or ``mod_only``.
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
-            as a hex color. Cannot be used in conjunction with ``css_class``.
+            as a hex color.
         :param text_color: The flair template's new text color, either
-            ``'light'`` or ``'dark'``. Cannot be used in conjunction with
-            ``css_class``.
+            ``'light'`` or ``'dark'``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
-            moderators. Cannot be used in conjunction with ``css_class``.
+            moderators.
 
         For example, to add an editable link flair try:
 
