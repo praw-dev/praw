@@ -758,51 +758,11 @@ class TestSubredditFlairTemplates(IntegrationTest):
         ):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
-                template["id"], "PRAW updated", css_class="myCSS"
-            )
-
-    def test_update_bad(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_update_bad"
-        ):
-            template = list(self.subreddit.flair.templates)[0]
-            with pytest.raises(TypeError):
-                self.subreddit.flair.templates.update(
-                    template["id"],
-                    "PRAW updated",
-                    css_class="myclass",
-                    text_color="light",
-                )
-
-    @mock.patch("time.sleep", return_value=None)
-    def test_update_across_kind(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_update_across_kind"
-        ):
-            self.subreddit.flair.templates.add("My PRAW text", css_class="flr")
-            template = [
-                t
-                for t in self.subreddit.flair.templates
-                if t["text"] == "My PRAW text"
-            ][0]
-            self.subreddit.flair.templates.update(
                 template["id"],
-                "updated text :snoo:",
+                "PRAW updated",
+                css_class="myCSS",
                 text_color="dark",
                 background_color="#00FFFF",
-            )
-
-    @mock.patch("time.sleep", return_value=None)
-    def test_update_v2(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_update_v2"
-        ):
-            template = list(self.subreddit.flair.templates)[0]
-            self.subreddit.flair.templates.update(
-                template["id"], "updated by PRAW", background_color="#000000"
             )
 
 
