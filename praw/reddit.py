@@ -2,7 +2,7 @@
 import configparser
 import os
 from itertools import islice
-from typing import IO, Any, Dict, Generator, Optional, Sequence, Type, Union
+from typing import IO, Any, Dict, Generator, Iterable, Optional, Type, Union
 
 from prawcore import (
     Authorizer,
@@ -461,7 +461,7 @@ class Reddit:
 
     def info(
         self,
-        fullnames: Optional[Sequence[str]] = None,
+        fullnames: Optional[Iterable[str]] = None,
         url: Optional[str] = None,
     ) -> Generator[Union[Subreddit, Comment, Submission], None, None]:
         """Fetch information about each item in ``fullnames`` or from ``url``.
@@ -485,7 +485,7 @@ class Reddit:
                   different set of submissions.
 
         """
-        none_count = [fullnames, url].count(None)
+        none_count = (fullnames, url).count(None)
         if none_count > 1:
             raise TypeError("Either `fullnames` or `url` must be provided.")
         if none_count < 1:
