@@ -46,4 +46,5 @@ Source Contributors
 - LilSpazJoekp `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
 - Timendum `@timendum <https://github.com/timendum>`_
 - vaclav-2012 `@vaclav-2012 <https://github.com/vaclav-2012>`_
+- Jack Steel `@jackodsteel <https://github.com/jackodsteel>`_
 - Add "Name <email (optional)> and github profile link" above this line.

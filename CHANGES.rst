@@ -14,6 +14,9 @@ Unreleased
   mark the submission NSFW immediately upon crossposting.
 * :meth:`~.Submission.crosspost` support parameter ``spoiler`` to
   mark the submission as a spoiler immediately upon crossposting.
+* :meth:`~.Reddit.redditor` Added fullname param to fetch a Redditor
+  by the fullname instead of name.
+
 
 **Fixed**
 

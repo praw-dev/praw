@@ -21,13 +21,28 @@ class TestRedditor(UnitTest):
         assert redditor2 == "dummy1"
 
     def test_construct_failure(self):
-        message = "Either `name` or `_data` must be provided."
+        message = (
+            "Exactly one of `name`, `fullname`, or `_data` must be provided."
+        )
         with pytest.raises(TypeError) as excinfo:
             Redditor(self.reddit)
         assert str(excinfo.value) == message
 
         with pytest.raises(TypeError) as excinfo:
-            Redditor(self.reddit, "dummy", {"id": "dummy"})
+            Redditor(self.reddit, "dummy", _data={"id": "dummy"})
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            Redditor(self.reddit, name="dummy", fullname="t2_dummy")
+        assert str(excinfo.value) == message
+
+        with pytest.raises(TypeError) as excinfo:
+            Redditor(
+                self.reddit,
+                name="dummy",
+                fullname="t2_dummy",
+                _data={"id": "dummy"},
+            )
         assert str(excinfo.value) == message
 
         with pytest.raises(AssertionError):
