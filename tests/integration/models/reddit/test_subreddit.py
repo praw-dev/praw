@@ -712,27 +712,14 @@ class TestSubredditFlairTemplates(IntegrationTest):
         for flair_template in templates:
             assert flair_template["id"]
 
-    @mock.patch("time.sleep", return_value=None)
-    def test_add(self, _):
+    def test_add(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
             "TestSubredditFlairTemplates.test_add"
         ):
-            for i in range(101):
-                self.subreddit.flair.templates.add(
-                    "PRAW{}".format(i), css_class="myCSS"
-                )
-
-    @mock.patch("time.sleep", return_value=None)
-    def test_add_v2(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_add_v2"
-        ):
-            for i in range(101):
-                self.subreddit.flair.templates.add(
-                    "PRAW{}".format(i), background_color="#ABCDEF"
-                )
+            self.subreddit.flair.templates.add(
+                "PRAW", css_class="myCSS", background_color="#ABCDEF"
+            )
 
     def test_clear(self):
         self.reddit.read_only = False
@@ -758,51 +745,11 @@ class TestSubredditFlairTemplates(IntegrationTest):
         ):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
-                template["id"], "PRAW updated", css_class="myCSS"
-            )
-
-    def test_update_bad(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_update_bad"
-        ):
-            template = list(self.subreddit.flair.templates)[0]
-            with pytest.raises(TypeError):
-                self.subreddit.flair.templates.update(
-                    template["id"],
-                    "PRAW updated",
-                    css_class="myclass",
-                    text_color="light",
-                )
-
-    @mock.patch("time.sleep", return_value=None)
-    def test_update_across_kind(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_update_across_kind"
-        ):
-            self.subreddit.flair.templates.add("My PRAW text", css_class="flr")
-            template = [
-                t
-                for t in self.subreddit.flair.templates
-                if t["text"] == "My PRAW text"
-            ][0]
-            self.subreddit.flair.templates.update(
                 template["id"],
-                "updated text :snoo:",
+                "PRAW updated",
+                css_class="myCSS",
                 text_color="dark",
                 background_color="#00FFFF",
-            )
-
-    @mock.patch("time.sleep", return_value=None)
-    def test_update_v2(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditFlairTemplates.test_update_v2"
-        ):
-            template = list(self.subreddit.flair.templates)[0]
-            self.subreddit.flair.templates.update(
-                template["id"], "updated by PRAW", background_color="#000000"
             )
 
 
@@ -824,27 +771,14 @@ class TestSubredditLinkFlairTemplates(IntegrationTest):
             assert isinstance(template["richtext"], list)
             assert all(isinstance(item, dict) for item in template["richtext"])
 
-    @mock.patch("time.sleep", return_value=None)
-    def test_add(self, _):
+    def test_add(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
             "TestSubredditLinkFlairTemplates.test_add"
         ):
-            for i in range(101):
-                self.subreddit.flair.link_templates.add(
-                    "PRAW{}".format(i), css_class="myCSS"
-                )
-
-    @mock.patch("time.sleep", return_value=None)
-    def test_add_v2(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestSubredditLinkFlairTemplates.test_add_v2"
-        ):
-            for i in range(101):
-                self.subreddit.flair.link_templates.add(
-                    "PRAW{}".format(i), text_color="light"
-                )
+            self.subreddit.flair.link_templates.add(
+                "PRAW", css_class="myCSS", text_color="light"
+            )
 
     def test_clear(self):
         self.reddit.read_only = False
