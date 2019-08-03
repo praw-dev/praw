@@ -1720,7 +1720,9 @@ class WidgetEncoder(JSONEncoder):
 
     def default(self, o):  # pylint: disable=E0202
         """Serialize ``PRAWBase`` objects."""
-        if isinstance(o, PRAWBase):
+        if isinstance(o, self._subreddit_class):
+            return str(o)
+        elif isinstance(o, PRAWBase):
             return {
                 key: val
                 for key, val in vars(o).items()

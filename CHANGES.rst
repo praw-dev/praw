@@ -19,6 +19,8 @@ Unreleased
 
 * :meth:`.add_community_list` has parameter ``description`` to support
   unannounced upstream Reddit API changes.
+* :meth:`~.WidgetModeration.update` supports passing a list of
+  :class:`.Subreddit` objects.
 
 **Changed**
 
