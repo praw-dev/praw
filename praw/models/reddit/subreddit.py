@@ -18,7 +18,7 @@ from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
-from .widgets import SubredditWidgets
+from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
 
 
@@ -903,6 +903,9 @@ class Subreddit(
             "sr_name": self._subreddit_list(self, other_subreddits),
         }
         self._reddit.post(API_PATH["subscribe"], data=data)
+
+
+WidgetEncoder._subreddit_class = Subreddit
 
 
 class SubredditFilters:

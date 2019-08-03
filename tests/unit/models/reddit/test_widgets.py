@@ -33,8 +33,9 @@ class TestWidgetEncoder(UnitTest):
             1,
             "two",
             PRAWBase(self.reddit, _data={"_secret": "no", "3": 3}),
+            self.reddit.subreddit("four"),
         ]
-        assert '[1, "two", {"3": 3}]' == dumps(data, cls=WidgetEncoder)
+        assert '[1, "two", {"3": 3}, "four"]' == dumps(data, cls=WidgetEncoder)
 
 
 class TestWidgets(UnitTest):
