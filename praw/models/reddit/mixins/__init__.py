@@ -102,6 +102,8 @@ class ThingModerationMixin:
 
         Example usage:
 
+        .. code:: python
+
            # lock a comment:
            comment = reddit.comment('dkk4qjd')
            comment.mod.lock()
