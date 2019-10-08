@@ -139,6 +139,52 @@ class ThingModerationMixin:
         data = {"id": self.thing.fullname, "spam": bool(spam)}
         self.thing._reddit.post(API_PATH["remove"], data=data)
 
+    def removal_reasons(self):
+        """Return list of available removal reasons.
+
+        reason ids are required in order to use :meth:`.add_removal_reason`.
+
+        For example:
+
+        .. code:: python
+
+           removal_reasons = submission.mod.removal_reasons()
+
+        """
+        url = API_PATH["removal_reasons_list"].format(
+            subreddit=self.submission.subreddit
+        )
+        return self.submission._reddit.get(
+            url, data={"link": self.submission.fullname}
+        )["data"]
+
+    def add_removal_reason(self, reason_id, mod_note=""):
+        """Add a removal reason for a Comment or Submission.
+
+        :param reason_id: The removal reason template ID.
+        :param mod_note: A message for the other mods on Reddit redesign
+
+        Example usage:
+
+        .. code:: python
+
+           # Select arbitrary reason (assuming there is any)
+           reasons = comment.mod.removal_reasons()
+           reason_id = next(x for x in reasons)
+           comment = reddit.comment('dkk4qjd')
+           comment.mod.add_removal_reason(reason_id=reason_id)
+           # remove a submission and add a mod note
+           submission = reddit.submission(id='5or86n')
+           submission.mod.remove(reason_id=""110ni21zo23ql", mod_note="foo")
+        """
+        # Only the first element of the item_id list is used.
+        data = {
+            "item_ids": [self.thing.fullname],
+            "mod_note": mod_note,
+            "reason_id": reason_id,
+        }
+        self.thing._reddit.post(API_PATH["removal_reasons"], data=data)
+
     def send_removal_message(
         self,
         message,
