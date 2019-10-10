@@ -2,6 +2,7 @@
 # pylint: disable=too-many-lines
 from copy import deepcopy
 from json import dumps, loads
+import socket
 from os.path import basename, dirname, join
 from urllib.parse import urljoin
 
@@ -9,7 +10,7 @@ from prawcore import Redirect
 import websocket
 
 from ...const import API_PATH, JPEG_HEADER
-from ...exceptions import APIException, ClientException
+from ...exceptions import APIException, ClientException, WebSocketException
 from ...util.cache import cachedproperty
 from ..util import permissions_string, stream_generator
 from ..listing.generator import ListingGenerator
@@ -476,7 +477,7 @@ class Subreddit(
         # significant time between the POST request just above this
         # comment and the creation of the websocket connection just
         # below, the code will become stuck in an infinite loop at the
-        # socket.recv() call. I believe this is because only one message is
+        # connection.recv() call. I believe this is because only one message is
         # sent over the websocket, and if the client doesn't connect
         # soon enough, it will miss the message and get stuck forever
         # waiting for another.
@@ -485,36 +486,43 @@ class Subreddit(
         # websocket creation happen right after the POST request,
         # otherwise you will have trouble.
 
-        if not isinstance(response, dict):
-            raise ClientException(
-                "Something went wrong with your post: {!r}".format(response)
-            )
-
         if without_websockets:
             return
 
         try:
-            socket = websocket.create_connection(
+            connection = websocket.create_connection(
                 response["json"]["data"]["websocket_url"], timeout=timeout
             )
-            ws_update = loads(socket.recv())
-            socket.close()
-        except websocket.WebSocketTimeoutException:
-            raise ClientException(
+            ws_update = loads(connection.recv())
+            connection.close()
+        except (
+            websocket.WebSocketException,
+            socket.error,
+            BlockingIOError,
+        ) as ws_exception:
+            raise WebSocketException(
                 "Websocket error. Check your media file. "
-                "Your post may still have been created."
+                "Your post may still have been created. "
+                "Use this exception's .original_exception attribute to get "
+                "the original exception.",
+                ws_exception,
             )
         url = ws_update["payload"]["redirect"]
         return self._reddit.submission(url=url)
 
-    def _upload_media(self, media_path):
-        """Upload media and return its URL. Uses undocumented endpoint."""
+    def _upload_media(self, media_path, expected_mime_prefix=None):
+        """Upload media and return its URL. Uses undocumented endpoint.
+
+        :param expected_mime_prefix: If provided, enforce that the media has a
+            mime type that starts with the provided prefix.
+        """
         if media_path is None:
             media_path = join(
                 dirname(dirname(dirname(__file__))), "images", "PRAW logo.png"
             )
 
         file_name = basename(media_path).lower()
+        file_extension = file_name.rpartition(".")[2]
         mime_type = {
             "png": "image/png",
             "mov": "video/quicktime",
@@ -523,8 +531,18 @@ class Subreddit(
             "jpeg": "image/jpeg",
             "gif": "image/gif",
         }.get(
-            file_name.rpartition(".")[2], "image/jpeg"
+            file_extension, "image/jpeg"
         )  # default to JPEG
+        if (
+            expected_mime_prefix is not None
+            and mime_type.partition("/")[0] != expected_mime_prefix
+        ):
+            raise ClientException(
+                "Expected a mimetype starting with {!r} but got mimetype {!r} "
+                "(from file extension {!r}).".format(
+                    expected_mime_prefix, mime_type, file_extension
+                )
+            )
         img_data = {"filepath": file_name, "mimetype": mime_type}
 
         url = API_PATH["media_asset"]
@@ -751,14 +769,17 @@ class Subreddit(
         :returns: A :class:`.Submission` object for the newly created
             submission, unless ``without_websockets`` is ``True``.
 
+        If ``image_path`` refers to a file that is not an image, PRAW will
+        raise a :class:`.ClientException`.
+
         .. note::
 
            Reddit's API uses WebSockets to respond with the link of the
            newly created post. If this fails, the method will raise
-           :class:`.ClientException`. Occasionally, the Reddit post will still
-           be created. More often, there is an error with the image file. If
-           you frequently get exceptions but successfully created posts, try
-           setting the ``timeout`` parameter to a value above 10.
+           :class:`.WebSocketException`. Occasionally, the Reddit post will
+           still be created. More often, there is an error with the image
+           file. If you frequently get exceptions but successfully created
+           posts, try setting the ``timeout`` parameter to a value above 10.
 
            To disable the use of WebSockets, set ``without_websockets=True``.
            This will make the method return ``None``, though the post will
@@ -790,7 +811,10 @@ class Subreddit(
         ):
             if value is not None:
                 data[key] = value
-        data.update(kind="image", url=self._upload_media(image_path))
+        data.update(
+            kind="image",
+            url=self._upload_media(image_path, expected_mime_prefix="image"),
+        )
         return self._submit_media(
             data, timeout, without_websockets=without_websockets
         )
@@ -844,14 +868,17 @@ class Subreddit(
         :returns: A :class:`.Submission` object for the newly created
             submission, unless ``without_websockets`` is ``True``.
 
+        If ``video_path`` refers to a file that is not a video, PRAW will
+        raise a :class:`.ClientException`.
+
         .. note::
 
            Reddit's API uses WebSockets to respond with the link of the
            newly created post. If this fails, the method will raise
-           :class:`.ClientException`. Occasionally, the Reddit post will still
-           be created. More often, there is an error with the video file. If
-           you frequently get exceptions but successfully created posts, try
-           setting the ``timeout`` parameter to a value above 10.
+           :class:`.WebSocketException`. Occasionally, the Reddit post will
+           still be created. More often, there is an error with the image
+           file. If you frequently get exceptions but successfully created
+           posts, try setting the ``timeout`` parameter to a value above 10.
 
            To disable the use of WebSockets, set ``without_websockets=True``.
            This will make the method return ``None``, though the post will
@@ -885,7 +912,7 @@ class Subreddit(
                 data[key] = value
         data.update(
             kind="videogif" if videogif else "video",
-            url=self._upload_media(video_path),
+            url=self._upload_media(video_path, expected_mime_prefix="video"),
             # if thumbnail_path is None, it uploads the PRAW logo
             video_poster_url=self._upload_media(thumbnail_path),
         )
