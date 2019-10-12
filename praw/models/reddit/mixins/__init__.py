@@ -154,9 +154,7 @@ class ThingModerationMixin:
         url = API_PATH["removal_reasons_list"].format(
             subreddit=self.thing.subreddit
         )
-        return self.thing._reddit.get(url, data={"link": self.thing.fullname})[
-            "data"
-        ]
+        return self.thing._reddit.get(url)["data"]
 
     def add_removal_reason(self, reason_id, mod_note=""):
         """Add a removal reason for a Comment or Submission.
@@ -183,7 +181,9 @@ class ThingModerationMixin:
             "mod_note": mod_note,
             "reason_id": reason_id,
         }
-        self.thing._reddit.post(API_PATH["removal_reasons"], data=data)
+        self.thing._reddit.post(
+            API_PATH["removal_reasons"], data={"json": dumps(data)}
+        )
 
     def send_removal_message(
         self,
