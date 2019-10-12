@@ -360,6 +360,39 @@ class TestSubmissionModeration(IntegrationTest):
             self.reddit.submission("4b536h").mod.remove(spam=True)
 
     @mock.patch("time.sleep", return_value=None)
+    def test_removal_reasons(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_removal_reasons"
+        ):
+            submission = Submission(self.reddit, "dgobm3")
+            expected = {
+                "13s0gvywuemkl": {
+                    "message": "Foobar",
+                    "id": "13s0gvywuemkl",
+                    "title": "REASON2",
+                },
+                "13s0guy5i84o8": {
+                    "message": "This is a test",
+                    "id": "13s0guy5i84o8",
+                    "title": "REASON1",
+                },
+            }
+            assert expected == submission.mod.removal_reasons()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_add_removal_reason(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_add_removal_reason"
+        ):
+            submission = Submission(self.reddit, "dgobm3")
+            mod = submission.mod
+            mod.remove()
+            mod_note = "Foobar"
+            mod.add_removal_reason("13s0gvywuemkl", mod_note=mod_note)
+
+    @mock.patch("time.sleep", return_value=None)
     def test_send_removal_message(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
