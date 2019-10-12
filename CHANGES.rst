@@ -6,8 +6,9 @@ Unreleased
 
 **Added**
 
-* Comments/Submissions can now list/add Reddit redesign removal templates ``comment.mod.removal_reasons()`` and
-  ``submission.mod.add_removal_reason()``. See: (:meth:`.ThingModerationMixin.removal_reasons` and
+* Comments/Submissions can now list/add Reddit redesign removal templates
+  ``comment.mod.removal_reasons()`` and ``submission.mod.add_removal_reason()``
+  See: (:meth:`.ThingModerationMixin.removal_reasons` and
   :meth:`.ThingModerationMixin.add_removal_reason`).
 
 6.4.0 (2019/09/21)
