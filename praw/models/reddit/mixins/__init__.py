@@ -142,7 +142,7 @@ class ThingModerationMixin:
     def removal_reasons(self):
         """Return list of available removal reasons.
 
-        reason ids are required in order to use :meth:`.add_removal_reason`.
+        Reason ids are required in order to use :meth:`.add_removal_reason`.
 
         For example:
 
@@ -152,11 +152,11 @@ class ThingModerationMixin:
 
         """
         url = API_PATH["removal_reasons_list"].format(
-            subreddit=self.submission.subreddit
+            subreddit=self.thing.subreddit
         )
-        return self.submission._reddit.get(
-            url, data={"link": self.submission.fullname}
-        )["data"]
+        return self.thing._reddit.get(url, data={"link": self.thing.fullname})[
+            "data"
+        ]
 
     def add_removal_reason(self, reason_id, mod_note=""):
         """Add a removal reason for a Comment or Submission.
