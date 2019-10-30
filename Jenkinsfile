@@ -6,7 +6,8 @@ pipeline {
     stages {
         stage('Setup workspace'){
             steps{
-                sh "echo Configure workspace"
+                sh "echo Configures the workspace"
+                sh 'pip install -r requirements.txt'
             }
         }
         stage('Validate') {
@@ -19,7 +20,9 @@ pipeline {
         }
         stage('Unit tests') {
             steps {
-                sh "echo Runs unit tests"
+                sh "echo Runs unit tests using pytests"
+                sh 'pip install -r test-requirements.txt'
+                sh 'python -m pytest tests/unit/'
             }
         }
         stage('Integration tests') {
