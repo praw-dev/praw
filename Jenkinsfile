@@ -34,6 +34,7 @@ pipeline {
         stage('Package') {
             steps {
                 sh "echo Builds the project"
+                sh 'python setup.py build'
             }
         }
         stage('Verify') {
