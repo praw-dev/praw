@@ -27,7 +27,8 @@ pipeline {
         }
         stage('Integration tests') {
             steps {
-                sh "echo Runs integration tests"
+                sh "echo Runs the integration tests using pytest"
+                sh 'python -m pytest tests/integration/'
             }
         }
         stage('Package') {
