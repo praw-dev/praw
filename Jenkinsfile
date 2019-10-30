@@ -11,7 +11,10 @@ pipeline {
         }
         stage('Validate') {
             steps {
-                sh "echo Validate Code"
+                sh "echo Validates the source code using flake8"
+                sh 'pip install flake8'
+                sh 'python -m flake8 praw/'
+                sh 'python -m flake8 --select=DUO praw/'
             }
         }
         stage('Unit tests') {
