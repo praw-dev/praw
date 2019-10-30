@@ -39,7 +39,9 @@ pipeline {
         }
         stage('Verify') {
             steps {
-                sh "echo Checks for bugs in the project"
+                sh "echo Checks for bugs in the project using bandit"
+                sh 'pip install bandit'
+                sh 'bandit -ll -r praw'
             }
         }
         stage('Deploy') {
