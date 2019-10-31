@@ -47,6 +47,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh "echo Uploads an artifact to jenkins"
+                sh 'tar -cvf praw.tar build'
+                archiveArtifacts artifacts: 'praw.tar', fingerprint: true
             }
         }
     }
