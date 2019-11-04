@@ -45,6 +45,11 @@ pipeline {
                 archiveArtifacts artifacts: 'praw.tar', fingerprint: true
             }
         }
+        stage('Benchmark') {
+            steps{
+                sh 'bash benchmarking/benchmark.sh'
+            }
+        }
     }
     
     post { 
