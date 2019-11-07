@@ -140,9 +140,15 @@ class ThingModerationMixin:
         self.thing._reddit.post(API_PATH["remove"], data=data)
 
     def removal_reasons(self):
-        """Return list of available removal reasons.
+        """Return a dict of available removal reasons.
 
         Reason ids are required in order to use :meth:`.add_removal_reason`.
+
+        The dict contains two keys: "data" and "order"
+        - The "data" key is a dict of reasons with ID as the key,
+        and "message", "id", and "title" as keys in the sub-dict.
+        - The "order" key is a list of reason IDs in the display order
+        when selecting on Reddit.
 
         For example:
 
@@ -161,6 +167,9 @@ class ThingModerationMixin:
 
         :param reason_id: The removal reason template ID.
         :param mod_note: A message for the other mods on Reddit redesign
+
+        It is necessary to first call :meth:`~.remove` on the
+        :class:`~.Comment` or :class:`~.Submission`
 
         Example usage:
 
