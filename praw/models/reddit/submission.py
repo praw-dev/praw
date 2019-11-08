@@ -521,6 +521,29 @@ class SubmissionModeration(ThingModerationMixin):
         self.thing._reddit.post(
             API_PATH["marknsfw"], data={"id": self.thing.fullname}
         )
+        
+    def set_original_content(self):
+        """Mark as original content.
+
+        This method can be used both by the submission author and moderators of
+        the subreddit that the submission belongs to if the subreddit has 
+        enabled the beta feature in settings.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.subreddit('test').submit('oc test',
+                                                        selftext='original')
+           submission.mod.set_original_content()
+        """
+        self.thing._reddit.post(
+            API_PATH["set_original_content"], data={"id": self.thing.id,
+                                                    "fullname": self.thing.fullname,
+                                                    "should_set_oc": True,
+                                                    "execute": False,
+                                                    "r": self.thing.subreddit}
+        )
 
     def sfw(self):
         """Mark as safe for work.
