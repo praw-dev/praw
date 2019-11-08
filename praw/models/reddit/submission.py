@@ -536,12 +536,15 @@ class SubmissionModeration(ThingModerationMixin):
            submission = reddit.subreddit('test').submit('oc test',
                                                         selftext='original')
            submission.mod.set_original_content()
+       
+       See also :meth:`~.unset_original_content`
+       
         """
         self.thing._reddit.post(
             API_PATH["set_original_content"], data={"id": self.thing.id,
                                                     "fullname": self.thing.fullname,
                                                     "should_set_oc": True,
-                                                    "execute": False,
+                                                    "executed": False,
                                                     "r": self.thing.subreddit}
         )
 
@@ -624,6 +627,33 @@ class SubmissionModeration(ThingModerationMixin):
             data={"id": self.thing.fullname, "sort": sort},
         )
 
+    def unset_original_content(self):
+        """Indicate that the submission is not original content.
+
+        This method can only be used by moderators of the subreddit 
+        that the submission belongs to, if the subreddit has enabled 
+        the beta feature in settings. This uses the same endpoint as
+        `set_original_content`, but `should_set_oc` is set to `False`.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.subreddit('test').submit('oc test',
+                                                        selftext='original')
+           submission.mod.unset_original_content()
+           
+        See also :meth:`~.set_original_content`
+        
+        """
+        self.thing._reddit.post(
+            API_PATH["set_original_content"], data={"id": self.thing.id,
+                                                    "fullname": self.thing.fullname,
+                                                    "should_set_oc": False,
+                                                    "executed": False,
+                                                    "r": self.thing.subreddit}
+        )
+        
     def unspoiler(self):
         """Indicate that the submission does not contain spoilers.
 
