@@ -525,9 +525,9 @@ class SubmissionModeration(ThingModerationMixin):
     def set_original_content(self):
         """Mark as original content.
 
-        This method can be used both by the submission author and moderators of
-        the subreddit that the submission belongs to if the subreddit has 
-        enabled the beta feature in settings.
+        This method can only be used by moderators of the subreddit 
+        that the submission belongs to, if the subreddit has enabled 
+        the beta feature in settings.
 
         Example usage:
 
