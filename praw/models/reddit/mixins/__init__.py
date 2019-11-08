@@ -144,11 +144,9 @@ class ThingModerationMixin:
 
         Reason ids are required in order to use :meth:`.add_removal_reason`.
 
-        The dict contains two keys: "data" and "order"
-        - The "data" key is a dict of reasons with ID as the key,
-        and "message", "id", and "title" as keys in the sub-dict.
-        - The "order" key is a list of reason IDs in the display order
-        when selecting on Reddit.
+        The response contains a dict of reasons with the "id" as key and the
+        value as a sub-dict containing the "message", "id", and "title" and
+        their values.
 
         For example:
 
@@ -166,10 +164,10 @@ class ThingModerationMixin:
         """Add a removal reason for a Comment or Submission.
 
         :param reason_id: The removal reason template ID.
-        :param mod_note: A message for the other mods on Reddit redesign
+        :param mod_note: A message for the other moderators.
 
         It is necessary to first call :meth:`~.remove` on the
-        :class:`~.Comment` or :class:`~.Submission`
+        :class:`~.Comment` or :class:`~.Submission`.
 
         Example usage:
 
@@ -178,11 +176,11 @@ class ThingModerationMixin:
            # Select arbitrary reason (assuming there is any)
            reasons = comment.mod.removal_reasons()
            reason_id = next(x for x in reasons)
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.mod.add_removal_reason(reason_id=reason_id)
            # remove a submission and add a mod note
-           submission = reddit.submission(id='5or86n')
-           submission.mod.remove(reason_id=""110ni21zo23ql", mod_note="foo")
+           submission = reddit.submission(id="5or86n")
+           submission.mod.remove(reason_id="110ni21zo23ql", mod_note="foo")
         """
         # Only the first element of the item_id list is used.
         data = {
