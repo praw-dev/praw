@@ -541,13 +541,13 @@ class SubmissionModeration(ThingModerationMixin):
 
         """
         data = {
-            "id": self.thing.id, "fullname": self.thing.fullname,
-            "should_set_oc": True, "executed": False,
-            "r": self.thing.subreddit
+            "id": self.thing.id,
+            "fullname": self.thing.fullname,
+            "should_set_oc": True,
+            "executed": False,
+            "r": self.thing.subreddit,
         }
-        self.thing._reddit.post(
-            API_PATH["set_original_content"], data=data
-        )
+        self.thing._reddit.post(API_PATH["set_original_content"], data=data)
 
     def sfw(self):
         """Mark as safe for work.
@@ -648,13 +648,13 @@ class SubmissionModeration(ThingModerationMixin):
 
         """
         data = {
-            "id": self.thing.id, "fullname": self.thing.fullname,
-            "should_set_oc": False, "executed": False,
-            "r": self.thing.subreddit
+            "id": self.thing.id,
+            "fullname": self.thing.fullname,
+            "should_set_oc": False,
+            "executed": False,
+            "r": self.thing.subreddit,
         }
-        self.thing._reddit.post(
-            API_PATH["set_original_content"], data=data
-        )
+        self.thing._reddit.post(API_PATH["set_original_content"], data=data)
 
     def unspoiler(self):
         """Indicate that the submission does not contain spoilers.
