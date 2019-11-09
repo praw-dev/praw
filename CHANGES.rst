@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+**Unreleased**
+
+* :meth:`Submission.set_original_content()` support 
+  marking a submission as "original content."
+* :meth:`Submission.unset_original_content()` support 
+  unmarking a submission as "original content."
+
 6.4.0 (2019/09/21)
 ------------------
 
