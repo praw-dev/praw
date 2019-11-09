@@ -537,7 +537,7 @@ class SubmissionModeration(ThingModerationMixin):
                                                         selftext='original')
            submission.mod.set_original_content()
        
-       See also :meth:`~.unset_original_content`
+        See also :meth:`~.unset_original_content`
        
         """
         self.thing._reddit.post(
