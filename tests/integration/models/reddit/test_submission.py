@@ -457,6 +457,15 @@ class TestSubmissionModeration(IntegrationTest):
         ):
             Submission(self.reddit, "4s2idz").mod.unlock()
 
+    def test_unset_original_content(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_unset_original_content"
+        ):
+            Submission(
+                self.reddit, "dueqm6"
+            ).mod.unset_original_content()
+
     def test_unspoiler(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
