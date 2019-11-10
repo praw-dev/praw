@@ -537,7 +537,7 @@ class SubmissionModeration(ThingModerationMixin):
                                                         selftext='original')
            submission.mod.set_original_content()
 
-        See also :meth:`~.unset_original_content`
+        See also :meth:`.unset_original_content`
 
         """
         data = {
@@ -633,8 +633,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         This method can only be used by moderators of the subreddit
         that the submission belongs to, if the subreddit has enabled
-        the beta feature in settings. This uses the same endpoint as
-        `set_original_content`, but `should_set_oc` is set to `False`.
+        the beta feature in settings.
 
         Example usage:
 
@@ -644,7 +643,7 @@ class SubmissionModeration(ThingModerationMixin):
                                                         selftext='original')
            submission.mod.unset_original_content()
 
-        See also :meth:`~.set_original_content`
+        See also :meth:`.set_original_content`
 
         """
         data = {
