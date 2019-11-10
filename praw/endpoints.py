@@ -141,6 +141,7 @@ API_PATH = {
     "select_flair":            "r/{subreddit}/api/selectflair/",
     "sendreplies":             "api/sendreplies",
     "sent":                    "message/sent/",
+    "set_original_content":    "api/set_original_content",
     "setpermissions":          "r/{subreddit}/api/setpermissions/",
     "site_admin":              "api/site_admin/",
     "spoiler":                 "api/spoiler/",

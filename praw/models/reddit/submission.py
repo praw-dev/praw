@@ -39,6 +39,8 @@ class Submission(
     ``distinguished``           Whether or not the submission is distinguished.
     ``edited``                  Whether or not the submission has been edited.
     ``id``                      ID of the submission.
+    ``is_original_content``     Whether or not the submission has been set
+                                as original content.
     ``is_self``                 Whether or not the submission is a selfpost
                                 (text-only).
     ``link_flair_template_id``  The link flair's ID, or None if not flaired.
@@ -522,6 +524,34 @@ class SubmissionModeration(ThingModerationMixin):
             API_PATH["marknsfw"], data={"id": self.thing.fullname}
         )
 
+    def set_original_content(self):
+        """Mark as original content.
+
+        This method can be used by moderators of the subreddit that the
+        submission belongs to. If the subreddit has enabled the Original
+        Content beta feature in settings, then the submission's author
+        can use it as well.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.subreddit('test').submit('oc test',
+                                                        selftext='original')
+           submission.mod.set_original_content()
+
+        See also :meth:`.unset_original_content`
+
+        """
+        data = {
+            "id": self.thing.id,
+            "fullname": self.thing.fullname,
+            "should_set_oc": True,
+            "executed": False,
+            "r": self.thing.subreddit,
+        }
+        self.thing._reddit.post(API_PATH["set_original_content"], data=data)
+
     def sfw(self):
         """Mark as safe for work.
 
@@ -600,6 +630,34 @@ class SubmissionModeration(ThingModerationMixin):
             API_PATH["suggested_sort"],
             data={"id": self.thing.fullname, "sort": sort},
         )
+
+    def unset_original_content(self):
+        """Indicate that the submission is not original content.
+
+        This method can be used by moderators of the subreddit that the
+        submission belongs to. If the subreddit has enabled the Original
+        Content beta feature in settings, then the submission's author
+        can use it as well.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.subreddit('test').submit('oc test',
+                                                        selftext='original')
+           submission.mod.unset_original_content()
+
+        See also :meth:`.set_original_content`
+
+        """
+        data = {
+            "id": self.thing.id,
+            "fullname": self.thing.fullname,
+            "should_set_oc": False,
+            "executed": False,
+            "r": self.thing.subreddit,
+        }
+        self.thing._reddit.post(API_PATH["set_original_content"], data=data)
 
     def unspoiler(self):
         """Indicate that the submission does not contain spoilers.

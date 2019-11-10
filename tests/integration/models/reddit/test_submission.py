@@ -380,6 +380,18 @@ class TestSubmissionModeration(IntegrationTest):
             assert res[1] is None
             assert res[2] is None
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_set_original_content(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_set_original_content"
+        ):
+            submission = Submission(self.reddit, "dueqm6")
+            assert not submission.is_original_content
+            submission.mod.set_original_content()
+            submission = Submission(self.reddit, "dueqm6")
+            assert submission.is_original_content
+
     def test_sfw(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubmissionModeration.test_sfw"):
@@ -447,6 +459,18 @@ class TestSubmissionModeration(IntegrationTest):
             "TestSubmissionModeration.test_unlock"
         ):
             Submission(self.reddit, "4s2idz").mod.unlock()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_unset_original_content(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_unset_original_content"
+        ):
+            submission = Submission(self.reddit, "duig7f")
+            assert submission.is_original_content
+            submission.mod.unset_original_content()
+            submission = Submission(self.reddit, "duig7f")
+            assert not submission.is_original_content
 
     def test_unspoiler(self):
         self.reddit.read_only = False
