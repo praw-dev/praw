@@ -7,9 +7,9 @@ Unreleased
 **Added**
 
 * :meth:`.set_original_content` supports
-  marking a submission as "original content."
+  marking a submission as original content.
 * :meth:`.unset_original_content` supports
-  unmarking a submission as "original content."
+  unmarking a submission as original content.
 
 6.4.0 (2019/09/21)
 ------------------
