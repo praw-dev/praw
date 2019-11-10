@@ -14,7 +14,7 @@ PRAW: The Python Reddit API Wrapper
    :alt: Join the chat at https://gitter.im/praw-dev/praw
    :target: https://gitter.im/praw-dev/praw
 
-PRAW, an acronym for "Python Reddit API Wrapper", is a python package that
+PRAW, an acronym for "Python Reddit API Wrapper", is a Python package that
 allows for simple access to Reddit's API. PRAW aims to be easy to use and
 internally follows all of `Reddit's API rules
 <https://github.com/reddit/reddit/wiki/API>`_. With PRAW there's no need to
@@ -26,7 +26,7 @@ agent and you're set.
 Installation
 ------------
 
-PRAW is supported on python 3.5+. The recommended way to
+PRAW is supported on Python 3.5+. The recommended way to
 install PRAW is via `pip <https://pypi.python.org/pypi/pip>`_.
 
 .. code-block:: bash
@@ -39,7 +39,7 @@ To install the latest development version of PRAW run the following instead:
 
    pip install --upgrade https://github.com/praw-dev/praw/archive/master.zip
 
-For instructions on installing python and pip see "The Hitchhiker's Guide to
+For instructions on installing Python and pip see "The Hitchhiker's Guide to
 Python" `Installation Guides
 <http://docs.python-guide.org/en/latest/starting/installation/>`_.
 
@@ -85,23 +85,23 @@ more examples of what you can do with PRAW.
 PRAW Discussion and Support
 ---------------------------
 
-For those new to python, or would otherwise consider themselves a python
+For those new to Python, or would otherwise consider themselves a Python
 beginner, please consider asking questions on the `r/learnpython
 <https://www.reddit.com/r/learnpython>`_ subreddit. There are wonderful people
-there who can help with general python and simple PRAW related questions.
+there who can help with general Python and simple PRAW related questions.
 
 Otherwise, there are a few official places to ask questions about PRAW:
 
-`/r/redditdev <https://www.reddit.com/r/redditdev>`_ is the best place on
+`r/redditdev <https://www.reddit.com/r/redditdev>`_ is the best place on
 Reddit to ask PRAW related questions. This subreddit is for all Reddit API
 related discussion so please tag submissions with *[PRAW]*. Please perform a
 search on the subreddit first to see if anyone has similar questions.
 
 Real-time chat can be conducted via the `praw-dev/praw
-<https://gitter.im/praw-dev/praw>`_ channel on gitter.
+<https://gitter.im/praw-dev/praw>`_ channel on Gitter.
 
 Please do not directly message any of the contributors via Reddit, email, or
-gitter unless they have indicated otherwise. We strongly encourage everyone to
+Gitter unless they have indicated otherwise. We strongly encourage everyone to
 help others with their questions.
 
 Please file bugs and feature requests as issues on `GitHub
@@ -128,7 +128,7 @@ Timothy Mellor created a github project called ``reddit_api``.
 
 `March 2011
 <https://github.com/praw-dev/praw/commit/ebfc9caba5b58b9e68c77af9c8e53f5562a2ee64>`_:
-The python package ``reddit`` was registered and uploaded to pypi.
+The Python package ``reddit`` was registered and uploaded to pypi.
 
 `December 2011
 <https://github.com/praw-dev/praw/commit/74bb962b3eefe04ce6acad88e6f53f43d10c8803>`_:
