@@ -39,6 +39,8 @@ class Submission(
     ``distinguished``           Whether or not the submission is distinguished.
     ``edited``                  Whether or not the submission has been edited.
     ``id``                      ID of the submission.
+    ``is_original_content``     Whether or not the submission has been set
+                                as original content.
     ``is_self``                 Whether or not the submission is a selfpost
                                 (text-only).
     ``link_flair_template_id``  The link flair's ID, or None if not flaired.
