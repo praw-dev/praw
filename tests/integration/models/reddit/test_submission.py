@@ -385,9 +385,7 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubmissionModeration.test_set_original_content"
         ):
-            Submission(
-                self.reddit, "dueqm6"
-            ).mod.set_original_content()
+            Submission(self.reddit, "dueqm6").mod.set_original_content()
 
     def test_sfw(self):
         self.reddit.read_only = False
@@ -462,9 +460,7 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubmissionModeration.test_unset_original_content"
         ):
-            Submission(
-                self.reddit, "dueqm6"
-            ).mod.unset_original_content()
+            Submission(self.reddit, "dueqm6").mod.unset_original_content()
 
     def test_unspoiler(self):
         self.reddit.read_only = False
