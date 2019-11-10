@@ -60,7 +60,7 @@ With the ``reddit`` instance you can then interact with Reddit:
 
 .. code-block:: python
 
-  # Create a submission to /r/test
+  # Create a submission to r/test
   reddit.subreddit('test').submit('Test Submission', url='https://reddit.com')
 
   # Comment on a known submission
@@ -75,7 +75,7 @@ With the ``reddit`` instance you can then interact with Reddit:
   for submission in reddit.front.hot(limit=256):
       print(submission.score)
 
-  # Obtain the moderator listing for redditdev
+  # Obtain the moderator listing for r/redditdev
   for moderator in reddit.subreddit('redditdev').moderator:
       print(moderator)
 
