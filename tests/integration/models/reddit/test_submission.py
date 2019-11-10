@@ -381,7 +381,7 @@ class TestSubmissionModeration(IntegrationTest):
             assert res[2] is None
 
     @mock.patch("time.sleep", return_value=None)
-    def test_set_original_content(self):
+    def test_set_original_content(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
             "TestSubmissionModeration.test_set_original_content"
@@ -457,7 +457,7 @@ class TestSubmissionModeration(IntegrationTest):
             Submission(self.reddit, "4s2idz").mod.unlock()
 
     @mock.patch("time.sleep", return_value=None)
-    def test_unset_original_content(self):
+    def test_unset_original_content(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
             "TestSubmissionModeration.test_unset_original_content"
