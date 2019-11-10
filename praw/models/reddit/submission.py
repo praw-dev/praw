@@ -527,9 +527,10 @@ class SubmissionModeration(ThingModerationMixin):
     def set_original_content(self):
         """Mark as original content.
 
-        This method can only be used by moderators of the subreddit
-        that the submission belongs to, if the subreddit has enabled
-        the beta feature in settings.
+        This method can be used by moderators of the subreddit that the
+        submission belongs to. If the subreddit has enabled the Original
+        Content beta feature in settings, then the submission's author
+        can use it as well.
 
         Example usage:
 
@@ -633,9 +634,10 @@ class SubmissionModeration(ThingModerationMixin):
     def unset_original_content(self):
         """Indicate that the submission is not original content.
 
-        This method can only be used by moderators of the subreddit
-        that the submission belongs to, if the subreddit has enabled
-        the beta feature in settings.
+        This method can be used by moderators of the subreddit that the
+        submission belongs to. If the subreddit has enabled the Original
+        Content beta feature in settings, then the submission's author
+        can use it as well.
 
         Example usage:
 
