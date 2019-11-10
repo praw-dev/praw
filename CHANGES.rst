@@ -10,6 +10,8 @@ Unreleased
   marking a submission as original content.
 * :meth:`.unset_original_content` supports
   unmarking a submission as original content.
+* Parameter ``without_websockets`` to :meth:`~.Subreddit.submit_image` and
+  :meth:`~.Subreddit.submit_video` to submit without using WebSockets.
 
 6.4.0 (2019/09/21)
 ------------------

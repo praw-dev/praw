@@ -325,6 +325,23 @@ class TestSubreddit(IntegrationTest):
             assert submission.link_flair_text == flair_text
 
     @mock.patch("time.sleep", return_value=None)
+    def test_submit_image__without_websockets(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image__without_websocket"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            for file_name in ("test.png", "test.jpg", "test.gif"):
+                image = self.image_path(file_name)
+
+                submission = subreddit.submit_image(
+                    "Test Title", image, without_websockets=True
+                )
+                assert submission is None
+
+    @mock.patch("time.sleep", return_value=None)
     @mock.patch(
         "websocket.create_connection",
         return_value=WebsocketMock("aheljy", "ahelks"),  # update with cassette
@@ -446,6 +463,23 @@ class TestSubreddit(IntegrationTest):
                 assert submission.author == self.reddit.config.username
                 assert submission.is_video
                 assert submission.title == "Test Title"
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_video__without_websockets(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video__without_websockets"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            for file_name in ("test.mov", "test.mp4"):
+                video = self.image_path(file_name)
+
+                submission = subreddit.submit_video(
+                    "Test Title", video, without_websockets=True
+                )
+                assert submission is None
 
     def test_subscribe(self):
         self.reddit.read_only = False
