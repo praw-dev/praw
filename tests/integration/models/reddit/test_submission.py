@@ -389,6 +389,7 @@ class TestSubmissionModeration(IntegrationTest):
             submission = Submission(self.reddit, "dueqm6")
             assert not submission.is_original_content
             submission.mod.set_original_content()
+            submission = Submission(self.reddit, "dueqm6")
             assert submission.is_original_content
 
     def test_sfw(self):
@@ -468,6 +469,7 @@ class TestSubmissionModeration(IntegrationTest):
             submission = Submission(self.reddit, "duig7f")
             assert submission.is_original_content
             submission.mod.unset_original_content()
+            submission = Submission(self.reddit, "duig7f")
             assert not submission.is_original_content
 
     def test_unspoiler(self):
