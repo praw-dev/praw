@@ -191,7 +191,7 @@ class Redditor(
         .. code:: python
 
             for subreddit in reddit.redditor('spez').moderated():
-                print(subreddit.name)
+                print(subreddit.display_name)
                 print(subreddit.title)
 
         """
