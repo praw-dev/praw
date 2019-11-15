@@ -196,7 +196,7 @@ class Redditor(
                 print(subreddit.title)
 
         """
-        d = reddit.get(API_PATH["moderated"].format(user=self))
+        d = self._reddit.get(API_PATH["moderated"].format(user=self))
         if "data" not in d:
             return []
         else:
