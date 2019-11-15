@@ -7,6 +7,7 @@ from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
 from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
+from .subreddit import Subreddit
 
 
 class Redditor(
@@ -179,6 +180,28 @@ class Redditor(
             API_PATH["gild_user"].format(username=self),
             data={"months": months},
         )
+
+    def moderated(self):
+        """Return a list of the redditor's moderated subreddits.
+
+        :returns: A ``list`` of :class:`~praw.models.Subreddit` objects.
+            Return ``[]`` if the redditor has no moderated subreddits.
+
+        Usage:
+
+        .. code:: python
+
+            for subreddit in reddit.redditor('spez').moderated():
+                print(subreddit.name)
+                print(subreddit.title)
+
+        """
+        d = reddit.get(API_PATH["moderated"].format(user=self))
+        if "data" not in d:
+            return []
+        else:
+            subreddits = [Subreddit(self._reddit, x["sr"]) for x in d["data"]]
+            return subreddits
 
     def multireddits(self):
         """Return a list of the redditor's public multireddits."""
