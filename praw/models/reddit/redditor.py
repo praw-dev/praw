@@ -7,7 +7,6 @@ from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
 from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
-from .subreddit import Subreddit
 
 
 class Redditor(
@@ -200,7 +199,7 @@ class Redditor(
         if "data" not in d:
             return []
         else:
-            subreddits = [Subreddit(self._reddit, x["sr"]) for x in d["data"]]
+            subreddits = [self._reddit.subreddit(x["sr"]) for x in d["data"]]
             return subreddits
 
     def multireddits(self):
