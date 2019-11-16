@@ -71,10 +71,13 @@ class TestRedditor(IntegrationTest):
 
     def test_moderated(self):
         redditor = self.reddit.redditor("spez")
+        redditor_no_mod = self.reddit.redditor("ArtemisHelper")
         with self.recorder.use_cassette("TestRedditor.test_moderated"):
             moderated = redditor.moderated()
             assert len(moderated) > 0
             assert len(moderated[0].name) > 0
+            not_moderated = redditor_no_mod.moderated()
+            assert len(not_moderated) == 0
 
     def test_multireddits(self):
         redditor = self.reddit.redditor("kjoneslol")
