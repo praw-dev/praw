@@ -69,7 +69,8 @@ class TestRedditor(IntegrationTest):
                 from_subreddit=pytest.placeholders.test_subreddit,
             )
 
-    def test_moderated(self):
+    @mock.patch("time.sleep", return_value=None)
+    def test_moderated(self, _):
         redditor = self.reddit.redditor("spez")
         redditor_no_mod = self.reddit.redditor("ArtemisHelper")
         with self.recorder.use_cassette("TestRedditor.test_moderated"):
