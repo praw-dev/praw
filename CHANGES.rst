@@ -6,6 +6,18 @@ Unreleased
 
 **Added**
 
+* :meth:`.set_original_content` supports
+  marking a submission as original content.
+* :meth:`.unset_original_content` supports
+  unmarking a submission as original content.
+* Parameter ``without_websockets`` to :meth:`~.Subreddit.submit_image` and
+  :meth:`~.Subreddit.submit_video` to submit without using WebSockets.
+
+6.4.0 (2019/09/21)
+------------------
+
+**Added**
+
 * :meth:`~.Submission.crosspost` support parameter ``flair_id`` to
   flair the submission immediately upon crossposting.
 * :meth:`~.Submission.crosspost` support parameter ``flair_text`` to
@@ -22,6 +34,17 @@ Unreleased
 
 * :meth:`.add_community_list` has parameter ``description`` to support
   unannounced upstream Reddit API changes.
+* :meth:`~.WidgetModeration.update` supports passing a list of
+  :class:`.Subreddit` objects.
+
+**Changed**
+
+* Removed ``css_class`` parameter cannot be used with ``background_color``,
+  ``text_color``, or ``mod_only`` constraint on methods:
+
+    * ``SubredditFlairTemplates.update()``
+    * ``SubredditRedditorFlairTemplates.add()``
+    * ``SubredditLinkFlairTemplates.add()``
 
 **Removed**
 

@@ -18,7 +18,7 @@ from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
-from .widgets import SubredditWidgets
+from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
 
 
@@ -455,7 +455,7 @@ class Subreddit(
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def _submit_media(self, data, timeout):
+    def _submit_media(self, data, timeout, without_websockets):
         """Submit and return an `image`, `video`, or `videogif`.
 
         This is a helper method for submitting posts that are not link posts or
@@ -488,6 +488,9 @@ class Subreddit(
             raise ClientException(
                 "Something went wrong with your post: {!r}".format(response)
             )
+
+        if without_websockets:
+            return
 
         try:
             socket = websocket.create_connection(
@@ -719,6 +722,7 @@ class Subreddit(
         spoiler=False,
         timeout=10,
         collection_id=None,
+        without_websockets=False,
     ):
         """Add an image submission to the subreddit.
 
@@ -739,6 +743,12 @@ class Subreddit(
             a spoiler (default: False).
         :param timeout: Specifies a particular timeout, in seconds. Use to
             avoid "Websocket error" exceptions (default: 10).
+        :param without_websockets: Set to ``True`` to disable use of WebSockets
+            (see note below for an explanation). If ``True``, this method
+            doesn't return anything. (default: ``False``).
+
+        :returns: A :class:`.Submission` object for the newly created
+            submission, unless ``without_websockets`` is ``True``.
 
         .. note::
 
@@ -749,8 +759,11 @@ class Subreddit(
            you frequently get exceptions but successfully created posts, try
            setting the ``timeout`` parameter to a value above 10.
 
-        :returns: A :class:`~.Submission` object for the newly created
-            submission.
+           To disable the use of WebSockets, set ``without_websockets=True``.
+           This will make the method return ``None``, though the post will
+           still be created. You may wish to do this if you are running your
+           program in a restricted network environment, or using a proxy
+           that doesn't support WebSockets connections.
 
         For example to submit an image to ``/r/reddit_api_test`` do:
 
@@ -777,7 +790,9 @@ class Subreddit(
             if value is not None:
                 data[key] = value
         data.update(kind="image", url=self._upload_media(image_path))
-        return self._submit_media(data, timeout)
+        return self._submit_media(
+            data, timeout, without_websockets=without_websockets
+        )
 
     def submit_video(
         self,
@@ -793,6 +808,7 @@ class Subreddit(
         spoiler=False,
         timeout=10,
         collection_id=None,
+        without_websockets=False,
     ):
         """Add a video or videogif submission to the subreddit.
 
@@ -820,6 +836,12 @@ class Subreddit(
             a spoiler (default: False).
         :param timeout: Specifies a particular timeout, in seconds. Use to
             avoid "Websocket error" exceptions (default: 10).
+        :param without_websockets: Set to ``True`` to disable use of WebSockets
+            (see note below for an explanation). If ``True``, this method
+            doesn't return anything. (default: ``False``).
+
+        :returns: A :class:`.Submission` object for the newly created
+            submission, unless ``without_websockets`` is ``True``.
 
         .. note::
 
@@ -830,8 +852,11 @@ class Subreddit(
            you frequently get exceptions but successfully created posts, try
            setting the ``timeout`` parameter to a value above 10.
 
-        :returns: A :class:`~.Submission` object for the newly created
-            submission.
+           To disable the use of WebSockets, set ``without_websockets=True``.
+           This will make the method return ``None``, though the post will
+           still be created. You may wish to do this if you are running your
+           program in a restricted network environment, or using a proxy
+           that doesn't support WebSockets connections.
 
         For example to submit a video to ``/r/reddit_api_test`` do:
 
@@ -863,7 +888,9 @@ class Subreddit(
             # if thumbnail_path is None, it uploads the PRAW logo
             video_poster_url=self._upload_media(thumbnail_path),
         )
-        return self._submit_media(data, timeout)
+        return self._submit_media(
+            data, timeout, without_websockets=without_websockets
+        )
 
     def subscribe(self, other_subreddits=None):
         """Subscribe to the subreddit.
@@ -903,6 +930,9 @@ class Subreddit(
             "sr_name": self._subreddit_list(self, other_subreddits),
         }
         self._reddit.post(API_PATH["subscribe"], data=data)
+
+
+WidgetEncoder._subreddit_class = Subreddit
 
 
 class SubredditFilters:
@@ -1234,33 +1264,16 @@ class SubredditFlairTemplates:
         text_color=None,
         mod_only=None,
     ):
-        if css_class and any(
-            param is not None
-            for param in (background_color, text_color, mod_only)
-        ):
-            raise TypeError(
-                "Parameter `css_class` cannot be used in "
-                "conjunction with parameters `background_color`, "
-                "`text_color`, or `mod_only`."
-            )
-        if css_class:
-            url = API_PATH["flairtemplate"].format(subreddit=self.subreddit)
-            data = {
-                "css_class": css_class,
-                "flair_type": self.flair_type(is_link),
-                "text": text,
-                "text_editable": bool(text_editable),
-            }
-        else:
-            url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
-            data = {
-                "background_color": background_color,
-                "text_color": text_color,
-                "flair_type": self.flair_type(is_link),
-                "text": text,
-                "text_editable": bool(text_editable),
-                "mod_only": bool(mod_only),
-            }
+        url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
+        data = {
+            "css_class": css_class,
+            "background_color": background_color,
+            "text_color": text_color,
+            "flair_type": self.flair_type(is_link),
+            "text": text,
+            "text_editable": bool(text_editable),
+            "mod_only": bool(mod_only),
+        }
         self.subreddit._reddit.post(url, data=data)
 
     def _clear(self, is_link=None):
@@ -1297,20 +1310,18 @@ class SubredditFlairTemplates:
     ):
         """Update the flair template provided by ``template_id``.
 
-        :param template_id: The flair template to update.
+        :param template_id: The flair template to update. If not valid then
+            a new flair template will be made.
         :param text: The flair template's new text (required).
         :param css_class: The flair template's new css_class (default: '').
-            Cannot be used in conjunction with ``background_color``,
-            ``text_color``, or ``mod_only``.
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
-            as a hex color. Cannot be used in conjunction with ``css_class``.
+            as a hex color.
         :param text_color: The flair template's new text color, either
-            ``'light'`` or ``'dark'``. Cannot be used in conjunction with
-            ``css_class``.
+            ``'light'`` or ``'dark'``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
-            moderators. Cannot be used in conjunction with ``css_class``.
+            moderators.
 
         For example to make a user flair template text_editable, try:
 
@@ -1328,34 +1339,16 @@ class SubredditFlairTemplates:
            ``None`` or ``False``) on Reddit's end.
 
         """
-        if css_class and any(
-            param is not None
-            for param in (background_color, text_color, mod_only)
-        ):
-            raise TypeError(
-                "Parameter `css_class` cannot be used in "
-                "conjunction with parameters `background_color`, "
-                "`text_color`, or `mod_only`."
-            )
-
-        if css_class:
-            url = API_PATH["flairtemplate"].format(subreddit=self.subreddit)
-            data = {
-                "css_class": css_class,
-                "flair_template_id": template_id,
-                "text": text,
-                "text_editable": bool(text_editable),
-            }
-        else:
-            url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
-            data = {
-                "flair_template_id": template_id,
-                "text": text,
-                "background_color": background_color,
-                "text_color": text_color,
-                "text_editable": text_editable,
-                "mod_only": mod_only,
-            }
+        url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
+        data = {
+            "flair_template_id": template_id,
+            "text": text,
+            "css_class": css_class,
+            "background_color": background_color,
+            "text_color": text_color,
+            "text_editable": text_editable,
+            "mod_only": mod_only,
+        }
         self.subreddit._reddit.post(url, data=data)
 
 
@@ -1392,17 +1385,14 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
-            Cannot be used in conjunction with ``background_color``,
-            ``text_color``, or ``mod_only``.
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
-            as a hex color. Cannot be used in conjunction with ``css_class``.
+            as a hex color.
         :param text_color: The flair template's new text color, either
-            ``'light'`` or ``'dark'``. Cannot be used in conjunction with
-            ``css_class``.
+            ``'light'`` or ``'dark'``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
-            moderators. Cannot be used in conjunction with ``css_class``.
+            moderators.
 
         For example, to add an editable Redditor flair try:
 
@@ -1467,17 +1457,14 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
-            Cannot be used in conjunction with ``background_color``,
-            ``text_color``, or ``mod_only``.
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
-            as a hex color. Cannot be used in conjunction with ``css_class``.
+            as a hex color.
         :param text_color: The flair template's new text color, either
-            ``'light'`` or ``'dark'``. Cannot be used in conjunction with
-            ``css_class``.
+            ``'light'`` or ``'dark'``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
-            moderators. Cannot be used in conjunction with ``css_class``.
+            moderators.
 
         For example, to add an editable link flair try:
 

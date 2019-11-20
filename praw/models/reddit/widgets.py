@@ -351,7 +351,9 @@ class SubredditWidgetsModeration:
 
     def _create_widget(self, payload):
         path = API_PATH["widget_create"].format(subreddit=self._subreddit)
-        widget = self._reddit.post(path, data={"json": dumps(payload)})
+        widget = self._reddit.post(
+            path, data={"json": dumps(payload, cls=WidgetEncoder)}
+        )
         widget.subreddit = self._subreddit
         return widget
 
@@ -585,7 +587,7 @@ class SubredditWidgetsModeration:
 
         """
         community_list = {
-            "data": [str(datum) for datum in data],
+            "data": data,
             "kind": "community-list",
             "shortName": short_name,
             "styles": styles,
@@ -1720,7 +1722,9 @@ class WidgetEncoder(JSONEncoder):
 
     def default(self, o):  # pylint: disable=E0202
         """Serialize ``PRAWBase`` objects."""
-        if isinstance(o, PRAWBase):
+        if isinstance(o, self._subreddit_class):
+            return str(o)
+        elif isinstance(o, PRAWBase):
             return {
                 key: val
                 for key, val in vars(o).items()
