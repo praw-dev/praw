@@ -12,6 +12,10 @@ Unreleased
   unmarking a submission as original content.
 * Parameter ``without_websockets`` to :meth:`~.Subreddit.submit_image` and
   :meth:`~.Subreddit.submit_video` to submit without using WebSockets.
+* Parameters ``allowable_content`` and ``max_emojis`` to
+  :meth:`~.SubredditRedditorFlairTemplates.add`,
+  :meth:`~.SubredditLinkFlairTemplates.add`, and
+  :meth:`~.SubredditFlairTemplates.update`, as well as its child classes.
 
 6.4.0 (2019/09/21)
 ------------------

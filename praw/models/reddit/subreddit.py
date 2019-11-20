@@ -1263,6 +1263,8 @@ class SubredditFlairTemplates:
         background_color=None,
         text_color=None,
         mod_only=None,
+        allowable_content=None,
+        max_emojis=None,
     ):
         url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
         data = {
@@ -1273,6 +1275,8 @@ class SubredditFlairTemplates:
             "text": text,
             "text_editable": bool(text_editable),
             "mod_only": bool(mod_only),
+            "allowable_content": allowable_content,
+            "max_emojis": max_emojis,
         }
         self.subreddit._reddit.post(url, data=data)
 
@@ -1307,6 +1311,8 @@ class SubredditFlairTemplates:
         background_color=None,
         text_color=None,
         mod_only=None,
+        allowable_content=None,
+        max_emojis=None,
     ):
         """Update the flair template provided by ``template_id``.
 
@@ -1322,6 +1328,9 @@ class SubredditFlairTemplates:
             ``'light'`` or ``'dark'``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
             moderators.
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+        :param max_emojis: (int) Maximum emojis in the flair (default: 10).
 
         For example to make a user flair template text_editable, try:
 
@@ -1348,6 +1357,8 @@ class SubredditFlairTemplates:
             "text_color": text_color,
             "text_editable": text_editable,
             "mod_only": mod_only,
+            "allowable_content": allowable_content,
+            "max_emojis": max_emojis,
         }
         self.subreddit._reddit.post(url, data=data)
 
@@ -1380,6 +1391,8 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         background_color=None,
         text_color=None,
         mod_only=None,
+        allowable_content=None,
+        max_emojis=None,
     ):
         """Add a Redditor flair template to the associated subreddit.
 
@@ -1393,6 +1406,9 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
             ``'light'`` or ``'dark'``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
             moderators.
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+        :param max_emojis: (int) Maximum emojis in the flair (default: 10).
 
         For example, to add an editable Redditor flair try:
 
@@ -1410,6 +1426,8 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
             background_color=background_color,
             text_color=text_color,
             mod_only=mod_only,
+            allowable_content=allowable_content,
+            max_emojis=max_emojis,
         )
 
     def clear(self):
@@ -1452,6 +1470,8 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         background_color=None,
         text_color=None,
         mod_only=None,
+        allowable_content=None,
+        max_emojis=None,
     ):
         """Add a link flair template to the associated subreddit.
 
@@ -1465,6 +1485,9 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
             ``'light'`` or ``'dark'``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
             moderators.
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+        :param max_emojis: (int) Maximum emojis in the flair (default: 10).
 
         For example, to add an editable link flair try:
 
@@ -1482,6 +1505,8 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
             background_color=background_color,
             text_color=text_color,
             mod_only=mod_only,
+            allowable_content=allowable_content,
+            max_emojis=max_emojis,
         )
 
     def clear(self):
