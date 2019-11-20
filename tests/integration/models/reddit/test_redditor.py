@@ -42,7 +42,8 @@ class TestRedditor(IntegrationTest):
             assert "created_utc" not in redditor.__dict__
             assert hasattr(redditor, "created_utc")
 
-    def test_fullname_init(self):
+    @mock.patch("time.sleep", return_value=None)
+    def test_fullname_init(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestRedditor.test_fullname_init"):
             redditor = self.reddit.redditor(fullname=self.FRIEND_FULLNAME)

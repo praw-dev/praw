@@ -102,6 +102,10 @@ class Redditor(
         """Return the class's kind."""
         return self._reddit.config.kinds["redditor"]
 
+    @property
+    def _path(self):
+        return API_PATH["user"].format(user=self)
+
     def __init__(self, reddit, name=None, fullname=None, _data=None):
         """Initialize a Redditor instance.
 
@@ -126,8 +130,7 @@ class Redditor(
         if name:
             self.name = name
         elif fullname:
-            self.name = self._fetch_username(fullname)
-        self._path = API_PATH["user"].format(user=self)
+            self._fullname = fullname
 
     def _fetch_username(self, fullname):
         return self._reddit.request(
@@ -135,6 +138,8 @@ class Redditor(
         )[fullname]["name"]
 
     def _fetch_info(self):
+        if hasattr(self, "_fullname"):
+            self.name = self._fetch_username(self._fullname)
         return ("user_about", {"user": self.name}, None)
 
     def _fetch_data(self):
