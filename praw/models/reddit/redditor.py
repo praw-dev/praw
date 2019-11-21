@@ -133,8 +133,8 @@ class Redditor(
             self._fullname = fullname
 
     def _fetch_username(self, fullname):
-        return self._reddit.request(
-            "GET", API_PATH["user_by_fullname"], {"ids": fullname}
+        return self._reddit.get(
+            API_PATH["user_by_fullname"], params={"ids": fullname}
         )[fullname]["name"]
 
     def _fetch_info(self):
