@@ -1330,6 +1330,8 @@ class SubredditFlairTemplates:
             moderators.
         :param allowable_content: If specified, most be one of ``'all'``,
             ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair (default: 10).
 
         For example to make a user flair template text_editable, try:
@@ -1408,6 +1410,8 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
             moderators.
         :param allowable_content: If specified, most be one of ``'all'``,
             ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair (default: 10).
 
         For example, to add an editable Redditor flair try:
@@ -1487,6 +1491,8 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
             moderators.
         :param allowable_content: If specified, most be one of ``'all'``,
             ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair (default: 10).
 
         For example, to add an editable link flair try:
