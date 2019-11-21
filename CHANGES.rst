@@ -12,6 +12,9 @@ Unreleased
   unmarking a submission as original content.
 * Parameter ``without_websockets`` to :meth:`~.Subreddit.submit_image` and
   :meth:`~.Subreddit.submit_video` to submit without using WebSockets.
+* :meth:`.Reddit.redditor` supports ``fullname`` param to fetch a Redditor
+  by the fullname instead of name.
+  :class:`.Redditor` constructor now also has ``fullname`` param.
 
 6.4.0 (2019/09/21)
 ------------------
