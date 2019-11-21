@@ -102,15 +102,25 @@ class Redditor(
         """Return the class's kind."""
         return self._reddit.config.kinds["redditor"]
 
-    def __init__(self, reddit, name=None, _data=None):
+    @property
+    def _path(self):
+        return API_PATH["user"].format(user=self)
+
+    def __init__(self, reddit, name=None, fullname=None, _data=None):
         """Initialize a Redditor instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param name: The name of the redditor.
+        :param fullname: The fullname of the redditor, starting with ``t2_``.
+
+        Exactly one of ``name``, ``fullname`` or ``_data`` must be provided.
 
         """
-        if bool(name) == bool(_data):
-            raise TypeError("Either `name` or `_data` must be provided.")
+        if [name, fullname, _data].count(None) != 2:
+            raise TypeError(
+                "Exactly one of `name`, `fullname`, or `_data` must be "
+                "provided."
+            )
         if _data:
             assert (
                 isinstance(_data, dict) and "name" in _data
@@ -119,9 +129,17 @@ class Redditor(
         self._listing_use_sort = True
         if name:
             self.name = name
-        self._path = API_PATH["user"].format(user=self)
+        elif fullname:
+            self._fullname = fullname
+
+    def _fetch_username(self, fullname):
+        return self._reddit.get(
+            API_PATH["user_by_fullname"], params={"ids": fullname}
+        )[fullname]["name"]
 
     def _fetch_info(self):
+        if hasattr(self, "_fullname"):
+            self.name = self._fetch_username(self._fullname)
         return ("user_about", {"user": self.name}, None)
 
     def _fetch_data(self):

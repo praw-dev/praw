@@ -556,13 +556,16 @@ class Reddit:
             path = redirect.path
         return models.Subreddit(self, path.split("/")[2])
 
-    def redditor(self, name):
-        """Return a lazy instance of :class:`~.Redditor` for ``name``.
+    def redditor(self, name=None, fullname=None):
+        """Return a lazy instance of :class:`~.Redditor`.
 
         :param name: The name of the redditor.
+        :param fullname: The fullname of the redditor, starting with ``t2_``.
+
+        Either ``name`` or ``fullname`` can be provided, but not both.
 
         """
-        return models.Redditor(self, name)
+        return models.Redditor(self, name=name, fullname=fullname)
 
     def request(self, method, path, params=None, data=None, files=None):
         """Return the parsed JSON data returned from a request to URL.
