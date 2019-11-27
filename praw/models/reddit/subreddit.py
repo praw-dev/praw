@@ -439,6 +439,10 @@ class Subreddit(
         super(Subreddit, self).__init__(reddit, _data=_data)
         if display_name:
             self.display_name = display_name
+            if not isinstance(display_name, str):
+                raise TypeError(
+                    "The display_name must be type `str`."
+                )
         self._path = API_PATH["subreddit"].format(subreddit=self)
 
     def _fetch_info(self):

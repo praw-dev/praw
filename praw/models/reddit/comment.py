@@ -148,7 +148,15 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         super(Comment, self).__init__(reddit, _data=_data)
         if id:
             self.id = id
+            if not isinstance(id, str):
+                raise TypeError(
+                    "The id must be type `str`."
+                )
         elif url:
+            if not isinstance(url, str):
+                raise TypeError(
+                    "The url must be type `str`."
+                )
             self.id = self.id_from_url(url)
         else:
             self._fetched = True
