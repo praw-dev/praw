@@ -195,11 +195,11 @@ class Redditor(
                 print(subreddit.title)
 
         """
-        d = self._reddit.get(API_PATH["moderated"].format(user=self))
-        if "data" not in d:
+        modded_data = self._reddit.get(API_PATH["moderated"].format(user=self))
+        if "data" not in modded_data:
             return []
         else:
-            subreddits = [self._reddit.subreddit(x["sr"]) for x in d["data"]]
+            subreddits = [self._reddit.subreddit(x["sr"]) for x in modded_data["data"]]
             return subreddits
 
     def multireddits(self):
