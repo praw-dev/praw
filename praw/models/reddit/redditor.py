@@ -9,7 +9,9 @@ from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
 
 
-class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase):
+class Redditor(
+    MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
+):
     """A class representing the users of reddit.
 
     **Typical Attributes**
@@ -140,7 +142,9 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
 
     def block(self):
         """Block the Redditor."""
-        self._reddit.post(API_PATH["block_user"], params={"account_id": self.fullname})
+        self._reddit.post(
+            API_PATH["block_user"], params={"account_id": self.fullname}
+        )
 
     def friend(self, note=None):
         """Friend the Redditor.
@@ -172,7 +176,8 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         if months < 1 or months > 36:
             raise TypeError("months must be between 1 and 36")
         self._reddit.post(
-            API_PATH["gild_user"].format(username=self), data={"months": months},
+            API_PATH["gild_user"].format(username=self),
+            data={"months": months},
         )
 
     def moderated(self):
@@ -194,7 +199,9 @@ class Redditor(MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
         if "data" not in modded_data:
             return []
         else:
-            subreddits = [self._reddit.subreddit(x["sr"]) for x in modded_data["data"]]
+            subreddits = [
+                self._reddit.subreddit(x["sr"]) for x in modded_data["data"]
+            ]
             return subreddits
 
     def multireddits(self):
@@ -282,4 +289,6 @@ class RedditorStream:
                print(submission)
 
         """
-        return stream_generator(self.redditor.submissions.new, **stream_options)
+        return stream_generator(
+            self.redditor.submissions.new, **stream_options
+        )
