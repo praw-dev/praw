@@ -111,8 +111,8 @@ class User(PRAWBase):
 
         .. code-block:: python
 
-            for subreddit in reddit.user.moderator_subreddits():
-                print(subreddit.display_name)
+           for subreddit in reddit.user.moderator_subreddits():
+               print(subreddit.display_name)
 
 
         """
