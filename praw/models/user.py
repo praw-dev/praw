@@ -114,6 +114,7 @@ class User(PRAWBase):
                 for subreddit in reddit.user.moderator_subreddits():
                     print(subreddit.display_name)
 
+
         """
         return ListingGenerator(
             self._reddit, API_PATH["my_moderator"], **generator_kwargs
