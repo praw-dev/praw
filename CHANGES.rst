@@ -10,7 +10,7 @@ Unreleased
   marking a submission as original content.
 * :meth:`.unset_original_content` supports
   unmarking a submission as original content.
-* :meth:`.Redditor.moderated` to get a list of the Redditor's
+* :meth:`.Redditor.moderated` to get a list of a Redditor's
   moderated subreddits.
 * Parameter ``without_websockets`` to :meth:`~.Subreddit.submit_image` and
   :meth:`~.Subreddit.submit_video` to submit without using WebSockets.
