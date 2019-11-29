@@ -109,6 +109,8 @@ class User(PRAWBase):
         subreddits, ordered by subscriber count. To retrieve more than
         100 subreddits, use :meth:`.Redditor.moderated`.
 
+        Usage:
+
         .. code-block:: python
 
            for subreddit in reddit.user.moderator_subreddits():
