@@ -106,8 +106,7 @@ class User(PRAWBase):
         :class:`.ListingGenerator`.
 
         .. note:: This method will return a maximum of 100 moderated
-        subreddits, ordered by subscriber count. To retrieve more than
-        100 subreddits, use :meth:`.Redditor.moderated`.
+        subreddits, ordered by subscriber count.
 
         .. code-block:: python
 
