@@ -9,6 +9,7 @@ from ... import IntegrationTest
 
 class TestRedditor(IntegrationTest):
     FRIEND = "PyAPITestUser3"
+    FRIEND_FULLNAME = "t2_6c1xj"
 
     @mock.patch("time.sleep", return_value=None)
     def test_block(self, _):
@@ -41,6 +42,13 @@ class TestRedditor(IntegrationTest):
             assert "created_utc" not in redditor.__dict__
             assert hasattr(redditor, "created_utc")
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_fullname_init(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestRedditor.test_fullname_init"):
+            redditor = self.reddit.redditor(fullname=self.FRIEND_FULLNAME)
+            assert redditor.name == self.FRIEND
+
     def test_gild__no_creddits(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestRedditor.test_gild__no_creddits"):
@@ -68,6 +76,17 @@ class TestRedditor(IntegrationTest):
                 "This is a test from PRAW",
                 from_subreddit=pytest.placeholders.test_subreddit,
             )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_moderated(self, _):
+        redditor = self.reddit.redditor("spez")
+        redditor_no_mod = self.reddit.redditor("ArtemisHelper")
+        with self.recorder.use_cassette("TestRedditor.test_moderated"):
+            moderated = redditor.moderated()
+            assert len(moderated) > 0
+            assert len(moderated[0].name) > 0
+            not_moderated = redditor_no_mod.moderated()
+            assert len(not_moderated) == 0
 
     def test_multireddits(self):
         redditor = self.reddit.redditor("kjoneslol")

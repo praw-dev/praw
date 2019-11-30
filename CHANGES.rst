@@ -6,6 +6,17 @@ Unreleased
 
 **Added**
 
+* :meth:`.set_original_content` supports
+  marking a submission as original content.
+* :meth:`.unset_original_content` supports
+  unmarking a submission as original content.
+* :meth:`.Redditor.moderated` to get a list of a Redditor's
+  moderated subreddits.
+* Parameter ``without_websockets`` to :meth:`~.Subreddit.submit_image` and
+  :meth:`~.Subreddit.submit_video` to submit without using WebSockets.
+* :meth:`.Reddit.redditor` supports ``fullname`` param to fetch a Redditor
+  by the fullname instead of name.
+  :class:`.Redditor` constructor now also has ``fullname`` param.
 * Comments/Submissions can now list/add Reddit redesign removal templates
   ``comment.mod.removal_reasons()`` and ``submission.mod.add_removal_reason()``
   See: (:meth:`.ThingModerationMixin.removal_reasons` and

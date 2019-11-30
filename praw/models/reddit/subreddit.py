@@ -455,7 +455,7 @@ class Subreddit(
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def _submit_media(self, data, timeout):
+    def _submit_media(self, data, timeout, without_websockets):
         """Submit and return an `image`, `video`, or `videogif`.
 
         This is a helper method for submitting posts that are not link posts or
@@ -488,6 +488,9 @@ class Subreddit(
             raise ClientException(
                 "Something went wrong with your post: {!r}".format(response)
             )
+
+        if without_websockets:
+            return
 
         try:
             socket = websocket.create_connection(
@@ -719,6 +722,7 @@ class Subreddit(
         spoiler=False,
         timeout=10,
         collection_id=None,
+        without_websockets=False,
     ):
         """Add an image submission to the subreddit.
 
@@ -739,6 +743,12 @@ class Subreddit(
             a spoiler (default: False).
         :param timeout: Specifies a particular timeout, in seconds. Use to
             avoid "Websocket error" exceptions (default: 10).
+        :param without_websockets: Set to ``True`` to disable use of WebSockets
+            (see note below for an explanation). If ``True``, this method
+            doesn't return anything. (default: ``False``).
+
+        :returns: A :class:`.Submission` object for the newly created
+            submission, unless ``without_websockets`` is ``True``.
 
         .. note::
 
@@ -749,8 +759,11 @@ class Subreddit(
            you frequently get exceptions but successfully created posts, try
            setting the ``timeout`` parameter to a value above 10.
 
-        :returns: A :class:`~.Submission` object for the newly created
-            submission.
+           To disable the use of WebSockets, set ``without_websockets=True``.
+           This will make the method return ``None``, though the post will
+           still be created. You may wish to do this if you are running your
+           program in a restricted network environment, or using a proxy
+           that doesn't support WebSockets connections.
 
         For example to submit an image to ``/r/reddit_api_test`` do:
 
@@ -777,7 +790,9 @@ class Subreddit(
             if value is not None:
                 data[key] = value
         data.update(kind="image", url=self._upload_media(image_path))
-        return self._submit_media(data, timeout)
+        return self._submit_media(
+            data, timeout, without_websockets=without_websockets
+        )
 
     def submit_video(
         self,
@@ -793,6 +808,7 @@ class Subreddit(
         spoiler=False,
         timeout=10,
         collection_id=None,
+        without_websockets=False,
     ):
         """Add a video or videogif submission to the subreddit.
 
@@ -820,6 +836,12 @@ class Subreddit(
             a spoiler (default: False).
         :param timeout: Specifies a particular timeout, in seconds. Use to
             avoid "Websocket error" exceptions (default: 10).
+        :param without_websockets: Set to ``True`` to disable use of WebSockets
+            (see note below for an explanation). If ``True``, this method
+            doesn't return anything. (default: ``False``).
+
+        :returns: A :class:`.Submission` object for the newly created
+            submission, unless ``without_websockets`` is ``True``.
 
         .. note::
 
@@ -830,8 +852,11 @@ class Subreddit(
            you frequently get exceptions but successfully created posts, try
            setting the ``timeout`` parameter to a value above 10.
 
-        :returns: A :class:`~.Submission` object for the newly created
-            submission.
+           To disable the use of WebSockets, set ``without_websockets=True``.
+           This will make the method return ``None``, though the post will
+           still be created. You may wish to do this if you are running your
+           program in a restricted network environment, or using a proxy
+           that doesn't support WebSockets connections.
 
         For example to submit a video to ``/r/reddit_api_test`` do:
 
@@ -863,7 +888,9 @@ class Subreddit(
             # if thumbnail_path is None, it uploads the PRAW logo
             video_poster_url=self._upload_media(thumbnail_path),
         )
-        return self._submit_media(data, timeout)
+        return self._submit_media(
+            data, timeout, without_websockets=without_websockets
+        )
 
     def subscribe(self, other_subreddits=None):
         """Subscribe to the subreddit.
