@@ -18,6 +18,7 @@ from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
+from .reasons import SubredditReasons
 from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
 
@@ -348,6 +349,31 @@ class Subreddit(
 
         """
         return SubredditQuarantine(self)
+
+    @cachedproperty
+    def reasons(self):
+        """Provide an instance of :class:`.SubredditReasons`.
+
+        Use this attribute for interacting with a subreddit's removal reasons.
+        For example to list all the removal reaons for a subreddit which you
+        have the ``posts`` moderator permission on try:
+
+        .. code-block:: python
+
+           for reason in reddit.subreddit('NAME').reasons:
+               print(reason)
+
+        A single removal reason can be lazily retrieved via:
+
+        .. code:: python
+
+           reddit.subreddit('NAME').reasons['title']
+
+        .. note:: Attempting to access attributes of an nonexistent removal
+           reason will result in a :class:`.ClientException`.
+
+        """
+        return SubredditReasons(self)
 
     @cachedproperty
     def stream(self):

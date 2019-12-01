@@ -18,6 +18,7 @@ from .reddit.message import Message, SubredditMessage
 from .reddit.modmail import ModmailAction, ModmailConversation, ModmailMessage
 from .reddit.more import MoreComments
 from .reddit.multi import Multireddit
+from .reddit.reasons import Reason
 from .reddit.redditor import Redditor
 from .reddit.submission import Submission
 from .reddit.subreddit import Subreddit
