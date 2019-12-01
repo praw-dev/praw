@@ -18,6 +18,32 @@ class ThingModerationMixin:
 
     REMOVAL_MESSAGE_API = None
 
+    def _add_removal_reason(self, mod_note="", reason_id=None):
+        """Add a removal reason for a Comment or Submission.
+
+        :param mod_note: A message for the other moderators.
+        :param reason_id: The removal reason ID.
+
+        It is necessary to first call :meth:`~.remove` on the
+        :class:`~.Comment` or :class:`~.Submission`.
+
+        If reason_id is not specified, mod_note cannot be blank.
+
+        """
+        if not reason_id and not mod_note:
+            raise ValueError(
+                "mod_note cannot be blank if reason_id is not specified"
+            )
+        # Only the first element of the item_id list is used.
+        data = {
+            "item_ids": [self.thing.fullname],
+            "mod_note": mod_note,
+            "reason_id": reason_id,
+        }
+        self.thing._reddit.post(
+            API_PATH["removal_reasons"], data={"json": dumps(data)}
+        )
+
     def approve(self):
         """Approve a :class:`~.Comment` or :class:`~.Submission`.
 
@@ -118,13 +144,13 @@ class ThingModerationMixin:
             API_PATH["lock"], data={"id": self.thing.fullname}
         )
 
-    def remove(self, mod_note="", reason_id=None, spam=False):
+    def remove(self, spam=False, mod_note="", reason_id=None):
         """Remove a :class:`~.Comment` or :class:`~.Submission`.
 
-        :param reason_id: The removal reason ID.
         :param mod_note: A message for the other moderators.
         :param spam: When True, use the removal to help train the Subreddit's
             spam filter (default: False).
+        :param reason_id: The removal reason ID.
 
         If either reason_id or mod_note are provided, a second API call is made
         to add the removal reason.
@@ -149,44 +175,6 @@ class ThingModerationMixin:
         self.thing._reddit.post(API_PATH["remove"], data=data)
         if any([reason_id, mod_note]):
             self._add_removal_reason(mod_note, reason_id)
-
-    def _add_removal_reason(self, mod_note="", reason_id=None):
-        """Add a removal reason for a Comment or Submission.
-
-        :param mod_note: A message for the other moderators.
-        :param reason_id: The removal reason ID.
-
-        It is necessary to first call :meth:`~.remove` on the
-        :class:`~.Comment` or :class:`~.Submission`.
-
-        If reason_id is not specified, mod_note cannot be blank.
-
-        Example usage:
-
-        .. code:: python
-
-           comment = reddit.comment("dkk4qjd")
-           comment.mod._add_removal_reason(reason_id="110ni21zo23ql")
-           # remove a submission and add a mod note
-           submission = reddit.submission(id="5or86n")
-           submission.mod._add_removal_reason(
-               mod_note="foo",
-               reason_id="110ni21zo23ql")
-
-        """
-        if not reason_id and not mod_note:
-            raise ValueError(
-                "mod_note cannot be blank if reason_id is not specified"
-            )
-        # Only the first element of the item_id list is used.
-        data = {
-            "item_ids": [self.thing.fullname],
-            "mod_note": mod_note,
-            "reason_id": reason_id,
-        }
-        self.thing._reddit.post(
-            API_PATH["removal_reasons"], data={"json": dumps(data)}
-        )
 
     def send_removal_message(
         self,
