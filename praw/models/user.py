@@ -105,6 +105,18 @@ class User(PRAWBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        .. note:: This method will return a maximum of 100 moderated
+           subreddits, ordered by subscriber count. To retrieve more than
+           100 moderated subreddits, please see :meth:`.Redditor.moderated`.
+
+        Usage:
+
+        .. code-block:: python
+
+           for subreddit in reddit.user.moderator_subreddits():
+               print(subreddit.display_name)
+
+
         """
         return ListingGenerator(
             self._reddit, API_PATH["my_moderator"], **generator_kwargs
