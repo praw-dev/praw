@@ -135,6 +135,7 @@ API_PATH = {
     "removal_comment_message": "api/v1/modactions/removal_comment_message",
     "removal_link_message":    "api/v1/modactions/removal_link_message",
     "removal_reasons":         "api/v1/modactions/removal_reasons",
+    "removal_reason":          "api/v1/{subreddit}/removal_reasons/{id}",
     "removal_reasons_list":    "api/v1/{subreddit}/removal_reasons",
     "remove":                  "api/remove/",
     "report":                  "api/report/",
