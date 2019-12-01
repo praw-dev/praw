@@ -1,6 +1,4 @@
 """Provide the Reason class."""
-import os
-
 from ...const import API_PATH
 from ...exceptions import ClientException
 from .base import RedditBase
@@ -64,11 +62,10 @@ class Reason(RedditBase):
 
 
 class SubredditReasons:
-    """Provide a set of functions to interact with a Subreddit's
-    removal reasons."""
+    """Provide a set of functions to a Subreddit's removal reasons."""
 
     def __getitem__(self, reason_id):
-        """Lazily return the removal reason for the subreddit with reason_id ``reason_id``.
+        """Lazily return the Reason for the subreddit with id ``reason_id``.
 
         :param reason_id: The id of the removal reason
 
