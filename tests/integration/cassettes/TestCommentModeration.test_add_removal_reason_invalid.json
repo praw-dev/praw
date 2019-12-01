@@ -58,7 +58,7 @@
             "snooserv"
           ],
           "Set-Cookie": [
-            "edgebucket=P3bBx6N2ebfHFppD0V; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+            "edgebucket=pUoMaLJgObdrGgzC4P; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
           ],
           "Strict-Transport-Security": [
             "max-age=15552000; includeSubDomains; preload"
@@ -76,10 +76,10 @@
             "majestic"
           ],
           "X-Served-By": [
-            "cache-lga21945-LGA"
+            "cache-lga21944-LGA"
           ],
           "X-Timer": [
-            "S1575188905.774964,VS0,VE390"
+            "S1575188906.571465,VS0,VE391"
           ],
           "cache-control": [
             "max-age=0, must-revalidate"
@@ -102,11 +102,11 @@
       }
     },
     {
-      "recorded_at": "2019-12-01T08:28:25",
+      "recorded_at": "2019-12-01T08:28:26",
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&id=t1_f98ugot&spam=False"
+          "string": "api_type=json&id=t1_f9974ce&spam=False"
         },
         "headers": {
           "Accept": [
@@ -128,7 +128,7 @@
             "application/x-www-form-urlencoded"
           ],
           "Cookie": [
-            "edgebucket=P3bBx6N2ebfHFppD0V"
+            "edgebucket=pUoMaLJgObdrGgzC4P"
           ],
           "User-Agent": [
             "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
@@ -156,7 +156,7 @@
             "application/json; charset=UTF-8"
           ],
           "Date": [
-            "Sun, 01 Dec 2019 08:28:25 GMT"
+            "Sun, 01 Dec 2019 08:28:26 GMT"
           ],
           "Server": [
             "snooserv"
@@ -177,10 +177,10 @@
             "majestic"
           ],
           "X-Served-By": [
-            "cache-lga21928-LGA"
+            "cache-lga21921-LGA"
           ],
           "X-Timer": [
-            "S1575188905.240622,VS0,VE165"
+            "S1575188906.044564,VS0,VE238"
           ],
           "cache-control": [
             "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
@@ -189,8 +189,8 @@
             "-1"
           ],
           "set-cookie": [
-            "loid=0000000000364wflpm.2.1549507701753.Z0FBQUFBQmQ0M21wcGlOVmxnT0VXQkhQWXJ2VVAzUTY2d1dsbVFfbG5BVXFyTVRteWR0SnhqT2FkOVBlVHkxRG9Nc3d0UC1lT041YUlPMi11aEh6aHA3bGttOHZDYXFkSVhUSlI4NXo2NHpaMVpFdi1DV1lXVXVUbXk1VUV4RkhJdzRGXy0wT2x5N28; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Tue, 30-Nov-2021 08:28:25 GMT; secure",
-            "session_tracker=28SGjwavxUQXSn5Oro.0.1575188905275.Z0FBQUFBQmQ0M21wYzdvVVBtc1NqTlZnSFlROG5RLW9CR2hWbmVRaEQ2Uk92Y0RfZkJ6a2ZxOGZtX0lqNmpDb3QzckVMMDZVRWZDNnJycEZqTG5YdGVsVkZaXzNGQ1p2TmZTVndMY0ZtaWtvbjliZzVmcUJuaUtZNlU0dkNucHVCd2JUTVd1RWFkUGk; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sun, 01-Dec-2019 10:28:25 GMT; secure"
+            "loid=0000000000364wflpm.2.1549507701753.Z0FBQUFBQmQ0M21xVFFkbnA5TDdwc0dPa0hSaEd1SHMxdXJORjQ3U0tyY1NSMXlfQk9hRk5SZWQ5Z1F2MldWZlZlWmxWSU5HYWs2Wk95XzdZNDJDQnBCMGVTZTZtNlJ6cUdLVm5SNXZNRFhOaThlM2R4R0ZOTGJLR2VKM3lsNG1CamFkbFB5VlZUTTY; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Tue, 30-Nov-2021 08:28:26 GMT; secure",
+            "session_tracker=FcFWrsy3D6UBR21XKI.0.1575188906070.Z0FBQUFBQmQ0M21xaXNfQlpfUXZQTGprLVprNFhPZDNyVC12d1BVRFpwb3BFc1ZsdXJzVnhBdlB6X0ZmYmh2bm1TbTJ6Rm5UOGJCWU96TXIxQkV3NHdGUS1UbTNRaGNlN1Njd2I1c0pLUEp3a3NQc0VrTlBtd3VPUU9Mak4wZ2NSVmwtU2lJZU5qOFc; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sun, 01-Dec-2019 10:28:26 GMT; secure"
           ],
           "x-content-type-options": [
             "nosniff"
@@ -199,13 +199,13 @@
             "SAMEORIGIN"
           ],
           "x-ratelimit-remaining": [
-            "597.0"
+            "595.0"
           ],
           "x-ratelimit-reset": [
-            "95"
+            "94"
           ],
           "x-ratelimit-used": [
-            "3"
+            "5"
           ],
           "x-ua-compatible": [
             "IE=edge"
@@ -219,122 +219,6 @@
           "message": "OK"
         },
         "url": "https://oauth.reddit.com/api/remove/?raw_json=1"
-      }
-    },
-    {
-      "recorded_at": "2019-12-01T08:28:25",
-      "request": {
-        "body": {
-          "encoding": "utf-8",
-          "string": "api_type=json&json=%7B%22item_ids%22%3A+%5B%22t1_f98ugot%22%5D%2C+%22mod_note%22%3A+%22Test%22%2C+%22reason_id%22%3A+null%7D"
-        },
-        "headers": {
-          "Accept": [
-            "*/*"
-          ],
-          "Accept-Encoding": [
-            "identity"
-          ],
-          "Authorization": [
-            "bearer <ACCESS_TOKEN>"
-          ],
-          "Connection": [
-            "keep-alive"
-          ],
-          "Content-Length": [
-            "124"
-          ],
-          "Content-Type": [
-            "application/x-www-form-urlencoded"
-          ],
-          "Cookie": [
-            "edgebucket=P3bBx6N2ebfHFppD0V; loid=0000000000364wflpm.2.1549507701753.Z0FBQUFBQmQ0M21wcGlOVmxnT0VXQkhQWXJ2VVAzUTY2d1dsbVFfbG5BVXFyTVRteWR0SnhqT2FkOVBlVHkxRG9Nc3d0UC1lT041YUlPMi11aEh6aHA3bGttOHZDYXFkSVhUSlI4NXo2NHpaMVpFdi1DV1lXVXVUbXk1VUV4RkhJdzRGXy0wT2x5N28; session_tracker=28SGjwavxUQXSn5Oro.0.1575188905275.Z0FBQUFBQmQ0M21wYzdvVVBtc1NqTlZnSFlROG5RLW9CR2hWbmVRaEQ2Uk92Y0RfZkJ6a2ZxOGZtX0lqNmpDb3QzckVMMDZVRWZDNnJycEZqTG5YdGVsVkZaXzNGQ1p2TmZTVndMY0ZtaWtvbjliZzVmcUJuaUtZNlU0dkNucHVCd2JUTVd1RWFkUGk"
-          ],
-          "User-Agent": [
-            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
-          ]
-        },
-        "method": "POST",
-        "uri": "https://oauth.reddit.com/api/v1/modactions/removal_reasons?raw_json=1"
-      },
-      "response": {
-        "body": {
-          "encoding": "UTF-8",
-          "string": ""
-        },
-        "headers": {
-          "Accept-Ranges": [
-            "bytes"
-          ],
-          "Connection": [
-            "keep-alive"
-          ],
-          "Content-Length": [
-            "0"
-          ],
-          "Content-Type": [
-            "application/json; charset=UTF-8"
-          ],
-          "Date": [
-            "Sun, 01 Dec 2019 08:28:25 GMT"
-          ],
-          "Server": [
-            "snooserv"
-          ],
-          "Strict-Transport-Security": [
-            "max-age=15552000; includeSubDomains; preload"
-          ],
-          "Via": [
-            "1.1 varnish"
-          ],
-          "X-Cache": [
-            "MISS"
-          ],
-          "X-Cache-Hits": [
-            "0"
-          ],
-          "X-Moose": [
-            "majestic"
-          ],
-          "X-Served-By": [
-            "cache-lga21928-LGA"
-          ],
-          "X-Timer": [
-            "S1575188905.419679,VS0,VE51"
-          ],
-          "cache-control": [
-            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
-          ],
-          "expires": [
-            "-1"
-          ],
-          "set-cookie": [
-            "session_tracker=28SGjwavxUQXSn5Oro.0.1575188905445.Z0FBQUFBQmQ0M21wWHhHS3lFQWpIQ1NCSDZCeVVvR0FtaXlOQk11eUJoN3FWSUlIUWhqNGhOUVRHRUpDZ0FaTXhyQ3FvZ0tQbTAwclNfOF9TaFhTNDVBWlZVRldTTW9uYi1yaE5DQ2RYdUdfUVBydW1oMUh5RF9obDBKZXJ2TmNjMlEya2RfcXRDMmg; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sun, 01-Dec-2019 10:28:25 GMT; secure"
-          ],
-          "x-content-type-options": [
-            "nosniff"
-          ],
-          "x-frame-options": [
-            "SAMEORIGIN"
-          ],
-          "x-ratelimit-remaining": [
-            "596.0"
-          ],
-          "x-ratelimit-reset": [
-            "95"
-          ],
-          "x-ratelimit-used": [
-            "4"
-          ],
-          "x-xss-protection": [
-            "1; mode=block"
-          ]
-        },
-        "status": {
-          "code": 200,
-          "message": "OK"
-        },
-        "url": "https://oauth.reddit.com/api/v1/modactions/removal_reasons?raw_json=1"
       }
     }
   ],
