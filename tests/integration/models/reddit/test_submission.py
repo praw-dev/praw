@@ -376,10 +376,10 @@ class TestSubmissionModeration(IntegrationTest):
             "TestSubmissionModeration.test_add_removal_reason"
         ):
             submission = Submission(self.reddit, "e3oo6a")
-            mod = submission.mod
-            mod.remove()
-            mod_note = "Foobar"
-            mod.add_removal_reason("110nhral8vygf", mod_note=mod_note)
+            submission.mod.remove()
+            submission.mod.add_removal_reason(
+                "110nhral8vygf", mod_note="Foobar"
+            )
 
     @mock.patch("time.sleep", return_value=None)
     def test_add_removal_reason_without_id(self, _):
@@ -388,10 +388,20 @@ class TestSubmissionModeration(IntegrationTest):
             "TestSubmissionModeration.test_add_removal_reason_without_id"
         ):
             submission = Submission(self.reddit, "e3om6k")
-            mod = submission.mod
-            mod.remove()
-            mod_note = "Foobar"
-            mod.add_removal_reason(mod_note=mod_note)
+            submission.mod.remove()
+            submission.mod.add_removal_reason(mod_note="Foobar")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_add_removal_reason_without_id_or_note(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_add_removal_reason_invalid"
+        ):
+            with pytest.raises(ValueError) as excinfo:
+                submission = Submission(self.reddit, "e4ds11")
+                submission.mod.remove()
+                submission.mod.add_removal_reason()
+            assert excinfo.value.args[0].startswith("mod_note cannot be blank")
 
     @mock.patch("time.sleep", return_value=None)
     def test_send_removal_message(self, _):

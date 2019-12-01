@@ -307,9 +307,9 @@ class TestCommentModeration(IntegrationTest):
         with self.recorder.use_cassette(
             "TestCommentModeration.test_add_removal_reason"
         ):
-            self.reddit.comment("f98ukt5").mod.add_removal_reason(
-                "110nhral8vygf", "Blah"
-            )
+            comment = self.reddit.comment("f98ukt5")
+            comment.mod.remove()
+            comment.mod.add_removal_reason("110nhral8vygf", "Blah")
 
     @mock.patch("time.sleep", return_value=None)
     def test_add_removal_reason_without_id(self, _):
@@ -317,9 +317,21 @@ class TestCommentModeration(IntegrationTest):
         with self.recorder.use_cassette(
             "TestCommentModeration.test_add_removal_reason_without_id"
         ):
-            self.reddit.comment("f98ugot").mod.add_removal_reason(
-                mod_note="Test"
-            )
+            comment = self.reddit.comment("f98ugot")
+            comment.mod.remove()
+            comment.mod.add_removal_reason(mod_note="Test")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_add_removal_reason_without_id_or_note(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestCommentModeration.test_add_removal_reason_invalid"
+        ):
+            with pytest.raises(ValueError) as excinfo:
+                comment = self.reddit.comment("f9974ce")
+                comment.mod.remove()
+                comment.mod.add_removal_reason()
+            assert excinfo.value.args[0].startswith("mod_note cannot be blank")
 
     @mock.patch("time.sleep", return_value=None)
     def test_send_removal_message(self, _):
