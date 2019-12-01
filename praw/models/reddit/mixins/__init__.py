@@ -173,7 +173,9 @@ class ThingModerationMixin:
 
         """
         if not reason_id and not mod_note:
-            raise ValueError("mod_note cannot be blank if reason_id is None")
+            raise ValueError(
+                "mod_note cannot be blank if reason_id is not specified"
+            )
         # Only the first element of the item_id list is used.
         data = {
             "item_ids": [self.thing.fullname],
