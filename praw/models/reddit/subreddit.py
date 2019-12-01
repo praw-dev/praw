@@ -18,6 +18,7 @@ from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
+from .removal_reasons import SubredditRemovalReasons
 from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
 
@@ -1617,6 +1618,31 @@ class SubredditModeration:
             API_PATH["about_modqueue"].format(subreddit=self.subreddit),
             **generator_kwargs
         )
+
+    @cachedproperty
+    def removal_reasons(self):
+        """Provide an instance of :class:`.SubredditRemovalReasons`.
+
+        Use this attribute for interacting with a subreddit's removal reasons.
+        For example to list all the removal reaons for a subreddit which you
+        have the ``posts`` moderator permission on try:
+
+        .. code-block:: python
+
+           for removal_reason in reddit.subreddit('NAME').mod.removal_reasons:
+               print(removal_reason)
+
+        A single removal reason can be lazily retrieved via:
+
+        .. code:: python
+
+           reddit.subreddit('NAME').mod.removal_reasons['reason_id']
+
+        .. note:: Attempting to access attributes of an nonexistent removal
+           reason will result in a :class:`.ClientException`.
+
+        """
+        return SubredditRemovalReasons(self.subreddit)
 
     def reports(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for reported comments and submissions.

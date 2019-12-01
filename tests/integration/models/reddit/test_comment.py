@@ -286,10 +286,54 @@ class TestCommentModeration(IntegrationTest):
         with self.recorder.use_cassette("TestCommentModeration.test_remove"):
             self.reddit.comment("da2g5y6").mod.remove(spam=True)
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_remove_with_reason_id(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestCommentModeration.test_remove_with_reason_id"
+        ):
+            self.reddit.comment("f3dm3b7").mod.remove(
+                reason_id="110nhral8vygf"
+            )
+
     def test_unlock(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestCommentModeration.test_unlock"):
             Comment(self.reddit, "da2g6ne").mod.unlock()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_add_removal_reason(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestCommentModeration.test_add_removal_reason"
+        ):
+            comment = self.reddit.comment("f98ukt5")
+            comment.mod.remove()
+            comment.mod._add_removal_reason(
+                mod_note="Blah", reason_id="110nhral8vygf"
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_add_removal_reason_without_id(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestCommentModeration.test_add_removal_reason_without_id"
+        ):
+            comment = self.reddit.comment("f98ugot")
+            comment.mod.remove()
+            comment.mod._add_removal_reason(mod_note="Test")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_add_removal_reason_without_id_or_note(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestCommentModeration.test_add_removal_reason_invalid"
+        ):
+            with pytest.raises(ValueError) as excinfo:
+                comment = self.reddit.comment("f9974ce")
+                comment.mod.remove()
+                comment.mod._add_removal_reason()
+            assert excinfo.value.args[0].startswith("mod_note cannot be blank")
 
     @mock.patch("time.sleep", return_value=None)
     def test_send_removal_message(self, _):

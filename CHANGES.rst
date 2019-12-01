@@ -17,6 +17,13 @@ Unreleased
 * :meth:`.Reddit.redditor` supports ``fullname`` param to fetch a Redditor
   by the fullname instead of name.
   :class:`.Redditor` constructor now also has ``fullname`` param.
+* Add :class:`.RemovalReason` and :class:`.SubredditRemovalReasons` to work
+  with removal reasons
+* Attribute ``removal_reasons`` to :class:`.SubredditModeration` to interact 
+  with new removal reason classes
+* Parameters ``mod_note`` and ``reason_id`` to 
+  :meth:`.ThingModerationMixin.remove` to optionally apply a removal reason
+  on removal
 
 6.4.0 (2019/09/21)
 ------------------
