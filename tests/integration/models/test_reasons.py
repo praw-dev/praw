@@ -60,14 +60,12 @@ class TestSubredditReasons(IntegrationTest):
     def test_update(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditReasons.test_update"):
-            reason = next(x for x in self.subreddit.reasons)
             self.subreddit.reasons.update(
-                reason.id, "PRAW updated", "New Message"
+                "110nhk2cgmaxy", "PRAW updated", "New Message"
             )
 
     @mock.patch("time.sleep", return_value=None)
     def test_delete(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubredditReasons.test_delete"):
-            reason = next(x for x in self.subreddit.reasons)
-            self.subreddit.reasons.delete(reason.id)
+            self.subreddit.reasons.delete("110ni21zo23ql")
