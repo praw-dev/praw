@@ -118,16 +118,16 @@ class ThingModerationMixin:
             API_PATH["lock"], data={"id": self.thing.fullname}
         )
 
-    def remove(self, spam=False, reason_id=None, mod_note=""):
+    def remove(self, mod_note="", reason_id=None, spam=False):
         """Remove a :class:`~.Comment` or :class:`~.Submission`.
 
-        :param spam: When True, use the removal to help train the Subreddit's
-            spam filter (default: False).
         :param reason_id: The removal reason ID.
         :param mod_note: A message for the other moderators.
+        :param spam: When True, use the removal to help train the Subreddit's
+            spam filter (default: False).
 
         If either reason_id or mod_note are provided, a second API call is made
-        using :meth:`~.add_removal_reason`
+        to add the removal reason.
 
         Example usage:
 
@@ -140,7 +140,7 @@ class ThingModerationMixin:
            submission = reddit.submission(id='5or86n')
            submission.mod.remove()
            # remove a submission with a removal reason
-           reason = reddit.subreddit.reasons["110ni21zo23ql"]
+           reason = reddit.subreddit.mod.removal_reasons["110ni21zo23ql"]
            submission = reddit.submission(id="5or86n")
            submission.mod.remove(reason_id=reason.id)
 
@@ -148,13 +148,13 @@ class ThingModerationMixin:
         data = {"id": self.thing.fullname, "spam": bool(spam)}
         self.thing._reddit.post(API_PATH["remove"], data=data)
         if any([reason_id, mod_note]):
-            self.add_removal_reason(reason_id, mod_note)
+            self._add_removal_reason(mod_note, reason_id)
 
-    def add_removal_reason(self, reason_id=None, mod_note=""):
+    def _add_removal_reason(self, mod_note="", reason_id=None):
         """Add a removal reason for a Comment or Submission.
 
-        :param reason_id: The removal reason ID.
         :param mod_note: A message for the other moderators.
+        :param reason_id: The removal reason ID.
 
         It is necessary to first call :meth:`~.remove` on the
         :class:`~.Comment` or :class:`~.Submission`.
@@ -166,10 +166,12 @@ class ThingModerationMixin:
         .. code:: python
 
            comment = reddit.comment("dkk4qjd")
-           comment.mod.add_removal_reason(reason_id="110ni21zo23ql")
+           comment.mod._add_removal_reason(reason_id="110ni21zo23ql")
            # remove a submission and add a mod note
            submission = reddit.submission(id="5or86n")
-           submission.mod.remove(reason_id="110ni21zo23ql", mod_note="foo")
+           submission.mod._add_removal_reason(
+               mod_note="foo",
+               reason_id="110ni21zo23ql")
 
         """
         if not reason_id and not mod_note:
