@@ -360,25 +360,14 @@ class TestSubmissionModeration(IntegrationTest):
             self.reddit.submission("4b536h").mod.remove(spam=True)
 
     @mock.patch("time.sleep", return_value=None)
-    def test_removal_reasons(self, _):
+    def test_remove_with_reason_id(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-            "TestSubmissionModeration.test_removal_reasons"
+            "TestSubmissionModeration.test_remove_with_reason_id"
         ):
-            submission = Submission(self.reddit, "dgobm3")
-            expected = {
-                "13s0gvywuemkl": {
-                    "message": "Foobar",
-                    "id": "13s0gvywuemkl",
-                    "title": "REASON2",
-                },
-                "13s0guy5i84o8": {
-                    "message": "This is a test",
-                    "id": "13s0guy5i84o8",
-                    "title": "REASON1",
-                },
-            }
-            assert expected == submission.mod.removal_reasons()
+            self.reddit.submission("e3op46").mod.remove(
+                reason_id="110nhral8vygf"
+            )
 
     @mock.patch("time.sleep", return_value=None)
     def test_add_removal_reason(self, _):
@@ -386,11 +375,23 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubmissionModeration.test_add_removal_reason"
         ):
-            submission = Submission(self.reddit, "dgobm3")
+            submission = Submission(self.reddit, "e3oo6a")
             mod = submission.mod
             mod.remove()
             mod_note = "Foobar"
-            mod.add_removal_reason("13s0gvywuemkl", mod_note=mod_note)
+            mod.add_removal_reason("110nhral8vygf", mod_note=mod_note)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_add_removal_reason_without_id(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_add_removal_reason_without_id"
+        ):
+            submission = Submission(self.reddit, "e3om6k")
+            mod = submission.mod
+            mod.remove()
+            mod_note = "Foobar"
+            mod.add_removal_reason(mod_note=mod_note)
 
     @mock.patch("time.sleep", return_value=None)
     def test_send_removal_message(self, _):

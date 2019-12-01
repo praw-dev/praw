@@ -286,43 +286,40 @@ class TestCommentModeration(IntegrationTest):
         with self.recorder.use_cassette("TestCommentModeration.test_remove"):
             self.reddit.comment("da2g5y6").mod.remove(spam=True)
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_remove_with_reason_id(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestCommentModeration.test_remove_with_reason_id"
+        ):
+            self.reddit.comment("f3dm3b7").mod.remove(
+                reason_id="110nhral8vygf"
+            )
+
     def test_unlock(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestCommentModeration.test_unlock"):
             Comment(self.reddit, "da2g6ne").mod.unlock()
 
     @mock.patch("time.sleep", return_value=None)
-    def test_removal_reasons(self, _):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette(
-            "TestCommentModeration.test_removal_reasons"
-        ):
-            comment = Comment(self.reddit, "f3dqee1")
-            expected = {
-                "13s0gvywuemkl": {
-                    "message": "Foobar",
-                    "id": "13s0gvywuemkl",
-                    "title": "REASON2",
-                },
-                "13s0guy5i84o8": {
-                    "message": "This is a test",
-                    "id": "13s0guy5i84o8",
-                    "title": "REASON1",
-                },
-            }
-            assert expected == comment.mod.removal_reasons()
-
-    @mock.patch("time.sleep", return_value=None)
     def test_add_removal_reason(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
-            "TestCommentnModeration.test_add_removal_reason"
+            "TestCommentModeration.test_add_removal_reason"
         ):
-            comment = Comment(self.reddit, "f3dqee1")
-            mod = comment.mod
-            mod.remove()
-            mod_note = "Foobar"
-            mod.add_removal_reason("13s0gvywuemkl", mod_note=mod_note)
+            self.reddit.comment("f98ukt5").mod.add_removal_reason(
+                "110nhral8vygf", "Blah"
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_add_removal_reason_without_id(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestCommentModeration.test_add_removal_reason_without_id"
+        ):
+            self.reddit.comment("f98ugot").mod.add_removal_reason(
+                mod_note="Test"
+            )
 
     @mock.patch("time.sleep", return_value=None)
     def test_send_removal_message(self, _):
