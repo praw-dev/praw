@@ -97,12 +97,14 @@ instances of them bound to an attribute of one of the PRAW models.
    other/modmail
    other/modmailmessage
    other/preferences
+   other/reason
    other/redditbase
    other/redditorlist
    other/sublisting
    other/submenu
    other/subredditemoji
    other/subredditmessage
+   other/subredditreasons
    other/redditorstream
    other/trophy
    other/util
