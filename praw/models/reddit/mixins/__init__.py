@@ -118,11 +118,16 @@ class ThingModerationMixin:
             API_PATH["lock"], data={"id": self.thing.fullname}
         )
 
-    def remove(self, spam=False):
+    def remove(self, spam=False, reason_id=None, mod_note=""):
         """Remove a :class:`~.Comment` or :class:`~.Submission`.
 
         :param spam: When True, use the removal to help train the Subreddit's
             spam filter (default: False).
+        :param reason_id: The removal reason ID.
+        :param mod_note: A message for the other moderators.
+
+        If either reason_id or mod_note are provided, a second API call is made
+        using :meth:`~.add_removal_reason`
 
         Example usage:
 
@@ -134,54 +139,41 @@ class ThingModerationMixin:
            # remove a submission
            submission = reddit.submission(id='5or86n')
            submission.mod.remove()
+           # remove a submission with a removal reason
+           reason = reddit.subreddit.reasons["110ni21zo23ql"]
+           submission = reddit.submission(id="5or86n")
+           submission.mod.remove(reason_id=reason.id)
 
         """
         data = {"id": self.thing.fullname, "spam": bool(spam)}
         self.thing._reddit.post(API_PATH["remove"], data=data)
+        if any([reason_id, mod_note]):
+            self.add_removal_reason(reason_id, mod_note)
 
-    def removal_reasons(self):
-        """Return a dict of available removal reasons.
-
-        Reason ids are required in order to use :meth:`.add_removal_reason`.
-
-        The response contains a dict of reasons with the "id" as key and the
-        value as a sub-dict containing the "message", "id", and "title" and
-        their values.
-
-        For example:
-
-        .. code:: python
-
-           removal_reasons = submission.mod.removal_reasons()
-
-        """
-        url = API_PATH["removal_reasons_list"].format(
-            subreddit=self.thing.subreddit
-        )
-        return self.thing._reddit.get(url)["data"]
-
-    def add_removal_reason(self, reason_id, mod_note=""):
+    def add_removal_reason(self, reason_id=None, mod_note=""):
         """Add a removal reason for a Comment or Submission.
 
-        :param reason_id: The removal reason template ID.
+        :param reason_id: The removal reason ID.
         :param mod_note: A message for the other moderators.
 
         It is necessary to first call :meth:`~.remove` on the
         :class:`~.Comment` or :class:`~.Submission`.
 
+        If reason_id is not specified, mod_note cannot be blank.
+
         Example usage:
 
         .. code:: python
 
-           # Select arbitrary reason (assuming there is any)
-           reasons = comment.mod.removal_reasons()
-           reason_id = next(x for x in reasons)
            comment = reddit.comment("dkk4qjd")
-           comment.mod.add_removal_reason(reason_id=reason_id)
+           comment.mod.add_removal_reason(reason_id="110ni21zo23ql")
            # remove a submission and add a mod note
            submission = reddit.submission(id="5or86n")
            submission.mod.remove(reason_id="110ni21zo23ql", mod_note="foo")
+
         """
+        if not reason_id and not mod_note:
+            raise ValueError("mod_note cannot be blank if reason_id is None")
         # Only the first element of the item_id list is used.
         data = {
             "item_ids": [self.thing.fullname],
