@@ -54,6 +54,21 @@ class RemovalReason(RedditBase):
             )
         )
 
+    def delete(self):
+        """Delete a removal reason from this subreddit.
+
+        To delete ``'141vv5c16py7d'`` from the subreddit ``'NAME'`` try:
+
+        .. code:: python
+
+           reddit.subreddit('NAME').removal_reasons['141vv5c16py7d'].mod.delete()
+
+        """
+        url = API_PATH["removal_reason"].format(
+            subreddit=self.subreddit, id=self.id
+        )
+        self.subreddit._reddit.request("DELETE", url)
+
     def update(self, message, title):
         """Update the removal reason from this subreddit.
 
@@ -75,21 +90,6 @@ class RemovalReason(RedditBase):
         data = {"message": message, "title": title}
         self.subreddit._reddit.put(url, data=data)
 
-    def delete(self):
-        """Delete a removal reason from this subreddit.
-
-        To delete ``'141vv5c16py7d'`` from the subreddit ``'NAME'`` try:
-
-        .. code:: python
-
-           reddit.subreddit('NAME').removal_reasons['141vv5c16py7d'].mod.delete()
-
-        """
-        url = API_PATH["removal_reason"].format(
-            subreddit=self.subreddit, id=self.id
-        )
-        self.subreddit._reddit.request("DELETE", url)
-
 
 class SubredditRemovalReasons:
     """Provide a set of functions to a Subreddit's removal reasons."""
@@ -103,7 +103,8 @@ class SubredditRemovalReasons:
 
         .. code:: python
 
-           reason = reddit.subreddit('praw_test').mod.reasons['141vv5c16py7d']
+           reason_id = '141vv5c16py7d'
+           reason = reddit.subreddit('NAME').mod.removal_reasons[reason_id]
            print(reason)
 
         """
