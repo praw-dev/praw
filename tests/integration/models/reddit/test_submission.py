@@ -377,8 +377,8 @@ class TestSubmissionModeration(IntegrationTest):
         ):
             submission = Submission(self.reddit, "e3oo6a")
             submission.mod.remove()
-            submission.mod.add_removal_reason(
-                "110nhral8vygf", mod_note="Foobar"
+            submission.mod._add_removal_reason(
+                mod_note="Foobar", reason_id="110nhral8vygf"
             )
 
     @mock.patch("time.sleep", return_value=None)
@@ -389,7 +389,7 @@ class TestSubmissionModeration(IntegrationTest):
         ):
             submission = Submission(self.reddit, "e3om6k")
             submission.mod.remove()
-            submission.mod.add_removal_reason(mod_note="Foobar")
+            submission.mod._add_removal_reason(mod_note="Foobar")
 
     @mock.patch("time.sleep", return_value=None)
     def test_add_removal_reason_without_id_or_note(self, _):
@@ -400,7 +400,7 @@ class TestSubmissionModeration(IntegrationTest):
             with pytest.raises(ValueError) as excinfo:
                 submission = Submission(self.reddit, "e4ds11")
                 submission.mod.remove()
-                submission.mod.add_removal_reason()
+                submission.mod._add_removal_reason()
             assert excinfo.value.args[0].startswith("mod_note cannot be blank")
 
     @mock.patch("time.sleep", return_value=None)

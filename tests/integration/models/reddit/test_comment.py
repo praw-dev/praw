@@ -309,7 +309,9 @@ class TestCommentModeration(IntegrationTest):
         ):
             comment = self.reddit.comment("f98ukt5")
             comment.mod.remove()
-            comment.mod.add_removal_reason("110nhral8vygf", "Blah")
+            comment.mod._add_removal_reason(
+                mod_note="Blah", reason_id="110nhral8vygf"
+            )
 
     @mock.patch("time.sleep", return_value=None)
     def test_add_removal_reason_without_id(self, _):
@@ -319,7 +321,7 @@ class TestCommentModeration(IntegrationTest):
         ):
             comment = self.reddit.comment("f98ugot")
             comment.mod.remove()
-            comment.mod.add_removal_reason(mod_note="Test")
+            comment.mod._add_removal_reason(mod_note="Test")
 
     @mock.patch("time.sleep", return_value=None)
     def test_add_removal_reason_without_id_or_note(self, _):
@@ -330,7 +332,7 @@ class TestCommentModeration(IntegrationTest):
             with pytest.raises(ValueError) as excinfo:
                 comment = self.reddit.comment("f9974ce")
                 comment.mod.remove()
-                comment.mod.add_removal_reason()
+                comment.mod._add_removal_reason()
             assert excinfo.value.args[0].startswith("mod_note cannot be blank")
 
     @mock.patch("time.sleep", return_value=None)
