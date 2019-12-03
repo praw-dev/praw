@@ -1268,15 +1268,15 @@ class SubredditFlairTemplates:
     ):
         url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
         data = {
-            "css_class": css_class,
-            "background_color": background_color,
-            "text_color": text_color,
-            "flair_type": self.flair_type(is_link),
-            "text": text,
-            "text_editable": bool(text_editable),
-            "mod_only": bool(mod_only),
             "allowable_content": allowable_content,
+            "background_color": background_color,
+            "css_class": css_class,
+            "flair_type": self.flair_type(is_link),
             "max_emojis": max_emojis,
+            "mod_only": bool(mod_only),
+            "text": text,
+            "text_color": text_color,
+            "text_editable": bool(text_editable),
         }
         self.subreddit._reddit.post(url, data=data)
 
@@ -1332,7 +1332,8 @@ class SubredditFlairTemplates:
             ``'emoji'``, or ``'text'`` to restrict content to that type.
             If set to ``'emoji'`` then the ``'text'`` param must be a
             valid emoji string, for example ``':snoo:'``.
-        :param max_emojis: (int) Maximum emojis in the flair (default: 10).
+        :param max_emojis: (int) Maximum emojis in the flair
+            (Reddit defaults this value to 10).
 
         For example to make a user flair template text_editable, try:
 
@@ -1352,15 +1353,15 @@ class SubredditFlairTemplates:
         """
         url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
         data = {
-            "flair_template_id": template_id,
-            "text": text,
-            "css_class": css_class,
+            "allowable_content": allowable_content,
             "background_color": background_color,
+            "css_class": css_class,
+            "flair_template_id": template_id,
+            "max_emojis": max_emojis,
+            "mod_only": mod_only,
+            "text": text,
             "text_color": text_color,
             "text_editable": text_editable,
-            "mod_only": mod_only,
-            "allowable_content": allowable_content,
-            "max_emojis": max_emojis,
         }
         self.subreddit._reddit.post(url, data=data)
 
@@ -1412,7 +1413,8 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
             ``'emoji'``, or ``'text'`` to restrict content to that type.
             If set to ``'emoji'`` then the ``'text'`` param must be a
             valid emoji string, for example ``':snoo:'``.
-        :param max_emojis: (int) Maximum emojis in the flair (default: 10).
+        :param max_emojis: (int) Maximum emojis in the flair
+            (Reddit defaults this value to 10).
 
         For example, to add an editable Redditor flair try:
 
@@ -1493,7 +1495,8 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
             ``'emoji'``, or ``'text'`` to restrict content to that type.
             If set to ``'emoji'`` then the ``'text'`` param must be a
             valid emoji string, for example ``':snoo:'``.
-        :param max_emojis: (int) Maximum emojis in the flair (default: 10).
+        :param max_emojis: (int) Maximum emojis in the flair
+            (Reddit defaults this value to 10).
 
         For example, to add an editable link flair try:
 
