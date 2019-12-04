@@ -198,6 +198,30 @@ class Redditor(
             data={"months": months},
         )
 
+    def moderated(self):
+        """Return a list of the redditor's moderated subreddits.
+
+        :returns: A ``list`` of :class:`~praw.models.Subreddit` objects.
+            Return ``[]`` if the redditor has no moderated subreddits.
+
+        Usage:
+
+        .. code:: python
+
+            for subreddit in reddit.redditor('spez').moderated():
+                print(subreddit.display_name)
+                print(subreddit.title)
+
+        """
+        modded_data = self._reddit.get(API_PATH["moderated"].format(user=self))
+        if "data" not in modded_data:
+            return []
+        else:
+            subreddits = [
+                self._reddit.subreddit(x["sr"]) for x in modded_data["data"]
+            ]
+            return subreddits
+
     def multireddits(self):
         """Return a list of the redditor's public multireddits."""
         return self._reddit.get(API_PATH["multireddit_user"].format(user=self))

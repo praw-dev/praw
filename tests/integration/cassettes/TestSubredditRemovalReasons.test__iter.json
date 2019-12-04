@@ -1,0 +1,220 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2019-12-01T19:51:22",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "80"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "118"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sun, 01 Dec 2019 19:51:22 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=qSqQxDcakTm7JdI1Gc; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21947-LGA"
+          ],
+          "X-Timer": [
+            "S1575229883.565635,VS0,VE385"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2019-12-01T19:51:23",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=qSqQxDcakTm7JdI1Gc"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/removal_reasons?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"data\": {\"12w9jt703c54s\": {\"message\": \"Please review our sidebar for the complete list of rules.\", \"id\": \"12w9jt703c54s\", \"title\": \"Generic\"}, \"110nhk2cgmaxy\": {\"message\": \"New Message\", \"id\": \"110nhk2cgmaxy\", \"title\": \"New Title\"}, \"110nihwu2yodi\": {\"message\": \"Please do not post about sneaking in drugs, any illegal items, or any items against HQ's Guidelines.\", \"id\": \"110nihwu2yodi\", \"title\": \"Follow HQ Rules\"}, \"110niezjjw156\": {\"message\": \"This subreddit is not the place, please visit the [Knowledge Base Wiki](https://www.reddit.com/r/Drugs/wiki/knowledgebase) in /r/drugs. Some other helpful subreddits:\\n\\n* /r/reagenttesting\\n\\n* /r/psychonaut\", \"id\": \"110niezjjw156\", \"title\": \"Drugs\"}, \"141z26rkjp1oa\": {\"message\": \"Test\", \"id\": \"141z26rkjp1oa\", \"title\": \"test\"}, \"110nil6tchrhg\": {\"message\": \"Rule 7 - Please follow general reddiquette.\\n\\nFor information regarding this and similar issues please see the sidebar. If you have any questions, [please feel free to message the mods](https://www.reddit.com/message/compose?to=%2Fr%2FElectricForest). Thank you!\", \"id\": \"110nil6tchrhg\", \"title\": \"Reddiquette\"}, \"110nib8nlsz79\": {\"message\": \"That\\u2019s not forest vibes, [fam.](https://media.giphy.com/media/12ClTeBg4yvkiI/200.gif)\", \"id\": \"110nib8nlsz79\", \"title\": \"Forest Vibes\"}, \"110niqgkuz8ab\": {\"message\": \"Welcome to attending the forest for the first time! Before you have quetions, here are two threads that will be of much help to you. \\n\\n* [Our Guide to EF](https://drive.google.com/file/d/0B0rIiDle2lgpOXFmZnJPTWVTeDQ/view)\\n* [List of Useful Posts](https://www.reddit.com/r/ElectricForest/comments/7l599k/list_of_useful_posts/)\\n\\nIf you still have questions, try using our search function or asking in our daily \\\"no dumb question\\\" thread and you will more than likely find the answer you're looking for!\", \"id\": \"110niqgkuz8ab\", \"title\": \"New to Forest\"}, \"110nhral8vygf\": {\"message\": \"Rule 2 - Be kind and respectful to others.\", \"id\": \"110nhral8vygf\", \"title\": \"Be Kind\"}}, \"order\": [\"110nhk2cgmaxy\", \"110nhral8vygf\", \"110nib8nlsz79\", \"110niezjjw156\", \"110nihwu2yodi\", \"110nil6tchrhg\", \"110niqgkuz8ab\", \"12w9jt703c54s\", \"141z26rkjp1oa\"]}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "2169"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sun, 01 Dec 2019 19:51:23 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21928-LGA"
+          ],
+          "X-Timer": [
+            "S1575229883.209786,VS0,VE89"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "loid=0000000000364wflpm.2.1549507701753.Z0FBQUFBQmQ1Qm03R0Y4SmpUOG1jMC1VN1M0d0xvd29IZ0pzQ1FWRndqd29lZ0lKWjV5VU1TZERvR2JIR2lWRlFpdUw0cDY2YWJ3TkJEUmgxb0lBb1lYOGtjSnJEN3R4NEFMdFlSNG9vZXE0dXFBZHM5LTFGaC03cEY4U241Rk5vdlpkUGYzU2x3c3g; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Tue, 30-Nov-2021 19:51:23 GMT; secure",
+            "session_tracker=LwbxN6YWqbQpLU5K1H.0.1575229883247.Z0FBQUFBQmQ1Qm03d284Q2gzdzdSV29rZklyb1Rra2p6bk4xcXRzSTlaa3B6QTNJUnF4bDVQVVlRMkxkZmw4WVZ6ZHhmMWZnV3JndmY3dEVuMDJ1TG9IelJ0SWd4SnQ2MzVqT0hoaTJKeHVya1BDdm9qaEt4MFhQdU1UY1h1MVhQSjVhNUdnZDY0aEI; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sun, 01-Dec-2019 21:51:23 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "588.0"
+          ],
+          "x-ratelimit-reset": [
+            "517"
+          ],
+          "x-ratelimit-used": [
+            "12"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/v1/<TEST_SUBREDDIT>/removal_reasons?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

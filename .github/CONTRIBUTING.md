@@ -32,7 +32,7 @@ to you, it likely is not to the person asking the question.
    commenting on the issue. This act will hopefully minimize any duplicate
    work.
 
-0. Prior to creating a pull request run the `pre_push.sh` script. This script
+0. Prior to creating a pull request run the `pre_push.py` script. This script
    depends on the tools `black` `flake8`, `pylint`, and `pydocstyle`. They can
    be installed via `pip install black flake8 pydocstyle pylint`.
 
