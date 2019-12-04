@@ -24,6 +24,10 @@ Unreleased
 * Parameters ``mod_note`` and ``reason_id`` to
   :meth:`.ThingModerationMixin.remove` to optionally apply a removal reason on
   removal
+* Parameters ``allowable_content`` and ``max_emojis`` to
+  :meth:`~.SubredditRedditorFlairTemplates.add`,
+  :meth:`~.SubredditLinkFlairTemplates.add`, and
+  :meth:`~.SubredditFlairTemplates.update`, as well as its child classes.
 
 **Deprecated**
 
