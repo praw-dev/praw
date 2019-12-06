@@ -27,7 +27,7 @@ class ThingModerationMixin:
         It is necessary to first call :meth:`~.remove` on the
         :class:`~.Comment` or :class:`~.Submission`.
 
-        If reason_id is not specified, mod_note cannot be blank.
+        If ``reason_id`` is not specified, ``mod_note`` cannot be blank.
 
         """
         if not reason_id and not mod_note:
@@ -74,9 +74,9 @@ class ThingModerationMixin:
         :param how: One of 'yes', 'no', 'admin', 'special'. 'yes' adds a
             moderator level distinguish. 'no' removes any distinction. 'admin'
             and 'special' require special user privileges to use.
-        :param sticky: Comment is stickied if True, placing it at the top of
-            the comment page regardless of score. If thing is not a top-level
-            comment, this parameter is silently ignored.
+        :param sticky: Comment is stickied if ``True``, placing it at the top
+            of the comment page regardless of score. If thing is not a
+            top-level comment, this parameter is silently ignored.
 
         Example usage:
 
@@ -152,8 +152,8 @@ class ThingModerationMixin:
             spam filter (default: False).
         :param reason_id: The removal reason ID.
 
-        If either reason_id or mod_note are provided, a second API call is made
-        to add the removal reason.
+        If either ``reason_id`` or ``mod_note`` are provided, a second API
+        call is made to add the removal reason.
 
         Example usage:
 
@@ -234,10 +234,11 @@ class ThingModerationMixin:
         self.distinguish(how="no")
 
     def unignore_reports(self):
-        """Resume receiving future reports on a :class:`~.Comment` or :class:`~.Submission`.
+        """Resume receiving future reports on a Comment or Submission.
 
-        Future reports on this Comment or Submission will cause notifications,
-        and appear in the various moderation listings.
+        Future reports on this :class:`~.Comment` or :class:`~.Submission`
+        will cause notifications, and appear in the various moderation
+        listings.
 
         Example usage:
 
@@ -246,7 +247,7 @@ class ThingModerationMixin:
            # accept future reports on a comment:
            comment = reddit.comment('dkk4qjd')
            comment.mod.unignore_reports()
-           # accept future reports on a submission
+           # accept future reports on a submission:
            submission = reddit.submission(id='5or86n')
            submission.mod.unignore_reports()
 
