@@ -1658,8 +1658,8 @@ class SubredditModeration:
         """Provide an instance of :class:`.SubredditRemovalReasons`.
 
         Use this attribute for interacting with a subreddit's removal reasons.
-        For example to list all the removal reaons for a subreddit which you
-        have the ``posts`` moderator permission on try:
+        For example to list all the removal reasons for a subreddit which you
+        have the ``posts`` moderator permission on, try:
 
         .. code-block:: python
 
