@@ -33,7 +33,8 @@ class EditableMixin:
 
            comment = reddit.comment('dkk4qjd')
 
-           # construct the text of an edited comment by appending to the old body
+           # construct the text of an edited comment
+           # by appending to the old body
            edited_body = comment.body + "Edit: thanks for the gold!"
            comment.edit(edited_body)
 
