@@ -204,6 +204,9 @@ class Redditor(
         :returns: A ``list`` of :class:`~praw.models.Subreddit` objects.
             Return ``[]`` if the redditor has no moderated subreddits.
 
+        The redditor's own user profile subreddit will not be returned,
+        but other user profile subreddits they moderate will be returned.
+
         Usage:
 
         .. code:: python
