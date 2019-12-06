@@ -15,7 +15,7 @@ class MessageableMixin:
             message from. When provided, messages are sent from the subreddit
             rather than from the authenticated user. Note that the
             authenticated user must be a moderator of the subreddit and have
-            the mail moderator permission.
+            the ``mail`` moderator permission.
 
         For example, to send a private message to ``/u/spez``, try:
 
