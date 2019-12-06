@@ -10,6 +10,9 @@ class ReportableMixin:
 
         :param reason: The reason for reporting.
 
+        Raises :class:`.APIException` if ``reason`` is longer than 100
+        characters.
+
         Example usage:
 
         .. code:: python

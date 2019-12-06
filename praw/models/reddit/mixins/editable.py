@@ -24,7 +24,7 @@ class EditableMixin:
     def edit(self, body):
         """Replace the body of the object with ``body``.
 
-        :param body: The markdown formatted content for the updated object.
+        :param body: The Markdown formatted content for the updated object.
         :returns: The current instance after updating its attributes.
 
         Example usage:
@@ -33,7 +33,8 @@ class EditableMixin:
 
            comment = reddit.comment('dkk4qjd')
 
-           #construct edited comment text by appending to old body
+           # construct the text of an edited comment
+           # by appending to the old body:
            edited_body = comment.body + "Edit: thanks for the gold!"
            comment.edit(edited_body)
 
