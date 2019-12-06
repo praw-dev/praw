@@ -98,7 +98,7 @@ class ThingModerationMixin:
         self.thing._reddit.post(API_PATH["distinguish"], data=data)
 
     def ignore_reports(self):
-        """Ignore future reports on a Comment or Submission.
+        """Ignore future reports on a :class:`~.Comment` or :class:`~.Submission`.
 
         Calling this method will prevent future reports on this Comment or
         Submission from both triggering notifications and appearing in the
@@ -112,7 +112,7 @@ class ThingModerationMixin:
            # ignore future reports on a comment:
            comment = reddit.comment('dkk4qjd')
            comment.mod.ignore_reports()
-           # ignore future reports on a submission
+           # ignore future reports on a submission:
            submission = reddit.submission(id='5or86n')
            submission.mod.ignore_reports()
 
@@ -124,7 +124,7 @@ class ThingModerationMixin:
         )
 
     def lock(self):
-        """Lock the a :class:`~.Comment` or :class:`~.Submission`.
+        """Lock a :class:`~.Comment` or :class:`~.Submission`.
 
         Example usage:
 
@@ -182,7 +182,7 @@ class ThingModerationMixin:
         title="ignored",
         type="public",  # pylint: disable=redefined-builtin
     ):
-        """Send a removal message for a Comment or Submission.
+        """Send a removal message for a :class:`~.Comment` or :class:`~.Submission`.
 
         Reddit adds human-readable information about the object to the message.
 
@@ -213,7 +213,7 @@ class ThingModerationMixin:
         return self.thing._reddit.post(url, data={"json": dumps(data)}) or None
 
     def undistinguish(self):
-        """Remove mod, admin, or special distinguishing on object.
+        """Remove mod, admin, or special distinguishing from an object.
 
         Also unstickies the object if applicable.
 
@@ -234,7 +234,7 @@ class ThingModerationMixin:
         self.distinguish(how="no")
 
     def unignore_reports(self):
-        """Resume receiving future reports on a Comment or Submission.
+        """Resume receiving future reports on a :class:`~.Comment` or :class:`~.Submission`.
 
         Future reports on this Comment or Submission will cause notifications,
         and appear in the various moderation listings.
@@ -258,7 +258,7 @@ class ThingModerationMixin:
         )
 
     def unlock(self):
-        """Unlock the a :class:`~.Comment` or :class:`~.Submission`.
+        """Unlock a :class:`~.Comment` or :class:`~.Submission`.
 
         Example usage:
 
