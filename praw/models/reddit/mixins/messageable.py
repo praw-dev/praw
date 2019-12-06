@@ -11,11 +11,11 @@ class MessageableMixin:
 
         :param subject: The subject of the message.
         :param message: The message content.
-        :param from_subreddit: A Subreddit instance or string to send the
+        :param from_subreddit: A :class:`~.Subreddit` instance or string to send the
             message from. When provided, messages are sent from the subreddit
             rather than from the authenticated user. Note that the
             authenticated user must be a moderator of the subreddit and have
-            mail permissions.
+            the mail moderator permission.
 
         For example, to send a private message to ``/u/spez``, try:
 
