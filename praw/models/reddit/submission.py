@@ -199,17 +199,12 @@ class Submission(
 
         if id is not None:
             if not isinstance(id, str):
-                raise TypeError(
-                    "The id must be type `str`."
-                )
+                raise TypeError("The id must be type `str`.")
             self.id = id
         elif url is not None:
             if not isinstance(url, str):
-                raise TypeError(
-                    "The url must be type `str`."
-                )
+                raise TypeError("The url must be type `str`.")
             self.id = self.id_from_url(url)
-
 
         self._comments_by_id = {}
 
