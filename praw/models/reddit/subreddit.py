@@ -28,22 +28,22 @@ class Subreddit(
 ):
     """A class for Subreddits.
 
-    To obtain an instance of this class for subreddit ``/r/redditdev`` execute:
+    To obtain an instance of this class for subreddit ``r/redditdev`` execute:
 
     .. code:: python
 
        subreddit = reddit.subreddit('redditdev')
 
-    While ``/r/all`` is not a real subreddit, it can still be treated like
+    While ``r/all`` is not a real subreddit, it can still be treated like
     one. The following outputs the titles of the 25 hottest submissions in
-    ``/r/all``:
+    ``r/all``:
 
     .. code:: python
 
        for submission in reddit.subreddit('all').hot(limit=25):
            print(submission.title)
 
-    Multiple subreddits can be combined like so:
+    Multiple subreddits can be combined with a ``+`` like so:
 
     .. code:: python
 
@@ -364,7 +364,7 @@ class Subreddit(
 
         Additionally, new submissions can be retrieved via the stream. In the
         following example all submissions are fetched via the special subreddit
-        ``all``:
+        ``r/all``:
 
         .. code:: python
 
@@ -547,7 +547,7 @@ class Subreddit(
         """Return a random Submission.
 
         Returns ``None`` on subreddits that do not support the random feature.
-        One example, at the time of writing, is /r/wallpapers.
+        One example, at the time of writing, is ``r/wallpapers``.
         """
         url = API_PATH["subreddit_random"].format(subreddit=self)
         try:
@@ -564,7 +564,7 @@ class Subreddit(
     def rules(self):
         """Return rules for the subreddit.
 
-        For example to show the rules of ``/r/redditdev`` try:
+        For example to show the rules of ``r/redditdev`` try:
 
         .. code:: python
 
@@ -650,7 +650,7 @@ class Subreddit(
         """Add a submission to the subreddit.
 
         :param title: The title of the submission.
-        :param selftext: The markdown formatted content for a ``text``
+        :param selftext: The Markdown formatted content for a ``text``
             submission. Use an empty string, ``''``, to make a title-only
             submission.
         :param url: The URL for a ``link`` submission.
@@ -672,7 +672,7 @@ class Subreddit(
 
         Either ``selftext`` or ``url`` can be provided, but not both.
 
-        For example to submit a URL to ``/r/reddit_api_test`` do:
+        For example to submit a URL to ``r/reddit_api_test`` do:
 
         .. code:: python
 
@@ -766,7 +766,7 @@ class Subreddit(
            program in a restricted network environment, or using a proxy
            that doesn't support WebSockets connections.
 
-        For example to submit an image to ``/r/reddit_api_test`` do:
+        For example to submit an image to ``r/reddit_api_test`` do:
 
         .. code:: python
 
@@ -859,7 +859,7 @@ class Subreddit(
            program in a restricted network environment, or using a proxy
            that doesn't support WebSockets connections.
 
-        For example to submit a video to ``/r/reddit_api_test`` do:
+        For example to submit a video to ``r/reddit_api_test`` do:
 
         .. code:: python
 
@@ -922,8 +922,8 @@ class Subreddit(
     def unsubscribe(self, other_subreddits=None):
         """Unsubscribe from the subreddit.
 
-        :param other_subreddits: When provided, also unsubscribe to the
-            provided list of subreddits.
+        :param other_subreddits: When provided, also unsubscribe from
+            the provided list of subreddits.
 
         """
         data = {
@@ -984,7 +984,7 @@ class SubredditFilters:
         :param subreddit: The subreddit to add to the filter list.
 
         Items from subreddits added to the filtered list will no longer be
-        included when obtaining listings for ``/r/all``.
+        included when obtaining listings for ``r/all``.
 
         Alternatively, you can filter a subreddit temporarily from a special
         listing in a manner like so:
@@ -1781,7 +1781,7 @@ class SubredditModeration:
             image hosting. Only applies to link-only subreddits.
         :param allow_post_crossposts: Allow users to crosspost submissions from
             other subreddits.
-        :param allow_top: Allow the subreddit to appear on ``/r/all`` as well
+        :param allow_top: Allow the subreddit to appear on ``r/all`` as well
             as the default and trending lists.
         :param collapse_deleted_comments: Collapse deleted and removed comments
             on comments pages by default.
@@ -1797,7 +1797,7 @@ class SubredditModeration:
             from modqueue/unmoderated.
         :param header_hover_text: The text seen when hovering over the snoo.
         :param hide_ads: Don't show ads within this subreddit. Only applies to
-            gold-user only subreddits.
+            Premium-user only subreddits.
         :param key_color: A 6-digit rgb hex color (e.g. ``'#AABBCC'``), used as
             a thematic color for your subreddit on mobile.
         :param lang: A valid IETF language tag (underscore separated).
@@ -2093,7 +2093,7 @@ class ModeratorRelationship(SubredditRelationship):
         user.
 
         For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
-            permissions to ``'/r/test/``, try:
+            permissions to ``r/test``, try:
 
         .. code:: python
 
@@ -2115,8 +2115,8 @@ class ModeratorRelationship(SubredditRelationship):
             grant. An empty list ``[]`` indicates no permissions, and when not
             provided ``None``, indicates full permissions.
 
-        For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
-            permissions to ``'/r/test/``, try:
+        For example, to invite ``'spez'`` with ``posts`` and ``mail``
+            permissions to ``r/test``, try:
 
         .. code:: python
 
@@ -2196,8 +2196,8 @@ class ModeratorRelationship(SubredditRelationship):
             grant. An empty list ``[]`` indicates no permissions, and when not
             provided, ``None``, indicates full permissions.
 
-        For example, to grant the flair and mail permissions to the moderator
-        invite, try:
+        For example, to grant the ``flair``` and ``mail``` permissions to
+        the moderator invite, try:
 
         .. code:: python
 
@@ -2933,7 +2933,7 @@ class SubredditWiki:
         :param reason: (Optional) The reason for the creation.
         :param other_settings: Additional keyword arguments to pass.
 
-        To create the wiki page ``'praw_test'`` in ``'/r/test'`` try:
+        To create the wiki page ``praw_test`` in ``r/test`` try:
 
         .. code:: python
 
@@ -2952,7 +2952,7 @@ class SubredditWiki:
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        To view the wiki revisions for ``'praw_test'`` in ``'/r/test'`` try:
+        To view the wiki revisions for ``'praw_test'`` in ``r/test`` try:
 
         .. code:: python
 

@@ -229,7 +229,7 @@ other_conversations=conversation.user.recent_convos)
     def reply(self, body, author_hidden=False, internal=False):
         """Reply to the conversation.
 
-        :param body: The markdown formatted content for a message.
+        :param body: The Markdown formatted content for a message.
         :param author_hidden: When True, author is hidden from non-moderators
             (default: False).
         :param internal: When True, message is a private moderator note,

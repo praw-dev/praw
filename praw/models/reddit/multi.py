@@ -192,7 +192,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
             longer than 50 characters.
         :param subreddits: Subreddits for this multireddit.
         :param description_md: Description for this multireddit, formatted in
-            markdown.
+            Markdown.
         :param icon_name: Can be one of: ``art and design``, ``ask``,
             ``books``, ``business``, ``cars``, ``comics``, ``cute animals``,
             ``diy``, ``entertainment``, ``food and drink``, ``funny``,

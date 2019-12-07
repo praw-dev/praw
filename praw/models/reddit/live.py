@@ -447,7 +447,7 @@ class LiveThreadContribution:
     def add(self, body):
         """Add an update to the live thread.
 
-        :param body: The markdown formatted content for the update.
+        :param body: The Markdown formatted content for the update.
 
         Usage:
 

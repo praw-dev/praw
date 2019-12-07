@@ -17,6 +17,7 @@ Documentation Contributors
 - theonefoster `@theonefoster <https://github.com/theonefoster>`_
 - Eric Woolard `@ericwoolard <https://github.com/ericwoolard>`_
 - Marc `@PerhapsSomeone <https://github.com/PerhapsSomeone>`_
+- kungming2 `@kungming2 <https://github.com/kungming2>`_
 - Add "Name <email (optional)> and github profile link" above this line.
 
 
