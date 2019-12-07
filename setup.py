@@ -18,7 +18,7 @@ setup(
     name=PACKAGE_NAME,
     author="Bryce Boe",
     author_email="bbzbryce@gmail.com",
-    python_requires=">=3.4",
+    python_requires=">=3.5",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
