@@ -364,7 +364,7 @@ class Subreddit(
 
         Additionally, new submissions can be retrieved via the stream. In the
         following example all submissions are fetched via the special subreddit
-        ``all``:
+        ``r/all``:
 
         .. code:: python
 
@@ -547,7 +547,7 @@ class Subreddit(
         """Return a random Submission.
 
         Returns ``None`` on subreddits that do not support the random feature.
-        One example, at the time of writing, is r/wallpapers.
+        One example, at the time of writing, is ``r/wallpapers``.
         """
         url = API_PATH["subreddit_random"].format(subreddit=self)
         try:
@@ -650,7 +650,7 @@ class Subreddit(
         """Add a submission to the subreddit.
 
         :param title: The title of the submission.
-        :param selftext: The markdown formatted content for a ``text``
+        :param selftext: The Markdown formatted content for a ``text``
             submission. Use an empty string, ``''``, to make a title-only
             submission.
         :param url: The URL for a ``link`` submission.
@@ -2093,7 +2093,7 @@ class ModeratorRelationship(SubredditRelationship):
         user.
 
         For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
-            permissions to ``'r/test/``, try:
+            permissions to ``r/test``, try:
 
         .. code:: python
 
@@ -2115,8 +2115,8 @@ class ModeratorRelationship(SubredditRelationship):
             grant. An empty list ``[]`` indicates no permissions, and when not
             provided ``None``, indicates full permissions.
 
-        For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
-            permissions to ``'r/test/``, try:
+        For example, to invite ``'spez'`` with ``posts`` and ``mail``
+            permissions to ``r/test``, try:
 
         .. code:: python
 
@@ -2196,8 +2196,8 @@ class ModeratorRelationship(SubredditRelationship):
             grant. An empty list ``[]`` indicates no permissions, and when not
             provided, ``None``, indicates full permissions.
 
-        For example, to grant the flair and mail permissions to the moderator
-        invite, try:
+        For example, to grant the ``flair``` and ``mail``` permissions to
+        the moderator invite, try:
 
         .. code:: python
 
@@ -2933,7 +2933,7 @@ class SubredditWiki:
         :param reason: (Optional) The reason for the creation.
         :param other_settings: Additional keyword arguments to pass.
 
-        To create the wiki page ``'praw_test'`` in ``'r/test'`` try:
+        To create the wiki page ``praw_test`` in ``r/test`` try:
 
         .. code:: python
 
@@ -2952,7 +2952,7 @@ class SubredditWiki:
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        To view the wiki revisions for ``'praw_test'`` in ``'r/test'`` try:
+        To view the wiki revisions for ``'praw_test'`` in ``r/test`` try:
 
         .. code:: python
 
