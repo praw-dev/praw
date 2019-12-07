@@ -33,8 +33,8 @@ to you, it likely is not to the person asking the question.
    work.
 
 0. Prior to creating a pull request run the `pre_push.py` script. This script
-   depends on the tools `black` `flake8`, `pylint`, `pydocstyle`, and `sphinx`. They can
-   be installed via `pip install black flake8 pydocstyle pylint sphinx`.
+   depends on the tools `black` `flake8`, `pylint`, `pydocstyle`, `sphinx` and `sphinx_rtd_theme`. They can
+   be installed via `pip install black flake8 pydocstyle pylint sphinx sphinx_rtd_theme`.
 
 0. Add yourself as a contributor to the ``AUTHORS.rst``.
 
