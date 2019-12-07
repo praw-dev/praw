@@ -130,15 +130,11 @@ class Redditor(
         if name:
             self.name = name
             if not isinstance(name, str):
-                raise TypeError(
-                    "The name must be type `str`."
-                )
+                raise TypeError("The name must be type `str`.")
         elif fullname:
             self._fullname = fullname
             if not isinstance(fullname, str):
-                raise TypeError(
-                    "The fullname must be type `str`."
-                )
+                raise TypeError("The fullname must be type `str`.")
 
     def _fetch_username(self, fullname):
         return self._reddit.get(
