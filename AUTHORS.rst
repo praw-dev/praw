@@ -17,6 +17,7 @@ Documentation Contributors
 - theonefoster `@theonefoster <https://github.com/theonefoster>`_
 - Eric Woolard `@ericwoolard <https://github.com/ericwoolard>`_
 - Marc `@PerhapsSomeone <https://github.com/PerhapsSomeone>`_
+- kungming2 `@kungming2 <https://github.com/kungming2>`_
 - Add "Name <email (optional)> and github profile link" above this line.
 
 
@@ -48,4 +49,5 @@ Source Contributors
 - vaclav-2012 `@vaclav-2012 <https://github.com/vaclav-2012>`_
 - kungming2 `@kungming2 <https://github.com/kungming2>`_
 - Jack Steel `@jackodsteel <https://github.com/jackodsteel>`_
+- David Mirch `@fwump38 <https://github.com/fwump38>`_
 - Add "Name <email (optional)> and github profile link" above this line.

@@ -42,7 +42,7 @@ class Redditor(
     ``is_mod``                           Whether or not the Redditor mods any
                                          subreddits.
     ``is_gold``                          Whether or not the Redditor has active
-                                         gold status.
+                                         Reddit Premium status.
     ``link_karma``                       The link karma for the Redditor.
     ``name``                             The Redditor's username.
     ``subreddit``                        If the Redditor has created a
@@ -172,7 +172,7 @@ class Redditor(
         """Friend the Redditor.
 
         :param note: A note to save along with the relationship. Requires
-            reddit Gold (default: None).
+            Reddit Premium (default: None).
 
         Calling this method subsequent times will update the note.
 
@@ -183,7 +183,7 @@ class Redditor(
         """Return a Redditor instance with specific friend-related attributes.
 
         :returns: A :class:`.Redditor` instance with fields ``date``, ``id``,
-            and possibly ``note`` if the authenticated user has reddit Gold.
+            and possibly ``note`` if the authenticated user has Reddit Premium.
 
         """
         return self._reddit.get(API_PATH["friend_v1"].format(user=self))
@@ -201,6 +201,34 @@ class Redditor(
             API_PATH["gild_user"].format(username=self),
             data={"months": months},
         )
+
+    def moderated(self):
+        """Return a list of the redditor's moderated subreddits.
+
+        :returns: A ``list`` of :class:`~praw.models.Subreddit` objects.
+            Return ``[]`` if the redditor has no moderated subreddits.
+
+        .. note:: The redditor's own user profile subreddit will not be
+           returned, but other user profile subreddits they moderate
+           will be returned.
+
+        Usage:
+
+        .. code:: python
+
+            for subreddit in reddit.redditor('spez').moderated():
+                print(subreddit.display_name)
+                print(subreddit.title)
+
+        """
+        modded_data = self._reddit.get(API_PATH["moderated"].format(user=self))
+        if "data" not in modded_data:
+            return []
+        else:
+            subreddits = [
+                self._reddit.subreddit(x["sr"]) for x in modded_data["data"]
+            ]
+            return subreddits
 
     def multireddits(self):
         """Return a list of the redditor's public multireddits."""

@@ -8,8 +8,8 @@ class GildableMixin:
     def gild(self):
         """Gild the author of the item.
 
-        .. note:: Requires the authenticated user to own reddit gold creddits.
-                  Calling this method will consume one reddit gold creddit.
+        .. note:: Requires the authenticated user to own Reddit Coins.
+                  Calling this method will consume Reddit Coins.
 
         Example usage:
 

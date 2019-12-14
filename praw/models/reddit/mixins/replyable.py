@@ -8,7 +8,7 @@ class ReplyableMixin:
     def reply(self, body):
         """Reply to the object.
 
-        :param body: The markdown formatted content for a comment.
+        :param body: The Markdown formatted content for a comment.
         :returns: A :class:`~.Comment` object for the newly created
             comment or ``None`` if Reddit doesn't provide one.
 

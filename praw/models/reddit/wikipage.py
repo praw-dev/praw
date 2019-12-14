@@ -109,7 +109,7 @@ class WikiPage(RedditBase):
     def edit(self, content, reason=None, **other_settings):
         """Edit this WikiPage's contents.
 
-        :param content: The updated markdown content of the page.
+        :param content: The updated Markdown content of the page.
         :param reason: (Optional) The reason for the revision.
         :param other_settings: Additional keyword arguments to pass.
 

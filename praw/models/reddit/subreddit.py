@@ -18,6 +18,7 @@ from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
+from .removal_reasons import SubredditRemovalReasons
 from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
 
@@ -27,22 +28,22 @@ class Subreddit(
 ):
     """A class for Subreddits.
 
-    To obtain an instance of this class for subreddit ``/r/redditdev`` execute:
+    To obtain an instance of this class for subreddit ``r/redditdev`` execute:
 
     .. code:: python
 
        subreddit = reddit.subreddit('redditdev')
 
-    While ``/r/all`` is not a real subreddit, it can still be treated like
+    While ``r/all`` is not a real subreddit, it can still be treated like
     one. The following outputs the titles of the 25 hottest submissions in
-    ``/r/all``:
+    ``r/all``:
 
     .. code:: python
 
        for submission in reddit.subreddit('all').hot(limit=25):
            print(submission.title)
 
-    Multiple subreddits can be combined like so:
+    Multiple subreddits can be combined with a ``+`` like so:
 
     .. code:: python
 
@@ -363,7 +364,7 @@ class Subreddit(
 
         Additionally, new submissions can be retrieved via the stream. In the
         following example all submissions are fetched via the special subreddit
-        ``all``:
+        ``r/all``:
 
         .. code:: python
 
@@ -548,7 +549,7 @@ class Subreddit(
         """Return a random Submission.
 
         Returns ``None`` on subreddits that do not support the random feature.
-        One example, at the time of writing, is /r/wallpapers.
+        One example, at the time of writing, is ``r/wallpapers``.
         """
         url = API_PATH["subreddit_random"].format(subreddit=self)
         try:
@@ -565,7 +566,7 @@ class Subreddit(
     def rules(self):
         """Return rules for the subreddit.
 
-        For example to show the rules of ``/r/redditdev`` try:
+        For example to show the rules of ``r/redditdev`` try:
 
         .. code:: python
 
@@ -651,7 +652,7 @@ class Subreddit(
         """Add a submission to the subreddit.
 
         :param title: The title of the submission.
-        :param selftext: The markdown formatted content for a ``text``
+        :param selftext: The Markdown formatted content for a ``text``
             submission. Use an empty string, ``''``, to make a title-only
             submission.
         :param url: The URL for a ``link`` submission.
@@ -673,7 +674,7 @@ class Subreddit(
 
         Either ``selftext`` or ``url`` can be provided, but not both.
 
-        For example to submit a URL to ``/r/reddit_api_test`` do:
+        For example to submit a URL to ``r/reddit_api_test`` do:
 
         .. code:: python
 
@@ -767,7 +768,7 @@ class Subreddit(
            program in a restricted network environment, or using a proxy
            that doesn't support WebSockets connections.
 
-        For example to submit an image to ``/r/reddit_api_test`` do:
+        For example to submit an image to ``r/reddit_api_test`` do:
 
         .. code:: python
 
@@ -860,7 +861,7 @@ class Subreddit(
            program in a restricted network environment, or using a proxy
            that doesn't support WebSockets connections.
 
-        For example to submit a video to ``/r/reddit_api_test`` do:
+        For example to submit a video to ``r/reddit_api_test`` do:
 
         .. code:: python
 
@@ -923,8 +924,8 @@ class Subreddit(
     def unsubscribe(self, other_subreddits=None):
         """Unsubscribe from the subreddit.
 
-        :param other_subreddits: When provided, also unsubscribe to the
-            provided list of subreddits.
+        :param other_subreddits: When provided, also unsubscribe from
+            the provided list of subreddits.
 
         """
         data = {
@@ -985,7 +986,7 @@ class SubredditFilters:
         :param subreddit: The subreddit to add to the filter list.
 
         Items from subreddits added to the filtered list will no longer be
-        included when obtaining listings for ``/r/all``.
+        included when obtaining listings for ``r/all``.
 
         Alternatively, you can filter a subreddit temporarily from a special
         listing in a manner like so:
@@ -1265,16 +1266,20 @@ class SubredditFlairTemplates:
         background_color=None,
         text_color=None,
         mod_only=None,
+        allowable_content=None,
+        max_emojis=None,
     ):
         url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
         data = {
-            "css_class": css_class,
+            "allowable_content": allowable_content,
             "background_color": background_color,
-            "text_color": text_color,
+            "css_class": css_class,
             "flair_type": self.flair_type(is_link),
-            "text": text,
-            "text_editable": bool(text_editable),
+            "max_emojis": max_emojis,
             "mod_only": bool(mod_only),
+            "text": text,
+            "text_color": text_color,
+            "text_editable": bool(text_editable),
         }
         self.subreddit._reddit.post(url, data=data)
 
@@ -1309,6 +1314,8 @@ class SubredditFlairTemplates:
         background_color=None,
         text_color=None,
         mod_only=None,
+        allowable_content=None,
+        max_emojis=None,
     ):
         """Update the flair template provided by ``template_id``.
 
@@ -1324,6 +1331,12 @@ class SubredditFlairTemplates:
             ``'light'`` or ``'dark'``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
             moderators.
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``.
+        :param max_emojis: (int) Maximum emojis in the flair
+            (Reddit defaults this value to 10).
 
         For example to make a user flair template text_editable, try:
 
@@ -1343,13 +1356,15 @@ class SubredditFlairTemplates:
         """
         url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
         data = {
-            "flair_template_id": template_id,
-            "text": text,
-            "css_class": css_class,
+            "allowable_content": allowable_content,
             "background_color": background_color,
+            "css_class": css_class,
+            "flair_template_id": template_id,
+            "max_emojis": max_emojis,
+            "mod_only": mod_only,
+            "text": text,
             "text_color": text_color,
             "text_editable": text_editable,
-            "mod_only": mod_only,
         }
         self.subreddit._reddit.post(url, data=data)
 
@@ -1382,6 +1397,8 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         background_color=None,
         text_color=None,
         mod_only=None,
+        allowable_content=None,
+        max_emojis=None,
     ):
         """Add a Redditor flair template to the associated subreddit.
 
@@ -1395,6 +1412,12 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
             ``'light'`` or ``'dark'``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
             moderators.
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``.
+        :param max_emojis: (int) Maximum emojis in the flair
+            (Reddit defaults this value to 10).
 
         For example, to add an editable Redditor flair try:
 
@@ -1412,6 +1435,8 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
             background_color=background_color,
             text_color=text_color,
             mod_only=mod_only,
+            allowable_content=allowable_content,
+            max_emojis=max_emojis,
         )
 
     def clear(self):
@@ -1454,6 +1479,8 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         background_color=None,
         text_color=None,
         mod_only=None,
+        allowable_content=None,
+        max_emojis=None,
     ):
         """Add a link flair template to the associated subreddit.
 
@@ -1467,6 +1494,12 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
             ``'light'`` or ``'dark'``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
             moderators.
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``.
+        :param max_emojis: (int) Maximum emojis in the flair
+            (Reddit defaults this value to 10).
 
         For example, to add an editable link flair try:
 
@@ -1484,6 +1517,8 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
             background_color=background_color,
             text_color=text_color,
             mod_only=mod_only,
+            allowable_content=allowable_content,
+            max_emojis=max_emojis,
         )
 
     def clear(self):
@@ -1620,6 +1655,31 @@ class SubredditModeration:
             **generator_kwargs
         )
 
+    @cachedproperty
+    def removal_reasons(self):
+        """Provide an instance of :class:`.SubredditRemovalReasons`.
+
+        Use this attribute for interacting with a subreddit's removal reasons.
+        For example to list all the removal reasons for a subreddit which you
+        have the ``posts`` moderator permission on, try:
+
+        .. code-block:: python
+
+           for removal_reason in reddit.subreddit('NAME').mod.removal_reasons:
+               print(removal_reason)
+
+        A single removal reason can be lazily retrieved via:
+
+        .. code:: python
+
+           reddit.subreddit('NAME').mod.removal_reasons['reason_id']
+
+        .. note:: Attempting to access attributes of an nonexistent removal
+           reason will result in a :class:`.ClientException`.
+
+        """
+        return SubredditRemovalReasons(self.subreddit)
+
     def reports(self, only=None, **generator_kwargs):
         """Return a ListingGenerator for reported comments and submissions.
 
@@ -1723,7 +1783,7 @@ class SubredditModeration:
             image hosting. Only applies to link-only subreddits.
         :param allow_post_crossposts: Allow users to crosspost submissions from
             other subreddits.
-        :param allow_top: Allow the subreddit to appear on ``/r/all`` as well
+        :param allow_top: Allow the subreddit to appear on ``r/all`` as well
             as the default and trending lists.
         :param collapse_deleted_comments: Collapse deleted and removed comments
             on comments pages by default.
@@ -1739,7 +1799,7 @@ class SubredditModeration:
             from modqueue/unmoderated.
         :param header_hover_text: The text seen when hovering over the snoo.
         :param hide_ads: Don't show ads within this subreddit. Only applies to
-            gold-user only subreddits.
+            Premium-user only subreddits.
         :param key_color: A 6-digit rgb hex color (e.g. ``'#AABBCC'``), used as
             a thematic color for your subreddit on mobile.
         :param lang: A valid IETF language tag (underscore separated).
@@ -2035,7 +2095,7 @@ class ModeratorRelationship(SubredditRelationship):
         user.
 
         For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
-            permissions to ``'/r/test/``, try:
+            permissions to ``r/test``, try:
 
         .. code:: python
 
@@ -2057,8 +2117,8 @@ class ModeratorRelationship(SubredditRelationship):
             grant. An empty list ``[]`` indicates no permissions, and when not
             provided ``None``, indicates full permissions.
 
-        For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
-            permissions to ``'/r/test/``, try:
+        For example, to invite ``'spez'`` with ``posts`` and ``mail``
+            permissions to ``r/test``, try:
 
         .. code:: python
 
@@ -2138,8 +2198,8 @@ class ModeratorRelationship(SubredditRelationship):
             grant. An empty list ``[]`` indicates no permissions, and when not
             provided, ``None``, indicates full permissions.
 
-        For example, to grant the flair and mail permissions to the moderator
-        invite, try:
+        For example, to grant the ``flair``` and ``mail``` permissions to
+        the moderator invite, try:
 
         .. code:: python
 
@@ -2875,7 +2935,7 @@ class SubredditWiki:
         :param reason: (Optional) The reason for the creation.
         :param other_settings: Additional keyword arguments to pass.
 
-        To create the wiki page ``'praw_test'`` in ``'/r/test'`` try:
+        To create the wiki page ``praw_test`` in ``r/test`` try:
 
         .. code:: python
 
@@ -2894,7 +2954,7 @@ class SubredditWiki:
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        To view the wiki revisions for ``'praw_test'`` in ``'/r/test'`` try:
+        To view the wiki revisions for ``'praw_test'`` in ``r/test`` try:
 
         .. code:: python
 
