@@ -109,3 +109,49 @@ class TestComment(UnitTest):
         assert comment._fetched
         with pytest.raises(AttributeError):
             comment._ipython_canary_method_should_not_exist_
+
+    def test_type_non_str_id(self):
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, id=1)
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, id=0.1)
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, id=1j)
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, id=True)
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, id=None)
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, id=[1, 2, 3])
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, id=(1, 2, 3))
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, id={1, 2, 3})
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, id={1: 2, 3: 4})
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, id=object())
+
+    def test_type_non_str_url(self):
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, url=1)
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, url=0.1)
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, url=1j)
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, url=True)
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, url=None)
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, url=[1, 2, 3])
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, url=(1, 2, 3))
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, url={1, 2, 3})
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, url={1: 2, 3: 4})
+        with pytest.raises(TypeError):
+            comment = Comment(self.reddit, url=object())
+
+
