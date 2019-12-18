@@ -100,7 +100,7 @@ class User(PRAWBase):
         return self._me
 
     def moderator_subreddits(self, **generator_kwargs):
-        """(DEPRECATED) Return a ListingGenerator of subreddits the user moderates.
+        """Return a ListingGenerator of subreddits the user moderates (DEPRECATED).
 
         ..warning:: (Deprecated) This method will be removed in the next major
                     version of PRAW. Please use :meth:`.Redditor.moderated`
