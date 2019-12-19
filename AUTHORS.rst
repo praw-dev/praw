@@ -21,6 +21,12 @@ Documentation Contributors
 - Add "Name <email (optional)> and github profile link" above this line.
 
 
+Logo Creator
+============
+
+- kungming2 `@kungming2 <https://github.com/kungming2>`_
+
+
 Source Contributors
 ===================
 
