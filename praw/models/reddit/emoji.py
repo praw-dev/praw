@@ -1,9 +1,9 @@
 """Provide the Emoji class."""
 import os
 
+from .base import RedditBase
 from ...const import API_PATH
 from ...exceptions import ClientException
-from .base import RedditBase
 
 
 class Emoji(RedditBase):
@@ -32,24 +32,22 @@ class Emoji(RedditBase):
         if isinstance(other, str):
             return other == str(self)
         return (
-            isinstance(other, self.__class__)
-            and str(self) == str(other)
-            and other.subreddit == self.subreddit
+                isinstance(other, self.__class__)
+                and str(self) == str(other)
+                and other.subreddit == self.subreddit
         )
 
     def __hash__(self):
         """Return the hash of the current instance."""
         return (
-            hash(self.__class__.__name__)
-            ^ hash(str(self))
-            ^ hash(self.subreddit)
+                hash(self.__class__.__name__)
+                ^ hash(str(self))
+                ^ hash(self.subreddit)
         )
 
     def __init__(self, reddit, subreddit, name, _data=None):
         """Construct an instance of the Emoji object."""
-        if _data is not None:
-            if not isinstance(_data, dict):
-                raise TypeError("The data must be type `dict`.")
+        # validate_types
         self.name = name
         self.subreddit = subreddit
         super(Emoji, self).__init__(reddit, _data=_data)

@@ -1,8 +1,4 @@
 """Provide the Comment class."""
-from ...const import API_PATH
-from ...exceptions import ClientException
-from ...util.cache import cachedproperty
-from ..comment_forest import CommentForest
 from .base import RedditBase
 from .mixins import (
     FullnameMixin,
@@ -11,6 +7,10 @@ from .mixins import (
     UserContentMixin,
 )
 from .redditor import Redditor
+from ..comment_forest import CommentForest
+from ...const import API_PATH
+from ...exceptions import ClientException
+from ...util.cache import cachedproperty
 
 
 class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
@@ -132,11 +132,11 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             reply.submission = submission
 
     def __init__(
-        self,
-        reddit,
-        id=None,  # pylint: disable=redefined-builtin
-        url=None,
-        _data=None,
+            self,
+            reddit,
+            id=None,  # pylint: disable=redefined-builtin
+            url=None,
+            _data=None,
     ):
         """Construct an instance of the Comment object."""
         if [id, url, _data].count(None) != 2:
@@ -148,15 +148,12 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         super(Comment, self).__init__(reddit, _data=_data)
         if id:
             self.id = id
-            if not isinstance(id, str):
-                raise TypeError("The id must be type `str`.")
+            # validate_types
         elif url:
-            if not isinstance(url, str):
-                raise TypeError("The url must be type `str`.")
+            # validate_types
             self.id = self.id_from_url(url)
         else:
-            if not isinstance(_data, dict):
-                raise TypeError("The data must be type `dict`.")
+            # validate_types
             self._fetched = True
 
     def __setattr__(self, attribute, value):

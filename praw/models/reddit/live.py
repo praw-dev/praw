@@ -1,11 +1,11 @@
 """Provide the LiveThread class."""
-from ...const import API_PATH
-from ...util.cache import cachedproperty
-from ..listing.generator import ListingGenerator
-from ..list.redditor import RedditorList
 from .base import RedditBase
 from .mixins import FullnameMixin
 from .redditor import Redditor
+from ..list.redditor import RedditorList
+from ..listing.generator import ListingGenerator
+from ...const import API_PATH
+from ...util.cache import cachedproperty
 
 
 class LiveContributorRelationship:
@@ -46,8 +46,7 @@ class LiveContributorRelationship:
 
         """
         self.thread = thread
-        if not isinstance(thread, dict):
-            raise TypeError("The data must be type `dict`.")
+        # validate_types
 
     def accept_invite(self):
         """Accept an invite to contribute the live thread.
@@ -337,7 +336,7 @@ class LiveThread(RedditBase):
         return hash(self.__class__.__name__) ^ hash(str(self))
 
     def __init__(
-        self, reddit, id=None, _data=None  # pylint: disable=redefined-builtin
+            self, reddit, id=None, _data=None  # pylint: disable=redefined-builtin
     ):
         """Initialize a lazy :class:`.LiveThread` instance.
 
@@ -477,12 +476,12 @@ class LiveThreadContribution:
         self.thread._reddit.post(url)
 
     def update(
-        self,
-        title=None,
-        description=None,
-        nsfw=None,
-        resources=None,
-        **other_settings
+            self,
+            title=None,
+            description=None,
+            nsfw=None,
+            resources=None,
+            **other_settings
     ):
         """Update settings of the live thread.
 

@@ -1,12 +1,12 @@
 """Provide the Redditor class."""
 from json import dumps
 
-from ...const import API_PATH
-from ...util.cache import cachedproperty
-from ..listing.mixins import RedditorListingMixin
-from ..util import stream_generator
 from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
+from ..listing.mixins import RedditorListingMixin
+from ..util import stream_generator
+from ...const import API_PATH
+from ...util.cache import cachedproperty
 
 
 class Redditor(
@@ -123,18 +123,16 @@ class Redditor(
             )
         if _data:
             assert (
-                isinstance(_data, dict) and "name" in _data
+                    isinstance(_data, dict) and "name" in _data
             ), "Please file a bug with PRAW"
         super(Redditor, self).__init__(reddit, _data=_data)
         self._listing_use_sort = True
         if name:
             self.name = name
-            if not isinstance(name, str):
-                raise TypeError("The name must be type `str`.")
+            # validate_types
         elif fullname:
             self._fullname = fullname
-            if not isinstance(fullname, str):
-                raise TypeError("The fullname must be type `str`.")
+            # validate_types
 
     def _fetch_username(self, fullname):
         return self._reddit.get(

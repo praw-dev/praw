@@ -1,12 +1,12 @@
 """Provide Collections functionality."""
 
-from ...const import API_PATH
-from ...exceptions import ClientException
-from ...util.cache import cachedproperty
-from ..base import PRAWBase
 from .base import RedditBase
 from .submission import Submission
 from .subreddit import Subreddit
+from ..base import PRAWBase
+from ...const import API_PATH
+from ...exceptions import ClientException
+from ...util.cache import cachedproperty
 
 
 class Collection(RedditBase):
@@ -96,17 +96,14 @@ class Collection(RedditBase):
                 "Exactly one of _data, collection_id, "
                 "or permalink must be provided."
             )
-        if not isinstance(_data, dict):
-            raise TypeError("The data must be type `dict`.")
+            # validate_types
 
         if permalink is not None:
-            if not isinstance(permalink, str):
-                raise TypeError("The permalink must be type `str`.")
+            # validate_types
             collection_id = self._url_parts(permalink)[4]
 
         if collection_id is not None:
-            if not isinstance(collection_id, str):
-                raise TypeError("The collection_id must be type `str`.")
+            # validate_types
             self.collection_id = collection_id  # set from _data otherwise
 
         self._info_params = {
@@ -233,7 +230,7 @@ class CollectionModeration(PRAWBase):
                 )
             )
         if post.startswith(
-            "{}_".format(self._reddit.config.kinds["submission"])
+                "{}_".format(self._reddit.config.kinds["submission"])
         ):
             return post
         try:

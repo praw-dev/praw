@@ -1,16 +1,16 @@
 """Provide the Submission class."""
 from urllib.parse import urljoin
 
-from ...const import API_PATH
-from ...exceptions import ClientException
-from ...util.cache import cachedproperty
-from ..comment_forest import CommentForest
-from ..listing.listing import Listing
-from ..listing.mixins import SubmissionListingMixin
 from .base import RedditBase
 from .mixins import FullnameMixin, ThingModerationMixin, UserContentMixin
 from .redditor import Redditor
 from .subreddit import Subreddit
+from ..comment_forest import CommentForest
+from ..listing.listing import Listing
+from ..listing.mixins import SubmissionListingMixin
+from ...const import API_PATH
+from ...exceptions import ClientException
+from ...util.cache import cachedproperty
 
 
 class Submission(
@@ -171,11 +171,11 @@ class Submission(
         return urljoin(self._reddit.config.short_url, self.id)
 
     def __init__(
-        self,
-        reddit,
-        id=None,  # pylint: disable=redefined-builtin
-        url=None,
-        _data=None,
+            self,
+            reddit,
+            id=None,  # pylint: disable=redefined-builtin
+            url=None,
+            _data=None,
     ):
         """Initialize a Submission instance.
 
@@ -198,12 +198,10 @@ class Submission(
         self.comment_sort = "best"
 
         if id is not None:
-            if not isinstance(id, str):
-                raise TypeError("The id must be type `str`.")
+            # validate_types
             self.id = id
         elif url is not None:
-            if not isinstance(url, str):
-                raise TypeError("The url must be type `str`.")
+            # validate_types
             self.id = self.id_from_url(url)
 
         self._comments_by_id = {}
@@ -222,7 +220,7 @@ class Submission(
             all_submissions += [x.fullname for x in other_submissions]
 
         for position in range(0, len(all_submissions), chunk_size):
-            yield ",".join(all_submissions[position : position + 50])
+            yield ",".join(all_submissions[position: position + 50])
 
     def _fetch_info(self):
         return (
@@ -309,14 +307,14 @@ class Submission(
             self._reddit.post(API_PATH["unhide"], data={"id": submissions})
 
     def crosspost(
-        self,
-        subreddit,
-        title=None,
-        send_replies=True,
-        flair_id=None,
-        flair_text=None,
-        nsfw=False,
-        spoiler=False,
+            self,
+            subreddit,
+            title=None,
+            send_replies=True,
+            flair_id=None,
+            flair_text=None,
+            nsfw=False,
+            spoiler=False,
     ):
         """Crosspost the submission to a subreddit.
 

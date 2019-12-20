@@ -5,15 +5,9 @@ from json import dumps, loads
 from os.path import basename, dirname, join
 from urllib.parse import urljoin
 
-from prawcore import Redirect
 import websocket
+from prawcore import Redirect
 
-from ...const import API_PATH, JPEG_HEADER
-from ...exceptions import APIException, ClientException
-from ...util.cache import cachedproperty
-from ..util import permissions_string, stream_generator
-from ..listing.generator import ListingGenerator
-from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin
@@ -21,6 +15,12 @@ from .modmail import ModmailConversation
 from .removal_reasons import SubredditRemovalReasons
 from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
+from ..listing.generator import ListingGenerator
+from ..listing.mixins import SubredditListingMixin
+from ..util import permissions_string, stream_generator
+from ...const import API_PATH, JPEG_HEADER
+from ...exceptions import APIException, ClientException
+from ...util.cache import cachedproperty
 
 
 class Subreddit(
@@ -439,12 +439,11 @@ class Subreddit(
         super(Subreddit, self).__init__(reddit, _data=_data)
         if display_name:
             self.display_name = display_name
-            if not isinstance(display_name, str):
-                raise TypeError("The display_name must be type `str`.")
+        # validate_types
         self._path = API_PATH["subreddit"].format(subreddit=self)
 
     def _fetch_info(self):
-        return ("subreddit_about", {"subreddit": self}, None)
+        return "subreddit_about", {"subreddit": self}, None
 
     def _fetch_data(self):
         name, fields, params = self._fetch_info()
