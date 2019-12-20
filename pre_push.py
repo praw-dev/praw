@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Run static analysis on the project."""
+import sys
 from shutil import rmtree
 from subprocess import CalledProcessError, check_call
 from tempfile import mkdtemp
-import sys
 
 
 def do_process(args, shell=False):
@@ -24,11 +24,12 @@ def do_process(args, shell=False):
     except Exception as exc:
         sys.stderr.write(str(exc) + "\n")
         sys.exit(1)
-    return True
+    else:
+        return True
 
 
 def main():
-    """Entry point to pre_push.py."""
+    """Entry point to pre_push.py. Returns a statuscode of 0 if everything ran correctly else returns statuscode 1"""
     success = True
     success &= do_process(["black *.py docs praw tests"], shell=True)
     success &= do_process(["flake8", "--exclude=.eggs,build,dist,docs,.tox"])
@@ -41,7 +42,7 @@ def main():
     finally:
         rmtree(tmp_dir)
 
-    return 0 if success else 1
+    return int(not success)
 
 
 if __name__ == "__main__":
