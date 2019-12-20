@@ -336,7 +336,7 @@ class LiveThread(RedditBase):
         return hash(self.__class__.__name__) ^ hash(str(self))
 
     def __init__(
-            self, reddit, id=None, _data=None  # pylint: disable=redefined-builtin
+        self, reddit, id=None, _data=None  # pylint: disable=redefined-builtin
     ):
         """Initialize a lazy :class:`.LiveThread` instance.
 
@@ -476,12 +476,12 @@ class LiveThreadContribution:
         self.thread._reddit.post(url)
 
     def update(
-            self,
-            title=None,
-            description=None,
-            nsfw=None,
-            resources=None,
-            **other_settings
+        self,
+        title=None,
+        description=None,
+        nsfw=None,
+        resources=None,
+        **other_settings
     ):
         """Update settings of the live thread.
 

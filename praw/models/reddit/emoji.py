@@ -32,17 +32,17 @@ class Emoji(RedditBase):
         if isinstance(other, str):
             return other == str(self)
         return (
-                isinstance(other, self.__class__)
-                and str(self) == str(other)
-                and other.subreddit == self.subreddit
+            isinstance(other, self.__class__)
+            and str(self) == str(other)
+            and other.subreddit == self.subreddit
         )
 
     def __hash__(self):
         """Return the hash of the current instance."""
         return (
-                hash(self.__class__.__name__)
-                ^ hash(str(self))
-                ^ hash(self.subreddit)
+            hash(self.__class__.__name__)
+            ^ hash(str(self))
+            ^ hash(self.subreddit)
         )
 
     def __init__(self, reddit, subreddit, name, _data=None):

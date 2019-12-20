@@ -9,14 +9,14 @@ from .. import UnitTest
 class ValidateTester:
     @staticmethod
     def no_exception_test(
-            variable,
-            expected_types,
-            ignore_none=True,
-            _internal_call=False,
-            variable_name=None,
-            expected_type_names=None,
-            error_message=None,
-            error_class=TypeError,
+        variable,
+        expected_types,
+        ignore_none=True,
+        _internal_call=False,
+        variable_name=None,
+        expected_type_names=None,
+        error_message=None,
+        error_class=TypeError,
     ):
         try:
             validate_types(
@@ -36,16 +36,16 @@ class ValidateTester:
 
     @staticmethod
     def check_msg(
-            msg,
-            variable,
-            expected_types,
-            ignore_none=True,
-            _internal_call=False,
-            variable_name=None,
-            expected_type_names=None,
-            error_message=None,
-            error_class=TypeError,
-            catch_class=None,
+        msg,
+        variable,
+        expected_types,
+        ignore_none=True,
+        _internal_call=False,
+        variable_name=None,
+        expected_type_names=None,
+        error_message=None,
+        error_class=TypeError,
+        catch_class=None,
     ):
         if catch_class is None:
             catch_class = error_class
@@ -64,15 +64,15 @@ class ValidateTester:
 
     @staticmethod
     def assert_error_validate(
-            variable,
-            expected_types,
-            ignore_none=True,
-            _internal_call=False,
-            variable_name=None,
-            expected_type_names=None,
-            error_message=None,
-            error_class=TypeError,
-            catch_class=None,
+        variable,
+        expected_types,
+        ignore_none=True,
+        _internal_call=False,
+        variable_name=None,
+        expected_type_names=None,
+        error_message=None,
+        error_class=TypeError,
+        catch_class=None,
     ):
         if catch_class is None:
             catch_class = error_class

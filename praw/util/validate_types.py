@@ -2,14 +2,14 @@
 
 
 def validate_types(
-        variable,
-        expected_types,
-        ignore_none=True,
-        _internal_call=False,
-        variable_name=None,
-        expected_type_names=None,
-        error_message=None,
-        error_class=TypeError,
+    variable,
+    expected_types,
+    ignore_none=True,
+    _internal_call=False,
+    variable_name=None,
+    expected_type_names=None,
+    error_message=None,
+    error_class=TypeError,
 ):
     """A function to make sure the values that are entered in a function are the correct types that should be entered
     in order to not cause any weird behavior with mismatched types.

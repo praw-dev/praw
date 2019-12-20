@@ -230,7 +230,7 @@ class CollectionModeration(PRAWBase):
                 )
             )
         if post.startswith(
-                "{}_".format(self._reddit.config.kinds["submission"])
+            "{}_".format(self._reddit.config.kinds["submission"])
         ):
             return post
         try:

@@ -132,11 +132,11 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             reply.submission = submission
 
     def __init__(
-            self,
-            reddit,
-            id=None,  # pylint: disable=redefined-builtin
-            url=None,
-            _data=None,
+        self,
+        reddit,
+        id=None,  # pylint: disable=redefined-builtin
+        url=None,
+        _data=None,
     ):
         """Construct an instance of the Comment object."""
         if [id, url, _data].count(None) != 2:

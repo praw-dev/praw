@@ -171,11 +171,11 @@ class Submission(
         return urljoin(self._reddit.config.short_url, self.id)
 
     def __init__(
-            self,
-            reddit,
-            id=None,  # pylint: disable=redefined-builtin
-            url=None,
-            _data=None,
+        self,
+        reddit,
+        id=None,  # pylint: disable=redefined-builtin
+        url=None,
+        _data=None,
     ):
         """Initialize a Submission instance.
 
@@ -220,7 +220,7 @@ class Submission(
             all_submissions += [x.fullname for x in other_submissions]
 
         for position in range(0, len(all_submissions), chunk_size):
-            yield ",".join(all_submissions[position: position + 50])
+            yield ",".join(all_submissions[position : position + 50])
 
     def _fetch_info(self):
         return (
@@ -307,14 +307,14 @@ class Submission(
             self._reddit.post(API_PATH["unhide"], data={"id": submissions})
 
     def crosspost(
-            self,
-            subreddit,
-            title=None,
-            send_replies=True,
-            flair_id=None,
-            flair_text=None,
-            nsfw=False,
-            spoiler=False,
+        self,
+        subreddit,
+        title=None,
+        send_replies=True,
+        flair_id=None,
+        flair_text=None,
+        nsfw=False,
+        spoiler=False,
     ):
         """Crosspost the submission to a subreddit.
 
