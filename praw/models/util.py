@@ -1,5 +1,5 @@
 """Provide helper classes used by other models."""
-import collections
+
 import random
 import time
 
@@ -238,7 +238,7 @@ def validate_types(variable,
 
     :param _internal_call: A boolean stating if the function is calling itself internally. Default false.
 
-        .. warning:: This function should never be called from outside of this function.
+        .. warning:: This variable should never be set to true if not being called from inside the function.
 
     :param expected_type_names: A list of strings that correspond to the type(s) that are expected. If not given,
         they will be automatically calculated from the name of the given type(s). This does not need to be included
@@ -262,17 +262,61 @@ def validate_types(variable,
 
         id = 12
         validate_types(id, str, variable_name = "id")
-        # raises TypeError("The variable id must be type `str` (was type `int`).")
+        # raises TypeError("The variable 'id' must be type `str` (was type `int`).")
 
-    Multiple types must be specified in a collection such as a list, tuple, or set.
+    Multiple types must be specified in a collection such as a list, tuple or set.
 
     .. code:: python
+
         id_list = {"id1": "1", "id2": "2"}
         validate_types(id_list, (list, tuple, set), variable_name = "id")
-        # raises TypeError("The variable id_list must be types `list`, `tuple`, or `set` (was type `dict`).)
+        # raises TypeError("The variable 'id_list' must be types `list`, `tuple` or `set` (was type `dict`).)
+
+    The names for expected types can be provided in a mix of strings and types.
+
+    .. code:: python
+
+        types_list = (str, int, "Imaginary numbers", type)
+        validate_types(30.6, (str, int, type), variable_name="id", expected_type_names = types_list)
+        # raises TypeError("The variable 'id' must be types `str`, `int`, `Imaginary numbers` or `type`
+                            (was type `float`).")
+
+    The error message that is printed can be changed completely.
+
+    It can be a static message, where the exception will raise exactly what was provided.
+
+    .. code:: python
+
+        msg = "You provided the wrong type"
+        example = 4
+        validate_types(example, str, error_message = msg)
+        # raises TypeError("You provided the wrong type")
+
+    You can also provide a string with three string-format values ('%s') and the function will auto-substitute
+    in values in the order:
+
+        1. Variable name
+        2. Type strings in format `<typename>`, ..., or `<typename>`
+        3. The actual type in format `<typename>`
+
+    .. code:: python
+
+        msg = "WRONG TYPES, NAME: %s, EXPECTED: %s, GOT: %s"
+        example = "$"
+        validate_types(example, (int, float), variable_name="example", error_message=msg)
+        # raises TypeError("WRONG TYPES, NAME: example, EXPECTED: `int` or `float`, GOT: `str`")
+
     """
     if error_message is None and variable_name is None:
         raise ValueError("variable_name needs to be specified if error_message is not given")
+    elif error_message is not None and variable_name is not None:
+        if error_message.count("%s") != 3:
+            raise ValueError("Both error_message and variable_name has been specified. Please only specify one.")
+    elif error_message is not None and variable_name is None:
+        if error_message.count("%s") == 3:
+            raise ValueError(
+                "variable_name needs to be specified if error_message contains the correct amount of string "
+                "substitution modifiers.")
     fail = False
     if not _internal_call:
         validate_types(variable_name, str, variable_name="variable_name", _internal_call=True)
@@ -281,38 +325,46 @@ def validate_types(variable,
         validate_types(error_message, str, variable_name="error_message", _internal_call=True)
         validate_types(error_class, type, variable_name="error_class", _internal_call=True)
     if expected_type_names is not None:
-        validate_types(expected_type_names, (str, list, tuple, set), variable_name="expected_type_names")
+        validate_types(expected_type_names, (str, list, tuple, set, type), variable_name="expected_type_names")
     if not ignore_none and variable is None:
         fail = True
     if ignore_none:
         if not isinstance(variable, expected_types) and variable is not None:
             fail = True
     if fail:
-        if error_message is None:
-            vlist = []
-            if not isinstance(expected_types, type):
-                msg = "The variable '%s' must be types %s (was type %s)."
-            else:
-                msg = "The variable '%s' must be type %s (was type %s)."
-            if isinstance(expected_type_names, str):
-                expected_type_names = (expected_type_names,)
-            if expected_type_names is not None:
-                for vtype in expected_type_names:
-                    vlist.append(vtype)
-            else:
-                if isinstance(expected_types, type):
-                    expected_types = (expected_types,)
-                for type_ in expected_types:
-                    vlist.append(type_.__name__)
-            if len(vlist) > 1:
-                prelim_vals = vlist[:-1]
-                varmsg = ""
-                for val in prelim_vals:
-                    varmsg += "`%s`, " % val
-                varmsg = varmsg.rstrip(", ")+" "
-                varmsg += "or `%s`" % vlist[-1]
-            else:
-                varmsg = "`%s`" % vlist[-1]
-            raise error_class(msg % (variable_name, varmsg, "`%s`" % variable.__class__.__name__))
+        vlist = []
+        if not isinstance(expected_types, type):
+            msg = "The variable '%s' must be types %s (was type %s)."
         else:
-            raise error_class(error_message)
+            msg = "The variable '%s' must be type %s (was type %s)."
+        if isinstance(expected_type_names, (str, type)):
+            expected_type_names = (expected_type_names,)
+        if expected_type_names is not None:
+            for vtype in expected_type_names:
+                if not _internal_call:
+                    validate_types(vtype, (str, type), variable_name=expected_type_names, _internal_call=True,
+                                   expected_type_names=["Iterable[str]", "[Iterable[type]"])
+                if isinstance(vtype, type):
+                    vlist.append(vtype.__name__)
+                else:
+                    vlist.append(vtype)
+        else:
+            if isinstance(expected_types, type):
+                expected_types = (expected_types,)
+            for type_ in expected_types:
+                vlist.append(type_.__name__)
+        if len(vlist) > 1:
+            prelim_vals = vlist[:-1]
+            varmsg = ""
+            for val in prelim_vals:
+                varmsg += "`%s`, " % val
+            varmsg = varmsg.rstrip(", ") + " "
+            varmsg += "or `%s`" % vlist[-1]
+        else:
+            varmsg = "`%s`" % vlist[-1]
+        if error_message is not None:
+            if error_message.count("%s") == 3:
+                msg = error_message
+            else:
+                raise error_class(error_message)
+        raise error_class(msg % (variable_name, varmsg, "`%s`" % variable.__class__.__name__))
