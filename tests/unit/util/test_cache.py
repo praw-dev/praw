@@ -22,6 +22,9 @@ class TestCachedProperty(UnitTest):
         assert "nine" not in klass.__dict__
         assert klass.nine == 9
         assert "nine" in klass.__dict__
+        assert "ten" not in klass.__dict__
+        assert klass.ten == 10
+        assert "ten" in klass.__dict__
 
     def test_repr(self):
         klass = self.Klass()
