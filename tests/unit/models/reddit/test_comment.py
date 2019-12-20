@@ -1,9 +1,9 @@
 import pickle
 
 import pytest
+
 from praw.exceptions import ClientException
 from praw.models import Comment
-
 from ... import UnitTest
 
 
@@ -149,5 +149,3 @@ class TestComment(UnitTest):
             comment = Comment(self.reddit, url={1: 2, 3: 4})
         with pytest.raises(TypeError):
             comment = Comment(self.reddit, url=object())
-
-

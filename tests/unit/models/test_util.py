@@ -1,9 +1,6 @@
 """Test praw.models.util."""
-import collections
 
-import pytest
-
-from praw.models.util import ExponentialCounter, permissions_string, validate_types
+from praw.models.util import ExponentialCounter, permissions_string
 from .. import UnitTest
 
 
