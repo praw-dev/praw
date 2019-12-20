@@ -19,6 +19,7 @@ from urllib.parse import quote_plus  # NOQA
 def _sleep(*args):
     raise Exception("Call to sleep")
 
+
 time.sleep = _sleep
 
 
