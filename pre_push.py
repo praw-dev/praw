@@ -47,6 +47,5 @@ def main():
 
 if __name__ == "__main__":
     exit_code = main()
-    print()
-    print("pre_push.py: Success!" if exit_code == 0 else "pre_push.py: Fail")
+    print("\npre_push.py: Success!" if not exit_code else "pre_push.py: Fail")
     sys.exit(exit_code)
