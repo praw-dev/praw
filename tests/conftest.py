@@ -12,16 +12,12 @@ import pytest
 from betamax_serializers import pretty_json
 
 # pylint: disable=import-error,no-name-in-module
-if sys.version_info.major == 2:
-    from urllib import quote_plus  # NOQA
-else:
-    from urllib.parse import quote_plus  # NOQA
+from urllib.parse import quote_plus  # NOQA
 
 
 # Prevent calls to sleep
 def _sleep(*args):
     raise Exception("Call to sleep")
-
 
 time.sleep = _sleep
 
