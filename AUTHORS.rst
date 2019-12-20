@@ -56,4 +56,5 @@ Source Contributors
 - kungming2 `@kungming2 <https://github.com/kungming2>`_
 - Jack Steel `@jackodsteel <https://github.com/jackodsteel>`_
 - David Mirch `@fwump38 <https://github.com/fwump38>`_
+- PokestarFan `@PokestarFan <https://github.com/PokestarFan>`_
 - Add "Name <email (optional)> and github profile link" above this line.
