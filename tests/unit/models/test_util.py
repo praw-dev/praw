@@ -62,38 +62,3 @@ class TestUtil(UnitTest):
         assert "-all,-a,-b,-c,+d" == permissions_string(
             ["d"], self.PERMISSIONS
         )
-
-
-class ValidateTester:
-    @staticmethod
-    def no_exception_test(variable, expected_types, ignore_none=True, _internal_call=False, variable_name=None,
-                          expected_type_names=None, error_message=None, error_class=TypeError):
-        try:
-            validate_types(variable, expected_types, ignore_none=ignore_none, _internal_call=_internal_call,
-                           variable_name=variable_name, expected_type_names=expected_type_names,
-                           error_message=error_message, error_class=error_class)
-        except error_class:
-            assert False
-        else:
-            assert True
-
-    @staticmethod
-    def check_msg(msg, variable, expected_types, ignore_none=True, _internal_call=False, variable_name=None,
-                  expected_type_names=None, error_message=None, error_class=TypeError, catch_class=None):
-        if catch_class is None:
-            catch_class = error_class
-        with pytest.raises(catch_class) as exc:
-            validate_types(variable, expected_types, ignore_none=ignore_none, _internal_call=_internal_call,
-                           variable_name=variable_name, expected_type_names=expected_type_names,
-                           error_message=error_message, error_class=error_class)
-        assert exc.value.args[0] == msg
-
-    @staticmethod
-    def assert_error_validate(variable, expected_types, ignore_none=True, _internal_call=False, variable_name=None,
-                              expected_type_names=None, error_message=None, error_class=TypeError, catch_class=None):
-        if catch_class is None:
-            catch_class = error_class
-        with pytest.raises(catch_class):
-            validate_types(variable, expected_types, ignore_none=ignore_none, _internal_call=_internal_call,
-                           variable_name=variable_name, expected_type_names=expected_type_names,
-                           error_message=error_message, error_class=error_class)
