@@ -46,6 +46,8 @@ class LiveContributorRelationship:
 
         """
         self.thread = thread
+        if not isinstance(thread, dict):
+            raise TypeError("The data must be type `dict`.")
 
     def accept_invite(self):
         """Accept an invite to contribute the live thread.

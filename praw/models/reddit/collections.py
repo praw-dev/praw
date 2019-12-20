@@ -96,11 +96,17 @@ class Collection(RedditBase):
                 "Exactly one of _data, collection_id, "
                 "or permalink must be provided."
             )
+        if not isinstance(_data, dict):
+            raise TypeError("The data must be type `dict`.")
 
         if permalink is not None:
+            if not isinstance(permalink, str):
+                raise TypeError("The permalink must be type `str`.")
             collection_id = self._url_parts(permalink)[4]
 
         if collection_id is not None:
+            if not isinstance(collection_id, str):
+                raise TypeError("The collection_id must be type `str`.")
             self.collection_id = collection_id  # set from _data otherwise
 
         self._info_params = {

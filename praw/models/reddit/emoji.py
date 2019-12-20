@@ -47,6 +47,9 @@ class Emoji(RedditBase):
 
     def __init__(self, reddit, subreddit, name, _data=None):
         """Construct an instance of the Emoji object."""
+        if _data is not None:
+            if not isinstance(_data, dict):
+                raise TypeError("The data must be type `dict`.")
         self.name = name
         self.subreddit = subreddit
         super(Emoji, self).__init__(reddit, _data=_data)

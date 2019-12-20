@@ -155,6 +155,8 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
                 raise TypeError("The url must be type `str`.")
             self.id = self.id_from_url(url)
         else:
+            if not isinstance(_data, dict):
+                raise TypeError("The data must be type `dict`.")
             self._fetched = True
 
     def __setattr__(self, attribute, value):

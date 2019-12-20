@@ -120,8 +120,6 @@ class TestComment(UnitTest):
         with pytest.raises(TypeError):
             comment = Comment(self.reddit, id=True)
         with pytest.raises(TypeError):
-            comment = Comment(self.reddit, id=None)
-        with pytest.raises(TypeError):
             comment = Comment(self.reddit, id=[1, 2, 3])
         with pytest.raises(TypeError):
             comment = Comment(self.reddit, id=(1, 2, 3))
@@ -141,8 +139,6 @@ class TestComment(UnitTest):
             comment = Comment(self.reddit, url=1j)
         with pytest.raises(TypeError):
             comment = Comment(self.reddit, url=True)
-        with pytest.raises(TypeError):
-            comment = Comment(self.reddit, url=None)
         with pytest.raises(TypeError):
             comment = Comment(self.reddit, url=[1, 2, 3])
         with pytest.raises(TypeError):
