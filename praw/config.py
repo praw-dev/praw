@@ -5,6 +5,7 @@ import os
 import sys
 
 from .exceptions import ClientException
+from .util.validate_types import validate_types
 
 
 class _NotSet:
@@ -119,7 +120,14 @@ class Config:
             "user_agent",
             "username",
         ):
-            setattr(self, attribute, self._fetch_or_not_set(attribute))
+            attrdata = self._fetch_or_not_set(attribute)
+            validate_types(
+                attrdata,
+                (str, _NotSet),
+                ignore_none=True,
+                variable_name=attribute,
+            )
+            setattr(self, attribute, attrdata)
 
         for required_attribute in ("oauth_url", "reddit_url"):
             setattr(self, required_attribute, self._fetch(required_attribute))

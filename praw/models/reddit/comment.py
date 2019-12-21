@@ -11,6 +11,7 @@ from ..comment_forest import CommentForest
 from ...const import API_PATH
 from ...exceptions import ClientException
 from ...util.cache import cachedproperty
+from ...util.validate_types import validate_id, validate_url
 
 
 class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
@@ -139,6 +140,8 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         _data=None,
     ):
         """Construct an instance of the Comment object."""
+        validate_id(id)
+        validate_url(url)
         if [id, url, _data].count(None) != 2:
             raise TypeError(
                 "Exactly one of `id`, `url`, or `_data` must be provided."
