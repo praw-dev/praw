@@ -13,12 +13,12 @@ def validate_types(
 ):
     """Verify parameters are the expected types.
 
-    A function to make sure the values that are entered in a function
-        are the correct types that should be entered
-        in order to not cause any weird behavior with mismatched types.
+    A function to make sure the values that are entered in a function are the
+        correct types that should be entered in order to not cause any weird
+        behavior with mismatched types.
 
     If the given variable does not match the expected types,
-        then an error, default TypeError, is thrown.
+        then an error, default :class:`TypeError`, is thrown.
 
     .. note:: By default, it does not throw an error if the variable is
         the value `None`, however this can be changed
@@ -33,7 +33,7 @@ def validate_types(
     :param variable_name: The name of the variable that shows up in
         the error. This does not need to be included if the
         parameter error_message is not None. If error_message is None,
-        then not including this argument will raise a ValueError
+        then not including this argument will raise a :class:`ValueError`.
 
     :param ignore_none: A boolean stating whether or not to not throw an
         error if the variable is None. Default true.
@@ -52,7 +52,7 @@ def validate_types(
     :param error_message: A message to override the default message that is
         dynamically calculated.
 
-    :param error_class: The error class to raise, default TypeError.
+    :param error_class: The error class to raise, default :class:`TypeError`.
 
     If a variable does match, nothing is returned.
 
