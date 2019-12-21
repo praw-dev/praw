@@ -4,7 +4,7 @@ import os
 import socket
 import time
 from base64 import b64encode
-from sys import platform
+from sys import platform, exit
 
 import betamax
 import pytest
@@ -20,6 +20,14 @@ def _sleep(*args):
 
 
 time.sleep = _sleep
+
+# noinspection PyBroadException
+try:
+    _sleep()
+except Exception:
+    pass
+else:
+    exit(1)
 
 
 def b64_string(input_string):
