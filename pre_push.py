@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Run static analysis on the project."""
+import sys
 from shutil import rmtree
 from subprocess import CalledProcessError, check_call
 from tempfile import mkdtemp
-import sys
 
 
 def do_process(args, shell=False):
