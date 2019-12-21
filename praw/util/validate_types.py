@@ -223,10 +223,7 @@ def validate_types(
             if isinstance(expected_types, (type, None.__class__)):
                 expected_types = (expected_types,)
             for type_ in expected_types:
-                try:
-                    vlist.append(type_.__name__)
-                except AttributeError:
-                    vlist.append(str(type_))
+                vlist.append(type_.__name__)
         if len(vlist) > 1:
             prelim_vals = vlist[:-1]
             varmsg = ""

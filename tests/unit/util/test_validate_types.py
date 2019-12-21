@@ -324,3 +324,22 @@ class TestValidate(ValidateTester, UnitTest):
             _internal_call=True,
             variable_name="Test",
         )
+
+    def test_msg_none_and_no_none(self):
+        self.check_msg(
+            "The variable 'id' must be type `str` (was type `NoneType`).",
+            None,
+            str,
+            ignore_none=False,
+            variable_name="id",
+        )
+
+    def test_msg_multiple_types(self):
+        self.check_msg(
+            "The variable 'id' must be types `str` or `int` "
+            "(was type `NoneType`).",
+            None,
+            (str, int),
+            ignore_none=False,
+            variable_name="id",
+        )
