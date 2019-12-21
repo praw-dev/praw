@@ -9,6 +9,8 @@ from praw.models import (
 from praw.models.reddit.widgets import WidgetEncoder
 from praw.models.base import PRAWBase
 
+import pytest
+
 from ... import UnitTest
 
 
@@ -21,12 +23,8 @@ class TestWidgetEncoder(UnitTest):
                 self.reddit.subreddit("subreddit"), self.reddit
             ),
         ]
-        try:
-            dumps(data, cls=WidgetEncoder)  # should throw TypeError
-        except TypeError:
-            pass  # success
-        else:
-            assert False
+        with pytest.raises(TypeError):
+            dumps(data, cls=WidgetEncoder)
 
     def test_good_encode(self):
         data = [
