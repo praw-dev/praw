@@ -192,14 +192,7 @@ def validate_types(
         if not isinstance(expected_types, type):
             msg = "The variable '%s' must be types %s (was type %s)."
         else:
-            try:
-                # noinspection PyTypeChecker
-                if len(expected_types) > 1:
-                    msg = "The variable '%s' must be types %s (was type %s)."
-                else:
-                    msg = "The variable '%s' must be type %s (was type %s)."
-            except TypeError:
-                msg = "The variable '%s' must be type %s (was type %s)."
+            msg = "The variable '%s' must be type %s (was type %s)."
         if isinstance(expected_type_names, (str, type)):
             expected_type_names = (expected_type_names,)
         if expected_type_names is not None:
