@@ -3,8 +3,10 @@ import pytest
 from betamax import Betamax
 from praw import Reddit
 
+from .. import PrawTest
 
-class IntegrationTest:
+
+class IntegrationTest(PrawTest):
     """Base class for PRAW integration tests."""
 
     def setup(self):
@@ -32,3 +34,6 @@ class IntegrationTest:
             user_agent=pytest.placeholders.user_agent,
             username=pytest.placeholders.username,
         )
+
+    def __repr__(self, test_type="Integration Test"):
+        return super().__repr__(test_type=test_type)

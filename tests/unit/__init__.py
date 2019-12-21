@@ -1,8 +1,10 @@
 """PRAW Unit test suite."""
 from praw import Reddit
 
+from .. import PrawTest
 
-class UnitTest:
+
+class UnitTest(PrawTest):
     """Base class for PRAW unit tests."""
 
     def setup(self):
@@ -12,3 +14,6 @@ class UnitTest:
         )
         # Unit tests should never issue requests
         self.reddit._core._requestor._http = None
+
+    def __repr__(self, test_type="Unit Test"):
+        return super().__repr__(test_type)
