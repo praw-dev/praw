@@ -88,17 +88,13 @@ class TestValidate(ValidateTester, UnitTest):
         )
 
     def test_none_yes_false(self):
-        self.no_exception_test(
-            None, None, ignore_none=False, variable_name="NoneTest"
-        )
+        self.no_exception_test(None, None, ignore_none=False, variable_name="NoneTest")
 
-    def test_internal_call_yes_mismatch_arg2(self):
-        self.no_exception_test(
-            None, {int: dict}, _internal_call=True, variable_name="Test"
-        )
+    def test_none_yes_false_grouped(self):
+        self.no_exception_test(None, (str, None), ignore_none=False, variable_name="NoneTest")
 
     def test_internal_call_yes_mismatch_arg3(self):
-        self.no_exception_test(None, int, _internal_call={})
+        self.no_exception_test(None, int, _internal_call={}, variable_name="test")
 
     def test_internal_call_yes_mismatch_arg4(self):
         self.no_exception_test(None, int, _internal_call=True, variable_name=3)
@@ -175,11 +171,12 @@ class TestValidate(ValidateTester, UnitTest):
             "variable_name needs to be specified if error_message is not given",
             12,
             str,
+            catch_class=ValueError
         )
 
     def test_msg_grouped(self):
         self.check_msg(
-            "The variable 'id' must be types `str`, `list`, or `dict` (was type `int`).",
+            "The variable 'id' must be types `str`, `list` or `dict` (was type `int`).",
             12,
             (str, list, dict),
             variable_name="id",
@@ -187,7 +184,7 @@ class TestValidate(ValidateTester, UnitTest):
 
     def test_msg_invalid_expected_types(self):
         self.check_msg(
-            "The variable 'expected_types' must be types `str`, `list`, `tuple`, or `set` (was type `dict`).",
+            "The variable 'expected_types' must be types `type`, `list`, `tuple` or `set` (was type `dict`).",
             12,
             {str: int},
             variable_name="id",
@@ -195,7 +192,7 @@ class TestValidate(ValidateTester, UnitTest):
 
     def test_msg_invalid_variable_name(self):
         self.check_msg(
-            "The variable 'variable_name 'must be type `str` (was type `int`).",
+            "The variable 'variable_name' must be type `str` (was type `int`).",
             12,
             str,
             variable_name=14,
@@ -215,7 +212,7 @@ class TestValidate(ValidateTester, UnitTest):
 
     def test_msg_double_error_message_and_variable_name(self):
         self.check_msg(
-            "Both error_message and variable_name has been specifed. Please only specify one.",
+            "Both error_message and variable_name has been specified. Please only specify one.",
             "12",
             str,
             variable_name="id",
@@ -259,6 +256,7 @@ class TestValidate(ValidateTester, UnitTest):
             "12",
             (int, float, bool),
             error_message="1: %s, 2: %s, 3: %s",
+            catch_class=ValueError
         )
 
     def test_msg_custom_error_with_variables_and_custom_expected_type_names(
@@ -298,4 +296,9 @@ class TestValidate(ValidateTester, UnitTest):
             str,
             variable_name="id",
             expected_type_names=[str, "string"],
+        )
+
+    def test_msg_internal_call_mismatch_arg2(self):
+        self.check_msg("isinstance() arg 2 must be a type or tuple of types",
+            None, {int: dict}, _internal_call=True, variable_name="Test"
         )

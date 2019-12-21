@@ -101,21 +101,7 @@ def validate_types(
         # raises TypeError("WRONG TYPES, NAME: example, EXPECTED: `int` or `float`, GOT: `str`")
 
     """
-    if error_message is None and variable_name is None:
-        raise ValueError(
-            "variable_name needs to be specified if error_message is not given"
-        )
-    elif error_message is not None and variable_name is not None:
-        if error_message.count("%s") != 3:
-            raise ValueError(
-                "Both error_message and variable_name has been specified. Please only specify one."
-            )
-    elif error_message is not None and variable_name is None:
-        if error_message.count("%s") == 3:
-            raise ValueError(
-                "variable_name needs to be specified if error_message contains the correct amount of string "
-                "substitution modifiers."
-            )
+
     fail = False
     if not _internal_call:
         validate_types(
@@ -145,12 +131,34 @@ def validate_types(
         validate_types(
             error_class, type, variable_name="error_class", _internal_call=True
         )
-    if expected_type_names is not None:
         validate_types(
             expected_type_names,
             (str, list, tuple, set, type),
             variable_name="expected_type_names",
+            _internal_call = True,
         )
+        if error_message is None and variable_name is None:
+            raise ValueError(
+                "variable_name needs to be specified if error_message is not given"
+            )
+        elif error_message is not None and variable_name is not None:
+            if error_message.count("%s") != 3:
+                raise ValueError(
+                    "Both error_message and variable_name has been specified. Please only specify one."
+                )
+        elif error_message is not None and variable_name is None:
+            if error_message.count("%s") == 3:
+                raise ValueError(
+                    "variable_name needs to be specified if error_message contains the correct amount of string "
+                    "substitution modifiers."
+                )
+        if expected_types is None:
+            if variable is None:
+                return None
+        if hasattr(expected_types, "__iter__") and not isinstance(expected_types, type):
+            if None in expected_types:
+                if variable is None:
+                    return None
     if not ignore_none and variable is None:
         fail = True
     if ignore_none:
@@ -161,7 +169,13 @@ def validate_types(
         if not isinstance(expected_types, type):
             msg = "The variable '%s' must be types %s (was type %s)."
         else:
-            msg = "The variable '%s' must be type %s (was type %s)."
+            try:
+                if len(expected_types) > 1:
+                    msg = "The variable '%s' must be types %s (was type %s)."
+                else:
+                    msg = "The variable '%s' must be type %s (was type %s)."
+            except TypeError:
+                msg = "The variable '%s' must be type %s (was type %s)."
         if isinstance(expected_type_names, (str, type)):
             expected_type_names = (expected_type_names,)
         if expected_type_names is not None:
@@ -182,10 +196,13 @@ def validate_types(
                 else:
                     vlist.append(vtype)
         else:
-            if isinstance(expected_types, type):
+            if isinstance(expected_types, (type, None.__class__)):
                 expected_types = (expected_types,)
             for type_ in expected_types:
-                vlist.append(type_.__name__)
+                try:
+                    vlist.append(type_.__name__)
+                except AttributeError:
+                    vlist.append(str(type_))
         if len(vlist) > 1:
             prelim_vals = vlist[:-1]
             varmsg = ""
