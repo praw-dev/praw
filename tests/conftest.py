@@ -2,7 +2,6 @@
 import json
 import os
 import socket
-import sys
 import time
 from base64 import b64encode
 from sys import platform

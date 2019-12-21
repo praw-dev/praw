@@ -29,7 +29,9 @@ def do_process(args, shell=False):
 
 
 def main():
-    """Entry point to pre_push.py. Returns a statuscode of 0 if everything ran correctly else returns statuscode 1"""
+    """Entry point to pre_push.py.
+    Returns a statuscode of 0 if everything ran correctly.
+    Otherwise, it will return statuscode 1"""
     success = True
     success &= do_process(["black *.py docs praw tests"], shell=True)
     success &= do_process(["flake8", "--exclude=.eggs,build,dist,docs,.tox"])
