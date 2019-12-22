@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Run static analysis on the project."""
+
+import argparse
+import sys
+from os import path
 from shutil import rmtree
 from subprocess import CalledProcessError, check_call
 from tempfile import mkdtemp
-import sys
 
 
 def do_process(args, shell=False):
@@ -27,8 +30,12 @@ def do_process(args, shell=False):
     return True
 
 
-def main():
-    """Entry point to pre_push.py."""
+def run_static():
+    """Runs the static tests.
+
+    Returns a statuscode of 0 if everything ran correctly.
+    Otherwise, it will return statuscode 1
+    """
     success = True
     success &= do_process(["black *.py docs praw tests"], shell=True)
     success &= do_process(["flake8", "--exclude=.eggs,build,dist,docs,.tox"])
@@ -41,11 +48,69 @@ def main():
     finally:
         rmtree(tmp_dir)
 
-    return 0 if success else 1
+    return success
+
+
+def run_unit():
+    """Runs the unit-tests.
+
+    Follows the behavior of the static tests,
+    where any failed tests cause pre_push.py to fail.
+    """
+    curdir = path.abspath(path.join(__file__, ".."))
+    return do_process(
+        [sys.executable, "{dir}/setup.py".format(dir=curdir), "test"]
+    )
+
+
+def main():
+    """Runs the main function.
+
+    usage: pre_push.py [-h] [-n] [-u] [-a]
+
+    Run static and/or unit-tests
+    """
+    parser = argparse.ArgumentParser(
+        description="Run static and/or unit-tests"
+    )
+    parser.add_argument(
+        "-n",
+        "--unstatic",
+        action="store_true",
+        help="Do not run static tests (black/flake8/pydocstyle/sphinx-build)",
+        default=False,
+    )
+    parser.add_argument(
+        "-u",
+        "--unit-tests",
+        "--unit",
+        action="store_true",
+        default=False,
+        help="Run the unit tests",
+    )
+    parser.add_argument(
+        "-a",
+        "--all",
+        action="store_true",
+        default=False,
+        help="Run all of the tests (static and unit). "
+        "Overrides the unstatic argument.",
+    )
+    args = parser.parse_args()
+    success = True
+    try:
+        if not args.unstatic or args.all:
+            success &= run_static()
+        if args.all or args.unit_tests:
+            success &= run_unit()
+    except KeyboardInterrupt:
+        return int(not False)
+    return int(not success)
 
 
 if __name__ == "__main__":
     exit_code = main()
-    print()
-    print("pre_push.py: Success!" if exit_code == 0 else "pre_push.py: Fail")
+    print(
+        "\npre_push.py: Success!" if not exit_code else "\npre_push.py: Fail"
+    )
     sys.exit(exit_code)
