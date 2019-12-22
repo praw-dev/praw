@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 """Run static analysis on the project."""
 
+import argparse
 import sys
-
 from os import path
 from shutil import rmtree
 from subprocess import CalledProcessError, check_call
 from tempfile import mkdtemp
-
-import argparse
 
 
 def do_process(args, shell=False):
@@ -60,7 +58,7 @@ def run_unit():
     where any failed tests cause pre_push.py to fail.
     """
     curdir = path.abspath(path.join(__file__, ".."))
-    return do_process([sys.executable, curdir + "/setup.py", "test"])
+    return do_process([sys.executable, "{dir}/setup.py".format(dir=curdir), "test"])
 
 
 def main():
