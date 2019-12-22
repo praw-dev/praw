@@ -58,7 +58,9 @@ def run_unit():
     where any failed tests cause pre_push.py to fail.
     """
     curdir = path.abspath(path.join(__file__, ".."))
-    return do_process([sys.executable, "{dir}/setup.py".format(dir=curdir), "test"])
+    return do_process(
+        [sys.executable, "{dir}/setup.py".format(dir=curdir), "test"]
+    )
 
 
 def main():
