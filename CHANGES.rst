@@ -34,6 +34,11 @@ Unreleased
 * :meth:`.moderator_subreddits` as :meth:`.Redditor.moderated` provides more
   functionality.
 
+**Removed**
+
+* Converting :class:`.APIException` to string will no longer escape unicode
+  characters.
+
 6.4.0 (2019/09/21)
 ------------------
 
