@@ -1,0 +1,16 @@
+from ....util.cache import cachedproperty as cachedproperty
+from ...base import PRAWBase as PRAWBase
+from ..generator import ListingGenerator as ListingGenerator
+from .base import BaseListingMixin as BaseListingMixin
+from .gilded import GildedListingMixin as GildedListingMixin
+from .rising import RisingListingMixin as RisingListingMixin
+from typing import Any
+
+class SubredditListingMixin(BaseListingMixin, GildedListingMixin, RisingListingMixin):
+    def comments(self): ...
+    def __init__(self, reddit: Any, _data: Any) -> None: ...
+
+class CommentHelper(PRAWBase):
+    subreddit: Any = ...
+    def __init__(self, subreddit: Any) -> None: ...
+    def __call__(self, **generator_kwargs: Any): ...

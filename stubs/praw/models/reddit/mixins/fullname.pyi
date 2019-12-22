@@ -1,0 +1,3 @@
+class FullnameMixin:
+    @property
+    def fullname(self): ...

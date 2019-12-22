@@ -1,0 +1,6 @@
+from typing import Any
+
+class PRAWBase:
+    @classmethod
+    def parse(cls, data: Any, reddit: Any): ...
+    def __init__(self, reddit: Any, _data: Any) -> None: ...

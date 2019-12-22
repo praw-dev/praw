@@ -1,0 +1,6 @@
+from ....const import API_PATH as API_PATH
+from typing import Any
+
+class EditableMixin:
+    def delete(self) -> None: ...
+    def edit(self, body: Any): ...
