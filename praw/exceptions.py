@@ -28,9 +28,9 @@ class APIException(PRAWException):
             the instance.
 
         """
-        error_str = u"{}: '{}'".format(error_type, message)
+        error_str = "{}: '{}'".format(error_type, message)
         if field:
-            error_str += u" on field '{}'".format(field)
+            error_str += " on field '{}'".format(field)
         error_str = error_str.encode("unicode_escape").decode("ascii")
 
         super(APIException, self).__init__(error_str)

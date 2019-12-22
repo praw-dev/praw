@@ -24,7 +24,7 @@ class TestAPIException:
         )
 
     def test_str_for_localized_error_string(self):
-        exception = APIException("RATELIMIT", u"実行回数が多すぎます", u"フィールド")
+        exception = APIException("RATELIMIT", "実行回数が多すぎます", "フィールド")
         assert str(exception) == (
             "RATELIMIT: '\\u5b9f\\u884c\\u56de\\u6570\\u304c\\u591a"
             "\\u3059\\u304e\\u307e\\u3059' on field "
