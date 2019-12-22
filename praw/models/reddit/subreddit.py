@@ -21,6 +21,7 @@ from ..util import permissions_string, stream_generator
 from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import APIException, ClientException
 from ...util.cache import cachedproperty
+from ...util.validate_types import validate_types
 
 
 class Subreddit(
@@ -432,7 +433,8 @@ class Subreddit(
            an instance via: ``reddit.subreddit('subreddit_name')``
 
         """
-        if bool(display_name) == bool(_data):
+        validate_types(display_name, str, variable_name="display_name")
+        if [display_name, _data].count(None) != 1:
             raise TypeError(
                 "Either `display_name` or `_data` must be provided."
             )

@@ -1,6 +1,7 @@
 """Provide the DomainListing class."""
 from ...const import API_PATH
 from .mixins import BaseListingMixin, RisingListingMixin
+from ...util.validate_types import validate_types
 
 
 class DomainListing(BaseListingMixin, RisingListingMixin):
@@ -13,5 +14,6 @@ class DomainListing(BaseListingMixin, RisingListingMixin):
         :param domain: The domain for which to obtain listings.
 
         """
+        validate_types(domain, str, variable_name="domain")
         super(DomainListing, self).__init__(reddit, _data=None)
         self._path = API_PATH["domain"].format(domain=domain)

@@ -107,6 +107,32 @@ class TestSubreddit(UnitTest):
                 "dummy_path", align="asdf"
             )
 
+    def test_valid_arg_display_name(self):
+        try:
+            Subreddit(self.reddit, display_name="1")
+        except TypeError:
+            assert False
+
+    def test_invalid_args_display_name(self):
+        invalid_args = [
+            1,
+            1.0,
+            complex(1),
+            True,
+            False,
+            object(),
+            type,
+            pytest,
+            list(),
+            tuple(),
+            set(),
+            dict(),
+            b"",
+        ]
+        for arg in invalid_args:
+            with pytest.raises(TypeError):
+                Subreddit(self.reddit, display_name=arg)
+
 
 class TestSubredditFlair(UnitTest):
     def test_set(self):

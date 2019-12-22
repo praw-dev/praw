@@ -106,3 +106,59 @@ class TestSubmission(UnitTest):
     def test_shortlink(self):
         submission = Submission(self.reddit, _data={"id": "dummy"})
         assert submission.shortlink == "https://redd.it/dummy"
+
+    def test_valid_arg_id(self):
+        try:
+            Submission(self.reddit, id="1")
+        except TypeError:
+            assert False
+
+    def test_invalid_args_id(self):
+        invalid_args = [
+            1,
+            1.0,
+            complex(1),
+            True,
+            False,
+            object(),
+            type,
+            pytest,
+            list(),
+            tuple(),
+            set(),
+            dict(),
+            b"",
+        ]
+        for arg in invalid_args:
+            with pytest.raises(TypeError):
+                Submission(self.reddit, id=arg)
+
+    def test_valid_arg_url(self):
+        try:
+            Submission(
+                self.reddit,
+                url="https://www.reddit.com/r/redditdev/comments/"
+                "2gmzqe/praw_https_enabled_praw_testing_needed/",
+            )
+        except TypeError:
+            assert False
+
+    def test_invalid_args_url(self):
+        invalid_args = [
+            1,
+            1.0,
+            complex(1),
+            True,
+            False,
+            object(),
+            type,
+            pytest,
+            list(),
+            tuple(),
+            set(),
+            dict(),
+            b"https://www.google.com",
+        ]
+        for arg in invalid_args:
+            with pytest.raises(TypeError):
+                Submission(self.reddit, url=arg)

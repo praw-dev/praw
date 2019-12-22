@@ -10,6 +10,7 @@ try:
 except ImportError:  # pragma: no cover
     UPDATE_CHECKER_MISSING = True
 
+from io import IOBase
 
 from prawcore import (
     Authorizer,
@@ -28,6 +29,7 @@ from .config import Config
 from .const import __version__, API_PATH, USER_AGENT_FORMAT
 from .exceptions import ClientException
 from .objector import Objector
+from .util.validate_types import validate_types, validate_url, validate_path
 
 
 class Reddit:
@@ -443,6 +445,7 @@ class Reddit:
             None).
 
         """
+        validate_path(path)
         data = self.request("GET", path, params=params)
         return self._objector.objectify(data)
 
@@ -468,6 +471,8 @@ class Reddit:
                   different set of submissions.
 
         """
+        validate_types(fullnames, (list, tuple), variable_name="fullnames")
+        validate_url(url)
         none_count = [fullnames, url].count(None)
         if none_count > 1:
             raise TypeError("Either `fullnames` or `url` must be provided.")
@@ -477,8 +482,6 @@ class Reddit:
             )
 
         if fullnames is not None:
-            if isinstance(fullnames, str):
-                raise TypeError("`fullnames` must be a non-str iterable.")
 
             def generator(fullnames):
                 iterable = iter(fullnames)
@@ -508,6 +511,7 @@ class Reddit:
             of the request (default: None).
 
         """
+        validate_types(path, str, variable_name=path)
         data = self.request("PATCH", path, data=data)
         return self._objector.objectify(data)
 
@@ -536,6 +540,7 @@ class Reddit:
             of the request (default: None).
 
         """
+        validate_path(path)
         data = self.request("PUT", path, data=data)
         return self._objector.objectify(data)
 
@@ -546,6 +551,9 @@ class Reddit:
             (default: False).
 
         """
+        validate_types(
+            nsfw, (bool, int), ignore_none=False, variable_name="nsfw"
+        )
         url = API_PATH["subreddit"].format(
             subreddit="randnsfw" if nsfw else "random"
         )
@@ -580,6 +588,13 @@ class Reddit:
             (default: None).
 
         """
+        validate_types(method, str, variable_name="method")
+        validate_path(path)
+        validate_types(
+            params, (str, list, tuple, dict), variable_name="params"
+        )
+        validate_types(data, (str, dict, bytes, IOBase), variable_name="data")
+        validate_types(files, dict, variable_name="files")
         return self._core.request(
             method, path, data=data, files=files, params=params
         )

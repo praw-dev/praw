@@ -182,8 +182,9 @@ def validate_types(
             if None in expected_types:
                 if variable is None:
                     return None
-    if not ignore_none and variable is None:
-        fail = True
+    if not ignore_none:
+        if not isinstance(variable, expected_types):
+            fail = True
     if ignore_none:
         if not isinstance(variable, expected_types) and variable is not None:
             fail = True

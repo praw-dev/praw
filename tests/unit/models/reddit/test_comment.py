@@ -109,3 +109,51 @@ class TestComment(UnitTest):
         assert comment._fetched
         with pytest.raises(AttributeError):
             comment._ipython_canary_method_should_not_exist_
+
+    def test_valid_arg_id(self):
+        try:
+            Comment(self.reddit, id="1")
+        except TypeError:
+            assert False
+
+    def test_invalid_args_id(self):
+        invalid_args = [
+            1,
+            1.0,
+            complex(1),
+            True,
+            False,
+            object(),
+            type,
+            pytest,
+        ]
+        for arg in invalid_args:
+            with pytest.raises(TypeError):
+                Comment(self.reddit, id=arg)
+
+    def test_valid_arg_url(self):
+        try:
+            Comment(
+                self.reddit,
+                url="https://www.reddit.com/r/AskReddit/"
+                "comments/edwa4h/what_are_some_"
+                "lesserknown_secondary_uses_for_an/"
+                "fblwd4v",
+            )
+        except TypeError:
+            assert False
+
+    def test_invalid_args_url(self):
+        invalid_args = [
+            1,
+            1.0,
+            complex(1),
+            True,
+            False,
+            object(),
+            type,
+            pytest,
+        ]
+        for arg in invalid_args:
+            with pytest.raises(TypeError):
+                Comment(self.reddit, url=arg)

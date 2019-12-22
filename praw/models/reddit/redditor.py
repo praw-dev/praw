@@ -7,6 +7,7 @@ from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
 from ...const import API_PATH
 from ...util.cache import cachedproperty
+from ...util.validate_types import validate_types
 
 
 class Redditor(
@@ -116,6 +117,8 @@ class Redditor(
         Exactly one of ``name``, ``fullname`` or ``_data`` must be provided.
 
         """
+        validate_types(name, str, variable_name="name")
+        validate_types(fullname, str, variable_name="fullname")
         if [name, fullname, _data].count(None) != 2:
             raise TypeError(
                 "Exactly one of `name`, `fullname`, or `_data` must be "

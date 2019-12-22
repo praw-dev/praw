@@ -90,6 +90,56 @@ class TestRedditor(UnitTest):
         redditor = Redditor(self.reddit, _data={"name": "name", "id": "dummy"})
         assert str(redditor) == "name"
 
+    def test_valid_arg_name(self):
+        try:
+            Redditor(self.reddit, name="1")
+        except TypeError:
+            assert False
+
+    def test_invalid_args_name(self):
+        invalid_args = [
+            1,
+            1.0,
+            complex(1),
+            True,
+            False,
+            object(),
+            type,
+            pytest,
+            list(),
+            tuple(),
+            set(),
+            dict(),
+        ]
+        for arg in invalid_args:
+            with pytest.raises(TypeError):
+                Redditor(self.reddit, name=arg)
+
+    def test_valid_arg_fullname(self):
+        try:
+            Redditor(self.reddit, fullname="1")
+        except TypeError:
+            assert False
+
+    def test_invalid_args_fullname(self):
+        invalid_args = [
+            1,
+            1.0,
+            complex(1),
+            True,
+            False,
+            object(),
+            type,
+            pytest,
+            list(),
+            tuple(),
+            set(),
+            dict(),
+        ]
+        for arg in invalid_args:
+            with pytest.raises(TypeError):
+                Redditor(self.reddit, fullname=arg)
+
 
 class TestRedditorListings(UnitTest):
     def test__params_not_modified_in_mixed_listing(self):

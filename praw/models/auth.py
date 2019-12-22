@@ -8,6 +8,7 @@ from prawcore import (
 
 from .base import PRAWBase
 from ..exceptions import ClientException
+from ..util.validate_types import validate_types
 
 
 class Auth(PRAWBase):
@@ -51,6 +52,7 @@ class Auth(PRAWBase):
         The session's active authorization will be updated upon success.
 
         """
+        validate_types(code, str, ignore_none=False, variable_name="code")
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         authorizer = Authorizer(authenticator)
         authorizer.authorize(code)
@@ -74,6 +76,13 @@ class Auth(PRAWBase):
         a non-installed application type.
 
         """
+        validate_types(
+            access_token, str, ignore_none=False, variable_name="access_token"
+        )
+        validate_types(
+            expires_in, int, ignore_none=False, variable_name="expires_in"
+        )
+        validate_types(scope, str, ignore_none=False, variable_name="scope")
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if not isinstance(authenticator, UntrustedAuthenticator):
             raise ClientException(
@@ -114,6 +123,14 @@ class Auth(PRAWBase):
             retrieved.
 
         """
+        validate_types(scopes, list, ignore_none=False, variable_name="scopes")
+        validate_types(state, str, ignore_none=False, variable_name="state")
+        validate_types(
+            duration, str, ignore_none=False, variable_name="duration"
+        )
+        validate_types(
+            implicit, (bool, int), ignore_none=False, variable_name="implicit"
+        )
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if authenticator.redirect_uri is self._reddit.config.CONFIG_NOT_SET:
             raise ClientException("redirect_uri must be provided")

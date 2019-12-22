@@ -45,3 +45,25 @@ def validate_url(url_data, *_args, ignore_none=True, **parent_kwargs):
         ignore_none=ignore_none,
         **parent_kwargs
     )
+
+
+def validate_path(path_data, *_args, ignore_none=True, **parent_kwargs):
+    """Check variable data with an assumed name of 'path'.
+
+    :param path_data: The value of the variable with name 'path'
+
+    :param ignore_none: (Inherited from :func:`~.validate_types`) Toggles
+        allowing the value of 'path' to be None (default True)
+
+    This function is just a fancy wrapper for :func:`~.validate_types` and
+        supports all of the same arguments as :func:`~.validate_types`
+
+    """
+    parent_kwargs = _remove_extra_attrs(parent_kwargs)
+    return validate_types(
+        path_data,
+        str,
+        variable_name="path",
+        ignore_none=ignore_none,
+        **parent_kwargs
+    )

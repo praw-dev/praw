@@ -2,6 +2,7 @@ from praw.util.validate_types import (
     validate_types,
     validate_url,
     validate_id,
+    validate_path,
     _remove_extra_attrs,
 )
 
@@ -160,10 +161,10 @@ class TestValidateURL(TestValidateDefaults, UnitTest):
             variable, ignore_none, call_function, **parent_kwargs
         )
 
-    def test_validate_correct_id(self):
+    def test_validate_correct_url(self):
         self._validate_correct_id()
 
-    def test_validate_incorrect_id(self):
+    def test_validate_incorrect_url(self):
         self._validate_incorrect_id()
 
     def test_validate_incorrect_msg(self):
@@ -190,3 +191,48 @@ class TestValidateURL(TestValidateDefaults, UnitTest):
 
     def test_validate_correct_msg(self, *_args, **__kwargs):
         self._validate_correct_msg("url")
+
+
+class TestValidatePath(TestValidateDefaults, UnitTest):
+    @classmethod
+    def no_exception_test(
+        cls,
+        variable,
+        ignore_none=True,
+        call_function=validate_path,
+        **parent_kwargs
+    ):
+        return super().no_exception_test(
+            variable, ignore_none, call_function, **parent_kwargs
+        )
+
+    def test_validate_correct_path(self):
+        self._validate_correct_id()
+
+    def test_validate_incorrect_path(self):
+        self._validate_incorrect_id()
+
+    def test_validate_incorrect_msg(self):
+        self._validate_incorrect_msg()
+
+    def test_validate_custom_args(self):
+        self._validate_custom_args()
+
+    @classmethod
+    def check_msg(
+        cls,
+        msg,
+        variable,
+        ignore_none=True,
+        call_function=validate_path,
+        **parent_kwargs
+    ):
+        return super().check_msg(
+            msg, variable, ignore_none, call_function, **parent_kwargs
+        )
+
+    def test_validate_no_none(self, *_args, **__kwargs):
+        self._validate_no_none("path")
+
+    def test_validate_correct_msg(self, *_args, **__kwargs):
+        self._validate_correct_msg("path")

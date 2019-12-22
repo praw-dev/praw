@@ -5,6 +5,7 @@ from ..const import API_PATH
 from .base import PRAWBase
 from .reddit.live import LiveThread
 from .reddit.multi import Multireddit, Subreddit
+from ..util.validate_types import validate_types
 
 
 class LiveHelper(PRAWBase):
@@ -50,8 +51,9 @@ class LiveHelper(PRAWBase):
                 print(thread.title)
 
         """
-        if not isinstance(ids, list):
-            raise TypeError("ids must be a list")
+        validate_types(
+            ids, (list, tuple), ignore_none=False, variable_name="ids"
+        )
 
         def generator():
             for position in range(0, len(ids), 100):
@@ -112,6 +114,10 @@ class MultiredditHelper(PRAWBase):
         :param name: The name of the multireddit.
 
         """
+        validate_types(
+            redditor, str, ignore_none=False, variable_name="redditor"
+        )
+        validate_types(name, str, ignore_none=False, variable_name="name")
         path = "/user/{}/m/{}".format(redditor, name)
         return Multireddit(self._reddit, _data={"name": name, "path": path})
 
@@ -170,8 +176,10 @@ class SubredditHelper(PRAWBase):
 
         :param display_name: The name of the subreddit.
         """
+        validate_types(
+            display_name, str, ignore_none=False, variable_name="display_name"
+        )
         lower_name = display_name.lower()
-
         if lower_name == "random":
             return self._reddit.random_subreddit()
         if lower_name == "randnsfw":

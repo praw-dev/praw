@@ -11,6 +11,7 @@ from ..listing.mixins import SubmissionListingMixin
 from ...const import API_PATH
 from ...exceptions import ClientException
 from ...util.cache import cachedproperty
+from ...util.validate_types import validate_url, validate_id
 
 
 class Submission(
@@ -187,6 +188,8 @@ class Submission(
         Either ``id`` or ``url`` can be provided, but not both.
 
         """
+        validate_id(id)
+        validate_url(url)
         if [id, url, _data].count(None) != 2:
             raise TypeError(
                 "Exactly one of `id`, `url`, or `_data` must be provided."

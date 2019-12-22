@@ -11,6 +11,7 @@ from praw.models.base import PRAWBase
 
 import pytest
 
+
 from ... import UnitTest
 
 
