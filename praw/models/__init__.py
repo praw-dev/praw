@@ -8,7 +8,7 @@ from .list.trophy import TrophyList
 from .listing.domain import DomainListing
 from .listing.generator import ListingGenerator
 from .listing.listing import Listing
-from .modaction import ModAction
+from .mod_action import ModAction
 from .preferences import Preferences
 from .reddit.collections import Collection
 from .reddit.comment import Comment
