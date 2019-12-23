@@ -1,10 +1,7 @@
 from .listing.mixins import SubredditListingMixin as SubredditListingMixin
-from typing import Any
-from typing import Any
-
-from .listing.mixins import SubredditListingMixin as SubredditListingMixin
+from ..reddit import Reddit
 
 
 class Front(SubredditListingMixin):
-    def __init__(self, reddit: Any) -> None: ...
-    def best(self, **generator_kwargs: Any): ...
+    def __init__(self, reddit: Reddit) -> None: ...
+    def best(self, **generator_kwargs: str): ...
