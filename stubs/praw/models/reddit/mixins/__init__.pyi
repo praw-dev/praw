@@ -1,3 +1,5 @@
+from typing import Any, Optional
+
 from .editable import EditableMixin as EditableMixin
 from .fullname import FullnameMixin as FullnameMixin
 from .gildable import GildableMixin as GildableMixin
@@ -8,10 +10,11 @@ from .replyable import ReplyableMixin as ReplyableMixin
 from .reportable import ReportableMixin as ReportableMixin
 from .savable import SavableMixin as SavableMixin
 from .votable import VotableMixin as VotableMixin
-from typing import Any, Optional
+
 
 class ThingModerationMixin:
     REMOVAL_MESSAGE_API: Any = ...
+    def _add_removal_reason(self, mod_note: str = ..., reason_id: Optional[Any] = ...) -> None: ...
     def approve(self) -> None: ...
     def distinguish(self, how: str = ..., sticky: bool = ...) -> None: ...
     def ignore_reports(self) -> None: ...

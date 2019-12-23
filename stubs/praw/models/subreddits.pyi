@@ -1,11 +1,13 @@
-from . import Subreddit as Subreddit
-from ..const import API_PATH as API_PATH
 from .base import PRAWBase as PRAWBase
-from .listing.generator import ListingGenerator as ListingGenerator
-from .util import stream_generator as stream_generator
+from typing import Any, Optional
 from typing import Any, Optional
 
+from .base import PRAWBase as PRAWBase
+
+
 class Subreddits(PRAWBase):
+    @staticmethod
+    def _to_list(subreddit_list: Any): ...
     def default(self, **generator_kwargs: Any): ...
     def gold(self, **generator_kwargs: Any): ...
     def new(self, **generator_kwargs: Any): ...

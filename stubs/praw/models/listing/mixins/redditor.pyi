@@ -1,8 +1,11 @@
-from ....util.cache import cachedproperty as cachedproperty
-from ..generator import ListingGenerator as ListingGenerator
 from .base import BaseListingMixin as BaseListingMixin
 from .gilded import GildedListingMixin as GildedListingMixin
 from typing import Any
+from typing import Any
+
+from .base import BaseListingMixin as BaseListingMixin
+from .gilded import GildedListingMixin as GildedListingMixin
+
 
 class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
     def comments(self): ...
@@ -14,4 +17,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
     def upvoted(self, **generator_kwargs: Any): ...
 
 class SubListing(BaseListingMixin):
+    _listing_use_sort: bool = ...
+    _reddit: Any = ...
+    _path: Any = ...
     def __init__(self, reddit: Any, base_path: Any, subpath: Any) -> None: ...

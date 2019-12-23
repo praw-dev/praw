@@ -1,10 +1,10 @@
 """praw setup.py"""
-
+import pathlib
 import re
 from codecs import open
-from os import path
-from setuptools import find_packages, setup
+from os import fspath, path
 
+from setuptools import find_packages, setup
 
 PACKAGE_NAME = "praw"
 HERE = path.abspath(path.dirname(__file__))
@@ -12,7 +12,6 @@ with open(path.join(HERE, "README.rst"), encoding="utf-8") as fp:
     README = fp.read()
 with open(path.join(HERE, PACKAGE_NAME, "const.py"), encoding="utf-8") as fp:
     VERSION = re.search('__version__ = "([^"]+)"', fp.read()).group(1)
-
 
 setup(
     name=PACKAGE_NAME,
@@ -49,7 +48,8 @@ setup(
     keywords="reddit api wrapper",
     license="Simplified BSD License",
     long_description=README,
-    package_data={"": ["LICENSE.txt"], PACKAGE_NAME: ["*.ini"]},
+    package_data={"": ["LICENSE.txt"], PACKAGE_NAME: ["*.ini"] + [fspath(file) for file in pathlib.Path(
+        path.abspath(path.join(__file__, "..", "stubs"))).glob('**/*.pyi')]},
     packages=find_packages(exclude=["tests", "tests.*"]),
     setup_requires=["pytest-runner >=2.1"],
     tests_require=[

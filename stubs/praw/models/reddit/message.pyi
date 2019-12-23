@@ -1,14 +1,19 @@
-from ...const import API_PATH as API_PATH
 from .base import RedditBase as RedditBase
 from .mixins import FullnameMixin as FullnameMixin, InboxableMixin as InboxableMixin, ReplyableMixin as ReplyableMixin
-from .redditor import Redditor as Redditor
-from .subreddit import Subreddit as Subreddit
 from typing import Any
+from typing import Any
+
+from .base import RedditBase as RedditBase
+from .mixins import FullnameMixin as FullnameMixin, InboxableMixin as InboxableMixin, ReplyableMixin as ReplyableMixin
+
 
 class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     STR_FIELD: str = ...
     @classmethod
     def parse(cls, data: Any, reddit: Any): ...
+    @property
+    def _kind(self): ...
+    _fetched: bool = ...
     def __init__(self, reddit: Any, _data: Any) -> None: ...
     def delete(self) -> None: ...
 
