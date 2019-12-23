@@ -21,8 +21,6 @@ from .models import (
     Redditors,
     SubredditHelper,
     Subreddits,
-)
-from .models import (
     User,
     Comment,
     Subreddit,
