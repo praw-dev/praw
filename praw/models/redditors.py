@@ -12,6 +12,9 @@ class Redditors(PRAWBase):
         """Return a :class:`.ListingGenerator` for new Redditors.
 
         :returns Redditor profiles, which are a type of :class:`.Subreddit`.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
         """
         return ListingGenerator(
             self._reddit, API_PATH["users_new"], **generator_kwargs
@@ -21,6 +24,9 @@ class Redditors(PRAWBase):
         """Return a :class:`.ListingGenerator` for popular Redditors.
 
         :returns Redditor profiles, which are a type of :class:`.Subreddit`.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
         """
         return ListingGenerator(
             self._reddit, API_PATH["users_popular"], **generator_kwargs
@@ -33,6 +39,8 @@ class Redditors(PRAWBase):
 
         :returns :class:`.Redditor`\ s.
 
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
         """
         self._safely_add_arguments(generator_kwargs, "params", q=query)
         return ListingGenerator(
