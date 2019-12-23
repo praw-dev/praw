@@ -38,7 +38,7 @@ def run_static():
     """
     success = True
     success &= do_process(
-        ["black docs praw tests stubs"], shell=True
+        ["black docs praw tests stubs ./pre_push.py setup.py"], shell=True
     )
     success &= do_process(["flake8", "--exclude=.eggs,build,dist,docs,.tox"])
     success &= do_process(["pydocstyle", "praw"])

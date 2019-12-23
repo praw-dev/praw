@@ -48,7 +48,8 @@ setup(
     keywords="reddit api wrapper",
     license="Simplified BSD License",
     long_description=README,
-    package_data={"": ["LICENSE.txt"], PACKAGE_NAME: ["*.ini"] + [fspath(file) for file in pathlib.Path(
+    package_data={"": ["LICENSE.txt"],
+                  PACKAGE_NAME: ["*.ini"] + [fspath(file) for file in pathlib.Path(
         path.abspath(path.join(__file__, "..", "stubs"))).glob('**/*.pyi')]},
     packages=find_packages(exclude=["tests", "tests.*"]),
     setup_requires=["pytest-runner >=2.1"],
