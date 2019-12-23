@@ -6,15 +6,10 @@ import sys
 import time
 from base64 import b64encode
 from sys import platform
-import warnings
 
 import betamax
 import pytest
 from betamax_serializers import pretty_json
-
-warnings.filterwarnings("error", category=DeprecationWarning)
-# Tests should not be using deprecated functions, unless it is to catch the
-# deprecation warning
 
 
 # pylint: disable=import-error,no-name-in-module

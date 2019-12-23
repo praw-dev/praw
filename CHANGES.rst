@@ -33,6 +33,7 @@ Unreleased
 
 * :meth:`.moderator_subreddits` as :meth:`.Redditor.moderated` provides more
   functionality.
+* :module:`~.modaction` has been renamed to :module:`~.mod_action`.
 
 6.4.0 (2019/09/21)
 ------------------
