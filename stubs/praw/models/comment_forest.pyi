@@ -1,11 +1,11 @@
-from typing import List, Optional
+from typing import Optional, List, Union
 
 from .reddit.comment import Comment
 from .reddit.more import MoreComments
 from .reddit.submission import Submission
 
 
-class CommentForest:
+class CommentForest(List[Union[Comment, MoreComments]]):
     def __getitem__(self, index: int): ...
     def __init__(self, submission: Submission, comments: Optional[List[Comment]] = ...) -> CommentForest: ...
     def __len__(self) -> int: ...
