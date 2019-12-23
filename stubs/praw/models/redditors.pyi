@@ -1,7 +1,3 @@
-from .base import PRAWBase as PRAWBase
-from typing import Generator
-from .reddit.subreddit import Subreddit
-from .reddit.redditor import Redditor
 from typing import Generator
 
 from .base import PRAWBase as PRAWBase
