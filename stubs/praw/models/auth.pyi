@@ -1,4 +1,3 @@
-from .base import PRAWBase as PRAWBase
 from typing import Optional, Union, Dict, Sequence, NoReturn, Set
 
 from .base import PRAWBase as PRAWBase
