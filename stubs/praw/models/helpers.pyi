@@ -1,5 +1,6 @@
-from typing import Any, Optional, List, Generator, Sequence, Literal
+from typing import Any, Optional, List, Sequence, Literal
 
+from . import ListingGenerator
 from .base import PRAWBase as PRAWBase
 from .reddit.live import LiveThread as LiveThread
 from .reddit.multi import Multireddit as Multireddit
@@ -8,7 +9,7 @@ from .reddit.subreddit import Subreddit
 
 class LiveHelper(PRAWBase):
     def __call__(self, id: str) -> LiveThread: ...
-    def info(self, ids: List[str]) -> Generator[LiveThread]: ...
+    def info(self, ids: List[str]) -> ListingGenerator[LiveThread]: ...
     def create(self, title: str, description: Optional[str] = ..., nsfw: bool = ..., resources: Optional[str] = ...) -> LiveThread: ...
     def now(self) -> Optional[LiveThread]: ...
 

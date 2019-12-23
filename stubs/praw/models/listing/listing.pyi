@@ -1,9 +1,10 @@
-from typing import Any, NoReturn, Optional
+from typing import Any, NoReturn, Optional, Generic, TypeVar
 
 from ..base import PRAWBase as PRAWBase
 
+T = TypeVar("T")
 
-class Listing(PRAWBase):
+class Listing(PRAWBase, Generic[T]):
     CHILD_ATTRIBUTE: str = ...
     def __len__(self) -> int: ...
     def __getitem__(self, index: int) -> Any: ...

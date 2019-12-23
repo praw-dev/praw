@@ -1,10 +1,13 @@
 from typing import Any, Optional, Dict
+from typing import Generic, TypeVar
 
 from ..base import PRAWBase as PRAWBase
 from ...reddit import Reddit
 
+T = TypeVar("T")
 
-class ListingGenerator(PRAWBase):
+
+class ListingGenerator(PRAWBase, Generic[T]):
     limit: int = ...
     params: Dict[str, str] = ...
     url: str = ...

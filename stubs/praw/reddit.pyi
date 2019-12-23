@@ -5,7 +5,6 @@ from typing import (
     Dict,
     Union,
     Sequence,
-    Generator,
     IO,
 )
 
@@ -70,7 +69,7 @@ class Reddit:
             Sequence[Union[Comment, Subreddit, Submission]]
         ] = ...,
         url: Optional[str] = ...,
-    ) -> Generator[Any]: ...
+    ) -> ListingGenerator[Any]: ...
     def patch(
         self,
         path: str,

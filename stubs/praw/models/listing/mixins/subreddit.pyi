@@ -1,21 +1,23 @@
-from ...base import PRAWBase as PRAWBase
-from .base import BaseListingMixin as BaseListingMixin
-from .gilded import GildedListingMixin as GildedListingMixin
-from .rising import RisingListingMixin as RisingListingMixin
-from typing import Any
-from typing import Any
+from typing import Any, TypeVar, Generic
+from typing import Dict
 
 from .base import BaseListingMixin as BaseListingMixin
 from .gilded import GildedListingMixin as GildedListingMixin
 from .rising import RisingListingMixin as RisingListingMixin
+from ... import ListingGenerator
 from ...base import PRAWBase as PRAWBase
+from ...reddit.comment import Comment
+from ...reddit.subreddit import Subreddit
+from ....util.cache import cachedproperty
 
+T = TypeVar("T")
 
 class SubredditListingMixin(BaseListingMixin, GildedListingMixin, RisingListingMixin):
-    def comments(self): ...
-    def __init__(self, reddit: Any, _data: Any) -> None: ...
+    @cachedproperty
+    def comments(self) -> CommentHelper[Comment]: ...
+    def __init__(self, reddit: str, _data: Dict[str, Any]) -> SubredditListingMixin: ...
 
-class CommentHelper(PRAWBase):
+class CommentHelper(PRAWBase, Generic[T]):
     subreddit: Any = ...
-    def __init__(self, subreddit: Any) -> None: ...
-    def __call__(self, **generator_kwargs: Any): ...
+    def __init__(self, subreddit: Subreddit) -> CommentHelper: ...
+    def __call__(self, **generator_kwargs: str) -> ListingGenerator[Comment]: ...
