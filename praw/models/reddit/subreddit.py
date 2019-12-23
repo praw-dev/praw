@@ -581,7 +581,7 @@ class Subreddit(
         time_filter="all",
         **generator_kwargs
     ):
-        """Return a ListingGenerator for items that match ``query``.
+        """Return a :class:`.ListingGenerator`for items that match ``query``.
 
         :param query: The query string to search for.
         :param sort: Can be one of: relevance, hot, top, new,
@@ -1057,12 +1057,16 @@ class SubredditFlair:
         return SubredditRedditorFlairTemplates(self.subreddit)
 
     def __call__(self, redditor=None, **generator_kwargs):
-        """Return a generator for Redditors and their associated flair.
+        """Return a :class:`.ListingGenerator` for Redditors
+            and their associated flair.
 
         :param redditor: When provided, yield at most a single
             :class:`~.Redditor` instance (default: None).
 
-        This method is intended to be used like:
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+
+        Usage:
 
         .. code-block:: python
 
@@ -1558,7 +1562,7 @@ class SubredditModeration:
         self.subreddit._reddit.post(url)
 
     def edited(self, only=None, **generator_kwargs):
-        """Return a ListingGenerator for edited comments and submissions.
+        """Return a :class:`.ListingGenerator` for edited comments and submissions.
 
         :param only: If specified, one of ``'comments'``, or ``'submissions'``
             to yield only results of that type.
@@ -1582,7 +1586,7 @@ class SubredditModeration:
         )
 
     def inbox(self, **generator_kwargs):
-        """Return a ListingGenerator for moderator messages.
+        """Return a :class:`.ListingGenerator` for moderator messages.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -1606,12 +1610,15 @@ class SubredditModeration:
         )
 
     def log(self, action=None, mod=None, **generator_kwargs):
-        """Return a ListingGenerator for moderator log entries.
+        """Return a :class:`.ListingGenerator` for moderator log entries.
 
         :param action: If given, only return log entries for the specified
             action.
         :param mod: If given, only return log entries for actions made by the
             passed in Redditor.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         To print the moderator and subreddit of the last 5 modlog entries try:
 
@@ -1630,7 +1637,8 @@ class SubredditModeration:
         )
 
     def modqueue(self, only=None, **generator_kwargs):
-        """Return a ListingGenerator for comments/submissions in the modqueue.
+        """Return a :class:`.ListingGenerator` for comments/submissions in the
+            modqueue.
 
         :param only: If specified, one of ``'comments'``, or ``'submissions'``
             to yield only results of that type.
@@ -1679,7 +1687,7 @@ class SubredditModeration:
         return SubredditRemovalReasons(self.subreddit)
 
     def reports(self, only=None, **generator_kwargs):
-        """Return a ListingGenerator for reported comments and submissions.
+        """Return a :class:`.ListingGenerator` for reported comments and submissions.
 
         :param only: If specified, one of ``'comments'``, or ``'submissions'``
             to yield only results of that type.
@@ -1709,7 +1717,7 @@ class SubredditModeration:
         return self.subreddit._reddit.get(url)["data"]
 
     def spam(self, only=None, **generator_kwargs):
-        """Return a ListingGenerator for spam comments and submissions.
+        """Return a :class:`.ListingGenerator` for spam comments and submissions.
 
         :param only: If specified, one of ``'comments'``, or ``'submissions'``
             to yield only results of that type.
@@ -1733,7 +1741,7 @@ class SubredditModeration:
         )
 
     def unmoderated(self, **generator_kwargs):
-        """Return a ListingGenerator for unmoderated submissions.
+        """Return a :class:`.ListingGenerator` for unmoderated submissions.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -1753,7 +1761,7 @@ class SubredditModeration:
         )
 
     def unread(self, **generator_kwargs):
-        """Return a ListingGenerator for unread moderator messages.
+        """Return a :class:`.ListingGenerator`for unread moderator messages.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -1947,7 +1955,7 @@ class SubredditRelationship:
     """
 
     def __call__(self, redditor=None, **generator_kwargs):
-        """Return a generator for Redditors belonging to this relationship.
+        """Return a :class:`.ListingGenerator`for Redditors belonging to this relationship.
 
         :param redditor: When provided, yield at most a single
             :class:`~.Redditor` instance. This is useful to confirm if a
@@ -2947,7 +2955,7 @@ class SubredditWiki:
         return new
 
     def revisions(self, **generator_kwargs):
-        """Return a generator for recent wiki revisions.
+        """Return a :class:`.ListingGenerator`for recent wiki revisions.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
