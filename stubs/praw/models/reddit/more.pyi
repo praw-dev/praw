@@ -1,5 +1,3 @@
-from ..base import PRAWBase as PRAWBase
-from typing import Any
 from typing import Any
 
 from ..base import PRAWBase as PRAWBase
