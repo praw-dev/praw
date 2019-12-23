@@ -72,7 +72,7 @@ class WikiPage(RedditBase):
         self.name = name
         self._revision = revision
         self.subreddit = subreddit
-        super(WikiPage, self).__init__(reddit, _data=_data)
+        super().__init__(reddit, _data=_data)
 
     def __repr__(self):
         """Return an object initialization representation of the instance."""

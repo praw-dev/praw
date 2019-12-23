@@ -40,7 +40,7 @@ class RemovalReason(RedditBase):
         """Construct an instance of the Removal Reason object."""
         self.id = reason_id
         self.subreddit = subreddit
-        super(RemovalReason, self).__init__(reddit, _data=_data)
+        super().__init__(reddit, _data=_data)
 
     def _fetch(self):
         for removal_reason in self.subreddit.mod.removal_reasons:

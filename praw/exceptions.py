@@ -33,7 +33,7 @@ class APIException(PRAWException):
             error_str += u" on field '{}'".format(field)
         error_str = error_str.encode("unicode_escape").decode("ascii")
 
-        super(APIException, self).__init__(error_str)
+        super().__init__(error_str)
         self.error_type = error_type
         self.message = message
         self.field = field

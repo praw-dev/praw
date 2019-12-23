@@ -35,7 +35,7 @@ class SubredditListingMixin(
         :param reddit: An instance of :class:`.Reddit`.
 
         """
-        super(SubredditListingMixin, self).__init__(reddit, _data=_data)
+        super().__init__(reddit, _data=_data)
 
 
 class CommentHelper(PRAWBase):
@@ -47,7 +47,7 @@ class CommentHelper(PRAWBase):
 
     def __init__(self, subreddit):
         """Initialize a CommentHelper instance."""
-        super(CommentHelper, self).__init__(subreddit._reddit, _data=None)
+        super().__init__(subreddit._reddit, _data=None)
         self.subreddit = subreddit
 
     def __call__(self, **generator_kwargs):
