@@ -1,5 +1,5 @@
 from typing import Any, Optional, Dict
-from typing import Generic, TypeVar
+from typing import Generator, TypeVar
 
 from ..base import PRAWBase as PRAWBase
 from ...reddit import Reddit
@@ -7,7 +7,7 @@ from ...reddit import Reddit
 T = TypeVar("T")
 
 
-class ListingGenerator(PRAWBase, Generic[T]):
+class ListingGenerator(PRAWBase, Generator[T, None, None]):
     limit: int = ...
     params: Dict[str, str] = ...
     url: str = ...

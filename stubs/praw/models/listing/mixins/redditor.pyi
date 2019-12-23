@@ -1,4 +1,4 @@
-from typing import TypeVar, Generic
+from typing import TypeVar, Collection
 from typing import Union
 
 from .base import BaseListingMixin as BaseListingMixin
@@ -22,5 +22,5 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
     def saved(self, **generator_kwargs: str) -> Union[Comment, Submission]: ...
     def upvoted(self, **generator_kwargs: str) -> Union[Comment, Submission]: ...
 
-class SubListing(BaseListingMixin, Generic[T]):
+class SubListing(BaseListingMixin, Collection[T]):
     def __init__(self, reddit: Reddit, base_path: str, subpath: str) -> SubListing: ...
