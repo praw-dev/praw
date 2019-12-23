@@ -4,5 +4,5 @@ from .base import PRAWBase as PRAWBase
 
 
 class Stylesheet(PRAWBase):
-    images: List[str]
-    stylesheet: str
+    images: List[str] = ...
+    stylesheet: str = ...
