@@ -1,5 +1,4 @@
 from typing import NoReturn, Dict, Union
-from typing import NoReturn, Dict, Union
 
 from .base import RedditBase as RedditBase
 from .mixins import FullnameMixin as FullnameMixin, \
