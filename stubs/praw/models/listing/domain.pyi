@@ -1,10 +1,7 @@
-from .mixins import BaseListingMixin as BaseListingMixin, RisingListingMixin as RisingListingMixin
-from typing import Any
-from typing import Any
-
 from .mixins import BaseListingMixin as BaseListingMixin, \
     RisingListingMixin as RisingListingMixin
+from ...reddit import Reddit
 
 
 class DomainListing(BaseListingMixin, RisingListingMixin):
-    def __init__(self, reddit: Any, domain: Any) -> None: ...
+    def __init__(self, reddit: Reddit, domain: str) -> None: ...
