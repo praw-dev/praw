@@ -1,6 +1,3 @@
-from typing import Any
-
 class FullnameMixin:
-    _kind: Any = ...
     @property
     def fullname(self): ...
