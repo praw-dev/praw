@@ -9,7 +9,7 @@ class Inbox(PRAWBase):
     """Inbox is a Listing class that represents the Inbox."""
 
     def all(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for all inbox comments and messages.
+        """Return a :class:`.ListingGenerator` for all inbox comments and messages.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -55,7 +55,7 @@ class Inbox(PRAWBase):
             items = items[25:]
 
     def comment_replies(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for comment replies.
+        """Return a :class:`.ListingGenerator` for comment replies.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -129,7 +129,7 @@ class Inbox(PRAWBase):
             items = items[25:]
 
     def mentions(self, **generator_kwargs):
-        r"""Return a :class:`.ListingGenerator`for mentions.
+        r"""Return a :class:`.ListingGenerator` for mentions.
 
         A mention is :class:`.Comment` in which the authorized redditor is
         named in its body like ``/u/redditor_name``.
@@ -170,7 +170,7 @@ class Inbox(PRAWBase):
                 return message
 
     def messages(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for inbox messages.
+        """Return a :class:`.ListingGenerator` for inbox messages.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -188,7 +188,7 @@ class Inbox(PRAWBase):
         )
 
     def sent(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for sent messages.
+        """Return a :class:`.ListingGenerator` for sent messages.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -225,7 +225,7 @@ class Inbox(PRAWBase):
         return stream_generator(self.unread, **stream_options)
 
     def submission_replies(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for submission replies.
+        """Return a :class:`.ListingGenerator` for submission replies.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -271,7 +271,7 @@ class Inbox(PRAWBase):
             items = items[25:]
 
     def unread(self, mark_read=False, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for unread comments and messages.
+        """Return a :class:`.ListingGenerator` for unread comments and messages.
 
         :param mark_read: Marks the inbox as read (default: False).
 

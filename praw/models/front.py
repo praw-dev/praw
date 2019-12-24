@@ -14,7 +14,7 @@ class Front(SubredditListingMixin):
         self._path = "/"
 
     def best(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for best items.
+        """Return a :class:`.ListingGenerator` for best items.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

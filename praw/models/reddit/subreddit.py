@@ -581,7 +581,7 @@ class Subreddit(
         time_filter="all",
         **generator_kwargs
     ):
-        """Return a :class:`.ListingGenerator`for items that match ``query``.
+        """Return a :class:`.ListingGenerator` for items that match ``query``.
 
         :param query: The query string to search for.
         :param sort: Can be one of: relevance, hot, top, new,
@@ -1057,8 +1057,7 @@ class SubredditFlair:
         return SubredditRedditorFlairTemplates(self.subreddit)
 
     def __call__(self, redditor=None, **generator_kwargs):
-        """Return a :class:`.ListingGenerator` for Redditors
-            and their associated flair.
+        """Return a :class:`.ListingGenerator` for Redditors and their flairs.
 
         :param redditor: When provided, yield at most a single
             :class:`~.Redditor` instance (default: None).
@@ -1637,8 +1636,7 @@ class SubredditModeration:
         )
 
     def modqueue(self, only=None, **generator_kwargs):
-        """Return a :class:`.ListingGenerator` for comments/submissions in the
-            modqueue.
+        """Return a :class:`.ListingGenerator` for modqueue items.
 
         :param only: If specified, one of ``'comments'``, or ``'submissions'``
             to yield only results of that type.
@@ -1761,7 +1759,7 @@ class SubredditModeration:
         )
 
     def unread(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for unread moderator messages.
+        """Return a :class:`.ListingGenerator` for unread moderator messages.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -1955,7 +1953,7 @@ class SubredditRelationship:
     """
 
     def __call__(self, redditor=None, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for Redditors belonging to this relationship.
+        """Return a :class:`.ListingGenerator` for Redditors in the relationship.
 
         :param redditor: When provided, yield at most a single
             :class:`~.Redditor` instance. This is useful to confirm if a
@@ -2955,7 +2953,7 @@ class SubredditWiki:
         return new
 
     def revisions(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for recent wiki revisions.
+        """Return a :class:`.ListingGenerator` for recent wiki revisions.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

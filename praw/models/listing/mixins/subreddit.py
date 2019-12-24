@@ -51,7 +51,7 @@ class CommentHelper(PRAWBase):
         self.subreddit = subreddit
 
     def __call__(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for the Subreddit's comments.
+        """Return a :class:`.ListingGenerator` for the Subreddit's comments.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

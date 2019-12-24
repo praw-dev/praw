@@ -9,7 +9,7 @@ class GildedListingMixin(PRAWBase):
     """Mixes in the gilded method."""
 
     def gilded(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for gilded items.
+        """Return a :class:`.ListingGenerator` for gilded items.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

@@ -9,7 +9,7 @@ class RisingListingMixin(PRAWBase):
     """Mixes in the rising methods."""
 
     def random_rising(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for random rising submissions.
+        """Return a :class:`.ListingGenerator` for random rising submissions.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -22,7 +22,7 @@ class RisingListingMixin(PRAWBase):
         )
 
     def rising(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for rising submissions.
+        """Return a :class:`.ListingGenerator` for rising submissions.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

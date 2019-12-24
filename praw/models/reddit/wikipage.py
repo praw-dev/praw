@@ -137,7 +137,7 @@ class WikiPage(RedditBase):
         )
 
     def revisions(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator`for page revisions.
+        """Return a :class:`.ListingGenerator` for page revisions.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
