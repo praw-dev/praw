@@ -18,9 +18,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pip install black flake8 pydocstyle sphinx sphinx_rtd_theme
+      run: pip install pip install black flake8 pydocstyle sphinx sphinx_rtd_theme
     - name: Check code formatting with black
       run: black --check --verbose *.py docs praw tests
     - name: Lint with flake8
@@ -40,6 +38,6 @@ jobs:
       - name: Install test dependencies
         run: pip install pytest coverage
       - name: Run tests
-        run: coverage run setup.py test 
+        run: python -m coverage run setup.py test 
       - name: Print coverage
         run: coverage report --include "praw/*" --fail-under=100
