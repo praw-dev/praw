@@ -56,7 +56,7 @@ class RedditBase(PRAWBase):
 
     def __str__(self):
         """Return a string representation of the instance."""
-        return getattr(self, self.STR_FIELD)
+        return str(getattr(self, self.STR_FIELD))
 
     def __ne__(self, other):
         """Return whether the other instance differs from the current."""

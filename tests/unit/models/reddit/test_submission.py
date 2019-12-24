@@ -106,3 +106,7 @@ class TestSubmission(UnitTest):
     def test_shortlink(self):
         submission = Submission(self.reddit, _data={"id": "dummy"})
         assert submission.shortlink == "https://redd.it/dummy"
+
+    def test_not_str(self):
+        submission_repr = Submission(self.reddit, id=1).replace('""', "''")
+        assert submission_repr == "Submission(id='3')"

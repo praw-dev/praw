@@ -90,6 +90,10 @@ class TestRedditor(UnitTest):
         redditor = Redditor(self.reddit, _data={"name": "name", "id": "dummy"})
         assert str(redditor) == "name"
 
+    def test_not_str(self):
+        redditor_repr = repr(Redditor(self.reddit, name=1)).replace('""', "''")
+        assert redditor_repr == "Redditor(name='1')"
+
 
 class TestRedditorListings(UnitTest):
     def test__params_not_modified_in_mixed_listing(self):
