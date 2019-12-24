@@ -17,7 +17,9 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Install project dependencies
+      run: python setup.py install
+    - name: Install test dependencies
       run: pip install black flake8 pydocstyle sphinx sphinx_rtd_theme
     - name: Check code formatting with black
       run: black --check --verbose *.py docs praw tests
@@ -40,6 +42,8 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install project dependencies
+        run: python setup.py install
       - name: Install test dependencies
         run: pip install pytest coverage
       - name: Run tests
