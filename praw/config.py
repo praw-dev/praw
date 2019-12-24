@@ -3,8 +3,11 @@ from threading import Lock
 import configparser
 import os
 import sys
+from typing import Any, ClassVar, Dict, Optional, Union, TypeVar
 
 from .exceptions import ClientException
+
+_T = TypeVar("_T")
 
 
 class _NotSet:
@@ -20,9 +23,24 @@ class _NotSet:
 class Config:
     """A class containing the configuration for a reddit site."""
 
-    CONFIG = None
-    CONFIG_NOT_SET = _NotSet()  # Represents a config value that is not set.
-    LOCK = Lock()
+    CONFIG: ClassVar[_T] = None
+    CONFIG_NOT_SET: ClassVar[_T] = _NotSet()
+    # Represents a config value that is not set.
+    LOCK: ClassVar[Lock] = Lock()
+
+    custom: Dict[Union[str, Any], Union[str, Any]]
+    client_id: ClassVar[Optional[str]]
+    client_secret: ClassVar[Optional[str]]
+    oauth_url: ClassVar[Optional[str]]
+    reddit_url: ClassVar[Optional[str]]
+    refresh_token: ClassVar[Optional[str]]
+    redirect_uri: ClassVar[Optional[str]]
+    password: ClassVar[Optional[str]]
+    user_agent: ClassVar[Optional[str]]
+    username: ClassVar[Optional[str]]
+
+    check_for_updates: ClassVar[bool] = ...
+    kinds: ClassVar[Dict[str, Any]] = ...
 
     @staticmethod
     def _config_boolean(item):
@@ -50,13 +68,13 @@ class Config:
         cls.CONFIG = config
 
     @property
-    def short_url(self):
+    def short_url(self) -> str:
         """Return the short url or raise a ClientException when not set."""
         if self._short_url is self.CONFIG_NOT_SET:
             raise ClientException("No short domain specified.")
         return self._short_url
 
-    def __init__(self, site_name, **settings):
+    def __init__(self, site_name: str, **settings: Union[str, Any]):
         """Initialize a Config instance."""
         with Config.LOCK:
             if Config.CONFIG is None:
