@@ -1,13 +1,11 @@
 """Provides the code to load PRAW's configuration file `praw.ini`."""
-from threading import Lock
 import configparser
 import os
 import sys
-from typing import Any, ClassVar, Dict, Optional, Union, TypeVar
+from threading import Lock
+from typing import Any, Union
 
 from .exceptions import ClientException
-
-_T = TypeVar("_T")
 
 
 class _NotSet:
@@ -23,24 +21,9 @@ class _NotSet:
 class Config:
     """A class containing the configuration for a reddit site."""
 
-    CONFIG: ClassVar[_T] = None
-    CONFIG_NOT_SET: ClassVar[_T] = _NotSet()
-    # Represents a config value that is not set.
-    LOCK: ClassVar[Lock] = Lock()
-
-    custom: Dict[Union[str, Any], Union[str, Any]]
-    client_id: ClassVar[Optional[str]]
-    client_secret: ClassVar[Optional[str]]
-    oauth_url: ClassVar[Optional[str]]
-    reddit_url: ClassVar[Optional[str]]
-    refresh_token: ClassVar[Optional[str]]
-    redirect_uri: ClassVar[Optional[str]]
-    password: ClassVar[Optional[str]]
-    user_agent: ClassVar[Optional[str]]
-    username: ClassVar[Optional[str]]
-
-    check_for_updates: ClassVar[bool] = ...
-    kinds: ClassVar[Dict[str, Any]] = ...
+    CONFIG = None
+    CONFIG_NOT_SET = _NotSet()  # Represents a config value that is not set.
+    LOCK = Lock()
 
     @staticmethod
     def _config_boolean(item):

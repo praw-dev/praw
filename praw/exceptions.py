@@ -6,8 +6,6 @@ wrong on the client side. Both of these classes extend :class:`.PRAWException`.
 
 """
 
-from typing import ClassVar
-
 
 class PRAWException(Exception):
     """The base PRAW Exception that all other exception classes extend."""
@@ -15,10 +13,6 @@ class PRAWException(Exception):
 
 class APIException(PRAWException):
     """Indicate exception that involve responses from Reddit's API."""
-
-    error_type: ClassVar[str] = ...
-    message: ClassVar[str] = ...
-    field: ClassVar[str] = ...
 
     def __init__(self, error_type: str, message: str, field: str):
         """Initialize an instance of APIException.
