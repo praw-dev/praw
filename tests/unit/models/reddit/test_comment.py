@@ -111,5 +111,5 @@ class TestComment(UnitTest):
             comment._ipython_canary_method_should_not_exist_
 
     def test_not_str(self):
-        comment_repr = repr(Comment(self.reddit, id=1)).replace('""', "''")
+        comment_repr = repr(Comment(self.reddit, id=3)).replace('""', "''")
         assert comment_repr == "Comment(id='3')"
