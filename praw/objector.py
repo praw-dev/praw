@@ -1,13 +1,19 @@
 """Provides the Objector class."""
+from .models.reddit.base import RedditBase
 from .exceptions import APIException, ClientException
 from .util import snake_case_keys
+from typing import Dict, List, Any, Union, Optional, NoReturn, TypeVar
+
+Reddit = TypeVar("Reddit")
 
 
 class Objector:
     """The objector builds :class:`.RedditBase` objects."""
 
     @classmethod
-    def parse_error(cls, data):
+    def parse_error(
+        cls, data: Union[List[Any], Dict[str, Dict[str, str]]]
+    ) -> Optional[APIException]:
         """Convert JSON response into an error object.
 
         :param data: The dict to be converted.
@@ -36,13 +42,17 @@ class Objector:
         return APIException(*errors[0])
 
     @classmethod
-    def check_error(cls, data):
+    def check_error(
+        cls, data: Union[List[Any], Dict[str, Dict[str, str]]]
+    ) -> NoReturn:
         """Raise an error if the argument resolves to an error object."""
         error = cls.parse_error(data)
         if error:
             raise error
 
-    def __init__(self, reddit, parsers=None):
+    def __init__(
+        self, reddit: Reddit, parsers: Optional[Dict[str, Any]] = None
+    ):
         """Initialize an Objector instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
@@ -118,7 +128,9 @@ class Objector:
             return data
         return parser.parse(data, self._reddit)
 
-    def objectify(self, data):
+    def objectify(
+        self, data: Optional[Union[Dict[str, Any], List[Any]]]
+    ) -> Optional[Union[RedditBase, Dict[str, Any], List[Any]]]:
         """Create RedditBase objects from data.
 
         :param data: The structured data.
