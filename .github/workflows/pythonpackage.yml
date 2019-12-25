@@ -17,6 +17,8 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Upgrade all installed pip packages (setuptools, pip, etc.)
+      run: pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
     - name: Install project dependencies
       run: python setup.py install
     - name: Install test dependencies
@@ -42,6 +44,8 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Upgrade all installed pip packages (setuptools, pip, etc.)
+        run: pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
       - name: Install project dependencies
         run: python setup.py install
       - name: Install test dependencies
