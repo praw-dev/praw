@@ -19,7 +19,7 @@ class Listing(PRAWBase):
         """Objectify the CHILD_ATTRIBUTE attribute."""
         if attribute == self.CHILD_ATTRIBUTE:
             value = self._reddit._objector.objectify(value)
-        super(Listing, self).__setattr__(attribute, value)
+        super().__setattr__(attribute, value)
 
 
 class FlairListing(Listing):

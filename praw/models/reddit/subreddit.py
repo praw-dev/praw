@@ -436,7 +436,7 @@ class Subreddit(
             raise TypeError(
                 "Either `display_name` or `_data` must be provided."
             )
-        super(Subreddit, self).__init__(reddit, _data=_data)
+        super().__init__(reddit, _data=_data)
         if display_name:
             self.display_name = display_name
         self._path = API_PATH["subreddit"].format(subreddit=self)
@@ -2101,7 +2101,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         """
         other_settings = self._handle_permissions(permissions, other_settings)
-        super(ModeratorRelationship, self).add(redditor, **other_settings)
+        super().add(redditor, **other_settings)
 
     # pylint: enable=arguments-differ
 

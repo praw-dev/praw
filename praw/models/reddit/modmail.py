@@ -136,7 +136,7 @@ class ModmailConversation(RedditBase):
             (default: False).
 
         """
-        super(ModmailConversation, self).__init__(reddit, _data=_data)
+        super().__init__(reddit, _data=_data)
         if bool(id) == bool(_data):
             raise TypeError("Either `id` or `_data` must be provided.")
 
@@ -338,7 +338,7 @@ class ModmailObject(RedditBase):
         """Objectify the AUTHOR_ATTRIBUTE attribute."""
         if attribute == self.AUTHOR_ATTRIBUTE:
             value = self._reddit._objector.objectify(value)
-        super(ModmailObject, self).__setattr__(attribute, value)
+        super().__setattr__(attribute, value)
 
 
 class ModmailAction(ModmailObject):

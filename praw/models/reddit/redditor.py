@@ -125,7 +125,7 @@ class Redditor(
             assert (
                 isinstance(_data, dict) and "name" in _data
             ), "Please file a bug with PRAW"
-        super(Redditor, self).__init__(reddit, _data=_data)
+        super().__init__(reddit, _data=_data)
         self._listing_use_sort = True
         if name:
             self.name = name
