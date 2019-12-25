@@ -24,7 +24,7 @@ jobs:
     - name: Install test dependencies
       run: pip install black flake8 pydocstyle sphinx sphinx_rtd_theme
     - name: Check code formatting with black
-      run: black --check --verbose *.py docs praw tests
+      run: black --check --verbose .
     - name: Lint with flake8
       run: flake8 --exclude=.eggs,build,docs
     - name: Check docstyle with pydocstyle
