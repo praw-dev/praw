@@ -71,7 +71,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         """Provide an instance of :class:`.SubredditStream`.
 
         Streams can be used to indefinitely retrieve new comments made to a
-        subreddit, like:
+        multireddit, like:
 
         .. code:: python
 
@@ -79,8 +79,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
                print(comment)
 
         Additionally, new submissions can be retrieved via the stream. In the
-        following example all submissions are fetched via the special subreddit
-        ``all``:
+        following example all new submissions to the multireddit are fetched:
 
         .. code:: python
 
