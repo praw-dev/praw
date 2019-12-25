@@ -52,6 +52,12 @@ jobs:
         run: python setup.py install
       - name: Install test dependencies
         run: pip install pytest coverage
+      - name: Install betamax and plugins 
+        # Windows + Python 3.8 bypass attempts
+        run: |
+          pip install "betamax >=0.8, <0.9"
+          pip install "betamax-matchers >=0.3.0, <0.5"
+          pip install "betamax-serializers >=0.2, <0.3"
       - name: Run tests
         run: python -m coverage run ./setup.py test 
       - name: Print coverage
