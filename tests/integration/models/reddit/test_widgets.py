@@ -975,4 +975,3 @@ class TestWidget(IntegrationTest):
             assert len(widgets.sidebar) >= 2
         assert widgets.sidebar[0] != widgets.sidebar[1]
         assert widgets.sidebar[0] != widgets.sidebar[1].id
-        assert "\xf0\x9f\x98\x80" != widgets.sidebar[0]  # for python 2
