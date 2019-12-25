@@ -1,16 +1,9 @@
-*.bak
 *.egg
 *.egg-info/
 *.eggs/
 *.pyc
-*.pyproj
-*.sln
-*.vs/
-*~
-.DS_Store
 .cache/
 .coverage
-.idea/
 .pytest_cache/
 .tox/
 _build/
