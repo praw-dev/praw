@@ -1,16 +1,17 @@
-"""Provide the ModAction class."""
+"""A placeholder for the old modaction.py file.
 
-from .base import PRAWBase
+The new file can be found at praw/models/mod_action.py.
 
+Do not import this module, as it is deprecated.
+"""
 
-class ModAction(PRAWBase):
-    """Represent a moderator action."""
+import warnings
+from .mod_action import *  # noqa
 
-    @property
-    def mod(self):
-        """Return the Redditor who the action was issued by."""
-        return self._reddit.redditor(self._mod)  # pylint: disable=no-member
-
-    @mod.setter
-    def mod(self, value):
-        self._mod = value  # pylint: disable=attribute-defined-outside-init
+warnings.warn(
+    "The name modaction has been deprecated. "
+    "Please import modaction as mod_action. "
+    "This feature will be removed on the next major version release.",
+    DeprecationWarning,
+    stacklevel=2,
+)

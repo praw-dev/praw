@@ -33,6 +33,8 @@ Unreleased
 
 * :meth:`.moderator_subreddits` as :meth:`.Redditor.moderated` provides more
   functionality.
+* The file for ModActions (praw/models/modaction.py) has been moved to
+  praw/models/mod_action.py and the previous has been Deprecated.
 
 6.4.0 (2019/09/21)
 ------------------
