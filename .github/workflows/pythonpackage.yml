@@ -6,7 +6,7 @@ jobs:
   lint:
     runs-on: ${{ matrix.os }}
     strategy:
-      max-parallel: 9
+      max-parallel: 3 # We need this limit or else the tests fail
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
         python-version: [3.6, 3.7, 3.8]
@@ -34,7 +34,7 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
-      max-parallel: 12
+      max-parallel: 4 # We need this limit or else the tests fail
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
         python-version: [3.5, 3.6, 3.7, 3.8]
