@@ -41,7 +41,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         return SubListing(self._reddit, self._path, "submitted")
 
     def downvoted(self, **generator_kwargs):
-        """Return a ListingGenerator for items the user has downvoted.
+        """Return a :class:`.ListingGenerator` for items the user has downvoted.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
         is not authorized to access the list. Note that because this function
@@ -57,7 +57,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         )
 
     def gildings(self, **generator_kwargs):
-        """Return a ListingGenerator for items the user has gilded.
+        """Return a :class:`.ListingGenerator` for items the user has gilded.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
         is not authorized to access the list. Note that because this function
@@ -75,7 +75,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         )
 
     def hidden(self, **generator_kwargs):
-        """Return a ListingGenerator for items the user has hidden.
+        """Return a :class:`.ListingGenerator` for items the user has hidden.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
         is not authorized to access the list. Note that because this function
@@ -91,7 +91,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         )
 
     def saved(self, **generator_kwargs):
-        """Return a ListingGenerator for items the user has saved.
+        """Return a :class:`.ListingGenerator` for items the user has saved.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
         is not authorized to access the list. Note that because this function
@@ -107,7 +107,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         )
 
     def upvoted(self, **generator_kwargs):
-        """Return a ListingGenerator for items the user has upvoted.
+        """Return a :class:`.ListingGenerator` for items the user has upvoted.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
         is not authorized to access the list. Note that because this function
@@ -124,7 +124,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
 
 class SubListing(BaseListingMixin):
-    """Helper class for generating ListingGenerator objects."""
+    """Helper class for generating :class:`.ListingGenerator` objects."""
 
     def __init__(self, reddit, base_path, subpath):
         """Initialize a SubListing instance.

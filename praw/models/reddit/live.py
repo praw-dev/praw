@@ -371,6 +371,9 @@ class LiveThread(RedditBase):
         :returns: A :class:`.ListingGenerator` object which yields
             :class:`.Submission` object.
 
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+
         Usage:
 
         .. code-block:: python
@@ -408,6 +411,9 @@ class LiveThread(RedditBase):
             :class:`.ListingGenerator` constructor.
         :returns: A :class:`.ListingGenerator` object which yields
             :class:`.LiveUpdate` object.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
 
         Usage:
 

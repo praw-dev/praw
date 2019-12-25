@@ -8,7 +8,7 @@ class SubmissionListingMixin(PRAWBase):
     """Adds additional methods pertaining to Submission instances."""
 
     def duplicates(self, **generator_kwargs):
-        """Return a ListingGenerator for the submission's duplicates.
+        """Return a :class:`.ListingGenerator` for the submission's duplicates.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
