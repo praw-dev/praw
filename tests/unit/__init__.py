@@ -1,9 +1,13 @@
 """PRAW Unit test suite."""
 from praw import Reddit
 
+from .. import PrawTest
 
-class UnitTest:
+class UnitTest(PrawTest):
     """Base class for PRAW unit tests."""
+
+    def __repr__(self, name="Unit Test"):
+        return super().__repr__(name)
 
     def setup(self):
         """Setup runs before all test cases."""

@@ -3,9 +3,14 @@ import pytest
 from betamax import Betamax
 from praw import Reddit
 
+from .. import PrawTest
 
-class IntegrationTest:
+
+class IntegrationTest(PrawTest):
     """Base class for PRAW integration tests."""
+
+    def __repr__(self, name="Integration Test"):
+        return super().__repr__(name)
 
     def setup(self):
         """Setup runs before all test cases."""
