@@ -3,6 +3,8 @@ import pytest
 
 from praw.models.list.base import BaseList
 
+from ... import UnitTest
+
 
 class DummyObjector:
     @staticmethod
@@ -15,8 +17,9 @@ class Dummy:
         self._objector = DummyObjector
 
 
-class TestBaseList:
+class TestBaseList(UnitTest):
     def setup(self):
+        super().setup()
         self._prev_child_attribute = BaseList.CHILD_ATTRIBUTE
 
     def teardown(self):

@@ -6,8 +6,10 @@ import pytest
 from praw.config import Config
 from praw.exceptions import ClientException
 
+from . import UnitTest
 
-class TestConfig:
+
+class TestConfig(UnitTest):
     @staticmethod
     def _assert_config_read(environment, mock_config):
         mock_instance = mock_config.return_value
