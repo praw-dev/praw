@@ -1,8 +1,10 @@
 """Provides the Objector class."""
-from .models.reddit.base import RedditBase
-from .exceptions import APIException, ClientException
-from .util import snake_case_keys
+
 from typing import Dict, List, Any, Union, Optional, NoReturn, TypeVar
+
+from .exceptions import APIException, ClientException
+from .models.reddit.base import RedditBase
+from .util import snake_case_keys
 
 Reddit = TypeVar("Reddit")
 
