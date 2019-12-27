@@ -1,7 +1,10 @@
 """Provide the Preferences class."""
 from json import dumps
+from typing import Dict, TypeVar, Union
 
 from ..const import API_PATH
+
+Reddit = TypeVar("Reddit")
 
 
 class Preferences:
@@ -11,7 +14,7 @@ class Preferences:
     currently authenticated user.
     """
 
-    def __call__(self):
+    def __call__(self) -> Dict[str, Union[bool, int, str]]:
         """Return the preference settings of the authenticated user as a dict.
 
         This method is intended to be accessed as ``reddit.user.preferences()``
@@ -27,14 +30,14 @@ class Preferences:
         """
         return self._reddit.get(API_PATH["preferences"])
 
-    def __init__(self, reddit):
+    def __init__(self, reddit: Reddit):
         """Create a Preferences instance.
 
         :param reddit: The Reddit instance.
         """
         self._reddit = reddit
 
-    def update(self, **preferences):
+    def update(self, **preferences: Union[bool, int, str]):
         """Modify the specified settings.
 
         :param 3rd_party_data_personalized_ads: Allow Reddit to use data
