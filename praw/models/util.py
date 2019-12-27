@@ -40,7 +40,7 @@ class ExponentialCounter:
         self._base = 1
         self._max = max_counter
 
-    def counter(self) -> ont:
+    def counter(self) -> int:
         """Increment the counter and return the current value with jitter."""
         max_jitter = self._base / 16.0
         value = self._base + random.random() * max_jitter - max_jitter / 2
