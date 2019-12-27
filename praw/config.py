@@ -3,7 +3,6 @@ import configparser
 import os
 import sys
 from threading import Lock
-from typing import Any, Union
 
 from .exceptions import ClientException
 
@@ -57,7 +56,7 @@ class Config:
             raise ClientException("No short domain specified.")
         return self._short_url
 
-    def __init__(self, site_name: str, **settings: Union[str, Any]):
+    def __init__(self, site_name: str, **settings: str):
         """Initialize a Config instance."""
         with Config.LOCK:
             if Config.CONFIG is None:

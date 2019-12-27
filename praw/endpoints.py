@@ -2,7 +2,7 @@
 
 # flake8: noqa
 # fmt: off
-API_PATH= {
+API_PATH = {
     "about_edited":            "r/{subreddit}/about/edited/",
     "about_log":               "r/{subreddit}/about/log/",
     "about_modqueue":          "r/{subreddit}/about/modqueue/",

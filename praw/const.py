@@ -1,5 +1,5 @@
 """PRAW constants."""
-from .endpoints import API_PATH  # noqa
+from .endpoints import API_PATH  # noqa: F401
 
 __version__ = "6.4.1.dev0"
 
