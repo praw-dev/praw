@@ -1,8 +1,11 @@
 """Provide the RedditBase class."""
+from typing import Any, Dict, TypeVar
 from urllib.parse import urlparse
 
 from ...exceptions import ClientException
 from ..base import PRAWBase
+
+Reddit = TypeVar("Reddit")
 
 
 class RedditBase(PRAWBase):
@@ -15,7 +18,7 @@ class RedditBase(PRAWBase):
             raise ClientException("Invalid URL: {}".format(url))
         return parsed.path.rstrip("/").split("/")
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other.lower() == str(self).lower()
@@ -24,7 +27,7 @@ class RedditBase(PRAWBase):
             and str(self).lower() == str(other).lower()
         )
 
-    def __getattr__(self, attribute):
+    def __getattr__(self, attribute: str) -> Any:
         """Return the value of `attribute`."""
         if not attribute.startswith("_") and not self._fetched:
             self._fetch()
@@ -35,11 +38,11 @@ class RedditBase(PRAWBase):
             )
         )
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         """Return the hash of the current instance."""
         return hash(self.__class__.__name__) ^ hash(str(self).lower())
 
-    def __init__(self, reddit, _data):
+    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
         """Initialize a RedditBase instance (or a subclass).
 
         :param reddit: An instance of :class:`~.Reddit`.
@@ -48,17 +51,17 @@ class RedditBase(PRAWBase):
         super().__init__(reddit, _data=_data)
         self._fetched = False
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""
         return "{}({}={!r})".format(
             self.__class__.__name__, self.STR_FIELD, str(self)
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the instance."""
         return getattr(self, self.STR_FIELD)
 
-    def __ne__(self, other):
+    def __ne__(self, other: Any) -> bool:
         """Return whether the other instance differs from the current."""
         return not self == other
 
