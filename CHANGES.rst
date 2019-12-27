@@ -36,6 +36,11 @@ Unreleased
 * The file for ModActions (praw/models/modaction.py) has been moved to
   praw/models/mod_action.py and the previous has been Deprecated.
 
+**Expected Changes**
+
+* The behavior of :class:`.APIException` will no longer unicode-escape strings
+  in the next minor release
+
 6.4.0 (2019/09/21)
 ------------------
 
