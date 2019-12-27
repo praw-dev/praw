@@ -1,5 +1,5 @@
 """Provides the User class."""
-from typing import Any, Dict, Generator, List, Optional, TypeVar, Union
+from typing import Dict, Generator, List, Optional, TypeVar, Union
 
 from ..const import API_PATH
 from ..models import Preferences
