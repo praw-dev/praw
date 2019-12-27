@@ -1,7 +1,11 @@
 """Provide CommentForest for Submission comments."""
 from heapq import heappop, heappush
+from typing import List, Optional, TypeVar, Union
 
 from .reddit.more import MoreComments
+
+Submission = TypeVar("Submission")
+Comment = TypeVar("Comment")
 
 
 class CommentForest:
@@ -29,7 +33,7 @@ class CommentForest:
                     queue.append((comment, item))
         return more_comments
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         """Return the comment at position ``index`` in the list.
 
         This method is to be used like an array access, such as:
@@ -49,7 +53,9 @@ class CommentForest:
         """
         return self._comments[index]
 
-    def __init__(self, submission, comments=None):
+    def __init__(
+        self, submission: Submission, comments: Optional[List[Comment]] = None
+    ):
         """Initialize a CommentForest instance.
 
         :param submission: An instance of :class:`~.Subreddit` that is the
@@ -61,7 +67,7 @@ class CommentForest:
         self._comments = comments
         self._submission = submission
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return the number of top-level comments in the forest."""
         return len(self._comments)
 
@@ -80,7 +86,7 @@ class CommentForest:
         for comment in comments:
             comment.submission = self._submission
 
-    def list(self):
+    def list(self) -> Union[Comment, MoreComments]:
         """Return a flattened list of all Comments.
 
         This list may contain :class:`.MoreComments` instances if
@@ -96,7 +102,9 @@ class CommentForest:
                 queue.extend(comment.replies)
         return comments
 
-    def replace_more(self, limit=32, threshold=0):
+    def replace_more(
+        self, limit: int = 32, threshold: int = 0
+    ) -> List[MoreComments]:
         """Update the comment forest by resolving instances of MoreComments.
 
         :param limit: The maximum number of :class:`.MoreComments` instances to
