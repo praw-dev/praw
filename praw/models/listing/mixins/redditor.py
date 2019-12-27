@@ -44,7 +44,9 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         """
         return SubListing(self._reddit, self._path, "submitted")
 
-    def downvoted(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Generator[Any, None, None]:
+    def downvoted(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Any, None, None]:
         """Return a :class:`.ListingGenerator` for items the user has downvoted.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -60,7 +62,9 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
             self._reddit, urljoin(self._path, "downvoted"), **generator_kwargs
         )
 
-    def gildings(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Generator[Any, None, None]:
+    def gildings(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Any, None, None]:
         """Return a :class:`.ListingGenerator` for items the user has gilded.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -78,7 +82,9 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
             **generator_kwargs
         )
 
-    def hidden(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Generator[Any, None, None]:
+    def hidden(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Any, None, None]:
         """Return a :class:`.ListingGenerator` for items the user has hidden.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -94,7 +100,9 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
             self._reddit, urljoin(self._path, "hidden"), **generator_kwargs
         )
 
-    def saved(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Generator[Any, None, None]:
+    def saved(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Any, None, None]:
         """Return a :class:`.ListingGenerator` for items the user has saved.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -110,7 +118,9 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
             self._reddit, urljoin(self._path, "saved"), **generator_kwargs
         )
 
-    def upvoted(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Generator[Any, None, None]:
+    def upvoted(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Any, None, None]:
         """Return a :class:`.ListingGenerator` for items the user has upvoted.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
