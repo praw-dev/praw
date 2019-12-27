@@ -38,7 +38,7 @@ def run_static():
     """
     success = True
     success &= do_process(["black ."], shell=True)
-    success &= do_process(["flake8", "--exclude=.eggs,build,dist,docs,.tox"])
+    success &= do_process(["flake8", "--exclude=.eggs,build,docs"])
     success &= do_process(["pydocstyle", "praw"])
     # success &= do_process(["pylint", "--rcfile=.pylintrc", "praw"])
 

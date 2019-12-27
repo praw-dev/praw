@@ -18,7 +18,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Upgrade all installed pip packages (setuptools, pip, etc.)
-      run: pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
+      run: pip upgrade setuptools
     - name: Install project dependencies
       run: python setup.py install
     - name: Install test dependencies
@@ -45,7 +45,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade all installed pip packages (setuptools, pip, etc.)
-        run: pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
+        run: pip upgrade setuptools
       - name: Get wheel
         run: pip install wheel
       - name: Install project dependencies
