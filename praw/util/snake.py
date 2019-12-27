@@ -1,4 +1,4 @@
-"""Contains functions dealing with snake case conversions"""
+"""Contains functions dealing with snake case conversions."""
 
 import re
 
