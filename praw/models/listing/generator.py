@@ -1,8 +1,12 @@
 """Provide the ListingGenerator class."""
 from copy import deepcopy
+from typing import Any, Dict, Optional, TypeVar
 
 from .listing import FlairListing
 from ..base import PRAWBase
+
+Reddit = TypeVar("Reddit")
+_ListingGenerator = TypeVar("_ListingGenerator")
 
 
 class ListingGenerator(PRAWBase):
@@ -15,7 +19,13 @@ class ListingGenerator(PRAWBase):
 
     """
 
-    def __init__(self, reddit, url, limit=100, params=None):
+    def __init__(
+        self,
+        reddit: Reddit,
+        url: str,
+        limit: int = 100,
+        params: Optional[Dict[str, str]] = None,
+    ):
         """Initialize a ListingGenerator instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -39,11 +49,11 @@ class ListingGenerator(PRAWBase):
         self.url = url
         self.yielded = 0
 
-    def __iter__(self):
+    def __iter__(self) -> _ListingGenerator:
         """Permit ListingGenerator to operate as an iterator."""
         return self
 
-    def __next__(self):
+    def __next__(self) -> Any:
         """Permit ListingGenerator to operate as a generator."""
         if self.limit is not None and self.yielded >= self.limit:
             raise StopIteration()
