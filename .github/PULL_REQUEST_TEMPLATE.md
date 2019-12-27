@@ -1,4 +1,4 @@
-Fixes # (provide issue number of applicable)
+Fixes # (provide issue number if applicable)
 
 ## Feature Summary and Justification
 
