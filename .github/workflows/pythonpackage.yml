@@ -52,7 +52,7 @@ jobs:
         run: pip install .
       - name: Install test dependencies
         run: pip install pytest coverage
-      - name: Install betamax and plugins 
+      - name: Install betamax and plugins
         # Windows + Python 3.8 support
         run: |
           pip install "betamax >=0.8, <0.9"
