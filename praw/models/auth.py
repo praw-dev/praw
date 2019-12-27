@@ -6,6 +6,8 @@ from prawcore import (
     session,
 )
 
+from typing import Dict, List, Literal, NoReturn, Optional, Set, Union
+
 from .base import PRAWBase
 from ..exceptions import ClientException
 
@@ -14,7 +16,7 @@ class Auth(PRAWBase):
     """Auth provides an interface to Reddit's authorization."""
 
     @property
-    def limits(self):
+    def limits(self) -> Dict[str, Optional[Union[str, int]]]:
         """Return a dictionary containing the rate limit info.
 
         The keys are:
@@ -42,7 +44,7 @@ class Auth(PRAWBase):
             "used": data.used,
         }
 
-    def authorize(self, code):
+    def authorize(self, code: str) -> Optional[str]:
         """Complete the web authorization flow and return the refresh token.
 
         :param code: The code obtained through the request to the redirect uri.
@@ -58,7 +60,9 @@ class Auth(PRAWBase):
         self._reddit._core = self._reddit._authorized_core = authorized_session
         return authorizer.refresh_token
 
-    def implicit(self, access_token, expires_in, scope):
+    def implicit(
+        self, access_token: str, expires_in: int, scope: str
+    ) -> NoReturn:
         """Set the active authorization to be an implicit authorization.
 
         :param access_token: The access_token obtained from Reddit's callback.
@@ -84,7 +88,7 @@ class Auth(PRAWBase):
         )
         self._reddit._core = self._reddit._authorized_core = implicit_session
 
-    def scopes(self):
+    def scopes(self) -> Set[str]:
         """Return a set of scopes included in the current authorization.
 
         For read-only authorizations this should return ``{'*'}``.
@@ -95,7 +99,13 @@ class Auth(PRAWBase):
             authorizer.refresh()
         return authorizer.scopes
 
-    def url(self, scopes, state, duration="permanent", implicit=False):
+    def url(
+        self,
+        scopes: List[str],
+        state: str,
+        duration: Literal["temporary", "permanent"] = "permanent",
+        implicit: bool = False,
+    ) -> str:
         """Return the URL used out-of-band to grant access to your application.
 
         :param scopes: A list of OAuth scopes to request authorization for.
