@@ -145,7 +145,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             )
         self._replies = []
         self._submission = None
-        super(Comment, self).__init__(reddit, _data=_data)
+        super().__init__(reddit, _data=_data)
         if id:
             self.id = id
         elif url:
@@ -165,7 +165,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             attribute = "_replies"
         elif attribute == "subreddit":
             value = self._reddit.subreddit(value)
-        super(Comment, self).__setattr__(attribute, value)
+        super().__setattr__(attribute, value)
 
     def _fetch_info(self):
         return ("info", {}, {"id": self.fullname})

@@ -49,14 +49,14 @@ class User(PRAWBase):
         This class is intended to be interfaced with through ``reddit.user``.
 
         """
-        super(User, self).__init__(reddit, _data=None)
+        super().__init__(reddit, _data=None)
 
     def blocked(self):
         """Return a RedditorList of blocked Redditors."""
         return self._reddit.get(API_PATH["blocked"])
 
     def contributor_subreddits(self, **generator_kwargs):
-        """Return a ListingGenerator of subreddits user is a contributor of.
+        """Return a :class:`.ListingGenerator` of subreddits user is a contributor of.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -100,7 +100,7 @@ class User(PRAWBase):
         return self._me
 
     def moderator_subreddits(self, **generator_kwargs):
-        """Return a ListingGenerator of subreddits the user moderates (DEPRECATED).
+        """Return a :class:`.ListingGenerator` of moderated subreddits.
 
         ..warning:: (Deprecated) This method will be removed in the next major
                     version of PRAW. Please use :meth:`.Redditor.moderated`
@@ -131,7 +131,7 @@ class User(PRAWBase):
         return self._reddit.get(API_PATH["my_multireddits"])
 
     def subreddits(self, **generator_kwargs):
-        """Return a ListingGenerator of subreddits the user is subscribed to.
+        """Return a :class:`.ListingGenerator` of subreddits the user is subscribed to.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

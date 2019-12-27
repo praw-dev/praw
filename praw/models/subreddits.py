@@ -14,25 +14,41 @@ class Subreddits(PRAWBase):
         return ",".join([str(x) for x in subreddit_list])
 
     def default(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator` for default subreddits."""
+        """Return a :class:`.ListingGenerator` for default subreddits.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+        """
         return ListingGenerator(
             self._reddit, API_PATH["subreddits_default"], **generator_kwargs
         )
 
     def gold(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator` for gold subreddits."""
+        """Return a :class:`.ListingGenerator` for gold subreddits.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+        """
         return ListingGenerator(
             self._reddit, API_PATH["subreddits_gold"], **generator_kwargs
         )
 
     def new(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator` for new subreddits."""
+        """Return a :class:`.ListingGenerator` for new subreddits.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+        """
         return ListingGenerator(
             self._reddit, API_PATH["subreddits_new"], **generator_kwargs
         )
 
     def popular(self, **generator_kwargs):
-        """Return a :class:`.ListingGenerator` for popular subreddits."""
+        """Return a :class:`.ListingGenerator` for popular subreddits.
+
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
+        """
         return ListingGenerator(
             self._reddit, API_PATH["subreddits_popular"], **generator_kwargs
         )
@@ -71,6 +87,8 @@ class Subreddits(PRAWBase):
 
         :param query: The query string to filter subreddits by.
 
+        Additional keyword arguments are passed in the initialization of
+        :class:`.ListingGenerator`.
         """
         self._safely_add_arguments(generator_kwargs, "params", q=query)
         return ListingGenerator(

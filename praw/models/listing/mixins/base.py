@@ -29,7 +29,7 @@ class BaseListingMixin(PRAWBase):
             )
 
     def controversial(self, time_filter="all", **generator_kwargs):
-        """Return a ListingGenerator for controversial submissions.
+        """Return a :class:`.ListingGenerator` for controversial submissions.
 
         :param time_filter: Can be one of: all, day, hour, month, week, year
             (default: all).
@@ -57,7 +57,7 @@ class BaseListingMixin(PRAWBase):
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
     def hot(self, **generator_kwargs):
-        """Return a ListingGenerator for hot items.
+        """Return a :class:`.ListingGenerator` for hot items.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -79,7 +79,7 @@ class BaseListingMixin(PRAWBase):
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
     def new(self, **generator_kwargs):
-        """Return a ListingGenerator for new items.
+        """Return a :class:`.ListingGenerator` for new items.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -101,7 +101,7 @@ class BaseListingMixin(PRAWBase):
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
     def top(self, time_filter="all", **generator_kwargs):
-        """Return a ListingGenerator for top submissions.
+        """Return a :class:`.ListingGenerator` for top submissions.
 
         :param time_filter: Can be one of: all, day, hour, month, week, year
             (default: all).

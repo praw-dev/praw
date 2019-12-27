@@ -89,7 +89,7 @@ class Collection(RedditBase):
         :param collection_id: The ID of the Collection (optional).
         :param permalink: The permalink of the Collection (optional).
         """
-        super(Collection, self).__init__(reddit, _data)
+        super().__init__(reddit, _data)
 
         if (_data, collection_id, permalink).count(None) != 2:
             raise TypeError(
@@ -142,7 +142,7 @@ class Collection(RedditBase):
             self.author = self._reddit.redditor(value)
         elif attribute == "sorted_links":
             value = self._reddit._objector.objectify(value)
-        super(Collection, self).__setattr__(attribute, value)
+        super().__setattr__(attribute, value)
 
     def _fetch_info(self):
         return ("collection", {}, self._info_params)
@@ -240,7 +240,7 @@ class CollectionModeration(PRAWBase):
 
         :param collection_id: The ID of a collection.
         """
-        super(CollectionModeration, self).__init__(reddit, _data=None)
+        super().__init__(reddit, _data=None)
         self.collection_id = collection_id
 
     def add_post(self, submission):
@@ -444,7 +444,7 @@ class SubredditCollections(PRAWBase):
 
     def __init__(self, reddit, subreddit, _data=None):
         """Initialize an instance of SubredditCollections."""
-        super(SubredditCollections, self).__init__(reddit, _data)
+        super().__init__(reddit, _data)
         self.subreddit = subreddit
 
     def __iter__(self):
@@ -479,7 +479,7 @@ class SubredditCollectionsModeration(PRAWBase):
 
     def __init__(self, reddit, sub_fullname, _data=None):
         """Initialize the SubredditCollectionsModeration instance."""
-        super(SubredditCollectionsModeration, self).__init__(reddit, _data)
+        super().__init__(reddit, _data)
         self.subreddit_fullname = sub_fullname
 
     def create(self, title, description):

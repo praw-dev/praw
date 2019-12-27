@@ -10,11 +10,11 @@ class Front(SubredditListingMixin):
 
     def __init__(self, reddit):
         """Initialize a Front instance."""
-        super(Front, self).__init__(reddit, _data=None)
+        super().__init__(reddit, _data=None)
         self._path = "/"
 
     def best(self, **generator_kwargs):
-        """Return a ListingGenerator for best items.
+        """Return a :class:`.ListingGenerator` for best items.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

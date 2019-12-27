@@ -6,7 +6,7 @@ from .. import IntegrationTest
 
 class TestCommentForest(IntegrationTest):
     def setup(self):
-        super(TestCommentForest, self).setup()
+        super().setup()
         # Responses do not decode well on travis so manually re-enable gzip.
         self.reddit._core._requestor._http.headers["Accept-Encoding"] = "gzip"
 

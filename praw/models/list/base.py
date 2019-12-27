@@ -13,7 +13,7 @@ class BaseList(PRAWBase):
         :param reddit: An instance of :class:`~.Reddit`.
 
         """
-        super(BaseList, self).__init__(reddit, _data=_data)
+        super().__init__(reddit, _data=_data)
 
         if self.CHILD_ATTRIBUTE is None:
             raise NotImplementedError("BaseList must be extended.")

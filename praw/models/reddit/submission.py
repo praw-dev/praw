@@ -191,7 +191,7 @@ class Submission(
             raise TypeError(
                 "Exactly one of `id`, `url`, or `_data` must be provided."
             )
-        super(Submission, self).__init__(reddit, _data=_data)
+        super().__init__(reddit, _data=_data)
         self.comment_limit = 2048
 
         # Specify the sort order for ``comments``
@@ -210,7 +210,7 @@ class Submission(
             value = Redditor.from_data(self._reddit, value)
         elif attribute == "subreddit":
             value = Subreddit(self._reddit, value)
-        super(Submission, self).__setattr__(attribute, value)
+        super().__setattr__(attribute, value)
 
     def _chunk(self, other_submissions, chunk_size):
         all_submissions = [self.fullname]
