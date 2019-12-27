@@ -6,7 +6,7 @@ from prawcore import (
     session,
 )
 
-from typing import Dict, List, Literal, NoReturn, Optional, Set, Union
+from typing import Dict, List, NoReturn, Optional, Set, Union
 
 from .base import PRAWBase
 from ..exceptions import ClientException
@@ -103,7 +103,7 @@ class Auth(PRAWBase):
         self,
         scopes: List[str],
         state: str,
-        duration: Literal["temporary", "permanent"] = "permanent",
+        duration: str = "permanent",
         implicit: bool = False,
     ) -> str:
         """Return the URL used out-of-band to grant access to your application.
