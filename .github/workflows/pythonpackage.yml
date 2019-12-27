@@ -6,7 +6,7 @@ jobs:
   lint:
     runs-on: ${{ matrix.os }}
     strategy:
-      max-parallel: 3 # We need this limit or else the tests fail
+      max-parallel: 3
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
         python-version: [3.6, 3.7, 3.8]
@@ -18,9 +18,9 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Upgrade all installed pip packages (setuptools, pip, etc.)
-      run: pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
+      run: pip install --upgrade setuptools
     - name: Install project dependencies
-      run: python setup.py install
+      run: pip install .
     - name: Install test dependencies
       run: pip install black flake8 pydocstyle sphinx sphinx_rtd_theme
     - name: Check code formatting with black
@@ -34,7 +34,7 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
-      max-parallel: 4 # We need this limit or else the tests fail
+      max-parallel: 4
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
         python-version: [3.5, 3.6, 3.7, 3.8]
@@ -45,15 +45,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Upgrade all installed pip packages (setuptools, pip, etc.)
-        run: pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
+        run: pip install --upgrade setuptools
       - name: Get wheel
         run: pip install wheel
       - name: Install project dependencies
-        run: python setup.py install
+        run: pip install .
       - name: Install test dependencies
         run: pip install pytest coverage
       - name: Install betamax and plugins 
-        # Windows + Python 3.8 bypass attempts
+        # Windows + Python 3.8 support
         run: |
           pip install "betamax >=0.8, <0.9"
           pip install "betamax-matchers >=0.3.0, <0.5"
