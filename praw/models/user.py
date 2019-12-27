@@ -60,7 +60,9 @@ class User(PRAWBase):
         """Return a RedditorList of blocked Redditors."""
         return self._reddit.get(API_PATH["blocked"])
 
-    def contributor_subreddits(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Generator[Subreddit, None, None]:
+    def contributor_subreddits(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Subreddit, None, None]:
         """Return a :class:`.ListingGenerator` of subreddits user is a contributor of.
 
         Additional keyword arguments are passed in the initialization of
@@ -84,7 +86,9 @@ class User(PRAWBase):
             karma_map[subreddit] = row
         return karma_map
 
-    def me(self, use_cache: bool=True) -> Optional[Redditor]:  # pylint: disable=invalid-name
+    def me(
+        self, use_cache: bool = True
+    ) -> Optional[Redditor]:  # pylint: disable=invalid-name
         """Return a :class:`.Redditor` instance for the authenticated user.
 
         In :attr:`~praw.Reddit.read_only` mode, this method returns ``None``.
@@ -104,7 +108,9 @@ class User(PRAWBase):
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me
 
-    def moderator_subreddits(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Generator[Subreddit, None, None]:
+    def moderator_subreddits(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Subreddit, None, None]:
         """Return a :class:`.ListingGenerator` of moderated subreddits.
 
         ..warning:: (Deprecated) This method will be removed in the next major
@@ -135,7 +141,9 @@ class User(PRAWBase):
         """Return a list of multireddits belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
 
-    def subreddits(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Generator[Subreddit, None, None]:
+    def subreddits(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Subreddit, None, None]:
         """Return a :class:`.ListingGenerator` of subreddits the user is subscribed to.
 
         Additional keyword arguments are passed in the initialization of
