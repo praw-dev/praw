@@ -1,4 +1,6 @@
 """Provides the User class."""
+from typing import Any, Dict, Generator, List, Optional, TypeVar, Union
+
 from ..const import API_PATH
 from ..models import Preferences
 from ..util.cache import cachedproperty
@@ -7,12 +9,15 @@ from .listing.generator import ListingGenerator
 from .reddit.redditor import Redditor
 from .reddit.subreddit import Subreddit
 
+Multireddit = TypeVar("Multireddit")
+Reddit = TypeVar("Reddit")
+
 
 class User(PRAWBase):
     """The user class provides methods for the currently authenticated user."""
 
     @cachedproperty
-    def preferences(self):
+    def preferences(self) -> Preferences:
         """Get an instance of :class:`.Preferences`.
 
         The preferences can be accessed as a ``dict`` like so:
@@ -43,7 +48,7 @@ class User(PRAWBase):
         """
         return Preferences(self._reddit)
 
-    def __init__(self, reddit):
+    def __init__(self, reddit: Reddit):
         """Initialize a User instance.
 
         This class is intended to be interfaced with through ``reddit.user``.
@@ -51,11 +56,11 @@ class User(PRAWBase):
         """
         super().__init__(reddit, _data=None)
 
-    def blocked(self):
+    def blocked(self) -> List[Redditor]:
         """Return a RedditorList of blocked Redditors."""
         return self._reddit.get(API_PATH["blocked"])
 
-    def contributor_subreddits(self, **generator_kwargs):
+    def contributor_subreddits(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Generator[Subreddit, None, None]:
         """Return a :class:`.ListingGenerator` of subreddits user is a contributor of.
 
         Additional keyword arguments are passed in the initialization of
@@ -66,11 +71,11 @@ class User(PRAWBase):
             self._reddit, API_PATH["my_contributor"], **generator_kwargs
         )
 
-    def friends(self):
+    def friends(self) -> List[Redditor]:
         """Return a RedditorList of friends."""
         return self._reddit.get(API_PATH["friends"])
 
-    def karma(self):
+    def karma(self) -> Dict[Subreddit, int]:
         """Return a dictionary mapping subreddits to their karma."""
         karma_map = {}
         for row in self._reddit.get(API_PATH["karma"])["data"]:
@@ -79,7 +84,7 @@ class User(PRAWBase):
             karma_map[subreddit] = row
         return karma_map
 
-    def me(self, use_cache=True):  # pylint: disable=invalid-name
+    def me(self, use_cache: bool=True) -> Optional[Redditor]:  # pylint: disable=invalid-name
         """Return a :class:`.Redditor` instance for the authenticated user.
 
         In :attr:`~praw.Reddit.read_only` mode, this method returns ``None``.
@@ -99,7 +104,7 @@ class User(PRAWBase):
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me
 
-    def moderator_subreddits(self, **generator_kwargs):
+    def moderator_subreddits(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Generator[Subreddit, None, None]:
         """Return a :class:`.ListingGenerator` of moderated subreddits.
 
         ..warning:: (Deprecated) This method will be removed in the next major
@@ -126,11 +131,11 @@ class User(PRAWBase):
             self._reddit, API_PATH["my_moderator"], **generator_kwargs
         )
 
-    def multireddits(self):
+    def multireddits(self) -> List[Multireddit]:
         """Return a list of multireddits belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])
 
-    def subreddits(self, **generator_kwargs):
+    def subreddits(self, **generator_kwargs: Union[str, int, Dict[str, str]]) -> Generator[Subreddit, None, None]:
         """Return a :class:`.ListingGenerator` of subreddits the user is subscribed to.
 
         Additional keyword arguments are passed in the initialization of
