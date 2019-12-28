@@ -2,6 +2,18 @@
 import configparser
 import os
 from itertools import islice
+from typing import (
+    NoReturn,
+    Optional,
+    Type,
+    Union,
+    Dict,
+    Any,
+    Sequence,
+    Generator,
+    IO,
+)
+
 
 try:
     from update_checker import update_check
@@ -21,18 +33,6 @@ from prawcore import (
     TrustedAuthenticator,
     UntrustedAuthenticator,
     session,
-)
-
-from typing import (
-    NoReturn,
-    Optional,
-    Type,
-    Union,
-    Dict,
-    Any,
-    Sequence,
-    Generator,
-    IO,
 )
 
 from . import models
