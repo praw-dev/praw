@@ -1,6 +1,6 @@
 """Provide the Emoji class."""
 import os
-from typing import Any, Dict, List, Optional, TypeVar, Union
+from typing import Any, Dict, List, Optional, TypeVar
 
 from ...const import API_PATH
 from ...exceptions import ClientException
@@ -138,7 +138,7 @@ class SubredditEmoji:
                 self._reddit, self.subreddit, emoji_name, _data=emoji_data
             )
 
-    def add(self, name: str, image_path: Union[str, os.PathLike]):
+    def add(self, name: str, image_path: str):
         """Add an emoji to this subreddit.
 
         :param name: The name of the emoji
