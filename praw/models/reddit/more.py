@@ -1,12 +1,17 @@
 """Provide the MoreComments class."""
+from typing import Any, Dict, List, TypeVar
 from ...const import API_PATH
 from ..base import PRAWBase
+
+Comment = TypeVar("Comment")
+_MoreComments = TypeVar("_MoreComments")
+Reddit = TypeVar("Reddit")
 
 
 class MoreComments(PRAWBase):
     """A class indicating there are more comments."""
 
-    def __init__(self, reddit, _data):
+    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
         """Construct an instance of the MoreComments object."""
         self.count = self.parent_id = None
         self.children = []
@@ -14,7 +19,7 @@ class MoreComments(PRAWBase):
         self._comments = None
         self.submission = None
 
-    def __eq__(self, other):
+    def __eq__(self, other: _MoreComments) -> bool:
         """Return True if these MoreComments instances are the same."""
         return (
             isinstance(other, self.__class__)
@@ -22,14 +27,14 @@ class MoreComments(PRAWBase):
             and self.children == other.children
         )
 
-    def __lt__(self, other):
+    def __lt__(self, other: _MoreComments) -> bool:
         """Provide a sort order on the MoreComments object."""
         # To work with heapq a "smaller" item is the one with the most comments
         # We are intentionally making the biggest element the smallest element
         # to turn the min-heap implementation in heapq into a max-heap.
         return self.count > other.count
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return a string representation of the MoreComments instance."""
         children = self.children[:4]
         if len(self.children) > 4:
@@ -61,7 +66,7 @@ class MoreComments(PRAWBase):
         assert len(comments.children) == 1
         return comments.children[0]
 
-    def comments(self, update=True):
+    def comments(self, update: bool = True) -> List[Comment]:
         """Fetch and return the comments for a single MoreComments object."""
         if self._comments is None:
             if self.count == 0:  # Handle 'continue this thread'
