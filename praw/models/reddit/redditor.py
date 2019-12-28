@@ -1,5 +1,6 @@
 """Provide the Redditor class."""
 from json import dumps
+from typing import Any, Dict, Generator, List, Optional, TypeVar, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
@@ -7,6 +8,15 @@ from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
 from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
+
+Comment = TypeVar("Comment")
+Multireddit = TypeVar("Multireddit")
+Reddit = TypeVar("Reddit")
+_Redditor = TypeVar("_Redditor")
+_RedditorStream = TypeVar("_RedditorStream")
+Submission = TypeVar("Submission")
+Subreddit = TypeVar("Subreddit")
+Trophy = TypeVar("Trophy")
 
 
 class Redditor(
@@ -74,7 +84,7 @@ class Redditor(
         return cls(reddit, data)
 
     @cachedproperty
-    def stream(self):
+    def stream(self) -> _RedditorStream:
         """Provide an instance of :class:`.RedditorStream`.
 
         Streams can be used to indefinitely retrieve new comments made by a
@@ -106,7 +116,13 @@ class Redditor(
     def _path(self):
         return API_PATH["user"].format(user=self)
 
-    def __init__(self, reddit, name=None, fullname=None, _data=None):
+    def __init__(
+        self,
+        reddit: Reddit,
+        name: Optional[str] = None,
+        fullname: Optional[str] = None,
+        _data: Optional[Dict[str, Any]] = None,
+    ):
         """Initialize a Redditor instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
@@ -164,7 +180,7 @@ class Redditor(
             API_PATH["block_user"], params={"account_id": self.fullname}
         )
 
-    def friend(self, note=None):
+    def friend(self, note: str = None):
         """Friend the Redditor.
 
         :param note: A note to save along with the relationship. Requires
@@ -175,7 +191,7 @@ class Redditor(
         """
         self._friend("PUT", data={"note": note} if note else {})
 
-    def friend_info(self):
+    def friend_info(self) -> _Redditor:
         """Return a Redditor instance with specific friend-related attributes.
 
         :returns: A :class:`.Redditor` instance with fields ``date``, ``id``,
@@ -184,7 +200,7 @@ class Redditor(
         """
         return self._reddit.get(API_PATH["friend_v1"].format(user=self))
 
-    def gild(self, months=1):
+    def gild(self, months: int = 1):
         """Gild the Redditor.
 
         :param months: Specifies the number of months to gild up to 36
@@ -198,7 +214,7 @@ class Redditor(
             data={"months": months},
         )
 
-    def moderated(self):
+    def moderated(self) -> List[Subreddit]:
         """Return a list of the redditor's moderated subreddits.
 
         :returns: A ``list`` of :class:`~praw.models.Subreddit` objects.
@@ -226,11 +242,11 @@ class Redditor(
             ]
             return subreddits
 
-    def multireddits(self):
+    def multireddits(self) -> List[Multireddit]:
         """Return a list of the redditor's public multireddits."""
         return self._reddit.get(API_PATH["multireddit_user"].format(user=self))
 
-    def trophies(self):
+    def trophies(self) -> List[Trophy]:
         """Return a list of the redditor's trophies.
 
         :returns: A ``list`` of :class:`~praw.models.Trophy` objects.
@@ -267,7 +283,7 @@ class Redditor(
 class RedditorStream:
     """Provides submission and comment streams."""
 
-    def __init__(self, redditor):
+    def __init__(self, redditor: Redditor):
         """Create a RedditorStream instance.
 
         :param redditor: The redditor associated with the streams.
@@ -275,7 +291,9 @@ class RedditorStream:
         """
         self.redditor = redditor
 
-    def comments(self, **stream_options):
+    def comments(
+        self, **stream_options: Union[str, int, Dict[str, str]]
+    ) -> Generator[Comment, None, None]:
         """Yield new comments as they become available.
 
         Comments are yielded oldest first. Up to 100 historical comments will
@@ -294,7 +312,9 @@ class RedditorStream:
         """
         return stream_generator(self.redditor.comments.new, **stream_options)
 
-    def submissions(self, **stream_options):
+    def submissions(
+        self, **stream_options: Union[str, int, Dict[str, str]]
+    ) -> Generator[Submission, None, None]:
         """Yield new submissions as they become available.
 
         Submissions are yielded oldest first. Up to 100 historical submissions
