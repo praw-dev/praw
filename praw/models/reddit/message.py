@@ -95,7 +95,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
 class SubredditMessage(Message):
     """A class for messages to a subreddit."""
 
-    def mute(self, _unmute=False):
+    def mute(self):
         """Mute the sender of this SubredditMessage."""
         self._reddit.post(API_PATH["mute_sender"], data={"id": self.fullname})
 
