@@ -1,9 +1,14 @@
 """Provide the Emoji class."""
 import os
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from ...const import API_PATH
 from ...exceptions import ClientException
 from .base import RedditBase
+
+_Emoji = TypeVar("_Emoji")
+Reddit = TypeVar("Reddit")
+Subreddit = TypeVar("Subreddit")
 
 
 class Emoji(RedditBase):
@@ -27,7 +32,7 @@ class Emoji(RedditBase):
 
     STR_FIELD = "name"
 
-    def __eq__(self, other):
+    def __eq__(self, other: _Emoji) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other == str(self)
@@ -37,7 +42,7 @@ class Emoji(RedditBase):
             and other.subreddit == self.subreddit
         )
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         """Return the hash of the current instance."""
         return (
             hash(self.__class__.__name__)
@@ -45,7 +50,13 @@ class Emoji(RedditBase):
             ^ hash(self.subreddit)
         )
 
-    def __init__(self, reddit, subreddit, name, _data=None):
+    def __init__(
+        self,
+        reddit: Reddit,
+        subreddit: Subreddit,
+        name: str,
+        _data: Optional[Dict[str, Any]] = None,
+    ):
         """Construct an instance of the Emoji object."""
         self.name = name
         self.subreddit = subreddit
@@ -82,7 +93,7 @@ class Emoji(RedditBase):
 class SubredditEmoji:
     """Provides a set of functions to a Subreddit for emoji."""
 
-    def __getitem__(self, name):
+    def __getitem__(self, name: str) -> Emoji:
         """Lazily return the Emoji for the subreddit named ``name``.
 
         :param name: The name of the emoji
@@ -97,7 +108,7 @@ class SubredditEmoji:
         """
         return Emoji(self._reddit, self.subreddit, name)
 
-    def __init__(self, subreddit):
+    def __init__(self, subreddit: Subreddit):
         """Create a SubredditEmoji instance.
 
         :param subreddit: The subreddit whose emoji are affected.
@@ -106,7 +117,7 @@ class SubredditEmoji:
         self.subreddit = subreddit
         self._reddit = subreddit._reddit
 
-    def __iter__(self):
+    def __iter__(self) -> List[Emoji]:
         """Return a list of Emoji for the subreddit.
 
         This method is to be used to discover all emoji for a subreddit:
@@ -127,7 +138,7 @@ class SubredditEmoji:
                 self._reddit, self.subreddit, emoji_name, _data=emoji_data
             )
 
-    def add(self, name, image_path):
+    def add(self, name: str, image_path: Union[str, os.PathLike]):
         """Add an emoji to this subreddit.
 
         :param name: The name of the emoji
