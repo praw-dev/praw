@@ -1,4 +1,6 @@
 """Provide the LiveThread class."""
+from typing import Any, Dict, Generator, List, Optional, TypeVar, Union
+
 from ...const import API_PATH
 from ...util.cache import cachedproperty
 from ..listing.generator import ListingGenerator
@@ -6,6 +8,13 @@ from ..list.redditor import RedditorList
 from .base import RedditBase
 from .mixins import FullnameMixin
 from .redditor import Redditor
+
+_LiveThread = TypeVar("_LiveThread")
+_LiveThreadContribution = TypeVar("_LiveThreadContribution")
+_LiveUpdate = TypeVar("_LiveUpdate")
+_LiveUpdateContribution = TypeVar("_LiveUpdateContribution")
+Reddit = TypeVar("Reddit")
+Submission = TypeVar("Submission")
 
 
 class LiveContributorRelationship:
@@ -19,7 +28,7 @@ class LiveContributorRelationship:
             permissions = set(permissions)
         return ",".join("+{}".format(x) for x in permissions)
 
-    def __call__(self):
+    def __call__(self) -> List[Redditor]:
         """Return a :class:`.RedditorList` for live threads' contributors.
 
         Usage:
@@ -35,7 +44,7 @@ class LiveContributorRelationship:
         temp = self.thread._reddit.get(url)
         return temp if isinstance(temp, RedditorList) else temp[0]
 
-    def __init__(self, thread):
+    def __init__(self, thread: _LiveThread):
         """Create a :class:`.LiveContributorRelationship` instance.
 
         :param thread: An instance of :class:`.LiveThread`.
@@ -61,7 +70,11 @@ class LiveContributorRelationship:
         url = API_PATH["live_accept_invite"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
-    def invite(self, redditor, permissions=None):
+    def invite(
+        self,
+        redditor: Union[str, Redditor],
+        permissions: Optional[List[str]] = None,
+    ):
         """Invite a redditor to be a contributor of the live thread.
 
         Raise :class:`praw.exceptions.APIException` if the invitation
@@ -110,7 +123,7 @@ class LiveContributorRelationship:
         url = API_PATH["live_leave"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
-    def remove(self, redditor):
+    def remove(self, redditor: Union[str, Redditor]):
         """Remove the redditor from the live thread contributors.
 
         :param redditor: A redditor fullname (e.g., ``'t2_1w72'``) or
@@ -134,7 +147,7 @@ class LiveContributorRelationship:
         url = API_PATH["live_remove_contrib"].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)
 
-    def remove_invite(self, redditor):
+    def remove_invite(self, redditor: Union[str, Redditor]):
         """Remove the invite for redditor.
 
         :param redditor: A redditor fullname (e.g., ``'t2_1w72'``) or
@@ -161,7 +174,11 @@ class LiveContributorRelationship:
         url = API_PATH["live_remove_invite"].format(id=self.thread.id)
         self.thread._reddit.post(url, data=data)
 
-    def update(self, redditor, permissions=None):
+    def update(
+        self,
+        redditor: Union[str, Redditor],
+        permissions: Optional[List[str]] = None,
+    ):
         """Update the contributor permissions for ``redditor``.
 
         :param redditor: A redditor name (e.g., ``'spez'``) or
@@ -201,7 +218,11 @@ class LiveContributorRelationship:
         }
         self.thread._reddit.post(url, data=data)
 
-    def update_invite(self, redditor, permissions=None):
+    def update_invite(
+        self,
+        redditor: Union[str, Redditor],
+        permissions: Optional[List[str]] = None,
+    ):
         """Update the contributor invite permissions for ``redditor``.
 
         :param redditor: A redditor name (e.g., ``'spez'``) or
@@ -271,7 +292,7 @@ class LiveThread(RedditBase):
     STR_FIELD = "id"
 
     @cachedproperty
-    def contrib(self):
+    def contrib(self) -> _LiveThreadContribution:
         """Provide an instance of :class:`.LiveThreadContribution`.
 
         Usage:
@@ -285,7 +306,7 @@ class LiveThread(RedditBase):
         return LiveThreadContribution(self)
 
     @cachedproperty
-    def contributor(self):
+    def contributor(self) -> LiveContributorRelationship:
         """Provide an instance of :class:`.LiveContributorRelationship`.
 
         You can call the instance to get a list of contributors which is
@@ -303,7 +324,7 @@ class LiveThread(RedditBase):
         """
         return LiveContributorRelationship(self)
 
-    def __eq__(self, other):
+    def __eq__(self, other: _LiveThread) -> bool:
         """Return whether the other instance equals the current.
 
         .. note:: This comparison is case sensitive.
@@ -312,7 +333,7 @@ class LiveThread(RedditBase):
             return other == str(self)
         return isinstance(other, self.__class__) and str(self) == str(other)
 
-    def __getitem__(self, update_id):
+    def __getitem__(self, update_id: str) -> _LiveUpdate:
         """Return a lazy :class:`.LiveUpdate` instance.
 
         :param update_id: A live update ID, e.g.,
@@ -330,12 +351,17 @@ class LiveThread(RedditBase):
         """
         return LiveUpdate(self._reddit, self.id, update_id)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         """Return the hash of the current instance."""
         return hash(self.__class__.__name__) ^ hash(str(self))
 
     def __init__(
-        self, reddit, id=None, _data=None  # pylint: disable=redefined-builtin
+        self,
+        reddit: Reddit,
+        id: Optional[str] = None,
+        _data: Optional[
+            Dict[str, Any]
+        ] = None,  # pylint: disable=redefined-builtin
     ):
         """Initialize a lazy :class:`.LiveThread` instance.
 
@@ -363,7 +389,9 @@ class LiveThread(RedditBase):
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def discussions(self, **generator_kwargs):
+    def discussions(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Submission, None, None]:
         """Get submissions linking to the thread.
 
         :param generator_kwargs: keyword arguments passed to
@@ -386,7 +414,7 @@ class LiveThread(RedditBase):
         url = API_PATH["live_discussions"].format(id=self.id)
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
-    def report(self, type):  # pylint: disable=redefined-builtin
+    def report(self, type: str):  # pylint: disable=redefined-builtin
         """Report the thread violating the Reddit rules.
 
         :param type: One of ``'spam'``, ``'vote-manipulation'``,
@@ -404,7 +432,9 @@ class LiveThread(RedditBase):
         url = API_PATH["live_report"].format(id=self.id)
         self._reddit.post(url, data={"type": type})
 
-    def updates(self, **generator_kwargs):
+    def updates(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[_LiveUpdate, None, None]:
         """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
 
         :param generator_kwargs: keyword arguments passed to
@@ -434,7 +464,7 @@ class LiveThread(RedditBase):
 class LiveThreadContribution:
     """Provides a set of contribution functions to a LiveThread."""
 
-    def __init__(self, thread):
+    def __init__(self, thread: LiveThread):
         """Create an instance of :class:`.LiveThreadContribution`.
 
         :param thread: An instance of :class:`.LiveThread`.
@@ -450,7 +480,7 @@ class LiveThreadContribution:
         """
         self.thread = thread
 
-    def add(self, body):
+    def add(self, body: str):
         """Add an update to the live thread.
 
         :param body: The Markdown formatted content for the update.
@@ -482,11 +512,11 @@ class LiveThreadContribution:
 
     def update(
         self,
-        title=None,
-        description=None,
-        nsfw=None,
-        resources=None,
-        **other_settings
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+        nsfw: Optional[bool] = None,
+        resources: Optional[str] = None,
+        **other_settings: Optional[str]
     ):
         """Update settings of the live thread.
 
@@ -574,7 +604,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
     _kind = "LiveUpdate"
 
     @cachedproperty
-    def contrib(self):
+    def contrib(self) -> _LiveUpdateContribution:
         """Provide an instance of :class:`.LiveUpdateContribution`.
 
         Usage:
@@ -589,11 +619,17 @@ class LiveUpdate(FullnameMixin, RedditBase):
         return LiveUpdateContribution(self)
 
     @property
-    def thread(self):
+    def thread(self) -> LiveThread:
         """Return :class:`.LiveThread` object the update object belongs to."""
         return self._thread
 
-    def __init__(self, reddit, thread_id=None, update_id=None, _data=None):
+    def __init__(
+        self,
+        reddit: Reddit,
+        thread_id: Optional[str] = None,
+        update_id: Optional[str] = None,
+        _data: Optional[Dict[str, Any]] = None,
+    ):
         """Initialize a lazy :class:`.LiveUpdate` instance.
 
         Either ``thread_id`` and ``update_id``, or ``_data`` must be
@@ -630,7 +666,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
                 "`_data` must be provided."
             )
 
-    def __setattr__(self, attribute, value):
+    def __setattr__(self, attribute: str, value: Any):
         """Objectify author."""
         if attribute == "author":
             value = Redditor(self._reddit, name=value)
@@ -648,7 +684,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
 class LiveUpdateContribution:
     """Provides a set of contribution functions to LiveUpdate."""
 
-    def __init__(self, update):
+    def __init__(self, update: LiveUpdate):
         """Create an instance of :class:`.LiveUpdateContribution`.
 
         :param update: An instance of :class:`.LiveUpdate`.
