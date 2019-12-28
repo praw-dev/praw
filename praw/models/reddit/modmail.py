@@ -215,8 +215,8 @@ class ModmailConversation(RedditBase):
 
            subreddit = reddit.subreddit('redditdev')
            conversation = subreddit.modmail.conversation('2gmz')
-           conversation.read(\
-other_conversations=conversation.user.recent_convos)
+           conversation.read(
+                            other_conversations=conversation.user.recent_convos)
 
         """
         data = {
