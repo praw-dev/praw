@@ -1,6 +1,6 @@
 """Provides the Objector class."""
 
-from typing import Dict, List, Any, Union, Optional, NoReturn, TypeVar
+from typing import Dict, List, Any, Union, Optional, TypeVar
 
 from .exceptions import APIException, ClientException
 from .models.reddit.base import RedditBase
@@ -44,9 +44,7 @@ class Objector:
         return APIException(*errors[0])
 
     @classmethod
-    def check_error(
-        cls, data: Union[List[Any], Dict[str, Dict[str, str]]]
-    ) -> NoReturn:
+    def check_error(cls, data: Union[List[Any], Dict[str, Dict[str, str]]]):
         """Raise an error if the argument resolves to an error object."""
         error = cls.parse_error(data)
         if error:
