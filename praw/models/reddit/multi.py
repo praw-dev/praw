@@ -1,6 +1,7 @@
 """Provide the Multireddit class."""
 from json import dumps
 import re
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
@@ -8,6 +9,9 @@ from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
 from .redditor import Redditor
 from .subreddit import Subreddit, SubredditStream
+
+_Multireddit = TypeVar("_Multireddit")
+Reddit = TypeVar("Reddit")
 
 
 class Multireddit(SubredditListingMixin, RedditBase):
@@ -50,7 +54,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
     RE_INVALID = re.compile(r"[\W_]+", re.UNICODE)
 
     @staticmethod
-    def sluggify(title):
+    def sluggify(title: str):
         """Return a slug version of the title.
 
         :param title: The title to make a slug of.
@@ -67,7 +71,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         return title or "_"
 
     @cachedproperty
-    def stream(self):
+    def stream(self) -> SubredditStream:
         """Provide an instance of :class:`.SubredditStream`.
 
         Streams can be used to indefinitely retrieve new comments made to a
@@ -90,7 +94,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         """
         return SubredditStream(self)
 
-    def __init__(self, reddit, _data):
+    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
         """Construct an instance of the Multireddit object."""
         self.path = None
         super().__init__(reddit, _data=_data)
@@ -123,7 +127,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
-    def add(self, subreddit):
+    def add(self, subreddit: Subreddit):
         """Add a subreddit to this multireddit.
 
         :param subreddit: The subreddit to add to this multi.
@@ -137,7 +141,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         )
         self._reset_attributes("subreddits")
 
-    def copy(self, display_name=None):
+    def copy(self, display_name: Optional[str] = None) -> _Multireddit:
         """Copy this multireddit and return the new multireddit.
 
         :param display_name: (optional) The display name for the copied
@@ -167,7 +171,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         )
         self._reddit.request("DELETE", path)
 
-    def remove(self, subreddit):
+    def remove(self, subreddit: Subreddit):
         """Remove a subreddit from this multireddit.
 
         :param subreddit: The subreddit to remove from this multi.
@@ -181,7 +185,9 @@ class Multireddit(SubredditListingMixin, RedditBase):
         )
         self._reset_attributes("subreddits")
 
-    def update(self, **updated_settings):
+    def update(
+        self, **updated_settings: Union[str, List[Union[str, Subreddit]]]
+    ):
         """Update this multireddit.
 
         Keyword arguments are passed for settings that should be updated. They
