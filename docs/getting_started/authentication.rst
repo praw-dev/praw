@@ -219,7 +219,7 @@ Read-only mode can be toggled via:
 
 
 Application-Only Flows
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
 The following flows are the **read-only mode** flows for Reddit applications
 
