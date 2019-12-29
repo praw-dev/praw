@@ -523,7 +523,8 @@ class TestSubmissionModeration(IntegrationTest):
         ):
             Submission(self.reddit, "5ouli3").mod.unspoiler()
 
-    def test_modflair_choices(self):
+    @mock.patch("time.sleep", return_value=None)
+    def test_modflair_choices(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
             "TestSubmissionModeration.test_flair_choices"
@@ -532,7 +533,8 @@ class TestSubmissionModeration(IntegrationTest):
             choice_list = list(choices)
             assert len(choice_list) > 0
 
-    def test_modflair_picked(self):
+    @mock.patch("time.sleep", return_value=None)
+    def test_modflair_picked(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
             "TestSubmissionModeration.test_flair_selection"
