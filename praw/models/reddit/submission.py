@@ -460,6 +460,7 @@ class SubmissionModeration(ThingModerationMixin):
             submission.mod.flair.select(template_id, text="Custom flair")
 
         """
+        return SubmissionModerationFlair(self.thing)
 
     def __init__(self, submission):
         """Create a SubmissionModeration instance.
