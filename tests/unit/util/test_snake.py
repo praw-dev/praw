@@ -51,4 +51,4 @@ class TestSnake(UnitTest):
         }
         new_test = snake_case_keys(test_strings)
         for key, item in new_test.items():
-            assert key==item
+            assert key == item
