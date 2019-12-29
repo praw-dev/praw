@@ -7,15 +7,31 @@ from ..generator import ListingGenerator
 from .base import BaseListingMixin
 from .gilded import GildedListingMixin
 
-_SubListing = TypeVar("_SubListing")
 Reddit = TypeVar("Reddit")
+
+class SubListing(BaseListingMixin):
+    """Helper class for generating :class:`.ListingGenerator` objects."""
+
+    def __init__(self, reddit: Reddit, base_path: str, subpath: str):
+        """Initialize a SubListing instance.
+
+        :param reddit: An instance of :class:`.Reddit`.
+        :param base_path: The path to the object up to this point.
+        :param subpath: The additional path to this sublisting.
+
+        """
+        super().__init__(reddit, _data=None)
+        self._listing_use_sort = True
+        self._reddit = reddit
+        self._path = urljoin(base_path, subpath)
+
 
 
 class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
     """Adds additional methods pertaining to Redditor instances."""
 
     @cachedproperty
-    def comments(self) -> _SubListing:
+    def comments(self) -> SubListing:
         r"""Provide an instance of :class:`.SubListing` for comment access.
 
         For example, to output the first line of all new comments by
@@ -30,7 +46,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         return SubListing(self._reddit, self._path, "comments")
 
     @cachedproperty
-    def submissions(self) -> _SubListing:
+    def submissions(self) -> SubListing:
         """Provide an instance of :class:`.SubListing` for submission access.
 
         For example, to output the title's of top 100 of all time submissions
@@ -135,20 +151,3 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         return ListingGenerator(
             self._reddit, urljoin(self._path, "upvoted"), **generator_kwargs
         )
-
-
-class SubListing(BaseListingMixin):
-    """Helper class for generating :class:`.ListingGenerator` objects."""
-
-    def __init__(self, reddit: Reddit, base_path: str, subpath: str):
-        """Initialize a SubListing instance.
-
-        :param reddit: An instance of :class:`.Reddit`.
-        :param base_path: The path to the object up to this point.
-        :param subpath: The additional path to this sublisting.
-
-        """
-        super().__init__(reddit, _data=None)
-        self._listing_use_sort = True
-        self._reddit = reddit
-        self._path = urljoin(base_path, subpath)
