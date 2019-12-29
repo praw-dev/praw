@@ -9,8 +9,8 @@ from .base import BaseListingMixin
 from .gilded import GildedListingMixin
 from .rising import RisingListingMixin
 
-Comment = TypeVar("Comment")
 _CommentHelper = TypeVar("_CommentHelper")
+Comment = TypeVar("Comment")
 Reddit = TypeVar("Reddit")
 Subreddit = TypeVar("Subreddit")
 
