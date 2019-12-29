@@ -49,6 +49,6 @@ class TestSnake(UnitTest):
             ("Case_Case", "case_case"),
             ("FACE_Face", "face_face"),
         }
-        dict(new_test) = snake_case_keys(test_strings)
+        new_test = dict(snake_case_keys(test_strings))
         for key, item in new_test.items():
             assert key == item
