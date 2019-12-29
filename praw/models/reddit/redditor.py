@@ -9,11 +9,11 @@ from ..util import stream_generator
 from .base import RedditBase
 from .mixins import FullnameMixin, MessageableMixin
 
+_Redditor = TypeVar("_Redditor")
+_RedditorStream = TypeVar("_RedditorStream")
 Comment = TypeVar("Comment")
 Multireddit = TypeVar("Multireddit")
 Reddit = TypeVar("Reddit")
-_Redditor = TypeVar("_Redditor")
-_RedditorStream = TypeVar("_RedditorStream")
 Submission = TypeVar("Submission")
 Subreddit = TypeVar("Subreddit")
 Trophy = TypeVar("Trophy")
