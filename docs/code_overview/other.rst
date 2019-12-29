@@ -19,6 +19,7 @@ instances of them bound to an attribute of one of the PRAW models.
    :caption: Flair Helpers
 
    other/submissionflair
+   other/submissionmoderationflair
    other/subredditflair
    other/subredditflairtemplates
    other/subredditlinkflairtemplates
