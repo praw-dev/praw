@@ -6,9 +6,8 @@ from .listing.generator import ListingGenerator
 from .base import PRAWBase
 from .util import stream_generator
 
-
-Message = TypeVar("Message")
 Comment = TypeVar("Comment")
+Message = TypeVar("Message")
 
 
 class Inbox(PRAWBase):
