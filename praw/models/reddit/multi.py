@@ -1,6 +1,7 @@
 """Provide the Multireddit class."""
-from json import dumps
 import re
+
+from json import dumps
 from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from ...const import API_PATH
