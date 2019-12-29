@@ -3,7 +3,7 @@ from praw.util import camel_to_snake
 from .. import UnitTest
 
 
-class TestUtil(UnitTest):
+class TestSnake(UnitTest):
     def test_camel_to_snake(self):
         test_strings = (
             ("camelCase", "camel_case"),
