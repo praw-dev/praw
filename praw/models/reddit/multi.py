@@ -1,6 +1,5 @@
 """Provide the Multireddit class."""
 import re
-
 from json import dumps
 from typing import Any, Dict, List, Optional, TypeVar, Union
 
