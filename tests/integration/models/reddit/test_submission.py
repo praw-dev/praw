@@ -541,9 +541,7 @@ class TestSubmissionModeration(IntegrationTest):
             choices = sub.mod.flair.choices()
             choice_list = list(choices)
             sub.mod.flair.select(choice_list[0]["id"])
-            sub.mod.flair.select(
-                choice_list[0]["id"], text="something"
-            )
+            sub.mod.flair.select(choice_list[0]["id"], text="something")
             sub.mod.flair.select(
                 choice_list[0]["id"],
                 text="something",
