@@ -35,7 +35,7 @@ Prerequisites
 
 
 .. _`Python 3.5+`: https://docs.python.org/3/tutorial/index.html
-.. _`/r/learnpython`: https://www.reddit.com/r/learnpython/
+.. _`r/learnpython`: https://www.reddit.com/r/learnpython/
 .. _reddit.com: https://www.reddit.com
 .. _`Reddit Help`: https://www.reddithelp.com/en
 .. _`Reddit's API wiki page`: https://github.com/reddit/reddit/wiki/API
