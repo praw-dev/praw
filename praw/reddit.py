@@ -2,6 +2,18 @@
 import configparser
 import os
 from itertools import islice
+from typing import (
+    NoReturn,
+    Optional,
+    Type,
+    Union,
+    Dict,
+    Any,
+    Sequence,
+    Generator,
+    IO,
+)
+
 
 try:
     from update_checker import update_check
@@ -29,6 +41,11 @@ from .const import __version__, API_PATH, USER_AGENT_FORMAT
 from .exceptions import ClientException
 from .objector import Objector
 
+Comment = models.Comment
+Redditor = models.Redditor
+Submission = models.Submission
+Subreddit = models.Subreddit
+
 
 class Reddit:
     """The Reddit class provides convenient access to reddit's API.
@@ -55,12 +72,12 @@ class Reddit:
         return value
 
     @property
-    def read_only(self):
+    def read_only(self) -> bool:
         """Return True when using the ReadOnlyAuthorizer."""
         return self._core == self._read_only_core
 
     @read_only.setter
-    def read_only(self, value):
+    def read_only(self, value: bool) -> NoReturn:
         """Set or unset the use of the ReadOnlyAuthorizer.
 
         Raise :class:`ClientException` when attempting to unset ``read_only``
@@ -86,10 +103,10 @@ class Reddit:
 
     def __init__(
         self,
-        site_name=None,
-        requestor_class=None,
-        requestor_kwargs=None,
-        **config_settings
+        site_name: str = None,
+        requestor_class: Optional[Type[Requestor]] = None,
+        requestor_kwargs: Dict[str, Any] = None,
+        **config_settings: str
     ):  # noqa: D207, D301
         """Initialize a Reddit instance.
 
@@ -411,8 +428,8 @@ class Reddit:
 
     def comment(
         self,  # pylint: disable=invalid-name
-        id=None,  # pylint: disable=redefined-builtin
-        url=None,
+        id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        url: Optional[str] = None,
     ):
         """Return a lazy instance of :class:`~.Comment` for ``id``.
 
@@ -427,7 +444,7 @@ class Reddit:
         """
         return models.Comment(self, id=id, url=url)
 
-    def domain(self, domain):
+    def domain(self, domain: str):
         """Return an instance of :class:`.DomainListing`.
 
         :param domain: The domain to obtain submission listings for.
@@ -435,7 +452,9 @@ class Reddit:
         """
         return models.DomainListing(self, domain)
 
-    def get(self, path, params=None):
+    def get(
+        self, path: str, params: Optional[Union[str, Dict[str, str]]] = None
+    ):
         """Return parsed objects returned from a GET request to ``path``.
 
         :param path: The path to fetch.
@@ -446,7 +465,11 @@ class Reddit:
         data = self.request("GET", path, params=params)
         return self._objector.objectify(data)
 
-    def info(self, fullnames=None, url=None):
+    def info(
+        self,
+        fullnames: Optional[Sequence[str]] = None,
+        url: Optional[str] = None,
+    ) -> Generator[Union[Subreddit, Comment, Submission], None, None]:
         """Fetch information about each item in ``fullnames`` or from ``url``.
 
         :param fullnames: A list of fullnames for comments, submissions, and/or
@@ -500,7 +523,13 @@ class Reddit:
 
         return generator(url)
 
-    def patch(self, path, data=None):
+    def patch(
+        self,
+        path: str,
+        data: Optional[
+            Union[Dict[str, Union[str, Any]], bytes, IO, str]
+        ] = None,
+    ) -> Any:
         """Return parsed objects returned from a PATCH request to ``path``.
 
         :param path: The path to fetch.
@@ -511,7 +540,15 @@ class Reddit:
         data = self.request("PATCH", path, data=data)
         return self._objector.objectify(data)
 
-    def post(self, path, data=None, files=None, params=None):
+    def post(
+        self,
+        path: str,
+        data: Optional[
+            Union[Dict[str, Union[str, Any]], bytes, IO, str]
+        ] = None,
+        files: Optional[Dict[str, IO]] = None,
+        params: Optional[Union[str, Dict[str, str]]] = None,
+    ) -> Any:
         """Return parsed objects returned from a POST request to ``path``.
 
         :param path: The path to fetch.
@@ -528,7 +565,13 @@ class Reddit:
         )
         return self._objector.objectify(data)
 
-    def put(self, path, data=None):
+    def put(
+        self,
+        path: str,
+        data: Optional[
+            Union[Dict[str, Union[str, Any]], bytes, IO, str]
+        ] = None,
+    ):
         """Return parsed objects returned from a PUT request to ``path``.
 
         :param path: The path to fetch.
@@ -539,7 +582,7 @@ class Reddit:
         data = self.request("PUT", path, data=data)
         return self._objector.objectify(data)
 
-    def random_subreddit(self, nsfw=False):
+    def random_subreddit(self, nsfw: bool = False) -> Subreddit:
         """Return a random lazy instance of :class:`~.Subreddit`.
 
         :param nsfw: Return a random NSFW (not safe for work) subreddit
@@ -556,7 +599,9 @@ class Reddit:
             path = redirect.path
         return models.Subreddit(self, path.split("/")[2])
 
-    def redditor(self, name=None, fullname=None):
+    def redditor(
+        self, name: Optional[str] = None, fullname: Optional[str] = None
+    ) -> Redditor:
         """Return a lazy instance of :class:`~.Redditor`.
 
         :param name: The name of the redditor.
@@ -567,7 +612,16 @@ class Reddit:
         """
         return models.Redditor(self, name=name, fullname=fullname)
 
-    def request(self, method, path, params=None, data=None, files=None):
+    def request(
+        self,
+        method: str,
+        path: str,
+        params: Optional[Union[str, Dict[str, str]]] = None,
+        data: Optional[
+            Union[Dict[str, Union[str, Any]], bytes, IO, str]
+        ] = None,
+        files: Optional[Dict[str, IO]] = None,
+    ) -> Any:
         """Return the parsed JSON data returned from a request to URL.
 
         :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
@@ -585,8 +639,8 @@ class Reddit:
         )
 
     def submission(  # pylint: disable=invalid-name,redefined-builtin
-        self, id=None, url=None
-    ):
+        self, id: Optional[str] = None, url: Optional[str] = None
+    ) -> Submission:
         """Return a lazy instance of :class:`~.Submission`.
 
         :param id: A reddit base36 submission ID, e.g., ``2gmzqe``.
