@@ -37,8 +37,8 @@ def run_static():
     Otherwise, it will return statuscode 1
     """
     success = True
-    success &= do_process(["black *.py docs praw tests"], shell=True)
-    success &= do_process(["flake8", "--exclude=.eggs,build,dist,docs,.tox"])
+    success &= do_process(["black ."], shell=True)
+    success &= do_process(["flake8", "--exclude=.eggs,build,docs"])
     success &= do_process(["pydocstyle", "praw"])
     # success &= do_process(["pylint", "--rcfile=.pylintrc", "praw"])
 
