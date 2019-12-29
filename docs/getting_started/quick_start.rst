@@ -10,7 +10,7 @@ Prerequisites
 
 :Python Knowledge: You need to know at least a little Python to use PRAW; it's a Python wrapper
                    after all. PRAW supports `Python 3.5+`_. If you are stuck on a problem,
-                   `/r/learnpython`_ is a great place to ask for help.
+                   `r/learnpython`_ is a great place to ask for help.
 
 :Reddit Knowledge: A basic understanding of how `reddit.com`_ works is a
                    must. In the event you are not already familiar with Reddit
@@ -28,9 +28,9 @@ Prerequisites
 :User Agent: A user agent is a unique identifier that helps Reddit determine
              the source of network requests. To use Reddit's API, you need a
              unique and descriptive user agent. The recommended format is
-             ``<platform>:<app ID>:<version string> (by /u/<Reddit
+             ``<platform>:<app ID>:<version string> (by u/<Reddit
              username>)``. For example,
-             ``android:com.example.myredditapp:v1.2.3 (by /u/kemitche)``. Read
+             ``android:com.example.myredditapp:v1.2.3 (by u/kemitche)``. Read
              more about user-agents at `Reddit's API wiki page`_.
 
 
@@ -71,9 +71,9 @@ Read-only :class:`.Reddit` Instances
 To create a read-only :class:`.Reddit` instance, you need three pieces of
 information:
 
-1) client ID
-2) client secret
-3) user agent
+1) Client ID
+2) Client Secret
+3) User Agent
 
 You may choose to provide these by passing in three keyword arguments when
 calling the initializer of the :class:`.Reddit` class: ``client_id``,
@@ -95,7 +95,7 @@ Just like that, you now have a read-only  :class:`.Reddit` instance.
    print(reddit.read_only)  # Output: True
 
 With a read-only instance, you can do something like obtaining 10 'hot'
-submissions from ``/r/learnpython``:
+submissions from ``r/learnpython``:
 
 .. code-block:: python
 
@@ -104,7 +104,7 @@ submissions from ``/r/learnpython``:
    for submission in reddit.subreddit('learnpython').hot(limit=10):
        print(submission.title)
 
-   # Output: 10 submission
+   # Output: 10 submissions
 
 If you want to do more than retrieve public information from Reddit, then you
 need an authorized :class:`.Reddit` instance.
@@ -124,8 +124,8 @@ In order to create an authorized :class:`.Reddit` instance, two additional
 pieces of information are required for **script** applications (see
 :ref:`oauth` for other application types):
 
-4) your Reddit user name, and
-5) your Reddit password
+4) Your Reddit username, and
+5) Your Reddit password
 
 Again, you may choose to provide these by passing in keyword arguments
 ``username`` and ``password`` when you call the :class:`.Reddit` initializer,
@@ -151,7 +151,7 @@ switch back to read-only mode whenever you want:
    # continued from code above
    reddit.read_only = True
 
-.. note:: If you are uncomfortable hard coding your credentials into your
+.. note:: If you are uncomfortable hard-coding your credentials into your
           program, there are some options available to you. Please see:
           :ref:`configuration`.
 
@@ -236,7 +236,7 @@ For example:
 
   # assume you have a Reddit instance bound to variable `reddit`
    redditor2 = reddit.redditor('bboe')
-   print(redditor2.link_karma)  # Output: bboe's karma
+   print(redditor2.link_karma)  # Output: u/bboe's karma
 
 Obtain :class:`.Comment` Instances
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
