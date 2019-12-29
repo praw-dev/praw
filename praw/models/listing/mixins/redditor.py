@@ -9,6 +9,7 @@ from .gilded import GildedListingMixin
 
 Reddit = TypeVar("Reddit")
 
+
 class SubListing(BaseListingMixin):
     """Helper class for generating :class:`.ListingGenerator` objects."""
 
@@ -24,7 +25,6 @@ class SubListing(BaseListingMixin):
         self._listing_use_sort = True
         self._reddit = reddit
         self._path = urljoin(base_path, subpath)
-
 
 
 class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
