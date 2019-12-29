@@ -14,6 +14,7 @@ Comment = TypeVar("Comment")
 Reddit = TypeVar("Reddit")
 Subreddit = TypeVar("Subreddit")
 
+
 class CommentHelper(PRAWBase):
     """Provide a set of functions to interact with a subreddit's comments."""
 
@@ -43,7 +44,6 @@ class CommentHelper(PRAWBase):
 
         """
         return ListingGenerator(self._reddit, self._path, **generator_kwargs)
-
 
 
 class SubredditListingMixin(
