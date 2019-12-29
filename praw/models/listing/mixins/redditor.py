@@ -7,8 +7,8 @@ from ..generator import ListingGenerator
 from .base import BaseListingMixin
 from .gilded import GildedListingMixin
 
-Reddit = TypeVar("Reddit")
 _SubListing = TypeVar("_SubListing")
+Reddit = TypeVar("Reddit")
 
 
 class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
