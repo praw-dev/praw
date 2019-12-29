@@ -5,8 +5,8 @@ from typing import Any, Dict, Optional, TypeVar
 from .listing import FlairListing
 from ..base import PRAWBase
 
-Reddit = TypeVar("Reddit")
 _ListingGenerator = TypeVar("_ListingGenerator")
+Reddit = TypeVar("Reddit")
 
 
 class ListingGenerator(PRAWBase):
