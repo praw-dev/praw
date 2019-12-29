@@ -25,10 +25,17 @@ class IntegrationTest:
         self.reddit.read_only = True
 
     def setup_reddit(self):
-        self.reddit = Reddit(
+        login_data = dict(
             client_id=pytest.placeholders.client_id,
             client_secret=pytest.placeholders.client_secret,
-            password=pytest.placeholders.password,
+            refresh_token=pytest.placeholders.refresh_token,
             user_agent=pytest.placeholders.user_agent,
             username=pytest.placeholders.username,
         )
+        if (
+            login_data["username"] == "placeholder_username"
+            and login_data["refresh_token"] != "placeholder_refresh_token"
+        ):
+            # Some refresh tokens do not require a username to be given
+            login_data.pop("username")
+        self.reddit = Reddit(**login_data)
