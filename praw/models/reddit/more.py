@@ -3,8 +3,8 @@ from typing import Any, Dict, List, TypeVar
 from ...const import API_PATH
 from ..base import PRAWBase
 
-Comment = TypeVar("Comment")
 _MoreComments = TypeVar("_MoreComments")
+Comment = TypeVar("Comment")
 Reddit = TypeVar("Reddit")
 
 
