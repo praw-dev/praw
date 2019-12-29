@@ -3,13 +3,12 @@ name: Python package
 on: [push, pull_request]
 
 jobs:
-  lint:
+  lint-multi-os:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
-        python-version: [3.6, 3.7, 3.8]
-
+        python-version: [3.8]
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python ${{ matrix.python-version }}
@@ -30,12 +29,12 @@ jobs:
       run: pydocstyle praw
     - name: Build Sphinx files
       run: sphinx-build -W docs/ /tmp/foo
-  test:
+  test-multi-os:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.8]
     steps:
       - uses: actions/checkout@v1
       - name: Set up Python ${{ matrix.python-version }}
@@ -58,5 +57,60 @@ jobs:
           pip install "betamax-serializers >=0.2, <0.3"
       - name: Run tests
         run: python -m coverage run ./setup.py test 
+      - name: Print coverage
+        run: coverage report --include "praw/*" --fail-under=100
+  lint-multi-python:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.5, 3.6, 3.7, 3.8]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Upgrade all installed pip packages (setuptools, pip, etc.)
+        run: pip install --upgrade setuptools
+      - name: Install project dependencies
+        run: pip install .
+      - name: Install test dependencies
+        run: pip install black flake8 pydocstyle sphinx sphinx_rtd_theme
+      - name: Check code formatting with black
+        run: black --check --verbose .
+      - name: Lint with flake8
+        run: flake8 --exclude=.eggs,build,docs
+      - name: Check docstyle with pydocstyle
+        run: pydocstyle praw
+      - name: Build Sphinx files
+        run: sphinx-build -W docs/ /tmp/foo
+  test-multi-python:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.5, 3.6, 3.7, 3.8]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Upgrade all installed pip packages (setuptools, pip, etc.)
+        run: pip install --upgrade setuptools
+      - name: Get wheel
+        run: pip install wheel
+      - name: Install project dependencies
+        run: pip install .
+      - name: Install test dependencies
+        run: pip install pytest coverage
+      - name: Install betamax and plugins
+        run: |
+          pip install "betamax >=0.8, <0.9"
+          pip install "betamax-matchers >=0.3.0, <0.5"
+          pip install "betamax-serializers >=0.2, <0.3"
+      - name: Run tests
+        run: python -m coverage run ./setup.py test
       - name: Print coverage
         run: coverage report --include "praw/*" --fail-under=100
