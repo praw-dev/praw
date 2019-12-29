@@ -31,7 +31,7 @@ from .objector import Objector
 
 
 class Reddit:
-    """The Reddit class provides convenient access to reddit's API.
+    """The Reddit class provides convenient access to Reddit's API.
 
     Instances of this class are the gateway to interacting with Reddit's API
     through PRAW. The canonical way to obtain an instance of this class is via:
@@ -97,7 +97,7 @@ class Reddit:
             which to load settings from. This parameter, in tandem with an
             appropriately configured ``praw.ini``, file is useful if you wish
             to easily save credentials for different applications, or
-            communicate with other servers running reddit. If ``site_name`` is
+            communicate with other servers running Reddit. If ``site_name`` is
             ``None``, then the site name will be looked for in the environment
             variable praw_site. If it is not found there, the DEFAULT site will
             be used.
@@ -589,7 +589,7 @@ class Reddit:
     ):
         """Return a lazy instance of :class:`~.Submission`.
 
-        :param id: A reddit base36 submission ID, e.g., ``2gmzqe``.
+        :param id: A Reddit base36 submission ID, e.g., ``2gmzqe``.
         :param url: A URL supported by
             :meth:`~praw.models.Submission.id_from_url`.`.
 
