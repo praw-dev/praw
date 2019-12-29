@@ -1,11 +1,10 @@
 """Provide the ListingGenerator class."""
 from copy import deepcopy
-from typing import Any, Dict, Optional, TypeVar
+from typing import Any, Dict, Iterator, Optional, TypeVar
 
 from .listing import FlairListing
 from ..base import PRAWBase
 
-_ListingGenerator = TypeVar("_ListingGenerator")
 Reddit = TypeVar("Reddit")
 
 
@@ -49,7 +48,7 @@ class ListingGenerator(PRAWBase):
         self.url = url
         self.yielded = 0
 
-    def __iter__(self) -> _ListingGenerator:
+    def __iter__(self) -> Iterator[Any]:
         """Permit ListingGenerator to operate as an iterator."""
         return self
 
