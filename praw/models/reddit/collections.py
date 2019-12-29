@@ -1,4 +1,5 @@
 """Provide Collections functionality."""
+from typing import Any, Dict, Generator, List, Optional, TypeVar, Union
 
 from ...const import API_PATH
 from ...exceptions import ClientException
@@ -7,6 +8,10 @@ from ..base import PRAWBase
 from .base import RedditBase
 from .submission import Submission
 from .subreddit import Subreddit
+
+Reddit = TypeVar("Reddit")
+_CollectionModeration = TypeVar("_CollectionModeration")
+_SubredditCollectionsModeration = TypeVar("_SubredditCollectionsModeration")
 
 
 class Collection(RedditBase):
@@ -57,7 +62,7 @@ class Collection(RedditBase):
     STR_FIELD = "collection_id"
 
     @cachedproperty
-    def mod(self):
+    def mod(self) -> _CollectionModeration:
         """Get an instance of :class:`.CollectionModeration`.
 
         Provides access to various methods, including
@@ -77,11 +82,17 @@ class Collection(RedditBase):
         return CollectionModeration(self._reddit, self.collection_id)
 
     @cachedproperty
-    def subreddit(self):
+    def subreddit(self) -> Subreddit:
         """Get the subreddit that this collection belongs to."""
         return next(self._reddit.info([self.subreddit_id]))
 
-    def __init__(self, reddit, _data=None, collection_id=None, permalink=None):
+    def __init__(
+        self,
+        reddit: Reddit,
+        _data: Dict[str, Any] = None,
+        collection_id: Optional[str] = None,
+        permalink: Optional[str] = None,
+    ):
         """Initialize this collection.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -108,7 +119,7 @@ class Collection(RedditBase):
             "include_links": True,
         }
 
-    def __iter__(self):
+    def __iter__(self) -> Generator[Any, None, None]:
         """Provide a way to iterate over the posts in this Collection.
 
         Example usage:
@@ -123,7 +134,7 @@ class Collection(RedditBase):
         for item in self.sorted_links:
             yield item
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Get the number of posts in this Collection.
 
         Example usage:
@@ -136,7 +147,7 @@ class Collection(RedditBase):
         """
         return len(self.link_ids)
 
-    def __setattr__(self, attribute, value):
+    def __setattr__(self, attribute: str, value: Any):
         """Objectify author, subreddit, and sorted_links attributes."""
         if attribute == "author_name":
             self.author = self._reddit.redditor(value)
@@ -235,7 +246,7 @@ class CollectionModeration(PRAWBase):
         except ClientException:
             return self._reddit.submission(id=post).fullname
 
-    def __init__(self, reddit, collection_id):
+    def __init__(self, reddit: Reddit, collection_id: str):
         """Initialize an instance of CollectionModeration.
 
         :param collection_id: The ID of a collection.
@@ -243,7 +254,7 @@ class CollectionModeration(PRAWBase):
         super().__init__(reddit, _data=None)
         self.collection_id = collection_id
 
-    def add_post(self, submission):
+    def add_post(self, submission: Submission):
         """Add a post to the collection.
 
         :param submission: The post to add, a :class:`.Submission`, its
@@ -287,7 +298,7 @@ class CollectionModeration(PRAWBase):
             data={"collection_id": self.collection_id},
         )
 
-    def remove_post(self, submission):
+    def remove_post(self, submission: Submission):
         """Remove a post from the collection.
 
         :param submission: The post to remove, a :class:`.Submission`, its
@@ -314,7 +325,7 @@ class CollectionModeration(PRAWBase):
             },
         )
 
-    def reorder(self, links):
+    def reorder(self, links: List[Union[str, Submission]]):
         """Reorder posts in the collection.
 
         :param links: A ``list`` of submissions, as :class:`.Submission`,
@@ -336,7 +347,7 @@ class CollectionModeration(PRAWBase):
             data={"collection_id": self.collection_id, "link_ids": link_ids},
         )
 
-    def update_description(self, description):
+    def update_description(self, description: str):
         """Update the collection's description.
 
         :param description: The new description.
@@ -359,7 +370,7 @@ class CollectionModeration(PRAWBase):
             },
         )
 
-    def update_title(self, title):
+    def update_title(self, title: str):
         """Update the collection's title.
 
         :param title: The new title.
@@ -392,7 +403,7 @@ class SubredditCollections(PRAWBase):
     """
 
     @cachedproperty
-    def mod(self):
+    def mod(self) -> _SubredditCollectionsModeration:
         """Get an instance of :class:`.SubredditCollectionsModeration`.
 
         Provides :meth:`~SubredditCollectionsModeration.create`:
@@ -407,7 +418,11 @@ class SubredditCollections(PRAWBase):
             self._reddit, self.subreddit.fullname
         )
 
-    def __call__(self, collection_id=None, permalink=None):
+    def __call__(
+        self,
+        collection_id: Optional[str] = None,
+        permalink: Optional[str] = None,
+    ):
         """Return the :class:`.Collection` with the specified ID.
 
         :param collection_id: The ID of a Collection (default: None).
@@ -442,7 +457,12 @@ class SubredditCollections(PRAWBase):
             self._reddit, collection_id=collection_id, permalink=permalink
         )
 
-    def __init__(self, reddit, subreddit, _data=None):
+    def __init__(
+        self,
+        reddit: Reddit,
+        subreddit: Subreddit,
+        _data: Optional[Dict[str, Any]] = None,
+    ):
         """Initialize an instance of SubredditCollections."""
         super().__init__(reddit, _data)
         self.subreddit = subreddit
@@ -477,12 +497,17 @@ class SubredditCollectionsModeration(PRAWBase):
 
     """
 
-    def __init__(self, reddit, sub_fullname, _data=None):
+    def __init__(
+        self,
+        reddit: Reddit,
+        sub_fullname: str,
+        _data: Optional[Dict[str, Any]] = None,
+    ):
         """Initialize the SubredditCollectionsModeration instance."""
         super().__init__(reddit, _data)
         self.subreddit_fullname = sub_fullname
 
-    def create(self, title, description):
+    def create(self, title: str, description: str):
         """Create a new :class:`.Collection`.
 
         The authenticated account must have appropriate moderator
