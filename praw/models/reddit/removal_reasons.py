@@ -1,7 +1,13 @@
 """Provide the Reason class."""
+from typing import Any, Dict, Generator, Optional, TypeVar
+
 from ...const import API_PATH
 from ...exceptions import ClientException
 from .base import RedditBase
+
+_RemovalReason = TypeVar("_RemovalReason")
+Reddit = TypeVar("Reddit")
+Subreddit = TypeVar("Subreddit")
 
 
 class RemovalReason(RedditBase):
@@ -26,17 +32,23 @@ class RemovalReason(RedditBase):
 
     STR_FIELD = "id"
 
-    def __eq__(self, other):
+    def __eq__(self, other: _RemovalReason) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other == str(self)
         return isinstance(other, self.__class__) and str(self) == str(other)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         """Return the hash of the current instance."""
         return hash(self.__class__.__name__) ^ hash(str(self))
 
-    def __init__(self, reddit, subreddit, reason_id, _data=None):
+    def __init__(
+        self,
+        reddit: Reddit,
+        subreddit: Subreddit,
+        reason_id: str,
+        _data: Optional[Dict[str, Any]] = None,
+    ):
         """Construct an instance of the Removal Reason object."""
         self.id = reason_id
         self.subreddit = subreddit
@@ -69,7 +81,7 @@ class RemovalReason(RedditBase):
         )
         self.subreddit._reddit.request("DELETE", url)
 
-    def update(self, message, title):
+    def update(self, message: str, title: str):
         """Update the removal reason from this subreddit.
 
         :param message: The removal reason's new message (required).
@@ -94,7 +106,7 @@ class RemovalReason(RedditBase):
 class SubredditRemovalReasons:
     """Provide a set of functions to a Subreddit's removal reasons."""
 
-    def __getitem__(self, reason_id):
+    def __getitem__(self, reason_id: str) -> RemovalReason:
         """Lazily return the Removal Reason for the subreddit with id ``reason_id``.
 
         :param reason_id: The id of the removal reason
@@ -110,7 +122,7 @@ class SubredditRemovalReasons:
         """
         return RemovalReason(self.subreddit._reddit, self.subreddit, reason_id)
 
-    def __init__(self, subreddit):
+    def __init__(self, subreddit: Subreddit):
         """Create a SubredditRemovalReasons instance.
 
         :param subreddit: The subreddit whose removal reasons to work with.
@@ -119,7 +131,7 @@ class SubredditRemovalReasons:
         self.subreddit = subreddit
         self._reddit = subreddit._reddit
 
-    def __iter__(self):
+    def __iter__(self) -> Generator[RemovalReason, None, None]:
         """Return a list of Removal Reasons for the subreddit.
 
         This method is used to discover all removal reasons for a
@@ -139,7 +151,7 @@ class SubredditRemovalReasons:
                 self._reddit, self.subreddit, reason_id, _data=reason_data
             )
 
-    def add(self, message, title):
+    def add(self, message: str, title: str) -> RemovalReason:
         """Add a removal reason to this subreddit.
 
         :param message: The message associated with the removal reason.
