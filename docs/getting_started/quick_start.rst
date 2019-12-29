@@ -2,7 +2,7 @@ Quick Start
 ===========
 
 In this section, we go over everything you need to know to start building
-scripts, or bots using PRAW, the Python Reddit API Wrapper. It's fun and
+scripts or bots using PRAW, the Python Reddit API Wrapper. It's fun and
 easy. Let's get started.
 
 Prerequisites
@@ -12,9 +12,9 @@ Prerequisites
                    after all. PRAW supports `Python 3.5+`_. If you are stuck on a problem,
                    `r/learnpython`_ is a great place to ask for help.
 
-:Reddit Knowledge: A basic understanding of how `reddit.com`_ works is a
+:Reddit Knowledge: A basic understanding of how Reddit works is a
                    must. In the event you are not already familiar with Reddit
-                   start with their FAQ_.
+                   start at `Reddit Help`_.
 
 :Reddit Account: A Reddit account is required to access Reddit's API. Create
                  one at `reddit.com`_.
@@ -31,13 +31,13 @@ Prerequisites
              ``<platform>:<app ID>:<version string> (by u/<Reddit
              username>)``. For example,
              ``android:com.example.myredditapp:v1.2.3 (by u/kemitche)``. Read
-             more about user-agents at `Reddit's API wiki page`_.
+             more about user agents at `Reddit's API wiki page`_.
 
 
 .. _`Python 3.5+`: https://docs.python.org/3/tutorial/index.html
 .. _`/r/learnpython`: https://www.reddit.com/r/learnpython/
 .. _reddit.com: https://www.reddit.com
-.. _FAQ: https://www.reddit.com/wiki/faq
+.. _`Reddit Help`: https://www.reddithelp.com/en
 .. _`Reddit's API wiki page`: https://github.com/reddit/reddit/wiki/API
 
 .. _`First Steps Guide`:
@@ -72,8 +72,8 @@ To create a read-only :class:`.Reddit` instance, you need three pieces of
 information:
 
 1) Client ID
-2) Client Secret
-3) User Agent
+2) Client secret
+3) User agent
 
 You may choose to provide these by passing in three keyword arguments when
 calling the initializer of the :class:`.Reddit` class: ``client_id``,
