@@ -268,7 +268,7 @@ of :class:`.Reddit` like so:
    reddit = praw.Reddit(client_id='SI8pN3DSbt0zor',
                         client_secret='xaxkj7HNh8kwg8e5t4m6KvSrbTI',
                         refresh_token='WeheY7PwgeCZj4S3QgUcLhKE5S2s4eAYdxM',
-                        user_agent='testscript by /u/fakebot3')
+                        user_agent='testscript by u/fakebot3')
    print(reddit.auth.scopes())
 
 The output from the above code displays which scopes are available on the
@@ -277,4 +277,3 @@ The output from the above code displays which scopes are available on the
 .. note:: Observe that ``redirect_uri`` does not need to be provided in such
           cases. It is only needed when :meth:`.url` is used.
 
-``
