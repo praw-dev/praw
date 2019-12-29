@@ -9,40 +9,10 @@ from .base import BaseListingMixin
 from .gilded import GildedListingMixin
 from .rising import RisingListingMixin
 
-_CommentHelper = TypeVar("_CommentHelper")
+
 Comment = TypeVar("Comment")
 Reddit = TypeVar("Reddit")
 Subreddit = TypeVar("Subreddit")
-
-
-class SubredditListingMixin(
-    BaseListingMixin, GildedListingMixin, RisingListingMixin
-):
-    """Adds additional methods pertaining to Subreddit-like instances."""
-
-    @cachedproperty
-    def comments(self) -> _CommentHelper:
-        """Provide an instance of :class:`.CommentHelper`.
-
-        For example, to output the author of the 25 most recent comments of
-        ``/r/redditdev`` execute:
-
-        .. code:: python
-
-           for comment in reddit.subreddit('redditdev').comments(limit=25):
-               print(comment.author)
-
-        """
-        return CommentHelper(self)
-
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
-        """Initialize a SubredditListingMixin instance.
-
-        :param reddit: An instance of :class:`.Reddit`.
-
-        """
-        super().__init__(reddit, _data=_data)
-
 
 class CommentHelper(PRAWBase):
     """Provide a set of functions to interact with a subreddit's comments."""
@@ -73,3 +43,33 @@ class CommentHelper(PRAWBase):
 
         """
         return ListingGenerator(self._reddit, self._path, **generator_kwargs)
+
+
+
+class SubredditListingMixin(
+    BaseListingMixin, GildedListingMixin, RisingListingMixin
+):
+    """Adds additional methods pertaining to Subreddit-like instances."""
+
+    @cachedproperty
+    def comments(self) -> CommentHelper:
+        """Provide an instance of :class:`.CommentHelper`.
+
+        For example, to output the author of the 25 most recent comments of
+        ``/r/redditdev`` execute:
+
+        .. code:: python
+
+           for comment in reddit.subreddit('redditdev').comments(limit=25):
+               print(comment.author)
+
+        """
+        return CommentHelper(self)
+
+    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+        """Initialize a SubredditListingMixin instance.
+
+        :param reddit: An instance of :class:`.Reddit`.
+
+        """
+        super().__init__(reddit, _data=_data)
