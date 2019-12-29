@@ -1,4 +1,5 @@
 """Provide the BaseListingMixin class."""
+from typing import Any, Dict, Generator, Union
 from urllib.parse import urljoin
 
 from ...base import PRAWBase
@@ -28,7 +29,11 @@ class BaseListingMixin(PRAWBase):
                 )
             )
 
-    def controversial(self, time_filter="all", **generator_kwargs):
+    def controversial(
+        self,
+        time_filter: str = "all",
+        **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Any, None, None]:
         """Return a :class:`.ListingGenerator` for controversial submissions.
 
         :param time_filter: Can be one of: all, day, hour, month, week, year
@@ -56,7 +61,9 @@ class BaseListingMixin(PRAWBase):
         url = _prepare(self, generator_kwargs, "controversial")
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
-    def hot(self, **generator_kwargs):
+    def hot(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Any, None, None]:
         """Return a :class:`.ListingGenerator` for hot items.
 
         Additional keyword arguments are passed in the initialization of
@@ -78,7 +85,9 @@ class BaseListingMixin(PRAWBase):
         url = _prepare(self, generator_kwargs, "hot")
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
-    def new(self, **generator_kwargs):
+    def new(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Any, None, None]:
         """Return a :class:`.ListingGenerator` for new items.
 
         Additional keyword arguments are passed in the initialization of
@@ -100,7 +109,11 @@ class BaseListingMixin(PRAWBase):
         url = _prepare(self, generator_kwargs, "new")
         return ListingGenerator(self._reddit, url, **generator_kwargs)
 
-    def top(self, time_filter="all", **generator_kwargs):
+    def top(
+        self,
+        time_filter: str = "all",
+        **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Any, None, None]:
         """Return a :class:`.ListingGenerator` for top submissions.
 
         :param time_filter: Can be one of: all, day, hour, month, week, year
