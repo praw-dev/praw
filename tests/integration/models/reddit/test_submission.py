@@ -528,7 +528,7 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubmissionModeration.test_flair_choices"
         ):
-            choices = Submission(self.reddit, "eh9cxx").mod.flair.choices()
+            choices = Submission(self.reddit, "eh9xy1").mod.flair.choices()
             choice_list = list(choices)
             assert len(choice_list) > 0
 
@@ -537,20 +537,20 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubmissionModeration.test_flair_selection"
         ):
-            sub = Submission(self.reddit, "eh9cxx")
+            sub = Submission(self.reddit, "eh9xy1")
             choices = sub.mod.flair.choices()
             choice_list = list(choices)
-            sub.mod.flair.select(choice_list[0]["flair_template_id"])
+            sub.mod.flair.select(choice_list[0]["id"])
             sub.mod.flair.select(
-                choice_list[0]["flair_template_id"], text="something"
+                choice_list[0]["id"], text="something"
             )
             sub.mod.flair.select(
-                choice_list[0]["flair_template_id"],
+                choice_list[0]["id"],
                 text="something",
                 css_class="Something else",
             )
             sub.mod.flair.select(
-                choice_list[0]["flair_template_id"], css_class="Something else"
+                choice_list[0]["id"], css_class="Something else"
             )
             with pytest.raises(TypeError):
                 sub.mod.flair.select(text="something")

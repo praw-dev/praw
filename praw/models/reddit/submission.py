@@ -456,7 +456,7 @@ class SubmissionModeration(ThingModerationMixin):
         .. code:: python
 
             choices = submission.mod.flair.choices()
-            template_id = next(choices)["flair_template_id"]
+            template_id = next(choices)["id"]
             submission.mod.flair.select(template_id, text="Custom flair")
 
         """
@@ -717,7 +717,7 @@ class SubmissionModerationFlair(SubmissionFlair):
            choices = submission.mod.flair.choices()
 
         """
-        return iter(self.submission.subreddit.link_templates)
+        return iter(self.submission.subreddit.flair.link_templates)
 
     def select(self, flair_template_id, text=None, css_class=None):
         """Select flair for submission.
@@ -733,7 +733,7 @@ class SubmissionModerationFlair(SubmissionFlair):
         .. code:: python
 
            choices = submission.mod.flair.choices()
-           template_id = next(choices)["flair_template_id"]
+           template_id = next(choices)["id"]
            submission.mod.flair.select(template_id,
                                        text='my custom value',
                                        css_class='my custom css class')
