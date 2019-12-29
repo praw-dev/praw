@@ -66,7 +66,7 @@ os.environ["praw_check_for_updates"] = "False"
 placeholders = {
     x: env_default(x)
     for x in (
-        "auth_code client_id client_secret password redirect_uri "
+        "auth_code client_id client_secret refresh_token redirect_uri "
         "test_subreddit user_agent username"
     ).split()
 }
