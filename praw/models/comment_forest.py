@@ -4,8 +4,8 @@ from typing import List, Optional, TypeVar, Union
 
 from .reddit.more import MoreComments
 
-Submission = TypeVar("Submission")
 Comment = TypeVar("Comment")
+Submission = TypeVar("Submission")
 
 
 class CommentForest:
