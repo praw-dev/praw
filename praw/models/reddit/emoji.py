@@ -1,6 +1,6 @@
 """Provide the Emoji class."""
 import os
-from typing import Any, Dict, List, Optional, TypeVar
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from ...const import API_PATH
 from ...exceptions import ClientException
@@ -32,7 +32,7 @@ class Emoji(RedditBase):
 
     STR_FIELD = "name"
 
-    def __eq__(self, other: _Emoji) -> bool:
+    def __eq__(self, other: Union[str, _Emoji]) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other == str(self)

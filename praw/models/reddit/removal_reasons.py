@@ -1,5 +1,5 @@
 """Provide the Reason class."""
-from typing import Any, Dict, Generator, Optional, TypeVar
+from typing import Any, Dict, Generator, Optional, TypeVar, Union
 
 from ...const import API_PATH
 from ...exceptions import ClientException
@@ -32,7 +32,7 @@ class RemovalReason(RedditBase):
 
     STR_FIELD = "id"
 
-    def __eq__(self, other: _RemovalReason) -> bool:
+    def __eq__(self, other: Union[str, _RemovalReason]) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other == str(self)
