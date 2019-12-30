@@ -77,10 +77,11 @@ class SubmissionFlair:
         )
         self.submission._reddit.post(url, data=data)
 
+
 class SubmissionModerationFlair(SubmissionFlair):
     """Provides a set of functions allowing moderators to set post flairs."""
 
-    def __call__(self, text: str="", css_class: str=""):
+    def __call__(self, text: str = "", css_class: str = ""):
         """Set flair for the submission.
 
         :param text: The flair text to associate with the Submission (default:
@@ -107,7 +108,9 @@ class SubmissionModerationFlair(SubmissionFlair):
         url = API_PATH["flair"].format(subreddit=self.submission.subreddit)
         self.submission._reddit.post(url, data=data)
 
-    def choices(self) -> Generator[Dict[str, Union[bool, list, str]], None, None]:
+    def choices(
+        self,
+    ) -> Generator[Dict[str, Union[bool, list, str]], None, None]:
         """Return list of available flair choices.
 
         Choices are required in order to use :meth:`.select`.
@@ -121,7 +124,12 @@ class SubmissionModerationFlair(SubmissionFlair):
         """
         return iter(self.submission.subreddit.flair.link_templates)
 
-    def select(self, flair_template_id: str, text: Optional[str]=None, css_class: Optional[str]=None):
+    def select(
+        self,
+        flair_template_id: str,
+        text: Optional[str] = None,
+        css_class: Optional[str] = None,
+    ):
         """Select flair for submission.
 
         :param flair_template_id: The flair template to select. The possible
@@ -151,6 +159,7 @@ class SubmissionModerationFlair(SubmissionFlair):
             subreddit=self.submission.subreddit
         )
         self.submission._reddit.post(url, data=data)
+
 
 class SubmissionModeration(ThingModerationMixin):
     """Provide a set of functions pertaining to Submission moderation.
@@ -195,7 +204,7 @@ class SubmissionModeration(ThingModerationMixin):
         """
         self.thing = submission
 
-    def contest_mode(self, state: bool=True):
+    def contest_mode(self, state: bool = True):
         """Set contest mode for the comments of this submission.
 
         :param state: (boolean) True enables contest mode, False, disables
@@ -311,7 +320,7 @@ class SubmissionModeration(ThingModerationMixin):
             API_PATH["spoiler"], data={"id": self.thing.fullname}
         )
 
-    def sticky(self, state: bool=True, bottom: bool=True):
+    def sticky(self, state: bool = True, bottom: bool = True):
         """Set the submission's sticky state in its subreddit.
 
         :param state: (boolean) True sets the sticky for the submission, false
@@ -338,7 +347,7 @@ class SubmissionModeration(ThingModerationMixin):
             API_PATH["sticky_submission"], data=data
         )
 
-    def suggested_sort(self, sort: str="blank"):
+    def suggested_sort(self, sort: str = "blank"):
         """Set the suggested sort for the comments of the submission.
 
         :param sort: Can be one of: confidence, top, new, controversial, old,
