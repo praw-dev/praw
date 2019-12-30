@@ -1,5 +1,5 @@
 """Provide the Submission class."""
-from typing import Any, Dict, List, Optional, TypeVar, Union
+from typing import Any, Dict, List, Generator, Optional, TypeVar, Union
 from urllib.parse import urljoin
 
 from ...const import API_PATH
@@ -80,7 +80,7 @@ class SubmissionFlair:
 class SubmissionModerationFlair(SubmissionFlair):
     """Provides a set of functions allowing moderators to set post flairs."""
 
-    def __call__(self, text="", css_class=""):
+    def __call__(self, text: str="", css_class: str=""):
         """Set flair for the submission.
 
         :param text: The flair text to associate with the Submission (default:
@@ -107,7 +107,7 @@ class SubmissionModerationFlair(SubmissionFlair):
         url = API_PATH["flair"].format(subreddit=self.submission.subreddit)
         self.submission._reddit.post(url, data=data)
 
-    def choices(self):
+    def choices(self) -> Generator[Dict[str, Union[bool, list, str]], None, None]:
         """Return list of available flair choices.
 
         Choices are required in order to use :meth:`.select`.
@@ -121,7 +121,7 @@ class SubmissionModerationFlair(SubmissionFlair):
         """
         return iter(self.submission.subreddit.flair.link_templates)
 
-    def select(self, flair_template_id, text=None, css_class=None):
+    def select(self, flair_template_id: str, text: Optional[str]=None, css_class: Optional[str]=None):
         """Select flair for submission.
 
         :param flair_template_id: The flair template to select. The possible
