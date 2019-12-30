@@ -167,7 +167,7 @@ class SubmissionModeration(ThingModerationMixin):
     REMOVAL_MESSAGE_API = "removal_link_message"
 
     @cachedproperty
-    def flair(self):
+    def flair(self) -> SubmissionModerationFlair:
         """Provide an instance of :class:`.SubmissionModerationFlair`.
 
         Allows the moderator to work with setting flairs on a submission
@@ -187,7 +187,7 @@ class SubmissionModeration(ThingModerationMixin):
         """
         return SubmissionModerationFlair(self.thing)
 
-    def __init__(self, submission):
+    def __init__(self, submission: _Submission):
         """Create a SubmissionModeration instance.
 
         :param submission: The submission to moderate.
@@ -195,7 +195,7 @@ class SubmissionModeration(ThingModerationMixin):
         """
         self.thing = submission
 
-    def contest_mode(self, state=True):
+    def contest_mode(self, state: bool=True):
         """Set contest mode for the comments of this submission.
 
         :param state: (boolean) True enables contest mode, False, disables
@@ -311,7 +311,7 @@ class SubmissionModeration(ThingModerationMixin):
             API_PATH["spoiler"], data={"id": self.thing.fullname}
         )
 
-    def sticky(self, state=True, bottom=True):
+    def sticky(self, state: bool=True, bottom: bool=True):
         """Set the submission's sticky state in its subreddit.
 
         :param state: (boolean) True sets the sticky for the submission, false
@@ -338,7 +338,7 @@ class SubmissionModeration(ThingModerationMixin):
             API_PATH["sticky_submission"], data=data
         )
 
-    def suggested_sort(self, sort="blank"):
+    def suggested_sort(self, sort: str="blank"):
         """Set the suggested sort for the comments of the submission.
 
         :param sort: Can be one of: confidence, top, new, controversial, old,
