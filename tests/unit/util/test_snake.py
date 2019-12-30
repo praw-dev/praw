@@ -29,7 +29,7 @@ class TestSnake(UnitTest):
             assert camel_to_snake(camel) == snake
 
     def test_camel_to_snake_dict(self):
-        test_strings = {
+        test_strings = dict((
             ("camelCase", "camel_case"),
             ("PascalCase", "pascal_case"),
             ("camelCasePlace", "camel_case_place"),
@@ -48,7 +48,7 @@ class TestSnake(UnitTest):
             ("Base_BASE", "base_base"),
             ("Case_Case", "case_case"),
             ("FACE_Face", "face_face"),
-        }
-        new_test = dict(snake_case_keys(test_strings))
+        ))
+        new_test = snake_case_keys(test_strings)
         for key, item in new_test.items():
             assert key == item
