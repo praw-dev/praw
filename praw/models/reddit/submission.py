@@ -1,4 +1,5 @@
 """Provide the Submission class."""
+from typing import Any, Dict, List, Optional, TypeVar, Union
 from urllib.parse import urljoin
 
 from ...const import API_PATH
@@ -11,6 +12,324 @@ from .base import RedditBase
 from .mixins import FullnameMixin, ThingModerationMixin, UserContentMixin
 from .redditor import Redditor
 from .subreddit import Subreddit
+
+_Submission = TypeVar("_Submission")
+Reddit = TypeVar("Reddit")
+
+
+class SubmissionFlair:
+    """Provide a set of functions pertaining to Submission flair."""
+
+    def __init__(self, submission: _Submission):
+        """Create a SubmissionFlair instance.
+
+        :param submission: The submission associated with the flair functions.
+
+        """
+        self.submission = submission
+
+    def choices(self) -> List[Dict[str, Union[bool, list, str]]]:
+        """Return list of available flair choices.
+
+        Choices are required in order to use :meth:`.select`.
+
+        For example:
+
+        .. code:: python
+
+           choices = submission.flair.choices()
+
+        """
+        url = API_PATH["flairselector"].format(
+            subreddit=self.submission.subreddit
+        )
+        return self.submission._reddit.post(
+            url, data={"link": self.submission.fullname}
+        )["choices"]
+
+    def select(self, flair_template_id: str, text: Optional[str] = None):
+        """Select flair for submission.
+
+        :param flair_template_id: The flair template to select. The possible
+            ``flair_template_id`` values can be discovered through
+            :meth:`.choices`.
+        :param text: If the template's ``flair_text_editable`` value is True,
+            this value will set a custom text (default: None).
+
+        For example, to select an arbitrary editable flair text (assuming there
+        is one) and set a custom value try:
+
+        .. code:: python
+
+           choices = submission.flair.choices()
+           template_id = next(x for x in choices
+                              if x['flair_text_editable'])['flair_template_id']
+           submission.flair.select(template_id, 'my custom value')
+
+        """
+        data = {
+            "flair_template_id": flair_template_id,
+            "link": self.submission.fullname,
+            "text": text,
+        }
+        url = API_PATH["select_flair"].format(
+            subreddit=self.submission.subreddit
+        )
+        self.submission._reddit.post(url, data=data)
+
+
+class SubmissionModeration(ThingModerationMixin):
+    """Provide a set of functions pertaining to Submission moderation.
+
+    Example usage:
+
+    .. code:: python
+
+       submission = reddit.submission(id="8dmv8z")
+       submission.mod.approve()
+
+    """
+
+    REMOVAL_MESSAGE_API = "removal_link_message"
+
+    def __init__(self, submission: _Submission):
+        """Create a SubmissionModeration instance.
+
+        :param submission: The submission to moderate.
+
+        """
+        self.thing = submission
+
+    def contest_mode(self, state: bool = True):
+        """Set contest mode for the comments of this submission.
+
+        :param state: (boolean) True enables contest mode, False, disables
+            (default: True).
+
+        Contest mode have the following effects:
+          * The comment thread will default to being sorted randomly.
+          * Replies to top-level comments will be hidden behind
+            "[show replies]" buttons.
+          * Scores will be hidden from non-moderators.
+          * Scores accessed through the API (mobile apps, bots) will be
+            obscured to "1" for non-moderators.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.mod.contest_mode(state=True)
+
+        """
+        self.thing._reddit.post(
+            API_PATH["contest_mode"],
+            data={"id": self.thing.fullname, "state": state},
+        )
+
+    def flair(self, text: str = "", css_class: str = ""):
+        """Set flair for the submission.
+
+        :param text: The flair text to associate with the Submission (default:
+            '').
+        :param css_class: The css class to associate with the flair html
+            (default: '').
+
+        This method can only be used by an authenticated user who is a
+        moderator of the Submission's Subreddit.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.mod.flair(text='PRAW', css_class='bot')
+
+        """
+        data = {
+            "css_class": css_class,
+            "link": self.thing.fullname,
+            "text": text,
+        }
+        url = API_PATH["flair"].format(subreddit=self.thing.subreddit)
+        self.thing._reddit.post(url, data=data)
+
+    def nsfw(self):
+        """Mark as not safe for work.
+
+        This method can be used both by the submission author and moderators of
+        the subreddit that the submission belongs to.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.subreddit('test').submit('nsfw test',
+                                                        selftext='nsfw')
+           submission.mod.nsfw()
+
+        See also :meth:`~.sfw`
+
+        """
+        self.thing._reddit.post(
+            API_PATH["marknsfw"], data={"id": self.thing.fullname}
+        )
+
+    def set_original_content(self):
+        """Mark as original content.
+
+        This method can be used by moderators of the subreddit that the
+        submission belongs to. If the subreddit has enabled the Original
+        Content beta feature in settings, then the submission's author
+        can use it as well.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.subreddit('test').submit('oc test',
+                                                        selftext='original')
+           submission.mod.set_original_content()
+
+        See also :meth:`.unset_original_content`
+
+        """
+        data = {
+            "id": self.thing.id,
+            "fullname": self.thing.fullname,
+            "should_set_oc": True,
+            "executed": False,
+            "r": self.thing.subreddit,
+        }
+        self.thing._reddit.post(API_PATH["set_original_content"], data=data)
+
+    def sfw(self):
+        """Mark as safe for work.
+
+        This method can be used both by the submission author and moderators of
+        the subreddit that the submission belongs to.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.mod.sfw()
+
+        See also :meth:`~.nsfw`
+
+        """
+        self.thing._reddit.post(
+            API_PATH["unmarknsfw"], data={"id": self.thing.fullname}
+        )
+
+    def spoiler(self):
+        """Indicate that the submission contains spoilers.
+
+        This method can be used both by the submission author and moderators of
+        the subreddit that the submission belongs to.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.mod.spoiler()
+
+        See also :meth:`~.unspoiler`
+
+        """
+        self.thing._reddit.post(
+            API_PATH["spoiler"], data={"id": self.thing.fullname}
+        )
+
+    def sticky(self, state: bool = True, bottom: bool = True):
+        """Set the submission's sticky state in its subreddit.
+
+        :param state: (boolean) True sets the sticky for the submission, false
+            unsets (default: True).
+        :param bottom: (boolean) When true, set the submission as the bottom
+            sticky. If no top sticky exists, this submission will become the
+            top sticky regardless (default: True).
+
+        This submission will replace an existing stickied submission if one
+        exists.
+
+        For example:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.mod.sticky()
+
+        """
+        data = {"id": self.thing.fullname, "state": state}
+        if not bottom:
+            data["num"] = 1
+        return self.thing._reddit.post(
+            API_PATH["sticky_submission"], data=data
+        )
+
+    def suggested_sort(self, sort: str = "blank"):
+        """Set the suggested sort for the comments of the submission.
+
+        :param sort: Can be one of: confidence, top, new, controversial, old,
+            random, qa, blank (default: blank).
+
+        """
+        self.thing._reddit.post(
+            API_PATH["suggested_sort"],
+            data={"id": self.thing.fullname, "sort": sort},
+        )
+
+    def unset_original_content(self):
+        """Indicate that the submission is not original content.
+
+        This method can be used by moderators of the subreddit that the
+        submission belongs to. If the subreddit has enabled the Original
+        Content beta feature in settings, then the submission's author
+        can use it as well.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.subreddit('test').submit('oc test',
+                                                        selftext='original')
+           submission.mod.unset_original_content()
+
+        See also :meth:`.set_original_content`
+
+        """
+        data = {
+            "id": self.thing.id,
+            "fullname": self.thing.fullname,
+            "should_set_oc": False,
+            "executed": False,
+            "r": self.thing.subreddit,
+        }
+        self.thing._reddit.post(API_PATH["set_original_content"], data=data)
+
+    def unspoiler(self):
+        """Indicate that the submission does not contain spoilers.
+
+        This method can be used both by the submission author and moderators of
+        the subreddit that the submission belongs to.
+
+        For example:
+
+        .. code:: python
+
+           submission = reddit.subreddit('test').submit('not spoiler',
+                                                        selftext='spoiler')
+           submission.mod.unspoiler()
+
+        See also :meth:`~.spoiler`
+
+        """
+        self.thing._reddit.post(
+            API_PATH["unspoiler"], data={"id": self.thing.fullname}
+        )
 
 
 class Submission(
@@ -74,7 +393,7 @@ class Submission(
     STR_FIELD = "id"
 
     @staticmethod
-    def id_from_url(url):
+    def id_from_url(url: str) -> str:
         """Return the ID contained within a submission URL.
 
         :param url: A url to a submission in one of the following formats (http
@@ -107,7 +426,7 @@ class Submission(
         return self._reddit.config.kinds["submission"]
 
     @property
-    def comments(self):
+    def comments(self) -> CommentForest:
         """Provide an instance of :class:`.CommentForest`.
 
         This attribute can use used, for example, to obtain a flat list of
@@ -135,12 +454,12 @@ class Submission(
         return self._comments
 
     @cachedproperty
-    def flair(self):
+    def flair(self) -> SubmissionFlair:
         """Provide an instance of :class:`.SubmissionFlair`.
 
         This attribute is used to work with flair as a regular user of the
         subreddit the submission belongs to. Moderators can directly use
-        :class:`.SubmissionModerationFlair`.
+        :meth:`.flair`.
 
         For example, to select an arbitrary editable flair text (assuming there
         is one) and set a custom value try:
@@ -156,12 +475,12 @@ class Submission(
         return SubmissionFlair(self)
 
     @cachedproperty
-    def mod(self):
+    def mod(self) -> SubmissionModeration:
         """Provide an instance of :class:`.SubmissionModeration`."""
         return SubmissionModeration(self)
 
     @property
-    def shortlink(self):
+    def shortlink(self) -> str:
         """Return a shortlink to the submission.
 
         For example http://redd.it/eorhm is a shortlink for
@@ -172,10 +491,10 @@ class Submission(
 
     def __init__(
         self,
-        reddit,
-        id=None,  # pylint: disable=redefined-builtin
-        url=None,
-        _data=None,
+        reddit: Reddit,
+        id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        url: Optional[str] = None,
+        _data: Optional[Dict[str, Any]] = None,
     ):
         """Initialize a Submission instance.
 
@@ -204,7 +523,7 @@ class Submission(
 
         self._comments_by_id = {}
 
-    def __setattr__(self, attribute, value):
+    def __setattr__(self, attribute: str, value: Any):
         """Objectify author, and subreddit attributes."""
         if attribute == "author":
             value = Redditor.from_data(self._reddit, value)
@@ -264,7 +583,7 @@ class Submission(
         data = {"links": self.fullname}
         self._reddit.post(API_PATH["store_visits"], data=data)
 
-    def hide(self, other_submissions=None):
+    def hide(self, other_submissions: Optional[List[_Submission]] = None):
         """Hide Submission.
 
         :param other_submissions: When provided, additionally
@@ -284,7 +603,7 @@ class Submission(
         for submissions in self._chunk(other_submissions, 50):
             self._reddit.post(API_PATH["hide"], data={"id": submissions})
 
-    def unhide(self, other_submissions=None):
+    def unhide(self, other_submissions: Optional[List[_Submission]] = None):
         """Unhide Submission.
 
         :param other_submissions: When provided, additionally
@@ -306,14 +625,14 @@ class Submission(
 
     def crosspost(
         self,
-        subreddit,
-        title=None,
-        send_replies=True,
-        flair_id=None,
-        flair_text=None,
-        nsfw=False,
-        spoiler=False,
-    ):
+        subreddit: Subreddit,
+        title: Optional[str] = None,
+        send_replies: bool = True,
+        flair_id: Optional[str] = None,
+        flair_text: Optional[str] = None,
+        nsfw: bool = False,
+        spoiler: bool = False,
+    ) -> _Submission:
         """Crosspost the submission to a subreddit.
 
         .. note::
@@ -364,67 +683,6 @@ class Submission(
                 data[key] = value
 
         return self._reddit.post(API_PATH["submit"], data=data)
-
-
-class SubmissionFlair:
-    """Provide a set of functions pertaining to Submission flair."""
-
-    def __init__(self, submission):
-        """Create a SubmissionFlair instance.
-
-        :param submission: The submission associated with the flair functions.
-
-        """
-        self.submission = submission
-
-    def choices(self):
-        """Return list of available flair choices.
-
-        Choices are required in order to use :meth:`.select`.
-
-        For example:
-
-        .. code:: python
-
-           choices = submission.flair.choices()
-
-        """
-        url = API_PATH["flairselector"].format(
-            subreddit=self.submission.subreddit
-        )
-        return self.submission._reddit.post(
-            url, data={"link": self.submission.fullname}
-        )["choices"]
-
-    def select(self, flair_template_id, text=None):
-        """Select flair for submission.
-
-        :param flair_template_id: The flair template to select. The possible
-            ``flair_template_id`` values can be discovered through
-            :meth:`.choices`.
-        :param text: If the template's ``flair_text_editable`` value is True,
-            this value will set a custom text (default: None).
-
-        For example, to select an arbitrary editable flair text (assuming there
-        is one) and set a custom value try:
-
-        .. code:: python
-
-           choices = submission.flair.choices()
-           template_id = next(x for x in choices
-                              if x['flair_text_editable'])['flair_template_id']
-           submission.flair.select(template_id, 'my custom value')
-
-        """
-        data = {
-            "flair_template_id": flair_template_id,
-            "link": self.submission.fullname,
-            "text": text,
-        }
-        url = API_PATH["select_flair"].format(
-            subreddit=self.submission.subreddit
-        )
-        self.submission._reddit.post(url, data=data)
 
 
 Subreddit._submission_class = Submission

@@ -1,19 +1,19 @@
 Installing PRAW
 ===============
 
-PRAW supports python 3.5+. The recommended way to install PRAW is via ``pip``.
+PRAW supports Python 3.5+. The recommended way to install PRAW is via ``pip``.
 
 .. code-block:: bash
 
    pip install praw
 
 .. note:: Depending on your system, you may need to use ``pip3`` to install
-          packages for python 3.
+          packages for Python 3.
 
 .. warning:: Avoid using ``sudo`` to install packages. Do you `really` trust
              this package?
 
-For instructions on installing python and pip see "The Hitchhiker's Guide to
+For instructions on installing Python and pip see "The Hitchhiker's Guide to
 Python" `Installation Guides
 <http://docs.python-guide.org/en/latest/starting/installation/>`_.
 
@@ -40,7 +40,7 @@ Installing the Latest Development Version
 -----------------------------------------
 
 Is there a feature that was recently merged into PRAW that you cannot wait to
-take advantage of? If so, you can install PRAW directly from github like so:
+take advantage of? If so, you can install PRAW directly from GitHub like so:
 
 .. code-block:: bash
 
