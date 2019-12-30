@@ -92,7 +92,28 @@ class SubmissionModeration(ThingModerationMixin):
 
     REMOVAL_MESSAGE_API = "removal_link_message"
 
-    def __init__(self, submission: _Submission):
+    @cachedproperty
+    def flair(self):
+        """Provide an instance of :class:`.SubmissionModerationFlair`.
+
+        Allows the moderator to work with setting flairs on a submission
+        that use the template system introduced in the redesign.
+
+        If a flair template is not being used, then a moderator should directly
+        call the instance.
+
+        Example usage:
+
+        .. code:: python
+
+            choices = submission.mod.flair.choices()
+            template_id = next(choices)["id"]
+            submission.mod.flair.select(template_id, text="Custom flair")
+
+        """
+        return SubmissionModerationFlair(self.thing)
+
+    def __init__(self, submission):
         """Create a SubmissionModeration instance.
 
         :param submission: The submission to moderate.
@@ -100,7 +121,7 @@ class SubmissionModeration(ThingModerationMixin):
         """
         self.thing = submission
 
-    def contest_mode(self, state: bool = True):
+    def contest_mode(self, state=True):
         """Set contest mode for the comments of this submission.
 
         :param state: (boolean) True enables contest mode, False, disables
@@ -126,33 +147,6 @@ class SubmissionModeration(ThingModerationMixin):
             API_PATH["contest_mode"],
             data={"id": self.thing.fullname, "state": state},
         )
-
-    def flair(self, text: str = "", css_class: str = ""):
-        """Set flair for the submission.
-
-        :param text: The flair text to associate with the Submission (default:
-            '').
-        :param css_class: The css class to associate with the flair html
-            (default: '').
-
-        This method can only be used by an authenticated user who is a
-        moderator of the Submission's Subreddit.
-
-        Example usage:
-
-        .. code:: python
-
-           submission = reddit.submission(id='5or86n')
-           submission.mod.flair(text='PRAW', css_class='bot')
-
-        """
-        data = {
-            "css_class": css_class,
-            "link": self.thing.fullname,
-            "text": text,
-        }
-        url = API_PATH["flair"].format(subreddit=self.thing.subreddit)
-        self.thing._reddit.post(url, data=data)
 
     def nsfw(self):
         """Mark as not safe for work.
@@ -243,7 +237,7 @@ class SubmissionModeration(ThingModerationMixin):
             API_PATH["spoiler"], data={"id": self.thing.fullname}
         )
 
-    def sticky(self, state: bool = True, bottom: bool = True):
+    def sticky(self, state=True, bottom=True):
         """Set the submission's sticky state in its subreddit.
 
         :param state: (boolean) True sets the sticky for the submission, false
@@ -270,7 +264,7 @@ class SubmissionModeration(ThingModerationMixin):
             API_PATH["sticky_submission"], data=data
         )
 
-    def suggested_sort(self, sort: str = "blank"):
+    def suggested_sort(self, sort="blank"):
         """Set the suggested sort for the comments of the submission.
 
         :param sort: Can be one of: confidence, top, new, controversial, old,
@@ -330,6 +324,83 @@ class SubmissionModeration(ThingModerationMixin):
         self.thing._reddit.post(
             API_PATH["unspoiler"], data={"id": self.thing.fullname}
         )
+
+
+class SubmissionModerationFlair(SubmissionFlair):
+    """Provides a set of functions allowing moderators to set post flairs."""
+
+    def __call__(self, text="", css_class=""):
+        """Set flair for the submission.
+
+        :param text: The flair text to associate with the Submission (default:
+            '').
+        :param css_class: The css class to associate with the flair html
+            (default: '').
+
+        This method can only be used by an authenticated user who is a
+        moderator of the Submission's Subreddit.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.mod.flair(text='PRAW', css_class='bot')
+
+        """
+        data = {
+            "css_class": css_class,
+            "link": self.submission.fullname,
+            "text": text,
+        }
+        url = API_PATH["flair"].format(subreddit=self.submission.subreddit)
+        self.submission._reddit.post(url, data=data)
+
+    def choices(self):
+        """Return list of available flair choices.
+
+        Choices are required in order to use :meth:`.select`.
+
+        For example:
+
+        .. code:: python
+
+           choices = submission.mod.flair.choices()
+
+        """
+        return iter(self.submission.subreddit.flair.link_templates)
+
+    def select(self, flair_template_id, text=None, css_class=None):
+        """Select flair for submission.
+
+        :param flair_template_id: The flair template to select. The possible
+            ``flair_template_id`` values can be discovered through
+            :meth:`.choices`.
+        :param text: The custom text value for the flair (Optional).
+        :param css_class: The custom css class for the flair (Optional).
+
+        For example, to select the first possible link flair:
+
+        .. code:: python
+
+           choices = submission.mod.flair.choices()
+           template_id = next(choices)["id"]
+           submission.mod.flair.select(template_id,
+                                       text='my custom value',
+                                       css_class='my custom css class')
+
+        """
+        data = {
+            "flair_template_id": flair_template_id,
+            "link": self.submission.fullname,
+            "text": text,
+            "css_class": css_class,
+        }
+        url = API_PATH["select_flair"].format(
+            subreddit=self.submission.subreddit
+        )
+        self.submission._reddit.post(url, data=data)
+
 
 
 class Submission(
