@@ -402,7 +402,6 @@ class SubmissionModerationFlair(SubmissionFlair):
         self.submission._reddit.post(url, data=data)
 
 
-
 class Submission(
     SubmissionListingMixin, UserContentMixin, FullnameMixin, RedditBase
 ):
@@ -530,7 +529,7 @@ class Submission(
 
         This attribute is used to work with flair as a regular user of the
         subreddit the submission belongs to. Moderators can directly use
-        :meth:`.flair`.
+        :class:`.SubmissionModerationFlair`.
 
         For example, to select an arbitrary editable flair text (assuming there
         is one) and set a custom value try:
