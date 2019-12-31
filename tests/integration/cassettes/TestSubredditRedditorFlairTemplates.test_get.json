@@ -1,0 +1,1847 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2020-01-04T02:19:11",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "61"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "118"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:11 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21937-LGA"
+          ],
+          "X-Timer": [
+            "S1578104352.605093,VS0,VE290"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:12",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=0&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:12 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104353.679908,VS0,VE88"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Mon, 03-Jan-2022 02:19:12 GMT; secure",
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104352715.Z0FBQUFBQmVEX1lnSzNtWXlBblE4ejVQbTM5MmdENWotdjg3eU82ZkpuaHdncGZXZXRyMHlYRGxCUzJEeUJMa0tZd1AyLXBmeVhoSk5fMjdzdThCZF9qbG5VaFcwbHhEMndKN3piOVlMazEyVnFkVUlEVEhUX2JtT18zckE1NE1SMEJucGJXV2ZaV2M; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:12 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "583.0"
+          ],
+          "x-ratelimit-reset": [
+            "48"
+          ],
+          "x-ratelimit-used": [
+            "17"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=0&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:12",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104352715.Z0FBQUFBQmVEX1lnSzNtWXlBblE4ejVQbTM5MmdENWotdjg3eU82ZkpuaHdncGZXZXRyMHlYRGxCUzJEeUJMa0tZd1AyLXBmeVhoSk5fMjdzdThCZF9qbG5VaFcwbHhEMndKN3piOVlMazEyVnFkVUlEVEhUX2JtT18zckE1NE1SMEJucGJXV2ZaV2M"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=1&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:12 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104353.792661,VS0,VE72"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104352815.Z0FBQUFBQmVEX1lnSmotWkozV2I0cl9Db3hRUXpzNUhfUl8wMlFuZDR0Umd0N2VUVjBXSE1WNTQ2LUNiVDVmdHZMS2tqSTZSaTdIUmROeVBVV0FRSjh5ZWhMVFJYa2YtUEFNQnhuMHlRVGxJN0d5N0FodFdyd1dPZDhzdWdRcEFUXzgzM2dnaGlfYWU; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:12 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "582.0"
+          ],
+          "x-ratelimit-reset": [
+            "48"
+          ],
+          "x-ratelimit-used": [
+            "18"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=1&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:13",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104352815.Z0FBQUFBQmVEX1lnSmotWkozV2I0cl9Db3hRUXpzNUhfUl8wMlFuZDR0Umd0N2VUVjBXSE1WNTQ2LUNiVDVmdHZMS2tqSTZSaTdIUmROeVBVV0FRSjh5ZWhMVFJYa2YtUEFNQnhuMHlRVGxJN0d5N0FodFdyd1dPZDhzdWdRcEFUXzgzM2dnaGlfYWU"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=2&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:13 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104353.891628,VS0,VE113"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104352939.Z0FBQUFBQmVEX1lnMWRJMlR0V01BNm90cWYtT2lDR3BhS2hUTHdrLVRBYXlUT0IySmljZWNYbV9XLVd3UG03WlhrcTdjcUpmWEM4eW5DMi1yN3dLNWd3T1d3S29HaVkxMG04Z1IwcnBvSnU5OGl0eGFyU0hFOHAyaVVGMWZaeWNIbzdKY3YwTS1kWUI; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:12 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "581.0"
+          ],
+          "x-ratelimit-reset": [
+            "48"
+          ],
+          "x-ratelimit-used": [
+            "19"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=2&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:13",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104352939.Z0FBQUFBQmVEX1lnMWRJMlR0V01BNm90cWYtT2lDR3BhS2hUTHdrLVRBYXlUT0IySmljZWNYbV9XLVd3UG03WlhrcTdjcUpmWEM4eW5DMi1yN3dLNWd3T1d3S29HaVkxMG04Z1IwcnBvSnU5OGl0eGFyU0hFOHAyaVVGMWZaeWNIbzdKY3YwTS1kWUI"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=3&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:13 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104353.029855,VS0,VE96"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353068.Z0FBQUFBQmVEX1loSlBpSHQxT1RDRlJ6bl9NRDZYYktFekJYempsQTVkYUhIVXJZNUR0T1g5NzFULUtOMlV3bk5kRlR4YUJLcW1JSy1QdnBUT0l1aTQxaGNVdFlESTF2MGkyMnVaajcxeS1iQmROSUZodkNrY3kwYmkxdmFLUHpzWTV0VWZfU0hnUWU; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:13 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "580.0"
+          ],
+          "x-ratelimit-reset": [
+            "47"
+          ],
+          "x-ratelimit-used": [
+            "20"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=3&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:13",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353068.Z0FBQUFBQmVEX1loSlBpSHQxT1RDRlJ6bl9NRDZYYktFekJYempsQTVkYUhIVXJZNUR0T1g5NzFULUtOMlV3bk5kRlR4YUJLcW1JSy1QdnBUT0l1aTQxaGNVdFlESTF2MGkyMnVaajcxeS1iQmROSUZodkNrY3kwYmkxdmFLUHpzWTV0VWZfU0hnUWU"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=4&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:13 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104353.150993,VS0,VE92"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353185.Z0FBQUFBQmVEX1loMjV1ZWF4U05YLUN1QTBlRUlNVDdCQzhsS1NGQVVDNTRmOFBaNmhiTWZSVi0xbmxCSU5WYjlSQVdaMDh2RzU1Zmk5U19PeGRBZGVHa0xCbWN5cFQtSEZNaU5mazY5WUU0YjNEZTlkQ3pieEljY3hvMXQ2ZHpubko5Qk5yOEM3YlE; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:13 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "579.0"
+          ],
+          "x-ratelimit-reset": [
+            "47"
+          ],
+          "x-ratelimit-used": [
+            "21"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=4&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:13",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353185.Z0FBQUFBQmVEX1loMjV1ZWF4U05YLUN1QTBlRUlNVDdCQzhsS1NGQVVDNTRmOFBaNmhiTWZSVi0xbmxCSU5WYjlSQVdaMDh2RzU1Zmk5U19PeGRBZGVHa0xCbWN5cFQtSEZNaU5mazY5WUU0YjNEZTlkQ3pieEljY3hvMXQ2ZHpubko5Qk5yOEM3YlE"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=5&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:13 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104353.265483,VS0,VE152"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353326.Z0FBQUFBQmVEX1loV2R0SDd6TGk5Ti1JSEp3RWdhU0xEeThXWkVRek1VSnF5VVJvRzdJWkE5dU5mRURsQmpqUUdlVU1SVmNYQ3F6cmpKWTByQ0xPZDNYdWp2TVM5ZGdFY2dUb3VKWnhxZjlHNTZGNmNVMmVLSWl4dVV6SHlnTEM5UVBOUUx6OElwMWM; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:13 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "578.0"
+          ],
+          "x-ratelimit-reset": [
+            "47"
+          ],
+          "x-ratelimit-used": [
+            "22"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=5&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:13",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353326.Z0FBQUFBQmVEX1loV2R0SDd6TGk5Ti1JSEp3RWdhU0xEeThXWkVRek1VSnF5VVJvRzdJWkE5dU5mRURsQmpqUUdlVU1SVmNYQ3F6cmpKWTByQ0xPZDNYdWp2TVM5ZGdFY2dUb3VKWnhxZjlHNTZGNmNVMmVLSWl4dVV6SHlnTEM5UVBOUUx6OElwMWM"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=6&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:13 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104353.442779,VS0,VE72"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353463.Z0FBQUFBQmVEX1loTVNwV0JTcTFwZEtNeDNWZ0ZBZ3VKU0M4YzktV0dmeE5kTlBZbjlyTHlDLU9lLXhEYTV4NUhIcVVVeTlJc3JudHFHV1NrYUpaY1NOMUg1MFFjaWF4c1Bqc1REb285eTgyR190YWo3STFqeFdIaEZ1T1A3QkFQaV81eU9iRGlodUM; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:13 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "577.0"
+          ],
+          "x-ratelimit-reset": [
+            "47"
+          ],
+          "x-ratelimit-used": [
+            "23"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=6&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:13",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353463.Z0FBQUFBQmVEX1loTVNwV0JTcTFwZEtNeDNWZ0ZBZ3VKU0M4YzktV0dmeE5kTlBZbjlyTHlDLU9lLXhEYTV4NUhIcVVVeTlJc3JudHFHV1NrYUpaY1NOMUg1MFFjaWF4c1Bqc1REb285eTgyR190YWo3STFqeFdIaEZ1T1A3QkFQaV81eU9iRGlodUM"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=7&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:13 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104354.543182,VS0,VE96"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353575.Z0FBQUFBQmVEX1loVTUzRng4RV91QnNNQjlPcVlTMGs4eEhYZXpwRmFQQTdSMkhjQUVDOEN2eUVBZjlkUjB0R005MmJRNFFBVFdsbnZQU003M3VsWkV0ZnE3U3ZqbFRULXpmUnUtc1ZHLXJoYUdvcU1TZ3VxbW4xR3V1NFNPQ2xSRHVFLUNpMEh4a1o; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:13 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "576.0"
+          ],
+          "x-ratelimit-reset": [
+            "47"
+          ],
+          "x-ratelimit-used": [
+            "24"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=7&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:13",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353575.Z0FBQUFBQmVEX1loVTUzRng4RV91QnNNQjlPcVlTMGs4eEhYZXpwRmFQQTdSMkhjQUVDOEN2eUVBZjlkUjB0R005MmJRNFFBVFdsbnZQU003M3VsWkV0ZnE3U3ZqbFRULXpmUnUtc1ZHLXJoYUdvcU1TZ3VxbW4xR3V1NFNPQ2xSRHVFLUNpMEh4a1o"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=8&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:13 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104354.662696,VS0,VE103"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353689.Z0FBQUFBQmVEX1lobjB5SzVEenByNjNNaHJ1YnI5WHV4Y3RVUE9lQW9YUzd3ZEhTQ2paN3lYcFNlNXBQdVp5UElCT09xNUdLTFFhdXFpRTBCdFo0ZjR6NG14Vm8yNlkxaDBiRTlHY0hBTDVJRXBGSWNSOUcyRnJYR3RtWDNoa2NEY0tiVUZaOG9YU0Q; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:13 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "575.0"
+          ],
+          "x-ratelimit-reset": [
+            "47"
+          ],
+          "x-ratelimit-used": [
+            "25"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=8&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:13",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353689.Z0FBQUFBQmVEX1lobjB5SzVEenByNjNNaHJ1YnI5WHV4Y3RVUE9lQW9YUzd3ZEhTQ2paN3lYcFNlNXBQdVp5UElCT09xNUdLTFFhdXFpRTBCdFo0ZjR6NG14Vm8yNlkxaDBiRTlHY0hBTDVJRXBGSWNSOUcyRnJYR3RtWDNoa2NEY0tiVUZaOG9YU0Q"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=9&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:13 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104354.825673,VS0,VE68"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353849.Z0FBQUFBQmVEX1loQXhCTWEyT2NIeWNaYzg5TmxHUnZ0WjNLMVpRc0Fxai1jQTk4Q0ZGb1BBSFBBVDB4OWJ2ZzFzZHVaLURDSGpYdlR2TW1Sb1dYRnhqejJkLVhCamdRUzM1UWFUeW5Xb3NTWWFzWHRGT0FZYWVwYjBKY1JnZGRrcEkyQjRkUDBTSFM; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:13 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "574.0"
+          ],
+          "x-ratelimit-reset": [
+            "47"
+          ],
+          "x-ratelimit-used": [
+            "26"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=9&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:14",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353849.Z0FBQUFBQmVEX1loQXhCTWEyT2NIeWNaYzg5TmxHUnZ0WjNLMVpRc0Fxai1jQTk4Q0ZGb1BBSFBBVDB4OWJ2ZzFzZHVaLURDSGpYdlR2TW1Sb1dYRnhqejJkLVhCamdRUzM1UWFUeW5Xb3NTWWFzWHRGT0FZYWVwYjBKY1JnZGRrcEkyQjRkUDBTSFM"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=10&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:14 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104354.913665,VS0,VE90"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353954.Z0FBQUFBQmVEX1loVmxRM21qVFNiWWJwczJQSzRwOGVQSzdZM1otY2NDMTlhU1JfTVNmclZ6Tld3N1drSFZMaVk0RFlFS2pFUmNNVThPOWp4eW9tX0NueHJINzJRRWxPalpZWHhIZDFMTTFlTUktTFdzczB5ZzBvX0Q4WFI5SVR1cWJBcTh0OUxRVzQ; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:13 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "573.0"
+          ],
+          "x-ratelimit-reset": [
+            "47"
+          ],
+          "x-ratelimit-used": [
+            "27"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=10&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:14",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104353954.Z0FBQUFBQmVEX1loVmxRM21qVFNiWWJwczJQSzRwOGVQSzdZM1otY2NDMTlhU1JfTVNmclZ6Tld3N1drSFZMaVk0RFlFS2pFUmNNVThPOWp4eW9tX0NueHJINzJRRWxPalpZWHhIZDFMTTFlTUktTFdzczB5ZzBvX0Q4WFI5SVR1cWJBcTh0OUxRVzQ"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=11&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:14 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104354.025832,VS0,VE131"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104354090.Z0FBQUFBQmVEX1lpeVJVSlBFYnlVSFhiX0dvNFROZ0ZDWGxNQnkxVG9VS3c4UnNBemhMcEFralhBUU5QSFBROXAtXzZFN1J4NWNfOGdON1kwUXhCdVc2bDNlTGJETzJUYjBRblo0ZmVtaWVrZUdxMDFSTDNYaVhYRFBxSm9oYlNJcTBnMkVQbUFPU3k; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:14 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "572.0"
+          ],
+          "x-ratelimit-reset": [
+            "46"
+          ],
+          "x-ratelimit-used": [
+            "28"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=11&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:14",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104354090.Z0FBQUFBQmVEX1lpeVJVSlBFYnlVSFhiX0dvNFROZ0ZDWGxNQnkxVG9VS3c4UnNBemhMcEFralhBUU5QSFBROXAtXzZFN1J4NWNfOGdON1kwUXhCdVc2bDNlTGJETzJUYjBRblo0ZmVtaWVrZUdxMDFSTDNYaVhYRFBxSm9oYlNJcTBnMkVQbUFPU3k"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=12&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:14 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104354.176745,VS0,VE96"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104354204.Z0FBQUFBQmVEX1lpb3U5blFFdTJUSGdTbzlRQTlnS0I2MDdxbG5jXzlPcGR3TDJwWkhJQ1pnaWlOcVhhRUZUbEpnYWNHS0U3OXhzNm5nUDJQLWk5TVVwRV9BelJzODlEZ1poWU1WckIxdVYxT3hHRWhjZXBHR0VNT0ktMzRjRUtQZ2x3dF9OY05PdE4; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:14 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "571.0"
+          ],
+          "x-ratelimit-reset": [
+            "46"
+          ],
+          "x-ratelimit-used": [
+            "29"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=12&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:14",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104354204.Z0FBQUFBQmVEX1lpb3U5blFFdTJUSGdTbzlRQTlnS0I2MDdxbG5jXzlPcGR3TDJwWkhJQ1pnaWlOcVhhRUZUbEpnYWNHS0U3OXhzNm5nUDJQLWk5TVVwRV9BelJzODlEZ1poWU1WckIxdVYxT3hHRWhjZXBHR0VNT0ktMzRjRUtQZ2x3dF9OY05PdE4"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=13&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:14 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104354.297205,VS0,VE170"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104354419.Z0FBQUFBQmVEX1lpTVlpYVdyNl9xUTdMUTcwY0Z1RTZhSjRVMFczM2pkRGpMQmxqZWY2bi0wbWRWMFpVX0c0TzEzM2NOd2tzc3FRZWl0djJjWFVCQVB2N2VsVlNkVHkyRXNLMGJGTF94eTRyR2VqUG5XTmNjZGJfMUtPalY3TEphYWExb25famNxOVU; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:14 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "570.0"
+          ],
+          "x-ratelimit-reset": [
+            "46"
+          ],
+          "x-ratelimit-used": [
+            "30"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=13&raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-01-04T02:19:14",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ffwjqiSJnxheYY1zLL; loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVEX1lna2xBbjNKWHEtTWdYZUJfT2pEV3VLdFpwRXpCQU1aWkYxUTFqbVpjd1BDZkFEcmpFTUJkYU5yM19Gd1NFdWczN252MHkyaFhiVm1UUk9NYzQ0U0JoVXcwS3ZvNlVmRTI0b3FiUU12VmRfYTIzUGJGaGNMX2JGdkdjaDRoZ2hzanM; session_tracker=nHwN6uqnHIxV14wi2o.0.1578104354419.Z0FBQUFBQmVEX1lpTVlpYVdyNl9xUTdMUTcwY0Z1RTZhSjRVMFczM2pkRGpMQmxqZWY2bi0wbWRWMFpVX0c0TzEzM2NOd2tzc3FRZWl0djJjWFVCQVB2N2VsVlNkVHkyRXNLMGJGTF94eTRyR2VqUG5XTmNjZGJfMUtPalY3TEphYWExb25famNxOVU"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.4.1.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=14&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"allowable_content\": \"all\", \"text\": \"Text\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"488f9b30-2a6e-11ea-a5e1-0e48d7ccc6bf\", \"css_class\": \"Test\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"Test\", \"text_color\": \"light\", \"mod_only\": false, \"background_color\": \"#cc8b00\", \"id\": \"0be1ace4-2a75-11ea-8018-0ecef10bc461\", \"css_class\": \"sdgdsgdfg\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": true, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"c35e4e9e-2c01-11ea-8f5b-0e0a652f3127\", \"css_class\": \"safd\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"sd\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"c6770634-2c0b-11ea-b2c4-0eb2086522d7\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_2343432423434234\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9f4aed66-2c31-11ea-83ce-0e82e83845bb\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"19c3c7e8-2c32-11ea-8f52-0e9efc12a42d\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"0c697326-2c33-11ea-a8a2-0e2c4841c615\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"411e3a8e-2c33-11ea-8867-0ecb0295a08f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-6272344502281197854\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"1caba762-2c34-11ea-9ce7-0ee91a3979a3\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_-5907897697623735472\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"4f5c14ee-2c34-11ea-9619-0e0e030ac6b1\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_4334785974679089788\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"9522e976-2c34-11ea-8cbe-0ed81bd53a3f\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"uihrreiuhgreuihgreiuhgeriugreigeriuhg\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"\", \"id\": \"0c5566e0-2c35-11ea-b4fa-0e34689a2fff\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test_7400363879098893801\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"38141cd6-2c3a-11ea-bcfd-0ead7f7cca81\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}, {\"allowable_content\": \"all\", \"text\": \"test124\", \"text_color\": \"dark\", \"mod_only\": false, \"background_color\": \"transparent\", \"id\": \"f93339d8-2ce4-11ea-9877-0ece4d97dd21\", \"css_class\": \"\", \"max_emojis\": 10, \"richtext\": [], \"text_editable\": false, \"override_css\": false, \"type\": \"text\"}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "4049"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 04 Jan 2020 02:19:14 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21921-LGA"
+          ],
+          "X-Timer": [
+            "S1578104355.503362,VS0,VE64"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=nHwN6uqnHIxV14wi2o.0.1578104354522.Z0FBQUFBQmVEX1lpLUc1aFFuYUhoZjduRHdmRXN5N0tibGZqOEs0MWdBYi1VMXlzdkVGTnFuMTNWaGsxMWVMWmhTNmtycTE3ZW4xS0NaX2I1SENyaHZZcGFoX2p0ZU45WUxqSld4NG93UVNQN3M4aWlnSkphNUVVNWZET3Z4VlUwNGJnV0Z3MTZrRWI; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 04-Jan-2020 04:19:14 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "569.0"
+          ],
+          "x-ratelimit-reset": [
+            "46"
+          ],
+          "x-ratelimit-used": [
+            "31"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/api/user_flair_v2?unique=14&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}
