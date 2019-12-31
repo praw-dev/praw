@@ -100,6 +100,7 @@ instances of them bound to an attribute of one of the PRAW models.
    other/preferences
    other/redditbase
    other/redditorlist
+   other/richflairbase
    other/removalreason
    other/sublisting
    other/submenu

@@ -9,6 +9,7 @@ The Reddit Instance
    :caption: Helper Classes
 
    reddit/front
+   reddit/flair
    reddit/inbox
    reddit/live
    reddit/multireddit
