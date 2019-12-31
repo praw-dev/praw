@@ -54,7 +54,7 @@ class ThingModerationMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            # approve a comment:
            comment = reddit.comment('dkk4qjd')
@@ -80,7 +80,7 @@ class ThingModerationMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            # distinguish and sticky a comment:
            comment = reddit.comment('dkk4qjd')
@@ -107,7 +107,7 @@ class ThingModerationMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            # ignore future reports on a comment:
            comment = reddit.comment('dkk4qjd')
@@ -128,7 +128,7 @@ class ThingModerationMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            # lock a comment:
            comment = reddit.comment('dkk4qjd')
@@ -157,7 +157,7 @@ class ThingModerationMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            # remove a comment and mark as spam:
            comment = reddit.comment('dkk4qjd')
@@ -219,7 +219,7 @@ class ThingModerationMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            # undistinguish a comment:
            comment = reddit.comment('dkk4qjd')
@@ -242,7 +242,7 @@ class ThingModerationMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            # accept future reports on a comment:
            comment = reddit.comment('dkk4qjd')

@@ -46,7 +46,7 @@ class BaseListingMixin(PRAWBase):
 
         This method can be used like:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.domain('imgur.com').controversial('week')
            reddit.multireddit('samuraisam', 'programming').controversial('day')
@@ -71,7 +71,7 @@ class BaseListingMixin(PRAWBase):
 
         This method can be used like:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.domain('imgur.com').hot()
            reddit.multireddit('samuraisam', 'programming').hot()
@@ -95,7 +95,7 @@ class BaseListingMixin(PRAWBase):
 
         This method can be used like:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.domain('imgur.com').new()
            reddit.multireddit('samuraisam', 'programming').new()
@@ -126,7 +126,7 @@ class BaseListingMixin(PRAWBase):
 
         This method can be used like:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.domain('imgur.com').top('week')
            reddit.multireddit('samuraisam', 'programming').top('day')

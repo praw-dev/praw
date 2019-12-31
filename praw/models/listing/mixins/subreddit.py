@@ -37,7 +37,7 @@ class CommentHelper(PRAWBase):
 
         This method should be used in a way similar to the example below:
 
-        .. code:: python
+        .. code-block:: python
 
            for comment in reddit.subreddit('redditdev').comments(limit=25):
                print(comment.author)
@@ -58,7 +58,7 @@ class SubredditListingMixin(
         For example, to output the author of the 25 most recent comments of
         ``/r/redditdev`` execute:
 
-        .. code:: python
+        .. code-block:: python
 
            for comment in reddit.subreddit('redditdev').comments(limit=25):
                print(comment.author)

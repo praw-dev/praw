@@ -13,7 +13,7 @@ class GildableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            comment = reddit.comment('dkk4qjd')
            comment.gild()

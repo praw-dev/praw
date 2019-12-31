@@ -110,7 +110,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         ``reply_limit`` attributes before replies are fetched, including
         any call to :meth:`.refresh`:
 
-        .. code:: python
+        .. code-block:: python
 
            comment.reply_sort = 'new'
            comment.refresh()
@@ -223,7 +223,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         Lazy comment example:
 
-        .. code:: python
+        .. code-block:: python
 
            comment = reddit.comment('cklhv0f')
            parent = comment.parent()
@@ -242,7 +242,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         successive calls to :meth:`.parent()` with calls to :meth:`.refresh()`
         at every 9 levels. For example:
 
-        .. code:: python
+        .. code-block:: python
 
            comment = reddit.comment('dkk4qjd')
            ancestor = comment
@@ -280,7 +280,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            comment = reddit.comment('dkk4qjd')
            comment.refresh()
@@ -329,7 +329,7 @@ class CommentModeration(ThingModerationMixin):
 
     Example usage:
 
-    .. code:: python
+    .. code-block:: python
 
        comment = reddit.comment('dkk4qjd')
        comment.mod.approve()

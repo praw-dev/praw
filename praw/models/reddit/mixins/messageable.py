@@ -19,20 +19,20 @@ class MessageableMixin:
 
         For example, to send a private message to ``u/spez``, try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.redditor('spez').message('TEST', 'test message from PRAW')
 
         To send a message to ``u/spez`` from the moderators of ``r/test`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.redditor('spez').message('TEST', 'test message from r/test',
                                            from_subreddit='test')
 
         To send a message to the moderators of ``r/test``, try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('test').message('TEST', 'test PM from PRAW')
 

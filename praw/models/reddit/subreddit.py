@@ -30,7 +30,7 @@ class Subreddit(
 
     To obtain an instance of this class for subreddit ``r/redditdev`` execute:
 
-    .. code:: python
+    .. code-block:: python
 
        subreddit = reddit.subreddit('redditdev')
 
@@ -38,14 +38,14 @@ class Subreddit(
     one. The following outputs the titles of the 25 hottest submissions in
     ``r/all``:
 
-    .. code:: python
+    .. code-block:: python
 
        for submission in reddit.subreddit('all').hot(limit=25):
            print(submission.title)
 
     Multiple subreddits can be combined with a ``+`` like so:
 
-    .. code:: python
+    .. code-block:: python
 
        for submission in reddit.subreddit('redditdev+learnpython').top('all'):
            print(submission)
@@ -56,7 +56,7 @@ class Subreddit(
     :meth:`~praw.models.Subreddit.gilded`, and
     :meth:`.SubredditStream.comments`.
 
-    .. code:: python
+    .. code-block:: python
 
        for submission in reddit.subreddit('all-redditdev').new():
            print(submission)
@@ -259,14 +259,14 @@ class Subreddit(
 
         This attribute can be used to discover all emoji for a subreddit:
 
-        .. code:: python
+        .. code-block:: python
 
            for emoji in reddit.subreddit('iama').emoji:
                print(emoji)
 
         A single emoji can be lazily retrieved via:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('blah').emoji['emoji_name']
 
@@ -357,7 +357,7 @@ class Subreddit(
         Streams can be used to indefinitely retrieve new comments made to a
         subreddit, like:
 
-        .. code:: python
+        .. code-block:: python
 
            for comment in reddit.subreddit('iama').stream.comments():
                print(comment)
@@ -366,7 +366,7 @@ class Subreddit(
         following example all submissions are fetched via the special subreddit
         ``r/all``:
 
-        .. code:: python
+        .. code-block:: python
 
            for submission in reddit.subreddit('all').stream.submissions():
                print(submission)
@@ -407,14 +407,14 @@ class Subreddit(
 
         This attribute can be used to discover all wikipages for a subreddit:
 
-        .. code:: python
+        .. code-block:: python
 
            for wikipage in reddit.subreddit('iama').wiki:
                print(wikipage)
 
         To fetch the content for a given wikipage try:
 
-        .. code:: python
+        .. code-block:: python
 
            wikipage = reddit.subreddit('iama').wiki['proof']
            print(wikipage.content_md)
@@ -566,7 +566,7 @@ class Subreddit(
 
         For example to show the rules of ``r/redditdev`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('redditdev').rules()
 
@@ -596,7 +596,7 @@ class Subreddit(
 
         For example to search all subreddits for ``praw`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            for submission in reddit.subreddit('all').search('praw'):
                print(submission.title)
@@ -674,7 +674,7 @@ class Subreddit(
 
         For example to submit a URL to ``r/reddit_api_test`` do:
 
-        .. code:: python
+        .. code-block:: python
 
            title = 'PRAW documentation'
            url = 'https://praw.readthedocs.io'
@@ -768,7 +768,7 @@ class Subreddit(
 
         For example to submit an image to ``r/reddit_api_test`` do:
 
-        .. code:: python
+        .. code-block:: python
 
            title = 'My favorite picture'
            image = '/path/to/image.png'
@@ -861,7 +861,7 @@ class Subreddit(
 
         For example to submit a video to ``r/reddit_api_test`` do:
 
-        .. code:: python
+        .. code-block:: python
 
            title = 'My favorite movie'
            video = '/path/to/video.mp4'
@@ -942,7 +942,7 @@ class SubredditFilters:
     Members of this class should be utilized via ``Subreddit.filters``. For
     example to add a filter run:
 
-    .. code:: python
+    .. code-block:: python
 
        reddit.subreddit('all').filters.add('subreddit_name')
 
@@ -964,7 +964,7 @@ class SubredditFilters:
 
         This method should be invoked as:
 
-        .. code:: python
+        .. code-block:: python
 
            for subreddit in reddit.subreddit('NAME').filters:
                ...
@@ -989,7 +989,7 @@ class SubredditFilters:
         Alternatively, you can filter a subreddit temporarily from a special
         listing in a manner like so:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('all-redditdev-learnpython')
 
@@ -1163,7 +1163,7 @@ class SubredditFlair:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('redditdev').flair.set('bboe', 'PRAW author',
                                                    css_class='mods')
@@ -1208,7 +1208,7 @@ class SubredditFlair:
         For example to clear the flair text, and set the ``praw`` flair css
         class on a few users try:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit.flair.update(['bboe', 'spez', 'spladug'],
                                   css_class='praw')
@@ -1569,7 +1569,7 @@ class SubredditModeration:
 
         To print all items in the edited queue try:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.subreddit('mod').mod.edited(limit=None):
                print(item)
@@ -1592,7 +1592,7 @@ class SubredditModeration:
 
         To print the last 5 moderator mail messages and their replies, try:
 
-        .. code:: python
+        .. code-block:: python
 
            for message in reddit.subreddit('mod').mod.inbox(limit=5):
                print("From: {}, Body: {}".format(message.author, message.body))
@@ -1619,7 +1619,7 @@ class SubredditModeration:
 
         To print the moderator and subreddit of the last 5 modlog entries try:
 
-        .. code:: python
+        .. code-block:: python
 
            for log in reddit.subreddit('mod').mod.log(limit=5):
                print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
@@ -1644,7 +1644,7 @@ class SubredditModeration:
 
         To print all modqueue items try:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.subreddit('mod').mod.modqueue(limit=None):
                print(item)
@@ -1672,7 +1672,7 @@ class SubredditModeration:
 
         A single removal reason can be lazily retrieved via:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('NAME').mod.removal_reasons['reason_id']
 
@@ -1693,7 +1693,7 @@ class SubredditModeration:
 
         To print the user and mod report reasons in the report queue try:
 
-        .. code:: python
+        .. code-block:: python
 
            for reported_item in reddit.subreddit('mod').mod.reports():
                print("User Reports: {}".format(reported_item.user_reports))
@@ -1723,7 +1723,7 @@ class SubredditModeration:
 
         To print the items in the spam queue try:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.subreddit('mod').mod.spam():
                print(item)
@@ -1744,7 +1744,7 @@ class SubredditModeration:
 
         To print the items in the unmoderated queue try:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.subreddit('mod').mod.unmoderated():
                print(item)
@@ -1766,7 +1766,7 @@ class SubredditModeration:
 
         To print the mail in the unread modmail queue try:
 
-        .. code:: python
+        .. code-block:: python
 
            for message in reddit.subreddit('mod').mod.unread():
                print("From: {}, To: {}".format(message.author, message.dest))
@@ -1895,7 +1895,7 @@ class SubredditQuarantine:
 
         Usage:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit = reddit.subreddit('QUESTIONABLE')
            next(subreddit.hot())  # Raises prawcore.Forbidden
@@ -1917,7 +1917,7 @@ class SubredditQuarantine:
 
         Usage:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit = reddit.subreddit('QUESTIONABLE')
            next(subreddit.hot())  # Returns Submission
@@ -2063,13 +2063,13 @@ class ModeratorRelationship(SubredditRelationship):
 
         To be used like:
 
-        .. code:: python
+        .. code-block:: python
 
            moderators = reddit.subreddit('nameofsub').moderator()
 
         For example, to list the moderators along with their permissions try:
 
-        .. code:: python
+        .. code-block:: python
 
            for moderator in reddit.subreddit('SUBREDDIT').moderator():
                print('{}: {}'.format(moderator, moderator.mod_permissions))
@@ -2099,7 +2099,7 @@ class ModeratorRelationship(SubredditRelationship):
         For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
             permissions to ``r/test``, try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('test').moderator.add('spez', ['posts', 'mail'])
 
@@ -2122,7 +2122,7 @@ class ModeratorRelationship(SubredditRelationship):
         For example, to invite ``'spez'`` with ``posts`` and ``mail``
             permissions to ``r/test``, try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('test').moderator.invite('spez', ['posts', 'mail'])
 
@@ -2137,7 +2137,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('subredditname').moderator.leave()
 
@@ -2152,7 +2152,7 @@ class ModeratorRelationship(SubredditRelationship):
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('subredditname').moderator.remove_invite('spez')
 
@@ -2173,13 +2173,13 @@ class ModeratorRelationship(SubredditRelationship):
 
         For example, to add all permissions to the moderator, try:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit.moderator.update('spez')
 
         To remove all permissions from the moderator, try:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit.moderator.update('spez', [])
 
@@ -2203,7 +2203,7 @@ class ModeratorRelationship(SubredditRelationship):
         For example, to grant the ``flair``` and ``mail``` permissions to
         the moderator invite, try:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit.moderator.update_invite('spez', ['flair', 'mail'])
 
@@ -2227,13 +2227,13 @@ class Modmail:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('redditdev').modmail('2gmz', mark_read=True)
 
         To print all messages from a conversation as Markdown source:
 
-        .. code:: python
+        .. code-block:: python
 
            conversation = reddit.subreddit('redditdev').modmail('2gmz', \
 mark_read=True)
@@ -2248,7 +2248,7 @@ mark_read=True)
 
         For example, to print the user's ban status:
 
-        .. code:: python
+        .. code-block:: python
 
            conversation = reddit.subreddit('redditdev').modmail('2gmz', \
 mark_read=True)
@@ -2256,7 +2256,7 @@ mark_read=True)
 
         To print a list of recent submissions by the user:
 
-        .. code:: python
+        .. code-block:: python
 
            conversation = reddit.subreddit('redditdev').modmail('2gmz', \
 mark_read=True)
@@ -2294,7 +2294,7 @@ mark_read=True)
 
         For example, to mark all notifications for a subreddit as read:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit = reddit.subreddit('redditdev')
            subreddit.modmail.bulk_read(state='notifications')
@@ -2337,7 +2337,7 @@ mark_read=True)
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
             conversations = reddit.subreddit('all').modmail.conversations(\
 state='mod')
@@ -2380,7 +2380,7 @@ state='mod')
         :returns: A :class:`.ModmailConversation` object for the newly created
             conversation.
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit = reddit.subreddit('redditdev')
            redditor = reddit.redditor('bboe')
@@ -2403,7 +2403,7 @@ state='mod')
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddits = reddit.subreddit('all').modmail.subreddits()
 
@@ -2424,7 +2424,7 @@ state='mod')
 
         For example, to print the count of unread moderator discussions:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit = reddit.subreddit('redditdev')
            unread_counts = subreddit.modmail.unread_count()
@@ -2456,7 +2456,7 @@ class SubredditStream:
         For example, to retrieve all new comments made to the ``iama``
         subreddit, try:
 
-        .. code:: python
+        .. code-block:: python
 
            for comment in reddit.subreddit('iama').stream.comments():
                print(comment)
@@ -2464,7 +2464,7 @@ class SubredditStream:
         To only retreive new submissions starting when the stream is
         created, pass `skip_existing=True`:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit = reddit.subreddit('iama')
            for comment in subreddit.stream.comments(skip_existing=True):
@@ -2483,7 +2483,7 @@ class SubredditStream:
 
         For example to retrieve all new submissions made to all of Reddit, try:
 
-        .. code:: python
+        .. code-block:: python
 
            for submission in reddit.subreddit('all').stream.submissions():
                print(submission)
@@ -2500,7 +2500,7 @@ class SubredditStylesheet:
 
         To be used as:
 
-        .. code:: python
+        .. code-block:: python
 
            stylesheet = reddit.subreddit('SUBREDDIT').stylesheet()
 
@@ -2515,7 +2515,7 @@ class SubredditStylesheet:
 
         An instance of this class is provided as:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet
 
@@ -2575,7 +2575,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner()
 
@@ -2591,7 +2591,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_additional_image()
 
@@ -2609,7 +2609,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_hover_image()
 
@@ -2624,7 +2624,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.delete_header()
 
@@ -2639,7 +2639,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.delete_image('smile')
 
@@ -2654,7 +2654,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.delete_mobile_header()
 
@@ -2669,7 +2669,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.delete_mobile_icon()
 
@@ -2684,7 +2684,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.update(
                'p { color: green; }', 'color text green')
@@ -2716,7 +2716,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.upload('smile', 'img.png')
 
@@ -2739,7 +2739,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.upload_banner('banner.png')
 
@@ -2764,7 +2764,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_additional_image('banner.png')
 
@@ -2801,7 +2801,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_hover_image('banner.png')
 
@@ -2826,7 +2826,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.upload_header('header.png')
 
@@ -2849,7 +2849,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.upload_mobile_header(
                'header.png')
@@ -2873,7 +2873,7 @@ class SubredditStylesheet:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('SUBREDDIT').stylesheet.upload_mobile_icon(
                'icon.png')
@@ -2890,7 +2890,7 @@ class SubredditWiki:
 
         This method is to be used to fetch a specific wikipage, like so:
 
-        .. code:: python
+        .. code-block:: python
 
            wikipage = reddit.subreddit('iama').wiki['proof']
            print(wikipage.content_md)
@@ -2915,7 +2915,7 @@ class SubredditWiki:
 
         This method is to be used to discover all wikipages for a subreddit:
 
-        .. code:: python
+        .. code-block:: python
 
            for wikipage in reddit.subreddit('iama').wiki:
                print(wikipage)
@@ -2939,7 +2939,7 @@ class SubredditWiki:
 
         To create the wiki page ``praw_test`` in ``r/test`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('test').wiki.create(
                'praw_test', 'wiki body text', reason='PRAW Test Creation')
@@ -2958,7 +2958,7 @@ class SubredditWiki:
 
         To view the wiki revisions for ``'praw_test'`` in ``r/test`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.subreddit('test').wiki['praw_test'].revisions():
                print(item)

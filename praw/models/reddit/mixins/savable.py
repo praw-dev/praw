@@ -14,7 +14,7 @@ class SavableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.save(category="view later")
@@ -34,7 +34,7 @@ class SavableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.unsave()

@@ -79,7 +79,7 @@ class Emoji(RedditBase):
 
         To delete ``'test'`` as an emoji on the subreddit ``'praw_test'`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('praw_test').emoji['test'].delete()
 
@@ -100,7 +100,7 @@ class SubredditEmoji:
 
         This method is to be used to fetch a specific emoji url, like so:
 
-        .. code:: python
+        .. code-block:: python
 
            emoji = reddit.subreddit('praw_test').emoji['test']
            print(emoji)
@@ -122,7 +122,7 @@ class SubredditEmoji:
 
         This method is to be used to discover all emoji for a subreddit:
 
-        .. code:: python
+        .. code-block:: python
 
            for emoji in reddit.subreddit('praw_test').emoji:
                print(emoji)
@@ -147,7 +147,7 @@ class SubredditEmoji:
 
         To add ``'test'`` to the subreddit ``'praw_test'`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('praw_test').emoji.add('test','test.png')
 

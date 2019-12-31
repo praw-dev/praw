@@ -71,7 +71,7 @@ class RemovalReason(RedditBase):
 
         To delete ``'141vv5c16py7d'`` from the subreddit ``'NAME'`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('NAME').removal_reasons['141vv5c16py7d'].mod.delete()
 
@@ -89,7 +89,7 @@ class RemovalReason(RedditBase):
 
         To update ``'141vv5c16py7d'`` from the subreddit ``'NAME'`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('NAME').removal_reasons['141vv5c16py7d'].mod.update(
                message='New message',
@@ -113,7 +113,7 @@ class SubredditRemovalReasons:
 
         This method is to be used to fetch a specific removal reason, like so:
 
-        .. code:: python
+        .. code-block:: python
 
            reason_id = '141vv5c16py7d'
            reason = reddit.subreddit('NAME').mod.removal_reasons[reason_id]
@@ -162,7 +162,7 @@ class SubredditRemovalReasons:
 
         To add ``'Test'`` to the subreddit ``'NAME'`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('NAME').removal_reasons.mod.add(
                message='Foobar',

@@ -19,7 +19,7 @@ class LiveHelper(PRAWBase):
 
         This method is intended to be used as:
 
-        .. code:: python
+        .. code-block:: python
 
             livethread = reddit.live('ukaeu1ik4sw5')
 
@@ -45,7 +45,7 @@ class LiveHelper(PRAWBase):
 
         Usage:
 
-        .. code:: python
+        .. code-block:: python
 
             ids = ['3rgnbke2rai6hen7ciytwcxadi',
                    'sw7bubeycai6hey4ciytwamw3a',

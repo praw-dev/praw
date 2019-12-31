@@ -14,7 +14,7 @@ class InboxableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            comment = reddit.comment('dkk4qjd')
            comment.block()
@@ -34,7 +34,7 @@ class InboxableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            inbox = reddit.inbox()
 
@@ -55,7 +55,7 @@ class InboxableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            inbox = reddit.inbox.unread()
 
@@ -78,7 +78,7 @@ class InboxableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            inbox = reddit.inbox(limit=10)
 
@@ -98,7 +98,7 @@ class InboxableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            inbox = reddit.inbox()
 

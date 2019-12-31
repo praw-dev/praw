@@ -174,7 +174,7 @@ class ModmailConversation(RedditBase):
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('redditdev').modmail('2gmz').archive()
 
@@ -186,7 +186,7 @@ class ModmailConversation(RedditBase):
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('redditdev').modmail('2gmz').highlight()
 
@@ -198,7 +198,7 @@ class ModmailConversation(RedditBase):
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('redditdev').modmail('2gmz').mute()
 
@@ -218,7 +218,7 @@ class ModmailConversation(RedditBase):
         For example, to mark the conversation as read along with other recent
         conversations from the same user:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit = reddit.subreddit('redditdev')
            conversation = subreddit.modmail.conversation('2gmz')
@@ -248,14 +248,14 @@ class ModmailConversation(RedditBase):
 
         For example, to reply to the non-mod user while hiding your username:
 
-        .. code:: python
+        .. code-block:: python
 
            conversation = reddit.subreddit('redditdev').modmail('2gmz')
            conversation.reply('Message body', author_hidden=True)
 
         To create a private moderator note on the conversation:
 
-        .. code:: python
+        .. code-block:: python
 
            conversation.reply('Message body', internal=True)
 
@@ -277,7 +277,7 @@ class ModmailConversation(RedditBase):
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('redditdev').modmail('2gmz').unarchive()
 
@@ -289,7 +289,7 @@ class ModmailConversation(RedditBase):
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('redditdev').modmail('2gmz').unhighlight()
 
@@ -303,7 +303,7 @@ class ModmailConversation(RedditBase):
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('redditdev').modmail('2gmz').unmute()
 
@@ -323,7 +323,7 @@ class ModmailConversation(RedditBase):
         For example, to mark the conversation as unread along with other recent
         conversations from the same user:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit = reddit.subreddit('redditdev')
            conversation = subreddit.modmail.conversation('2gmz')

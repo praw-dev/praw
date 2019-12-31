@@ -115,7 +115,7 @@ def stream_generator(
 
     For example, to create a stream of comment replies, try:
 
-    .. code:: python
+    .. code-block:: python
 
        reply_function = reddit.inbox.comment_replies
        for reply in praw.models.util.stream_generator(reply_function):
@@ -124,7 +124,7 @@ def stream_generator(
     To pause a comment stream after six responses with no new
     comments, try:
 
-    .. code:: python
+    .. code-block:: python
 
        subreddit = reddit.subreddit('redditdev')
        for comment in subreddit.stream.comments(pause_after=6):
@@ -134,7 +134,7 @@ def stream_generator(
 
     To resume fetching comments after a pause, try:
 
-    .. code:: python
+    .. code-block:: python
 
        subreddit = reddit.subreddit('help')
        comment_stream = subreddit.stream.comments(pause_after=5)
@@ -155,7 +155,7 @@ def stream_generator(
     stream as soon as possible, rather than up to a delay of just over sixteen
     seconds.
 
-    .. code:: python
+    .. code-block:: python
 
        subreddit = reddit.subreddit('help')
        for comment in subreddit.stream.comments(pause_after=0):

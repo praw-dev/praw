@@ -21,7 +21,7 @@ class VotableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.clear_vote()
@@ -43,7 +43,7 @@ class VotableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.downvote()
@@ -67,7 +67,7 @@ class VotableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.upvote()

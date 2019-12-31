@@ -37,7 +37,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         For example, to output the first line of all new comments by
         ``/u/spez`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            for comment in reddit.redditor('spez').comments.new(limit=None):
                print(comment.body.split('\n', 1)[0][:79])
@@ -52,7 +52,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         For example, to output the title's of top 100 of all time submissions
         for ``/u/spez`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            for submission in reddit.redditor('spez').submissions.top('all'):
                print(submission.title)
