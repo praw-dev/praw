@@ -2,8 +2,10 @@
 from typing import Any, Dict, Optional, TypeVar, Union
 from .base import RedditBase
 
-_RichFlairBase = TypeVar("_RichFlairBase")
+_AdvancedSubmissionFlair = TypeVar("_AdvancedSubmissionFlair")
 _LinkFlair = TypeVar("_LinkFlair")
+_RedditorFlair = TypeVar("_RedditorFlair")
+_RichFlairBase = TypeVar("_RichFlairBase")
 Reddit = TypeVar("Reddit")
 Submission = TypeVar("Submission")
 Subreddit = TypeVar("Subreddit")
@@ -22,17 +24,55 @@ class RichFlairBase(RedditBase):
     @classmethod
     def make_new_flair(
         cls,
-        reddit,
-        text=None,
-        css_class=None,
-        text_editable=False,
-        background_color=None,
-        text_color=None,
-        mod_only=None,
-        allowable_content=None,
-        max_emojis=None,
-    ):
-        """Make a new flair instance. Useful for adding new flair templates."""
+        reddit: Reddit,
+        subreddit: Subreddit,
+        text: str,
+        css_class: str = "",
+        text_editable: bool = False,
+        background_color: str = "transparent",
+        text_color: str = "dark",
+        mod_only: bool = False,
+        allowable_content: str = "all",
+        max_emojis: str = 10,
+    ) -> _RichFlairBase:
+        """Make a new flair instance. Useful for adding new flair templates.
+
+        .. note:: This method should only be called from an instance of
+           :class:`.FlairHelper`.
+
+        :param reddit: An instance of :class:`~.Reddit`.
+        :param subreddit: An instance of :class:`~.Subreddit`.
+        :param text: The flair template's text (required).
+        :param css_class: The flair template's css_class (default: '').
+        :param text_editable: (boolean) Indicate if the flair text can be
+            modified for each Redditor that sets it (default: False).
+        :param background_color: The flair template's new background color,
+            as a hex color.
+        :param text_color: The flair template's new text color, either
+            ``'light'`` or ``'dark'``.
+        :param mod_only: (boolean) Indicate if the flair can only be used by
+            moderators.
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``.
+        :param max_emojis: (int) Maximum emojis in the flair
+            (Reddit defaults this value to 10).
+        """
+        return cls(
+            reddit,
+            subreddit,
+            dict(
+                text=text,
+                css_class=css_class,
+                text_editable=text_editable,
+                background_color=background_color,
+                text_color=text_color,
+                mod_only=mod_only,
+                allowable_content=allowable_content,
+                max_emojis=max_emojis,
+            ),
+        )
 
     def __eq__(self, other: Union[str, _RichFlairBase]) -> bool:
         """Check that two instances of the class are equal."""
@@ -60,6 +100,8 @@ class RichFlairBase(RedditBase):
         """Initialize the class."""
         super().__init__(reddit, _data=_data)
         self.subreddit = subreddit
+        if not self.subreddit.use_flair_class:
+            self.subreddit.use_flair_class = True
 
     def change_info(self, **new_values: Union[str, int, bool]):
         """Update the values of the flair instance.
@@ -153,6 +195,164 @@ class AdvancedSubmissionFlair(RichFlairBase):
     ======================= ===================================================
     """
 
+    @classmethod
+    def make_new_flair(
+        cls,
+        reddit: Reddit,
+        subreddit: Subreddit,
+        text: str,
+        css_class: str = "",
+        text_editable: bool = False,
+        background_color: str = "transparent",
+        text_color: str = "dark",
+        mod_only: bool = False,
+        allowable_content: str = "all",
+        max_emojis: str = 10,
+    ) -> _AdvancedSubmissionFlair:
+        """Make a new flair instance. Useful for adding new flair templates.
+
+        .. note:: This method should only be called from
+           :meth:`.FlairHelper.make_link_flair`.
+
+        :param reddit: An instance of :class:`~.Reddit`.
+        :param subreddit: An instance of :class:`~.Subreddit`.
+        :param text: The flair template's text (required).
+        :param css_class: The flair template's css_class (default: '').
+        :param text_editable: (boolean) Indicate if the flair text can be
+            modified for each Redditor that sets it (default: False).
+        :param background_color: The flair template's new background color,
+            as a hex color.
+        :param text_color: The flair template's new text color, either
+            ``'light'`` or ``'dark'``.
+        :param mod_only: (boolean) Indicate if the flair can only be used by
+            moderators.
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``.
+        :param max_emojis: (int) Maximum emojis in the flair
+            (Reddit defaults this value to 10).
+        """
+        return super().make_new_flair(
+            reddit,
+            subreddit,
+            text,
+            css_class,
+            text_editable,
+            background_color,
+            text_color,
+            mod_only,
+            allowable_content,
+            max_emojis,
+        )
+
+    def change_info(self, **new_values: Union[str, int, bool]):
+        """Update the values of the flair instance.
+
+        .. warning:: Most values, except text, can only be updated by a
+            moderator who has the ``flair`` permission. Text can only be
+            updated if the flair is editable. To check if a flair is editable,
+            run:
+
+            .. code-block:: python
+
+                flair.text_editable
+
+        :param text: The flair template's new text
+        :param css_class: The flair template's new css class. (Mod only)
+        :param text_editable: (boolean) Indicate if the flair text can be
+            modified for each Redditor that sets it. (Mod only)
+        :param background_color: The flair template's new background color,
+            as a hex color (``#XXXXXX``). This should be inputted as
+            ``0x------``, where the 6 ``-`` correspond to the 6 digits of an
+            RGB hex. (Mod only)
+        :param text_color: The flair template's new text color, either
+            ``'light'`` or ``'dark'``. (Mod only)
+        :param mod_only: (boolean) Indicate if the flair can only be used by
+            moderators. (Mod only)
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``. (Mod only)
+        :param max_emojis: (int) Maximum emojis in the flair. (Mod only)
+
+        To change just the text of an editable flair, run:
+
+        .. code-block:: python
+
+            if flair.text_editable:
+                flair.change_info(text="New text")
+
+        To change the flair into a mod-only flair that has a white background
+        and dark text, run:
+
+        .. code-block:: python
+
+            flair.change_info(mod_only=True,
+                              background_color=,0xffffff # White is FFFFFF
+                              text_color="dark"
+                              )
+
+        To make a flair's text editable by anyone, run:
+
+        ..code-block:: python
+
+            flair.change_info(text_editable=True)
+
+        """
+        super().change_info(**new_values)
+
+    def _fetch(self):
+        if [
+            True
+            for attr in (
+                "allowable_content",
+                "text",
+                "text_color",
+                "mod_only",
+                "background_color",
+                "id",
+                "css_class",
+                "max_emojis",
+                "text_editable",
+                "id",
+            )
+            if attr in self.__dict__
+        ].count(False) == 0:
+            self._fetched = True
+        else:
+            if hasattr(self, "id"):
+                for template in self.subreddit.flair.link_templates:
+                    if self.id == template.id:
+                        self.__dict__ = template.__dict__
+                        break
+            else:
+                for template in self.subreddit.flair.link_templates:
+                    if (
+                        self.allowable_content,
+                        self.text,
+                        self.text_color,
+                        self.mod_only,
+                        self.background_color,
+                        self.id,
+                        self.css_class,
+                        self.max_emojis,
+                        self.text_editable,
+                    ) == (
+                        template.allowable_content,
+                        template.text,
+                        template.text_color,
+                        template.mod_only,
+                        template.background_color,
+                        template.id,
+                        template.css_class,
+                        template.max_emojis,
+                        template.text_editable,
+                    ):
+                        self.__dict__ = template.__dict__
+                        break
+            super()._fetch()
+
 
 class RedditorFlair(RichFlairBase):
     """An individual RedditorFlair object.
@@ -188,6 +388,163 @@ class RedditorFlair(RichFlairBase):
     ======================= ===================================================
 
     """
+
+    @classmethod
+    def make_new_flair(
+        cls,
+        reddit: Reddit,
+        subreddit: Subreddit,
+        text: str,
+        css_class: str = "",
+        text_editable: bool = False,
+        background_color: str = "transparent",
+        text_color: str = "dark",
+        mod_only: bool = False,
+        allowable_content: str = "all",
+        max_emojis: str = 10,
+    ) -> _RichFlairBase:
+        """Make a new flair instance. Useful for adding new flair templates.
+
+        .. note:: This method should only be called from
+           :meth:`.FlairHelper.make_user_flair`.
+
+        :param reddit: An instance of :class:`~.Reddit`.
+        :param subreddit: An instance of :class:`~.Subreddit`.
+        :param text: The flair template's text (required).
+        :param css_class: The flair template's css_class (default: '').
+        :param text_editable: (boolean) Indicate if the flair text can be
+            modified for each Redditor that sets it (default: False).
+        :param background_color: The flair template's new background color,
+            as a hex color.
+        :param text_color: The flair template's new text color, either
+            ``'light'`` or ``'dark'``.
+        :param mod_only: (boolean) Indicate if the flair can only be used by
+            moderators.
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``.
+        :param max_emojis: (int) Maximum emojis in the flair
+            (Reddit defaults this value to 10).
+        """
+        return super().make_new_flair(
+            reddit,
+            subreddit,
+            text,
+            css_class,
+            text_editable,
+            background_color,
+            text_color,
+            mod_only,
+            allowable_content,
+            max_emojis,
+        )
+
+    def change_info(self, **new_values: Union[str, int, bool]):
+        """Update the values of the flair instance.
+
+        .. warning:: Most values, except text, can only be updated by a
+            moderator who has the ``flair`` permission. Text can only be
+            updated if the flair is editable. To check if a flair is editable,
+            run:
+
+            .. code-block:: python
+
+                flair.text_editable
+
+        :param text: The flair template's new text
+        :param css_class: The flair template's new css class. (Mod only)
+        :param text_editable: (boolean) Indicate if the flair text can be
+            modified for each Redditor that sets it. (Mod only)
+        :param background_color: The flair template's new background color,
+            as a hex color (``#XXXXXX``). This should be inputted as
+            ``0x------``, where the 6 ``-`` correspond to the 6 digits of an
+            RGB hex. (Mod only)
+        :param text_color: The flair template's new text color, either
+            ``'light'`` or ``'dark'``. (Mod only)
+        :param mod_only: (boolean) Indicate if the flair can only be used by
+            moderators. (Mod only)
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``. (Mod only)
+        :param max_emojis: (int) Maximum emojis in the flair. (Mod only)
+
+        To change just the text of an editable flair, run:
+
+        .. code-block:: python
+
+            if flair.text_editable:
+                flair.change_info(text="New text")
+
+        To change the flair into a mod-only flair that has a white background
+        and dark text, run:
+
+        .. code-block:: python
+
+            flair.change_info(mod_only=True,
+                              background_color=,0xffffff # White is FFFFFF
+                              text_color="dark"
+                              )
+
+        To make a flair's text editable by anyone, run:
+
+        ..code-block:: python
+
+            flair.change_info(text_editable=True)
+        """
+        super().change_info(**new_values)
+
+    def _fetch(self):
+        if [
+            True
+            for attr in (
+                "allowable_content",
+                "text",
+                "text_color",
+                "mod_only",
+                "background_color",
+                "id",
+                "css_class",
+                "max_emojis",
+                "text_editable",
+                "id",
+            )
+            if attr in self.__dict__
+        ].count(False) == 0:
+            self._fetched = True
+        else:
+            if hasattr(self, "id"):
+                for template in self.subreddit.flair.templates:
+                    if self.id == template.id:
+                        self.__dict__ = template.__dict__
+                        break
+            else:
+                for template in self.subreddit.flair.templates:
+                    if (
+                        self.allowable_content,
+                        self.text,
+                        self.text_color,
+                        self.mod_only,
+                        self.background_color,
+                        self.id,
+                        self.css_class,
+                        self.max_emojis,
+                        self.text_editable,
+                    ) == (
+                        template.allowable_content,
+                        template.text,
+                        template.text_color,
+                        template.mod_only,
+                        template.background_color,
+                        template.id,
+                        template.css_class,
+                        template.max_emojis,
+                        template.text_editable,
+                    ):
+                        self.__dict__ = template.__dict__
+                        break
+            super()._fetch()
 
 
 class LinkFlair(RedditBase):

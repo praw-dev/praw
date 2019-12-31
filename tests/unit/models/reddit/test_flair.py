@@ -38,7 +38,7 @@ class TestFlair(UnitTest):
         example_submission = self.reddit.submission("dummy")
         example_flair = LinkFlair(self.reddit, example_submission, example)
         assert example_flair.flair_text == "Test"
-        example_flair.change_info(text="Testing")
+        example_flair.change_text("Testing")
         assert example_flair.flair_text == "Testing"
 
     def test_equality(self):
@@ -54,7 +54,7 @@ class TestFlair(UnitTest):
         example_flair_2 = LinkFlair(self.reddit, example_submission, example)
         assert example_flair == example_flair_2
         assert hash(example_flair) == hash(example_flair_2)
-        example_flair.change_info(text="Testt")
+        example_flair.change_text("Testt")
         assert example_flair != example_flair_2
         assert hash(example_flair) != hash(example_flair_2)
 

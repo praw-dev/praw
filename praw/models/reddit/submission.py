@@ -90,7 +90,10 @@ class SubmissionFlair:
             raise TypeError("Either template_id or flair should be given.")
         if flair is not None:
             if text is not None:
-                flair.change_info(text=text)
+                if isinstance(flair, AdvancedSubmissionFlair):
+                    flair.change_info(text=text)
+                else:
+                    flair.change_text(text)
             if isinstance(flair, LinkFlair):
                 data = {
                     "flair_template_id": flair.flair_template_id,
