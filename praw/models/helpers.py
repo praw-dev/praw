@@ -177,10 +177,15 @@ class MultiredditHelper(PRAWBase):
 class SubredditHelper(PRAWBase):
     """Provide a set of functions to interact with Subreddits."""
 
-    def __call__(self, display_name: str) -> Subreddit:
+    def __call__(
+        self, display_name: str, use_flair_class: bool = False
+    ) -> Subreddit:
         """Return a lazy instance of :class:`~.Subreddit`.
 
         :param display_name: The name of the subreddit.
+        :param use_flair_class: Whether or not you want flairs to be returned
+            as new flair classes or as dicts.
+
         """
         lower_name = display_name.lower()
 
@@ -189,7 +194,11 @@ class SubredditHelper(PRAWBase):
         if lower_name == "randnsfw":
             return self._reddit.random_subreddit(nsfw=True)
 
-        return Subreddit(self._reddit, display_name=display_name)
+        return Subreddit(
+            self._reddit,
+            display_name=display_name,
+            use_flair_class=use_flair_class,
+        )
 
     def create(
         self,
