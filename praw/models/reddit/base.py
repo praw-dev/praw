@@ -1,5 +1,5 @@
 """Provide the RedditBase class."""
-from typing import Any, Dict, TypeVar
+from typing import Any, Dict, TypeVar, Union
 from urllib.parse import urlparse
 
 from ...exceptions import ClientException
@@ -18,7 +18,7 @@ class RedditBase(PRAWBase):
             raise ClientException("Invalid URL: {}".format(url))
         return parsed.path.rstrip("/").split("/")
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: Union[Any, str]) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other.lower() == str(self).lower()

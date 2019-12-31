@@ -324,7 +324,7 @@ class LiveThread(RedditBase):
         """
         return LiveContributorRelationship(self)
 
-    def __eq__(self, other: _LiveThread) -> bool:
+    def __eq__(self, other: Union[str, _LiveThread]) -> bool:
         """Return whether the other instance equals the current.
 
         .. note:: This comparison is case sensitive.

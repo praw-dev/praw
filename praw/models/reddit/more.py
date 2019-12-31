@@ -1,5 +1,6 @@
 """Provide the MoreComments class."""
-from typing import Any, Dict, List, TypeVar
+from typing import Any, Dict, List, TypeVar, Union
+
 from ...const import API_PATH
 from ..base import PRAWBase
 
@@ -19,7 +20,7 @@ class MoreComments(PRAWBase):
         self._comments = None
         self.submission = None
 
-    def __eq__(self, other: _MoreComments) -> bool:
+    def __eq__(self, other: Union[str, _MoreComments]) -> bool:
         """Return True if these MoreComments instances are the same."""
         return (
             isinstance(other, self.__class__)
