@@ -14,7 +14,7 @@ class TestFlair(IntegrationTest):
             submission = self.reddit.submission("ehswem")
             choices = submission.flair.choices(use_flair_class=True)
             for choice in choices:
-                advanced = choice.find_advanced_flair_template(submission)
+                advanced = choice.find_advanced_flair_template()
                 assert advanced.id == choice.flair_template_id
 
     @mock.patch("time.sleep", return_value=None)
@@ -27,5 +27,5 @@ class TestFlair(IntegrationTest):
             choices = submission.flair.choices(use_flair_class=True)
             choice = next(iter(choices))
             choice.flair_template_id = "asdf"
-            advanced = choice.find_advanced_flair_template(submission)
+            advanced = choice.find_advanced_flair_template()
             assert advanced is None

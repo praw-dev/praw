@@ -116,7 +116,7 @@ class TestSubmission(UnitTest):
             "flair_text": "Test",
         }
         submission = Submission(self.reddit, _data={"id": "dummy"})
-        flair = LinkFlair(self.reddit, _data=flairdata)
+        flair = LinkFlair(self.reddit, submission, _data=flairdata)
         with pytest.raises(TypeError):
             submission.flair().select(
                 template_id="0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d", flair=flair

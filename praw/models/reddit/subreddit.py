@@ -1433,7 +1433,7 @@ class SubredditFlairTemplates:
             "text_color": text_color,
             "text_editable": bool(text_editable),
         }
-        self.subreddit._reddit.post(url, data=data)
+        return self.subreddit._reddit.post(url, data=data)
 
     def _clear(self, is_link=None):
         url = API_PATH["flairtemplateclear"].format(subreddit=self.subreddit)
@@ -1441,8 +1441,12 @@ class SubredditFlairTemplates:
             url, data={"flair_type": self.flair_type(is_link)}
         )
 
-    def delete(self, template_id):
-        """Remove a flair template provided by ``template_id``.
+    def delete(self, template_id=None, flair=None):
+        """Remove a flair template.
+
+        :param template_id: The id of the template to delete.
+        :param flair: The instance of :class:`.AdvancedSubmissionFlair` that
+            contains the template to delete.
 
         For example, to delete the first Redditor flair template listed, try:
 
@@ -1452,29 +1456,37 @@ class SubredditFlairTemplates:
            subreddit.flair.templates.delete(template_info['id'])
 
         """
+        if [template_id, flair].count(None) != 1:
+            raise TypeError(
+                "Either ``template_id`` or ``flair`` can be provided."
+            )
+        if flair is not None:
+            data = {"flair_template_id": flair.id}
+        else:
+            data = {"flair_template_id": template_id}
         url = API_PATH["flairtemplatedelete"].format(subreddit=self.subreddit)
-        self.subreddit._reddit.post(
-            url, data={"flair_template_id": template_id}
-        )
+        self.subreddit._reddit.post(url, data=data)
 
     def update(
         self,
-        template_id,
+        template_id=None,
         text=None,
         css_class=None,
-        text_editable=None,
+        text_editable=False,
         background_color=None,
         text_color=None,
         mod_only=None,
         allowable_content=None,
         max_emojis=None,
         fetch=True,
+        flair=None,
     ):
         """Update the flair template provided by ``template_id``.
 
         :param template_id: The flair template to update. If not valid then
             an exception will be thrown.
-        :param text: The flair template's new text (required).
+        :param text: The flair template's new text (required if flair is not
+            specified).
         :param css_class: The flair template's new css_class (default: '').
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
@@ -1492,6 +1504,8 @@ class SubredditFlairTemplates:
             (Reddit defaults this value to 10).
         :param fetch: Whether or not PRAW will fetch existing information on
             the existing flair before updating (Default: True).
+        :param flair: The instance of :class:`.AdvancedSubmissionFlair` that
+            contains the new flair info.
 
         .. warning:: If parameter ``fetch`` is set to ``False``, all parameters
              not provided will be reset to default (``None`` or ``False``)
@@ -1555,7 +1569,9 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         params = {"unique": self.subreddit._reddit._next_unique}
         for template in self.subreddit._reddit.get(url, params=params):
             if self.subreddit.use_flair_class:
-                yield RedditorFlair(self.subreddit._reddit, template)
+                yield RedditorFlair(
+                    self.subreddit._reddit, self.subreddit, template
+                )
             else:
                 yield template
 
@@ -1569,6 +1585,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         mod_only=None,
         allowable_content=None,
         max_emojis=None,
+        return_flair_obj=False,
     ):
         """Add a Redditor flair template to the associated subreddit.
 
@@ -1588,6 +1605,9 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
             valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
+        :param return_flair_obj: Return a flair object or the created dict
+        :returns: Either a dict containing information on the created flair or
+            an instance of :class:`.RedditorFlair`.
 
         For example, to add an editable Redditor flair try:
 
@@ -1597,7 +1617,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
                css_class='praw', text_editable=True)
 
         """
-        self._add(
+        data = self._add(
             text,
             css_class=css_class,
             text_editable=text_editable,
@@ -1608,6 +1628,10 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
             allowable_content=allowable_content,
             max_emojis=max_emojis,
         )
+        if return_flair_obj:
+            return RedditorFlair(self.subreddit._reddit, self.subreddit, data)
+        else:
+            return data
 
     def clear(self):
         """Remove all Redditor flair templates from the subreddit.
@@ -1639,7 +1663,9 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         url = API_PATH["link_flair"].format(subreddit=self.subreddit)
         for template in self.subreddit._reddit.get(url):
             if self.subreddit.use_flair_class:
-                yield AdvancedSubmissionFlair(self.subreddit._reddit, template)
+                yield AdvancedSubmissionFlair(
+                    self.subreddit._reddit, self.subreddit, template
+                )
             else:
                 yield template
 
@@ -1653,6 +1679,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         mod_only=None,
         allowable_content=None,
         max_emojis=None,
+        return_flair_obj=False,
     ):
         """Add a link flair template to the associated subreddit.
 
@@ -1672,6 +1699,9 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
             valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
+        :param return_flair_obj: Return a flair object or the created dict
+        :returns: Either a dict containing information on the created flair or
+            an instance of :class:`.AdvancedSubmissionFlair`.
 
         For example, to add an editable link flair try:
 
@@ -1681,7 +1711,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
                css_class='praw', text_editable=True)
 
         """
-        self._add(
+        data = self._add(
             text,
             css_class=css_class,
             text_editable=text_editable,
@@ -1692,6 +1722,12 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
             allowable_content=allowable_content,
             max_emojis=max_emojis,
         )
+        if return_flair_obj:
+            return AdvancedSubmissionFlair(
+                self.subreddit._reddit, self.subreddit, data
+            )
+        else:
+            return data
 
     def clear(self):
         """Remove all link flair templates from the subreddit.

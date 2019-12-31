@@ -16,7 +16,8 @@ class TestFlair(UnitTest):
             "flair_position": "right",
             "flair_text": "Test",
         }
-        example_flair = LinkFlair(self.reddit, example)
+        example_submission = self.reddit.submission("dummy")
+        example_flair = LinkFlair(self.reddit, example_submission, example)
         assert example_flair.flair_css_class == "Test"
         assert (
             example_flair.flair_template_id
@@ -34,9 +35,10 @@ class TestFlair(UnitTest):
             "flair_position": "right",
             "flair_text": "Test",
         }
-        example_flair = LinkFlair(self.reddit, example)
+        example_submission = self.reddit.submission("dummy")
+        example_flair = LinkFlair(self.reddit, example_submission, example)
         assert example_flair.flair_text == "Test"
-        example_flair.change_text("Testing")
+        example_flair.change_info(text="Testing")
         assert example_flair.flair_text == "Testing"
 
     def test_equality(self):
@@ -47,11 +49,12 @@ class TestFlair(UnitTest):
             "flair_position": "right",
             "flair_text": "Test",
         }
-        example_flair = LinkFlair(self.reddit, example)
-        example_flair_2 = LinkFlair(self.reddit, example)
+        example_submission = self.reddit.submission("dummy")
+        example_flair = LinkFlair(self.reddit, example_submission, example)
+        example_flair_2 = LinkFlair(self.reddit, example_submission, example)
         assert example_flair == example_flair_2
         assert hash(example_flair) == hash(example_flair_2)
-        example_flair.change_text("Testt")
+        example_flair.change_info(text="Testt")
         assert example_flair != example_flair_2
         assert hash(example_flair) != hash(example_flair_2)
 
@@ -63,7 +66,8 @@ class TestFlair(UnitTest):
             "flair_position": "right",
             "flair_text": "Test",
         }
-        example_flair = LinkFlair(self.reddit, example)
+        example_submission = self.reddit.submission("dummy")
+        example_flair = LinkFlair(self.reddit, example_submission, example)
         assert example_flair == "Test"
 
 
@@ -82,7 +86,12 @@ class TestFlairMod(UnitTest):
             "background_color": "",
             "id": "0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d",
         }
-        example_flair = AdvancedSubmissionFlair(self.reddit, example)
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        example_flair = AdvancedSubmissionFlair(
+            self.reddit, example_subreddit, example
+        )
         assert example_flair.type == "text"
         assert not example_flair.text_editable
         assert example_flair.allowable_content == "all"
@@ -111,12 +120,17 @@ class TestFlairMod(UnitTest):
             "background_color": "",
             "id": "0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d",
         }
-        example_flair = AdvancedSubmissionFlair(self.reddit, example)
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        example_flair = AdvancedSubmissionFlair(
+            self.reddit, example_subreddit, example
+        )
         assert example_flair.text == "Test"
-        example_flair.change_text("Testing")
+        example_flair.change_info(text="Testing")
         assert example_flair.text == "Testing"
         assert example_flair.css_class == "Test"
-        example_flair.change_css_class("Testing")
+        example_flair.change_info(css_class="Testing")
         assert example_flair.css_class == "Testing"
 
     def test_equality(self):
@@ -133,16 +147,25 @@ class TestFlairMod(UnitTest):
             "background_color": "",
             "id": "0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d",
         }
-        example_flair = AdvancedSubmissionFlair(self.reddit, example)
-        example_flair_2 = AdvancedSubmissionFlair(self.reddit, example)
-        example_flair_3 = AdvancedSubmissionFlair(self.reddit, example)
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        example_flair = AdvancedSubmissionFlair(
+            self.reddit, example_subreddit, example
+        )
+        example_flair_2 = AdvancedSubmissionFlair(
+            self.reddit, example_subreddit, example
+        )
+        example_flair_3 = AdvancedSubmissionFlair(
+            self.reddit, example_subreddit, example
+        )
         assert example_flair == example_flair_2 == example_flair_3
         assert (
             hash(example_flair)
             == hash(example_flair_2)
             == hash(example_flair_3)
         )
-        example_flair.change_text("T")
+        example_flair.change_info(text="T")
         assert (
             example_flair != example_flair_2
             and example_flair != example_flair_3
@@ -152,7 +175,7 @@ class TestFlairMod(UnitTest):
         ) != hash(example_flair_3)
         assert example_flair_2 == example_flair_3
         assert hash(example_flair_2) == hash(example_flair_3)
-        example_flair_2.change_css_class("DSF")
+        example_flair_2.change_info(css_class="DSF")
         assert example_flair != example_flair_2
         assert example_flair_2 != example_flair_3
         assert hash(example_flair) != hash(example_flair_2)
@@ -172,7 +195,12 @@ class TestFlairMod(UnitTest):
             "background_color": "",
             "id": "0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d",
         }
-        example_flair = AdvancedSubmissionFlair(self.reddit, example)
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        example_flair = AdvancedSubmissionFlair(
+            self.reddit, example_subreddit, example
+        )
         assert example_flair == "Test"
 
 
@@ -192,7 +220,10 @@ class TestRedditorFlair(UnitTest):
             "override_css": False,
             "type": "text",
         }
-        example_flair = RedditorFlair(self.reddit, example)
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        example_flair = RedditorFlair(self.reddit, example_subreddit, example)
         assert example_flair.type == "text"
         assert example_flair.text_editable
         assert example_flair.allowable_content == "all"
@@ -223,12 +254,15 @@ class TestRedditorFlair(UnitTest):
             "type": "text",
         }
 
-        example_flair = RedditorFlair(self.reddit, example)
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        example_flair = RedditorFlair(self.reddit, example_subreddit, example)
         assert example_flair.text == "Test"
-        example_flair.change_text("Testing")
+        example_flair.change_info(text="Testing")
         assert example_flair.text == "Testing"
         assert example_flair.css_class == "Text"
-        example_flair.change_css_class("Testing")
+        example_flair.change_info(css_class="Testing")
         assert example_flair.css_class == "Testing"
 
     def test_equality(self):
@@ -246,17 +280,23 @@ class TestRedditorFlair(UnitTest):
             "override_css": False,
             "type": "text",
         }
-
-        example_flair = RedditorFlair(self.reddit, example)
-        example_flair_2 = RedditorFlair(self.reddit, example)
-        example_flair_3 = RedditorFlair(self.reddit, example)
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        example_flair = RedditorFlair(self.reddit, example_subreddit, example)
+        example_flair_2 = RedditorFlair(
+            self.reddit, example_subreddit, example
+        )
+        example_flair_3 = RedditorFlair(
+            self.reddit, example_subreddit, example
+        )
         assert example_flair == example_flair_2 == example_flair_3
         assert (
             hash(example_flair)
             == hash(example_flair_2)
             == hash(example_flair_3)
         )
-        example_flair.change_text("T")
+        example_flair.change_info(text="T")
         assert (
             example_flair != example_flair_2
             and example_flair != example_flair_3
@@ -266,7 +306,7 @@ class TestRedditorFlair(UnitTest):
         ) != hash(example_flair_3)
         assert example_flair_2 == example_flair_3
         assert hash(example_flair_2) == hash(example_flair_3)
-        example_flair_2.change_css_class("DSF")
+        example_flair_2.change_info(css_class="DSF")
         assert example_flair != example_flair_2
         assert example_flair_2 != example_flair_3
         assert hash(example_flair) != hash(example_flair_2)
@@ -287,5 +327,8 @@ class TestRedditorFlair(UnitTest):
             "override_css": False,
             "type": "text",
         }
-        example_flair = RedditorFlair(self.reddit, example)
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        example_flair = RedditorFlair(self.reddit, example_subreddit, example)
         assert example_flair == "Test"

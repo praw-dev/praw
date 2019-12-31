@@ -305,9 +305,9 @@ class TestSubmissionFlair(IntegrationTest):
         ):
             submission = Submission(self.reddit, "ehswem")
             flairdata = list(submission.flair.choices())
-            flair = LinkFlair(self.reddit, _data=flairdata[-1])
+            flair = LinkFlair(self.reddit, submission, _data=flairdata[-1])
             submission.flair.select(flair=flair)
-            flair2 = LinkFlair(self.reddit, _data=flairdata[0])
+            flair2 = LinkFlair(self.reddit, submission, _data=flairdata[0])
             submission.flair.select(flair=flair2, text="Testing")
 
     @mock.patch("time.sleep", return_value=None)

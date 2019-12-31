@@ -51,7 +51,7 @@ class SubmissionFlair:
         )["choices"]
         if use_flair_class:
             return [
-                LinkFlair(self.submission._reddit, choice)
+                LinkFlair(self.submission._reddit, self.submission, choice)
                 for choice in choices
             ]
         else:
@@ -90,7 +90,7 @@ class SubmissionFlair:
             raise TypeError("Either template_id or flair should be given.")
         if flair is not None:
             if text is not None:
-                flair.change_text(text)
+                flair.change_info(text=text)
             if isinstance(flair, LinkFlair):
                 data = {
                     "flair_template_id": flair.flair_template_id,

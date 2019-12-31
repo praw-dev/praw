@@ -6,6 +6,7 @@ _RichFlairBase = TypeVar("_RichFlairBase")
 _LinkFlair = TypeVar("_LinkFlair")
 Reddit = TypeVar("Reddit")
 Submission = TypeVar("Submission")
+Subreddit = TypeVar("Subreddit")
 
 
 class RichFlairBase(RedditBase):
@@ -17,6 +18,21 @@ class RichFlairBase(RedditBase):
     """
 
     STR_FIELD = "text"
+
+    @classmethod
+    def make_new_flair(
+        cls,
+        reddit,
+        text=None,
+        css_class=None,
+        text_editable=False,
+        background_color=None,
+        text_color=None,
+        mod_only=None,
+        allowable_content=None,
+        max_emojis=None,
+    ):
+        """Make a new flair instance. Useful for adding new flair templates."""
 
     def __eq__(self, other: Union[str, _RichFlairBase]) -> bool:
         """Check that two instances of the class are equal."""
@@ -38,36 +54,69 @@ class RichFlairBase(RedditBase):
             ^ hash(self.css_class)
         )
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(
+        self, reddit: Reddit, subreddit: Subreddit, _data: Dict[str, Any]
+    ):
         """Initialize the class."""
         super().__init__(reddit, _data=_data)
+        self.subreddit = subreddit
 
-    def change_css_class(self, css_class: str):
-        """Change the css class of the flair (Mod only).
+    def change_info(self, **new_values: Union[str, int, bool]):
+        """Update the values of the flair instance.
 
-        :param css_class: The new css class that you want the flair to have.
-
-        .. warning:: This method can only be used by moderators of the
-           subreddit.
-
-        """
-        self.css_class = css_class
-
-    def change_text(self, text: str):
-        """Change the text of the flair.
-
-        :param: The text to replace the default text with.
-
-        .. warning:: This method requires that the flair be editable or the
-            authenticated user be a moderator of the subreddit the flair will
-            be applied on. To check if a flair is editable, run:
+        .. warning:: Most values, except text, can only be updated by a
+            moderator who has the ``flair`` permission. Text can only be
+            updated if the flair is editable. To check if a flair is editable,
+            run:
 
             .. code-block:: python
 
                 flair.text_editable
 
+        :param text: The flair template's new text
+        :param css_class: The flair template's new css class. (Mod only)
+        :param text_editable: (boolean) Indicate if the flair text can be
+            modified for each Redditor that sets it. (Mod only)
+        :param background_color: The flair template's new background color,
+            as a hex color (``#XXXXXX``). This should be inputted as
+            ``0x------``, where the 6 ``-`` correspond to the 6 digits of an
+            RGB hex. (Mod only)
+        :param text_color: The flair template's new text color, either
+            ``'light'`` or ``'dark'``. (Mod only)
+        :param mod_only: (boolean) Indicate if the flair can only be used by
+            moderators. (Mod only)
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``. (Mod only)
+        :param max_emojis: (int) Maximum emojis in the flair. (Mod only)
+
+        To change just the text of an editable flair, run:
+
+        .. code-block:: python
+
+            if flair.text_editable:
+                flair.change_info(text="New text")
+
+        To change the flair into a mod-only flair that has a white background
+        and dark text, run:
+
+        .. code-block:: python
+
+            flair.change_info(mod_only=True,
+                              background_color=,0xffffff # White is FFFFFF
+                              text_color="dark"
+                              )
+
+        To make a flair's text editable by anyone, run:
+
+        ..code-block:: python
+
+            flair.change_info(text_editable=True)
+
         """
-        self.text = text
+        for attribute, new_value in new_values.items():
+            setattr(self, attribute, new_value)
 
 
 class AdvancedSubmissionFlair(RichFlairBase):
@@ -104,60 +153,6 @@ class AdvancedSubmissionFlair(RichFlairBase):
     ======================= ===================================================
     """
 
-    def change_css_class(self, css_class: str):
-        """
-        Change the css class of the flair (Mod only).
-
-        :param css_class: The new css class that you want the flair to have.
-
-        .. warning::
-
-            This method can only be used by moderators of the subreddit.
-
-        For example, to set the flair of a stickied post as a mod post with a
-        css class of "mod":
-
-        .. code-block:: python
-
-            submission = reddit.submission("Mod post ID")
-            subreddit = reddit.subreddit(str(submission.subreddit),
-                                         use_flair_class=True)
-            flair = next(iter(subreddit.flair.link_templates))
-            flair.change_css_class("mod")
-            submission.flair.select(flair=flair)
-
-        """
-        super().change_css_class(css_class)
-
-    def change_text(self, text: str):
-        """Change the text of the flair.
-
-        :param: The text to replace the default text with.
-
-        .. warning:: This method requires that the flair be editable or the
-            authenticated user be a moderator of the subreddit the flair will
-            be applied on. To check if a flair is editable, run:
-
-            .. code-block:: python
-
-                flair.text_editable
-
-        For example, to edit the first editable flair to have a flair with the
-        text "test", run:
-
-        .. code-block:: python
-
-            submission = reddit.submission("Post ID")
-            subreddit = reddit.subreddit(str(submission.subreddit),
-                                         use_flair_class=True)
-            for flair in subreddit.flair.link_templates:
-                if flair.text_editable:
-                    break
-            flair.change_text("test")
-
-        """
-        super().change_text(text)
-
 
 class RedditorFlair(RichFlairBase):
     """An individual RedditorFlair object.
@@ -193,56 +188,6 @@ class RedditorFlair(RichFlairBase):
     ======================= ===================================================
 
     """
-
-    def change_css_class(self, css_class: str):
-        """
-        Change the css class of the flair (Mod only).
-
-        :param css_class: The new css class that you want the flair to have.
-
-        .. warning::
-
-            This method can only be used by moderators of the subreddit.
-
-        For example, to give user "spez" the first avaliable flair but give
-        it a css class of "admin", you can run:
-
-        .. code-block:: python
-
-            subreddit = reddit.subreddit("NAME", use_flair_class=True)
-            flair = next(iter(subreddit.flair.templates))
-            flair.change_css_class("admin")
-            subreddit.flair.set("spez", flair=flair)
-
-        """
-        super().change_css_class(css_class)
-
-    def change_text(self, text: str):
-        """Change the text of the flair.
-
-        :param: The text to replace the default text with.
-
-        .. warning:: This method requires that the flair be editable or the
-            authenticated user be a moderator of the subreddit the flair will
-            be applied on. To check if a flair is editable, run:
-
-            .. code-block:: python
-
-                flair.text_editable
-
-        For example, to edit the first editable flair to have a flair with the
-        text "test", run:
-
-        .. code-block:: python
-
-            subreddit = reddit.subreddit("NAME", use_flair_class=True)
-            for flair in subreddit.flair.templates:
-                if flair.text_editable:
-                    break
-            flair.change_text("test")
-
-        """
-        super().change_text(text)
 
 
 class LinkFlair(RedditBase):
@@ -285,8 +230,11 @@ class LinkFlair(RedditBase):
             ^ hash(self.flair_template_id)
         )
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(
+        self, reddit: Reddit, submission: Submission, _data: Dict[str, Any]
+    ):
         """Instantizes the flair object."""
+        self.submission = submission
         super().__init__(reddit, _data=_data)
 
     def change_text(self, text: str):
@@ -317,20 +265,18 @@ class LinkFlair(RedditBase):
         self.flair_text = text
 
     def find_advanced_flair_template(
-        self, submission: Submission
+        self,
     ) -> Optional[AdvancedSubmissionFlair]:
         """Allow a user to find more info about the flair.
 
-        When given a submission, the method will scan the subreddit the
-        submission is in until it finds a matching
-        :class:`.AdvancedSubmissionFlair` or returns nothing
+        The method will scan the subreddit the flair belongs to and either
+        return :class:`.AdvancedSubmissionFlair` or None if no flair is found
 
-        :param submission: The submission that return the flair
         :returns: The :class:`.AdvancedSubmissionFlair` if it could find it,
             otherwise None
 
         """
-        display_name = submission.subreddit.display_name
+        display_name = self.submission.subreddit.display_name
         for flair in self._reddit.subreddit(
             display_name, use_flair_class=True
         ).flair.link_templates:
