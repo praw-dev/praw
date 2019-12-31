@@ -954,6 +954,117 @@ class TestSubredditFlair(IntegrationTest):
             )
         assert all(x["ok"] for x in response)
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_set_flair_object(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit, use_flair_class=True
+        )
+        with self.recorder.use_cassette("TestSubredditFlair.flair_with_class"):
+            template = next(iter(subreddit.flair.templates))
+            assert isinstance(template, RedditorFlair)
+            subreddit.flair.set(pytest.placeholders.username, flair=template)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_get_link_flairs(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit, use_flair_class=True
+        )
+        with self.recorder.use_cassette(
+            "TestSubredditFlair.obtain_link_flair"
+        ):
+            for linkflair in subreddit.flair.link_templates:
+                assert isinstance(linkflair, AdvancedSubmissionFlair)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_get_redditor_flairs(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit, use_flair_class=True
+        )
+        with self.recorder.use_cassette(
+            "TestSubredditFlair.obtain_user_flair"
+        ):
+            for linkflair in subreddit.flair.templates:
+                assert isinstance(linkflair, RedditorFlair)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_get_make_and_delete_and_update_link_flair(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit, use_flair_class=True
+        )
+        with self.recorder.use_cassette(
+            "TestSubredditFlair.make_and_delete_and_update_link_flair"
+        ):
+            ex_hash = 288266951
+            maker = subreddit.flair.maker
+            newflair = maker.make_link_flair(
+                "test{hash}".format(hash=ex_hash),
+            )
+            data = subreddit.flair.link_templates.add(
+                flair=newflair, return_flair_obj=True
+            )
+            assert isinstance(data, AdvancedSubmissionFlair)
+            newflair._fetch()
+            assert data == newflair
+            newflair.change_info(css_class="test{hash}".format(hash=ex_hash))
+            print(subreddit.flair.link_templates.update(flair=newflair))
+            newflair2 = AdvancedSubmissionFlair(
+                self.reddit, subreddit, {"id": newflair.id}
+            )
+            newflair2._fetch()
+            print(newflair.__dict__)
+            print(newflair2.__dict__)
+            assert newflair == newflair2
+            subreddit.flair.link_templates.delete(flair=newflair)
+            newflair3 = AdvancedSubmissionFlair(
+                self.reddit, subreddit, {"id": newflair.id}
+            )
+            dict_length = len(newflair3.__dict__)
+            newflair3._fetch()
+            assert (
+                len(newflair3.__dict__) == dict_length and newflair3._fetched
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_get_make_and_delete_and_update_user_flair(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit, use_flair_class=True
+        )
+        with self.recorder.use_cassette(
+            "TestSubredditFlair.make_and_delete_and_update_user_flair"
+        ):
+            ex_hash = 288266951
+            maker = subreddit.flair.maker
+            newflair = maker.make_user_flair(
+                "test{hash}".format(hash=ex_hash),
+            )
+            data = subreddit.flair.templates.add(
+                flair=newflair, return_flair_obj=True
+            )
+            assert isinstance(data, RedditorFlair)
+            newflair._fetch()
+            assert data == newflair
+            newflair.change_info(css_class="test{hash}".format(hash=ex_hash))
+            subreddit.flair.templates.update(flair=newflair)
+            newflair2 = RedditorFlair(
+                self.reddit, subreddit, {"id": newflair.id}
+            )
+            newflair2._fetch()
+            assert newflair == newflair2
+            subreddit.flair.templates.delete(flair=newflair)
+            newflair3 = RedditorFlair(
+                self.reddit, subreddit, {"id": newflair.id}
+            )
+            dict_length = len(newflair3.__dict__)
+            newflair3._fetch()
+            assert (
+                len(newflair3.__dict__) == dict_length and newflair3._fetched
+            )
+
 
 class TestSubredditFlairTemplates(IntegrationTest):
     @property
@@ -2208,38 +2319,3 @@ class TestSubredditWiki(IntegrationTest):
                 assert isinstance(revision["author"], Redditor)
                 assert isinstance(revision["page"], WikiPage)
             assert count == 4
-
-    @mock.patch("time.sleep", return_value=None)
-    def test_set_flair_object(self, _):
-        self.reddit.read_only = False
-        subreddit = self.reddit.subreddit(
-            pytest.placeholders.test_subreddit, use_flair_class=True
-        )
-        with self.recorder.use_cassette("TestSubredditFlair.flair_with_class"):
-            template = next(iter(subreddit.flair.templates))
-            assert isinstance(template, RedditorFlair)
-            subreddit.flair.set(pytest.placeholders.username, flair=template)
-
-    @mock.patch("time.sleep", return_value=None)
-    def test_get_link_flairs(self, _):
-        self.reddit.read_only = False
-        subreddit = self.reddit.subreddit(
-            pytest.placeholders.test_subreddit, use_flair_class=True
-        )
-        with self.recorder.use_cassette(
-            "TestSubredditFlair.obtain_link_flair"
-        ):
-            for linkflair in subreddit.flair.link_templates:
-                assert isinstance(linkflair, AdvancedSubmissionFlair)
-
-    @mock.patch("time.sleep", return_value=None)
-    def test_get_redditor_flairs(self, _):
-        self.reddit.read_only = False
-        subreddit = self.reddit.subreddit(
-            pytest.placeholders.test_subreddit, use_flair_class=True
-        )
-        with self.recorder.use_cassette(
-            "TestSubredditFlair.obtain_user_flair"
-        ):
-            for linkflair in subreddit.flair.templates:
-                assert isinstance(linkflair, RedditorFlair)

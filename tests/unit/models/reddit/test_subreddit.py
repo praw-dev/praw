@@ -3,6 +3,8 @@ import pickle
 import pytest
 from praw.models import Subreddit, WikiPage
 from praw.models.reddit.subreddit import SubredditFlairTemplates
+from praw.models import AdvancedSubmissionFlair, RedditorFlair
+from praw.models.flair_helper import FlairHelper
 
 from ... import UnitTest
 
@@ -115,6 +117,25 @@ class TestSubredditFlair(UnitTest):
         with pytest.raises(TypeError):
             subreddit.flair.set(
                 "a_redditor", css_class="myCSS", flair_template_id="gibberish"
+            )
+
+    def test_maker(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        assert isinstance(subreddit.flair.maker, FlairHelper)
+
+    def test_flair_gen(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        lf = subreddit.flair.maker.make_link_flair("Test")
+        assert isinstance(lf, AdvancedSubmissionFlair)
+        uf = subreddit.flair.maker.make_user_flair("Test")
+        assert isinstance(uf, RedditorFlair)
+
+    def test_delete_error(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with pytest.raises(TypeError):
+            subreddit.flair.templates.delete(
+                template_id="sf",
+                flair=subreddit.flair.maker.make_user_flair("Dummy"),
             )
 
 

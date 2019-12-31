@@ -324,6 +324,17 @@ class TestSubmissionFlair(IntegrationTest):
             submission.flair.select(flair=flairdata[-1])
             submission.flair.select(flair=flairdata[-1], text="Testing")
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_is_link_flair(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionFlair.test_get_LinkFlair"
+        ):
+            submission = self.reddit.submission("ehswem")
+            choices = submission.flair.choices(use_flair_class=True)
+            for choice in choices:
+                assert isinstance(choice, LinkFlair)
+
 
 class TestSubmissionModeration(IntegrationTest):
     def test_approve(self):

@@ -303,25 +303,30 @@ class AdvancedSubmissionFlair(RichFlairBase):
         super().change_info(**new_values)
 
     def _fetch(self):
-        if [
-            True
-            for attr in (
-                "allowable_content",
-                "text",
-                "text_color",
-                "mod_only",
-                "background_color",
-                "id",
-                "css_class",
-                "max_emojis",
-                "text_editable",
-                "id",
+        if (
+            len(
+                [
+                    True
+                    for attr in (
+                        "allowable_content",
+                        "text",
+                        "text_color",
+                        "mod_only",
+                        "background_color",
+                        "id",
+                        "css_class",
+                        "max_emojis",
+                        "text_editable",
+                        "id",
+                    )
+                    if attr in self.__dict__
+                ]
             )
-            if attr in self.__dict__
-        ].count(False) == 0:
+            == 10
+        ):
             self._fetched = True
         else:
-            if hasattr(self, "id"):
+            if "id" in self.__dict__:
                 for template in self.subreddit.flair.link_templates:
                     if self.id == template.id:
                         self.__dict__ = template.__dict__
@@ -334,7 +339,6 @@ class AdvancedSubmissionFlair(RichFlairBase):
                         self.text_color,
                         self.mod_only,
                         self.background_color,
-                        self.id,
                         self.css_class,
                         self.max_emojis,
                         self.text_editable,
@@ -344,7 +348,6 @@ class AdvancedSubmissionFlair(RichFlairBase):
                         template.text_color,
                         template.mod_only,
                         template.background_color,
-                        template.id,
                         template.css_class,
                         template.max_emojis,
                         template.text_editable,
@@ -496,25 +499,30 @@ class RedditorFlair(RichFlairBase):
         super().change_info(**new_values)
 
     def _fetch(self):
-        if [
-            True
-            for attr in (
-                "allowable_content",
-                "text",
-                "text_color",
-                "mod_only",
-                "background_color",
-                "id",
-                "css_class",
-                "max_emojis",
-                "text_editable",
-                "id",
+        if (
+            len(
+                [
+                    True
+                    for attr in (
+                        "allowable_content",
+                        "text",
+                        "text_color",
+                        "mod_only",
+                        "background_color",
+                        "id",
+                        "css_class",
+                        "max_emojis",
+                        "text_editable",
+                        "id",
+                    )
+                    if attr in self.__dict__
+                ]
             )
-            if attr in self.__dict__
-        ].count(False) == 0:
+            == 10
+        ):
             self._fetched = True
         else:
-            if hasattr(self, "id"):
+            if "id" in self.__dict__:
                 for template in self.subreddit.flair.templates:
                     if self.id == template.id:
                         self.__dict__ = template.__dict__
@@ -527,7 +535,6 @@ class RedditorFlair(RichFlairBase):
                         self.text_color,
                         self.mod_only,
                         self.background_color,
-                        self.id,
                         self.css_class,
                         self.max_emojis,
                         self.text_editable,
@@ -537,7 +544,6 @@ class RedditorFlair(RichFlairBase):
                         template.text_color,
                         template.mod_only,
                         template.background_color,
-                        template.id,
                         template.css_class,
                         template.max_emojis,
                         template.text_editable,

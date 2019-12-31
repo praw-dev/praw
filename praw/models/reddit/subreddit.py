@@ -1579,7 +1579,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
 
     def add(
         self,
-        text,
+        text=None,
         css_class="",
         text_editable=False,
         background_color=None,
@@ -1587,6 +1587,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         mod_only=None,
         allowable_content=None,
         max_emojis=None,
+        flair=None,
         return_flair_obj=False,
     ):
         """Add a Redditor flair template to the associated subreddit.
@@ -1607,6 +1608,8 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
             valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
+        :param flair: The instance of :class:`.RedditorFlair` with pre-filled
+            information about a flair.
         :param return_flair_obj: Return a flair object or the created dict
         :returns: Either a dict containing information on the created flair or
             an instance of :class:`.RedditorFlair`.
@@ -1619,17 +1622,30 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
                css_class='praw', text_editable=True)
 
         """
-        data = self._add(
-            text,
-            css_class=css_class,
-            text_editable=text_editable,
-            is_link=False,
-            background_color=background_color,
-            text_color=text_color,
-            mod_only=mod_only,
-            allowable_content=allowable_content,
-            max_emojis=max_emojis,
-        )
+        if flair is not None:
+            data = self._add(
+                flair.text,
+                css_class=flair.css_class,
+                text_editable=flair.text_editable,
+                is_link=False,
+                background_color=flair.background_color,
+                text_color=flair.text_color,
+                mod_only=flair.mod_only,
+                allowable_content=flair.allowable_content,
+                max_emojis=flair.max_emojis,
+            )
+        else:
+            data = self._add(
+                text,
+                css_class=css_class,
+                text_editable=text_editable,
+                is_link=False,
+                background_color=background_color,
+                text_color=text_color,
+                mod_only=mod_only,
+                allowable_content=allowable_content,
+                max_emojis=max_emojis,
+            )
         if return_flair_obj:
             return RedditorFlair(self.subreddit._reddit, self.subreddit, data)
         else:
@@ -1673,7 +1689,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
     def add(
         self,
-        text,
+        text=None,
         css_class="",
         text_editable=False,
         background_color=None,
@@ -1681,6 +1697,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         mod_only=None,
         allowable_content=None,
         max_emojis=None,
+        flair=None,
         return_flair_obj=False,
     ):
         """Add a link flair template to the associated subreddit.
@@ -1701,6 +1718,8 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
             valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
+        :param flair: The instance of :class:`.AdvancedSubmissionFlair` with
+            pre-filled information about a flair.
         :param return_flair_obj: Return a flair object or the created dict
         :returns: Either a dict containing information on the created flair or
             an instance of :class:`.AdvancedSubmissionFlair`.
@@ -1713,17 +1732,30 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
                css_class='praw', text_editable=True)
 
         """
-        data = self._add(
-            text,
-            css_class=css_class,
-            text_editable=text_editable,
-            is_link=True,
-            background_color=background_color,
-            text_color=text_color,
-            mod_only=mod_only,
-            allowable_content=allowable_content,
-            max_emojis=max_emojis,
-        )
+        if flair is not None:
+            data = self._add(
+                flair.text,
+                css_class=flair.css_class,
+                text_editable=flair.text_editable,
+                is_link=True,
+                background_color=flair.background_color,
+                text_color=flair.text_color,
+                mod_only=flair.mod_only,
+                allowable_content=flair.allowable_content,
+                max_emojis=flair.max_emojis,
+            )
+        else:
+            data = self._add(
+                text,
+                css_class=css_class,
+                text_editable=text_editable,
+                is_link=True,
+                background_color=background_color,
+                text_color=text_color,
+                mod_only=mod_only,
+                allowable_content=allowable_content,
+                max_emojis=max_emojis,
+            )
         if return_flair_obj:
             return AdvancedSubmissionFlair(
                 self.subreddit._reddit, self.subreddit, data
