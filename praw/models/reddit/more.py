@@ -1,5 +1,6 @@
 """Provide the MoreComments class."""
 from typing import Any, Dict, List, TypeVar, Union
+
 from ...const import API_PATH
 from ..base import PRAWBase
 
