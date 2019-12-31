@@ -9,6 +9,7 @@ from ..comment_forest import CommentForest
 from ..listing.listing import Listing
 from ..listing.mixins import SubmissionListingMixin
 from .base import RedditBase
+from .flair import LinkFlair, AdvancedSubmissionFlair
 from .mixins import FullnameMixin, ThingModerationMixin, UserContentMixin
 from .redditor import Redditor
 from .subreddit import Subreddit
@@ -28,7 +29,9 @@ class SubmissionFlair:
         """
         self.submission = submission
 
-    def choices(self) -> List[Dict[str, Union[bool, list, str]]]:
+    def choices(
+        self, use_flair_class=False
+    ) -> Union[List[Dict[str, Union[bool, list, str]]], List[LinkFlair]]:
         """Return list of available flair choices.
 
         Choices are required in order to use :meth:`.select`.
@@ -43,18 +46,33 @@ class SubmissionFlair:
         url = API_PATH["flairselector"].format(
             subreddit=self.submission.subreddit
         )
-        return self.submission._reddit.post(
+        choices = self.submission._reddit.post(
             url, data={"link": self.submission.fullname}
         )["choices"]
+        if use_flair_class:
+            return [
+                LinkFlair(self.submission._reddit, choice)
+                for choice in choices
+            ]
+        else:
+            return choices
 
-    def select(self, flair_template_id: str, text: Optional[str] = None):
+    def select(
+        self,
+        template_id: Optional[str] = None,
+        text: Optional[str] = None,
+        flair: Optional[Union[LinkFlair, AdvancedSubmissionFlair]] = None,
+    ):
         """Select flair for submission.
 
-        :param flair_template_id: The flair template to select. The possible
-            ``flair_template_id`` values can be discovered through
-            :meth:`.choices`.
-        :param text: If the template's ``flair_text_editable`` value is True,
-            this value will set a custom text (default: None).
+        :param template_id: The template id of the flair to apply.
+        :param text: The custom text to add to the flair
+        :param flair: The instance of :class:`.SubmissionFlair` to use.
+
+        The template_id and flair paramater are mutually exclusive.
+
+        If there is a text value and a flair value, the text in the flair will
+        be replaced with the text in the text paramater
 
         For example, to select an arbitrary editable flair text (assuming there
         is one) and set a custom value try:
@@ -62,16 +80,35 @@ class SubmissionFlair:
         .. code-block:: python
 
            choices = submission.flair.choices()
-           template_id = next(x for x in choices
-                              if x['flair_text_editable'])['flair_template_id']
-           submission.flair.select(template_id, 'my custom value')
+           flair = next(x for x in choices
+                              if x.flair_text_editable)
+           flair.change_text("custom value")
+           submission.flair.select(flair)
 
         """
-        data = {
-            "flair_template_id": flair_template_id,
-            "link": self.submission.fullname,
-            "text": text,
-        }
+        if [template_id, flair].count(None) != 1:
+            raise TypeError("Either template_id or flair should be given.")
+        if flair is not None:
+            if text is not None:
+                flair.change_text(text)
+            if isinstance(flair, LinkFlair):
+                data = {
+                    "flair_template_id": flair.flair_template_id,
+                    "link": self.submission.fullname,
+                    "text": flair.flair_text,
+                }
+            else:
+                data = {
+                    "flair_template_id": flair.id,
+                    "link": self.submission.fullname,
+                    "text": flair.text,
+                }
+        else:
+            data = {
+                "flair_template_id": template_id,
+                "link": self.submission.fullname,
+                "text": text,
+            }
         url = API_PATH["select_flair"].format(
             subreddit=self.submission.subreddit
         )
