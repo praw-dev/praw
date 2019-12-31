@@ -18,6 +18,7 @@ from ...exceptions import (
     WebSocketException,
 )
 from ...util.cache import cachedproperty
+from ..flair_helper import FlairHelper
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from ..util import permissions_string, stream_generator
@@ -1222,6 +1223,7 @@ class SubredditFlair:
 
         """
         self.subreddit = subreddit
+        self.maker = FlairHelper(self.subreddit)
 
     def configure(
         self,
