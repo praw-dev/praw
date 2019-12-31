@@ -2,7 +2,7 @@ import pickle
 
 import pytest
 from praw.exceptions import ClientException
-from praw.models import Submission
+from praw.models import Submission, LinkFlair
 
 from ... import UnitTest
 
@@ -106,3 +106,23 @@ class TestSubmission(UnitTest):
     def test_shortlink(self):
         submission = Submission(self.reddit, _data={"id": "dummy"})
         assert submission.shortlink == "https://redd.it/dummy"
+
+    def test_submission_flair(self):
+        flairdata = {
+            "flair_css_class": "Test",
+            "flair_template_id": "0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d",
+            "flair_text_editable": True,
+            "flair_position": "right",
+            "flair_text": "Test",
+        }
+        submission = Submission(self.reddit, _data={"id": "dummy"})
+        flair = LinkFlair(self.reddit, _data=flairdata)
+        with pytest.raises(TypeError):
+            submission.flair().select(
+                template_id="0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d", flair=flair
+            )
+
+    def test_submission_neither(self):
+        submission = Submission(self.reddit, _data={"id": "dummy"})
+        with pytest.raises(TypeError):
+            submission.flair.select()

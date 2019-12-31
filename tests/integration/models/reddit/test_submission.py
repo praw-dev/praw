@@ -1,4 +1,4 @@
-from praw.models import Comment, Submission
+from praw.models import Comment, Submission, LinkFlair
 from prawcore import BadRequest
 import mock
 import pytest
@@ -296,6 +296,33 @@ class TestSubmissionFlair(IntegrationTest):
         with self.recorder.use_cassette("TestSubmissionFlair.test_select"):
             submission = Submission(self.reddit, "4t4t2h")
             submission.flair.select("16cabd0a-a68d-11e5-8349-0e8ff96e6679")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_select_flair(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionFlair.test_select_flair"
+        ):
+            submission = Submission(self.reddit, "ehswem")
+            flairdata = list(submission.flair.choices())
+            flair = LinkFlair(self.reddit, _data=flairdata[-1])
+            submission.flair.select(flair=flair)
+            flair2 = LinkFlair(self.reddit, _data=flairdata[0])
+            submission.flair.select(flair=flair2, text="Testing")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_select_flair_advanced(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionFlair.test_select_flair_advanced"
+        ):
+            submission = Submission(self.reddit, "ehswem")
+            subreddit = self.reddit.subreddit(
+                str(submission.subreddit), use_flair_class=True
+            )
+            flairdata = list(iter(subreddit.flair.link_templates))
+            submission.flair.select(flair=flairdata[-1])
+            submission.flair.select(flair=flairdata[-1], text="Testing")
 
 
 class TestSubmissionModeration(IntegrationTest):

@@ -11,12 +11,14 @@ from praw.exceptions import (
     WebSocketException,
 )
 from praw.models import (
+    AdvancedSubmissionFlair,
     Comment,
     ModAction,
     ModmailAction,
     ModmailConversation,
     ModmailMessage,
     Redditor,
+    RedditorFlair,
     Submission,
     Subreddit,
     SubredditMessage,
@@ -2199,7 +2201,6 @@ class TestSubredditWiki(IntegrationTest):
     def test_revisions(self, _):
         self.reddit.read_only = False
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-
         with self.recorder.use_cassette("TestSubredditWiki.revisions"):
             count = 0
             for revision in subreddit.wiki.revisions(limit=4):
@@ -2207,3 +2208,38 @@ class TestSubredditWiki(IntegrationTest):
                 assert isinstance(revision["author"], Redditor)
                 assert isinstance(revision["page"], WikiPage)
             assert count == 4
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_set_flair_object(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit, use_flair_class=True
+        )
+        with self.recorder.use_cassette("TestSubredditFlair.flair_with_class"):
+            template = next(iter(subreddit.flair.templates))
+            assert isinstance(template, RedditorFlair)
+            subreddit.flair.set(pytest.placeholders.username, flair=template)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_get_link_flairs(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit, use_flair_class=True
+        )
+        with self.recorder.use_cassette(
+            "TestSubredditFlair.obtain_link_flair"
+        ):
+            for linkflair in subreddit.flair.link_templates:
+                assert isinstance(linkflair, AdvancedSubmissionFlair)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_get_redditor_flairs(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit, use_flair_class=True
+        )
+        with self.recorder.use_cassette(
+            "TestSubredditFlair.obtain_user_flair"
+        ):
+            for linkflair in subreddit.flair.templates:
+                assert isinstance(linkflair, RedditorFlair)
