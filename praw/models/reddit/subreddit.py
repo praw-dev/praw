@@ -22,6 +22,7 @@ from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from ..util import permissions_string, stream_generator
 from .base import RedditBase
+from .flair import AdvancedSubmissionFlair, RedditorFlair
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
@@ -481,11 +482,15 @@ class Subreddit(
         """
         return SubredditWiki(self)
 
-    def __init__(self, reddit, display_name=None, _data=None):
+    def __init__(
+        self, reddit, display_name=None, _data=None, use_flair_class=False
+    ):
         """Initialize a Subreddit instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param display_name: The name of the subreddit.
+        :param use_flair_class: Whether or not you want flairs to be returned
+            as the new flair classes or as dicts.
 
         .. note:: This class should not be initialized directly. Instead obtain
            an instance via: ``reddit.subreddit('subreddit_name')``
@@ -495,6 +500,7 @@ class Subreddit(
             raise TypeError(
                 "Either `display_name` or `_data` must be provided."
             )
+        self.use_flair_class = use_flair_class
         super().__init__(reddit, _data=_data)
         if display_name:
             self.display_name = display_name
@@ -1273,7 +1279,14 @@ class SubredditFlair:
         """
         return self.update(x["user"] for x in self())
 
-    def set(self, redditor, text="", css_class="", flair_template_id=None):
+    def set(
+        self,
+        redditor,
+        text="",
+        css_class="",
+        flair_template_id=None,
+        flair=None,
+    ):
         """Set flair for a Redditor.
 
         :param redditor: (Required) A redditor name (e.g., ``'spez'``) or
@@ -1284,6 +1297,8 @@ class SubredditFlair:
             (default: ''). Use either this or ``flair_template_id``.
         :param flair_template_id: The ID of the flair template to be used
             (default: ``None``). Use either this or ``css_class``.
+        :param flair: The instance of :class:`.RedditorFlair`
+            to be used.
 
         This method can only be used by an authenticated user who is a
         moderator of the associated Subreddit.
@@ -1299,14 +1314,21 @@ class SubredditFlair:
                                                    flair_template_id=template)
 
         """
-        if css_class and flair_template_id is not None:
+        if [bool(_) for _ in (css_class, flair_template_id, flair)].count(
+            False
+        ) < 2:
             raise TypeError(
-                "Parameter `css_class` cannot be used in "
-                "conjunction with `flair_template_id`."
+                "Either ``css_class``, ``flair_template_id``"
+                " or ``flair`` can be provided."
             )
         data = {"name": str(redditor), "text": text}
         if flair_template_id is not None:
             data["flair_template_id"] = flair_template_id
+            url = API_PATH["select_flair"].format(subreddit=self.subreddit)
+        elif flair is not None:
+            data["flair_template_id"] = flair.id
+            data["css_class"] = flair.css_class
+            data["text"] = flair.text
             url = API_PATH["select_flair"].format(subreddit=self.subreddit)
         else:
             data["css_class"] = css_class
@@ -1532,7 +1554,10 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         url = API_PATH["user_flair"].format(subreddit=self.subreddit)
         params = {"unique": self.subreddit._reddit._next_unique}
         for template in self.subreddit._reddit.get(url, params=params):
-            yield template
+            if self.subreddit.use_flair_class:
+                yield RedditorFlair(self.subreddit._reddit, template)
+            else:
+                yield template
 
     def add(
         self,
@@ -1613,7 +1638,10 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         """
         url = API_PATH["link_flair"].format(subreddit=self.subreddit)
         for template in self.subreddit._reddit.get(url):
-            yield template
+            if self.subreddit.use_flair_class:
+                yield AdvancedSubmissionFlair(self.subreddit._reddit, template)
+            else:
+                yield template
 
     def add(
         self,
