@@ -1,6 +1,6 @@
 """Provide the PRAWBase superclass."""
 from copy import deepcopy
-from typing import Any, Dict, TypeVar
+from typing import Any, Dict, Optional, TypeVar
 
 Reddit = TypeVar("Reddit")
 
@@ -32,7 +32,7 @@ class PRAWBase:
         """
         return cls(reddit, _data=data)
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(self, reddit: Reddit, _data: Optional[Dict[str, Any]]):
         """Initialize a PRAWModel instance.
 
         :param reddit: An instance of :class:`.Reddit`.
