@@ -111,6 +111,12 @@ class Subreddit(
     STR_FIELD = "display_name"
     MESSAGE_PREFIX = "#"
 
+    class _dummy_flair:
+        """A dummy flair. This provides default attributes id and text."""
+
+        id = None
+        text = None
+
     @staticmethod
     def _create_or_update(
         _reddit,
@@ -797,25 +803,19 @@ class Subreddit(
             "spoiler": bool(spoiler),
         }
         if flair is not None:
-            if [flair_id, flair_text].count(None) != 2:
-                raise TypeError(
-                    "Either ``flair`` or a combination of ``flair_"
-                    "id`` and ``flair_Text`` can be provided."
-                )
-            _kvpair = (
-                ("flair_id", flair.id),
-                ("flair_text", flair.text),
-                ("collection_id", collection_id),
-            )
-        else:
-            _kvpair = (
-                ("flair_id", flair_id),
-                ("flair_text", flair_text),
-                ("collection_id", collection_id),
-            )
-        for key, value in _kvpair:
+            if flair_id is not None:
+                raise TypeError("Either flair or flair_id should be provided")
+        flair = flair or self._dummy_flair()
+        flair_id = flair_id or flair.id
+        flair_text = flair_text or flair.text
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+        ):
             if value is not None:
                 data[key] = value
+
         if selftext is not None:
             data.update(kind="self", text=selftext)
         else:
@@ -902,23 +902,16 @@ class Subreddit(
             "spoiler": bool(spoiler),
         }
         if flair is not None:
-            if [flair_id, flair_text].count(None) != 2:
-                raise TypeError(
-                    "Either ``flair`` or a combination of ``flair_"
-                    "id`` and ``flair_Text`` can be provided."
-                )
-            _kvpair = (
-                ("flair_id", flair.id),
-                ("flair_text", flair.text),
-                ("collection_id", collection_id),
-            )
-        else:
-            _kvpair = (
-                ("flair_id", flair_id),
-                ("flair_text", flair_text),
-                ("collection_id", collection_id),
-            )
-        for key, value in _kvpair:
+            if flair_id is not None:
+                raise TypeError("Either flair or flair_id should be provided")
+        flair = flair or self._dummy_flair()
+        flair_id = flair_id or flair.id
+        flair_text = flair_text or flair.text
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+        ):
             if value is not None:
                 data[key] = value
 
@@ -1020,23 +1013,16 @@ class Subreddit(
             "spoiler": bool(spoiler),
         }
         if flair is not None:
-            if [flair_id, flair_text].count(None) != 2:
-                raise TypeError(
-                    "Either ``flair`` or a combination of ``flair_"
-                    "id`` and ``flair_Text`` can be provided."
-                )
-            _kvpair = (
-                ("flair_id", flair.id),
-                ("flair_text", flair.text),
-                ("collection_id", collection_id),
-            )
-        else:
-            _kvpair = (
-                ("flair_id", flair_id),
-                ("flair_text", flair_text),
-                ("collection_id", collection_id),
-            )
-        for key, value in _kvpair:
+            if flair_id is not None:
+                raise TypeError("Either flair or flair_id should be provided")
+        flair = flair or self._dummy_flair()
+        flair_id = flair_id or flair.id
+        flair_text = flair_text or flair.text
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+        ):
             if value is not None:
                 data[key] = value
 

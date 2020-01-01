@@ -7,6 +7,14 @@ from ... import IntegrationTest
 
 
 class TestFlair(IntegrationTest):
+    def _delete_flair(self, flair):
+        if isinstance(flair, AdvancedSubmissionFlair):
+            sub = flair.subreddit
+            sub.flair.link_templates.delete(flair=flair)
+        if isinstance(flair, RedditorFlair):
+            sub = flair.subreddit
+            sub.flair.templates.delete(flair=flair)
+
     @mock.patch("time.sleep", return_value=None)
     def test_get_compatible_flairs(self, _):
         self.reddit.read_only = False
@@ -147,3 +155,46 @@ class TestFlair(IntegrationTest):
             for key in other_details.keys():
                 assert hasattr(flair, key)
                 assert getattr(flair, key) == other_details[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_auto_creation_ASF(self, _):
+        # Flairs need to be deleted at the end of the test
+        self.reddit.read_only = False
+        arbritary_number = 124
+        with self.recorder.use_cassette("TestFlair.auto_create_submission"):
+            submission = self.reddit.submission("eh0qey")
+            subreddit = submission.subreddit
+            flair = subreddit.flair.maker.make_link_flair(
+                "test{num}".format(num=arbritary_number),
+                create_before_usage=True,
+            )
+            submission.flair.select(flair=flair)
+            _submission = self.reddit.submission("eh0qey")
+            assert _submission.link_flair_text == "test{num}".format(
+                num=arbritary_number
+            )
+            assert "id" in flair.__dict__
+            self._delete_flair(flair)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_auto_creation_RF(self, _):
+        # Flairs need to be deleted at the end of the test
+        self.reddit.read_only = False
+        arbritary_number = 124
+        with self.recorder.use_cassette("TestFlair.auto_create_redditor"):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            user = self.reddit.redditor("spez")
+            flair = subreddit.flair.maker.make_user_flair(
+                "test{num}".format(num=arbritary_number),
+                create_before_usage=True,
+            )
+            subreddit.flair.set(user, flair=flair)
+            new_entry = [
+                data for data in subreddit.flair() if data["user"] == user
+            ][0]
+            assert new_entry["flair_text"] == "test{num}".format(
+                num=arbritary_number
+            )
+            self._delete_flair(flair)

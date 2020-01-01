@@ -110,6 +110,30 @@ class TestSubreddit(UnitTest):
                 "dummy_path", align="asdf"
             )
 
+    def test_submit_type_errors(self):
+        subreddit = Subreddit(self.reddit, display_name="name")
+        with pytest.raises(TypeError):
+            subreddit.submit(
+                "test",
+                selftext="sdf",
+                flair_id="test",
+                flair=subreddit.flair.maker.make_link_flair("dummy"),
+            )
+        with pytest.raises(TypeError):
+            subreddit.submit_image(
+                "test",
+                "test",
+                flair_id="test",
+                flair=subreddit.flair.maker.make_link_flair("dummy"),
+            )
+        with pytest.raises(TypeError):
+            subreddit.submit_video(
+                "test",
+                "test",
+                flair_id="test",
+                flair=subreddit.flair.maker.make_link_flair("dummy"),
+            )
+
 
 class TestSubredditFlair(UnitTest):
     def test_set(self):

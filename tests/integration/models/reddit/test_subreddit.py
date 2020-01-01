@@ -87,6 +87,14 @@ class WebsocketMockException:
 
 
 class TestSubreddit(IntegrationTest):
+    def _delete_flair(self, flair):
+        if isinstance(flair, AdvancedSubmissionFlair):
+            sub = flair.subreddit
+            sub.flair.link_templates.delete(flair=flair)
+        if isinstance(flair, RedditorFlair):
+            sub = flair.subreddit
+            sub.flair.templates.delete(flair=flair)
+
     @staticmethod
     def image_path(name):
         test_dir = abspath(dirname(sys.modules[__name__].__file__))
@@ -747,6 +755,42 @@ class TestSubreddit(IntegrationTest):
             "TestSubreddit.test_unsubscribe__multiple"
         ):
             subreddit.unsubscribe(["redditdev", self.reddit.subreddit("iama")])
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_url_flair_obj(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit, use_flair_class=True
+        )
+        url = "https://www.google.com"
+        test_type = "TestSubPostLink"
+        with self.recorder.use_cassette("TestSubreddit.submit_url_flair_obj"):
+            flair = subreddit.flair.maker.make_link_flair(
+                test_type, css_class=test_type, create_before_usage=True
+            )
+            submission = subreddit.submit("Running_test", url=url, flair=flair)
+            assert submission.link_flair_text == test_type
+            assert submission.link_flair_css_class == test_type
+            self._delete_flair(flair)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_text_flair_obj(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(
+            pytest.placeholders.test_subreddit, use_flair_class=True
+        )
+        text = "Testing, 1, 2, 3"
+        test_type = "TestSubPostText"
+        with self.recorder.use_cassette("TestSubreddit.submit_text_flair_obj"):
+            flair = subreddit.flair.maker.make_link_flair(
+                test_type, css_class=test_type, create_before_usage=True
+            )
+            submission = subreddit.submit(
+                "Running_test", selftext=text, flair=flair
+            )
+            assert submission.link_flair_text == test_type
+            assert submission.link_flair_css_class == test_type
+            self._delete_flair(flair)
 
 
 class TestSubredditFilters(IntegrationTest):
