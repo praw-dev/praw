@@ -34,6 +34,7 @@ class RichFlairBase(RedditBase):
         mod_only: bool = False,
         allowable_content: str = "all",
         max_emojis: str = 10,
+        create_before_usage: bool = False,
     ) -> _RichFlairBase:
         r"""Make a new flair instance. Useful for adding new flair templates.
 
@@ -63,6 +64,10 @@ class RichFlairBase(RedditBase):
             valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
+        :param create_before_usage: If the flair does not exist and is being
+            used to flair a submission or redditor, it will automatically
+            create the flair and obtain the flair ID before flairing the
+            submission or redditor (Mod only)(Default: False).
         """
         return cls(
             reddit,
@@ -76,6 +81,7 @@ class RichFlairBase(RedditBase):
                 mod_only=mod_only,
                 allowable_content=allowable_content,
                 max_emojis=max_emojis,
+                create_before_usage=create_before_usage,
             ),
         )
 
@@ -107,6 +113,8 @@ class RichFlairBase(RedditBase):
         self.subreddit = subreddit
         if not self.subreddit.use_flair_class:
             self.subreddit.use_flair_class = True
+        if "create_before_usage" not in self.__dict__:
+            self.create_before_usage = False
 
     def change_info(self, **new_values: Union[str, int, bool]):
         r"""Update the values of the flair instance.
@@ -218,6 +226,7 @@ class AdvancedSubmissionFlair(RichFlairBase):
         mod_only: bool = False,
         allowable_content: str = "all",
         max_emojis: str = 10,
+        create_before_usage: bool = False,
     ) -> _AdvancedSubmissionFlair:
         r"""Make a new flair instance. Useful for adding new flair templates.
 
@@ -247,6 +256,10 @@ class AdvancedSubmissionFlair(RichFlairBase):
             valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
+        :param create_before_usage: If the flair does not exist and is being
+            used to flair a submission or redditor, it will automatically
+            create the flair and obtain the flair ID before flairing the
+            submission or redditor (Mod only)(Default: False).
         """
         return super().make_new_flair(
             reddit,
@@ -259,6 +272,7 @@ class AdvancedSubmissionFlair(RichFlairBase):
             mod_only,
             allowable_content,
             max_emojis,
+            create_before_usage,
         )
 
     def change_info(self, **new_values: Union[str, int, bool]):
@@ -322,7 +336,14 @@ class AdvancedSubmissionFlair(RichFlairBase):
         """
         super().change_info(**new_values)
 
-    def _fetch(self):
+    def _make_in_subreddit(self):
+        self.subreddit.flair.link_templates.add(flair=self)
+        self._fetch(_called_from_inner_method=True)
+
+    def _fetch(self, _called_from_inner_method=False):
+        if not _called_from_inner_method:
+            if self.create_before_usage and "id" not in self.__dict__:
+                self._make_in_subreddit()
         if (
             len(
                 [
@@ -425,11 +446,12 @@ class RedditorFlair(RichFlairBase):
         mod_only: bool = False,
         allowable_content: str = "all",
         max_emojis: str = 10,
-    ) -> _RichFlairBase:
+        create_before_usage: bool = False,
+    ) -> _AdvancedSubmissionFlair:
         r"""Make a new flair instance. Useful for adding new flair templates.
 
         .. note:: This method should only be called from
-           :meth:`.FlairHelper.make_user_flair`.
+           :meth:`.FlairHelper.make_link_flair`.
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param subreddit: An instance of :class:`~.Subreddit`.
@@ -454,6 +476,10 @@ class RedditorFlair(RichFlairBase):
             valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
+        :param create_before_usage: If the flair does not exist and is being
+            used to flair a submission or redditor, it will automatically
+            create the flair and obtain the flair ID before flairing the
+            submission or redditor (Mod only)(Default: False).
         """
         return super().make_new_flair(
             reddit,
@@ -466,6 +492,7 @@ class RedditorFlair(RichFlairBase):
             mod_only,
             allowable_content,
             max_emojis,
+            create_before_usage,
         )
 
     def change_info(self, **new_values: Union[str, int, bool]):
@@ -529,7 +556,14 @@ class RedditorFlair(RichFlairBase):
         """
         super().change_info(**new_values)
 
-    def _fetch(self):
+    def _make_in_subreddit(self):
+        self.subreddit.flair.templates.add(flair=self)
+        self._fetch(_called_from_inner_method=True)
+
+    def _fetch(self, _called_from_inner_method=False):
+        if not _called_from_inner_method:
+            if self.create_before_usage and "id" not in self.__dict__:
+                self._make_in_subreddit()
         if (
             len(
                 [

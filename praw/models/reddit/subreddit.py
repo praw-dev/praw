@@ -742,6 +742,7 @@ class Subreddit(
         nsfw=False,
         spoiler=False,
         collection_id=None,
+        flair=None,
     ):
         """Add a submission to the subreddit.
 
@@ -763,6 +764,8 @@ class Subreddit(
             (default: False).
         :param spoiler: Whether or not the submission should be marked as
             a spoiler (default: False).
+        :param flair: The instance of :class:`.AdvancedSubmissionFlair` to
+            flair the new post with.
         :returns: A :class:`~.Submission` object for the newly created
             submission.
 
@@ -793,11 +796,24 @@ class Subreddit(
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
         }
-        for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-            ("collection_id", collection_id),
-        ):
+        if flair is not None:
+            if [flair_id, flair_text].count(None) != 2:
+                raise TypeError(
+                    "Either ``flair`` or a combination of ``flair_"
+                    "id`` and ``flair_Text`` can be provided."
+                )
+            _kvpair = (
+                ("flair_id", flair.id),
+                ("flair_text", flair.text),
+                ("collection_id", collection_id),
+            )
+        else:
+            _kvpair = (
+                ("flair_id", flair_id),
+                ("flair_text", flair_text),
+                ("collection_id", collection_id),
+            )
+        for key, value in _kvpair:
             if value is not None:
                 data[key] = value
         if selftext is not None:
@@ -820,6 +836,7 @@ class Subreddit(
         timeout=10,
         collection_id=None,
         without_websockets=False,
+        flair=None,
     ):
         """Add an image submission to the subreddit.
 
@@ -843,6 +860,8 @@ class Subreddit(
         :param without_websockets: Set to ``True`` to disable use of WebSockets
             (see note below for an explanation). If ``True``, this method
             doesn't return anything. (default: ``False``).
+        :param flair: The instance of :class:`.AdvancedSubmissionFlair` to
+            flair the new post with.
 
         :returns: A :class:`.Submission` object for the newly created
             submission, unless ``without_websockets`` is ``True``.
@@ -882,11 +901,27 @@ class Subreddit(
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
         }
-        for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-            ("collection_id", collection_id),
-        ):
+        if flair is not None:
+            if [flair_id, flair_text].count(None) != 2:
+                raise TypeError(
+                    "Either ``flair`` or a combination of ``flair_"
+                    "id`` and ``flair_Text`` can be provided."
+                )
+            _kvpair = (
+                ("flair_id", flair.id),
+                ("flair_text", flair.text),
+                ("collection_id", collection_id),
+            )
+        else:
+            _kvpair = (
+                ("flair_id", flair_id),
+                ("flair_text", flair_text),
+                ("collection_id", collection_id),
+            )
+        for key, value in _kvpair:
+            if value is not None:
+                data[key] = value
+
             if value is not None:
                 data[key] = value
         data.update(
@@ -912,6 +947,7 @@ class Subreddit(
         timeout=10,
         collection_id=None,
         without_websockets=False,
+        flair=None,
     ):
         """Add a video or videogif submission to the subreddit.
 
@@ -942,6 +978,8 @@ class Subreddit(
         :param without_websockets: Set to ``True`` to disable use of WebSockets
             (see note below for an explanation). If ``True``, this method
             doesn't return anything. (default: ``False``).
+        :param flair: The instance of :class:`.AdvancedSubmissionFlair` to
+            flair the new post with.
 
         :returns: A :class:`.Submission` object for the newly created
             submission, unless ``without_websockets`` is ``True``.
@@ -981,13 +1019,27 @@ class Subreddit(
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
         }
-        for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
-            ("collection_id", collection_id),
-        ):
+        if flair is not None:
+            if [flair_id, flair_text].count(None) != 2:
+                raise TypeError(
+                    "Either ``flair`` or a combination of ``flair_"
+                    "id`` and ``flair_Text`` can be provided."
+                )
+            _kvpair = (
+                ("flair_id", flair.id),
+                ("flair_text", flair.text),
+                ("collection_id", collection_id),
+            )
+        else:
+            _kvpair = (
+                ("flair_id", flair_id),
+                ("flair_text", flair_text),
+                ("collection_id", collection_id),
+            )
+        for key, value in _kvpair:
             if value is not None:
                 data[key] = value
+
         data.update(
             kind="videogif" if videogif else "video",
             url=self._upload_media(video_path, expected_mime_prefix="video"),

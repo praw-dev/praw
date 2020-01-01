@@ -33,6 +33,7 @@ class FlairHelper(PRAWBase):
         mod_only: bool = False,
         allowable_content: str = "all",
         max_emojis: str = 10,
+        create_before_usage: bool = False,
     ) -> AdvancedSubmissionFlair:
         r"""Make an instance of :class:`.AdvancedSubmissionFlair`.
 
@@ -60,6 +61,10 @@ class FlairHelper(PRAWBase):
             valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
+        :param create_before_usage: If the flair does not exist and is being
+            used to flair a submission or redditor, it will automatically
+            create the flair and obtain the flair ID before flairing the
+            submission or redditor (Mod only)(Default: False).
         """
         return AdvancedSubmissionFlair.make_new_flair(
             self._reddit,
@@ -72,6 +77,7 @@ class FlairHelper(PRAWBase):
             mod_only=mod_only,
             allowable_content=allowable_content,
             max_emojis=max_emojis,
+            create_before_usage=create_before_usage,
         )
 
     def make_user_flair(
@@ -84,6 +90,7 @@ class FlairHelper(PRAWBase):
         mod_only: bool = False,
         allowable_content: str = "all",
         max_emojis: str = 10,
+        create_before_usage: bool = False,
     ) -> RedditorFlair:
         r"""Make an instance of :class:`.RedditorFlair`.
 
@@ -112,6 +119,10 @@ class FlairHelper(PRAWBase):
             valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
+        :param create_before_usage: If the flair does not exist and is being
+            used to flair a submission or redditor, it will automatically
+            create the flair and obtain the flair ID before flairing the
+            submission or redditor (Mod only)(Default: False).
         """
         return RedditorFlair.make_new_flair(
             self._reddit,
@@ -124,4 +135,5 @@ class FlairHelper(PRAWBase):
             mod_only=mod_only,
             allowable_content=allowable_content,
             max_emojis=max_emojis,
+            create_before_usage=create_before_usage,
         )
