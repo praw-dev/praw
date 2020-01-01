@@ -15,12 +15,7 @@ class PRAWException(Exception):
 class APIException(PRAWException):
     """Indicate exception that involve responses from Reddit's API."""
 
-    def __init__(
-        self,
-        error_type: Optional[str],
-        message: Optional[str],
-        field: Optional[str],
-    ):
+    def __init__(self, error_type: str, message: str, field: Optional[str]):
         """Initialize an instance of APIException.
 
         :param error_type: The error type set on Reddit's end.
