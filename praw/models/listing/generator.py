@@ -1,6 +1,6 @@
 """Provide the ListingGenerator class."""
 from copy import deepcopy
-from typing import Any, Dict, Iterator, Optional, TypeVar
+from typing import Any, Dict, Generator, Iterator, Optional, TypeVar
 
 from .listing import FlairListing
 from ..base import PRAWBase
@@ -52,7 +52,7 @@ class ListingGenerator(PRAWBase):
         """Permit ListingGenerator to operate as an iterator."""
         return self
 
-    def __next__(self) -> Any:
+    def __next__(self) -> Generator[Any, None, None]:
         """Permit ListingGenerator to operate as a generator."""
         if self.limit is not None and self.yielded >= self.limit:
             raise StopIteration()
