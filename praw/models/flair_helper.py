@@ -34,13 +34,18 @@ class FlairHelper(PRAWBase):
         allowable_content: str = "all",
         max_emojis: str = 10,
     ) -> AdvancedSubmissionFlair:
-        """Make an instance of :class:`.AdvancedSubmissionFlair`.
+        r"""Make an instance of :class:`.AdvancedSubmissionFlair`.
 
         This is a lazy instance, and it is only meant to be used with
         :meth:`.SubredditLinkFlairTemplates.add`.
 
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
@@ -80,13 +85,19 @@ class FlairHelper(PRAWBase):
         allowable_content: str = "all",
         max_emojis: str = 10,
     ) -> RedditorFlair:
-        """Make an instance of :class:`.RedditorFlair`.
+        r"""Make an instance of :class:`.RedditorFlair`.
 
         This is a lazy instance, and it is only meant to be used with
         :meth:`.SubredditRedditorFlairTemplates.add`.
 
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
+
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,

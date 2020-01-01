@@ -35,7 +35,7 @@ class RichFlairBase(RedditBase):
         allowable_content: str = "all",
         max_emojis: str = 10,
     ) -> _RichFlairBase:
-        """Make a new flair instance. Useful for adding new flair templates.
+        r"""Make a new flair instance. Useful for adding new flair templates.
 
         .. note:: This method should only be called from an instance of
            :class:`.FlairHelper`.
@@ -44,6 +44,11 @@ class RichFlairBase(RedditBase):
         :param subreddit: An instance of :class:`~.Subreddit`.
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
@@ -104,7 +109,7 @@ class RichFlairBase(RedditBase):
             self.subreddit.use_flair_class = True
 
     def change_info(self, **new_values: Union[str, int, bool]):
-        """Update the values of the flair instance.
+        r"""Update the values of the flair instance.
 
         .. warning:: Most values, except text, can only be updated by a
             moderator who has the ``flair`` permission. Text can only be
@@ -117,6 +122,11 @@ class RichFlairBase(RedditBase):
 
         :param text: The flair template's new text
         :param css_class: The flair template's new css class. (Mod only)
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it. (Mod only)
         :param background_color: The flair template's new background color,
@@ -209,7 +219,7 @@ class AdvancedSubmissionFlair(RichFlairBase):
         allowable_content: str = "all",
         max_emojis: str = 10,
     ) -> _AdvancedSubmissionFlair:
-        """Make a new flair instance. Useful for adding new flair templates.
+        r"""Make a new flair instance. Useful for adding new flair templates.
 
         .. note:: This method should only be called from
            :meth:`.FlairHelper.make_link_flair`.
@@ -218,6 +228,11 @@ class AdvancedSubmissionFlair(RichFlairBase):
         :param subreddit: An instance of :class:`~.Subreddit`.
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
@@ -247,7 +262,7 @@ class AdvancedSubmissionFlair(RichFlairBase):
         )
 
     def change_info(self, **new_values: Union[str, int, bool]):
-        """Update the values of the flair instance.
+        r"""Update the values of the flair instance.
 
         .. warning:: Most values, except text, can only be updated by a
             moderator who has the ``flair`` permission. Text can only be
@@ -260,6 +275,11 @@ class AdvancedSubmissionFlair(RichFlairBase):
 
         :param text: The flair template's new text
         :param css_class: The flair template's new css class. (Mod only)
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it. (Mod only)
         :param background_color: The flair template's new background color,
@@ -406,7 +426,7 @@ class RedditorFlair(RichFlairBase):
         allowable_content: str = "all",
         max_emojis: str = 10,
     ) -> _RichFlairBase:
-        """Make a new flair instance. Useful for adding new flair templates.
+        r"""Make a new flair instance. Useful for adding new flair templates.
 
         .. note:: This method should only be called from
            :meth:`.FlairHelper.make_user_flair`.
@@ -415,6 +435,11 @@ class RedditorFlair(RichFlairBase):
         :param subreddit: An instance of :class:`~.Subreddit`.
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
@@ -444,7 +469,7 @@ class RedditorFlair(RichFlairBase):
         )
 
     def change_info(self, **new_values: Union[str, int, bool]):
-        """Update the values of the flair instance.
+        r"""Update the values of the flair instance.
 
         .. warning:: Most values, except text, can only be updated by a
             moderator who has the ``flair`` permission. Text can only be
@@ -457,6 +482,12 @@ class RedditorFlair(RichFlairBase):
 
         :param text: The flair template's new text
         :param css_class: The flair template's new css class. (Mod only)
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
+
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it. (Mod only)
         :param background_color: The flair template's new background color,

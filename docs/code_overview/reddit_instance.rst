@@ -5,11 +5,10 @@ The Reddit Instance
    :inherited-members:
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Helper Classes
 
    reddit/front
-   reddit/flair
    reddit/inbox
    reddit/live
    reddit/multireddit

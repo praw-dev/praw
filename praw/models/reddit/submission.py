@@ -173,12 +173,17 @@ class SubmissionModeration(ThingModerationMixin):
         css_class: str = "",
         flair_template_id: Optional[str] = None,
     ):
-        """Set flair for the submission.
+        r"""Set flair for the submission.
 
         :param text: The flair text to associate with the Submission (default:
             '').
         :param css_class: The css class to associate with the flair html
             (default: '').
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
         :param flair_template_id: The flair template id to use when flairing
             (Optional).
 

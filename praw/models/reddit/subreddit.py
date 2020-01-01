@@ -1289,7 +1289,7 @@ class SubredditFlair:
         flair_template_id=None,
         flair=None,
     ):
-        """Set flair for a Redditor.
+        r"""Set flair for a Redditor.
 
         :param redditor: (Required) A redditor name (e.g., ``'spez'``) or
             :class:`~.Redditor` instance.
@@ -1297,6 +1297,11 @@ class SubredditFlair:
             Submission (default: '').
         :param css_class: The css class to associate with the flair html
             (default: ''). Use either this or ``flair_template_id``.
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
         :param flair_template_id: The ID of the flair template to be used
             (default: ``None``). Use either this or ``css_class``.
         :param flair: The instance of :class:`.RedditorFlair`
@@ -1338,7 +1343,7 @@ class SubredditFlair:
         self.subreddit._reddit.post(url, data=data)
 
     def update(self, flair_list, text="", css_class=""):
-        """Set or clear the flair for many Redditors at once.
+        r"""Set or clear the flair for many Redditors at once.
 
         :param flair_list: Each item in this list should be either: the name of
             a Redditor, an instance of :class:`.Redditor`, or a dictionary
@@ -1353,6 +1358,12 @@ class SubredditFlair:
             ``flair_list`` (default: '').
         :param css_class: The css class to use when not explicitly provided in
             ``flair_list`` (default: '').
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
+
         :returns: List of dictionaries indicating the success or failure of
             each update.
 
@@ -1483,13 +1494,18 @@ class SubredditFlairTemplates:
         fetch=True,
         flair=None,
     ):
-        """Update the flair template provided by ``template_id``.
+        r"""Update the flair template provided by ``template_id``.
 
         :param template_id: The flair template to update. If not valid then
             an exception will be thrown.
         :param text: The flair template's new text (required if flair is not
             specified).
         :param css_class: The flair template's new css_class (default: '').
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
@@ -1590,10 +1606,15 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         flair=None,
         return_flair_obj=False,
     ):
-        """Add a Redditor flair template to the associated subreddit.
+        r"""Add a Redditor flair template to the associated subreddit.
 
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
@@ -1700,10 +1721,15 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         flair=None,
         return_flair_obj=False,
     ):
-        """Add a link flair template to the associated subreddit.
+        r"""Add a link flair template to the associated subreddit.
 
         :param text: The flair template's text (required).
         :param css_class: The flair template's css_class (default: '').
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
         :param text_editable: (boolean) Indicate if the flair text can be
             modified for each Redditor that sets it (default: False).
         :param background_color: The flair template's new background color,
