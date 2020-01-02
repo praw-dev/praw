@@ -1473,6 +1473,94 @@ class TestSubredditStreams(IntegrationTest):
             assert submission_count < 100
 
 
+class TestSubredditModerationStreams(IntegrationTest):
+    @property
+    def subreddit(self):
+        return self.reddit.subreddit(pytest.placeholders.test_subreddit)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_edited(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditModerationStreams.test_edited"
+        ):
+            generator = self.subreddit.mod.stream.edited()
+            for i in range(10):
+                assert isinstance(next(generator), (Comment, Submission))
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_log(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditModerationStreams.test_log"
+        ):
+            generator = self.subreddit.mod.stream.log()
+            for i in range(101):
+                assert isinstance(next(generator), ModAction)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_modmail_conversations(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditModerationStreams.test_modmail_conversations"
+        ):
+            generator = self.reddit.subreddit(
+                "mod"
+            ).mod.stream.modmail_conversations()
+            for i in range(10):
+                assert isinstance(next(generator), ModmailConversation)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_modqueue(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditModerationStreams.test_modqueue"
+        ):
+            generator = self.subreddit.mod.stream.modqueue()
+            for i in range(10):
+                assert isinstance(next(generator), (Comment, Submission))
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_spam(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditModerationStreams.test_spam"
+        ):
+            generator = self.subreddit.mod.stream.spam()
+            for i in range(10):
+                assert isinstance(next(generator), (Comment, Submission))
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_reports(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditModerationStreams.test_reports"
+        ):
+            generator = self.subreddit.mod.stream.reports()
+            for i in range(10):
+                assert isinstance(next(generator), (Comment, Submission))
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_unmoderated(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditModerationStreams.test_unmoderated"
+        ):
+            generator = self.subreddit.mod.stream.unmoderated()
+            for i in range(10):
+                assert isinstance(next(generator), (Comment, Submission))
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_unread(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditModerationStreams.test_unread"
+        ):
+            generator = self.reddit.subreddit("mod").mod.stream.unread()
+            for i in range(2):
+                assert isinstance(next(generator), SubredditMessage)
+
+
 class TestSubredditStylesheet(IntegrationTest):
     @staticmethod
     def image_path(name):
