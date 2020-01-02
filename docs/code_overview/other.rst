@@ -59,6 +59,7 @@ instances of them bound to an attribute of one of the PRAW models.
    other/subredditfilters
    other/subredditquarantine
    other/subredditstream
+   other/subredditmoderationstream
    other/subredditstylesheet
    other/subredditwidgets
    other/subredditwiki
