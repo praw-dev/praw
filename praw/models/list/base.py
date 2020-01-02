@@ -1,5 +1,9 @@
 """Provide the BaseList class."""
+from typing import Any, Dict, Iterator, TypeVar
+
 from ..base import PRAWBase
+
+Reddit = TypeVar("Reddit")
 
 
 class BaseList(PRAWBase):
@@ -7,7 +11,7 @@ class BaseList(PRAWBase):
 
     CHILD_ATTRIBUTE = None
 
-    def __init__(self, reddit, _data):
+    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
         """Initialize a BaseList instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
@@ -22,22 +26,22 @@ class BaseList(PRAWBase):
         for index, item in enumerate(child_list):
             child_list[index] = reddit._objector.objectify(item)
 
-    def __contains__(self, item):
+    def __contains__(self, item: Any) -> bool:
         """Test if item exists in the list."""
         return item in getattr(self, self.CHILD_ATTRIBUTE)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> Any:
         """Return the item at position index in the list."""
         return getattr(self, self.CHILD_ATTRIBUTE)[index]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Any]:
         """Return an iterator to the list."""
         return getattr(self, self.CHILD_ATTRIBUTE).__iter__()
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return the number of items in the list."""
         return len(getattr(self, self.CHILD_ATTRIBUTE))
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a string representation of the list."""
         return str(getattr(self, self.CHILD_ATTRIBUTE))

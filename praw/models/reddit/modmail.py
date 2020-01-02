@@ -1,7 +1,12 @@
 """Provide models for new modmail."""
+from typing import Any, Dict, List, Optional, TypeVar
+
 from ...const import API_PATH
 from ...util import snake_case_keys
 from .base import RedditBase
+
+_ModmailConversation = TypeVar("_ModmailConversation")
+Reddit = TypeVar("Reddit")
 
 
 class ModmailConversation(RedditBase):
@@ -90,7 +95,7 @@ class ModmailConversation(RedditBase):
 
     @classmethod
     def parse(  # pylint: disable=arguments-differ
-        cls, data, reddit, convert_objects=True
+        cls, data: Dict[str, Any], reddit: Reddit, convert_objects: bool = True
     ):
         """Return an instance of ModmailConversation from ``data``.
 
@@ -125,10 +130,10 @@ class ModmailConversation(RedditBase):
 
     def __init__(
         self,
-        reddit,
-        id=None,  # pylint: disable=redefined-builtin
-        mark_read=False,
-        _data=None,
+        reddit: Reddit,
+        id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        mark_read: bool = False,
+        _data: Optional[Dict[str, Any]] = None,
     ):
         """Construct an instance of the ModmailConversation object.
 
@@ -202,7 +207,9 @@ class ModmailConversation(RedditBase):
             "POST", API_PATH["modmail_mute"].format(id=self.id)
         )
 
-    def read(self, other_conversations=None):  # noqa: D207, D301
+    def read(
+        self, other_conversations: Optional[List[_ModmailConversation]] = None
+    ):  # noqa: D207, D301
         """Mark the conversation(s) as read.
 
         :param other_conversations: A list of other conversations to mark
@@ -226,7 +233,9 @@ class ModmailConversation(RedditBase):
         }
         self._reddit.post(API_PATH["modmail_read"], data=data)
 
-    def reply(self, body, author_hidden=False, internal=False):
+    def reply(
+        self, body: str, author_hidden: bool = False, internal: bool = False
+    ):
         """Reply to the conversation.
 
         :param body: The Markdown formatted content for a message.
@@ -303,7 +312,9 @@ class ModmailConversation(RedditBase):
             "POST", API_PATH["modmail_unmute"].format(id=self.id)
         )
 
-    def unread(self, other_conversations=None):  # noqa: D207, D301
+    def unread(
+        self, other_conversations: Optional[List[_ModmailConversation]] = None
+    ):  # noqa: D207, D301
         """Mark the conversation(s) as unread.
 
         :param other_conversations: A list of other conversations to mark
@@ -334,7 +345,7 @@ class ModmailObject(RedditBase):
     AUTHOR_ATTRIBUTE = "author"
     STR_FIELD = "id"
 
-    def __setattr__(self, attribute, value):
+    def __setattr__(self, attribute: str, value: Any):
         """Objectify the AUTHOR_ATTRIBUTE attribute."""
         if attribute == self.AUTHOR_ATTRIBUTE:
             value = self._reddit._objector.objectify(value)

@@ -1,5 +1,9 @@
 """Represent the Trophy class."""
+from typing import Any, Dict, TypeVar
+
 from .base import PRAWBase
+
+Reddit = TypeVar("Reddit")
 
 
 class Trophy(PRAWBase):
@@ -30,7 +34,7 @@ class Trophy(PRAWBase):
     ======================= ===================================================
     """
 
-    def __init__(self, reddit, _data):
+    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
         """Initialize a Trophy instance.
 
         :param reddit: An instance of :class:`.Reddit`.
@@ -41,6 +45,6 @@ class Trophy(PRAWBase):
         assert isinstance(_data, dict) and "name" in _data
         super().__init__(reddit, _data=_data)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return a name of the trophy."""
         return self.name  # pylint: disable=no-member

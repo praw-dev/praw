@@ -1,4 +1,6 @@
 """Provide the Listing class."""
+from typing import Any, Optional
+
 from ..base import PRAWBase
 
 
@@ -7,15 +9,15 @@ class Listing(PRAWBase):
 
     CHILD_ATTRIBUTE = "children"
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Return the number of items in the Listing."""
         return len(getattr(self, self.CHILD_ATTRIBUTE))
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int) -> Any:
         """Return the item at position index in the list."""
         return getattr(self, self.CHILD_ATTRIBUTE)[index]
 
-    def __setattr__(self, attribute, value):
+    def __setattr__(self, attribute: str, value: Any):
         """Objectify the CHILD_ATTRIBUTE attribute."""
         if attribute == self.CHILD_ATTRIBUTE:
             value = self._reddit._objector.objectify(value)
@@ -28,6 +30,6 @@ class FlairListing(Listing):
     CHILD_ATTRIBUTE = "users"
 
     @property
-    def after(self):
+    def after(self) -> Optional[Any]:
         """Return the next attribute or None."""
         return getattr(self, "next", None)

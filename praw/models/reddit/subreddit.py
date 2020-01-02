@@ -1146,9 +1146,7 @@ class SubredditFlair:
         """
         return self.update(x["user"] for x in self())
 
-    def set(
-        self, redditor=None, text="", css_class="", flair_template_id=None
-    ):
+    def set(self, redditor, text="", css_class="", flair_template_id=None):
         """Set flair for a Redditor.
 
         :param redditor: (Required) A redditor name (e.g., ``'spez'``) or

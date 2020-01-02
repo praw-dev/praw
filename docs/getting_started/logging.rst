@@ -1,10 +1,10 @@
 Logging in PRAW
 ===============
 
-Occasionally it is useful to observe the HTTP requests that PRAW is issuing. To
+It is occasionally useful to observe the HTTP requests that PRAW is issuing. To
 do so you have to configure and enable logging.
 
-To log everything available add the following to your code:
+Add the following to your code to log everything available:
 
 .. code-block:: python
 
@@ -16,7 +16,7 @@ To log everything available add the following to your code:
    logger.setLevel(logging.DEBUG)
    logger.addHandler(handler)
 
-When properly configured HTTP requests that are issued should produce output
+When properly configured, HTTP requests that are issued should produce output
 similar to the following:
 
 .. code-block:: text

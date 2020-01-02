@@ -1,4 +1,5 @@
 """Caching utilities."""
+from typing import Any, Callable, Optional
 
 
 class cachedproperty:
@@ -18,7 +19,7 @@ class cachedproperty:
     .. versionadded:: 6.3.0
     """
 
-    def __init__(self, func, doc=None):
+    def __init__(self, func: Callable[[Any], Any], doc: Optional[str] = None):
         """Initialize the descriptor."""
         self.func = self.__wrapped__ = func
 
@@ -26,7 +27,9 @@ class cachedproperty:
             doc = func.__doc__
         self.__doc__ = doc
 
-    def __get__(self, obj, objtype=None):
+    def __get__(
+        self, obj: Optional[Any], objtype: Optional[Any] = None
+    ) -> Any:
         """Implement descriptor getter.
 
         Calculate the property's value and then store it in the
@@ -38,6 +41,6 @@ class cachedproperty:
         value = obj.__dict__[self.func.__name__] = self.func(obj)
         return value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return repr(self)."""
         return "<%s %s>" % (self.__class__.__name__, self.func)
