@@ -1,8 +1,8 @@
 """Provides the code to load PRAW's configuration file `praw.ini`."""
-from threading import Lock
 import configparser
 import os
 import sys
+from threading import Lock
 
 from .exceptions import ClientException
 
@@ -50,13 +50,13 @@ class Config:
         cls.CONFIG = config
 
     @property
-    def short_url(self):
+    def short_url(self) -> str:
         """Return the short url or raise a ClientException when not set."""
         if self._short_url is self.CONFIG_NOT_SET:
             raise ClientException("No short domain specified.")
         return self._short_url
 
-    def __init__(self, site_name, **settings):
+    def __init__(self, site_name: str, **settings: str):
         """Initialize a Config instance."""
         with Config.LOCK:
             if Config.CONFIG is None:

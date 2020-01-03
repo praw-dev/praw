@@ -1,4 +1,6 @@
 """Provide the Comment class."""
+from typing import Any, Dict, Optional, TypeVar, Union
+
 from ...const import API_PATH
 from ...exceptions import ClientException
 from ...util.cache import cachedproperty
@@ -11,6 +13,12 @@ from .mixins import (
     UserContentMixin,
 )
 from .redditor import Redditor
+
+_Comment = TypeVar("_Comment")
+_CommentModeration = TypeVar("_CommentModeration")
+Reddit = TypeVar("Reddit")
+Submission = TypeVar("Submission")
+Subreddit = TypeVar("Subreddit")
 
 
 class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
@@ -63,7 +71,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     STR_FIELD = "id"
 
     @staticmethod
-    def id_from_url(url):
+    def id_from_url(url: str) -> str:
         """Get the ID of a comment from the full URL."""
         parts = RedditBase._url_parts(url)
         try:
@@ -81,18 +89,18 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return self._reddit.config.kinds["comment"]
 
     @property
-    def is_root(self):
+    def is_root(self) -> bool:
         """Return True when the comment is a top level comment."""
         parent_type = self.parent_id.split("_", 1)[0]
         return parent_type == self._reddit.config.kinds["submission"]
 
     @cachedproperty
-    def mod(self):
+    def mod(self) -> _CommentModeration:
         """Provide an instance of :class:`.CommentModeration`."""
         return CommentModeration(self)
 
     @property
-    def replies(self):
+    def replies(self) -> CommentForest:
         """Provide an instance of :class:`.CommentForest`.
 
         This property may return an empty list if the comment
@@ -114,7 +122,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return self._replies
 
     @property
-    def submission(self):
+    def submission(self) -> Submission:
         """Return the Submission object this comment belongs to."""
         if not self._submission:  # Comment not from submission
             self._submission = self._reddit.submission(
@@ -123,7 +131,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return self._submission
 
     @submission.setter
-    def submission(self, submission):
+    def submission(self, submission: Submission):
         """Update the Submission associated with the Comment."""
         submission._comments_by_id[self.name] = self
         self._submission = submission
@@ -133,10 +141,10 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
     def __init__(
         self,
-        reddit,
-        id=None,  # pylint: disable=redefined-builtin
-        url=None,
-        _data=None,
+        reddit: Reddit,
+        id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        url: Optional[str] = None,
+        _data: Optional[Dict[str, Any]] = None,
     ):
         """Construct an instance of the Comment object."""
         if [id, url, _data].count(None) != 2:
@@ -153,7 +161,11 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         else:
             self._fetched = True
 
-    def __setattr__(self, attribute, value):
+    def __setattr__(
+        self,
+        attribute: str,
+        value: Union[str, Redditor, CommentForest, Subreddit],
+    ):
         """Objectify author, replies, and subreddit."""
         if attribute == "author":
             value = Redditor.from_data(self._reddit, value)
@@ -196,7 +208,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             return self.context.rsplit("/", 4)[1]
         return self.link_id.split("_", 1)[1]
 
-    def parent(self):
+    def parent(self) -> Union[_Comment, Submission]:
         """Return the parent of the comment.
 
         The returned parent will be an instance of either
@@ -326,7 +338,7 @@ class CommentModeration(ThingModerationMixin):
 
     REMOVAL_MESSAGE_API = "removal_comment_message"
 
-    def __init__(self, comment):
+    def __init__(self, comment: Comment):
         """Create a CommentModeration instance.
 
         :param comment: The comment to moderate.

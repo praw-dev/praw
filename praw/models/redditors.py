@@ -1,14 +1,20 @@
 """Provide the Redditors class."""
+from typing import Dict, Generator, TypeVar, Union
+
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .util import stream_generator
 from ..const import API_PATH
 
+Subreddit = TypeVar("Subreddit")
+
 
 class Redditors(PRAWBase):
     """Redditors is a Listing class that provides various Redditor lists."""
 
-    def new(self, **generator_kwargs):
+    def new(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Subreddit, None, None]:
         """Return a :class:`.ListingGenerator` for new Redditors.
 
         :returns Redditor profiles, which are a type of :class:`.Subreddit`.
@@ -20,7 +26,9 @@ class Redditors(PRAWBase):
             self._reddit, API_PATH["users_new"], **generator_kwargs
         )
 
-    def popular(self, **generator_kwargs):
+    def popular(
+        self, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Subreddit, None, None]:
         """Return a :class:`.ListingGenerator` for popular Redditors.
 
         :returns Redditor profiles, which are a type of :class:`.Subreddit`.
@@ -32,7 +40,9 @@ class Redditors(PRAWBase):
             self._reddit, API_PATH["users_popular"], **generator_kwargs
         )
 
-    def search(self, query, **generator_kwargs):
+    def search(
+        self, query: str, **generator_kwargs: Union[str, int, Dict[str, str]]
+    ) -> Generator[Subreddit, None, None]:
         r"""Return a :class:`.ListingGenerator` of Redditors for ``query``.
 
         :param query: The query string to filter Redditors by.
@@ -47,7 +57,9 @@ class Redditors(PRAWBase):
             self._reddit, API_PATH["users_search"], **generator_kwargs
         )
 
-    def stream(self, **stream_options):
+    def stream(
+        self, **stream_options: Union[str, int, Dict[str, str]]
+    ) -> Generator[Subreddit, None, None]:
         """Yield new Redditors as they are created.
 
         Redditors are yielded oldest first. Up to 100 historical Redditors

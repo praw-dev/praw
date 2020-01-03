@@ -123,3 +123,15 @@ class TestSubredditWiki(UnitTest):
         wikipage = subreddit.wiki["Foo"]
         assert isinstance(wikipage, WikiPage)
         assert "foo" == wikipage.name
+
+
+class TestSubredditModmailConversationsStream(UnitTest):
+    def test_conversation_stream_init(self):
+        submodstream = self.reddit.subreddit("mod").mod.stream
+        submodstream.modmail_conversations()
+        assert submodstream.subreddit == "all"
+
+    def test_conversation_stream_capilization(self):
+        submodstream = self.reddit.subreddit("Mod").mod.stream
+        submodstream.modmail_conversations()
+        assert submodstream.subreddit == "all"

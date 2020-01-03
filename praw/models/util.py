@@ -1,6 +1,7 @@
 """Provide helper classes used by other models."""
 import random
 import time
+from typing import Any, Callable, Generator, List, Optional, Set
 
 
 class BoundedSet:
@@ -9,17 +10,17 @@ class BoundedSet:
     This class does not implement the complete set interface.
     """
 
-    def __init__(self, max_items):
+    def __init__(self, max_items: int):
         """Construct an instance of the BoundedSet."""
         self.max_items = max_items
         self._fifo = []
         self._set = set()
 
-    def __contains__(self, item):
+    def __contains__(self, item: Any) -> bool:
         """Test if the BoundedSet contains item."""
         return item in self._set
 
-    def add(self, item):
+    def add(self, item: Any):
         """Add an item to the set discarding the oldest item if necessary."""
         if len(self._set) == self.max_items:
             self._set.remove(self._fifo.pop(0))
@@ -30,7 +31,7 @@ class BoundedSet:
 class ExponentialCounter:
     """A class to provide an exponential counter with jitter."""
 
-    def __init__(self, max_counter):
+    def __init__(self, max_counter: int):
         """Initialize an instance of ExponentialCounter.
 
         :param max_counter: The maximum base value. Note that the computed
@@ -39,7 +40,7 @@ class ExponentialCounter:
         self._base = 1
         self._max = max_counter
 
-    def counter(self):
+    def counter(self) -> int:
         """Increment the counter and return the current value with jitter."""
         max_jitter = self._base / 16.0
         value = self._base + random.random() * max_jitter - max_jitter / 2
@@ -51,7 +52,9 @@ class ExponentialCounter:
         self._base = 1
 
 
-def permissions_string(permissions, known_permissions):
+def permissions_string(
+    permissions: Optional[List[str]], known_permissions: Set[str]
+) -> str:
     """Return a comma separated string of permission changes.
 
     :param permissions: A list of strings, or ``None``. These strings can
@@ -77,12 +80,13 @@ def permissions_string(permissions, known_permissions):
 
 
 def stream_generator(
-    function,
-    pause_after=None,
-    skip_existing=False,
-    attribute_name="fullname",
-    **function_kwargs
-):
+    function: Callable[[Any], Any],
+    pause_after: Optional[int] = None,
+    skip_existing: bool = False,
+    attribute_name: str = "fullname",
+    exclude_before: bool = False,
+    **function_kwargs: Any
+) -> Generator[Any, None, None]:
     """Yield new items from ListingGenerators and ``None`` when paused.
 
     :param function: A callable that returns a ListingGenerator, e.g.
@@ -101,6 +105,9 @@ def stream_generator(
         starting the stream (default: False).
 
     :param attribute_name: The field to use as an id (default: "fullname").
+
+    :param exclude_before: When True does not pass ``params`` to ``functions``
+         (default: False).
 
     Additional keyword arguments will be passed to ``function``.
 
@@ -174,15 +181,9 @@ def stream_generator(
         if before_attribute is None:
             limit -= without_before_counter
             without_before_counter = (without_before_counter + 1) % 30
-        for item in reversed(
-            list(
-                function(
-                    limit=limit,
-                    params={"before": before_attribute},
-                    **function_kwargs
-                )
-            )
-        ):
+        if not exclude_before:
+            function_kwargs["params"] = {"before": before_attribute}
+        for item in reversed(list(function(limit=limit, **function_kwargs))):
             attribute = getattr(item, attribute_name)
             if attribute in seen_attributes:
                 continue

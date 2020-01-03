@@ -14,7 +14,7 @@ Before you can use any one of these with PRAW, you must first `register
 <https://www.reddit.com/prefs/apps/>`_ an application of the appropriate type
 on Reddit.
 
-If your app does not require a user context, it is :ref:`read only <read_only_application>`.
+If your app does not require a user context, it is :ref:`read-only <read_only_application>`.
 
 PRAW supports the flows that each of these applications can use. The
 following table defines which tables can use which flows:
@@ -41,18 +41,18 @@ Password Flow
 **Password Flow** is the simplest type of authentication flow to work with
 because no callback process is involved in obtaining an ``access_token``.
 
-While **password flow** applications do not involve a redirect uri, Reddit
+While **password flow** applications do not involve a redirect URI, Reddit
 still requires that you provide one when registering your script application --
 ``http://localhost:8080`` is a simple one to use.
 
 In order to use a **password flow** application with PRAW you need four pieces
 of information:
 
-:client_id: The client ID is the 14 character string listed just under
+:client_id: The client ID is the 14-character string listed just under
             "personal use script" for the desired `developed application
             <https://www.reddit.com/prefs/apps/>`_
 
-:client_secret: The client secret is the 27 character string listed adjacent to
+:client_secret: The client secret is the 27-character string listed adjacent to
                 ``secret`` for the application.
 
 :password: The password for the Reddit account used to register the application.
@@ -78,7 +78,7 @@ To verify that you are authenticated as the correct user run:
 
 The output should contain the same name as you entered for ``username``.
 
-.. note:: If the following exception is raised, double check your credentials,
+.. note:: If the following exception is raised, double-check your credentials,
           and ensure that that the username and password you are using are for
           the same user with which the application is associated:
 
@@ -123,13 +123,13 @@ A **code flow** application is useful for two primary purposes:
   * avoid the hassle of 2FA (described above)
   * not pass your username and password to PRAW (and thus not keep it in memory)
 
-When registering your application you must provide a valid redirect uri. If you
+When registering your application you must provide a valid redirect URI. If you
 are running a website you will want to enter the appropriate callback URL and
 configure that endpoint to complete the code flow.
 
 If you aren't actually running a website, you can use the :ref:`refresh_token`
 script to obtain ``refresh_tokens``. Enter ``http://localhost:8080`` as the
-redirect uri when using this script.
+redirect URI when using this script.
 
 Whether or not you use the script there are two processes involved in obtaining
 access or refresh tokens.
@@ -194,54 +194,54 @@ instance.
 
 .. _read_only_application:
 
-Read Only Mode
+Read-Only Mode
 --------------
 
-All application types support a read only mode. Read only mode provides access
+All application types support a read-only mode. Read-only mode provides access
 to Reddit like a logged out user would see including the default Subreddits in
 the ``reddit.front`` listings.
 
 In the absence of a ``refresh_token`` both :ref:`code_flow` and
-:ref:`implicit_flow` applications start in the **read only** mode. With such
-applications **read only** mode is disabled when :meth:`.authorize`, or
+:ref:`implicit_flow` applications start in the **read-only** mode. With such
+applications **read-only** mode is disabled when :meth:`.authorize`, or
 :meth:`.implicit` are successfully called. :ref:`password_flow` applications
-start up with **read only** mode disabled.
+start up with **read-only** mode disabled.
 
-Read only mode can be toggled via:
+Read-only mode can be toggled via:
 
 .. code-block:: python
 
-   # Enable read only mode
+   # Enable read-only mode
    reddit.read_only = True
 
-   # Disable read only mode (must have a valid authorization)
+   # Disable read-only mode (must have a valid authorization)
    reddit.read_only = False
 
 
-Aplication Only Flows
-~~~~~~~~~~~~~~~~~~~~~
+Application-Only Flows
+~~~~~~~~~~~~~~~~~~~~~~
 
-The following flows are the **read only mode** flows for Reddit applications
+The following flows are the **read-only mode** flows for Reddit applications
 
 .. _application_only_client_credentials_flow:
 
-Application Only (Client Credentials)
+Application-Only (Client Credentials)
 +++++++++++++++++++++++++++++++++++++
 
-This is the default flow for **read only mode** in script and web applications.
+This is the default flow for **read-only mode** in script and web applications.
 The idea behind this is that Reddit *can* trust these applications as coming from
 a given developer, however the application requires no logged-in user context.
 
-An installed application *cannot* use this flow, because it Reddit requires a
+An installed application *cannot* use this flow, because Reddit requires a
 ``client_secret`` to be given it this flow is being used. In other words,
 installed applications are not considered confidential clients.
 
 .. _application_only_installed_client_flow:
 
-Application Only (Installed Client)
+Application-Only (Installed Client)
 +++++++++++++++++++++++++++++++++++
 
-This is the default flow for **read only mode** in installed applications.
+This is the default flow for **read-only mode** in installed applications.
 The idea behind this is that Reddit *might not be able* to trust these
 applications as coming from a given developer. This would be able to happen if
 someone other than the developer can potentially replicate the client information
@@ -268,7 +268,7 @@ of :class:`.Reddit` like so:
    reddit = praw.Reddit(client_id='SI8pN3DSbt0zor',
                         client_secret='xaxkj7HNh8kwg8e5t4m6KvSrbTI',
                         refresh_token='WeheY7PwgeCZj4S3QgUcLhKE5S2s4eAYdxM',
-                        user_agent='testscript by /u/fakebot3')
+                        user_agent='testscript by u/fakebot3')
    print(reddit.auth.scopes())
 
 The output from the above code displays which scopes are available on the

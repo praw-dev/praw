@@ -68,9 +68,12 @@ in the cassettes. The environment variables are (listed in bash export format):
    export prawtest_user_agent=praw_pytest
 
 By setting these environment variables prior to running ``python setup.py
-test``, when adding or updating cassettes, instances of ``mypassword`` we be
+test``, when adding or updating cassettes, instances of ``mypassword`` will be
 replaced by the placeholder text ``<PASSWORD>`` and similar for the other
 environment variables.
+
+To use tokens instead of username/password set ``prawtest_refresh_token``
+instead of ``prawtest_password`` and ``prawtest_username``.
 
 When adding or updating a cassette, you will likely want to force requests to
 occur again rather than using an existing cassette. The simplest way to rebuild

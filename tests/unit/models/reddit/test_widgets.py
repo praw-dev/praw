@@ -1,4 +1,5 @@
 from json import dumps
+from pytest import raises
 
 from praw.models import (
     SubredditWidgets,
@@ -21,12 +22,8 @@ class TestWidgetEncoder(UnitTest):
                 self.reddit.subreddit("subreddit"), self.reddit
             ),
         ]
-        try:
+        with raises(TypeError):
             dumps(data, cls=WidgetEncoder)  # should throw TypeError
-        except TypeError:
-            pass  # success
-        else:
-            assert False
 
     def test_good_encode(self):
         data = [

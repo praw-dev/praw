@@ -24,6 +24,27 @@ Unreleased
 * Parameters ``mod_note`` and ``reason_id`` to
   :meth:`.ThingModerationMixin.remove` to optionally apply a removal reason on
   removal
+* Add :class:`.SubredditModerationStream` to enable moderation streams
+* Attribute ``stream`` to :class:`.SubredditModeration` to interact with new
+  moderation streams
+* Add :meth:`.SubredditModerationStream.edited` to allow streaming
+  of :meth:`.SubredditModeration.edited`
+* Add :meth:`.SubredditModerationStream.log` to allow streaming
+  of :meth:`.SubredditModeration.log`
+* Add :meth:`.SubredditModerationStream.modmail_conversations` to allow
+  streaming of :meth:`.Modmail.conversations`
+* Add :meth:`.SubredditModerationStream.modqueue` to allow streaming
+  of :meth:`.SubredditModeration.modqueue`
+* Add :meth:`.SubredditModerationStream.reports` to allow streaming
+  of :meth:`.SubredditModeration.reports`
+* Add :meth:`.SubredditModerationStream.spam` to allow streaming
+  of :meth:`.SubredditModeration.spam`
+* Add :meth:`.SubredditModerationStream.unmoderated` to allow streaming
+  of :meth:`.SubredditModeration.unmoderated`
+* Add :meth:`.SubredditModerationStream.unread` to allow streaming
+  of :meth:`.SubredditModeration.unread`
+* Parameter ``exclude_before`` to :func:`.stream_generator` to allow
+  :meth:`.SubredditModerationStream.modmail_conversations` to work
 * Parameters ``allowable_content`` and ``max_emojis`` to
   :meth:`~.SubredditRedditorFlairTemplates.add`,
   :meth:`~.SubredditLinkFlairTemplates.add`, and
@@ -35,6 +56,11 @@ Unreleased
   functionality.
 * The file for ModActions (praw/models/modaction.py) has been moved to
   praw/models/mod_action.py and the previous has been Deprecated.
+
+**Expected Changes**
+
+* The behavior of :class:`.APIException` will no longer unicode-escape strings
+  in the next minor release
 
 6.4.0 (2019/09/21)
 ------------------
