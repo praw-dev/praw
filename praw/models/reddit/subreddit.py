@@ -18,7 +18,6 @@ from ...exceptions import (
     WebSocketException,
 )
 from ...util.cache import cachedproperty
-from ..flair_helper import FlairHelper
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
 from ..util import permissions_string, stream_generator
@@ -1252,7 +1251,6 @@ class SubredditFlair:
 
         """
         self.subreddit = subreddit
-        self.maker = FlairHelper(self.subreddit)
 
     def configure(
         self,
@@ -1309,6 +1307,145 @@ class SubredditFlair:
 
         """
         return self.update(x["user"] for x in self())
+
+    def make_link_flair(
+        self,
+        text: str,
+        css_class: str = "",
+        text_editable: bool = False,
+        background_color: str = "transparent",
+        text_color: str = "dark",
+        mod_only: bool = False,
+        allowable_content: str = "all",
+        max_emojis: str = 10,
+        create_before_usage: bool = False,
+    ) -> AdvancedSubmissionFlair:
+        r"""Make an instance of :class:`.AdvancedSubmissionFlair`.
+
+        This is a lazy instance, and it is only meant to be used with
+        :meth:`.SubredditLinkFlairTemplates.add`.
+
+        :param text: The flair template's text (required).
+        :param css_class: The flair template's css_class (default: '').
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
+        :param text_editable: (boolean) Indicate if the flair text can be
+            modified for each Redditor that sets it (default: False).
+        :param background_color: The flair template's new background color,
+            as a hex color.
+        :param text_color: The flair template's new text color, either
+            ``'light'`` or ``'dark'``.
+        :param mod_only: (boolean) Indicate if the flair can only be used by
+            moderators.
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``.
+        :param max_emojis: (int) Maximum emojis in the flair
+            (Reddit defaults this value to 10).
+        :param create_before_usage: If the flair does not exist and is being
+            used to flair a submission or redditor, it will automatically
+            create the flair and obtain the flair ID before flairing the
+            submission or redditor (Mod only)(Default: False).
+
+        Example usage to make a ``Mod post`` flair:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("NAME")
+            flair = subreddit.flair.make_link_flair("Mod post",
+                                                    css_class="Mod post",
+                                                    background_color=0x00FF00.
+                                                    mod_only=True)
+            subreddit.flair.link_templates.add(flair=flair)
+
+        """
+        return AdvancedSubmissionFlair.make_new_flair(
+            self.subreddit._reddit,
+            self.subreddit,
+            text=text,
+            css_class=css_class,
+            text_editable=text_editable,
+            background_color=background_color,
+            text_color=text_color,
+            mod_only=mod_only,
+            allowable_content=allowable_content,
+            max_emojis=max_emojis,
+            create_before_usage=create_before_usage,
+        )
+
+    def make_user_flair(
+        self,
+        text: str,
+        css_class: str = "",
+        text_editable: bool = False,
+        background_color: str = "transparent",
+        text_color: str = "dark",
+        mod_only: bool = False,
+        allowable_content: str = "all",
+        max_emojis: str = 10,
+        create_before_usage: bool = False,
+    ) -> RedditorFlair:
+        r"""Make an instance of :class:`.RedditorFlair`.
+
+        This is a lazy instance, and it is only meant to be used with
+        :meth:`.SubredditRedditorFlairTemplates.add`.
+
+        :param text: The flair template's text (required).
+        :param css_class: The flair template's css_class (default: '').
+
+        .. warning:: Reddit will not accept a css_class containing any
+            characters in the character set
+            ``!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~``.
+
+
+        :param text_editable: (boolean) Indicate if the flair text can be
+            modified for each Redditor that sets it (default: False).
+        :param background_color: The flair template's new background color,
+            as a hex color.
+        :param text_color: The flair template's new text color, either
+            ``'light'`` or ``'dark'``.
+        :param mod_only: (boolean) Indicate if the flair can only be used by
+            moderators.
+        :param allowable_content: If specified, most be one of ``'all'``,
+            ``'emoji'``, or ``'text'`` to restrict content to that type.
+            If set to ``'emoji'`` then the ``'text'`` param must be a
+            valid emoji string, for example ``':snoo:'``.
+        :param max_emojis: (int) Maximum emojis in the flair
+            (Reddit defaults this value to 10).
+        :param create_before_usage: If the flair does not exist and is being
+            used to flair a submission or redditor, it will automatically
+            create the flair and obtain the flair ID before flairing the
+            submission or redditor (Mod only)(Default: False).
+
+        Example to make a ``Mod`` flair:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("NAME")
+            flair = subreddit.flair.make_user_flair("Mod",
+                                                    css_class="Mod",
+                                                    background_color=0x00FF00.
+                                                    mod_only=True)
+            subreddit.flair.templates.add(flair=flair)
+
+        """
+        return RedditorFlair.make_new_flair(
+            self.subreddit._reddit,
+            self.subreddit,
+            text,
+            css_class=css_class,
+            text_editable=text_editable,
+            background_color=background_color,
+            text_color=text_color,
+            mod_only=mod_only,
+            allowable_content=allowable_content,
+            max_emojis=max_emojis,
+            create_before_usage=create_before_usage,
+        )
 
     def set(
         self,
@@ -1617,7 +1754,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         for template in self.subreddit._reddit.get(url, params=params):
             if self.subreddit.use_flair_class:
                 yield RedditorFlair(
-                    self.subreddit._reddit, self.subreddit, template
+                    self.subreddit._reddit, self.subreddit, _data=template
                 )
             else:
                 yield template
@@ -1697,7 +1834,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
                 max_emojis=max_emojis,
             )
         if return_flair_obj:
-            return RedditorFlair(self.subreddit._reddit, self.subreddit, data)
+            return RedditorFlair(self.subreddit._reddit, self.subreddit, _data=data)
         else:
             return data
 
@@ -1732,7 +1869,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         for template in self.subreddit._reddit.get(url):
             if self.subreddit.use_flair_class:
                 yield AdvancedSubmissionFlair(
-                    self.subreddit._reddit, self.subreddit, template
+                    self.subreddit._reddit, self.subreddit, _data=template
                 )
             else:
                 yield template
@@ -1813,7 +1950,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
             )
         if return_flair_obj:
             return AdvancedSubmissionFlair(
-                self.subreddit._reddit, self.subreddit, data
+                self.subreddit._reddit, self.subreddit, _data=data
             )
         else:
             return data

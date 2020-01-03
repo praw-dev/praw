@@ -17,6 +17,41 @@ class RichFlairBase(RedditBase):
     Flairs of this type are obtained by either
     :class:`.SubredditLinkFlairTemplates`
     or :class:`.SubredditRedditorFlairTemplates`.
+
+    Subclasses:
+
+        * :class:`.AdvancedSubmissionFlair`
+        * :class:`.RedditorFlair`
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    necessarily comprehensive.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``allowable_content``   The type of content allowed in the flair (
+                            acceptable values are ``all``, ``emoji`` or
+                            ``text``).
+    ``background_color``    The background color of the flair. Values can be a
+                            color name (``dark`` or a 6-digit RGB code
+                            ``#ffffff``.)
+    ``css_class``           The css class of the flair.
+    ``id``                  The flair template id.
+    ``max_emojis``          The amount of :class:`.Emoji` that can go in the
+                            flair.
+    ``mod_only``            Whether or not the flair is mod only or not.
+    ``richtext``            A list containing data about any richtext elements,
+                            including any emojis, present in the flair.
+    ``text``                The text of the flair.
+    ``text_color``          The color of the text
+    ``text_editable``       Whether or not the flair text can be edited.
+    ``type``                The type of the flair (``text`` or ``richtext``.)
+    ======================= ===================================================
     """
 
     STR_FIELD = "text"
@@ -39,7 +74,7 @@ class RichFlairBase(RedditBase):
         r"""Make a new flair instance. Useful for adding new flair templates.
 
         .. note:: This method should only be called from an instance of
-           :class:`.FlairHelper`.
+           :class:`.SubredditFlair`.
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param subreddit: An instance of :class:`~.Subreddit`.
@@ -72,7 +107,7 @@ class RichFlairBase(RedditBase):
         return cls(
             reddit,
             subreddit,
-            dict(
+            _data=dict(
                 text=text,
                 css_class=css_class,
                 text_editable=text_editable,
@@ -106,10 +141,23 @@ class RichFlairBase(RedditBase):
         )
 
     def __init__(
-        self, reddit: Reddit, subreddit: Subreddit, _data: Dict[str, Any]
+        self,
+        reddit: Reddit,
+        subreddit: Subreddit,
+        id: Optional[str] = None,
+        _data: Optional[Dict[str, Any]] = None,
     ):
-        """Initialize the class."""
+        """Initialize the class.
+
+        :param reddit: An instance of :class:`~.Reddit`.
+        :param subreddit: An instance of :class:`~.Subreddit`.
+        :param id: The template id of the flair.
+        """
+        if [id, _data].count(None) != 1:
+            raise TypeError("Either ``id`` or ``_data`` needs to be provided.")
         super().__init__(reddit, _data=_data)
+        if id is not None:
+            self.id = id
         self.subreddit = subreddit
         if not self.subreddit.use_flair_class:
             self.subreddit.use_flair_class = True
@@ -231,7 +279,7 @@ class AdvancedSubmissionFlair(RichFlairBase):
         r"""Make a new flair instance. Useful for adding new flair templates.
 
         .. note:: This method should only be called from
-           :meth:`.FlairHelper.make_link_flair`.
+           :meth:`.SubredditFlair.make_link_flair`.
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param subreddit: An instance of :class:`~.Subreddit`.
@@ -260,6 +308,18 @@ class AdvancedSubmissionFlair(RichFlairBase):
             used to flair a submission or redditor, it will automatically
             create the flair and obtain the flair ID before flairing the
             submission or redditor (Mod only)(Default: False).
+
+        Example usage to make a ``Mod post`` flair:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("NAME")
+            flair = subreddit.flair.make_link_flair("Mod post",
+                                                    css_class="Mod post",
+                                                    background_color=0x00FF00.
+                                                    mod_only=True)
+            subreddit.flair.link_templates.add(flair=flair)
+
         """
         return super().make_new_flair(
             reddit,
@@ -274,6 +334,24 @@ class AdvancedSubmissionFlair(RichFlairBase):
             max_emojis,
             create_before_usage,
         )
+
+    def __init__(
+        self,
+        reddit: Reddit,
+        subreddit: Subreddit,
+        id: Optional[str] = None,
+        _data: Optional[Dict[str, Any]] = None,
+    ):
+        """Instantize the class.
+
+        .. warning:: This class should not be directly created. Instead,
+            obtain an instance through :class:`.SubredditFlair`.
+
+        :param reddit: An instance of :class:`~.Reddit`.
+        :param subreddit: An instance of :class:`~.Subreddit`.
+        :param id: The template id of the flair.
+        """
+        super().__init__(reddit, subreddit, id, _data)
 
     def change_info(self, **new_values: Union[str, int, bool]):
         r"""Update the values of the flair instance.
@@ -447,11 +525,11 @@ class RedditorFlair(RichFlairBase):
         allowable_content: str = "all",
         max_emojis: str = 10,
         create_before_usage: bool = False,
-    ) -> _AdvancedSubmissionFlair:
+    ) -> _RedditorFlair:
         r"""Make a new flair instance. Useful for adding new flair templates.
 
         .. note:: This method should only be called from
-           :meth:`.FlairHelper.make_link_flair`.
+           :meth:`.SubredditFlair.make_link_flair`.
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param subreddit: An instance of :class:`~.Subreddit`.
@@ -480,6 +558,18 @@ class RedditorFlair(RichFlairBase):
             used to flair a submission or redditor, it will automatically
             create the flair and obtain the flair ID before flairing the
             submission or redditor (Mod only)(Default: False).
+
+        Example to make a ``Mod`` flair:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("NAME")
+            flair = subreddit.flair.make_user_flair("Mod",
+                                                    css_class="Mod",
+                                                    background_color=0x00FF00.
+                                                    mod_only=True)
+            subreddit.flair.templates.add(flair=flair)
+
         """
         return super().make_new_flair(
             reddit,
@@ -494,6 +584,24 @@ class RedditorFlair(RichFlairBase):
             max_emojis,
             create_before_usage,
         )
+
+    def __init__(
+        self,
+        reddit: Reddit,
+        subreddit: Subreddit,
+        id: Optional[str] = None,
+        _data: Optional[Dict[str, Any]] = None,
+    ):
+        """Instantize the class.
+
+        .. warning:: This class should not be directly created, but instead
+            obtained through :class:`~.SubredditFlair`.
+
+        :param reddit: An instance of :class:`~.Reddit`.
+        :param subreddit: An instance of :class:`~.Subreddit`.
+        :param id: The template id of the flair.
+        """
+        super().__init__(reddit, subreddit, id, _data)
 
     def change_info(self, **new_values: Union[str, int, bool]):
         r"""Update the values of the flair instance.

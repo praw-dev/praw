@@ -90,7 +90,7 @@ class TestFlairMod(UnitTest):
             "dummy", use_flair_class=True
         )
         example_flair = AdvancedSubmissionFlair(
-            self.reddit, example_subreddit, example
+            self.reddit, example_subreddit, _data=example
         )
         assert example_flair.type == "text"
         assert not example_flair.text_editable
@@ -124,7 +124,7 @@ class TestFlairMod(UnitTest):
             "dummy", use_flair_class=True
         )
         example_flair = AdvancedSubmissionFlair(
-            self.reddit, example_subreddit, example
+            self.reddit, example_subreddit, _data=example
         )
         assert example_flair.text == "Test"
         example_flair.change_info(text="Testing")
@@ -151,13 +151,13 @@ class TestFlairMod(UnitTest):
             "dummy", use_flair_class=True
         )
         example_flair = AdvancedSubmissionFlair(
-            self.reddit, example_subreddit, example
+            self.reddit, example_subreddit, _data=example
         )
         example_flair_2 = AdvancedSubmissionFlair(
-            self.reddit, example_subreddit, example
+            self.reddit, example_subreddit, _data=example
         )
         example_flair_3 = AdvancedSubmissionFlair(
-            self.reddit, example_subreddit, example
+            self.reddit, example_subreddit, _data=example
         )
         assert example_flair == example_flair_2 == example_flair_3
         assert (
@@ -199,7 +199,7 @@ class TestFlairMod(UnitTest):
             "dummy", use_flair_class=True
         )
         example_flair = AdvancedSubmissionFlair(
-            self.reddit, example_subreddit, example
+            self.reddit, example_subreddit, _data=example
         )
         assert example_flair == "Test"
 
@@ -208,7 +208,7 @@ class TestFlairMod(UnitTest):
             "dummy", use_flair_class=False
         )
         example_flair = AdvancedSubmissionFlair(
-            self.reddit, example_subreddit, {"text": "dummy"}
+            self.reddit, example_subreddit, _data={"text": "dummy"}
         )
         assert example_flair.subreddit.use_flair_class
 
@@ -230,7 +230,7 @@ class TestFlairMod(UnitTest):
             "dummy", use_flair_class=True
         )
         example_flair = AdvancedSubmissionFlair(
-            self.reddit, example_subreddit, data
+            self.reddit, example_subreddit, _data=data
         )
         example_flair._fetch()
         assert example_flair._fetched
@@ -255,7 +255,9 @@ class TestRedditorFlair(UnitTest):
         example_subreddit = self.reddit.subreddit(
             "dummy", use_flair_class=True
         )
-        example_flair = RedditorFlair(self.reddit, example_subreddit, example)
+        example_flair = RedditorFlair(
+            self.reddit, example_subreddit, _data=example
+        )
         assert example_flair.type == "text"
         assert example_flair.text_editable
         assert example_flair.allowable_content == "all"
@@ -289,7 +291,9 @@ class TestRedditorFlair(UnitTest):
         example_subreddit = self.reddit.subreddit(
             "dummy", use_flair_class=True
         )
-        example_flair = RedditorFlair(self.reddit, example_subreddit, example)
+        example_flair = RedditorFlair(
+            self.reddit, example_subreddit, _data=example
+        )
         assert example_flair.text == "Test"
         example_flair.change_info(text="Testing")
         assert example_flair.text == "Testing"
@@ -315,12 +319,14 @@ class TestRedditorFlair(UnitTest):
         example_subreddit = self.reddit.subreddit(
             "dummy", use_flair_class=True
         )
-        example_flair = RedditorFlair(self.reddit, example_subreddit, example)
+        example_flair = RedditorFlair(
+            self.reddit, example_subreddit, _data=example
+        )
         example_flair_2 = RedditorFlair(
-            self.reddit, example_subreddit, example
+            self.reddit, example_subreddit, _data=example
         )
         example_flair_3 = RedditorFlair(
-            self.reddit, example_subreddit, example
+            self.reddit, example_subreddit, _data=example
         )
         assert example_flair == example_flair_2 == example_flair_3
         assert (
@@ -362,7 +368,9 @@ class TestRedditorFlair(UnitTest):
         example_subreddit = self.reddit.subreddit(
             "dummy", use_flair_class=True
         )
-        example_flair = RedditorFlair(self.reddit, example_subreddit, example)
+        example_flair = RedditorFlair(
+            self.reddit, example_subreddit, _data=example
+        )
         assert example_flair == "Test"
 
     def test_subreddit_override(self):
@@ -370,7 +378,7 @@ class TestRedditorFlair(UnitTest):
             "dummy", use_flair_class=False
         )
         example_flair = RedditorFlair(
-            self.reddit, example_subreddit, {"text": "dummy"}
+            self.reddit, example_subreddit, _data={"text": "dummy"}
         )
         assert example_flair.subreddit.use_flair_class
 
@@ -391,6 +399,6 @@ class TestRedditorFlair(UnitTest):
         example_subreddit = self.reddit.subreddit(
             "dummy", use_flair_class=True
         )
-        example_flair = RedditorFlair(self.reddit, example_subreddit, data)
+        example_flair = RedditorFlair(self.reddit, example_subreddit, _data=data)
         example_flair._fetch()
         assert example_flair._fetched

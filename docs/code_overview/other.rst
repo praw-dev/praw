@@ -23,7 +23,6 @@ instances of them bound to an attribute of one of the PRAW models.
    other/subredditflairtemplates
    other/subredditlinkflairtemplates
    other/subredditredditorflairtemplates
-   other/flairhelper
 
 .. toctree::
    :maxdepth: 2

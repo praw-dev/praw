@@ -765,7 +765,7 @@ class TestSubreddit(IntegrationTest):
         url = "https://www.google.com"
         test_type = "TestSubPostLink"
         with self.recorder.use_cassette("TestSubreddit.submit_url_flair_obj"):
-            flair = subreddit.flair.maker.make_link_flair(
+            flair = subreddit.flair.make_link_flair(
                 test_type, css_class=test_type, create_before_usage=True
             )
             submission = subreddit.submit("Running_test", url=url, flair=flair)
@@ -782,7 +782,7 @@ class TestSubreddit(IntegrationTest):
         text = "Testing, 1, 2, 3"
         test_type = "TestSubPostText"
         with self.recorder.use_cassette("TestSubreddit.submit_text_flair_obj"):
-            flair = subreddit.flair.maker.make_link_flair(
+            flair = subreddit.flair.make_link_flair(
                 test_type, css_class=test_type, create_before_usage=True
             )
             submission = subreddit.submit(
@@ -1043,7 +1043,7 @@ class TestSubredditFlair(IntegrationTest):
             "TestSubredditFlair.make_and_delete_and_update_link_flair"
         ):
             ex_hash = 288266951
-            maker = subreddit.flair.maker
+            maker = subreddit.flair
             newflair = maker.make_link_flair(
                 "test{hash}".format(hash=ex_hash),
             )
@@ -1056,7 +1056,7 @@ class TestSubredditFlair(IntegrationTest):
             newflair.change_info(css_class="test{hash}".format(hash=ex_hash))
             print(subreddit.flair.link_templates.update(flair=newflair))
             newflair2 = AdvancedSubmissionFlair(
-                self.reddit, subreddit, {"id": newflair.id}
+                self.reddit, subreddit, _data={"id": newflair.id}
             )
             newflair2._fetch()
             print(newflair.__dict__)
@@ -1064,7 +1064,7 @@ class TestSubredditFlair(IntegrationTest):
             assert newflair == newflair2
             subreddit.flair.link_templates.delete(flair=newflair)
             newflair3 = AdvancedSubmissionFlair(
-                self.reddit, subreddit, {"id": newflair.id}
+                self.reddit, subreddit, _data={"id": newflair.id}
             )
             dict_length = len(newflair3.__dict__)
             newflair3._fetch()
@@ -1082,7 +1082,7 @@ class TestSubredditFlair(IntegrationTest):
             "TestSubredditFlair.make_and_delete_and_update_user_flair"
         ):
             ex_hash = 288266951
-            maker = subreddit.flair.maker
+            maker = subreddit.flair
             newflair = maker.make_user_flair(
                 "test{hash}".format(hash=ex_hash),
             )
@@ -1095,13 +1095,13 @@ class TestSubredditFlair(IntegrationTest):
             newflair.change_info(css_class="test{hash}".format(hash=ex_hash))
             subreddit.flair.templates.update(flair=newflair)
             newflair2 = RedditorFlair(
-                self.reddit, subreddit, {"id": newflair.id}
+                self.reddit, subreddit, _data={"id": newflair.id}
             )
             newflair2._fetch()
             assert newflair == newflair2
             subreddit.flair.templates.delete(flair=newflair)
             newflair3 = RedditorFlair(
-                self.reddit, subreddit, {"id": newflair.id}
+                self.reddit, subreddit, _data={"id": newflair.id}
             )
             dict_length = len(newflair3.__dict__)
             newflair3._fetch()
