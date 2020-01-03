@@ -111,12 +111,6 @@ class Subreddit(
     STR_FIELD = "display_name"
     MESSAGE_PREFIX = "#"
 
-    class _dummy_flair:
-        """A dummy flair. This provides default attributes id and text."""
-
-        id = None
-        text = None
-
     @staticmethod
     def _create_or_update(
         _reddit,
@@ -802,15 +796,14 @@ class Subreddit(
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
         }
-        if flair is not None:
-            if flair_id is not None:
-                raise TypeError("Either flair or flair_id should be provided")
-        flair = flair or self._dummy_flair()
-        flair_id = flair_id or flair.id
-        flair_text = flair_text or flair.text
+        if flair_id is not None and flair is not None:
+            raise TypeError(
+                "Either ``flair`` or ``flair_id`` can be provided."
+            )
+
         for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
+            ("flair_id", flair_id if flair is None else flair.id),
+            ("flair_text", flair_text if flair is None else flair.text),
             ("collection_id", collection_id),
         ):
             if value is not None:
@@ -901,15 +894,14 @@ class Subreddit(
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
         }
-        if flair is not None:
-            if flair_id is not None:
-                raise TypeError("Either flair or flair_id should be provided")
-        flair = flair or self._dummy_flair()
-        flair_id = flair_id or flair.id
-        flair_text = flair_text or flair.text
+        if flair_id is not None and flair is not None:
+            raise TypeError(
+                "Either ``flair`` or ``flair_id`` can be provided."
+            )
+
         for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
+            ("flair_id", flair_id if flair is None else flair.id),
+            ("flair_text", flair_text if flair is None else flair.text),
             ("collection_id", collection_id),
         ):
             if value is not None:
@@ -1012,15 +1004,14 @@ class Subreddit(
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
         }
-        if flair is not None:
-            if flair_id is not None:
-                raise TypeError("Either flair or flair_id should be provided")
-        flair = flair or self._dummy_flair()
-        flair_id = flair_id or flair.id
-        flair_text = flair_text or flair.text
+        if flair_id is not None and flair is not None:
+            raise TypeError(
+                "Either ``flair`` or ``flair_id`` can be provided."
+            )
+
         for key, value in (
-            ("flair_id", flair_id),
-            ("flair_text", flair_text),
+            ("flair_id", flair_id if flair is None else flair.id),
+            ("flair_text", flair_text if flair is None else flair.text),
             ("collection_id", collection_id),
         ):
             if value is not None:
