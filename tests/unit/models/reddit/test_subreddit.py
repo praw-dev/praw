@@ -116,21 +116,21 @@ class TestSubreddit(UnitTest):
                 "test",
                 selftext="sdf",
                 flair_id="test",
-                flair=subreddit.flair.link_templates.make_link_flair("dummy"),
+                flair=subreddit.flair.link_templates.make("dummy"),
             )
         with pytest.raises(TypeError):
             subreddit.submit_image(
                 "test",
                 "test",
                 flair_id="test",
-                flair=subreddit.flair.link_templates.make_link_flair("dummy"),
+                flair=subreddit.flair.link_templates.make("dummy"),
             )
         with pytest.raises(TypeError):
             subreddit.submit_video(
                 "test",
                 "test",
                 flair_id="test",
-                flair=subreddit.flair.link_templates.make_link_flair("dummy"),
+                flair=subreddit.flair.link_templates.make("dummy"),
             )
 
 
@@ -144,9 +144,9 @@ class TestSubredditFlair(UnitTest):
 
     def test_flair_gen(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-        lf = subreddit.flair.link_templates.make_link_flair("Test")
+        lf = subreddit.flair.link_templates.make("Test")
         assert isinstance(lf, AdvancedSubmissionFlair)
-        uf = subreddit.flair.templates.make_user_flair("Test")
+        uf = subreddit.flair.templates.make("Test")
         assert isinstance(uf, RedditorFlair)
 
     def test_delete_error(self):
@@ -154,8 +154,32 @@ class TestSubredditFlair(UnitTest):
         with pytest.raises(TypeError):
             subreddit.flair.templates.delete(
                 template_id="sf",
-                flair=subreddit.flair.templates.make_user_flair("Dummy"),
+                flair=subreddit.flair.templates.make("Dummy"),
             )
+
+
+class TestSubredditLinkFlairTemplates(UnitTest):
+    def test_get(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        flair = subreddit.flair.link_templates.get("dummy")
+        assert isinstance(flair, AdvancedSubmissionFlair)
+
+    def test_make(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        flair = subreddit.flair.link_templates.make("dummy")
+        assert isinstance(flair, AdvancedSubmissionFlair)
+
+
+class TestSubredditRedditorFlairTemplates(UnitTest):
+    def test_get(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        flair = subreddit.flair.templates.get("dummy")
+        assert isinstance(flair, RedditorFlair)
+
+    def test_make(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        flair = subreddit.flair.templates.make("dummy")
+        assert isinstance(flair, RedditorFlair)
 
 
 class TestSubredditFlairTemplates(UnitTest):

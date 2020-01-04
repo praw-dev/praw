@@ -765,7 +765,7 @@ class TestSubreddit(IntegrationTest):
         url = "https://www.google.com"
         test_type = "TestSubPostLink"
         with self.recorder.use_cassette("TestSubreddit.submit_url_flair_obj"):
-            flair = subreddit.flair.link_templates.make_link_flair(
+            flair = subreddit.flair.link_templates.make(
                 test_type, css_class=test_type, create_before_usage=True
             )
             submission = subreddit.submit("Running_test", url=url, flair=flair)
@@ -782,7 +782,7 @@ class TestSubreddit(IntegrationTest):
         text = "Testing, 1, 2, 3"
         test_type = "TestSubPostText"
         with self.recorder.use_cassette("TestSubreddit.submit_text_flair_obj"):
-            flair = subreddit.flair.link_templates.make_link_flair(
+            flair = subreddit.flair.link_templates.make(
                 test_type, css_class=test_type, create_before_usage=True
             )
             submission = subreddit.submit(
@@ -1044,12 +1044,10 @@ class TestSubredditFlair(IntegrationTest):
         ):
             ex_hash = 288266951
             maker = subreddit.flair
-            newflair = maker.link_templates.make_link_flair(
+            newflair = maker.link_templates.make(
                 "test{hash}".format(hash=ex_hash),
             )
-            data = subreddit.flair.link_templates.add(
-                flair=newflair, return_flair_obj=True
-            )
+            data = subreddit.flair.link_templates.add(flair=newflair)
             assert isinstance(data, AdvancedSubmissionFlair)
             newflair._fetch()
             assert data == newflair
@@ -1083,12 +1081,8 @@ class TestSubredditFlair(IntegrationTest):
         ):
             ex_hash = 288266951
             maker = subreddit.flair
-            newflair = maker.templates.make_user_flair(
-                "test{hash}".format(hash=ex_hash),
-            )
-            data = subreddit.flair.templates.add(
-                flair=newflair, return_flair_obj=True
-            )
+            newflair = maker.templates.make("test{hash}".format(hash=ex_hash),)
+            data = subreddit.flair.templates.add(flair=newflair)
             assert isinstance(data, RedditorFlair)
             newflair._fetch()
             assert data == newflair
@@ -1316,6 +1310,46 @@ class TestSubredditLinkFlairTemplates(IntegrationTest):
             "TestSubredditLinkFlairTemplates.test_clear"
         ):
             self.subreddit.flair.link_templates.clear()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_get(self, _):
+        self.reddit.read_only = False
+        sub = self.subreddit
+        sub.use_flair_class = True
+        with self.recorder.use_cassette(
+            "TestSubredditLinkFlairTemplates.test_get"
+        ):
+            for flair in sub.flair.link_templates:
+                assert isinstance(flair, AdvancedSubmissionFlair)
+                flair_id = flair.id
+                flair2 = sub.flair.link_templates.get(flair_id)
+                flair2._fetch()
+                assert flair2._fetched
+                assert flair == flair2
+                assert flair.id == flair2.id
+
+
+class TestSubredditRedditorFlairTemplates(IntegrationTest):
+    @property
+    def subreddit(self):
+        return self.reddit.subreddit(pytest.placeholders.test_subreddit)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_get(self, _):
+        self.reddit.read_only = False
+        sub = self.subreddit
+        sub.use_flair_class = True
+        with self.recorder.use_cassette(
+            "TestSubredditRedditorFlairTemplates.test_get"
+        ):
+            for flair in sub.flair.templates:
+                assert isinstance(flair, RedditorFlair)
+                flair_id = flair.id
+                flair2 = sub.flair.templates.get(flair_id)
+                flair2._fetch()
+                assert flair2._fetched
+                assert flair == flair2
+                assert flair.id == flair2.id
 
 
 class TestSubredditListings(IntegrationTest):
