@@ -1,9 +1,10 @@
 """Test praw.models.subreddit."""
 from os.path import abspath, dirname, join
 from json import dumps
+import socket
 import sys
 
-from praw.exceptions import APIException, ClientException
+from praw.exceptions import APIException, ClientException, WebSocketException
 from praw.models import (
     Comment,
     ModAction,
@@ -45,6 +46,42 @@ class WebsocketMock:
         assert 0 <= self.i + 1 < len(self.post_ids)
         self.i += 1
         return dumps(self.make_dict(self.post_ids[self.i]))
+
+
+class WebsocketMockException:
+    def __init__(self, recv_exc=None, close_exc=None):
+        """Initialize a WebsocketMockException.
+
+        :param recv_exc: An exception to be raised during a call to recv().
+        :param close_exc: An exception to be raised during close().
+
+        The purpose of this class is to mock a WebSockets connection that is
+        faulty or times out, to see how PRAW handles it.
+        """
+        self._recv_exc = recv_exc
+        self._close_exc = close_exc
+
+    def close(self, *args, **kwargs):
+        if self._close_exc is not None:
+            raise self._close_exc
+
+    def recv(self):
+        if self._recv_exc is not None:
+            raise self._recv_exc
+        else:
+            return dumps(
+                {
+                    "payload": {
+                        "redirect": "https://reddit.com/r/<TEST_SUBREDDIT>/"
+                        "comments/abcdef/test_title/"
+                    }
+                }
+            )
+
+
+def raise_exception(exception):
+    """Raise the specified exception."""
+    raise exception
 
 
 class TestSubreddit(IntegrationTest):
@@ -297,10 +334,10 @@ class TestSubreddit(IntegrationTest):
             subreddit = self.reddit.subreddit(
                 pytest.placeholders.test_subreddit
             )
-
-            image = self.image_path("test.mov")
-            with pytest.raises(ClientException):
-                subreddit.submit_image("Test Title", image)
+            for file_name in ("test.mov", "test.mp4"):
+                image = self.image_path(file_name)
+                with pytest.raises(ClientException):
+                    subreddit.submit_image("Test Title", image)
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
@@ -323,6 +360,101 @@ class TestSubreddit(IntegrationTest):
             )
             assert submission.link_flair_css_class == flair_class
             assert submission.link_flair_text == flair_text
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection", side_effect=BlockingIOError
+    )  # happens with timeout=0
+    def test_submit_image__timeout_1(self, _, __):
+
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image__timeout"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.jpg")
+            with pytest.raises(WebSocketException):
+                subreddit.submit_image("Test Title", image)
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection",
+        side_effect=socket.timeout
+        # happens with timeout=0.00001
+    )
+    def test_submit_image__timeout_2(self, _, __):
+
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image__timeout"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.jpg")
+            with pytest.raises(WebSocketException):
+                subreddit.submit_image("Test Title", image)
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection",
+        return_value=WebsocketMockException(
+            recv_exc=websocket.WebSocketTimeoutException()
+        ),  # happens with timeout=0.1
+    )
+    def test_submit_image__timeout_3(self, _, __):
+
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image__timeout"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.jpg")
+            with pytest.raises(WebSocketException):
+                subreddit.submit_image("Test Title", image)
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection",
+        return_value=WebsocketMockException(
+            close_exc=websocket.WebSocketTimeoutException()
+        ),  # could happen, and PRAW should handle it
+    )
+    def test_submit_image__timeout_4(self, _, __):
+
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image__timeout"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.jpg")
+            with pytest.raises(WebSocketException):
+                subreddit.submit_image("Test Title", image)
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection",
+        return_value=WebsocketMockException(
+            recv_exc=websocket.WebSocketConnectionClosedException()
+        ),  # from issue #1124
+    )
+    def test_submit_image__timeout_5(self, _, __):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image__timeout"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.jpg")
+            with pytest.raises(WebSocketException):
+                subreddit.submit_image("Test Title", image)
 
     @mock.patch("time.sleep", return_value=None)
     def test_submit_image__without_websockets(self, _):
@@ -361,8 +493,7 @@ class TestSubreddit(IntegrationTest):
                 assert submission.title == "Test Title"
 
     @mock.patch("time.sleep", return_value=None)
-    @mock.patch("websocket.create_connection", return_value=WebsocketMock())
-    def test_submit_video__bad_filetype(self, _, __):
+    def test_submit_video__bad_filetype(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
             "TestSubreddit.test_submit_video__bad_filetype"
@@ -370,13 +501,10 @@ class TestSubreddit(IntegrationTest):
             subreddit = self.reddit.subreddit(
                 pytest.placeholders.test_subreddit
             )
-            for file_name in ("test.mov", "test.mp4"):
+            for file_name in ("test.jpg", "test.png", "test.gif"):
                 video = self.image_path(file_name)
-
                 with pytest.raises(ClientException):
-                    subreddit.submit_video(
-                        "Test Title", video, thumbnail_path=video
-                    )
+                    subreddit.submit_video("Test Title", video)
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch("websocket.create_connection", return_value=WebsocketMock())
@@ -440,6 +568,101 @@ class TestSubreddit(IntegrationTest):
                 assert submission.author == self.reddit.config.username
                 assert submission.is_video
                 assert submission.title == "Test Title"
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection", side_effect=BlockingIOError
+    )  # happens with timeout=0
+    def test_submit_video__timeout_1(self, _, __):
+
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video__timeout"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            video = self.image_path("test.mov")
+            with pytest.raises(WebSocketException):
+                subreddit.submit_video("Test Title", video)
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection",
+        side_effect=socket.timeout
+        # happens with timeout=0.00001
+    )
+    def test_submit_video__timeout_2(self, _, __):
+
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video__timeout"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            video = self.image_path("test.mov")
+            with pytest.raises(WebSocketException):
+                subreddit.submit_video("Test Title", video)
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection",
+        return_value=WebsocketMockException(
+            recv_exc=websocket.WebSocketTimeoutException()
+        ),  # happens with timeout=0.1
+    )
+    def test_submit_video__timeout_3(self, _, __):
+
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video__timeout"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            video = self.image_path("test.mov")
+            with pytest.raises(WebSocketException):
+                subreddit.submit_video("Test Title", video)
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection",
+        return_value=WebsocketMockException(
+            close_exc=websocket.WebSocketTimeoutException()
+        ),  # could happen, and PRAW should handle it
+    )
+    def test_submit_video__timeout_4(self, _, __):
+
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video__timeout"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            video = self.image_path("test.mov")
+            with pytest.raises(WebSocketException):
+                subreddit.submit_video("Test Title", video)
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection",
+        return_value=WebsocketMockException(
+            close_exc=websocket.WebSocketConnectionClosedException()
+        ),  # from issue #1124
+    )
+    def test_submit_video__timeout_5(self, _, __):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video__timeout"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            video = self.image_path("test.mov")
+            with pytest.raises(WebSocketException):
+                subreddit.submit_video("Test Title", video)
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(

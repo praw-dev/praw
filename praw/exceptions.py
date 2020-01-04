@@ -42,3 +42,16 @@ class APIException(PRAWException):
 
 class ClientException(PRAWException):
     """Indicate exceptions that don't involve interaction with Reddit's API."""
+
+
+class WebSocketException(ClientException):
+    """Indicate exceptions caused by use of WebSockets."""
+
+    def __init__(self, message, exception):
+        """Initialize a WebSocketException.
+
+        :param message: The exception message.
+        :param exception: The exception thrown by the websocket library.
+        """
+        super().__init__(message)
+        self.original_exception = exception
