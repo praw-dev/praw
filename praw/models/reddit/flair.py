@@ -279,7 +279,7 @@ class AdvancedSubmissionFlair(RichFlairBase):
         r"""Make a new flair instance. Useful for adding new flair templates.
 
         .. note:: This method should only be called from
-           :meth:`.SubredditFlair.make_link_flair`.
+           :meth:`.SubredditLinkFlairTemplates.make_link_flair`.
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param subreddit: An instance of :class:`~.Subreddit`.
@@ -314,10 +314,8 @@ class AdvancedSubmissionFlair(RichFlairBase):
         .. code-block:: python
 
             subreddit = reddit.subreddit("NAME")
-            flair = subreddit.flair.make_link_flair("Mod post",
-                                                    css_class="Mod post",
-                                                    background_color=0x00FF00.
-                                                    mod_only=True)
+            flair = subreddit.flair.link_templates.make_link_flair("Mod post",
+            css_class="Mod post", background_color=0x00FF00, mod_only=True)
             subreddit.flair.link_templates.add(flair=flair)
 
         """
@@ -529,7 +527,7 @@ class RedditorFlair(RichFlairBase):
         r"""Make a new flair instance. Useful for adding new flair templates.
 
         .. note:: This method should only be called from
-           :meth:`.SubredditFlair.make_link_flair`.
+           :meth:`.SubredditRedditorFlairTemplates.make_user_flair`.
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param subreddit: An instance of :class:`~.Subreddit`.
@@ -564,10 +562,8 @@ class RedditorFlair(RichFlairBase):
         .. code-block:: python
 
             subreddit = reddit.subreddit("NAME")
-            flair = subreddit.flair.make_user_flair("Mod",
-                                                    css_class="Mod",
-                                                    background_color=0x00FF00.
-                                                    mod_only=True)
+            flair = subreddit.flair.templates.make_user_flair("Mod",
+            css_class="Mod", background_color=0x00FF00, mod_only=True)
             subreddit.flair.templates.add(flair=flair)
 
         """

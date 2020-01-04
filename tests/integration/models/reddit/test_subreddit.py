@@ -765,7 +765,7 @@ class TestSubreddit(IntegrationTest):
         url = "https://www.google.com"
         test_type = "TestSubPostLink"
         with self.recorder.use_cassette("TestSubreddit.submit_url_flair_obj"):
-            flair = subreddit.flair.make_link_flair(
+            flair = subreddit.flair.link_templates.make_link_flair(
                 test_type, css_class=test_type, create_before_usage=True
             )
             submission = subreddit.submit("Running_test", url=url, flair=flair)
@@ -782,7 +782,7 @@ class TestSubreddit(IntegrationTest):
         text = "Testing, 1, 2, 3"
         test_type = "TestSubPostText"
         with self.recorder.use_cassette("TestSubreddit.submit_text_flair_obj"):
-            flair = subreddit.flair.make_link_flair(
+            flair = subreddit.flair.link_templates.make_link_flair(
                 test_type, css_class=test_type, create_before_usage=True
             )
             submission = subreddit.submit(
@@ -1044,7 +1044,7 @@ class TestSubredditFlair(IntegrationTest):
         ):
             ex_hash = 288266951
             maker = subreddit.flair
-            newflair = maker.make_link_flair(
+            newflair = maker.link_templates.make_link_flair(
                 "test{hash}".format(hash=ex_hash),
             )
             data = subreddit.flair.link_templates.add(
@@ -1083,7 +1083,7 @@ class TestSubredditFlair(IntegrationTest):
         ):
             ex_hash = 288266951
             maker = subreddit.flair
-            newflair = maker.make_user_flair(
+            newflair = maker.templates.make_user_flair(
                 "test{hash}".format(hash=ex_hash),
             )
             data = subreddit.flair.templates.add(

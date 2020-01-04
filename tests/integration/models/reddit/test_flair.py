@@ -168,7 +168,7 @@ class TestFlair(IntegrationTest):
         with self.recorder.use_cassette("TestFlair.auto_create_submission"):
             submission = self.reddit.submission("eh0qey")
             subreddit = submission.subreddit
-            flair = subreddit.flair.make_link_flair(
+            flair = subreddit.flair.link_templates.make_link_flair(
                 "test{num}".format(num=arbritary_number),
                 create_before_usage=True,
             )
@@ -190,7 +190,7 @@ class TestFlair(IntegrationTest):
                 pytest.placeholders.test_subreddit
             )
             user = self.reddit.redditor("spez")
-            flair = subreddit.flair.make_user_flair(
+            flair = subreddit.flair.templates.make_user_flair(
                 "test{num}".format(num=arbritary_number),
                 create_before_usage=True,
             )

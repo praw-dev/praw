@@ -116,21 +116,21 @@ class TestSubreddit(UnitTest):
                 "test",
                 selftext="sdf",
                 flair_id="test",
-                flair=subreddit.flair.make_link_flair("dummy"),
+                flair=subreddit.flair.link_templates.make_link_flair("dummy"),
             )
         with pytest.raises(TypeError):
             subreddit.submit_image(
                 "test",
                 "test",
                 flair_id="test",
-                flair=subreddit.flair.make_link_flair("dummy"),
+                flair=subreddit.flair.link_templates.make_link_flair("dummy"),
             )
         with pytest.raises(TypeError):
             subreddit.submit_video(
                 "test",
                 "test",
                 flair_id="test",
-                flair=subreddit.flair.make_link_flair("dummy"),
+                flair=subreddit.flair.link_templates.make_link_flair("dummy"),
             )
 
 
@@ -144,9 +144,9 @@ class TestSubredditFlair(UnitTest):
 
     def test_flair_gen(self):
         subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
-        lf = subreddit.flair.make_link_flair("Test")
+        lf = subreddit.flair.link_templates.make_link_flair("Test")
         assert isinstance(lf, AdvancedSubmissionFlair)
-        uf = subreddit.flair.make_user_flair("Test")
+        uf = subreddit.flair.templates.make_user_flair("Test")
         assert isinstance(uf, RedditorFlair)
 
     def test_delete_error(self):
@@ -154,7 +154,7 @@ class TestSubredditFlair(UnitTest):
         with pytest.raises(TypeError):
             subreddit.flair.templates.delete(
                 template_id="sf",
-                flair=subreddit.flair.make_user_flair("Dummy"),
+                flair=subreddit.flair.templates.make_user_flair("Dummy"),
             )
 
 
