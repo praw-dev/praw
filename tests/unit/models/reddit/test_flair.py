@@ -1,3 +1,5 @@
+import pytest
+
 from praw.models import (
     LinkFlair,
     AdvancedSubmissionFlair,
@@ -71,7 +73,7 @@ class TestFlair(UnitTest):
         assert example_flair == "Test"
 
 
-class TestFlairMod(UnitTest):
+class TestFlairAdvanced(UnitTest):
     def test_attrs(self):
         example = {
             "type": "text",
@@ -234,6 +236,58 @@ class TestFlairMod(UnitTest):
         )
         example_flair._fetch()
         assert example_flair._fetched
+
+    def test_error(self):
+        data = {
+            "type": "text",
+            "text_editable": True,
+            "allowable_content": "all",
+            "text": "Testingint",
+            "max_emojis": 10,
+            "text_color": "dark",
+            "mod_only": False,
+            "css_class": "Testing",
+            "richtext": [],
+            "background_color": "#dadada",
+            "id": "bfe7bf6e-2a6e-11ea-9d64-0e73c60478f7",
+        }
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        with pytest.raises(TypeError):
+            example_flair = AdvancedSubmissionFlair(  # noqa: F841
+                self.reddit,
+                example_subreddit,
+                id="bfe7bf6e-2a6e-11ea-9d64-0e73c60478f7",
+                _data=data,
+            )
+
+    def test_id(self):
+        data = {
+            "type": "text",
+            "text_editable": True,
+            "allowable_content": "all",
+            "text": "Testingint",
+            "max_emojis": 10,
+            "text_color": "dark",
+            "mod_only": False,
+            "css_class": "Testing",
+            "richtext": [],
+            "background_color": "#dadada",
+            "id": "bfe7bf6e-2a6e-11ea-9d64-0e73c60478f7",
+        }
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        example_flair = AdvancedSubmissionFlair(
+            self.reddit,
+            example_subreddit,
+            id="bfe7bf6e-2a6e-11ea-9d64-0e73c60478f7",
+        )
+        example_flair_2 = AdvancedSubmissionFlair(
+            self.reddit, example_subreddit, _data=data
+        )
+        assert example_flair_2.id == example_flair.id
 
 
 class TestRedditorFlair(UnitTest):
@@ -399,6 +453,62 @@ class TestRedditorFlair(UnitTest):
         example_subreddit = self.reddit.subreddit(
             "dummy", use_flair_class=True
         )
-        example_flair = RedditorFlair(self.reddit, example_subreddit, _data=data)
+        example_flair = RedditorFlair(
+            self.reddit, example_subreddit, _data=data
+        )
         example_flair._fetch()
         assert example_flair._fetched
+
+    def test_error(self):
+        example = {
+            "allowable_content": "all",
+            "text": "Test",
+            "text_color": "light",
+            "mod_only": False,
+            "background_color": "#cc8b00",
+            "id": "0be1ace4-2a75-11ea-8018-0ecef10bc461",
+            "css_class": "Test",
+            "max_emojis": 10,
+            "richtext": [],
+            "text_editable": True,
+            "override_css": False,
+            "type": "text",
+        }
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        with pytest.raises(TypeError):
+            example_flair = RedditorFlair(  # noqa: F841
+                self.reddit,
+                example_subreddit,
+                id="0be1ace4-2a75-11ea-8018-0ecef10bc461",
+                _data=example,
+            )
+
+    def test_id(self):
+        example = {
+            "allowable_content": "all",
+            "text": "Test",
+            "text_color": "light",
+            "mod_only": False,
+            "background_color": "#cc8b00",
+            "id": "0be1ace4-2a75-11ea-8018-0ecef10bc461",
+            "css_class": "Test",
+            "max_emojis": 10,
+            "richtext": [],
+            "text_editable": True,
+            "override_css": False,
+            "type": "text",
+        }
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        example_flair = RedditorFlair(
+            self.reddit,
+            example_subreddit,
+            id="0be1ace4-2a75-11ea-8018-0ecef10bc461",
+        )
+        example_flair_2 = RedditorFlair(
+            self.reddit, example_subreddit, _data=example
+        )
+        assert example_flair.id == example_flair_2.id

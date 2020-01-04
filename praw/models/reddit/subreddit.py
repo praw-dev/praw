@@ -1834,7 +1834,9 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
                 max_emojis=max_emojis,
             )
         if return_flair_obj:
-            return RedditorFlair(self.subreddit._reddit, self.subreddit, _data=data)
+            return RedditorFlair(
+                self.subreddit._reddit, self.subreddit, _data=data
+            )
         else:
             return data
 

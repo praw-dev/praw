@@ -202,3 +202,170 @@ class TestFlair(IntegrationTest):
                 num=arbritary_number
             )
             self._delete_flair(flair)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_id_attr_RF_full(self, _):
+        self.reddit.read_only = False
+        data = {
+            "allowable_content": "all",
+            "text": "Test",
+            "text_color": "light",
+            "mod_only": False,
+            "background_color": "#cc8b00",
+            "id": "0be1ace4-2a75-11ea-8018-0ecef10bc461",
+            "css_class": "sdgdsgdfg",
+            "max_emojis": 10,
+            "richtext": [],
+            "text_editable": True,
+            "override_css": False,
+            "type": "text",
+        }
+        with self.recorder.use_cassette("TestFlair.check_id_full_RF"):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            flair1 = RedditorFlair(self.reddit, subreddit, _data=data)
+            flair1._fetch()
+            assert flair1._fetched
+            flair2 = RedditorFlair(
+                self.reddit,
+                subreddit,
+                id="0be1ace4-2a75-11ea-8018-0ecef10bc461",
+            )
+            flair2._fetch()
+            assert flair2._fetched
+            assert flair1 == flair2
+            assert flair1.id == flair2.id
+            assert flair1.__dict__ == flair2.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_id_attr_RF_id_only(self, _):
+        self.reddit.read_only = False
+        data = {"id": "0be1ace4-2a75-11ea-8018-0ecef10bc461"}
+        with self.recorder.use_cassette("TestFlair.check_id_only_RF"):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            flair1 = RedditorFlair(self.reddit, subreddit, _data=data)
+            flair1._fetch()
+            assert flair1._fetched
+            flair2 = RedditorFlair(
+                self.reddit,
+                subreddit,
+                id="0be1ace4-2a75-11ea-8018-0ecef10bc461",
+            )
+            flair2._fetch()
+            assert flair2._fetched
+            assert flair1 == flair2
+            assert flair1.id == flair2.id
+            assert flair1.__dict__ == flair2.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_id_attr_RF_id_only_both(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestFlair.check_id_all_RF"):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            flair1 = RedditorFlair(
+                self.reddit,
+                subreddit,
+                id="0be1ace4-2a75-11ea-8018-0ecef10bc461",
+            )
+            flair1._fetch()
+            assert flair1._fetched
+            flair2 = RedditorFlair(
+                self.reddit,
+                subreddit,
+                id="0be1ace4-2a75-11ea-8018-0ecef10bc461",
+            )
+            flair2._fetch()
+            assert flair2._fetched
+            assert flair1 == flair2
+            assert flair1.id == flair2.id
+            assert flair1.__dict__ == flair2.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_id_attr_ASF_full(self, _):
+        self.reddit.read_only = False
+        data = {
+            "type": "text",
+            "text_editable": True,
+            "allowable_content": "all",
+            "text": "Testingint",
+            "max_emojis": 10,
+            "text_color": "dark",
+            "mod_only": False,
+            "css_class": "Testing",
+            "richtext": [],
+            "background_color": "#dadada",
+            "id": "bfe7bf6e-2a6e-11ea-9d64-0e73c60478f7",
+        }
+        with self.recorder.use_cassette("TestFlair.check_id_full_ASF"):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            flair1 = AdvancedSubmissionFlair(
+                self.reddit, subreddit, _data=data
+            )
+            flair1._fetch()
+            assert flair1._fetched
+            flair2 = AdvancedSubmissionFlair(
+                self.reddit,
+                subreddit,
+                id="bfe7bf6e-2a6e-11ea-9d64-0e73c60478f7",
+            )
+            flair2._fetch()
+            assert flair2._fetched
+            assert flair1 == flair2
+            assert flair1.id == flair2.id
+            assert flair1.__dict__ == flair2.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_id_attr_ASF_id_only(self, _):
+        self.reddit.read_only = False
+        data = {"id": "bfe7bf6e-2a6e-11ea-9d64-0e73c60478f7"}
+        with self.recorder.use_cassette("TestFlair.check_id_only_ASF"):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            flair1 = AdvancedSubmissionFlair(
+                self.reddit, subreddit, _data=data
+            )
+            flair1._fetch()
+            assert flair1._fetched
+            flair2 = AdvancedSubmissionFlair(
+                self.reddit,
+                subreddit,
+                id="bfe7bf6e-2a6e-11ea-9d64-0e73c60478f7",
+            )
+            flair2._fetch()
+            assert flair2._fetched
+            assert flair1 == flair2
+            assert flair1.id == flair2.id
+            assert flair1.__dict__ == flair2.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_id_attr_ASF_id_only_both(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestFlair.check_id_all_ASF"):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            flair1 = AdvancedSubmissionFlair(
+                self.reddit,
+                subreddit,
+                id="bfe7bf6e-2a6e-11ea-9d64-0e73c60478f7",
+            )
+            flair1._fetch()
+            assert flair1._fetched
+            flair2 = AdvancedSubmissionFlair(
+                self.reddit,
+                subreddit,
+                id="bfe7bf6e-2a6e-11ea-9d64-0e73c60478f7",
+            )
+            flair2._fetch()
+            assert flair2._fetched
+            assert flair1 == flair2
+            assert flair1.id == flair2.id
+            assert flair1.__dict__ == flair2.__dict__
