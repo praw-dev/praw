@@ -1631,7 +1631,6 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         allowable_content=None,
         max_emojis=None,
         flair=None,
-        return_flair_obj=False,
     ):
         r"""Add a Redditor flair template to the associated subreddit.
 
@@ -1658,7 +1657,6 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
             (Reddit defaults this value to 10).
         :param flair: The instance of :class:`.RedditorFlair` with pre-filled
             information about a flair.
-        :param return_flair_obj: Return a flair object or the created dict
         :returns: Either a dict containing information on the created flair or
             an instance of :class:`.RedditorFlair`.
 
@@ -1694,7 +1692,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
                 allowable_content=allowable_content,
                 max_emojis=max_emojis,
             )
-        if return_flair_obj:
+        if self.subreddit.use_flair_class:
             return RedditorFlair(
                 self.subreddit._reddit, self.subreddit, _data=data
             )
@@ -1713,7 +1711,18 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         """
         self._clear(is_link=False)
 
-    def make_user_flair(
+    def get(self, id: str) -> RedditorFlair:
+        """Get an instance of :class:`.RedditorFlair`.
+
+        This is a lazy instance, but can be coverted into a non-lazy instance
+        by attempting to access the attribute ``flair.text``.
+
+        :param id: The flair template id of the flair.
+        :returns: The instance of :class:`.RedditorFlair`.
+        """
+        return RedditorFlair(self.subreddit._reddit, self.subreddit, id=id)
+
+    def make(
         self,
         text: str,
         css_class: str = "",
@@ -1762,7 +1771,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         .. code-block:: python
 
             subreddit = reddit.subreddit("NAME")
-            flair = subreddit.flair.templates.make_user_flair("Mod",
+            flair = subreddit.flair.templates.make("Mod",
             css_class="Mod", background_color=0x00FF00, mod_only=True)
             subreddit.flair.templates.add(flair=flair)
 
@@ -1816,7 +1825,6 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         allowable_content=None,
         max_emojis=None,
         flair=None,
-        return_flair_obj=False,
     ):
         r"""Add a link flair template to the associated subreddit.
 
@@ -1843,7 +1851,6 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
             (Reddit defaults this value to 10).
         :param flair: The instance of :class:`.AdvancedSubmissionFlair` with
             pre-filled information about a flair.
-        :param return_flair_obj: Return a flair object or the created dict
         :returns: Either a dict containing information on the created flair or
             an instance of :class:`.AdvancedSubmissionFlair`.
 
@@ -1879,7 +1886,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
                 allowable_content=allowable_content,
                 max_emojis=max_emojis,
             )
-        if return_flair_obj:
+        if self.subreddit.use_flair_class:
             return AdvancedSubmissionFlair(
                 self.subreddit._reddit, self.subreddit, _data=data
             )
@@ -1898,7 +1905,20 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         """
         self._clear(is_link=True)
 
-    def make_link_flair(
+    def get(self, id: str) -> AdvancedSubmissionFlair:
+        """Get an instance of :class:`.AdvancedSubmissionFlair`.
+
+        This is a lazy instance, but can be coverted into a non-lazy instance
+        by attempting to access the attribute ``flair.text``.
+
+        :param id: The flair template id of the flair.
+        :returns: The instance of :class:`.AdvancedSubmissionFlair`.
+        """
+        return AdvancedSubmissionFlair(
+            self.subreddit._reddit, self.subreddit, id=id
+        )
+
+    def make(
         self,
         text: str,
         css_class: str = "",
@@ -1946,7 +1966,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         .. code-block:: python
 
             subreddit = reddit.subreddit("NAME")
-            flair = subreddit.flair.link_templates.make_link_flair("Mod post",
+            flair = subreddit.flair.link_templates.make("Mod post",
                                                     css_class="Mod post",
                                                     background_color=0x00FF00.
                                                     mod_only=True)
@@ -1966,7 +1986,6 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
             max_emojis=max_emojis,
             create_before_usage=create_before_usage,
         )
-
 
 
 class SubredditModeration:
