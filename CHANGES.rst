@@ -708,8 +708,7 @@ PRAW 4 introduces significant breaking changes. The numerous changes are not
 listed here, only the feature removals. Please read through
 :doc:`/getting_started/quick_start` to help with updating your code to
 PRAW 4. If you require additional help please ask on `/r/redditdev
-<https://www.reddit.com/r/redditdev>`_ or in the `praw-dev/praw
-<https://gitter.im/praw-dev/praw>`_ channel on gitter.
+<https://www.reddit.com/r/redditdev>`_ or via Slack.
 
 **Added**
 
