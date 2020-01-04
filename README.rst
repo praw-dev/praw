@@ -13,9 +13,6 @@ PRAW: The Python Reddit API Wrapper
 .. image:: https://github.com/praw-dev/praw/workflows/Python%20package/badge.svg
    :alt: Github Actions Coverage
    :target: https://github.com/praw-dev/praw/actions?query=branch%3Amaster
-.. image:: https://badges.gitter.im/praw-dev/praw.svg
-   :alt: Join the chat at https://gitter.im/praw-dev/praw
-   :target: https://gitter.im/praw-dev/praw
 
 PRAW, an acronym for "Python Reddit API Wrapper", is a Python package that
 allows for simple access to Reddit's API. PRAW aims to be easy to use and
@@ -100,11 +97,12 @@ Reddit to ask PRAW related questions. This subreddit is for all Reddit API
 related discussion so please tag submissions with *[PRAW]*. Please perform a
 search on the subreddit first to see if anyone has similar questions.
 
-Real-time chat can be conducted via the `praw-dev/praw
-<https://gitter.im/praw-dev/praw>`_ channel on Gitter.
+Real-time chat can be conducted via the `PRAW Slack Organization
+<https://join.slack.com/t/praw/shared_invite/enQtODk1NDM4NDk3MDE0LWYyYzM1NGE2YjI4MTAwM2IyZWExMTJiNTZiNTgwNTlmYzQ0NmNiZjg5Zjc0NTIwYWZkZmI5MTFlNWY0MmFjY2M>`_
+(please create an issue if that invite link has expired).
 
 Please do not directly message any of the contributors via Reddit, email, or
-Gitter unless they have indicated otherwise. We strongly encourage everyone to
+Slack unless they have indicated otherwise. We strongly encourage everyone to
 help others with their questions.
 
 Please file bugs and feature requests as issues on `GitHub
