@@ -77,7 +77,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         Streams can be used to indefinitely retrieve new comments made to a
         multireddit, like:
 
-        .. code:: python
+        .. code-block:: python
 
            for comment in reddit.multireddit('spez', 'fun').stream.comments():
                print(comment)
@@ -85,7 +85,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         Additionally, new submissions can be retrieved via the stream. In the
         following example all new submissions to the multireddit are fetched:
 
-        .. code:: python
+        .. code-block:: python
 
            for submission in reddit.multireddit('bboe',
                                                 'games').stream.submissions():

@@ -20,7 +20,7 @@ class ReplyableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.reply('reply')

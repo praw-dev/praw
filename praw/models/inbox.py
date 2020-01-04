@@ -23,7 +23,7 @@ class Inbox(PRAWBase):
 
         To output the type and ID of all items available via this listing do:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.inbox.all(limit=None):
                print(repr(item))
@@ -42,7 +42,7 @@ class Inbox(PRAWBase):
 
         For example, to collapse all unread Messages, try:
 
-        .. code:: python
+        .. code-block:: python
 
             from praw.models import Message
             unread_messages = []
@@ -71,7 +71,7 @@ class Inbox(PRAWBase):
 
         To output the author of one request worth of comment replies try:
 
-        .. code:: python
+        .. code-block:: python
 
            for reply in reddit.inbox.comment_replies():
                print(reply.author)
@@ -92,7 +92,7 @@ class Inbox(PRAWBase):
 
         For example, to mark all unread Messages as read, try:
 
-        .. code:: python
+        .. code-block:: python
 
             from praw.models import Message
             unread_messages = []
@@ -122,7 +122,7 @@ class Inbox(PRAWBase):
 
         For example, to mark the first 10 items as unread try:
 
-        .. code:: python
+        .. code-block:: python
 
             to_unread = list(reddit.inbox.all(limit=10))
             reddit.inbox.mark_unread(to_unread)
@@ -151,7 +151,7 @@ class Inbox(PRAWBase):
         For example, to output the author and body of the first 25 mentions
         try:
 
-        .. code:: python
+        .. code-block:: python
 
            for mention in reddit.inbox.mentions(limit=25):
                print('{}\n{}\n'.format(mention.author, mention.body))
@@ -168,7 +168,7 @@ class Inbox(PRAWBase):
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            message = reddit.inbox.message('7bnlgu')
 
@@ -190,7 +190,7 @@ class Inbox(PRAWBase):
 
         For example, to output the subject of the most recent 5 messages try:
 
-        .. code:: python
+        .. code-block:: python
 
            for message in reddit.inbox.messages(limit=5):
                print(message.subject)
@@ -211,7 +211,7 @@ class Inbox(PRAWBase):
         For example, to output the recipient of the most recent 15 messages
         try:
 
-        .. code:: python
+        .. code-block:: python
 
            for message in reddit.inbox.sent(limit=15):
                print(message.dest)
@@ -233,7 +233,7 @@ class Inbox(PRAWBase):
 
         For example, to retrieve all new inbox items, try:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.inbox.stream():
                print(item)
@@ -251,7 +251,7 @@ class Inbox(PRAWBase):
 
         To output the author of one request worth of submission replies try:
 
-        .. code:: python
+        .. code-block:: python
 
            for reply in reddit.inbox.submission_replies():
                print(reply.author)
@@ -270,7 +270,7 @@ class Inbox(PRAWBase):
 
         For example, to uncollapse all unread Messages, try:
 
-        .. code:: python
+        .. code-block:: python
 
             from praw.models import Message
             unread_messages = []
@@ -306,7 +306,7 @@ class Inbox(PRAWBase):
 
         For example, to output the author of unread comments try:
 
-        .. code:: python
+        .. code-block:: python
 
            from praw.models import Comment
            for item in reddit.inbox.unread(limit=None):

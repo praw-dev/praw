@@ -10,7 +10,7 @@ class EditableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            comment = reddit.comment('dkk4qjd')
            comment.delete()
@@ -29,7 +29,7 @@ class EditableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            comment = reddit.comment('dkk4qjd')
 

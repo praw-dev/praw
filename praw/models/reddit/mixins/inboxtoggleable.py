@@ -10,7 +10,7 @@ class InboxToggleableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            comment = reddit.comment('dkk4qjd')
            comment.disable_inbox_replies()
@@ -30,7 +30,7 @@ class InboxToggleableMixin:
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            comment = reddit.comment('dkk4qjd')
            comment.enable_inbox_replies()

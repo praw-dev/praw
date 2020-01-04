@@ -38,14 +38,14 @@ class CommentForest:
 
         This method is to be used like an array access, such as:
 
-        .. code:: python
+        .. code-block:: python
 
            first_comment = submission.comments[0]
 
         Alternatively, the presence of this method enables one to iterate over
         all top_level comments, like so:
 
-        .. code:: python
+        .. code-block:: python
 
            for comment in submission.comments:
                print(comment.body)
@@ -123,7 +123,7 @@ class CommentForest:
         For example, to replace up to 32 :class:`.MoreComments` instances of a
         submission try:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission('3hahrw')
            submission.comments.replace_more()
@@ -131,7 +131,7 @@ class CommentForest:
         Alternatively, to replace :class:`.MoreComments` instances within the
         replies of a single comment try:
 
-        .. code:: python
+        .. code-block:: python
 
            comment = reddit.comment('d8r4im1')
            comment.refresh()
@@ -143,7 +143,7 @@ class CommentForest:
                   looping and handling exceptions until the method returns
                   successfully. For example:
 
-                  .. code:: python
+                  .. code-block:: python
 
                      while True:
                          try:

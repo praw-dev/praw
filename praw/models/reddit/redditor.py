@@ -90,7 +90,7 @@ class Redditor(
         Streams can be used to indefinitely retrieve new comments made by a
         redditor, like:
 
-        .. code:: python
+        .. code-block:: python
 
            for comment in reddit.redditor('spez').stream.comments():
                print(comment)
@@ -99,7 +99,7 @@ class Redditor(
         following example all submissions are fetched via the redditor
         ``spez``:
 
-        .. code:: python
+        .. code-block:: python
 
            for submission in reddit.redditor('spez').stream.submissions():
                print(submission)
@@ -226,7 +226,7 @@ class Redditor(
 
         Usage:
 
-        .. code:: python
+        .. code-block:: python
 
             for subreddit in reddit.redditor('spez').moderated():
                 print(subreddit.display_name)
@@ -256,7 +256,7 @@ class Redditor(
 
         Usage:
 
-        .. code:: python
+        .. code-block:: python
 
             for trophy in reddit.redditor('spez').trophies():
                 print(trophy.name)
@@ -304,7 +304,7 @@ class RedditorStream:
         For example, to retrieve all new comments made by redditor ``spez``,
         try:
 
-        .. code:: python
+        .. code-block:: python
 
            for comment in reddit.redditor('spez').stream.comments():
                print(comment)
@@ -325,7 +325,7 @@ class RedditorStream:
         For example to retrieve all new submissions made by redditor
         ``spez``, try:
 
-        .. code:: python
+        .. code-block:: python
 
            for submission in reddit.redditor('spez').stream.submissions():
                print(submission)

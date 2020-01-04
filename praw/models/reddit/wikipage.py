@@ -127,7 +127,7 @@ class WikiPage(RedditBase):
 
         To view revision ``[ID]`` of ``'praw_test'`` in ``'/r/test'``:
 
-        .. code:: python
+        .. code-block:: python
 
            page = reddit.subreddit('test').wiki['praw_test'].revision('[ID]')
 
@@ -144,14 +144,14 @@ class WikiPage(RedditBase):
 
         To view the wiki revisions for ``'praw_test'`` in ``'/r/test'`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.subreddit('test').wiki['praw_test'].revisions():
                print(item)
 
         To get :class:`.WikiPage` objects for each revision:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.subreddit('test').wiki['praw_test'].revisions():
                print(item['page'])
@@ -182,7 +182,7 @@ class WikiPageModeration:
 
         To add ``'spez'`` as an editor on the wikipage ``'praw_test'`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('test').wiki['praw_test'].mod.add('spez')
 
@@ -201,7 +201,7 @@ class WikiPageModeration:
 
         To remove ``'spez'`` as an editor on the wikipage ``'praw_test'`` try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('test').wiki['praw_test'].mod.remove('spez')
 
@@ -233,7 +233,7 @@ class WikiPageModeration:
         To set the wikipage ``'praw_test'`` in ``'/r/test'`` to mod only and
           disable it from showing in the page list, try:
 
-        .. code:: python
+        .. code-block:: python
 
            reddit.subreddit('test').wiki['praw_test'].mod.update(listed=False,
                                                                  permlevel=2)

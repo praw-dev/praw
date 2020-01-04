@@ -191,7 +191,7 @@ class LiveContributorRelationship:
 
         For example, to grant all permissions to the contributor, try:
 
-        .. code:: python
+        .. code-block:: python
 
            thread = reddit.live('ukaeu1ik4sw5')
            thread.contributor.update('spez')
@@ -199,13 +199,13 @@ class LiveContributorRelationship:
         To grant 'access' and 'edit' permissions (and to remove other
         permissions), try:
 
-        .. code:: python
+        .. code-block:: python
 
            thread.contributor.update('spez', ['access', 'edit'])
 
         To remove all permissions from the contributor, try:
 
-        .. code:: python
+        .. code-block:: python
 
            subreddit.moderator.update('spez', [])
 
@@ -235,7 +235,7 @@ class LiveContributorRelationship:
 
         For example, to set all permissions to the invitation, try:
 
-        .. code:: python
+        .. code-block:: python
 
            thread = reddit.live('ukaeu1ik4sw5')
            thread.contributor.update_invite('spez')
@@ -243,13 +243,13 @@ class LiveContributorRelationship:
         To set 'access' and 'edit' permissions (and to remove other
         permissions) to the invitation, try:
 
-        .. code:: python
+        .. code-block:: python
 
            thread.contributor.update_invite('spez', ['access', 'edit'])
 
         To remove all permissions from the invitation, try:
 
-        .. code:: python
+        .. code-block:: python
 
            thread.contributor.update_invite('spez', [])
 

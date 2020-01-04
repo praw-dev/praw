@@ -21,7 +21,7 @@ class SubmissionListingMixin(PRAWBase):
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
 
