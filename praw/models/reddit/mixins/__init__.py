@@ -1,5 +1,6 @@
 """Package providing reddit class mixins."""
 from json import dumps
+
 from ....const import API_PATH
 from .editable import EditableMixin
 from .fullname import FullnameMixin

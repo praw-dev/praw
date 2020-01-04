@@ -3,25 +3,16 @@ import configparser
 import os
 from itertools import islice
 from typing import (
+    IO,
+    Any,
+    Dict,
+    Generator,
     NoReturn,
     Optional,
+    Sequence,
     Type,
     Union,
-    Dict,
-    Any,
-    Sequence,
-    Generator,
-    IO,
 )
-
-
-try:
-    from update_checker import update_check
-
-    UPDATE_CHECKER_MISSING = False
-except ImportError:  # pragma: no cover
-    UPDATE_CHECKER_MISSING = True
-
 
 from prawcore import (
     Authorizer,
@@ -37,9 +28,17 @@ from prawcore import (
 
 from . import models
 from .config import Config
-from .const import __version__, API_PATH, USER_AGENT_FORMAT
+from .const import API_PATH, USER_AGENT_FORMAT, __version__
 from .exceptions import ClientException
 from .objector import Objector
+
+try:
+    from update_checker import update_check
+
+    UPDATE_CHECKER_MISSING = False
+except ImportError:  # pragma: no cover
+    UPDATE_CHECKER_MISSING = True
+
 
 Comment = models.Comment
 Redditor = models.Redditor

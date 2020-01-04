@@ -2,8 +2,8 @@
 from typing import Dict, Generator, List, TypeVar, Union
 
 from ..const import API_PATH
-from .listing.generator import ListingGenerator
 from .base import PRAWBase
+from .listing.generator import ListingGenerator
 from .util import stream_generator
 
 Comment = TypeVar("Comment")
