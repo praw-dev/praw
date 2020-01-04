@@ -10,6 +10,9 @@ PRAW: The Python Reddit API Wrapper
 .. image:: https://coveralls.io/repos/github/praw-dev/praw/badge.svg?branch=master
    :alt: Coveralls Coverage
    :target: https://coveralls.io/github/praw-dev/praw?branch=master
+.. image:: https://github.com/praw-dev/praw/workflows/Python%20package/badge.svg
+   :alt: Github Actions Coverage
+   :target: https://github.com/praw-dev/praw/actions?query=branch%3Amaster
 .. image:: https://badges.gitter.im/praw-dev/praw.svg
    :alt: Join the chat at https://gitter.im/praw-dev/praw
    :target: https://gitter.im/praw-dev/praw
