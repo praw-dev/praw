@@ -1,105 +1,90 @@
-name: Python package
-
-on: [push, pull_request]
-
 jobs:
   lint-multi-os:
+    name: Lint ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-        python-version: [3.8]
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+    - uses: actions/setup-python@v1
       with:
-        python-version: ${{ matrix.python-version }}
-    - name: Upgrade all installed pip packages (setuptools, pip, etc.)
-      run: pip install --upgrade setuptools
-    - name: Install project dependencies
-      run: pip install .
-    - name: Install test dependencies
-      run: pip install black flake8 pydocstyle sphinx sphinx_rtd_theme
+        python-version: 3.x
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[lint]
+    - name: Run black
+      run: black --check --verbose .
+    - name: Run flake8
+      run: flake8 --exclude docs --statistics
     - name: Check usage of code-block
       run: python ./tools/replace_code_block.py --check
-    - name: Check code formatting with black
-      run: black --check --verbose .
-    - name: Lint with flake8
-      run: flake8 --exclude=.eggs,build,docs
-    - name: Check docstyle with pydocstyle
+    - name: Run pydocstyle
       run: pydocstyle praw
-    - name: Build Sphinx files
+    - name: Run sphinx
       run: sphinx-build -W docs/ /tmp/foo
-  test-multi-os:
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-        python-version: [3.8]
-    steps:
-      - uses: actions/checkout@v1
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Upgrade all installed pip packages (setuptools, pip, etc.)
-        run: pip install --upgrade setuptools
-      - name: Get wheel
-        run: pip install wheel
-      - name: Install project dependencies
-        run: pip install .[test]
-      - name: Install test dependencies
-        run: pip install pytest coverage
-      - name: Run tests
-        run: coverage run --source prawcore --module pytest
+        os: [macOS-latest, ubuntu-latest, windows-latest]
+
   lint-multi-python:
-    runs-on: ${{ matrix.os }}
+    name: Lint Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.x
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[lint]
+    - name: Run black
+      run: black --check --verbose .
+    - name: Run flake8
+      run: flake8 --exclude docs --statistics
+    - name: Run pydocstyle
+      run: pydocstyle praw
+    - name: Run sphinx
+      run: sphinx-build -W docs/ /tmp/foo
     strategy:
       matrix:
-        os: [ubuntu-latest]
         python-version: [3.6, 3.7, 3.8]
-    steps:
-      - uses: actions/checkout@v1
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Upgrade all installed pip packages (setuptools, pip, etc.)
-        run: pip install --upgrade setuptools
-      - name: Install project dependencies
-        run: pip install .
-      - name: Install test dependencies
-        run: pip install black flake8 pydocstyle sphinx sphinx_rtd_theme
-      - name: Check usage of code-block
-        run: python ./tools/replace_code_block.py --check
-      - name: Check code formatting with black
-        run: black --check --verbose .
-      - name: Lint with flake8
-        run: flake8 --exclude=.eggs,build,docs
-      - name: Check docstyle with pydocstyle
-        run: pydocstyle praw
-      - name: Build Sphinx files
-        run: sphinx-build -W docs/ /tmp/foo
-  test-multi-python:
+
+  test-multi-os:
+    name: Test ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.x
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[test]
+    - name: Test with pytest
+      run: pytest
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        os: [macOS-latest, ubuntu-latest, windows-latest]
+
+  test-multi-python:
+    name: Test Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Upgrade all installed pip packages (setuptools, pip, etc.)
-        run: pip install --upgrade setuptools
-      - name: Get wheel
-        run: pip install wheel
-      - name: Install project dependencies
-        run: pip install .[test]
-      - name: Install test dependencies
-        run: pip install pytest coverage
-      - name: Run tests
-        run: coverage run --source prawcore --module pytest
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.x
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[ci,test]
+        pip install https://github.com/bboe/coveralls-python/archive/github_actions.zip
+    - name: Test with pytest
+      run: coverage run --source praw --module pytest
+    strategy:
+      matrix:
+        python-version: [3.5, 3.6, 3.7, 3.8]
+
+name: CI
+on: [pull_request, push]
