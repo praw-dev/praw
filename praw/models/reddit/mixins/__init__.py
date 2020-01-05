@@ -184,6 +184,11 @@ class ThingModerationMixin:
     ):
         """Send a removal message for a :class:`~.Comment` or :class:`~.Submission`.
 
+        .. warning:: The object has to be removed before giving it a removal
+            reason. Remove the object with :meth:`.remove`. Trying to add a
+            removal reason without removing the object will result in
+            ``prawcore.exceptions.BadRequest`` being thrown.
+
         Reddit adds human-readable information about the object to the message.
 
         :param type: One of 'public', 'private', 'private_exposed'.
