@@ -522,3 +522,41 @@ class TestSubmissionModeration(IntegrationTest):
             "TestSubmissionModeration.test_unspoiler"
         ):
             Submission(self.reddit, "5ouli3").mod.unspoiler()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_modflair_choices(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_flair_choices"
+        ):
+            choices = Submission(self.reddit, "eh9xy1").mod.flair.choices()
+            choice_list = list(choices)
+            assert len(choice_list) > 0
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_modflair_picked(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_flair_selection"
+        ):
+            sub = Submission(self.reddit, "eh9xy1")
+            choices = sub.mod.flair.choices()
+            choice_list = list(choices)
+            sub.mod.flair.select(choice_list[0]["id"])
+            sub.mod.flair.select(choice_list[0]["id"], text="something")
+            sub.mod.flair.select(
+                choice_list[0]["id"],
+                text="something",
+                css_class="Something else",
+            )
+            sub.mod.flair.select(
+                choice_list[0]["id"], css_class="Something else"
+            )
+            with pytest.raises(TypeError):
+                sub.mod.flair.select(text="something")
+            with pytest.raises(TypeError):
+                sub.mod.flair.select(
+                    text="something", css_class="Something else"
+                )
+            with pytest.raises(TypeError):
+                sub.mod.flair.select(css_class="Something else")
