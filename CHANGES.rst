@@ -24,31 +24,14 @@ Unreleased
 * Parameters ``mod_note`` and ``reason_id`` to
   :meth:`.ThingModerationMixin.remove` to optionally apply a removal reason on
   removal
-* Add :class:`.SubredditModerationStream` to enable moderation streams
-* Attribute ``stream`` to :class:`.SubredditModeration` to interact with new
-  moderation streams
-* Add :meth:`.SubredditModerationStream.edited` to allow streaming
-  of :meth:`.SubredditModeration.edited`
-* Add :meth:`.SubredditModerationStream.log` to allow streaming
-  of :meth:`.SubredditModeration.log`
-* Add :meth:`.SubredditModerationStream.modmail_conversations` to allow
-  streaming of :meth:`.Modmail.conversations`
-* Add :meth:`.SubredditModerationStream.modqueue` to allow streaming
-  of :meth:`.SubredditModeration.modqueue`
-* Add :meth:`.SubredditModerationStream.reports` to allow streaming
-  of :meth:`.SubredditModeration.reports`
-* Add :meth:`.SubredditModerationStream.spam` to allow streaming
-  of :meth:`.SubredditModeration.spam`
-* Add :meth:`.SubredditModerationStream.unmoderated` to allow streaming
-  of :meth:`.SubredditModeration.unmoderated`
-* Add :meth:`.SubredditModerationStream.unread` to allow streaming
-  of :meth:`.SubredditModeration.unread`
-* Parameter ``exclude_before`` to :func:`.stream_generator` to allow
-  :meth:`.SubredditModerationStream.modmail_conversations` to work
 * Parameters ``allowable_content`` and ``max_emojis`` to
   :meth:`~.SubredditRedditorFlairTemplates.add`,
   :meth:`~.SubredditLinkFlairTemplates.add`, and
   :meth:`~.SubredditFlairTemplates.update`, as well as its child classes.
+* Add :class:`.SubmissionModerationFlair` which contains the
+  :meth:`~.SubmissionModerationFlair.choices` and
+  :meth:`~.SubmissionModerationFlair.select` methods and is back-compatible
+  with the previous flair method.
 
 **Deprecated**
 
@@ -395,8 +378,8 @@ Unreleased
 * Return values from :meth:`.Comment.block`, :meth:`.Message.block`,
   :meth:`.SubredditMessage.block`, :meth:`.SubredditFlair.delete`,
   :meth:`.friend`, :meth:`.Redditor.message`, :meth:`.Subreddit.message`,
-  :meth:`.select`, and :meth:`.unfriend` are removed as they do not provide
-  any useful information.
+  :meth:`~.SubmissionFlair.select`, and :meth:`.unfriend` are removed as they
+  do not provide any useful information.
 * ``praw.ini`` no longer reads in ``http_proxy`` and ``https_proxy`` settings.
 * ``is_link`` parameter of :meth:`.SubredditRedditorFlairTemplates.add` and
   :meth:`.SubredditRedditorFlairTemplates.clear`. Use
@@ -581,7 +564,7 @@ parameter as described below:
 * Return values from :meth:`.Comment.block`, :meth:`.Message.block`,
   :meth:`.SubredditMessage.block`, :meth:`.SubredditFlair.delete`,
   :meth:`.friend`, :meth:`.Redditor.message`, :meth:`.Subreddit.message`,
-  :meth:`.select`, and :meth:`.unfriend` will be removed in PRAW 5 as they do
+  :meth:`~.SubmissionFlair.select`, and :meth:`.unfriend` will be removed in PRAW 5 as they do
   not provide any useful information.
 
 **Fixed**
@@ -621,7 +604,7 @@ parameter as described below:
   accidentally missed previously.
 * Add ``sticky`` parameter to :meth:`.CommentModeration.distinguish` to sticky
   comments.
-* :meth:`.flair` to add a submission's flair from an instance of
+* ``~.Submission.flair`` to add a submission's flair from an instance of
   :class:`.Submission`.
 * :meth:`.Comment.parent` to obtain the parent of a :class:`.Comment`.
 * :meth:`.opt_in` and :meth:`.opt_out` to :class:`.Subreddit` to permit working
@@ -653,7 +636,7 @@ parameter as described below:
   ``Subreddit.mod.ignore_reports``, ``Subreddit.mod.remove``,
   ``Subreddit.mod.undistinguish``, ``Subreddit.mod.unignore_reports``.
 * Support for passing a :class:`.Submission` to :meth:`.SubredditFlair.set`
-  will be removed in PRAW 5. Use :meth:`.flair` instead.
+  will be removed in PRAW 5. Use ``Submission.flair`` instead.
 * The ``thing`` argument to :meth:`.SubredditFlair.set` is replaced with
   ``redditor`` and will be removed in PRAW 5.
 
@@ -708,7 +691,8 @@ PRAW 4 introduces significant breaking changes. The numerous changes are not
 listed here, only the feature removals. Please read through
 :doc:`/getting_started/quick_start` to help with updating your code to
 PRAW 4. If you require additional help please ask on `/r/redditdev
-<https://www.reddit.com/r/redditdev>`_ or via Slack.
+<https://www.reddit.com/r/redditdev>`_ or in the `praw-dev/praw
+<https://gitter.im/praw-dev/praw>`_ channel on gitter.
 
 **Added**
 
