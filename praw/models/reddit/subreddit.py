@@ -1692,7 +1692,7 @@ class SubredditModeration:
         Streams can be used to indefinitely retrieve Moderator only items from
         :class:`.SubredditModeration` made to moderated subreddits, like:
 
-        .. code:: python
+        .. code-block:: python
 
            for log in reddit.subreddit('mod').mod.stream.log():
                print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
@@ -1946,7 +1946,7 @@ class SubredditModerationStream:
         For example, to retrieve all new edited submissions/comments made
         to all moderated subreddits, try:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.subreddit('mod').mod.stream.edited():
                print(item)
@@ -1967,7 +1967,7 @@ class SubredditModerationStream:
         For example, to retrieve all new mod actions made to all moderated
         subreddits, try:
 
-        .. code:: python
+        .. code-block:: python
 
            for log in reddit.subreddit('mod').mod.stream.log():
                print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
@@ -1998,7 +1998,7 @@ class SubredditModerationStream:
 
         To print new mail in the unread modmail queue try:
 
-        .. code:: python
+        .. code-block:: python
 
            for message in reddit.subreddit('all').mod.stream.modmail_conversations():
                print("From: {}, To: {}".format(message.owner, message.participant))
@@ -2026,7 +2026,7 @@ class SubredditModerationStream:
 
         To print all new modqueue items try:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.subreddit('mod').mod.stream.modqueue():
                print(item)
@@ -2046,7 +2046,7 @@ class SubredditModerationStream:
 
         To print new user and mod report reasons in the report queue try:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.subreddit('mod').mod.stream.reports():
                print(item)
@@ -2066,7 +2066,7 @@ class SubredditModerationStream:
 
         To print new items in the spam queue try:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.subreddit('mod').mod.stream.spam():
                print(item)
@@ -2083,7 +2083,7 @@ class SubredditModerationStream:
 
         To print new items in the unmoderated queue try:
 
-        .. code:: python
+        .. code-block:: python
 
            for item in reddit.subreddit('mod').mod.stream.unmoderated():
                print(item)
@@ -2102,7 +2102,7 @@ class SubredditModerationStream:
 
         To print new mail in the unread modmail queue try:
 
-        .. code:: python
+        .. code-block:: python
 
            for message in reddit.subreddit('mod').mod.stream.unread():
                print("From: {}, To: {}".format(message.author, message.dest))
