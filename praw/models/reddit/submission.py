@@ -1,5 +1,5 @@
 """Provide the Submission class."""
-from typing import Any, Dict, List, Optional, TypeVar, Union
+from typing import Any, Dict, List, Generator, Optional, TypeVar, Union
 from urllib.parse import urljoin
 
 from ...const import API_PATH
@@ -35,7 +35,7 @@ class SubmissionFlair:
 
         For example:
 
-        .. code-block:: python
+        .. code:: python
 
            choices = submission.flair.choices()
 
@@ -59,7 +59,7 @@ class SubmissionFlair:
         For example, to select an arbitrary editable flair text (assuming there
         is one) and set a custom value try:
 
-        .. code-block:: python
+        .. code:: python
 
            choices = submission.flair.choices()
            template_id = next(x for x in choices
@@ -78,12 +78,95 @@ class SubmissionFlair:
         self.submission._reddit.post(url, data=data)
 
 
+class SubmissionModerationFlair(SubmissionFlair):
+    """Provides a set of functions allowing moderators to set post flairs."""
+
+    def __call__(self, text: str = "", css_class: str = ""):
+        """Set flair for the submission.
+
+        :param text: The flair text to associate with the Submission (default:
+            '').
+        :param css_class: The css class to associate with the flair html
+            (default: '').
+
+        This method can only be used by an authenticated user who is a
+        moderator of the Submission's Subreddit.
+
+        Example usage:
+
+        .. code:: python
+
+           submission = reddit.submission(id='5or86n')
+           submission.mod.flair(text='PRAW', css_class='bot')
+
+        """
+        data = {
+            "css_class": css_class,
+            "link": self.submission.fullname,
+            "text": text,
+        }
+        url = API_PATH["flair"].format(subreddit=self.submission.subreddit)
+        self.submission._reddit.post(url, data=data)
+
+    def choices(
+        self,
+    ) -> Generator[Dict[str, Union[bool, list, str]], None, None]:
+        """Return list of available flair choices.
+
+        Choices are required in order to use :meth:`.select`.
+
+        For example:
+
+        .. code:: python
+
+           choices = submission.mod.flair.choices()
+
+        """
+        return iter(self.submission.subreddit.flair.link_templates)
+
+    def select(
+        self,
+        flair_template_id: str,
+        text: Optional[str] = None,
+        css_class: Optional[str] = None,
+    ):
+        """Select flair for submission.
+
+        :param flair_template_id: The flair template to select. The possible
+            ``flair_template_id`` values can be discovered through
+            :meth:`.choices`.
+        :param text: The custom text value for the flair (Optional).
+        :param css_class: The custom css class for the flair (Optional).
+
+        For example, to select the first possible link flair:
+
+        .. code:: python
+
+           choices = submission.mod.flair.choices()
+           template_id = next(choices)["id"]
+           submission.mod.flair.select(template_id,
+                                       text='my custom value',
+                                       css_class='my custom css class')
+
+        """
+        data = {
+            "flair_template_id": flair_template_id,
+            "link": self.submission.fullname,
+            "text": text,
+            "css_class": css_class,
+        }
+        url = API_PATH["select_flair"].format(
+            subreddit=self.submission.subreddit
+        )
+        self.submission._reddit.post(url, data=data)
+
+
 class SubmissionModeration(ThingModerationMixin):
     """Provide a set of functions pertaining to Submission moderation.
 
     Example usage:
 
-    .. code-block:: python
+    .. code:: python
 
        submission = reddit.submission(id="8dmv8z")
        submission.mod.approve()
@@ -91,6 +174,27 @@ class SubmissionModeration(ThingModerationMixin):
     """
 
     REMOVAL_MESSAGE_API = "removal_link_message"
+
+    @cachedproperty
+    def flair(self) -> SubmissionModerationFlair:
+        """Provide an instance of :class:`.SubmissionModerationFlair`.
+
+        Allows the moderator to work with setting flairs on a submission
+        that use the template system introduced in the redesign.
+
+        If a flair template is not being used, then a moderator should directly
+        call the instance.
+
+        Example usage:
+
+        .. code:: python
+
+            choices = submission.mod.flair.choices()
+            template_id = next(choices)["id"]
+            submission.mod.flair.select(template_id, text="Custom flair")
+
+        """
+        return SubmissionModerationFlair(self.thing)
 
     def __init__(self, submission: _Submission):
         """Create a SubmissionModeration instance.
@@ -116,7 +220,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code-block:: python
+        .. code:: python
 
            submission = reddit.submission(id='5or86n')
            submission.mod.contest_mode(state=True)
@@ -127,33 +231,6 @@ class SubmissionModeration(ThingModerationMixin):
             data={"id": self.thing.fullname, "state": state},
         )
 
-    def flair(self, text: str = "", css_class: str = ""):
-        """Set flair for the submission.
-
-        :param text: The flair text to associate with the Submission (default:
-            '').
-        :param css_class: The css class to associate with the flair html
-            (default: '').
-
-        This method can only be used by an authenticated user who is a
-        moderator of the Submission's Subreddit.
-
-        Example usage:
-
-        .. code-block:: python
-
-           submission = reddit.submission(id='5or86n')
-           submission.mod.flair(text='PRAW', css_class='bot')
-
-        """
-        data = {
-            "css_class": css_class,
-            "link": self.thing.fullname,
-            "text": text,
-        }
-        url = API_PATH["flair"].format(subreddit=self.thing.subreddit)
-        self.thing._reddit.post(url, data=data)
-
     def nsfw(self):
         """Mark as not safe for work.
 
@@ -162,7 +239,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code-block:: python
+        .. code:: python
 
            submission = reddit.subreddit('test').submit('nsfw test',
                                                         selftext='nsfw')
@@ -185,7 +262,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code-block:: python
+        .. code:: python
 
            submission = reddit.subreddit('test').submit('oc test',
                                                         selftext='original')
@@ -211,7 +288,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code-block:: python
+        .. code:: python
 
            submission = reddit.submission(id='5or86n')
            submission.mod.sfw()
@@ -231,7 +308,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code-block:: python
+        .. code:: python
 
            submission = reddit.submission(id='5or86n')
            submission.mod.spoiler()
@@ -257,7 +334,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         For example:
 
-        .. code-block:: python
+        .. code:: python
 
            submission = reddit.submission(id='5or86n')
            submission.mod.sticky()
@@ -292,7 +369,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code-block:: python
+        .. code:: python
 
            submission = reddit.subreddit('test').submit('oc test',
                                                         selftext='original')
@@ -318,7 +395,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         For example:
 
-        .. code-block:: python
+        .. code:: python
 
            submission = reddit.subreddit('test').submit('not spoiler',
                                                         selftext='spoiler')
@@ -431,7 +508,7 @@ class Submission(
         This attribute can use used, for example, to obtain a flat list of
         comments, with any :class:`.MoreComments` removed:
 
-        .. code-block:: python
+        .. code:: python
 
            submission.comments.replace_more(limit=0)
            comments = submission.comments.list()
@@ -440,7 +517,7 @@ class Submission(
         ``comment_limit`` attributes before comments are fetched, including
         any call to :meth:`.replace_more`:
 
-        .. code-block:: python
+        .. code:: python
 
            submission.comment_sort = 'new'
            comments = submission.comments.list()
@@ -458,12 +535,12 @@ class Submission(
 
         This attribute is used to work with flair as a regular user of the
         subreddit the submission belongs to. Moderators can directly use
-        :meth:`.flair`.
+        :class:`.SubmissionModerationFlair`.
 
         For example, to select an arbitrary editable flair text (assuming there
         is one) and set a custom value try:
 
-        .. code-block:: python
+        .. code:: python
 
            choices = submission.flair.choices()
            template_id = next(x for x in choices
@@ -573,7 +650,7 @@ class Submission(
 
         Example usage:
 
-        .. code-block:: python
+        .. code:: python
 
            submission = reddit.submission(id='5or86n')
            submission.mark_visited()
@@ -591,7 +668,7 @@ class Submission(
 
         Example usage:
 
-        .. code-block:: python
+        .. code:: python
 
            submission = reddit.submission(id='5or86n')
            submission.hide()
@@ -611,7 +688,7 @@ class Submission(
 
         Example usage:
 
-        .. code-block:: python
+        .. code:: python
 
            submission = reddit.submission(id='5or86n')
            submission.unhide()
@@ -656,7 +733,7 @@ class Submission(
 
         Example usage:
 
-        .. code-block:: python
+        .. code:: python
 
            submission = reddit.submission(id='5or86n')
            cross_post = submission.crosspost(subreddit="learnprogramming",
