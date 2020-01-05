@@ -3,8 +3,8 @@ from typing import Any, Dict, Generator, List, Optional, TypeVar, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
-from ..listing.generator import ListingGenerator
 from ..list.redditor import RedditorList
+from ..listing.generator import ListingGenerator
 from .base import RedditBase
 from .mixins import FullnameMixin
 from .redditor import Redditor

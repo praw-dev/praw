@@ -1,7 +1,7 @@
 """Provide classes related to widgets."""
 
 import os.path
-from json import dumps, JSONEncoder
+from json import JSONEncoder, dumps
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty

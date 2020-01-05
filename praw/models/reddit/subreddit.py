@@ -1,20 +1,21 @@
 """Provide the Subreddit class."""
+
 # pylint: disable=too-many-lines
+import socket
 from copy import deepcopy
 from json import dumps, loads
-import socket
 from os.path import basename, dirname, join
 from urllib.parse import urljoin
 
-from prawcore import Redirect
 import websocket
+from prawcore import Redirect
 
 from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import APIException, ClientException, WebSocketException
 from ...util.cache import cachedproperty
-from ..util import permissions_string, stream_generator
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
+from ..util import permissions_string, stream_generator
 from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin

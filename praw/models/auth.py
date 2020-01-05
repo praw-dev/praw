@@ -8,8 +8,8 @@ from prawcore import (
     session,
 )
 
-from .base import PRAWBase
 from ..exceptions import ClientException
+from .base import PRAWBase
 
 
 class Auth(PRAWBase):

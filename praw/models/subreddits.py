@@ -1,11 +1,11 @@
 """Provide the Subreddits class."""
 from typing import Dict, Generator, List, Optional, Union
 
+from ..const import API_PATH
 from . import Subreddit
 from .base import PRAWBase
 from .listing.generator import ListingGenerator
 from .util import stream_generator
-from ..const import API_PATH
 
 
 class Subreddits(PRAWBase):

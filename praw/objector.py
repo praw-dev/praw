@@ -1,6 +1,6 @@
 """Provides the Objector class."""
 
-from typing import Dict, List, Any, Union, Optional, TypeVar
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from .exceptions import APIException, ClientException
 from .models.reddit.base import RedditBase

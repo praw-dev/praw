@@ -2,8 +2,8 @@
 from copy import deepcopy
 from typing import Any, Dict, Iterator, Optional, TypeVar
 
-from .listing import FlairListing
 from ..base import PRAWBase
+from .listing import FlairListing
 
 Reddit = TypeVar("Reddit")
 
