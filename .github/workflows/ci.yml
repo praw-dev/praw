@@ -48,19 +48,11 @@ jobs:
       - name: Get wheel
         run: pip install wheel
       - name: Install project dependencies
-        run: pip install .
+        run: pip install .[test]
       - name: Install test dependencies
         run: pip install pytest coverage
-      - name: Install betamax and plugins
-        # Windows + Python 3.8 support
-        run: |
-          pip install "betamax >=0.8, <0.9"
-          pip install "betamax-matchers >=0.3.0, <0.5"
-          pip install "betamax-serializers >=0.2, <0.3"
       - name: Run tests
-        run: python -m coverage run ./setup.py test 
-      - name: Print coverage
-        run: coverage report --include "praw/*" --fail-under=100
+        run: coverage run --source prawcore --module pytest
   lint-multi-python:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -106,15 +98,8 @@ jobs:
       - name: Get wheel
         run: pip install wheel
       - name: Install project dependencies
-        run: pip install .
+        run: pip install .[test]
       - name: Install test dependencies
         run: pip install pytest coverage
-      - name: Install betamax and plugins
-        run: |
-          pip install "betamax >=0.8, <0.9"
-          pip install "betamax-matchers >=0.3.0, <0.5"
-          pip install "betamax-serializers >=0.2, <0.3"
       - name: Run tests
-        run: python -m coverage run ./setup.py test
-      - name: Print coverage
-        run: coverage report --include "praw/*" --fail-under=100
+        run: coverage run --source prawcore --module pytest

@@ -2,10 +2,10 @@ cache: pip
 dist: xenial
 install:
   - yes | pip uninstall py pytest
-  - pip install coveralls
+  - pip install .[ci,test]
 jobs:
   include:
-    - install: pip install black flake8 pydocstyle sphinx sphinx_rtd_theme .
+    - install: pip install .[dev]
       python: 3.8
       script:
         - python3 ./tools/replace_code_block.py --check
@@ -21,8 +21,7 @@ python:
   - 3.7
   - 3.8
 script:
-  - coverage run --source=praw setup.py test
-  - coveralls
+  - pytest
 stages:
   - lint
   - test
