@@ -8,6 +8,10 @@ Unreleased
 
 * ``config_interpolation`` parameter for :class:`.Reddit` supporting basic and
   extended modes.
+* Add :class:`.SubmissionModerationFlair` which contains the
+  :meth:`~.SubmissionModerationFlair.choices` and
+  :meth:`~.SubmissionModerationFlair.select` methods and is back-compatible
+  with the previous flair method.
 
 **Removed**
 
@@ -70,10 +74,6 @@ Unreleased
   :meth:`~.SubredditRedditorFlairTemplates.add`,
   :meth:`~.SubredditLinkFlairTemplates.add`, and
   :meth:`~.SubredditFlairTemplates.update`, as well as its child classes.
-* Add :class:`.SubmissionModerationFlair` which contains the
-  :meth:`~.SubmissionModerationFlair.choices` and
-  :meth:`~.SubmissionModerationFlair.select` methods and is back-compatible
-  with the previous flair method.
 
 **Deprecated**
 

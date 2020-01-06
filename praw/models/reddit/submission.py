@@ -35,7 +35,7 @@ class SubmissionFlair:
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            choices = submission.flair.choices()
 
@@ -59,7 +59,7 @@ class SubmissionFlair:
         For example, to select an arbitrary editable flair text (assuming there
         is one) and set a custom value try:
 
-        .. code:: python
+        .. code-block:: python
 
            choices = submission.flair.choices()
            template_id = next(x for x in choices
@@ -94,7 +94,7 @@ class SubmissionModerationFlair(SubmissionFlair):
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.mod.flair(text='PRAW', css_class='bot')
@@ -117,7 +117,7 @@ class SubmissionModerationFlair(SubmissionFlair):
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            choices = submission.mod.flair.choices()
 
@@ -140,7 +140,7 @@ class SubmissionModerationFlair(SubmissionFlair):
 
         For example, to select the first possible link flair:
 
-        .. code:: python
+        .. code-block:: python
 
            choices = submission.mod.flair.choices()
            template_id = next(choices)["id"]
@@ -166,7 +166,7 @@ class SubmissionModeration(ThingModerationMixin):
 
     Example usage:
 
-    .. code:: python
+    .. code-block:: python
 
        submission = reddit.submission(id="8dmv8z")
        submission.mod.approve()
@@ -187,7 +187,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
             choices = submission.mod.flair.choices()
             template_id = next(choices)["id"]
@@ -220,7 +220,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.mod.contest_mode(state=True)
@@ -239,7 +239,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.subreddit('test').submit('nsfw test',
                                                         selftext='nsfw')
@@ -262,7 +262,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.subreddit('test').submit('oc test',
                                                         selftext='original')
@@ -288,7 +288,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.mod.sfw()
@@ -308,7 +308,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.mod.spoiler()
@@ -334,7 +334,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.mod.sticky()
@@ -369,7 +369,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.subreddit('test').submit('oc test',
                                                         selftext='original')
@@ -395,7 +395,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         For example:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.subreddit('test').submit('not spoiler',
                                                         selftext='spoiler')
@@ -508,7 +508,7 @@ class Submission(
         This attribute can use used, for example, to obtain a flat list of
         comments, with any :class:`.MoreComments` removed:
 
-        .. code:: python
+        .. code-block:: python
 
            submission.comments.replace_more(limit=0)
            comments = submission.comments.list()
@@ -517,7 +517,7 @@ class Submission(
         ``comment_limit`` attributes before comments are fetched, including
         any call to :meth:`.replace_more`:
 
-        .. code:: python
+        .. code-block:: python
 
            submission.comment_sort = 'new'
            comments = submission.comments.list()
@@ -540,7 +540,7 @@ class Submission(
         For example, to select an arbitrary editable flair text (assuming there
         is one) and set a custom value try:
 
-        .. code:: python
+        .. code-block:: python
 
            choices = submission.flair.choices()
            template_id = next(x for x in choices
@@ -650,7 +650,7 @@ class Submission(
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.mark_visited()
@@ -668,7 +668,7 @@ class Submission(
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.hide()
@@ -688,7 +688,7 @@ class Submission(
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            submission.unhide()
@@ -733,7 +733,7 @@ class Submission(
 
         Example usage:
 
-        .. code:: python
+        .. code-block:: python
 
            submission = reddit.submission(id='5or86n')
            cross_post = submission.crosspost(subreddit="learnprogramming",
