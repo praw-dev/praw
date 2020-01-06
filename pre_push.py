@@ -8,6 +8,8 @@ from shutil import rmtree
 from subprocess import CalledProcessError, check_call
 from tempfile import mkdtemp
 
+current_directory = path.abspath(path.join(__file__, ".."))
+
 
 def do_process(args, shell=False):
     """Run program provided by args.
@@ -37,6 +39,12 @@ def run_static():
     Otherwise, it will return statuscode 1
     """
     success = True
+    success &= do_process(
+        [
+            sys.executable,
+            path.join(current_directory, "tools/replace_code_block.py"),
+        ]
+    )
     success &= do_process(["black ."], shell=True)
     success &= do_process(["flake8", "--exclude=.eggs,build,docs"])
     success &= do_process(["pydocstyle", "praw"])
@@ -57,9 +65,8 @@ def run_unit():
     Follows the behavior of the static tests,
     where any failed tests cause pre_push.py to fail.
     """
-    curdir = path.abspath(path.join(__file__, ".."))
     return do_process(
-        [sys.executable, "{dir}/setup.py".format(dir=curdir), "test"]
+        [sys.executable, path.join(current_directory, "setup.py"), "test"]
     )
 
 

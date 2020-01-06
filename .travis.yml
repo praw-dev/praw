@@ -8,6 +8,7 @@ jobs:
     - install: pip install black flake8 pydocstyle sphinx sphinx_rtd_theme .
       python: 3.8
       script:
+        - python3 ./tools/replace_code_block.py --check
         - black --check --verbose *.py docs praw tests
         - flake8 --exclude=.eggs,build,docs
         - pydocstyle praw

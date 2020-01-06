@@ -21,6 +21,8 @@ jobs:
       run: pip install .
     - name: Install test dependencies
       run: pip install black flake8 pydocstyle sphinx sphinx_rtd_theme
+    - name: Check usage of code-block
+      run: python ./tools/replace_code_block.py --check
     - name: Check code formatting with black
       run: black --check --verbose .
     - name: Lint with flake8
@@ -77,6 +79,8 @@ jobs:
         run: pip install .
       - name: Install test dependencies
         run: pip install black flake8 pydocstyle sphinx sphinx_rtd_theme
+      - name: Check usage of code-block
+        run: python ./tools/replace_code_block.py --check
       - name: Check code formatting with black
         run: black --check --verbose .
       - name: Lint with flake8
