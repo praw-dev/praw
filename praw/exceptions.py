@@ -21,18 +21,10 @@ class APIException(PRAWException):
         :param error_type: The error type set on Reddit's end.
         :param message: The associated message for the error.
         :param field: The input field associated with the error if available.
-
-        .. note:: Calling ``str()`` on the instance returns
-            ``unicode_escape``-d ASCII string because the message may be
-            localized and may contain UNICODE characters. If you want a
-            non-escaped message, access the ``message`` attribute on
-            the instance.
-
         """
-        error_str = u"{}: '{}'".format(error_type, message)
+        error_str = "{}: '{}'".format(error_type, message)
         if field:
-            error_str += u" on field '{}'".format(field)
-        error_str = error_str.encode("unicode_escape").decode("ascii")
+            error_str += " on field '{}'".format(field)
 
         super().__init__(error_str)
         self.error_type = error_type
