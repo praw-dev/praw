@@ -54,7 +54,10 @@ class CommentForest:
         return self._comments[index]
 
     def __init__(
-        self, submission: Submission, comments: Optional[List[Comment]] = None
+        self,
+        submission: Submission,
+        comments: Optional[List[Comment]] = None,
+        parent_comment: Optional[Comment] = None,
     ):
         """Initialize a CommentForest instance.
 
@@ -62,9 +65,12 @@ class CommentForest:
             parent of the comments.
         :param comments: Initialize the Forest with a list of comments
             (default: None).
+        :param parent_comment: Initialize the Forest with a parent comment
+            (default: None).
 
         """
         self._comments = comments
+        self._parent_comment = parent_comment
         self._submission = submission
 
     def __len__(self) -> int:
@@ -154,6 +160,9 @@ class CommentForest:
                              sleep(1)
 
         """
+        if self._parent_comment is not None:
+            if self._parent_comment._refreshed:
+                return []
         remaining = limit
         more_comments = self._gather_more_comments(self._comments)
         skipped = []

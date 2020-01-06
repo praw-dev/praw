@@ -118,7 +118,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         """
         if isinstance(self._replies, list):
-            self._replies = CommentForest(self.submission, self._replies)
+            self._replies = CommentForest(self.submission, self._replies, self)
         return self._replies
 
     @property
@@ -153,6 +153,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
             )
         self._replies = []
         self._submission = None
+        self._refreshed = False
         super().__init__(reddit, _data=_data)
         if id:
             self.id = id
@@ -321,6 +322,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         for reply in comment_list:
             reply.submission = self.submission
+        self._refreshed = True
         return self
 
 
