@@ -12,13 +12,10 @@ Documentation Contributors
 - Dale Cudmore <dalecudmore@gmail.com> `@DCuddies <https://github.com/DCuddies>`_
 - Zhifu Ge <zhifu@me.com> `@zhifuge <https://github.com/zhifuge>`_
 - diceroll123 `@diceroll123 <https://github.com/diceroll123>`_
-- Mike Wohlrab `@D0cR3d <https://github.com/D0cR3d>`_
 - Watchful1 `@Watchful1 <https://github.com/Watchful1>`_
 - theonefoster `@theonefoster <https://github.com/theonefoster>`_
 - Eric Woolard `@ericwoolard <https://github.com/ericwoolard>`_
 - Marc `@PerhapsSomeone <https://github.com/PerhapsSomeone>`_
-- kungming2 `@kungming2 <https://github.com/kungming2>`_
-- PythonCoderAS `@PythonCoderAS <https://github.com/PythonCoderAS>`_
 <!-- - Add "Name <email (optional)> and github profile link" above this line. -->
 
 
