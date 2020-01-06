@@ -12,13 +12,11 @@ Documentation Contributors
 - Dale Cudmore <dalecudmore@gmail.com> `@DCuddies <https://github.com/DCuddies>`_
 - Zhifu Ge <zhifu@me.com> `@zhifuge <https://github.com/zhifuge>`_
 - diceroll123 `@diceroll123 <https://github.com/diceroll123>`_
-- Mike Wohlrab `@D0cR3d <https://github.com/D0cR3d>`_
 - Watchful1 `@Watchful1 <https://github.com/Watchful1>`_
 - theonefoster `@theonefoster <https://github.com/theonefoster>`_
 - Eric Woolard `@ericwoolard <https://github.com/ericwoolard>`_
 - Marc `@PerhapsSomeone <https://github.com/PerhapsSomeone>`_
-- kungming2 `@kungming2 <https://github.com/kungming2>`_
-- Add "Name <email (optional)> and github profile link" above this line.
+<!-- - Add "Name <email (optional)> and github profile link" above this line. -->
 
 
 Logo Creator
@@ -56,5 +54,5 @@ Source Contributors
 - kungming2 `@kungming2 <https://github.com/kungming2>`_
 - Jack Steel `@jackodsteel <https://github.com/jackodsteel>`_
 - David Mirch `@fwump38 <https://github.com/fwump38>`_
-- PokestarFan `@PokestarFan <https://github.com/PokestarFan>`_
-- Add "Name <email (optional)> and github profile link" above this line.
+- PythonCoderAS `@PythonCoderAS <https://github.com/PythonCoderAS>`_
+<!-- - Add "Name <email (optional)> and github profile link" above this line. -->
