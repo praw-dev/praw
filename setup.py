@@ -13,6 +13,19 @@ with open(path.join(HERE, "README.rst"), encoding="utf-8") as fp:
 with open(path.join(HERE, PACKAGE_NAME, "const.py"), encoding="utf-8") as fp:
     VERSION = re.search('__version__ = "([^"]+)"', fp.read()).group(1)
 
+extras = {
+    "ci": ["coveralls"],
+    "dev": ["pre-commit"],
+    "lint": ["black", "flake8", "pydocstyle", "sphinx", "sphinx_rtd_theme"],
+    "test": [
+        "betamax >=0.8, <0.9",
+        "betamax-matchers >=0.3.0, <0.5",
+        "betamax-serializers >=0.2, <0.3",
+        "mock >=0.8",
+        "pytest >=2.7.3",
+    ],
+}
+extras["dev"] += extras["lint"] + extras["test"]
 
 setup(
     name=PACKAGE_NAME,
@@ -32,7 +45,6 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Utilities",
     ],
     description=(
@@ -40,7 +52,7 @@ setup(
         "python package that allows for simple access to "
         "reddit's API."
     ),
-    extras_require={"dev": ["pre-commit"]},
+    extras_require=extras,
     install_requires=[
         "prawcore >=1.0.1, <2.0",
         "update_checker >=0.16",
@@ -51,15 +63,6 @@ setup(
     long_description=README,
     package_data={"": ["LICENSE.txt"], PACKAGE_NAME: ["*.ini"]},
     packages=find_packages(exclude=["tests", "tests.*"]),
-    setup_requires=["pytest-runner >=2.1"],
-    tests_require=[
-        "betamax >=0.8, <0.9",
-        "betamax-matchers >=0.3.0, <0.5",
-        "betamax-serializers >=0.2, <0.3",
-        "mock >=0.8",
-        "pytest >=2.7.3",
-    ],
-    test_suite="tests",
     url="https://praw.readthedocs.org/",
     version=VERSION,
 )

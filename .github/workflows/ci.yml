@@ -1,0 +1,134 @@
+jobs:
+  complete_coverals:
+    needs: test-multi-python
+    runs-on: ubuntu-latest
+    steps:
+    - uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        parallel-finished: true
+
+  lint-multi-os:
+    name: Lint ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.x
+    - uses: actions/cache@v1
+      with:
+        key: v0-${{ runner.os }}-pip-lint-${{ hashFiles('setup.py') }}
+        path: ~/.cache/pip
+        restore-keys: |
+          v0-${{ runner.os }}-pip-lint-
+          v0-${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[lint]
+    - name: Run black
+      run: black --check --verbose .
+    - name: Run flake8
+      run: flake8 --exclude docs --statistics
+    - name: Check usage of code-block
+      run: python ./tools/replace_code_block.py --check
+    - name: Run pydocstyle
+      run: pydocstyle praw
+    - name: Run sphinx
+      run: sphinx-build -W docs/ /tmp/foo
+    strategy:
+      matrix:
+        os: [macOS-latest, ubuntu-latest, windows-latest]
+
+  lint-multi-python:
+    name: Lint Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.x
+    - uses: actions/cache@v1
+      with:
+        key: v0-${{ runner.os }}-pip-lint-${{ hashFiles('setup.py') }}
+        path: ~/.cache/pip
+        restore-keys: |
+          v0-${{ runner.os }}-pip-lint-
+          v0-${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[lint]
+    - name: Run black
+      run: black --check --verbose .
+    - name: Run flake8
+      run: flake8 --exclude docs --statistics
+    - name: Run pydocstyle
+      run: pydocstyle praw
+    - name: Run sphinx
+      run: sphinx-build -W docs/ /tmp/foo
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8]
+
+  test-multi-os:
+    name: Test ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.x
+    - uses: actions/cache@v1
+      with:
+        key: v0-${{ runner.os }}-pip-test-${{ hashFiles('setup.py') }}
+        path: ~/.cache/pip
+        restore-keys: |
+          v0-${{ runner.os }}-pip-test-
+          v0-${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[test]
+    - name: Test with pytest
+      run: pytest
+    strategy:
+      matrix:
+        os: [macOS-latest, ubuntu-latest, windows-latest]
+
+  test-multi-python:
+    name: Test Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.x
+    - uses: actions/cache@v1
+      with:
+        key: v0-${{ runner.os }}-pip-test-${{ hashFiles('setup.py') }}
+        path: ~/.cache/pip
+        restore-keys: |
+          v0-${{ runner.os }}-pip-test-
+          v0-${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[test]
+        pip install https://github.com/bboe/coveralls-python/archive/github_actions.zip
+    - name: Test with pytest
+      run: coverage run --source praw --module pytest
+    - env:
+        COVERALLS_PARALLEL: true
+        COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      name: Submit to coveralls
+      run: coveralls
+    - name: Check coverage
+      run: coverage report --fail-under=100
+    strategy:
+      matrix:
+        python-version: [3.5, 3.6, 3.7, 3.8]
+
+name: CI
+on: [pull_request, push]
