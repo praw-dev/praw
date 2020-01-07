@@ -70,11 +70,6 @@ Unreleased
 * The behavior of :class:`.APIException` will no longer unicode-escape strings
   in the next minor release
 
-**Removed**
-
-* Converting :class:`.APIException` to string will no longer escape unicode
-  characters.
-
 6.4.0 (2019/09/21)
 ------------------
 
