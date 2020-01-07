@@ -9,6 +9,13 @@ Unreleased
 * Converting :class:`.APIException` to string will no longer escape unicode
   characters.
 
+6.5.1 (2010/01/07)
+------------------
+
+**Fixed**
+
+* Removed usages of ``NoReturn`` that caused PRAW to fail due to
+  ``ImportError`` in Python ``<3.5.4`` and ``<3.6.2``.
 
 6.5.0 (2020/01/05)
 ------------------

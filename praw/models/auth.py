@@ -1,5 +1,5 @@
 """Provide the Auth class."""
-from typing import Dict, List, NoReturn, Optional, Set, Union
+from typing import Dict, List, Optional, Set, Union
 
 from prawcore import (
     Authorizer,
@@ -60,9 +60,7 @@ class Auth(PRAWBase):
         self._reddit._core = self._reddit._authorized_core = authorized_session
         return authorizer.refresh_token
 
-    def implicit(
-        self, access_token: str, expires_in: int, scope: str
-    ) -> NoReturn:
+    def implicit(self, access_token: str, expires_in: int, scope: str) -> None:
         """Set the active authorization to be an implicit authorization.
 
         :param access_token: The access_token obtained from Reddit's callback.
