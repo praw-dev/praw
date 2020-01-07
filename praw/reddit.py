@@ -2,17 +2,7 @@
 import configparser
 import os
 from itertools import islice
-from typing import (
-    IO,
-    Any,
-    Dict,
-    Generator,
-    NoReturn,
-    Optional,
-    Sequence,
-    Type,
-    Union,
-)
+from typing import IO, Any, Dict, Generator, Optional, Sequence, Type, Union
 
 from prawcore import (
     Authorizer,
@@ -76,7 +66,7 @@ class Reddit:
         return self._core == self._read_only_core
 
     @read_only.setter
-    def read_only(self, value: bool) -> NoReturn:
+    def read_only(self, value: bool) -> None:
         """Set or unset the use of the ReadOnlyAuthorizer.
 
         Raise :class:`ClientException` when attempting to unset ``read_only``
