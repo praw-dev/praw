@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Fixed**
+
+* Removed usages of `NoReturn` that caused PRAW to fail due to `ImportError`
+  in Python <3.5.4 and <3.6.2.
+
 6.5.0 (2020/01/05)
 ------------------
 
