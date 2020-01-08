@@ -1,8 +1,10 @@
 # coding: utf-8
 from praw.exceptions import APIException, ClientException, PRAWException
 
+from . import UnitTest
 
-class TestPRAWException:
+
+class TestPRAWException(UnitTest):
     def test_inheritance(self):
         assert isinstance(PRAWException(), Exception)
 
@@ -11,7 +13,7 @@ class TestPRAWException:
         assert str(PRAWException("foo")) == "foo"
 
 
-class TestAPIException:
+class TestAPIException(UnitTest):
     def test_inheritance(self):
         assert isinstance(APIException(None, None, None), PRAWException)
 
@@ -24,7 +26,7 @@ class TestAPIException:
         )
 
 
-class TestClientException:
+class TestClientException(UnitTest):
     def test_inheritance(self):
         assert isinstance(ClientException(), PRAWException)
 
