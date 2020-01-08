@@ -39,7 +39,7 @@ class ClientException(PRAWException):
 class WebSocketException(ClientException):
     """Indicate exceptions caused by use of WebSockets."""
 
-    def __init__(self, message, exception):
+    def __init__(self, message: str, exception: Exception):
         """Initialize a WebSocketException.
 
         :param message: The exception message.
