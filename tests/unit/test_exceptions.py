@@ -1,4 +1,10 @@
-from praw.exceptions import APIException, ClientException, PRAWException
+# coding: utf-8
+from praw.exceptions import (
+    APIException,
+    ClientException,
+    PRAWException,
+    DuplicateReplaceException,
+)
 
 
 class TestPRAWException:
@@ -30,3 +36,15 @@ class TestClientException:
     def test_str(self):
         assert str(ClientException()) == ""
         assert str(ClientException("error message")) == "error message"
+
+
+class TestDuplicateReplaceException:
+    def test_inheritance(self):
+        assert isinstance(DuplicateReplaceException(), ClientException)
+
+    def test_message(self):
+        assert (
+            str(DuplicateReplaceException())
+            == "A duplicate comment has been detected. Are you attempting to "
+            "call ``replace_more_comments`` more than once?"
+        )

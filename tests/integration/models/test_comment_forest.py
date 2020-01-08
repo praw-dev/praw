@@ -1,5 +1,9 @@
 """Test praw.models.comment_forest."""
+import mock
+import pytest
+
 from praw.models import Comment, MoreComments, Submission
+from praw.exceptions import DuplicateReplaceException
 
 from .. import IntegrationTest
 
@@ -126,3 +130,16 @@ class TestCommentForest(IntegrationTest):
             )
             comment.replies.replace_more()
             assert all(isinstance(x, Comment) for x in comment.replies.list())
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_comment_forest_refresh_error(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestCommentForest.test_DuplicateReplaceException",
+            match_requests_on=["uri", "method", "body"],
+        ):
+            submission = next(self.reddit.front.top())
+            submission.comment_limit = 1
+            submission.comments[1].comments()
+            with pytest.raises(DuplicateReplaceException):
+                submission.comments.replace_more(limit=1)
