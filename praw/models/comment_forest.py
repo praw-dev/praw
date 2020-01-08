@@ -3,6 +3,7 @@ from heapq import heappop, heappush
 from typing import List, Optional, TypeVar, Union
 
 from .reddit.more import MoreComments
+from ..exceptions import DuplicateReplaceException
 
 Comment = TypeVar("Comment")
 Submission = TypeVar("Submission")
@@ -72,12 +73,16 @@ class CommentForest:
         return len(self._comments)
 
     def _insert_comment(self, comment):
-        assert comment.name not in self._submission._comments_by_id
+        if comment.name in self._submission._comments_by_id:
+            raise DuplicateReplaceException
         comment.submission = self._submission
         if isinstance(comment, MoreComments) or comment.is_root:
             self._comments.append(comment)
         else:
-            assert comment.parent_id in self._submission._comments_by_id
+            assert comment.parent_id in self._submission._comments_by_id, (
+                "PRAW Error occured. Please file a bug report and include "
+                "the code that caused the error."
+            )
             parent = self._submission._comments_by_id[comment.parent_id]
             parent.replies._comments.append(comment)
 
