@@ -1,4 +1,3 @@
-# coding: utf-8
 from praw.exceptions import APIException, ClientException, PRAWException
 
 
