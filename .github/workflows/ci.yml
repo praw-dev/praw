@@ -1,5 +1,5 @@
 jobs:
-  complete_coverals:
+  complete_coveralls:
     needs: test-multi-python
     runs-on: ubuntu-latest
     steps:
