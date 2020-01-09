@@ -13,7 +13,7 @@ PRAW: The Python Reddit API Wrapper
 .. image:: https://coveralls.io/repos/github/praw-dev/praw/badge.svg?branch=master
    :alt: Coveralls Coverage
    :target: https://coveralls.io/github/praw-dev/praw?branch=master
-.. image:: https://github.com/praw-dev/praw/workflows/Python%20package/badge.svg
+.. image:: https://github.com/praw-dev/praw/workflows/CI/badge.svg
    :alt: Github Actions Coverage
    :target: https://github.com/praw-dev/praw/actions?query=branch%3Amaster
 .. image:: https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg
