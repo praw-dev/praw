@@ -36,6 +36,17 @@ class ClientException(PRAWException):
     """Indicate exceptions that don't involve interaction with Reddit's API."""
 
 
+class DuplicateReplaceException(ClientException):
+    """Indicate exceptions that involve the replacement of MoreComments."""
+
+    def __init__(self):
+        """Instantize the class."""
+        super().__init__(
+            "A duplicate comment has been detected. Are you attempting to call"
+            " ``replace_more_comments`` more than once?"
+        )
+
+
 class WebSocketException(ClientException):
     """Indicate exceptions caused by use of WebSockets."""
 
