@@ -57,6 +57,21 @@ class InvalidImplicitAuth(ClientException):
         )
 
 
+class InvalidURL(ClientException):
+    """Indicate exceptions where an invalid URL is entered."""
+
+    def __init__(self, url: str, custom_message: Optional[str] = None):
+        """Instantize the class.
+
+        :param url: The invalid URL.
+        :param custom_message: A custom message to display. Must contain a
+            format identifier (``{}`` or ``{0}``).
+        """
+        if custom_message:
+            super().__init__(custom_message.format(url))
+        super().__init__("Invalid URL: {url}".format(url=url))
+
+
 class MissingRequiredAttributeException(ClientException):
     """Indicate exceptions caused by not including a required attribute."""
 
