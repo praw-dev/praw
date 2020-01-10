@@ -35,7 +35,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         r"""Provide an instance of :class:`.SubListing` for comment access.
 
         For example, to output the first line of all new comments by
-        ``/u/spez`` try:
+        ``u/spez`` try:
 
         .. code-block:: python
 
@@ -50,7 +50,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         """Provide an instance of :class:`.SubListing` for submission access.
 
         For example, to output the title's of top 100 of all time submissions
-        for ``/u/spez`` try:
+        for ``u/spez`` try:
 
         .. code-block:: python
 

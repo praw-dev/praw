@@ -143,7 +143,7 @@ class Inbox(PRAWBase):
         r"""Return a :class:`.ListingGenerator` for mentions.
 
         A mention is :class:`.Comment` in which the authorized redditor is
-        named in its body like ``/u/redditor_name``.
+        named in its body like ``u/redditor_name``.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

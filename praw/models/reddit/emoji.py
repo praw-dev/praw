@@ -69,9 +69,7 @@ class Emoji(RedditBase):
                 self._fetched = True
                 return
         raise ClientException(
-            "/r/{} does not have the emoji {}".format(
-                self.subreddit, self.name
-            )
+            "r/{} does not have the emoji {}".format(self.subreddit, self.name)
         )
 
     def delete(self):
