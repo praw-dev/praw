@@ -69,7 +69,8 @@ class InvalidURL(ClientException):
         """
         if custom_message:
             super().__init__(custom_message.format(url))
-        super().__init__("Invalid URL: {url}".format(url=url))
+        else:
+            super().__init__("Invalid URL: {url}".format(url=url))
 
 
 class MissingRequiredAttributeException(ClientException):

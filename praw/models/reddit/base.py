@@ -2,7 +2,7 @@
 from typing import Any, Dict, TypeVar, Union
 from urllib.parse import urlparse
 
-from ...exceptions import ClientException
+from ...exceptions import InvalidURL
 from ..base import PRAWBase
 
 Reddit = TypeVar("Reddit")
@@ -15,7 +15,7 @@ class RedditBase(PRAWBase):
     def _url_parts(url):
         parsed = urlparse(url)
         if not parsed.netloc:
-            raise ClientException("Invalid URL: {}".format(url))
+            raise InvalidURL(url)
         return parsed.path.rstrip("/").split("/")
 
     def __eq__(self, other: Union[Any, str]) -> bool:
