@@ -35,11 +35,10 @@ class Objector:
         if len(errors) < 1:
             # See `Collection._fetch()`.
             raise ClientException("successful error response", data)
-        if len(errors) > 1:
-            # Yet to be observed.
-            raise AssertionError(
-                "multiple error descriptions in response", data
-            )
+        assert not len(errors) > 1, (  # Yet to be observed.
+            "multiple error descriptions in response",
+            data,
+        )
 
         return APIException(*errors[0])
 
@@ -168,7 +167,10 @@ class Objector:
             errors = data["json"]["errors"]
             if len(errors) == 1:
                 raise APIException(*errors[0])
-            assert not errors
+            assert not errors, (
+                "Errors did not get raised as an APIException",
+                errors,
+            )
         elif isinstance(data, dict):
             return self._objectify_dict(data)
 
