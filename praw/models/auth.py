@@ -8,7 +8,7 @@ from prawcore import (
     session,
 )
 
-from ..exceptions import ClientException
+from ..exceptions import ClientException, MissingRequiredAttributeException
 from .base import PRAWBase
 
 
@@ -124,7 +124,7 @@ class Auth(PRAWBase):
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if authenticator.redirect_uri is self._reddit.config.CONFIG_NOT_SET:
-            raise ClientException("redirect_uri must be provided")
+            raise MissingRequiredAttributeException("redirect_uri must be provided")
         if isinstance(authenticator, UntrustedAuthenticator):
             return authenticator.authorize_url(
                 "temporary" if implicit else duration,
