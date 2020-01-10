@@ -19,7 +19,7 @@ from prawcore import (
 from . import models
 from .config import Config
 from .const import API_PATH, USER_AGENT_FORMAT, __version__
-from .exceptions import ClientException
+from .exceptions import ClientException, MissingRequiredAttributeException
 from .objector import Objector
 
 try:
@@ -180,9 +180,11 @@ class Reddit:
                 self.config.CONFIG_NOT_SET,
                 None,
             ):
-                raise ClientException(required_message.format(attribute))
+                raise MissingRequiredAttributeException(
+                    required_message.format(attribute)
+                )
         if self.config.client_secret is self.config.CONFIG_NOT_SET:
-            raise ClientException(
+            raise MissingRequiredAttributeException(
                 required_message.format("client_secret")
                 + "\nFor installed applications this value "
                 "must be set to None via a keyword argument "
