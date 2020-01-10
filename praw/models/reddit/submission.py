@@ -410,9 +410,7 @@ class Submission(
             submission_id = parts[-1]
             if "r" in parts:
                 raise InvalidURL(
-                    url,
-                    custom_message="Invalid URL (subreddit, not "
-                    "submission): {}",
+                    url, message="Invalid URL (subreddit, not submission): {}",
                 )
         else:
             submission_id = parts[parts.index("comments") + 1]
