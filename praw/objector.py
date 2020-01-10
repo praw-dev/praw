@@ -35,11 +35,10 @@ class Objector:
         if len(errors) < 1:
             # See `Collection._fetch()`.
             raise ClientException("successful error response", data)
-        if len(errors) > 1:
-            # Yet to be observed.
-            raise AssertionError(
-                "multiple error descriptions in response", data
-            )
+        assert not len(errors) > 1, (  # Yet to be observed.
+            "multiple error descriptions in response",
+            data,
+        )
 
         return APIException(*errors[0])
 
