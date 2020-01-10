@@ -47,6 +47,10 @@ class DuplicateReplaceException(ClientException):
         )
 
 
+class MissingRequiredAttributeException(ClientException):
+    """Indicate exceptions caused by not including a required attribute."""
+
+
 class WebSocketException(ClientException):
     """Indicate exceptions caused by use of WebSockets."""
 
