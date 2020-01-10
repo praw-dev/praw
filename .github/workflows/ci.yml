@@ -31,8 +31,6 @@ jobs:
       run: black --check --verbose .
     - name: Run flake8
       run: flake8 --exclude docs --statistics
-    - name: Check usage of code-block
-      run: python ./tools/replace_code_block.py --check
     - name: Check other phrase usages
       run: python ./tools/static_word_checks.py
     - name: Run pydocstyle
@@ -62,8 +60,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install .[lint]
-    - name: Check usage of code-block
-      run: python ./tools/replace_code_block.py --check
     - name: Check other phrase usages
       run: python ./tools/static_word_checks.py
     - name: Run black
