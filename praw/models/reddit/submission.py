@@ -402,7 +402,7 @@ class Submission(
             * https://reddit.com/comments/2gmzqe/
             * https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/
 
-        Raise :class:`.ClientException` if URL is not a valid submission URL.
+        Raise :class:`.InvalidURL` if URL is not a valid submission URL.
 
         """
         parts = RedditBase._url_parts(url)
