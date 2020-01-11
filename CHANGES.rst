@@ -31,6 +31,64 @@ Unreleased
 * The parameter ``text`` for methods
   :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` is no longer required.
+* :class:`.LinkFlair` to represent simple flairs.
+* :meth:`.LinkFlair.change_text` to change the text of an editable link flair
+* :meth:`.LinkFlair.find_advanced_flair_template` to get the instance of
+  :class:`.AdvancedSubmissionFlair` that corresponds to the flair template id
+* :class:`.AdvancedSubmissionFlair` to represent submission flairs yielded
+  through :class:`~.SubredditLinkFlairTemplates`.
+* :class:`.RedditorFlair` to represent redditor flairs yielded through
+  :class:`~.SubredditRedditorFlairTemplates`.
+* :class:`.RichFlairBase` to represent the base class for
+  :class:`.AdvancedSubmissionFlair` and :class:`.RedditorFlair` as both
+  flairs are identical except for method used to retrieve them.
+* :meth:`.RichFlairBase.make_new_flair`,
+  :meth:`.AdvancedSubmissionFlair.make_new_flair` and
+  :meth:`.RedditorFlair.make_new_flair` to make new empty copies of flairs
+  in order to use with :meth:`~.SubredditLinkFlairTemplates.add` and
+  :meth:`~.SubredditRedditorFlairTemplates.add`, respectively.
+  These methods should not be called directly.
+* :meth:`.RichFlairBase.change_info`,
+  :meth:`.AdvancedSubmissionFlair.change_info` and
+  :meth:`.RedditorFlair.change_info` to change the attributes of a flair in
+  order to use with :meth:`~.SubredditLinkFlairTemplates.update` and
+  :meth:`~.SubredditRedditorFlairTemplates.update`, respectively.
+* :class:`~.Subreddit` now has parameter ``use_flair_class``. This parameter
+  is False by default. When true, :class:`~.SubredditLinkFlairTemplates` and
+  :class:`~.SubredditRedditorFlairTemplates` will return Flair objects instead
+  of dicts. Creating an instance of flair through the ``make_new_flair``
+  method will set this to True. :class:`~.SubredditHelper` has been updated
+  to include this new parameter.
+* :meth:`~.Subreddit.submit`, :meth:`~.Subreddit.submit_image` and
+  :meth:`~.Subreddit.submit_video` have a new parameter ``flair``, which
+  accepts an instance of :class:`.AdvancedSubmissionFlair`.
+* :meth:`~.SubredditFlair.set` has a new parameter ``flair``, which accepts
+  an instance of :class:`.RedditorFlair`.
+* :meth:`~.SubredditFlairTemplates.delete` has a new parameter ``flair``, which
+  accepts an instance of :class:`.AdvancedSubmissionFlair` or
+  :class:`.RedditorFlair`.
+* :meth:`~.SubredditFlairTemplates.update` has a new parameter ``flair``, which
+  accepts an instance of :class:`.AdvancedSubmissionFlair` or
+  :class:`.RedditorFlair`.
+* :meth:`~.SubredditRedditorFlairTemplates.make` to make empty instances of
+  :class:`.RedditorFlair` for use in
+  :meth:`~.SubredditRedditorFlairTemplates.add`.
+* :meth:`~.SubredditLinkFlairTemplates.make` to make empty instances of
+  :class:`.AdvancedSubmissionFlair` for use in
+  :meth:`~.SubredditLinkFlairTemplates.add`.
+* :meth:`~.SubredditRedditorFlairTemplates.get` to get lazy instances of
+  :class:`.RedditorFlair`.
+* :meth:`~.SubredditLinkFlairTemplates.get` to get lazy instances of
+  :class:`.AdvancedSubmissionFlair`.
+* :meth:`~.SubredditRedditorFlairTemplates.add` has a new parameter ``flair``,
+  which accepts an instance of :class:`.RedditorFlair`.
+* :meth:`~.SubredditLinkFlairTemplates.add` has a new parameter ``flair``,
+  which accepts an instance of :class:`.AdvancedSubmissionFlair`.
+* :meth:`.SubmissionFlair.choices` has a new parameter ``use_flair_class``.
+  which, when set to true, returns an instance of :class:`.LinkFlair`.
+* :meth:`.SubmissionFlair.select` has a new parameter ``flair``,
+  which accepts an instance of :class:`.LinkFlair` or
+  :class:`.AdvancedSubmissionFlair`.
 
 **Removed**
 
