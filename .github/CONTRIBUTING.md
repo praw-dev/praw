@@ -34,11 +34,12 @@ to you, it likely is not to the person asking the question.
 
 0. Prior to creating a pull request run the `pre_push.py` script. This script
    depends on the tools `black` `flake8`, `pylint`, `pydocstyle`, `sphinx` and `sphinx_rtd_theme`. They can
-   be installed via `pip install black flake8 pydocstyle pylint sphinx sphinx_rtd_theme`.
+   be installed via `pip install black flake8 pydocstyle pylint sphinx sphinx_rtd_theme` or via
+   `pip install praw[lint]`.
 
 0. Add yourself as a contributor to the ``AUTHORS.rst``.
 
-0. Once pushed, ensure that your TravisCI build succeeds. Travis will error
+0. Once pushed, ensure that your Github Actions build succeeds. Actions will error
    before running any tests if there are _any_ `flake8` or `pydocstyle`
    issues. Resolve any issues by updating your pull request.
 
@@ -46,6 +47,7 @@ to you, it likely is not to the person asking the question.
    not require fetching data from Reddit, e.g., method argument validation,
    should be saved as a unit test. Tests that hit Reddit's servers should be an
    integration test and all network activity should be recorded via Betamax.
+   The required packages can be installed with `pip install praw[test]`.
 
 0. Feel free to check on the status of your pull request periodically by adding
    a comment.
@@ -60,8 +62,8 @@ we would like to see you push a number of contributions before we add you on.
 ## Style Recommendations
 
 To keep PRAW's source consistent, all contribution code must pass the
-`pre_push.sh` script. Travis CI will enforce the passing of the automated
-tests, as well as style checking done via the `pre_push.sh` script. While this
+`pre_push.py` script. Github Actions will enforce the passing of the automated
+tests, as well as style checking done via the `pre_push.py` script. While this
 script helps ensure consistency with much of PEP8 and PEP257 there are a few
 things that it does not enforce. Please look over the following list:
 
