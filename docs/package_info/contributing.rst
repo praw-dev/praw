@@ -37,9 +37,9 @@ anyway so we can work with you to write the necessary tests.
 Running the Test Suite
 ~~~~~~~~~~~~~~~~~~~~~~
 
-`Travis CI <https://travis-ci.org/praw-dev/praw>`_ automatically runs all
-updates to known branches and pull requests. However, it's useful to be able to
-run the tests locally. The simplest way is via:
+`Github Actions <https://github.com/praw-dev/praw/actions>`_ automatically runs
+all updates to known branches and pull requests. However, it's useful to be
+able to run the tests locally. The simplest way is via:
 
 .. code:: bash
 
