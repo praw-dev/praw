@@ -33,7 +33,7 @@ class Config:
     @classmethod
     def _load_config(cls):
         """Attempt to load settings from various praw.ini files."""
-        config = configparser.RawConfigParser()
+        config = configparser.ConfigParser()
         module_dir = os.path.dirname(sys.modules[__name__].__file__)
         if "APPDATA" in os.environ:  # Windows
             os_config_path = os.environ["APPDATA"]
