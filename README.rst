@@ -7,9 +7,6 @@ PRAW: The Python Reddit API Wrapper
 .. image:: https://img.shields.io/pypi/dm/praw
    :alt: PyPI - Downloads - Monthly
    :target: https://pypi.python.org/pypi/praw
-.. image:: https://travis-ci.org/praw-dev/praw.svg?branch=master
-   :alt: Travis CI Status
-   :target: https://travis-ci.org/praw-dev/praw
 .. image:: https://coveralls.io/repos/github/praw-dev/praw/badge.svg?branch=master
    :alt: Coveralls Coverage
    :target: https://coveralls.io/github/praw-dev/praw?branch=master
