@@ -23,6 +23,10 @@ class Config:
     CONFIG = None
     CONFIG_NOT_SET = _NotSet()  # Represents a config value that is not set.
     LOCK = Lock()
+    INTERPOLATION_LEVEL = {
+        "basic": configparser.BasicInterpolation,
+        "extended": configparser.ExtendedInterpolation,
+    }
 
     @staticmethod
     def _config_boolean(item):
@@ -31,9 +35,13 @@ class Config:
         return item.lower() in {"1", "yes", "true", "on"}
 
     @classmethod
-    def _load_config(cls):
+    def _load_config(cls, interpolation: str = None):
         """Attempt to load settings from various praw.ini files."""
-        config = configparser.ConfigParser()
+        if interpolation is not None:
+            interpolator_class = cls.INTERPOLATION_LEVEL[interpolation]()
+        else:
+            interpolator_class = None
+        config = configparser.ConfigParser(interpolation=interpolator_class)
         module_dir = os.path.dirname(sys.modules[__name__].__file__)
         if "APPDATA" in os.environ:  # Windows
             os_config_path = os.environ["APPDATA"]
@@ -56,11 +64,13 @@ class Config:
             raise ClientException("No short domain specified.")
         return self._short_url
 
-    def __init__(self, site_name: str, **settings: str):
+    def __init__(
+        self, site_name: str, interpolation: str = None, **settings: str
+    ):
         """Initialize a Config instance."""
         with Config.LOCK:
             if Config.CONFIG is None:
-                self._load_config()
+                self._load_config(interpolation)
 
         self._settings = settings
         self.custom = dict(Config.CONFIG.items(site_name), **settings)
