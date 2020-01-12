@@ -93,7 +93,7 @@ class Reddit:
     def __init__(
         self,
         site_name: str = None,
-        config_interpolation: str = None,
+        config_interpolation: Optional[str] = None,
         requestor_class: Optional[Type[Requestor]] = None,
         requestor_kwargs: Dict[str, Any] = None,
         **config_settings: str
