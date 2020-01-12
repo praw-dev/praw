@@ -110,18 +110,27 @@ class TestConfig:
 class TestConfigInterpolation:
     def test_no_interpolation(self):
         Config.CONFIG = None  # Force config file reload
-        config = Config("INTERPOLATION")
-        assert config.custom["basic_interpolation"] == "%(reddit_url)s"
-        assert config.custom["extended_interpolation"] == "${reddit_url}"
+        with mock.patch.dict(
+            "os.environ", {"XDG_CONFIG_HOME": os.path.dirname(__file__)}
+        ):
+            config = Config("INTERPOLATION")
+            assert config.custom["basic_interpolation"] == "%(reddit_url)s"
+            assert config.custom["extended_interpolation"] == "${reddit_url}"
 
     def test_basic_interpolation(self):
         Config.CONFIG = None  # Force config file reload
-        config = Config("INTERPOLATION", interpolation="basic")
-        assert config.custom["basic_interpolation"] == config.reddit_url
-        assert config.custom["extended_interpolation"] == "${reddit_url}"
+        with mock.patch.dict(
+            "os.environ", {"XDG_CONFIG_HOME": os.path.dirname(__file__)}
+        ):
+            config = Config("INTERPOLATION", interpolation="basic")
+            assert config.custom["basic_interpolation"] == config.reddit_url
+            assert config.custom["extended_interpolation"] == "${reddit_url}"
 
     def test_extended_interpolation(self):
         Config.CONFIG = None  # Force config file reload
-        config = Config("INTERPOLATION", interpolation="extended")
-        assert config.custom["basic_interpolation"] == "%(reddit_url)s"
-        assert config.custom["extended_interpolation"] == config.reddit_url
+        with mock.patch.dict(
+            "os.environ", {"XDG_CONFIG_HOME": os.path.dirname(__file__)}
+        ):
+            config = Config("INTERPOLATION", interpolation="extended")
+            assert config.custom["basic_interpolation"] == "%(reddit_url)s"
+            assert config.custom["extended_interpolation"] == config.reddit_url
