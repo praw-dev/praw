@@ -58,19 +58,19 @@ class TestConfig:
             config = Config("DEFAULT", check_for_updates=value)
             assert config.check_for_updates is True
 
-    @mock.patch("configparser.RawConfigParser")
+    @mock.patch("configparser.ConfigParser")
     def test_load_ini_from_appdata(self, mock_config):
         self._assert_config_read("APPDATA", mock_config)
 
-    @mock.patch("configparser.RawConfigParser")
+    @mock.patch("configparser.ConfigParser")
     def test_load_ini_from_home(self, mock_config):
         self._assert_config_read("HOME", mock_config)
 
-    @mock.patch("configparser.RawConfigParser")
+    @mock.patch("configparser.ConfigParser")
     def test_load_ini_from_xdg_config_home(self, mock_config):
         self._assert_config_read("XDG_CONFIG_HOME", mock_config)
 
-    @mock.patch("configparser.RawConfigParser")
+    @mock.patch("configparser.ConfigParser")
     def test_load_ini_with_no_config_directory(self, mock_config):
         mock_instance = mock_config.return_value
         Config.CONFIG = None  # Force config file reload
@@ -105,3 +105,44 @@ class TestConfig:
     def test_unset_value_has_useful_string_representation(self):
         config = Config("DEFAULT", password=Config.CONFIG_NOT_SET)
         assert str(config.password) == "NotSet"
+
+
+class TestConfigInterpolation:
+    def test_no_interpolation(self):
+        Config.CONFIG = None  # Force config file reload
+        with mock.patch.dict(
+            "os.environ",
+            {
+                "APPDATA": os.path.dirname(__file__),
+                "XDG_CONFIG_HOME": os.path.dirname(__file__),
+            },
+        ):
+            config = Config("INTERPOLATION")
+            assert config.custom["basic_interpolation"] == "%(reddit_url)s"
+            assert config.custom["extended_interpolation"] == "${reddit_url}"
+
+    def test_basic_interpolation(self):
+        Config.CONFIG = None  # Force config file reload
+        with mock.patch.dict(
+            "os.environ",
+            {
+                "APPDATA": os.path.dirname(__file__),
+                "XDG_CONFIG_HOME": os.path.dirname(__file__),
+            },
+        ):
+            config = Config("INTERPOLATION", config_interpolation="basic")
+            assert config.custom["basic_interpolation"] == config.reddit_url
+            assert config.custom["extended_interpolation"] == "${reddit_url}"
+
+    def test_extended_interpolation(self):
+        Config.CONFIG = None  # Force config file reload
+        with mock.patch.dict(
+            "os.environ",
+            {
+                "APPDATA": os.path.dirname(__file__),
+                "XDG_CONFIG_HOME": os.path.dirname(__file__),
+            },
+        ):
+            config = Config("INTERPOLATION", config_interpolation="extended")
+            assert config.custom["basic_interpolation"] == "%(reddit_url)s"
+            assert config.custom["extended_interpolation"] == config.reddit_url

@@ -4,6 +4,11 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* ``config_interpolation`` parameter for :class:`.Reddit` supporting basic and
+  extended modes.
+
 **Removed**
 
 * Converting :class:`.APIException` to string will no longer escape unicode

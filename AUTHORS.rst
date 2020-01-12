@@ -55,4 +55,5 @@ Source Contributors
 - Jack Steel `@jackodsteel <https://github.com/jackodsteel>`_
 - David Mirch `@fwump38 <https://github.com/fwump38>`_
 - PythonCoderAS `@PythonCoderAS <https://github.com/PythonCoderAS>`_
+- Michael Cetrulo <contact@michael-cetrulo.com> `@git2samus <https://github.com/git2samus>`_
 <!-- - Add "Name <email (optional)> and github profile link" above this line. -->

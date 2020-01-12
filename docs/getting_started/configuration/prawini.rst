@@ -90,3 +90,41 @@ example, to use the settings defined for ``bot2`` as shown above, initialize
 
 A site can also be selected via a ``praw_site`` environment variable. This
 approach has precedence over the ``site_name`` parameter described above.
+
+Using Interpolation
+-------------------
+
+By default PRAW doesn't apply any interpolation on the config file but this can
+be changed with the ``config_interpolation`` parameter which can be set to
+"basic" or "extended".
+
+This can be useful to separate the components of the ``user_agent`` into
+individual variables, for example:
+
+.. _interpolation_site_example:
+.. code-block:: ini
+
+   [bot1]
+   bot_name=MyBot
+   bot_version=1.2.3
+   bot_author=MyUser
+   user_agent=script:%(bot_name)s:v%(bot_version)s (by /u/%(bot_author)s)
+
+This uses basic interpolation thus :class:`.Reddit` need to be initialized as
+follows:
+
+.. code-block:: python
+
+   reddit = praw.Reddit('bot1', config_interpolation='basic')
+
+Then the value of ``reddit.config.user_agent`` will be
+``script:MyBot:v1.2.3 (by /u/MyUser)``.
+
+See `Interpolation of values
+<https://docs.python.org/3/library/configparser.html#interpolation-of-values>`_
+for details.
+
+.. warning:: The ConfigParser instance is cached internally at the class level,
+             it is shared across all instances of :class:`.Reddit` and once set
+             it's not overridden by future invocations.
+
