@@ -99,7 +99,7 @@ be changed with the ``interpolation`` parameter which can be set to "basic" or
 "extended".
 
 This can be useful to separate the components of the ``user_agent`` into
-indivual variables, for example:
+individual variables, for example:
 
 .. _interpolation_site_example:
 .. code-block:: ini
