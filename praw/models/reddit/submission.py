@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, TypeVar, Union
 from urllib.parse import urljoin
 
 from ...const import API_PATH
-from ...exceptions import ClientException
+from ...exceptions import InvalidURL
 from ...util.cache import cachedproperty
 from ..comment_forest import CommentForest
 from ..listing.listing import Listing
@@ -402,22 +402,21 @@ class Submission(
             * https://reddit.com/comments/2gmzqe/
             * https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/
 
-        Raise :class:`.ClientException` if URL is not a valid submission URL.
+        Raise :class:`.InvalidURL` if URL is not a valid submission URL.
 
         """
         parts = RedditBase._url_parts(url)
         if "comments" not in parts:
             submission_id = parts[-1]
             if "r" in parts:
-                raise ClientException(
-                    "Invalid URL (subreddit, "
-                    "not submission): {}".format(url)
+                raise InvalidURL(
+                    url, message="Invalid URL (subreddit, not submission): {}",
                 )
         else:
             submission_id = parts[parts.index("comments") + 1]
 
         if not submission_id.isalnum():
-            raise ClientException("Invalid URL: {}".format(url))
+            raise InvalidURL(url)
         return submission_id
 
     @property

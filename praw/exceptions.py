@@ -47,6 +47,33 @@ class DuplicateReplaceException(ClientException):
         )
 
 
+class InvalidImplicitAuth(ClientException):
+    """Indicate exceptions where an implicit auth type is used incorrectly."""
+
+    def __init__(self):
+        """Instantize the class."""
+        super().__init__(
+            "Implicit authorization can only be used with installed apps."
+        )
+
+
+class InvalidURL(ClientException):
+    """Indicate exceptions where an invalid URL is entered."""
+
+    def __init__(self, url: str, message: str = "Invalid URL: {}"):
+        """Initialize the class.
+
+        :param url: The invalid URL.
+        :param message: The message to display. Must contain a format
+            identifier (``{}`` or ``{0}``). (default: ``"Invalid URL: {url}"``)
+        """
+        super().__init__(message.format(url))
+
+
+class MissingRequiredAttributeException(ClientException):
+    """Indicate exceptions caused by not including a required attribute."""
+
+
 class WebSocketException(ClientException):
     """Indicate exceptions caused by use of WebSockets."""
 

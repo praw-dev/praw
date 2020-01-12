@@ -2,7 +2,7 @@
 from typing import Any, Dict, Optional, TypeVar, Union
 
 from ...const import API_PATH
-from ...exceptions import ClientException
+from ...exceptions import ClientException, InvalidURL
 from ...util.cache import cachedproperty
 from ..comment_forest import CommentForest
 from .base import RedditBase
@@ -77,10 +77,10 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         try:
             comment_index = parts.index("comments")
         except ValueError:
-            raise ClientException("Invalid URL: {}".format(url))
+            raise InvalidURL(url)
 
         if len(parts) - 4 != comment_index:
-            raise ClientException("Invalid URL: {}".format(url))
+            raise InvalidURL(url)
         return parts[-1]
 
     @property

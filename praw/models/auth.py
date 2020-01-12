@@ -8,7 +8,7 @@ from prawcore import (
     session,
 )
 
-from ..exceptions import ClientException
+from ..exceptions import InvalidImplicitAuth, MissingRequiredAttributeException
 from .base import PRAWBase
 
 
@@ -72,15 +72,13 @@ class Auth(PRAWBase):
         :param scope: A space-delimited string of Reddit OAuth2 scope names as
             returned from Reddit's callback.
 
-        Raise :class:`.ClientException` if :class:`.Reddit` was initialized for
-        a non-installed application type.
+        Raise :class:`.InvalidImplicitAuth` if :class:`.Reddit` was initialized
+        for a non-installed application type.
 
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if not isinstance(authenticator, UntrustedAuthenticator):
-            raise ClientException(
-                "implicit can only be used with installed apps."
-            )
+            raise InvalidImplicitAuth
         implicit_session = session(
             ImplicitAuthorizer(authenticator, access_token, expires_in, scope)
         )
@@ -124,7 +122,9 @@ class Auth(PRAWBase):
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator
         if authenticator.redirect_uri is self._reddit.config.CONFIG_NOT_SET:
-            raise ClientException("redirect_uri must be provided")
+            raise MissingRequiredAttributeException(
+                "redirect_uri must be provided"
+            )
         if isinstance(authenticator, UntrustedAuthenticator):
             return authenticator.authorize_url(
                 "temporary" if implicit else duration,
@@ -133,7 +133,5 @@ class Auth(PRAWBase):
                 implicit=implicit,
             )
         if implicit:
-            raise ClientException(
-                "implicit can only be set for installed applications"
-            )
+            raise InvalidImplicitAuth
         return authenticator.authorize_url(duration, scopes, state)
