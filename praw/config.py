@@ -3,6 +3,7 @@ import configparser
 import os
 import sys
 from threading import Lock
+from typing import Optional
 
 from .exceptions import ClientException
 
@@ -67,7 +68,10 @@ class Config:
         return self._short_url
 
     def __init__(
-        self, site_name: str, config_interpolation: Optional[str] = None, **settings: str
+        self,
+        site_name: str,
+        config_interpolation: Optional[str] = None,
+        **settings: str
     ):
         """Initialize a Config instance."""
         with Config.LOCK:
