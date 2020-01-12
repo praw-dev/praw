@@ -95,8 +95,8 @@ Using Interpolation
 -------------------
 
 By default PRAW doesn't apply any interpolation on the config file but this can
-be changed with the ``interpolation`` parameter which can be set to "basic" or
-"extended".
+be changed with the ``config_interpolation`` parameter which can be set to
+"basic" or "extended".
 
 This can be useful to separate the components of the ``user_agent`` into
 individual variables, for example:
@@ -115,7 +115,7 @@ follows:
 
 .. code-block:: python
 
-   reddit = praw.Reddit('bot1', interpolation='basic')
+   reddit = praw.Reddit('bot1', config_interpolation='basic')
 
 Then the value of ``reddit.config.user_agent`` will be
 ``script:MyBot:v1.2.3 (by /u/MyUser)``.

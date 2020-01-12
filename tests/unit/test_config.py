@@ -122,7 +122,7 @@ class TestConfigInterpolation:
         with mock.patch.dict(
             "os.environ", {"XDG_CONFIG_HOME": os.path.dirname(__file__)}
         ):
-            config = Config("INTERPOLATION", interpolation="basic")
+            config = Config("INTERPOLATION", config_interpolation="basic")
             assert config.custom["basic_interpolation"] == config.reddit_url
             assert config.custom["extended_interpolation"] == "${reddit_url}"
 
@@ -131,6 +131,6 @@ class TestConfigInterpolation:
         with mock.patch.dict(
             "os.environ", {"XDG_CONFIG_HOME": os.path.dirname(__file__)}
         ):
-            config = Config("INTERPOLATION", interpolation="extended")
+            config = Config("INTERPOLATION", config_interpolation="extended")
             assert config.custom["basic_interpolation"] == "%(reddit_url)s"
             assert config.custom["extended_interpolation"] == config.reddit_url

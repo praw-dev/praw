@@ -93,7 +93,7 @@ class Reddit:
     def __init__(
         self,
         site_name: str = None,
-        interpolation: str = None,
+        config_interpolation: str = None,
         requestor_class: Optional[Type[Requestor]] = None,
         requestor_kwargs: Dict[str, Any] = None,
         **config_settings: str
@@ -155,7 +155,7 @@ class Reddit:
         try:
             config_section = site_name or os.getenv("praw_site") or "DEFAULT"
             self.config = Config(
-                config_section, interpolation, **config_settings
+                config_section, config_interpolation, **config_settings
             )
         except configparser.NoSectionError as exc:
             help_message = (
