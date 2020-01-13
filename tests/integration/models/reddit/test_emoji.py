@@ -43,6 +43,17 @@ class TestEmoji(IntegrationTest):
         with self.recorder.use_cassette("TestEmoji.test_delete"):
             subreddit.emoji["test_png"].delete()
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_update(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette("TestEmoji.test_update"):
+            subreddit.emoji["test_png"].update(
+                mod_flair_only=False,
+                post_flair_allowed=True,
+                user_flair_allowed=True,
+            )
+
 
 class TestSubredditEmoji(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
@@ -65,5 +76,22 @@ class TestSubredditEmoji(IntegrationTest):
                 emoji = subreddit.emoji.add(
                     "test_{}".format(extension),
                     "tests/integration/files/test.{}".format(extension),
+                )
+                assert isinstance(emoji, Emoji)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_add_with_perms(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette(
+            "TestSubredditEmoji.test_add_with_perms"
+        ):
+            for extension in ["jpg", "png"]:
+                emoji = subreddit.emoji.add(
+                    "test_{}".format(extension),
+                    "tests/integration/files/test.{}".format(extension),
+                    mod_flair_only=True,
+                    post_flair_allowed=True,
+                    user_flair_allowed=False,
                 )
                 assert isinstance(emoji, Emoji)
