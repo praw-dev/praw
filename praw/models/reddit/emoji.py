@@ -27,7 +27,11 @@ class Emoji(RedditBase):
     ======================= ===================================================
     ``name``                The name of the emoji.
     ``url``                 The URL of the emoji image.
+    ``mod_flair_only``      Whether the emoji is restricted for mod use only.
+    ``post_flair_allowed``  Whether the emoji appears in post flair.
+    ``user_flair_allowed``  Whether the emoji appears in user flair.
     ======================= ===================================================
+
     """
 
     STR_FIELD = "name"
@@ -89,6 +93,47 @@ class Emoji(RedditBase):
         )
         self._reddit.request("DELETE", url)
 
+    def update(
+        self,
+        mod_flair_only: Optional[bool] = None,
+        post_flair_allowed: Optional[bool] = None,
+        user_flair_allowed: Optional[bool] = None,
+    ):
+        """Update the permissions of an emoji in this subreddit.
+
+        :param mod_flair_only: (boolean) Indicate whether the emoji is
+            restricted to mod use only. Respects pre-existing settings if not
+            provided.
+        :param post_flair_allowed: (boolean) Indicate whether the emoji can be
+            used in post flair. Respects pre-existing settings if not provided.
+        :param user_flair_allowed: (boolean) Indicate whether the emoji can be
+            used in user flair. Respects pre-existing settings if not provided.
+
+        To restrict the emoji ``'test'`` in subreddit ``'wowemoji'`` to mod use
+        only, try:
+
+        .. code-block:: python
+
+           reddit.subreddit('wowemoji').emoji['test'].update(mod_flair_only=True)
+
+        """
+        data = {
+            "name": self.name,
+            "mod_flair_only": self.mod_flair_only,
+            "post_flair_allowed": self.post_flair_allowed,
+            "user_flair_allowed": self.user_flair_allowed,
+        }
+
+        if mod_flair_only is not None:
+            data["mod_flair_only"] = bool(mod_flair_only)
+        if post_flair_allowed is not None:
+            data["post_flair_allowed"] = bool(post_flair_allowed)
+        if user_flair_allowed is not None:
+            data["user_flair_allowed"] = bool(user_flair_allowed)
+
+        url = API_PATH["emoji_update"].format(subreddit=self.subreddit)
+        self._reddit.post(url, data=data)
+
 
 class SubredditEmoji:
     """Provides a set of functions to a Subreddit for emoji."""
@@ -138,11 +183,24 @@ class SubredditEmoji:
                 self._reddit, self.subreddit, emoji_name, _data=emoji_data
             )
 
-    def add(self, name: str, image_path: str):
+    def add(
+        self,
+        name: str,
+        image_path: str,
+        mod_flair_only: bool = False,
+        post_flair_allowed: bool = True,
+        user_flair_allowed: bool = True,
+    ) -> Emoji:
         """Add an emoji to this subreddit.
 
         :param name: The name of the emoji
         :param image_path: A path to a jpeg or png image.
+        :param mod_flair_only: (boolean) Indicate whether the emoji is
+            restricted to mod use only. (Default: ``False``)
+        :param post_flair_allowed: (boolean) Indicate whether the emoji can be
+            used in post flair. (Default: ``True``)
+        :param user_flair_allowed: (boolean) Indicate whether the emoji can be
+            used in user flair. (Default: ``True``)
         :returns: The Emoji added.
 
         To add ``'test'`` to the subreddit ``'praw_test'`` try:
@@ -173,8 +231,14 @@ class SubredditEmoji:
             )
         response.raise_for_status()
 
+        data = {
+            "name": name,
+            "s3_key": upload_data["key"],
+            "mod_flair_only": mod_flair_only,
+            "post_flair_allowed": post_flair_allowed,
+            "user_flair_allowed": user_flair_allowed,
+        }
+
         url = API_PATH["emoji_upload"].format(subreddit=self.subreddit)
-        self._reddit.post(
-            url, data={"name": name, "s3_key": upload_data["key"]}
-        )
+        self._reddit.post(url, data=data)
         return Emoji(self._reddit, self.subreddit, name)
