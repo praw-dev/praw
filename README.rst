@@ -4,6 +4,9 @@ PRAW: The Python Reddit API Wrapper
 .. image:: https://img.shields.io/pypi/v/praw.svg
    :alt: Latest PRAW Version
    :target: https://pypi.python.org/pypi/praw
+.. image:: https://img.shields.io/pypi/pyversions/praw
+   :alt: Supported Python Versions
+   :target: https://pypi.python.org/pypi/praw
 .. image:: https://img.shields.io/pypi/dm/praw
    :alt: PyPI - Downloads - Monthly
    :target: https://pypi.python.org/pypi/praw
