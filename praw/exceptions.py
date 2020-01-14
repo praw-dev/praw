@@ -4,6 +4,8 @@ Includes two main exceptions: :class:`.APIException` for when something goes
 wrong on the server side, and :class:`.ClientException` when something goes
 wrong on the client side. Both of these classes extend :class:`.PRAWException`.
 
+All other exceptions are subclassed from :class:`.ClientException`.
+
 """
 from typing import Optional
 
@@ -65,7 +67,7 @@ class InvalidURL(ClientException):
 
         :param url: The invalid URL.
         :param message: The message to display. Must contain a format
-            identifier (``{}`` or ``{0}``). (default: ``"Invalid URL: {url}"``)
+            identifier (``{}`` or ``{0}``). (default: ``"Invalid URL: {}"``)
         """
         super().__init__(message.format(url))
 
