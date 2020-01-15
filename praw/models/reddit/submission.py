@@ -445,6 +445,9 @@ class Submission(
            submission.comment_sort = 'new'
            comments = submission.comments.list()
 
+        .. note:: The appropriate values for ``comment_sort`` include ``best``,
+            ``top``, ``new``, ``controversial``, ``old`` and ``q&a``.
+
         See :ref:`extracting_comments` for more on working with a
         :class:`.CommentForest`.
 
