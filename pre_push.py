@@ -42,7 +42,8 @@ def run_static():
     success &= do_process(
         [
             sys.executable,
-            path.join(current_directory, "tools/replace_code_block.py"),
+            path.join(current_directory, "tools", "static_word_checks.py"),
+            "--replace",
         ]
     )
     success &= do_process(["black ."], shell=True)

@@ -91,6 +91,16 @@ Documentation
   ``t5_xyfc7``. The correct term for a subreddit's "name" like `python
   <https://www.reddit.com/r/python>`_ is its display name.
 
+Static Checker
+~~~~~~~~~~~~~~
+
+PRAW's test suite comes with a checker tool that can warn you of using
+incorrect documentation styles (using ``.. code::`` instead of
+``.. code-block::``, using ``/r/`` instead of ``r/``, etc.).
+
+.. autoclass:: tools.static_word_checks.StaticChecker
+   :inherited-members:
+
 Files to Update
 ---------------
 
