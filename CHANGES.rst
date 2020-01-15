@@ -14,7 +14,7 @@ Unreleased
 * Converting :class:`.APIException` to string will no longer escape unicode
   characters.
 
-6.5.1 (2010/01/07)
+6.5.1 (2020/01/07)
 ------------------
 
 **Fixed**
