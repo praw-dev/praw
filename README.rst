@@ -47,7 +47,7 @@ To install the latest development version of PRAW run the following instead:
 
 For instructions on installing Python and pip see "The Hitchhiker's Guide to
 Python" `Installation Guides
-<http://docs.python-guide.org/en/latest/starting/installation/>`_.
+<https://docs.python-guide.org/en/latest/starting/installation/>`_.
 
 Quickstart
 ----------
@@ -85,7 +85,7 @@ With the ``reddit`` instance you can then interact with Reddit:
   for moderator in reddit.subreddit('redditdev').moderator:
       print(moderator)
 
-Please see PRAW's `documentation <http://praw.readthedocs.io/>`_ for
+Please see PRAW's `documentation <https://praw.readthedocs.io/>`_ for
 more examples of what you can do with PRAW.
 
 PRAW Discussion and Support
@@ -124,7 +124,7 @@ information are certainly welcome.
 Documentation
 -------------
 
-PRAW's documentation is located at http://praw.readthedocs.io/.
+PRAW's documentation is located at https://praw.readthedocs.io/.
 
 History
 -------
