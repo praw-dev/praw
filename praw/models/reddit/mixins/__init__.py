@@ -3,6 +3,7 @@ from json import dumps
 
 from ....const import API_PATH
 from .editable import EditableMixin
+from .exportable import ExportableMixin
 from .fullname import FullnameMixin
 from .gildable import GildableMixin
 from .inboxable import InboxableMixin
@@ -286,6 +287,7 @@ class ThingModerationMixin:
 
 class UserContentMixin(
     EditableMixin,
+    ExportableMixin,
     GildableMixin,
     InboxToggleableMixin,
     ReplyableMixin,
