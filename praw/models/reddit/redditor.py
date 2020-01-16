@@ -7,7 +7,7 @@ from ...util.cache import cachedproperty
 from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
 from .base import RedditBase
-from .mixins import FullnameMixin, MessageableMixin
+from .mixins import ExportableMixin, FullnameMixin, MessageableMixin
 
 _Redditor = TypeVar("_Redditor")
 _RedditorStream = TypeVar("_RedditorStream")
@@ -20,7 +20,11 @@ Trophy = TypeVar("Trophy")
 
 
 class Redditor(
-    MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
+    ExportableMixin,
+    MessageableMixin,
+    RedditorListingMixin,
+    FullnameMixin,
+    RedditBase,
 ):
     """A class representing the users of reddit.
 
@@ -85,11 +89,11 @@ class Redditor(
     STR_FIELD = "name"
 
     @classmethod
-    def from_data(cls, reddit, data):
+    def from_data(cls, reddit, _data):
         """Return an instance of Redditor, or None from ``data``."""
-        if data == "[deleted]":
+        if _data == "[deleted]":
             return None
-        return cls(reddit, data)
+        return cls(reddit, _data=_data)
 
     @cachedproperty
     def stream(self) -> _RedditorStream:

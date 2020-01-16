@@ -7,6 +7,7 @@ from ...const import API_PATH
 from ...util.cache import cachedproperty
 from ..listing.mixins import SubredditListingMixin
 from .base import RedditBase
+from .mixins import ExportableMixin
 from .redditor import Redditor
 from .subreddit import Subreddit, SubredditStream
 
@@ -14,7 +15,7 @@ _Multireddit = TypeVar("_Multireddit")
 Reddit = TypeVar("Reddit")
 
 
-class Multireddit(SubredditListingMixin, RedditBase):
+class Multireddit(ExportableMixin, SubredditListingMixin, RedditBase):
     r"""A class for users' Multireddits.
 
     This is referred to as a Custom Feed on the Reddit UI.

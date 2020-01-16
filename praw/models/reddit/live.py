@@ -6,7 +6,7 @@ from ...util.cache import cachedproperty
 from ..list.redditor import RedditorList
 from ..listing.generator import ListingGenerator
 from .base import RedditBase
-from .mixins import FullnameMixin
+from .mixins import ExportableMixin, FullnameMixin
 from .redditor import Redditor
 
 _LiveThread = TypeVar("_LiveThread")
@@ -263,7 +263,7 @@ class LiveContributorRelationship:
         self.thread._reddit.post(url, data=data)
 
 
-class LiveThread(RedditBase):
+class LiveThread(ExportableMixin, RedditBase):
     """An individual LiveThread object.
 
     **Typical Attributes**
@@ -575,7 +575,7 @@ class LiveThreadContribution:
         self.thread._reset_attributes(*data.keys())
 
 
-class LiveUpdate(FullnameMixin, RedditBase):
+class LiveUpdate(ExportableMixin, FullnameMixin, RedditBase):
     """An individual :class:`.LiveUpdate` object.
 
     **Typical Attributes**
@@ -669,7 +669,7 @@ class LiveUpdate(FullnameMixin, RedditBase):
     def __setattr__(self, attribute: str, value: Any):
         """Objectify author."""
         if attribute == "author":
-            value = Redditor(self._reddit, name=value)
+            value = self._create_base(Redditor.from_data, self._reddit, value)
         super().__setattr__(attribute, value)
 
     def _fetch(self):

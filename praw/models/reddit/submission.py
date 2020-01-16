@@ -549,9 +549,9 @@ class Submission(
     def __setattr__(self, attribute: str, value: Any):
         """Objectify author, and subreddit attributes."""
         if attribute == "author":
-            value = Redditor.from_data(self._reddit, value)
+            value = self._create_base(Redditor.from_data, self._reddit, value)
         elif attribute == "subreddit":
-            value = Subreddit(self._reddit, value)
+            value = self._create_base(Subreddit, self._reddit, value)
         super().__setattr__(attribute, value)
 
     def _chunk(self, other_submissions, chunk_size):

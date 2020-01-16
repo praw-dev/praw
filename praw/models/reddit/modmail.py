@@ -4,12 +4,13 @@ from typing import Any, Dict, List, Optional, TypeVar
 from ...const import API_PATH
 from ...util import snake_case_keys
 from .base import RedditBase
+from .mixins import ExportableMixin
 
 _ModmailConversation = TypeVar("_ModmailConversation")
 Reddit = TypeVar("Reddit")
 
 
-class ModmailConversation(RedditBase):
+class ModmailConversation(ExportableMixin, RedditBase):
     """A class for modmail conversations.
 
     **Typical Attributes**

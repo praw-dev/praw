@@ -3,13 +3,14 @@ from typing import Any, Dict, List, TypeVar, Union
 
 from ...const import API_PATH
 from ..base import PRAWBase
+from .mixins import ExportableMixin
 
 _MoreComments = TypeVar("_MoreComments")
 Comment = TypeVar("Comment")
 Reddit = TypeVar("Reddit")
 
 
-class MoreComments(PRAWBase):
+class MoreComments(ExportableMixin, PRAWBase):
     """A class indicating there are more comments."""
 
     def __init__(self, reddit: Reddit, _data: Dict[str, Any]):

@@ -13,12 +13,12 @@ from .mixins import (
     UserContentMixin,
 )
 from .redditor import Redditor
+from .subreddit import Subreddit
 
 _Comment = TypeVar("_Comment")
 _CommentModeration = TypeVar("_CommentModeration")
 Reddit = TypeVar("Reddit")
 Submission = TypeVar("Submission")
-Subreddit = TypeVar("Subreddit")
 
 
 class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
@@ -180,7 +180,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     ):
         """Objectify author, replies, and subreddit."""
         if attribute == "author":
-            value = Redditor.from_data(self._reddit, value)
+            value = self._create_base(Redditor.from_data, self._reddit, value)
         elif attribute == "replies":
             if value == "":
                 value = []
@@ -188,7 +188,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
                 value = self._reddit._objector.objectify(value).children
             attribute = "_replies"
         elif attribute == "subreddit":
-            value = self._reddit.subreddit(value)
+            value = self._create_base(Subreddit, self._reddit, value)
         super().__setattr__(attribute, value)
 
     def _fetch_info(self):
