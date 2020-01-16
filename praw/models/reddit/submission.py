@@ -549,7 +549,11 @@ class Submission(
     def __setattr__(self, attribute: str, value: Any):
         """Objectify author, and subreddit attributes."""
         if attribute == "author":
-            value = self._create_base(Redditor.from_data, self._reddit, value)
+            value = (
+                self._create_base(Redditor, self._reddit, value)
+                if Redditor.check_name(value)
+                else None
+            )
         elif attribute == "subreddit":
             value = self._create_base(Subreddit, self._reddit, value)
         super().__setattr__(attribute, value)
