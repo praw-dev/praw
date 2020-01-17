@@ -31,6 +31,32 @@ Unreleased
 * The parameter ``text`` for methods
   :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` is no longer required.
+* Certain reddit instances are now exportable as dicts that can be used in the
+  ``_data`` paramater in the ``__init__`` function of the class. These classes
+  have a new method, ``export``. The following classes can now be exported:
+
+   * :class:`.Comment` can be exported via :meth:`.Comment.export`.
+   * :class:`.LiveThread` can be exported via :meth:`.LiveThread.export`.
+   * :class:`.LiveUpdate` can be exported via :meth:`.LiveUpdate.export`.
+   * :class:`.Message` can be exported via :meth:`.Message.export`.
+   * :class:`.ModmailConversation` can be exported via
+     :meth:`.ModmailConversation.export`.
+   * :class:`.ModmailMessage` can be exported via
+     :meth:`.ModmailMessage.export`.
+   * :class:`.MoreComments` can be exported via :meth:`.MoreComments.export`.
+   * :class:`.Multireddit` can be exported via :meth:`.Multireddit.export`.
+   * :class:`.Redditor` can be exported via :meth:`.Redditor.export`.
+   * :class:`.Submission` can be exported via :meth:`.Submission.export`.
+   * :class:`.Subreddit` can be exported via :meth:`.Subreddit.export`.
+
+* The ``export`` function can export data to JSON via the ``jsonify`` argument,
+  which is set to False on default. By default, all private parameters
+  (``_...``) will be removed. This can be explicitly disabled by setting the
+  parameter ``remove_private`` to False.
+* The ``export`` function can also convert other bases to their string forms
+  instead of exporting them as dicts. This behavoir can be chosen via the
+  ``stringify`` argument, set to False on default.
+
 
 **Removed**
 
