@@ -122,6 +122,24 @@ class ExportableMixin:
             them (Default: False)
         :returns: A dict of the attributes that got exported, or a string
             containing the dict.
+
+        .. note:: Lazy objects that are exported will continue to behave as a
+            lazy object. If you do not want to export a lazy object, call the
+            object's ``_fetch()`` method.
+
+        For example, to export a submission as a JSON string and create another
+        submission with the same data:
+
+        .. code-block:: python
+
+            import json
+            import praw.models
+            submission = reddit.submission("Example id")
+            submission._fetch()
+            submission_json = submission.export(jsonify=True)
+            submission2 = praw.models.Submission(
+            _data=json.loads(submission_json))
+
         """
         if remove_private is None:
             remove_private = True if jsonify else False

@@ -1,0 +1,223 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2020-01-25T20:57:04",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "61"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.6.0.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "118"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 25 Jan 2020 20:57:04 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=ABPcRFGitsnICGwjVZ; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21962-LGA"
+          ],
+          "X-Timer": [
+            "S1579985824.200922,VS0,VE293"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2020-01-25T20:57:04",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=ABPcRFGitsnICGwjVZ"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/6.6.0.dev0 prawcore/1.0.1"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/message/messages/ll22wt/?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"dist\": null, \"children\": [{\"kind\": \"t4\", \"data\": {\"first_message\": null, \"first_message_name\": null, \"subreddit\": \"PokestarFan\", \"likes\": null, \"replies\": {\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"dist\": null, \"children\": [{\"kind\": \"t4\", \"data\": {\"first_message\": 1305156488, \"first_message_name\": \"t4_ll216w\", \"subreddit\": \"PokestarFan\", \"likes\": null, \"replies\": \"\", \"id\": \"ll22wt\", \"subject\": \"re: Test\", \"was_comment\": false, \"score\": 0, \"author\": \"<USERNAME>\", \"num_comments\": null, \"parent_id\": \"t4_ll216w\", \"subreddit_name_prefixed\": \"r/PokestarFan\", \"new\": false, \"type\": \"unknown\", \"body\": \"Hi\", \"dest\": \"#PokestarFan\", \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EHi\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"name\": \"t4_ll22wt\", \"created\": 1580014232.0, \"created_utc\": 1579985432.0, \"context\": \"\", \"distinguished\": null}}], \"after\": null, \"before\": null}}, \"id\": \"ll216w\", \"subject\": \"Test\", \"was_comment\": false, \"score\": 0, \"author\": null, \"num_comments\": null, \"parent_id\": null, \"subreddit_name_prefixed\": \"r/PokestarFan\", \"new\": false, \"type\": \"unknown\", \"body\": \"Hello\", \"dest\": \"<USERNAME>\", \"body_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EHello\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"name\": \"t4_ll216w\", \"created\": 1580014098.0, \"created_utc\": 1579985298.0, \"context\": \"\", \"distinguished\": \"moderator\"}}], \"after\": null, \"before\": null}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "1517"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Sat, 25 Jan 2020 20:57:04 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21950-LGA"
+          ],
+          "X-Timer": [
+            "S1579985825.627222,VS0,VE99"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "loid=00000000005bn5wlvy.2.1577584524387.Z0FBQUFBQmVMS3VnN1BsYm9PWVBybjEtblVnY09Pa3JTNFJfR202TnVsNDVJRUxwZFQtZDFFNHBfMGlJM01uNjU1UmxvajJpdjVDcUsxTm0zbE5TYldmRUhFSERoNDA5QW1ncG82NWVGZlViQnBtSER6UmtlOTJJNEt1WXlmUHAtaGpZVDJaaTJsRHI; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Mon, 24-Jan-2022 20:57:04 GMT; secure",
+            "session_tracker=xXii7hyeICW2vqh3MI.0.1579985824659.Z0FBQUFBQmVMS3VndjMxdlJhVDQyQ2p5NzdUS3EwMXRJcGpFX2dRX3ZmUDhoWTZ6OGtvUnFDVDdNc2NpdXZRYkdLVjhJSXZDeTdvYjhCRzhGbDEyLUQ4WFpWaXBmbjBCNk14X2JpT1VfQjNZZENDX2pOcXkwamFXMXQ0N21hV1liZ1lLWlFrMXIyV0g; Domain=reddit.com; Max-Age=7199; Path=/; expires=Sat, 25-Jan-2020 22:57:04 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "598.0"
+          ],
+          "x-ratelimit-reset": [
+            "176"
+          ],
+          "x-ratelimit-used": [
+            "2"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/message/messages/ll22wt/?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}
