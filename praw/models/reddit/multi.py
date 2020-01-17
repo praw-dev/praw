@@ -106,7 +106,8 @@ class Multireddit(ExportableMixin, SubredditListingMixin, RedditBase):
         self.path = "/" + self._path[:-1]  # Prevent requests for path
         if "subreddits" in self.__dict__:
             self.subreddits = [
-                Subreddit(reddit, x["name"]) for x in self.subreddits
+                Subreddit(reddit, x["name"]) if isinstance(x, dict) else x
+                for x in self.subreddits
             ]
 
     def _fetch_info(self):

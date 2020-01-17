@@ -11,7 +11,7 @@ class ExportableMixin:
     @staticmethod
     def _create_base(
         base: Callable[
-            [Reddit, Union[str, Dict[str, Union[Any, Dict[str, Any]]]]], _T
+            [Reddit, str, Dict[str, Union[Any, Dict[str, Any]]]], _T
         ],
         reddit: Reddit,
         data: Union[str, Dict[str, Union[Any, Dict[str, Any]]]],
@@ -19,7 +19,7 @@ class ExportableMixin:
         """Create another PRAWBase with either a string or a dict."""
         return (
             base(reddit, _data=data)
-            if isinstance(data, dict)
+            if isinstance(data, dict) and ("_")
             else base(reddit, data)
         )
 

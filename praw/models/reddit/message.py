@@ -1,10 +1,11 @@
 """Provide the Message class."""
-from typing import Any, Dict, TypeVar
+from typing import Any, Dict, TypeVar, Union
 
 from ...const import API_PATH
 from .base import RedditBase
 from .mixins import (
     EditableMixin,
+    ExportableMixin,
     FullnameMixin,
     InboxableMixin,
     ReplyableMixin,
@@ -16,7 +17,12 @@ Reddit = TypeVar("Reddit")
 
 
 class Message(
-    EditableMixin, InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase
+    ExportableMixin,
+    EditableMixin,
+    InboxableMixin,
+    ReplyableMixin,
+    FullnameMixin,
+    RedditBase,
 ):
     """A class for private messages.
 
@@ -106,6 +112,22 @@ class Message(
         self._reddit.post(
             API_PATH["delete_message"], data={"id": self.fullname}
         )
+
+    def __setattr__(self, name: str, value: Union[str, Dict[str, Any]]):
+        """Objectify author, subreddit and dest."""
+        if name == "author" and isinstance(value, dict):
+            value = Redditor(self._reddit, _data=value)
+        if name == "subreddit" and isinstance(value, dict):
+            value = Subreddit(self._reddit, _data=value)
+        if name == "dest" and isinstance(value, dict):
+            # Things get tricky. Dest can be a redditor or a subreddit.
+            # However, subreddits have key ``display_name`` and redditors have
+            # key ``name``, which we can use to differentiate them.
+            if "display_name" in value:  # subreddit
+                value = Subreddit(self._reddit, _data=value)
+            else:  # redditor or bug, in which case, file a bug report
+                value = Redditor(self._reddit, _data=value)
+        super().__setattr__(name, value)
 
 
 class SubredditMessage(Message):

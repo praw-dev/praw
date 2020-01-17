@@ -544,7 +544,9 @@ class Submission(
         elif url is not None:
             self.id = self.id_from_url(url)
 
-        self._comments_by_id = {}
+        self._comments_by_id = (
+            self._comments_by_id if hasattr(self, "_comments_by_id") else {}
+        )
 
     def __setattr__(self, attribute: str, value: Any):
         """Objectify author, and subreddit attributes."""

@@ -48,8 +48,8 @@ class RedditBase(PRAWBase):
         :param reddit: An instance of :class:`~.Reddit`.
 
         """
-        super().__init__(reddit, _data=_data)
         self._fetched = False
+        super().__init__(reddit, _data=_data)
 
     def __repr__(self) -> str:
         """Return an object initialization representation of the instance."""

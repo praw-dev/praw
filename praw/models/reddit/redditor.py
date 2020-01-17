@@ -94,7 +94,7 @@ class Redditor(
         if isinstance(name, dict):
             if "name" in name:
                 name = name["name"]
-        return name != "[deleted]"
+        return name != "[deleted]" and name is not None
 
     @cachedproperty
     def stream(self) -> _RedditorStream:

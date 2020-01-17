@@ -1,5 +1,5 @@
 """Provide models for new modmail."""
-from typing import Any, Dict, List, Optional, TypeVar
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from ...const import API_PATH
 from ...util import snake_case_keys
@@ -150,6 +150,17 @@ class ModmailConversation(ExportableMixin, RedditBase):
             self.id = id
 
         self._info_params = {"markRead": True} if mark_read else None
+
+    def __setattr__(
+        self,
+        name: str,
+        value: Union[str, Dict[str, Union[str, Dict[str, Any]]]],
+    ):
+        """Objectify owner."""
+        # If owner is given as a dict, it is not objectified.
+        if name == "owner" and isinstance(value, dict):
+            value = self._reddit.subreddit(value["display_name"])
+        super().__setattr__(name, value)
 
     def _build_conversation_list(self, other_conversations):
         """Return a comma-separated list of conversation IDs."""
@@ -340,16 +351,22 @@ other_conversations=conversation.user.recent_convos)
         self._reddit.post(API_PATH["modmail_unread"], data=data)
 
 
-class ModmailObject(RedditBase):
+class ModmailObject(ExportableMixin, RedditBase):
     """A base class for objects within a modmail conversation."""
 
     AUTHOR_ATTRIBUTE = "author"
     STR_FIELD = "id"
 
     def __setattr__(self, attribute: str, value: Any):
-        """Objectify the AUTHOR_ATTRIBUTE attribute."""
+        """Objectify the AUTHOR_ATTRIBUTE attribute and owner."""
         if attribute == self.AUTHOR_ATTRIBUTE:
             value = self._reddit._objector.objectify(value)
+        # If owner is given as a dict, it is not objectified.
+        if attribute == "owner" and isinstance(value, dict):
+            value = self._reddit.subreddit(value["display_name"])
+        # If author is given as a dict, it is not objectified.
+        if attribute == "author" and isinstance(value, dict):
+            value = self._reddit.redditor(value["name"])
         super().__setattr__(attribute, value)
 
 
