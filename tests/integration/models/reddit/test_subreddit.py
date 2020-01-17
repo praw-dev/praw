@@ -1,6 +1,6 @@
 """Test praw.models.subreddit."""
 from os.path import abspath, dirname, join
-from json import dumps
+import json
 import socket
 import sys
 
@@ -50,7 +50,7 @@ class WebsocketMock:
             raise websocket.WebSocketTimeoutException()
         assert 0 <= self.i + 1 < len(self.post_ids)
         self.i += 1
-        return dumps(self.make_dict(self.post_ids[self.i]))
+        return json.dumps(self.make_dict(self.post_ids[self.i]))
 
 
 class WebsocketMockException:
@@ -74,7 +74,7 @@ class WebsocketMockException:
         if self._recv_exc is not None:
             raise self._recv_exc
         else:
-            return dumps(
+            return json.dumps(
                 {
                     "payload": {
                         "redirect": "https://reddit.com/r/<TEST_SUBREDDIT>/"
@@ -149,6 +149,99 @@ class TestSubreddit(IntegrationTest):
                     wikimode="disabled",
                 )
             assert excinfo.value.error_type == "NO_TEXT"
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestSubreddit.test_export"):
+            subreddit = Subreddit(
+                self.reddit, pytest.placeholders.test_subreddit
+            )
+            subreddit._fetch()
+            assert subreddit._fetched
+            subreddit2 = Subreddit(self.reddit, _data=subreddit.export())
+            assert subreddit2.__dict__ == subreddit.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_no_private(self, _):
+        self.reddit.read_only = False
+        subreddit = Subreddit(self.reddit, pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_export_no_private"
+        ):
+            subreddit._fetch()
+            data = subreddit.export(remove_private=True)
+            assert [key.startswith("_") for key, value in data.items()].count(
+                True
+            ) == 0
+            subreddit2 = Subreddit(self.reddit, _data=data)
+            subreddit2._fetched = True
+            for key in subreddit2.__dict__:
+                assert subreddit2.__dict__[key] == subreddit.__dict__[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify(self, _):
+        self.reddit.read_only = False
+        subreddit = Subreddit(self.reddit, pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette("TestSubreddit.test_export_jsonify"):
+            subreddit._fetch()
+            jsondata = subreddit.export(jsonify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            subreddit2 = Subreddit(self.reddit, _data=json.loads(jsondata))
+            subreddit2._fetched = True
+            assert subreddit2.__dict__ == subreddit.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_with_private(self, _):
+        self.reddit.read_only = False
+        subreddit = Subreddit(self.reddit, pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_export_jsonify_with_private"
+        ):
+            subreddit._fetch()
+            jsondata = subreddit.export(jsonify=True, remove_private=False)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) > 0
+            subreddit2 = Subreddit(self.reddit, _data=json.loads(jsondata))
+            subreddit2._fetched = True
+            for key in subreddit2.__dict__:
+                assert subreddit2.__dict__[key] == subreddit.__dict__[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_stringify(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestSubreddit.test_export_stringify"):
+            subreddit = Subreddit(
+                self.reddit, pytest.placeholders.test_subreddit
+            )
+            subreddit._fetch()
+            assert subreddit._fetched
+            subreddit2 = Subreddit(
+                self.reddit, _data=subreddit.export(stringify=True)
+            )
+            assert subreddit2.__dict__ == subreddit.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_stringify(self, _):
+        self.reddit.read_only = False
+        subreddit = Subreddit(self.reddit, pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_export_jsonify_stringify"
+        ):
+            subreddit._fetch()
+            jsondata = subreddit.export(jsonify=True, stringify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            subreddit2 = Subreddit(self.reddit, _data=json.loads(jsondata))
+            subreddit2._fetched = True
+            assert subreddit2.__dict__ == subreddit.__dict__
 
     @mock.patch("time.sleep", return_value=None)
     def test_message(self, _):

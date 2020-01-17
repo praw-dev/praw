@@ -8,6 +8,7 @@ from praw.models import (
     RedditorList,
     Submission,
 )
+import json
 import mock
 import pytest
 
@@ -53,6 +54,99 @@ class TestLiveThread(IntegrationTest):
         assert isinstance(data, list)
         assert isinstance(contributors, RedditorList)
         assert len(contributors) > 0
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export(self, _):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, "xyu8kmjvfrww")
+        with self.recorder.use_cassette("TestLiveThread.test_export"):
+            thread._fetch()
+            assert thread._fetched
+            thread2 = LiveThread(self.reddit, _data=thread.export())
+            assert thread2.__dict__ == thread.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_no_private(self, _):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, "xyu8kmjvfrww")
+        with self.recorder.use_cassette(
+            "TestLiveThread.test_export_no_private"
+        ):
+            thread._fetch()
+            assert thread._fetched
+            data = thread.export(remove_private=True)
+            assert [key.startswith("_") for key, value in data.items()].count(
+                True
+            ) == 0
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify(self, _):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, "xyu8kmjvfrww")
+        with self.recorder.use_cassette("TestLiveThread.test_export_jsonify"):
+            thread._fetch()
+            assert thread._fetched
+            jsondata = thread.export(jsonify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            thread2 = LiveThread(self.reddit, _data=json.loads(jsondata))
+            thread2._fetched = True
+            for key in thread2.__dict__:
+                assert thread2.__dict__[key] == thread.__dict__[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_with_private(self, _):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, "xyu8kmjvfrww")
+        with self.recorder.use_cassette(
+            "TestLiveThread.test_export_jsonify_with_private"
+        ):
+            thread._fetch()
+            assert thread._fetched
+            jsondata = thread.export(jsonify=True, remove_private=False)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) > 0
+            thread2 = LiveThread(self.reddit, _data=json.loads(jsondata))
+            assert thread2.__dict__ == thread.__dict__
+            for key in thread2.__dict__:
+                assert thread2.__dict__[key] == thread.__dict__[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_stringify(self, _):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, "xyu8kmjvfrww")
+        with self.recorder.use_cassette(
+            "TestLiveThread.test_export_stringify"
+        ):
+            thread._fetch()
+            assert thread._fetched
+            thread2 = LiveThread(
+                self.reddit, _data=thread.export(stringify=True)
+            )
+            assert thread2.__dict__ == thread.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_stringify(self, _):
+        self.reddit.read_only = False
+        thread = LiveThread(self.reddit, "xyu8kmjvfrww")
+        with self.recorder.use_cassette(
+            "TestLiveThread.test_export_jsonify_stringify"
+        ):
+            thread._fetch()
+            assert thread._fetched
+            jsondata = thread.export(jsonify=True, stringify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            thread2 = LiveThread(self.reddit, _data=json.loads(jsondata))
+            thread2._fetched = True
+            for key in thread2.__dict__:
+                assert thread2.__dict__[key] == thread.__dict__[key]
 
     def test_init(self):
         thread = LiveThread(self.reddit, "ukaeu1ik4sw5")

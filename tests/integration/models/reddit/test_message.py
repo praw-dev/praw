@@ -1,4 +1,5 @@
 from praw.models import Message, Redditor, Subreddit, SubredditMessage
+import json
 import mock
 import pytest
 
@@ -51,6 +52,138 @@ class TestMessage(IntegrationTest):
         with self.recorder.use_cassette("TestMessage.test_delete"):
             message = next(self.reddit.inbox.messages())
             message.delete()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestMessage.test_export"):
+            message = next(self.reddit.inbox.messages())
+            message._fetch()
+            assert message._fetched
+            message2 = Message(self.reddit, message.export())
+            assert message2.__dict__ == message.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_no_private(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestMessage.test_export_no_private"):
+            message = next(self.reddit.inbox.messages())
+            message._fetch()
+            assert message._fetched
+            data = message.export(remove_private=True)
+            assert [key.startswith("_") for key, value in data.items()].count(
+                True
+            ) == 0
+            message2 = Message(self.reddit, _data=data)
+            for key in message2.__dict__:
+                assert message2.__dict__[key] == message.__dict__[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestMessage.test_export_jsonify"):
+            message = next(self.reddit.inbox.messages())
+            message._fetch()
+            assert message._fetched
+            jsondata = message.export(jsonify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            message2 = Message(self.reddit, _data=json.loads(jsondata))
+            assert message2._fetched
+            assert message2.__dict__ == message.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_with_private(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestMessage.test_export_jsonify_with_private"
+        ):
+            message = next(self.reddit.inbox.messages())
+            message._fetch()
+            assert message._fetched
+            jsondata = message.export(jsonify=True, remove_private=False)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) > 0
+            message2 = Message(self.reddit, _data=json.loads(jsondata))
+            assert message2._fetched
+            for key in message2.__dict__:
+                assert message2.__dict__[key] == message.__dict__[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_stringify(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestMessage.test_export_stringify"):
+            message = next(self.reddit.inbox.messages())
+            message._fetch()
+            assert message._fetched
+            message2 = Message(self.reddit, message.export(stringify=True))
+            assert message2.__dict__ == message.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_stringify(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestMessage.test_export_jsonify_stringify"
+        ):
+            message = next(self.reddit.inbox.messages())
+            message._fetch()
+            assert message._fetched
+            jsondata = message.export(jsonify=True, stringify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            message2 = Message(self.reddit, _data=json.loads(jsondata))
+            assert message2._fetched
+            assert message2.__dict__ == message.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_to_redditor(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestMessage.test_export_redditor"):
+            message = next(self.reddit.inbox.messages())
+            message._fetch()
+            assert message._fetched
+            message2 = Message(self.reddit, message.export())
+            assert message2.__dict__ == message.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_from_subreddit(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestMessage.test_export_from_subreddit"
+        ):
+            message = self.reddit.inbox.message("ll216w")
+            message._fetch()
+            assert message._fetched
+            message2 = Message(self.reddit, message.export())
+            assert message2.__dict__ == message.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_to_subreddit(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestMessage.test_export_to_subreddit"
+        ):
+            message = self.reddit.inbox.message("ll22wt")
+            message._fetch()
+            assert message._fetched
+            message2 = Message(self.reddit, message.export())
+            assert message2.__dict__ == message.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_replies(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestMessage.test_export_replies"):
+            message = self.reddit.inbox.message("kzwk3j")
+            message._fetch()
+            assert message._fetched
+            message2 = Message(self.reddit, message.export())
+            assert message2.__dict__ == message.__dict__
 
     @mock.patch("time.sleep", return_value=None)
     def test_mark_read(self, _):

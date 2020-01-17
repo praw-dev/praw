@@ -1,4 +1,5 @@
-from praw.models import Comment, Submission, Subreddit
+from praw.models import Comment, Multireddit, Submission, Subreddit
+import json
 import mock
 import pytest
 
@@ -53,6 +54,101 @@ class TestMultireddit(IntegrationTest):
         with self.recorder.use_cassette("TestMultireddit.test_delete"):
             multi = self.reddit.user.multireddits()[0]
             multi.delete()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestMultireddit.test_export"):
+            multi = self.reddit.user.multireddits()[0]
+            multi._fetch()
+            assert multi._fetched
+            multi2 = multi.__class__(self.reddit, _data=multi.export())
+            assert multi2.__dict__ == multi.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_no_private(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestMultireddit.test_export_no_private"
+        ):
+            multi = self.reddit.user.multireddits()[0]
+            multi._fetch()
+            assert multi._fetched
+            data = multi.export(remove_private=True)
+            assert [key.startswith("_") for key, value in data.items()].count(
+                True
+            ) == 0
+            multi2 = Multireddit(self.reddit, _data=data)
+            multi2._fetched = True
+            for key in multi2.__dict__:
+                assert multi2.__dict__[key] == multi.__dict__[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestMultireddit.test_export_jsonify"):
+            multi = self.reddit.user.multireddits()[0]
+            multi._fetch()
+            assert multi._fetched
+            jsondata = multi.export(jsonify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            multi2 = Multireddit(self.reddit, _data=json.loads(jsondata))
+            multi2._fetched = True
+            assert multi2.__dict__ == multi.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_with_private(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestMultireddit.test_export_jsonify_with_private"
+        ):
+            multi = self.reddit.user.multireddits()[0]
+            multi._fetch()
+            assert multi._fetched
+            jsondata = multi.export(jsonify=True, remove_private=False)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) > 0
+            multi2 = Multireddit(self.reddit, _data=json.loads(jsondata))
+            assert multi2._fetched
+            for key in multi2.__dict__:
+                assert multi2.__dict__[key] == multi.__dict__[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_stringify(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestMultireddit.test_export_stringify"
+        ):
+            multi = self.reddit.user.multireddits()[0]
+            multi._fetch()
+            assert multi._fetched
+            multi2 = multi.__class__(
+                self.reddit, _data=multi.export(stringify=True)
+            )
+            assert multi2.__dict__ == multi.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_stringify(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestMultireddit.test_export_jsonify_stringify"
+        ):
+            multi = self.reddit.user.multireddits()[0]
+            multi._fetch()
+            assert multi._fetched
+            jsondata = multi.export(jsonify=True, stringify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            multi2 = Multireddit(self.reddit, _data=json.loads(jsondata))
+            multi2._fetched = True
+            assert multi2.__dict__ == multi.__dict__
 
     @mock.patch("time.sleep", return_value=None)
     def test_remove(self, _):

@@ -1,6 +1,7 @@
 """Test praw.models.redditor."""
 from prawcore import BadRequest, Forbidden
-from praw.models import Comment, Submission
+from praw.models import Comment, Redditor, Submission
+import json
 import mock
 import pytest
 
@@ -17,6 +18,93 @@ class TestRedditor(IntegrationTest):
         with self.recorder.use_cassette("TestRedditor.test_block"):
             redditor = self.reddit.redditor(self.FRIEND)
             redditor.block()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestRedditor.test_export"):
+            redditor = self.reddit.redditor(self.FRIEND)
+            redditor._fetch()
+            assert redditor._fetched
+            redditor2 = Redditor(self.reddit, _data=redditor.export())
+            assert redditor2.__dict__ == redditor.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_no_private(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestRedditor.test_export_no_private"):
+            redditor = self.reddit.redditor(self.FRIEND)
+            redditor._fetch()
+            data = redditor.export(remove_private=True)
+            assert [key.startswith("_") for key, value in data.items()].count(
+                True
+            ) == 0
+            redditor2 = Redditor(self.reddit, _data=data)
+            redditor2._fetched = True
+            for key in redditor2.__dict__:
+                assert redditor2.__dict__[key] == redditor.__dict__[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestRedditor.test_export_jsonify"):
+            redditor = self.reddit.redditor(self.FRIEND)
+            redditor._fetch()
+            jsondata = redditor.export(jsonify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            redditor2 = Redditor(self.reddit, _data=json.loads(jsondata))
+            redditor2._fetched = True
+            assert redditor2.__dict__ == redditor.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_with_private(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestRedditor.test_export_jsonify_with_private"
+        ):
+            redditor = self.reddit.redditor(self.FRIEND)
+            redditor._fetch()
+            jsondata = redditor.export(jsonify=True, remove_private=False)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) > 0
+            redditor2 = Redditor(self.reddit, _data=json.loads(jsondata))
+            assert redditor2._fetched
+            for key in redditor2.__dict__:
+                assert redditor2.__dict__[key] == redditor.__dict__[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_stringify(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestRedditor.test_export_stringify"):
+            redditor = self.reddit.redditor(self.FRIEND)
+            redditor._fetch()
+            assert redditor._fetched
+            redditor2 = Redditor(
+                self.reddit, _data=redditor.export(stringify=True)
+            )
+            assert redditor2.__dict__ == redditor.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_stringify(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestRedditor.test_export_jsonify_stringify"
+        ):
+            redditor = self.reddit.redditor(self.FRIEND)
+            redditor._fetch()
+            jsondata = redditor.export(jsonify=True, stringify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            redditor2 = Redditor(self.reddit, _data=json.loads(jsondata))
+            redditor2._fetched = True
+            assert redditor2.__dict__ == redditor.__dict__
 
     def test_friend(self):
         self.reddit.read_only = False

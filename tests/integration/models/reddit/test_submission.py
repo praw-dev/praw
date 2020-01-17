@@ -1,5 +1,6 @@
 from praw.models import Comment, Submission
 from prawcore import BadRequest
+import json
 import mock
 import pytest
 
@@ -61,6 +62,111 @@ class TestSubmission(IntegrationTest):
             "TestSubmission.test_enable_inbox_replies"
         ):
             submission.enable_inbox_replies()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestSubmission.test_export"):
+            submission = Submission(self.reddit, "4b1tfm")
+            submission._fetch()
+            assert submission._fetched
+            submission2 = Submission(self.reddit, _data=submission.export())
+            assert submission2.__dict__ == submission.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_no_private(self, _):
+        self.reddit.read_only = False
+        submission = Submission(self.reddit, "4b1tfm")
+        with self.recorder.use_cassette(
+            "TestSubmission.test_export_no_private"
+        ):
+            submission._fetch()
+            data = submission.export(remove_private=True)
+            assert [key.startswith("_") for key, value in data.items()].count(
+                True
+            ) == 0
+            submission2 = Submission(self.reddit, _data=data)
+            submission2._fetched = True
+            for key in submission2.__dict__:
+                if not key.startswith("_"):
+                    assert (
+                        submission2.__dict__[key] == submission.__dict__[key]
+                    )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify(self, _):
+        self.reddit.read_only = False
+        submission = Submission(self.reddit, "4b1tfm")
+        with self.recorder.use_cassette("TestSubmission.test_export_jsonify"):
+            submission._fetch()
+            jsondata = submission.export(jsonify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            submission2 = Submission(self.reddit, _data=json.loads(jsondata))
+            submission2._fetched = True
+            for key in submission2.__dict__:
+                if not key.startswith("_"):
+                    assert (
+                        submission2.__dict__[key] == submission.__dict__[key]
+                    )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_with_private(self, _):
+        self.reddit.read_only = False
+        submission = Submission(self.reddit, "4b1tfm")
+        with self.recorder.use_cassette(
+            "TestSubmission.test_export_jsonify_with_private"
+        ):
+            submission._fetch()
+            jsondata = submission.export(jsonify=True, remove_private=False)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) > 0
+            submission2 = Submission(self.reddit, _data=json.loads(jsondata))
+            assert submission2._fetched
+            for key in submission2.__dict__:
+                if not key.startswith("_"):
+                    assert (
+                        submission2.__dict__[key] == submission.__dict__[key]
+                    )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_stringify(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmission.test_export_stringify"
+        ):
+            submission = Submission(self.reddit, "4b1tfm")
+            submission._fetch()
+            assert submission._fetched
+            submission2 = Submission(
+                self.reddit, _data=submission.export(stringify=True)
+            )
+            assert submission2.__dict__ == submission.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_stringify(self, _):
+        self.reddit.read_only = False
+        submission = Submission(self.reddit, "4b1tfm")
+        with self.recorder.use_cassette(
+            "TestSubmission.test_export_jsonify_stringify"
+        ):
+            submission._fetch()
+            jsondata = submission.export(jsonify=True, stringify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            submission2 = Submission(self.reddit, _data=json.loads(jsondata))
+            submission2._fetched = True
+            for key in submission2.__dict__:
+                if not key.startswith("_"):
+                    assert (
+                        submission2.__dict__[key] == submission.__dict__[key]
+                    )
 
     def test_gild__no_creddits(self):
         self.reddit.read_only = False

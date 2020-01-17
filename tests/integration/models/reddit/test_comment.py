@@ -1,6 +1,7 @@
 from praw.exceptions import ClientException, PRAWException
 from praw.models import Comment, Submission
 from prawcore import BadRequest
+import json
 import mock
 import pytest
 
@@ -71,6 +72,94 @@ class TestComment(IntegrationTest):
             "TestComment.test_enable_inbox_replies"
         ):
             comment.enable_inbox_replies()
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export(self, _):
+        self.reddit.read_only = False
+        comment = Comment(self.reddit, "fdilbrw")
+        with self.recorder.use_cassette("TestComment.test_export"):
+            comment.body  # try to trigger fetch
+            comment2 = Comment(self.reddit, _data=comment.export())
+            assert comment2._fetched
+            assert comment2.__dict__ == comment.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_no_private(self, _):
+        self.reddit.read_only = False
+        comment = Comment(self.reddit, "fdilbrw")
+        with self.recorder.use_cassette("TestComment.test_export_no_private"):
+            comment.body  # try to trigger fetch
+            data = comment.export(remove_private=True)
+            assert [key.startswith("_") for key, value in data.items()].count(
+                True
+            ) == 0
+            comment2 = Comment(self.reddit, _data=data)
+            for key in comment2.__dict__:
+                assert comment2.__dict__[key] == comment.__dict__[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify(self, _):
+        self.reddit.read_only = False
+        comment = Comment(self.reddit, "fdilbrw")
+        with self.recorder.use_cassette("TestComment.test_export_jsonify"):
+            comment.body  # try to trigger fetch
+            jsondata = comment.export(jsonify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            print(repr(json.loads(jsondata,)))
+            comment2 = Comment(self.reddit, _data=json.loads(jsondata))
+            assert comment2._fetched
+            assert comment2.__dict__ == comment.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_with_private(self, _):
+        self.reddit.read_only = False
+        comment = Comment(self.reddit, "fdilbrw")
+        with self.recorder.use_cassette(
+            "TestComment.test_export_jsonify_with_private"
+        ):
+            comment.body  # try to trigger fetch
+            jsondata = comment.export(jsonify=True, remove_private=False)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) > 0
+            comment2 = Comment(self.reddit, _data=json.loads(jsondata))
+            assert comment2._fetched
+            for key in comment2.__dict__:
+                assert comment2.__dict__[key] == comment.__dict__[key]
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_stringify(self, _):
+        self.reddit.read_only = False
+        comment = Comment(self.reddit, "fdilbrw")
+        with self.recorder.use_cassette("TestComment.test_export_stringify"):
+            comment.body  # try to trigger fetch
+            comment2 = Comment(
+                self.reddit, _data=comment.export(stringify=True)
+            )
+            assert comment2._fetched
+            assert comment2.__dict__ == comment.__dict__
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_export_jsonify_stringify(self, _):
+        self.reddit.read_only = False
+        comment = Comment(self.reddit, "fdilbrw")
+        with self.recorder.use_cassette(
+            "TestComment.test_export_jsonify_stringify"
+        ):
+            comment.body  # try to trigger fetch
+            jsondata = comment.export(jsonify=True, stringify=True)
+            assert isinstance(jsondata, str)
+            assert [
+                key.startswith("_") for key, _ in json.loads(jsondata).items()
+            ].count(True) == 0
+            print(repr(json.loads(jsondata)))
+            comment2 = Comment(self.reddit, _data=json.loads(jsondata))
+            assert comment2._fetched
+            assert comment2.__dict__ == comment.__dict__
 
     def test_gild__no_creddits(self):
         self.reddit.read_only = False
