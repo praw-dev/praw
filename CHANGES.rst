@@ -15,6 +15,8 @@ Unreleased
   instance of :class:`.Redditor` or a string containing a redditor name and
   returns an instance of :class:`.Redditor` if the authenticated user is
   friends with the user, otherwise throws an exception.
+* :meth:`.SubmissionModeration.flair` has the parameter ``flair_template_id``
+  for applying flairs with template IDs.
 
 **Removed**
 
