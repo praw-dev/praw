@@ -3,7 +3,6 @@
 # pylint: disable=too-many-lines
 import socket
 import warnings
-from abc import ABC, abstractmethod
 from copy import deepcopy
 from json import dumps, loads
 from os.path import basename, dirname, join
@@ -1363,7 +1362,7 @@ class SubredditFlair:
         return response
 
 
-class SubredditFlairTemplates(ABC):
+class SubredditFlairTemplates:
     """Provide functions to interact with a Subreddit's flair templates."""
 
     @staticmethod
@@ -1384,7 +1383,6 @@ class SubredditFlairTemplates(ABC):
         """
         self.subreddit = subreddit
 
-    @abstractmethod
     def __iter__(self):
         """Abstract method to return flair templates."""
         raise NotImplementedError
@@ -1419,32 +1417,6 @@ class SubredditFlairTemplates(ABC):
         url = API_PATH["flairtemplateclear"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(
             url, data={"flair_type": self.flair_type(is_link)}
-        )
-
-    @abstractmethod
-    def add(
-        self,
-        text,
-        css_class="",
-        text_editable=False,
-        is_link=None,
-        background_color=None,
-        text_color=None,
-        mod_only=None,
-        allowable_content=None,
-        max_emojis=None,
-    ):
-        """Abstract method to add a flair template."""
-        return self._add(
-            text,
-            css_class=css_class,
-            text_editable=text_editable,
-            is_link=False,
-            background_color=background_color,
-            text_color=text_color,
-            mod_only=mod_only,
-            allowable_content=allowable_content,
-            max_emojis=max_emojis,
         )
 
     def delete(self, template_id):
@@ -1538,7 +1510,9 @@ class SubredditFlairTemplates(ABC):
         }
         if fetch:
             _existing_data = [
-                template for template in self if template["id"] == template_id
+                template
+                for template in iter(self)
+                if template["id"] == template_id
             ]
             if len(_existing_data) == 0:
                 warnings.warn(
@@ -1614,7 +1588,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
                css_class='praw', text_editable=True)
 
         """
-        super().add(
+        self._add(
             text,
             css_class=css_class,
             text_editable=text_editable,
@@ -1651,7 +1625,6 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
            for template in reddit.subreddit('NAME').flair.link_templates:
                print(template)
-
 
         """
         url = API_PATH["link_flair"].format(subreddit=self.subreddit)
@@ -1696,7 +1669,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
                css_class='praw', text_editable=True)
 
         """
-        super().add(
+        self._add(
             text,
             css_class=css_class,
             text_editable=text_editable,
