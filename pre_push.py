@@ -53,7 +53,9 @@ def run_static():
 
     tmp_dir = mkdtemp()
     try:
-        success &= do_process(["sphinx-build", "-W", "docs", tmp_dir])
+        success &= do_process(
+            ["sphinx-build", "-W", "--keep-going", "docs", tmp_dir]
+        )
     finally:
         rmtree(tmp_dir)
 

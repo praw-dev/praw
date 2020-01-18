@@ -36,7 +36,7 @@ jobs:
     - name: Run pydocstyle
       run: pydocstyle praw
     - name: Run sphinx
-      run: sphinx-build -W docs/ /tmp/foo
+      run: sphinx-build -W --keep-going docs/ /tmp/foo
     strategy:
       matrix:
         os: [macOS-latest, ubuntu-latest, windows-latest]
@@ -69,7 +69,7 @@ jobs:
     - name: Run pydocstyle
       run: pydocstyle praw
     - name: Run sphinx
-      run: sphinx-build -W docs/ /tmp/foo
+      run: sphinx-build -W --keep-going docs/ /tmp/foo
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8]
