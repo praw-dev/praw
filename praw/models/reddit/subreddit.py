@@ -1437,11 +1437,11 @@ class SubredditFlairTemplates:
         mod_only=None,
         allowable_content=None,
         max_emojis=None,
+        fetch=True,
     ):
         """Update the flair template provided by ``template_id``.
 
-        :param template_id: The flair template to update. If not valid then
-            a new flair template will be made.
+        :param template_id: The flair template to update.
         :param text: The flair template's new text (required).
         :param css_class: The flair template's new css_class (default: '').
         :param text_editable: (boolean) Indicate if the flair text can be
@@ -1458,6 +1458,12 @@ class SubredditFlairTemplates:
             valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
+        :param fetch: Whether or not PRAW will fetch existing information on
+            the existing flair before updating (Default: True).
+
+        .. warning:: If parameter ``fetch`` is set to False, a network request
+            to Reddit will not be made, but all other values will be
+            overwritten to their defaults.
 
         For example to make a user flair template text_editable, try:
 
@@ -1468,11 +1474,6 @@ class SubredditFlairTemplates:
                template_info['id'],
                template_info['flair_text'],
                text_editable=True)
-
-        .. note::
-
-           Any parameters not provided will be set to default values (usually
-           ``None`` or ``False``) on Reddit's end.
 
         """
         url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
@@ -1487,6 +1488,19 @@ class SubredditFlairTemplates:
             "text_color": text_color,
             "text_editable": text_editable,
         }
+        if fetch:
+            _existing_data = [
+                data for data in self if data["id"] == template_id
+            ]
+            if len(_existing_data) == 0:
+                raise ClientException(
+                    "There is no flair template with id {template_id} "
+                    "on Reddit.".format(template_id=template_id)
+                )
+            existing_data = _existing_data[0]
+            for key, item in data.copy().items():
+                if not bool(item):
+                    data[key] = existing_data[key]
         self.subreddit._reddit.post(url, data=data)
 
 
