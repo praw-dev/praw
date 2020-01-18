@@ -11,7 +11,12 @@ import websocket
 from prawcore import Redirect
 
 from ...const import API_PATH, JPEG_HEADER
-from ...exceptions import APIException, ClientException, WebSocketException
+from ...exceptions import (
+    APIException,
+    ClientException,
+    InvalidFlairTemplateID,
+    WebSocketException,
+)
 from ...util.cache import cachedproperty
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
@@ -1495,10 +1500,7 @@ class SubredditFlairTemplates:
                 data for data in self if data["id"] == template_id
             ]
             if len(_existing_data) == 0:
-                raise ClientException(
-                    "There is no flair template with id {template_id} "
-                    "on Reddit.".format(template_id=template_id)
-                )
+                raise InvalidFlairTemplateID(template_id)
             existing_data = _existing_data[0]
             for key, item in data.copy().items():
                 if not bool(item):

@@ -20,6 +20,17 @@ Unreleased
 * :meth:`~.Emoji.update` supports modifying an emoji's permissions.
 * :meth:`~.SubredditEmoji.add` now supports optionally passing booleans to set
   an emoji's permissions upon upload.
+* Methods :meth:`.SubredditFlairLinkTemplates.update` and
+  :meth:`.SubredditFlairRedditorTemplates.update` contains a new parameter,
+  ``fetch``, that toggles the automatic fetching of existing data from Reddit.
+  It is set to true on default.
+* Values in methods :meth:`.SubredditFlairLinkTemplates.update` and
+  :meth:`.SubredditFlairRedditorTemplates.update` that are left as the
+  defaults will no longer be over-written if the ``fetch`` parameter is set to
+  true, but will fill in existing values for the flair template.
+* The parameter ``text`` for methods
+  :meth:`.SubredditFlairLinkTemplates.update` and
+  :meth:`.SubredditFlairRedditorTemplates.update` is no longer required.
 
 **Removed**
 
@@ -28,6 +39,10 @@ Unreleased
 * Module ``praw.models.modaction`` no longer exists. Pleae use the module
   ``praw.models.mod_action`` module, or directly import ``ModAction``
   from ``praw.models``.
+* Methods :meth:`.SubredditFlairLinkTemplates.update` and
+  :meth:`.SubredditFlairRedditorTemplates.update` will no longer
+  create flairs that are using an invalid template id, but instead throw a
+  :class:`.InvalidFlairTemplateID`.
 
 6.5.1 (2020/01/07)
 ------------------

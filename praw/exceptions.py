@@ -49,6 +49,18 @@ class DuplicateReplaceException(ClientException):
         )
 
 
+class InvalidFlairTemplateID(ClientException):
+    """Indicate exceptions where an invalid flair template id is given."""
+
+    def __init__(self, template_id: str):
+        """Initialize the class."""
+        super().__init__(
+            "The flair template id {template_id} is invalid.".format(
+                template_id=template_id
+            )
+        )
+
+
 class InvalidImplicitAuth(ClientException):
     """Indicate exceptions where an implicit auth type is used incorrectly."""
 
