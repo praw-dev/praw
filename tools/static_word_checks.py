@@ -108,6 +108,18 @@ class StaticChecker:
 
         It runs the checks located in the ``self.full_file_checks`` and
         ``self.line_checks`` lists, with full file checks being run first.
+
+        Full-file checks are checks that can also fix the errors they find,
+        while the line checks can just warn about found errors.
+
+        * Full file checks:
+
+           * :meth:`.check_for_code_statement`
+           * :meth:`.check_for_double_syntax`
+
+        * Line checks
+
+           * :meth:`.check_for_noreturn`
         """
         status = True
         directory = os.path.abspath(os.path.join(__file__, "..", "..", "praw"))
