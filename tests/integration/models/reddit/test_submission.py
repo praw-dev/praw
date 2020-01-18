@@ -328,6 +328,67 @@ class TestSubmissionModeration(IntegrationTest):
         with self.recorder.use_cassette("TestSubmissionModeration.test_flair"):
             self.reddit.submission("4b536p").mod.flair("submission flair")
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_flair_template_id(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_flair_with_template_id"
+        ):
+            self.reddit.submission("eh9xy1").mod.flair(
+                "submission flair",
+                flair_template_id="0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d",
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_flair_text_only(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_flair_text_only"
+        ):
+            self.reddit.submission("eh9xy1").mod.flair("submission flair")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_flair_text_and_css_class(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_flair_text_and_css_class"
+        ):
+            self.reddit.submission("eh9xy1").mod.flair(
+                "submission flair", css_class="submission flair"
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_flair_all(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_flair_all"
+        ):
+            self.reddit.submission("eh9xy1").mod.flair(
+                "submission flair",
+                css_class="submission flair",
+                flair_template_id="0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d",
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_flair_just_template_id(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_flair_just_template_id"
+        ):
+            self.reddit.submission("eh9xy1").mod.flair(
+                flair_template_id="0f7349d8-2a6d-11ea-8529-0e5dee3e1a9d"
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_flair_just_css_class(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_flair_just_css_class"
+        ):
+            self.reddit.submission("eh9xy1").mod.flair(
+                css_class="submission flair"
+            )
+
     def test_distinguish(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
