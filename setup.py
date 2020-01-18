@@ -62,7 +62,7 @@ setup(
     license="Simplified BSD License",
     long_description=README,
     package_data={"": ["LICENSE.txt"], PACKAGE_NAME: ["*.ini"]},
-    packages=find_packages(exclude=["tests", "tests.*"]),
+    packages=find_packages(exclude=["tests", "tests.*", "tools", "tools.*"]),
     url="https://praw.readthedocs.org/",
     version=VERSION,
 )
