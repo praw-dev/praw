@@ -68,22 +68,22 @@ class Preferences:
         :param email_messages: Send messages as emails (boolean).
         :param email_unsubscribe_all: Unsubscribe from all emails (boolean).
         :param enable_default_themes: Use reddit theme (boolean).
-        :param g: Location (one of ``'GLOBAL'``, ``'US'``, ``'AR'``,
-            ``'AU'``, ``'BG'``, ``'CA'``, ``'CL'``, ``'CO'``, ``'HR'``,
-            ``'CZ'``, ``'FI'``, ``'GR'``, ``'HU'``, ``'IS'``, ``'IN'``,
-            ``'IE'``, ``'JP'``, ``'MY'``, ``'MX'``, ``'NZ'``, ``'PH'``,
-            ``'PL'``, ``'PT'``, ``'PR'``, ``'RO'``, ``'RS'``, ``'SG'``,
-            ``'SE'``, ``'TW'``, ``'TH'``, ``'TR'``, ``'GB'``, ``'US_WA'``,
-            ``'US_DE'``, ``'US_DC'``, ``'US_WI'``, ``'US_WV'``, ``'US_HI'``,
-            ``'US_FL'``, ``'US_WY'``, ``'US_NH'``, ``'US_NJ'``, ``'US_NM'``,
-            ``'US_TX'``, ``'US_LA'``, ``'US_NC'``, ``'US_ND'``, ``'US_NE'``,
-            ``'US_TN'``, ``'US_NY'``, ``'US_PA'``, ``'US_CA'``, ``'US_NV'``,
-            ``'US_VA'``, ``'US_CO'``, ``'US_AK'``, ``'US_AL'``, ``'US_AR'``,
-            ``'US_VT'``, ``'US_IL'``, ``'US_GA'``, ``'US_IN'``, ``'US_IA'``,
-            ``'US_OK'``, ``'US_AZ'``, ``'US_ID'``, ``'US_CT'``, ``'US_ME'``,
-            ``'US_MD'``, ``'US_MA'``, ``'US_OH'``, ``'US_UT'``, ``'US_MO'``,
-            ``'US_MN'``, ``'US_MI'``, ``'US_RI'``, ``'US_KS'``, ``'US_MT'``,
-            ``'US_MS'``, ``'US_SC'``, ``'US_KY'``, ``'US_OR'``, ``'US_SD'``).
+        :param g: Location (one of ``'GLOBAL'``, ``'AR'``, ``'AU'``, ``'BG'``,
+            ``'CA'``, ``'CL'``, ``'CO'``, ``'CZ'``, ``'FI'``, ``'GB'``,
+            ``'GR'``, ``'HR'``, ``'HU'``, ``'IE'``, ``'IN'``, ``'IS'``,
+            ``'JP'``, ``'MX'``, ``'MY'``, ``'NZ'``, ``'PH'``, ``'PL'``,
+            ``'PR'``, ``'PT'``, ``'RO'``, ``'RS'``, ``'SE'``, ``'SG'``,
+            ``'TH'``, ``'TR'``, ``'TW'``, ``'US'``, ``'US_AK'``, ``'US_AL'``,
+            ``'US_AR'``, ``'US_AZ'``, ``'US_CA'``, ``'US_CO'``, ``'US_CT'``,
+            ``'US_DC'``, ``'US_DE'``, ``'US_FL'``, ``'US_GA'``, ``'US_HI'``,
+            ``'US_IA'``, ``'US_ID'``, ``'US_IL'``, ``'US_IN'``, ``'US_KS'``,
+            ``'US_KY'``, ``'US_LA'``, ``'US_MA'``, ``'US_MD'``, ``'US_ME'``,
+            ``'US_MI'``, ``'US_MN'``, ``'US_MO'``, ``'US_MS'``, ``'US_MT'``,
+            ``'US_NC'``, ``'US_ND'``, ``'US_NE'``, ``'US_NH'``, ``'US_NJ'``,
+            ``'US_NM'``, ``'US_NV'``, ``'US_NY'``, ``'US_OH'``, ``'US_OK'``,
+            ``'US_OR'``, ``'US_PA'``, ``'US_RI'``, ``'US_SC'``, ``'US_SD'``,
+            ``'US_TN'``, ``'US_TX'``, ``'US_UT'``, ``'US_VA'``, ``'US_VT'``,
+            ``'US_WA'``, ``'US_WI'``, ``'US_WV'``, ``'US_WY'``).
         :param hide_ads: Hide ads (boolean).
         :param hide_downs: Don't show me submissions after I've downvoted them,
             except my own (boolean).
