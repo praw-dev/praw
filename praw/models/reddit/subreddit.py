@@ -1429,7 +1429,7 @@ class SubredditFlairTemplates:
     def update(
         self,
         template_id,
-        text,
+        text="",
         css_class="",
         text_editable=False,
         background_color=None,
@@ -1460,10 +1460,12 @@ class SubredditFlairTemplates:
             (Reddit defaults this value to 10).
         :param fetch: Whether or not PRAW will fetch existing information on
             the existing flair before updating (Default: True).
+        :raises: ClientException if an invalid flair template ID is given.
 
         .. warning:: If parameter ``fetch`` is set to False, a network request
             to Reddit will not be made, but all other values will be
-            overwritten to their defaults.
+            overwritten to their defaults. Furthermore, text and CSS class will
+            be set to blank values.
 
         For example to make a user flair template text_editable, try:
 
