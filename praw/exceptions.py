@@ -55,7 +55,8 @@ class InvalidFlairTemplateID(ClientException):
     def __init__(self, template_id: str):
         """Initialize the class."""
         super().__init__(
-            "The flair template id {template_id} is invalid.".format(
+            "The flair template id ``{template_id}`` is invalid. If you are "
+            "trying to create a flair, please use the ``add`` method.".format(
                 template_id=template_id
             )
         )

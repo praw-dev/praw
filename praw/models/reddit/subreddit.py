@@ -2,6 +2,8 @@
 
 # pylint: disable=too-many-lines
 import socket
+import warnings
+from abc import ABC, abstractmethod
 from copy import deepcopy
 from json import dumps, loads
 from os.path import basename, dirname, join
@@ -14,7 +16,6 @@ from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import (
     APIException,
     ClientException,
-    InvalidFlairTemplateID,
     WebSocketException,
 )
 from ...util.cache import cachedproperty
@@ -1362,7 +1363,7 @@ class SubredditFlair:
         return response
 
 
-class SubredditFlairTemplates:
+class SubredditFlairTemplates(ABC):
     """Provide functions to interact with a Subreddit's flair templates."""
 
     @staticmethod
@@ -1382,6 +1383,11 @@ class SubredditFlairTemplates:
 
         """
         self.subreddit = subreddit
+
+    @abstractmethod
+    def __iter__(self):
+        """Abstract method to return flair templates."""
+        raise NotImplementedError
 
     def _add(
         self,
@@ -1415,6 +1421,32 @@ class SubredditFlairTemplates:
             url, data={"flair_type": self.flair_type(is_link)}
         )
 
+    @abstractmethod
+    def add(
+        self,
+        text,
+        css_class="",
+        text_editable=False,
+        is_link=None,
+        background_color=None,
+        text_color=None,
+        mod_only=None,
+        allowable_content=None,
+        max_emojis=None,
+    ):
+        """Abstract method to add a flair template."""
+        return self._add(
+            text,
+            css_class=css_class,
+            text_editable=text_editable,
+            is_link=False,
+            background_color=background_color,
+            text_color=text_color,
+            mod_only=mod_only,
+            allowable_content=allowable_content,
+            max_emojis=max_emojis,
+        )
+
     def delete(self, template_id):
         """Remove a flair template provided by ``template_id``.
 
@@ -1442,11 +1474,17 @@ class SubredditFlairTemplates:
         mod_only=None,
         allowable_content=None,
         max_emojis=None,
-        fetch=True,
+        fetch=False,
     ):
         """Update the flair template provided by ``template_id``.
 
-        :param template_id: The flair template to update.
+        :param template_id: The flair template to update. If not valid then
+            a new flair template will be made.
+
+            .. warning:: The behavior of this function to create a new flair is
+                DEPRECATED. Please use the method ``add`` instead. This will
+                cause an exception on the next major release.
+
         :param text: The flair template's new text (required).
         :param css_class: The flair template's new css_class (default: '').
         :param text_editable: (boolean) Indicate if the flair text can be
@@ -1464,13 +1502,16 @@ class SubredditFlairTemplates:
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
         :param fetch: Whether or not PRAW will fetch existing information on
-            the existing flair before updating (Default: True).
-        :raises: ClientException if an invalid flair template ID is given.
+            the existing flair before updating (Default: False).
 
         .. warning:: If parameter ``fetch`` is set to False, a network request
             to Reddit will not be made, but all other values will be
             overwritten to their defaults. Furthermore, text and CSS class will
             be set to blank values.
+
+        .. note:: Parameter ``fetch`` will be set to True on the next major
+            release of PRAW.
+
 
         For example to make a user flair template text_editable, try:
 
@@ -1497,14 +1538,21 @@ class SubredditFlairTemplates:
         }
         if fetch:
             _existing_data = [
-                data for data in self if data["id"] == template_id
+                template for template in self if template["id"] == template_id
             ]
             if len(_existing_data) == 0:
-                raise InvalidFlairTemplateID(template_id)
-            existing_data = _existing_data[0]
-            for key, item in data.copy().items():
-                if not bool(item):
-                    data[key] = existing_data[key]
+                warnings.warn(
+                    "Creating flair templates with an invalid flair "
+                    "ID is now deprecated. This will cause an "
+                    "exception in the next major release.",
+                    category=DeprecationWarning,
+                    stacklevel=2,
+                )
+            else:
+                existing_data = _existing_data[0]
+                for key, item in data.copy().items():
+                    if not bool(item):
+                        data[key] = existing_data[key]
         self.subreddit._reddit.post(url, data=data)
 
 
@@ -1566,7 +1614,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
                css_class='praw', text_editable=True)
 
         """
-        self._add(
+        super().add(
             text,
             css_class=css_class,
             text_editable=text_editable,
@@ -1648,7 +1696,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
                css_class='praw', text_editable=True)
 
         """
-        self._add(
+        super().add(
             text,
             css_class=css_class,
             text_editable=text_editable,

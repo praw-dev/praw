@@ -22,15 +22,28 @@ Unreleased
   an emoji's permissions upon upload.
 * Methods :meth:`.SubredditFlairLinkTemplates.update` and
   :meth:`.SubredditFlairRedditorTemplates.update` contains a new parameter,
+* Methods :meth:`.SubredditLinkFlairTemplates.update` and
+  :meth:`.SubredditRedditorFlairTemplates.update` contains a new parameter,
   ``fetch``, that toggles the automatic fetching of existing data from Reddit.
-  It is set to true on default.
-* Values in methods :meth:`.SubredditFlairLinkTemplates.update` and
-  :meth:`.SubredditFlairRedditorTemplates.update` that are left as the
+  It is set to False on default.
+
+  .. warning:: Parameter fetch will be set to True by default on the next
+     major release.
+
+* Values in methods :meth:`.SubredditLinkFlairTemplates.update` and
+  :meth:`.SubredditRedditorFlairTemplates.update` that are left as the
   defaults will no longer be over-written if the ``fetch`` parameter is set to
-  true, but will fill in existing values for the flair template.
+  True, but will fill in existing values for the flair template.
 * The parameter ``text`` for methods
-  :meth:`.SubredditFlairLinkTemplates.update` and
-  :meth:`.SubredditFlairRedditorTemplates.update` is no longer required.
+  :meth:`.SubredditLinkFlairTemplates.update` and
+  :meth:`.SubredditRedditorFlairTemplates.update` is no longer required.
+
+**Deprecated**
+
+* Creating a flair through methods :meth:`.SubredditLinkFlairTemplates.update`
+  and :meth:`.SubredditRedditorFlairTemplates.update` is now deprecated. This
+  action will throw :class:`.InvalidFlairTemplateID` on the next major
+  release.
 
 **Removed**
 
