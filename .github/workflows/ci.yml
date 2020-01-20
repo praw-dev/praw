@@ -33,6 +33,8 @@ jobs:
       run: flake8 --exclude docs --statistics
     - name: Check other phrase usages
       run: python ./tools/static_word_checks.py
+    - name: Check documentation
+      run: python ./tools/check_documentation.py
     - name: Run pydocstyle
       run: pydocstyle praw
     - name: Run sphinx
@@ -66,6 +68,8 @@ jobs:
       run: black --check --verbose .
     - name: Run flake8
       run: flake8 --exclude docs --statistics
+    - name: Check documentation
+      run: python ./tools/check_documentation.py
     - name: Run pydocstyle
       run: pydocstyle praw
     - name: Run sphinx

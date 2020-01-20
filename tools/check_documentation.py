@@ -23,42 +23,39 @@ class DocumentationChecker:
     """
 
     BASE_SEARCH_CLASS = RedditBase
-    exceptions = [
+    exceptions = {
         ModmailObject,  # is never publicly accessed
-    ]
+    }
     HAS_CODE_BLOCK = re.compile(r".. code-block::")
     HAS_ATTRIBUTE_TABLE = re.compile(r"Attribute[ ]+Description")
-    METHOD_EXCEPTIONS = [
+    METHOD_EXCEPTIONS = {
         "from_data",
         "id_from_url",
         "parse",
         "sluggify",
-    ]
-    subclasses = []
+    }
+    subclasses = set()
 
     @staticmethod
-    def in_list_lambda(search_list):
-        return lambda item: item not in search_list
-
-    @classmethod
-    def expand(cls, base_list, append_list):
-        base_list = list(base_list)
-        while len(base_list) > 0:
-            item = base_list.pop(0)
-            append_list.append(item)
-            base_list.extend(item.__subclasses__())
-        append_list = set(append_list)
+    def discover_subclasses(base_set):
+        working_items = list(base_set)
+        subclasses = set()
+        while working_items:
+            item = working_items.pop(0)
+            subclasses.add(item)
+            working_items.extend(item.__subclasses__())
+        return subclasses
 
     @classmethod
     def check(cls):
-        cls.expand(
-            cls.BASE_SEARCH_CLASS.__subclasses__(), cls.subclasses
+        cls.subclasses |= cls.discover_subclasses(
+            cls.BASE_SEARCH_CLASS.__subclasses__()
         )
-        cls.expand(cls.exceptions, cls.exceptions)
+        cls.exceptions |= cls.discover_subclasses(cls.exceptions)
         success = True
-        for subclass in (
-            item for item in cls.subclasses if item not in cls.exceptions
-        ):
+        for subclass in cls.subclasses:
+            if subclass in cls.exceptions:
+                continue
             if not cls.HAS_ATTRIBUTE_TABLE.search(subclass.__doc__):
                 print(
                     "Subclass {mod}.{name} is missing a table "
@@ -67,31 +64,25 @@ class DocumentationChecker:
                     )
                 )
                 success = False
-            method_list = []
-            for method_name in (
-                item
-                for item in dir(subclass)
-                if item not in cls.METHOD_EXCEPTIONS
-            ):
-                value = getattr(subclass, method_name)
+            for method_name in dir(subclass):
+                if method_name in cls.METHOD_EXCEPTIONS:
+                    continue
+                method = getattr(subclass, method_name)
                 if (
-                    callable(value) or isinstance(value, cachedproperty)
+                    callable(method) or isinstance(method, cachedproperty)
                 ) and not method_name.startswith("_"):
-                    method_list.append(value)
-            for method in method_list:
-                if isinstance(method, cachedproperty):
-                    method = method.func
-                method_doc = method.__doc__
-                if not cls.HAS_CODE_BLOCK.search(str(method_doc)):
-                    print(
-                        "Method {mod}.{classname}.{methodname} is missing "
-                        "code examples.".format(
-                            mod=subclass.__module__,
-                            classname=subclass.__name__,
-                            methodname=method.__name__,
+                    if isinstance(method, cachedproperty):
+                        method = method.func
+                    if not cls.HAS_CODE_BLOCK.search(method.__doc__):
+                        print(
+                            "Method {mod}.{classname}.{methodname} is missing "
+                            "code examples.".format(
+                                mod=subclass.__module__,
+                                classname=subclass.__name__,
+                                methodname=method.__name__,
+                            )
                         )
-                    )
-                    success = False
+                        success = False
         return success
 
 

@@ -46,6 +46,12 @@ def run_static():
             "--replace",
         ]
     )
+    success &= do_process(
+        [
+            sys.executable,
+            path.join(current_directory, "tools", "check_documentation.py"),
+        ]
+    )
     success &= do_process(["black ."], shell=True)
     success &= do_process(["flake8", "--exclude=.eggs,build,docs"])
     success &= do_process(["pydocstyle", "praw"])
