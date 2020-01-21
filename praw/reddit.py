@@ -485,7 +485,7 @@ class Reddit:
                   different set of submissions.
 
         """
-        none_count = [fullnames, url].count(None)
+        none_count = (fullnames, url).count(None)
         if none_count > 1:
             raise TypeError("Either `fullnames` or `url` must be provided.")
         if none_count < 1:

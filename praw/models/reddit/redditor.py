@@ -132,7 +132,7 @@ class Redditor(
         Exactly one of ``name``, ``fullname`` or ``_data`` must be provided.
 
         """
-        if [name, fullname, _data].count(None) != 2:
+        if (name, fullname, _data).count(None) != 2:
             raise TypeError(
                 "Exactly one of `name`, `fullname`, or `_data` must be "
                 "provided."
