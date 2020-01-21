@@ -150,7 +150,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         _data: Optional[Dict[str, Any]] = None,
     ):
         """Construct an instance of the Comment object."""
-        if [id, url, _data].count(None) != 2:
+        if (id, url, _data).count(None) != 2:
             raise TypeError(
                 "Exactly one of `id`, `url`, or `_data` must be provided."
             )

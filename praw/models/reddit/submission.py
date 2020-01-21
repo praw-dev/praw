@@ -508,7 +508,7 @@ class Submission(
         Either ``id`` or ``url`` can be provided, but not both.
 
         """
-        if [id, url, _data].count(None) != 2:
+        if (id, url, _data).count(None) != 2:
             raise TypeError(
                 "Exactly one of `id`, `url`, or `_data` must be provided."
             )
