@@ -8,6 +8,9 @@ Unreleased
 
 * ``config_interpolation`` parameter for :class:`.Reddit` supporting basic and
   extended modes.
+* Add :meth:`.Redditors.partial_redditors` that returns lightweight redditor
+  objects that contain only a few fields. This is useful for resolving
+  Redditor IDs to their usernames in bulk.
 
 **Removed**
 

@@ -3,7 +3,6 @@ Maintainers
 
 - Bryce Boe <bbzbryce@gmail.com> `@bboe <https://github.com/bboe>`_
 - Joe RH <jarhill0@gmail.com> `@jarhill0 <https://github.com/jarhill0>`_
-- Daniel P. <pyprohly@outlook.com> `@Pyprohly <https://github.com/Pyprohly>`_
 
 
 Documentation Contributors
@@ -48,6 +47,7 @@ Source Contributors
 - Declan Hoare <declanhoare@exemail.com.au> `@NetwideRogue <https://github.com/NetwideRogue>`_
 - Elaina Martineau `@CrackedP0t <https://github.com/CrackedP0t>`_
 - Rob Curtis <BourbonInExile@gmail.com> `@waab76 <https://github.com/waab76>`_
+- Pyprohly <pyprohly@outlook.com> `@Pyprohly <https://github.com/Pyprohly>`_
 - LilSpazJoekp `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
 - Timendum `@timendum <https://github.com/timendum>`_
 - vaclav-2012 `@vaclav-2012 <https://github.com/vaclav-2012>`_
