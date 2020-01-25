@@ -16,6 +16,9 @@ PRAW: The Python Reddit API Wrapper
 .. image:: https://github.com/praw-dev/praw/workflows/CI/badge.svg
    :alt: Github Actions Coverage
    :target: https://github.com/praw-dev/praw/actions?query=branch%3Amaster
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :alt: Code Style
+   :target: https://github.com/psf/black
 .. image:: https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg
    :alt: Contributor Covenant
    :target: https://github.com/praw-dev/praw/blob/master/CODE_OF_CONDUCT.md
