@@ -123,10 +123,22 @@ class Message(
             # Things get tricky. Dest can be a redditor or a subreddit.
             # However, subreddits have key ``display_name`` and redditors have
             # key ``name``, which we can use to differentiate them.
+            # The objector cannot tell the difference, so it must be done here.
             if "display_name" in value:  # subreddit
                 value = Subreddit(self._reddit, _data=value)
             else:  # redditor or bug, in which case, file a bug report
                 value = Redditor(self._reddit, _data=value)
+        if name == "replies" and isinstance(value, list):
+            newlist = []
+            for item in value:
+                if isinstance(item, dict):
+                    if item["subreddit"] is not None:
+                        newlist.append(SubredditMessage(self._reddit, item))
+                    else:
+                        newlist.append(Message(self._reddit, item))
+                else:
+                    newlist.append(item)
+            value = newlist
         super().__setattr__(name, value)
 
 

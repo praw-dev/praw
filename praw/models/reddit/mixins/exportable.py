@@ -20,6 +20,7 @@ class ExportableMixin:
         data: Union[str, Dict[str, Union[Any, Dict[str, Any]]]],
     ) -> _T:
         """Create another PRAWBase with either a string or a dict."""
+        print(base, data)
         return (
             base(reddit, _data=data)
             if isinstance(data, dict)
@@ -89,21 +90,11 @@ class ExportableMixin:
             # removes non-json from lists and tuples
             base = list(base)
             for index, item in enumerate(base):
-                if not (
-                    isinstance(
-                        item, (dict, list, tuple, str, int, float, bool)
-                    )
-                    or item is None
-                ):
-                    base.pop(index, None)
                 if isinstance(item, (dict, list, tuple)):
                     if _internal_counter < 3:
                         base[index] = cls._jsonify_base(
                             item, _internal_counter=_internal_counter + 1
                         )
-                    else:
-
-                        base.pop(index, None)
         return base
 
     def export(

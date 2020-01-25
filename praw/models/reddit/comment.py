@@ -180,11 +180,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     ):
         """Objectify author, replies, and subreddit."""
         if attribute == "author":
-            value = (
-                self._create_base(Redditor, self._reddit, value)
-                if Redditor.check_name(value)
-                else None
-            )
+            value = self._create_base(Redditor.from_data, self._reddit, value)
         elif attribute == "replies":
             if value == "":
                 value = []

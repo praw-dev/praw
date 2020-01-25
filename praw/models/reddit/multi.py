@@ -106,19 +106,21 @@ class Multireddit(ExportableMixin, SubredditListingMixin, RedditBase):
         self.path = "/" + self._path[:-1]  # Prevent requests for path
 
     def __setattr__(self, name: str, value: Any):
-        """Objectify subreddits"""
+        """Objectify ``subreddits``."""
         if name == "subreddits":
             objectified_subreddits = []
             for index, subreddit in enumerate(value):
                 if isinstance(subreddit, dict):
                     if "name" in subreddit:
-                        objectified_subreddits.append(Subreddit(self._reddit,
-                                                                display_name=
-                                                                subreddit[
-                                                                    "name"]))
+                        objectified_subreddits.append(
+                            Subreddit(
+                                self._reddit, display_name=subreddit["name"]
+                            )
+                        )
                     else:
                         objectified_subreddits.append(
-                            Subreddit(self._reddit, _data=subreddit))
+                            Subreddit(self._reddit, _data=subreddit)
+                        )
                 else:
                     objectified_subreddits.append(subreddit)
             value = objectified_subreddits

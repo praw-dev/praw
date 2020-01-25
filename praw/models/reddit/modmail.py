@@ -161,9 +161,6 @@ class ModmailConversation(ExportableMixin, RedditBase):
         # If owner is given as a dict, it is not objectified.
         if name == "owner" and isinstance(value, dict):
             value = self._reddit.subreddit(value["display_name"])
-        elif name == "author":
-            if isinstance(value, dict):
-                value = Redditor(self._reddit, _data=value)
         elif name == "authors":
             print(value)
             for index, item in enumerate(value.copy()):

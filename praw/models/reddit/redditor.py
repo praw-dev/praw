@@ -88,13 +88,18 @@ class Redditor(
 
     STR_FIELD = "name"
 
-    @staticmethod
-    def check_name(name: Union[str, Dict]):
-        """Return an instance of Redditor, or None from ``data``."""
-        if isinstance(name, dict):
-            if "name" in name:
-                name = name["name"]
-        return name != "[deleted]" and name is not None
+    @classmethod
+    def from_data(cls, reddit, name=None, _data=None):
+        """Return an instance of Redditor, or None from ``name``.
+
+        :param reddit: An instance of :class:`.Reddit`.
+        :param name: The name to check.
+        """
+        if _data is not None:
+            name = _data["name"]
+        if name == "[deleted]" or (name, _data).count(None) == 2:
+            return None
+        return cls(reddit, name) if _data is None else cls(reddit, _data=_data)
 
     @cachedproperty
     def stream(self) -> _RedditorStream:
