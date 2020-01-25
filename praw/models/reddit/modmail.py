@@ -5,6 +5,7 @@ from ...const import API_PATH
 from ...util import snake_case_keys
 from .base import RedditBase
 from .mixins import ExportableMixin
+from .redditor import Redditor
 
 _ModmailConversation = TypeVar("_ModmailConversation")
 Reddit = TypeVar("Reddit")
@@ -160,6 +161,19 @@ class ModmailConversation(ExportableMixin, RedditBase):
         # If owner is given as a dict, it is not objectified.
         if name == "owner" and isinstance(value, dict):
             value = self._reddit.subreddit(value["display_name"])
+        elif name == "author":
+            if isinstance(value, dict):
+                value = Redditor(self._reddit, _data=value)
+        elif name == "authors":
+            print(value)
+            for index, item in enumerate(value.copy()):
+                if isinstance(item, dict):
+                    value[index] = Redditor(self._reddit, _data=item)
+            print(value)
+        elif name == "messages":
+            for index, item in enumerate(value):
+                if isinstance(item, dict):
+                    value[index] = ModmailMessage(self._reddit, _data=item)
         super().__setattr__(name, value)
 
     def _build_conversation_list(self, other_conversations):
@@ -359,14 +373,12 @@ class ModmailObject(ExportableMixin, RedditBase):
 
     def __setattr__(self, attribute: str, value: Any):
         """Objectify the AUTHOR_ATTRIBUTE attribute and owner."""
+        print(attribute, value)
         if attribute == self.AUTHOR_ATTRIBUTE:
             value = self._reddit._objector.objectify(value)
-        # If owner is given as a dict, it is not objectified.
-        if attribute == "owner" and isinstance(value, dict):
-            value = self._reddit.subreddit(value["display_name"])
+            if isinstance(value, dict):
+                value = Redditor(self._reddit, _data=value)
         # If author is given as a dict, it is not objectified.
-        if attribute == "author" and isinstance(value, dict):
-            value = self._reddit.redditor(value["name"])
         super().__setattr__(attribute, value)
 
 
