@@ -11,6 +11,10 @@ Unreleased
 * Add :meth:`.Redditors.partial_redditors` that returns lightweight redditor
   objects that contain only a few fields. This is useful for resolving
   Redditor IDs to their usernames in bulk.
+* :meth:`.User.friends` has a new parameter ``user`` that takes either an
+  instance of :class:`.Redditor` or a string containing a redditor name and
+  returns an instance of :class:`.Redditor` if the authenticated user is
+  friends with the user, otherwise throws an exception.
 
 **Removed**
 

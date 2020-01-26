@@ -73,9 +73,24 @@ class User(PRAWBase):
             self._reddit, API_PATH["my_contributor"], **generator_kwargs
         )
 
-    def friends(self) -> List[Redditor]:
-        """Return a RedditorList of friends."""
-        return self._reddit.get(API_PATH["friends"])
+    def friends(
+        self, user: Optional[Union[str, Redditor]] = None
+    ) -> Union[List[Redditor], Redditor]:
+        """Return a RedditorList of friends or a Redditor in the friends list.
+
+        :param user: Checks to see if you are friends with the Redditor. Either
+            an instance of :class:`.Redditor` or a string can be given.
+        :returns: A list of Redditors, or a Redditor if you are friends with
+            the given Redditor. The Redditor also has friend attributes.
+        :raises: An instance of ``prawcore.exceptions.BadRequest`` if you are
+            not friends with the specified Redditor.
+        """
+        endpoint = (
+            API_PATH["friends"]
+            if user is None
+            else API_PATH["friend_v1"].format(user=str(user))
+        )
+        return self._reddit.get(endpoint)
 
     def karma(self) -> Dict[Subreddit, int]:
         """Return a dictionary mapping subreddits to their karma."""
