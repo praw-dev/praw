@@ -2,8 +2,12 @@
 
 import pytest
 from . import UnitTest
+import warnings
 
 
-@pytest.mark.filterwarnings("error", category=DeprecationWarning)
 class TestDeprecation(UnitTest):
-    pass  # No current deprecations
+    def test_deprecation_modaction(self):
+        warnings.filterwarnings("error", category=DeprecationWarning)
+        with pytest.raises(DeprecationWarning):
+            import praw.models.modaction  # noqa
+        warnings.filterwarnings("default", category=DeprecationWarning)
