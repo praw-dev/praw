@@ -101,10 +101,12 @@ class SubredditMessage(Message):
 
     def mute(self):
         """Mute the sender of this SubredditMessage."""
+        self._reddit._check_auth()
         self._reddit.post(API_PATH["mute_sender"], data={"id": self.fullname})
 
     def unmute(self):
         """Unmute the sender of this SubredditMessage."""
+        self._reddit._check_auth()
         self._reddit.post(
             API_PATH["unmute_sender"], data={"id": self.fullname}
         )

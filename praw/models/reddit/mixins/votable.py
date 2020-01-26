@@ -6,6 +6,7 @@ class VotableMixin:
     """Interface for RedditBase classes that can be voted on."""
 
     def _vote(self, direction):
+        self._reddit._check_auth()
         self._reddit.post(
             API_PATH["vote"], data={"dir": str(direction), "id": self.fullname}
         )

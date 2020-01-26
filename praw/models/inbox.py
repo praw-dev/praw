@@ -29,6 +29,7 @@ class Inbox(PRAWBase):
                print(repr(item))
 
         """
+        self._reddit._check_auth()
         return ListingGenerator(
             self._reddit, API_PATH["inbox"], **generator_kwargs
         )
@@ -56,6 +57,7 @@ class Inbox(PRAWBase):
            :meth:`.Message.uncollapse`
 
         """
+        self._reddit._check_auth()
         while items:
             data = {"id": ",".join(x.fullname for x in items[:25])}
             self._reddit.post(API_PATH["collapse"], data=data)
@@ -77,6 +79,7 @@ class Inbox(PRAWBase):
                print(reply.author)
 
         """
+        self._reddit._check_auth()
         return ListingGenerator(
             self._reddit, API_PATH["comment_replies"], **generator_kwargs
         )
@@ -106,6 +109,7 @@ class Inbox(PRAWBase):
            :meth:`.Comment.mark_read` and :meth:`.Message.mark_read`
 
         """
+        self._reddit._check_auth()
         while items:
             data = {"id": ",".join(x.fullname for x in items[:25])}
             self._reddit.post(API_PATH["read_message"], data=data)
@@ -132,6 +136,7 @@ class Inbox(PRAWBase):
            :meth:`.Comment.mark_unread` and :meth:`.Message.mark_unread`
 
         """
+        self._reddit._check_auth()
         while items:
             data = {"id": ",".join(x.fullname for x in items[:25])}
             self._reddit.post(API_PATH["unread_message"], data=data)
@@ -157,6 +162,7 @@ class Inbox(PRAWBase):
                print('{}\n{}\n'.format(mention.author, mention.body))
 
         """
+        self._reddit._check_auth()
         return ListingGenerator(
             self._reddit, API_PATH["mentions"], **generator_kwargs
         )
@@ -196,6 +202,7 @@ class Inbox(PRAWBase):
                print(message.subject)
 
         """
+        self._reddit._check_auth()
         return ListingGenerator(
             self._reddit, API_PATH["messages"], **generator_kwargs
         )
@@ -217,6 +224,7 @@ class Inbox(PRAWBase):
                print(message.dest)
 
         """
+        self._reddit._check_auth()
         return ListingGenerator(
             self._reddit, API_PATH["sent"], **generator_kwargs
         )
@@ -239,6 +247,7 @@ class Inbox(PRAWBase):
                print(item)
 
         """
+        self._reddit._check_auth()
         return stream_generator(self.unread, **stream_options)
 
     def submission_replies(
@@ -257,6 +266,7 @@ class Inbox(PRAWBase):
                print(reply.author)
 
         """
+        self._reddit._check_auth()
         return ListingGenerator(
             self._reddit, API_PATH["submission_replies"], **generator_kwargs
         )
@@ -284,6 +294,7 @@ class Inbox(PRAWBase):
            :meth:`.Message.collapse`
 
         """
+        self._reddit._check_auth()
         while items:
             data = {"id": ",".join(x.fullname for x in items[:25])}
             self._reddit.post(API_PATH["uncollapse"], data=data)
@@ -314,6 +325,7 @@ class Inbox(PRAWBase):
                    print(item.author)
 
         """
+        self._reddit._check_auth()
         self._safely_add_arguments(generator_kwargs, "params", mark=mark_read)
         return ListingGenerator(
             self._reddit, API_PATH["unread"], **generator_kwargs

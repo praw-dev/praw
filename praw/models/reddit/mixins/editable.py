@@ -19,6 +19,7 @@ class EditableMixin:
            submission.delete()
 
         """
+        self._reddit._check_auth()
         self._reddit.post(API_PATH["del"], {"id": self.fullname})
 
     def edit(self, body):
@@ -40,6 +41,7 @@ class EditableMixin:
 
         """
         data = {"text": body, "thing_id": self.fullname}
+        self._reddit._check_auth()
         updated = self._reddit.post(API_PATH["edit"], data=data)[0]
         for attribute in [
             "_fetched",

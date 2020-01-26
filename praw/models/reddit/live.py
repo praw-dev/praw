@@ -67,6 +67,7 @@ class LiveContributorRelationship:
             thread.contributor.accept_invite()
 
         """
+        self.thread._reddit._check_auth()
         url = API_PATH["live_accept_invite"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
@@ -101,6 +102,7 @@ class LiveContributorRelationship:
             remove the invite for redditor.
 
         """
+        self.thread._reddit._check_auth()
         url = API_PATH["live_invite"].format(id=self.thread.id)
         data = {
             "name": str(redditor),
@@ -120,6 +122,7 @@ class LiveContributorRelationship:
             thread.contributor.leave()
 
         """
+        self.thread._reddit._check_auth()
         url = API_PATH["live_leave"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
@@ -139,6 +142,7 @@ class LiveContributorRelationship:
            thread.contributor.remove('t2_1w72')  # with fullname
 
         """
+        self.thread._reddit._check_auth()
         if isinstance(redditor, Redditor):
             fullname = redditor.fullname
         else:
@@ -166,6 +170,7 @@ class LiveContributorRelationship:
             invite a redditor to be a contributor of the live thread.
 
         """
+        self.thread._reddit._check_auth()
         if isinstance(redditor, Redditor):
             fullname = redditor.fullname
         else:
@@ -210,6 +215,7 @@ class LiveContributorRelationship:
            subreddit.moderator.update('spez', [])
 
         """
+        self.thread._reddit._check_auth()
         url = API_PATH["live_update_perms"].format(id=self.thread.id)
         data = {
             "name": str(redditor),
@@ -254,6 +260,7 @@ class LiveContributorRelationship:
            thread.contributor.update_invite('spez', [])
 
         """
+        self.thread._reddit._check_auth()
         url = API_PATH["live_update_perms"].format(id=self.thread.id)
         data = {
             "name": str(redditor),
@@ -429,6 +436,7 @@ class LiveThread(RedditBase):
            thread.report('spam')
 
         """
+        self._reddit._check_auth()
         url = API_PATH["live_report"].format(id=self.id)
         self._reddit.post(url, data={"type": type})
 
@@ -493,6 +501,7 @@ class LiveThreadContribution:
            thread.contrib.add('test `LiveThreadContribution.add()`')
 
         """
+        self.thread._reddit._check_auth()
         url = API_PATH["live_add_update"].format(id=self.thread.id)
         self.thread._reddit.post(url, data={"body": body})
 
@@ -507,6 +516,7 @@ class LiveThreadContribution:
            thread.contrib.close()
 
         """
+        self.thread._reddit._check_auth()
         url = API_PATH["live_close"].format(id=self.thread.id)
         self.thread._reddit.post(url)
 
@@ -563,6 +573,7 @@ class LiveThreadContribution:
         if all(value is None for value in settings.values()):
             return
         # get settings from Reddit (not cache)
+        self.thread._reddit._check_auth()
         thread = LiveThread(self.thread._reddit, self.thread.id)
         data = {
             key: getattr(thread, key) if value is None else value
@@ -714,6 +725,7 @@ class LiveUpdateContribution:
            update.contrib.remove()
 
         """
+        self.update.thread._reddit._check_auth()
         url = API_PATH["live_remove_update"].format(id=self.update.thread.id)
         data = {"id": self.update.fullname}
         self.update.thread._reddit.post(url, data=data)
@@ -733,6 +745,7 @@ class LiveUpdateContribution:
         See :class:`.LiveUpdate` for details.
 
         """
+        self.update.thread._reddit._check_auth()
         url = API_PATH["live_strike"].format(id=self.update.thread.id)
         data = {"id": self.update.fullname}
         self.update.thread._reddit.post(url, data=data)

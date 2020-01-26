@@ -24,6 +24,7 @@ class InboxableMixin:
            comment.author.block()
 
         """
+        self._reddit._check_auth()
         self._reddit.post(API_PATH["block"], data={"id": self.fullname})
 
     def collapse(self):
@@ -45,6 +46,7 @@ class InboxableMixin:
         See also :meth:`~.uncollapse`
 
         """
+        self._reddit._check_auth()
         self._reddit.inbox.collapse([self])
 
     def mark_read(self):
@@ -68,6 +70,7 @@ class InboxableMixin:
         use :meth:`praw.models.Inbox.mark_read`
 
         """
+        self._reddit._check_auth()
         self._reddit.inbox.mark_read([self])
 
     def mark_unread(self):
@@ -88,6 +91,7 @@ class InboxableMixin:
         See also :meth:`~.mark_read`
 
         """
+        self._reddit._check_auth()
         self._reddit.inbox.mark_unread([self])
 
     def uncollapse(self):
@@ -109,4 +113,5 @@ class InboxableMixin:
         See also :meth:`~.collapse`
 
         """
+        self._reddit._check_auth()
         self._reddit.inbox.uncollapse([self])

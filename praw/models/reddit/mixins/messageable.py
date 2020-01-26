@@ -37,6 +37,7 @@ class MessageableMixin:
            reddit.subreddit('test').message('TEST', 'test PM from PRAW')
 
         """
+        self._reddit._check_auth()
         data = {
             "subject": subject,
             "text": message,

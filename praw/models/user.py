@@ -58,6 +58,7 @@ class User(PRAWBase):
 
     def blocked(self) -> List[Redditor]:
         """Return a RedditorList of blocked Redditors."""
+        self._reddit._check_auth()
         return self._reddit.get(API_PATH["blocked"])
 
     def contributor_subreddits(
@@ -69,16 +70,19 @@ class User(PRAWBase):
         :class:`.ListingGenerator`.
 
         """
+        self._reddit._check_auth()
         return ListingGenerator(
             self._reddit, API_PATH["my_contributor"], **generator_kwargs
         )
 
     def friends(self) -> List[Redditor]:
         """Return a RedditorList of friends."""
+        self._reddit._check_auth()
         return self._reddit.get(API_PATH["friends"])
 
     def karma(self) -> Dict[Subreddit, int]:
         """Return a dictionary mapping subreddits to their karma."""
+        self._reddit._check_auth()
         karma_map = {}
         for row in self._reddit.get(API_PATH["karma"])["data"]:
             subreddit = Subreddit(self._reddit, row["sr"])
@@ -101,8 +105,7 @@ class User(PRAWBase):
            instances, however, for distinct authorizations.
 
         """
-        if self._reddit.read_only:
-            return None
+        self._reddit._check_auth()
         if "_me" not in self.__dict__ or not use_cache:
             user_data = self._reddit.get(API_PATH["me"])
             self._me = Redditor(self._reddit, _data=user_data)
@@ -133,12 +136,14 @@ class User(PRAWBase):
 
 
         """
+        self._reddit._check_auth()
         return ListingGenerator(
             self._reddit, API_PATH["my_moderator"], **generator_kwargs
         )
 
     def multireddits(self) -> List[Multireddit]:
         """Return a list of multireddits belonging to the user."""
+        self._reddit._check_auth()
         return self._reddit.get(API_PATH["my_multireddits"])
 
     def subreddits(
@@ -150,6 +155,7 @@ class User(PRAWBase):
         :class:`.ListingGenerator`.
 
         """
+        self._reddit._check_auth()
         return ListingGenerator(
             self._reddit, API_PATH["my_subreddits"], **generator_kwargs
         )

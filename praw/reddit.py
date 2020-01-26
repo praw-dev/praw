@@ -331,6 +331,14 @@ class Reddit:
             update_check(__package__, __version__)
             Reddit.update_checked = True
 
+    def _check_auth(self):
+        if self._core == self._read_only_core:
+            raise ClientException(
+                "An action that requires authentication was attempted on an "
+                "unauthorized instance of PRAW. Please authenticate with "
+                "either an username/password or a refresh token."
+            )
+
     def _prepare_objector(self):
         mappings = {
             self.config.kinds["comment"]: models.Comment,

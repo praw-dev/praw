@@ -133,6 +133,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         :param subreddit: The subreddit to add to this multi.
 
         """
+        self._reddit._check_auth()
         url = API_PATH["multireddit_update"].format(
             multi=self.name, user=self._author, subreddit=subreddit
         )
@@ -150,6 +151,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
             name and name as this multireddit.
 
         """
+        self._reddit._check_auth()
         if display_name:
             name = self.sluggify(display_name)
         else:
@@ -166,6 +168,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
     def delete(self):
         """Delete this multireddit."""
+        self._reddit._check_auth()
         path = API_PATH["multireddit_api"].format(
             multi=self.name, user=self._author.name
         )
@@ -177,6 +180,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         :param subreddit: The subreddit to remove from this multi.
 
         """
+        self._reddit._check_auth()
         url = API_PATH["multireddit_update"].format(
             multi=self.name, user=self._author, subreddit=subreddit
         )
@@ -210,6 +214,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         :param weighting_scheme: Can be one of: ``classic``, ``fresh``.
 
         """
+        self._reddit._check_auth()
         if "subreddits" in updated_settings:
             updated_settings["subreddits"] = [
                 {"name": str(sub)} for sub in updated_settings["subreddits"]

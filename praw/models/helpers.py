@@ -85,6 +85,7 @@ class LiveHelper(PRAWBase):
         :returns: The new LiveThread object.
 
         """
+        self._reddit._check_auth()
         return self._reddit.post(
             API_PATH["livecreate"],
             data={
@@ -169,6 +170,7 @@ class MultiredditHelper(PRAWBase):
             "visibility": visibility,
             "weighting_scheme": weighting_scheme,
         }
+        self._reddit._check_auth()
         return self._reddit.post(
             API_PATH["multireddit_base"], data={"model": dumps(model)}
         )
@@ -221,6 +223,7 @@ class SubredditHelper(PRAWBase):
         take on a default value assigned by the Reddit server.
 
         """
+        self._reddit._check_auth()
         Subreddit._create_or_update(
             _reddit=self._reddit,
             name=name,

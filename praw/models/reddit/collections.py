@@ -191,6 +191,7 @@ class Collection(RedditBase):
 
         See also :meth:`~.unfollow`.
         """
+        self._reddit._check_auth()
         self._reddit.post(
             API_PATH["collection_follow"],
             data={"collection_id": self.collection_id, "follow": True},
@@ -207,6 +208,7 @@ class Collection(RedditBase):
 
         See also :meth:`~.follow`.
         """
+        self._reddit._check_auth()
         self._reddit.post(
             API_PATH["collection_follow"],
             data={"collection_id": self.collection_id, "follow": False},
@@ -271,6 +273,7 @@ class CollectionModeration(PRAWBase):
         See also :meth:`.remove_post`.
 
         """
+        self._reddit._check_auth()
         link_fullname = self._post_fullname(submission)
 
         self._reddit.post(
@@ -293,6 +296,7 @@ class CollectionModeration(PRAWBase):
         See also :meth:`~.SubredditCollectionsModeration.create`.
 
         """
+        self._reddit._check_auth()
         self._reddit.post(
             API_PATH["collection_delete"],
             data={"collection_id": self.collection_id},
@@ -315,6 +319,7 @@ class CollectionModeration(PRAWBase):
         See also :meth:`.add_post`.
 
         """
+        self._reddit._check_auth()
         link_fullname = self._post_fullname(submission)
 
         self._reddit.post(
@@ -341,6 +346,7 @@ class CollectionModeration(PRAWBase):
            collection.mod.reorder(new_order)
 
         """
+        self._reddit._check_auth()
         link_ids = ",".join(self._post_fullname(post) for post in links)
         self._reddit.post(
             API_PATH["collection_reorder"],
@@ -362,6 +368,7 @@ class CollectionModeration(PRAWBase):
         See also :meth:`.update_title`.
 
         """
+        self._reddit._check_auth()
         self._reddit.post(
             API_PATH["collection_desc"],
             data={
@@ -385,6 +392,7 @@ class CollectionModeration(PRAWBase):
         See also :meth:`.update_description`.
 
         """
+        self._reddit._check_auth()
         self._reddit.post(
             API_PATH["collection_title"],
             data={"collection_id": self.collection_id, "title": title},
@@ -529,6 +537,7 @@ class SubredditCollectionsModeration(PRAWBase):
         See also :meth:`~CollectionModeration.delete`.
 
         """
+        self._reddit._check_auth()
         return self._reddit.post(
             API_PATH["collection_create"],
             data={

@@ -40,6 +40,7 @@ class SubmissionFlair:
            choices = submission.flair.choices()
 
         """
+        self.submission._reddit._check_auth()
         url = API_PATH["flairselector"].format(
             subreddit=self.submission.subreddit
         )
@@ -67,6 +68,7 @@ class SubmissionFlair:
            submission.flair.select(template_id, 'my custom value')
 
         """
+        self.submission._reddit._check_auth()
         data = {
             "flair_template_id": flair_template_id,
             "link": self.submission.fullname,
@@ -122,6 +124,7 @@ class SubmissionModeration(ThingModerationMixin):
            submission.mod.contest_mode(state=True)
 
         """
+        self.thing._reddit._check_auth()
         self.thing._reddit.post(
             API_PATH["contest_mode"],
             data={"id": self.thing.fullname, "state": state},
@@ -146,6 +149,7 @@ class SubmissionModeration(ThingModerationMixin):
            submission.mod.flair(text='PRAW', css_class='bot')
 
         """
+        self.thing._reddit._check_auth()
         data = {
             "css_class": css_class,
             "link": self.thing.fullname,
@@ -194,6 +198,7 @@ class SubmissionModeration(ThingModerationMixin):
         See also :meth:`.unset_original_content`
 
         """
+        self.thing._reddit._check_auth()
         data = {
             "id": self.thing.id,
             "fullname": self.thing.fullname,
@@ -219,6 +224,7 @@ class SubmissionModeration(ThingModerationMixin):
         See also :meth:`~.nsfw`
 
         """
+        self.thing._reddit._check_auth()
         self.thing._reddit.post(
             API_PATH["unmarknsfw"], data={"id": self.thing.fullname}
         )
@@ -239,6 +245,7 @@ class SubmissionModeration(ThingModerationMixin):
         See also :meth:`~.unspoiler`
 
         """
+        self.thing._reddit._check_auth()
         self.thing._reddit.post(
             API_PATH["spoiler"], data={"id": self.thing.fullname}
         )
@@ -263,6 +270,7 @@ class SubmissionModeration(ThingModerationMixin):
            submission.mod.sticky()
 
         """
+        self.thing._reddit._check_auth()
         data = {"id": self.thing.fullname, "state": state}
         if not bottom:
             data["num"] = 1
@@ -277,6 +285,7 @@ class SubmissionModeration(ThingModerationMixin):
             random, qa, blank (default: blank).
 
         """
+        self.thing._reddit._check_auth()
         self.thing._reddit.post(
             API_PATH["suggested_sort"],
             data={"id": self.thing.fullname, "sort": sort},
@@ -301,6 +310,7 @@ class SubmissionModeration(ThingModerationMixin):
         See also :meth:`.set_original_content`
 
         """
+        self.thing._reddit._check_auth()
         data = {
             "id": self.thing.id,
             "fullname": self.thing.fullname,
@@ -327,6 +337,7 @@ class SubmissionModeration(ThingModerationMixin):
         See also :meth:`~.spoiler`
 
         """
+        self.thing._reddit._check_auth()
         self.thing._reddit.post(
             API_PATH["unspoiler"], data={"id": self.thing.fullname}
         )
@@ -582,6 +593,7 @@ class Submission(
            submission.mark_visited()
 
         """
+        self._reddit._check_auth()
         data = {"links": self.fullname}
         self._reddit.post(API_PATH["store_visits"], data=data)
 
@@ -602,6 +614,7 @@ class Submission(
         See also :meth:`~.unhide`
 
         """
+        self._reddit._check_auth()
         for submissions in self._chunk(other_submissions, 50):
             self._reddit.post(API_PATH["hide"], data={"id": submissions})
 
@@ -622,6 +635,7 @@ class Submission(
         See also :meth:`~.hide`
 
         """
+        self._reddit._check_auth()
         for submissions in self._chunk(other_submissions, 50):
             self._reddit.post(API_PATH["unhide"], data={"id": submissions})
 
@@ -668,6 +682,7 @@ class Submission(
         See also :meth:`~.hide`
 
         """
+        self._reddit._check_auth()
         if title is None:
             title = self.title
 

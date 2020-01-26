@@ -179,6 +179,7 @@ class ModmailConversation(RedditBase):
            reddit.subreddit('redditdev').modmail('2gmz').archive()
 
         """
+        self._reddit._check_auth()
         self._reddit.post(API_PATH["modmail_archive"].format(id=self.id))
 
     def highlight(self):
@@ -191,6 +192,7 @@ class ModmailConversation(RedditBase):
            reddit.subreddit('redditdev').modmail('2gmz').highlight()
 
         """
+        self._reddit._check_auth()
         self._reddit.post(API_PATH["modmail_highlight"].format(id=self.id))
 
     def mute(self):
@@ -203,6 +205,7 @@ class ModmailConversation(RedditBase):
            reddit.subreddit('redditdev').modmail('2gmz').mute()
 
         """
+        self._reddit._check_auth()
         self._reddit.request(
             "POST", API_PATH["modmail_mute"].format(id=self.id)
         )
@@ -226,6 +229,7 @@ class ModmailConversation(RedditBase):
                             other_conversations=conversation.user.recent_convos)
 
         """
+        self._reddit._check_auth()
         data = {
             "conversationIds": self._build_conversation_list(
                 other_conversations
@@ -260,6 +264,7 @@ class ModmailConversation(RedditBase):
            conversation.reply('Message body', internal=True)
 
         """
+        self._reddit._check_auth()
         data = {
             "body": body,
             "isAuthorHidden": author_hidden,
@@ -282,6 +287,7 @@ class ModmailConversation(RedditBase):
            reddit.subreddit('redditdev').modmail('2gmz').unarchive()
 
         """
+        self._reddit._check_auth()
         self._reddit.post(API_PATH["modmail_unarchive"].format(id=self.id))
 
     def unhighlight(self):
@@ -294,6 +300,7 @@ class ModmailConversation(RedditBase):
            reddit.subreddit('redditdev').modmail('2gmz').unhighlight()
 
         """
+        self._reddit._check_auth()
         self._reddit.request(
             "DELETE", API_PATH["modmail_highlight"].format(id=self.id)
         )
@@ -308,6 +315,7 @@ class ModmailConversation(RedditBase):
            reddit.subreddit('redditdev').modmail('2gmz').unmute()
 
         """
+        self._reddit._check_auth()
         self._reddit.request(
             "POST", API_PATH["modmail_unmute"].format(id=self.id)
         )
@@ -331,6 +339,7 @@ class ModmailConversation(RedditBase):
 other_conversations=conversation.user.recent_convos)
 
         """
+        self._reddit._check_auth()
         data = {
             "conversationIds": self._build_conversation_list(
                 other_conversations

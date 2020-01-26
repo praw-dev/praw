@@ -29,6 +29,7 @@ class ReplyableMixin:
            comment.reply('reply')
 
         """
+        self._reddit._check_auth()
         data = {"text": body, "thing_id": self.fullname}
         comments = self._reddit.post(API_PATH["comment"], data=data)
         try:

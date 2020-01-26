@@ -84,6 +84,7 @@ class Emoji(RedditBase):
            reddit.subreddit('praw_test').emoji['test'].delete()
 
         """
+        self._reddit._check_auth()
         url = API_PATH["emoji_delete"].format(
             emoji_name=self.name, subreddit=self.subreddit
         )
@@ -152,6 +153,7 @@ class SubredditEmoji:
            reddit.subreddit('praw_test').emoji.add('test','test.png')
 
         """
+        self._reddit._check_auth()
         data = {
             "filepath": os.path.basename(image_path),
             "mimetype": "image/jpeg",

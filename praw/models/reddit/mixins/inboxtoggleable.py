@@ -21,6 +21,7 @@ class InboxToggleableMixin:
         See also :meth:`~.enable_inbox_replies`
 
         """
+        self._reddit._check_auth()
         self._reddit.post(
             API_PATH["sendreplies"], data={"id": self.fullname, "state": False}
         )
@@ -41,6 +42,7 @@ class InboxToggleableMixin:
         See also :meth:`~.disable_inbox_replies`
 
         """
+        self._reddit._check_auth()
         self._reddit.post(
             API_PATH["sendreplies"], data={"id": self.fullname, "state": True}
         )

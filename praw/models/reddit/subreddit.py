@@ -707,7 +707,7 @@ class Subreddit(
         """
         if (bool(selftext) or selftext == "") == bool(url):
             raise TypeError("Either `selftext` or `url` must be provided.")
-
+        self._reddit._check_auth()
         data = {
             "sr": str(self),
             "resubmit": bool(resubmit),
@@ -797,6 +797,7 @@ class Subreddit(
            reddit.subreddit('reddit_api_test').submit_image(title, image)
 
         """
+        self._reddit._check_auth()
         data = {
             "sr": str(self),
             "resubmit": bool(resubmit),
@@ -896,6 +897,7 @@ class Subreddit(
            reddit.subreddit('reddit_api_test').submit_video(title, video)
 
         """
+        self._reddit._check_auth()
         data = {
             "sr": str(self),
             "resubmit": bool(resubmit),
@@ -928,6 +930,7 @@ class Subreddit(
             list of subreddits.
 
         """
+        self._reddit._check_auth()
         data = {
             "action": "sub",
             "skip_inital_defaults": True,
@@ -954,6 +957,7 @@ class Subreddit(
             the provided list of subreddits.
 
         """
+        self._reddit._check_auth()
         data = {
             "action": "unsub",
             "sr_name": self._subreddit_list(self, other_subreddits),
@@ -1024,6 +1028,7 @@ class SubredditFilters:
         Raises ``prawcore.NotFound`` when calling on a non-special subreddit.
 
         """
+        self.subreddit._reddit._check_auth()
         url = API_PATH["subreddit_filter"].format(
             special=self.subreddit,
             user=self.subreddit._reddit.user.me(),
@@ -1041,6 +1046,7 @@ class SubredditFilters:
         Raises ``prawcore.NotFound`` when calling on a non-special subreddit.
 
         """
+        self.subreddit._reddit._check_auth()
         url = API_PATH["subreddit_filter"].format(
             special=self.subreddit,
             user=self.subreddit._reddit.user.me(),
@@ -1141,6 +1147,7 @@ class SubredditFlair:
         Reddit introduces them.
 
         """
+        self.subreddit._reddit._check_auth()
         data = {
             "flair_enabled": bool(position),
             "flair_position": position or "right",
@@ -1162,6 +1169,7 @@ class SubredditFlair:
                   :meth:`~praw.models.reddit.subreddit.SubredditFlair.update`.
 
         """
+        self.subreddit._reddit._check_auth()
         url = API_PATH["deleteflair"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={"name": str(redditor)})
 
@@ -1172,6 +1180,7 @@ class SubredditFlair:
             each delete.
 
         """
+        self.subreddit._reddit._check_auth()
         return self.update(x["user"] for x in self())
 
     def set(self, redditor, text="", css_class="", flair_template_id=None):
@@ -1205,6 +1214,7 @@ class SubredditFlair:
                 "Parameter `css_class` cannot be used in "
                 "conjunction with `flair_template_id`."
             )
+        self.subreddit._reddit._check_auth()
         data = {"name": str(redditor), "text": text}
         if flair_template_id is not None:
             data["flair_template_id"] = flair_template_id
@@ -1242,6 +1252,7 @@ class SubredditFlair:
                                   css_class='praw')
 
         """
+        self.subreddit._reddit._check_auth()
         lines = []
         for item in flair_list:
             if isinstance(item, dict):
@@ -1327,6 +1338,7 @@ class SubredditFlairTemplates:
            subreddit.flair.templates.delete(template_info['id'])
 
         """
+        self.subreddit._reddit._check_auth()
         url = API_PATH["flairtemplatedelete"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(
             url, data={"flair_template_id": template_id}
@@ -1381,6 +1393,7 @@ class SubredditFlairTemplates:
            ``None`` or ``False``) on Reddit's end.
 
         """
+        self.subreddit._reddit._check_auth()
         url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
         data = {
             "allowable_content": allowable_content,
@@ -1454,6 +1467,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
                css_class='praw', text_editable=True)
 
         """
+        self.subreddit._reddit._check_auth()
         self._add(
             text,
             css_class=css_class,
@@ -1476,6 +1490,7 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
            reddit.subreddit('NAME').flair.templates.clear()
 
         """
+        self.subreddit._reddit._check_auth()
         self._clear(is_link=False)
 
 
@@ -1536,6 +1551,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
                css_class='praw', text_editable=True)
 
         """
+        self.subreddit._reddit._check_auth()
         self._add(
             text,
             css_class=css_class,
@@ -1558,6 +1574,7 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
            reddit.subreddit('NAME').flair.link_templates.clear()
 
         """
+        self.subreddit._reddit._check_auth()
         self._clear(is_link=True)
 
 
@@ -1584,6 +1601,7 @@ class SubredditModeration:
 
     def accept_invite(self):
         """Accept an invitation as a moderator of the community."""
+        self.subreddit._reddit._check_auth()
         url = API_PATH["accept_mod_invite"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
 
@@ -1604,6 +1622,7 @@ class SubredditModeration:
                print(item)
 
         """
+        self.subreddit._reddit._check_auth()
         self._handle_only(only, generator_kwargs)
         return ListingGenerator(
             self.subreddit._reddit,
@@ -1629,6 +1648,7 @@ class SubredditModeration:
                    print("From: {}, Body: {}".format(reply.author, reply.body))
 
         """
+        self.subreddit._reddit._check_auth()
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["moderator_messages"].format(subreddit=self.subreddit),
@@ -1654,6 +1674,7 @@ class SubredditModeration:
                print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
 
         """
+        self.subreddit._reddit._check_auth()
         params = {"mod": str(mod) if mod else mod, "type": action}
         Subreddit._safely_add_arguments(generator_kwargs, "params", **params)
         return ListingGenerator(
@@ -1679,6 +1700,7 @@ class SubredditModeration:
                print(item)
 
         """
+        self.subreddit._reddit._check_auth()
         self._handle_only(only, generator_kwargs)
         return ListingGenerator(
             self.subreddit._reddit,
@@ -1746,6 +1768,7 @@ class SubredditModeration:
                print("Mod Reports: {}".format(reported_item.mod_reports))
 
         """
+        self.subreddit._reddit._check_auth()
         self._handle_only(only, generator_kwargs)
         return ListingGenerator(
             self.subreddit._reddit,
@@ -1755,6 +1778,7 @@ class SubredditModeration:
 
     def settings(self):
         """Return a dictionary of the subreddit's current settings."""
+        self.subreddit._reddit._check_auth()
         url = API_PATH["subreddit_settings"].format(subreddit=self.subreddit)
         return self.subreddit._reddit.get(url)["data"]
 
@@ -1775,6 +1799,7 @@ class SubredditModeration:
                print(item)
 
         """
+        self.subreddit._reddit._check_auth()
         self._handle_only(only, generator_kwargs)
         return ListingGenerator(
             self.subreddit._reddit,
@@ -1796,6 +1821,7 @@ class SubredditModeration:
                print(item)
 
         """
+        self.subreddit._reddit._check_auth()
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["about_unmoderated"].format(subreddit=self.subreddit),
@@ -1818,6 +1844,7 @@ class SubredditModeration:
                print("From: {}, To: {}".format(message.author, message.dest))
 
         """
+        self.subreddit._reddit._check_auth()
         return ListingGenerator(
             self.subreddit._reddit,
             API_PATH["moderator_unread"].format(subreddit=self.subreddit),
@@ -1907,6 +1934,7 @@ class SubredditModeration:
                      is used to fetch the current settings.
 
         """
+        self.subreddit._reddit._check_auth()
         current_settings = self.settings()
         fullname = current_settings.pop("subreddit_id")
 
@@ -1953,6 +1981,7 @@ class SubredditModerationStream:
                print(item)
 
         """
+        self.subreddit._reddit._check_auth()
         return stream_generator(
             self.subreddit.mod.edited, only=only, **stream_options
         )
@@ -1974,6 +2003,7 @@ class SubredditModerationStream:
                print("Mod: {}, Subreddit: {}".format(log.mod, log.subreddit))
 
         """
+        self.subreddit._reddit._check_auth()
         return stream_generator(
             self.subreddit.mod.log,
             action=action,
@@ -2005,6 +2035,7 @@ class SubredditModerationStream:
                print("From: {}, To: {}".format(message.owner, message.participant))
 
         """  # noqa: E501
+        self.subreddit._reddit._check_auth()
         if self.subreddit == "mod":
             self.subreddit = self.subreddit._reddit.subreddit("all")
         return stream_generator(
@@ -2033,6 +2064,7 @@ class SubredditModerationStream:
                print(item)
 
         """
+        self.subreddit._reddit._check_auth()
         return stream_generator(
             self.subreddit.mod.modqueue, only=only, **stream_options
         )
@@ -2053,6 +2085,7 @@ class SubredditModerationStream:
                print(item)
 
         """
+        self.subreddit._reddit._check_auth()
         return stream_generator(
             self.subreddit.mod.reports, only=only, **stream_options
         )
@@ -2073,6 +2106,7 @@ class SubredditModerationStream:
                print(item)
 
         """
+        self.subreddit._reddit._check_auth()
         return stream_generator(
             self.subreddit.mod.spam, only=only, **stream_options
         )
@@ -2090,6 +2124,7 @@ class SubredditModerationStream:
                print(item)
 
         """
+        self.subreddit._reddit._check_auth()
         return stream_generator(
             self.subreddit.mod.unmoderated, **stream_options
         )
@@ -2109,6 +2144,7 @@ class SubredditModerationStream:
                print("From: {}, To: {}".format(message.author, message.dest))
 
         """
+        self.subreddit._reddit._check_auth()
         return stream_generator(self.subreddit.mod.unread, **stream_options)
 
 
@@ -2126,6 +2162,9 @@ class SubredditQuarantine:
     def opt_in(self):
         """Permit your user access to the quarantined subreddit.
 
+        .. note:: You need to have a verified email address in order to
+            opt-in to a quarantined subreddit.
+
         Usage:
 
         .. code-block:: python
@@ -2137,6 +2176,7 @@ class SubredditQuarantine:
            next(subreddit.hot())  # Returns Submission
 
         """
+        self.subreddit._reddit._check_auth()
         data = {"sr_name": self.subreddit}
         try:
             self.subreddit._reddit.post(
@@ -2222,6 +2262,7 @@ class SubredditRelationship:
             :class:`~.Redditor` instance.
 
         """
+        self.subreddit._reddit._check_auth()
         data = {"name": str(redditor), "type": self.relationship}
         data.update(other_settings)
         url = API_PATH["friend"].format(subreddit=self.subreddit)
@@ -2234,6 +2275,7 @@ class SubredditRelationship:
             :class:`~.Redditor` instance.
 
         """
+        self.subreddit._reddit._check_auth()
         data = {"name": str(redditor), "type": self.relationship}
         url = API_PATH["unfriend"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
@@ -2255,6 +2297,7 @@ class ContributorRelationship(SubredditRelationship):
 
     def leave(self):
         """Abdicate the contributor position."""
+        self.subreddit._reddit._check_auth()
         self.subreddit._reddit.post(
             API_PATH["leavecontributor"], data={"id": self.subreddit.fullname}
         )
@@ -2337,6 +2380,7 @@ class ModeratorRelationship(SubredditRelationship):
            reddit.subreddit('test').moderator.add('spez', ['posts', 'mail'])
 
         """
+        self.subreddit._reddit._check_auth()
         other_settings = self._handle_permissions(permissions, other_settings)
         super().add(redditor, **other_settings)
 
@@ -2360,6 +2404,7 @@ class ModeratorRelationship(SubredditRelationship):
            reddit.subreddit('test').moderator.invite('spez', ['posts', 'mail'])
 
         """
+        self.subreddit._reddit._check_auth()
         data = self._handle_permissions(permissions, other_settings)
         data.update({"name": str(redditor), "type": "moderator_invite"})
         url = API_PATH["friend"].format(subreddit=self.subreddit)
@@ -2375,6 +2420,7 @@ class ModeratorRelationship(SubredditRelationship):
            reddit.subreddit('subredditname').moderator.leave()
 
         """
+        self.subreddit._reddit._check_auth()
         self.remove(self.subreddit._reddit.config.username)
 
     def remove_invite(self, redditor):
@@ -2390,6 +2436,7 @@ class ModeratorRelationship(SubredditRelationship):
            reddit.subreddit('subredditname').moderator.remove_invite('spez')
 
         """
+        self.subreddit._reddit._check_auth()
         data = {"name": str(redditor), "type": "moderator_invite"}
         url = API_PATH["unfriend"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data=data)
@@ -2417,6 +2464,7 @@ class ModeratorRelationship(SubredditRelationship):
            subreddit.moderator.update('spez', [])
 
         """
+        self.subreddit._reddit._check_auth()
         url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
         data = self._handle_permissions(
             permissions, {"name": str(redditor), "type": "moderator"}
@@ -2441,6 +2489,7 @@ class ModeratorRelationship(SubredditRelationship):
            subreddit.moderator.update_invite('spez', ['flair', 'mail'])
 
         """
+        self.subreddit._reddit._check_auth()
         url = API_PATH["setpermissions"].format(subreddit=self.subreddit)
         data = self._handle_permissions(
             permissions, {"name": str(redditor), "type": "moderator_invite"}
@@ -2533,6 +2582,7 @@ mark_read=True)
            subreddit.modmail.bulk_read(state='notifications')
 
         """
+        self.subreddit._reddit._check_auth()
         params = {"entity": self._build_subreddit_list(other_subreddits)}
         if state:
             params["state"] = state
@@ -2576,6 +2626,7 @@ mark_read=True)
 state='mod')
 
         """
+        self.subreddit._reddit._check_auth()
         params = {}
         if self.subreddit != "all":
             params["entity"] = self._build_subreddit_list(other_subreddits)
@@ -2620,6 +2671,7 @@ state='mod')
            subreddit.modmail.create('Subject', 'Body', redditor)
 
         """
+        self.subreddit._reddit._check_auth()
         data = {
             "body": body,
             "isAuthorHidden": author_hidden,
@@ -2641,6 +2693,7 @@ state='mod')
            subreddits = reddit.subreddit('all').modmail.subreddits()
 
         """
+        self.subreddit._reddit._check_auth()
         response = self.subreddit._reddit.get(API_PATH["modmail_subreddits"])
         for value in response["subreddits"].values():
             subreddit = self.subreddit._reddit.subreddit(value["display_name"])
@@ -2664,6 +2717,7 @@ state='mod')
            print(unread_counts['mod'])
 
         """
+        self.subreddit._reddit._check_auth()
         return self.subreddit._reddit.get(API_PATH["modmail_unread_count"])
 
 
@@ -2813,6 +2867,7 @@ class SubredditStylesheet:
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner()
 
         """
+        self.subreddit._reddit._check_auth()
         data = {"bannerBackgroundImage": ""}
         self._update_structured_styles(data)
 
@@ -2829,6 +2884,7 @@ class SubredditStylesheet:
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_additional_image()
 
         """
+        self.subreddit._reddit._check_auth()
         data = {
             "bannerPositionedImage": "",
             "secondaryBannerPositionedImage": "",
@@ -2847,6 +2903,7 @@ class SubredditStylesheet:
            reddit.subreddit('SUBREDDIT').stylesheet.delete_banner_hover_image()
 
         """
+        self.subreddit._reddit._check_auth()
         data = {"secondaryBannerPositionedImage": ""}
         self._update_structured_styles(data)
 
@@ -2862,6 +2919,7 @@ class SubredditStylesheet:
            reddit.subreddit('SUBREDDIT').stylesheet.delete_header()
 
         """
+        self.subreddit._reddit._check_auth()
         url = API_PATH["delete_sr_header"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
 
@@ -2877,6 +2935,7 @@ class SubredditStylesheet:
            reddit.subreddit('SUBREDDIT').stylesheet.delete_image('smile')
 
         """
+        self.subreddit._reddit._check_auth()
         url = API_PATH["delete_sr_image"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url, data={"img_name": name})
 
@@ -2892,6 +2951,7 @@ class SubredditStylesheet:
            reddit.subreddit('SUBREDDIT').stylesheet.delete_mobile_header()
 
         """
+        self.subreddit._reddit._check_auth()
         url = API_PATH["delete_sr_header"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
 
@@ -2907,6 +2967,7 @@ class SubredditStylesheet:
            reddit.subreddit('SUBREDDIT').stylesheet.delete_mobile_icon()
 
         """
+        self.subreddit._reddit._check_auth()
         url = API_PATH["delete_sr_icon"].format(subreddit=self.subreddit)
         self.subreddit._reddit.post(url)
 
@@ -2923,6 +2984,7 @@ class SubredditStylesheet:
                'p { color: green; }', 'color text green')
 
         """
+        self.subreddit._reddit._check_auth()
         data = {
             "op": "save",
             "reason": reason,
@@ -2954,6 +3016,7 @@ class SubredditStylesheet:
            reddit.subreddit('SUBREDDIT').stylesheet.upload('smile', 'img.png')
 
         """
+        self.subreddit._reddit._check_auth()
         return self._upload_image(
             image_path, {"name": name, "upload_type": "img"}
         )
@@ -2977,6 +3040,7 @@ class SubredditStylesheet:
            reddit.subreddit('SUBREDDIT').stylesheet.upload_banner('banner.png')
 
         """
+        self.subreddit._reddit._check_auth()
         image_type = "bannerBackgroundImage"
         image_url = self._upload_style_asset(image_path, image_type)
         self._update_structured_styles({image_type: image_url})
@@ -3010,7 +3074,7 @@ class SubredditStylesheet:
                     "`left`, `centered`, or `right`"
                 )
             alignment["bannerPositionedImagePosition"] = align
-
+        self.subreddit._reddit._check_auth()
         image_type = "bannerPositionedImage"
         image_url = self._upload_style_asset(image_path, image_type)
         style_data = {image_type: image_url}
@@ -3039,6 +3103,7 @@ class SubredditStylesheet:
            reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_hover_image('banner.png')
 
         """
+        self.subreddit._reddit._check_auth()
         image_type = "secondaryBannerPositionedImage"
         image_url = self._upload_style_asset(image_path, image_type)
         self._update_structured_styles({image_type: image_url})
@@ -3064,6 +3129,7 @@ class SubredditStylesheet:
            reddit.subreddit('SUBREDDIT').stylesheet.upload_header('header.png')
 
         """
+        self.subreddit._reddit._check_auth()
         return self._upload_image(image_path, {"upload_type": "header"})
 
     def upload_mobile_header(self, image_path):
@@ -3088,6 +3154,7 @@ class SubredditStylesheet:
                'header.png')
 
         """
+        self.subreddit._reddit._check_auth()
         return self._upload_image(image_path, {"upload_type": "banner"})
 
     def upload_mobile_icon(self, image_path):
@@ -3112,6 +3179,7 @@ class SubredditStylesheet:
                'icon.png')
 
         """
+        self.subreddit._reddit._check_auth()
         return self._upload_image(image_path, {"upload_type": "icon"})
 
 
@@ -3178,6 +3246,7 @@ class SubredditWiki:
                'praw_test', 'wiki body text', reason='PRAW Test Creation')
 
         """
+        self.subreddit._reddit._check_auth()
         name = name.replace(" ", "_").lower()
         new = WikiPage(self.subreddit._reddit, self.subreddit, name)
         new.edit(content=content, reason=reason, **other_settings)

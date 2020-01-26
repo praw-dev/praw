@@ -28,6 +28,7 @@ class Preferences:
         See https://www.reddit.com/dev/api#GET_api_v1_me_prefs for the list
         of possible values.
         """
+        self._reddit._check_auth()
         return self._reddit.get(API_PATH["preferences"])
 
     def __init__(self, reddit: Reddit):
@@ -193,6 +194,7 @@ class Preferences:
                 **{'3rd_party_data_personalized_ads': False})
 
         """
+        self._reddit._check_auth()
         return self._reddit.patch(
             API_PATH["preferences"], data={"json": dumps(preferences)}
         )

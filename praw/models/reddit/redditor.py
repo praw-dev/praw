@@ -176,6 +176,7 @@ class Redditor(
 
     def block(self):
         """Block the Redditor."""
+        self._reddit._check_auth()
         self._reddit.post(
             API_PATH["block_user"], params={"account_id": self.fullname}
         )
@@ -189,6 +190,7 @@ class Redditor(
         Calling this method subsequent times will update the note.
 
         """
+        self._reddit._check_auth()
         self._friend("PUT", data={"note": note} if note else {})
 
     def friend_info(self) -> _Redditor:
@@ -198,6 +200,7 @@ class Redditor(
             and possibly ``note`` if the authenticated user has Reddit Premium.
 
         """
+        self._reddit._check_auth()
         return self._reddit.get(API_PATH["friend_v1"].format(user=self))
 
     def gild(self, months: int = 1):
@@ -209,6 +212,7 @@ class Redditor(
         """
         if months < 1 or months > 36:
             raise TypeError("months must be between 1 and 36")
+        self._reddit._check_auth()
         self._reddit.post(
             API_PATH["gild_user"].format(username=self),
             data={"months": months},
@@ -267,6 +271,7 @@ class Redditor(
 
     def unblock(self):
         """Unblock the Redditor."""
+        self._reddit._check_auth()
         data = {
             "container": self._reddit.user.me().fullname,
             "name": str(self),
@@ -277,6 +282,7 @@ class Redditor(
 
     def unfriend(self):
         """Unfriend the Redditor."""
+        self._reddit._check_auth()
         self._friend(method="DELETE", data={"id": str(self)})
 
 

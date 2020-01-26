@@ -36,6 +36,7 @@ class WikiPageModeration:
            reddit.subreddit('test').wiki['praw_test'].mod.add('spez')
 
         """
+        self.wikipage._reddit._check_auth()
         data = {"page": self.wikipage.name, "username": str(redditor)}
         url = API_PATH["wiki_page_editor"].format(
             subreddit=self.wikipage.subreddit, method="add"
@@ -55,6 +56,7 @@ class WikiPageModeration:
            reddit.subreddit('test').wiki['praw_test'].mod.remove('spez')
 
         """
+        self.wikipage._reddit._check_auth()
         data = {"page": self.wikipage.name, "username": str(redditor)}
         url = API_PATH["wiki_page_editor"].format(
             subreddit=self.wikipage.subreddit, method="del"
@@ -63,6 +65,7 @@ class WikiPageModeration:
 
     def settings(self) -> Dict[str, Any]:
         """Return the settings for this WikiPage."""
+        self.wikipage._reddit._check_auth()
         url = API_PATH["wiki_page_settings"].format(
             subreddit=self.wikipage.subreddit, page=self.wikipage.name
         )
@@ -90,6 +93,7 @@ class WikiPageModeration:
                                                                  permlevel=2)
 
         """
+        self.wikipage._reddit._check_auth()
         other_settings.update({"listed": listed, "permlevel": permlevel})
         url = API_PATH["wiki_page_settings"].format(
             subreddit=self.wikipage.subreddit, page=self.wikipage.name
@@ -214,6 +218,7 @@ class WikiPage(RedditBase):
         :param other_settings: Additional keyword arguments to pass.
 
         """
+        self._reddit._check_auth()
         other_settings.update(
             {"content": content, "page": self.name, "reason": reason}
         )

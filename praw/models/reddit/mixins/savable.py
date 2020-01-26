@@ -25,6 +25,7 @@ class SavableMixin:
         See also :meth:`~.unsave`
 
         """
+        self._reddit._check_auth()
         self._reddit.post(
             API_PATH["save"], data={"category": category, "id": self.fullname}
         )
@@ -45,4 +46,5 @@ class SavableMixin:
         See also :meth:`~.save`
 
         """
+        self._reddit._check_auth()
         self._reddit.post(API_PATH["unsave"], data={"id": self.fullname})
