@@ -196,7 +196,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         :param subreddit: The subreddit to remove from this multi.
 
-        For example, to remove subreddit ``r/test`` to multireddit
+        For example, to remove subreddit ``r/test`` from multireddit
         ``bboe/test``:
 
         .. code-block:: python
