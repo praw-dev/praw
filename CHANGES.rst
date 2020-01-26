@@ -11,6 +11,8 @@ Unreleased
 * Add :meth:`.Redditors.partial_redditors` that returns lightweight redditor
   objects that contain only a few fields. This is useful for resolving
   Redditor IDs to their usernames in bulk.
+* When non-read only actions are run as a read-only user, they will throw a
+  :class:`.ClientException`.
 
 **Removed**
 
