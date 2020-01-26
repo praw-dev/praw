@@ -1,4 +1,5 @@
 import pickle
+import mock
 
 import pytest
 from praw.models import Subreddit, WikiPage
@@ -126,12 +127,14 @@ class TestSubredditWiki(UnitTest):
 
 
 class TestSubredditModmailConversationsStream(UnitTest):
-    def test_conversation_stream_init(self):
+    @mock.patch("praw.reddit.Reddit._check_auth", return_value=None)
+    def test_conversation_stream_init(self, _):
         submodstream = self.reddit.subreddit("mod").mod.stream
         submodstream.modmail_conversations()
         assert submodstream.subreddit == "all"
 
-    def test_conversation_stream_capilization(self):
+    @mock.patch("praw.reddit.Reddit._check_auth", return_value=None)
+    def test_conversation_stream_capilization(self, _):
         submodstream = self.reddit.subreddit("Mod").mod.stream
         submodstream.modmail_conversations()
         assert submodstream.subreddit == "all"

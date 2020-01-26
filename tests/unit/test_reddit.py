@@ -69,6 +69,10 @@ class TestReddit(UnitTest):
     def test_multireddit(self):
         assert self.reddit.multireddit("bboe", "aa").path == "/user/bboe/m/aa"
 
+    def test_read_only_invalid_operation(self):
+        with pytest.raises(ClientException):
+            self.reddit.user.friends()  # invalid operation
+
     def test_read_only__with_authenticated_core(self):
         with Reddit(
             password=None,
