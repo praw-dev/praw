@@ -183,7 +183,15 @@ class Redditor(
         self._reddit.request(method, url, data=dumps(data))
 
     def block(self):
-        """Block the Redditor."""
+        """Block the Redditor.
+
+        For example, to block Redditor ``spez``:
+
+        .. code-block:: python
+
+            reddit.redditor("spez").block()
+
+        """
         self._reddit.post(
             API_PATH["block_user"], params={"account_id": self.fullname}
         )
@@ -196,6 +204,18 @@ class Redditor(
 
         Calling this method subsequent times will update the note.
 
+        For example, to friend Redditor ``spez``:
+
+        .. code-block:: python
+
+            reddit.redditor("spez").friend()
+
+        To add a note to the friendship (requires Reddit Premium):
+
+        .. code-block:: python
+
+            reddit.redditor("spez").friend(note="My favorite admin")
+
         """
         self._friend("PUT", data={"note": note} if note else {})
 
@@ -205,6 +225,13 @@ class Redditor(
         :returns: A :class:`.Redditor` instance with fields ``date``, ``id``,
             and possibly ``note`` if the authenticated user has Reddit Premium.
 
+        For example, to get the friendship information of Redditor ``spez``:
+
+        .. code-block:: python
+
+            info = reddit.redditor("spez").friend_info
+            friend_data = info.date
+
         """
         return self._reddit.get(API_PATH["friend_v1"].format(user=self))
 
@@ -213,6 +240,12 @@ class Redditor(
 
         :param months: Specifies the number of months to gild up to 36
             (default: 1).
+
+        For example, to gild Redditor ``spez`` for 1 month:
+
+        .. code-block:: python
+
+            reddit.redditor("spez").gild(months=1)
 
         """
         if months < 1 or months > 36:
@@ -251,7 +284,16 @@ class Redditor(
             return subreddits
 
     def multireddits(self) -> List[Multireddit]:
-        """Return a list of the redditor's public multireddits."""
+        """Return a list of the redditor's public multireddits.
+
+        For example, to to get Redditor ``spez``'s multireddits:
+
+        .. code-block:: python
+
+            multireddits = reddit.redditor("spez").multireddits()
+
+
+        """
         return self._reddit.get(API_PATH["multireddit_user"].format(user=self))
 
     def trophies(self) -> List[Trophy]:
@@ -274,7 +316,15 @@ class Redditor(
         return list(self._reddit.get(API_PATH["trophies"].format(user=self)))
 
     def unblock(self):
-        """Unblock the Redditor."""
+        """Unblock the Redditor.
+
+        For example, to unblock Redditor ``spez``:
+
+        .. code-block:: python
+
+            reddit.redditor("spez").unblock()
+
+        """
         data = {
             "container": self._reddit.user.me().fullname,
             "name": str(self),
@@ -284,7 +334,15 @@ class Redditor(
         self._reddit.post(url, data=data)
 
     def unfriend(self):
-        """Unfriend the Redditor."""
+        """Unfriend the Redditor.
+
+        For example, to unfriend Redditor ``spez``:
+
+        .. code-block:: python
+
+            reddit.redditor("spez").unfriend()
+
+        """
         self._friend(method="DELETE", data={"id": str(self)})
 
 
