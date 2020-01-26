@@ -19,6 +19,13 @@ class RisingListingMixin(PRAWBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        For example, to get random rising submissions for subreddit ``r/test``:
+
+        .. code-block:: python
+
+            for submission in reddit.subreddit('test').random_rising():
+                print(submission.title)
+
         """
         return ListingGenerator(
             self._reddit,
@@ -33,6 +40,13 @@ class RisingListingMixin(PRAWBase):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        For example, to get rising submissions for subreddit ``r/test``:
+
+        .. code-block:: python
+
+            for submission in reddit.subreddit('test').rising():
+                print(submission.title)
 
         """
         return ListingGenerator(

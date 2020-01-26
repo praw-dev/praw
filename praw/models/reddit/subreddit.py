@@ -567,6 +567,13 @@ class Subreddit(
 
         Returns ``None`` on subreddits that do not support the random feature.
         One example, at the time of writing, is ``r/wallpapers``.
+
+        For example, to get a random submission off of ``r/AskReddit``:
+
+        .. code-block:: python
+
+            submission = reddit.subreddit("AskReddit").random()
+            print(submission.title)
         """
         url = API_PATH["subreddit_random"].format(subreddit=self)
         try:
@@ -642,6 +649,12 @@ class Subreddit(
             (default: 1).
 
         Raises ``prawcore.NotFound`` if the sticky does not exist.
+
+        For example, to get the stickied post on the subreddit ``r/test``:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").sticky()
 
         """
         url = API_PATH["about_sticky"].format(subreddit=self)
@@ -927,6 +940,12 @@ class Subreddit(
         :param other_subreddits: When provided, also subscribe to the provided
             list of subreddits.
 
+        For example, to subscribe to ``r/test``:
+
+        .. code-block:: python
+
+            reddit.subreddit("test").subscribe()
+
         """
         data = {
             "action": "sub",
@@ -941,6 +960,12 @@ class Subreddit(
         Raises ``prawcore.NotFound`` when the traffic stats aren't available to
         the authenticated user, that is, they are not public and the
         authenticated user is not a moderator of the subreddit.
+
+        For example, to get the traffic stats for ``r/test``:
+
+        .. code-block:: python
+
+            stats=reddit.subreddit("test").traffic()
 
         """
         return self._reddit.get(
