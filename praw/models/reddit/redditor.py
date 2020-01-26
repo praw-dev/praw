@@ -32,6 +32,12 @@ class Redditor(
     guarantee that these attributes will always be present, nor is this list
     comprehensive in any way.
 
+    .. note:: Shadowbanned accounts are treated the same as non-existent
+        accounts, meaning that they will not have any attributes.
+
+    .. note:: Suspended/banned accounts will only return the ``name`` and
+        ``is_suspended`` attributes.
+
     ==================================== ======================================
     Attribute                            Description
     ==================================== ======================================
@@ -53,6 +59,8 @@ class Redditor(
                                          subreddits.
     ``is_gold``                          Whether or not the Redditor has active
                                          Reddit Premium status.
+    ``is_suspended``                     Whether or not the Redditor is
+                                         currently suspended.
     ``link_karma``                       The link karma for the Redditor.
     ``name``                             The Redditor's username.
     ``subreddit``                        If the Redditor has created a
