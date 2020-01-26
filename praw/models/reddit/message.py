@@ -33,8 +33,6 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     ``id``                  The ID of the message.
     ``name``                The full ID of the message, prefixed with 't4'.
     ``subject``             The subject of the message.
-    ``subreddit``           If the message was sent from a subreddit,
-                            provides an instance of :class:`.Subreddit`.
     ``was_comment``         Whether or not the message was a comment reply.
     ======================= ===================================================
 
@@ -90,6 +88,13 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
 
         .. note:: Reddit does not return an indication of whether or not the
                   message was successfully deleted.
+
+        For example, to delete the most recent message in your inbox:
+
+        .. code-block:: python
+
+            next(reddit.inbox.all()).delete()
+
         """
         self._reddit.post(
             API_PATH["delete_message"], data={"id": self.fullname}
@@ -97,14 +102,65 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
 
 
 class SubredditMessage(Message):
-    """A class for messages to a subreddit."""
+    """A class for messages to a subreddit.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    comprehensive in any way.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``author``              Provides an instance of :class:`.Redditor`.
+    ``body``                The body of the message.
+    ``created_utc``         Time the message was created, represented in
+                            `Unix Time`_.
+    ``dest``                Provides an instance of :class:`.Redditor`. The
+                            recipient of the message.
+    ``id``                  The ID of the message.
+    ``name``                The full ID of the message, prefixed with 't4'.
+    ``subject``             The subject of the message.
+    ``subreddit``           If the message was sent from a subreddit,
+                            provides an instance of :class:`.Subreddit`.
+    ``was_comment``         Whether or not the message was a comment reply.
+    ======================= ===================================================
+
+    .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
+
+    """
 
     def mute(self):
-        """Mute the sender of this SubredditMessage."""
+        """Mute the sender of this SubredditMessage.
+
+        For example, to mute the sender of the first SubredditMessage in the
+        authenticated users' inbox:
+
+        .. code-block:: python
+
+            from praw.models import SubredditMessage
+            msg = next(message for message in reddit.inbox.all()
+                        if isinstance(message, SubredditMessage)
+            msg.mute()
+        """
         self._reddit.post(API_PATH["mute_sender"], data={"id": self.fullname})
 
     def unmute(self):
-        """Unmute the sender of this SubredditMessage."""
+        """Unmute the sender of this SubredditMessage.
+
+        For example, to unmute the sender of the first SubredditMessage in the
+        authenticated users' inbox:
+
+        .. code-block:: python
+
+            from praw.models import SubredditMessage
+            msg = next(message for message in reddit.inbox.all()
+                        if isinstance(message, SubredditMessage)
+            msg.unmute()
+        """
         self._reddit.post(
             API_PATH["unmute_sender"], data={"id": self.fullname}
         )

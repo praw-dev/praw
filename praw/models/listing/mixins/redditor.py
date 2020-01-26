@@ -73,6 +73,13 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        For example, to get all downvoted items of the authenticated user:
+
+        .. code-block:: python
+
+            for item in reddit.user.me().downvoted():
+                print(item.id)
+
         """
         return ListingGenerator(
             self._reddit, urljoin(self._path, "downvoted"), **generator_kwargs
@@ -90,6 +97,13 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        For example, to get all gilded items of the authenticated user:
+
+        .. code-block:: python
+
+            for item in reddit.user.me().gildings():
+                print(item.id)
 
         """
         return ListingGenerator(
@@ -111,6 +125,13 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        For example, to get all hidden items of the authenticated user:
+
+        .. code-block:: python
+
+            for item in reddit.user.me().hidden():
+                print(item.id)
+
         """
         return ListingGenerator(
             self._reddit, urljoin(self._path, "hidden"), **generator_kwargs
@@ -129,6 +150,13 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        For example, to get all saved items of the authenticated user:
+
+        .. code-block:: python
+
+            for item in reddit.user.me().saved():
+                print(item.id)
+
         """
         return ListingGenerator(
             self._reddit, urljoin(self._path, "saved"), **generator_kwargs
@@ -146,6 +174,13 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        For example, to get all upvoted items of the authenticated user:
+
+        .. code-block:: python
+
+            for item in reddit.user.me().upvoted():
+                print(item.id)
 
         """
         return ListingGenerator(
