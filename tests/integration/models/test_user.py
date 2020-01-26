@@ -1,6 +1,8 @@
 """Test praw.models.user."""
 from praw.models import Multireddit, Redditor, Subreddit
+from prawcore.exceptions import BadRequest
 import mock
+import pytest
 
 from .. import IntegrationTest
 
@@ -30,6 +32,20 @@ class TestUser(IntegrationTest):
             friends = self.reddit.user.friends()
         assert len(friends) > 0
         assert all(isinstance(friend, Redditor) for friend in friends)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_friend_exist(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestUser.test_friend_exist"):
+            friend = self.reddit.user.friends(user=self.reddit.user.me())
+            assert isinstance(friend, Redditor)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_friend_not_exist(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestUser.test_friend_not_exist"):
+            with pytest.raises(BadRequest):
+                self.reddit.user.friends(user="fake__user_user_user")
 
     def test_karma(self):
         self.reddit.read_only = False
