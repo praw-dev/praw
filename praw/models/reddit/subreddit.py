@@ -2686,6 +2686,9 @@ class SubredditStream:
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
+        .. note:: While PRAW tries to catch all new comments, some high-volume
+            streams, especially the r/all stream, may drop some comments.
+
         For example, to retrieve all new comments made to the ``iama``
         subreddit, try:
 
@@ -2713,6 +2716,10 @@ class SubredditStream:
         will initially be returned.
 
         Keyword arguments are passed to :func:`.stream_generator`.
+
+        .. note:: While PRAW tries to catch all new submissions, some
+            high-volume streams, especially the r/all stream, may drop some
+            submissions.
 
         For example to retrieve all new submissions made to all of Reddit, try:
 
