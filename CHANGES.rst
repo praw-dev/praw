@@ -16,6 +16,9 @@ Unreleased
 
 * Converting :class:`.APIException` to string will no longer escape unicode
   characters.
+* Module ``praw.models.modaction`` no longer exists. Pleae use the module
+  ``praw.models.mod_action`` module, or directly import ``ModAction``
+  from ``praw.models``.
 
 6.5.1 (2020/01/07)
 ------------------
