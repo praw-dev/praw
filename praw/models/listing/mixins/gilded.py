@@ -17,6 +17,13 @@ class GildedListingMixin(PRAWBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
+        For example, to get gilded items in subreddit ``r/test``:
+
+        .. code-block:: python
+
+            for item in reddit.subreddit('test').gilded():
+                print(item.id)
+
         """
         return ListingGenerator(
             self._reddit, urljoin(self._path, "gilded"), **generator_kwargs

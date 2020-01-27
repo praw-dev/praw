@@ -132,6 +132,13 @@ class Multireddit(SubredditListingMixin, RedditBase):
 
         :param subreddit: The subreddit to add to this multi.
 
+        For example, to add subreddit ``r/test`` to multireddit ``bboe/test``:
+
+        .. code-block:: python
+
+            subreddit=reddit.subreddit('test')
+            reddit.multireddit('bboe', 'test').add(subreddit)
+
         """
         url = API_PATH["multireddit_update"].format(
             multi=self.name, user=self._author, subreddit=subreddit
@@ -149,6 +156,11 @@ class Multireddit(SubredditListingMixin, RedditBase):
             display name. When not provided the copy will use the same display
             name and name as this multireddit.
 
+        To copy the multireddit ``bboe/test`` with a name of ``testing``:
+        .. code-block:: python
+
+            reddit.multireddit('bboe', 'test').copy('testing')
+
         """
         if display_name:
             name = self.sluggify(display_name)
@@ -165,7 +177,15 @@ class Multireddit(SubredditListingMixin, RedditBase):
         return self._reddit.post(API_PATH["multireddit_copy"], data=data)
 
     def delete(self):
-        """Delete this multireddit."""
+        """Delete this multireddit.
+
+        For example, to delete multireddit``bboe/test``:
+
+        .. code-block:: python
+
+            reddit.multireddit('bboe', 'test').delete()
+
+        """
         path = API_PATH["multireddit_api"].format(
             multi=self.name, user=self._author.name
         )
@@ -175,6 +195,15 @@ class Multireddit(SubredditListingMixin, RedditBase):
         """Remove a subreddit from this multireddit.
 
         :param subreddit: The subreddit to remove from this multi.
+
+        For example, to remove subreddit ``r/test`` from multireddit
+        ``bboe/test``:
+
+        .. code-block:: python
+
+            subreddit=reddit.subreddit('test')
+            reddit.multireddit('bboe', 'test').remove(subreddit)
+
 
         """
         url = API_PATH["multireddit_update"].format(
@@ -208,6 +237,12 @@ class Multireddit(SubredditListingMixin, RedditBase):
         :param key_color: RGB hex color code of the form ``'#FFFFFF'``.
         :param visibility: Can be one of: ``hidden``, ``private``, ``public``.
         :param weighting_scheme: Can be one of: ``classic``, ``fresh``.
+
+        For example, to rename multireddit ``bboe/test`` to ``bboe/testing``:
+
+        .. code-block:: python
+
+            reddit.multireddit('bboe', 'test').update(display_name='testing')
 
         """
         if "subreddits" in updated_settings:

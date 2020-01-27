@@ -213,6 +213,14 @@ class WikiPage(RedditBase):
         :param reason: (Optional) The reason for the revision.
         :param other_settings: Additional keyword arguments to pass.
 
+        For example, to replace the first wiki page of ``r/test`` with the
+        phrase ``test wiki page``:
+
+        .. code-block:: python
+
+            page = next(iter(reddit.subreddit('test').wiki))
+            page.edit(content='test wiki page')
+
         """
         other_settings.update(
             {"content": content, "page": self.name, "reason": reason}

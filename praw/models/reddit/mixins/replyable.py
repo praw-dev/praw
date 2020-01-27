@@ -18,6 +18,10 @@ class ReplyableMixin:
         comment will be sucessfully created on Reddit and can be retried
         by drawing the comment from the user's comment history.
 
+        .. note:: Some items, such as locked submissions/comments or
+            non-replyable messages will throw ``prawcore.exceptions.Forbidden``
+            when attempting to reply to them.
+
         Example usage:
 
         .. code-block:: python
