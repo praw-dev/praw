@@ -45,6 +45,7 @@ applications and **web** applications.
    tutorials/comments.rst
    tutorials/refresh_token.rst
    tutorials/reply_bot.rst
+   tutorials/view_traffic_data.rst
 
 .. _package_info:
 .. toctree::
