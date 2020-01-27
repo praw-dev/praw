@@ -2,7 +2,6 @@
 
 # pylint: disable=too-many-lines
 import socket
-import warnings
 from copy import deepcopy
 from json import dumps, loads
 from os.path import basename, dirname, join
@@ -15,6 +14,7 @@ from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import (
     APIException,
     ClientException,
+    InvalidFlairTemplateID,
     WebSocketException,
 )
 from ...util.cache import cachedproperty
@@ -1446,17 +1446,12 @@ class SubredditFlairTemplates:
         mod_only=None,
         allowable_content=None,
         max_emojis=None,
-        fetch=False,
+        fetch=True,
     ):
         """Update the flair template provided by ``template_id``.
 
         :param template_id: The flair template to update. If not valid then
-            a new flair template will be made.
-
-            .. warning:: The behavior of this function to create a new flair is
-                DEPRECATED. Please use the method ``add`` instead. This will
-                cause an exception on the next major release.
-
+            an exception will be thrown.
         :param text: The flair template's new text (required).
         :param css_class: The flair template's new css_class (default: '').
         :param text_editable: (boolean) Indicate if the flair text can be
@@ -1480,10 +1475,6 @@ class SubredditFlairTemplates:
             to Reddit will not be made, but all other values will be
             overwritten to their defaults. Furthermore, text and CSS class will
             be set to blank values.
-
-        .. note:: Parameter ``fetch`` will be set to True on the next major
-            release of PRAW.
-
 
         For example to make a user flair template text_editable, try:
 
@@ -1515,13 +1506,7 @@ class SubredditFlairTemplates:
                 if template["id"] == template_id
             ]
             if len(_existing_data) == 0:
-                warnings.warn(
-                    "Creating flair templates with an invalid flair "
-                    "ID is now deprecated. This will cause an "
-                    "exception in the next major release.",
-                    category=DeprecationWarning,
-                    stacklevel=2,
-                )
+                raise InvalidFlairTemplateID(template_id)
             else:
                 existing_data = _existing_data[0]
                 for key, item in data.copy().items():

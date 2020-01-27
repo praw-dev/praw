@@ -25,10 +25,7 @@ Unreleased
 * Methods :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` contains a new parameter,
   ``fetch``, that toggles the automatic fetching of existing data from Reddit.
-  It is set to False on default.
-
-  .. warning:: Parameter fetch will be set to True by default on the next
-     major release.
+  It is set to True on default.
 
 * Values in methods :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` that are left as the
@@ -38,22 +35,15 @@ Unreleased
   :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` is no longer required.
 
-**Deprecated**
-
-* Creating a flair through methods :meth:`.SubredditLinkFlairTemplates.update`
-  and :meth:`.SubredditRedditorFlairTemplates.update` is now deprecated. This
-  action will throw :class:`.InvalidFlairTemplateID` on the next major
-  release.
-
 **Removed**
 
 * Converting :class:`.APIException` to string will no longer escape unicode
   characters.
 * Module ``praw.models.modaction`` no longer exists. Pleae use the module
-  ``praw.models.mod_action`` module, or directly import ``ModAction``
+  ``praw.models.mod_action``, or directly import ``ModAction``
   from ``praw.models``.
-* Methods :meth:`.SubredditFlairLinkTemplates.update` and
-  :meth:`.SubredditFlairRedditorTemplates.update` will no longer
+* Methods :meth:`.SubredditLinkFlairTemplates.update` and
+  :meth:`.SubredditRedditorFlairTemplates.update` will no longer
   create flairs that are using an invalid template id, but instead throw a
   :class:`.InvalidFlairTemplateID`.
 

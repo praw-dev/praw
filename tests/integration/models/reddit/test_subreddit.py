@@ -7,6 +7,7 @@ import sys
 from praw.exceptions import (
     APIException,
     ClientException,
+    InvalidFlairTemplateID,
     WebSocketException,
 )
 from praw.models import (
@@ -1009,13 +1010,12 @@ class TestSubredditFlairTemplates(IntegrationTest):
             )
 
     @mock.patch("time.sleep", return_value=None)
-    @pytest.mark.filterwarnings("error", category=DeprecationWarning)
     def test_update_invalid(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
             "TestSubredditFlairTemplates.test_update_invalid"
         ):
-            with pytest.raises(DeprecationWarning):
+            with pytest.raises(InvalidFlairTemplateID):
                 self.subreddit.flair.templates.update(
                     "fake id",
                     "PRAW updated",
