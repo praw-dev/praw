@@ -280,7 +280,15 @@ class Subreddit(
 
     @cachedproperty
     def filters(self):
-        """Provide an instance of :class:`.SubredditFilters`."""
+        """Provide an instance of :class:`.SubredditFilters`.
+
+        For example, to add a filter, run:
+
+        .. code-block:: python
+
+            reddit.subreddit('all').filters.add('subreddit_name')
+
+        """
         return SubredditFilters(self)
 
     @cachedproperty
@@ -308,7 +316,14 @@ class Subreddit(
 
     @cachedproperty
     def mod(self):
-        """Provide an instance of :class:`.SubredditModeration`."""
+        """Provide an instance of :class:`.SubredditModeration`.
+
+        For example, to accept a moderation invite from subreddit ``r/test``:
+
+        .. code-block:: python
+
+            reddit.subreddit('test').mod.accept_invite()
+        """
         return SubredditModeration(self)
 
     @cachedproperty
@@ -333,12 +348,31 @@ class Subreddit(
 
     @cachedproperty
     def modmail(self):
-        """Provide an instance of :class:`.Modmail`."""
+        """Provide an instance of :class:`.Modmail`.
+
+        For example, to send a new modmail from the subreddit ``r/test`` to
+        user ``u/spez`` with the subject ``test`` along with a message body of
+        ``hello``:
+
+        .. code-block:: python
+
+            reddit.subreddit('test').modmail.create('test', 'hello', 'spez')
+
+        """
         return Modmail(self)
 
     @cachedproperty
     def muted(self):
-        """Provide an instance of :class:`.SubredditRelationship`."""
+        """Provide an instance of :class:`.SubredditRelationship`.
+
+        For example, muted users can be iterated through like so:
+
+        .. code-block:: python
+
+            for mute in reddit.subreddit('redditdev').muted():
+                print('{}: {}'.format(mute, mute.note))
+
+        """
         return SubredditRelationship(self, "muted")
 
     @cachedproperty
@@ -348,6 +382,12 @@ class Subreddit(
         This property is named ``quaran`` because ``quarantine`` is a
         Subreddit attribute returned by Reddit to indicate whether or not a
         Subreddit is quarantined.
+
+        To opt-in into a quarantined subreddit:
+
+        .. code-block:: python
+
+            reddit.subreddit('test').quaran.opt_in()
 
         """
         return SubredditQuarantine(self)
@@ -378,7 +418,19 @@ class Subreddit(
 
     @cachedproperty
     def stylesheet(self):
-        """Provide an instance of :class:`.SubredditStylesheet`."""
+        """Provide an instance of :class:`.SubredditStylesheet`.
+
+        For example, to add the css data ``.test{color:blue}`` to the existing
+        stylesheet:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit('SUBREDDIT')
+            stylesheet = subreddit.stylesheet()
+            stylesheet += ".test{color:blue}"
+            subreddit.stylesheet.update(stylesheet)
+
+        """
         return SubredditStylesheet(self)
 
     @cachedproperty
@@ -978,6 +1030,12 @@ class Subreddit(
         :param other_subreddits: When provided, also unsubscribe from
             the provided list of subreddits.
 
+        To unsubscribe from ``r/test``:
+
+        .. code-block:: python
+
+            reddit.subreddit('test').unsubscribe()
+
         """
         data = {
             "action": "unsub",
@@ -993,11 +1051,11 @@ class SubredditFilters:
     """Provide functions to interact with the special Subreddit's filters.
 
     Members of this class should be utilized via ``Subreddit.filters``. For
-    example to add a filter run:
+    example, to add a filter, run:
 
     .. code-block:: python
 
-       reddit.subreddit('all').filters.add('subreddit_name')
+        reddit.subreddit('all').filters.add('subreddit_name')
 
     """
 
@@ -1587,7 +1645,15 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
 
 class SubredditModeration:
-    """Provides a set of moderation functions to a Subreddit."""
+    """Provides a set of moderation functions to a Subreddit.
+
+    For example, to accept a moderation invite from subreddit ``r/test``:
+
+    .. code-block:: python
+
+        reddit.subreddit('test').mod.accept_invite()
+
+    """
 
     @staticmethod
     def _handle_only(only, generator_kwargs):
@@ -2138,7 +2204,15 @@ class SubredditModerationStream:
 
 
 class SubredditQuarantine:
-    """Provides subreddit quarantine related methods."""
+    """Provides subreddit quarantine related methods.
+
+    To opt-in into a quarantined subreddit:
+
+    .. code-block:: python
+
+        reddit.subreddit('test').quaran.opt_in()
+
+    """
 
     def __init__(self, subreddit):
         """Create a SubredditQuarantine instance.
@@ -2474,7 +2548,17 @@ class ModeratorRelationship(SubredditRelationship):
 
 
 class Modmail:
-    """Provides modmail functions for a subreddit."""
+    """Provides modmail functions for a subreddit.
+
+    For example, to send a new modmail from the subreddit ``r/test`` to user
+    ``u/spez`` with the subject ``test`` along with a message body of
+    ``hello``:
+
+    .. code-block:: python
+
+        reddit.subreddit('test').modmail.create('test', 'hello', 'spez')
+
+    """
 
     def __call__(self, id=None, mark_read=False):  # noqa: D207, D301
         """Return an individual conversation.
@@ -2758,7 +2842,19 @@ class SubredditStream:
 
 
 class SubredditStylesheet:
-    """Provides a set of stylesheet functions to a Subreddit."""
+    """Provides a set of stylesheet functions to a Subreddit.
+
+    For example, to add the css data ``.test{color:blue}`` to the existing
+    stylesheet:
+
+    .. code-block:: python
+
+        subreddit = reddit.subreddit('SUBREDDIT')
+        stylesheet = subreddit.stylesheet()
+        stylesheet += ".test{color:blue}"
+        subreddit.stylesheet.update(stylesheet)
+
+    """
 
     def __call__(self):
         """Return the subreddit's stylesheet.
