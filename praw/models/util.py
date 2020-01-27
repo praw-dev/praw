@@ -3,6 +3,8 @@ import random
 import time
 from typing import Any, Callable, Generator, List, Optional, Set
 
+from ..util import int_to_base36
+
 
 class BoundedSet:
     """A set with a maximum size that evicts the oldest items when necessary.
@@ -207,3 +209,38 @@ def stream_generator(
                 yield None
             else:
                 time.sleep(exponential_counter.counter())
+
+
+def r_all_streamer(
+    function: Callable[[Any], Any],
+    pause_after: Optional[int] = None,
+    skip_existing: bool = False,
+    attribute_name: str = "fullname",
+    exclude_before: bool = False,
+    **function_kwargs: Any
+) -> Generator[Any, None, None]:
+    """Stream class that handles r/all streams.
+
+    Please refer to the documentation for :func:`.stream_generator`.
+    """
+    prev = 0
+    stream = stream_generator(
+        function,
+        pause_after=pause_after,
+        skip_existing=skip_existing,
+        attribute_name=attribute_name,
+        exclude_before=exclude_before,
+        **function_kwargs
+    )
+    for item in stream:
+        if hasattr(item, "id"):
+            if prev == 0:
+                prev = int(item.id, base=36)
+            cur = int(item.id, base=36)
+            if cur - prev > 1:
+                for idnum in range(prev + 1, cur):
+                    reddit = item._reddit
+                    itemtype = item.__class__
+                    yield itemtype(reddit, id=int_to_base36(idnum))
+            prev = cur
+        yield item

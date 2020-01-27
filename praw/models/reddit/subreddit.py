@@ -20,7 +20,7 @@ from ...exceptions import (
 from ...util.cache import cachedproperty
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
-from ..util import permissions_string, stream_generator
+from ..util import permissions_string, stream_generator, r_all_streamer
 from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin
@@ -2850,7 +2850,11 @@ class SubredditStream:
                print(comment)
 
         """
-        return stream_generator(self.subreddit.comments, **stream_options)
+        return (
+            stream_generator(self.subreddit.comments, **stream_options)
+            if self.subreddit.__dict__.get("display_name", "None") != "all"
+            else r_all_streamer(self.subreddit.comments, **stream_options)
+        )
 
     def submissions(self, **stream_options):
         """Yield new submissions as they become available.
@@ -2872,7 +2876,11 @@ class SubredditStream:
                print(submission)
 
         """
-        return stream_generator(self.subreddit.new, **stream_options)
+        return (
+            stream_generator(self.subreddit.new, **stream_options)
+            if self.subreddit.__dict__.get("display_name", "None") != "all"
+            else r_all_streamer(self.subreddit.new, **stream_options)
+        )
 
 
 class SubredditStylesheet:

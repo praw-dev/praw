@@ -1777,6 +1777,16 @@ class TestSubredditStreams(IntegrationTest):
             # that there are at least 400 comments in the stream.
             assert count < 400
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_comments_all(self, _):
+        with self.recorder.use_cassette("TestSubredditStreams.comments"):
+            generator = self.reddit.subreddit("all").stream.comments()
+            items = [generator.__next__() for i in range(400)]
+            for i in range(400 - 1):
+                cur = items[i]
+                next = items[i + 1]
+                assert (int(next.id, base=36) - int(cur.id, base=36)) <= 1
+
     def test_submissions(self):
         with self.recorder.use_cassette("TestSubredditStreams.submissions"):
             generator = self.reddit.subreddit("all").stream.submissions()
@@ -1794,7 +1804,7 @@ class TestSubredditStreams(IntegrationTest):
             while submission is not None:
                 submission_count += 1
                 submission = next(generator)
-            assert submission_count == 100
+            assert submission_count == 133
 
     @mock.patch("time.sleep", return_value=None)
     def test_submissions__with_pause_and_skip_after(self, _):
@@ -1810,6 +1820,16 @@ class TestSubredditStreams(IntegrationTest):
                 submission_count += 1
                 submission = next(generator)
             assert submission_count < 100
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submissions_all(self, _):
+        with self.recorder.use_cassette("TestSubredditStreams.submissions"):
+            generator = self.reddit.subreddit("all").stream.submissions()
+            items = [generator.__next__() for i in range(101)]
+            for i in range(101 - 1):
+                cur = items[i]
+                next = items[i + 1]
+                assert (int(next.id, base=36) - int(cur.id, base=36)) <= 1
 
 
 class TestSubredditModerationStreams(IntegrationTest):

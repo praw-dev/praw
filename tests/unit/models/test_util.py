@@ -1,7 +1,18 @@
 """Test praw.models.util."""
-from praw.models.util import ExponentialCounter, permissions_string
+from praw.models.util import BoundedSet, ExponentialCounter, permissions_string
 
 from .. import UnitTest
+
+
+class TestBoundedSet(UnitTest):
+    def test_limit(self):
+        bset = BoundedSet(2)
+        for i in range(10):
+            bset.add(i)
+        assert 8 in bset
+        assert 9 in bset
+        assert 7 not in bset
+        assert 0 not in bset
 
 
 class TestExponentialCounter(UnitTest):
