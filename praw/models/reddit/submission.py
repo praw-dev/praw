@@ -478,7 +478,16 @@ class Submission(
 
     @cachedproperty
     def mod(self) -> SubmissionModeration:
-        """Provide an instance of :class:`.SubmissionModeration`."""
+        """Provide an instance of :class:`.SubmissionModeration`.
+
+        Example usage:
+
+        .. code-block:: python
+
+           submission = reddit.submission(id="8dmv8z")
+           submission.mod.approve()
+
+        """
         return SubmissionModeration(self)
 
     @property

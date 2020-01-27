@@ -83,7 +83,16 @@ class Collection(RedditBase):
 
     @cachedproperty
     def subreddit(self) -> Subreddit:
-        """Get the subreddit that this collection belongs to."""
+        """Get the subreddit that this collection belongs to.
+
+        For example:
+
+        .. code-block:: python
+
+            collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
+            subreddit = collection.subreddit
+
+        """
         return next(self._reddit.info([self.subreddit_id]))
 
     def __init__(

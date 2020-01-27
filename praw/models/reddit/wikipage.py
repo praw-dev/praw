@@ -13,7 +13,15 @@ Subreddit = TypeVar("Subreddit")
 
 
 class WikiPageModeration:
-    """Provides a set of moderation functions for a WikiPage."""
+    """Provides a set of moderation functions for a WikiPage.
+
+    For example, to add ``spez`` as an editor on the wikipage ``praw_test``
+    try:
+
+    .. code-block:: python
+
+        reddit.subreddit('test').wiki['praw_test'].mod.add('spez')
+    """
 
     def __init__(self, wikipage: _WikiPage):
         """Create a WikiPageModeration instance.
@@ -143,7 +151,16 @@ class WikiPage(RedditBase):
 
     @cachedproperty
     def mod(self) -> WikiPageModeration:
-        """Provide an instance of :class:`.WikiPageModeration`."""
+        """Provide an instance of :class:`.WikiPageModeration`.
+
+        For example, to add ``spez`` as an editor on the wikipage ``praw_test``
+        try:
+
+        .. code-block:: python
+
+            reddit.subreddit('test').wiki['praw_test'].mod.add('spez')
+
+        """
         return WikiPageModeration(self)
 
     def __eq__(self, other: _WikiPage):

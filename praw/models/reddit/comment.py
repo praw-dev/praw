@@ -96,7 +96,16 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
     @cachedproperty
     def mod(self) -> _CommentModeration:
-        """Provide an instance of :class:`.CommentModeration`."""
+        """Provide an instance of :class:`.CommentModeration`.
+
+        Example usage:
+
+        .. code-block:: python
+
+            comment = reddit.comment('dkk4qjd')
+            comment.mod.approve()
+
+        """
         return CommentModeration(self)
 
     @property
