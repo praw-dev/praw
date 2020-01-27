@@ -61,7 +61,10 @@ setup(
     keywords="reddit api wrapper",
     license="Simplified BSD License",
     long_description=README,
-    package_data={"": ["LICENSE.txt"], PACKAGE_NAME: ["*.ini"]},
+    package_data={
+        "": ["LICENSE.txt"],
+        PACKAGE_NAME: ["*.ini", "images/*.jpg"],
+    },
     packages=find_packages(exclude=["tests", "tests.*", "tools", "tools.*"]),
     url="https://praw.readthedocs.org/",
     version=VERSION,
