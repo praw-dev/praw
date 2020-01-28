@@ -177,10 +177,14 @@ class MultiredditHelper(PRAWBase):
 class SubredditHelper(PRAWBase):
     """Provide a set of functions to interact with Subreddits."""
 
-    def __call__(self, display_name: str) -> Subreddit:
+    def __call__(
+        self, display_name: str, use_new_stream: bool = False
+    ) -> Subreddit:
         """Return a lazy instance of :class:`~.Subreddit`.
 
         :param display_name: The name of the subreddit.
+        :param use_new_stream: Use the new subreddit stream. Please read the
+            note on :class:`.Subreddit` before setting this parameter to True.
         """
         lower_name = display_name.lower()
 
@@ -189,7 +193,11 @@ class SubredditHelper(PRAWBase):
         if lower_name == "randnsfw":
             return self._reddit.random_subreddit(nsfw=True)
 
-        return Subreddit(self._reddit, display_name=display_name)
+        return Subreddit(
+            self._reddit,
+            display_name=display_name,
+            use_new_stream=use_new_stream,
+        )
 
     def create(
         self,

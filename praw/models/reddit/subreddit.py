@@ -481,11 +481,21 @@ class Subreddit(
         """
         return SubredditWiki(self)
 
-    def __init__(self, reddit, display_name=None, _data=None):
+    def __init__(
+        self, reddit, display_name=None, _data=None, use_new_stream=False
+    ):
         """Initialize a Subreddit instance.
 
         :param reddit: An instance of :class:`~.Reddit`.
         :param display_name: The name of the subreddit.
+        :param use_new_stream: Use the new SubredditStreams.
+
+        .. note:: The new streams will provide lazy comments that were not sent
+            by Reddit's API, and therefore will not be pre-filled like normal
+            comments. This will lead to extra API requests, and also include
+            comments that have been automatically removed by AutoModerator.
+            Any bot built with the new stream will have to handle this.
+            Therefore, the streams will only be used when explicitly asked for.
 
         .. note:: This class should not be initialized directly. Instead obtain
            an instance via: ``reddit.subreddit('subreddit_name')``
@@ -498,6 +508,7 @@ class Subreddit(
         super().__init__(reddit, _data=_data)
         if display_name:
             self.display_name = display_name
+        self._use_new_stream = use_new_stream
         self._path = API_PATH["subreddit"].format(subreddit=self)
 
     def _fetch_info(self):
@@ -2852,7 +2863,10 @@ class SubredditStream:
         """
         return (
             stream_generator(self.subreddit.comments, **stream_options)
-            if self.subreddit.__dict__.get("display_name", "None") != "all"
+            if (
+                self.subreddit.__dict__.get("display_name", "None") != "all"
+                or not self.subreddit.__dict__.get("_use_new_stream", False)
+            )
             else r_all_streamer(self.subreddit.comments, **stream_options)
         )
 
@@ -2878,7 +2892,10 @@ class SubredditStream:
         """
         return (
             stream_generator(self.subreddit.new, **stream_options)
-            if self.subreddit.__dict__.get("display_name", "None") != "all"
+            if (
+                self.subreddit.__dict__.get("display_name", "None") != "all"
+                or not self.subreddit.__dict__.get("_use_new_stream", False)
+            )
             else r_all_streamer(self.subreddit.new, **stream_options)
         )
 

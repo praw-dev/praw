@@ -1779,8 +1779,10 @@ class TestSubredditStreams(IntegrationTest):
 
     @mock.patch("time.sleep", return_value=None)
     def test_comments_all(self, _):
-        with self.recorder.use_cassette("TestSubredditStreams.comments"):
-            generator = self.reddit.subreddit("all").stream.comments()
+        with self.recorder.use_cassette("TestSubredditStreams.comments_new"):
+            generator = self.reddit.subreddit(
+                "all", use_new_stream=True
+            ).stream.comments()
             items = [generator.__next__() for i in range(400)]
             for i in range(400 - 1):
                 cur = items[i]
@@ -1804,7 +1806,7 @@ class TestSubredditStreams(IntegrationTest):
             while submission is not None:
                 submission_count += 1
                 submission = next(generator)
-            assert submission_count == 133
+            assert submission_count == 100
 
     @mock.patch("time.sleep", return_value=None)
     def test_submissions__with_pause_and_skip_after(self, _):
@@ -1823,8 +1825,12 @@ class TestSubredditStreams(IntegrationTest):
 
     @mock.patch("time.sleep", return_value=None)
     def test_submissions_all(self, _):
-        with self.recorder.use_cassette("TestSubredditStreams.submissions"):
-            generator = self.reddit.subreddit("all").stream.submissions()
+        with self.recorder.use_cassette(
+            "TestSubredditStreams.submissions_new"
+        ):
+            generator = self.reddit.subreddit(
+                "all", use_new_stream=True
+            ).stream.submissions()
             items = [generator.__next__() for i in range(101)]
             for i in range(101 - 1):
                 cur = items[i]

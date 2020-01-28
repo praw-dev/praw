@@ -31,6 +31,10 @@ Unreleased
 * The parameter ``text`` for methods
   :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` is no longer required.
+* Subreddit streams streaming from r/all can use a new streamer class that will
+  auto-fill items that aren't yielded from Reddit. However, there are
+  problems with the new stream, so usage of the stream requires the parameter
+  ``use_new_stream`` to be set to True (False by default).
 
 **Removed**
 
