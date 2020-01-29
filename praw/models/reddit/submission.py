@@ -127,13 +127,20 @@ class SubmissionModeration(ThingModerationMixin):
             data={"id": self.thing.fullname, "state": state},
         )
 
-    def flair(self, text: str = "", css_class: str = ""):
+    def flair(
+        self,
+        text: str = "",
+        css_class: str = "",
+        flair_template_id: Optional[str] = None,
+    ):
         """Set flair for the submission.
 
         :param text: The flair text to associate with the Submission (default:
             '').
         :param css_class: The css class to associate with the flair html
             (default: '').
+        :param flair_template_id: The flair template id to use when flairing
+            (Optional).
 
         This method can only be used by an authenticated user who is a
         moderator of the Submission's Subreddit.
@@ -152,6 +159,11 @@ class SubmissionModeration(ThingModerationMixin):
             "text": text,
         }
         url = API_PATH["flair"].format(subreddit=self.thing.subreddit)
+        if flair_template_id is not None:
+            data["flair_template_id"] = flair_template_id
+            url = API_PATH["select_flair"].format(
+                subreddit=self.thing.subreddit
+            )
         self.thing._reddit.post(url, data=data)
 
     def nsfw(self):
