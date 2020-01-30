@@ -1365,6 +1365,8 @@ class SubredditFlair:
 class SubredditFlairTemplates:
     """Provide functions to interact with a Subreddit's flair templates."""
 
+    _SENTINEL = object()
+
     @staticmethod
     def flair_type(is_link):
         """Return LINK_FLAIR or USER_FLAIR depending on ``is_link`` value."""
@@ -1385,7 +1387,7 @@ class SubredditFlairTemplates:
 
     def __iter__(self):
         """Abstract method to return flair templates."""
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def _add(
         self,
@@ -1438,14 +1440,14 @@ class SubredditFlairTemplates:
     def update(
         self,
         template_id,
-        text="",
-        css_class="",
-        text_editable=False,
-        background_color=None,
-        text_color=None,
-        mod_only=None,
-        allowable_content=None,
-        max_emojis=None,
+        text=_SENTINEL,
+        css_class=_SENTINEL,
+        text_editable=_SENTINEL,
+        background_color=_SENTINEL,
+        text_color=_SENTINEL,
+        mod_only=_SENTINEL,
+        allowable_content=_SENTINEL,
+        max_emojis=_SENTINEL,
         fetch=True,
     ):
         """Update the flair template provided by ``template_id``.
@@ -1469,12 +1471,11 @@ class SubredditFlairTemplates:
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
         :param fetch: Whether or not PRAW will fetch existing information on
-            the existing flair before updating (Default: False).
+            the existing flair before updating (Default: True).
 
-        .. warning:: If parameter ``fetch`` is set to False, a network request
-            to Reddit will not be made, but all other values will be
-            overwritten to their defaults. Furthermore, text and CSS class will
-            be set to blank values.
+        .. warning:: If parameter ``fetch`` is set to ``False``, all parameters
+             not provided will be reset to default (``None`` or ``False``)
+             values.
 
         For example to make a user flair template text_editable, try:
 
@@ -1505,13 +1506,40 @@ class SubredditFlairTemplates:
                 for template in iter(self)
                 if template["id"] == template_id
             ]
-            if len(_existing_data) == 0:
+            if len(_existing_data) != 1:
                 raise InvalidFlairTemplateID(template_id)
             else:
                 existing_data = _existing_data[0]
-                for key, item in data.copy().items():
-                    if not bool(item):
-                        data[key] = existing_data[key]
+                for key, value in existing_data.items():
+                    if key in data:
+                        if data.get(key) == self._SENTINEL:
+                            data[key] = value
+        data.update(
+            {
+                "allowable_content": allowable_content
+                if data["allowable_content"] != self._SENTINEL
+                else None,
+                "background_color": background_color
+                if data["background_color"] != self._SENTINEL
+                else None,
+                "css_class": css_class
+                if data["css_class"] != self._SENTINEL
+                else "",
+                "max_emojis": max_emojis
+                if data["max_emojis"] != self._SENTINEL
+                else None,
+                "mod_only": mod_only
+                if data["mod_only"] != self._SENTINEL
+                else None,
+                "text": text if data["text"] != self._SENTINEL else "",
+                "text_color": text_color
+                if data["text_color"] != self._SENTINEL
+                else None,
+                "text_editable": text_editable
+                if data["text_editable"] != self._SENTINEL
+                else False,
+            }
+        )
         self.subreddit._reddit.post(url, data=data)
 
 

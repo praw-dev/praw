@@ -1104,6 +1104,27 @@ class TestSubredditFlairTemplates(IntegrationTest):
             )[0]
             assert newtemplate == template
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_false(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditFlairTemplates.test_update_false"
+        ):
+            template = list(self.subreddit.flair.templates)[0]
+            self.subreddit.flair.templates.update(
+                template["id"], text_editable=True, fetch=True,
+            )
+            self.subreddit.flair.templates.update(
+                template["id"], text_editable=False, fetch=True,
+            )
+            newtemplate = list(
+                filter(
+                    lambda _template: _template["id"] == template["id"],
+                    self.subreddit.flair.templates,
+                )
+            )[0]
+            assert newtemplate["text_editable"] is False
+
 
 class TestSubredditLinkFlairTemplates(IntegrationTest):
     @property

@@ -20,17 +20,14 @@ Unreleased
 * :meth:`~.Emoji.update` supports modifying an emoji's permissions.
 * :meth:`~.SubredditEmoji.add` now supports optionally passing booleans to set
   an emoji's permissions upon upload.
-* Methods :meth:`.SubredditFlairLinkTemplates.update` and
-  :meth:`.SubredditFlairRedditorTemplates.update` contains a new parameter,
 * Methods :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` contains a new parameter,
   ``fetch``, that toggles the automatic fetching of existing data from Reddit.
   It is set to True on default.
-
 * Values in methods :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` that are left as the
   defaults will no longer be over-written if the ``fetch`` parameter is set to
-  True, but will fill in existing values for the flair template.
+  ``True``, but will fill in existing values for the flair template.
 * The parameter ``text`` for methods
   :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` is no longer required.
@@ -39,7 +36,7 @@ Unreleased
 
 * Converting :class:`.APIException` to string will no longer escape unicode
   characters.
-* Module ``praw.models.modaction`` no longer exists. Pleae use the module
+* Module ``praw.models.modaction`` no longer exists. Please use the module
   ``praw.models.mod_action``, or directly import ``ModAction``
   from ``praw.models``.
 * Methods :meth:`.SubredditLinkFlairTemplates.update` and
