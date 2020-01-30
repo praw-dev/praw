@@ -92,8 +92,17 @@ class User(PRAWBase):
         )
         return self._reddit.get(endpoint)
 
-    def karma(self) -> Dict[Subreddit, int]:
-        """Return a dictionary mapping subreddits to their karma."""
+    def karma(self) -> Dict[Subreddit, Dict[str, int]]:
+        """Return a dictionary mapping subreddits to their karma.
+
+        The returned dict contains subreddits as keys. Each subreddit key
+        contains a sub-dict that have keys for ``comment_karma`` and
+        ``link_karma``. The dict is sorted in descending karma order.
+
+        .. note:: Each key of the main dict is an instance of
+            :class:`~.Subreddit`. It is recommended to iterate over the dict in
+            order to retrieve the values, preferably through ``dict.items()``.
+        """
         karma_map = {}
         for row in self._reddit.get(API_PATH["karma"])["data"]:
             subreddit = Subreddit(self._reddit, row["sr"])
