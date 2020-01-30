@@ -76,15 +76,6 @@ class TestUser(IntegrationTest):
                 self.reddit.user.me(use_cache=False), "praw_is_cached"
             )
 
-    def test_moderator_subreddits(self):
-        self.reddit.read_only = False
-        with self.recorder.use_cassette("TestUser.test_moderator_subreddits"):
-            count = 0
-            for subreddit in self.reddit.user.moderator_subreddits():
-                assert isinstance(subreddit, Subreddit)
-                count += 1
-            assert count > 0
-
     def test_multireddits(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestUser.test_multireddits"):
