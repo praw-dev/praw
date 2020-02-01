@@ -43,6 +43,7 @@ applications and **web** applications.
    :caption: Tutorials
 
    tutorials/comments.rst
+   tutorials/monitor_submissions.rst
    tutorials/refresh_token.rst
    tutorials/reply_bot.rst
 
