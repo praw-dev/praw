@@ -1013,6 +1013,17 @@ class Subreddit(
         the authenticated user, that is, they are not public and the
         authenticated user is not a moderator of the subreddit.
 
+        The traffic method returns a dict with three keys. The keys are
+        ``day``, ``hour`` and ``month``. Each key contains a list of lists with
+        3 or 4 values. The first value is a timestamp indicating the start of
+        the category (start of the day for the ``day`` key, start of the hour
+        for the ``hour`` key, etc.). The second, third, and fourth values
+        indicate the unique pageviews, total pageviews, and subscribers,
+        respectively.
+
+        .. note:: The ``hour`` key does not contain subscribers, and therefore
+            each sub-list contains three values.
+
         For example, to get the traffic stats for ``r/test``:
 
         .. code-block:: python
