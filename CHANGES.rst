@@ -17,6 +17,10 @@ Unreleased
   friends with the user, otherwise throws an exception.
 * :meth:`.SubmissionModeration.flair` has the parameter ``flair_template_id``
   for applying flairs with template IDs.
+* :meth:`.SubredditHelper.join` joins two or more Subreddits similar to
+  ``os.path.join``, but uses a ``+`` seperator.
+* :meth:`.SubredditHelper.remove` removes two or more Subreddits similar to
+  ``os.path.join``, but uses a ``-`` seperator.
 
 **Removed**
 

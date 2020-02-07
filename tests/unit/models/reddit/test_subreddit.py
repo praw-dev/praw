@@ -107,6 +107,24 @@ class TestSubreddit(UnitTest):
                 "dummy_path", align="asdf"
             )
 
+    def test_helper_join_no_args(self):
+        with pytest.raises(ValueError):
+            self.reddit.subreddit.join()
+
+    def test_helper_remove_no_args(self):
+        with pytest.raises(ValueError):
+            self.reddit.subreddit.remove()
+
+    def test_helper_join_one_arg(self):
+        sub = self.reddit.subreddit("test")
+        sub2 = self.reddit.subreddit.join(sub)
+        assert sub == sub2
+
+    def test_helper_remove_one_arg(self):
+        sub = self.reddit.subreddit("test")
+        sub2 = self.reddit.subreddit.remove(sub)
+        assert sub == sub2
+
 
 class TestSubredditFlair(UnitTest):
     def test_set(self):
