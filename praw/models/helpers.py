@@ -1,4 +1,5 @@
 """Provide the helper classes."""
+from collections import OrderedDict
 from json import dumps
 from typing import Generator, List, Optional, Union
 
@@ -177,6 +178,16 @@ class MultiredditHelper(PRAWBase):
 class SubredditHelper(PRAWBase):
     """Provide a set of functions to interact with Subreddits."""
 
+    def _filter_subs(self, symbol, subreddits):
+        if len(subreddits) < 1:
+            raise ValueError("At least one Subreddit must be given.")
+        elif len(subreddits) == 1:
+            return self(str(subreddits[0]))
+        names = OrderedDict.fromkeys(
+            str(subreddit) for subreddit in subreddits
+        )
+        return self("".join(name + symbol for name in names).rstrip(symbol))
+
     def __call__(self, display_name: str) -> Subreddit:
         """Return a lazy instance of :class:`~.Subreddit`.
 
@@ -231,3 +242,27 @@ class SubredditHelper(PRAWBase):
             **other_settings
         )
         return self(name)
+
+    def join(self, *subreddits: Union[str, Subreddit]) -> Subreddit:
+        """Create a new instance of :class:`.Subreddit` with the subreddits.
+
+        :param subreddits: The Subreddits to join. Either instances of
+            :class:`.Subreddit` or strings containing the display names of the
+            Subreddits.
+        :returns: An instance of :class:`.Subreddit`.
+
+        .. note:: Duplicate Subreddits will only be included once.
+        """
+        return self._filter_subs("+", subreddits)
+
+    def remove(self, *subreddits: Union[str, Subreddit]) -> Subreddit:
+        """Create a new instance of :class:`.Subreddit` without the subreddits.
+
+        :param subreddits: The Subreddits to remove. Either instances of
+            :class:`.Subreddit` or strings containing the display names of the
+            Subreddits.
+        :returns: An instance of :class:`.Subreddit`.
+
+        .. note:: Duplicate Subreddits will only be removed once.
+        """
+        return self._filter_subs("-", subreddits)
