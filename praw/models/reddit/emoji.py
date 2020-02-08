@@ -111,30 +111,39 @@ class Emoji(RedditBase):
             appear in user flair. Respects pre-existing settings if not
             provided.
 
-        To restrict the emoji ``'test'`` in subreddit ``'wowemoji'`` to mod use
+        .. note:: In order to retain pre-existing values for those that are not
+           explicitly passed, a network request is issued. To  avoid that
+           network request, explicitly provide all values.
+
+        To restrict the emoji ``test`` in subreddit ``wowemoji`` to mod use
         only, try:
 
         .. code-block:: python
 
-           reddit.subreddit('wowemoji').emoji['test'].update(mod_flair_only=True)
+           reddit.subreddit("wowemoji").emoji["test"].update(mod_flair_only=True)
 
         """
-        data = {
-            "name": self.name,
-            "mod_flair_only": self.mod_flair_only,
-            "post_flair_allowed": self.post_flair_allowed,
-            "user_flair_allowed": self.user_flair_allowed,
+        locals_reference = locals()
+        mapping = {
+            attribute: locals_reference[attribute]
+            for attribute in (
+                "mod_flair_only",
+                "post_flair_allowed",
+                "user_flair_allowed",
+            )
         }
+        if all(value is None for value in mapping.values()):
+            raise TypeError("At least one attribute must be provided")
 
-        if mod_flair_only is not None:
-            data["mod_flair_only"] = bool(mod_flair_only)
-        if post_flair_allowed is not None:
-            data["post_flair_allowed"] = bool(post_flair_allowed)
-        if user_flair_allowed is not None:
-            data["user_flair_allowed"] = bool(user_flair_allowed)
-
+        data = {"name": self.name}
+        for attribute, value in mapping.items():
+            if value is None:
+                value = getattr(self, attribute)
+            data[attribute] = value
         url = API_PATH["emoji_update"].format(subreddit=self.subreddit)
         self._reddit.post(url, data=data)
+        for attribute, value in data.items():
+            setattr(self, attribute, value)
 
 
 class SubredditEmoji:

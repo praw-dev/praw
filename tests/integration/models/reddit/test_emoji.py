@@ -54,6 +54,15 @@ class TestEmoji(IntegrationTest):
                 user_flair_allowed=True,
             )
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_update__with_preexisting_values(self, _):
+        self.reddit.read_only = False
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with self.recorder.use_cassette(
+            "TestEmoji.test_update__with_preexisting_values"
+        ):
+            subreddit.emoji["test_png"].update(mod_flair_only=True)
+
 
 class TestSubredditEmoji(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
