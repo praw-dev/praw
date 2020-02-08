@@ -173,12 +173,16 @@ class SubredditEmoji:
                print(emoji)
 
         """
-        response = self.subreddit._reddit.get(
+        response = self._reddit.get(
             API_PATH["emoji_list"].format(subreddit=self.subreddit)
         )
-        for emoji_name, emoji_data in response[
-            self.subreddit.fullname
-        ].items():
+        subreddit_keys = [
+            key
+            for key in response.keys()
+            if key.startswith(self._reddit.config.kinds["subreddit"])
+        ]
+        assert len(subreddit_keys) == 1
+        for emoji_name, emoji_data in response[subreddit_keys[0]].items():
             yield Emoji(
                 self._reddit, self.subreddit, emoji_name, _data=emoji_data
             )
