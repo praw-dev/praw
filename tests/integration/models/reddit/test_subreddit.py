@@ -79,11 +79,6 @@ class WebsocketMockException:
             )
 
 
-def raise_exception(exception):
-    """Raise the specified exception."""
-    raise exception
-
-
 class TestSubreddit(IntegrationTest):
     @staticmethod
     def image_path(name):
@@ -474,6 +469,73 @@ class TestSubreddit(IntegrationTest):
                 assert submission is None
 
     @mock.patch("time.sleep", return_value=None)
+    @mock.patch("websocket.create_connection", return_value=WebsocketMock())
+    def test_submit_image_with_userpage_streaming(self, _, __):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image_with_userpage_streaming"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            for ident, file_name in enumerate(
+                ["test.png", "test.jpg", "test.gif"]
+            ):
+                image = self.image_path(file_name)
+                title = "Test Image Title {}".format(ident)
+                submission = subreddit.submit_image(
+                    title, image, stream_userpage=True
+                )
+                assert submission.author == self.reddit.config.username
+                assert submission.is_reddit_media_domain
+                assert submission.title == title
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_image_with_userpage_streaming_no_websocket(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image_with_userpage_streaming"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            for ident, file_name in enumerate(
+                ["test.png", "test.jpg", "test.gif"]
+            ):
+                image = self.image_path(file_name)
+                title = "Test Image Title {}".format(ident)
+                submission = subreddit.submit_image(
+                    title,
+                    image,
+                    without_websockets=True,
+                    stream_userpage=True,
+                )
+                assert submission.author == self.reddit.config.username
+                assert submission.is_reddit_media_domain
+                assert submission.title == title
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch("websocket.create_connection", return_value=WebsocketMock())
+    def test_submit_image_with_userpage_streaming_no_post(self, _, __):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image_with_userpage_streaming_no_post"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            subreddit._submit_media = lambda *a, **kw: None
+            for ident, file_name in enumerate(
+                ["test.png", "test.jpg", "test.gif"]
+            ):
+                image = self.image_path(file_name)
+                title = "Test _Image_ Title {}".format(ident)
+                submission = subreddit.submit_image(
+                    title, image, stream_userpage=True
+                )
+                assert submission is None
+
+    @mock.patch("time.sleep", return_value=None)
     @mock.patch(
         "websocket.create_connection",
         return_value=WebsocketMock("aheljy", "ahelks"),  # update with cassette
@@ -701,6 +763,71 @@ class TestSubreddit(IntegrationTest):
 
                 submission = subreddit.submit_video(
                     "Test Title", video, without_websockets=True
+                )
+                assert submission is None
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection",
+        return_value=WebsocketMock(),  # update with cassette
+    )  # update with cassette
+    def test_submit_video_with_userpage_streaming(self, _, __):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video_with_userpage_streaming"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            for ident, file_name in enumerate(["test.mov", "test.mp4"]):
+                video = self.image_path(file_name)
+                title = "Test Video Title {}".format(ident)
+                submission = subreddit.submit_video(
+                    title, video, stream_userpage=True
+                )
+                assert submission.author == self.reddit.config.username
+                assert submission.is_reddit_media_domain
+                assert submission.title == title
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection",
+        return_value=WebsocketMock(),  # update with cassette
+    )  # update with cassette
+    def test_submit_video_with_userpage_streaming_no_websockets(self, _, __):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video_with_userpage_streaming"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            for ident, file_name in enumerate(["test.mov", "test.mp4"]):
+                video = self.image_path(file_name)
+                title = "Test Video Title {}".format(ident)
+                submission = subreddit.submit_video(
+                    title, video, without_websockets=True, stream_userpage=True
+                )
+                assert submission.author == self.reddit.config.username
+                assert submission.is_reddit_media_domain
+                assert submission.title == title
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch("websocket.create_connection", return_value=WebsocketMock())
+    def test_submit_video_with_userpage_streaming_no_post(self, _, __):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video_with_userpage_streaming_no_post"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            subreddit._submit_media = lambda *a, **kw: None
+            for ident, file_name in enumerate(["test.mov", "test.mp4"]):
+                video = self.image_path(file_name)
+                title = "Test _Video_ Title {}".format(ident)
+                submission = subreddit.submit_video(
+                    title, video, stream_userpage=True
                 )
                 assert submission is None
 
