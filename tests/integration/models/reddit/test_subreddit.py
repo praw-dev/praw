@@ -484,7 +484,7 @@ class TestSubreddit(IntegrationTest):
                 image = self.image_path(file_name)
                 title = "Test Image Title {}".format(ident)
                 submission = subreddit.submit_image(
-                    title, image, stream_userpage=True
+                    title, image, check_userpage=True
                 )
                 assert submission.author == self.reddit.config.username
                 assert submission.is_reddit_media_domain
@@ -505,10 +505,7 @@ class TestSubreddit(IntegrationTest):
                 image = self.image_path(file_name)
                 title = "Test Image Title {}".format(ident)
                 submission = subreddit.submit_image(
-                    title,
-                    image,
-                    without_websockets=True,
-                    stream_userpage=True,
+                    title, image, without_websockets=True, check_userpage=True,
                 )
                 assert submission.author == self.reddit.config.username
                 assert submission.is_reddit_media_domain
@@ -531,7 +528,7 @@ class TestSubreddit(IntegrationTest):
                 image = self.image_path(file_name)
                 title = "Test _Image_ Title {}".format(ident)
                 submission = subreddit.submit_image(
-                    title, image, stream_userpage=True
+                    title, image, check_userpage=True
                 )
                 assert submission is None
 
@@ -783,7 +780,7 @@ class TestSubreddit(IntegrationTest):
                 video = self.image_path(file_name)
                 title = "Test Video Title {}".format(ident)
                 submission = subreddit.submit_video(
-                    title, video, stream_userpage=True
+                    title, video, check_userpage=True
                 )
                 assert submission.author == self.reddit.config.username
                 assert submission.is_reddit_media_domain
@@ -806,7 +803,7 @@ class TestSubreddit(IntegrationTest):
                 video = self.image_path(file_name)
                 title = "Test Video Title {}".format(ident)
                 submission = subreddit.submit_video(
-                    title, video, without_websockets=True, stream_userpage=True
+                    title, video, without_websockets=True, check_userpage=True
                 )
                 assert submission.author == self.reddit.config.username
                 assert submission.is_reddit_media_domain
@@ -827,7 +824,7 @@ class TestSubreddit(IntegrationTest):
                 video = self.image_path(file_name)
                 title = "Test _Video_ Title {}".format(ident)
                 submission = subreddit.submit_video(
-                    title, video, stream_userpage=True
+                    title, video, check_userpage=True
                 )
                 assert submission is None
 

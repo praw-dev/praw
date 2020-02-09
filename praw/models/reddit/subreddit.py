@@ -2,6 +2,7 @@
 
 # pylint: disable=too-many-lines
 import socket
+import time
 from copy import deepcopy
 from json import dumps, loads
 from os.path import basename, dirname, join
@@ -808,7 +809,7 @@ class Subreddit(
         timeout=10,
         collection_id=None,
         without_websockets=False,
-        stream_userpage=False,
+        check_userpage=False,
         userspage_timeout=30,
     ):
         """Add an image submission to the subreddit.
@@ -833,7 +834,7 @@ class Subreddit(
         :param without_websockets: Set to ``True`` to disable use of WebSockets
             (see note below for an explanation). If ``True``, this method
             doesn't return anything. (default: ``False``).
-        :param stream_userpage: Instead of relying on a websocket, the user's
+        :param check_userpage: Instead of relying on a websocket, the user's
             submissions are streamed, and once a submission is found that
             matches the title of the submitted post, return that submission
             (defualt: ``False``).
@@ -871,7 +872,7 @@ class Subreddit(
 
         .. warning::
 
-            If using multiple instances of PRAW, ``stream_userpage`` might
+            If using multiple instances of PRAW, ``check_userpage`` might
             return the wrong submission if multiple posts with the same title
             are made to the same subreddit.
 
@@ -908,23 +909,16 @@ class Subreddit(
                 data, timeout, without_websockets=without_websockets
             )
         except (ClientException, WebSocketException):
-            if not stream_userpage:
+            if not check_userpage:
                 raise
         else:
             if result is not None:
                 return result
-        if stream_userpage:
-            for submission in self._reddit.user.me().stream.submissions(
-                pause_after=userspage_timeout
-            ):
-                if submission is None:
-                    return
-                else:
-                    if (
-                        submission.title == title
-                        and submission.subreddit == self
-                    ):
-                        return submission
+        if check_userpage:
+            time.sleep(userspage_timeout)
+            for submission in self._reddit.user.me().submissions.new():
+                if submission.title == title and submission.subreddit == self:
+                    return submission
 
     def submit_video(
         self,
@@ -941,7 +935,7 @@ class Subreddit(
         timeout=10,
         collection_id=None,
         without_websockets=False,
-        stream_userpage=False,
+        check_userpage=False,
         userspage_timeout=30,
     ):
         """Add a video or videogif submission to the subreddit.
@@ -973,7 +967,7 @@ class Subreddit(
         :param without_websockets: Set to ``True`` to disable use of WebSockets
             (see note below for an explanation). If ``True``, this method
             doesn't return anything. (default: ``False``).
-        :param stream_userpage: Instead of relying on a websocket, the user's
+        :param check_userpage: Instead of relying on a websocket, the user's
             submissions are streamed, and once a submission is found that
             matches the title of the submitted post, return that submission
             (defualt: ``False``).
@@ -1011,7 +1005,7 @@ class Subreddit(
 
         .. warning::
 
-            If using multiple instances of PRAW, ``stream_userpage`` might
+            If using multiple instances of PRAW, ``check_userpage`` might
             return the wrong submission if multiple posts with the same title
             are made to the same subreddit.
 
@@ -1051,23 +1045,16 @@ class Subreddit(
                 data, timeout, without_websockets=without_websockets
             )
         except (ClientException, WebSocketException):
-            if not stream_userpage:
+            if not check_userpage:
                 raise
         else:
             if result is not None:
                 return result
-        if stream_userpage:
-            for submission in self._reddit.user.me().stream.submissions(
-                pause_after=userspage_timeout
-            ):
-                if submission is None:
-                    return
-                else:
-                    if (
-                        submission.title == title
-                        and submission.subreddit == self
-                    ):
-                        return submission
+        if check_userpage:
+            time.sleep(userspage_timeout)
+            for submission in self._reddit.user.me().submissions.new():
+                if submission.title == title and submission.subreddit == self:
+                    return submission
 
     def subscribe(self, other_subreddits=None):
         """Subscribe to the subreddit.

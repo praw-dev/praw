@@ -21,7 +21,7 @@ Unreleased
 * :meth:`~.SubredditEmoji.add` now supports optionally passing booleans to set
   an emoji's permissions upon upload.
 * :meth:`.Subreddit.submit_image` and :meth:`.Subreddit.submit_video` have a
-  new parameter, ``stream_userpage``, as a fallback/alternative to websockets.
+  new parameter, ``check_userpage``, as a fallback/alternative to websockets.
 * :meth:`.Subreddit.submit_image` and :meth:`.Subreddit.submit_video` have a
   new parameter, ``userpage_timeout``, to set the amount of time to wait for
   before timing out.
