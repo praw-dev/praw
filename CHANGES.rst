@@ -17,6 +17,9 @@ Unreleased
   friends with the user, otherwise throws an exception.
 * :meth:`.SubmissionModeration.flair` has the parameter ``flair_template_id``
   for applying flairs with template IDs.
+* :meth:`~.Emoji.update` supports modifying an emoji's permissions.
+* :meth:`~.SubredditEmoji.add` now supports optionally passing booleans to set
+  an emoji's permissions upon upload.
 
 **Removed**
 

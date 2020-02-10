@@ -46,6 +46,7 @@ API_PATH = {
     "emoji_delete":            "api/v1/{subreddit}/emoji/{emoji_name}",
     "emoji_lease":             "api/v1/{subreddit}/emoji_asset_upload_s3.json",
     "emoji_list":              "api/v1/{subreddit}/emojis/all",
+    "emoji_update":            "api/v1/{subreddit}/emoji_permissions",
     "emoji_upload":            "api/v1/{subreddit}/emoji.json",
     "flair":                   "r/{subreddit}/api/flair/",
     "flairconfig":             "r/{subreddit}/api/flairconfig/",

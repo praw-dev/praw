@@ -51,6 +51,7 @@ Source Contributors
 - LilSpazJoekp `@LilSpazJoekp <https://github.com/LilSpazJoekp>`_
 - Timendum `@timendum <https://github.com/timendum>`_
 - vaclav-2012 `@vaclav-2012 <https://github.com/vaclav-2012>`_
+- Jon Meager `@H4CKY54CK <https://github.com/H4CKY54CK>`_
 - kungming2 `@kungming2 <https://github.com/kungming2>`_
 - Jack Steel `@jackodsteel <https://github.com/jackodsteel>`_
 - David Mirch `@fwump38 <https://github.com/fwump38>`_
