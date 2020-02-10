@@ -6,6 +6,7 @@ from praw.exceptions import (
     InvalidURL,
     InvalidImplicitAuth,
     MissingRequiredAttributeException,
+    MultiAPIException,
     PRAWException,
     WebSocketException,
 )
@@ -92,6 +93,32 @@ class TestMissingRequiredAttributeException:
             str(MissingRequiredAttributeException("error message"))
             == "error message"
         )
+
+
+class TestMultipleAPIException:
+    def test_inheritance(self):
+        assert APIException in MultiAPIException.__bases__
+
+    def test_new(self):
+        ex_list1 = [["1", "2", "3"]]
+        ex_list2 = [["1", "2", "3"], ["4", "5", "6"]]
+        assert MultiAPIException(ex_list1).__class__ == APIException
+        assert MultiAPIException(ex_list2).__class__ == MultiAPIException
+
+    def test_str(self):
+        ex_list = [["1", "2", "3"], ["4", "5", "6"]]
+        assert (
+            str(MultiAPIException(ex_list))
+            == "1: '2' on field '3'\n4: '5' on field '6'"
+        )
+
+    def test_api_exception_list(self):
+        ex_list = [["1", "2", "3"], ["4", "5", "6"]]
+        mapi = MultiAPIException(ex_list)
+        assert len(mapi.api_exceptions) == 2
+        assert [
+            item.__class__ == APIException for item in mapi.api_exceptions
+        ].count(False) == 0
 
 
 class TestWebSocketException:

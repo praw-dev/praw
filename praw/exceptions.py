@@ -7,7 +7,9 @@ wrong on the client side. Both of these classes extend :class:`.PRAWException`.
 All other exceptions are subclassed from :class:`.ClientException`.
 
 """
-from typing import List, Optional
+from typing import List, Optional, TypeVar, Union
+
+_MultiAPIException = TypeVar("_MultiAPIException")
 
 
 class PRAWException(Exception):
@@ -33,9 +35,13 @@ class APIException(PRAWException):
         self.message = message
         self.field = field
 
+
 class MultiAPIException(APIException):
     """A wrapper API exception that can deal with multiple API exceptions"""
-    def __new__(cls, exceptions: List[List[str]]):
+
+    def __new__(
+        cls, exceptions: List[List[str]]
+    ) -> Union[APIException, _MultiAPIException]:
         """Returns APIException if len(exceptions) == 1 else instantizes.
 
         :param exceptions: A list containing the exception(s)
