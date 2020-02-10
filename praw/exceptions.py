@@ -7,7 +7,7 @@ wrong on the client side. Both of these classes extend :class:`.PRAWException`.
 All other exceptions are subclassed from :class:`.ClientException`.
 
 """
-from typing import Optional
+from typing import List, Optional
 
 
 class PRAWException(Exception):
@@ -32,6 +32,32 @@ class APIException(PRAWException):
         self.error_type = error_type
         self.message = message
         self.field = field
+
+class MultiAPIException(APIException):
+    """A wrapper API exception that can deal with multiple API exceptions"""
+    def __new__(cls, exceptions: List[List[str]]):
+        """Returns APIException if len(exceptions) == 1 else instantizes.
+
+        :param exceptions: A list containing the exception(s)
+        :returns: :class:`.APIException` or :class:`.MultiAPIException`
+        """
+        if len(exceptions) == 1:
+            return APIException(*exceptions[0])
+        else:
+            return super().__new__(cls)
+
+    def __init__(self, exceptions: List[List[str]]):
+        """Instantizes the class
+
+        :param exceptions: A list containing the exceptions
+        """
+        self.api_exceptions = []
+        arg_str = ""
+        for exception in exceptions:
+            self.api_exceptions.append(APIException(*exception))
+            arg_str += self.api_exceptions[-1].args[0] + "\n"
+        arg_str = arg_str.rstrip()
+        Exception.__init__(self, arg_str)
 
 
 class ClientException(PRAWException):

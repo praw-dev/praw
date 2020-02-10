@@ -2,7 +2,7 @@
 
 from typing import Any, Dict, List, Optional, TypeVar, Union
 
-from .exceptions import APIException, ClientException
+from .exceptions import MultiAPIException, APIException, ClientException
 from .models.reddit.base import RedditBase
 from .util import snake_case_keys
 
@@ -40,7 +40,7 @@ class Objector:
             data,
         )
 
-        return APIException(*errors[0])
+        return MultiAPIException(errors)
 
     @classmethod
     def check_error(cls, data: Union[List[Any], Dict[str, Dict[str, str]]]):
@@ -165,8 +165,8 @@ class Objector:
             return parser.parse(data["json"]["data"], self._reddit)
         if "json" in data and "errors" in data["json"]:
             errors = data["json"]["errors"]
-            if len(errors) == 1:
-                raise APIException(*errors[0])
+            if len(errors) > 0:
+                raise MultiAPIException(errors)
             assert not errors, (
                 "Errors did not get raised as an APIException",
                 errors,
