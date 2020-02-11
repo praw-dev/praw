@@ -21,9 +21,9 @@ Unreleased
 * :meth:`~.SubredditEmoji.add` now supports optionally passing booleans to set
   an emoji's permissions upon upload.
 * Methods :meth:`.SubredditLinkFlairTemplates.update` and
-  :meth:`.SubredditRedditorFlairTemplates.update` contains a new parameter,
+  :meth:`.SubredditRedditorFlairTemplates.update` contain a new parameter,
   ``fetch``, that toggles the automatic fetching of existing data from Reddit.
-  It is set to True on default.
+  It is set to True by default.
 * Values in methods :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` that are left as the
   defaults will no longer be over-written if the ``fetch`` parameter is set to

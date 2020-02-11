@@ -1365,8 +1365,6 @@ class SubredditFlair:
 class SubredditFlairTemplates:
     """Provide functions to interact with a Subreddit's flair templates."""
 
-    _SENTINEL = object()
-
     @staticmethod
     def flair_type(is_link):
         """Return LINK_FLAIR or USER_FLAIR depending on ``is_link`` value."""
@@ -1440,14 +1438,14 @@ class SubredditFlairTemplates:
     def update(
         self,
         template_id,
-        text=_SENTINEL,
-        css_class=_SENTINEL,
-        text_editable=_SENTINEL,
-        background_color=_SENTINEL,
-        text_color=_SENTINEL,
-        mod_only=_SENTINEL,
-        allowable_content=_SENTINEL,
-        max_emojis=_SENTINEL,
+        text=None,
+        css_class=None,
+        text_editable=None,
+        background_color=None,
+        text_color=None,
+        mod_only=None,
+        allowable_content=None,
+        max_emojis=None,
         fetch=True,
     ):
         """Update the flair template provided by ``template_id``.
@@ -1511,35 +1509,8 @@ class SubredditFlairTemplates:
             else:
                 existing_data = _existing_data[0]
                 for key, value in existing_data.items():
-                    if key in data:
-                        if data.get(key) == self._SENTINEL:
-                            data[key] = value
-        data.update(
-            {
-                "allowable_content": allowable_content
-                if data["allowable_content"] != self._SENTINEL
-                else None,
-                "background_color": background_color
-                if data["background_color"] != self._SENTINEL
-                else None,
-                "css_class": css_class
-                if data["css_class"] != self._SENTINEL
-                else "",
-                "max_emojis": max_emojis
-                if data["max_emojis"] != self._SENTINEL
-                else None,
-                "mod_only": mod_only
-                if data["mod_only"] != self._SENTINEL
-                else None,
-                "text": text if data["text"] != self._SENTINEL else "",
-                "text_color": text_color
-                if data["text_color"] != self._SENTINEL
-                else None,
-                "text_editable": text_editable
-                if data["text_editable"] != self._SENTINEL
-                else False,
-            }
-        )
+                    if data.get(key) is None:
+                        data[key] = value
         self.subreddit._reddit.post(url, data=data)
 
 

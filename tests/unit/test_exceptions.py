@@ -59,7 +59,7 @@ class TestInvalidFlairTemplateID:
     def test_inheritance(self):
         assert isinstance(InvalidFlairTemplateID(None), ClientException)
 
-    def test_message(self):
+    def test_str(self):
         assert (
             str(InvalidFlairTemplateID("123"))
             == "The flair template id ``123`` is invalid. If you are "
