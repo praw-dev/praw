@@ -37,8 +37,8 @@ class TestObjector(UnitTest):
                 ]
             }
         }
-        with pytest.raises(AssertionError):
-            objector.parse_error(error_response)
+        error = objector.parse_error(error_response)
+        assert isinstance(error, APIException)
 
     def test_check_error(self):
         objector = self.reddit._objector

@@ -31,6 +31,49 @@ class TestAPIException:
         assert str(exception) == (
             "BAD_SOMETHING: 'invalid something' on field 'some_field'"
         )
+        exception2 = APIException(
+            [
+                ["BAD_SOMETHING", "invalid something", "some_field"],
+                ["BAD_SOMETHING", "invalid something", "some_field"],
+            ]
+        )
+        assert (
+            str(exception2)
+            == "BAD_SOMETHING: 'invalid something' on field 'some_field'\n"
+            "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+        )
+        exception3 = APIException(
+            [["BAD_SOMETHING", "invalid something", "some_field"]]
+        )
+        assert str(exception3) == (
+            "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+        )
+
+    def test_iter(self):
+        exception = APIException(
+            "BAD_SOMETHING", "invalid something", "some_field"
+        )
+        for subexception in exception:
+            assert (
+                subexception
+                == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+            )
+        exception2 = APIException(
+            [
+                ["BAD_SOMETHING", "invalid something", "some_field"],
+                ["BAD_SOMETHING", "invalid something", "some_field"],
+            ]
+        )
+        assert list(exception2) == [
+            "BAD_SOMETHING: 'invalid something' on field 'some_field'",
+            "BAD_SOMETHING: 'invalid something' on field 'some_field'",
+        ]
+        exception3 = APIException(
+            [["BAD_SOMETHING", "invalid something", "some_field"]]
+        )
+        assert list(exception3) == [
+            "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+        ]
 
 
 class TestClientException:
