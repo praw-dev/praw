@@ -35,12 +35,7 @@ class Objector:
         if len(errors) < 1:
             # See `Collection._fetch()`.
             raise ClientException("successful error response", data)
-        assert not len(errors) > 1, (  # Yet to be observed.
-            "multiple error descriptions in response",
-            data,
-        )
-
-        return APIException(*errors[0])
+        return APIException(errors)
 
     @classmethod
     def check_error(cls, data: Union[List[Any], Dict[str, Dict[str, str]]]):
@@ -165,8 +160,8 @@ class Objector:
             return parser.parse(data["json"]["data"], self._reddit)
         if "json" in data and "errors" in data["json"]:
             errors = data["json"]["errors"]
-            if len(errors) == 1:
-                raise APIException(*errors[0])
+            if len(errors) >= 1:
+                raise APIException(errors)
             assert not errors, (
                 "Errors did not get raised as an APIException",
                 errors,

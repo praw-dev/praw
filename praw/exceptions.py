@@ -7,7 +7,7 @@ wrong on the client side. Both of these classes extend :class:`.PRAWException`.
 All other exceptions are subclassed from :class:`.ClientException`.
 
 """
-from typing import Optional
+from typing import Iterator, List, Optional, Union
 
 
 class PRAWException(Exception):
@@ -17,21 +17,57 @@ class PRAWException(Exception):
 class APIException(PRAWException):
     """Indicate exception that involve responses from Reddit's API."""
 
-    def __init__(self, error_type: str, message: str, field: Optional[str]):
+    @staticmethod
+    def _exception_str(
+        error_type: str,
+        message: str,
+        field: Optional[str],
+        newline: bool = False,
+    ):
+        error_str = "{}: '{}'".format(error_type, message)
+        error_str += " on field '{}'".format(field) if field else ""
+        error_str += "\n" if newline else ""
+        return error_str
+
+    def __init__(
+        self,
+        error_type: Union[str, List[List[str]]],
+        message: Optional[str] = None,
+        field: Optional[str] = None,
+    ):
         """Initialize an instance of APIException.
 
         :param error_type: The error type set on Reddit's end.
         :param message: The associated message for the error.
         :param field: The input field associated with the error if available.
         """
-        error_str = "{}: '{}'".format(error_type, message)
-        if field:
-            error_str += " on field '{}'".format(field)
-
+        error_str = ""
+        if isinstance(error_type, list):
+            errors = error_type
+            if len(errors) == 1:
+                error_type, message, field = errors[0]
+                error_str += self._exception_str(error_type, message, field)
+            else:
+                error_type, message, field = [], [], []
+                for error in errors:
+                    cur_error, cur_message, cur_field = error
+                    error_type.append(cur_error)
+                    message.append(cur_message)
+                    field.append(cur_field)
+                    error_str += self._exception_str(
+                        cur_error, cur_message, cur_field, newline=True
+                    )
+        else:
+            error_str += self._exception_str(error_type, message, field)
+        error_str = error_str.rstrip()
         super().__init__(error_str)
         self.error_type = error_type
         self.message = message
         self.field = field
+
+    def __iter__(self) -> Iterator[str]:
+        """Iterate over the sub-exceptions."""
+        return iter(self.args[0].split("\n"))
 
 
 class ClientException(PRAWException):
