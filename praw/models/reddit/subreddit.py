@@ -11,7 +11,12 @@ import websocket
 from prawcore import Redirect
 
 from ...const import API_PATH, JPEG_HEADER
-from ...exceptions import APIException, ClientException, WebSocketException
+from ...exceptions import (
+    APIException,
+    ClientException,
+    InvalidFlairTemplateID,
+    WebSocketException,
+)
 from ...util.cache import cachedproperty
 from ..listing.generator import ListingGenerator
 from ..listing.mixins import SubredditListingMixin
@@ -1378,6 +1383,10 @@ class SubredditFlairTemplates:
         """
         self.subreddit = subreddit
 
+    def __iter__(self):
+        """Abstract method to return flair templates."""
+        raise NotImplementedError()
+
     def _add(
         self,
         text,
@@ -1429,19 +1438,20 @@ class SubredditFlairTemplates:
     def update(
         self,
         template_id,
-        text,
-        css_class="",
-        text_editable=False,
+        text=None,
+        css_class=None,
+        text_editable=None,
         background_color=None,
         text_color=None,
         mod_only=None,
         allowable_content=None,
         max_emojis=None,
+        fetch=True,
     ):
         """Update the flair template provided by ``template_id``.
 
         :param template_id: The flair template to update. If not valid then
-            a new flair template will be made.
+            an exception will be thrown.
         :param text: The flair template's new text (required).
         :param css_class: The flair template's new css_class (default: '').
         :param text_editable: (boolean) Indicate if the flair text can be
@@ -1458,6 +1468,12 @@ class SubredditFlairTemplates:
             valid emoji string, for example ``':snoo:'``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
+        :param fetch: Whether or not PRAW will fetch existing information on
+            the existing flair before updating (Default: True).
+
+        .. warning:: If parameter ``fetch`` is set to ``False``, all parameters
+             not provided will be reset to default (``None`` or ``False``)
+             values.
 
         For example to make a user flair template text_editable, try:
 
@@ -1468,11 +1484,6 @@ class SubredditFlairTemplates:
                template_info['id'],
                template_info['flair_text'],
                text_editable=True)
-
-        .. note::
-
-           Any parameters not provided will be set to default values (usually
-           ``None`` or ``False``) on Reddit's end.
 
         """
         url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
@@ -1487,6 +1498,19 @@ class SubredditFlairTemplates:
             "text_color": text_color,
             "text_editable": text_editable,
         }
+        if fetch:
+            _existing_data = [
+                template
+                for template in iter(self)
+                if template["id"] == template_id
+            ]
+            if len(_existing_data) != 1:
+                raise InvalidFlairTemplateID(template_id)
+            else:
+                existing_data = _existing_data[0]
+                for key, value in existing_data.items():
+                    if data.get(key) is None:
+                        data[key] = value
         self.subreddit._reddit.post(url, data=data)
 
 
@@ -1585,7 +1609,6 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
 
            for template in reddit.subreddit('NAME').flair.link_templates:
                print(template)
-
 
         """
         url = API_PATH["link_flair"].format(subreddit=self.subreddit)

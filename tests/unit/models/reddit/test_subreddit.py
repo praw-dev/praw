@@ -2,6 +2,7 @@ import pickle
 
 import pytest
 from praw.models import Subreddit, WikiPage
+from praw.models.reddit.subreddit import SubredditFlairTemplates
 
 from ... import UnitTest
 
@@ -115,6 +116,14 @@ class TestSubredditFlair(UnitTest):
             subreddit.flair.set(
                 "a_redditor", css_class="myCSS", flair_template_id="gibberish"
             )
+
+
+class TestSubredditFlairTemplates(UnitTest):
+    def test_not_implemented(self):
+        with pytest.raises(NotImplementedError):
+            SubredditFlairTemplates(
+                Subreddit(self.reddit, pytest.placeholders.test_subreddit)
+            ).__iter__()
 
 
 class TestSubredditWiki(UnitTest):
