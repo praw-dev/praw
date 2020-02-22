@@ -159,6 +159,38 @@ class TestSubreddit(IntegrationTest):
             )
             subreddit.message("Test from PRAW", message="Test content")
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_post_requirements(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_post_requirements"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            data = subreddit.post_requirements()
+            tags = [
+                "domain_blacklist",
+                "body_restriction_policy",
+                "domain_whitelist",
+                "title_regexes",
+                "body_blacklisted_strings",
+                "body_required_strings",
+                "title_text_min_length",
+                "is_flair_required",
+                "title_text_max_length",
+                "body_regexes",
+                "link_repost_age",
+                "body_text_min_length",
+                "link_restriction_policy",
+                "body_text_max_length",
+                "title_required_strings",
+                "title_blacklisted_strings",
+                "guidelines_text",
+                "guidelines_display_policy",
+            ]
+            assert list(data) == tags
+
     def test_random(self):
         with self.recorder.use_cassette("TestSubreddit.test_random"):
             subreddit = self.reddit.subreddit(

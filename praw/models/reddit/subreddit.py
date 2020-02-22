@@ -619,6 +619,43 @@ class Subreddit(
 
         return upload_url + "/" + upload_data["key"]
 
+    def post_requirements(self):
+        """Get the post requirements for a subreddit.
+
+        :returns: A dict with the various requirements.
+
+        The returned dict contains the following keys:
+
+        * ``domain_blacklist``
+        * ``body_restriction_policy``
+        * ``domain_whitelist``
+        * ``title_regexes``
+        * ``body_blacklisted_strings``
+        * ``body_required_strings``
+        * ``title_text_min_length``
+        * ``is_flair_required``
+        * ``title_text_max_length``
+        * ``body_regexes``
+        * ``link_repost_age``
+        * ``body_text_min_length``
+        * ``link_restriction_policy``
+        * ``body_text_max_length``
+        * ``title_required_strings``
+        * ``title_blacklisted_strings``
+        * ``guidelines_text``
+        * ``guidelines_display_policy``
+
+        For example, to fetch the post requirements for ``r/test``:
+
+        .. code-block:: python
+
+            print(reddit.subreddit("test").post_requirements)
+
+        """
+        return self._reddit.get(
+            API_PATH["post_requirements"].format(subreddit=str(self))
+        )
+
     def random(self):
         """Return a random Submission.
 
