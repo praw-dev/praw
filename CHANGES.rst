@@ -51,6 +51,11 @@ Unreleased
 
 .. warning:: In May-June 2020, Reddit will force all submissions to run through
   a subreddit's validation rules.
+* Introduced a new class, :class:`.RedditErrorItem`, to represent an individual
+  error item returned from Reddit.
+* Class :class:`.APIException` now serves as a container for the
+  :class:`.RedditErrorItem` s. You can obtain the individual items by either
+  iterating over the :class:`.APIException` or using index numbers.
 
 **Removed**
 
