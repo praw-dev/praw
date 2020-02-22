@@ -101,7 +101,7 @@ class TestLiveContributorRelationship(IntegrationTest):
             thread.contributor.invite("nmtake")
             with pytest.raises(APIException) as excinfo:
                 thread.contributor.invite("nmtake")
-        assert excinfo.value.error_type == "LIVEUPDATE_ALREADY_CONTRIBUTOR"
+        assert excinfo.value[0].error_type == "LIVEUPDATE_ALREADY_CONTRIBUTOR"
 
     def test_invite__empty_list(self):
         self.reddit.read_only = False

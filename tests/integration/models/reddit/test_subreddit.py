@@ -126,7 +126,7 @@ class TestSubreddit(IntegrationTest):
                     subreddit_type="public",
                     wikimode="disabled",
                 )
-            assert excinfo.value.error_type == "SUBREDDIT_EXISTS"
+            assert excinfo.value[0].error_type == "SUBREDDIT_EXISTS"
 
     def test_create__invalid_parameter(self):
         self.reddit.read_only = False
@@ -142,7 +142,7 @@ class TestSubreddit(IntegrationTest):
                     subreddit_type="public",
                     wikimode="disabled",
                 )
-            assert excinfo.value.error_type == "INVALID_OPTION"
+            assert excinfo.value[0].error_type == "INVALID_OPTION"
 
     def test_create__missing_parameter(self):
         self.reddit.read_only = False
@@ -158,7 +158,7 @@ class TestSubreddit(IntegrationTest):
                     subreddit_type="public",
                     wikimode="disabled",
                 )
-            assert excinfo.value.error_type == "NO_TEXT"
+            assert excinfo.value[0].error_type == "NO_TEXT"
 
     @mock.patch("time.sleep", return_value=None)
     def test_message(self, _):
@@ -1361,7 +1361,7 @@ class TestSubredditModeration(IntegrationTest):
         ):
             with pytest.raises(APIException) as excinfo:
                 self.subreddit.mod.accept_invite()
-            assert excinfo.value.error_type == "NO_INVITE_FOUND"
+            assert excinfo.value[0].error_type == "NO_INVITE_FOUND"
 
     def test_edited(self):
         self.reddit.read_only = False
@@ -1791,7 +1791,7 @@ class TestSubredditRelationships(IntegrationTest):
                 self.subreddit.moderator.invite(
                     self.REDDITOR, permissions=["a"]
                 )
-            assert excinfo.value.error_type == "INVALID_PERMISSIONS"
+            assert excinfo.value[0].error_type == "INVALID_PERMISSIONS"
 
     @mock.patch("time.sleep", return_value=None)
     def test_moderator_invite__no_perms(self, _):
@@ -2131,7 +2131,7 @@ class TestSubredditStylesheet(IntegrationTest):
                 self.subreddit.stylesheet.upload(
                     "praw", self.image_path("invalid.jpg")
                 )
-        assert excinfo.value.error_type == "IMAGE_ERROR"
+        assert excinfo.value[0].error_type == "IMAGE_ERROR"
 
     def test_upload__invalid_ext(self):
         self.reddit.read_only = False
@@ -2142,7 +2142,7 @@ class TestSubredditStylesheet(IntegrationTest):
                 self.subreddit.stylesheet.upload(
                     "praw.png", self.image_path("white-square.png")
                 )
-        assert excinfo.value.error_type == "BAD_CSS_NAME"
+        assert excinfo.value[0].error_type == "BAD_CSS_NAME"
 
     def test_upload__too_large(self):
         self.reddit.read_only = False
@@ -2287,7 +2287,7 @@ class TestSubredditStylesheet(IntegrationTest):
                     getattr(self.subreddit.stylesheet, method)(
                         self.image_path("invalid.jpg")
                     )
-                assert excinfo.value.error_type == "IMAGE_ERROR"
+                assert excinfo.value[0].error_type == "IMAGE_ERROR"
 
     def test_upload__others_too_large(self):
         self.reddit.read_only = False

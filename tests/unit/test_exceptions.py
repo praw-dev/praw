@@ -8,6 +8,7 @@ from praw.exceptions import (
     InvalidURL,
     MissingRequiredAttributeException,
     PRAWException,
+    RedditErrorItem,
     WebSocketException,
 )
 
@@ -21,17 +22,69 @@ class TestPRAWException:
         assert str(PRAWException("foo")) == "foo"
 
 
-class TestAPIException:
-    def test_inheritance(self):
-        assert isinstance(APIException(None, None, None), PRAWException)
+class TestRedditErrorItem:
+    def test_equality(self):
+        resp = ["BAD_SOMETHING", "invalid something", "some_field"]
+        error = RedditErrorItem(*resp)
+        error2 = RedditErrorItem(*resp)
+        assert error == error2
+        assert error == resp
+        assert error != 0
+
+    def test_property(self):
+        error = RedditErrorItem(
+            *["BAD_SOMETHING", "invalid something", "some_field"]
+        )
+        assert (
+            error.error_message
+            == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+        )
 
     def test_str(self):
-        exception = APIException(
-            "BAD_SOMETHING", "invalid something", "some_field"
+        error = RedditErrorItem(
+            *["BAD_SOMETHING", "invalid something", "some_field"]
         )
-        assert str(exception) == (
-            "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+        assert (
+            str(error)
+            == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
         )
+
+    def test_repr(self):
+        error = RedditErrorItem(
+            *["BAD_SOMETHING", "invalid something", "some_field"]
+        )
+        assert (
+            repr(error)
+            == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+        )
+
+
+class TestAPIException:
+    def test_inheritance(self):
+        assert isinstance(APIException([[None, None, None]]), PRAWException)
+
+    def test_iter(self):
+        container = APIException(
+            [
+                ["BAD_SOMETHING", "invalid something", "some_field"],
+                RedditErrorItem(
+                    *["BAD_SOMETHING", "invalid something", "some_field"]
+                ),
+            ]
+        )
+        for exception in container:
+            assert isinstance(exception, RedditErrorItem)
+
+    def test_getitem(self):
+        container = APIException(
+            [
+                ["BAD_SOMETHING", "invalid something", "some_field"],
+                ["BAD_SOMETHING", "invalid something", "some_field"],
+            ]
+        )
+        assert isinstance(container[0], RedditErrorItem)
+        assert isinstance(container[-1], RedditErrorItem)
+        assert isinstance(container[0:2], list)
 
 
 class TestClientException:

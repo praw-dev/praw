@@ -15,5 +15,5 @@ class TestObjector(IntegrationTest):
             submission = self.reddit.submission("4b536h")
             with pytest.raises(APIException) as excinfo:
                 submission.mod.approve()
-            assert excinfo.value.error_type == "USER_REQUIRED"
-            assert str(excinfo.value) == message
+            assert excinfo.value[0].error_type == "USER_REQUIRED"
+            assert str(excinfo.value[0]) == message
