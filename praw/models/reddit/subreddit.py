@@ -2991,7 +2991,7 @@ class SubredditStylesheet:
                     "BAD_CSS_NAME",
                     "IMAGE_ERROR",
                 ], "Please file a bug with PRAW"
-                raise APIException(error_type, error_value, None)
+                raise APIException([[error_type, error_value, None]])
             return response
 
     def _upload_style_asset(self, image_path, image_type):

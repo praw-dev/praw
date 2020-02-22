@@ -7,31 +7,84 @@ wrong on the client side. Both of these classes extend :class:`.PRAWException`.
 All other exceptions are subclassed from :class:`.ClientException`.
 
 """
-from typing import Optional
+from typing import List, Optional, TypeVar, Union
+
+_RedditErrorItem = TypeVar("_RedditErrorItem")
 
 
 class PRAWException(Exception):
     """The base PRAW Exception that all other exception classes extend."""
 
 
-class APIException(PRAWException):
-    """Indicate exception that involve responses from Reddit's API."""
+class RedditErrorItem:
+    """Represents a single error returned from Reddit's API."""
 
-    def __init__(self, error_type: str, message: str, field: Optional[str]):
-        """Initialize an instance of APIException.
+    @property
+    def error_message(self):
+        """Get the completed error message string."""
+        error_str = "{}: '{}'".format(self.error_type, self.message)
+        if self.field:
+            error_str += " on field '{}'".format(self.field)
+        return error_str
+
+    def __init__(
+        self, error_type: str, message: str, field: Optional[str] = None
+    ):
+        """Instantize an error item.
 
         :param error_type: The error type set on Reddit's end.
         :param message: The associated message for the error.
         :param field: The input field associated with the error if available.
         """
-        error_str = "{}: '{}'".format(error_type, message)
-        if field:
-            error_str += " on field '{}'".format(field)
-
-        super().__init__(error_str)
         self.error_type = error_type
         self.message = message
         self.field = field
+
+    def __eq__(self, other: Union[_RedditErrorItem, List[str]]):
+        """Check for equality."""
+        if isinstance(other, RedditErrorItem):
+            return (self.error_type, self.message, self.field) == (
+                other.error_type,
+                other.message,
+                other.field,
+            )
+        elif isinstance(other, list):
+            return [self.error_type, self.message, self.field] == other
+        return False
+
+    def __repr__(self):
+        """Get the message returned from repr(self)."""
+        return self.error_message
+
+    def __str__(self):
+        """Get the message returned from str(self)."""
+        return self.error_message
+
+
+class APIException(PRAWException):
+    """Container for error messages from Reddit's API."""
+
+    def __init__(self, items: List[Union[RedditErrorItem, List[str]]]):
+        """Initialize an instance of APIException.
+
+        :param items: Either a list of instances of :class:`.RedditErrorItem`
+            or a list containing lists of unformed errors.
+        """
+        self.items = []
+        for item in items:
+            if isinstance(item, RedditErrorItem):
+                self.items.append(item)
+            else:
+                self.items.append(RedditErrorItem(*item))
+        super().__init__(*self.items)
+
+    def __iter__(self):
+        """Iterate over the list of items."""
+        return iter(self.items)
+
+    def __getitem__(self, item: Union[int, slice]):
+        """Get an item or slice of items from the list of items."""
+        return self.items[item]
 
 
 class ClientException(PRAWException):
