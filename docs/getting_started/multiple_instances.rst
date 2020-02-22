@@ -33,12 +33,15 @@ of reasons in its own code and each instance depends on an instance of
 ``requests.Session``, which is not thread-safe [`ref
 <https://github.com/kennethreitz/requests/issues/2766>`_].
 
-In theory having a unique :class:`.Reddit` instance for each thread should
-work. However, until someone perpetually volunteers to be PRAW's thread safety
-instructor, little to no support will go toward any PRAW issues that could be
-affected by the use of multiple threads. Consider using multiple processes
-instead.
+In theory, having a unique :class:`.Reddit` instance for each thread, and
+making sure that the instances are used in their respective threads only, will
+work. :class:`multiprocessing.Process` has been confirmed to work with PRAW, so
+that is a viable choice as well. However, there are various errors with
+:class:`multiprocessing.pool.Pool`, and is not supported by PRAW. Please use
+``multiprocessing.pool.ThreadPool`` as an alternative to a process
+pool.
 
 Please see `this discussion
 <https://www.reddit.com/r/redditdev/comments/5uwxke/praw4_is_praw4_thread_safe/>`_
-for more information.
+and `this GitHub issue <https://github.com/praw-dev/praw/issues/1336>`_ for
+more information.
