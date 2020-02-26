@@ -1569,29 +1569,47 @@ class SubredditFlairTemplates:
         """
         url = API_PATH["flairtemplate_v2"].format(subreddit=self.subreddit)
         data = {
-            "allowable_content": allowable_content,
-            "background_color": background_color,
-            "css_class": css_class,
-            "flair_template_id": template_id,
-            "max_emojis": max_emojis,
-            "mod_only": mod_only,
-            "text": text,
-            "text_color": text_color,
-            "text_editable": text_editable,
+            "allowable_content": flair.allowable_content
+            if flair
+            else allowable_content,
+            "background_color": flair.background_color
+            if flair
+            else background_color,
+            "css_class": flair.css_class if flair else css_class,
+            "flair_template_id": flair.id if flair else template_id,
+            "max_emojis": flair.max_emojis if flair else max_emojis,
+            "mod_only": flair.mod_only if flair else mod_only,
+            "text": flair.text if flair else text,
+            "text_color": flair.text_color if flair else text_color,
+            "text_editable": flair.text_editable if flair else text_editable,
         }
         if fetch:
-            _existing_data = [
-                template
-                for template in iter(self)
-                if template["id"] == template_id
-            ]
-            if len(_existing_data) != 1:
-                raise InvalidFlairTemplateID(template_id)
+            existing_data = None
+            for template in iter(self):
+                if flair:
+                    if template.id == flair.id:
+                        existing_data = template
+                        break
+                else:
+                    if template["id"] == template_id:
+                        existing_data = template
+                        break
+            if existing_data is None:
+                if flair:
+                    raise InvalidFlairTemplateID(flair.id)
+                else:
+                    raise InvalidFlairTemplateID(template_id)
             else:
-                existing_data = _existing_data[0]
-                for key, value in existing_data.items():
-                    if data.get(key) is None:
-                        data[key] = value
+                if flair:
+                    for key, value in vars(existing_data).items():
+                        if data.get(key) is None:
+                            data[key] = value
+                        else:
+                            setattr(existing_data, key, data.get(key))
+                else:
+                    for key, value in existing_data.items():
+                        if data.get(key) is None:
+                            data[key] = value
         self.subreddit._reddit.post(url, data=data)
 
 
@@ -1668,30 +1686,23 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
                css_class='praw', text_editable=True)
 
         """
-        if flair is not None:
-            data = self._add(
-                flair.text,
-                css_class=flair.css_class,
-                text_editable=flair.text_editable,
-                is_link=False,
-                background_color=flair.background_color,
-                text_color=flair.text_color,
-                mod_only=flair.mod_only,
-                allowable_content=flair.allowable_content,
-                max_emojis=flair.max_emojis,
-            )
-        else:
-            data = self._add(
-                text,
-                css_class=css_class,
-                text_editable=text_editable,
-                is_link=False,
-                background_color=background_color,
-                text_color=text_color,
-                mod_only=mod_only,
-                allowable_content=allowable_content,
-                max_emojis=max_emojis,
-            )
+        data = self._add(
+            flair.text if flair else text,
+            css_class=flair.css_class if flair else css_class,
+            text_editable=flair.text_editable if flair else text_editable,
+            is_link=False,
+            background_color=flair.background_color
+            if flair
+            else background_color,
+            text_color=flair.text_color if flair else text_color,
+            mod_only=flair.mod_only if flair else mod_only,
+            allowable_content=flair.allowable_content
+            if flair
+            else allowable_content,
+            max_emojis=flair.max_emojis if flair else max_emojis,
+        )
+        if flair:
+            flair.__dict__.update(data)
         if self.subreddit.use_flair_class:
             return RedditorFlair(
                 self.subreddit._reddit, self.subreddit, _data=data
@@ -1862,30 +1873,23 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
                css_class='praw', text_editable=True)
 
         """
-        if flair is not None:
-            data = self._add(
-                flair.text,
-                css_class=flair.css_class,
-                text_editable=flair.text_editable,
-                is_link=True,
-                background_color=flair.background_color,
-                text_color=flair.text_color,
-                mod_only=flair.mod_only,
-                allowable_content=flair.allowable_content,
-                max_emojis=flair.max_emojis,
-            )
-        else:
-            data = self._add(
-                text,
-                css_class=css_class,
-                text_editable=text_editable,
-                is_link=True,
-                background_color=background_color,
-                text_color=text_color,
-                mod_only=mod_only,
-                allowable_content=allowable_content,
-                max_emojis=max_emojis,
-            )
+        data = self._add(
+            flair.text if flair else text,
+            css_class=flair.css_class if flair else css_class,
+            text_editable=flair.text_editable if flair else text_editable,
+            is_link=True,
+            background_color=flair.background_color
+            if flair
+            else background_color,
+            text_color=flair.text_color if flair else text_color,
+            mod_only=flair.mod_only if flair else mod_only,
+            allowable_content=flair.allowable_content
+            if flair
+            else allowable_content,
+            max_emojis=flair.max_emojis if flair else max_emojis,
+        )
+        if flair:
+            flair.__dict__.update(data)
         if self.subreddit.use_flair_class:
             return AdvancedSubmissionFlair(
                 self.subreddit._reddit, self.subreddit, _data=data

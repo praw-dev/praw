@@ -1,6 +1,7 @@
 """Provide the Flair class."""
 from typing import Any, Dict, Optional, TypeVar, Union
 from .base import RedditBase
+from ...exceptions import InvalidFlairTemplateID
 
 _AdvancedSubmissionFlair = TypeVar("_AdvancedSubmissionFlair")
 _LinkFlair = TypeVar("_LinkFlair")
@@ -290,65 +291,24 @@ class AdvancedSubmissionFlair(RichFlairBase):
         super().__init__(reddit, subreddit, id, _data)
 
     def _make_in_subreddit(self):
-        self.subreddit.flair.link_templates.add(flair=self)
-        self._fetch(_called_from_inner_method=True)
+        return self.subreddit.flair.link_templates.add(flair=self)
 
     def _fetch(self, _called_from_inner_method=False):
         if not _called_from_inner_method:
             if self.create_before_usage and "id" not in self.__dict__:
-                self._make_in_subreddit()
-        if (
-            len(
-                [
-                    True
-                    for attr in (
-                        "allowable_content",
-                        "text",
-                        "text_color",
-                        "mod_only",
-                        "background_color",
-                        "id",
-                        "css_class",
-                        "max_emojis",
-                        "text_editable",
-                        "id",
-                    )
-                    if attr in self.__dict__
-                ]
-            )
-            == 10
-        ):
-            self._fetched = True
+                template = self._make_in_subreddit()
+                self.__dict__.update(template.__dict__)
+                self._fetched = True
+        if "id" in self.__dict__:
+            for template in self.subreddit.flair.link_templates:
+                if self.id == template.id:
+                    self.__dict__.update(template.__dict__)
+                    self._fetched = True
+                    break
+            if not self._fetched:
+                raise InvalidFlairTemplateID(self.id)
         else:
-            if "id" in self.__dict__:
-                for template in self.subreddit.flair.link_templates:
-                    if self.id == template.id:
-                        self.__dict__ = template.__dict__
-                        break
-            else:
-                for template in self.subreddit.flair.link_templates:
-                    if (
-                        self.allowable_content,
-                        self.text,
-                        self.text_color,
-                        self.mod_only,
-                        self.background_color,
-                        self.css_class,
-                        self.max_emojis,
-                        self.text_editable,
-                    ) == (
-                        template.allowable_content,
-                        template.text,
-                        template.text_color,
-                        template.mod_only,
-                        template.background_color,
-                        template.css_class,
-                        template.max_emojis,
-                        template.text_editable,
-                    ):
-                        self.__dict__ = template.__dict__
-                        break
-            super()._fetch()
+            self._fetched = True
 
 
 class RedditorFlair(RichFlairBase):
@@ -405,65 +365,24 @@ class RedditorFlair(RichFlairBase):
         super().__init__(reddit, subreddit, id, _data)
 
     def _make_in_subreddit(self):
-        self.subreddit.flair.templates.add(flair=self)
-        self._fetch(_called_from_inner_method=True)
+        return self.subreddit.flair.templates.add(flair=self)
 
     def _fetch(self, _called_from_inner_method=False):
         if not _called_from_inner_method:
             if self.create_before_usage and "id" not in self.__dict__:
-                self._make_in_subreddit()
-        if (
-            len(
-                [
-                    True
-                    for attr in (
-                        "allowable_content",
-                        "text",
-                        "text_color",
-                        "mod_only",
-                        "background_color",
-                        "id",
-                        "css_class",
-                        "max_emojis",
-                        "text_editable",
-                        "id",
-                    )
-                    if attr in self.__dict__
-                ]
-            )
-            == 10
-        ):
-            self._fetched = True
+                template = self._make_in_subreddit()
+                self.__dict__.update(template.__dict__)
+                self._fetched = True
+        if "id" in self.__dict__:
+            for template in self.subreddit.flair.templates:
+                if self.id == template.id:
+                    self.__dict__.update(template.__dict__)
+                    self._fetched = True
+                    break
+            if not self._fetched:
+                raise InvalidFlairTemplateID(self.id)
         else:
-            if "id" in self.__dict__:
-                for template in self.subreddit.flair.templates:
-                    if self.id == template.id:
-                        self.__dict__ = template.__dict__
-                        break
-            else:
-                for template in self.subreddit.flair.templates:
-                    if (
-                        self.allowable_content,
-                        self.text,
-                        self.text_color,
-                        self.mod_only,
-                        self.background_color,
-                        self.css_class,
-                        self.max_emojis,
-                        self.text_editable,
-                    ) == (
-                        template.allowable_content,
-                        template.text,
-                        template.text_color,
-                        template.mod_only,
-                        template.background_color,
-                        template.css_class,
-                        template.max_emojis,
-                        template.text_editable,
-                    ):
-                        self.__dict__ = template.__dict__
-                        break
-            super()._fetch()
+            self._fetched = True
 
 
 class LinkFlair(RedditBase):

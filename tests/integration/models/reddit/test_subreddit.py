@@ -1049,7 +1049,6 @@ class TestSubredditFlair(IntegrationTest):
             )
             data = subreddit.flair.link_templates.add(flair=newflair)
             assert isinstance(data, AdvancedSubmissionFlair)
-            newflair._fetch()
             assert data == newflair
             newflair.change_info(css_class="test{hash}".format(hash=ex_hash))
             print(subreddit.flair.link_templates.update(flair=newflair))
@@ -1061,14 +1060,6 @@ class TestSubredditFlair(IntegrationTest):
             print(newflair2.__dict__)
             assert newflair == newflair2
             subreddit.flair.link_templates.delete(flair=newflair)
-            newflair3 = AdvancedSubmissionFlair(
-                self.reddit, subreddit, _data={"id": newflair.id}
-            )
-            dict_length = len(newflair3.__dict__)
-            newflair3._fetch()
-            assert (
-                len(newflair3.__dict__) == dict_length and newflair3._fetched
-            )
 
     @mock.patch("time.sleep", return_value=None)
     def test_get_make_and_delete_and_update_user_flair(self, _):
@@ -1085,6 +1076,8 @@ class TestSubredditFlair(IntegrationTest):
             data = subreddit.flair.templates.add(flair=newflair)
             assert isinstance(data, RedditorFlair)
             newflair._fetch()
+            print(vars(data))
+            print(vars(newflair))
             assert data == newflair
             newflair.change_info(css_class="test{hash}".format(hash=ex_hash))
             subreddit.flair.templates.update(flair=newflair)
@@ -1094,14 +1087,6 @@ class TestSubredditFlair(IntegrationTest):
             newflair2._fetch()
             assert newflair == newflair2
             subreddit.flair.templates.delete(flair=newflair)
-            newflair3 = RedditorFlair(
-                self.reddit, subreddit, _data={"id": newflair.id}
-            )
-            dict_length = len(newflair3.__dict__)
-            newflair3._fetch()
-            assert (
-                len(newflair3.__dict__) == dict_length and newflair3._fetched
-            )
 
 
 class TestSubredditFlairTemplates(IntegrationTest):
@@ -1175,6 +1160,23 @@ class TestSubredditFlairTemplates(IntegrationTest):
                     background_color="#00FFFF",
                     fetch=True,
                 )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_invalid_flair(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditFlairTemplates.test_update_invalid_flair"
+        ):
+            sub = self.subreddit
+            flair = sub.flair.templates.make(
+                "PRAW updated",
+                css_class="myCSS",
+                text_color="dark",
+                background_color="#00FFFF",
+            )
+            flair.id = "fake id"
+            with pytest.raises(InvalidFlairTemplateID):
+                sub.flair.templates.update(flair=flair, fetch=True)
 
     @mock.patch("time.sleep", return_value=None)
     def test_update_fetch(self, _):
@@ -1321,12 +1323,6 @@ class TestSubredditLinkFlairTemplates(IntegrationTest):
         ):
             for flair in sub.flair.link_templates:
                 assert isinstance(flair, AdvancedSubmissionFlair)
-                flair_id = flair.id
-                flair2 = sub.flair.link_templates.get(flair_id)
-                flair2._fetch()
-                assert flair2._fetched
-                assert flair == flair2
-                assert flair.id == flair2.id
 
 
 class TestSubredditRedditorFlairTemplates(IntegrationTest):

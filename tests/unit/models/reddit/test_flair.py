@@ -214,29 +214,6 @@ class TestFlairAdvanced(UnitTest):
         )
         assert example_flair.subreddit.use_flair_class
 
-    def test_fetch(self):
-        data = {
-            "type": "text",
-            "text_editable": True,
-            "allowable_content": "all",
-            "text": "Testingint",
-            "max_emojis": 10,
-            "text_color": "dark",
-            "mod_only": False,
-            "css_class": "Testing",
-            "richtext": [],
-            "background_color": "#dadada",
-            "id": "bfe7bf6e-2a6e-11ea-9d64-0e73c60478f7",
-        }
-        example_subreddit = self.reddit.subreddit(
-            "dummy", use_flair_class=True
-        )
-        example_flair = AdvancedSubmissionFlair(
-            self.reddit, example_subreddit, _data=data
-        )
-        example_flair._fetch()
-        assert example_flair._fetched
-
     def test_error(self):
         data = {
             "type": "text",
@@ -288,6 +265,16 @@ class TestFlairAdvanced(UnitTest):
             self.reddit, example_subreddit, _data=data
         )
         assert example_flair_2.id == example_flair.id
+
+    def test_noid_fetch(self):
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        example_flair = AdvancedSubmissionFlair(
+            self.reddit, example_subreddit, _data={"fakeattr": True},
+        )
+        example_flair._fetch()
+        assert example_flair._fetched
 
 
 class TestRedditorFlair(UnitTest):
@@ -436,29 +423,6 @@ class TestRedditorFlair(UnitTest):
         )
         assert example_flair.subreddit.use_flair_class
 
-    def test_fetch(self):
-        data = {
-            "type": "text",
-            "text_editable": True,
-            "allowable_content": "all",
-            "text": "Testingint",
-            "max_emojis": 10,
-            "text_color": "dark",
-            "mod_only": False,
-            "css_class": "Testing",
-            "richtext": [],
-            "background_color": "#dadada",
-            "id": "bfe7bf6e-2a6e-11ea-9d64-0e73c60478f7",
-        }
-        example_subreddit = self.reddit.subreddit(
-            "dummy", use_flair_class=True
-        )
-        example_flair = RedditorFlair(
-            self.reddit, example_subreddit, _data=data
-        )
-        example_flair._fetch()
-        assert example_flair._fetched
-
     def test_error(self):
         example = {
             "allowable_content": "all",
@@ -512,3 +476,13 @@ class TestRedditorFlair(UnitTest):
             self.reddit, example_subreddit, _data=example
         )
         assert example_flair.id == example_flair_2.id
+
+    def test_noid_fetch(self):
+        example_subreddit = self.reddit.subreddit(
+            "dummy", use_flair_class=True
+        )
+        example_flair = RedditorFlair(
+            self.reddit, example_subreddit, _data={"fakeattr": True},
+        )
+        example_flair._fetch()
+        assert example_flair._fetched
