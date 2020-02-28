@@ -2,7 +2,7 @@
 
 from typing import Any, Dict, List, Optional, TypeVar, Union
 
-from .exceptions import APIException, ClientException
+from .exceptions import RedditAPIException, ClientException
 from .models.reddit.base import RedditBase
 from .util import snake_case_keys
 
@@ -15,11 +15,11 @@ class Objector:
     @classmethod
     def parse_error(
         cls, data: Union[List[Any], Dict[str, Dict[str, str]]]
-    ) -> Optional[APIException]:
+    ) -> Optional[RedditAPIException]:
         """Convert JSON response into an error object.
 
         :param data: The dict to be converted.
-        :returns: An instance of :class:`~.APIException`, or ``None`` if
+        :returns: An instance of :class:`~.RedditAPIException`, or ``None`` if
             ``data`` doesn't fit this model.
 
         """
@@ -40,7 +40,7 @@ class Objector:
             data,
         )
 
-        return APIException(errors)
+        return RedditAPIException(errors)
 
     @classmethod
     def check_error(cls, data: Union[List[Any], Dict[str, Dict[str, str]]]):
@@ -166,9 +166,9 @@ class Objector:
         if "json" in data and "errors" in data["json"]:
             errors = data["json"]["errors"]
             if len(errors) >= 1:
-                raise APIException(errors)
+                raise RedditAPIException(errors)
             assert not errors, (
-                "Errors did not get raised as an APIException",
+                "Errors did not get raised as an RedditAPIException",
                 errors,
             )
         elif isinstance(data, dict):

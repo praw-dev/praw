@@ -4,22 +4,28 @@ Migrating to PRAW 7.X
 Exception Handling
 ------------------
 
+Class ``APIException`` has also been renamed to :class:`.RedditAPIException`.
+Importing ``APIException`` will still work, but is deprecated, but will be
+removed from PRAW 8.0.
+
 PRAW 7 introduced a fundamental change in how exceptions are recieved from
-Reddit's API. Reddit can return multiple exceptions for one API action, and
-as such, the previous :class:`.APIException` serves as a container for each of
-the true exception objects. These objects are instances of
+Reddit's API.Reddit can return multiple exceptions for one API action, and
+as such, the exception :class:`.RedditAPIException` serves as a container for
+each of the true exception objects. These objects are instances of
 :class:`.RedditErrorItem`, and they contain the information of one "error" from
-Reddit's API. They have the three data attributes that :class:`.APIException`
-used to contain.
+Reddit's API. They have the three data attributes that
+:class:`.RedditAPIException` used to contain.
 
 Most code regarding exceptions can be quickly fixed to work under the new
-system. In the example code below, observe how attributes are accessed.
+system. All of the exceptions are stored in the ``items`` attribute of the
+exception as entries in a list. In the example code below, observe how
+attributes are accessed.
 
 .. code-block:: python
 
     try:
         reddit.subreddit("test").submit("Test Title", url="invalidurl")
-    except APIException as exception:
+    except RedditAPIException as exception:
         print(exception.error_type)
 
 This can generally be changed to
@@ -28,8 +34,8 @@ This can generally be changed to
 
     try:
         reddit.subreddit("test").submit("Test Title", url="invalidurl")
-    except APIException as exception:
-        print(exception[0].error_type)
+    except RedditAPIException as exception:
+        print(exception.items[0].error_type)
 
 However, this should not be done, as this will only work for one error. The
 probability of Reddit's API returning multiple exceptions, especially on
@@ -40,8 +46,8 @@ and do the action on each item in the iterator.
 
     try:
         reddit.subreddit("test").submit("Test Title", url="invalidurl")
-    except APIException as exception:
-        for subexception in exception:
+    except RedditAPIException as exception:
+        for subexception in exception.items:
             print(subexception.error_type)
 
 Alternatively, the exceptions are provided to the exception constructor, so
@@ -52,5 +58,5 @@ exceptions.
 
     try:
         reddit.subreddit("test").submit("Test Title", url="invalidurl")
-    except APIException as exception:
+    except RedditAPIException as exception:
         print(exception)

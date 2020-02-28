@@ -1,7 +1,6 @@
 """Test praw.objector."""
+from praw.exceptions import RedditAPIException
 import pytest
-
-from praw.exceptions import APIException
 
 from . import IntegrationTest
 
@@ -13,7 +12,7 @@ class TestObjector(IntegrationTest):
             "TestObjector.test_raise_api_exception"
         ):
             submission = self.reddit.submission("4b536h")
-            with pytest.raises(APIException) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 submission.mod.approve()
-            assert excinfo.value[0].error_type == "USER_REQUIRED"
-            assert str(excinfo.value[0]) == message
+            assert excinfo.value.items[0].error_type == "USER_REQUIRED"
+            assert str(excinfo.value.items[0]) == message

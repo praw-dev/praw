@@ -1,8 +1,9 @@
 """PRAW exception classes.
 
-Includes two main exceptions: :class:`.APIException` for when something goes
-wrong on the server side, and :class:`.ClientException` when something goes
-wrong on the client side. Both of these classes extend :class:`.PRAWException`.
+Includes two main exceptions: :class:`.RedditAPIException` for when something
+goes wrong on the server side, and :class:`.ClientException` when something
+goes wrong on the client side. Both of these classes extend
+:class:`.PRAWException`.
 
 All other exceptions are subclassed from :class:`.ClientException`.
 
@@ -30,11 +31,11 @@ class RedditErrorItem:
     def __init__(
         self, error_type: str, message: str, field: Optional[str] = None
     ):
-        """Instantize an error item.
+        """Instantiate an error item.
 
         :param error_type: The error type set on Reddit's end.
         :param message: The associated message for the error.
-        :param field: The input field associated with the error if available.
+        :param field: The input field associated with the error, if available.
         """
         self.error_type = error_type
         self.message = message
@@ -48,43 +49,47 @@ class RedditErrorItem:
                 other.message,
                 other.field,
             )
-        elif isinstance(other, list):
-            return [self.error_type, self.message, self.field] == other
-        return False
+        return NotImplemented
 
     def __repr__(self):
-        """Get the message returned from repr(self)."""
-        return self.error_message
+        """Return repr(self)."""
+        return "{}(error_type={!r}, message={!r}, field={!r})".format(
+            self.__class__.__name__, self.error_type, self.message, self.field
+        )
 
     def __str__(self):
         """Get the message returned from str(self)."""
         return self.error_message
 
 
-class APIException(PRAWException):
+class RedditAPIException(PRAWException):
     """Container for error messages from Reddit's API."""
 
+    @staticmethod
+    def parse_exception_list(exclist: List[Union[RedditErrorItem, List[str]]]):
+        """Covert an exception list into a :class:`.RedditErrorItem` list."""
+        return [
+            exception
+            if isinstance(exception, RedditErrorItem)
+            else RedditErrorItem(
+                exception[0],
+                exception[1],
+                exception[2] if bool(exception[2]) else "",
+            )
+            for exception in exclist
+        ]
+
     def __init__(self, items: List[Union[RedditErrorItem, List[str]]]):
-        """Initialize an instance of APIException.
+        """Initialize an instance of RedditAPIException.
 
         :param items: Either a list of instances of :class:`.RedditErrorItem`
             or a list containing lists of unformed errors.
         """
-        self.items = []
-        for item in items:
-            if isinstance(item, RedditErrorItem):
-                self.items.append(item)
-            else:
-                self.items.append(RedditErrorItem(*item))
+        self.items = self.parse_exception_list(items)
         super().__init__(*self.items)
 
-    def __iter__(self):
-        """Iterate over the list of items."""
-        return iter(self.items)
 
-    def __getitem__(self, item: Union[int, slice]):
-        """Get an item or slice of items from the list of items."""
-        return self.items[item]
+APIException = RedditAPIException
 
 
 class ClientException(PRAWException):

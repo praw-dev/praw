@@ -77,7 +77,7 @@ class LiveContributorRelationship:
     ):
         """Invite a redditor to be a contributor of the live thread.
 
-        Raise :class:`praw.exceptions.APIException` if the invitation
+        Raise :class:`praw.exceptions.RedditAPIException` if the invitation
         already exists.
 
         :param redditor: A redditor name (e.g., ``'spez'``) or

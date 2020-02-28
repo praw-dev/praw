@@ -1,6 +1,6 @@
 # coding: utf-8
 from praw.exceptions import (
-    APIException,
+    RedditAPIException,
     ClientException,
     DuplicateReplaceException,
     InvalidFlairTemplateID,
@@ -28,7 +28,6 @@ class TestRedditErrorItem:
         error = RedditErrorItem(*resp)
         error2 = RedditErrorItem(*resp)
         assert error == error2
-        assert error == resp
         assert error != 0
 
     def test_property(self):
@@ -55,16 +54,17 @@ class TestRedditErrorItem:
         )
         assert (
             repr(error)
-            == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+            == "RedditErrorItem(error_type='BAD_SOMETHING', message="
+            "'invalid something', field='some_field')"
         )
 
 
-class TestAPIException:
+class TestRedditAPIException:
     def test_inheritance(self):
-        assert isinstance(APIException([[None, None, None]]), PRAWException)
+        assert issubclass(RedditAPIException, PRAWException)
 
-    def test_iter(self):
-        container = APIException(
+    def test_items(self):
+        container = RedditAPIException(
             [
                 ["BAD_SOMETHING", "invalid something", "some_field"],
                 RedditErrorItem(
@@ -72,19 +72,8 @@ class TestAPIException:
                 ),
             ]
         )
-        for exception in container:
+        for exception in container.items:
             assert isinstance(exception, RedditErrorItem)
-
-    def test_getitem(self):
-        container = APIException(
-            [
-                ["BAD_SOMETHING", "invalid something", "some_field"],
-                ["BAD_SOMETHING", "invalid something", "some_field"],
-            ]
-        )
-        assert isinstance(container[0], RedditErrorItem)
-        assert isinstance(container[-1], RedditErrorItem)
-        assert isinstance(container[0:2], list)
 
 
 class TestClientException:

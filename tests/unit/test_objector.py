@@ -1,6 +1,6 @@
 import pytest
 
-from praw.exceptions import APIException, ClientException
+from praw.exceptions import RedditAPIException, ClientException
 
 from . import UnitTest
 
@@ -23,7 +23,7 @@ class TestObjector(UnitTest):
             }
         }
         error = objector.parse_error(error_response)
-        assert isinstance(error, APIException)
+        assert isinstance(error, RedditAPIException)
 
         error_response = {"json": {"errors": []}}
         with pytest.raises(ClientException):
@@ -51,5 +51,5 @@ class TestObjector(UnitTest):
                 ]
             }
         }
-        with pytest.raises(APIException):
+        with pytest.raises(RedditAPIException):
             objector.check_error(error_response)
