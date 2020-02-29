@@ -40,11 +40,11 @@ class Emoji(RedditBase):
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
             return other == str(self)
-        return (
-            isinstance(other, self.__class__)
-            and str(self) == str(other)
-            and other.subreddit == self.subreddit
-        )
+        if isinstance(other, self.__class__):
+            return (
+                str(self) == str(other) and other.subreddit == self.subreddit
+            )
+        return NotImplemented
 
     def __hash__(self) -> int:
         """Return the hash of the current instance."""

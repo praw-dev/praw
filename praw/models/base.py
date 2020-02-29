@@ -42,3 +42,17 @@ class PRAWBase:
         if _data:
             for attribute, value in _data.items():
                 setattr(self, attribute, value)
+
+    def __eq__(self, other):
+        """Check if a PRAWBase is equal to another PRAWBase."""
+        if isinstance(other, PRAWBase):
+            return {
+                k: v
+                for k, v in self.__dict__.items()
+                if (not k.startswith("_") and k != "reddit")
+            } == {
+                k: v
+                for k, v in other.__dict__.items()
+                if (not k.startswith("_") and k != "reddit")
+            }
+        return NotImplemented

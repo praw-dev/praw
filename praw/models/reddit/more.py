@@ -22,11 +22,11 @@ class MoreComments(PRAWBase):
 
     def __eq__(self, other: Union[str, _MoreComments]) -> bool:
         """Return True if these MoreComments instances are the same."""
-        return (
-            isinstance(other, self.__class__)
-            and self.count == other.count
-            and self.children == other.children
-        )
+        if isinstance(other, self.__class__):
+            return (
+                self.count == other.count and self.children == other.children
+            )
+        return NotImplemented
 
     def __lt__(self, other: _MoreComments) -> bool:
         """Provide a sort order on the MoreComments object."""
