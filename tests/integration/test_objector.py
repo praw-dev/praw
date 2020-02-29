@@ -1,6 +1,7 @@
 """Test praw.objector."""
-from praw.exceptions import APIException
 import pytest
+
+from praw.exceptions import APIException
 
 from . import IntegrationTest
 

@@ -1,7 +1,8 @@
 import pickle
 
 import pytest
-from praw.models import Subreddit, Emoji
+
+from praw.models import Emoji, Subreddit
 from praw.models.reddit.emoji import SubredditEmoji
 
 from ... import UnitTest

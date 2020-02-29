@@ -1,6 +1,7 @@
 import pickle
 
 import pytest
+
 from praw.models import Message, SubredditMessage
 
 from ... import UnitTest

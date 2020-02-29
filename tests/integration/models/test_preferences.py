@@ -1,6 +1,7 @@
 import mock
 
 from praw.models import Preferences
+
 from .. import IntegrationTest
 
 

@@ -1,4 +1,5 @@
 import pytest
+
 from praw.models import ModmailConversation
 
 from ... import UnitTest

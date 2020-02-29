@@ -1,7 +1,8 @@
 """Test praw.models.auth."""
-from prawcore import InvalidToken
-from praw import Reddit
 import pytest
+from prawcore import InvalidToken
+
+from praw import Reddit
 
 from .. import IntegrationTest
 

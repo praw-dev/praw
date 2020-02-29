@@ -1,8 +1,9 @@
 """Test praw.models.user."""
-from praw.models import Multireddit, Redditor, Subreddit
-from prawcore.exceptions import BadRequest
 import mock
 import pytest
+from prawcore.exceptions import BadRequest
+
+from praw.models import Multireddit, Redditor, Subreddit
 
 from .. import IntegrationTest
 

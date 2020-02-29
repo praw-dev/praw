@@ -2,8 +2,8 @@
 from heapq import heappop, heappush
 from typing import List, Optional, TypeVar, Union
 
-from .reddit.more import MoreComments
 from ..exceptions import DuplicateReplaceException
+from .reddit.more import MoreComments
 
 Comment = TypeVar("Comment")
 Submission = TypeVar("Submission")

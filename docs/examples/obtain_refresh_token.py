@@ -9,10 +9,11 @@ This tool can be used to conveniently create refresh tokens for later use with
 your web application OAuth2 credentials.
 
 """
-import praw
 import random
 import socket
 import sys
+
+import praw
 
 
 def receive_connection():

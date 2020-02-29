@@ -1,10 +1,11 @@
 import os
 import sys
 
+from praw import __version__
+
 sys.path.insert(0, ".")
 sys.path.insert(1, "..")
 
-from praw import __version__
 
 copyright = "2020, Bryce Boe"
 exclude_patterns = ["_build"]

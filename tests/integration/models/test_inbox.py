@@ -1,8 +1,9 @@
 """Test praw.models.inbox."""
-from praw.models import Comment, Message, Redditor, Subreddit
-from prawcore import Forbidden
 import mock
 import pytest
+from prawcore import Forbidden
+
+from praw.models import Comment, Message, Redditor, Subreddit
 
 from .. import IntegrationTest
 

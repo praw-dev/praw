@@ -3,10 +3,11 @@ import types
 
 import mock
 import pytest
-from praw import __version__, Reddit
+from prawcore import Requestor
+
+from praw import Reddit, __version__
 from praw.config import Config
 from praw.exceptions import ClientException
-from prawcore import Requestor
 
 from . import UnitTest
 

@@ -1,6 +1,7 @@
 """Test praw.models.subreddits."""
-from praw.models import Subreddit
 import mock
+
+from praw.models import Subreddit
 
 from .. import IntegrationTest
 

@@ -1,4 +1,5 @@
 import pytest
+
 from praw.models.reddit.mixins import ThingModerationMixin
 
 from .... import UnitTest

@@ -1,8 +1,9 @@
-from praw.exceptions import ClientException, PRAWException
-from praw.models import Comment, Submission
-from prawcore import BadRequest
 import mock
 import pytest
+from prawcore import BadRequest
+
+from praw.exceptions import ClientException, PRAWException
+from praw.models import Comment, Submission
 
 from ... import IntegrationTest
 

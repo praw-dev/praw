@@ -1,9 +1,10 @@
 """PRAW Integration test suite."""
 
-from betamax import Betamax
-from praw import Reddit
 import pytest
 import requests
+from betamax import Betamax
+
+from praw import Reddit
 
 
 class IntegrationTest:

@@ -1,6 +1,7 @@
 """Test praw.models.util."""
-from praw.models.trophy import Trophy
 import pytest
+
+from praw.models.trophy import Trophy
 
 from .. import UnitTest
 

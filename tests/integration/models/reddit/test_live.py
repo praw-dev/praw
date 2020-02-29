@@ -1,4 +1,7 @@
 """Test praw.models.LiveThread"""
+import mock
+import pytest
+
 from praw.const import API_PATH
 from praw.exceptions import APIException
 from praw.models import (
@@ -8,8 +11,6 @@ from praw.models import (
     RedditorList,
     Submission,
 )
-import mock
-import pytest
 
 from ... import IntegrationTest
 

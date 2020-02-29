@@ -1,6 +1,7 @@
 import pickle
 
 import pytest
+
 from praw.models import Subreddit, WikiPage
 from praw.models.reddit.subreddit import SubredditFlairTemplates
 
