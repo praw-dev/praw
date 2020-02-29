@@ -14,7 +14,7 @@ from praw.exceptions import (
 
 class TestPRAWException:
     def test_inheritance(self):
-        assert isinstance(PRAWException(), Exception)
+        assert issubclass(PRAWException, Exception)
 
     def test_str(self):
         assert str(PRAWException()) == ""
@@ -23,7 +23,7 @@ class TestPRAWException:
 
 class TestAPIException:
     def test_inheritance(self):
-        assert isinstance(APIException(None, None, None), PRAWException)
+        assert issubclass(APIException, PRAWException)
 
     def test_str(self):
         exception = APIException(
@@ -36,7 +36,7 @@ class TestAPIException:
 
 class TestClientException:
     def test_inheritance(self):
-        assert isinstance(ClientException(), PRAWException)
+        assert issubclass(ClientException, PRAWException)
 
     def test_str(self):
         assert str(ClientException()) == ""
@@ -45,7 +45,7 @@ class TestClientException:
 
 class TestDuplicateReplaceException:
     def test_inheritance(self):
-        assert isinstance(DuplicateReplaceException(), ClientException)
+        assert issubclass(DuplicateReplaceException, ClientException)
 
     def test_message(self):
         assert (
@@ -57,7 +57,7 @@ class TestDuplicateReplaceException:
 
 class TestInvalidFlairTemplateID:
     def test_inheritance(self):
-        assert isinstance(InvalidFlairTemplateID(None), ClientException)
+        assert issubclass(InvalidFlairTemplateID, ClientException)
 
     def test_str(self):
         assert (
@@ -69,7 +69,7 @@ class TestInvalidFlairTemplateID:
 
 class TestInvalidImplicitAuth:
     def test_inheritance(self):
-        assert isinstance(InvalidImplicitAuth(), ClientException)
+        assert issubclass(InvalidImplicitAuth, ClientException)
 
     def test_message(self):
         assert (
@@ -80,7 +80,7 @@ class TestInvalidImplicitAuth:
 
 class TestInvalidURL:
     def test_inheritance(self):
-        assert isinstance(InvalidURL(None), ClientException)
+        assert issubclass(InvalidURL, ClientException)
 
     def test_message(self):
         assert (
@@ -97,7 +97,7 @@ class TestInvalidURL:
 
 class TestMissingRequiredAttributeException:
     def test_inheritance(self):
-        assert isinstance(MissingRequiredAttributeException(), ClientException)
+        assert issubclass(MissingRequiredAttributeException, ClientException)
 
     def test_str(self):
         assert str(MissingRequiredAttributeException()) == ""
@@ -109,7 +109,7 @@ class TestMissingRequiredAttributeException:
 
 class TestWebSocketException:
     def test_inheritance(self):
-        assert isinstance(WebSocketException(None, None), ClientException)
+        assert issubclass(WebSocketException, ClientException)
 
     def test_str(self):
         assert str(WebSocketException("", None)) == ""
