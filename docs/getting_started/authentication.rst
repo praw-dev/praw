@@ -86,6 +86,7 @@ The output should contain the same name as you entered for ``username``.
 
              OAuthException: invalid_grant error processing request
 
+.. _2FA:
 
 Two-Factor Authentication
 ~~~~~~~~~~~~~~~~~~~~~~~~~
