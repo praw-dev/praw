@@ -26,3 +26,9 @@ class TestComment(UnitTest):
         assert repr(more) == (
             "<MoreComments count=4, children=['a', 'b', 'c', 'd']>"
         )
+
+    def test_equality(self):
+        more = MoreComments(
+            self.reddit, {"children": ["a", "b", "c", "d"], "count": 4}
+        )
+        assert more != 4

@@ -5,6 +5,7 @@ from typing import List, Optional, TypeVar, Union
 from ..exceptions import DuplicateReplaceException
 from .reddit.more import MoreComments
 
+_CommentForest = TypeVar("_CommentForest")
 Comment = TypeVar("Comment")
 Submission = TypeVar("Submission")
 
@@ -13,7 +14,6 @@ class CommentForest:
     """A forest of comments starts with multiple top-level comments.
 
     Each of these comments can be a tree of replies.
-
     """
 
     @staticmethod
@@ -71,6 +71,12 @@ class CommentForest:
     def __len__(self) -> int:
         """Return the number of top-level comments in the forest."""
         return len(self._comments)
+
+    def __eq__(self, other: _CommentForest):
+        """Compare two comment forest instances."""
+        if isinstance(other, CommentForest):
+            return self.list() == other.list()
+        return NotImplemented
 
     def _insert_comment(self, comment):
         if comment.name in self._submission._comments_by_id:

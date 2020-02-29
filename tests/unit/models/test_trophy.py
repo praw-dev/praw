@@ -23,3 +23,8 @@ class TestTrophy(UnitTest):
         name = "Inciteful Link"
         trophy = Trophy(self.reddit, {"name": name})
         assert str(trophy) == trophy.name == name
+
+    def test_equality(self):
+        name = "Inciteful Link"
+        trophy = Trophy(self.reddit, {"name": name})
+        assert trophy != 5

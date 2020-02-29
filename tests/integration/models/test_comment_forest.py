@@ -14,6 +14,20 @@ class TestCommentForest(IntegrationTest):
         # Responses do not decode well on travis so manually re-enable gzip.
         self.reddit._core._requestor._http.headers["Accept-Encoding"] = "gzip"
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_equality(self, _):
+        with self.recorder.use_cassette(
+            "TestCommentForest.test_equality",
+            match_requests_on=["uri", "method", "body"],
+        ):
+            submission = Submission(self.reddit, "3hahrw")
+            submission2 = Submission(self.reddit, "3hahrw")
+            assert submission.comments == submission2.comments
+            submission.comments.replace_more()
+            assert submission.comments != submission2.comments
+            submission2.comments.replace_more()
+            assert submission.comments == submission2.comments
+
     def test_replace__all(self):
         with self.recorder.use_cassette(
             "TestCommentForest.test_replace__all",
