@@ -26,7 +26,7 @@ class MoreComments(PRAWBase):
             return (
                 self.count == other.count and self.children == other.children
             )
-        return NotImplemented
+        return super().__eq__(other)
 
     def __lt__(self, other: _MoreComments) -> bool:
         """Provide a sort order on the MoreComments object."""

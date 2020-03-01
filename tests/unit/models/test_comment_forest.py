@@ -1,5 +1,6 @@
-from .. import UnitTest
 from praw.models.comment_forest import CommentForest
+
+from .. import UnitTest
 
 
 class TestCommentForest(UnitTest):

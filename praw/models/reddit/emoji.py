@@ -44,7 +44,7 @@ class Emoji(RedditBase):
             return (
                 str(self) == str(other) and other.subreddit == self.subreddit
             )
-        return NotImplemented
+        return super().__eq__(other)
 
     def __hash__(self) -> int:
         """Return the hash of the current instance."""

@@ -31,4 +31,8 @@ class TestComment(UnitTest):
         more = MoreComments(
             self.reddit, {"children": ["a", "b", "c", "d"], "count": 4}
         )
-        assert more != 4
+        more2 = MoreComments(
+            self.reddit, {"children": ["a", "b", "c", "d"], "count": 4}
+        )
+        assert more == more2
+        assert more != 5
