@@ -151,6 +151,7 @@ class Reddit:
         self._core = self._authorized_core = self._read_only_core = None
         self._objector = None
         self._unique_counter = 0
+        self.validate_on_submit = False
 
         try:
             config_section = site_name or os.getenv("praw_site") or "DEFAULT"

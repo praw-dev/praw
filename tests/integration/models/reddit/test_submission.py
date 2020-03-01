@@ -2,6 +2,7 @@ import mock
 import pytest
 from prawcore import BadRequest
 
+from praw.exceptions import APIException
 from praw.models import Comment, Submission
 
 from ... import IntegrationTest
@@ -54,6 +55,17 @@ class TestSubmission(IntegrationTest):
             submission = Submission(self.reddit, "4b1tfm")
             submission.edit("New text")
             assert submission.selftext == "New text"
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_edit_invalid(self, _):
+        self.reddit.read_only = False
+        self.reddit.validate_on_submit = True
+        with self.recorder.use_cassette("TestSubmission.test_edit_invalid"):
+            submission = Submission(self.reddit, "eippcc")
+            with pytest.raises(
+                (APIException, BadRequest)
+            ):  # waiting for prawcore fix
+                submission.edit("rewtwert")
 
     def test_enable_inbox_replies(self):
         self.reddit.read_only = False
