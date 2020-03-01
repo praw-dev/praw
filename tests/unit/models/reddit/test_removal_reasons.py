@@ -1,6 +1,6 @@
 import pickle
 
-from praw.models import Subreddit, RemovalReason
+from praw.models import RemovalReason, Subreddit
 from praw.models.reddit.removal_reasons import SubredditRemovalReasons
 
 from ... import UnitTest

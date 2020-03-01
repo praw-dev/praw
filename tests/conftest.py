@@ -1,18 +1,17 @@
 """Prepare py.test."""
-from base64 import b64encode
-from functools import wraps
 import json
 import os
 import socket
 import sys
-from sys import platform
 import time
+from base64 import b64encode
+from functools import wraps
+from sys import platform
 
 import betamax
-from betamax.cassette.cassette import dispatch_hooks, Cassette
 import pytest
+from betamax.cassette.cassette import Cassette, dispatch_hooks
 from betamax_serializers import pretty_json
-
 
 # pylint: disable=import-error,no-name-in-module
 if sys.version_info.major == 2:

@@ -1,6 +1,7 @@
 import pickle
 
 import pytest
+
 from praw.models import Redditor
 
 from ... import UnitTest

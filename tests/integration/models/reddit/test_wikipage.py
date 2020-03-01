@@ -1,7 +1,8 @@
-from praw.models import Redditor, WikiPage
-from prawcore import NotFound
 import mock
 import pytest
+from prawcore import NotFound
+
+from praw.models import Redditor, WikiPage
 
 from ... import IntegrationTest
 

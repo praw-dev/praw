@@ -1,8 +1,8 @@
 """Test praw.util.cache."""
 
-from .. import UnitTest
-
 from praw.util.cache import cachedproperty
+
+from .. import UnitTest
 
 
 class TestCachedProperty(UnitTest):

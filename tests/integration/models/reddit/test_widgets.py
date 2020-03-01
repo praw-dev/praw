@@ -1,7 +1,8 @@
+import sys
+from os.path import abspath, dirname, join
+
 import mock
 import pytest
-from os.path import abspath, dirname, join
-import sys
 
 from praw.models import (
     Button,
@@ -9,12 +10,12 @@ from praw.models import (
     Calendar,
     CommunityList,
     CustomWidget,
-    Menu,
-    MenuLink,
     IDCard,
     Image,
     ImageData,
     ImageWidget,
+    Menu,
+    MenuLink,
     ModeratorsWidget,
     PostFlairWidget,
     Redditor,
@@ -24,6 +25,7 @@ from praw.models import (
     TextArea,
     Widget,
 )
+
 from ... import IntegrationTest
 
 if sys.version_info.major > 2:

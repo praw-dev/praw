@@ -1,7 +1,8 @@
-from praw.exceptions import ClientException
-from praw.models import Emoji
 import mock
 import pytest
+
+from praw.exceptions import ClientException
+from praw.models import Emoji
 
 from ... import IntegrationTest
 

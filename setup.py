@@ -3,8 +3,8 @@
 import re
 from codecs import open
 from os import path
-from setuptools import find_packages, setup
 
+from setuptools import find_packages, setup
 
 PACKAGE_NAME = "praw"
 HERE = path.abspath(path.dirname(__file__))

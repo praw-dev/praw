@@ -1,8 +1,13 @@
 """Test praw.models.subreddit."""
-from os.path import abspath, dirname, join
-from json import dumps
 import socket
 import sys
+from json import dumps
+from os.path import abspath, dirname, join
+
+import mock
+import pytest
+import websocket
+from prawcore import Forbidden, NotFound, RequestException, TooLarge
 
 from praw.exceptions import (
     APIException,
@@ -17,16 +22,12 @@ from praw.models import (
     ModmailConversation,
     ModmailMessage,
     Redditor,
+    Stylesheet,
     Submission,
     Subreddit,
     SubredditMessage,
-    Stylesheet,
     WikiPage,
 )
-from prawcore import Forbidden, NotFound, RequestException, TooLarge
-import mock
-import pytest
-import websocket
 
 from ... import IntegrationTest
 

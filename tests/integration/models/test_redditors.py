@@ -2,6 +2,7 @@
 import mock
 
 from praw.models import Redditor, Subreddit
+
 from .. import IntegrationTest
 
 
