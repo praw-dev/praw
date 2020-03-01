@@ -2,6 +2,8 @@
 from typing import Any, Dict, List, Optional, TypeVar, Union
 from urllib.parse import urljoin
 
+from prawcore import Conflict
+
 from ...const import API_PATH
 from ...exceptions import InvalidURL
 from ...util.cache import cachedproperty
@@ -255,7 +257,9 @@ class SubmissionModeration(ThingModerationMixin):
             API_PATH["spoiler"], data={"id": self.thing.fullname}
         )
 
-    def sticky(self, state: bool = True, bottom: bool = True):
+    def sticky(
+        self, state: bool = True, bottom: bool = True,
+    ):
         """Set the submission's sticky state in its subreddit.
 
         :param state: (boolean) True sets the sticky for the submission, false
@@ -264,7 +268,11 @@ class SubmissionModeration(ThingModerationMixin):
             sticky. If no top sticky exists, this submission will become the
             top sticky regardless (default: True).
 
-        This submission will replace an existing stickied submission if one
+        .. note:: When a submission is stickied two or more times, the Reddit
+            API responds with a 409 error that is raises as a ``Conflict`` by
+            PRAWCore. The method suppresses these ``Conflict`` errors.
+
+        This submission will replace the second stickied submission if one
         exists.
 
         For example:
@@ -278,9 +286,12 @@ class SubmissionModeration(ThingModerationMixin):
         data = {"id": self.thing.fullname, "state": state}
         if not bottom:
             data["num"] = 1
-        return self.thing._reddit.post(
-            API_PATH["sticky_submission"], data=data
-        )
+        try:
+            return self.thing._reddit.post(
+                API_PATH["sticky_submission"], data=data
+            )
+        except Conflict:
+            pass
 
     def suggested_sort(self, sort: str = "blank"):
         """Set the suggested sort for the comments of the submission.

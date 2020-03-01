@@ -531,6 +531,15 @@ class TestSubmissionModeration(IntegrationTest):
         ):
             Submission(self.reddit, "4s2idz").mod.sticky(bottom=False)
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_sticky__ignore_conflicts(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubmissionModeration.test_sticky__ignore_conflicts"
+        ):
+            Submission(self.reddit, "f1iczt").mod.sticky(bottom=False)
+            Submission(self.reddit, "f1iczt").mod.sticky(bottom=False)
+
     def test_suggested_sort(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
