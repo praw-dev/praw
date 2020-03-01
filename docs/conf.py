@@ -3,10 +3,6 @@ import sys
 
 from praw import __version__
 
-sys.path.insert(0, ".")
-sys.path.insert(1, "..")
-
-
 copyright = "2020, Bryce Boe"
 exclude_patterns = ["_build"]
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx"]
