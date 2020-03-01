@@ -31,6 +31,8 @@ Unreleased
 * The parameter ``text`` for methods
   :meth:`.SubredditLinkFlairTemplates.update` and
   :meth:`.SubredditRedditorFlairTemplates.update` is no longer required.
+* There is a new method, :meth:`.Subreddit.post_requirements`, to fetch a
+  subreddit's post requirements.
 
 **Removed**
 

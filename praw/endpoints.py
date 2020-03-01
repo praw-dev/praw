@@ -129,6 +129,7 @@ API_PATH = {
     "my_moderator":            "subreddits/mine/moderator/",
     "my_multireddits":         "api/multi/mine/",
     "my_subreddits":           "subreddits/mine/subscriber/",
+    "post_requirements":       "api/v1/{subreddit}/post_requirements",
     "preferences":             "api/v1/me/prefs",
     "quarantine_opt_in":       "api/quarantine_optin",
     "quarantine_opt_out":      "api/quarantine_optout",
