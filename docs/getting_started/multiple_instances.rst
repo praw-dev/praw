@@ -37,7 +37,7 @@ In theory, having a unique :class:`.Reddit` instance for each thread, and
 making sure that the instances are used in their respective threads only, will
 work. :class:`multiprocessing.Process` has been confirmed to work with PRAW, so
 that is a viable choice as well. However, there are various errors with
-:class:`multiprocessing.pool.Pool`, and is not supported by PRAW. Please use
+:class:`multiprocessing.pool.Pool`, thus it is not supported by PRAW. Please use
 ``multiprocessing.pool.ThreadPool`` as an alternative to a process
 pool.
 
