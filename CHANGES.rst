@@ -51,16 +51,20 @@ Unreleased
 
 .. warning:: In May-June 2020, Reddit will force all submissions to run through
   a subreddit's validation rules.
-* Introduced a data class, :class:`.RedditErrorItem`, to represent an individual
-  error item returned from Reddit.
+* Introduced a data class, :class:`.RedditErrorItem`, to represent an
+  individual error item returned from Reddit.
 * Class :class:`.RedditAPIException` now serves as a container for the
-  :class:`.RedditErrorItem`\ s. You can obtain the individual items by either
-  iterating over the :class:`.RedditAPIException` or using index numbers.
-* ``APIException`` is an alias to :class:`.RedditAPIException`.
+  :class:`.RedditErrorItem`\ s. You can access the items by doing
+  ``RedditAPIException.items``, which returns a list.
+* :class:`.APIException` is an alias to :class:`.RedditAPIException`.
+
+**Deprecated**
+
+* :class:`.APIException` is deprecated and slotted for removal in PRAW 8.0.
 
 **Removed**
 
-* Converting :class:`.RedditAPIException` to string will no longer escape unicode
+* Converting :class:`.APIException` to string will no longer escape unicode
   characters.
 * Module ``praw.models.modaction`` no longer exists. Please use the module
   ``praw.models.mod_action``, or directly import ``ModAction``
@@ -138,7 +142,7 @@ Unreleased
 
 **Expected Changes**
 
-* The behavior of :class:`.RedditAPIException` will no longer unicode-escape strings
+* The behavior of func:`APIException` will no longer unicode-escape strings
   in the next minor release
 
 6.4.0 (2019/09/21)
@@ -596,7 +600,7 @@ parameter as described below:
 
 * Uploading an image resulting in too large of a request (>500 KB) now
   raises ``prawcore.TooLarge`` instead of an ``AssertionError``.
-* Uploading an invalid image raises :class:`.RedditAPIException`.
+* Uploading an invalid image raises func:`APIException`.
 * :class:`.Redditor` instances obtained via :attr:`.moderator` (e.g.,
   ``reddit.subreddit('subreddit').moderator()``) will contain attributes with
   the relationship metadata (e.g., ``mod_permissions``).

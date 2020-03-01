@@ -1,6 +1,7 @@
 """Test praw.objector."""
-from praw.exceptions import RedditAPIException
 import pytest
+
+from praw.exceptions import RedditAPIException
 
 from . import IntegrationTest
 

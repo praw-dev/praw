@@ -4,17 +4,17 @@ Migrating to PRAW 7.X
 Exception Handling
 ------------------
 
-Class ``APIException`` has also been renamed to :class:`.RedditAPIException`.
-Importing ``APIException`` will still work, but is deprecated, but will be
-removed from PRAW 8.0.
+Class :class:`.APIException` has also been renamed to
+:class:`.RedditAPIException`. Importing :class:`.APIException` will still work,
+but is deprecated, but will be removed in PRAW 8.0.
 
 PRAW 7 introduced a fundamental change in how exceptions are recieved from
-Reddit's API.Reddit can return multiple exceptions for one API action, and
+Reddit's API. Reddit can return multiple exceptions for one API action, and
 as such, the exception :class:`.RedditAPIException` serves as a container for
 each of the true exception objects. These objects are instances of
 :class:`.RedditErrorItem`, and they contain the information of one "error" from
-Reddit's API. They have the three data attributes that
-:class:`.RedditAPIException` used to contain.
+Reddit's API. They have the three data attributes that :class:`.APIException`
+used to contain.
 
 Most code regarding exceptions can be quickly fixed to work under the new
 system. All of the exceptions are stored in the ``items`` attribute of the

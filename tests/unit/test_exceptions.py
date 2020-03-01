@@ -1,6 +1,8 @@
 # coding: utf-8
+import pytest
+
 from praw.exceptions import (
-    RedditAPIException,
+    APIException,
     ClientException,
     DuplicateReplaceException,
     InvalidFlairTemplateID,
@@ -8,6 +10,7 @@ from praw.exceptions import (
     InvalidURL,
     MissingRequiredAttributeException,
     PRAWException,
+    RedditAPIException,
     RedditErrorItem,
     WebSocketException,
 )
@@ -74,6 +77,15 @@ class TestRedditAPIException:
         )
         for exception in container.items:
             assert isinstance(exception, RedditErrorItem)
+
+    @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
+    def test_apiexception_value(self):
+        exc = APIException("test", "testing", "test")
+        assert exc.error_type == "test"
+        exc2 = APIException(["test", "testing", "test"])
+        assert exc2.message == "testing"
+        exc3 = APIException([["test", "testing", "test"]])
+        assert exc3.field == "test"
 
 
 class TestClientException:

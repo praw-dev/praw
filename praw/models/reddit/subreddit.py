@@ -13,9 +13,9 @@ from prawcore import Redirect
 
 from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import (
-    RedditAPIException,
     ClientException,
     InvalidFlairTemplateID,
+    RedditAPIException,
     TooLargeMediaException,
     WebSocketException,
 )

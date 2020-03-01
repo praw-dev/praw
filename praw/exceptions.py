@@ -9,6 +9,7 @@ All other exceptions are subclassed from :class:`.ClientException`.
 
 """
 from typing import List, Optional, TypeVar, Union
+from warnings import warn
 
 _RedditErrorItem = TypeVar("_RedditErrorItem")
 
@@ -23,9 +24,9 @@ class RedditErrorItem:
     @property
     def error_message(self):
         """Get the completed error message string."""
-        error_str = "{}: '{}'".format(self.error_type, self.message)
+        error_str = "{}: {!r}".format(self.error_type, self.message)
         if self.field:
-            error_str += " on field '{}'".format(self.field)
+            error_str += " on field {!r}".format(self.field)
         return error_str
 
     def __init__(
@@ -49,7 +50,7 @@ class RedditErrorItem:
                 other.message,
                 other.field,
             )
-        return NotImplemented
+        return super().__eq__(other)
 
     def __repr__(self):
         """Return repr(self)."""
@@ -66,7 +67,9 @@ class RedditAPIException(PRAWException):
     """Container for error messages from Reddit's API."""
 
     @staticmethod
-    def parse_exception_list(exclist: List[Union[RedditErrorItem, List[str]]]):
+    def parse_exception_list(
+        exceptions: List[Union[RedditErrorItem, List[str]]]
+    ):
         """Covert an exception list into a :class:`.RedditErrorItem` list."""
         return [
             exception
@@ -76,7 +79,7 @@ class RedditAPIException(PRAWException):
                 exception[1],
                 exception[2] if bool(exception[2]) else "",
             )
-            for exception in exclist
+            for exception in exceptions
         ]
 
     def __init__(self, items: List[Union[RedditErrorItem, List[str]]]):
@@ -89,7 +92,45 @@ class RedditAPIException(PRAWException):
         super().__init__(*self.items)
 
 
-APIException = RedditAPIException
+class APIException(RedditAPIException):
+    """Old class preserved for alias purposes."""
+
+    @property
+    def error_type(self) -> str:
+        """Get error_type."""
+        return self._get_old_attr("error_type")
+
+    @property
+    def message(self) -> str:
+        """Get message."""
+        return self._get_old_attr("message")
+
+    @property
+    def field(self) -> str:
+        """Get field."""
+        return self._get_old_attr("field")
+
+    def _get_old_attr(self, attrname):
+        warn(
+            "Accessing attribute ``{}`` through APIException is deprecated. "
+            "This behavior will be removed in PRAW 8.0. Check out "
+            "https://praw.readthedocs.io/en/latest/package_info/"
+            "praw7_migration.html to learn how to migrate your code.".format(
+                attrname
+            ),
+            category=DeprecationWarning,
+            stacklevel=3,
+        )
+        return getattr(self.items[0], attrname)
+
+    def __init__(self, arg1, *optional_args):
+        """Initialize the exception."""
+        if isinstance(arg1, str):
+            super().__init__([[arg1, *optional_args]])
+        elif isinstance(arg1, list) and isinstance(arg1[0], str):
+            super().__init__([arg1])
+        else:
+            super().__init__(arg1)
 
 
 class ClientException(PRAWException):

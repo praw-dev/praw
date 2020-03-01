@@ -2,7 +2,7 @@
 
 from typing import Any, Dict, List, Optional, TypeVar, Union
 
-from .exceptions import RedditAPIException, ClientException
+from .exceptions import ClientException, RedditAPIException
 from .models.reddit.base import RedditBase
 from .util import snake_case_keys
 
@@ -35,11 +35,6 @@ class Objector:
         if len(errors) < 1:
             # See `Collection._fetch()`.
             raise ClientException("successful error response", data)
-        assert not len(errors) > 1, (  # Yet to be observed.
-            "multiple error descriptions in response",
-            data,
-        )
-
         return RedditAPIException(errors)
 
     @classmethod
@@ -165,12 +160,8 @@ class Objector:
             return parser.parse(data["json"]["data"], self._reddit)
         if "json" in data and "errors" in data["json"]:
             errors = data["json"]["errors"]
-            if len(errors) >= 1:
+            if len(errors) > 0:
                 raise RedditAPIException(errors)
-            assert not errors, (
-                "Errors did not get raised as an RedditAPIException",
-                errors,
-            )
         elif isinstance(data, dict):
             return self._objectify_dict(data)
 
