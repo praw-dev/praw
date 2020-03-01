@@ -26,6 +26,7 @@ applications and **web** applications.
    getting_started/configuration
    getting_started/multiple_instances
    getting_started/logging
+   getting_started/faq
 
 .. _code_overview:
 .. toctree::
