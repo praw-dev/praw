@@ -153,6 +153,14 @@ class TestComment(IntegrationTest):
         assert isinstance(parent, Submission)
         assert parent.fullname == comment.parent_id
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_stream(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestComment.test_stream"):
+            com = self.reddit.comment("fjbr7ul")
+            assert isinstance(
+                next(com.comment_stream(skip_existing=True)), Comment
+            )
 
     @mock.patch("time.sleep", return_value=None)
     def test_tree(self, _):

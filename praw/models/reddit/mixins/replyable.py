@@ -1,9 +1,41 @@
 """Provide the ReplyableMixin class."""
 from ....const import API_PATH
+from ...util import stream_generator
 
 
 class ReplyableMixin:
     """Interface for RedditBase classes that can be replied to."""
+
+    def comment_stream(self, **stream_options):
+        """Create a stream yielding new top-level comments/comment replies.
+
+        :param stream_options: Options to pass to :func:`.stream_generator`.
+        :returns: A stream for top-level comments.
+
+        Example usage:
+
+        .. code-block:: python
+
+            submission = reddit.submission(id='5or86n')
+            for comment in submission.comment_stream():
+                print(comment)
+
+
+            parent_comment = reddit.comment(id='dxolpyc')
+            for comment in parent_comment.comment_stream():
+                print(comment)
+        """
+        forest = self.comments if "comments" in dir(self) else self.replies
+        return stream_generator(
+            forest.tree,
+            exclude_before=True,
+            showmore=False,
+            sort="new",
+            context=0,
+            depth=0,
+            threaded=False,
+            **stream_options
+        )
 
     def reply(self, body):
         """Reply to the object.
@@ -26,11 +58,11 @@ class ReplyableMixin:
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
-           submission.reply('reply')
+            submission = reddit.submission(id='5or86n')
+            submission.reply('reply')
 
-           comment = reddit.comment(id='dxolpyc')
-           comment.reply('reply')
+            comment = reddit.comment(id='dxolpyc')
+            comment.reply('reply')
 
         """
         data = {"text": body, "thing_id": self.fullname}

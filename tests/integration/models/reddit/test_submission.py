@@ -138,6 +138,13 @@ class TestSubmission(IntegrationTest):
         with self.recorder.use_cassette("TestSubmission.test_save"):
             Submission(self.reddit, "4b536p").save()
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_stream(self, _):
+        sub = self.reddit.submission("fcn10m")
+        with self.recorder.use_cassette("TestSubmission.test_stream"):
+            assert isinstance(
+                next(sub.comment_stream(skip_existing=True)), Comment
+            )
 
     @mock.patch("time.sleep", return_value=None)
     def test_tree(self, _):
