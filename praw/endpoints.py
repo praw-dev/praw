@@ -29,6 +29,7 @@ API_PATH = {
     "collection_subreddit":    "api/v1/collections/subreddit_collections",
     "collection_title":        "api/v1/collections/update_collection_title",
     "comment":                 "api/comment/",
+    "comment_tree":            "r/{subreddit}/comments/{submissionid}",
     "comment_replies":         "message/comments/",
     "compose":                 "api/compose/",
     "contest_mode":            "api/set_contest_mode/",

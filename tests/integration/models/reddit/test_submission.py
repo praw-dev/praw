@@ -138,6 +138,15 @@ class TestSubmission(IntegrationTest):
         with self.recorder.use_cassette("TestSubmission.test_save"):
             Submission(self.reddit, "4b536p").save()
 
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_tree(self, _):
+        sub = self.reddit.submission("fcn10m")
+        with self.recorder.use_cassette("TestSubmission.test_tree"):
+            for comment in sub.comments.tree(showmore=False):
+                assert isinstance(comment, Comment)
+                assert comment.submission == sub
+
     def test_mark_visited(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubmission.test_mark_visited"):

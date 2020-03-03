@@ -130,7 +130,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         """
         if isinstance(self._replies, list):
-            self._replies = CommentForest(self.submission, self._replies)
+            self._replies = CommentForest(self.submission, self, self._replies)
         return self._replies
 
     @property

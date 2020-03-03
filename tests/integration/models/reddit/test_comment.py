@@ -153,6 +153,15 @@ class TestComment(IntegrationTest):
         assert isinstance(parent, Submission)
         assert parent.fullname == comment.parent_id
 
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_tree(self, _):
+        comment = Comment(self.reddit, "fjbr7ul")
+        with self.recorder.use_cassette("TestComment.test_tree"):
+            tree_data = comment.replies.tree()
+            for com in tree_data:
+                assert isinstance(com, Comment)
+
     def test_refresh(self):
         comment = Comment(self.reddit, "d81vwef")
         with self.recorder.use_cassette("TestComment.test_refresh"):

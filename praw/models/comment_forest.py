@@ -2,6 +2,7 @@
 from heapq import heappop, heappush
 from typing import List, Optional, TypeVar, Union
 
+from ..endpoints import API_PATH
 from ..exceptions import DuplicateReplaceException
 from .reddit.more import MoreComments
 
@@ -55,18 +56,24 @@ class CommentForest:
         return self._comments[index]
 
     def __init__(
-        self, submission: Submission, comments: Optional[List[Comment]] = None
+        self,
+        submission: Submission,
+        comment: Optional[Comment] = None,
+        comments: Optional[List[Comment]] = None,
     ):
         """Initialize a CommentForest instance.
 
-        :param submission: An instance of :class:`~.Subreddit` that is the
+        :param submission: An instance of :class:`~.Submission` that is the
             parent of the comments.
+        :param comment: Initialize the Forest with a root comment
+            (Defualt: None).
         :param comments: Initialize the Forest with a list of comments
             (default: None).
 
         """
         self._comments = comments
         self._submission = submission
+        self._comment = comment
 
     def __len__(self) -> int:
         """Return the number of top-level comments in the forest."""
@@ -193,3 +200,74 @@ class CommentForest:
             item._remove_from.remove(item)
 
         return more_comments + skipped
+
+    def tree(
+        self,
+        context=0,
+        depth=9,
+        limit=None,
+        showmore=True,
+        sort="best",
+        threaded=True,
+        expand_more_comments=False,
+    ):
+        """Get the entire tree of a comment or submission.
+
+        .. note:: This method is primarily implemented for getting a
+            standalone list of comments, without affecting the CommentForest.
+
+        .. note:: This method returns the immediate replies for an object.
+
+        :param context: If the tree is for a comment's tree, rather than a
+            submission's tree, then ``context`` amount of parent comments will
+            be fetched. This will return the comment's uppermost parent, up to
+            the ``context`` parent comment. (Defualt: 0)
+        :param depth: The depth of comments that will be fetched. (Defualt: 9)
+        :param limit: How many comments to start with (Default: None)
+        :param showmore: Return MoreComments not returned in the initial call.
+            (Default: True)
+        :param sort: The sorting method to use when retrieving comments
+            (Default: ``best``).
+        :param threaded: Return a comment with replies as one comment thread,
+            rather than multiple comments. (Default: True)
+        :param expand_more_comments: If any instances of :class:`.MoreComments`
+            are found, they will be fully expanded. This operation can be
+            time-consuming, depending on the amount of comments on the
+            original post. (Default: False)
+
+        For example, to retrieve a static list of comments from the first
+        submission on ``r/all``:
+
+        .. code-block:: python
+
+            subreddit = reddit.subreddit("all")
+            post = next(subreddit.hot())
+            comments = post.comments().tree()
+        """
+        data = {
+            "depth": depth,
+            "limit": limit,
+            "sort": sort,
+            "showedits": True,
+            "showmore": showmore,
+            "threaded": threaded,
+        }
+        if self._comment:
+            data.update({"comment": str(self._comment), "context": context})
+        response = self._submission._reddit.get(
+            API_PATH["comment_tree"].format(
+                subreddit=str(self._submission.subreddit),
+                submissionid=str(self._submission),
+            ),
+            params=data,
+        )
+        comments = list(response[1])
+        if expand_more_comments:
+            while True:
+                for comment in comments:
+                    if isinstance(comment, MoreComments):
+                        comments.remove(comment)
+                        comment.submission = self._submission
+                        comments.extend(comment.comments())
+                break
+        return comments

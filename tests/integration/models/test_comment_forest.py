@@ -143,3 +143,17 @@ class TestCommentForest(IntegrationTest):
             submission.comments[1].comments()
             with pytest.raises(DuplicateReplaceException):
                 submission.comments.replace_more(limit=1)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_comment_forest_tree_replace_more(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestCommentForest.test_tree_replace_more",
+            match_requests_on=["uri", "method", "body"],
+        ):
+            sub = self.reddit.submission("fcn10m")
+            assert isinstance(sub.comments.tree(limit=1)[-1], MoreComments)
+            for comment in sub.comments.tree(
+                limit=1, expand_more_comments=True
+            ):
+                assert isinstance(comment, Comment)
