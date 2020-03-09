@@ -370,5 +370,5 @@ class CommentModeration(ThingModerationMixin):
            comment.mod.show()
         """
         url = API_PATH["show_comment"]
-        
+
         self.thing._reddit.post(url, data={"id": self.thing.fullname})
