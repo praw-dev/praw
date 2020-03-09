@@ -149,6 +149,7 @@ API_PATH = {
     "sent":                    "message/sent/",
     "set_original_content":    "api/set_original_content",
     "setpermissions":          "r/{subreddit}/api/setpermissions/",
+    "show_comment":            "api/show_comment",
     "site_admin":              "api/site_admin/",
     "spoiler":                 "api/spoiler/",
     "sticky_submission":       "api/set_subreddit_sticky/",

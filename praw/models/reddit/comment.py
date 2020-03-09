@@ -357,3 +357,17 @@ class CommentModeration(ThingModerationMixin):
 
         """
         self.thing = comment
+
+    def show(self):
+        """Uncollapse a :class:`~.Comment` that has been collapsed by Crowd Control
+
+        Example usage:
+
+        .. code-block:: python
+
+           # lock a comment:
+           comment = reddit.comment('dkk4qjd')
+           comment.mod.show()
+        """
+        url = API_PATH["show_comment"]
+        return self.thing._reddit.post(url, data={'id': self.thing.fullname}) or None
