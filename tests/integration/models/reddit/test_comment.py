@@ -297,6 +297,11 @@ class TestCommentModeration(IntegrationTest):
                 reason_id="110nhral8vygf"
             )
 
+    def test_show(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestCommentModeration.test_show"):
+            self.reddit.comment("fjyyrv6").mod.show()
+
     def test_unlock(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestCommentModeration.test_unlock"):
