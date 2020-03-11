@@ -82,19 +82,6 @@ class RedditAPIException(PRAWException):
             for exception in exceptions
         ]
 
-    def __init__(self, items: List[Union[RedditErrorItem, List[str]]]):
-        """Initialize an instance of RedditAPIException.
-
-        :param items: Either a list of instances of :class:`.RedditErrorItem`
-            or a list containing lists of unformed errors.
-        """
-        self.items = self.parse_exception_list(items)
-        super().__init__(*self.items)
-
-
-class APIException(RedditAPIException):
-    """Old class preserved for alias purposes."""
-
     @property
     def error_type(self) -> str:
         """Get error_type."""
@@ -123,14 +110,28 @@ class APIException(RedditAPIException):
         )
         return getattr(self.items[0], attrname)
 
-    def __init__(self, arg1, *optional_args):
-        """Initialize the exception."""
-        if isinstance(arg1, str):
-            super().__init__([[arg1, *optional_args]])
-        elif isinstance(arg1, list) and isinstance(arg1[0], str):
-            super().__init__([arg1])
-        else:
-            super().__init__(arg1)
+    def __init__(
+        self,
+        items: Union[List[Union[RedditErrorItem, List[str], str]], str],
+        *optional_args: str
+    ):
+        """Initialize an instance of RedditAPIException.
+
+        :param items: Either a list of instances of :class:`.RedditErrorItem`
+            or a list containing lists of unformed errors.
+        :param optional_args: Takes the second and third arguments that
+            :class:`.APIException` used to take.
+        """
+        if isinstance(items, str):
+            items = [[items, *optional_args]]
+        elif isinstance(items, list) and isinstance(items[0], str):
+            items = [items]
+        self.items = self.parse_exception_list(items)
+        super().__init__(*self.items)
+
+
+class APIException(RedditAPIException):
+    """Old class preserved for alias purposes."""
 
 
 class ClientException(PRAWException):

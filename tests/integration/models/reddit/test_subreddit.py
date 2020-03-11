@@ -20,8 +20,8 @@ from praw.const import PNG_HEADER
 from praw.exceptions import (
     ClientException,
     InvalidFlairTemplateID,
-    TooLargeMediaException,
     RedditAPIException,
+    TooLargeMediaException,
     WebSocketException,
 )
 from praw.models import (
