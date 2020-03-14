@@ -374,6 +374,7 @@ class TestSubreddit(IntegrationTest):
             ):
                 response = requests.Response()
                 response._content = mock_data.encode("utf-8")
+                response.status_code = 400
                 return response
             return _post(url, *args, **kwargs)
 

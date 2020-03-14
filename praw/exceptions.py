@@ -92,19 +92,18 @@ class MissingRequiredAttributeException(ClientException):
 class TooLargeMediaException(ClientException):
     """Indicate exceptions from uploading media that's too large."""
 
-    def __init__(self, expected: int, actual: int):
+    def __init__(self, maximum_size: int, actual: int):
         """Initialize a TooLargeMediaException.
 
-        :param expected: The expected size of the uploaded media.
+        :param maximum_size: The maximum_size size of the uploaded media.
         :param actual: The actual size of the uploaded media.
         """
-        self.expected = expected
+        self.maximum_size = maximum_size
         self.actual = actual
-        self.difference = actual - expected
         super().__init__(
-            "The media that you uploaded was too large (expected {expected} "
-            "bytes, got {actual} bytes)".format(
-                expected=expected, actual=actual
+            "The media that you uploaded was too large (maximum size is "
+            "{maximum_size} bytes, uploaded {actual} bytes)".format(
+                maximum_size=maximum_size, actual=actual
             )
         )
 

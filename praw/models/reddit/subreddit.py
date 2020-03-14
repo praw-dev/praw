@@ -524,10 +524,10 @@ class Subreddit(
         tags = [element.tag for element in root]
         if tags[:4] == ["Code", "Message", "ProposedSize", "MaxSizeAllowed"]:
             # Returned if image is too big
-            code, message, actual, expected = [
+            code, message, actual, maximum_size = [
                 element.text for element in root[:4]
             ]
-            raise TooLargeMediaException(int(expected), int(actual))
+            raise TooLargeMediaException(int(maximum_size), int(actual))
 
     def _submit_media(self, data, timeout, without_websockets):
         """Submit and return an `image`, `video`, or `videogif`.
@@ -629,7 +629,8 @@ class Subreddit(
             response = self._reddit._core._requestor._http.post(
                 upload_url, data=upload_data, files={"file": media}
             )
-        self._parse_xml_response(response)
+        if not response.ok:
+            self._parse_xml_response(response)
         response.raise_for_status()
 
         return upload_url + "/" + upload_data["key"]

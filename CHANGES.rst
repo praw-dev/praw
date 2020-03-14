@@ -38,8 +38,8 @@ Unreleased
 * A new method :meth:`.CommentModeration.show` will uncollapse a
   comment that was collapsed because of Crowd Control
 * Methods :meth:`.Subreddit.submit_image` and :meth:`.Subreddit.submit_video`
-  will throw an error if the submitted media is rejected by Reddit due to the
-  size of the media.
+  will throw :class:`.TooLargeMediaException` if the submitted media is
+  rejected by Reddit due to the size of the media.
 
 **Removed**
 
