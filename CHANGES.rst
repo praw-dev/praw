@@ -40,6 +40,17 @@ Unreleased
 * Methods :meth:`.Subreddit.submit_image` and :meth:`.Subreddit.submit_video`
   will throw :class:`.TooLargeMediaException` if the submitted media is
   rejected by Reddit due to the size of the media.
+* Class :class:`.Reddit` has an attribute, ``validate_on_submit``, that can be
+  set after class initialization that causes methods :meth:`.Subreddit.submit`,
+  :meth:`.Subreddit.submit_image`, :meth:`.Subreddit.submit_video`, and
+  :meth:`.Submission.edit` to check that the submission matches a subreddit's
+  post validation rules. This attribute will be functionally useless once
+  Reddit implements their change. This attribute will be deprecated on the next
+  release after Reddit's change, and will be removed on the next major release
+  after Reddit's change.
+
+.. warning:: In May-June 2020, Reddit will force all submissions to run through
+  a subreddit's validation rules.
 
 **Removed**
 

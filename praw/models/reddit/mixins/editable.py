@@ -39,7 +39,11 @@ class EditableMixin:
            comment.edit(edited_body)
 
         """
-        data = {"text": body, "thing_id": self.fullname}
+        data = {
+            "text": body,
+            "thing_id": self.fullname,
+            "validate_on_submit": self._reddit.validate_on_submit,
+        }
         updated = self._reddit.post(API_PATH["edit"], data=data)[0]
         for attribute in [
             "_fetched",

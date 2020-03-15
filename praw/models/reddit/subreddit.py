@@ -838,6 +838,7 @@ class Subreddit(
             "title": title,
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
+            "validate_on_submit": self._reddit.validate_on_submit,
         }
         for key, value in (
             ("flair_id", flair_id),
@@ -889,7 +890,6 @@ class Subreddit(
         :param without_websockets: Set to ``True`` to disable use of WebSockets
             (see note below for an explanation). If ``True``, this method
             doesn't return anything. (default: ``False``).
-
         :returns: A :class:`.Submission` object for the newly created
             submission, unless ``without_websockets`` is ``True``.
 
@@ -927,6 +927,7 @@ class Subreddit(
             "title": title,
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
+            "validate_on_submit": self._reddit.validate_on_submit,
         }
         for key, value in (
             ("flair_id", flair_id),
@@ -988,7 +989,6 @@ class Subreddit(
         :param without_websockets: Set to ``True`` to disable use of WebSockets
             (see note below for an explanation). If ``True``, this method
             doesn't return anything. (default: ``False``).
-
         :returns: A :class:`.Submission` object for the newly created
             submission, unless ``without_websockets`` is ``True``.
 
@@ -1026,6 +1026,7 @@ class Subreddit(
             "title": title,
             "nsfw": bool(nsfw),
             "spoiler": bool(spoiler),
+            "validate_on_submit": self._reddit.validate_on_submit,
         }
         for key, value in (
             ("flair_id", flair_id),

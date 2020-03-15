@@ -8,7 +8,13 @@ import mock
 import pytest
 import requests
 import websocket
-from prawcore import Forbidden, NotFound, RequestException, TooLarge
+from prawcore import (
+    BadRequest,
+    Forbidden,
+    NotFound,
+    RequestException,
+    TooLarge,
+)
 
 from praw.const import PNG_HEADER
 from praw.exceptions import (
@@ -325,6 +331,23 @@ class TestSubreddit(IntegrationTest):
             assert submission.spoiler is True
 
     @mock.patch("time.sleep", return_value=None)
+    def test_submit__verify_invalid(self, _):
+        self.reddit.read_only = False
+        self.reddit.validate_on_submit = True
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit__verify_invalid"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            with pytest.raises(
+                (APIException, BadRequest)
+            ):  # waiting for prawcore fix
+                subreddit.submit(
+                    "dfgfdgfdgdf", url="https://www.google.com",
+                )
+
+    @mock.patch("time.sleep", return_value=None)
     @mock.patch(
         "websocket.create_connection",
         return_value=WebsocketMock(
@@ -437,6 +460,24 @@ class TestSubreddit(IntegrationTest):
             )
             assert submission.link_flair_css_class == flair_class
             assert submission.link_flair_text == flair_text
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_image_verify_invalid(self, _):
+        self.reddit.read_only = False
+        self.reddit.validate_on_submit = True
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image_verify_invalid"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.jpg")
+            with pytest.raises(
+                (APIException, BadRequest)
+            ):  # waiting for prawcore fix
+                subreddit.submit_image(
+                    "gdfgfdgdgdgfgfdgdfgfdgfdg", image,
+                )
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
@@ -618,6 +659,22 @@ class TestSubreddit(IntegrationTest):
             )
             assert submission.link_flair_css_class == flair_class
             assert submission.link_flair_text == flair_text
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_video_verify_invalid(self, _):
+        self.reddit.read_only = False
+        self.reddit.validate_on_submit = True
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video_verify_invalid"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.mov")
+            with pytest.raises(
+                (APIException, BadRequest)
+            ):  # waiting for prawcore fix
+                subreddit.submit_video("gdfgfdgdgdgfgfdgdfgfdgfdg", image)
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
