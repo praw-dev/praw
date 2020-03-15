@@ -132,35 +132,6 @@ class User(PRAWBase):
             self._me = Redditor(self._reddit, _data=user_data)
         return self._me
 
-    def moderator_subreddits(
-        self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
-        """Return a :class:`.ListingGenerator` of moderated subreddits.
-
-        ..warning:: (Deprecated) This method will be removed in the next major
-                    version of PRAW. Please use :meth:`.Redditor.moderated`
-                    instead.
-
-        Additional keyword arguments are passed in the initialization of
-        :class:`.ListingGenerator`.
-
-        .. note:: This method will return a maximum of 100 moderated
-           subreddits, ordered by subscriber count. To retrieve more than
-           100 moderated subreddits, please see :meth:`.Redditor.moderated`.
-
-        Usage:
-
-        .. code-block:: python
-
-           for subreddit in reddit.user.moderator_subreddits():
-               print(subreddit.display_name)
-
-
-        """
-        return ListingGenerator(
-            self._reddit, API_PATH["my_moderator"], **generator_kwargs
-        )
-
     def multireddits(self) -> List[Multireddit]:
         """Return a list of multireddits belonging to the user."""
         return self._reddit.get(API_PATH["my_multireddits"])

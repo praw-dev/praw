@@ -52,6 +52,8 @@ Unreleased
   :meth:`.SubredditRedditorFlairTemplates.update` will no longer
   create flairs that are using an invalid template id, but instead throw a
   :class:`.InvalidFlairTemplateID`.
+* Method ``reddit.user.moderator_subreddits`` has been removed. Please use
+  :meth:`.Redditor.moderated` instead.
 
 6.5.1 (2020/01/07)
 ------------------
@@ -112,8 +114,8 @@ Unreleased
 
 **Deprecated**
 
-* :meth:`.moderator_subreddits` as :meth:`.Redditor.moderated` provides more
-  functionality.
+* Method ``reddit.user.moderator_subreddits`` as :meth:`.Redditor.moderated`
+  provides more functionality.
 * The file for ModActions (praw/models/modaction.py) has been moved to
   praw/models/mod_action.py and the previous has been Deprecated.
 
