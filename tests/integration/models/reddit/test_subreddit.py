@@ -6,13 +6,16 @@ from os.path import abspath, dirname, join
 
 import mock
 import pytest
+import requests
 import websocket
 from prawcore import Forbidden, NotFound, RequestException, TooLarge
 
+from praw.const import PNG_HEADER
 from praw.exceptions import (
     APIException,
     ClientException,
     InvalidFlairTemplateID,
+    TooLargeMediaException,
     WebSocketException,
 )
 from praw.models import (
@@ -343,6 +346,47 @@ class TestSubreddit(IntegrationTest):
                 assert submission.author == self.reddit.config.username
                 assert submission.is_reddit_media_domain
                 assert submission.title == "Test Title"
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_image__large(self, _, tmp_path):
+        reddit = self.reddit
+        reddit.read_only = False
+        mock_data = (
+            '<?xml version="1.0" encoding="UTF-8"?>'
+            "<Error>"
+            "<Code>EntityTooLarge</Code>"
+            "<Message>Your proposed upload exceeds the maximum "
+            "allowed size</Message>"
+            "<ProposedSize>20971528</ProposedSize>"
+            "<MaxSizeAllowed>20971520</MaxSizeAllowed>"
+            "<RequestId>23F056D6990D87E0</RequestId>"
+            "<HostId>iYEVOuRfbLiKwMgHt2ewqQRIm0NWL79uiC2rPLj9P0PwW55"
+            "4MhjY2/O8d9JdKTf1iwzLjwWMnGQ=</HostId>"
+            "</Error>"
+        )
+        _post = reddit._core._requestor._http.post
+
+        def patch_request(url, *args, **kwargs):
+            """Patch requests to return mock data on specific url."""
+            if (
+                "https://reddit-uploaded-media.s3-accelerate.amazonaws.com"
+                in url
+            ):
+                response = requests.Response()
+                response._content = mock_data.encode("utf-8")
+                response.status_code = 400
+                return response
+            return _post(url, *args, **kwargs)
+
+        reddit._core._requestor._http.post = patch_request
+        fake_png = PNG_HEADER + b"\x1a" * 10  # Normally 1024 ** 2 * 20 (20 MB)
+        with open(tmp_path.joinpath("fake_img.png"), "wb") as tempfile:
+            tempfile.write(fake_png)
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image__large"
+        ):
+            with pytest.raises(TooLargeMediaException):
+                reddit.subreddit("test").submit_image("test", tempfile.name)
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch("websocket.create_connection", return_value=WebsocketMock())

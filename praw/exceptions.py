@@ -89,6 +89,25 @@ class MissingRequiredAttributeException(ClientException):
     """Indicate exceptions caused by not including a required attribute."""
 
 
+class TooLargeMediaException(ClientException):
+    """Indicate exceptions from uploading media that's too large."""
+
+    def __init__(self, maximum_size: int, actual: int):
+        """Initialize a TooLargeMediaException.
+
+        :param maximum_size: The maximum_size size of the uploaded media.
+        :param actual: The actual size of the uploaded media.
+        """
+        self.maximum_size = maximum_size
+        self.actual = actual
+        super().__init__(
+            "The media that you uploaded was too large (maximum size is "
+            "{maximum_size} bytes, uploaded {actual} bytes)".format(
+                maximum_size=maximum_size, actual=actual
+            )
+        )
+
+
 class WebSocketException(ClientException):
     """Indicate exceptions caused by use of WebSockets."""
 

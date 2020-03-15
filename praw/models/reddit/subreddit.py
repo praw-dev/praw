@@ -6,6 +6,7 @@ from copy import deepcopy
 from json import dumps, loads
 from os.path import basename, dirname, join
 from urllib.parse import urljoin
+from xml.etree.ElementTree import XML
 
 import websocket
 from prawcore import Redirect
@@ -15,6 +16,7 @@ from ...exceptions import (
     APIException,
     ClientException,
     InvalidFlairTemplateID,
+    TooLargeMediaException,
     WebSocketException,
 )
 from ...util.cache import cachedproperty
@@ -515,6 +517,18 @@ class Subreddit(
         self.__dict__.update(other.__dict__)
         self._fetched = True
 
+    def _parse_xml_response(self, response):
+        """Parse the XML from a response and raise any errors found."""
+        xml = response.text
+        root = XML(xml)
+        tags = [element.tag for element in root]
+        if tags[:4] == ["Code", "Message", "ProposedSize", "MaxSizeAllowed"]:
+            # Returned if image is too big
+            code, message, actual, maximum_size = [
+                element.text for element in root[:4]
+            ]
+            raise TooLargeMediaException(int(maximum_size), int(actual))
+
     def _submit_media(self, data, timeout, without_websockets):
         """Submit and return an `image`, `video`, or `videogif`.
 
@@ -615,6 +629,8 @@ class Subreddit(
             response = self._reddit._core._requestor._http.post(
                 upload_url, data=upload_data, files={"file": media}
             )
+        if not response.ok:
+            self._parse_xml_response(response)
         response.raise_for_status()
 
         return upload_url + "/" + upload_data["key"]
