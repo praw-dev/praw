@@ -25,7 +25,7 @@ attributes are accessed.
 
     try:
         reddit.subreddit("test").submit("Test Title", url="invalidurl")
-    except RedditAPIException as exception:
+    except APIException as exception:
         print(exception.error_type)
 
 This can generally be changed to

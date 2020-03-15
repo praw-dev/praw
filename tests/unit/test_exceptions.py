@@ -35,7 +35,7 @@ class TestRedditErrorItem:
 
     def test_property(self):
         error = RedditErrorItem(
-            *["BAD_SOMETHING", "invalid something", "some_field"]
+            "BAD_SOMETHING", "invalid something", "some_field"
         )
         assert (
             error.error_message
@@ -44,7 +44,7 @@ class TestRedditErrorItem:
 
     def test_str(self):
         error = RedditErrorItem(
-            *["BAD_SOMETHING", "invalid something", "some_field"]
+            "BAD_SOMETHING", "invalid something", "some_field"
         )
         assert (
             str(error)
@@ -53,7 +53,7 @@ class TestRedditErrorItem:
 
     def test_repr(self):
         error = RedditErrorItem(
-            *["BAD_SOMETHING", "invalid something", "some_field"]
+            "BAD_SOMETHING", "invalid something", "some_field"
         )
         assert (
             repr(error)
@@ -78,7 +78,7 @@ class TestRedditAPIException:
             [
                 ["BAD_SOMETHING", "invalid something", "some_field"],
                 RedditErrorItem(
-                    *["BAD_SOMETHING", "invalid something", "some_field"]
+                    "BAD_SOMETHING", "invalid something", "some_field"
                 ),
             ]
         )
