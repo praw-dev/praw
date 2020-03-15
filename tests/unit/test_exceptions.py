@@ -1,4 +1,6 @@
 # coding: utf-8
+import pytest
+
 from praw.exceptions import (
     APIException,
     ClientException,
@@ -8,6 +10,8 @@ from praw.exceptions import (
     InvalidURL,
     MissingRequiredAttributeException,
     PRAWException,
+    RedditAPIException,
+    RedditErrorItem,
     WebSocketException,
 )
 
@@ -21,17 +25,74 @@ class TestPRAWException:
         assert str(PRAWException("foo")) == "foo"
 
 
-class TestAPIException:
-    def test_inheritance(self):
-        assert isinstance(APIException(None, None, None), PRAWException)
+class TestRedditErrorItem:
+    def test_equality(self):
+        resp = ["BAD_SOMETHING", "invalid something", "some_field"]
+        error = RedditErrorItem(*resp)
+        error2 = RedditErrorItem(*resp)
+        assert error == error2
+        assert error != 0
 
-    def test_str(self):
-        exception = APIException(
+    def test_property(self):
+        error = RedditErrorItem(
             "BAD_SOMETHING", "invalid something", "some_field"
         )
-        assert str(exception) == (
-            "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+        assert (
+            error.error_message
+            == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
         )
+
+    def test_str(self):
+        error = RedditErrorItem(
+            "BAD_SOMETHING", "invalid something", "some_field"
+        )
+        assert (
+            str(error)
+            == "BAD_SOMETHING: 'invalid something' on field 'some_field'"
+        )
+
+    def test_repr(self):
+        error = RedditErrorItem(
+            "BAD_SOMETHING", "invalid something", "some_field"
+        )
+        assert (
+            repr(error)
+            == "RedditErrorItem(error_type='BAD_SOMETHING', message="
+            "'invalid something', field='some_field')"
+        )
+
+
+class TestAPIException:
+    def test_catch(self):
+        exc = RedditAPIException([["test", "testing", "test"]])
+        with pytest.raises(APIException):
+            raise exc
+
+
+class TestRedditAPIException:
+    def test_inheritance(self):
+        assert issubclass(RedditAPIException, PRAWException)
+
+    def test_items(self):
+        container = RedditAPIException(
+            [
+                ["BAD_SOMETHING", "invalid something", "some_field"],
+                RedditErrorItem(
+                    "BAD_SOMETHING", "invalid something", "some_field"
+                ),
+            ]
+        )
+        for exception in container.items:
+            assert isinstance(exception, RedditErrorItem)
+
+    @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
+    def test_apiexception_value(self):
+        exc = RedditAPIException("test", "testing", "test")
+        assert exc.error_type == "test"
+        exc2 = RedditAPIException(["test", "testing", "test"])
+        assert exc2.message == "testing"
+        exc3 = RedditAPIException([["test", "testing", "test"]])
+        assert exc3.field == "test"
 
 
 class TestClientException:

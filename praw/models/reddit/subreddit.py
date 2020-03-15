@@ -13,9 +13,9 @@ from prawcore import Redirect
 
 from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import (
-    APIException,
     ClientException,
     InvalidFlairTemplateID,
+    RedditAPIException,
     TooLargeMediaException,
     WebSocketException,
 )
@@ -2991,7 +2991,7 @@ class SubredditStylesheet:
                     "BAD_CSS_NAME",
                     "IMAGE_ERROR",
                 ], "Please file a bug with PRAW"
-                raise APIException(error_type, error_value, None)
+                raise RedditAPIException([[error_type, error_value, None]])
             return response
 
     def _upload_style_asset(self, image_path, image_type):
@@ -3158,7 +3158,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -3181,7 +3181,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -3206,7 +3206,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -3243,7 +3243,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -3268,7 +3268,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -3291,7 +3291,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.
@@ -3315,7 +3315,7 @@ class SubredditStylesheet:
 
         Raises ``prawcore.TooLarge`` if the overall request body is too large.
 
-        Raises :class:`.APIException` if there are other issues with the
+        Raises :class:`.RedditAPIException` if there are other issues with the
         uploaded image. Unfortunately the exception info might not be very
         specific, so try through the website with the same image to see what
         the problem actually might be.

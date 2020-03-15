@@ -2,6 +2,8 @@
 
 import pytest
 
+from praw.exceptions import APIException
+
 from . import UnitTest
 
 
@@ -15,3 +17,12 @@ class TestDeprecation(UnitTest):
         self.reddit.validate_on_submit = False
         with pytest.raises(DeprecationWarning):
             self.reddit.validate_on_submit
+
+    def test_apiexception(self):
+        exc = APIException(["test", "testing", "test"])
+        with pytest.raises(DeprecationWarning):
+            exc.error_type
+        with pytest.raises(DeprecationWarning):
+            exc.message
+        with pytest.raises(DeprecationWarning):
+            exc.field
