@@ -16,6 +16,7 @@ A: Directly calling the constructors will refresh the value:
 .. _faq2:
 
 Q: Whenever I try to do anything, I get an ``invalid_grant`` error
+
 A: This means that either you provided the wrong password and/or the account
 you are trying to sign in with has 2FA enabled, and as such, either needs a 2FA
 token or a refresh token to sign in. A refresh token is preferred, because then
