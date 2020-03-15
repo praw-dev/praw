@@ -62,6 +62,13 @@ class TestRedditErrorItem:
         )
 
 
+class TestAPIException:
+    def test_catch(self):
+        exc = RedditAPIException([["test", "testing", "test"]])
+        with pytest.raises(APIException):
+            raise exc
+
+
 class TestRedditAPIException:
     def test_inheritance(self):
         assert issubclass(RedditAPIException, PRAWException)
@@ -80,11 +87,11 @@ class TestRedditAPIException:
 
     @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
     def test_apiexception_value(self):
-        exc = APIException("test", "testing", "test")
+        exc = RedditAPIException("test", "testing", "test")
         assert exc.error_type == "test"
-        exc2 = APIException(["test", "testing", "test"])
+        exc2 = RedditAPIException(["test", "testing", "test"])
         assert exc2.message == "testing"
-        exc3 = APIException([["test", "testing", "test"]])
+        exc3 = RedditAPIException([["test", "testing", "test"]])
         assert exc3.field == "test"
 
 

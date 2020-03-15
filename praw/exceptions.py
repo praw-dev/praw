@@ -63,8 +63,8 @@ class RedditErrorItem:
         return self.error_message
 
 
-class RedditAPIException(PRAWException):
-    """Container for error messages from Reddit's API."""
+class APIException(PRAWException):
+    """Old class preserved for alias purposes."""
 
     @staticmethod
     def parse_exception_list(
@@ -130,8 +130,8 @@ class RedditAPIException(PRAWException):
         super().__init__(*self.items)
 
 
-class APIException(RedditAPIException):
-    """Old class preserved for alias purposes."""
+class RedditAPIException(APIException):
+    """Container for error messages from Reddit's API."""
 
 
 class ClientException(PRAWException):

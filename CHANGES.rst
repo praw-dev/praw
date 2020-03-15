@@ -51,6 +51,7 @@ Unreleased
 
 .. warning:: In May-June 2020, Reddit will force all submissions to run through
   a subreddit's validation rules.
+
 * Introduced a data class, :class:`.RedditErrorItem`, to represent an
   individual error item returned from Reddit.
 * Class :class:`.RedditAPIException` now serves as a container for the

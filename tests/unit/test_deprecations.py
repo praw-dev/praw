@@ -17,6 +17,7 @@ class TestDeprecation(UnitTest):
         self.reddit.validate_on_submit = False
         with pytest.raises(DeprecationWarning):
             self.reddit.validate_on_submit
+
     def test_apiexception(self):
         exc = APIException(["test", "testing", "test"])
         with pytest.raises(DeprecationWarning):

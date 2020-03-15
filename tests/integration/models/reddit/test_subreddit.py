@@ -341,7 +341,7 @@ class TestSubreddit(IntegrationTest):
                 pytest.placeholders.test_subreddit
             )
             with pytest.raises(
-                (APIException, BadRequest)
+                (RedditAPIException, BadRequest)
             ):  # waiting for prawcore fix
                 subreddit.submit(
                     "dfgfdgfdgdf", url="https://www.google.com",
@@ -473,7 +473,7 @@ class TestSubreddit(IntegrationTest):
             )
             image = self.image_path("test.jpg")
             with pytest.raises(
-                (APIException, BadRequest)
+                (RedditAPIException, BadRequest)
             ):  # waiting for prawcore fix
                 subreddit.submit_image(
                     "gdfgfdgdgdgfgfdgdfgfdgfdg", image,
@@ -672,7 +672,7 @@ class TestSubreddit(IntegrationTest):
             )
             image = self.image_path("test.mov")
             with pytest.raises(
-                (APIException, BadRequest)
+                (RedditAPIException, BadRequest)
             ):  # waiting for prawcore fix
                 subreddit.submit_video("gdfgfdgdgdgfgfdgdfgfdgfdg", image)
 
