@@ -4,11 +4,12 @@ Frequently Asked Questions
 .. _faq1:
 
 Q: How can I refresh a comment/subreddit/submission?
-A: .. code-block:: python
+A:
+.. code-block:: python
 
-reddit.comment(id=comment.id)
-reddit.subreddit(display_name=subreddit.display_name)
-reddit.submission(id=submission.id)
+   reddit.comment(id=comment.id)
+   reddit.subreddit(display_name=subreddit.display_name)
+   reddit.submission(id=submission.id)
 
 .. _faq2:
 
