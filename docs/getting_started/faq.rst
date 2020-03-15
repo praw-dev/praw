@@ -4,7 +4,8 @@ Frequently Asked Questions
 .. _faq1:
 
 Q: How can I refresh a comment/subreddit/submission?
-A:
+
+A: Directly calling the constructors will refresh the value:
 
 .. code-block:: python
 
