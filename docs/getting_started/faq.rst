@@ -5,6 +5,7 @@ Frequently Asked Questions
 
 Q: How can I refresh a comment/subreddit/submission?
 A:
+
 .. code-block:: python
 
    reddit.comment(id=comment.id)
