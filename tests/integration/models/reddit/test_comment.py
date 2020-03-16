@@ -1,8 +1,7 @@
 import mock
 import pytest
-from prawcore import BadRequest
 
-from praw.exceptions import ClientException, PRAWException
+from praw.exceptions import ClientException, PRAWException, RedditAPIException
 from praw.models import Comment, Submission
 
 from ... import IntegrationTest
@@ -76,10 +75,10 @@ class TestComment(IntegrationTest):
     def test_gild__no_creddits(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestComment.test_gild__no_creddits"):
-            with pytest.raises(BadRequest) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 Comment(self.reddit, "d1616q2").gild()
-            reason = excinfo.value.response.json()["reason"]
-            assert "INSUFFICIENT_CREDDITS" == reason
+            exception = excinfo.value
+            assert "INSUFFICIENT_CREDDITS" == exception.error_type
 
     def test_invalid(self):
         with self.recorder.use_cassette("TestComment.test_invalid"):

@@ -188,7 +188,8 @@ class ThingModerationMixin:
         .. warning:: The object has to be removed before giving it a removal
             reason. Remove the object with :meth:`.remove`. Trying to add a
             removal reason without removing the object will result in
-            ``prawcore.exceptions.BadRequest`` being thrown.
+            :class:`.RedditAPIException` being thrown with an ``INVALID_ID``
+            error_type.
 
         Reddit adds human-readable information about the object to the message.
 

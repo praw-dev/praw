@@ -302,7 +302,7 @@ class Redditor(
         :returns: A ``list`` of :class:`~praw.models.Trophy` objects.
             Return ``[]`` if the redditor has no trophy.
 
-        Raise ``prawcore.exceptions.BadRequest`` if the redditor doesn't exist.
+        Raise :class:`.RedditAPIException` if the redditor doesn't exist.
 
         Usage:
 

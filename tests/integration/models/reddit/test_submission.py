@@ -1,8 +1,7 @@
 import mock
 import pytest
-from prawcore import BadRequest
 
-from praw.exceptions import APIException
+from praw.exceptions import RedditAPIException
 from praw.models import Comment, Submission
 
 from ... import IntegrationTest
@@ -62,9 +61,7 @@ class TestSubmission(IntegrationTest):
         self.reddit.validate_on_submit = True
         with self.recorder.use_cassette("TestSubmission.test_edit_invalid"):
             submission = Submission(self.reddit, "eippcc")
-            with pytest.raises(
-                (APIException, BadRequest)
-            ):  # waiting for prawcore fix
+            with pytest.raises(RedditAPIException):
                 submission.edit("rewtwert")
 
     def test_enable_inbox_replies(self):
@@ -80,10 +77,10 @@ class TestSubmission(IntegrationTest):
         with self.recorder.use_cassette(
             "TestSubmission.test_gild__no_creddits"
         ):
-            with pytest.raises(BadRequest) as excinfo:
+            with pytest.raises(RedditAPIException) as excinfo:
                 Submission(self.reddit, "4b1tfm").gild()
-            reason = excinfo.value.response.json()["reason"]
-            assert "INSUFFICIENT_CREDDITS" == reason
+            exception = excinfo.value
+            assert "INSUFFICIENT_CREDDITS" == exception.error_type
 
     def test_gilded(self):
         with self.recorder.use_cassette("TestSubmission.test_gilded"):

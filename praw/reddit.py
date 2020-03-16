@@ -16,11 +16,16 @@ from prawcore import (
     UntrustedAuthenticator,
     session,
 )
+from prawcore.exceptions import BadRequest
 
 from . import models
 from .config import Config
 from .const import API_PATH, USER_AGENT_FORMAT, __version__
-from .exceptions import ClientException, MissingRequiredAttributeException
+from .exceptions import (
+    ClientException,
+    MissingRequiredAttributeException,
+    RedditAPIException,
+)
 from .objector import Objector
 
 try:
@@ -648,9 +653,20 @@ class Reddit:
             (default: None).
 
         """
-        return self._core.request(
-            method, path, data=data, files=files, params=params
-        )
+        try:
+            return self._core.request(
+                method, path, data=data, files=files, params=params
+            )
+        except BadRequest as exception:
+            data = exception.response.json()
+            if "fields" in data:
+                assert len(data["fields"]) == 1
+                field = data["fields"][0]
+            else:
+                field = None
+            raise RedditAPIException(
+                [data["reason"], data["explanation"], field]
+            ) from exception
 
     def submission(  # pylint: disable=invalid-name,redefined-builtin
         self, id: Optional[str] = None, url: Optional[str] = None
