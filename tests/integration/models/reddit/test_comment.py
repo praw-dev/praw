@@ -360,6 +360,20 @@ class TestCommentModeration(IntegrationTest):
             assert res[1] is None
             assert res[2] is None
 
+    @mock.patch("time.sleep", return_value=None)
+    def test_send_removal_message__error(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestCommentModeration.test_send_removal_message__error"
+        ):
+            comment = self.reddit.comment("fkmrn4a")
+            comment.mod.remove()
+            with pytest.raises(RedditAPIException) as excinfo:
+                comment.mod.send_removal_message("message", "a" * 51)
+            exception = excinfo.value
+            assert "title" == exception.field
+            assert "TOO_LONG" == exception.error_type
+
     def test_undistinguish(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette(
