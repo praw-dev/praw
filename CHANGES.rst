@@ -59,6 +59,11 @@ Unreleased
   ``RedditAPIException.items``, which returns a list.
 * :class:`.APIException` is an alias to :class:`.RedditAPIException`.
 
+**Changed**
+
+* ``prawcore.BadRequest`` should no longer be raised. Instead a more useful
+  :class:`.RedditAPIException` instance will be raised.
+
 **Deprecated**
 
 * :class:`.APIException` is deprecated and slotted for removal in PRAW 8.0.

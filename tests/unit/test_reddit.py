@@ -4,6 +4,7 @@ import types
 import mock
 import pytest
 from prawcore import Requestor
+from prawcore.exceptions import BadRequest
 
 from praw import Reddit, __version__
 from praw.config import Config
@@ -161,6 +162,23 @@ class TestReddit(UnitTest):
         with pytest.raises(configparser.NoSectionError) as excinfo:
             Reddit("bad_site_name")
         assert "praw.readthedocs.io" in excinfo.value.message
+
+    @mock.patch("prawcore.sessions.Session")
+    def test_request__badrequest_with_no_json_body(self, mock_session):
+        response = mock.Mock(status_code=400)
+        response.json.side_effect = ValueError
+        mock_session.return_value.request = mock.Mock(
+            side_effect=BadRequest(response=response)
+        )
+
+        reddit = Reddit(
+            client_id="dummy", client_secret="dummy", user_agent="dummy"
+        )
+        with pytest.raises(Exception) as excinfo:
+            reddit.request("POST", "/")
+        assert str(excinfo.value).startswith(
+            "Unexpected BadRequest without json body."
+        )
 
     def test_submission(self):
         assert self.reddit.submission("2gmzqe").id == "2gmzqe"

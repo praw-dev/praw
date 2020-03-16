@@ -82,7 +82,7 @@ class User(PRAWBase):
             an instance of :class:`.Redditor` or a string can be given.
         :returns: A list of Redditors, or a Redditor if you are friends with
             the given Redditor. The Redditor also has friend attributes.
-        :raises: An instance of ``prawcore.exceptions.BadRequest`` if you are
+        :raises: An instance of :class:`.RedditAPIException` if you are
             not friends with the specified Redditor.
         """
         endpoint = (

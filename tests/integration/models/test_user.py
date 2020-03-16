@@ -1,8 +1,8 @@
 """Test praw.models.user."""
 import mock
 import pytest
-from prawcore.exceptions import BadRequest
 
+from praw.exceptions import RedditAPIException
 from praw.models import Multireddit, Redditor, Subreddit
 
 from .. import IntegrationTest
@@ -45,7 +45,7 @@ class TestUser(IntegrationTest):
     def test_friend_not_exist(self, _):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestUser.test_friend_not_exist"):
-            with pytest.raises(BadRequest):
+            with pytest.raises(RedditAPIException):
                 self.reddit.user.friends(user="fake__user_user_user")
 
     def test_karma(self):
