@@ -58,4 +58,5 @@ Source Contributors
 - PythonCoderAS `@PythonCoderAS <https://github.com/PythonCoderAS>`_
 - Michael Cetrulo <contact@michael-cetrulo.com> `@git2samus <https://github.com/git2samus>`_
 - George Schizas `@gschizas <https://github.com/gschizas>`_
+- Todd Roberts `@toddrob99 <https://github.com/toddrob99>`_
 <!-- - Add "Name <email (optional)> and github profile link" above this line. -->

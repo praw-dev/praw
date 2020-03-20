@@ -788,6 +788,7 @@ class Subreddit(
         nsfw=False,
         spoiler=False,
         collection_id=None,
+        discussion_type=None,
     ):
         """Add a submission to the subreddit.
 
@@ -809,6 +810,8 @@ class Subreddit(
             (default: False).
         :param spoiler: Whether or not the submission should be marked as
             a spoiler (default: False).
+        :param discussion_type: Set to ``CHAT`` to enable live discussion
+            instead of traditional comments (default: None).
         :returns: A :class:`~.Submission` object for the newly created
             submission.
 
@@ -844,6 +847,7 @@ class Subreddit(
             ("flair_id", flair_id),
             ("flair_text", flair_text),
             ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
         ):
             if value is not None:
                 data[key] = value
@@ -867,6 +871,7 @@ class Subreddit(
         timeout=10,
         collection_id=None,
         without_websockets=False,
+        discussion_type=None,
     ):
         """Add an image submission to the subreddit.
 
@@ -890,6 +895,8 @@ class Subreddit(
         :param without_websockets: Set to ``True`` to disable use of WebSockets
             (see note below for an explanation). If ``True``, this method
             doesn't return anything. (default: ``False``).
+        :param discussion_type: Set to ``CHAT`` to enable live discussion
+            instead of traditional comments (default: None).
         :returns: A :class:`.Submission` object for the newly created
             submission, unless ``without_websockets`` is ``True``.
 
@@ -933,6 +940,7 @@ class Subreddit(
             ("flair_id", flair_id),
             ("flair_text", flair_text),
             ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
         ):
             if value is not None:
                 data[key] = value
@@ -959,6 +967,7 @@ class Subreddit(
         timeout=10,
         collection_id=None,
         without_websockets=False,
+        discussion_type=None,
     ):
         """Add a video or videogif submission to the subreddit.
 
@@ -989,6 +998,8 @@ class Subreddit(
         :param without_websockets: Set to ``True`` to disable use of WebSockets
             (see note below for an explanation). If ``True``, this method
             doesn't return anything. (default: ``False``).
+        :param discussion_type: Set to ``CHAT`` to enable live discussion
+            instead of traditional comments (default: None).
         :returns: A :class:`.Submission` object for the newly created
             submission, unless ``without_websockets`` is ``True``.
 
@@ -1032,6 +1043,7 @@ class Subreddit(
             ("flair_id", flair_id),
             ("flair_text", flair_text),
             ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
         ):
             if value is not None:
                 data[key] = value

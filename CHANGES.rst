@@ -58,6 +58,9 @@ Unreleased
   :class:`.RedditErrorItem`\ s. You can access the items by doing
   ``RedditAPIException.items``, which returns a list.
 * :class:`.APIException` is an alias to :class:`.RedditAPIException`.
+* Parameter ``discussion_type`` to methods :meth:`.Subreddit.submit`,
+  :meth:`.Subreddit.submit_image`, and :meth:`.Subreddit.submit_video` to
+  support submitting as a live discussion (set to ``CHAT``).
 
 **Changed**
 
