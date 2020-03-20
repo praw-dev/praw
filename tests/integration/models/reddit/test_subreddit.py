@@ -294,6 +294,18 @@ class TestSubreddit(IntegrationTest):
             assert submission.title == "Test Title"
 
     @mock.patch("time.sleep", return_value=None)
+    def test_submit_live_chat(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestSubreddit.test_submit_live_chat"):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            submission = subreddit.submit(
+                "Test Title", selftext="", discussion_type="CHAT"
+            )
+            assert submission.discussion_type == "CHAT"
+
+    @mock.patch("time.sleep", return_value=None)
     def test_submit__url(self, _):
         url = "https://praw.readthedocs.org/en/stable/"
         self.reddit.read_only = False
@@ -460,6 +472,24 @@ class TestSubreddit(IntegrationTest):
             )
             assert submission.link_flair_css_class == flair_class
             assert submission.link_flair_text == flair_text
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection", return_value=WebsocketMock("flo1ea")
+    )  # update with cassette
+    def test_submit_image_chat(self, _=None, __=None):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_image_chat"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.jpg")
+            submission = subreddit.submit_image(
+                "Test Title", image, discussion_type="CHAT"
+            )
+            assert submission.discussion_type == "CHAT"
 
     @mock.patch("time.sleep", return_value=None)
     def test_submit_image_verify_invalid(self, _):
@@ -659,6 +689,24 @@ class TestSubreddit(IntegrationTest):
             )
             assert submission.link_flair_css_class == flair_class
             assert submission.link_flair_text == flair_text
+
+    @mock.patch("time.sleep", return_value=None)
+    @mock.patch(
+        "websocket.create_connection", return_value=WebsocketMock("flnyhf")
+    )  # update with cassette
+    def test_submit_video_chat(self, _=None, __=None):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_video_chat"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            image = self.image_path("test.mov")
+            submission = subreddit.submit_video(
+                "Test Title", image, discussion_type="CHAT"
+            )
+            assert submission.discussion_type == "CHAT"
 
     @mock.patch("time.sleep", return_value=None)
     def test_submit_video_verify_invalid(self, _):
