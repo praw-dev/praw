@@ -59,8 +59,8 @@ Unreleased
   ``RedditAPIException.items``, which returns a list.
 * :class:`.APIException` is an alias to :class:`.RedditAPIException`.
 * Parameter ``discussion_type`` to methods :meth:`.Subreddit.submit`,
-  :meth:`.Subreddit.submit_image`, :meth:`.Subreddit.submit_video` to support
-  submitting as a live discussion (set to ``CHAT``).
+  :meth:`.Subreddit.submit_image`, and :meth:`.Subreddit.submit_video` to
+  support submitting as a live discussion (set to ``CHAT``).
 
 **Changed**
 
