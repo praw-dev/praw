@@ -163,13 +163,6 @@ class WikiPage(RedditBase):
         """
         return WikiPageModeration(self)
 
-    def __eq__(self, other: _WikiPage):
-        """Return whether the other instance equals the current."""
-        return (
-            isinstance(other, self.__class__)
-            and str(self).lower() == str(other).lower()
-        )
-
     def __init__(
         self,
         reddit: Reddit,
