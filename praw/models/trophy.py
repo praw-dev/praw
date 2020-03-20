@@ -3,6 +3,7 @@ from typing import Any, Dict, TypeVar
 
 from .base import PRAWBase
 
+_Trophy = TypeVar("_Trophy")
 Reddit = TypeVar("Reddit")
 
 
@@ -45,6 +46,16 @@ class Trophy(PRAWBase):
         assert isinstance(_data, dict) and "name" in _data
         super().__init__(reddit, _data=_data)
 
+    def __eq__(self, other: _Trophy) -> bool:
+        """Check if two Trophies are equal."""
+        if isinstance(other, self.__class__):
+            return self.name == other.name
+        return super().__eq__(other)
+
     def __str__(self) -> str:
         """Return a name of the trophy."""
         return self.name  # pylint: disable=no-member
+
+    def __repr__(self) -> str:
+        """Return the object's REPR status."""
+        return "{}(name={!r})".format(self.__class__.__name__, self.name)
