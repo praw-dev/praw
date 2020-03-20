@@ -113,12 +113,22 @@ class Reddit:
         self,
         site_name: str = None,
         config_interpolation: Optional[str] = None,
+        new_flair: Optional[bool] = False,
         requestor_class: Optional[Type[Requestor]] = None,
         requestor_kwargs: Dict[str, Any] = None,
         **config_settings: str
     ):  # noqa: D207, D301
         """Initialize a Reddit instance.
 
+        :param config_interpolation: Allows the usage of interpolation in the
+            config file.
+        :param new_flair: Enables the usage of the new flair system. This is a
+            feature to give users one major version change before enforcing the
+            new flair models. (Default: False).
+        :param requestor_class: A class that will be used to create a
+            requestor. If not set, use ``prawcore.Requestor`` (default: None).
+        :param requestor_kwargs: Dictionary with additional keyword arguments
+            used to initialize the requestor (default: None).
         :param site_name: The name of a section in your ``praw.ini`` file from
             which to load settings from. This parameter, in tandem with an
             appropriately configured ``praw.ini``, file is useful if you wish
@@ -127,10 +137,6 @@ class Reddit:
             ``None``, then the site name will be looked for in the environment
             variable praw_site. If it is not found there, the DEFAULT site will
             be used.
-        :param requestor_class: A class that will be used to create a
-            requestor. If not set, use ``prawcore.Requestor`` (default: None).
-        :param requestor_kwargs: Dictionary with additional keyword arguments
-            used to initialize the requestor (default: None).
 
         Additional keyword arguments will be used to initialize the
         :class:`.Config` object. This can be used to specify configuration
@@ -168,6 +174,7 @@ class Reddit:
 
         """
         self._core = self._authorized_core = self._read_only_core = None
+        self.new_flair = new_flair
         self._objector = None
         self._unique_counter = 0
         self._validate_on_submit = False

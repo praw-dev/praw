@@ -25,6 +25,7 @@ from ..listing.mixins import SubredditListingMixin
 from ..util import permissions_string, stream_generator
 from .base import RedditBase
 from .emoji import SubredditEmoji
+from .flair import RedditorFlair, SubmissionFlair
 from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
 from .removal_reasons import SubredditRemovalReasons
@@ -1586,7 +1587,9 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         url = API_PATH["user_flair"].format(subreddit=self.subreddit)
         params = {"unique": self.subreddit._reddit._next_unique}
         for template in self.subreddit._reddit.get(url, params=params):
-            yield template
+            yield RedditorFlair(
+                self.subreddit, _data=template
+            ) if self.subreddit._reddit.new_flair else template
 
     def add(
         self,
@@ -1667,7 +1670,9 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         """
         url = API_PATH["link_flair"].format(subreddit=self.subreddit)
         for template in self.subreddit._reddit.get(url):
-            yield template
+            yield SubmissionFlair(
+                self.subreddit, _data=template
+            ) if self.subreddit._reddit.new_flair else template
 
     def add(
         self,

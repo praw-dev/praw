@@ -2,8 +2,8 @@
 from typing import Any, Dict, Optional, TypeVar, Union
 from .base import RedditBase
 
-_AdvancedSubmissionFlair = TypeVar("_AdvancedSubmissionFlair")
-_LinkFlair = TypeVar("_LinkFlair")
+_SubmissionFlair = TypeVar("_SubmissionFlair")
+_BasicSubmissionFlair = TypeVar("_BasicSubmissionFlair")
 _RedditorFlair = TypeVar("_RedditorFlair")
 _RichFlairBase = TypeVar("_RichFlairBase")
 Reddit = TypeVar("Reddit")
@@ -15,12 +15,12 @@ class RichFlairBase(RedditBase):
     """A base class for rich flairs.
 
     Flairs of this type are obtained by either
-    :class:`.SubredditLinkFlairTemplates`
+    :class:`.SubredditBasicSubmissionFlairTemplates`
     or :class:`.SubredditRedditorFlairTemplates`.
 
     Subclasses:
 
-        * :class:`.AdvancedSubmissionFlair`
+        * :class:`.SubmissionFlair`
         * :class:`.RedditorFlair`
 
     **Typical Attributes**
@@ -78,19 +78,18 @@ class RichFlairBase(RedditBase):
 
     def __init__(
         self,
-        reddit: Reddit,
         subreddit: Subreddit,
         id: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
     ):
         """Initialize the class.
 
-        :param reddit: An instance of :class:`~.Reddit`.
         :param subreddit: An instance of :class:`~.Subreddit`.
         :param id: The template id of the flair.
         """
         if [id, _data].count(None) != 1:
             raise TypeError("Either ``id`` or ``_data`` needs to be provided.")
+        reddit = subreddit._reddit
         super().__init__(reddit, _data=_data)
         if id is not None:
             self.id = id
@@ -101,7 +100,7 @@ class RichFlairBase(RedditBase):
             self.create_before_usage = False
 
 
-class AdvancedSubmissionFlair(RichFlairBase):
+class SubmissionFlair(RichFlairBase):
     """A special submission flair that contains more details.
 
     **Typical Attributes**
@@ -137,7 +136,6 @@ class AdvancedSubmissionFlair(RichFlairBase):
 
     def __init__(
         self,
-        reddit: Reddit,
         subreddit: Subreddit,
         id: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
@@ -147,11 +145,10 @@ class AdvancedSubmissionFlair(RichFlairBase):
         .. warning:: This class should not be directly created. Instead,
             obtain an instance through :class:`.SubredditFlair`.
 
-        :param reddit: An instance of :class:`~.Reddit`.
         :param subreddit: An instance of :class:`~.Subreddit`.
         :param id: The template id of the flair.
         """
-        super().__init__(reddit, subreddit, id, _data)
+        super().__init__(subreddit, id, _data)
 
 
 class RedditorFlair(RichFlairBase):
@@ -191,7 +188,6 @@ class RedditorFlair(RichFlairBase):
 
     def __init__(
         self,
-        reddit: Reddit,
         subreddit: Subreddit,
         id: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
@@ -201,15 +197,14 @@ class RedditorFlair(RichFlairBase):
         .. warning:: This class should not be directly created, but instead
             obtained through :class:`~.SubredditFlair`.
 
-        :param reddit: An instance of :class:`~.Reddit`.
         :param subreddit: An instance of :class:`~.Subreddit`.
         :param id: The template id of the flair.
         """
-        super().__init__(reddit, subreddit, id, _data)
+        super().__init__(subreddit, id, _data)
 
 
-class LinkFlair(RedditBase):
-    """An individual LinkFlair object.
+class BasicSubmissionFlair(RedditBase):
+    """An individual BasicSubmissionFlair object.
 
     **Typical Attributes**
 
@@ -230,7 +225,7 @@ class LinkFlair(RedditBase):
 
     STR_FIELD = "flair_text"
 
-    def __eq__(self, other: Union[str, _LinkFlair]) -> bool:
+    def __eq__(self, other: Union[str, _BasicSubmissionFlair]) -> bool:
         """Check that two flairs are the same flair."""
         if isinstance(other, str):
             return str(self) == other
