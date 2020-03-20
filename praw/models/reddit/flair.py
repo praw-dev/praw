@@ -77,27 +77,15 @@ class RichFlairBase(RedditBase):
         )
 
     def __init__(
-        self,
-        subreddit: Subreddit,
-        id: Optional[str] = None,
-        _data: Optional[Dict[str, Any]] = None,
+        self, subreddit: Subreddit, _data: Optional[Dict[str, Any]] = None,
     ):
         """Initialize the class.
 
         :param subreddit: An instance of :class:`~.Subreddit`.
-        :param id: The template id of the flair.
         """
-        if [id, _data].count(None) != 1:
-            raise TypeError("Either ``id`` or ``_data`` needs to be provided.")
         reddit = subreddit._reddit
         super().__init__(reddit, _data=_data)
-        if id is not None:
-            self.id = id
         self.subreddit = subreddit
-        if not self.subreddit.use_flair_class:
-            self.subreddit.use_flair_class = True
-        if "create_before_usage" not in self.__dict__:
-            self.create_before_usage = False
 
 
 class SubmissionFlair(RichFlairBase):
@@ -135,10 +123,7 @@ class SubmissionFlair(RichFlairBase):
     """
 
     def __init__(
-        self,
-        subreddit: Subreddit,
-        id: Optional[str] = None,
-        _data: Optional[Dict[str, Any]] = None,
+        self, subreddit: Subreddit, _data: Optional[Dict[str, Any]] = None,
     ):
         """Instantize the class.
 
@@ -146,9 +131,8 @@ class SubmissionFlair(RichFlairBase):
             obtain an instance through :class:`.SubredditFlair`.
 
         :param subreddit: An instance of :class:`~.Subreddit`.
-        :param id: The template id of the flair.
         """
-        super().__init__(subreddit, id, _data)
+        super().__init__(subreddit, _data)
 
 
 class RedditorFlair(RichFlairBase):
@@ -187,10 +171,7 @@ class RedditorFlair(RichFlairBase):
     """
 
     def __init__(
-        self,
-        subreddit: Subreddit,
-        id: Optional[str] = None,
-        _data: Optional[Dict[str, Any]] = None,
+        self, subreddit: Subreddit, _data: Optional[Dict[str, Any]] = None,
     ):
         """Instantize the class.
 
@@ -198,9 +179,8 @@ class RedditorFlair(RichFlairBase):
             obtained through :class:`~.SubredditFlair`.
 
         :param subreddit: An instance of :class:`~.Subreddit`.
-        :param id: The template id of the flair.
         """
-        super().__init__(subreddit, id, _data)
+        super().__init__(subreddit, _data)
 
 
 class BasicSubmissionFlair(RedditBase):
@@ -243,9 +223,8 @@ class BasicSubmissionFlair(RedditBase):
             ^ hash(self.flair_template_id)
         )
 
-    def __init__(
-        self, reddit: Reddit, submission: Submission, _data: Dict[str, Any]
-    ):
+    def __init__(self, submission: Submission, _data: Dict[str, Any]):
         """Instantizes the flair object."""
         self.submission = submission
+        reddit = submission._reddit
         super().__init__(reddit, _data=_data)

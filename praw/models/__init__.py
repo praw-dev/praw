@@ -12,6 +12,7 @@ from .mod_action import ModAction
 from .preferences import Preferences
 from .reddit.collections import Collection
 from .reddit.comment import Comment
+from .reddit.flair import BasicSubmissionFlair, RedditorFlair, SubmissionFlair
 from .reddit.emoji import Emoji
 from .reddit.live import LiveThread, LiveUpdate
 from .reddit.message import Message, SubredditMessage
