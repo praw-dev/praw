@@ -3,14 +3,21 @@ from typing import Any, Dict, TypeVar
 
 from ...const import API_PATH
 from .base import RedditBase
-from .mixins import FullnameMixin, InboxableMixin, ReplyableMixin
+from .mixins import (
+    FullnameMixin,
+    InboxableMixin,
+    ReplyableMixin,
+    ReportableMixin,
+)
 from .redditor import Redditor
 from .subreddit import Subreddit
 
 Reddit = TypeVar("Reddit")
 
 
-class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
+class Message(
+    InboxableMixin, ReplyableMixin, ReportableMixin, FullnameMixin, RedditBase
+):
     """A class for private messages.
 
     **Typical Attributes**
