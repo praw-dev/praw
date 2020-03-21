@@ -232,6 +232,15 @@ class TestComment(IntegrationTest):
         with self.recorder.use_cassette("TestComment.test_report"):
             Comment(self.reddit, "d0335z3").report("custom")
 
+    def test_report_admin(self):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestComment.test_report_admin"):
+            self.reddit.comment("fl2c5ax").report(
+                "Anti-LGBT content",
+                admin=True,
+                explanation="This is a transphobic comment",
+            )
+
     def test_save(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestComment.test_save"):

@@ -25,7 +25,7 @@ from ..listing.mixins import SubredditListingMixin
 from ..util import permissions_string, stream_generator
 from .base import RedditBase
 from .emoji import SubredditEmoji
-from .mixins import FullnameMixin, MessageableMixin
+from .mixins import FullnameMixin, MessageableMixin, ReportableMixin
 from .modmail import ModmailConversation
 from .removal_reasons import SubredditRemovalReasons
 from .widgets import SubredditWidgets, WidgetEncoder
@@ -33,7 +33,11 @@ from .wikipage import WikiPage
 
 
 class Subreddit(
-    MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBase
+    ReportableMixin,
+    MessageableMixin,
+    SubredditListingMixin,
+    FullnameMixin,
+    RedditBase,
 ):
     """A class for Subreddits.
 

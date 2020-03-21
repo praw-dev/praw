@@ -102,6 +102,14 @@ class TestSubreddit(UnitTest):
             subreddit.submit("Cool title", selftext="", url="b")
         assert str(excinfo.value) == message
 
+    def test_report_non_admin(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        with pytest.raises(TypeError) as excinfo:
+            subreddit.report("Test")
+        assert (
+            str(excinfo.value) == "Subreddits can only be reported to admins."
+        )
+
     def test_upload_banner_additional_image(self):
         subreddit = Subreddit(self.reddit, display_name="name")
         with pytest.raises(ValueError):

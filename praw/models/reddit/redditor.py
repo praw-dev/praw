@@ -7,7 +7,7 @@ from ...util.cache import cachedproperty
 from ..listing.mixins import RedditorListingMixin
 from ..util import stream_generator
 from .base import RedditBase
-from .mixins import FullnameMixin, MessageableMixin
+from .mixins import FullnameMixin, MessageableMixin, ReportableMixin
 
 _Redditor = TypeVar("_Redditor")
 _RedditorStream = TypeVar("_RedditorStream")
@@ -20,7 +20,11 @@ Trophy = TypeVar("Trophy")
 
 
 class Redditor(
-    MessageableMixin, RedditorListingMixin, FullnameMixin, RedditBase
+    ReportableMixin,
+    MessageableMixin,
+    RedditorListingMixin,
+    FullnameMixin,
+    RedditBase,
 ):
     """A class representing the users of reddit.
 
