@@ -113,6 +113,7 @@ class Reddit:
         self,
         site_name: str = None,
         config_interpolation: Optional[str] = None,
+        export_limit: int = 3,
         requestor_class: Optional[Type[Requestor]] = None,
         requestor_kwargs: Dict[str, Any] = None,
         **config_settings: str
@@ -127,6 +128,8 @@ class Reddit:
             ``None``, then the site name will be looked for in the environment
             variable praw_site. If it is not found there, the DEFAULT site will
             be used.
+        :param export_limit: How many cycles of object exportation should occur
+            before returning None (Default: 3).
         :param requestor_class: A class that will be used to create a
             requestor. If not set, use ``prawcore.Requestor`` (default: None).
         :param requestor_kwargs: Dictionary with additional keyword arguments
@@ -168,6 +171,7 @@ class Reddit:
 
         """
         self._core = self._authorized_core = self._read_only_core = None
+        self.export_limit = export_limit
         self._objector = None
         self._unique_counter = 0
         self._validate_on_submit = False

@@ -1,4 +1,5 @@
 """Provide the Comment class."""
+from json import dumps
 from typing import Any, Dict, Optional, TypeVar, Union
 
 from ...const import API_PATH
@@ -219,6 +220,101 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         if "context" in self.__dict__:
             return self.context.rsplit("/", 4)[1]
         return self.link_id.split("_", 1)[1]
+
+    @staticmethod
+    def _filter_export(name: str, value: Any, private: bool) -> bool:
+        """Filter an attribute, given it's name and value."""
+        if name.startswith("_") and not private:
+            return False  # Private attribute
+        return (
+            hasattr(value, "export")
+            or isinstance(value(str, int, bool, float))
+            or value is None
+        )
+
+    def _export_logic(self, attribute, depth, json, private, string):
+        if depth >= self._reddit.export_limit:
+            return
+        if hasattr(attribute, "export"):
+            if string:
+                return str(attribute)
+            else:
+                return attribute.export(depth + 1, json, private, string)
+        elif (
+            isinstance(attribute, (str, int, bool, float)) or attribute is None
+        ):
+            return attribute
+        elif isinstance(attribute, list):
+            return list(
+                filter(
+                    lambda item: item is not None,
+                    (
+                        self._export_logic(attr, depth, json, private, string)
+                        for attr in attribute
+                    ),
+                )
+            )
+        elif isinstance(attribute, dict):
+            dict(
+                filter(
+                    lambda item: item[1] is not None,
+                    {
+                        k: self._export_logic(
+                            attr, depth, json, private, string
+                        )
+                        for k, attr in attribute.items()
+                    },
+                )
+            )
+        else:
+            return
+
+    def export(
+        self,
+        depth: int = 0,
+        json: bool = True,
+        private: bool = False,
+        string: bool = False,
+    ) -> Optional[Dict[str, Union[Any, Dict[str, Any]]]]:
+        """Export the comment's dictionary, recursively.
+
+        .. note:: Attributes unable to be exported will be removed.
+
+        .. note:: Lazy comments will be exported in the lazy state. Please
+            retrieve an attribute, such as ``comment.score``, if you want all
+            attributes.
+
+        :param depth: How deep in an export chain the export is being called
+            from. If the number exceeds a limit, the method will return None.
+        :param json: Provide a JSON dump. (Default: True)
+        :param private: Include private variables (Default: False)
+        :param string: Convert each model into it's string representation,
+            instead of exporting it's dict.
+        :returns: A dictionary where the keys and values match the attributes
+            of the class.
+
+        Export example:
+
+        .. code-block:: python
+
+            comment = reddit.comment("testid")
+            comment.body # Triggering fetch
+            data = comment.export()
+
+        """
+        if depth >= self._reddit.export_limit:
+            return
+        export_dict = {}
+        for attribute_name, attribute in filter(
+            lambda item: self._filter_export(*item, private),
+            self.__dict__.items(),
+        ):
+            exported = self._export_logic(
+                attribute, depth, json, private, string
+            )
+            if exported is not None:
+                export_dict[attribute_name] = exported
+        return dumps(export_dict) if json else export_dict
 
     def parent(self) -> Union[_Comment, Submission]:
         """Return the parent of the comment.
