@@ -37,6 +37,7 @@ class TestEmoji(UnitTest):
         assert emoji1 == emoji4
         assert emoji1 != emoji5
         assert emoji1 != emoji6
+        assert emoji1 != 5
 
     def test__get(self):
         subreddit = self.reddit.subreddit("a")
