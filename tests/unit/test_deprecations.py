@@ -63,3 +63,7 @@ class TestDeprecation(UnitTest):
         with pytest.raises(DeprecationWarning) as excinfo:
             self.reddit.submission("1234").gild()
             assert excinfo.value.args[0] == "`.gild` has been renamed to `.award`."
+
+    def test_subreddit_stylesheet_call(self):
+        with pytest.raises(DeprecationWarning):
+            self.reddit.subreddit("test").stylesheet()

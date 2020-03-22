@@ -52,7 +52,6 @@ from .reddit.widgets import (
 )
 from .reddit.wikipage import WikiPage
 from .redditors import Redditors
-from .stylesheet import Stylesheet
 from .subreddits import Subreddits
 from .trophy import Trophy
 from .user import User

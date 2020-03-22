@@ -9,6 +9,7 @@ from json import dumps, loads
 from os.path import basename, dirname, isfile, join
 from typing import List
 from urllib.parse import urljoin
+from warnings import warn
 from xml.etree.ElementTree import XML
 
 import websocket
@@ -3198,22 +3199,47 @@ class SubredditStream:
         return stream_generator(self.subreddit.new, **stream_options)
 
 
-class SubredditStylesheet:
+class SubredditStylesheet(RedditBase):
     """Provides a set of stylesheet functions to a Subreddit.
+
+    **Typical Attributes**
+
+    This table describes attributes that typically belong to objects of this
+    class. Since attributes are dynamically provided (see
+    :ref:`determine-available-attributes-of-an-object`), there is not a
+    guarantee that these attributes will always be present, nor is this list
+    necessarily comprehensive.
+
+    ======================= ===================================================
+    Attribute               Description
+    ======================= ===================================================
+    ``images``              A :class:`list` of images used by the stylesheet.
+    ``stylesheet``          The contents of the stylesheet, as CSS.
+    ======================= ===================================================
 
     For example, to add the css data ``.test{color:blue}`` to the existing stylesheet:
 
     .. code-block:: python
 
         subreddit = reddit.subreddit("SUBREDDIT")
-        stylesheet = subreddit.stylesheet()
+        stylesheet = subreddit.stylesheet.stylesheet
         stylesheet += ".test{color:blue}"
         subreddit.stylesheet.update(stylesheet)
 
     """
 
+    STR_FIELD = "subreddit_display_name"
+
     def __call__(self):
-        """Return the subreddit's stylesheet.
+        """Return the subreddit's stylesheet (Deprecated).
+
+        .. note:: As of PRAW 7.0, the model containing the stylesheet data and
+            the class holding the methods have been combined into one. The
+            new class is a lazy class, meaning that attributes have to be
+            called for if wanted. The __call__ method will return itself.
+
+        .. warning:: This method is slated for removal in the next major PRAW
+            release (8.0).
 
         To be used as:
 
@@ -3222,8 +3248,14 @@ class SubredditStylesheet:
             stylesheet = reddit.subreddit("SUBREDDIT").stylesheet()
 
         """
-        url = API_PATH["about_stylesheet"].format(subreddit=self.subreddit)
-        return self.subreddit._reddit.get(url)
+        warn(
+            "This method is deprecated and will be removed in PRAW 8.0. "
+            "Removing the call will still result in the same functionality. "
+            "To do so, remove the ``()`` before the stylesheet attribute.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return self
 
     def __init__(self, subreddit):
         """Create a SubredditStylesheet instance.
@@ -3238,6 +3270,15 @@ class SubredditStylesheet:
 
         """
         self.subreddit = subreddit
+        super().__init__(subreddit._reddit, None)
+        self.subreddit_display_name = self.subreddit.display_name
+
+    def _fetch(self):
+        url = API_PATH["about_stylesheet"].format(subreddit=self.subreddit)
+        data = self.subreddit._reddit.get(url)
+        data = data["data"]
+        del data["subreddit_id"]
+        self.__dict__.update(data)
 
     def _update_structured_styles(self, style_data):
         url = API_PATH["structured_styles"].format(subreddit=self.subreddit)

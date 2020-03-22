@@ -390,7 +390,6 @@ class Reddit:
             "more": models.MoreComments,
             "post-flair": models.PostFlairWidget,
             "rule": models.Rule,
-            "stylesheet": models.Stylesheet,
             "subreddit-rules": models.RulesWidget,
             "textarea": models.TextArea,
             "widget": models.Widget,

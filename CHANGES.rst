@@ -62,6 +62,12 @@ Unreleased
 * :attr:`.WebSocketException.original_exception` is deprecated and slated for removal in
   PRAW 8.0.
 
+**Deprecated**
+
+* :class:`.SubredditStylesheet`\ 's ``__call__`` method
+  (``subreddit.stylesheet()``) is deprecated and slotted for removal in PRAW
+  8.0.
+
 **Fixed**
 
 * An issue where certain subreddit settings could not be set through
@@ -170,6 +176,8 @@ Unreleased
   using an invalid template id, but instead throw a :class:`.InvalidFlairTemplateID`.
 * Method ``reddit.user.moderator_subreddits`` has been removed. Please use
   :meth:`.Redditor.moderated` instead.
+* Class ``Stylesheet`` no longer exists. It has been merged with
+  :class:`.SubredditStylesheet`.
 
 6.5.1 (2020/01/07)
 ------------------

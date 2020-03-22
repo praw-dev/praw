@@ -79,6 +79,12 @@ class TestSubreddit(UnitTest):
         subreddit = Subreddit(self.reddit, display_name="name")
         assert repr(subreddit) == "Subreddit(display_name='name')"
 
+    @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
+    def test_stylesheet_call(self):
+        subreddit = self.reddit.subreddit(pytest.placeholders.test_subreddit)
+        style = subreddit.stylesheet
+        assert type(style()) == type(style)
+
     def test_search__params_not_modified(self):
         params = {"dummy": "value"}
         subreddit = Subreddit(self.reddit, display_name="name")
