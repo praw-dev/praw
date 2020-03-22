@@ -61,6 +61,7 @@ Unreleased
 * Parameter ``discussion_type`` to methods :meth:`.Subreddit.submit`,
   :meth:`.Subreddit.submit_image`, and :meth:`.Subreddit.submit_video` to
   support submitting as a live discussion (set to ``CHAT``).
+* Instances of :class:`.Trophy` can be compared for equality with each other.
 
 **Changed**
 
