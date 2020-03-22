@@ -1,4 +1,4 @@
-"""Container from any server-side errors"""
+"""Container from any server-side errors."""
 
 from typing import List, Optional, TypeVar, Union
 from warnings import warn

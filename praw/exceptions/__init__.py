@@ -7,12 +7,19 @@ goes wrong on the client side. Both of these classes extend
 
 All other exceptions are subclassed from :class:`.ClientException`.
 """
-from .api import APIException, RedditAPIException, RedditErrorItem
+# flake8: noqa
+from .api import (
+    APIException,
+    RedditAPIException,
+    RedditErrorItem,
+)
 from .base import PRAWException
 from .client import (
     ClientException,
     DuplicateReplaceException,
+    InvalidFlairTemplateID,
     InvalidImplicitAuth,
+    InvalidURL,
     MissingRequiredAttributeException,
     TooLargeMediaException,
     WebSocketException,

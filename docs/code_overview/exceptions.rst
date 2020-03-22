@@ -7,8 +7,20 @@ exceptions might be raised that inherit from
 information on those exceptions:
 https://github.com/praw-dev/prawcore/blob/master/prawcore/exceptions.py
 
-praw.exceptions
----------------
+Base Exception
+--------------
 
-.. automodule:: praw.exceptions
+.. autoclass:: praw.exceptions.PRAWException
+   :inherited-members:
+
+Server Exceptions
+-----------------
+
+.. automodule:: praw.exceptions.api
+   :inherited-members:
+
+Client Exceptions
+-----------------
+
+.. automodule:: praw.exceptions.client
    :inherited-members:
