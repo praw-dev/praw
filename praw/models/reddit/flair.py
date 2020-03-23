@@ -56,16 +56,17 @@ class RichFlairBase(RedditBase):
 
     STR_FIELD = "text"
 
-    def __eq__(self, other: Union[str, _RichFlairBase]) -> bool:
+    def __eq__(self, other: Union[str, _RichFlairBase, Any]) -> bool:
         """Check that two instances of the class are equal."""
         if isinstance(other, str):
             return str(self) == other
-        return (
-            isinstance(other, self.__class__)
-            and str(self) == str(other)
-            and self.id == other.id
-            and self.css_class == other.css_class
-        )
+        elif isinstance(other, self.__class__):
+            return (
+                str(self) == str(other)
+                and self.id == other.id
+                and self.css_class == other.css_class
+            )
+        return super().__eq__(other)
 
     def __hash__(self) -> int:
         """Get the hash of the instance."""

@@ -118,6 +118,7 @@ class TestFlairAdvanced(UnitTest):
         assert hash(example_flair) != hash(example_flair_2) and hash(
             example_flair
         ) != hash(example_flair_3)
+        assert example_flair != 5
 
     def test_str(self):
         example = {
@@ -208,6 +209,7 @@ class TestRedditorFlair(UnitTest):
         assert hash(example_flair) != hash(example_flair_2) and hash(
             example_flair
         ) != hash(example_flair_3)
+        assert example_flair != 5
 
     def test_str(self):
         example = {
