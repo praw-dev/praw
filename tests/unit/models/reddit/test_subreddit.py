@@ -107,7 +107,8 @@ class TestSubreddit(UnitTest):
         with pytest.raises(TypeError) as excinfo:
             subreddit.report("Test")
         assert (
-            str(excinfo.value) == "Subreddits can only be reported to admins."
+            str(excinfo.value)
+            == "Subreddits can not be reported to moderators."
         )
 
     def test_upload_banner_additional_image(self):
