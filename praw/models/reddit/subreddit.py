@@ -482,7 +482,7 @@ class Subreddit(MessageableMixin, SubredditListingMixin, FullnameMixin, RedditBa
         .. code-block:: python
 
             subreddit = reddit.subreddit("SUBREDDIT")
-            stylesheet = subreddit.stylesheet()
+            stylesheet = subreddit.stylesheet.stylesheet
             stylesheet += ".test{color:blue}"
             subreddit.stylesheet.update(stylesheet)
 
@@ -3228,7 +3228,7 @@ class SubredditStylesheet(RedditBase):
 
     """
 
-    STR_FIELD = "subreddit_display_name"
+    STR_FIELD = "subreddit_id"
 
     def __call__(self):
         """Return the subreddit's stylesheet (Deprecated).
@@ -3271,13 +3271,11 @@ class SubredditStylesheet(RedditBase):
         """
         self.subreddit = subreddit
         super().__init__(subreddit._reddit, None)
-        self.subreddit_display_name = self.subreddit.display_name
 
     def _fetch(self):
         url = API_PATH["about_stylesheet"].format(subreddit=self.subreddit)
         data = self.subreddit._reddit.get(url)
         data = data["data"]
-        del data["subreddit_id"]
         self.__dict__.update(data)
 
     def _update_structured_styles(self, style_data):
