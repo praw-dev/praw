@@ -1,4 +1,4 @@
-
+import yaml
 import unittest
 import sys
 import random
@@ -9,12 +9,18 @@ class submissionUnitTest(unittest.TestCase):
 
     
     def testLogin(self):
+        login_doc='../../credentials.yaml'
+        with open(login_doc,'r') as stream:
+            credentials=yaml.load(stream)
+        
+        
         self.reddit=None
-        self.username=''
-        self.appName=''
-        self.password=''
-        self.personal_use_script=''
-        self.client_secret=''
+        self.username=credentials['username']
+        self.appName=credentials['user_agent']
+        self.subreddit=credentials['subreddit']
+        self.password=credentials['password']
+        self.personal_use_script=credentials['personal_use_script']
+        self.client_secret=credentials['client_secret']
         #If login works 
         r=praw.Reddit(client_id=self.personal_use_script,
                      client_secret=self.client_secret,
@@ -23,18 +29,22 @@ class submissionUnitTest(unittest.TestCase):
                      password='')
     
     def login(self):
+        login_doc='../../credentials.yaml'
+        with open(login_doc,'r') as stream:
+            credentials=yaml.load(stream)
         self.reddit=None
-        self.username=''
-        self.appName=''
-        self.password=''
-        self.personal_use_script=''
-        self.client_secret=''
+        self.username=credentials['username']
+        self.appName=credentials['user_agent']
+        self.subreddit=credentials['subreddit']
+        self.password=credentials['password']
+        self.personal_use_script=credentials['personal_use_script']
+        self.client_secret=credentials['client_secret']
         #If login works 
         r=praw.Reddit(client_id=self.personal_use_script,
                      client_secret=self.client_secret,
-                     user_agent='',
+                     user_agent=self.appName,
                      username=self.username,
-                     password='')
+                     password=self.password)
         return r
     
     def testPostEmpty(self):
@@ -66,9 +76,9 @@ class submissionUnitTest(unittest.TestCase):
         subreddit.submit_video(title=title,video_path=path_to_video)
         
         
-#if __name__=='__main__' :
-#    teehee=submissionUnitTest()
-#    teehee.testPostEmpty()
+if __name__=='__main__' :
+    teehee=submissionUnitTest()
+    teehee.testPostEmpty()
 #    teehee.testPostWithBody()
 #    teehee.testPostWithImage()
 #    teehee.testPostWithVideo()
