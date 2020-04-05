@@ -1599,8 +1599,11 @@ class TestSubredditModeration(IntegrationTest):
         with self.recorder.use_cassette("TestSubredditModeration.test_update"):
             before_settings = self.subreddit.mod.settings()
             new_title = before_settings["title"] + "x"
-            if len(new_title) == 20:
-                new_title = "x"
+            new_title = (
+                "x"
+                if (len(new_title) >= 20 and "placeholder" not in new_title)
+                else new_title
+            )
             self.subreddit.mod.update(title=new_title)
             assert self.subreddit.title == new_title
             after_settings = self.subreddit.mod.settings()

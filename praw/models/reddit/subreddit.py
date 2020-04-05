@@ -2018,24 +2018,35 @@ class SubredditModeration:
     def update(self, **settings):
         """Update the subreddit's settings.
 
+        :param all_original_content: Mandate all submissions to be original
+            content only.
+        :param allow_chat_post_creation: Allow users to create chat
+            submissions.
         :param allow_images: Allow users to upload images using the native
-            image hosting. Only applies to link-only subreddits.
+            image hosting.
+        :param allow_polls: Allow users to post polls to the subreddit.
         :param allow_post_crossposts: Allow users to crosspost submissions from
             other subreddits.
         :param allow_top: Allow the subreddit to appear on ``r/all`` as well
             as the default and trending lists.
+        :param allow_videos: Allow users to upload videos using the native
+            image hosting.
         :param collapse_deleted_comments: Collapse deleted and removed comments
             on comments pages by default.
+        :param crowd_control_chat_level: Controls the crowd control level for
+            chat rooms. Goes from 0-3.
+        :param crowd_control_level: Controls the crowd control level for
+            submissions. Goes from 0-3.
+        :param crowd_control_mode: Enables/disables crowd control.
         :param comment_score_hide_mins: The number of minutes to hide comment
             scores.
         :param description: Shown in the sidebar of your subreddit.
         :param disable_contributor_requests: Specifies whether redditors may
             send automated modmail messages requesting approval as a submitter.
-        :type disable_contributor_requests: bool
-        :param domain: Domain name with a cname that points to
-            {subreddit}.reddit.com.
         :param exclude_banned_modqueue: Exclude posts by site-wide banned users
             from modqueue/unmoderated.
+        :param free_form_reports: Allow users to specify custom reasons in the
+            report menu.
         :param header_hover_text: The text seen when hovering over the snoo.
         :param hide_ads: Don't show ads within this subreddit. Only applies to
             Premium-user only subreddits.
@@ -2044,16 +2055,16 @@ class SubredditModeration:
         :param lang: A valid IETF language tag (underscore separated).
         :param link_type: The types of submissions users can make.
             One of ``any``, ``link``, ``self``.
+        :param original_content_tag_enabled: Enables the use of the
+            ``original content`` label for submissions.
         :param over_18: Viewers must be over 18 years old (i.e. NSFW).
         :param public_description: Public description blurb. Appears in search
             results and on the landing page for private subreddits.
         :param public_traffic: Make the traffic stats page public.
         :param restrict_commenting: Specifies whether approved users have the
             ability to comment.
-        :type restrict_commenting: bool
         :param restrict_posting: Specifies whether approved users have the
             ability to submit posts.
-        :type restrict_posting: bool
         :param show_media: Show thumbnails on submissions.
         :param show_media_preview: Expand media previews on comments pages.
         :param spam_comments: Spam filter strength for comments.
@@ -2063,8 +2074,6 @@ class SubredditModeration:
         :param spam_selfposts: Spam filter strength for selfposts.
             One of ``all``, ``low``, ``high``.
         :param spoilers_enabled: Enable marking posts as containing spoilers.
-        :param sr: The fullname of the subreddit whose settings will be
-            updated.
         :param submit_link_label: Custom label for submit link button
             (None for default).
         :param submit_text: Text to show on submission page.
@@ -2075,9 +2084,12 @@ class SubredditModeration:
             ``restricted``.
         :param suggested_comment_sort: All comment threads will use this
             sorting method by default. Leave None, or choose one of
-            ``confidence``, ``controversial``, ``new``, ``old``, ``qa``,
-            ``random``, ``top``.
+            ``confidence``, ``controversial``, ``live``, ``new``, ``old``,
+            ``qa``, ``random``, ``top``.
         :param title: The title of the subreddit.
+        :param welcome_message_enabled: Enables the subreddit welcome message.
+        :param welcome_message_text: The text to be used as a welcome message.
+            A welcome message is sent to all new subscribers by a Reddit bot.
         :param wiki_edit_age: Account age, in days, required to edit and create
             wiki pages.
         :param wiki_edit_karma: Subreddit karma required to edit and create
@@ -2107,7 +2119,7 @@ class SubredditModeration:
             "lang": "language",
             "link_type": "content_options",
         }
-        for (new, old) in remap.items():
+        for new, old in remap.items():
             current_settings[new] = current_settings.pop(old)
 
         current_settings.update(settings)
