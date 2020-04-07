@@ -3,6 +3,8 @@
 # pylint: disable=too-many-lines
 import socket
 from copy import deepcopy
+from csv import writer
+from io import StringIO
 from json import dumps, loads
 from os.path import basename, dirname, join
 from urllib.parse import urljoin
@@ -1407,19 +1409,20 @@ class SubredditFlair:
                                   css_class='praw')
 
         """
-        lines = []
+        templines = StringIO()
         for item in flair_list:
             if isinstance(item, dict):
-                fmt_data = (
+                writer(templines).writerow([
                     str(item["user"]),
                     item.get("flair_text", text),
-                    item.get("flair_css_class", css_class),
-                )
+                    item.get("flair_css_class", css_class)
+                ])
             else:
-                fmt_data = (str(item), text, css_class)
-            lines.append('"{}","{}","{}"'.format(*fmt_data))
+                writer(templines).writerow([str(item), text, css_class])
 
-        response = []
+        lines = templines.getvalue().splitlines()
+        templines.close()
+        response=[]
         url = API_PATH["flaircsv"].format(subreddit=self.subreddit)
         while lines:
             data = {"flair_csv": "\n".join(lines[:100])}
