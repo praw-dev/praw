@@ -1412,17 +1412,19 @@ class SubredditFlair:
         templines = StringIO()
         for item in flair_list:
             if isinstance(item, dict):
-                writer(templines).writerow([
-                    str(item["user"]),
-                    item.get("flair_text", text),
-                    item.get("flair_css_class", css_class)
-                ])
+                writer(templines).writerow(
+                    [
+                        str(item["user"]),
+                        item.get("flair_text", text),
+                        item.get("flair_css_class", css_class),
+                    ]
+                )
             else:
                 writer(templines).writerow([str(item), text, css_class])
 
         lines = templines.getvalue().splitlines()
         templines.close()
-        response=[]
+        response = []
         url = API_PATH["flaircsv"].format(subreddit=self.subreddit)
         while lines:
             data = {"flair_csv": "\n".join(lines[:100])}
