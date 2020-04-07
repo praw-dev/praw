@@ -74,9 +74,7 @@ def run_unit():
     Follows the behavior of the static tests,
     where any failed tests cause pre_push.py to fail.
     """
-    return do_process(
-        [sys.executable, path.join(current_directory, "setup.py"), "test"]
-    )
+    return do_process(["pytest"])
 
 
 def main():
