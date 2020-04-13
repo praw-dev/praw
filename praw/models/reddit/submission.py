@@ -468,8 +468,9 @@ class Submission(
            submission.comment_sort = 'new'
            comments = submission.comments.list()
 
-        .. note:: The appropriate values for ``comment_sort`` include ``best``,
-            ``top``, ``new``, ``controversial``, ``old`` and ``q&a``.
+        .. note:: The appropriate values for ``comment_sort`` include
+           ``confidence``, ``controversial``, ``new``, ``old``, ``q&a``,
+           and ``top``
 
         See :ref:`extracting_comments` for more on working with a
         :class:`.CommentForest`.
@@ -548,7 +549,7 @@ class Submission(
         self.comment_limit = 2048
 
         # Specify the sort order for ``comments``
-        self.comment_sort = "best"
+        self.comment_sort = "confidence"
 
         if id is not None:
             self.id = id
