@@ -243,9 +243,9 @@ Obtain :class:`.Comment` Instances
 
 Submissions have a ``comments`` attribute that is a :class:`.CommentForest`
 instance. That instance is iterable and represents the top-level comments of
-the submission by the default comment sort (``best``). If you instead want to
-iterate over *all* comments as a flattened list you can call the :meth:`.list`
-method on a :class:`.CommentForest` instance. For example:
+the submission by the default comment sort (``confidence``). If you instead
+want to iterate over *all* comments as a flattened list you can call the
+:meth:`.list` method on a :class:`.CommentForest` instance. For example:
 
 .. code-block:: python
 

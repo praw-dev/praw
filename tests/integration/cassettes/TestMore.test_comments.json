@@ -53,7 +53,7 @@
       "request": {
         "body": {
           "encoding": "utf-8",
-          "string": "api_type=json&children=cu5tt8h%2Ccu5v9yd%2Ccu5twf5%2Ccu5tkk4%2Ccu5tead%2Ccu5rxpy%2Ccu5oufs%2Ccu5tpek%2Ccu5pbdh&link_id=t3_3hahrw&sort=best"
+          "string": "api_type=json&children=cu5tt8h%2Ccu5v9yd%2Ccu5twf5%2Ccu5tkk4%2Ccu5tead%2Ccu5rxpy%2Ccu5oufs%2Ccu5tpek%2Ccu5pbdh&link_id=t3_3hahrw&sort=confidence"
         },
         "headers": {
           "Accept": "*/*",
@@ -114,7 +114,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.0.0a1 prawcore/0.0.8"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/comments/3hahrw/?limit=2048&sort=best&raw_json=1"
+        "uri": "https://oauth.reddit.com/comments/3hahrw/?limit=2048&sort=confidence&raw_json=1"
       },
       "response": {
         "body": {
@@ -146,7 +146,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/comments/3hahrw/?limit=2048&sort=best&raw_json=1"
+        "url": "https://oauth.reddit.com/comments/3hahrw/?limit=2048&sort=confidence&raw_json=1"
       }
     }
   ],

@@ -643,7 +643,7 @@
           ]
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/comments/ahells/?limit=2048&sort=best&raw_json=1"
+        "uri": "https://oauth.reddit.com/comments/ahells/?limit=2048&sort=confidence&raw_json=1"
       },
       "response": {
         "body": {
@@ -725,7 +725,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/comments/ahells/?limit=2048&sort=best&raw_json=1"
+        "url": "https://oauth.reddit.com/comments/ahells/?limit=2048&sort=confidence&raw_json=1"
       }
     }
   ],

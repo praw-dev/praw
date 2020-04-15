@@ -67,6 +67,8 @@ Unreleased
 
 * ``prawcore.BadRequest`` should no longer be raised. Instead a more useful
   :class:`.RedditAPIException` instance will be raised.
+* Set the default comment sort to ``confidence`` instead of ``best`` because it
+  turns out ``best`` isn't actually the correct value for the parameter.
 
 **Deprecated**
 

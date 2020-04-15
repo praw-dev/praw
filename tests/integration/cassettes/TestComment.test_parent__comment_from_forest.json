@@ -67,7 +67,7 @@
           "User-Agent": "<USER_AGENT> PRAW/4.1.0dev prawcore/0.5.0"
         },
         "method": "GET",
-        "uri": "https://oauth.reddit.com/comments/2gmzqe/?limit=2048&raw_json=1&sort=best"
+        "uri": "https://oauth.reddit.com/comments/2gmzqe/?limit=2048&raw_json=1&sort=confidence"
       },
       "response": {
         "body": {
@@ -102,7 +102,7 @@
           "code": 200,
           "message": "OK"
         },
-        "url": "https://oauth.reddit.com/comments/2gmzqe/?limit=2048&raw_json=1&sort=best"
+        "url": "https://oauth.reddit.com/comments/2gmzqe/?limit=2048&raw_json=1&sort=confidence"
       }
     }
   ],

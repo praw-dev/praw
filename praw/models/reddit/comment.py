@@ -125,8 +125,9 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
            comment.refresh()
            replies = comment.replies
 
-        .. note:: The appropriate values for ``reply_sort`` include ``best``,
-            ``top``, ``new``, ``controversial``, ``old`` and ``q&a``.
+        .. note:: The appropriate values for ``reply_sort`` include
+           ``confidence``, ``controversial``, ``new``, ``old``, ``q&a``,
+           and ``top``.
 
         """
         if isinstance(self._replies, list):
