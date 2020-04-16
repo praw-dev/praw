@@ -31,7 +31,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     ``dest``                Provides an instance of :class:`.Redditor`. The
                             recipient of the message.
     ``id``                  The ID of the message.
-    ``name``                The full ID of the message, prefixed with 't4'.
+    ``name``                The full ID of the message, prefixed with ``t4_``.
     ``subject``             The subject of the message.
     ``was_comment``         Whether or not the message was a comment reply.
     ======================= ===================================================
@@ -122,7 +122,7 @@ class SubredditMessage(Message):
     ``dest``                Provides an instance of :class:`.Redditor`. The
                             recipient of the message.
     ``id``                  The ID of the message.
-    ``name``                The full ID of the message, prefixed with 't4'.
+    ``name``                The full ID of the message, prefixed with ``t4_``.
     ``subject``             The subject of the message.
     ``subreddit``           If the message was sent from a subreddit,
                             provides an instance of :class:`.Subreddit`.
