@@ -47,7 +47,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
     ``link_id``             The submission ID that the comment belongs to.
     ``parent_id``           The ID of the parent comment (prefixed with ``t3_``).
                             If it is a top-level comment, this returns the
-                            submission ID instead (prefixed with ``t3_``).
+                            submission ID instead (prefixed with ``t1_``).
     ``permalink``           A permalink for the comment. Comment objects from
                             the inbox have a ``context`` attribute instead.
     ``replies``             Provides an instance of :class:`.CommentForest`.
