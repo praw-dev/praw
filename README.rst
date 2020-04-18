@@ -82,7 +82,7 @@ With the ``reddit`` instance you can then interact with Reddit:
       print(submission.score)
 
   # Obtain the moderator listing for r/redditdev
-  for moderator in reddit.subreddit('redditdev').moderator:
+  for moderator in reddit.subreddit('redditdev').moderator():
       print(moderator)
 
 Please see PRAW's `documentation <https://praw.readthedocs.io/>`_ for
