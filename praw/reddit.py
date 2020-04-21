@@ -97,15 +97,13 @@ class Reddit:
             warn(
                 "Reddit will check for validation on all posts around "
                 "May-June 2020. It is recommended to check for validation"
-                " by setting reddit.validate_on_submit to True.",
+                " by either initializing the Reddit instance with parameter"
+                "`validate_on_submit=True`, or by adding a line in the "
+                "`praw.ini` file containing `validate_on_submit=True`.",
                 category=DeprecationWarning,
                 stacklevel=3,
             )
         return value
-
-    @validate_on_submit.setter
-    def validate_on_submit(self, val: bool):
-        self._validate_on_submit = val
 
     def __enter__(self):
         """Handle the context manager open."""
@@ -175,7 +173,6 @@ class Reddit:
         self._core = self._authorized_core = self._read_only_core = None
         self._objector = None
         self._unique_counter = 0
-        self._validate_on_submit = False
 
         try:
             config_section = site_name or os.getenv("praw_site") or "DEFAULT"
@@ -218,6 +215,8 @@ class Reddit:
                 "must be set to None via a keyword argument "
                 "to the `Reddit` class constructor."
             )
+
+        self._validate_on_submit = self.config.validate_on_submit
 
         self._check_for_update()
         self._prepare_objector()

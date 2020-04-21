@@ -139,3 +139,7 @@ class Config:
 
         for required_attribute in ("oauth_url", "reddit_url"):
             setattr(self, required_attribute, self._fetch(required_attribute))
+
+        self.validate_on_submit = self._config_boolean(
+            self._fetch_or_not_set("validate_on_submit")
+        )
