@@ -8,6 +8,7 @@ PRAW's configuration options are broken down into the following categories:
 * :ref:`basic_options`
 * :ref:`oauth_options`
 * :ref:`site_options`
+* :ref:`misc_options`
 * :ref:`custom_options`
 
 All of these options can be provided in any of the ways mentioned in
@@ -98,6 +99,21 @@ updated in order to successfully access a third-party Reddit site:
 
 :subreddit_kind: The type prefix for subreddits on the Reddit instance
                  (default: ``t5_``).
+
+.. _misc_options:
+
+Miscellaneous Options
+---------------------
+
+PRAW has a bunch of config options that do not belong in a specific category.
+
+:validate_on_submit: Reddit is planning on enforcing post validation rules
+                     sometime between May and June 2020. As of right now, post
+                     validation is disabled by default, but all submissions
+                     made by a Reddit instance will honor the provided value
+                     for post validation (True/False). However, a value of
+                     False will result in a DeprecationWarning, as the choice
+                     to not use post validation will be removed.
 
 .. _custom_options:
 
