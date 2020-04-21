@@ -345,7 +345,7 @@ class TestSubreddit(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_submit__verify_invalid(self, _):
         self.reddit.read_only = False
-        self.reddit.validate_on_submit = True
+        self.reddit._validate_on_submit = True
         with self.recorder.use_cassette(
             "TestSubreddit.test_submit__verify_invalid"
         ):
@@ -494,7 +494,7 @@ class TestSubreddit(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_submit_image_verify_invalid(self, _):
         self.reddit.read_only = False
-        self.reddit.validate_on_submit = True
+        self.reddit._validate_on_submit = True
         with self.recorder.use_cassette(
             "TestSubreddit.test_submit_image_verify_invalid"
         ):
@@ -711,7 +711,7 @@ class TestSubreddit(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_submit_video_verify_invalid(self, _):
         self.reddit.read_only = False
-        self.reddit.validate_on_submit = True
+        self.reddit._validate_on_submit = True
         with self.recorder.use_cassette(
             "TestSubreddit.test_submit_video_verify_invalid"
         ):

@@ -58,7 +58,7 @@ class TestSubmission(IntegrationTest):
     @mock.patch("time.sleep", return_value=None)
     def test_edit_invalid(self, _):
         self.reddit.read_only = False
-        self.reddit.validate_on_submit = True
+        self.reddit._validate_on_submit = True
         with self.recorder.use_cassette("TestSubmission.test_edit_invalid"):
             submission = Submission(self.reddit, "eippcc")
             with pytest.raises(RedditAPIException):

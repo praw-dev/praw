@@ -12,9 +12,9 @@ class TestDeprecation(UnitTest):
     def test_validate_on_submit(self):
         with pytest.raises(DeprecationWarning):
             self.reddit.validate_on_submit
-        self.reddit.validate_on_submit = True
+        self.reddit._validate_on_submit = True
         assert self.reddit.validate_on_submit
-        self.reddit.validate_on_submit = False
+        self.reddit._validate_on_submit = False
         with pytest.raises(DeprecationWarning):
             self.reddit.validate_on_submit
 

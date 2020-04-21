@@ -33,7 +33,7 @@ class Config:
     def _config_boolean(item):
         if isinstance(item, bool):
             return item
-        return item.lower() in {"1", "yes", "true", "on"}
+        return str(item).lower() in {"1", "yes", "true", "on"}
 
     @classmethod
     def _load_config(cls, config_interpolation: Optional[str] = None):
