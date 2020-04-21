@@ -53,13 +53,6 @@ Glossary
   awarding one month of Reddit Gold. Currently, gilding means awarding one
   month of ``Reddit Platinum``, or giving a ``Platinum`` award.
 
-.. _snake_case:
-
-* ``Snake Case``: Another type of variable notation where words are seperated
-  by underscores. For example, the glossary entry for
-  :ref:`Access Token <access_token>` would be written as ``access_token`` in
-  Snake Case.
-
 .. _websocket:
 
 * ``Websocket``: A special connection type that supports both a client and a
