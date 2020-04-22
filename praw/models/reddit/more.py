@@ -72,18 +72,25 @@ class MoreComments(PRAWBase):
     def comments(self, update: bool = True) -> List[Comment]:
         """Fetch and return the comments for a single MoreComments object."""
         if self._comments is None:
+            self._comments = []
             if self.count == 0:  # Handle 'continue this thread'
                 return self._continue_comments(update)
             assert self.children, "Please file a bug report with PRAW."
-            data = {
-                "children": ",".join(self.children),
-                "link_id": self.submission.fullname,
-                "sort": self.submission.comment_sort,
-            }
-            self._comments = self._reddit.post(
-                API_PATH["morechildren"], data=data
-            )
-            if update:
-                for comment in self._comments:
-                    comment.submission = self.submission
+            queue = (
+                self.children.copy()
+            )  # Issue 1401 requires the use of a queue
+            while queue:
+                print("passed")
+                data = {
+                    "children": ",".join(queue[:500]),
+                    "link_id": self.submission.fullname,
+                    "sort": self.submission.comment_sort,
+                }
+                queue = queue[500:]
+                self._comments.extend(
+                    self._reddit.post(API_PATH["morechildren"], data=data)
+                )
+                if update:
+                    for comment in self._comments:
+                        comment.submission = self.submission
         return self._comments
