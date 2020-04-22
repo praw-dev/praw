@@ -22,7 +22,29 @@ user defined ``praw.ini`` files in a few other locations:
 
    3. In the directory specified by the ``APPDATA`` environment variable
       (Windows).
-
+      
+   .. note:: To check the values of the environment variables, you can
+      open up a terminal (Terminal/Terminal.app/Command Prompt/Powershell)
+      and echo the variables (replacing <varaible> with the name of the 
+      variable:
+      
+      **MacOS/Linux**: 
+      
+      .. code-block:: bash
+      
+         echo "$<variable>"
+         
+      **Windows Command Prompt**
+      
+      .. code-block:: bat
+      
+         echo "%<variable>%"
+         
+      **Powershell**
+      
+      .. code-block:: powershell
+      
+         Write-Output "$env:<variable>"
 
 Format of praw.ini
 ------------------
