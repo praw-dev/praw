@@ -69,6 +69,8 @@ Unreleased
   :class:`.RedditAPIException` instance will be raised.
 * Set the default comment sort to ``confidence`` instead of ``best`` because it
   turns out ``best`` isn't actually the correct value for the parameter.
+* :class:`.MoreComments` use a queue to fetch up to 500 items at a time,
+  instead of making one request for all items.
 
 **Deprecated**
 
