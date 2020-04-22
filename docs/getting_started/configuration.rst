@@ -24,11 +24,11 @@ to :class:`.Reddit`, and finally settings in ``praw.ini`` files.
 Using an HTTP or HTTPS proxy with PRAW
 --------------------------------------
 
-PRAW internally relies upon the `requests <http://docs.python-requests.org/>`_
+PRAW internally relies upon the `requests <http://requests.readthedocs.io/>`_
 package to handle HTTP requests. Requests supports use of ``HTTP_PROXY`` and
 ``HTTPS_PROXY`` environment variables in order to proxy HTTP and HTTPS requests
 respectively [`ref
-<http://docs.python-requests.org/en/master/user/advanced/#proxies>`_].
+<http://requests.readthedocs.io/en/master/user/advanced/#proxies>`_].
 
 Given that PRAW exclusively communicates with Reddit via HTTPS, only the
 ``HTTPS_PROXY`` option should be required.
@@ -47,7 +47,7 @@ Configuring a custom requests Session
 PRAW uses `requests`_ to handle
 networking. If your use-case requires custom configuration, it is possible
 to configure a `Session
-<http://docs.python-requests.org/en/master/user/advanced/#session-objects>`_
+<http://requests.readthedocs.io/en/master/user/advanced/#session-objects>`_
 and then use it with PRAW.
 
 For example, some networks use self-signed SSL certificates when connecting
