@@ -15,7 +15,7 @@ PRAW supports Python 3.5+. The recommended way to install PRAW is via ``pip``.
 
 For instructions on installing Python and pip see "The Hitchhiker's Guide to
 Python" `Installation Guides
-<http://docs.python-guide.org/en/latest/starting/installation/>`_.
+<https://docs.python-guide.org/en/latest/starting/installation/>`_.
 
 Updating PRAW
 -------------

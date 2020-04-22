@@ -51,7 +51,7 @@ Adding and Updating Integration Tests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PRAW's integration tests utilize `Betamax
-<http://betamax.readthedocs.io/en/latest/>`_ to record an interaction with
+<https://betamax.readthedocs.io/en/latest/>`_ to record an interaction with
 Reddit. The recorded interaction is then replayed for subsequent test runs.
 
 To safely record a cassette without leaking your account credentials, PRAW

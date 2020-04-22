@@ -41,9 +41,9 @@ Once we identify these questions, the LMGTFY Bot will reply to the submission
 with an appropriate lmgtfy_ link. For the example
 questions those links are:
 
-1. http://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F
+1. https://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F
 
-2. http://lmgtfy.com/?q=How+many+feet+are+in+a+yard%3F
+2. https://lmgtfy.com/?q=How+many+feet+are+in+a+yard%3F
 
 
 Step 1: Getting Started
@@ -146,7 +146,7 @@ space character, ' ', is not permitted, and the question mark, '?', has a
 special meaning. Thus we will transform those into their URL-safe
 representation so that a question like "What is the capital of Canada?" is
 transformed into the link
-``http://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F)``.
+``https://lmgtfy.com/?q=What+is+the+capital+of+Canada%3F)``.
 
 There are a number of ways we could accomplish this task. For starters we could
 write a function to replace spaces with pluses, ``+``, and question marks with
@@ -160,7 +160,7 @@ comment is located:
 
    from urllib.parse import quote_plus
 
-   reply_template = '[Let me google that for you](http://lmgtfy.com/?q={})'
+   reply_template = '[Let me google that for you](https://lmgtfy.com/?q={})'
 
    url_title = quote_plus(submission.title)
    reply_text = reply_template.format(url_title)
@@ -237,6 +237,6 @@ The following is the complete LMGTFY Bot:
    :language: python
 
 
-.. _lmgtfy: http://lmgtfy.com/
+.. _lmgtfy: https://lmgtfy.com/
 .. _OAuth2 Quick Start Example:
    https://github.com/reddit/reddit/wiki/OAuth2-Quick-Start-Example#first-steps

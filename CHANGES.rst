@@ -786,7 +786,7 @@ parameter as described below:
   https://github.com/reddit/reddit/wiki/OAuth2#authorization-implicit-grant-flow)
 * :meth:`.scopes` to discover which scopes are available to the current
   authentication
-* Lots of documentation: http://praw.readthedocs.io/
+* Lots of documentation: https://praw.readthedocs.io/
 
 4.0.0rc2 (2016/11/20)
 ---------------------
@@ -870,4 +870,4 @@ PRAW 4. If you require additional help please ask on `/r/redditdev
 
 
 For changes prior to version 4.0 please see: `3.4.0 changelog
-<http://praw.readthedocs.io/en/v3.4.0/pages/changelog.html>`_
+<https://praw.readthedocs.io/en/v3.4.0/pages/changelog.html>`_
