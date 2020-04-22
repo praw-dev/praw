@@ -111,11 +111,11 @@ class TestCommentForest(IntegrationTest):
         ):
             submission = Submission(self.reddit, "3hahrw")
             types = [type(x) for x in submission.comments.list()]
-            assert types.count(Comment) == 472
+            assert types.count(Comment) == 470
             assert types.count(MoreComments) == 18
             assert submission.comments[0].replies.replace_more() == []
             types = [type(x) for x in submission.comments.list()]
-            assert types.count(Comment) == 489
+            assert types.count(Comment) == 487
             assert types.count(MoreComments) == 11
 
     def test_replace__on_direct_comment(self):
