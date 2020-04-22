@@ -80,7 +80,6 @@ class MoreComments(PRAWBase):
                 self.children.copy()
             )  # Issue 1401 requires the use of a queue
             while queue:
-                print("passed")
                 data = {
                     "children": ",".join(queue[:500]),
                     "link_id": self.submission.fullname,
