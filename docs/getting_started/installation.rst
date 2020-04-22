@@ -45,3 +45,9 @@ take advantage of? If so, you can install PRAW directly from GitHub like so:
 .. code-block:: bash
 
    pip install --upgrade https://github.com/praw-dev/praw/archive/master.zip
+
+You can also directly clone a copy of the repository using git, like so:
+
+.. code-block:: bash
+
+   pip install --upgrade git+https://github.com/praw-dev/praw.git
