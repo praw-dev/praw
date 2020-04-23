@@ -72,6 +72,11 @@ Unreleased
 
 * :class:`.APIException` is deprecated and slotted for removal in PRAW 8.0.
 
+**Fixed**
+
+* :meth:`.SubredditFlair.update` will not error out when the flair text 
+  contains quotations.
+  
 **Removed**
 
 * Converting :class:`.APIException` to string will no longer escape unicode
