@@ -25,8 +25,8 @@ user defined ``praw.ini`` files in a few other locations:
       
    .. note:: To check the values of the environment variables, you can
       open up a terminal (Terminal/Terminal.app/Command Prompt/Powershell)
-      and echo the variables (replacing <varaible> with the name of the 
-      variable:
+      and echo the variables (replacing <variable> with the name of the 
+      variable):
       
       **MacOS/Linux**: 
       
@@ -156,4 +156,3 @@ for details.
 .. warning:: The ConfigParser instance is cached internally at the class level,
              it is shared across all instances of :class:`.Reddit` and once set
              it's not overridden by future invocations.
-
