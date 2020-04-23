@@ -1,11 +1,12 @@
 """Provide the SavableMixin class."""
+from typing import Optional
 from ....const import API_PATH
 
 
 class SavableMixin:
     """Interface for RedditBase classes that can be saved."""
 
-    def save(self, category=None):
+    def save(self, category: Optional[str] = None):
         """Save the object.
 
         :param category: (Premium) The category to save to. If your user does
