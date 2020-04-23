@@ -26,7 +26,7 @@ user defined ``praw.ini`` files in a few other locations:
    .. note:: To check the values of the environment variables, you can
       open up a terminal (Terminal/Terminal.app/Command Prompt/Powershell)
       and echo the variables (replacing <varaible> with the name of the 
-      variable:
+      variable):
       
       **MacOS/Linux**: 
       
