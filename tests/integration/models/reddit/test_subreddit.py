@@ -4,7 +4,7 @@ import sys
 from json import dumps
 from os.path import abspath, dirname, join
 
-import mock
+from unittest import mock
 import pytest
 import requests
 import websocket

@@ -1,6 +1,6 @@
 """Test praw.models.redditors."""
 
-import mock
+from unittest import mock
 
 from .. import UnitTest
 
