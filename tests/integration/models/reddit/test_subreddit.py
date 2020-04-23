@@ -1132,7 +1132,21 @@ class TestSubredditFlair(IntegrationTest):
             response = self.subreddit.flair.update(
                 flair_list, css_class="default"
             )
-        assert all(x["ok"] for x in response)
+            assert all(x["ok"] for x in response)
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_update_quotes(self, _):
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubredditFlair.test_update_quotes"
+        ):
+            response = self.subreddit.flair.update(
+                [self.reddit.user.me()], text='"testing"', css_class="testing",
+            )
+            assert all(x["ok"] for x in response)
+            flair = next(self.subreddit.flair(self.reddit.user.me()))
+            assert flair["flair_text"] == '"testing"'
+            assert flair["flair_css_class"] == "testing"
 
 
 class TestSubredditFlairTemplates(IntegrationTest):
