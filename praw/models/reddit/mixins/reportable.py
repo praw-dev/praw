@@ -5,7 +5,7 @@ from ....const import API_PATH
 class ReportableMixin:
     """Interface for RedditBase classes that can be reported."""
 
-    def report(self, reason):
+    def report(self, reason: str):
         """Report this object to the moderators of its subreddit.
 
         :param reason: The reason for reporting.
