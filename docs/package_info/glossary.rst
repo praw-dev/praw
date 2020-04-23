@@ -44,7 +44,7 @@ Glossary
 
    .. _fullname_t6:
 
-   - ``t6`` These object represent ``Award``s, such as ``Reddit Gold`` or
+   - ``t6`` These object represent ``Award``\ s, such as ``Reddit Gold`` or
      ``Reddit Silver``.
 
 .. _gild:
