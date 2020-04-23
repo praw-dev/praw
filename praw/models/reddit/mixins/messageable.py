@@ -1,11 +1,19 @@
 """Provide the MessageableMixin class."""
+from typing import Optional, TypeVar, Union
 from ....const import API_PATH
+
+Subreddit = TypeVar("Subreddit")
 
 
 class MessageableMixin:
     """Interface for classes that can be messaged."""
 
-    def message(self, subject, message, from_subreddit=None):
+    def message(
+        self,
+        subject: str,
+        message: str,
+        from_subreddit: Optional[Union[Subreddit, str]] = None,
+    ):
         """
         Send a message to a redditor or a subreddit's moderators (mod mail).
 
