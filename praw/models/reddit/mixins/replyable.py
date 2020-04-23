@@ -5,7 +5,7 @@ from ....const import API_PATH
 class ReplyableMixin:
     """Interface for RedditBase classes that can be replied to."""
 
-    def reply(self, body):
+    def reply(self, body: str):
         """Reply to the object.
 
         :param body: The Markdown formatted content for a comment.

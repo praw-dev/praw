@@ -7,7 +7,7 @@ class FullnameMixin:
     _kind = None
 
     @property
-    def fullname(self):
+    def fullname(self) -> str:
         """Return the object's fullname.
 
         A fullname is an object's kind mapping like ``t3`` followed by an

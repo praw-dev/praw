@@ -21,7 +21,7 @@ class EditableMixin:
         """
         self._reddit.post(API_PATH["del"], {"id": self.fullname})
 
-    def edit(self, body):
+    def edit(self, body: str):
         """Replace the body of the object with ``body``.
 
         :param body: The Markdown formatted content for the updated object.
