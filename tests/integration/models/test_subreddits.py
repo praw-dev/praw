@@ -1,5 +1,5 @@
 """Test praw.models.subreddits."""
-import mock
+from unittest import mock
 
 from praw.models import Subreddit
 

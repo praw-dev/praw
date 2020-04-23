@@ -26,7 +26,6 @@ extras = {
     "test": [
         "betamax >=0.8, <0.9",
         "betamax-matchers >=0.3.0, <0.5",
-        "mock >=0.8",
         "pytest >=2.7.3",
     ],
 }

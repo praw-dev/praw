@@ -1,5 +1,5 @@
 """Test praw.reddit."""
-import mock
+from unittest import mock
 
 from praw.models import LiveThread
 from praw.models.reddit.base import RedditBase

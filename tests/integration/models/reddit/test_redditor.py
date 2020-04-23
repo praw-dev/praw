@@ -1,5 +1,5 @@
 """Test praw.models.redditor."""
-import mock
+from unittest import mock
 import pytest
 from prawcore import Forbidden
 
