@@ -75,7 +75,7 @@ Unreleased
 **Fixed**
 
 * :meth:`.SubredditFlair.update` will not error out when the flair text 
-  contains quotations.
+  contains quote marks.
   
 **Removed**
 
