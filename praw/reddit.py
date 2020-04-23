@@ -655,7 +655,12 @@ class Reddit:
         """
         try:
             return self._core.request(
-                method, path, data=data, files=files, params=params
+                method,
+                path,
+                data=data,
+                files=files,
+                params=params,
+                timeout=self.config.timeout,
             )
         except BadRequest as exception:
             try:
