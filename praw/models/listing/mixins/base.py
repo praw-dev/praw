@@ -39,7 +39,7 @@ class BaseListingMixin(PRAWBase):
         :param time_filter: Can be one of: all, day, hour, month, week, year
             (default: all).
 
-        Raise :py:class:`.ValueError` if ``time_filter`` is invalid.
+        :raises: :py:class:`.ValueError` if ``time_filter`` is invalid.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -119,7 +119,7 @@ class BaseListingMixin(PRAWBase):
         :param time_filter: Can be one of: all, day, hour, month, week, year
             (default: all).
 
-        Raise :py:class:`.ValueError` if ``time_filter`` is invalid.
+        :raises: :py:class:`.ValueError` if ``time_filter`` is invalid.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

@@ -81,7 +81,7 @@ class Reddit:
     def read_only(self, value: bool) -> None:
         """Set or unset the use of the ReadOnlyAuthorizer.
 
-        Raise :class:`ClientException` when attempting to unset ``read_only``
+        :raises: :class:`ClientException` when attempting to unset ``read_only``
         and only the ReadOnlyAuthorizer is available.
 
         """
