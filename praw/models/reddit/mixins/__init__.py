@@ -270,6 +270,8 @@ class ThingModerationMixin:
 
         Example usage:
 
+        .. code-block:: python
+
            # unlock a comment:
            comment = reddit.comment('dkk4qjd')
            comment.mod.unlock()
