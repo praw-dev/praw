@@ -65,6 +65,11 @@ Unreleased
 * :class:`.Reddit` has a new configurable parameter, ``timeout``. This defaults
   to 16 seconds. It controls how long PRAW will wait for a response before
   throwing an exception.
+* PRAW now handles ratelimit errors returned as instances of
+  :class:`.RedditAPIException`.
+* :class:`.Reddit` has one new parameter, ``ratelimit_seconds`` . The parameter
+  configures the maximum amount of seconds to catch ratelimits for.
+  It defaults to 5 seconds when not specified.
 
 **Changed**
 
