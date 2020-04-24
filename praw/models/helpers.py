@@ -105,7 +105,7 @@ class LiveHelper(PRAWBase):
 
         .. code-block:: python
 
-        thread = reddit.live.now()  # LiveThread object or None
+            thread = reddit.live.now()  # LiveThread object or None
 
         """
         return self._reddit.get(API_PATH["live_now"])
