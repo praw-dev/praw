@@ -1,7 +1,7 @@
 import os
 import sys
-
 from unittest import mock
+
 import pytest
 
 from praw.config import Config

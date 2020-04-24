@@ -1,5 +1,6 @@
 """Test praw.models.inbox."""
 from unittest import mock
+
 import pytest
 from prawcore import Forbidden
 

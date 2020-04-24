@@ -1,5 +1,6 @@
 """Test praw.models.comment_forest."""
 from unittest import mock
+
 import pytest
 
 from praw.exceptions import DuplicateReplaceException

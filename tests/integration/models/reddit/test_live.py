@@ -1,5 +1,6 @@
 """Test praw.models.LiveThread"""
 from unittest import mock
+
 import pytest
 
 from praw.const import API_PATH
