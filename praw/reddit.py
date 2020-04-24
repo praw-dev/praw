@@ -1,7 +1,10 @@
 """Provide the Reddit class."""
 import configparser
 import os
+import time
 from itertools import islice
+from logging import getLogger
+from re import search
 from typing import IO, Any, Dict, Generator, Iterable, Optional, Type, Union
 from warnings import warn
 
@@ -40,6 +43,8 @@ Comment = models.Comment
 Redditor = models.Redditor
 Submission = models.Submission
 Subreddit = models.Subreddit
+
+logger = getLogger("praw")
 
 
 class Reddit:
@@ -481,8 +486,7 @@ class Reddit:
             None).
 
         """
-        data = self.request("GET", path, params=params)
-        return self._objector.objectify(data)
+        return self._objectify_request("GET", path, params=params)
 
     def info(
         self,
@@ -542,6 +546,31 @@ class Reddit:
 
         return generator(url)
 
+    def _objectify_request(
+        self,
+        method: str,
+        path: str,
+        params: Optional[Union[str, Dict[str, str]]] = None,
+        data: Optional[
+            Union[Dict[str, Union[str, Any]], bytes, IO, str]
+        ] = None,
+        files: Optional[Dict[str, IO]] = None,
+    ) -> Any:
+        """Run a request through the ``Objector``.
+
+        :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
+        :param path: The path to fetch.
+        :param params: The query parameters to add to the request (default:
+            None).
+        :param data: Dictionary, bytes, or file-like object to send in the body
+            of the request (default: None).
+        :param files: Dictionary, filename to file (like) object mapping
+            (default: None).
+
+        """
+        data = self.request(method, path, params, data, files)
+        return self._objector.objectify(data)
+
     def patch(
         self,
         path: str,
@@ -556,8 +585,7 @@ class Reddit:
             of the request (default: None).
 
         """
-        data = self.request("PATCH", path, data=data)
-        return self._objector.objectify(data)
+        return self._objectify_request("PATCH", path, data=data)
 
     def post(
         self,
@@ -579,10 +607,41 @@ class Reddit:
             None).
 
         """
-        data = self.request(
-            "POST", path, data=data or {}, files=files, params=params
-        )
-        return self._objector.objectify(data)
+        retries = 0
+        while True:
+            _raise = True
+            try:
+                return self._objectify_request(
+                    "POST", path, data=data or {}, files=files, params=params
+                )
+            except RedditAPIException as exception:
+                print(exception)
+                for item in exception.items:
+                    if "ratelimit" in item.error_type.lower():
+                        amount_search = search(
+                            r"([0-9]{1,2}) (seconds?|minutes?)", item.message
+                        )
+                        if not amount_search:
+                            break
+                        seconds = int(amount_search.group(1))
+                        if "minute" in amount_search.group(2):
+                            seconds *= 60
+                        if seconds <= int(self.config.ratelimit_seconds):
+                            sleep_seconds = seconds + min(seconds / 10, 1)
+                            logger.debug(
+                                "Rate limit hit, sleeping for %.2f " "seconds",
+                                sleep_seconds,
+                            )
+                            time.sleep(sleep_seconds)
+                            _raise = False
+                            retries += 1
+                            if retries >= 5:
+                                raise RecursionError(
+                                    "POST request to {} has exceeded the retry"
+                                    " limit of 5 retries.".format(path)
+                                ) from exception
+                if _raise:
+                    raise
 
     def put(
         self,
@@ -598,8 +657,7 @@ class Reddit:
             of the request (default: None).
 
         """
-        data = self.request("PUT", path, data=data)
-        return self._objector.objectify(data)
+        return self._objectify_request("PUT", path, data=data)
 
     def random_subreddit(self, nsfw: bool = False) -> Subreddit:
         """Return a random lazy instance of :class:`~.Subreddit`.
