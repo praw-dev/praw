@@ -77,15 +77,14 @@ class LiveContributorRelationship:
     ):
         """Invite a redditor to be a contributor of the live thread.
 
-        Raise :class:`praw.exceptions.RedditAPIException` if the invitation
-        already exists.
-
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should
             be a list of strings specifying which subset of permissions to
             grant. An empty list ``[]`` indicates no permissions, and when
             not provided (``None``), indicates full permissions.
+        :raises: :class:`praw.exceptions.RedditAPIException` if the invitation
+            already exists.
 
         Usage:
 
@@ -97,7 +96,7 @@ class LiveContributorRelationship:
            # 'manage' and 'settings' permissions
            thread.contributor.invite(redditor, ['manage', 'settings'])
 
-        :seealso: :meth:`.LiveContributorRelationship.remove_invite` to
+        .. seealso:: :meth:`.LiveContributorRelationship.remove_invite` to
             remove the invite for redditor.
 
         """
@@ -126,7 +125,7 @@ class LiveContributorRelationship:
     def remove(self, redditor: Union[str, Redditor]):
         """Remove the redditor from the live thread contributors.
 
-        :param redditor: A redditor fullname (e.g., ``'t2_1w72'``) or
+        :param redditor: A redditor fullname (e.g., ``t2_1w72``) or
             :class:`~.Redditor` instance.
 
         Usage:
@@ -150,7 +149,7 @@ class LiveContributorRelationship:
     def remove_invite(self, redditor: Union[str, Redditor]):
         """Remove the invite for redditor.
 
-        :param redditor: A redditor fullname (e.g., ``'t2_1w72'``) or
+        :param redditor: A redditor fullname (e.g., ``t2_1w72``) or
             :class:`~.Redditor` instance.
 
         Usage:
@@ -162,7 +161,7 @@ class LiveContributorRelationship:
            thread.contributor.remove_invite(redditor)
            thread.contributor.remove_invite('t2_1w72')  # with fullname
 
-        :seealso: :meth:`.LiveContributorRelationship.invite` to
+        .. seealso:: :meth:`.LiveContributorRelationship.invite` to
             invite a redditor to be a contributor of the live thread.
 
         """
@@ -181,7 +180,7 @@ class LiveContributorRelationship:
     ):
         """Update the contributor permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should
             be a list of strings specifying which subset of permissions to
@@ -225,7 +224,7 @@ class LiveContributorRelationship:
     ):
         """Update the contributor invite permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should
             be a list of strings specifying which subset of permissions to
@@ -337,7 +336,7 @@ class LiveThread(RedditBase):
         """Return a lazy :class:`.LiveUpdate` instance.
 
         :param update_id: A live update ID, e.g.,
-            ``'7827987a-c998-11e4-a0b9-22000b6a88d2'``.
+            ``7827987a-c998-11e4-a0b9-22000b6a88d2``.
 
         Usage:
 
@@ -366,7 +365,7 @@ class LiveThread(RedditBase):
         """Initialize a lazy :class:`.LiveThread` instance.
 
         :param reddit: An instance of :class:`.Reddit`.
-        :param id: A live thread ID, e.g., ``'ukaeu1ik4sw5'``
+        :param id: A live thread ID, e.g., ``ukaeu1ik4sw5``
         """
         if bool(id) == bool(_data):
             raise TypeError("Either `id` or `_data` must be provided.")
@@ -417,9 +416,9 @@ class LiveThread(RedditBase):
     def report(self, type: str):  # pylint: disable=redefined-builtin
         """Report the thread violating the Reddit rules.
 
-        :param type: One of ``'spam'``, ``'vote-manipulation'``,
-            ``'personal-information'``, ``'sexualizing-minors'``,
-            ``'site-breaking'``.
+        :param type: One of ``spam``, ``vote-manipulation``,
+            ``personal-information``, ``sexualizing-minors``,
+            ``site-breaking``.
 
         Usage:
 
@@ -636,9 +635,9 @@ class LiveUpdate(FullnameMixin, RedditBase):
         provided.
 
         :param reddit: An instance of :class:`.Reddit`.
-        :param thread_id: A live thread ID, e.g., ``'ukaeu1ik4sw5'``.
+        :param thread_id: A live thread ID, e.g., ``ukaeu1ik4sw5``.
         :param update_id: A live update ID, e.g.,
-            ``'7827987a-c998-11e4-a0b9-22000b6a88d2'``.
+            ``7827987a-c998-11e4-a0b9-22000b6a88d2``.
 
         Usage:
 

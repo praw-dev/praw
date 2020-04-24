@@ -105,7 +105,7 @@ class LiveHelper(PRAWBase):
 
         .. code-block:: python
 
-        thread = reddit.live.now()  # LiveThread object or None
+            thread = reddit.live.now()  # LiveThread object or None
 
         """
         return self._reddit.get(API_PATH["live_now"])
@@ -119,7 +119,7 @@ class MultiredditHelper(PRAWBase):
     ) -> Multireddit:
         """Return a lazy instance of :class:`~.Multireddit`.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance who owns the multireddit.
         :param name: The name of the multireddit.
 
@@ -152,7 +152,7 @@ class MultiredditHelper(PRAWBase):
             ``sports``, ``style``, ``tech``, ``travel``, ``unusual stories``,
             ``video``, or ``None``.
         :param key_color: (Optional) RGB hex color code of the form
-            ``'#FFFFFF'``.
+            ``#FFFFFF``.
         :param visibility: (Optional) Can be one of: ``hidden``, ``private``,
             ``public`` (default: private).
         :param weighting_scheme: (Optional) Can be one of: ``classic``,
@@ -214,11 +214,11 @@ class SubredditHelper(PRAWBase):
             ``restricted`` (default: public).
         :param wikimode: One of  ``anyone``, ``disabled``, ``modonly``.
 
-        See :meth:`~.SubredditModeration.update` for documentation of other
-        available settings.
-
         Any keyword parameters not provided, or set explicitly to None, will
         take on a default value assigned by the Reddit server.
+
+        .. seealso:: :meth:`~.SubredditModeration.update` for documentation
+            of other available settings.
 
         """
         Subreddit._create_or_update(

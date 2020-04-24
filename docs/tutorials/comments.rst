@@ -35,7 +35,8 @@ entire URL:
 
 .. code-block:: python
 
-   submission = reddit.submission(url='https://www.reddit.com/r/funny/comments/3g1jfi/buttons/')
+   url = "https://www.reddit.com/r/funny/comments/3g1jfi/buttons/"
+   submission = reddit.submission(url=url)
 
 or with the submission's ID which comes after ``comments/`` in the URL:
 

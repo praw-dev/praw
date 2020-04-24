@@ -7,9 +7,11 @@ References
 * `Reddit API Wiki Page <https://github.com/reddit/reddit/wiki/API>`_.
 * `Reddit API Documentation <https://www.reddit.com/dev/api>`_.
 
-* `Reddit Help <https://www.reddithelp.com/en>`_. Frequently asked questions and a knowledge base for the site.
+* `Reddit Help <https://www.reddithelp.com/en>`_. Frequently asked questions
+  and a knowledge base for the site.
 * `Reddit Markdown Primer
-  <https://www.reddit.com/wiki/markdown>`_. A guide to the Markdown formatting used on the site.
+  <https://www.reddit.com/wiki/markdown>`_. A guide to the Markdown formatting
+  used on the site.
 * `Reddit Status <https://reddit.statuspage.io/>`_.
   Indicates when Reddit is up or down.
 * `r/changelog <https://www.reddit.com/r/changelog/>`_. Significant changes to

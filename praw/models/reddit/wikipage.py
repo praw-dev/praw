@@ -34,10 +34,10 @@ class WikiPageModeration:
     def add(self, redditor: Redditor):
         """Add an editor to this WikiPage.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
 
-        To add ``'spez'`` as an editor on the wikipage ``'praw_test'`` try:
+        To add ``spez`` as an editor on the wikipage ``praw_test`` try:
 
         .. code-block:: python
 
@@ -53,10 +53,10 @@ class WikiPageModeration:
     def remove(self, redditor: Redditor):
         """Remove an editor from this WikiPage.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
 
-        To remove ``'spez'`` as an editor on the wikipage ``'praw_test'`` try:
+        To remove ``spez`` as an editor on the wikipage ``praw_test`` try:
 
         .. code-block:: python
 
@@ -89,8 +89,8 @@ class WikiPageModeration:
         :param other_settings: Additional keyword arguments to pass.
         :returns: The updated WikiPage settings.
 
-        To set the wikipage ``'praw_test'`` in ``'/r/test'`` to mod only and
-          disable it from showing in the page list, try:
+        To set the wikipage ``praw_test`` in ``/r/test`` to mod only and
+        disable it from showing in the page list, try:
 
         .. code-block:: python
 
@@ -243,7 +243,7 @@ class WikiPage(RedditBase):
     def revision(self, revision: str):
         """Return a specific version of this page by revision ID.
 
-        To view revision ``[ID]`` of ``'praw_test'`` in ``'/r/test'``:
+        To view revision ``[ID]`` of ``praw_test`` in ``/r/test``:
 
         .. code-block:: python
 
@@ -262,7 +262,7 @@ class WikiPage(RedditBase):
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        To view the wiki revisions for ``'praw_test'`` in ``'/r/test'`` try:
+        To view the wiki revisions for ``praw_test`` in ``/r/test`` try:
 
         .. code-block:: python
 

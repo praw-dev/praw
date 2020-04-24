@@ -235,7 +235,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
             ``models pinup``, ``music``, ``news``, ``philosophy``, ``pictures
             and gifs``, ``science``, ``shopping``, ``sports``, ``style``,
             ``tech``, ``travel``, ``unusual stories``, ``video``, or ``None``.
-        :param key_color: RGB hex color code of the form ``'#FFFFFF'``.
+        :param key_color: RGB hex color code of the form ``#FFFFFF``.
         :param visibility: Can be one of: ``hidden``, ``private``, ``public``.
         :param weighting_scheme: Can be one of: ``classic``, ``fresh``.
 

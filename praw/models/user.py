@@ -63,7 +63,9 @@ class User(PRAWBase):
     def contributor_subreddits(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
     ) -> Generator[Subreddit, None, None]:
-        """Return a :class:`.ListingGenerator` of subreddits user is a contributor of.
+        """Return a :class:`.ListingGenerator` of contributor subreddits.
+
+        These are subreddits that the user is a contributor of.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.

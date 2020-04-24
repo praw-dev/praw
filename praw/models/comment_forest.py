@@ -158,6 +158,10 @@ class CommentForest:
                              print('Handling replace_more exception')
                              sleep(1)
 
+        .. warning:: If this method is called, and the comments are refreshed,
+            calling this method again will result in a
+            :class:`.DuplicateReplaceException`.
+
         """
         remaining = limit
         more_comments = self._gather_more_comments(self._comments)
