@@ -2546,7 +2546,7 @@ class ModeratorRelationship(SubredditRelationship):
         user.
 
         For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
-            permissions to ``r/test``, try:
+        permissions to ``r/test``, try:
 
         .. code-block:: python
 

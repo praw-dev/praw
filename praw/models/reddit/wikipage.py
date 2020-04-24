@@ -89,8 +89,8 @@ class WikiPageModeration:
         :param other_settings: Additional keyword arguments to pass.
         :returns: The updated WikiPage settings.
 
-        To set the wikipage ``'praw_test'`` in ``'/r/test'`` to mod only and
-          disable it from showing in the page list, try:
+        To set the wikipage ``praw_test`` in ``/r/test`` to mod only and
+        disable it from showing in the page list, try:
 
         .. code-block:: python
 
