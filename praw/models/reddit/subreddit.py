@@ -1322,7 +1322,7 @@ class SubredditFlair:
     def delete(self, redditor):
         """Delete flair for a Redditor.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
 
         .. note:: To delete the flair of many Redditors at once, please see
@@ -1344,7 +1344,7 @@ class SubredditFlair:
     def set(self, redditor, text="", css_class="", flair_template_id=None):
         """Set flair for a Redditor.
 
-        :param redditor: (Required) A redditor name (e.g., ``'spez'``) or
+        :param redditor: (Required) A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
         :param text: The flair text to associate with the Redditor or
             Submission (default: '').
@@ -1530,13 +1530,13 @@ class SubredditFlairTemplates:
         :param background_color: The flair template's new background color,
             as a hex color.
         :param text_color: The flair template's new text color, either
-            ``'light'`` or ``'dark'``.
+            ``light`` or ``dark``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
             moderators.
-        :param allowable_content: If specified, most be one of ``'all'``,
-            ``'emoji'``, or ``'text'`` to restrict content to that type.
-            If set to ``'emoji'`` then the ``'text'`` param must be a
-            valid emoji string, for example ``':snoo:'``.
+        :param allowable_content: If specified, most be one of ``all``,
+            ``emoji``, or ``text`` to restrict content to that type.
+            If set to ``emoji`` then the ``text`` param must be a
+            valid emoji string, for example ``:snoo:``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
         :param fetch: Whether or not PRAW will fetch existing information on
@@ -1625,13 +1625,13 @@ class SubredditRedditorFlairTemplates(SubredditFlairTemplates):
         :param background_color: The flair template's new background color,
             as a hex color.
         :param text_color: The flair template's new text color, either
-            ``'light'`` or ``'dark'``.
+            ``light`` or ``dark``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
             moderators.
-        :param allowable_content: If specified, most be one of ``'all'``,
-            ``'emoji'``, or ``'text'`` to restrict content to that type.
-            If set to ``'emoji'`` then the ``'text'`` param must be a
-            valid emoji string, for example ``':snoo:'``.
+        :param allowable_content: If specified, most be one of ``all``,
+            ``emoji``, or ``text`` to restrict content to that type.
+            If set to ``emoji`` then the ``text`` param must be a
+            valid emoji string, for example ``:snoo:``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
 
@@ -1706,13 +1706,13 @@ class SubredditLinkFlairTemplates(SubredditFlairTemplates):
         :param background_color: The flair template's new background color,
             as a hex color.
         :param text_color: The flair template's new text color, either
-            ``'light'`` or ``'dark'``.
+            ``light`` or ``dark``.
         :param mod_only: (boolean) Indicate if the flair can only be used by
             moderators.
-        :param allowable_content: If specified, most be one of ``'all'``,
-            ``'emoji'``, or ``'text'`` to restrict content to that type.
-            If set to ``'emoji'`` then the ``'text'`` param must be a
-            valid emoji string, for example ``':snoo:'``.
+        :param allowable_content: If specified, most be one of ``all``,
+            ``emoji``, or ``text`` to restrict content to that type.
+            If set to ``emoji`` then the ``text`` param must be a
+            valid emoji string, for example ``:snoo:``.
         :param max_emojis: (int) Maximum emojis in the flair
             (Reddit defaults this value to 10).
 
@@ -1786,7 +1786,7 @@ class SubredditModeration:
     def edited(self, only=None, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for edited comments and submissions.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``comments``, or ``submissions``
             to yield only results of that type.
 
         Additional keyword arguments are passed in the initialization of
@@ -1861,7 +1861,7 @@ class SubredditModeration:
     def modqueue(self, only=None, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for modqueue items.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``comments``, or ``submissions``
             to yield only results of that type.
 
         Additional keyword arguments are passed in the initialization of
@@ -1927,7 +1927,7 @@ class SubredditModeration:
     def reports(self, only=None, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for reported comments and submissions.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``comments``, or ``submissions``
             to yield only results of that type.
 
         Additional keyword arguments are passed in the initialization of
@@ -1957,7 +1957,7 @@ class SubredditModeration:
     def spam(self, only=None, **generator_kwargs):
         """Return a :class:`.ListingGenerator` for spam comments and submissions.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``comments``, or ``submissions``
             to yield only results of that type.
 
         Additional keyword arguments are passed in the initialization of
@@ -2055,7 +2055,7 @@ class SubredditModeration:
         :param header_hover_text: The text seen when hovering over the snoo.
         :param hide_ads: Don't show ads within this subreddit. Only applies to
             Premium-user only subreddits.
-        :param key_color: A 6-digit rgb hex color (e.g. ``'#AABBCC'``), used as
+        :param key_color: A 6-digit rgb hex color (e.g. ``#AABBCC``), used as
             a thematic color for your subreddit on mobile.
         :param lang: A valid IETF language tag (underscore separated).
         :param link_type: The types of submissions users can make.
@@ -2147,7 +2147,7 @@ class SubredditModerationStream:
     def edited(self, only=None, **stream_options):
         """Yield edited comments and submissions as they become available.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``comments``, or ``submissions``
             to yield only results of that type.
 
         Keyword arguments are passed to :func:`.stream_generator`.
@@ -2228,7 +2228,7 @@ class SubredditModerationStream:
     def modqueue(self, only=None, **stream_options):
         """Yield comments/submissions in the modqueue as they become available.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``comments``, or ``submissions``
             to yield only results of that type.
 
         Keyword arguments are passed to :func:`.stream_generator`.
@@ -2248,7 +2248,7 @@ class SubredditModerationStream:
     def reports(self, only=None, **stream_options):
         """Yield reported comments and submissions as they become available.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``comments``, or ``submissions``
             to yield only results of that type.
 
         Keyword arguments are passed to :func:`.stream_generator`.
@@ -2268,7 +2268,7 @@ class SubredditModerationStream:
     def spam(self, only=None, **stream_options):
         """Yield spam comments and submissions as they become available.
 
-        :param only: If specified, one of ``'comments'``, or ``'submissions'``
+        :param only: If specified, one of ``comments``, or ``submissions``
             to yield only results of that type.
 
         Keyword arguments are passed to :func:`.stream_generator`.
@@ -2434,7 +2434,7 @@ class SubredditRelationship:
     def add(self, redditor, **other_settings):
         """Add ``redditor`` to this relationship.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
 
         """
@@ -2446,7 +2446,7 @@ class SubredditRelationship:
     def remove(self, redditor):
         """Remove ``redditor`` from this relationship.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
 
         """
@@ -2535,7 +2535,7 @@ class ModeratorRelationship(SubredditRelationship):
     def add(self, redditor, permissions=None, **other_settings):
         """Add or invite ``redditor`` to be a moderator of the subreddit.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should be
             a list of strings specifying which subset of permissions to
@@ -2545,7 +2545,7 @@ class ModeratorRelationship(SubredditRelationship):
         An invite will be sent unless the user making this call is an admin
         user.
 
-        For example, to invite ``'spez'`` with ``'posts'`` and ``'mail'``
+        For example, to invite ``spez`` with ``posts`` and ``mail``
         permissions to ``r/test``, try:
 
         .. code-block:: python
@@ -2561,14 +2561,14 @@ class ModeratorRelationship(SubredditRelationship):
     def invite(self, redditor, permissions=None, **other_settings):
         """Invite ``redditor`` to be a moderator of the subreddit.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should be
             a list of strings specifying which subset of permissions to
             grant. An empty list ``[]`` indicates no permissions, and when not
             provided ``None``, indicates full permissions.
 
-        For example, to invite ``'spez'`` with ``posts`` and ``mail``
+        For example, to invite ``spez`` with ``posts`` and ``mail``
             permissions to ``r/test``, try:
 
         .. code-block:: python
@@ -2596,7 +2596,7 @@ class ModeratorRelationship(SubredditRelationship):
     def remove_invite(self, redditor):
         """Remove the moderator invite for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
 
         For example:
@@ -2613,7 +2613,7 @@ class ModeratorRelationship(SubredditRelationship):
     def update(self, redditor, permissions=None):
         """Update the moderator permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should be
             a list of strings specifying which subset of permissions to
@@ -2642,7 +2642,7 @@ class ModeratorRelationship(SubredditRelationship):
     def update_invite(self, redditor, permissions=None):
         """Update the moderator invite permissions for ``redditor``.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should be
             a list of strings specifying which subset of permissions to
@@ -3434,7 +3434,7 @@ class SubredditWiki:
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        To view the wiki revisions for ``'praw_test'`` in ``r/test`` try:
+        To view the wiki revisions for ``praw_test`` in ``r/test`` try:
 
         .. code-block:: python
 

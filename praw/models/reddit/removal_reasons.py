@@ -69,7 +69,7 @@ class RemovalReason(RedditBase):
     def delete(self):
         """Delete a removal reason from this subreddit.
 
-        To delete ``'141vv5c16py7d'`` from the subreddit ``'NAME'`` try:
+        To delete ``141vv5c16py7d`` from the subreddit ``NAME`` try:
 
         .. code-block:: python
 
@@ -87,7 +87,7 @@ class RemovalReason(RedditBase):
         :param message: The removal reason's new message (required).
         :param title: The removal reason's new title (required).
 
-        To update ``'141vv5c16py7d'`` from the subreddit ``'NAME'`` try:
+        To update ``141vv5c16py7d`` from the subreddit ``NAME`` try:
 
         .. code-block:: python
 
@@ -160,7 +160,7 @@ class SubredditRemovalReasons:
 
         The message will be prepended with `Hi u/username,` automatically.
 
-        To add ``'Test'`` to the subreddit ``'NAME'`` try:
+        To add ``Test`` to the subreddit ``NAME`` try:
 
         .. code-block:: python
 

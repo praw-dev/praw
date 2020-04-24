@@ -119,7 +119,7 @@ class MultiredditHelper(PRAWBase):
     ) -> Multireddit:
         """Return a lazy instance of :class:`~.Multireddit`.
 
-        :param redditor: A redditor name (e.g., ``'spez'``) or
+        :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance who owns the multireddit.
         :param name: The name of the multireddit.
 
@@ -152,7 +152,7 @@ class MultiredditHelper(PRAWBase):
             ``sports``, ``style``, ``tech``, ``travel``, ``unusual stories``,
             ``video``, or ``None``.
         :param key_color: (Optional) RGB hex color code of the form
-            ``'#FFFFFF'``.
+            ``#FFFFFF``.
         :param visibility: (Optional) Can be one of: ``hidden``, ``private``,
             ``public`` (default: private).
         :param weighting_scheme: (Optional) Can be one of: ``classic``,
