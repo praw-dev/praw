@@ -182,7 +182,7 @@ class SubmissionModeration(ThingModerationMixin):
                                                         selftext='nsfw')
            submission.mod.nsfw()
 
-        See also :meth:`~.sfw`
+        .. seealso:: :meth:`~.sfw`
 
         """
         self.thing._reddit.post(
@@ -205,7 +205,7 @@ class SubmissionModeration(ThingModerationMixin):
                                                         selftext='original')
            submission.mod.set_original_content()
 
-        See also :meth:`.unset_original_content`
+        .. seealso:: :meth:`.unset_original_content`
 
         """
         data = {
@@ -230,7 +230,7 @@ class SubmissionModeration(ThingModerationMixin):
            submission = reddit.submission(id='5or86n')
            submission.mod.sfw()
 
-        See also :meth:`~.nsfw`
+        .. seealso:: :meth:`~.nsfw`
 
         """
         self.thing._reddit.post(
@@ -250,7 +250,7 @@ class SubmissionModeration(ThingModerationMixin):
            submission = reddit.submission(id='5or86n')
            submission.mod.spoiler()
 
-        See also :meth:`~.unspoiler`
+        .. seealso:: :meth:`~.unspoiler`
 
         """
         self.thing._reddit.post(
@@ -321,7 +321,7 @@ class SubmissionModeration(ThingModerationMixin):
                                                         selftext='original')
            submission.mod.unset_original_content()
 
-        See also :meth:`.set_original_content`
+        .. seealso:: :meth:`.set_original_content`
 
         """
         data = {
@@ -347,7 +347,7 @@ class SubmissionModeration(ThingModerationMixin):
                                                         selftext='spoiler')
            submission.mod.unspoiler()
 
-        See also :meth:`~.spoiler`
+        .. seealso:: :meth:`~.spoiler`
 
         """
         self.thing._reddit.post(
@@ -632,7 +632,7 @@ class Submission(
            submission = reddit.submission(id='5or86n')
            submission.hide()
 
-        See also :meth:`~.unhide`
+        .. seealso:: :meth:`~.unhide`
 
         """
         for submissions in self._chunk(other_submissions, 50):
@@ -652,7 +652,7 @@ class Submission(
            submission = reddit.submission(id='5or86n')
            submission.unhide()
 
-        See also :meth:`~.hide`
+        .. seealso:: :meth:`~.hide`
 
         """
         for submissions in self._chunk(other_submissions, 50):
@@ -698,7 +698,7 @@ class Submission(
            cross_post = submission.crosspost(subreddit="learnprogramming",
                                              send_replies=False)
 
-        See also :meth:`~.hide`
+        .. seealso:: :meth:`~.hide`
 
         """
         if title is None:

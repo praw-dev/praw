@@ -42,7 +42,7 @@ class InboxableMixin:
            message = next(inbox)
            message.collapse()
 
-        See also :meth:`~.uncollapse`
+        .. seealso:: :meth:`~.uncollapse`
 
         """
         self._reddit.inbox.collapse([self])
@@ -62,7 +62,7 @@ class InboxableMixin:
            for message in inbox:
                # process unread messages
 
-        See also :meth:`~.mark_unread`
+        .. seealso:: :meth:`~.mark_unread`
 
         To mark the whole inbox as read with a single network request,
         use :meth:`praw.models.Inbox.mark_read`
@@ -85,7 +85,7 @@ class InboxableMixin:
            for message in inbox:
                # process messages
 
-        See also :meth:`~.mark_read`
+        .. seealso:: :meth:`~.mark_read`
 
         """
         self._reddit.inbox.mark_unread([self])
@@ -106,7 +106,7 @@ class InboxableMixin:
            message = next(inbox)
            message.uncollapse()
 
-        See also :meth:`~.collapse`
+        .. seealso:: :meth:`~.collapse`
 
         """
         self._reddit.inbox.uncollapse([self])

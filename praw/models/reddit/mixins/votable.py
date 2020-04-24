@@ -51,7 +51,7 @@ class VotableMixin:
            comment = reddit.comment(id='dxolpyc')
            comment.downvote()
 
-        See also :meth:`~.upvote`
+        .. seealso:: :meth:`~.upvote`
 
         """
         self._vote(direction=-1)
@@ -75,7 +75,7 @@ class VotableMixin:
            comment = reddit.comment(id='dxolpyc')
            comment.upvote()
 
-        See also :meth:`~.downvote`
+        .. seealso:: :meth:`~.downvote`
 
         """
         self._vote(direction=1)

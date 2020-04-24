@@ -90,7 +90,7 @@ class ThingModerationMixin:
            submission = reddit.submission(id='5or86n')
            submission.mod.distinguish(how='no')
 
-        See also :meth:`~.undistinguish`
+        .. seealso:: :meth:`~.undistinguish`
 
         """
         data = {"how": how, "id": self.thing.fullname}
@@ -117,7 +117,7 @@ class ThingModerationMixin:
            submission = reddit.submission(id='5or86n')
            submission.mod.ignore_reports()
 
-        See also :meth:`~.unignore_reports`
+        .. seealso:: :meth:`~.unignore_reports`
 
         """
         self.thing._reddit.post(
@@ -138,7 +138,7 @@ class ThingModerationMixin:
            submission = reddit.submission(id='5or86n')
            submission.mod.lock()
 
-        See also :meth:`~.unlock`
+        .. seealso:: :meth:`~.unlock`
 
         """
         self.thing._reddit.post(
@@ -235,7 +235,7 @@ class ThingModerationMixin:
            submission = reddit.submission(id='5or86n')
            submission.mod.undistinguish()
 
-        See also :meth:`~.distinguish`
+        .. seealso:: :meth:`~.distinguish`
 
         """
         self.distinguish(how="no")
@@ -258,7 +258,7 @@ class ThingModerationMixin:
            submission = reddit.submission(id='5or86n')
            submission.mod.unignore_reports()
 
-        See also :meth:`~.ignore_reports`
+        .. seealso:: :meth:`~.ignore_reports`
 
         """
         self.thing._reddit.post(
@@ -277,7 +277,7 @@ class ThingModerationMixin:
            submission = reddit.submission(id='5or86n')
            submission.mod.unlock()
 
-        See also :meth:`~.lock`
+        .. seealso:: :meth:`~.lock`
 
         """
         self.thing._reddit.post(

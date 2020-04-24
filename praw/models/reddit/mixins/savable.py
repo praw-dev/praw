@@ -23,7 +23,7 @@ class SavableMixin:
            comment = reddit.comment(id='dxolpyc')
            comment.save()
 
-        See also :meth:`~.unsave`
+        .. seealso:: :meth:`~.unsave`
 
         """
         self._reddit.post(
@@ -43,7 +43,7 @@ class SavableMixin:
            comment = reddit.comment(id='dxolpyc')
            comment.unsave()
 
-        See also :meth:`~.save`
+        .. seealso:: :meth:`~.save`
 
         """
         self._reddit.post(API_PATH["unsave"], data={"id": self.fullname})
