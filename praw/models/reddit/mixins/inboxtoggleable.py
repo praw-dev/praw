@@ -18,7 +18,7 @@ class InboxToggleableMixin:
            submission = reddit.submission('8dmv8z')
            submission.disable_inbox_replies()
 
-        See also :meth:`~.enable_inbox_replies`
+        .. seealso:: :meth:`~.enable_inbox_replies`
 
         """
         self._reddit.post(
@@ -38,7 +38,7 @@ class InboxToggleableMixin:
            submission = reddit.submission('8dmv8z')
            submission.enable_inbox_replies()
 
-        See also :meth:`~.disable_inbox_replies`
+        .. seealso:: :meth:`~.disable_inbox_replies`
 
         """
         self._reddit.post(

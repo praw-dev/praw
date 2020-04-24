@@ -198,7 +198,7 @@ class Collection(RedditBase):
 
            reddit.subreddit('SUBREDDIT').collections('some_uuid').follow()
 
-        See also :meth:`~.unfollow`.
+        .. seealso:: :meth:`~.unfollow`
         """
         self._reddit.post(
             API_PATH["collection_follow"],
@@ -214,7 +214,7 @@ class Collection(RedditBase):
 
            reddit.subreddit('SUBREDDIT').collections('some_uuid').unfollow()
 
-        See also :meth:`~.follow`.
+        .. seealso:: :meth:`~.follow`
         """
         self._reddit.post(
             API_PATH["collection_follow"],
@@ -277,7 +277,7 @@ class CollectionModeration(PRAWBase):
            collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
            collection.mod.add_post('bgibu9')
 
-        See also :meth:`.remove_post`.
+        .. seealso:: :meth:`.remove_post`
 
         """
         link_fullname = self._post_fullname(submission)
@@ -299,7 +299,7 @@ class CollectionModeration(PRAWBase):
 
            reddit.subreddit('SUBREDDIT').collections('some_uuid').mod.delete()
 
-        See also :meth:`~.SubredditCollectionsModeration.create`.
+        .. seealso:: :meth:`~.SubredditCollectionsModeration.create`
 
         """
         self._reddit.post(
@@ -321,7 +321,7 @@ class CollectionModeration(PRAWBase):
            collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
            collection.mod.remove_post('bgibu9')
 
-        See also :meth:`.add_post`.
+        .. seealso:: :meth:`.add_post`
 
         """
         link_fullname = self._post_fullname(submission)
@@ -368,7 +368,7 @@ class CollectionModeration(PRAWBase):
            collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
            collection.mod.update_description('Please enjoy these links!')
 
-        See also :meth:`.update_title`.
+        .. seealso:: :meth:`.update_title`
 
         """
         self._reddit.post(
@@ -391,7 +391,7 @@ class CollectionModeration(PRAWBase):
            collection = reddit.subreddit('SUBREDDIT').collections('some_uuid')
            collection.mod.update_title('Titley McTitleface')
 
-        See also :meth:`.update_description`.
+        .. seealso:: :meth:`.update_description`
 
         """
         self._reddit.post(
@@ -535,7 +535,7 @@ class SubredditCollectionsModeration(PRAWBase):
            new_collection = my_sub.collections.mod.create('Title', 'desc')
            new_collection.mod.add_post('bgibu9')
 
-        See also :meth:`~CollectionModeration.delete`.
+        .. seealso:: :meth:`~CollectionModeration.delete`
 
         """
         return self._reddit.post(
