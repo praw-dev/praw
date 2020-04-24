@@ -421,6 +421,7 @@ class Submission(
 
         :param url: A url to a submission in one of the following formats (http
             urls will also work):
+
             * https://redd.it/2gmzqe
             * https://reddit.com/comments/2gmzqe/
             * https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https/
