@@ -137,10 +137,18 @@ class Config:
         ):
             setattr(self, attribute, self._fetch_or_not_set(attribute))
 
-        for required_attribute in ("oauth_url", "reddit_url", "timeout"):
+        for required_attribute in (
+            "oauth_url",
+            "ratelimit_seconds",
+            "reddit_url",
+            "timeout",
+        ):
             setattr(self, required_attribute, self._fetch(required_attribute))
 
-        for attribute, conversion in {"timeout": int}.items():
+        for attribute, conversion in {
+            "ratelimit_seconds": int,
+            "timeout": int,
+        }.items():
             try:
                 setattr(self, attribute, conversion(getattr(self, attribute)))
             except ValueError:
