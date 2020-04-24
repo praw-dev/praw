@@ -8,7 +8,7 @@ from prawcore.exceptions import BadRequest
 
 from praw import Reddit, __version__
 from praw.config import Config
-from praw.exceptions import ClientException
+from praw.exceptions import ClientException, RedditAPIException
 
 from . import UnitTest
 
@@ -79,6 +79,77 @@ class TestReddit(UnitTest):
 
     def test_multireddit(self):
         assert self.reddit.multireddit("bboe", "aa").path == "/user/bboe/m/aa"
+
+    @mock.patch(
+        "praw.Reddit.request",
+        side_effect=[
+            {
+                "json": {
+                    "errors": [
+                        [
+                            "RATELIMIT",
+                            "You are doing that too much. Try again in 5 "
+                            "seconds.",
+                            "ratelimit",
+                        ]
+                    ]
+                }
+            },
+            {
+                "json": {
+                    "errors": [
+                        [
+                            "RATELIMIT",
+                            "You are doing that too much. Try again in 10 "
+                            "minutes.",
+                            "ratelimit",
+                        ]
+                    ]
+                }
+            },
+            {
+                "json": {
+                    "errors": [
+                        [
+                            "RATELIMIT",
+                            "APRIL FOOLS FROM REDDIT, TRY AGAIN",
+                            "ratelimit",
+                        ]
+                    ]
+                }
+            },
+            {},
+        ],
+    )
+    @mock.patch("time.sleep", return_value=None)
+    def test_post_ratelimit(self, __, _):
+        with pytest.raises(RedditAPIException) as exc:
+            self.reddit.post("test")
+        assert (
+            exc.value.message
+            == "You are doing that too much. Try again in 10 minutes."
+        )
+        with pytest.raises(RedditAPIException) as exc2:
+            self.reddit.post("test")
+        assert exc2.value.message == "APRIL FOOLS FROM REDDIT, TRY AGAIN"
+        assert self.reddit.post("test") == {}
+
+    @mock.patch(
+        "praw.Reddit._objectify_request",
+        side_effect=RedditAPIException(
+            [
+                [
+                    "RATELIMIT",
+                    "You are doing that too much. Try again in 5 seconds.",
+                    "ratelimit",
+                ]
+            ]
+        ),
+    )
+    @mock.patch("time.sleep", return_value=None)
+    def test_post_recursion_error(self, __, _):
+        with pytest.raises(RecursionError):
+            self.reddit.post("test")
 
     def test_read_only__with_authenticated_core(self):
         with Reddit(

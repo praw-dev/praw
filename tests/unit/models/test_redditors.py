@@ -18,9 +18,7 @@ class TestRedditors(UnitTest):
             list(self.reddit.redditors.partial_redditors(in_ids_list))
 
             assert mock_method.call_count == 1
-            assert mock_method.call_args[1]["params"]["ids"] == ",".join(
-                in_ids_list
-            )
+            assert mock_method.call_args[0][2]["ids"] == ",".join(in_ids_list)
 
         with mock.patch.object(self.reddit, "request") as mock_method:
             in_ids_list = [("t2_%d" % n) for n in range(102)]
@@ -28,8 +26,8 @@ class TestRedditors(UnitTest):
 
             assert mock_method.call_count == 2
             cal = mock_method.call_args_list
-            assert cal[0][1]["params"]["ids"] == ",".join(in_ids_list[:100])
-            assert cal[1][1]["params"]["ids"] == ",".join(in_ids_list[-2:])
+            assert cal[0][0][2]["ids"] == ",".join(in_ids_list[:100])
+            assert cal[1][0][2]["ids"] == ",".join(in_ids_list[-2:])
 
     def test_partial_redditors__no_typeerror(self):
         func = self.reddit.redditors.partial_redditors
