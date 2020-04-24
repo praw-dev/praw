@@ -2211,8 +2211,7 @@ class SubredditModerationStream:
 
            subreddit = reddit.subreddit('all')
            for message in subreddit.mod.stream.modmail_conversations():
-               print("From: {}, To: {}".format(message.owner,
-                message.participant))
+               print("From: {}, To: {}".format(message.owner, message.participant))
 
         """  # noqa: E501
         if self.subreddit == "mod":
