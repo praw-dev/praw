@@ -3,8 +3,8 @@ import socket
 import sys
 from json import dumps
 from os.path import abspath, dirname, join
-
 from unittest import mock
+
 import pytest
 import requests
 import websocket

@@ -1,7 +1,7 @@
 import sys
 from os.path import abspath, dirname, join
-
 from unittest import mock
+
 import pytest
 
 from praw.models import (

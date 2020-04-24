@@ -1,4 +1,5 @@
 from unittest import mock
+
 import pytest
 from prawcore import NotFound
 

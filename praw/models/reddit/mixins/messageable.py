@@ -1,5 +1,6 @@
 """Provide the MessageableMixin class."""
 from typing import Optional, TypeVar, Union
+
 from ....const import API_PATH
 
 Subreddit = TypeVar("Subreddit")

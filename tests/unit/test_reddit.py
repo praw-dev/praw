@@ -1,7 +1,7 @@
 import configparser
 import types
-
 from unittest import mock
+
 import pytest
 from prawcore import Requestor
 from prawcore.exceptions import BadRequest

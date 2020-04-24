@@ -1,5 +1,6 @@
 """Test praw.models.user."""
 from unittest import mock
+
 import pytest
 
 from praw.exceptions import RedditAPIException

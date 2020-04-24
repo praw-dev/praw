@@ -13,7 +13,6 @@ import pytest
 from betamax.cassette.cassette import Cassette, dispatch_hooks
 from betamax.serializers import JSONSerializer
 
-
 # pylint: disable=import-error,no-name-in-module
 if sys.version_info.major == 2:
     from urllib import quote_plus  # NOQA
