@@ -103,6 +103,9 @@ class Subreddit(
     ``user_is_subscriber``     Whether the authenticated user is subscribed.
     ========================== ===============================================
 
+    .. note:: Trying to retrieve attributes of quarantined or private
+        subreddits will result in a 403 error. Trying to retrieve attributes of
+        a banned subreddit will result in a 404 error.
 
     .. _Unix Time: https://en.wikipedia.org/wiki/Unix_time
 
