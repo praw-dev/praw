@@ -137,5 +137,5 @@ class Config:
         ):
             setattr(self, attribute, self._fetch_or_not_set(attribute))
 
-        for required_attribute in ("oauth_url", "reddit_url"):
+        for required_attribute in ("oauth_url", "reddit_url", "timeout"):
             setattr(self, required_attribute, self._fetch(required_attribute))

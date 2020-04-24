@@ -62,6 +62,9 @@ Unreleased
   :meth:`.Subreddit.submit_image`, and :meth:`.Subreddit.submit_video` to
   support submitting as a live discussion (set to ``CHAT``).
 * Instances of :class:`.Trophy` can be compared for equality with each other.
+* :class:`.Reddit` has a new configurable parameter, ``timeout``. This defaults
+  to 16 seconds. It controls how long PRAW will wait for a response before
+  throwing an exception.
 
 **Changed**
 
