@@ -8,9 +8,10 @@ easy. Let's get started.
 Prerequisites
 -------------
 
-:Python Knowledge: You need to know at least a little Python to use PRAW; it's a Python wrapper
-                   after all. PRAW supports `Python 3.5+`_. If you are stuck on a problem,
-                   `r/learnpython`_ is a great place to ask for help.
+:Python Knowledge: You need to know at least a little Python to use PRAW; it's
+                   a Python wrapper after all. PRAW supports `Python 3.5+`_. If
+                   you are stuck on a problem, `r/learnpython`_ is a great
+                   place to ask for help.
 
 :Reddit Knowledge: A basic understanding of how Reddit works is a
                    must. In the event you are not already familiar with Reddit

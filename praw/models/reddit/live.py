@@ -77,15 +77,14 @@ class LiveContributorRelationship:
     ):
         """Invite a redditor to be a contributor of the live thread.
 
-        :raises: :class:`praw.exceptions.RedditAPIException` if the invitation
-        already exists.
-
         :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
         :param permissions: When provided (not ``None``), permissions should
             be a list of strings specifying which subset of permissions to
             grant. An empty list ``[]`` indicates no permissions, and when
             not provided (``None``), indicates full permissions.
+        :raises: :class:`praw.exceptions.RedditAPIException` if the invitation
+            already exists.
 
         Usage:
 

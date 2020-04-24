@@ -735,9 +735,11 @@ class Reddit:
             try:
                 data = exception.response.json()
             except ValueError:
-                # TODO: Remove this exception after 2020-12-31 if no one has filed a bug against it.
+                # TODO: Remove this exception after 2020-12-31 if no one has
+                # filed a bug against it.
                 raise Exception(
-                    "Unexpected BadRequest without json body. Please file a bug: https://github.com/praw-dev/praw/issues"
+                    "Unexpected BadRequest without json body. Please file a "
+                    "bug at https://github.com/praw-dev/praw/issues"
                 ) from exception
             if "fields" in data:
                 assert len(data["fields"]) == 1

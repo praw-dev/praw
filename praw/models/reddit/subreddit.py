@@ -2209,8 +2209,10 @@ class SubredditModerationStream:
 
         .. code-block:: python
 
-           for message in reddit.subreddit('all').mod.stream.modmail_conversations():
-               print("From: {}, To: {}".format(message.owner, message.participant))
+           subreddit = reddit.subreddit('all')
+           for message in subreddit.mod.stream.modmail_conversations():
+               print("From: {}, To: {}".format(message.owner,
+                message.participant))
 
         """  # noqa: E501
         if self.subreddit == "mod":
@@ -3244,7 +3246,8 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_additional_image('banner.png')
+           subreddit = reddit.subreddit('SUBREDDIT')
+           subreddit.stylesheet.upload_banner_additional_image('banner.png')
 
         """
         alignment = {}
@@ -3281,7 +3284,8 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit('SUBREDDIT').stylesheet.upload_banner_hover_image('banner.png')
+           subreddit = reddit.subreddit('SUBREDDIT')
+           subreddit.stylesheet.upload_banner_hover_image('banner.png')
 
         """
         image_type = "secondaryBannerPositionedImage"

@@ -520,7 +520,8 @@ class Submission(
         """Return a shortlink to the submission.
 
         For example http://redd.it/eorhm is a shortlink for
-        https://www.reddit.com/r/announcements/comments/eorhm/reddit_30_less_typing/.
+        https://www.reddit.com/r/announcements/comments/eorhm/
+        reddit_30_less_typing/.
 
         """
         return urljoin(self._reddit.config.short_url, self.id)
