@@ -2323,7 +2323,7 @@ class SubredditModerationStream:
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        .. seealso:: :meth:`inbox` for all messages.
+        .. seealso:: :meth:`~.inbox` for all messages.
 
         To print new mail in the unread modmail queue try:
 

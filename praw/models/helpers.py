@@ -218,7 +218,7 @@ class SubredditHelper(PRAWBase):
         take on a default value assigned by the Reddit server.
 
         .. seealso:: :meth:`~.SubredditModeration.update` for documentation
-        of other available settings.
+            of other available settings.
 
         """
         Subreddit._create_or_update(
