@@ -98,13 +98,15 @@ class Subreddits(PRAWBase):
     ) -> Generator[Subreddit, None, None]:
         """Return a :class:`.ListingGenerator` of subreddits matching ``query``.
 
-        Subreddits are searched by both their title and description. To search
-        names only see ``search_by_name``.
+        Subreddits are searched by both their title and description.
 
         :param query: The query string to filter subreddits by.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
+
+        .. seealso:: :meth:`~.search_by_name` to search by subreddit names
+
         """
         self._safely_add_arguments(generator_kwargs, "params", q=query)
         return ListingGenerator(

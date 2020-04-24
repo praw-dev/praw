@@ -730,7 +730,7 @@ class Subreddit(
             (default: all).
 
         For more information on building a search query see:
-            https://www.reddit.com/wiki/search
+        https://www.reddit.com/wiki/search
 
         For example to search all subreddits for ``praw`` try:
 
@@ -827,10 +827,10 @@ class Subreddit(
            url = 'https://praw.readthedocs.io'
            reddit.subreddit('reddit_api_test').submit(title, url=url)
 
-        .. note ::
+        .. seealso ::
 
-           For submitting images, videos, and videogifs,
-           see :meth:`.submit_image` and :meth:`.submit_video`.
+           * :meth:`.submit_image` to submit images
+           * :meth:`.submit_video`. to submit videos and videogifs
 
         """
         if (bool(selftext) or selftext == "") == bool(url):
@@ -927,6 +927,11 @@ class Subreddit(
            title = 'My favorite picture'
            image = '/path/to/image.png'
            reddit.subreddit('reddit_api_test').submit_image(title, image)
+
+        .. seealso ::
+
+           * :meth:`.submit` to submit url posts and selftexts
+           * :meth:`.submit_video`. to submit videos and videogifs
 
         """
         data = {
@@ -1030,6 +1035,11 @@ class Subreddit(
            title = 'My favorite movie'
            video = '/path/to/video.mp4'
            reddit.subreddit('reddit_api_test').submit_video(title, video)
+
+        .. seealso ::
+
+           * :meth:`.submit` to submit url posts and selftexts
+           * :meth:`.submit_image` to submit images
 
         """
         data = {
@@ -1325,8 +1335,10 @@ class SubredditFlair:
         :param redditor: A redditor name (e.g., ``spez``) or
             :class:`~.Redditor` instance.
 
-        .. note:: To delete the flair of many Redditors at once, please see
-                  :meth:`~praw.models.reddit.subreddit.SubredditFlair.update`.
+        .. seealso::
+
+            :meth:`~praw.models.reddit.subreddit.SubredditFlair.update` to
+            delete the flair of many Redditors at once.
 
         """
         url = API_PATH["deleteflair"].format(subreddit=self.subreddit)
@@ -1813,7 +1825,7 @@ class SubredditModeration:
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        See ``unread`` for unread moderator messages.
+        .. seealso:: :meth:`~.unread` for unread moderator messages.
 
         To print the last 5 moderator mail messages and their replies, try:
 
@@ -2004,7 +2016,7 @@ class SubredditModeration:
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
 
-        See ``inbox`` for all messages.
+        .. seealso:: :meth:`inbox` for all messages.
 
         To print the mail in the unread modmail queue try:
 
@@ -2308,7 +2320,7 @@ class SubredditModerationStream:
 
         Keyword arguments are passed to :func:`.stream_generator`.
 
-        See ``inbox`` for all messages.
+        .. seealso:: :meth:`inbox` for all messages.
 
         To print new mail in the unread modmail queue try:
 

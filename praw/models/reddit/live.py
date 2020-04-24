@@ -96,7 +96,7 @@ class LiveContributorRelationship:
            # 'manage' and 'settings' permissions
            thread.contributor.invite(redditor, ['manage', 'settings'])
 
-        :seealso: :meth:`.LiveContributorRelationship.remove_invite` to
+        .. seealso:: :meth:`.LiveContributorRelationship.remove_invite` to
             remove the invite for redditor.
 
         """
@@ -161,7 +161,7 @@ class LiveContributorRelationship:
            thread.contributor.remove_invite(redditor)
            thread.contributor.remove_invite('t2_1w72')  # with fullname
 
-        :seealso: :meth:`.LiveContributorRelationship.invite` to
+        .. seealso:: :meth:`.LiveContributorRelationship.invite` to
             invite a redditor to be a contributor of the live thread.
 
         """

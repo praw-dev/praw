@@ -214,11 +214,11 @@ class SubredditHelper(PRAWBase):
             ``restricted`` (default: public).
         :param wikimode: One of  ``anyone``, ``disabled``, ``modonly``.
 
-        See :meth:`~.SubredditModeration.update` for documentation of other
-        available settings.
-
         Any keyword parameters not provided, or set explicitly to None, will
         take on a default value assigned by the Reddit server.
+
+        .. seealso:: :meth:`~.SubredditModeration.update` for documentation
+        of other available settings.
 
         """
         Subreddit._create_or_update(
