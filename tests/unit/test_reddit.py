@@ -61,6 +61,14 @@ class TestReddit(UnitTest):
             == "An incorrect config type was given for option timeout. The "
             "expected type is int, but the given value is test."
         )
+        with pytest.raises(ValueError) as excinfo:
+            Reddit(ratelimit_seconds="test", **self.REQUIRED_DUMMY_SETTINGS)
+        assert (
+            excinfo.value.args[0]
+            == "An incorrect config type was given for option "
+            "ratelimit_seconds. The expected type is int, but the given value "
+            "is test."
+        )
 
     def test_info__not_list(self):
         with pytest.raises(TypeError) as excinfo:
@@ -83,6 +91,18 @@ class TestReddit(UnitTest):
     @mock.patch(
         "praw.Reddit.request",
         side_effect=[
+            {
+                "json": {
+                    "errors": [
+                        [
+                            "RATELIMIT",
+                            "You are doing that too much. Try again in 5 "
+                            "seconds.",
+                            "ratelimit",
+                        ]
+                    ]
+                }
+            },
             {
                 "json": {
                     "errors": [
@@ -127,29 +147,18 @@ class TestReddit(UnitTest):
             self.reddit.post("test")
         assert (
             exc.value.message
-            == "You are doing that too much. Try again in 10 minutes."
+            == "You are doing that too much. Try again in 5 seconds."
         )
         with pytest.raises(RedditAPIException) as exc2:
             self.reddit.post("test")
-        assert exc2.value.message == "APRIL FOOLS FROM REDDIT, TRY AGAIN"
-        assert self.reddit.post("test") == {}
-
-    @mock.patch(
-        "praw.Reddit._objectify_request",
-        side_effect=RedditAPIException(
-            [
-                [
-                    "RATELIMIT",
-                    "You are doing that too much. Try again in 5 seconds.",
-                    "ratelimit",
-                ]
-            ]
-        ),
-    )
-    @mock.patch("time.sleep", return_value=None)
-    def test_post_recursion_error(self, __, _):
-        with pytest.raises(RecursionError):
+        assert (
+            exc2.value.message
+            == "You are doing that too much. Try again in 10 minutes."
+        )
+        with pytest.raises(RedditAPIException) as exc3:
             self.reddit.post("test")
+        assert exc3.value.message == "APRIL FOOLS FROM REDDIT, TRY AGAIN"
+        assert self.reddit.post("test") == {}
 
     def test_read_only__with_authenticated_core(self):
         with Reddit(

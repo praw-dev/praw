@@ -145,7 +145,10 @@ class Config:
         ):
             setattr(self, required_attribute, self._fetch(required_attribute))
 
-        for attribute, conversion in {"timeout": int}.items():
+        for attribute, conversion in {
+            "timeout": int,
+            "ratelimit_seconds": int,
+        }.items():
             try:
                 setattr(self, attribute, conversion(getattr(self, attribute)))
             except ValueError:

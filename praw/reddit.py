@@ -586,12 +586,12 @@ class Reddit:
     def _handle_rate_limit(
         self,
         exception: RedditAPIException,
-        method: Callable[[Any], Any],
-        *method_args: Any,
-        **method_kwargs: Any
+        retry: Callable[[Any], Any],
+        *retry_args: Any,
+        **retry_kwargs: Any
     ) -> Any:
         for item in exception.items:
-            if "RATELIMIT" == item.error_type():
+            if "RATELIMIT" == item.error_type:
                 amount_search = search(
                     r"([0-9]{1,2}) (seconds?|minutes?)", item.message
                 )
@@ -607,7 +607,7 @@ class Reddit:
                         sleep_seconds,
                     )
                     time.sleep(sleep_seconds)
-                    return method(*method_args, **method_kwargs)
+                    return retry(*retry_args, **retry_kwargs)
         raise exception
 
     def patch(
@@ -657,8 +657,8 @@ class Reddit:
             )
         except RedditAPIException as exception:
             return self._handle_rate_limit(
-                exception,
-                self._objectify_request,
+                exception=exception,
+                retry=self._objectify_request,
                 data=data,
                 files=files,
                 method="POST",
