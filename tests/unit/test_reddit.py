@@ -53,6 +53,15 @@ class TestReddit(UnitTest):
 
         assert excinfo.match("(?i)mutually exclusive")
 
+    def test_invalid_config(self):
+        with pytest.raises(ValueError) as excinfo:
+            Reddit(timeout="test", **self.REQUIRED_DUMMY_SETTINGS)
+        assert (
+            excinfo.value.args[0]
+            == "An incorrect config type was given for option timeout. The "
+            "expected type is int, but the given value is test."
+        )
+
     def test_info__not_list(self):
         with pytest.raises(TypeError) as excinfo:
             self.reddit.info("Let's try a string")
