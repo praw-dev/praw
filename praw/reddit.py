@@ -1,21 +1,11 @@
 """Provide the Reddit class."""
 import configparser
 import os
+import re
 import time
 from itertools import islice
 from logging import getLogger
-from re import search
-from typing import (
-    IO,
-    Any,
-    Callable,
-    Dict,
-    Generator,
-    Iterable,
-    Optional,
-    Type,
-    Union,
-)
+from typing import IO, Any, Dict, Generator, Iterable, Optional, Type, Union
 from warnings import warn
 
 from prawcore import (
@@ -74,6 +64,7 @@ class Reddit:
     """
 
     update_checked = False
+    _ratelimit_regex = re.compile(r"([0-9]{1,2}) (seconds?|minutes?)")
 
     @property
     def _next_unique(self):
@@ -578,23 +569,18 @@ class Reddit:
         :param path: The path to fetch.
 
         """
-        data = self.request(
-            data=data, files=files, method=method, params=params, path=path
+        return self._objector.objectify(
+            self.request(
+                data=data, files=files, method=method, params=params, path=path
+            )
         )
-        return self._objector.objectify(data)
 
     def _handle_rate_limit(
-        self,
-        exception: RedditAPIException,
-        retry: Callable[[Any], Any],
-        *retry_args: Any,
-        **retry_kwargs: Any
-    ) -> Any:
+        self, exception: RedditAPIException
+    ) -> Optional[Union[int]]:
         for item in exception.items:
-            if "RATELIMIT" == item.error_type:
-                amount_search = search(
-                    r"([0-9]{1,2}) (seconds?|minutes?)", item.message
-                )
+            if item.error_type == "RATELIMIT":
+                amount_search = self._ratelimit_regex.search(item.message)
                 if not amount_search:
                     break
                 seconds = int(amount_search.group(1))
@@ -602,13 +588,8 @@ class Reddit:
                     seconds *= 60
                 if seconds <= int(self.config.ratelimit_seconds):
                     sleep_seconds = seconds + min(seconds / 10, 1)
-                    logger.debug(
-                        "Rate limit hit, sleeping for %.2f " "seconds",
-                        sleep_seconds,
-                    )
-                    time.sleep(sleep_seconds)
-                    return retry(*retry_args, **retry_kwargs)
-        raise exception
+                    return sleep_seconds
+        return None
 
     def patch(
         self,
@@ -656,15 +637,22 @@ class Reddit:
                 path=path,
             )
         except RedditAPIException as exception:
-            return self._handle_rate_limit(
-                exception=exception,
-                retry=self._objectify_request,
-                data=data,
-                files=files,
-                method="POST",
-                params=params,
-                path=path,
-            )
+            seconds = self._handle_rate_limit(exception=exception)
+            if seconds is not None:
+                logger.debug(
+                    "Rate limit hit, sleeping for {:.2f} seconds".format(
+                        seconds
+                    )
+                )
+                time.sleep(seconds)
+                return self._objectify_request(
+                    data=data,
+                    files=files,
+                    method="POST",
+                    params=params,
+                    path=path,
+                )
+            raise
 
     def put(
         self,
@@ -726,12 +714,12 @@ class Reddit:
 
         :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
         :param path: The path to fetch.
+        :param params: The query parameters to add to the request (default:
+            None).
         :param data: Dictionary, bytes, or file-like object to send in the body
             of the request (default: None).
         :param files: Dictionary, filename to file (like) object mapping
             (default: None).
-        :param params: The query parameters to add to the request (default:
-            None).
 
         """
         try:
