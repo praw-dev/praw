@@ -25,7 +25,7 @@ class Redditors(PRAWBase):
     ) -> Generator[Subreddit, None, None]:
         """Return a :class:`.ListingGenerator` for new Redditors.
 
-        :returns:Redditor profiles, which are a type of :class:`.Subreddit`.
+        :returns: Redditor profiles, which are a type of :class:`.Subreddit`.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -39,7 +39,7 @@ class Redditors(PRAWBase):
     ) -> Generator[Subreddit, None, None]:
         """Return a :class:`.ListingGenerator` for popular Redditors.
 
-        :returns:Redditor profiles, which are a type of :class:`.Subreddit`.
+        :returns: Redditor profiles, which are a type of :class:`.Subreddit`.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
@@ -55,7 +55,7 @@ class Redditors(PRAWBase):
 
         :param query: The query string to filter Redditors by.
 
-        :returns::class:`.Redditor`\ s.
+        :returns: :class:`.Redditor`\ s.
 
         Additional keyword arguments are passed in the initialization of
         :class:`.ListingGenerator`.
