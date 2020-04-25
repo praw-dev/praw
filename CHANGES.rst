@@ -80,7 +80,7 @@ Change Log
 
 **Deprecated**
 
-* :class:`.APIException` is deprecated and slotted for removal in PRAW 8.0.
+* :class:`.APIException` is deprecated and slated for removal in PRAW 8.0.
 
 **Fixed**
 
