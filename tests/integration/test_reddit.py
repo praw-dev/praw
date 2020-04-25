@@ -1,14 +1,30 @@
 """Test praw.reddit."""
+import pytest
 from unittest import mock
 
 from praw.models import LiveThread
 from praw.models.reddit.base import RedditBase
 from praw.models.reddit.submission import Submission
+from prawcore.exceptions import BadRequest
 
 from . import IntegrationTest
 
 
 class TestReddit(IntegrationTest):
+    def test_bare_badrequest(self):
+        data = {
+            "sr": "AskReddit",
+            "field": "link",
+            "kind": "link",
+            "title": "l",
+            "text": "lol",
+            "show_error_list": True,
+        }
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestReddit.test_bare_badrequest"):
+            with pytest.raises(BadRequest):
+                self.reddit.post("/api/validate_submission_field", data=data)
+
     def test_info(self):
         bases = ["t1_d7ltv", "t3_5dec", "t5_2qk"]
         items = []

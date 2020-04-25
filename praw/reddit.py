@@ -778,6 +778,8 @@ class Reddit:
                     "Unexpected BadRequest without json body. Please file a "
                     "bug at https://github.com/praw-dev/praw/issues"
                 ) from exception
+            if list(data) == ["message", "error"]:
+                raise
             if "fields" in data:
                 assert len(data["fields"]) == 1
                 field = data["fields"][0]
