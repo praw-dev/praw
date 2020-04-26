@@ -73,7 +73,7 @@ class CommentForest:
         return len(self._comments)
 
     def _insert_comment(self, comment):
-        if comment.name in self._submission._comments_by_id:
+        if vars(comment).get("name", None) in self._submission._comments_by_id:
             raise DuplicateReplaceException
         comment.submission = self._submission
         if isinstance(comment, MoreComments) or comment.is_root:
