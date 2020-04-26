@@ -16,6 +16,9 @@ class TestSubmission(IntegrationTest):
             assert isinstance(submission.comments[0], Comment)
             assert isinstance(submission.comments[0].replies[0], Comment)
 
+    def test_comment_sort(self):
+        with self.recorder.use_cassette("")
+
     def test_clear_vote(self):
         self.reddit.read_only = False
         with self.recorder.use_cassette("TestSubmission.test_clear_vote"):

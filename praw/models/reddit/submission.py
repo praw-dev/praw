@@ -535,7 +535,7 @@ class Submission(SubmissionListingMixin, UserContentMixin, FullnameMixin, Reddit
         self.comment_limit = 2048
 
         # Specify the sort order for ``comments``
-        self.comment_sort = "confidence"
+        self.comment_sort = self._reddit.config.comment_sort if self._reddit.config.comment_sort else "confidence"
 
         if id is not None:
             self.id = id

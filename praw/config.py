@@ -125,6 +125,7 @@ class Config:
         for attribute in (
             "client_id",
             "client_secret",
+            "comment_sort",
             "redirect_uri",
             "refresh_token",
             "password",
