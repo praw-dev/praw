@@ -79,12 +79,18 @@ class CommentForest:
         if isinstance(comment, MoreComments) or comment.is_root:
             self._comments.append(comment)
         else:
-            assert comment.parent_id in self._submission._comments_by_id, (
-                "PRAW Error occured. Please file a bug report and include "
-                "the code that caused the error."
-            )
-            parent = self._submission._comments_by_id[comment.parent_id]
-            parent.replies._comments.append(comment)
+            if comment.parent_id in self._submission._comments_by_id:
+                parent = self._submission._comments_by_id[comment.parent_id]
+                parent.replies._comments.append(comment)
+            elif comment.parent_id == self._submission.id:
+                self._submission._comments_by_id[comment.id] = comment
+                self._submission.comments._comments.append(comment)
+            else:
+                self._insert_comment(
+                    self._submission._reddit.comment(comment.parent_id)
+                )
+                parent = self._submission._comments_by_id[comment.parent_id]
+                parent.replies._comments.append(comment)
 
     def _update(self, comments):
         self._comments = comments
