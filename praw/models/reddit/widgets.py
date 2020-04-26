@@ -9,13 +9,15 @@ from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
 
+
 class WidgetBase(PRAWBase):
     """A PRAWBase that converts string RGB values into integers."""
 
     def __setattr__(self, name: str, value: Union[str, Any]):
         """Convert RGB values (#XXXXXX) to int."""
-        if value.startswith("#") and len(value) == 7:
-            value = int(value[1:], 16)
+        if isinstance(value, str):
+            if value.startswith("#") and len(value) == 7:
+                value = int(value[1:], 16)
         super().__setattr__(name, value)
 
 
@@ -52,6 +54,7 @@ class Button(WidgetBase):
     ======================= ===================================================
     """
 
+
 class Hover(WidgetBase):
     """Class to represent the hover data for a :class:`.ButtonWidget`.
 
@@ -80,6 +83,7 @@ class Hover(WidgetBase):
     ``width``               Image width. Only present on image buttons.
     ======================= ===================================================
     """
+
 
 class Image(WidgetBase):
     """Class to represent an image that's part of a :class:`.ImageWidget`.
@@ -165,6 +169,7 @@ class Style(WidgetBase):
                             hexadecimal
 
     """
+
 
 class Submenu(BaseList):
     r"""Class to represent a submenu of links inside a menu.
@@ -406,8 +411,10 @@ class SubredditWidgetsModeration:
     """
 
     @classmethod
-    def _convert_color_list_to_RGB(cls, data: List[Union[Dict[str, Union[int, Any]]]]) -> List[Union[Dict[str, Union[str, Any]]]]:
-        """Iterates through a list, running dictionaries through the other method."""
+    def _convert_color_list_to_RGB(
+        cls, data: List[Union[Dict[str, Union[int, Any]]]]
+    ) -> List[Union[Dict[str, Union[str, Any]]]]:
+        """Iterate through a list, running dictionaries through the other method."""
         converted = []
         for item in data:
             if isinstance(item, dict):
@@ -419,8 +426,10 @@ class SubredditWidgetsModeration:
         return converted
 
     @classmethod
-    def _convert_color_to_RGB(cls, data: Dict[str, Union[int, List[Any]]]) -> Dict[str, Union[str, Any]]:
-        """Iterates through a dictionary, converting color keys to RGB strings.
+    def _convert_color_to_RGB(
+        cls, data: Dict[str, Union[int, List[Any]]]
+    ) -> Dict[str, Union[str, Any]]:
+        """Iterate through a dictionary, converting color keys to RGB strings.
 
         For example, given the dict below:
 
@@ -456,7 +465,6 @@ class SubredditWidgetsModeration:
             else:
                 converted[key] = value
         return converted
-
 
     def __init__(self, subreddit, reddit):
         """Initialize the class."""
