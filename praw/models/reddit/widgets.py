@@ -51,7 +51,7 @@ class Button(WidgetBase):
     """
 
 
-class Image(PRAWBase):
+class Image(WidgetBase):
     """Class to represent an image that's part of a :class:`.ImageWidget`.
 
     **Typical Attributes**
@@ -73,7 +73,7 @@ class Image(PRAWBase):
     """
 
 
-class ImageData(PRAWBase):
+class ImageData(WidgetBase):
     """Class for image data that's part of a :class:`.CustomWidget`.
 
     **Typical Attributes**
@@ -95,7 +95,7 @@ class ImageData(PRAWBase):
     """
 
 
-class MenuLink(PRAWBase):
+class MenuLink(WidgetBase):
     """Class to represent a single link inside a menu or submenu.
 
     **Typical Attributes**
@@ -140,7 +140,7 @@ class Submenu(BaseList):
     CHILD_ATTRIBUTE = "children"
 
 
-class SubredditWidgets(PRAWBase):
+class SubredditWidgets(WidgetBase):
     """Class to represent a subreddit's widgets.
 
     Create an instance like so:
@@ -930,7 +930,7 @@ class SubredditWidgetsModeration:
         return upload_url + "/" + upload_data["key"]
 
 
-class Widget(PRAWBase):
+class Widget(WidgetBase):
     """Base class to represent a Widget."""
 
     @property
