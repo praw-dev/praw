@@ -405,6 +405,59 @@ class SubredditWidgetsModeration:
        with appropriate permissions.
     """
 
+    @classmethod
+    def _convert_color_list_to_RGB(cls, data: List[Union[Dict[str, Union[int, Any]]]]) -> List[Union[Dict[str, Union[str, Any]]]]:
+        """Iterates through a list, running dictionaries through the other method."""
+        converted = []
+        for item in data:
+            if isinstance(item, dict):
+                converted.append(cls._convert_color_to_RGB(item))
+            if isinstance(item, list):
+                converted.append(cls._convert_color_list_to_RGB(item))
+            else:
+                converted.append(item)
+        return converted
+
+    @classmethod
+    def _convert_color_to_RGB(cls, data: Dict[str, Union[int, List[Any]]]) -> Dict[str, Union[str, Any]]:
+        """Iterates through a dictionary, converting color keys to RGB strings.
+
+        For example, given the dict below:
+
+        .. code-block:: python
+
+            data = {"buttons": [{"color": 16777215, # OxFFFFFF = 16777215
+                 "text": "Hello World!"},
+                {"color": 0, # Ox000000 = 0
+                 "url": "https://www.google.com"}],
+            "backgroundColor": 65280 # 0x00FF00 = 65280
+            }
+
+        When run through the converter, results in:
+
+        .. code-block:: python
+
+            data = {"buttons": [{"color": "#FFFFFF", # OxFFFFFF = 16777215
+                 "text": "Hello World!"},
+                {"color": , # Ox000000 = 0
+                 "url": "https://www.google.com"}],
+            "backgroundColor": 65280 # 0x00FF00 = 65280
+            }
+
+        """
+        converted = {}
+        for key, value in data.items():
+            if isinstance(value, dict):
+                converted[key] = cls._convert_color_to_RGB(value)
+            elif isinstance(value, list):
+                converted[key] = cls._convert_color_list_to_RGB(value)
+            elif "color" in key.lower() and isinstance(value, int):
+                converted[key] = "#{}".format(hex(value)[2:])
+            else:
+                converted[key] = value
+        return converted
+
+
     def __init__(self, subreddit, reddit):
         """Initialize the class."""
         self._subreddit = subreddit
@@ -1791,7 +1844,7 @@ class WidgetEncoder(JSONEncoder):
                 for key, val in vars(o).items()
                 if not key.startswith("_")
             }
-        return JSONEncoder.default(self, o)
+        return super().default(o)
 
 
 class WidgetModeration:
