@@ -2,14 +2,24 @@
 
 import os.path
 from json import JSONEncoder, dumps
+from typing import Any, Dict, List, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
 from ..base import PRAWBase
 from ..list.base import BaseList
 
+class WidgetBase(PRAWBase):
+    """A PRAWBase that converts string RGB values into integers."""
 
-class Button(PRAWBase):
+    def __setattr__(self, name: str, value: Union[str, Any]):
+        """Convert RGB values (#XXXXXX) to int."""
+        if value.startswith("#") and len(value) == 7:
+            value = int(value[1:], 16)
+        super().__setattr__(name, value)
+
+
+class Button(WidgetBase):
     """Class to represent a single button inside a :class:`.ButtonWidget`.
 
     **Typical Attributes**
