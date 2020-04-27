@@ -22,8 +22,8 @@ A: This means that either you provided the wrong password and/or the account
 you are trying to sign in with has 2FA enabled, and as such, either needs a 2FA
 token or a refresh token to sign in. A refresh token is preferred, because then
 you will not need to enter a 2FA token in order to sign in, and the session
-will last for longer than an hour. Refer to :ref:`2FA` and :ref:`code_flow` in
-order to use the respective auth methods.
+will last for longer than an hour. Refer to :ref:`2FA` and :ref:`refresh_token`
+in order to use the respective auth methods.
 
 .. _faq3:
 
@@ -32,3 +32,18 @@ How can I extend the timeout?
 
 A: Set the timeout config option or initialize :class:`.Reddit` with a timeout
 of your choosing.
+
+.. _faq4:
+
+Q: Help, I keep on getting redirected to `/login`!
+
+A: PRAW is most likely on a read-only mode. This normally occurs when you log in
+without a username/password or a refresh_token. You need to sign in with either
+one of those. See :ref:`oauth_options` to see the avaliable methods
+to sign in. 
+
+A2: You could also be using a Reddit instance in read-only mode. To set the 
+instance to not be in read_only mode, do `reddit.read_only = False`.
+
+.. note:: Trying to set an instance of Reddit to non-read-only without being signed
+   in will raise a :class:`.ClientException`.
