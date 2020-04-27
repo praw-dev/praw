@@ -59,8 +59,8 @@ class Preferences:
         :param creddit_autorenew: Use a creddit to automatically renew my
             gold if it expires (boolean).
         :param default_comment_sort: Default comment sort (one of
-            ``'confidence'``, ``'top'``, ``'new'``, ``'controversial'``,
-            ``'old'``, ``'random'``, ``'qa'``, ``'live'``).
+            ``"confidence"``, ``"top"``, ``"new"``, ``"controversial"``,
+            ``"old"``, ``"random"``, ``"qa"``, ``"live"``).
         :param domain_details: Show additional details in the domain text
             when available, such as the source subreddit or the content
             author's url/name (boolean).
@@ -68,22 +68,22 @@ class Preferences:
         :param email_messages: Send messages as emails (boolean).
         :param email_unsubscribe_all: Unsubscribe from all emails (boolean).
         :param enable_default_themes: Use reddit theme (boolean).
-        :param g: Location (one of ``'GLOBAL'``, ``'AR'``, ``'AU'``, ``'BG'``,
-            ``'CA'``, ``'CL'``, ``'CO'``, ``'CZ'``, ``'FI'``, ``'GB'``,
-            ``'GR'``, ``'HR'``, ``'HU'``, ``'IE'``, ``'IN'``, ``'IS'``,
-            ``'JP'``, ``'MX'``, ``'MY'``, ``'NZ'``, ``'PH'``, ``'PL'``,
-            ``'PR'``, ``'PT'``, ``'RO'``, ``'RS'``, ``'SE'``, ``'SG'``,
-            ``'TH'``, ``'TR'``, ``'TW'``, ``'US'``, ``'US_AK'``, ``'US_AL'``,
-            ``'US_AR'``, ``'US_AZ'``, ``'US_CA'``, ``'US_CO'``, ``'US_CT'``,
-            ``'US_DC'``, ``'US_DE'``, ``'US_FL'``, ``'US_GA'``, ``'US_HI'``,
-            ``'US_IA'``, ``'US_ID'``, ``'US_IL'``, ``'US_IN'``, ``'US_KS'``,
-            ``'US_KY'``, ``'US_LA'``, ``'US_MA'``, ``'US_MD'``, ``'US_ME'``,
-            ``'US_MI'``, ``'US_MN'``, ``'US_MO'``, ``'US_MS'``, ``'US_MT'``,
-            ``'US_NC'``, ``'US_ND'``, ``'US_NE'``, ``'US_NH'``, ``'US_NJ'``,
-            ``'US_NM'``, ``'US_NV'``, ``'US_NY'``, ``'US_OH'``, ``'US_OK'``,
-            ``'US_OR'``, ``'US_PA'``, ``'US_RI'``, ``'US_SC'``, ``'US_SD'``,
-            ``'US_TN'``, ``'US_TX'``, ``'US_UT'``, ``'US_VA'``, ``'US_VT'``,
-            ``'US_WA'``, ``'US_WI'``, ``'US_WV'``, ``'US_WY'``).
+        :param g: Location (one of ``"GLOBAL"``, ``"AR"``, ``"AU"``, ``"BG"``,
+            ``"CA"``, ``"CL"``, ``"CO"``, ``"CZ"``, ``"FI"``, ``"GB"``,
+            ``"GR"``, ``"HR"``, ``"HU"``, ``"IE"``, ``"IN"``, ``"IS"``,
+            ``"JP"``, ``"MX"``, ``"MY"``, ``"NZ"``, ``"PH"``, ``"PL"``,
+            ``"PR"``, ``"PT"``, ``"RO"``, ``"RS"``, ``"SE"``, ``"SG"``,
+            ``"TH"``, ``"TR"``, ``"TW"``, ``"US"``, ``"US_AK"``, ``"US_AL"``,
+            ``"US_AR"``, ``"US_AZ"``, ``"US_CA"``, ``"US_CO"``, ``"US_CT"``,
+            ``"US_DC"``, ``"US_DE"``, ``"US_FL"``, ``"US_GA"``, ``"US_HI"``,
+            ``"US_IA"``, ``"US_ID"``, ``"US_IL"``, ``"US_IN"``, ``"US_KS"``,
+            ``"US_KY"``, ``"US_LA"``, ``"US_MA"``, ``"US_MD"``, ``"US_ME"``,
+            ``"US_MI"``, ``"US_MN"``, ``"US_MO"``, ``"US_MS"``, ``"US_MT"``,
+            ``"US_NC"``, ``"US_ND"``, ``"US_NE"``, ``"US_NH"``, ``"US_NJ"``,
+            ``"US_NM"``, ``"US_NV"``, ``"US_NY"``, ``"US_OH"``, ``"US_OK"``,
+            ``"US_OR"``, ``"US_PA"``, ``"US_RI"``, ``"US_SC"``, ``"US_SD"``,
+            ``"US_TN"``, ``"US_TX"``, ``"US_UT"``, ``"US_VA"``, ``"US_VT"``,
+            ``"US_WA"``, ``"US_WI"``, ``"US_WV"``, ``"US_WY"``).
         :param hide_ads: Hide ads (boolean).
         :param hide_downs: Don't show me submissions after I've downvoted them,
             except my own (boolean).
@@ -105,10 +105,10 @@ class Preferences:
             (boolean).
         :param mark_messages_read: Mark messages as read when I open my inbox
             (boolean).
-        :param media: Thumbnail preference (one of ``'on'``, ``'off'``,
-            ``'subreddit'``).
-        :param media_preview: Media preview preference (one of ``'on'``,
-            ``'off'``, ``'subreddit'``).
+        :param media: Thumbnail preference (one of ``"on"``, ``"off"``,
+            ``"subreddit"``).
+        :param media_preview: Media preview preference (one of ``"on"``,
+            ``"off"``, ``"subreddit"``).
         :param min_comment_score: Don't show me comments with a score less than
             this number (int between ``-100`` and ``100``).
         :param min_link_score: Don't show me submissions with a score less than
