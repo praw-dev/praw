@@ -37,8 +37,8 @@ of your choosing.
 
 Q: Help, I keep on getting redirected to `/login`!
 
-A: PRAW is most likely on a read-only mode. This normally occurs when you log in
-without a username/password or a refresh_token. You need to sign in with either
+A: PRAW is most likely in read-only mode. This normally occurs when you log in
+without a username and password or a refresh token. You need to sign in with either
 one of those. See :ref:`oauth_options` to see the avaliable methods
 to sign in. 
 
