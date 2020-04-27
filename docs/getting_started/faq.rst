@@ -37,25 +37,7 @@ of your choosing.
 
 Q: Help, I keep on getting redirected to ``/r/subreddit/login/``!
 
-Q2: I keep on getting this exception!:
-
-.. parsed-literal::
-
-    Traceback (most recent call last):
-      File "/usr/local/lib/python3.7/site-packages/praw/models/reddit/subreddit.py", line 1121, in traffic
-        API_PATH["about_traffic"].format(subreddit=self)
-      File "/usr/local/lib/python3.7/site-packages/praw/reddit.py", line 490, in get
-        return self._objectify_request(method="GET", params=params, path=path)
-      File "/usr/local/lib/python3.7/site-packages/praw/reddit.py", line 574, in _objectify_request
-        data=data, files=files, method=method, params=params, path=path
-      File "/usr/local/lib/python3.7/site-packages/praw/reddit.py", line 732, in request
-        timeout=self.config.timeout,
-      File "/usr/local/lib/python3.7/site-packages/prawcore/sessions.py", line 336, in request
-        url=url,
-      File "/usr/local/lib/python3.7/site-packages/prawcore/sessions.py", line 265, in _request_with_retries
-        raise self.STATUS_EXCEPTIONS[response.status_code](response)
-    prawcore.exceptions.Redirect: Redirect to /r/AskReddit/login/ (You may be trying to perform a non-read-only action via a 
-    read-only instance.)
+Q2: I keep on getting this exception: ``prawcore.exceptions.Redirect: Redirect to /r/subreddit/login/ (You may be trying to perform a non-read-only action via a read-only instance.)``
 
 A: PRAW is most likely in read-only mode. This normally occurs when PRAW is
 authenticated without a username and password or a refresh token. In order to perform
