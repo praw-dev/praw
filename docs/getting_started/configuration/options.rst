@@ -20,7 +20,7 @@ Basic Configuration Options
 
 :check_for_updates: When ``true``, check for new versions of PRAW. When a
                     newer version of PRAW is available a message is reported
-                    via standard out (default: ``true``).
+                    via standard error (default: ``true``).
 
 :user_agent: (Required) A unique description of your application. The following
              format is recommended according to `Reddit's API Rules
