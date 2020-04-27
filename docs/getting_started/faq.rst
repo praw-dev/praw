@@ -54,7 +54,8 @@ Q2: I keep on getting this exception!:
         url=url,
       File "/usr/local/lib/python3.7/site-packages/prawcore/sessions.py", line 265, in _request_with_retries
         raise self.STATUS_EXCEPTIONS[response.status_code](response)
-    prawcore.exceptions.Redirect: Redirect to /r/AskReddit/login/ (You may be trying to perform a non-read-only action via a     read-only instance.)
+    prawcore.exceptions.Redirect: Redirect to /r/AskReddit/login/ (You may be trying to perform a non-read-only action via a 
+    read-only instance.)
 
 A: PRAW is most likely in read-only mode. This normally occurs when PRAW is
 authenticated without a username and password or a refresh token. In order to perform
