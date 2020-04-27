@@ -27,7 +27,7 @@ class Button(PRAWBase):
     ``height``              Image height. Only present on image buttons.
     ``hoverState``          A ``dict`` describing the state of the button when
                             hovered over. Optional.
-    ``kind``                Either ``text`` or ``image``.
+    ``kind``                Either ``"text"`` or ``"image"``.
     ``linkUrl``             A link that can be visited by clicking the button.
                             Only present on image buttons.
     ``text``                The text displayed on the button.
@@ -563,7 +563,7 @@ class SubredditWidgetsModeration:
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param data: A ``list`` of subreddits. Subreddits can be represented as
-                     ``str`` (e.g. the string ``redditdev``) or as
+                     ``str`` (e.g. the string ``"redditdev"``) or as
                      :class:`.Subreddit` (e.g.
                      ``reddit.subreddit('redditdev')``). These types may be
                      mixed within the list.
@@ -571,7 +571,7 @@ class SubredditWidgetsModeration:
                        ``headerColor``, and values of hex colors. For example,
                        ``{'backgroundColor': '#FFFF66', 'headerColor':
                        '#3333EE'}``.
-        :param description: A ``str`` containing Markdown (default: ``''``).
+        :param description: A ``str`` containing Markdown (default: ``""``).
 
         Example usage:
 
@@ -615,12 +615,12 @@ class SubredditWidgetsModeration:
             .. note::
                 As of this writing, Reddit will not accept empty CSS. If you
                 wish to create a custom widget without CSS, consider using
-                ``/**/`` (an empty comment) as your CSS.
+                ``"/**/"`` (an empty comment) as your CSS.
 
         :param height: The height of the widget, between 50 and 500.
         :param image_data: A ``list`` of ``dict``\ s as specified in
             `Reddit docs`_. Each ``dict`` represents an image and has the
-            key ``url`` which maps to the URL of an image hosted on
+            key ``"url"`` which maps to the URL of an image hosted on
             Reddit's servers. Images should be uploaded using
             :meth:`.upload_image`.
 
@@ -677,7 +677,7 @@ class SubredditWidgetsModeration:
 
         :param short_name: A name for the widget, no longer than 30 characters.
         :param data: A ``list`` of ``dict``\ s as specified in `Reddit docs`_.
-            Each ``dict`` has the key ``url`` which maps to the URL
+            Each ``dict`` has the key ``"url"`` which maps to the URL
             of an image hosted on Reddit's servers. Images should
             be uploaded using :meth:`.upload_image`.
 
@@ -779,7 +779,7 @@ class SubredditWidgetsModeration:
         """Add and return a :class:`.PostFlairWidget`.
 
         :param short_name: A name for the widget, no longer than 30 characters.
-        :param display: Display style. Either ``cloud`` or ``list``.
+        :param display: Display style. Either ``"cloud"`` or ``"list"``.
         :param order: A ``list`` of flair template IDs. You can get all flair
             template IDs in a subreddit with:
 
@@ -851,7 +851,7 @@ class SubredditWidgetsModeration:
         :param new_order: A list of widgets. Represented as a ``list`` that
             contains ``Widget`` objects, or widget IDs as strings. These types
             may be mixed.
-        :param section: The section to reorder. (default: ``sidebar``)
+        :param section: The section to reorder. (default: ``"sidebar"``)
 
         Example usage:
 
@@ -1038,10 +1038,10 @@ class ButtonWidget(Widget, BaseList):
     ``description``         The description, in Markdown.
     ``description_html``    The description, in HTML.
     ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``button``).
+    ``kind``                The widget kind (always ``"button"``).
     ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``backgroundColor`` and
-                            ``headerColor``.
+    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
+                            ``"headerColor"``.
     ``subreddit``           The :class:`.Subreddit` the button widget belongs
                             to.
     ======================= ===================================================
@@ -1112,11 +1112,11 @@ class Calendar(Widget):
     ``configuration``       A ``dict`` describing the calendar configuration.
     ``data``                A ``list`` of ``dict``\ s that represent events.
     ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``calendar``).
+    ``kind``                The widget kind (always ``"calendar"``).
     ``requiresSync``        A ``bool``.
     ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``backgroundColor`` and
-                            ``headerColor``.
+    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
+                            ``"headerColor"``.
     ``subreddit``           The :class:`.Subreddit` the button widget belongs
                             to.
     ======================= ===================================================
@@ -1182,10 +1182,10 @@ class CommunityList(Widget, BaseList):
                             :class:`.CommunityList` (e.g. ``for sub in
                             community_list``).
     ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``community-list``).
+    ``kind``                The widget kind (always ``"community-list"``).
     ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``backgroundColor`` and
-                            ``headerColor``.
+    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
+                            ``"headerColor"``.
     ``subreddit``           The :class:`.Subreddit` the button widget belongs
                             to.
     ======================= ===================================================
@@ -1252,10 +1252,10 @@ class CustomWidget(Widget):
     ``id``                  The widget ID.
     ``imageData``           A ``list`` of :class:`.ImageData` that belong to
                             the widget.
-    ``kind``                The widget kind (always ``custom``).
+    ``kind``                The widget kind (always ``"custom"``).
     ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``backgroundColor`` and
-                            ``headerColor``.
+    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
+                            ``"headerColor"``.
     ``stylesheetUrl``       A link to the widget's stylesheet.
     ``subreddit``           The :class:`.Subreddit` the button widget belongs
                             to.
@@ -1303,10 +1303,10 @@ class IDCard(Widget):
                                 example, "users online".
     ``description``             The subreddit description.
     ``id``                      The widget ID.
-    ``kind``                    The widget kind (always ``id-card``).
+    ``kind``                    The widget kind (always ``"id-card"``).
     ``shortName``               The short name of the widget.
-    ``styles``                  A ``dict`` with the keys ``backgroundColor``
-                                and ``headerColor``.
+    ``styles``                  A ``dict`` with the keys ``"backgroundColor"``
+                                and ``"headerColor"``.
     ``subreddit``               The :class:`.Subreddit` the button widget
                                 belongs to.
     ``subscribersCount``        The number of subscribers to the subreddit.
@@ -1378,10 +1378,10 @@ class ImageWidget(Widget, BaseList):
                             :class:`.ImageWidget` (e.g. ``for img in
                             image_widget``).
     ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``image``).
+    ``kind``                The widget kind (always ``"image"``).
     ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``backgroundColor`` and
-                            ``headerColor``.
+    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
+                            ``"headerColor"``.
     ``subreddit``           The :class:`.Subreddit` the button widget belongs
                             to.
     ======================= ===================================================
@@ -1457,7 +1457,7 @@ class Menu(Widget, BaseList):
                             Can be iterated over by iterating over the
                             :class:`.Menu` (e.g. ``for item in menu``).
     ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``menu``).
+    ``kind``                The widget kind (always ``"menu"``).
     ``subreddit``           The :class:`.Subreddit` the button widget belongs
                             to.
     ======================= ===================================================
@@ -1494,13 +1494,13 @@ class ModeratorsWidget(Widget, BaseList):
     Attribute               Description
     ======================= ===================================================
     ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``moderators``).
+    ``kind``                The widget kind (always ``"moderators"``).
     ``mods``                A list of the :class:`.Redditor`\ s that moderate
                             the subreddit. Can be iterated over by iterating
                             over the :class:`.ModeratorsWidget` (e.g. ``for
                             mod in widgets.moderators_widget``).
-    ``styles``              A ``dict`` with the keys ``backgroundColor``
-                            and ``headerColor``.
+    ``styles``              A ``dict`` with the keys ``"backgroundColor"``
+                            and ``"headerColor"``.
     ``subreddit``           The :class:`.Subreddit` the button widget
                             belongs to.
     ``totalMods``           The total number of moderators in the subreddit.
@@ -1573,17 +1573,17 @@ class PostFlairWidget(Widget, BaseList):
     ======================= ===================================================
     Attribute               Description
     ======================= ===================================================
-    ``display``             The display style of the widget, either ``cloud``
-                            or ``list``.
+    ``display``             The display style of the widget, either ``"cloud"``
+                            or ``"list"``.
     ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``post-flair``).
+    ``kind``                The widget kind (always ``"post-flair"``).
     ``order``               A list of the flair IDs in this widget.
                             Can be iterated over by iterating over the
                             :class:`.PostFlairWidget` (e.g. ``for flair_id in
                             post_flair``).
     ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``backgroundColor`` and
-                            ``headerColor``.
+    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
+                            ``"headerColor"``.
     ``subreddit``           The :class:`.Subreddit` the button widget belongs
                             to.
     ``templates``           A ``dict`` that maps flair IDs to ``dict``\ s that
@@ -1630,13 +1630,13 @@ class RulesWidget(Widget, BaseList):
                             Can be iterated over by iterating over the
                             :class:`.RulesWidget` (e.g. ``for rule in
                             rules_widget``).
-    ``display``             The display style of the widget, either ``full``
-                            or ``compact``.
+    ``display``             The display style of the widget, either ``"full"``
+                            or ``"compact"``.
     ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``subreddit-rules``).
+    ``kind``                The widget kind (always ``"subreddit-rules"``).
     ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``backgroundColor``
-                            and ``headerColor``.
+    ``styles``              A ``dict`` with the keys ``"backgroundColor"``
+                            and ``"headerColor"``.
     ``subreddit``           The :class:`.Subreddit` the button widget
                             belongs to.
     ======================= ===================================================
@@ -1705,10 +1705,10 @@ class TextArea(Widget):
     Attribute               Description
     ======================= ===================================================
     ``id``                  The widget ID.
-    ``kind``                The widget kind (always ``textarea``).
+    ``kind``                The widget kind (always ``"textarea"``).
     ``shortName``           The short name of the widget.
-    ``styles``              A ``dict`` with the keys ``backgroundColor`` and
-                            ``headerColor``.
+    ``styles``              A ``dict`` with the keys ``"backgroundColor"`` and
+                            ``"headerColor"``.
     ``subreddit``           The :class:`.Subreddit` the button widget belongs
                             to.
     ``text``                The widget's text, as Markdown.

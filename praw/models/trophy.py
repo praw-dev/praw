@@ -40,7 +40,7 @@ class Trophy(PRAWBase):
 
         :param reddit: An instance of :class:`.Reddit`.
         :param _data: The structured data, assumed to be a dict
-            and key ``name`` must be provided.
+            and key ``"name"`` must be provided.
 
         """
         assert isinstance(_data, dict) and "name" in _data
