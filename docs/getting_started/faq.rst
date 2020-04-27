@@ -41,9 +41,3 @@ A: PRAW is most likely in read-only mode. This normally occurs when you log in
 without a username and password or a refresh token. You need to sign in with either
 one of those. See :ref:`oauth_options` to see the avaliable methods
 to sign in. 
-
-A2: You could also be using a Reddit instance in read-only mode. To set the 
-instance to not be in read_only mode, do `reddit.read_only = False`.
-
-.. note:: Trying to set an instance of Reddit to non-read-only without being signed
-   in will raise a :class:`.ClientException`.
