@@ -59,7 +59,7 @@ setup(
     extras_require=extras,
     install_requires=[
         "prawcore >=1.3.0, <2.0",
-        "update_checker >=0.16",
+        "update_checker >=0.17",
         "websocket-client >=0.54.0",
     ],
     keywords="reddit api wrapper",
