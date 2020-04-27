@@ -1,7 +1,9 @@
 """Provide the Reddit class."""
 import configparser
+import contextlib
 import os
 import re
+import sys
 import time
 from itertools import islice
 from logging import getLogger
@@ -359,7 +361,8 @@ class Reddit:
         if UPDATE_CHECKER_MISSING:
             return
         if not Reddit.update_checked and self.config.check_for_updates:
-            update_check(__package__, __version__)
+            with contextlib.redirect_stdout(sys.stderr):
+                update_check(__package__, __version__)
             Reddit.update_checked = True
 
     def _prepare_objector(self):
