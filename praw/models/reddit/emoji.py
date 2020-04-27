@@ -81,7 +81,7 @@ class Emoji(RedditBase):
     def delete(self):
         """Delete an emoji from this subreddit by Emoji.
 
-        To delete ``test`` as an emoji on the subreddit ``praw_test`` try:
+        To delete ``'test'`` as an emoji on the subreddit ``'praw_test'`` try:
 
         .. code-block:: python
 
