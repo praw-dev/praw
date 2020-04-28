@@ -22,8 +22,8 @@ A: This means that either you provided the wrong password and/or the account
 you are trying to sign in with has 2FA enabled, and as such, either needs a 2FA
 token or a refresh token to sign in. A refresh token is preferred, because then
 you will not need to enter a 2FA token in order to sign in, and the session
-will last for longer than an hour. Refer to :ref:`2FA` and :ref:`code_flow` in
-order to use the respective auth methods.
+will last for longer than an hour. Refer to :ref:`2FA` and :ref:`refresh_token`
+in order to use the respective auth methods.
 
 .. _faq3:
 
@@ -32,3 +32,14 @@ How can I extend the timeout?
 
 A: Set the timeout config option or initialize :class:`.Reddit` with a timeout
 of your choosing.
+
+.. _faq4:
+
+Q: Help, I keep on getting redirected to ``/r/subreddit/login/``!
+
+Q2: I keep on getting this exception: ``prawcore.exceptions.Redirect: Redirect to /r/subreddit/login/ (You may be trying to perform a non-read-only action via a read-only instance.)``
+
+A: PRAW is most likely in read-only mode. This normally occurs when PRAW is
+authenticated without a username and password or a refresh token. In order to perform
+this action, the Reddit instance needs to be authenticated. See :ref:`oauth_options` to
+see the available authentication methods.
