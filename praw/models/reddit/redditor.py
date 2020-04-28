@@ -30,7 +30,7 @@ class Redditor(
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     .. note:: Shadowbanned accounts are treated the same as non-existent
         accounts, meaning that they will not have any attributes.

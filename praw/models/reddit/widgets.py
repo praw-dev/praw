@@ -18,7 +18,7 @@ class Button(PRAWBase):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -50,7 +50,7 @@ class Image(PRAWBase):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -72,7 +72,7 @@ class ImageData(PRAWBase):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -94,7 +94,7 @@ class MenuLink(PRAWBase):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -114,7 +114,7 @@ class Submenu(BaseList):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -1026,7 +1026,7 @@ class ButtonWidget(Widget, BaseList):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -1104,7 +1104,7 @@ class Calendar(Widget):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -1172,7 +1172,7 @@ class CommunityList(Widget, BaseList):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -1242,7 +1242,7 @@ class CustomWidget(Widget):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -1293,7 +1293,7 @@ class IDCard(Widget):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     =========================== ===============================================
     Attribute                   Description
@@ -1368,7 +1368,7 @@ class ImageWidget(Widget, BaseList):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -1447,7 +1447,7 @@ class Menu(Widget, BaseList):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -1488,7 +1488,7 @@ class ModeratorsWidget(Widget, BaseList):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -1568,7 +1568,7 @@ class PostFlairWidget(Widget, BaseList):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -1621,7 +1621,7 @@ class RulesWidget(Widget, BaseList):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
@@ -1699,7 +1699,7 @@ class TextArea(Widget):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description

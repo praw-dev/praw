@@ -18,7 +18,7 @@ class ModmailConversation(RedditBase):
     class. Since attributes are dynamically provided (see
     :ref:`determine-available-attributes-of-an-object`), there is not a
     guarantee that these attributes will always be present, nor is this list
-    comprehensive in any way.
+    necessarily complete.
 
     ======================= ===================================================
     Attribute               Description
