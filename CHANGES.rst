@@ -4,6 +4,11 @@ Change Log
 Unreleased
 ----------
 
+**Added**
+
+* :class:`.Rule` to represent one rule of a subreddit.
+* :class:`.SubredditRules` to get and add rules.
+
 **Fixed**
 
 * An issue where certain subreddit settings could not be set through
@@ -686,7 +691,7 @@ parameter as described below:
 
 **Added**
 
-* :meth:`.Subreddit.rules` to get the rules of a subreddit.
+* ``.Subreddit.rules`` to get the rules of a subreddit.
 * :class:`.LiveContributorRelationship`, which can be obtained through
   :attr:`.LiveThread.contributor`, to interact with live threads'
   contributors.
