@@ -1,0 +1,224 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2020-04-29T06:35:41",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "53"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.0.1.dev0 prawcore/1.3.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "116"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 29 Apr 2020 06:35:41 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=UgRLP8teExeLz5oA7K; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-pao17430-PAO"
+          ],
+          "X-Timer": [
+            "S1588142141.968603,VS0,VE436"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2020-04-29T06:35:41",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=UgRLP8teExeLz5oA7K"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.0.1.dev0 prawcore/1.3.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/comments/g9zfex/?limit=2048&sort=confidence&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"dist\": 1, \"children\": [{\"kind\": \"t3\", \"data\": {\"approved_at_utc\": null, \"subreddit\": \"WouldYouRather\", \"selftext\": \"The maths test is not important and the cake will be given to you in a box so it doesn\\u2019t make a mess.\\n\\n[View Poll](https://www.reddit.com/poll/g9zfex)\", \"user_reports\": [], \"saved\": false, \"mod_reason_title\": null, \"gilded\": 0, \"clicked\": false, \"title\": \"Would you rather get 100% in a maths test and get nothing or get less than 50% in a maths test and get an entire chocolate cake as commiseration?\", \"link_flair_richtext\": [], \"subreddit_name_prefixed\": \"r/WouldYouRather\", \"hidden\": false, \"pwls\": 0, \"link_flair_css_class\": null, \"downs\": 0, \"thumbnail_height\": null, \"parent_whitelist_status\": \"no_ads\", \"hide_score\": false, \"name\": \"t3_g9zfex\", \"quarantine\": false, \"link_flair_text_color\": \"dark\", \"upvote_ratio\": 0.76, \"author_flair_background_color\": null, \"subreddit_type\": \"public\", \"ups\": 2, \"total_awards_received\": 0, \"media_embed\": {}, \"thumbnail_width\": null, \"author_flair_template_id\": null, \"is_original_content\": false, \"author_fullname\": \"t2_3ud9zeck\", \"secure_media\": null, \"is_reddit_media_domain\": false, \"is_meta\": false, \"category\": null, \"secure_media_embed\": {}, \"link_flair_text\": null, \"can_mod_post\": false, \"num_duplicates\": 0, \"approved_by\": null, \"author_premium\": false, \"thumbnail\": \"self\", \"edited\": 1588121169.0, \"author_flair_css_class\": null, \"author_flair_richtext\": [], \"gildings\": {}, \"content_categories\": null, \"is_self\": true, \"mod_note\": null, \"created\": 1588149595.0, \"link_flair_type\": \"text\", \"wls\": 0, \"removed_by_category\": null, \"banned_by\": null, \"author_flair_type\": \"text\", \"domain\": \"self.WouldYouRather\", \"allow_live_comments\": false, \"selftext_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EThe maths test is not important and the cake will be given to you in a box so it doesn\\u2019t make a mess.\\u003C/p\\u003E\\n\\n\\u003Cp\\u003E\\u003Ca href=\\\"https://www.reddit.com/poll/g9zfex\\\"\\u003EView Poll\\u003C/a\\u003E\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"likes\": null, \"suggested_sort\": null, \"banned_at_utc\": null, \"view_count\": null, \"archived\": false, \"score\": 2, \"no_follow\": false, \"is_crosspostable\": true, \"pinned\": false, \"over_18\": false, \"all_awardings\": [], \"awarders\": [], \"media_only\": false, \"can_gild\": true, \"spoiler\": false, \"locked\": false, \"author_flair_text\": null, \"treatment_tags\": [], \"visited\": false, \"removed_by\": null, \"num_reports\": null, \"distinguished\": null, \"subreddit_id\": \"t5_2qr1y\", \"mod_reason_by\": null, \"removal_reason\": null, \"link_flair_background_color\": \"\", \"id\": \"g9zfex\", \"is_robot_indexable\": true, \"report_reasons\": null, \"author\": \"ukcomedy\", \"discussion_type\": null, \"num_comments\": 3, \"send_replies\": true, \"media\": null, \"contest_mode\": false, \"poll_data\": {\"user_selection\": \"573294\", \"options\": [{\"text\": \"100% and nothing\", \"vote_count\": 40, \"id\": \"573294\"}, {\"text\": \"\\u003C50% and chocolate cake\", \"vote_count\": 14, \"id\": \"573295\"}], \"voting_end_timestamp\": 1588379995927, \"total_vote_count\": 54}, \"author_patreon_flair\": false, \"author_flair_text_color\": null, \"permalink\": \"/r/WouldYouRather/comments/g9zfex/would_you_rather_get_100_in_a_maths_test_and_get/\", \"whitelist_status\": \"no_ads\", \"stickied\": false, \"url\": \"https://www.reddit.com/r/WouldYouRather/comments/g9zfex/would_you_rather_get_100_in_a_maths_test_and_get/\", \"subreddit_subscribers\": 233767, \"created_utc\": 1588120795.0, \"num_crossposts\": 0, \"mod_reports\": [], \"is_video\": false}}], \"after\": null, \"before\": null}}, {\"kind\": \"Listing\", \"data\": {\"modhash\": null, \"dist\": null, \"children\": [{\"kind\": \"t1\", \"data\": {\"total_awards_received\": 0, \"approved_at_utc\": null, \"ups\": 4, \"awarders\": [], \"mod_reason_by\": null, \"banned_by\": null, \"author_flair_type\": \"text\", \"removal_reason\": null, \"link_id\": \"t3_g9zfex\", \"author_flair_template_id\": null, \"likes\": null, \"replies\": \"\", \"user_reports\": [], \"saved\": false, \"id\": \"fowm36w\", \"banned_at_utc\": null, \"mod_reason_title\": null, \"gilded\": 0, \"archived\": false, \"no_follow\": false, \"author\": \"IGotCheddar\", \"can_mod_post\": false, \"send_replies\": true, \"parent_id\": \"t3_g9zfex\", \"score\": 4, \"author_fullname\": \"t2_4yn1k69i\", \"report_reasons\": null, \"approved_by\": null, \"all_awardings\": [], \"subreddit_id\": \"t5_2qr1y\", \"body\": \"GPA is way more important than a cake.\", \"edited\": false, \"downs\": 0, \"author_flair_css_class\": null, \"is_submitter\": false, \"collapsed\": false, \"author_flair_richtext\": [], \"author_patreon_flair\": false, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EGPA is way more important than a cake.\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"gildings\": {}, \"collapsed_reason\": null, \"associated_award\": null, \"stickied\": false, \"author_premium\": false, \"subreddit_type\": \"public\", \"can_gild\": true, \"subreddit\": \"WouldYouRather\", \"author_flair_text_color\": null, \"score_hidden\": false, \"permalink\": \"/r/WouldYouRather/comments/g9zfex/would_you_rather_get_100_in_a_maths_test_and_get/fowm36w/\", \"num_reports\": null, \"locked\": false, \"name\": \"t1_fowm36w\", \"created\": 1588151271.0, \"author_flair_text\": null, \"treatment_tags\": [], \"created_utc\": 1588122471.0, \"subreddit_name_prefixed\": \"r/WouldYouRather\", \"controversiality\": 0, \"depth\": 0, \"author_flair_background_color\": null, \"collapsed_because_crowd_control\": null, \"mod_reports\": [], \"mod_note\": null, \"distinguished\": null}}, {\"kind\": \"t1\", \"data\": {\"total_awards_received\": 0, \"approved_at_utc\": null, \"ups\": 2, \"awarders\": [], \"mod_reason_by\": null, \"banned_by\": null, \"author_flair_type\": \"text\", \"removal_reason\": null, \"link_id\": \"t3_g9zfex\", \"author_flair_template_id\": null, \"likes\": null, \"replies\": \"\", \"user_reports\": [], \"saved\": false, \"id\": \"fowngch\", \"banned_at_utc\": null, \"mod_reason_title\": null, \"gilded\": 0, \"archived\": false, \"no_follow\": true, \"author\": \"warm_tapwater\", \"can_mod_post\": false, \"send_replies\": true, \"parent_id\": \"t3_g9zfex\", \"score\": 2, \"author_fullname\": \"t2_4sijpn1s\", \"report_reasons\": null, \"approved_by\": null, \"all_awardings\": [], \"subreddit_id\": \"t5_2qr1y\", \"body\": \"I can't tell if this is a serious question or a shitpost\", \"edited\": false, \"downs\": 0, \"author_flair_css_class\": null, \"is_submitter\": false, \"collapsed\": false, \"author_flair_richtext\": [], \"author_patreon_flair\": false, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EI can\\u0026#39;t tell if this is a serious question or a shitpost\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"gildings\": {}, \"collapsed_reason\": null, \"associated_award\": null, \"stickied\": false, \"author_premium\": false, \"subreddit_type\": \"public\", \"can_gild\": true, \"subreddit\": \"WouldYouRather\", \"author_flair_text_color\": null, \"score_hidden\": false, \"permalink\": \"/r/WouldYouRather/comments/g9zfex/would_you_rather_get_100_in_a_maths_test_and_get/fowngch/\", \"num_reports\": null, \"locked\": false, \"name\": \"t1_fowngch\", \"created\": 1588152067.0, \"author_flair_text\": null, \"treatment_tags\": [], \"created_utc\": 1588123267.0, \"subreddit_name_prefixed\": \"r/WouldYouRather\", \"controversiality\": 0, \"depth\": 0, \"author_flair_background_color\": null, \"collapsed_because_crowd_control\": null, \"mod_reports\": [], \"mod_note\": null, \"distinguished\": null}}, {\"kind\": \"t1\", \"data\": {\"total_awards_received\": 0, \"approved_at_utc\": null, \"ups\": 1, \"awarders\": [], \"mod_reason_by\": null, \"banned_by\": null, \"author_flair_type\": \"text\", \"removal_reason\": null, \"link_id\": \"t3_g9zfex\", \"author_flair_template_id\": null, \"likes\": null, \"replies\": \"\", \"user_reports\": [], \"saved\": false, \"id\": \"fox3noa\", \"banned_at_utc\": null, \"mod_reason_title\": null, \"gilded\": 0, \"archived\": false, \"no_follow\": true, \"author\": \"squirrel420\", \"can_mod_post\": false, \"send_replies\": true, \"parent_id\": \"t3_g9zfex\", \"score\": 1, \"author_fullname\": \"t2_i9pvf\", \"report_reasons\": null, \"approved_by\": null, \"all_awardings\": [], \"subreddit_id\": \"t5_2qr1y\", \"body\": \"Second choice sounds like most test i took, except i wouldve also had cake.\", \"edited\": false, \"downs\": 0, \"author_flair_css_class\": null, \"is_submitter\": false, \"collapsed\": false, \"author_flair_richtext\": [], \"author_patreon_flair\": false, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003ESecond choice sounds like most test i took, except i wouldve also had cake.\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"gildings\": {}, \"collapsed_reason\": null, \"associated_award\": null, \"stickied\": false, \"author_premium\": false, \"subreddit_type\": \"public\", \"can_gild\": true, \"subreddit\": \"WouldYouRather\", \"author_flair_text_color\": null, \"score_hidden\": false, \"permalink\": \"/r/WouldYouRather/comments/g9zfex/would_you_rather_get_100_in_a_maths_test_and_get/fox3noa/\", \"num_reports\": null, \"locked\": false, \"name\": \"t1_fox3noa\", \"created\": 1588162099.0, \"author_flair_text\": null, \"treatment_tags\": [], \"created_utc\": 1588133299.0, \"subreddit_name_prefixed\": \"r/WouldYouRather\", \"controversiality\": 0, \"depth\": 0, \"author_flair_background_color\": null, \"collapsed_because_crowd_control\": null, \"mod_reports\": [], \"mod_note\": null, \"distinguished\": null}}], \"after\": null, \"before\": null}}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "9107"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 29 Apr 2020 06:35:41 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "session_tracker=H1Vfm0Oh0ynDFeW1nw.0.1588142141524.Z0FBQUFBQmVxU0E5Y0NJTDRxMDlNcnR1SkdHYUZYTzFVOVBVU2dvRVRidzlwV3M1QlEtYTFpZG1BN01zSnc5N0hsT0ljN0RleDNlTDBwUGMwYklFS3lJYTBhVTJaMThhanNTVHpodmJGdlhuSDM4SlZIVWYxUDlKMFY1dEplR29VNU5zdDBsU2g0TW0; Domain=reddit.com; Max-Age=7199; Path=/; expires=Wed, 29-Apr-2020 08:35:41 GMT; secure; SameSite=None; Secure",
+            "redesign_optout=true; Domain=reddit.com; Max-Age=94607999; Path=/; expires=Sat, 29-Apr-2023 06:35:41 GMT; secure",
+            "csv=1; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-pao17444-PAO"
+          ],
+          "X-Timer": [
+            "S1588142141.455203,VS0,VE213"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "595.0"
+          ],
+          "x-ratelimit-reset": [
+            "259"
+          ],
+          "x-ratelimit-used": [
+            "5"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/comments/g9zfex/?limit=2048&sort=confidence&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

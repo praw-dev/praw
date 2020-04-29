@@ -100,6 +100,7 @@ instances of them bound to an attribute of one of the PRAW models.
    other/modmail
    other/modmailmessage
    other/preferences
+   other/poll
    other/redditbase
    other/redditorlist
    other/removalreason
