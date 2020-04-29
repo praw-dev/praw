@@ -188,6 +188,7 @@ API_PATH = {
     "unread_message":          "api/unread_message/",
     "unsave":                  "api/unsave/",
     "unspoiler":               "api/unspoiler/",
+    "update_settings":         "api/v1/subreddit/update_settings",
     "upload_image":            "r/{subreddit}/api/upload_sr_img",
     "user":                    "user/{user}/",
     "user_about":              "user/{user}/about/",
