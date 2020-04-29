@@ -12,7 +12,7 @@ from praw.models import Submission
 
 
 @pytest.mark.skipif(
-    "true" not in os.environ.get("NETWORK_TEST", "").lower(),
+    not os.environ.get("NETWORK_TEST"),
     reason="Not running from the NETWORK_TEST ci task",
 )
 def test_github_actions():
