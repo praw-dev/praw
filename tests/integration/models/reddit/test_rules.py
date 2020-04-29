@@ -53,9 +53,11 @@ class TestRule(IntegrationTest):
 
     @pytest.mark.filterwarnings("ignore", category=DeprecationWarning)
     def test_iter_call(self):
-        with self.recorder.use_cassette("TestRule.test_iter_rules"):
-            for rule in self.subreddit.rules():
-                assert isinstance(rule, Rule)
+        with self.recorder.use_cassette("TestRule.test_call"):
+            assert (
+                self.subreddit.rules()["rules"][0]["short_name"]
+                == "Test post 12"
+            )
 
     def test_iter_rule_string(self):
         with self.recorder.use_cassette("TestRule.test_iter_rules"):

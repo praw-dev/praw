@@ -147,7 +147,9 @@ class SubredditRules:
             category=DeprecationWarning,
             stacklevel=2,
         )
-        return self.__iter__()
+        return self._reddit.request(
+            "GET", API_PATH["rules"].format(subreddit=self.subreddit)
+        )
 
     def __getitem__(self, short_name: Union[str, int, slice]) -> Rule:
         """Return the Rule for the subreddit with short_name ``short_name``.
