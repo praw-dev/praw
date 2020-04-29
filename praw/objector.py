@@ -169,7 +169,7 @@ class Objector:
                     # id.
                     data["json"]["data"]["id"] = data["json"]["data"][
                         "id"
-                    ].partition("_")[2]
+                    ].split("_", 1)[1]
             else:
                 parser = self.parsers["LiveUpdateEvent"]
             return parser.parse(data["json"]["data"], self._reddit)
