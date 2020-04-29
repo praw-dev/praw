@@ -2123,28 +2123,10 @@ class SubredditModeration:
         call to :meth:`.SubredditModeration.update` should retain their current
         value. If they do not please file a bug.
 
-        .. warning:: Undocumented settings, or settings that were very recently
-                     documented, may not retain their current value when
-                     updating. This often occurs when Reddit adds a new setting
-                     but forgets to add that setting to the API endpoint that
-                     is used to fetch the current settings.
-
         """
-        current_settings = self.settings()
-        fullname = current_settings.pop("subreddit_id")
-
-        # These attributes come out using different names than they go in.
-        remap = {
-            "allow_top": "default_set",
-            "lang": "language",
-            "link_type": "content_options",
-        }
-        for new, old in remap.items():
-            current_settings[new] = current_settings.pop(old)
-
-        current_settings.update(settings)
-        return Subreddit._create_or_update(
-            _reddit=self.subreddit._reddit, sr=fullname, **current_settings
+        settings["sr"] = self.subreddit.fullname
+        return self.subreddit._reddit.patch(
+            API_PATH["update_settings"], json=settings
         )
 
 

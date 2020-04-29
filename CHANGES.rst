@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+Unreleased
+----------
+
+**Fixed**
+
+* An issue where certain subreddit settings could not be set through
+  :meth:`.SubredditModeration.update`, such as ``welcome_message_enabled``
+  and ``welcome_message_text``. This change also removes the need for PRAW
+  to track current subreddit settings and send unmodified ones in the
+  update request.
+
 7.0.0 (2020/04/24)
 ------------------
 
