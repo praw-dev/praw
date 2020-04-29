@@ -1,5 +1,6 @@
 """Provides the Objector class."""
 
+from json import loads
 from typing import Any, Dict, List, Optional, TypeVar, Union
 
 from .exceptions import ClientException, RedditAPIException
@@ -72,6 +73,9 @@ class Objector:
             # Modmail message
             data = snake_case_keys(data)
             parser = self.parsers["ModmailMessage"]
+        elif {"kind", "short_name", "violation_reason"}.issubset(data):
+            # This is a Rule
+            parser = self.parsers["rule"]
         elif {"isAdmin", "isDeleted"}.issubset(data):
             # Modmail author
             data = snake_case_keys(data)
@@ -151,6 +155,8 @@ class Objector:
                 return data
             if "things" in data["json"]["data"]:  # Submission.reply
                 return self.objectify(data["json"]["data"]["things"])
+            if "rules" in data["json"]["data"]:
+                return self.objectify(loads(data["json"]["data"]["rules"]))
             if "url" in data["json"]["data"]:  # Subreddit.submit
                 # The URL is the URL to the submission, so it's removed.
                 del data["json"]["data"]["url"]
@@ -158,6 +164,8 @@ class Objector:
             else:
                 parser = self.parsers["LiveUpdateEvent"]
             return parser.parse(data["json"]["data"], self._reddit)
+        if "rules" in data:
+            return self.objectify(data["rules"])
         if "json" in data and "errors" in data["json"]:
             errors = data["json"]["errors"]
             if len(errors) > 0:

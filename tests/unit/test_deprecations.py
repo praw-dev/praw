@@ -18,7 +18,7 @@ class TestDeprecation(UnitTest):
         with pytest.raises(DeprecationWarning):
             self.reddit.validate_on_submit
 
-    def test_apiexception(self):
+    def test_api_exception(self):
         exc = APIException(["test", "testing", "test"])
         with pytest.raises(DeprecationWarning):
             exc.error_type
@@ -26,3 +26,11 @@ class TestDeprecation(UnitTest):
             exc.message
         with pytest.raises(DeprecationWarning):
             exc.field
+
+    def test_subreddit_rules_call(self):
+        with pytest.raises(DeprecationWarning) as excinfo:
+            self.reddit.subreddit("test").rules()
+        assert (
+            excinfo.value.args[0] == "Calling SubredditRules to get a list of "
+            "rules is deprecated. Remove the parentheses to use the iterator."
+        )
