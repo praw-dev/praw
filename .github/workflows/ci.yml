@@ -27,6 +27,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install .[lint]
+        python -c "import shutil;shutil.rmtree('build')"
     - name: Run black
       run: black --check --verbose .
     - name: Run flake8
@@ -62,6 +63,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install .[lint]
+        python -c "import shutil;shutil.rmtree('build')"
     - name: Check other phrase usages
       run: python ./tools/static_word_checks.py
     - name: Run black
@@ -97,6 +99,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install .[test]
+        python -c "import shutil;shutil.rmtree('build')"
     - name: Test with pytest
       run: pytest
     strategy:
@@ -123,6 +126,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install .[test]
         pip install https://github.com/bboe/coveralls-python/archive/github_actions.zip
+        python -c "import shutil;shutil.rmtree('build')"
     - name: Test with pytest
       run: coverage run --source praw --module pytest
     - env:
