@@ -50,6 +50,10 @@ Unreleased
 * Added :class:`.Styles` to represent widget styling information.
 * Ability to stream live thread updates via new class :class:`.LiveThreadStream` with
   method :meth:`~.LiveThreadStream.updates`.
+* Reddit has a new config option, ``comment_sort``. This sets the default
+  comment sort for submissions. Note that this does not get rid of the ability
+  to change the comment sort, but rather changes the *inital* comment sort.
+  When unspecified, it defaults to ``confidence``.
 
 **Changed**
 
@@ -72,6 +76,7 @@ Unreleased
   data are re-raised as the original ``BadRequest``.
 * :meth:`.submit_image` and :meth:`.submit_video` will throw :class:`.MediaPostFailed`
   when Reddit fails to post an image or video post.
+
 
 
 7.0.0 (2020/04/24)

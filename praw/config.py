@@ -125,7 +125,6 @@ class Config:
         for attribute in (
             "client_id",
             "client_secret",
-            "comment_sort",
             "redirect_uri",
             "refresh_token",
             "password",
@@ -135,6 +134,7 @@ class Config:
             setattr(self, attribute, self._fetch_or_not_set(attribute))
 
         for required_attribute in (
+            "comment_sort",
             "oauth_url",
             "ratelimit_seconds",
             "reddit_url",
