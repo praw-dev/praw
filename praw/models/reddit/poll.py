@@ -19,7 +19,7 @@ class PollOption(PRAWBase):
        print(poll_data.options[0])
 
        # By ID -- print the option with ID '576797'
-       print(poll_data.get_option("576797"))
+       print(poll_data.option("576797"))
 
     **Typical Attributes**
 
@@ -94,7 +94,7 @@ class PollData(PRAWBase):
         """
         if self._user_selection is None:
             return None
-        return self.get_option(self._user_selection)
+        return self.option(self._user_selection)
 
     def __setattr__(self, attribute: str, value: Any):
         """Objectify the options attribute, and save user_selection."""
@@ -104,7 +104,7 @@ class PollData(PRAWBase):
             attribute = "_user_selection"
         super().__setattr__(attribute, value)
 
-    def get_option(self, option_id: str) -> PollOption:
+    def option(self, option_id: str) -> PollOption:
         """Get the option with the specified ID.
 
         :param option_id: The ID of a poll option, as a ``str``.

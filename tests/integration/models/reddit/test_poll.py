@@ -22,7 +22,7 @@ class TestPollData(IntegrationTest):
             assert poll_data.user_selection is None  # not logged in
 
             with pytest.raises(KeyError):
-                poll_data.get_option("badID")
+                poll_data.option("badID")
 
     def test_get_user_selection(self,):
         poll_id = "g9zfex"
