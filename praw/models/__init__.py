@@ -20,6 +20,7 @@ from .reddit.more import MoreComments
 from .reddit.multi import Multireddit
 from .reddit.redditor import Redditor
 from .reddit.removal_reasons import RemovalReason
+from .reddit.rules import Rule
 from .reddit.submission import Submission
 from .reddit.subreddit import Subreddit
 from .reddit.widgets import (

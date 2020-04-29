@@ -29,6 +29,7 @@ from .base import RedditBase
 from .emoji import SubredditEmoji
 from .mixins import FullnameMixin, MessageableMixin
 from .modmail import ModmailConversation
+from .rules import SubredditRules
 from .removal_reasons import SubredditRemovalReasons
 from .widgets import SubredditWidgets, WidgetEncoder
 from .wikipage import WikiPage
@@ -405,6 +406,31 @@ class Subreddit(
         return SubredditQuarantine(self)
 
     @cachedproperty
+    def rules(self):
+        """Provide an instance of :class:`.SubredditRules`.
+
+        Use this attribute for interacting with a subreddit's rules.
+        For example, to list all the rules for a subreddit:
+
+        .. code-block:: python
+
+            for rule in reddit.subreddit('AskReddit').rules:
+                print(rule)
+
+        You can also add rules to the subreddit, if you are a moderator. For
+        example, to make a rule called ``"No spam"`` in the subreddit ``"NAME"``:
+
+        .. code-block:: python
+
+           reddit.subreddit('NAME').rules.mod.add(
+               "No spam",
+               "all",
+               description="Do not spam. Spam bad")
+
+        """
+        return SubredditRules(self)
+
+    @cachedproperty
     def stream(self):
         """Provide an instance of :class:`.SubredditStream`.
 
@@ -701,18 +727,6 @@ class Subreddit(
             )
         except ClientException:
             return None
-
-    def rules(self):
-        """Return rules for the subreddit.
-
-        For example to show the rules of ``r/redditdev`` try:
-
-        .. code-block:: python
-
-           reddit.subreddit('redditdev').rules()
-
-        """
-        return self._reddit.get(API_PATH["rules"].format(subreddit=self))
 
     def search(
         self,
