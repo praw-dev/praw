@@ -553,6 +553,7 @@ class Reddit:
             Union[Dict[str, Union[str, Any]], bytes, IO, str]
         ] = None,
         files: Optional[Dict[str, IO]] = None,
+        json=None,
         method: str = "",
         params: Optional[Union[str, Dict[str, str]]] = None,
         path: str = "",
@@ -563,6 +564,9 @@ class Reddit:
             of the request (default: None).
         :param files: Dictionary, filename to file (like) object mapping
             (default: None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
         :param method: The HTTP method (e.g., GET, POST, PUT, DELETE).
         :param params: The query parameters to add to the request (default:
             None).
@@ -571,7 +575,12 @@ class Reddit:
         """
         return self._objector.objectify(
             self.request(
-                data=data, files=files, method=method, params=params, path=path
+                data=data,
+                files=files,
+                json=json,
+                method=method,
+                params=params,
+                path=path,
             )
         )
 
@@ -597,15 +606,21 @@ class Reddit:
         data: Optional[
             Union[Dict[str, Union[str, Any]], bytes, IO, str]
         ] = None,
+        json=None,
     ) -> Any:
         """Return parsed objects returned from a PATCH request to ``path``.
 
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body
             of the request (default: None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
 
         """
-        return self._objectify_request(data=data, method="PATCH", path=path)
+        return self._objectify_request(
+            data=data, method="PATCH", path=path, json=json
+        )
 
     def post(
         self,
@@ -615,6 +630,7 @@ class Reddit:
         ] = None,
         files: Optional[Dict[str, IO]] = None,
         params: Optional[Union[str, Dict[str, str]]] = None,
+        json=None,
     ) -> Any:
         """Return parsed objects returned from a POST request to ``path``.
 
@@ -625,13 +641,18 @@ class Reddit:
             (default: None).
         :param params: The query parameters to add to the request (default:
             None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
 
         """
-        data = data or {}
+        if json is None:
+            data = data or {}
         try:
             return self._objectify_request(
                 data=data,
                 files=files,
+                json=json,
                 method="POST",
                 params=params,
                 path=path,
@@ -660,15 +681,21 @@ class Reddit:
         data: Optional[
             Union[Dict[str, Union[str, Any]], bytes, IO, str]
         ] = None,
+        json=None,
     ):
         """Return parsed objects returned from a PUT request to ``path``.
 
         :param path: The path to fetch.
         :param data: Dictionary, bytes, or file-like object to send in the body
             of the request (default: None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
 
         """
-        return self._objectify_request(data=data, method="PUT", path=path,)
+        return self._objectify_request(
+            data=data, json=json, method="PUT", path=path
+        )
 
     def random_subreddit(self, nsfw: bool = False) -> Subreddit:
         """Return a random lazy instance of :class:`~.Subreddit`.
@@ -709,6 +736,7 @@ class Reddit:
             Union[Dict[str, Union[str, Any]], bytes, IO, str]
         ] = None,
         files: Optional[Dict[str, IO]] = None,
+        json=None,
     ) -> Any:
         """Return the parsed JSON data returned from a request to URL.
 
@@ -720,8 +748,15 @@ class Reddit:
             of the request (default: None).
         :param files: Dictionary, filename to file (like) object mapping
             (default: None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
 
         """
+        if data and json:
+            raise ClientException(
+                "At most one of `data` and `json` is supported."
+            )
         try:
             return self._core.request(
                 method,
@@ -730,6 +765,7 @@ class Reddit:
                 files=files,
                 params=params,
                 timeout=self.config.timeout,
+                json=json,
             )
         except BadRequest as exception:
             try:
