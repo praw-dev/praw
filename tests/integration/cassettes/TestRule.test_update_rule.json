@@ -1,0 +1,342 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2020-04-27T04:13:59",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=password&password=<PASSWORD>&username=<USERNAME>"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "61"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.0.1.dev0 prawcore/1.3.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "118"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Mon, 27 Apr 2020 04:13:58 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=Au3vjDjNYh73wDBjre; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21950-LGA"
+          ],
+          "X-Timer": [
+            "S1587960839.662262,VS0,VE337"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2020-04-27T04:13:59",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=Au3vjDjNYh73wDBjre"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.0.1.dev0 prawcore/1.3.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/about/rules?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"rules\": [{\"kind\": \"all\", \"description\": \"d\", \"short_name\": \"tesy all\", \"violation_reason\": \"df\", \"created_utc\": 1587969502.0, \"priority\": 0, \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Ed\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\"}, {\"kind\": \"link\", \"description\": \"r\", \"short_name\": \"Test comment\", \"violation_reason\": \"Comment test\", \"created_utc\": 1587949225.0, \"priority\": 1, \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Er\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\"}, {\"kind\": \"comment\", \"description\": \"testing post rf\", \"short_name\": \"Test post 12\", \"violation_reason\": \"34\", \"created_utc\": 1587949210.0, \"priority\": 2, \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003Etesting post rf\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\"}, {\"kind\": \"all\", \"description\": \"\", \"short_name\": \"sdf\", \"violation_reason\": \"sdf\", \"created_utc\": 1587984896.0, \"priority\": 3}], \"site_rules\": [\"Spam\", \"Personal and confidential information\", \"Threatening, harassing, or inciting violence\"], \"site_rules_flow\": [{\"reasonTextToShow\": \"This is spam\", \"reasonText\": \"This is spam\"}, {\"nextStepHeader\": \"In what way?\", \"reasonTextToShow\": \"This is abusive or harassing\", \"nextStepReasons\": [{\"nextStepHeader\": \"Who is the harassment targeted at?\", \"reasonTextToShow\": \"It's targeted harassment\", \"nextStepReasons\": [{\"reasonTextToShow\": \"At me\", \"reasonText\": \"It's targeted harassment at me\"}, {\"reasonTextToShow\": \"At someone else\", \"reasonText\": \"It's targeted harassment at someone else\"}], \"reasonText\": \"\"}, {\"nextStepHeader\": \"Who is the threat directed at?\", \"reasonTextToShow\": \"It threatens violence or physical harm\", \"nextStepReasons\": [{\"reasonTextToShow\": \"At me\", \"reasonText\": \"It threatens violence or physical harm at me\"}, {\"reasonTextToShow\": \"At someone else\", \"reasonText\": \"It threatens violence or physical harm at someone else\"}], \"reasonText\": \"\"}, {\"reasonTextToShow\": \"It's rude, vulgar or offensive\", \"reasonText\": \"It's rude, vulgar or offensive\"}, {\"reasonTextToShow\": \"It's abusing the report button\", \"canWriteNotes\": true, \"isAbuseOfReportButton\": true, \"notesInputTitle\": \"Additional information (optional)\", \"reasonText\": \"It's abusing the report button\"}], \"reasonText\": \"\"}, {\"nextStepHeader\": \"What issue?\", \"reasonTextToShow\": \"Other issues\", \"nextStepReasons\": [{\"complaintButtonText\": \"File a complaint\", \"complaintUrl\": \"https://www.reddit.com/api/report_redirect?thing=%25%28thing%29s\\u0026reason_code=COPYRIGHT\", \"complaintPageTitle\": \"File a complaint?\", \"reasonText\": \"It infringes my copyright\", \"reasonTextToShow\": \"It infringes my copyright\", \"fileComplaint\": true, \"complaintPrompt\": \"If you think content on Reddit violates your intellectual property, please file a complaint at the link below:\"}, {\"complaintButtonText\": \"File a complaint\", \"complaintUrl\": \"https://www.reddit.com/api/report_redirect?thing=%25%28thing%29s\\u0026reason_code=TRADEMARK\", \"complaintPageTitle\": \"File a complaint?\", \"reasonText\": \"It infringes my trademark rights\", \"reasonTextToShow\": \"It infringes my trademark rights\", \"fileComplaint\": true, \"complaintPrompt\": \"If you think content on Reddit violates your intellectual property, please file a complaint at the link below:\"}, {\"reasonTextToShow\": \"It's personal and confidential information\", \"reasonText\": \"It's personal and confidential information\"}, {\"reasonTextToShow\": \"It's sexual or suggestive content involving minors\", \"reasonText\": \"It's sexual or suggestive content involving minors\"}, {\"nextStepHeader\": \"Do you appear in the image?\", \"reasonTextToShow\": \"It's involuntary pornography\", \"nextStepReasons\": [{\"reasonTextToShow\": \"I appear in the image\", \"reasonText\": \"It's involuntary pornography and i appear in it\"}, {\"reasonTextToShow\": \"I do not appear in the image\", \"reasonText\": \"It's involuntary pornography and i do not appear in it\"}], \"reasonText\": \"\"}, {\"reasonTextToShow\": \"It's a transaction for prohibited goods or services\", \"reasonText\": \"It's a transaction for prohibited goods or services\"}, {\"complaintButtonText\": \"File a complaint\", \"complaintUrl\": \"https://www.reddit.com/api/report_redirect?thing=%25%28thing%29s\\u0026reason_code=NETZDG\", \"complaintPageTitle\": \"File a complaint?\", \"reasonText\": \"Report this content under NetzDG\", \"reasonTextToShow\": \"Report this content under NetzDG\", \"fileComplaint\": true, \"complaintPrompt\": \"This reporting procedure is only available for people in Germany. If you are in Germany and would like to report this content under the German Netzwerkdurchsetzungsgesetz (NetzDG) law you may file a complaint by clicking the link below.\"}, {\"usernamesInputTitle\": \"Username\", \"reasonTextToShow\": \"Someone is considering suicide or serious self-harm.\", \"canSpecifyUsernames\": true, \"reasonText\": \"Someone is considering suicide or serious self-harm.\", \"requestCrisisSupport\": true, \"oneUsername\": true}], \"reasonText\": \"\"}]}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "5024"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Mon, 27 Apr 2020 04:13:59 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "session_tracker=863gOlyruocvYXHEXP.0.1587960839170.Z0FBQUFBQmVwbHdIaUE0VGlqaWM5Zm1EWTE1bDZKTVVLY0lXN25LX0x2dnFPTU8zRmZySEtxQmNWd1BPbUVlTkJjRWlCRjlQYjR2Nk93THEya3RScW02OEw2bXFkY0NtMHhhOTJMSllDcGo5NmJxaC1JTlFpMmNjdGR4dGV2dll1dFU1N1F0TjF5ZXc; Domain=reddit.com; Max-Age=7199; Path=/; expires=Mon, 27-Apr-2020 06:13:59 GMT; secure; SameSite=None; Secure",
+            "csv=1; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21943-LGA"
+          ],
+          "X-Timer": [
+            "S1587960839.131155,VS0,VE76"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "595.0"
+          ],
+          "x-ratelimit-reset": [
+            "361"
+          ],
+          "x-ratelimit-used": [
+            "5"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/r/<TEST_SUBREDDIT>/about/rules?raw_json=1"
+      }
+    },
+    {
+      "recorded_at": "2020-04-27T04:13:59",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "api_type=json&description=Updated+rule&kind=link&old_short_name=tesy+all&r=<TEST_SUBREDDIT>&short_name=tesy+all&violation_reason=PUpdate"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "135"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "Cookie": [
+            "csv=1; edgebucket=Au3vjDjNYh73wDBjre; session_tracker=863gOlyruocvYXHEXP.0.1587960839170.Z0FBQUFBQmVwbHdIaUE0VGlqaWM5Zm1EWTE1bDZKTVVLY0lXN25LX0x2dnFPTU8zRmZySEtxQmNWd1BPbUVlTkJjRWlCRjlQYjR2Nk93THEya3RScW02OEw2bXFkY0NtMHhhOTJMSllDcGo5NmJxaC1JTlFpMmNjdGR4dGV2dll1dFU1N1F0TjF5ZXc"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.0.1.dev0 prawcore/1.3.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://oauth.reddit.com/api/update_subreddit_rule?raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"json\": {\"errors\": [], \"data\": {\"rules\": \"[{\\\"kind\\\": \\\"link\\\", \\\"description\\\": \\\"Updated rule\\\", \\\"short_name\\\": \\\"tesy all\\\", \\\"violation_reason\\\": \\\"PUpdate\\\", \\\"created_utc\\\": 1587969502.0, \\\"priority\\\": 0, \\\"description_html\\\": \\\"\\u003C!-- SC_OFF --\\u003E\\u003Cp\\u003EUpdated rule\\u003C/p\\u003E\\\\n\\u003C!-- SC_ON --\\u003E\\\"}]\", \"description_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cp\\u003EUpdated rule\\u003C/p\\u003E\\n\\u003C!-- SC_ON --\\u003E\"}}}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "450"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Mon, 27 Apr 2020 04:13:59 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21943-LGA"
+          ],
+          "X-Timer": [
+            "S1587960839.248086,VS0,VE139"
+          ],
+          "cache-control": [
+            "private, s-maxage=0, max-age=0, must-revalidate, no-store, max-age=0, must-revalidate"
+          ],
+          "expires": [
+            "-1"
+          ],
+          "set-cookie": [
+            "session_tracker=863gOlyruocvYXHEXP.0.1587960839285.Z0FBQUFBQmVwbHdIWlY4cHp6a0o3bmg3UUFGbXB6XzJSY1dZT092U1NOQ3hBbzQwaG03V0xhMVVqemtzTDFjQ3dmUVFrNnF4T2hESGlwdG9obHA1ZDNwcjF2YWdXMk1wa21keFVDRExKcTkzc0QxVTNHUGxxTV94NXhOM0pFc0doMlR1X1M4RnVlX2s; Domain=reddit.com; Max-Age=7199; Path=/; expires=Mon, 27-Apr-2020 06:13:59 GMT; secure"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ratelimit-remaining": [
+            "594.0"
+          ],
+          "x-ratelimit-reset": [
+            "361"
+          ],
+          "x-ratelimit-used": [
+            "6"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/api/update_subreddit_rule?raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}
