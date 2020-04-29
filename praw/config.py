@@ -40,7 +40,7 @@ class Config:
             category=DeprecationWarning,
             stacklevel=2,
         )
-        return dict(**self.file_settings, **self.code_settings)
+        return dict(**self._file_settings, **self._code_settings)
 
     @staticmethod
     def _config_boolean(item):
@@ -92,8 +92,8 @@ class Config:
                 self._load_config(config_interpolation)
 
         self._settings = settings
-        self.file_settings = Config.CONFIG.items(site_name)
-        self.code_settings = settings
+        self._file_settings = Config.CONFIG.items(site_name)
+        self._code_settings = settings
 
         self.client_id = self.client_secret = self.oauth_url = None
         self.reddit_url = self.refresh_token = self.redirect_uri = None
@@ -211,14 +211,14 @@ class Config:
         :class:`.Subreddit` with a display_name of ``"redditdev"``.
         """
         return_value = default
-        ini_value = self.file_settings.get(key)
+        ini_value = self._file_settings.get(key)
         if ini_value is not None:
             return_value = ini_value
         if environment_variable:
             env_value = os.getenv("praw_{}".format(key))
             if env_value is not None:
                 return_value = env_value
-        code_value = self.code_settings.get(key)
+        code_value = self._code_settings.get(key)
         if code_value is not None:
             return_value = code_value
         if required and return_value == default:
