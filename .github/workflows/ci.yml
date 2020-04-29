@@ -28,6 +28,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install .[lint]
         python -c "import shutil;shutil.rmtree('build')"
+    - name: Print debug information
+      run: python ./.github/workflows/debug_lint.py
     - name: Run black
       run: black --check --verbose .
     - name: Run flake8
@@ -64,6 +66,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install .[lint]
         python -c "import shutil;shutil.rmtree('build')"
+    - name: Print debug information
+      run: python ./.github/workflows/debug_lint.py
     - name: Check other phrase usages
       run: python ./tools/static_word_checks.py
     - name: Run black
@@ -100,6 +104,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install .[test]
         python -c "import shutil;shutil.rmtree('build')"
+    - name: Print debug information
+      run: python ./.github/workflows/debug_test.py
     - name: Test with pytest
       run: pytest
     strategy:
@@ -127,6 +133,8 @@ jobs:
         pip install .[test]
         pip install https://github.com/bboe/coveralls-python/archive/github_actions.zip
         python -c "import shutil;shutil.rmtree('build')"
+    - name: Print debug information
+      run: python ./.github/workflows/debug_test_coverage.py
     - name: Test with pytest
       run: coverage run --source praw --module pytest
     - env:
