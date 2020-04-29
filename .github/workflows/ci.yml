@@ -140,5 +140,33 @@ jobs:
       matrix:
         python-version: [3.5, 3.6, 3.7, 3.8]
 
+  test-network:
+    name: Test Network Request
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.x
+    - uses: actions/cache@v1
+      with:
+        key: v0-${{ runner.os }}-pip-test-${{ hashFiles('setup.py') }}
+        path: ~/.cache/pip
+        restore-keys: |
+          v0-${{ runner.os }}-pip-test-
+          v0-${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[test]
+        python -c "import shutil;shutil.rmtree('build')"
+    - name: Run network test
+      run: pytest tests/integration/test_github_actions.py::test_github_actions
+      env:
+        NETWORK_TEST: true
+        NETWORK_TEST_CLIENT_ID: ${{ secrets.NETWORK_TEST_CLIENT_ID }}
+        NETWORK_TEST_CLIENT_SECRET: ${{ secrets.NETWORK_TEST_CLIENT_SECRET }}
+
+
 name: CI
 on: [pull_request, push]
