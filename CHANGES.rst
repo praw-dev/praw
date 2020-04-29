@@ -20,10 +20,8 @@ Unreleased
   and ``welcome_message_text``. This change also removes the need for PRAW
   to track current subreddit settings and send unmodified ones in the
   update request.
-**Fixed**
-
-* BadRequests that do not have any detailed error data are raised as
-  BadRequests.
+* Instances of ``BadRequest``\ s captured by PRAW that do not contain any
+  detailed JSON data are re-raised as the original ``BadRequest``.
 
 7.0.0 (2020/04/24)
 ------------------
