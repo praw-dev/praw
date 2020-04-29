@@ -161,6 +161,15 @@ class Objector:
                 # The URL is the URL to the submission, so it's removed.
                 del data["json"]["data"]["url"]
                 parser = self.parsers[self._reddit.config.kinds["submission"]]
+                if data["json"]["data"]["id"].startswith(
+                    self._reddit.config.kinds["submission"] + "_"
+                ):
+                    # With polls, Reddit returns a fullname but calls it an
+                    # "id". This fixes this by coercing the fullname into an
+                    # id.
+                    data["json"]["data"]["id"] = data["json"]["data"][
+                        "id"
+                    ].partition("_")[2]
             else:
                 parser = self.parsers["LiveUpdateEvent"]
             return parser.parse(data["json"]["data"], self._reddit)

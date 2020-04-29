@@ -12,6 +12,7 @@ from ..listing.listing import Listing
 from ..listing.mixins import SubmissionListingMixin
 from .base import RedditBase
 from .mixins import FullnameMixin, ThingModerationMixin, UserContentMixin
+from .poll import PollData
 from .redditor import Redditor
 from .subreddit import Subreddit
 
@@ -392,6 +393,9 @@ class Submission(
     ``over_18``                 Whether or not the submission has been marked
                                 as NSFW.
     ``permalink``               A permalink for the submission.
+    ``poll_data``               A :class:`.PollData` object representing the
+                                data of this submission, if it is a poll
+                                submission.
     ``score``                   The number of upvotes for the submission.
     ``selftext``                The submissions' selftext - an empty string if
                                 a link post.
@@ -558,11 +562,13 @@ class Submission(
         self._comments_by_id = {}
 
     def __setattr__(self, attribute: str, value: Any):
-        """Objectify author, and subreddit attributes."""
+        """Objectify author, subreddit, and poll data attributes."""
         if attribute == "author":
             value = Redditor.from_data(self._reddit, value)
         elif attribute == "subreddit":
             value = Subreddit(self._reddit, value)
+        elif attribute == "poll_data":
+            value = PollData(self._reddit, value)
         super().__setattr__(attribute, value)
 
     def _chunk(self, other_submissions, chunk_size):

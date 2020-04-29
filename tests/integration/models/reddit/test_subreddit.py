@@ -348,9 +348,75 @@ class TestSubreddit(IntegrationTest):
             with pytest.raises(
                 (RedditAPIException, BadRequest)
             ):  # waiting for prawcore fix
-                subreddit.submit(
-                    "dfgfdgfdgdf", url="https://www.google.com",
-                )
+                subreddit.submit("dfgfdgfdgdf", url="https://www.google.com")
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_poll(self, _):
+        options = ["Yes", "No", "3", "4", "5", "6"]
+        self.reddit.read_only = False
+        with self.recorder.use_cassette("TestSubreddit.test_submit_poll"):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            submission = subreddit.submit_poll(
+                "Test Poll",
+                selftext="Test poll text.",
+                options=options,
+                duration=6,
+            )
+            assert submission.author == self.reddit.config.username
+            assert submission.selftext.startswith("Test poll text.")
+            assert submission.title == "Test Poll"
+            assert [
+                str(option) for option in submission.poll_data.options
+            ] == options
+            assert (
+                submission.poll_data.voting_end_timestamp
+                > submission.created_utc
+            )
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_poll__flair(self, _):
+        flair_id = "9ac711a4-1ddf-11e9-aaaa-0e22784c70ce"
+        flair_text = "Test flair text"
+        flair_class = ""
+        options = ["Yes", "No"]
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_poll__flair"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            submission = subreddit.submit_poll(
+                "Test Poll",
+                selftext="Test poll text.",
+                flair_id=flair_id,
+                flair_text=flair_text,
+                options=options,
+                duration=6,
+            )
+            assert submission.link_flair_text == flair_text
+            assert submission.link_flair_css_class == flair_class
+
+    @mock.patch("time.sleep", return_value=None)
+    def test_submit_poll__live_chat(self, _):
+        options = ["Yes", "No"]
+        self.reddit.read_only = False
+        with self.recorder.use_cassette(
+            "TestSubreddit.test_submit_poll__live_chat"
+        ):
+            subreddit = self.reddit.subreddit(
+                pytest.placeholders.test_subreddit
+            )
+            submission = subreddit.submit_poll(
+                "Test Poll",
+                selftext="",
+                discussion_type="CHAT",
+                options=options,
+                duration=2,
+            )
+            assert submission.discussion_type == "CHAT"
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
@@ -498,9 +564,7 @@ class TestSubreddit(IntegrationTest):
             with pytest.raises(
                 (RedditAPIException, BadRequest)
             ):  # waiting for prawcore fix
-                subreddit.submit_image(
-                    "gdfgfdgdgdgfgfdgdfgfdgfdg", image,
-                )
+                subreddit.submit_image("gdfgfdgdgdgfgfdgdfgfdgfdg", image)
 
     @mock.patch("time.sleep", return_value=None)
     @mock.patch(
@@ -1134,7 +1198,7 @@ class TestSubredditFlair(IntegrationTest):
             "TestSubredditFlair.test_update_quotes"
         ):
             response = self.subreddit.flair.update(
-                [self.reddit.user.me()], text='"testing"', css_class="testing",
+                [self.reddit.user.me()], text='"testing"', css_class="testing"
             )
             assert all(x["ok"] for x in response)
             flair = next(self.subreddit.flair(self.reddit.user.me()))
@@ -1282,9 +1346,7 @@ class TestSubredditFlairTemplates(IntegrationTest):
             "TestSubredditFlairTemplates.test_update_fetch_only"
         ):
             template = list(self.subreddit.flair.templates)[0]
-            self.subreddit.flair.templates.update(
-                template["id"], fetch=True,
-            )
+            self.subreddit.flair.templates.update(template["id"], fetch=True)
             newtemplate = list(
                 filter(
                     lambda _template: _template["id"] == template["id"],
@@ -1301,10 +1363,10 @@ class TestSubredditFlairTemplates(IntegrationTest):
         ):
             template = list(self.subreddit.flair.templates)[0]
             self.subreddit.flair.templates.update(
-                template["id"], text_editable=True, fetch=True,
+                template["id"], text_editable=True, fetch=True
             )
             self.subreddit.flair.templates.update(
-                template["id"], text_editable=False, fetch=True,
+                template["id"], text_editable=False, fetch=True
             )
             newtemplate = list(
                 filter(

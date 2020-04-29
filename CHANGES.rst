@@ -8,6 +8,10 @@ Unreleased
 
 * :class:`.Rule` to represent one rule of a subreddit.
 * :class:`.SubredditRules` to get and add rules.
+* Ability to submit polls with :meth:`.submit_poll`.
+* :class:`.PollData` and :class:`.PollOption`.
+* Ability to view poll data and poll options via the ``.poll_data`` attribute
+  on poll submissions.
 
 **Fixed**
 

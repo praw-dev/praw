@@ -7,6 +7,7 @@ from csv import writer
 from io import StringIO
 from json import dumps, loads
 from os.path import basename, dirname, join
+from typing import List
 from urllib.parse import urljoin
 from xml.etree.ElementTree import XML
 
@@ -847,7 +848,8 @@ class Subreddit(
         .. seealso ::
 
            * :meth:`.submit_image` to submit images
-           * :meth:`.submit_video`. to submit videos and videogifs
+           * :meth:`.submit_video` to submit videos and videogifs
+           * :meth:`.submit_poll` to submit polls
 
         """
         if (bool(selftext) or selftext == "") == bool(url):
@@ -975,6 +977,83 @@ class Subreddit(
         return self._submit_media(
             data, timeout, without_websockets=without_websockets
         )
+
+    def submit_poll(
+        self,
+        title: str,
+        selftext: str,
+        options: List[str],
+        duration: int,
+        flair_id: str = None,
+        flair_text: str = None,
+        resubmit: bool = True,
+        send_replies: bool = True,
+        nsfw: bool = False,
+        spoiler: bool = False,
+        collection_id: str = None,
+        discussion_type: str = None,
+    ):
+        """Add a poll submission to the subreddit.
+
+        :param title: The title of the submission.
+        :param selftext: The Markdown formatted content for the
+            submission. Use an empty string, ``""``, to make a submission
+            with no text contents.
+        :param options: A ``list`` of two to six poll options as ``str``.
+        :param duration: The number of days the poll should accept votes,
+            as an ``int``. Valid values are between ``1`` and ``7``, inclusive.
+        :param collection_id: The UUID of a :class:`.Collection` to add the
+            newly-submitted post to.
+        :param flair_id: The flair template to select (default: None).
+        :param flair_text: If the template's ``flair_text_editable`` value is
+            True, this value will set a custom text (default: None).
+        :param resubmit: When False, an error will occur if the URL has already
+            been submitted (default: True).
+        :param send_replies: When True, messages will be sent to the submission
+            author when comments are made to the submission (default: True).
+        :param nsfw: Whether or not the submission should be marked NSFW
+            (default: False).
+        :param spoiler: Whether or not the submission should be marked as
+            a spoiler (default: False).
+        :param discussion_type: Set to ``CHAT`` to enable live discussion
+            instead of traditional comments (default: None).
+        :returns: A :class:`~.Submission` object for the newly created
+            submission.
+
+        For example to submit a poll to ``r/reddit_api_test`` do:
+
+        .. code-block:: python
+
+           title = "Do you like PRAW?"
+           reddit.subreddit("reddit_api_test").submit(
+               title,
+               selftext="",
+               options=["Yes", "No"],
+               duration=3
+           )
+        """
+        data = {
+            "sr": str(self),
+            "text": selftext,
+            "options": options,
+            "duration": duration,
+            "resubmit": bool(resubmit),
+            "sendreplies": bool(send_replies),
+            "title": title,
+            "nsfw": bool(nsfw),
+            "spoiler": bool(spoiler),
+            "validate_on_submit": self._reddit.validate_on_submit,
+        }
+        for key, value in (
+            ("flair_id", flair_id),
+            ("flair_text", flair_text),
+            ("collection_id", collection_id),
+            ("discussion_type", discussion_type),
+        ):
+            if value is not None:
+                data[key] = value
+
+        return self._reddit.post(API_PATH["submit_poll_post"], json=data)
 
     def submit_video(
         self,
