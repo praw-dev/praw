@@ -1,0 +1,221 @@
+{
+  "http_interactions": [
+    {
+      "recorded_at": "2020-04-29T00:19:19",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": "grant_type=client_credentials"
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "Basic <BASIC_AUTH>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "29"
+          ],
+          "Content-Type": [
+            "application/x-www-form-urlencoded"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.0.0.dev0 prawcore/1.3.0"
+          ]
+        },
+        "method": "POST",
+        "uri": "https://www.reddit.com/api/v1/access_token"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "{\"access_token\": \"<ACCESS_TOKEN>\", \"token_type\": \"bearer\", \"expires_in\": 3600, \"scope\": \"*\"}"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "106"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 29 Apr 2020 00:19:19 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "edgebucket=R1yWMj4eD8GgkFVGFj; Domain=reddit.com; Max-Age=63071999; Path=/;  secure"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21973-LGA"
+          ],
+          "X-Timer": [
+            "S1588119559.142528,VS0,VE48"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-reddit-loid": [
+            "00000000006bz8dkxk.2.1588119559170.Z0FBQUFBQmVxTWdIZ0YzM0lLWUMzemFIRjNWSU5DOUkxRXh1Zmpuek9KOHcxUnBmSDczZGhMS3N0aXFYTWt0OWtjS1ZpNlhZMFg2WVU2R2JUc3FlYWhLLXc5cTFqTkRMa3p1TERFbG8zRElSYnU3cTQ5T1NQZzRwTjZjbnViRHlxUGRkQkp6YzNJWmI"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://www.reddit.com/api/v1/access_token"
+      }
+    },
+    {
+      "recorded_at": "2020-04-29T00:19:19",
+      "request": {
+        "body": {
+          "encoding": "utf-8",
+          "string": ""
+        },
+        "headers": {
+          "Accept": [
+            "*/*"
+          ],
+          "Accept-Encoding": [
+            "identity"
+          ],
+          "Authorization": [
+            "bearer <ACCESS_TOKEN>"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Cookie": [
+            "edgebucket=R1yWMj4eD8GgkFVGFj"
+          ],
+          "User-Agent": [
+            "<USER_AGENT> PRAW/7.0.0.dev0 prawcore/1.3.0"
+          ]
+        },
+        "method": "GET",
+        "uri": "https://oauth.reddit.com/comments/2gmzqe/?limit=2048&sort=top&raw_json=1"
+      },
+      "response": {
+        "body": {
+          "encoding": "UTF-8",
+          "string": "[{\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"dist\": 1, \"children\": [{\"kind\": \"t3\", \"data\": {\"approved_at_utc\": null, \"subreddit\": \"redditdev\", \"selftext\": \"PRAW client developers,\\n\\nI have made a PRAW branch to test using only HTTPS over the API. This change requires some testers to see if there any issues that did not come up from our set of unit tests. This is the first of a few improvements that will (hopefully soon) be released with PRAW version 3. If you want to start using HTTPS exclusively through PRAW please update via the following:\\n\\n    pip install git+git://github.com/praw-dev/praw.git@praw3\\n\\nIf you experience any issues feel free to report them here, however filing a bug on github (https://github.com/praw-dev/praw/issues) would be ideal. Thanks!\", \"user_reports\": [], \"saved\": false, \"mod_reason_title\": null, \"gilded\": 1, \"clicked\": false, \"title\": \"[PRAW] HTTPS enabled PRAW testing needed\", \"link_flair_richtext\": [], \"subreddit_name_prefixed\": \"r/redditdev\", \"hidden\": false, \"pwls\": 6, \"link_flair_css_class\": null, \"downs\": 0, \"thumbnail_height\": null, \"parent_whitelist_status\": \"all_ads\", \"hide_score\": false, \"name\": \"t3_2gmzqe\", \"quarantine\": false, \"link_flair_text_color\": \"dark\", \"upvote_ratio\": 0.94, \"author_flair_background_color\": \"\", \"subreddit_type\": \"public\", \"ups\": 12, \"total_awards_received\": 1, \"media_embed\": {}, \"thumbnail_width\": null, \"author_flair_template_id\": null, \"is_original_content\": false, \"author_fullname\": \"t2_3pz6e\", \"secure_media\": null, \"is_reddit_media_domain\": false, \"is_meta\": false, \"category\": null, \"secure_media_embed\": {}, \"link_flair_text\": \"PRAW\", \"can_mod_post\": false, \"num_duplicates\": 0, \"approved_by\": null, \"author_premium\": false, \"thumbnail\": \"self\", \"edited\": false, \"author_flair_css_class\": \"\", \"author_flair_richtext\": [], \"gildings\": {\"gid_2\": 1}, \"content_categories\": null, \"is_self\": true, \"mod_note\": null, \"created\": 1410964471.0, \"link_flair_type\": \"text\", \"wls\": 6, \"removed_by_category\": null, \"banned_by\": null, \"author_flair_type\": \"text\", \"domain\": \"self.redditdev\", \"allow_live_comments\": false, \"selftext_html\": \"\\u003C!-- SC_OFF --\\u003E\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EPRAW client developers,\\u003C/p\\u003E\\n\\n\\u003Cp\\u003EI have made a PRAW branch to test using only HTTPS over the API. This change requires some testers to see if there any issues that did not come up from our set of unit tests. This is the first of a few improvements that will (hopefully soon) be released with PRAW version 3. If you want to start using HTTPS exclusively through PRAW please update via the following:\\u003C/p\\u003E\\n\\n\\u003Cpre\\u003E\\u003Ccode\\u003Epip install git+git://github.com/praw-dev/praw.git@praw3\\n\\u003C/code\\u003E\\u003C/pre\\u003E\\n\\n\\u003Cp\\u003EIf you experience any issues feel free to report them here, however filing a bug on github (\\u003Ca href=\\\"https://github.com/praw-dev/praw/issues\\\"\\u003Ehttps://github.com/praw-dev/praw/issues\\u003C/a\\u003E) would be ideal. Thanks!\\u003C/p\\u003E\\n\\u003C/div\\u003E\\u003C!-- SC_ON --\\u003E\", \"likes\": null, \"suggested_sort\": null, \"banned_at_utc\": null, \"view_count\": null, \"archived\": true, \"score\": 12, \"no_follow\": false, \"is_crosspostable\": false, \"pinned\": false, \"over_18\": false, \"all_awardings\": [{\"giver_coin_reward\": null, \"subreddit_id\": null, \"is_new\": false, \"days_of_drip_extension\": 0, \"coin_price\": 500, \"id\": \"gid_2\", \"penny_donate\": null, \"coin_reward\": 100, \"icon_url\": \"https://www.redditstatic.com/gold/awards/icon/gold_512.png\", \"days_of_premium\": 7, \"icon_height\": 512, \"resized_icons\": [{\"url\": \"https://www.redditstatic.com/gold/awards/icon/gold_16.png\", \"width\": 16, \"height\": 16}, {\"url\": \"https://www.redditstatic.com/gold/awards/icon/gold_32.png\", \"width\": 32, \"height\": 32}, {\"url\": \"https://www.redditstatic.com/gold/awards/icon/gold_48.png\", \"width\": 48, \"height\": 48}, {\"url\": \"https://www.redditstatic.com/gold/awards/icon/gold_64.png\", \"width\": 64, \"height\": 64}, {\"url\": \"https://www.redditstatic.com/gold/awards/icon/gold_128.png\", \"width\": 128, \"height\": 128}], \"icon_width\": 512, \"start_date\": null, \"is_enabled\": true, \"description\": \"Gives the author a week of Reddit Premium, %{coin_symbol}100 Coins to do with as they please, and shows a Gold Award.\", \"end_date\": null, \"subreddit_coin_reward\": 0, \"count\": 1, \"name\": \"Gold\", \"icon_format\": null, \"award_sub_type\": \"GLOBAL\", \"penny_price\": null, \"award_type\": \"global\"}], \"awarders\": [], \"media_only\": false, \"can_gild\": false, \"spoiler\": false, \"locked\": false, \"author_flair_text\": \"PRAW Author\", \"treatment_tags\": [], \"visited\": false, \"removed_by\": null, \"num_reports\": null, \"distinguished\": null, \"subreddit_id\": \"t5_2qizd\", \"mod_reason_by\": null, \"removal_reason\": null, \"link_flair_background_color\": \"\", \"id\": \"2gmzqe\", \"is_robot_indexable\": true, \"report_reasons\": null, \"author\": \"bboe\", \"discussion_type\": null, \"num_comments\": 2, \"send_replies\": true, \"media\": null, \"contest_mode\": false, \"author_patreon_flair\": false, \"author_flair_text_color\": \"dark\", \"permalink\": \"/r/redditdev/comments/2gmzqe/praw_https_enabled_praw_testing_needed/\", \"whitelist_status\": \"all_ads\", \"stickied\": false, \"url\": \"https://www.reddit.com/r/redditdev/comments/2gmzqe/praw_https_enabled_praw_testing_needed/\", \"subreddit_subscribers\": 35363, \"created_utc\": 1410935671.0, \"num_crossposts\": 0, \"mod_reports\": [], \"is_video\": false}}], \"after\": null, \"before\": null}}, {\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"dist\": null, \"children\": [{\"kind\": \"t1\", \"data\": {\"total_awards_received\": 0, \"approved_at_utc\": null, \"ups\": 1, \"awarders\": [], \"mod_reason_by\": null, \"banned_by\": null, \"author_flair_type\": \"text\", \"removal_reason\": null, \"link_id\": \"t3_2gmzqe\", \"author_flair_template_id\": null, \"likes\": null, \"replies\": {\"kind\": \"Listing\", \"data\": {\"modhash\": \"\", \"dist\": null, \"children\": [{\"kind\": \"t1\", \"data\": {\"total_awards_received\": 0, \"approved_at_utc\": null, \"ups\": 1, \"awarders\": [], \"mod_reason_by\": null, \"banned_by\": null, \"author_flair_type\": \"text\", \"removal_reason\": null, \"link_id\": \"t3_2gmzqe\", \"author_flair_template_id\": null, \"likes\": null, \"replies\": \"\", \"user_reports\": [], \"saved\": false, \"id\": \"cklhv0f\", \"banned_at_utc\": null, \"mod_reason_title\": null, \"gilded\": 0, \"archived\": true, \"no_follow\": true, \"author\": \"bboe\", \"can_mod_post\": false, \"send_replies\": true, \"parent_id\": \"t1_cklfmye\", \"score\": 1, \"author_fullname\": \"t2_3pz6e\", \"report_reasons\": null, \"approved_by\": null, \"all_awardings\": [], \"subreddit_id\": \"t5_2qizd\", \"collapsed\": false, \"body\": \"Yes it does. That fix is also in the master branch, we just haven't made a release for it (and we probably won't until 3.0).\", \"edited\": false, \"author_flair_css_class\": \"\", \"is_submitter\": true, \"downs\": 0, \"author_flair_richtext\": [], \"author_patreon_flair\": false, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EYes it does. That fix is also in the master branch, we just haven\\u0026#39;t made a release for it (and we probably won\\u0026#39;t until 3.0).\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"gildings\": {}, \"collapsed_reason\": null, \"associated_award\": null, \"stickied\": false, \"author_premium\": false, \"subreddit_type\": \"public\", \"can_gild\": true, \"subreddit\": \"redditdev\", \"author_flair_text_color\": \"dark\", \"score_hidden\": false, \"permalink\": \"/r/redditdev/comments/2gmzqe/praw_https_enabled_praw_testing_needed/cklhv0f/\", \"num_reports\": null, \"locked\": false, \"name\": \"t1_cklhv0f\", \"created\": 1411038834.0, \"author_flair_text\": \"PRAW Author\", \"treatment_tags\": [], \"created_utc\": 1411010034.0, \"subreddit_name_prefixed\": \"r/redditdev\", \"controversiality\": 0, \"depth\": 1, \"author_flair_background_color\": \"\", \"collapsed_because_crowd_control\": null, \"mod_reports\": [], \"mod_note\": null, \"distinguished\": null}}], \"after\": null, \"before\": null}}, \"user_reports\": [], \"saved\": false, \"id\": \"cklfmye\", \"banned_at_utc\": null, \"mod_reason_title\": null, \"gilded\": 0, \"archived\": true, \"no_follow\": true, \"author\": \"paneer_burrito\", \"can_mod_post\": false, \"send_replies\": true, \"parent_id\": \"t3_2gmzqe\", \"score\": 1, \"author_fullname\": \"t2_gy2i1\", \"report_reasons\": null, \"approved_by\": null, \"all_awardings\": [], \"subreddit_id\": \"t5_2qizd\", \"body\": \"Quick question: I remember reading about an issue where the proxy settings for https requests were not getting picked up from the environment variables. Does this branch have that fix? Thanks\", \"edited\": false, \"downs\": 0, \"author_flair_css_class\": null, \"is_submitter\": false, \"collapsed\": false, \"author_flair_richtext\": [], \"author_patreon_flair\": false, \"body_html\": \"\\u003Cdiv class=\\\"md\\\"\\u003E\\u003Cp\\u003EQuick question: I remember reading about an issue where the proxy settings for https requests were not getting picked up from the environment variables. Does this branch have that fix? Thanks\\u003C/p\\u003E\\n\\u003C/div\\u003E\", \"gildings\": {}, \"collapsed_reason\": null, \"associated_award\": null, \"stickied\": false, \"author_premium\": false, \"subreddit_type\": \"public\", \"can_gild\": true, \"subreddit\": \"redditdev\", \"author_flair_text_color\": null, \"score_hidden\": false, \"permalink\": \"/r/redditdev/comments/2gmzqe/praw_https_enabled_praw_testing_needed/cklfmye/\", \"num_reports\": null, \"locked\": false, \"name\": \"t1_cklfmye\", \"created\": 1411033912.0, \"author_flair_text\": null, \"treatment_tags\": [], \"created_utc\": 1411005112.0, \"subreddit_name_prefixed\": \"r/redditdev\", \"controversiality\": 0, \"depth\": 0, \"author_flair_background_color\": null, \"collapsed_because_crowd_control\": null, \"mod_reports\": [], \"mod_note\": null, \"distinguished\": null}}], \"after\": null, \"before\": null}}]"
+        },
+        "headers": {
+          "Accept-Ranges": [
+            "bytes"
+          ],
+          "Connection": [
+            "keep-alive"
+          ],
+          "Content-Length": [
+            "9576"
+          ],
+          "Content-Type": [
+            "application/json; charset=UTF-8"
+          ],
+          "Date": [
+            "Wed, 29 Apr 2020 00:19:19 GMT"
+          ],
+          "Server": [
+            "snooserv"
+          ],
+          "Set-Cookie": [
+            "loid=00000000006bz8dkxk.2.1588119559170.Z0FBQUFBQmVxTWdIRXRIRHgyMWUwRUh5UHloanhfVWNFNzF0dEgxYXpqY0ctbUJJdFROb3cyeXA2MVhlUWdFazNMWnphaXJMSndlTGJlVHBDdS01NG9hX3l4T2huX2lVR2lHc05TUVhhU2ViRlhXd19BQ3I1VGZsUWxTckh4cDgxR1FlNnVVdlEtemo; Domain=reddit.com; Max-Age=63071999; Path=/; expires=Fri, 29-Apr-2022 00:19:19 GMT; secure; SameSite=None; Secure",
+            "session_tracker=IGpUhdR7me8W35PUp0.0.1588119559384.Z0FBQUFBQmVxTWdIenBPYzRxci1BMjI1a2ZIVlFja2dWTWZfN3JNSXZ4Vi1DQUdaVmxUendjZElRWFVtZ2JoX21fUDRpbENMWm5sVHNqM0dnUnk1X0xpRWNSYlNPa0IyM29ILUMzRjBURl9nUmVNVTBxZENJOG80SzFHT1htYm9leFRQbm1PTThSZjU; Domain=reddit.com; Max-Age=7199; Path=/; expires=Wed, 29-Apr-2020 02:19:19 GMT; secure; SameSite=None; Secure",
+            "csv=1; Max-Age=63072000; Domain=.reddit.com; Path=/; Secure; SameSite=None"
+          ],
+          "Strict-Transport-Security": [
+            "max-age=15552000; includeSubDomains; preload"
+          ],
+          "Vary": [
+            "accept-encoding"
+          ],
+          "Via": [
+            "1.1 varnish"
+          ],
+          "X-Cache": [
+            "MISS"
+          ],
+          "X-Cache-Hits": [
+            "0"
+          ],
+          "X-Moose": [
+            "majestic"
+          ],
+          "X-Served-By": [
+            "cache-lga21957-LGA"
+          ],
+          "X-Timer": [
+            "S1588119559.341343,VS0,VE240"
+          ],
+          "access-control-allow-origin": [
+            "*"
+          ],
+          "access-control-expose-headers": [
+            "X-Moose"
+          ],
+          "cache-control": [
+            "max-age=0, must-revalidate"
+          ],
+          "x-content-type-options": [
+            "nosniff"
+          ],
+          "x-frame-options": [
+            "SAMEORIGIN"
+          ],
+          "x-ua-compatible": [
+            "IE=edge"
+          ],
+          "x-xss-protection": [
+            "1; mode=block"
+          ]
+        },
+        "status": {
+          "code": 200,
+          "message": "OK"
+        },
+        "url": "https://oauth.reddit.com/comments/2gmzqe/?limit=2048&sort=top&raw_json=1"
+      }
+    }
+  ],
+  "recorded_with": "betamax/0.8.1"
+}

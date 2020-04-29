@@ -150,5 +150,7 @@ class Config:
                 setattr(self, attribute, conversion(getattr(self, attribute)))
             except ValueError:
                 raise ValueError(
-                    f"An incorrect config type was given for option {attribute}. The expected type is {conversion.__name__}, but the given value is {getattr(self, attribute)}."
+                    f"An incorrect config type was given for option {attribute}. The "
+                    f"expected type is {conversion.__name__}, but the given value is "
+                    f"{getattr(self, attribute)}."
                 )

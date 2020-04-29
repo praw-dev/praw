@@ -60,6 +60,10 @@ Unreleased
 * :meth:`.RemovalReason.update`\ 's parameters are now optional.
 * :meth:`.SubredditRemovalReasons.__getitem__` now takes integers and slices to get
   removal reasons from the list of reasons as returned by Reddit.
+* When a submission's attributes are fetched, the comment sort is updated with
+  the response from the API. This can be used to check if the provided comment
+  sort is valid, as any invalid comment sorts will change the ``comment_sort``
+  attribute to ``confidence``.
 
 **Deprecated**
 
@@ -76,7 +80,6 @@ Unreleased
   data are re-raised as the original ``BadRequest``.
 * :meth:`.submit_image` and :meth:`.submit_video` will throw :class:`.MediaPostFailed`
   when Reddit fails to post an image or video post.
-
 
 
 7.0.0 (2020/04/24)
