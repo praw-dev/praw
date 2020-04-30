@@ -173,8 +173,8 @@ class SubredditRules:
         Rule numbers start at ``0``, so the first rule is at index ``0``, and the
         second rule is at index ``1``, and so on.
 
-        If a rule of a specific number does not exist, an
-        :py:class:`IndexError` will be thrown.
+        :raises: :py:class:`IndexError` if a rule of a specific number does not
+            exist.
 
         .. note:: You can use negative indexes, such as ``-1``, to get the last
             rule. You can also use slices, to get a subset of rules, such as
@@ -202,7 +202,7 @@ class SubredditRules:
         self.subreddit = subreddit
         self._reddit = subreddit._reddit
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[Rule]:
         """Iterate through the rules of the subreddit.
 
         :returns: An iterator containing all of the rules of a subreddit.
