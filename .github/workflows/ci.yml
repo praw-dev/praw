@@ -163,7 +163,6 @@ jobs:
     - name: Run network test
       run: pytest tests/integration/test_github_actions.py::test_github_actions
       env:
-        NETWORK_TEST: true
         NETWORK_TEST_CLIENT_ID: ${{ secrets.NETWORK_TEST_CLIENT_ID }}
         NETWORK_TEST_CLIENT_SECRET: ${{ secrets.NETWORK_TEST_CLIENT_SECRET }}
 
