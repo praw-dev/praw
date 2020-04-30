@@ -12,7 +12,7 @@ from praw.models import Submission
 
 
 @pytest.mark.skipif(
-    not os.getenv("NETWORK_TEST_CLIENT_ID")
+    not os.getenv("NETWORK_TEST_CLIENT_ID"),
     reason="Not running from the NETWORK_TEST ci task on praw-dev/praw",
 )
 def test_github_actions():
