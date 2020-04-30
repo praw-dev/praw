@@ -189,7 +189,7 @@ class SubredditRemovalReasons:
 
     @cachedproperty
     def _removal_reason_list(self) -> List[RemovalReason]:
-        """Get a list of Removal Reason objects
+        """Get a list of Removal Reason objects.
 
         :returns: A list of instances of :class:`.RemovalReason`.
         """
