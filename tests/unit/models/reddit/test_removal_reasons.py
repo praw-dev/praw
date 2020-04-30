@@ -9,19 +9,19 @@ from ... import UnitTest
 class TestRemovalReason(UnitTest):
     def test_equality(self):
         reason1 = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), reason_id="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), reason_id="x"
         )
         reason2 = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), reason_id="2"
+            self.reddit, subreddit=self.reddit.subreddit("a"), reason_id="2"
         )
         reason3 = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "b"), reason_id="1"
+            self.reddit, subreddit=self.reddit.subreddit("b"), reason_id="1"
         )
         reason4 = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "A"), reason_id="x"
+            self.reddit, subreddit=self.reddit.subreddit("A"), reason_id="x"
         )
         reason5 = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), reason_id="X"
+            self.reddit, subreddit=self.reddit.subreddit("a"), reason_id="X"
         )
         assert reason1 == reason1
         assert reason1 == "x"
@@ -39,19 +39,19 @@ class TestRemovalReason(UnitTest):
 
     def test_hash(self):
         reason1 = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), reason_id="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), reason_id="x"
         )
         reason2 = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), reason_id="2"
+            self.reddit, subreddit=self.reddit.subreddit("a"), reason_id="2"
         )
         reason3 = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "b"), reason_id="1"
+            self.reddit, subreddit=self.reddit.subreddit("b"), reason_id="1"
         )
         reason4 = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "A"), reason_id="x"
+            self.reddit, subreddit=self.reddit.subreddit("A"), reason_id="x"
         )
         reason5 = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), reason_id="X"
+            self.reddit, subreddit=self.reddit.subreddit("a"), reason_id="X"
         )
         assert hash(reason1) == hash(reason1)
         assert hash(reason2) == hash(reason2)
@@ -63,7 +63,7 @@ class TestRemovalReason(UnitTest):
 
     def test_pickle(self):
         reason = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), reason_id="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), reason_id="x"
         )
         for level in range(pickle.HIGHEST_PROTOCOL + 1):
             other = pickle.loads(pickle.dumps(reason, protocol=level))
@@ -71,18 +71,18 @@ class TestRemovalReason(UnitTest):
 
     def test_repr(self):
         reason = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), reason_id="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), reason_id="x"
         )
         assert repr(reason) == ("RemovalReason(id='x')")
 
     def test_str(self):
         reason = RemovalReason(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), reason_id="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), reason_id="x"
         )
         assert str(reason) == "x"
 
 
 class TestSubredditRemovalReasons(UnitTest):
     def test_repr(self):
-        sr = SubredditRemovalReasons(subreddit=Subreddit(self.reddit, "a"))
+        sr = SubredditRemovalReasons(subreddit=self.reddit.subreddit("a"))
         assert repr(sr)  # assert it has some repr

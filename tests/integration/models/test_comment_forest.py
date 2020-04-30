@@ -20,7 +20,7 @@ class TestCommentForest(IntegrationTest):
             "TestCommentForest.test_replace__all",
             match_requests_on=["uri", "method", "body"],
         ):
-            submission = Submission(self.reddit, "3hahrw")
+            submission = self.reddit.submission("3hahrw")
             before_count = len(submission.comments.list())
             skipped = submission.comments.replace_more(None, threshold=0)
             assert len(skipped) == 0
@@ -37,7 +37,7 @@ class TestCommentForest(IntegrationTest):
             "TestCommentForest.test_replace__all_large",
             match_requests_on=["uri", "method", "body"],
         ):
-            submission = Submission(self.reddit, "n49rw")
+            submission = self.reddit.submission("n49rw")
             skipped = submission.comments.replace_more(None, threshold=0)
             assert len(skipped) == 0
             assert all(
@@ -53,7 +53,7 @@ class TestCommentForest(IntegrationTest):
             "TestCommentForest.test_replace__all_with_comment_limit",
             match_requests_on=["uri", "method", "body"],
         ):
-            submission = Submission(self.reddit, "3hahrw")
+            submission = self.reddit.submission("3hahrw")
             submission.comment_limit = 10
             skipped = submission.comments.replace_more(None, threshold=0)
             assert len(skipped) == 0
@@ -64,7 +64,7 @@ class TestCommentForest(IntegrationTest):
             "TestCommentForest.test_replace__all_with_comment_sort",
             match_requests_on=["uri", "method", "body"],
         ):
-            submission = Submission(self.reddit, "3hahrw")
+            submission = self.reddit.submission("3hahrw")
             submission.comment_sort = "old"
             skipped = submission.comments.replace_more(None, threshold=0)
             assert len(skipped) == 0
@@ -75,7 +75,7 @@ class TestCommentForest(IntegrationTest):
             "TestCommentForest.test_replace__skip_at_limit",
             match_requests_on=["uri", "method", "body"],
         ):
-            submission = Submission(self.reddit, "3hahrw")
+            submission = self.reddit.submission("3hahrw")
             skipped = submission.comments.replace_more(1)
             assert len(skipped) == 17
 
@@ -84,7 +84,7 @@ class TestCommentForest(IntegrationTest):
             "TestCommentForest.test_replace__skip_below_threshold",
             match_requests_on=["uri", "method", "body"],
         ):
-            submission = Submission(self.reddit, "3hahrw")
+            submission = self.reddit.submission("3hahrw")
             before_count = len(submission.comments.list())
             skipped = submission.comments.replace_more(16, 5)
             assert len(skipped) == 13
@@ -97,7 +97,7 @@ class TestCommentForest(IntegrationTest):
             "TestCommentForest.test_replace__skip_all",
             match_requests_on=["uri", "method", "body"],
         ):
-            submission = Submission(self.reddit, "3hahrw")
+            submission = self.reddit.submission("3hahrw")
             before_count = len(submission.comments.list())
             skipped = submission.comments.replace_more(limit=0)
             assert len(skipped) == 18
@@ -110,7 +110,7 @@ class TestCommentForest(IntegrationTest):
             "TestCommentForest.test_replace__on_comment_from_submission",
             match_requests_on=["uri", "method", "body"],
         ):
-            submission = Submission(self.reddit, "3hahrw")
+            submission = self.reddit.submission("3hahrw")
             types = [type(x) for x in submission.comments.list()]
             assert types.count(Comment) == 472
             assert types.count(MoreComments) == 18

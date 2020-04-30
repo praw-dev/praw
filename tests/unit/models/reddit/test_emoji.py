@@ -11,22 +11,22 @@ from ... import UnitTest
 class TestEmoji(UnitTest):
     def test_equality(self):
         emoji1 = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="x"
         )
         emoji2 = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="2"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="2"
         )
         emoji3 = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "b"), name="1"
+            self.reddit, subreddit=self.reddit.subreddit("b"), name="1"
         )
         emoji4 = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "A"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("A"), name="x"
         )
         emoji5 = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="X"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="X"
         )
         emoji6 = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "b"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("b"), name="x"
         )
         assert emoji1 == emoji1
         assert emoji1 == "x"
@@ -46,22 +46,22 @@ class TestEmoji(UnitTest):
 
     def test_hash(self):
         emoji1 = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="x"
         )
         emoji2 = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="2"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="2"
         )
         emoji3 = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "b"), name="1"
+            self.reddit, subreddit=self.reddit.subreddit("b"), name="1"
         )
         emoji4 = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "A"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("A"), name="x"
         )
         emoji5 = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="X"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="X"
         )
         emoji6 = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "b"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("b"), name="x"
         )
         assert hash(emoji1) == hash(emoji1)
         assert hash(emoji2) == hash(emoji2)
@@ -74,7 +74,7 @@ class TestEmoji(UnitTest):
 
     def test_pickle(self):
         emoji = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="x"
         )
         for level in range(pickle.HIGHEST_PROTOCOL + 1):
             other = pickle.loads(pickle.dumps(emoji, protocol=level))
@@ -82,19 +82,19 @@ class TestEmoji(UnitTest):
 
     def test_repr(self):
         emoji = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="x"
         )
         assert repr(emoji) == ("Emoji(name='x')")
 
     def test_str(self):
         emoji = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="x"
         )
         assert str(emoji) == "x"
 
     def test_update(self):
         emoji = Emoji(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="x"
         )
         with pytest.raises(TypeError) as excinfo:
             emoji.update()
@@ -103,5 +103,5 @@ class TestEmoji(UnitTest):
 
 class TestSubredditEmoji(UnitTest):
     def test_repr(self):
-        se = SubredditEmoji(subreddit=Subreddit(self.reddit, "a"))
+        se = SubredditEmoji(subreddit=self.reddit.subreddit("a"))
         assert repr(se)  # assert it has some repr

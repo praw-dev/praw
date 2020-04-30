@@ -8,19 +8,19 @@ from ... import UnitTest
 class TestWikiPage(UnitTest):
     def test_equality(self):
         page1 = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="x"
         )
         page2 = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="2"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="2"
         )
         page3 = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "b"), name="1"
+            self.reddit, subreddit=self.reddit.subreddit("b"), name="1"
         )
         page4 = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "A"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("A"), name="x"
         )
         page5 = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="X"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="X"
         )
         assert page1 == page1
         assert page2 == page2
@@ -32,19 +32,19 @@ class TestWikiPage(UnitTest):
 
     def test_hash(self):
         page1 = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="x"
         )
         page2 = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="2"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="2"
         )
         page3 = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "b"), name="1"
+            self.reddit, subreddit=self.reddit.subreddit("b"), name="1"
         )
         page4 = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "A"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("A"), name="x"
         )
         page5 = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="X"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="X"
         )
         assert hash(page1) == hash(page1)
         assert hash(page2) == hash(page2)
@@ -56,7 +56,7 @@ class TestWikiPage(UnitTest):
 
     def test_pickle(self):
         page = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="x"
         )
         for level in range(pickle.HIGHEST_PROTOCOL + 1):
             other = pickle.loads(pickle.dumps(page, protocol=level))
@@ -64,7 +64,7 @@ class TestWikiPage(UnitTest):
 
     def test_repr(self):
         page = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="x"
         )
         assert repr(page) == (
             "WikiPage(subreddit=Subreddit(display_name='a'), name='x')"
@@ -72,6 +72,6 @@ class TestWikiPage(UnitTest):
 
     def test_str(self):
         page = WikiPage(
-            self.reddit, subreddit=Subreddit(self.reddit, "a"), name="x"
+            self.reddit, subreddit=self.reddit.subreddit("a"), name="x"
         )
         assert str(page) == "a/x"
