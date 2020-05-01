@@ -61,9 +61,9 @@ creating an instance of :class:`.Reddit`:
 
    import praw
 
-   reddit = praw.Reddit(user_agent='LMGTFY (by /u/USERNAME)',
-                        client_id='CLIENT_ID', client_secret="CLIENT_SECRET",
-                        username='USERNAME', password='PASSWORD')
+   reddit = praw.Reddit(user_agent="LMGTFY (by /u/USERNAME)",
+                        client_id="CLIENT_ID", client_secret="CLIENT_SECRET",
+                        username="USERNAME", password="PASSWORD")
 
 In addition to the OAuth2 credentials, the username and password of the Reddit
 account that registered the application are required.
@@ -81,7 +81,7 @@ subreddit. To indefinitely iterate over new submissions to a subreddit add:
 
 .. code-block:: python
 
-   subreddit = reddit.subreddit('AskReddit')
+   subreddit = reddit.subreddit("AskReddit")
    for submission in subreddit.stream.submissions():
        # do something with submission
 
@@ -117,7 +117,7 @@ phrases:
 
 .. code-block:: python
 
-   questions = ['what is', 'who is', 'what are']
+   questions = ["what is", "who is", "what are"]
    normalized_title = submission.title.lower()
    for question_phrase in questions:
        if question_phrase in normalized_title:
@@ -142,7 +142,7 @@ those submissions with an appropriate lmgtfy_ link.
 First we will need to construct a working lmgtfy_ link. In essence we want to
 pass the entire submission title to lmgtfy_. However, there are certain
 characters that are not permitted in URLs or have other . For instance, the
-space character, ' ', is not permitted, and the question mark, '?', has a
+space character, " ", is not permitted, and the question mark, "?", has a
 special meaning. Thus we will transform those into their URL-safe
 representation so that a question like "What is the capital of Canada?" is
 transformed into the link

@@ -48,7 +48,7 @@ class BaseListingMixin(PRAWBase):
 
         .. code-block:: python
 
-           reddit.domain('imgur.com').controversial("week")
+           reddit.domain("imgur.com").controversial("week")
            reddit.multireddit("samuraisam", "programming").controversial("day")
            reddit.redditor("spez").controversial("month")
            reddit.redditor("spez").comments.controversial("year")
@@ -73,7 +73,7 @@ class BaseListingMixin(PRAWBase):
 
         .. code-block:: python
 
-           reddit.domain('imgur.com').hot()
+           reddit.domain("imgur.com").hot()
            reddit.multireddit("samuraisam", "programming").hot()
            reddit.redditor("spez").hot()
            reddit.redditor("spez").comments.hot()
@@ -97,7 +97,7 @@ class BaseListingMixin(PRAWBase):
 
         .. code-block:: python
 
-           reddit.domain('imgur.com').new()
+           reddit.domain("imgur.com").new()
            reddit.multireddit("samuraisam", "programming").new()
            reddit.redditor("spez").new()
            reddit.redditor("spez").comments.new()
@@ -128,7 +128,7 @@ class BaseListingMixin(PRAWBase):
 
         .. code-block:: python
 
-           reddit.domain('imgur.com').top("week")
+           reddit.domain("imgur.com").top("week")
            reddit.multireddit("samuraisam", "programming").top("day")
            reddit.redditor("spez").top("month")
            reddit.redditor("spez").comments.top("year")

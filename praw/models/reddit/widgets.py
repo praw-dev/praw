@@ -177,7 +177,7 @@ class SubredditWidgets(PRAWBase):
 
     .. code-block:: python
 
-       widgets.mod.add_text_area("My title", '**bold text**',
+       widgets.mod.add_text_area("My title", "**bold text**",
                                  {"backgroundColor": "#FFFF66",
                                   "headerColor": "#3333EE"})
 
@@ -336,7 +336,7 @@ class SubredditWidgetsModeration:
 
        styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
        reddit.subreddit("learnpython").widgets.mod.add_text_area(
-           "My title", '**bold text**', styles)
+           "My title", "**bold text**", styles)
 
     .. note::
 
@@ -445,7 +445,7 @@ class SubredditWidgetsModeration:
         .. code-block:: python
 
            widget_moderation = reddit.subreddit("mysub").widgets.mod
-           my_image = widget_moderation.upload_image('/path/to/pic.jpg')
+           my_image = widget_moderation.upload_image("/path/to/pic.jpg")
            buttons = [
                {
                    "kind": "text",
@@ -479,7 +479,7 @@ class SubredditWidgetsModeration:
            ]
            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
            new_widget = widget_moderation.add_button_widget(
-               "Things to click", 'Click some of these *cool* links!',
+               "Things to click", "Click some of these *cool* links!",
                buttons, styles)
 
         """
@@ -540,7 +540,7 @@ class SubredditWidgetsModeration:
                      "showLocation": False,
                      "showTime": True,
                      "showTitle": True}
-           cal_id = 'y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com'
+           cal_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
            new_widget = widget_moderation.add_calendar("Upcoming Events",
                                                        cal_id, True,
                                                        config, styles)
@@ -646,7 +646,7 @@ class SubredditWidgetsModeration:
         .. code-block:: python
 
            widget_moderation = reddit.subreddit("mysub").widgets.mod
-           image_paths = ['/path/to/image1.jpg', '/path/to/image2.png']
+           image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
            image_urls = [widget_moderation.upload_image(img_path)
                          for img_path in image_paths]
            image_dicts = [{"width": 600, "height": 450, "name": "logo",
@@ -655,8 +655,8 @@ class SubredditWidgetsModeration:
                            "url": image_urls[1]}]
            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
            new_widget = widget_moderation.add_custom_widget("My widget",
-                                                           '# Hello world!',
-                                                           '/**/', 200,
+                                                           "# Hello world!",
+                                                           "/**/", 200,
                                                            image_dicts, styles)
 
         """
@@ -703,7 +703,7 @@ class SubredditWidgetsModeration:
         .. code-block:: python
 
            widget_moderation = reddit.subreddit("mysub").widgets.mod
-           image_paths = ['/path/to/image1.jpg', '/path/to/image2.png']
+           image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
            image_dicts = [{"width": 600, "height": 450, "linkUrl": '',
                            "url": widget_moderation.upload_image(img_path)}
                           for img_path in image_paths]
@@ -832,7 +832,7 @@ class SubredditWidgetsModeration:
            widget_moderation = reddit.subreddit("mysub").widgets.mod
            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
            new_widget = widget_moderation.add_text_area("My cool title",
-                                                        '*Hello* **world**!',
+                                                        "*Hello* **world**!",
                                                         styles)
 
         """
@@ -889,7 +889,7 @@ class SubredditWidgetsModeration:
         .. code-block:: python
 
            my_sub = reddit.subreddit("my_sub")
-           image_url = my_sub.widgets.mod.upload_image('/path/to/image.jpg')
+           image_url = my_sub.widgets.mod.upload_image("/path/to/image.jpg")
            images = [{"width": 300, "height": 300,
                       "url": image_url, "linkUrl": ''}]
            styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
@@ -1001,7 +1001,7 @@ class ButtonWidget(Widget, BaseList):
        ]
        styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
        button_widget = widgets.mod.add_button_widget(
-           "Things to click", 'Click some of these *cool* links!',
+           "Things to click", "Click some of these *cool* links!",
            buttons, styles)
 
     For more information on creation, see :meth:`.add_button_widget`.
@@ -1078,7 +1078,7 @@ class Calendar(Widget):
                  "showLocation": False,
                  "showTime": True,
                  "showTitle": True}
-       cal_id = 'y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com'
+       cal_id = "y6nm89jy427drk8l71w75w9wjn@group.calendar.google.com"
        calendar = widgets.mod.add_calendar(
            "Upcoming Events", cal_id, True, config, styles)
 
@@ -1218,7 +1218,7 @@ class CustomWidget(Widget):
        widgets = reddit.subreddit("redditdev").widgets
        styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
        custom = widgets.mod.add_custom_widget(
-           "My custom widget", '# Hello world!', '/**/', 200, [], styles)
+           "My custom widget", "# Hello world!", "/**/", 200, [], styles)
 
     For more information on creation, see :meth:`.add_custom_widget`.
 
@@ -1338,7 +1338,7 @@ class ImageWidget(Widget, BaseList):
     .. code-block:: python
 
        widgets = reddit.subreddit("redditdev").widgets
-       image_paths = ['/path/to/image1.jpg', '/path/to/image2.png']
+       image_paths = ["/path/to/image1.jpg", "/path/to/image2.png"]
        image_dicts = [{"width": 600, "height": 450, "linkUrl": '',
                        "url": widgets.mod.upload_image(img_path)}
                       for img_path in image_paths]
@@ -1405,7 +1405,7 @@ class Menu(Widget, BaseList):
                if isinstance(item, praw.models.Submenu):
                    print(item.text)
                    for child in item:
-                       print('\t', child.text, child.url)
+                       print("\t", child.text, child.url)
                else:  # MenuLink
                    print(item.text, item.url)
 
@@ -1674,7 +1674,7 @@ class TextArea(Widget):
        widgets = reddit.subreddit("redditdev").widgets
        styles = {"backgroundColor": "#FFFF66", "headerColor": "#3333EE"}
        text_area = widgets.mod.add_text_area("My cool title",
-                                             '*Hello* **world**!',
+                                             "*Hello* **world**!",
                                              styles)
 
     For more information on creation, see :meth:`.add_text_area`.

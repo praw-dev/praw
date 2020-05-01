@@ -399,12 +399,12 @@ Unreleased
 * Fix bug with positive ``pause_after`` values in streams provided by
   :func:`.stream_generator` where the wait time was not reset after a yielded
   ``None``.
-* Parse URLs with trailing slashes and no ``'comments'`` element when creating
+* Parse URLs with trailing slashes and no ``"comments"`` element when creating
   :class:`.Submission` objects.
 * Fix bug where ``Subreddit.submissions`` returns a same submission more than
   once
 * Fix bug where ``ListingGenerator`` fetches the same batch of submissions in
-  an infinite loop when ``'before'`` parameter is provided.
+  an infinite loop when ``"before"`` parameter is provided.
 
 **Removed**
 
@@ -468,7 +468,7 @@ Unreleased
   possible (currently 8) enabling significantly quicker traversal to the
   top-most :class:`.Comment` via successive :meth:`.parent()` calls.
 * Calling :meth:`~.Comment.refresh` previously could have resulted in a
-  ``AttributeError: 'MoreComments' object has no attribute '_replies'``
+  ``AttributeError: "MoreComments" object has no attribute "_replies"``
   exception. This situation will now result in a :class:`.ClientException`.
 * Properly handle ``BAD_CSS_NAME`` errors when uploading stylesheet images with
   invalid filenames. Previously an ``AssertionError`` was raised.
@@ -599,7 +599,7 @@ parameter as described below:
 
 * :meth:`.submit` accepts ``selftext=''`` to create a title-only submission.
 * :class:`.Reddit` accepts ``requestor_class=cls`` for a customized requestor
-  class and ``requestor_kwargs={'param': value}`` for passing arguments to
+  class and ``requestor_kwargs={"param": value}`` for passing arguments to
   requestor initialization.
 * :meth:`~praw.models.reddit.subreddit.SubredditStream.comments`,
   :meth:`~praw.models.reddit.subreddit.SubredditStream.submissions`, and
@@ -649,7 +649,7 @@ parameter as described below:
   raises ``prawcore.TooLarge`` instead of an ``AssertionError``.
 * Uploading an invalid image raises func:`APIException`.
 * :class:`.Redditor` instances obtained via :attr:`.moderator` (e.g.,
-  ``reddit.subreddit('subreddit').moderator()``) will contain attributes with
+  ``reddit.subreddit("subreddit").moderator()``) will contain attributes with
   the relationship metadata (e.g., ``mod_permissions``).
 * :class:`.Message` instances retrieved from the inbox now have attributes
   ``author``, ``dest`` ``replies`` and ``subreddit`` properly converted to
@@ -687,7 +687,7 @@ parameter as described below:
 
 * :meth:`.LiveContributorRelationship.invite` and
   :meth:`.LiveContributorRelationship.remove_invite` now hit endpoints,
-  which starts with 'api/', for consistency.
+  which starts with "api/", for consistency.
 * :meth:`.ModeratorRelationship.update`, and
   :meth:`.ModeratorRelationship.update_invite` now always remove known unlisted
   permissions.
@@ -759,7 +759,7 @@ parameter as described below:
 * :class:`.LiveUpdate` to represent an individual update in a
   :class:`.LiveThread`.
 * Ability to access an individual :class:`.LiveUpdate` via
-  ``reddit.live('THREAD_ID')['UPDATE_ID']``.
+  ``reddit.live("THREAD_ID")["UPDATE_ID"]``.
 * :meth:`.LiveThread.updates` to iterate the updates of the thread.
 
 **Changed**

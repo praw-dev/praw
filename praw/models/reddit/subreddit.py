@@ -218,7 +218,7 @@ class Subreddit(
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").banned.add("NAME", ban_reason='...')
+           reddit.subreddit("SUBREDDIT").banned.add("NAME", ban_reason="...")
 
         To list the banned users along with any notes, try:
 
@@ -944,7 +944,7 @@ class Subreddit(
         .. code-block:: python
 
            title = "My favorite picture"
-           image = '/path/to/image.png'
+           image = "/path/to/image.png"
            reddit.subreddit("reddit_api_test").submit_image(title, image)
 
         .. seealso ::
@@ -1129,7 +1129,7 @@ class Subreddit(
         .. code-block:: python
 
            title = "My favorite movie"
-           video = '/path/to/video.mp4'
+           video = "/path/to/video.mp4"
            reddit.subreddit("reddit_api_test").submit_video(title, video)
 
         .. seealso ::
@@ -3287,7 +3287,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.upload("smile", 'img.png')
+           reddit.subreddit("SUBREDDIT").stylesheet.upload("smile", "img.png")
 
         """
         return self._upload_image(
@@ -3310,7 +3310,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.upload_banner('banner.png')
+           reddit.subreddit("SUBREDDIT").stylesheet.upload_banner("banner.png")
 
         """
         image_type = "bannerBackgroundImage"
@@ -3336,7 +3336,7 @@ class SubredditStylesheet:
         .. code-block:: python
 
            subreddit = reddit.subreddit("SUBREDDIT")
-           subreddit.stylesheet.upload_banner_additional_image('banner.png')
+           subreddit.stylesheet.upload_banner_additional_image("banner.png")
 
         """
         alignment = {}
@@ -3374,7 +3374,7 @@ class SubredditStylesheet:
         .. code-block:: python
 
            subreddit = reddit.subreddit("SUBREDDIT")
-           subreddit.stylesheet.upload_banner_hover_image('banner.png')
+           subreddit.stylesheet.upload_banner_hover_image("banner.png")
 
         """
         image_type = "secondaryBannerPositionedImage"
@@ -3399,7 +3399,7 @@ class SubredditStylesheet:
 
         .. code-block:: python
 
-           reddit.subreddit("SUBREDDIT").stylesheet.upload_header('header.png')
+           reddit.subreddit("SUBREDDIT").stylesheet.upload_header("header.png")
 
         """
         return self._upload_image(image_path, {"upload_type": "header"})
@@ -3423,7 +3423,7 @@ class SubredditStylesheet:
         .. code-block:: python
 
            reddit.subreddit("SUBREDDIT").stylesheet.upload_mobile_header(
-               'header.png')
+               "header.png")
 
         """
         return self._upload_image(image_path, {"upload_type": "banner"})
@@ -3447,7 +3447,7 @@ class SubredditStylesheet:
         .. code-block:: python
 
            reddit.subreddit("SUBREDDIT").stylesheet.upload_mobile_icon(
-               'icon.png')
+               "icon.png")
 
         """
         return self._upload_image(image_path, {"upload_type": "icon"})

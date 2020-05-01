@@ -243,7 +243,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
            # `replies` is empty until the comment is refreshed
            print(parent.replies)  # Output: []
            parent.refresh()
-           print(parent.replies)  # Output is at least: [Comment(id='cklhv0f')]
+           print(parent.replies)  # Output is at least: [Comment(id="cklhv0f")]
 
         .. warning:: Successive calls to :meth:`.parent()` may result in a
            network request per call when the comment is not obtained through a

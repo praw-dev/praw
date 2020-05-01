@@ -135,7 +135,7 @@ from an instance of :class:`.Reddit` you can execute:
 
 .. code-block:: python
 
-   reddit.config.custom['app_debugging']
+   reddit.config.custom["app_debugging"]
 
 .. note:: Custom PRAW configuration environment variables are not
           supported. You can directly access environment variables via

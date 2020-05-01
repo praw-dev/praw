@@ -76,7 +76,7 @@ class Collection(RedditBase):
         .. code-block:: python
 
            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
-           collection.mod.update_title('My new title!')
+           collection.mod.update_title("My new title!")
 
         """
         return CollectionModeration(self._reddit, self.collection_id)
@@ -366,7 +366,7 @@ class CollectionModeration(PRAWBase):
         .. code-block:: python
 
            collection = reddit.subreddit("SUBREDDIT").collections("some_uuid")
-           collection.mod.update_description('Please enjoy these links!')
+           collection.mod.update_description("Please enjoy these links!")
 
         .. seealso:: :meth:`.update_title`
 

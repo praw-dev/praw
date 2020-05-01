@@ -10,9 +10,9 @@ As always, you need to begin by creating an instance of :class:`.Reddit`:
 
    import praw
 
-   reddit = praw.Reddit(user_agent='Comment Extraction (by /u/USERNAME)',
-                        client_id='CLIENT_ID', client_secret="CLIENT_SECRET",
-                        username='USERNAME', password='PASSWORD')
+   reddit = praw.Reddit(user_agent="Comment Extraction (by /u/USERNAME)",
+                        client_id="CLIENT_ID", client_secret="CLIENT_SECRET",
+                        username="USERNAME", password="PASSWORD")
 
 .. note:: If you are only analyzing public comments, entering a username and
    password is optional.
@@ -42,7 +42,7 @@ or with the submission's ID which comes after ``comments/`` in the URL:
 
 .. code-block:: python
 
-   submission = reddit.submission(id='3g1jfi')
+   submission = reddit.submission(id="3g1jfi")
 
 With a submission object we can then interact with its :class:`.CommentForest`
 through the submission's :attr:`~praw.models.Submission.comments` attribute. A
@@ -58,7 +58,7 @@ thread we could do:
        print(top_level_comment.body)
 
 While running this you will most likely encounter the exception
-``AttributeError: 'MoreComments' object has no attribute 'body'``. This
+``AttributeError: "MoreComments" object has no attribute "body"``. This
 submission's comment forest contains a number of :class:`.MoreComments`
 objects. These objects represent the "load more comments", and "continue this
 thread" links encountered on the website. While we could ignore

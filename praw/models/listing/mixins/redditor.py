@@ -40,7 +40,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
         .. code-block:: python
 
            for comment in reddit.redditor("spez").comments.new(limit=None):
-               print(comment.body.split('\n', 1)[0][:79])
+               print(comment.body.split("\n", 1)[0][:79])
 
         """
         return SubListing(self._reddit, self._path, "comments")
