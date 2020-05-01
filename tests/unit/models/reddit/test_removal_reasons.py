@@ -22,6 +22,9 @@ class TestRemovalReason(UnitTest):
         reason4 = RemovalReason(
             self.reddit, subreddit=self.reddit.subreddit("A"), id="x"
         )
+        reason5 = RemovalReason(
+            self.reddit, subreddit=self.reddit.subreddit("A"), reason_id="X"
+        )
         assert reason1 == reason1
         assert reason1 == "x"
         assert reason2 == reason2
@@ -29,10 +32,18 @@ class TestRemovalReason(UnitTest):
         assert reason1 != reason2
         assert reason1 != reason3
         assert reason1 == reason4
+        assert reason1 != reason5
 
     def test_exception(self):
         with pytest.raises(ValueError):
             RemovalReason(self.reddit, subreddit=self.reddit.subreddit("a"))
+        with pytest.raises(ValueError):
+            RemovalReason(
+                self.reddit,
+                subreddit=self.reddit.subreddit("a"),
+                id="test",
+                _data={},
+            )
 
     def test__get(self):
         subreddit = self.reddit.subreddit("a")
@@ -52,12 +63,16 @@ class TestRemovalReason(UnitTest):
         reason4 = RemovalReason(
             self.reddit, subreddit=self.reddit.subreddit("A"), id="x"
         )
+        reason5 = RemovalReason(
+            self.reddit, subreddit=self.reddit.subreddit("a"), reason_id="X"
+        )
         assert hash(reason1) == hash(reason1)
         assert hash(reason2) == hash(reason2)
         assert hash(reason3) == hash(reason3)
         assert hash(reason1) != hash(reason2)
         assert hash(reason1) != hash(reason3)
         assert hash(reason1) == hash(reason4)
+        assert hash(reason1) != hash(reason5)
 
     def test_pickle(self):
         reason = RemovalReason(

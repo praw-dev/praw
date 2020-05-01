@@ -1,5 +1,6 @@
-"""Provide the Reason class."""
-from typing import TYPE_CHECKING, Any, Dict, Iterator, Optional, Union
+"""Provide the Removal Reason class."""
+from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Union
+from warnings import warn
 
 from ...const import API_PATH
 from ...exceptions import ClientException
@@ -33,6 +34,28 @@ class RemovalReason(RedditBase):
 
     STR_FIELD = "id"
 
+    @staticmethod
+    def _warn_reason_id(
+        reason_id_value: Optional[str], id_value: Optional[str]
+    ):
+        """The reason id param is deprecated. Warns is it's used.
+
+        :param reason_id_value: The value passed as parameter ``reason_id``.
+        :param id_value: Returns the actual value of parameter ``id`` is
+            parameter ``reason_id`` is not used.
+        """
+        if reason_id_value is not None:
+            warn(
+                "Parameter ``reason_id`` is deprecated. Either use positional"
+                ' arguments (resaon_id="x" -> "x") or change the parameter '
+                'name to ``id`` (resaon_id="x" -> id="x"). The parameter will'
+                " be removed in PRAW 8.",
+                category=DeprecationWarning,
+                stacklevel=3,
+            )
+            return reason_id_value
+        return id_value
+
     def __eq__(self, other: Union[str, "RemovalReason"]) -> bool:
         """Return whether the other instance equals the current."""
         if isinstance(other, str):
@@ -48,11 +71,22 @@ class RemovalReason(RedditBase):
         reddit: "Reddit",
         subreddit: "Subreddit",
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        reason_id: Optional[str] = None,
         _data: Optional[Dict[str, Any]] = None,
     ):
-        """Construct an instance of the Removal Reason object."""
+        """Construct an instance of the Removal Reason object.
+
+        :param reddit: An instance of :class:`.Reddit`.
+        :param subreddit: An instance of :class:`.Subreddit`.
+        :param id: The id of the removal reason.
+        :param reason_id: (Deprecated) The original name of the ``id``
+            parameter. Used for backwards compatibility. This parameter should
+            not be used.
+        """
+        id = self._warn_reason_id(reason_id, id)
         if (id, _data).count(None) != 1:
             raise ValueError("Either id or _data needs to be given.")
+
         self.id = id
         self.subreddit = subreddit
         super().__init__(reddit, _data=_data)
@@ -116,12 +150,10 @@ class RemovalReason(RedditBase):
 class SubredditRemovalReasons:
     """Provide a set of functions to a Subreddit's removal reasons."""
 
-    def __getitem__(
-        self, id: Union[str, int, slice]  # pylint: disable=redefined-builtin
-    ) -> RemovalReason:
-        """Return the Removal Reason for the subreddit with id ``id``.
+    def __getitem__(self, reason_id: Union[str, int, slice]) -> RemovalReason:
+        """Return the Removal Reason with the ID/number/slice ``reason_id``.
 
-        :param id: The id of the removal reason or the removal reason number
+        :param reason_id: The ID or index of the removal reason
 
         .. note:: Removal reasons fetched using a specific rule name are lazy
             loaded, so you might have to access an attribute to get all of the
@@ -135,7 +167,7 @@ class SubredditRemovalReasons:
            reason = reddit.subreddit("NAME").mod.removal_reasons[reason_id]
            print(reason)
 
-        You can also use index numbers to get a numbered rule. Since Python
+        You can also use indices to get a numbered rule. Since Python
         uses 0-indexing, the first rule is index 0, and so on.
 
         .. note:: Both negative indices and slices can be used to interact with
