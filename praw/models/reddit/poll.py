@@ -18,7 +18,7 @@ class PollOption(PRAWBase):
        # By index -- print the first option
        print(poll_data.options[0])
 
-       # By ID -- print the option with ID '576797'
+       # By ID -- print the option with ID "576797"
        print(poll_data.option("576797"))
 
     **Typical Attributes**

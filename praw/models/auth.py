@@ -87,7 +87,7 @@ class Auth(PRAWBase):
     def scopes(self) -> Set[str]:
         """Return a set of scopes included in the current authorization.
 
-        For read-only authorizations this should return ``{'*'}``.
+        For read-only authorizations this should return ``{"*"}``.
 
         """
         authorizer = self._reddit._core._authorizer

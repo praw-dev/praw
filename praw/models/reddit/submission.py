@@ -66,8 +66,8 @@ class SubmissionFlair:
 
            choices = submission.flair.choices()
            template_id = next(x for x in choices
-                              if x['flair_text_editable'])['flair_template_id']
-           submission.flair.select(template_id, 'my custom value')
+                              if x["flair_text_editable"])["flair_template_id"]
+           submission.flair.select(template_id, "my custom value")
 
         """
         data = {
@@ -121,7 +121,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.mod.contest_mode(state=True)
 
         """
@@ -152,8 +152,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
-           submission.mod.flair(text='PRAW', css_class='bot')
+           submission = reddit.submission(id="5or86n")
+           submission.mod.flair(text="PRAW", css_class="bot")
 
         """
         data = {
@@ -179,8 +179,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.subreddit('test').submit('nsfw test',
-                                                        selftext='nsfw')
+           submission = reddit.subreddit("test").submit("nsfw test",
+                                                        selftext="nsfw")
            submission.mod.nsfw()
 
         .. seealso:: :meth:`~.sfw`
@@ -202,8 +202,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.subreddit('test').submit('oc test',
-                                                        selftext='original')
+           submission = reddit.subreddit("test").submit("oc test",
+                                                        selftext="original")
            submission.mod.set_original_content()
 
         .. seealso:: :meth:`.unset_original_content`
@@ -228,7 +228,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.mod.sfw()
 
         .. seealso:: :meth:`~.nsfw`
@@ -248,7 +248,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.mod.spoiler()
 
         .. seealso:: :meth:`~.unspoiler`
@@ -278,7 +278,7 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.mod.sticky()
 
         """
@@ -316,8 +316,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.subreddit('test').submit('oc test',
-                                                        selftext='original')
+           submission = reddit.subreddit("test").submit("oc test",
+                                                        selftext="original")
            submission.mod.unset_original_content()
 
         .. seealso:: :meth:`.set_original_content`
@@ -342,8 +342,8 @@ class SubmissionModeration(ThingModerationMixin):
 
         .. code-block:: python
 
-           submission = reddit.subreddit('test').submit('not spoiler',
-                                                        selftext='spoiler')
+           submission = reddit.subreddit("test").submit("not spoiler",
+                                                        selftext="spoiler")
            submission.mod.unspoiler()
 
         .. seealso:: :meth:`~.spoiler`
@@ -468,7 +468,7 @@ class Submission(
 
         .. code-block:: python
 
-           submission.comment_sort = 'new'
+           submission.comment_sort = "new"
            comments = submission.comments.list()
 
         .. note:: The appropriate values for ``comment_sort`` include
@@ -497,8 +497,8 @@ class Submission(
 
            choices = submission.flair.choices()
            template_id = next(x for x in choices
-                              if x['flair_text_editable'])['flair_template_id']
-           submission.flair.select(template_id, 'my custom value')
+                              if x["flair_text_editable"])["flair_template_id"]
+           submission.flair.select(template_id, "my custom value")
 
         """
         return SubmissionFlair(self)
@@ -616,7 +616,7 @@ class Submission(
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.mark_visited()
 
         """
@@ -634,7 +634,7 @@ class Submission(
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.hide()
 
         .. seealso:: :meth:`~.unhide`
@@ -654,7 +654,7 @@ class Submission(
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.unhide()
 
         .. seealso:: :meth:`~.hide`
@@ -699,7 +699,7 @@ class Submission(
 
         .. code-block:: python
 
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            cross_post = submission.crosspost(subreddit="learnprogramming",
                                              send_replies=False)
 

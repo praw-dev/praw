@@ -85,7 +85,7 @@ class Emoji(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit('praw_test').emoji['test'].delete()
+           reddit.subreddit("praw_test").emoji["test"].delete()
 
         """
         url = API_PATH["emoji_delete"].format(
@@ -158,7 +158,7 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-           emoji = reddit.subreddit('praw_test').emoji['test']
+           emoji = reddit.subreddit("praw_test").emoji["test"]
            print(emoji)
 
         """
@@ -180,7 +180,7 @@ class SubredditEmoji:
 
         .. code-block:: python
 
-           for emoji in reddit.subreddit('praw_test').emoji:
+           for emoji in reddit.subreddit("praw_test").emoji:
                print(emoji)
 
         """

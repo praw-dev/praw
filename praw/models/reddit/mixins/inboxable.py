@@ -16,7 +16,7 @@ class InboxableMixin:
 
         .. code-block:: python
 
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.block()
 
            # or, identically:

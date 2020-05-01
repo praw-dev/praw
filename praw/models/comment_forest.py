@@ -130,7 +130,7 @@ class CommentForest:
 
         .. code-block:: python
 
-           submission = reddit.submission('3hahrw')
+           submission = reddit.submission("3hahrw")
            submission.comments.replace_more()
 
         Alternatively, to replace :class:`.MoreComments` instances within the
@@ -138,7 +138,7 @@ class CommentForest:
 
         .. code-block:: python
 
-           comment = reddit.comment('d8r4im1')
+           comment = reddit.comment("d8r4im1")
            comment.refresh()
            comment.replies.replace_more()
 

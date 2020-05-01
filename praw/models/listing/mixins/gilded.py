@@ -21,7 +21,7 @@ class GildedListingMixin(PRAWBase):
 
         .. code-block:: python
 
-            for item in reddit.subreddit('test').gilded():
+            for item in reddit.subreddit("test").gilded():
                 print(item.id)
 
         """
