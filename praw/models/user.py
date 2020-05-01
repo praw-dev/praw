@@ -25,7 +25,7 @@ class User(PRAWBase):
         .. code-block:: python
 
            preferences = reddit.user.preferences()
-           print(preferences['show_link_flair'])
+           print(preferences["show_link_flair"])
 
         Preferences can be updated via:
 

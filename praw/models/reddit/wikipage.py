@@ -20,7 +20,7 @@ class WikiPageModeration:
 
     .. code-block:: python
 
-        reddit.subreddit('test').wiki['praw_test'].mod.add('spez')
+        reddit.subreddit("test").wiki["praw_test"].mod.add("spez")
     """
 
     def __init__(self, wikipage: _WikiPage):
@@ -41,7 +41,7 @@ class WikiPageModeration:
 
         .. code-block:: python
 
-           reddit.subreddit('test').wiki['praw_test'].mod.add('spez')
+           reddit.subreddit("test").wiki["praw_test"].mod.add("spez")
 
         """
         data = {"page": self.wikipage.name, "username": str(redditor)}
@@ -60,7 +60,7 @@ class WikiPageModeration:
 
         .. code-block:: python
 
-           reddit.subreddit('test').wiki['praw_test'].mod.remove('spez')
+           reddit.subreddit("test").wiki["praw_test"].mod.remove("spez")
 
         """
         data = {"page": self.wikipage.name, "username": str(redditor)}
@@ -94,7 +94,7 @@ class WikiPageModeration:
 
         .. code-block:: python
 
-           reddit.subreddit('test').wiki['praw_test'].mod.update(listed=False,
+           reddit.subreddit("test").wiki["praw_test"].mod.update(listed=False,
                                                                  permlevel=2)
 
         """
@@ -158,7 +158,7 @@ class WikiPage(RedditBase):
 
         .. code-block:: python
 
-            reddit.subreddit('test').wiki['praw_test'].mod.add('spez')
+            reddit.subreddit("test").wiki["praw_test"].mod.add("spez")
 
         """
         return WikiPageModeration(self)
@@ -228,8 +228,8 @@ class WikiPage(RedditBase):
 
         .. code-block:: python
 
-            page = next(iter(reddit.subreddit('test').wiki))
-            page.edit(content='test wiki page')
+            page = next(iter(reddit.subreddit("test").wiki))
+            page.edit(content="test wiki page")
 
         """
         other_settings.update(
@@ -247,7 +247,7 @@ class WikiPage(RedditBase):
 
         .. code-block:: python
 
-           page = reddit.subreddit('test').wiki['praw_test'].revision('[ID]')
+           page = reddit.subreddit("test").wiki["praw_test"].revision('[ID]')
 
         """
         return WikiPage(
@@ -266,15 +266,15 @@ class WikiPage(RedditBase):
 
         .. code-block:: python
 
-           for item in reddit.subreddit('test').wiki['praw_test'].revisions():
+           for item in reddit.subreddit("test").wiki["praw_test"].revisions():
                print(item)
 
         To get :class:`.WikiPage` objects for each revision:
 
         .. code-block:: python
 
-           for item in reddit.subreddit('test').wiki['praw_test'].revisions():
-               print(item['page'])
+           for item in reddit.subreddit("test").wiki["praw_test"].revisions():
+               print(item["page"])
 
         """
         url = API_PATH["wiki_page_revisions"].format(

@@ -12,10 +12,10 @@ class EditableMixin:
 
         .. code-block:: python
 
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.delete()
 
-           submission = reddit.submission('8dmv8z')
+           submission = reddit.submission("8dmv8z")
            submission.delete()
 
         """
@@ -31,7 +31,7 @@ class EditableMixin:
 
         .. code-block:: python
 
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
 
            # construct the text of an edited comment
            # by appending to the old body:

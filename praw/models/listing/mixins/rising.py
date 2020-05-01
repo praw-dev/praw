@@ -23,7 +23,7 @@ class RisingListingMixin(PRAWBase):
 
         .. code-block:: python
 
-            for submission in reddit.subreddit('test').random_rising():
+            for submission in reddit.subreddit("test").random_rising():
                 print(submission.title)
 
         """
@@ -45,7 +45,7 @@ class RisingListingMixin(PRAWBase):
 
         .. code-block:: python
 
-            for submission in reddit.subreddit('test').rising():
+            for submission in reddit.subreddit("test").rising():
                 print(submission.title)
 
         """

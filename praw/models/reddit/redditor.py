@@ -66,15 +66,15 @@ class Redditor(
     ``subreddit``                        If the Redditor has created a
                                          user-subreddit, provides a dictionary
                                          of additional attributes. See below.
-    ``subreddit['banner_img']``          The URL of the user-subreddit banner.
-    ``subreddit['name']``                The fullname of the user-subreddit.
-    ``subreddit['over_18']``             Whether or not the user-subreddit is
+    ``subreddit["banner_img"]``          The URL of the user-subreddit banner.
+    ``subreddit["name"]``                The fullname of the user-subreddit.
+    ``subreddit["over_18"]``             Whether or not the user-subreddit is
                                          NSFW.
-    ``subreddit['public_description']``  The public description of the user-
+    ``subreddit["public_description"]``  The public description of the user-
                                          subreddit.
-    ``subreddit['subscribers']``         The number of users subscribed to the
+    ``subreddit["subscribers"]``         The number of users subscribed to the
                                          user-subreddit.
-    ``subreddit['title']``               The title of the user-subreddit.
+    ``subreddit["title"]``               The title of the user-subreddit.
     ==================================== ======================================
 
 
@@ -100,7 +100,7 @@ class Redditor(
 
         .. code-block:: python
 
-           for comment in reddit.redditor('spez').stream.comments():
+           for comment in reddit.redditor("spez").stream.comments():
                print(comment)
 
         Additionally, new submissions can be retrieved via the stream. In the
@@ -109,7 +109,7 @@ class Redditor(
 
         .. code-block:: python
 
-           for submission in reddit.redditor('spez').stream.submissions():
+           for submission in reddit.redditor("spez").stream.submissions():
                print(submission)
 
         """
@@ -269,7 +269,7 @@ class Redditor(
 
         .. code-block:: python
 
-            for subreddit in reddit.redditor('spez').moderated():
+            for subreddit in reddit.redditor("spez").moderated():
                 print(subreddit.display_name)
                 print(subreddit.title)
 
@@ -308,7 +308,7 @@ class Redditor(
 
         .. code-block:: python
 
-            for trophy in reddit.redditor('spez').trophies():
+            for trophy in reddit.redditor("spez").trophies():
                 print(trophy.name)
                 print(trophy.description)
 
@@ -372,7 +372,7 @@ class RedditorStream:
 
         .. code-block:: python
 
-           for comment in reddit.redditor('spez').stream.comments():
+           for comment in reddit.redditor("spez").stream.comments():
                print(comment)
 
         """
@@ -393,7 +393,7 @@ class RedditorStream:
 
         .. code-block:: python
 
-           for submission in reddit.redditor('spez').stream.submissions():
+           for submission in reddit.redditor("spez").stream.submissions():
                print(submission)
 
         """

@@ -102,7 +102,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-            comment = reddit.comment('dkk4qjd')
+            comment = reddit.comment("dkk4qjd")
             comment.mod.approve()
 
         """
@@ -121,7 +121,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment.reply_sort = 'new'
+           comment.reply_sort = "new"
            comment.refresh()
            replies = comment.replies
 
@@ -230,7 +230,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         If this comment was obtained through a :class:`.Submission`, then its
         entire ancestry should be immediately available, requiring no extra
         network requests. However, if this comment was obtained through other
-        means, e.g., ``reddit.comment('COMMENT_ID')``, or
+        means, e.g., ``reddit.comment("COMMENT_ID")``, or
         ``reddit.inbox.comment_replies``, then the returned parent may be a
         lazy instance of either :class:`.Comment`, or :class:`.Submission`.
 
@@ -238,7 +238,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment = reddit.comment('cklhv0f')
+           comment = reddit.comment("cklhv0f")
            parent = comment.parent()
            # `replies` is empty until the comment is refreshed
            print(parent.replies)  # Output: []
@@ -257,7 +257,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            ancestor = comment
            refresh_counter = 0
            while not ancestor.is_root:
@@ -295,7 +295,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
 
         .. code-block:: python
 
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.refresh()
 
         """
@@ -344,7 +344,7 @@ class CommentModeration(ThingModerationMixin):
 
     .. code-block:: python
 
-       comment = reddit.comment('dkk4qjd')
+       comment = reddit.comment("dkk4qjd")
        comment.mod.approve()
 
     """
@@ -367,7 +367,7 @@ class CommentModeration(ThingModerationMixin):
         .. code-block:: python
 
            # lock a comment:
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.mod.show()
         """
         url = API_PATH["show_comment"]

@@ -130,7 +130,7 @@ def stream_generator(
 
     .. code-block:: python
 
-       subreddit = reddit.subreddit('redditdev')
+       subreddit = reddit.subreddit("redditdev")
        for comment in subreddit.stream.comments(pause_after=6):
            if comment is None:
                break
@@ -140,7 +140,7 @@ def stream_generator(
 
     .. code-block:: python
 
-       subreddit = reddit.subreddit('help')
+       subreddit = reddit.subreddit("help")
        comment_stream = subreddit.stream.comments(pause_after=5)
 
        for comment in comment_stream:
@@ -161,7 +161,7 @@ def stream_generator(
 
     .. code-block:: python
 
-       subreddit = reddit.subreddit('help')
+       subreddit = reddit.subreddit("help")
        for comment in subreddit.stream.comments(pause_after=0):
            if comment is None:
                continue

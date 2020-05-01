@@ -57,9 +57,9 @@ class Reddit:
     .. code-block:: python
 
        import praw
-       reddit = praw.Reddit(client_id='CLIENT_ID',
-                            client_secret="CLIENT_SECRET", password='PASSWORD',
-                            user_agent='USERAGENT', username='USERNAME')
+       reddit = praw.Reddit(client_id="CLIENT_ID",
+                            client_secret="CLIENT_SECRET", password="PASSWORD",
+                            user_agent="USERAGENT", username="USERNAME")
 
     """
 
@@ -175,7 +175,7 @@ class Reddit:
 
            my_session = betamax.Betamax(requests.Session())
            reddit = Reddit(..., requestor_class=JSONDebugRequestor,
-                           requestor_kwargs={'session': my_session})
+                           requestor_kwargs={"session": my_session})
 
         """
         self._core = self._authorized_core = self._read_only_core = None
@@ -273,7 +273,7 @@ class Reddit:
 
         .. code-block:: python
 
-           reddit.live.create('title', 'description')
+           reddit.live.create("title", "description")
 
         """
 
@@ -286,7 +286,7 @@ class Reddit:
 
         .. code-block:: python
 
-           reddit.multireddit('samuraisam', 'programming')
+           reddit.multireddit("samuraisam", "programming")
 
         """
 
@@ -311,21 +311,21 @@ class Reddit:
 
         .. code-block:: python
 
-           reddit.subreddit.create('coolnewsubname')
+           reddit.subreddit.create("coolnewsubname")
 
         To obtain a lazy a :class:`.Subreddit` instance run:
 
         .. code-block:: python
 
-           reddit.subreddit('redditdev')
+           reddit.subreddit("redditdev")
 
         Note that multiple subreddits can be combined and filtered views of
         r/all can also be used just like a subreddit:
 
         .. code-block:: python
 
-           reddit.subreddit('redditdev+learnpython+botwatch')
-           reddit.subreddit('all-redditdev-learnpython')
+           reddit.subreddit("redditdev+learnpython+botwatch")
+           reddit.subreddit("all-redditdev-learnpython")
 
         """
 

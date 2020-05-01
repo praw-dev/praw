@@ -57,7 +57,7 @@ class Rule(RedditBase):
 
         .. code-block:: python
 
-            reddit.subreddit('NAME').rules['No spam'].mod.delete()
+            reddit.subreddit("NAME").rules["No spam"].mod.delete()
 
         To update ``"No spam"`` from the subreddit ``"NAME"`` try:
 
@@ -119,7 +119,7 @@ class SubredditRules:
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').rules.mod.add(
+           reddit.subreddit("NAME").rules.mod.add(
                "No spam",
                "all",
                description="Do not spam. Spam bad")
@@ -164,8 +164,8 @@ class SubredditRules:
 
         .. code-block:: python
 
-            rule_name = 'No spam'
-            rule = reddit.subreddit('NAME').rules[rule_name]
+            rule_name = "No spam"
+            rule = reddit.subreddit("NAME").rules[rule_name]
             print(rule)
 
         You can also fetch a numbered rule of a subreddit.
@@ -211,7 +211,7 @@ class SubredditRules:
 
         .. code-block:: python
 
-           for rule in reddit.subreddit('NAME').rules:
+           for rule in reddit.subreddit("NAME").rules:
                print(rule)
 
         """
@@ -238,7 +238,7 @@ class RuleModeration:
 
     .. code-block:: python
 
-        reddit.subreddit('NAME').rules['No spam'].mod.delete()
+        reddit.subreddit("NAME").rules["No spam"].mod.delete()
 
     To update ``"No spam"`` from the subreddit ``"NAME"`` try:
 
@@ -260,7 +260,7 @@ class RuleModeration:
 
         .. code-block:: python
 
-            reddit.subreddit('NAME').rules['No spam'].mod.delete()
+            reddit.subreddit("NAME").rules["No spam"].mod.delete()
 
         """
         data = {
@@ -320,7 +320,7 @@ class SubredditRulesModeration:
 
     .. code-block:: python
 
-       reddit.subreddit('NAME').rules.mod.add(
+       reddit.subreddit("NAME").rules.mod.add(
            "No spam",
            "all",
            description="Do not spam. Spam bad")
@@ -365,7 +365,7 @@ class SubredditRulesModeration:
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').rules.mod.add(
+           reddit.subreddit("NAME").rules.mod.add(
                "No spam",
                "all",
                description="Do not spam. Spam bad")

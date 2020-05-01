@@ -38,7 +38,7 @@ class CommentHelper(PRAWBase):
 
         .. code-block:: python
 
-           for comment in reddit.subreddit('redditdev').comments(limit=25):
+           for comment in reddit.subreddit("redditdev").comments(limit=25):
                print(comment.author)
 
         """
@@ -59,7 +59,7 @@ class SubredditListingMixin(
 
         .. code-block:: python
 
-           for comment in reddit.subreddit('redditdev').comments(limit=25):
+           for comment in reddit.subreddit("redditdev").comments(limit=25):
                print(comment.author)
 
         """

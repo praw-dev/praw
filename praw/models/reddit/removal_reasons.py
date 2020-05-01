@@ -73,7 +73,7 @@ class RemovalReason(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').removal_reasons['141vv5c16py7d'].mod.delete()
+           reddit.subreddit("NAME").removal_reasons["141vv5c16py7d"].mod.delete()
 
         """
         url = API_PATH["removal_reason"].format(
@@ -91,9 +91,9 @@ class RemovalReason(RedditBase):
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').removal_reasons['141vv5c16py7d'].mod.update(
-               message='New message',
-               title='New title')
+           reddit.subreddit("NAME").removal_reasons["141vv5c16py7d"].mod.update(
+               message="New message",
+               title="New title")
 
         """
         url = API_PATH["removal_reason"].format(
@@ -115,8 +115,8 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-           reason_id = '141vv5c16py7d'
-           reason = reddit.subreddit('NAME').mod.removal_reasons[reason_id]
+           reason_id = "141vv5c16py7d"
+           reason = reddit.subreddit("NAME").mod.removal_reasons[reason_id]
            print(reason)
 
         """
@@ -139,7 +139,7 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-           for removal_reason in reddit.subreddit('NAME').mod.removal_reasons:
+           for removal_reason in reddit.subreddit("NAME").mod.removal_reasons:
                print(removal_reason)
 
         """
@@ -164,9 +164,9 @@ class SubredditRemovalReasons:
 
         .. code-block:: python
 
-           reddit.subreddit('NAME').removal_reasons.mod.add(
-               message='Foobar',
-               title='Test')
+           reddit.subreddit("NAME").removal_reasons.mod.add(
+               message="Foobar",
+               title="Test")
 
         """
         data = {"message": message, "title": title}

@@ -58,10 +58,10 @@ class ThingModerationMixin:
         .. code-block:: python
 
            # approve a comment:
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.mod.approve()
            # approve a submission:
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.mod.approve()
 
         """
@@ -72,9 +72,9 @@ class ThingModerationMixin:
     def distinguish(self, how="yes", sticky=False):
         """Distinguish a :class:`~.Comment` or :class:`~.Submission`.
 
-        :param how: One of 'yes', 'no', 'admin', 'special'. 'yes' adds a
-            moderator level distinguish. 'no' removes any distinction. 'admin'
-            and 'special' require special user privileges to use.
+        :param how: One of "yes", "no", "admin", "special". "yes" adds a
+            moderator level distinguish. "no" removes any distinction. "admin"
+            and "special" require special user privileges to use.
         :param sticky: Comment is stickied if ``True``, placing it at the top
             of the comment page regardless of score. If thing is not a
             top-level comment, this parameter is silently ignored.
@@ -84,11 +84,11 @@ class ThingModerationMixin:
         .. code-block:: python
 
            # distinguish and sticky a comment:
-           comment = reddit.comment('dkk4qjd')
-           comment.mod.distinguish(how='yes', sticky=True)
+           comment = reddit.comment("dkk4qjd")
+           comment.mod.distinguish(how="yes", sticky=True)
            # undistinguish a submission:
-           submission = reddit.submission(id='5or86n')
-           submission.mod.distinguish(how='no')
+           submission = reddit.submission(id="5or86n")
+           submission.mod.distinguish(how="no")
 
         .. seealso:: :meth:`~.undistinguish`
 
@@ -111,10 +111,10 @@ class ThingModerationMixin:
         .. code-block:: python
 
            # ignore future reports on a comment:
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.mod.ignore_reports()
            # ignore future reports on a submission:
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.mod.ignore_reports()
 
         .. seealso:: :meth:`~.unignore_reports`
@@ -132,10 +132,10 @@ class ThingModerationMixin:
         .. code-block:: python
 
            # lock a comment:
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.mod.lock()
            # lock a submission:
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.mod.lock()
 
         .. seealso:: :meth:`~.unlock`
@@ -161,10 +161,10 @@ class ThingModerationMixin:
         .. code-block:: python
 
            # remove a comment and mark as spam:
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.mod.remove(spam=True)
            # remove a submission
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.mod.remove()
            # remove a submission with a removal reason
            reason = reddit.subreddit.mod.removal_reasons["110ni21zo23ql"]
@@ -193,15 +193,15 @@ class ThingModerationMixin:
 
         Reddit adds human-readable information about the object to the message.
 
-        :param type: One of 'public', 'private', 'private_exposed'.
-            'public' leaves a stickied comment on the post.
-            'private' sends a Modmail message with hidden username.
-            'private_exposed' sends a Modmail message without hidden username.
+        :param type: One of "public", "private", "private_exposed".
+            "public" leaves a stickied comment on the post.
+            "private" sends a Modmail message with hidden username.
+            "private_exposed" sends a Modmail message without hidden username.
         :param title: The short reason given in the message.
-            (Ignored if type is 'public'.)
+            (Ignored if type is "public".)
         :param message: The body of the message.
 
-        If ``type`` is 'public', the new :class:`~.Comment` is returned.
+        If ``type`` is "public", the new :class:`~.Comment` is returned.
         """
         # The API endpoint used to send removal messages is different
         # for posts and comments, so the derived classes specify which one.
@@ -229,10 +229,10 @@ class ThingModerationMixin:
         .. code-block:: python
 
            # undistinguish a comment:
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.mod.undistinguish()
            # undistinguish a submission:
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.mod.undistinguish()
 
         .. seealso:: :meth:`~.distinguish`
@@ -252,10 +252,10 @@ class ThingModerationMixin:
         .. code-block:: python
 
            # accept future reports on a comment:
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.mod.unignore_reports()
            # accept future reports on a submission:
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.mod.unignore_reports()
 
         .. seealso:: :meth:`~.ignore_reports`
@@ -273,10 +273,10 @@ class ThingModerationMixin:
         .. code-block:: python
 
            # unlock a comment:
-           comment = reddit.comment('dkk4qjd')
+           comment = reddit.comment("dkk4qjd")
            comment.mod.unlock()
            # unlock a submission:
-           submission = reddit.submission(id='5or86n')
+           submission = reddit.submission(id="5or86n")
            submission.mod.unlock()
 
         .. seealso:: :meth:`~.lock`

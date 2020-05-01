@@ -23,7 +23,7 @@ class Preferences:
         .. code-block:: python
 
            preferences = reddit.user.preferences()
-           print(preferences['show_link_flair'])
+           print(preferences["show_link_flair"])
 
         See https://www.reddit.com/dev/api#GET_api_v1_me_prefs for the list
         of possible values.
@@ -190,7 +190,7 @@ class Preferences:
         .. code-block:: python
 
            reddit.user.preferences.update(
-                **{'3rd_party_data_personalized_ads': False})
+                **{"3rd_party_data_personalized_ads": False})
 
         """
         return self._reddit.patch(

@@ -170,7 +170,7 @@ class Inbox(PRAWBase):
 
         .. code-block:: python
 
-           message = reddit.inbox.message('7bnlgu')
+           message = reddit.inbox.message("7bnlgu")
 
         """
         listing = self._reddit.get(API_PATH["message"].format(id=message_id))
