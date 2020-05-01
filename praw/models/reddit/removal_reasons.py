@@ -38,7 +38,7 @@ class RemovalReason(RedditBase):
     def _warn_reason_id(
         reason_id_value: Optional[str], id_value: Optional[str]
     ):
-        """The reason id param is deprecated. Warns is it's used.
+        """Reason id param is deprecated. Warns is it's used.
 
         :param reason_id_value: The value passed as parameter ``reason_id``.
         :param id_value: Returns the actual value of parameter ``id`` is
@@ -192,9 +192,9 @@ class SubredditRemovalReasons:
                 print(reason)
 
         """
-        if not isinstance(id, str):
-            return self._removal_reason_list[id]
-        return RemovalReason(self._reddit, self.subreddit, id)
+        if not isinstance(reason_id, str):
+            return self._removal_reason_list[reason_id]
+        return RemovalReason(self._reddit, self.subreddit, reason_id)
 
     def __init__(self, subreddit: "Subreddit"):
         """Create a SubredditRemovalReasons instance.

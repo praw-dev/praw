@@ -15,6 +15,12 @@ Unreleased
 * Add method :meth:`~.Reddit.delete` to :class:`.Reddit` class to support HTTP
   DELETE requests.
 
+**Changed**
+
+* :meth:`.RemovalReason.update`\ 's parameters are now optional.
+* :meth:`.SubredditRemovalReasons.__getitem__` now takes integers and slices to
+  get removal reasons from the list of reasons as returned by Reddit.
+
 **Fixed**
 
 * An issue where certain subreddit settings could not be set through
