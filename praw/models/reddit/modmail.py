@@ -294,9 +294,7 @@ class ModmailConversation(RedditBase):
            reddit.subreddit("redditdev").modmail("2gmz").unhighlight()
 
         """
-        self._reddit.request(
-            "DELETE", API_PATH["modmail_highlight"].format(id=self.id)
-        )
+        self._reddit.delete(API_PATH["modmail_highlight"].format(id=self.id))
 
     def unmute(self):
         """Unmute the non-mod user associated with the conversation.

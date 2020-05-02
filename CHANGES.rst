@@ -12,6 +12,8 @@ Unreleased
 * :class:`.PollData` and :class:`.PollOption`.
 * Ability to view poll data and poll options via the ``.poll_data`` attribute
   on poll submissions.
+* Add method :meth:`~.Reddit.delete` to :class:`.Reddit` class to support HTTP
+  DELETE requests.
 
 **Fixed**
 

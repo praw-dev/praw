@@ -601,6 +601,28 @@ class Reddit:
                     return sleep_seconds
         return None
 
+    def delete(
+        self,
+        path: str,
+        data: Optional[
+            Union[Dict[str, Union[str, Any]], bytes, IO, str]
+        ] = None,
+        json=None,
+    ) -> Any:
+        """Return parsed objects returned from a DELETE request to ``path``.
+
+        :param path: The path to fetch.
+        :param data: Dictionary, bytes, or file-like object to send in the body
+            of the request (default: None).
+        :param json: JSON-serializable object to send in the body
+            of the request with a Content-Type header of application/json
+            (default: None). If ``json`` is provided, ``data`` should not be.
+
+        """
+        return self._objectify_request(
+            data=data, json=json, method="DELETE", path=path
+        )
+
     def patch(
         self,
         path: str,

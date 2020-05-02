@@ -1763,7 +1763,7 @@ class WidgetModeration:
         path = API_PATH["widget_modify"].format(
             widget_id=self.widget.id, subreddit=self._subreddit
         )
-        self._reddit.request("DELETE", path)
+        self._reddit.delete(path)
 
     def update(self, **kwargs):
         """Update the widget. Returns the updated widget.

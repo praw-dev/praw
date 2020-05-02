@@ -79,7 +79,7 @@ class RemovalReason(RedditBase):
         url = API_PATH["removal_reason"].format(
             subreddit=self.subreddit, id=self.id
         )
-        self.subreddit._reddit.request("DELETE", url)
+        self._reddit.delete(url)
 
     def update(self, message: str, title: str):
         """Update the removal reason from this subreddit.

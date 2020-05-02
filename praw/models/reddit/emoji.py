@@ -91,7 +91,7 @@ class Emoji(RedditBase):
         url = API_PATH["emoji_delete"].format(
             emoji_name=self.name, subreddit=self.subreddit
         )
-        self._reddit.request("DELETE", url)
+        self._reddit.delete(url)
 
     def update(
         self,
