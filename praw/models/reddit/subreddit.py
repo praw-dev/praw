@@ -3250,6 +3250,7 @@ class SubredditStylesheet:
         """Update the subreddit's stylesheet.
 
         :param stylesheet: The CSS for the new stylesheet.
+        :param reason: The reason for updating the stylesheet.
 
         For example:
 
