@@ -1302,8 +1302,8 @@ class SubredditFilters:
             user=self.subreddit._reddit.user.me(),
             subreddit=subreddit,
         )
-        self.subreddit._reddit.request(
-            "PUT", url, data={"model": dumps({"name": str(subreddit)})}
+        self.subreddit._reddit.put(
+            url, data={"model": dumps({"name": str(subreddit)})}
         )
 
     def remove(self, subreddit):
