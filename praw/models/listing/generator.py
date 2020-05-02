@@ -1,6 +1,6 @@
 """Provide the ListingGenerator class."""
 from copy import deepcopy
-from typing import Any, Dict, Iterator, Optional, TypeVar
+from typing import Any, Dict, Iterator, Optional, TypeVar, Union
 
 from ..base import PRAWBase
 from .listing import FlairListing
@@ -23,7 +23,7 @@ class ListingGenerator(PRAWBase):
         reddit: Reddit,
         url: str,
         limit: int = 100,
-        params: Optional[Dict[str, str]] = None,
+        params: Optional[Dict[str, Union[str, int]]] = None,
     ):
         """Initialize a ListingGenerator instance.
 

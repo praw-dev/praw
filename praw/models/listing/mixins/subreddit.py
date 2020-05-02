@@ -1,5 +1,5 @@
 """Provide the SubredditListingMixin class."""
-from typing import Any, Dict, Generator, TypeVar, Union
+from typing import Any, Dict, Generator, Optional, TypeVar, Union
 from urllib.parse import urljoin
 
 from ....util.cache import cachedproperty
@@ -65,7 +65,7 @@ class SubredditListingMixin(
         """
         return CommentHelper(self)
 
-    def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
+    def __init__(self, reddit: Reddit, _data: Optional[Dict[str, Any]]):
         """Initialize a SubredditListingMixin instance.
 
         :param reddit: An instance of :class:`.Reddit`.
