@@ -1,5 +1,5 @@
 """Provide the RedditorListingMixin class."""
-from typing import Any, Dict, Generator, TypeVar, Union
+from typing import Any, Dict, Iterator, TypeVar, Union
 from urllib.parse import urljoin
 
 from ....util.cache import cachedproperty
@@ -62,7 +62,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     def downvoted(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for items the user has downvoted.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -87,7 +87,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     def gildings(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for items the user has gilded.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -114,7 +114,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     def hidden(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for items the user has hidden.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -139,7 +139,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     def saved(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for items the user has saved.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user
@@ -164,7 +164,7 @@ class RedditorListingMixin(BaseListingMixin, GildedListingMixin):
 
     def upvoted(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for items the user has upvoted.
 
         May raise ``prawcore.Forbidden`` after issuing the request if the user

@@ -1,5 +1,5 @@
 """Provide the Front class."""
-from typing import Dict, Generator, List, TypeVar, Union
+from typing import Dict, Iterator, List, TypeVar, Union
 
 from ..const import API_PATH
 from .base import PRAWBase
@@ -15,7 +15,7 @@ class Inbox(PRAWBase):
 
     def all(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Union[Message, Comment], None, None]:
+    ) -> Iterator[Union[Message, Comment]]:
         """Return a :class:`.ListingGenerator` for all inbox comments and messages.
 
         Additional keyword arguments are passed in the initialization of
@@ -63,7 +63,7 @@ class Inbox(PRAWBase):
 
     def comment_replies(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Comment, None, None]:
+    ) -> Iterator[Comment]:
         """Return a :class:`.ListingGenerator` for comment replies.
 
         Additional keyword arguments are passed in the initialization of
@@ -139,7 +139,7 @@ class Inbox(PRAWBase):
 
     def mentions(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Comment, None, None]:
+    ) -> Iterator[Comment]:
         r"""Return a :class:`.ListingGenerator` for mentions.
 
         A mention is :class:`.Comment` in which the authorized redditor is
@@ -182,7 +182,7 @@ class Inbox(PRAWBase):
 
     def messages(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Message, None, None]:
+    ) -> Iterator[Message]:
         """Return a :class:`.ListingGenerator` for inbox messages.
 
         Additional keyword arguments are passed in the initialization of
@@ -202,7 +202,7 @@ class Inbox(PRAWBase):
 
     def sent(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Message, None, None]:
+    ) -> Iterator[Message]:
         """Return a :class:`.ListingGenerator` for sent messages.
 
         Additional keyword arguments are passed in the initialization of
@@ -223,7 +223,7 @@ class Inbox(PRAWBase):
 
     def stream(
         self, **stream_options: Union[str, int, Dict[str, str]]
-    ) -> Generator[Union[Comment, Message], None, None]:
+    ) -> Iterator[Union[Comment, Message]]:
         """Yield new inbox items as they become available.
 
         Items are yielded oldest first. Up to 100 historical items will
@@ -243,7 +243,7 @@ class Inbox(PRAWBase):
 
     def submission_replies(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Comment, None, None]:
+    ) -> Iterator[Comment]:
         """Return a :class:`.ListingGenerator` for submission replies.
 
         Additional keyword arguments are passed in the initialization of
@@ -293,7 +293,7 @@ class Inbox(PRAWBase):
         self,
         mark_read: bool = False,
         **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Union[Comment, Message], None, None]:
+    ) -> Iterator[Union[Comment, Message]]:
         """Return a :class:`.ListingGenerator` for unread comments and messages.
 
         :param mark_read: Marks the inbox as read (default: False).

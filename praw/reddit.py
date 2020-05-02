@@ -479,7 +479,9 @@ class Reddit:
         return models.DomainListing(self, domain)
 
     def get(
-        self, path: str, params: Optional[Union[str, Dict[str, str]]] = None
+        self,
+        path: str,
+        params: Optional[Union[str, Dict[str, Union[str, int]]]] = None,
     ):
         """Return parsed objects returned from a GET request to ``path``.
 
@@ -587,7 +589,7 @@ class Reddit:
 
     def _handle_rate_limit(
         self, exception: RedditAPIException
-    ) -> Optional[Union[int]]:
+    ) -> Optional[Union[int, float]]:
         for item in exception.items:
             if item.error_type == "RATELIMIT":
                 amount_search = self._ratelimit_regex.search(item.message)

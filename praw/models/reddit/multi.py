@@ -216,7 +216,10 @@ class Multireddit(SubredditListingMixin, RedditBase):
         self._reset_attributes("subreddits")
 
     def update(
-        self, **updated_settings: Union[str, List[Union[str, Subreddit]]]
+        self,
+        **updated_settings: Union[
+            str, List[Union[str, Subreddit, Dict[str, str]]]
+        ]
     ):
         """Update this multireddit.
 

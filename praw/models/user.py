@@ -1,5 +1,5 @@
 """Provides the User class."""
-from typing import Dict, Generator, List, Optional, TypeVar, Union
+from typing import Dict, Iterator, List, Optional, TypeVar, Union
 
 from ..const import API_PATH
 from ..models import Preferences
@@ -62,7 +62,7 @@ class User(PRAWBase):
 
     def contributor_subreddits(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Return a :class:`.ListingGenerator` of contributor subreddits.
 
         These are subreddits that the user is a contributor of.
@@ -140,7 +140,7 @@ class User(PRAWBase):
 
     def subreddits(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Return a :class:`.ListingGenerator` of subreddits the user is subscribed to.
 
         Additional keyword arguments are passed in the initialization of
