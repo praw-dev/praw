@@ -1,7 +1,7 @@
 """Provide the Redditors class."""
 from itertools import islice
 from types import SimpleNamespace
-from typing import Dict, Generator, Iterable, TypeVar, Union
+from typing import Dict, Iterable, Iterator, TypeVar, Union
 
 import prawcore
 
@@ -22,7 +22,7 @@ class Redditors(PRAWBase):
 
     def new(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Return a :class:`.ListingGenerator` for new Redditors.
 
         :returns: Redditor profiles, which are a type of :class:`.Subreddit`.
@@ -36,7 +36,7 @@ class Redditors(PRAWBase):
 
     def popular(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Return a :class:`.ListingGenerator` for popular Redditors.
 
         :returns: Redditor profiles, which are a type of :class:`.Subreddit`.
@@ -50,7 +50,7 @@ class Redditors(PRAWBase):
 
     def search(
         self, query: str, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         r"""Return a :class:`.ListingGenerator` of Redditors for ``query``.
 
         :param query: The query string to filter Redditors by.
@@ -67,7 +67,7 @@ class Redditors(PRAWBase):
 
     def stream(
         self, **stream_options: Union[str, int, Dict[str, str]]
-    ) -> Generator[Subreddit, None, None]:
+    ) -> Iterator[Subreddit]:
         """Yield new Redditors as they are created.
 
         Redditors are yielded oldest first. Up to 100 historical Redditors
@@ -81,7 +81,7 @@ class Redditors(PRAWBase):
 
     def partial_redditors(
         self, ids: Iterable[str]
-    ) -> Generator[PartialRedditor, None, None]:
+    ) -> Iterator[PartialRedditor]:
         """Get user summary data by redditor IDs.
 
         :param ids: An iterable of redditor fullname IDs.

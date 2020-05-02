@@ -1,5 +1,5 @@
 """Provide the Front class."""
-from typing import Generator, TypeVar, Union
+from typing import Iterator, TypeVar, Union
 from urllib.parse import urljoin
 
 from .listing.generator import ListingGenerator
@@ -19,7 +19,7 @@ class Front(SubredditListingMixin):
 
     def best(
         self, **generator_kwargs: Union[str, int]
-    ) -> Generator[Submission, None, None]:
+    ) -> Iterator[Submission]:
         """Return a :class:`.ListingGenerator` for best items.
 
         Additional keyword arguments are passed in the initialization of

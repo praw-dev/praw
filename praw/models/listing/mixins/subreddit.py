@@ -1,5 +1,5 @@
 """Provide the SubredditListingMixin class."""
-from typing import Any, Dict, Generator, Optional, TypeVar, Union
+from typing import Any, Dict, Iterator, Optional, TypeVar, Union
 from urllib.parse import urljoin
 
 from ....util.cache import cachedproperty
@@ -28,7 +28,7 @@ class CommentHelper(PRAWBase):
 
     def __call__(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for the Subreddit's comments.
 
         Additional keyword arguments are passed in the initialization of

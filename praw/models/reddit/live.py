@@ -1,5 +1,5 @@
 """Provide the LiveThread class."""
-from typing import Any, Dict, Generator, List, Optional, TypeVar, Union
+from typing import Any, Dict, Iterator, List, Optional, TypeVar, Union
 
 from ...const import API_PATH
 from ...util.cache import cachedproperty
@@ -389,7 +389,7 @@ class LiveThread(RedditBase):
 
     def discussions(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Submission, None, None]:
+    ) -> Iterator[Submission]:
         """Get submissions linking to the thread.
 
         :param generator_kwargs: keyword arguments passed to
@@ -432,7 +432,7 @@ class LiveThread(RedditBase):
 
     def updates(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[_LiveUpdate, None, None]:
+    ) -> Iterator[_LiveUpdate]:
         """Return a :class:`.ListingGenerator` yields :class:`.LiveUpdate` s.
 
         :param generator_kwargs: keyword arguments passed to

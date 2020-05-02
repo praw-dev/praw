@@ -8,7 +8,7 @@ from .listing import FlairListing
 Reddit = TypeVar("Reddit")
 
 
-class ListingGenerator(PRAWBase):
+class ListingGenerator(PRAWBase, Iterator):
     """Instances of this class generate :class:`.RedditBase` instances.
 
     .. warning:: This class should not be directly utilized. Instead you will

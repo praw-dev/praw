@@ -1,5 +1,5 @@
 """Provide the BaseListingMixin class."""
-from typing import Any, Dict, Generator, Union
+from typing import Any, Dict, Iterator, Union
 from urllib.parse import urljoin
 
 from ...base import PRAWBase
@@ -33,7 +33,7 @@ class BaseListingMixin(PRAWBase):
         self,
         time_filter: str = "all",
         **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for controversial submissions.
 
         :param time_filter: Can be one of: all, day, hour, month, week, year
@@ -63,7 +63,7 @@ class BaseListingMixin(PRAWBase):
 
     def hot(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for hot items.
 
         Additional keyword arguments are passed in the initialization of
@@ -87,7 +87,7 @@ class BaseListingMixin(PRAWBase):
 
     def new(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for new items.
 
         Additional keyword arguments are passed in the initialization of
@@ -113,7 +113,7 @@ class BaseListingMixin(PRAWBase):
         self,
         time_filter: str = "all",
         **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for top submissions.
 
         :param time_filter: Can be one of: all, day, hour, month, week, year

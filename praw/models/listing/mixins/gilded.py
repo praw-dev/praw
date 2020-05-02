@@ -1,5 +1,5 @@
 """Provide the GildedListingMixin class."""
-from typing import Any, Dict, Generator, Union
+from typing import Any, Dict, Iterator, Union
 from urllib.parse import urljoin
 
 from ...base import PRAWBase
@@ -11,7 +11,7 @@ class GildedListingMixin(PRAWBase):
 
     def gilded(
         self, **generator_kwargs: Union[str, int, Dict[str, str]]
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         """Return a :class:`.ListingGenerator` for gilded items.
 
         Additional keyword arguments are passed in the initialization of
