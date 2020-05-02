@@ -1319,7 +1319,7 @@ class SubredditFilters:
             user=self.subreddit._reddit.user.me(),
             subreddit=str(subreddit),
         )
-        self.subreddit._reddit.request("DELETE", url, data={})
+        self.subreddit._reddit.delete(url)
 
 
 class SubredditFlair:

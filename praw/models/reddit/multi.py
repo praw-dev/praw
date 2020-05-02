@@ -190,7 +190,7 @@ class Multireddit(SubredditListingMixin, RedditBase):
         path = API_PATH["multireddit_api"].format(
             multi=self.name, user=self._author.name
         )
-        self._reddit.request("DELETE", path)
+        self._reddit.delete(path)
 
     def remove(self, subreddit: Subreddit):
         """Remove a subreddit from this multireddit.
@@ -210,8 +210,8 @@ class Multireddit(SubredditListingMixin, RedditBase):
         url = API_PATH["multireddit_update"].format(
             multi=self.name, user=self._author, subreddit=subreddit
         )
-        self._reddit.request(
-            "DELETE", url, data={"model": dumps({"name": str(subreddit)})}
+        self._reddit.delete(
+            url, data={"model": dumps({"name": str(subreddit)})}
         )
         self._reset_attributes("subreddits")
 
