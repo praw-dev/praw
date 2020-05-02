@@ -148,7 +148,7 @@ URL. You can do that as follows:
 
    reddit = praw.Reddit(client_id="SI8pN3DSbt0zor",
                         client_secret="xaxkj7HNh8kwg8e5t4m6KvSrbTI",
-                        redirect_uri='http://localhost:8080',
+                        redirect_uri="http://localhost:8080",
                         user_agent="testscript by /u/fakebot3")
    print(reddit.auth.url(["identity"], "...", "permanent"))
 
@@ -278,4 +278,3 @@ The output from the above code displays which scopes are available on the
 
 .. note:: Observe that ``redirect_uri`` does not need to be provided in such
           cases. It is only needed when :meth:`.url` is used.
-

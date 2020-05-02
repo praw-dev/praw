@@ -58,7 +58,7 @@ thread we could do:
        print(top_level_comment.body)
 
 While running this you will most likely encounter the exception
-``AttributeError: "MoreComments" object has no attribute "body"``. This
+``AttributeError: 'MoreComments' object has no attribute 'body'``. This
 submission's comment forest contains a number of :class:`.MoreComments`
 objects. These objects represent the "load more comments", and "continue this
 thread" links encountered on the website. While we could ignore

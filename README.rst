@@ -67,10 +67,10 @@ With the ``reddit`` instance you can then interact with Reddit:
 .. code-block:: python
 
   # Create a submission to r/test
-  reddit.subreddit("test").submit("Test Submission", url='https://reddit.com')
+  reddit.subreddit("test").submit("Test Submission", url="https://reddit.com")
 
   # Comment on a known submission
-  submission = reddit.submission(url='https://www.reddit.com/comments/5e1az9')
+  submission = reddit.submission(url="https://www.reddit.com/comments/5e1az9")
   submission.reply("Super rad!")
 
   # Reply to the first comment of a weekly top thread of a moderated community

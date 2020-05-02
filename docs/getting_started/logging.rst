@@ -25,7 +25,7 @@ similar to the following:
 
    Fetching: GET https://oauth.reddit.com/api/v1/me
    Data: None
-   Params: {"raw_json": 1}
+   Params: {'raw_json': 1}
    Response: 200 (876 bytes)
    
 Furthermore, any API ratelimits from POST actions that are handled will produce
