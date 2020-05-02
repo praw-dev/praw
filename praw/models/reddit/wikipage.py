@@ -247,7 +247,7 @@ class WikiPage(RedditBase):
 
         .. code-block:: python
 
-           page = reddit.subreddit("test").wiki["praw_test"].revision('[ID]')
+           page = reddit.subreddit("test").wiki["praw_test"].revision("[ID]")
 
         """
         return WikiPage(

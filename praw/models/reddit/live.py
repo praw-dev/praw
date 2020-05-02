@@ -298,7 +298,7 @@ class LiveThread(RedditBase):
         .. code-block:: python
 
            thread = reddit.live("ukaeu1ik4sw5")
-           thread.contrib.add('### update')
+           thread.contrib.add("### update")
 
         """
         return LiveThreadContribution(self)
@@ -316,7 +316,7 @@ class LiveThread(RedditBase):
 
            thread = reddit.live("ukaeu1ik4sw5")
            for contributor in thread.contributor():
-               # prints `(Redditor(name='Acidtwist'), ['all'])`
+               # prints `(Redditor(name="Acidtwist"), ["all"])`
                print(contributor, contributor.permissions)
 
         """
@@ -473,7 +473,7 @@ class LiveThreadContribution:
         .. code-block:: python
 
            thread = reddit.live("ukaeu1ik4sw5")
-           thread.contrib.add('### update')
+           thread.contrib.add("### update")
 
         """
         self.thread = thread
@@ -488,7 +488,7 @@ class LiveThreadContribution:
         .. code-block:: python
 
            thread = reddit.live("ydwwxneu7vsa")
-           thread.contrib.add('test `LiveThreadContribution.add()`')
+           thread.contrib.add("test `LiveThreadContribution.add()`")
 
         """
         url = API_PATH["live_add_update"].format(id=self.thread.id)

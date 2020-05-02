@@ -155,7 +155,7 @@ class CommentForest:
                              submission.comments.replace_more()
                              break
                          except PossibleExceptions:
-                             print('Handling replace_more exception')
+                             print("Handling replace_more exception")
                              sleep(1)
 
         .. warning:: If this method is called, and the comments are refreshed,
