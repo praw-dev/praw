@@ -38,7 +38,7 @@ class RemovalReason(RedditBase):
     def _warn_reason_id(
         reason_id_value: Optional[str], id_value: Optional[str]
     ):
-        """Reason id param is deprecated. Warns is it's used.
+        """Reason id param is deprecated. Warns if it's used.
 
         :param reason_id_value: The value passed as parameter ``reason_id``.
         :param id_value: Returns the actual value of parameter ``id`` is
@@ -47,7 +47,7 @@ class RemovalReason(RedditBase):
         if reason_id_value is not None:
             warn(
                 "Parameter ``reason_id`` is deprecated. Either use positional"
-                ' arguments (resaon_id="x" -> "x") or change the parameter '
+                ' arguments (reason_id="x" -> "x") or change the parameter '
                 'name to ``id`` (resaon_id="x" -> id="x"). The parameter will'
                 " be removed in PRAW 8.",
                 category=DeprecationWarning,

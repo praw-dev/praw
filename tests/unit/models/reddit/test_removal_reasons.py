@@ -23,7 +23,7 @@ class TestRemovalReason(UnitTest):
             self.reddit, subreddit=self.reddit.subreddit("A"), id="x"
         )
         reason5 = RemovalReason(
-            self.reddit, subreddit=self.reddit.subreddit("A"), reason_id="X"
+            self.reddit, subreddit=self.reddit.subreddit("a"), reason_id="X"
         )
         assert reason1 == reason1
         assert reason1 == "x"
