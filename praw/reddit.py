@@ -22,7 +22,7 @@ from prawcore import (
 from prawcore.exceptions import BadRequest
 
 from . import models
-from .config import Config
+from .config import get_praw_config, get_praw_environment_settings
 from .const import API_PATH, USER_AGENT_FORMAT, __version__
 from .exceptions import (
     ClientException,
@@ -123,10 +123,10 @@ class Reddit:
     def __init__(
         self,
         site_name: str = None,
-        config_interpolation: Optional[str] = None,
+        config: Optional[configparser.ConfigParser] = None,
         requestor_class: Optional[Type[Requestor]] = None,
         requestor_kwargs: Dict[str, Any] = None,
-        **config_settings: str
+        **config_settings: Any
     ):  # noqa: D207, D301
         """Initialize a Reddit instance.
 
@@ -183,25 +183,46 @@ class Reddit:
         self._unique_counter = 0
         self._validate_on_submit = False
 
+        if config is None:
+            config = get_praw_config()
+        section_name = site_name or config.default_section
         try:
-            config_section = site_name or os.getenv("praw_site") or "DEFAULT"
-            self.config = Config(
-                config_section, config_interpolation, **config_settings
-            )
-        except configparser.NoSectionError as exc:
-            help_message = (
-                "You provided the name of a praw.ini "
-                "configuration which does not exist.\n\nFor help "
-                "with creating a Reddit instance, visit\n"
-                "https://praw.readthedocs.io/en/latest/code_overvi"
-                "ew/reddit_instance.html\n\n"
-                "For help on configuring PRAW, visit\n"
-                "https://praw.readthedocs.io/en/latest/getting_sta"
-                "rted/configuration.html"
-            )
-            if site_name is not None:
-                exc.message += "\n" + help_message
-            raise
+            section = config[section_name]
+        except KeyError:
+            msg = ("No section " + repr(section_name) +
+                '''
+
+You provided the name of a praw.ini configuration which does not exist.
+
+For help with creating a Reddit instance, visit
+https://praw.readthedocs.io/en/latest/code_overview/reddit_instance.html
+
+For help on configuring PRAW, visit
+https://praw.readthedocs.io/en/latest/getting_started/configuration.html
+''')
+            class StrReprStr(str):
+                def __repr__(self):
+                    return str(self)
+            raise KeyError(StrReprStr(msg)) from None
+
+        settings = {
+            'user_agent': section['user_agent'],
+            'client_id': section['client_id'],
+            'client_secret': section.get('client_secret'),
+            'refresh_token': section.get('refresh_token'),
+            'username': section.get('username'),
+            'password': section.get('password'),
+            'redirect_uri': section.get('redirect_uri'),
+            'oauth_url': section['oauth_url'],
+            'reddit_url': section['reddit_url'],
+            'short_url': section['short_url'],
+            'check_for_updates': section.getboolean('check_for_updates'),
+            'ratelimit_seconds': section.getfloat('ratelimit_seconds'),
+            'timeout': section.getfloat('timeout'),
+        }
+        settings.update(get_praw_environment_settings())
+        settings.update(config_settings)
+        self.settings = settings
 
         required_message = (
             "Required configuration setting {!r} missing. \n"
@@ -210,14 +231,11 @@ class Reddit:
             "constructor, or as an environment variable."
         )
         for attribute in ("client_id", "user_agent"):
-            if getattr(self.config, attribute) in (
-                self.config.CONFIG_NOT_SET,
-                None,
-            ):
+            if attribute not in self.settings:
                 raise MissingRequiredAttributeException(
                     required_message.format(attribute)
                 )
-        if self.config.client_secret is self.config.CONFIG_NOT_SET:
+        if 'client_secret' not in self.settings:
             raise MissingRequiredAttributeException(
                 required_message.format("client_secret")
                 + "\nFor installed applications this value "
@@ -358,18 +376,18 @@ class Reddit:
     def _check_for_update(self):
         if UPDATE_CHECKER_MISSING:
             return
-        if not Reddit.update_checked and self.config.check_for_updates:
+        if not Reddit.update_checked and self.settings["check_for_updates"]:
             update_check(__package__, __version__)
             Reddit.update_checked = True
 
     def _prepare_objector(self):
         mappings = {
-            self.config.kinds["comment"]: models.Comment,
-            self.config.kinds["message"]: models.Message,
-            self.config.kinds["redditor"]: models.Redditor,
-            self.config.kinds["submission"]: models.Submission,
-            self.config.kinds["subreddit"]: models.Subreddit,
-            self.config.kinds["trophy"]: models.Trophy,
+            "t1": models.Comment,
+            "t2": models.Redditor,
+            "t3": models.Submission,
+            "t4": models.Message,
+            "t5": models.Subreddit,
+            "t6": models.Trophy,
             "Button": models.Button,
             "Collection": models.Collection,
             "Image": models.Image,
@@ -408,13 +426,13 @@ class Reddit:
         requestor_kwargs = requestor_kwargs or {}
 
         requestor = requestor_class(
-            USER_AGENT_FORMAT.format(self.config.user_agent),
-            self.config.oauth_url,
-            self.config.reddit_url,
+            USER_AGENT_FORMAT.format(self.settings['user_agent']),
+            self.settings['oauth_url'],
+            self.settings['reddit_url'],
             **requestor_kwargs
         )
 
-        if self.config.client_secret:
+        if self.settings['client_secret']:
             self._prepare_trusted_prawcore(requestor)
         else:
             self._prepare_untrusted_prawcore(requestor)
@@ -422,32 +440,32 @@ class Reddit:
     def _prepare_trusted_prawcore(self, requestor):
         authenticator = TrustedAuthenticator(
             requestor,
-            self.config.client_id,
-            self.config.client_secret,
-            self.config.redirect_uri,
+            self.settings['client_id'],
+            self.settings['client_secret'],
+            self.settings['redirect_uri'],
         )
         read_only_authorizer = ReadOnlyAuthorizer(authenticator)
         self._read_only_core = session(read_only_authorizer)
 
-        if self.config.username and self.config.password:
+        if self.settings['username'] and self.settings['password']:
             script_authorizer = ScriptAuthorizer(
-                authenticator, self.config.username, self.config.password
+                authenticator, self.settings['username'], self.settings['password']
             )
             self._core = self._authorized_core = session(script_authorizer)
-        elif self.config.refresh_token:
-            authorizer = Authorizer(authenticator, self.config.refresh_token)
+        elif self.settings['refresh_token']:
+            authorizer = Authorizer(authenticator, self.settings['refresh_token'])
             self._core = self._authorized_core = session(authorizer)
         else:
             self._core = self._read_only_core
 
     def _prepare_untrusted_prawcore(self, requestor):
         authenticator = UntrustedAuthenticator(
-            requestor, self.config.client_id, self.config.redirect_uri
+            requestor, self.settings['client_id'], self.settings['redirect_uri']
         )
         read_only_authorizer = DeviceIDAuthorizer(authenticator)
         self._read_only_core = session(read_only_authorizer)
-        if self.config.refresh_token:
-            authorizer = Authorizer(authenticator, self.config.refresh_token)
+        if self.settings['refresh_token']:
+            authorizer = Authorizer(authenticator, self.settings['refresh_token'])
             self._core = self._authorized_core = session(authorizer)
         else:
             self._core = self._read_only_core
@@ -598,7 +616,7 @@ class Reddit:
                 seconds = int(amount_search.group(1))
                 if "minute" in amount_search.group(2):
                     seconds *= 60
-                if seconds <= int(self.config.ratelimit_seconds):
+                if seconds <= self.settings['ratelimit_seconds']:
                     sleep_seconds = seconds + min(seconds / 10, 1)
                     return sleep_seconds
         return None
@@ -789,7 +807,7 @@ class Reddit:
                 data=data,
                 files=files,
                 params=params,
-                timeout=self.config.timeout,
+                timeout=self.settings['timeout'],
                 json=json,
             )
         except BadRequest as exception:

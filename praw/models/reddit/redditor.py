@@ -83,6 +83,7 @@ class Redditor(
     """
 
     STR_FIELD = "name"
+    _kind = "t2"
 
     @classmethod
     def from_data(cls, reddit, data):
@@ -114,11 +115,6 @@ class Redditor(
 
         """
         return RedditorStream(self)
-
-    @property
-    def _kind(self):
-        """Return the class's kind."""
-        return self._reddit.config.kinds["redditor"]
 
     @property
     def _path(self):

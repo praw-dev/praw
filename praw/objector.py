@@ -82,22 +82,22 @@ class Objector:
             # Prevent clobbering base-36 id
             del data["id"]
             data["is_subreddit_mod"] = data.pop("is_mod")
-            parser = self.parsers[self._reddit.config.kinds["redditor"]]
+            parser = self.parsers["t2"]
         elif {"banStatus", "muteStatus", "recentComments"}.issubset(data):
             # Modmail user
             data = snake_case_keys(data)
             data["created_string"] = data.pop("created")
-            parser = self.parsers[self._reddit.config.kinds["redditor"]]
+            parser = self.parsers["t2"]
         elif {"displayName", "id", "type"}.issubset(data):
             # Modmail subreddit
             data = snake_case_keys(data)
-            parser = self.parsers[self._reddit.config.kinds[data["type"]]]
+            parser = self.parsers[data["type"]]
         elif {"date", "id", "name"}.issubset(data) or {
             "id",
             "name",
             "permissions",
         }.issubset(data):
-            parser = self.parsers[self._reddit.config.kinds["redditor"]]
+            parser = self.parsers["t2"]
         elif {"text", "url"}.issubset(data):
             if "color" in data or "linkUrl" in data:
                 parser = self.parsers["Button"]
@@ -114,12 +114,12 @@ class Objector:
             # discards flair information
             return self._reddit.redditor(data["name"])
         elif {"parent_id"}.issubset(data):
-            parser = self.parsers[self._reddit.config.kinds["comment"]]
+            parser = self.parsers["t1"]
         elif "collection_id" in data.keys():
             parser = self.parsers["Collection"]
         else:
             if "user" in data:
-                parser = self.parsers[self._reddit.config.kinds["redditor"]]
+                parser = self.parsers["t2"]
                 data["user"] = parser.parse(
                     {"name": data["user"]}, self._reddit
                 )
@@ -160,10 +160,8 @@ class Objector:
             if "url" in data["json"]["data"]:  # Subreddit.submit
                 # The URL is the URL to the submission, so it's removed.
                 del data["json"]["data"]["url"]
-                parser = self.parsers[self._reddit.config.kinds["submission"]]
-                if data["json"]["data"]["id"].startswith(
-                    self._reddit.config.kinds["submission"] + "_"
-                ):
+                parser = self.parsers["t3"]
+                if data["json"]["data"]["id"].startswith("t3_"):
                     # With polls, Reddit returns a fullname but calls it an
                     # "id". This fixes this by coercing the fullname into an
                     # id.

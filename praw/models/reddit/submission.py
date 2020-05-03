@@ -416,6 +416,7 @@ class Submission(
     """
 
     STR_FIELD = "id"
+    _kind = "t3"
 
     @staticmethod
     def id_from_url(url: str) -> str:
@@ -444,11 +445,6 @@ class Submission(
         if not submission_id.isalnum():
             raise InvalidURL(url)
         return submission_id
-
-    @property
-    def _kind(self):
-        """Return the class's kind."""
-        return self._reddit.config.kinds["submission"]
 
     @property
     def comments(self) -> CommentForest:
@@ -525,7 +521,7 @@ class Submission(
         https://www.reddit.com/r/announcements/comments/eorhm/reddit_30_less_typing/.
 
         """
-        return urljoin(self._reddit.config.short_url, self.id)
+        return urljoin(self._reddit.settings['short_url'], self.id)
 
     def __init__(
         self,

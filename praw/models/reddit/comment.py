@@ -69,6 +69,7 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         "This comment does not appear to be in the comment tree"
     )
     STR_FIELD = "id"
+    _kind = "t1"
 
     @staticmethod
     def id_from_url(url: str) -> str:
@@ -84,15 +85,10 @@ class Comment(InboxableMixin, UserContentMixin, FullnameMixin, RedditBase):
         return parts[-1]
 
     @property
-    def _kind(self):
-        """Return the class's kind."""
-        return self._reddit.config.kinds["comment"]
-
-    @property
     def is_root(self) -> bool:
         """Return True when the comment is a top level comment."""
         parent_type = self.parent_id.split("_", 1)[0]
-        return parent_type == self._reddit.config.kinds["submission"]
+        return parent_type == "t3"
 
     @cachedproperty
     def mod(self) -> _CommentModeration:

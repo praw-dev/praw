@@ -190,7 +190,7 @@ class SubredditEmoji:
         subreddit_keys = [
             key
             for key in response.keys()
-            if key.startswith(self._reddit.config.kinds["subreddit"])
+            if key.startswith("t5")
         ]
         assert len(subreddit_keys) == 1
         for emoji_name, emoji_data in response[subreddit_keys[0]].items():

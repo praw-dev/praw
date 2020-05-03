@@ -42,6 +42,7 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
     """
 
     STR_FIELD = "id"
+    _kind = "t4"
 
     @classmethod
     def parse(cls, data: Dict[str, Any], reddit: Reddit):
@@ -72,11 +73,6 @@ class Message(InboxableMixin, ReplyableMixin, FullnameMixin, RedditBase):
             return SubredditMessage(reddit, _data=data)
 
         return cls(reddit, _data=data)
-
-    @property
-    def _kind(self):
-        """Return the class's kind."""
-        return self._reddit.config.kinds["message"]
 
     def __init__(self, reddit: Reddit, _data: Dict[str, Any]):
         """Construct an instance of the Message object."""

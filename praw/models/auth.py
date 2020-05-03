@@ -121,7 +121,7 @@ class Auth(PRAWBase):
 
         """
         authenticator = self._reddit._read_only_core._authorizer._authenticator
-        if authenticator.redirect_uri is self._reddit.config.CONFIG_NOT_SET:
+        if authenticator.redirect_uri is None:
             raise MissingRequiredAttributeException(
                 "redirect_uri must be provided"
             )

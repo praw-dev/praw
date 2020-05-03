@@ -71,13 +71,9 @@ class ModmailConversation(RedditBase):
     def _convert_user_summary(data, reddit):
         """Convert dictionaries of recent user history to PRAW objects."""
         parsers = {
-            "recentComments": reddit._objector.parsers[
-                reddit.config.kinds["comment"]
-            ],
+            "recentComments": reddit._objector.parsers["t1"],
             "recentConvos": ModmailConversation,
-            "recentPosts": reddit._objector.parsers[
-                reddit.config.kinds["submission"]
-            ],
+            "recentPosts": reddit._objector.parsers["t3"],
         }
         for kind, parser in parsers.items():
             objects = []

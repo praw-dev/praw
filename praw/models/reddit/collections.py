@@ -246,9 +246,7 @@ class CollectionModeration(PRAWBase):
                     type(post)
                 )
             )
-        if post.startswith(
-            "{}_".format(self._reddit.config.kinds["submission"])
-        ):
+        if post.startswith("t3_"):
             return post
         try:
             return self._reddit.submission(url=post).fullname

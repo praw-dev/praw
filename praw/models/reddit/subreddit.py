@@ -117,6 +117,7 @@ class Subreddit(
 
     STR_FIELD = "display_name"
     MESSAGE_PREFIX = "#"
+    _kind = "t5"
 
     @staticmethod
     def _create_or_update(
@@ -204,11 +205,6 @@ class Subreddit(
                 [str(subreddit)] + [str(x) for x in other_subreddits]
             )
         return str(subreddit)
-
-    @property
-    def _kind(self):
-        """Return the class's kind."""
-        return self._reddit.config.kinds["subreddit"]
 
     @cachedproperty
     def banned(self):
@@ -724,7 +720,7 @@ class Subreddit(
             path = redirect.path
         try:
             return self._submission_class(
-                self._reddit, url=urljoin(self._reddit.config.reddit_url, path)
+                self._reddit, url=urljoin(self._reddit.settings['reddit_url'], path)
             )
         except ClientException:
             return None
@@ -793,7 +789,7 @@ class Subreddit(
         except Redirect as redirect:
             path = redirect.path
         return self._submission_class(
-            self._reddit, url=urljoin(self._reddit.config.reddit_url, path)
+            self._reddit, url=urljoin(self._reddit.settings['reddit_url'], path)
         )
 
     def submit(
@@ -2682,7 +2678,7 @@ class ModeratorRelationship(SubredditRelationship):
            reddit.subreddit("subredditname").moderator.leave()
 
         """
-        self.remove(self.subreddit._reddit.config.username)
+        self.remove(self.subreddit._reddit.settings['username'])
 
     def remove_invite(self, redditor):
         """Remove the moderator invite for ``redditor``.
