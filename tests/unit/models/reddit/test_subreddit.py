@@ -1,7 +1,10 @@
+import json
+import os
 import pickle
-
 import pytest
+from unittest import mock
 
+from praw.exceptions import MediaPostFailed
 from praw.models import Subreddit, WikiPage
 from praw.models.reddit.subreddit import SubredditFlairTemplates
 
@@ -60,6 +63,21 @@ class TestSubreddit(UnitTest):
         assert hash(subreddit1) == hash(subreddit2)
         assert hash(subreddit2) != hash(subreddit3)
         assert hash(subreddit1) != hash(subreddit3)
+
+    @mock.patch(
+        "praw.Reddit.post",
+        return_value={"json": {"data": {"websocket_url": ""}}},
+    )
+    @mock.patch("praw.models.Subreddit._upload_media", return_value="")
+    @mock.patch("websocket.create_connection")
+    def test_invalid_media(
+        self, connection_mock, _mock_upload_media, _mock_post
+    ):
+        connection_mock().recv.return_value = json.dumps(
+            {"payload": {}, "type": "failed"}
+        )
+        with pytest.raises(MediaPostFailed):
+            self.reddit.subreddit("test").submit_image("Test", "dummy path")
 
     def test_pickle(self):
         subreddit = Subreddit(

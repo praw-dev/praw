@@ -18,6 +18,7 @@ from ...const import API_PATH, JPEG_HEADER
 from ...exceptions import (
     ClientException,
     InvalidFlairTemplateID,
+    MediaPostFailed,
     RedditAPIException,
     TooLargeMediaException,
     WebSocketException,
@@ -612,6 +613,8 @@ class Subreddit(
                 "the original exception.",
                 ws_exception,
             )
+        if ws_update.get("type") == "failed":
+            raise MediaPostFailed()
         url = ws_update["payload"]["redirect"]
         return self._reddit.submission(url=url)
 

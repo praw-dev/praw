@@ -218,6 +218,38 @@ class InvalidURL(ClientException):
         super().__init__(message.format(url))
 
 
+class MediaPostFailed(RedditAPIException):
+    """Indicate exceptions where invalid media was uploaded."""
+
+    @property
+    def error_type(self) -> str:
+        """Constant representing the error type of all instances."""
+        return "Failed Media Upload"
+
+    @property
+    def message(self) -> str:
+        """Constant representing the message of all instances."""
+        return (
+            "The attempted media upload action has failed. Possible causes"
+            " include the corruption of media files. Check that the media "
+            "file can be opened on your local machine."
+        )
+
+    @property
+    def field(self) -> None:
+        """Constant representing the field of all instances."""
+        return None
+
+    @property
+    def error_item(self) -> RedditErrorItem:
+        """Constant representing a :class:`.RedditErrorItem` instance."""
+        return RedditErrorItem(self.error_type, self.message, self.field)
+
+    def __init__(self):
+        """Instantize MediaPostFailed."""
+        super().__init__(self.error_item)
+
+
 class MissingRequiredAttributeException(ClientException):
     """Indicate exceptions caused by not including a required attribute."""
 
