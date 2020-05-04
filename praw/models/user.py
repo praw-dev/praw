@@ -1,5 +1,6 @@
 """Provides the User class."""
 from typing import TYPE_CHECKING, Dict, Iterator, List, Optional, Union
+from warnings import warn
 
 from ..const import API_PATH
 from ..models import Preferences
@@ -119,8 +120,6 @@ class User(PRAWBase):
     ) -> Optional["praw.models.Redditor"]:  # pylint: disable=invalid-name
         """Return a :class:`.Redditor` instance for the authenticated user.
 
-        In :attr:`~praw.Reddit.read_only` mode, this method returns ``None``.
-
         :param use_cache: When true, and if this function has been previously called,
             returned the cached version (default: True).
 
@@ -130,8 +129,20 @@ class User(PRAWBase):
             the cached value. Prefer using separate Reddit instances, however, for
             distinct authorizations.
 
+        .. deprecated:: 7.2
+
+            In read-only mode this method returns ``None``. In PRAW 8 this method will
+            raise :class:`.ReadOnlyException` when called in read-only mode.
+
         """
         if self._reddit.read_only:
+            warn(
+                "The `None` return value is deprecated, and will raise a "
+                "`ReadOnlyException` beginning with PRAW 8. See documentation "
+                "for forward compatability options.",
+                category=DeprecationWarning,
+                stacklevel=2,
+            )
             return None
         if "_me" not in self.__dict__ or not use_cache:
             user_data = self._reddit.get(API_PATH["me"])
